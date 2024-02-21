@@ -1,15 +1,23 @@
 package com.tokopedia.content.product.preview.view.components
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -127,23 +135,24 @@ private fun RenderContent(
                 end.linkTo(atcBtn.start, 8.dp)
             }
         )
-
         // Final Price
-        NestTypography(
-            text = product.price.finalPrice,
-            maxLines = 1,
-            textStyle = NestTheme.typography.heading5.copy(
-                color = NestTheme.colors.NN._1000
-            ),
-            modifier = Modifier
-                .heightIn(0.dp, 208.dp)
-                .constrainAs(ogPrice) {
-                    width = Dimension.wrapContent
-                    height = Dimension.wrapContent
-                    start.linkTo(title.start)
-                    top.linkTo(title.bottom, 4.dp)
-                }
-        )
+        if (product.price !is BottomNavUiModel.Price.NettPrice) {
+            NestTypography(
+                text = product.price.finalPrice,
+                maxLines = 1,
+                textStyle = NestTheme.typography.heading5.copy(
+                    color = NestTheme.colors.NN._1000
+                ),
+                modifier = Modifier
+                    .heightIn(0.dp, 208.dp)
+                    .constrainAs(ogPrice) {
+                        width = Dimension.wrapContent
+                        height = Dimension.wrapContent
+                        start.linkTo(title.start)
+                        top.linkTo(title.bottom, 4.dp)
+                    }
+            )
+        }
 
         NestButton(
             text = product.buttonState.text,
@@ -159,7 +168,7 @@ private fun RenderContent(
                 }
         )
 
-        if (product.price is BottomNavUiModel.DiscountedPrice) {
+        if (product.price is BottomNavUiModel.Price.DiscountedPrice || product.price is BottomNavUiModel.Price.NettPrice) {
             NestTypography(
                 text = product.price.ogPriceFmt,
                 maxLines = 1,
@@ -176,6 +185,8 @@ private fun RenderContent(
                         top.linkTo(ogPrice.top)
                     }
             )
+        }
+        if (product.price is BottomNavUiModel.Price.DiscountedPrice) {
             NestTypography(
                 text = product.price.discountPercentage,
                 maxLines = 1,
@@ -192,6 +203,33 @@ private fun RenderContent(
                         top.linkTo(slashedPrice.top)
                     }
             )
+        }
+
+        if (product.price is BottomNavUiModel.Price.NettPrice) {
+            Row(modifier = Modifier
+                .wrapContentSize()
+                .border(BorderStroke(1.dp, NestTheme.colors.RN._50))
+                .background(NestTheme.colors.RN._200.copy(alpha = 0.2f), RoundedCornerShape(20)) //TODO: adjust radius
+                .padding(4.dp)
+                .constrainAs(ogPrice) {
+                    start.linkTo(parent.start)
+                    top.linkTo(title.bottom, 6.dp)
+                    bottom.linkTo(parent.bottom)
+                }
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_nett_price),
+                    contentDescription = "",
+                    modifier = Modifier.size(16.dp), //TODO: adjust center
+                )
+                NestTypography(
+                    text = product.price.nettPriceFmt,
+                    maxLines = 1,
+                    textStyle = NestTheme.typography.heading5.copy(
+                        color = NestTheme.colors.RN._200
+                    )
+                )
+            }
         }
     }
 }
