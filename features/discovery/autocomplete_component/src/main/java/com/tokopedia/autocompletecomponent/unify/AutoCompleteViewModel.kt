@@ -54,9 +54,6 @@ internal class AutoCompleteViewModel @Inject constructor(
     val isSuggestion
         get() = stateValue.isSuggestion
 
-    val currentQuery
-        get() = stateValue.parameter[SearchApiConst.Q] ?: ""
-
     fun onScreenInitialized() {
         actOnParameter()
     }
@@ -136,13 +133,14 @@ internal class AutoCompleteViewModel @Inject constructor(
 
     fun trackTrendingShow() {
         val appLogData = stateValue.appLogData
+        val currentSearchTerm = stateValue.resultList.firstOrNull()?.searchTerm ?: ""
         AppLogSearch.eventTrendingShow(
             AppLogSearch.TrendingShow(
                 searchPosition = appLogData.enterFrom,
                 searchEntrance = appLogData.searchEntrance,
                 imprId = "", // TODO milhamj: wait from BE
                 newSugSessionId = appLogData.newSugSessionId,
-                rawQuery = currentQuery,
+                rawQuery = currentSearchTerm,
                 enterMethod = appLogData.enterMethod,
                 wordsNum = stateValue.resultList.filter {
                     it.domainModel.isMasterTemplate()
