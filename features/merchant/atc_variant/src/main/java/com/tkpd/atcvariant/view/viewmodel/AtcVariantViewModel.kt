@@ -503,7 +503,7 @@ class AtcVariantViewModel @Inject constructor(
             AppLogAnalytics.sendConfirmCart(
                 TrackConfirmCart(
                     productId = parentId,
-                    productCategory = categoryName,
+                    productCategory = categoryName, // todo: need to be level 1 category
                     productType = ProductType.AVAILABLE,
                     originalPrice = selectedChild?.campaign?.originalPrice.orZero(),
                     salePrice = selectedChild?.price.orZero(),
@@ -515,13 +515,12 @@ class AtcVariantViewModel @Inject constructor(
             AppLogAnalytics.sendConfirmSku(
                 TrackConfirmSku(
                     productId = parentId,
-                    productCategory = categoryName,
+                    productCategory = categoryName, // todo: need to be level 1 category
                     productType = ProductType.AVAILABLE,
                     originalPrice = selectedChild?.campaign?.originalPrice.orZero(),
                     salePrice = selectedChild?.price.orZero(),
                     skuId = selectedChild?.productId.orEmpty(),
-                    isSkuSelected = false,
-                    isAddCartSelected = false,
+                    isSingleSku = false, // always false in atc variant
                     qty = selectedChild?.getFinalMinOrder().orZero().toString(),
                     isHaveAddress = false
                 )
@@ -625,14 +624,16 @@ class AtcVariantViewModel @Inject constructor(
         AppLogAnalytics.sendConfirmCartResult(
             TrackConfirmCartResult(
                 productId = parentId,
-                productCategory = addToCartRequest?.category.orEmpty(),
+                productCategory = addToCartRequest?.category.orEmpty(), // todo: need to be level 1
                 productType = ProductType.AVAILABLE,
                 originalPrice = selectedChild?.campaign?.originalPrice.orZero(),
                 salePrice = selectedChild?.price.orZero(),
                 skuId = selectedChild?.productId.orEmpty(),
                 addSkuNum = selectedChild?.getFinalMinOrder().orZero(),
-                isSuccess = "",
-                failReason = ""
+                isSuccess = false, // todo
+                failReason = result.errorMessage.firstOrNull().orEmpty(),
+                buttonType = -1, // todo
+                cartItemId = result?.data?.cartId.orEmpty()
             )
         )
         if (result.isDataError()) {

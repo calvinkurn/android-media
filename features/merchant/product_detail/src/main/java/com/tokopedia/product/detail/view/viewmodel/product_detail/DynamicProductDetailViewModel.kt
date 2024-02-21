@@ -287,14 +287,14 @@ class DynamicProductDetailViewModel @Inject constructor(
     var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
     val impressionHolders = mutableListOf<String>()
+
     /**
-     * for appLog stay-analytics to determine if the data is already loaded or not
+     * These variable are for storing appLog stay-analytics data
      * */
     private var isLoadData: Boolean = false
-    /**
-     * for appLog stay-analytics to determine if the product is already added to cart
-     * */
     var hasDoneAddToCart: Boolean = false
+    var mainPhotoViewed: MutableSet<Int> = mutableSetOf()
+    var skuPhotoViewed: MutableSet<Int> = mutableSetOf()
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -504,28 +504,36 @@ class DynamicProductDetailViewModel @Inject constructor(
         return p2.bebasOngkir.boImages.firstOrNull { it.boType == boType } ?: BebasOngkirImage()
     }
 
-    fun getProductDetailTrack(): TrackProductDetail {
-        val p1 = getDynamicProductInfoP1 ?: throw Exception()
-        val p2 = p2Data.value ?: throw Exception()
+    fun getProductDetailTrack(): TrackProductDetail? {
+        val p1 = getDynamicProductInfoP1 ?: return null
+        val p2 = p2Data.value ?: return null
 
         return TrackProductDetail(
             productId = p1.parentProductId,
-            productCategory = p1.basic.category.name,
+            productCategory = p1.basic.category.detail.firstOrNull()?.name.orEmpty(),
             productType = p1.productType,
             originalPrice = p1.data.price.slashPriceFmt,
-            salePrice = p1.data.campaign.priceFmt
+            salePrice = p1.data.campaign.priceFmt,
+            isSingleSku = p1.data.variant.isVariant.not()
         )
     }
 
     fun getStayAnalyticsData(): TrackStayProductDetail {
-        val p1 = getDynamicProductInfoP1 ?: throw Exception("P1 is not available")
+        val p1 = getDynamicProductInfoP1
+        val mainCount = mainPhotoViewed.count()
+        mainPhotoViewed.clear()
+        val skuCount = skuPhotoViewed.count()
+        skuPhotoViewed.clear()
         return TrackStayProductDetail(
-            productId = p1.parentProductId,
-            productCategory = p1.basic.category.name,
-            productType = p1.productType,
-            originalPrice = p1.data.price.slashPriceFmt,
-            salePrice = p1.data.campaign.priceFmt,
+            productId = p1?.parentProductId.orEmpty(),
+            productCategory = p1?.basic?.category?.detail?.firstOrNull()?.name.orEmpty(),
+            productType = p1?.productType ?: ProductType.NOT_AVAILABLE,
+            originalPrice = p1?.data?.price?.slashPriceFmt.orEmpty(),
+            salePrice = p1?.data?.campaign?.priceFmt.orEmpty(),
             isLoadData = isLoadData,
+            isSingleSku = p1?.data?.variant?.isVariant != true,
+            mainPhotoViewCount = mainCount,
+            skuPhotoViewCount = skuCount,
             isAddCartSelected = hasDoneAddToCart
         )
     }
@@ -689,7 +697,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         AppLogAnalytics.sendConfirmCart(
             TrackConfirmCart(
                 productId = data.parentProductId,
-                productCategory = data.basic.category.name,
+                productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
                 productType = ProductType.AVAILABLE,
                 originalPrice = data.data.price.value,
                 salePrice = data.finalPrice,
@@ -705,14 +713,16 @@ class DynamicProductDetailViewModel @Inject constructor(
         AppLogAnalytics.sendConfirmCartResult(
             TrackConfirmCartResult(
                 productId = data.parentProductId,
-                productCategory = data.basic.category.name,
+                productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
                 productType = ProductType.AVAILABLE,
                 originalPrice = data.data.price.value,
                 salePrice = data.finalPrice,
                 skuId = data.basic.productID,
                 addSkuNum = data.basic.minOrder,
-                isSuccess = "",
-                failReason = ""
+                isSuccess = false, // todo
+                failReason = result.getAtcErrorMessage().orEmpty(),
+                buttonType = -1, // todo
+                cartItemId = result.data.cartId,
             )
         )
         if (result.isStatusError()) {
@@ -768,13 +778,12 @@ class DynamicProductDetailViewModel @Inject constructor(
         AppLogAnalytics.sendConfirmSku(
             TrackConfirmSku(
                 productId = data.parentProductId,
-                productCategory = data.basic.category.name,
+                productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
                 productType = ProductType.AVAILABLE,
                 originalPrice = data.data.price.value,
                 salePrice = data.finalPrice,
                 skuId = data.basic.productID,
-                isSkuSelected = false,
-                isAddCartSelected = false,
+                isSingleSku = data.isProductVariant(),
                 qty = data.basic.minOrder.toString(),
                 isHaveAddress = false
             )

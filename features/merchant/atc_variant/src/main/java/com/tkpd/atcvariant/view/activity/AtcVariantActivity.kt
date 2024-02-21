@@ -12,6 +12,7 @@ import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.byteio.IAppLogActivity
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CACHE_ID
@@ -112,6 +113,6 @@ class AtcVariantActivity : BaseSimpleActivity(), IAppLogActivity {
     }
 
     override fun getPageName(): String {
-        return "sku"
+        return PageName.SKU
     }
 }

@@ -7,6 +7,7 @@ import android.text.style.StyleSpan
 import android.text.style.TypefaceSpan
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_MANUAL_ENTER
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -123,4 +124,8 @@ internal fun getBoldStyle(context: Context?): Any {
         TypefaceSpan(typeface)
     else
         StyleSpan(Typeface.BOLD)
+}
+
+internal fun MutableMap<String, String>.addEnterMethodNormalSearch() {
+    put(SearchApiConst.ENTER_METHOD, AppLogSearch.ParamValue.NORMAL_SEARCH)
 }

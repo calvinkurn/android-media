@@ -2,6 +2,9 @@ package com.tokopedia.analytics.byteio.search
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
@@ -59,9 +62,11 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_NUM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_POSITION
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_SOURCE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CORRECT_WORD
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.ENTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_PANEL
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_BAR_OUTER
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SUG
 import org.json.JSONObject
 
 object AppLogSearch {
@@ -147,6 +152,7 @@ object AppLogSearch {
         const val SEARCH_SUG = "search_sug"
         const val NORMAL_SEARCH = "normal_search"
         const val SUG_RECOM = "sug_recom"
+        const val TAB_SEARCH = "tab_search"
         const val GOODS = "goods"
         const val VIDEO_GOODS = "video_goods"
         const val SHOP = "shop"
@@ -154,12 +160,15 @@ object AppLogSearch {
         const val SHOP_BIG = "shop_big"
         const val GOODS_COLLECT = "goods_collect"
         const val CLICK_MORE_BUTTON = "click_more_button" //"Click three dots on the product card"
-        const val CLICK_FAVORITE_BUTTON = "click_favourite_button" // "Click on the three dots of the product card to add to favorites"
-        const val CLICK_MORE_FINDALIKE = "click_more_findalike" //"Click on the three points of the product card to find similarities"
+        const val CLICK_FAVORITE_BUTTON =
+            "click_favourite_button" // "Click on the three dots of the product card to add to favorites"
+        const val CLICK_MORE_FINDALIKE =
+            "click_more_findalike" //"Click on the three points of the product card to find similarities"
         const val CLICK_BACK = "click_back" //"Top back button"
         const val CLICK_SHOPPING_CART = "click_shopping_cart" // "Click on shopping cart"
         const val CLICK_SETTING = "click_setting" // "Click Settings"
-        const val CLICK_SHOP_NAME = "click_shop_name" // "Click on the name of the shop to go to the shop homepage" (Shop Ads)
+        const val CLICK_SHOP_NAME =
+            "click_shop_name" // "Click on the name of the shop to go to the shop homepage" (Shop Ads)
         const val SORT_RELEVANCE = "sort_relevance"
         const val SORT_REVIEW = "sort_review"
         const val SORT_PRICE_ASC = "sort_price_asc"
@@ -172,10 +181,14 @@ object AppLogSearch {
     }
 
     fun eventShowSearch(currentPageName: String) {
-        AppLogAnalytics.send(SHOW_SEARCH, JSONObject(mapOf(
-            SEARCH_ENTRANCE to if (currentPageName == "/") HOMEPAGE else "",
-            ENTER_FROM to if (currentPageName == "/") HOMEPAGE else "",
-        )))
+        AppLogAnalytics.send(
+            SHOW_SEARCH, JSONObject(
+                mapOf(
+                    SEARCH_ENTRANCE to if (currentPageName == "/") HOMEPAGE else "",
+                    ENTER_FROM to if (currentPageName == "/") HOMEPAGE else "",
+                )
+            )
+        )
     }
 
     data class TrendingWords(
@@ -204,8 +217,53 @@ object AppLogSearch {
         AppLogAnalytics.send(TRENDING_WORDS_CLICK, JSONObject(trendingWords.toMap()))
     }
 
+    data class Search(
+        val imprId: String,
+        val enterFrom: String,
+        val searchType: String,
+        val enterMethod: String,
+        val searchKeyword: String,
+        val durationMs: Long? = null,
+        val isSuccess: Boolean? = null,
+        val preSearchId: String? = null,
+        val ecSearchSessionId: String? = null,
+        val sugType: String? = null,
+        val newSugSessionId: String? = null,
+        val preClickId: String? = null,
+        val blankPageEnterFrom: String? = null,
+        val blankPageEnterMethod: String? = null,
+        val ecomSortChosen: String? = null,
+        val ecomFilterChosen: Map<String, Any>? = null,
+        val ecomFilterType: String? = null,
+    ) {
+        fun json() = JSONObject(buildMap {
+            put(IMPR_ID, imprId)
+            put(ENTER_FROM, enterFrom)
+            put(SEARCH_TYPE, searchType)
+            put(ENTER_METHOD, enterMethod)
+            put(SEARCH_KEYWORD, searchKeyword)
+
+            durationMs?.let { put(DURATION, it) }
+            isSuccess?.let { put(IS_SUCCESS, it.intValue) }
+            preSearchId?.let { put(PRE_SEARCH_ID, it) }
+            ecSearchSessionId?.let { put(EC_SEARCH_SESSION_ID, it) }
+            sugType?.let { put(SUG_TYPE, it) }
+            newSugSessionId?.let { put(NEW_SUG_SESSION_ID, it) }
+            preClickId?.let { put(PRE_CLICK_ID, it) }
+            blankPageEnterFrom?.let { put(BLANKPAGE_ENTER_FROM, it) }
+            blankPageEnterMethod?.let { put(BLANKPAGE_ENTER_METHOD, it) }
+            ecomSortChosen?.let { put(ECOM_SORT_CHOSEN, it) }
+            ecomFilterChosen?.let { put(ECOM_FILTER_CHOSEN, it) }
+            ecomFilterType?.let { put(ECOM_FILTER_TYPE, it) }
+        })
+    }
+
+    fun eventSearch(search: Search) {
+        AppLogAnalytics.send(SEARCH, search.json())
+    }
+
     sealed class EventSearch(val from: String) {
-        class Placeholder: EventSearch(PLACEHOLDER) {
+        class Placeholder : EventSearch(PLACEHOLDER) {
             override fun json() = JSONObject(
                 mapOf(
                     IMPR_ID to "", // TODO:: Search ID From BE
@@ -223,7 +281,7 @@ object AppLogSearch {
             )
         }
 
-        class InitialState: EventSearch(INITIAL_STATE) {
+        class InitialState : EventSearch(INITIAL_STATE) {
             override fun json() = JSONObject(
                 mapOf(
                     IMPR_ID to "", // TODO:: Search ID From BE
@@ -241,7 +299,7 @@ object AppLogSearch {
             )
         }
 
-        class Suggestion: EventSearch(SUGGESTION) {
+        class Suggestion : EventSearch(SUGGESTION) {
             override fun json() = JSONObject(
                 mapOf(
                     IMPR_ID to "", // TODO:: Search ID From BE
@@ -262,7 +320,7 @@ object AppLogSearch {
             )
         }
 
-        class Filter: EventSearch(FILTER) {
+        class Filter : EventSearch(FILTER) {
             override fun json() = JSONObject(
                 mapOf(
                     IMPR_ID to "", // TODO:: Search ID From BE
@@ -284,7 +342,7 @@ object AppLogSearch {
             )
         }
 
-        class TypoCorrection: EventSearch(TYPO_CORRECTION) {
+        class TypoCorrection : EventSearch(TYPO_CORRECTION) {
             override fun json() = JSONObject(
                 mapOf(
                     ENTER_METHOD to CORRECT_WORD,
@@ -293,7 +351,9 @@ object AppLogSearch {
             )
         }
 
-        fun send() { AppLogAnalytics.send(SEARCH, json()) }
+        fun send() {
+            AppLogAnalytics.send(SEARCH, json())
+        }
 
         abstract fun json(): JSONObject
 
@@ -317,55 +377,87 @@ object AppLogSearch {
 
     // /////////////// -- IJ -- /////////////
 
-    fun <K, V> eventEnterSearchBlankPage() {
+    fun eventEnterSearchBlankPage(
+        enterFrom: String,
+        searchEntrance: String
+    ) {
         AppLogAnalytics.send(
             ENTER_SEARCH_BLANKPAGE,
             JSONObject(
                 mapOf(
-                    SEARCH_ENTRANCE to "", // TODO:: HOMEPAGE. Other page empty
-                    ENTER_FROM to "", // TODO:: HOMEPAGE || GOODS_SEARCH || STORE_SEARCH.
-                    ENTER_METHOD to "", // TODO:: ENTER
+                    ENTER_FROM to enterFrom,
+                    ENTER_METHOD to ENTER,
+                    SEARCH_ENTRANCE to searchEntrance
                 )
             )
         )
     }
 
-    fun <K, V> eventTrendingShow() {
+    data class TrendingShow(
+        val searchPosition: String,
+        val searchEntrance: String,
+        val imprId: String,
+        val newSugSessionId: Long,
+        val rawQuery: String,
+        val enterMethod: String,
+        val wordsNum: Int,
+        val wordSource: String = SUG,
+    ) {
+        fun json() = JSONObject(
+            mapOf(
+                SEARCH_POSITION to searchPosition,
+                SEARCH_ENTRANCE to searchEntrance,
+                IMPR_ID to imprId, // TODO:: Request ID from Suggestion GQL BE
+                NEW_SUG_SESSION_ID to newSugSessionId,
+                RAW_QUERY to rawQuery,
+                ENTER_METHOD to enterMethod,
+                WORDS_SOURCE to wordSource,
+                WORDS_NUM to wordsNum,
+            )
+        )
+    }
+
+    fun eventTrendingShow(trendingShow: TrendingShow) {
         AppLogAnalytics.send(
             TRENDING_SHOW,
-            JSONObject(
-                mapOf(
-                    WORDS_SOURCE to "", // TODO:: SUG
-                    WORDS_NUM to 0, // TODO:: Total number of all suggestion
-                    SEARCH_POSITION to "", // TODO:: HOMEPAGE || GOODS_SEARCH || STORE_SEARCH.
-                    SEARCH_ENTRANCE to "", // TODO:: HOMEPAGE. Other page = ""
-                    IMPR_ID to "", // TODO:: Request ID from Suggestion GQL BE
-                    RAW_QUERY to "", // TODO:: Query from user
-                    NEW_SUG_SESSION_ID to "", // TODO:: Reset every time query is entirely deleted. System.currentTimeMillis()
-                    ENTER_METHOD to "", // TODO:: "ENTER (from home to Initial State to Suggestion) || CLICK_SEARCH_BAR (from SRP)
-                )
+            trendingShow.json()
+        )
+    }
+
+    data class TrendingWordsShow(
+        val searchPosition: String,
+        val searchEntrance: String,
+        val groupId: String,
+        val imprId: String,
+        val newSugSessionId: Long,
+        val rawQuery: String,
+        val enterMethod: String,
+        val sugType: String,
+        val wordsContent: String,
+        val wordsPosition: Int,
+        val wordSource: String = SUG,
+    ) {
+        fun json() = JSONObject(
+            mapOf(
+                SEARCH_POSITION to searchPosition,
+                SEARCH_ENTRANCE to searchEntrance,
+                GROUP_ID to groupId, // TODO:: Group ID
+                IMPR_ID to imprId, // TODO:: Request ID from Suggestion GQL BE
+                NEW_SUG_SESSION_ID to newSugSessionId,
+                RAW_QUERY to rawQuery,
+                ENTER_METHOD to enterMethod,
+                SUG_TYPE to sugType, // TODO:: CAMPAIGN || PRODUCT || STORE.
+                WORDS_CONTENT to wordsContent,
+                WORDS_POSITION to wordsPosition,
+                WORDS_SOURCE to wordSource
             )
         )
     }
 
-    fun <K, V> eventTrendingWordsShowSuggestion() {
+    fun eventTrendingWordsShowSuggestion(trendingWordsShow: TrendingWordsShow) {
         AppLogAnalytics.send(
             TRENDING_WORDS_SHOW,
-            JSONObject(
-                mapOf(
-                    WORDS_SOURCE to "", //TODO:: SUG
-                    WORDS_POSITION to 0, // TODO:: Index of Suggestion words
-                    WORDS_CONTENT to "", // TODO:: Words content
-                    SEARCH_POSITION to "", // TODO:: HOMEPAGE || GOODS_SEARCH || STORE_SEARCH.
-                    SEARCH_ENTRANCE to "", // TODO:: HOMEPAGE. Other pages = ""
-                    GROUP_ID to "", // TODO:: Group ID
-                    IMPR_ID to "", // TODO:: Request ID
-                    RAW_QUERY to "", // TODO:: Raw Query
-                    NEW_SUG_SESSION_ID to "", // TODO::  Reset every time query is entirely deleted. System.currentTimeMillis()
-                    SUG_TYPE to "", // TODO:: CAMPAIGN || PRODUCT || STORE.
-                    ENTER_METHOD to "", // TODO:: "ENTER (from home to Initial State to Suggestion) || CLICK_SEARCH_BAR (from SRP)
-                )
-            )
+            trendingWordsShow.json()
         )
     }
 
@@ -389,7 +481,6 @@ object AppLogSearch {
             )
         )
     }
-
 
 
     // /////////////// -- IJ -- /////////////
@@ -492,6 +583,9 @@ object AppLogSearch {
         AppLogAnalytics.send(EventName.PRODUCT_CLICK, tiktokecJSON())
     }
 
+    //TODO:: Update source_module to null
+    //TODO:: Update source_page_type to goods_search
+    //TODO:: Update entrance_form
     private fun tiktokecJSON() = JSONObject(
         mapOf(
             SOURCE_MODULE to "", // TODO:: Is this search?
@@ -516,5 +610,7 @@ object AppLogSearch {
         )
     ).apply {
         addPage()
+        addSourceModule()
+        addSourcePageType()
     }
 }

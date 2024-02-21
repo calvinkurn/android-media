@@ -14,7 +14,6 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
@@ -81,6 +80,8 @@ interface DynamicProductDetailListener {
         variantOptionId: String,
         componentTrackDataModel: ComponentTrackDataModel?
     )
+
+    fun onMediaViewed(position: Int, isVariantPhoto: Boolean)
 
     fun shouldShowWishlist(): Boolean
 

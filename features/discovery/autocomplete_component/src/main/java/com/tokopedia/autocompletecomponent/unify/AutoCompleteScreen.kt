@@ -10,6 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteEducationComponent
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteMasterComponent
@@ -17,7 +18,6 @@ import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteT
 import com.tokopedia.autocompletecomponent.util.AutoCompleteNavigate
 import com.tokopedia.autocompletecomponent.util.AutoCompleteTemplateEnum
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.iris.Iris
 import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.track.TrackApp
@@ -56,6 +56,9 @@ internal fun AutoCompleteScreen(
                 LaunchedEffect(key1 = !item.impressionHolder.impressed, block = {
                     item.impressionHolder.impressed = true
                     item.impress(iris)
+                    if (item.domainModel.isMasterTemplate()) {
+                        viewModel.trackTrendingWordsShow(item)
+                    }
                 })
                 when (item.domainModel.template) {
                     AutoCompleteTemplateEnum.Master.toString() -> {
@@ -95,12 +98,23 @@ private fun EvaluateNavigation(
 ) {
     if (navigate != null) {
         LocalContext.current.apply {
-            val modifiedApplink = getModifiedApplink(navigate.applink, SearchParameter())
+            val modifiedApplink = getModifiedApplink(
+                navigate.applink,
+                viewModel.stateValue.parameter,
+                enterMethod(viewModel),
+            )
             RouteManager.route(this, modifiedApplink)
         }
         viewModel.onNavigated()
     }
 }
+
+private fun enterMethod(viewModel: AutoCompleteViewModel) =
+    if (viewModel.isInitialState)
+        AppLogSearch.ParamValue.SEARCH_HISTORY
+    else if (viewModel.isSuggestion)
+        AppLogSearch.ParamValue.SEARCH_SUG
+    else ""
 
 @Composable
 private fun EvaluateActionReplace(

@@ -2,6 +2,7 @@ package com.tokopedia.autocompletecomponent.unify.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.autocompletecomponent.util.AutoCompleteTemplateEnum
 
 data class SuggestionUnify(
     @SerializedName("applink")
@@ -63,4 +64,6 @@ data class SuggestionUnify(
     @SerializedName("url")
     @Expose
     val url: String = ""
-)
+) {
+    fun isMasterTemplate(): Boolean = template == AutoCompleteTemplateEnum.Master.toString()
+}

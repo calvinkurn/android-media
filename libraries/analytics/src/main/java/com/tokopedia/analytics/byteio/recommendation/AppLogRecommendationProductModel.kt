@@ -1,6 +1,9 @@
 package com.tokopedia.analytics.byteio.recommendation
 
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogParam
 import org.json.JSONObject
 
@@ -32,6 +35,9 @@ data class AppLogRecommendationProductModel (
         put(AppLogParam.SHOP_ID, shopId)
         put(AppLogRecommendationConst.REC_PARAMS, recParams)
         addPage()
+        addEntranceForm()
+        addSourcePageType()
+        addSourceModule()
     }
 
     companion object {
