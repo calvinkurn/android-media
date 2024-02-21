@@ -1,7 +1,7 @@
 package com.tokopedia.content.product.preview.data.mapper
 
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
@@ -21,7 +21,7 @@ class ProductPreviewSourceMapper(
             productId = productId,
             source = ProductPreviewSourceModel.ProductSourceData(
                 productSourceList = productData.data.getGalleryItems().mapIndexed { index, item ->
-                    ProductContentUiModel(
+                    ProductMediaUiModel(
                         contentId = item.id,
                         selected = index == mediaSelectedPosition,
                         variantName = item.tag.orEmpty(),

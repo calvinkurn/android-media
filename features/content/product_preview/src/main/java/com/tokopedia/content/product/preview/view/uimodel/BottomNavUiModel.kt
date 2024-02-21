@@ -11,7 +11,8 @@ data class BottomNavUiModel(
     val stock: Int,
     val buttonState: ButtonState,
     val hasVariant: Boolean,
-    val shop: Shop
+    val shop: Shop,
+    val categoryTree: List<CategoryTree>
 ) {
 
     companion object {
@@ -23,7 +24,8 @@ data class BottomNavUiModel(
                     stock = 0,
                     buttonState = ButtonState.Unknown,
                     hasVariant = false,
-                    shop = Shop.Empty
+                    shop = Shop.Empty,
+                    categoryTree = emptyList()
                 )
     }
 
@@ -41,9 +43,9 @@ data class BottomNavUiModel(
 
     enum class ButtonState(val value: String, val text: String) {
         Active("ACTIVE", "+ Keranjang"),
-        Inactive("INACTIVE","Stok Habis"),
+        Inactive("INACTIVE", "Stok Habis"),
         OOS("OOS", "Ingatkan Saya"),
-        Unknown("","");
+        Unknown("", "");
 
         companion object {
             private val values = ButtonState.values()
@@ -70,7 +72,13 @@ data class BottomNavUiModel(
 
     data class RemindMeUiModel(
         val isSuccess: Boolean,
-        val message: String,
+        val message: String
+    )
+
+    data class CategoryTree(
+        val id: String,
+        val name: String,
+        val title: String
     )
 }
 

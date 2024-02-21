@@ -5,7 +5,7 @@ import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ProductContentUiModel(
+data class ProductMediaUiModel(
     val contentId: String = "",
     val selected: Boolean = false,
     val variantName: String = "",

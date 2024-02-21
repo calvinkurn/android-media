@@ -6,14 +6,22 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_Static_Black">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_review_media"
+    <com.tokopedia.content.common.util.scroll.NestedScrollableHost
+        android:id="@+id/nested_scroll_host"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_review_media"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.tokopedia.content.common.util.scroll.NestedScrollableHost>
 
     <com.tokopedia.unifycomponents.PageControl
         android:id="@+id/pc_review_content"
@@ -46,7 +54,7 @@
         android:id="@+id/group_review_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="layout_author_review, iv_review_star, tv_review_details, tv_review_description, iv_review_menu" />
+        app:constraint_referenced_ids="layout_author_review, iv_review_star, tv_review_details, tv_review_description" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_review_interaction"

@@ -62,7 +62,8 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                     description = Uri.decode(it.review)
                 ),
                 mediaSelectedPosition = 0,
-                isWatchMode = false
+                isWatchMode = false,
+                isScrolling = false,
             )
         }
         return ReviewUiModel(
@@ -79,13 +80,15 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                     ReviewMediaUiModel(
                         mediaId = videos.attachmentId,
                         type = MediaType.Video,
-                        url = videos.url
+                        url = videos.url,
+                        selected = index == 0
                     )
                 } + it.images.mapIndexed { index, images ->
                     ReviewMediaUiModel(
                         mediaId = images.attachmentId,
                         type = MediaType.Image,
-                        url = images.fullSizeUrl
+                        url = images.fullSizeUrl,
+                        selected = if (it.videos.isEmpty()) index == 0 else false
                     )
                 },
                 menus = ReviewMenuStatus(isReportable = it.isReportable && !isOwner(it.user.userId)),
@@ -108,7 +111,8 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                     description = Uri.decode(it.review)
                 ),
                 mediaSelectedPosition = 0,
-                isWatchMode = false
+                isWatchMode = false,
+                isScrolling = false,
             )
         }
         return ReviewUiModel(
@@ -146,6 +150,13 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 BottomNavUiModel.ButtonState.getByValue(
                     response.data.buttonState
                 ) // Variant product always active, to open GVBS.
+            },
+            categoryTree = response.data.categoryTree.map { categoryTree ->
+                BottomNavUiModel.CategoryTree(
+                    id = categoryTree.id,
+                    name = categoryTree.name,
+                    title = categoryTree.title
+                )
             }
         )
 

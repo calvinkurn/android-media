@@ -94,7 +94,6 @@ import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -148,6 +147,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
@@ -165,6 +165,7 @@ import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCoachMarkHelper
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
+import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -304,6 +305,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -613,6 +615,9 @@ open class DynamicProductDetailFragment :
     private val productMediaRecomBottomSheetManager by lazyThreadSafetyNone {
         ProductMediaRecomBottomSheetManager(childFragmentManager, this)
     }
+
+    private val enableContentProductPreview: Boolean
+        get() = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CONTENT_PRODUCT_PREVIEW, false)
 
     override val rootView: Fragment
         get() = this
@@ -1953,22 +1958,24 @@ open class DynamicProductDetailFragment :
             reviewID
         )
 
-        openProductPreviewActivityReviewSource(
-            reviewId = reviewID,
-            attachmentId = attachmentID,
-        )
-        // TODO product preview remote config
-//        ReviewMediaGalleryRouter.routeToReviewMediaGallery(
-//            context = requireContext(),
-//            pageSource = ReviewMediaGalleryRouter.PageSource.PDP,
-//            productID = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
-//            shopID = viewModel.getDynamicProductInfoP1?.basic?.shopID.orEmpty(),
-//            isProductReview = true,
-//            isFromGallery = false,
-//            mediaPosition = position.inc(),
-//            showSeeMore = detailedMediaResult.hasNext,
-//            preloadedDetailedReviewMediaResult = detailedMediaResult
-//        ).let { startActivity(it) }
+        if (enableContentProductPreview) {
+            openProductPreviewActivityReviewSource(
+                reviewId = reviewID,
+                attachmentId = attachmentID
+            )
+        } else {
+            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                context = requireContext(),
+                pageSource = ReviewMediaGalleryRouter.PageSource.PDP,
+                productID = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
+                shopID = viewModel.getDynamicProductInfoP1?.basic?.shopID.orEmpty(),
+                isProductReview = true,
+                isFromGallery = false,
+                mediaPosition = position.inc(),
+                showSeeMore = detailedMediaResult.hasNext,
+                preloadedDetailedReviewMediaResult = detailedMediaResult
+            ).let { startActivity(it) }
+        }
     }
 
     override fun onReviewClick() {
@@ -2145,8 +2152,12 @@ open class DynamicProductDetailFragment :
                 )
             )
         }
-        openProductPreviewActivityProductSource()
-        // TODO product preview remote config
+
+        if (enableContentProductPreview) {
+            openProductPreviewActivityProductSource()
+        } else {
+            getProductDetailActivity()?.addNewFragment(ProductVideoDetailFragment())
+        }
     }
 
     override fun onVideoVolumeCLicked(isMute: Boolean) {
@@ -2253,8 +2264,24 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onImageClicked(position: Int) {
-        openProductPreviewActivityProductSource(position = position)
-        // TODO product preview remote config
+        if (enableContentProductPreview) {
+            openProductPreviewActivityProductSource(position = position)
+        } else {
+            val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
+            val items = dynamicProductInfoData.data.getGalleryItems()
+            if (items.isEmpty()) return
+            val intent = ProductDetailGalleryActivity.createIntent(
+                context = requireContext(),
+                productDetailGallery = ProductDetailGallery(
+                    productId = dynamicProductInfoData.basic.productID,
+                    userId = viewModel.userId,
+                    page = ProductDetailGallery.Page.ProductDetail,
+                    items = items,
+                    selectedId = position.toString()
+                )
+            )
+            startActivity(intent)
+        }
     }
 
     private fun openProductPreviewActivityProductSource(
@@ -2267,7 +2294,7 @@ open class DynamicProductDetailFragment :
         val intent = ProductPreviewActivity.createIntent(
             context = requireContext(),
             productPreviewSourceModel = ProductPreviewSourceMapper(
-                productId = productId,
+                productId = productId
             ).mapProductSourceModel(
                 productData = productData,
                 mediaSelectedPosition = position,
@@ -2280,16 +2307,16 @@ open class DynamicProductDetailFragment :
 
     private fun openProductPreviewActivityReviewSource(
         reviewId: String,
-        attachmentId: String,
+        attachmentId: String
     ) {
         val productId = productId ?: return
         val intent = ProductPreviewActivity.createIntent(
             context = requireContext(),
             productPreviewSourceModel = ProductPreviewSourceMapper(
-                productId = productId,
+                productId = productId
             ).mapReviewSourceModel(
                 reviewId = reviewId,
-                attachmentId = attachmentId,
+                attachmentId = attachmentId
             )
         )
         startActivity(intent)

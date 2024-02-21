@@ -26,8 +26,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
-import com.tokopedia.cart.view.customview.BmGmWidgetView
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
+import com.tokopedia.cart.view.customview.BmGmWidgetView
 import com.tokopedia.cart.view.customview.CartSwipeRevealLayout
 import com.tokopedia.cart.view.customview.CartViewBinderHelper
 import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
@@ -486,10 +486,7 @@ class CartItemViewHolder(
                         if (!data.isError) {
                             if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                                 actionListener?.onCartItemCheckChanged(bindingAdapterPosition, data)
-                                viewHolderListener?.onNeedToRefreshSingleShop(
-                                    data,
-                                    bindingAdapterPosition
-                                )
+                                handleCheckboxRefresh(data)
                             }
                         }
                     }
@@ -540,15 +537,27 @@ class CartItemViewHolder(
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
                         if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                             actionListener?.onBundleItemCheckChanged(data)
-                            viewHolderListener?.onNeedToRefreshSingleShop(
-                                data,
-                                bindingAdapterPosition
-                            )
+                            handleCheckboxRefresh(data)
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun handleCheckboxRefresh(data: CartItemHolderData) {
+        if (data.wholesalePriceData.isEmpty() && shouldRefreshSingleProduct()) {
+            viewHolderListener?.onNeedToRefreshSingleProduct(bindingAdapterPosition)
+        } else {
+            viewHolderListener?.onNeedToRefreshSingleShop(
+                data,
+                bindingAdapterPosition
+            )
+        }
+    }
+
+    private fun shouldRefreshSingleProduct(): Boolean {
+        return true
     }
 
     private fun renderShopInfo(data: CartItemHolderData) {
@@ -1086,7 +1095,7 @@ class CartItemViewHolder(
             )
         }
 
-        if (data.wholesalePriceFormatted != null) {
+        if (data.wholesalePriceFormatted != null && data.isSelected) {
             binding.textProductPrice.text = data.wholesalePriceFormatted
                 ?: ""
         } else {
@@ -1099,7 +1108,7 @@ class CartItemViewHolder(
 
     private fun renderSlashPrice(data: CartItemHolderData) {
         val hasPriceOriginal = data.productOriginalPrice > 0
-        val hasWholesalePrice = data.wholesalePrice > 0
+        val hasWholesalePrice = data.wholesalePrice > 0 && data.isSelected
         val hasPriceDrop = data.productInitialPriceBeforeDrop > 0 &&
             data.productInitialPriceBeforeDrop > data.productPrice
         if (!data.isError && (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) && !data.isBundlingItem) {
@@ -1108,14 +1117,14 @@ class CartItemViewHolder(
                 renderSlashPriceFromCampaign(data)
             } else if (data.productInitialPriceBeforeDrop > 0) {
                 val wholesalePrice = data.wholesalePrice
-                if (wholesalePrice > 0 && wholesalePrice < data.productPrice) {
+                if (hasWholesalePrice && wholesalePrice < data.productPrice) {
                     // Wholesale
                     renderSlashPriceFromWholesale(data)
                 } else {
                     // Price drop
                     renderSlashPriceFromPriceDrop(data)
                 }
-            } else if (data.wholesalePrice > 0) {
+            } else if (hasWholesalePrice) {
                 // Wholesale
                 renderSlashPriceFromWholesale(data)
             }

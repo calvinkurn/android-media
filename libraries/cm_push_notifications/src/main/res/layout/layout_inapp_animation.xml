@@ -118,6 +118,7 @@
 
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_error_reason"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -129,6 +130,7 @@
                 app:typographyType="heading_3" />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_error_msg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -140,6 +142,7 @@
                 app:typographyType="paragraph_2" />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_error_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -148,6 +151,7 @@
                 android:layout_marginBottom="@dimen/dp_12"
                 android:text="Error Code: 1234"
                 android:textAlignment="center"
+                android:visibility="gone"
                 android:textColor="@color/Unify_NN600"
                 app:typographyType="small" />
 

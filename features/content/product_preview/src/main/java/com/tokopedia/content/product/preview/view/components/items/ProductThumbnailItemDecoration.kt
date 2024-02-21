@@ -6,7 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
-class ProductIndicatorItemDecoration(
+class ProductThumbnailItemDecoration(
     context: Context
 ) : RecyclerView.ItemDecoration() {
 
