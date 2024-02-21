@@ -2,8 +2,6 @@ package com.tokopedia.play.widget.ui
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
-import android.view.View.OnClickListener
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -20,14 +18,18 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.platform.AbstractComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,10 +44,8 @@ import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.NoMinimumTouchArea
-import com.tokopedia.play.widget.liveindicator.analytic.PlayWidgetLiveIndicatorAnalytic
 import com.tokopedia.play.widget.liveindicator.di.DaggerPlayWidgetLiveIndicatorComponent
 import com.tokopedia.play.widget.liveindicator.di.PlayWidgetLiveIndicatorComponent
-import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play.widget.R as playwidgetR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -63,83 +63,61 @@ class PlayWidgetLiveIndicatorView : AbstractComposeView {
         defStyleAttr
     )
 
-    private val componentFactory = object : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return DaggerPlayWidgetLiveIndicatorComponent.builder()
-                .baseAppComponent(
-                    (context.applicationContext as BaseMainApplication).baseAppComponent
-                ).build() as T
-        }
-    }
+    private var mAnalyticModel: AnalyticModel? by mutableStateOf(null)
+    private var mImpressionTag by mutableStateOf("")
 
-    private var mComponent: PlayWidgetLiveIndicatorComponent? = null
-
-    private var mAnalyticModel: AnalyticModel? = null
-
-    private var mOnClicked by mutableStateOf(createOnClickWithAnalytic())
-
-    init {
-        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(view: View) {
-                mComponent = createComponent()
-            }
-
-            override fun onViewDetachedFromWindow(view: View) {
-                mComponent = null
-            }
-        })
-
-        addImpressionListener {
-            analytic { impressLiveBadge(it.channelId, it.productId, it.shopId) }
-        }
-        setOnClickListener(null)
-    }
+    private var mOnClicked by mutableStateOf({})
 
     @Composable
     override fun Content() {
         NestTheme {
-            PlayWidgetLiveIndicator(mOnClicked)
+            PlayWidgetLiveIndicator(mOnClicked, analyticModel = mAnalyticModel, impressionTag = mImpressionTag)
         }
     }
 
     override fun setOnClickListener(l: OnClickListener?) {
-        mOnClicked = createOnClickWithAnalytic { l?.onClick(this) }
-    }
-
-    private fun createOnClickWithAnalytic(onClicked: () -> Unit = {}): () -> Unit {
-        return {
-            analytic { clickLiveBadge(it.channelId, it.productId, it.shopId) }
-            onClicked()
-        }
+        mOnClicked = { l?.onClick(this) }
     }
 
     fun setAnalyticModel(model: AnalyticModel) {
         mAnalyticModel = model
     }
 
-    private fun createComponent(): PlayWidgetLiveIndicatorComponent {
-        val owner = findViewTreeViewModelStoreOwner() ?: error("VM Store Owner not found")
-        return ViewModelProvider(owner, componentFactory).get()
-    }
-
-    private fun analytic(onAnalytic: PlayWidgetLiveIndicatorAnalytic.(AnalyticModel) -> Unit) {
-        val model = mAnalyticModel ?: return
-        mComponent?.getAnalytic()?.onAnalytic(model)
+    fun setImpressionTag(tag: String) {
+        mImpressionTag = tag
     }
 
     data class AnalyticModel(
         val channelId: String,
         val productId: String,
         val shopId: String,
-    )
+    ) {
+        companion object {
+            val Empty = AnalyticModel(
+                channelId = "",
+                productId = "",
+                shopId = ""
+            )
+        }
+    }
 }
 
 @Composable
 fun PlayWidgetLiveIndicator(
     onClicked: () -> Unit,
     modifier: Modifier = Modifier,
+    analyticModel: PlayWidgetLiveIndicatorView.AnalyticModel? = null,
+    impressionTag: String = "",
 ) {
+
+    val component = rememberDaggerComponent()
+
+    LaunchedEffect(analyticModel, impressionTag) {
+        analyticModel?.let {
+            component.getAnalytic().impressLiveBadge(it.channelId, it.productId, it.shopId, impressionTag)
+        }
+    }
+
     NoMinimumTouchArea {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -147,7 +125,14 @@ fun PlayWidgetLiveIndicator(
                 .requiredHeight(24.dp)
                 .requiredWidth(56.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .clickable(onClick = onClicked)
+                .clickable(onClick = {
+                    analyticModel?.let {
+                        component
+                            .getAnalytic()
+                            .clickLiveBadge(it.channelId, it.productId, it.shopId)
+                    }
+                    onClicked()
+                })
                 .background(colorResource(playwidgetR.color.play_widget_live_indicator_dms_bg))
         ) {
             LiveIndicatorDot(
@@ -228,8 +213,34 @@ private fun IconChevronRight(modifier: Modifier = Modifier) {
 
 private val BlinkEaseInOut = CubicBezierEasing(0.63f, 0.01f, 0.29f, 1.0f)
 
+@Composable
+private fun rememberDaggerComponent(): PlayWidgetLiveIndicatorComponent {
+
+    val context = LocalContext.current
+    val view = LocalView.current
+
+    return remember {
+        val componentFactory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return DaggerPlayWidgetLiveIndicatorComponent.builder()
+                    .baseAppComponent(
+                        (context.applicationContext as BaseMainApplication).baseAppComponent
+                    ).build() as T
+            }
+        }
+
+        ViewModelProvider(
+            checkNotNull(view.findViewTreeViewModelStoreOwner()) {
+                "No ViewModelStoreOwner was found for view $view"
+            },
+            componentFactory
+        ).get()
+    }
+}
+
 @Preview
 @Composable
 private fun PlayWidgetLiveIndicatorViewPreview() {
-    PlayWidgetLiveIndicator(onClicked = {})
+    PlayWidgetLiveIndicator(onClicked = {}, )
 }

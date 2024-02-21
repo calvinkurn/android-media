@@ -38,6 +38,8 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
         binding.indicatorView.setAnalyticModel(
             PlayWidgetLiveIndicatorView.AnalyticModel("channel_id", "product_id", "shop_id")
         )
+        binding.indicatorView.setImpressionTag("view_based")
+
         binding.thumbnailView.setAnalyticModel(
             PlayWidgetLiveThumbnailView.AnalyticModel("channel_id", "product_id", "shop_id")
         )
@@ -57,7 +59,9 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
             NestTheme {
                 PlayWidgetLiveIndicator(
                     onClicked = {},
-                    Modifier.fillMaxSize()
+                    Modifier.fillMaxSize(),
+                    analyticModel = PlayWidgetLiveIndicatorView.AnalyticModel("channel_id", "product_id", "shop_id"),
+                    impressionTag = "compose_based"
                 )
             }
         }

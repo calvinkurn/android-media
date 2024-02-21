@@ -19,8 +19,9 @@ internal class PlayWidgetLiveIndicatorAnalytic @Inject constructor(
         channelId: String,
         productId: String,
         shopId: String,
+        tag: String = "",
     ) {
-        analyticManager.impressOnlyOnce("live_badge") {
+        analyticManager.impressOnlyOnce("live_badge-$tag") {
             analyticManager.sendViewContent(
                 eventAction = "view - badge",
                 eventLabel = "$channelId - $productId - $shopId",
