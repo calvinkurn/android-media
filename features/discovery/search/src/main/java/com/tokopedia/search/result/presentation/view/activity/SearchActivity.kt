@@ -265,6 +265,7 @@ class SearchActivity :
         } else if (searchViewModel?.activeTabPosition == 1) {
             intent.putExtra("enter_from", STORE_SEARCH) // TODO milhamj
         }
+        startActivity(intent)
     }
 
     private fun autoCompleteParamsString() =
