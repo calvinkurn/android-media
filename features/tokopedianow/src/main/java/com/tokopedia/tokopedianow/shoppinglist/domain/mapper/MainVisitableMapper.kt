@@ -22,6 +22,10 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.Shoppin
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListRetryUiModel
 
 internal object MainVisitableMapper {
+
+    /**
+     * -- Page Level Section
+     */
     fun MutableList<Visitable<*>>.addLoadingState(): MutableList<Visitable<*>> {
         val newList = arrayListOf(
             TokoNowThematicHeaderUiModel(
@@ -69,6 +73,10 @@ internal object MainVisitableMapper {
         )
     }
 
+    /**
+     * -- Header Section
+     */
+
     fun MutableList<Visitable<*>>.addHeader(
         headerModel: HeaderModel,
         @TokoNowLayoutState state: Int
@@ -87,34 +95,18 @@ internal object MainVisitableMapper {
         )
     }
 
-    fun MutableList<Visitable<*>>.addLoadMore(): MutableList<Visitable<*>> {
-        add(LoadingMoreModel())
-        return this
-    }
+    /**
+     * -- Shopping List Section
+     */
 
-    fun MutableList<Visitable<*>>.removeLoadMore(): MutableList<Visitable<*>> {
-        removeFirst { it is LoadingMoreModel }
-        return this
-    }
-
-    fun MutableList<Visitable<*>>.addRetry(): MutableList<Visitable<*>> {
-        add(ShoppingListRetryUiModel())
-        return this
-    }
-
-    fun MutableList<Visitable<*>>.removeRetry(): MutableList<Visitable<*>> {
-        removeFirst { it is ShoppingListRetryUiModel }
+    fun MutableList<Visitable<*>>.addEmptyShoppingList(): MutableList<Visitable<*>> {
+        add(ShoppingListEmptyUiModel())
         return this
     }
 
     fun MutableList<Visitable<*>>.addTopCheckAllShoppingList(
-        metadata: GetShoppingListDataResponse.Metadata
     ): MutableList<Visitable<*>> {
-        add(
-            ShoppingListTopCheckAllUiModel(
-                allPrice = metadata.inStockSelectedTotalPriceFmt
-            )
-        )
+        add(ShoppingListTopCheckAllUiModel())
         return this
     }
 
@@ -156,35 +148,25 @@ internal object MainVisitableMapper {
         return this
     }
 
-    fun MutableList<Visitable<*>>.addIf(
-        isTrue: Boolean,
-        layout: () -> MutableList<Visitable<*>>
+    fun MutableList<Visitable<*>>.addTitle(
+        title: String
     ): MutableList<Visitable<*>> {
-        return if (isTrue) {
-            layout.invoke()
-        } else {
-            this
-        }
+        add(TokoNowTitleUiModel(title))
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.addLoadMore(): MutableList<Visitable<*>> {
+        add(LoadingMoreModel())
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.addRetry(): MutableList<Visitable<*>> {
+        add(ShoppingListRetryUiModel())
+        return this
     }
 
     fun MutableList<Visitable<*>>.addDivider(): MutableList<Visitable<*>> {
         add(TokoNowDividerUiModel())
-        return this
-    }
-
-    fun MutableList<Visitable<*>>.addTitle(
-        title: String
-    ): MutableList<Visitable<*>> {
-        add(
-            TokoNowTitleUiModel(
-                title = title
-            )
-        )
-        return this
-    }
-
-    fun MutableList<Visitable<*>>.addEmptyShoppingList(): MutableList<Visitable<*>> {
-        add(ShoppingListEmptyUiModel())
         return this
     }
 
@@ -231,5 +213,26 @@ internal object MainVisitableMapper {
                 )
             )
         )
+    }
+
+    fun MutableList<Visitable<*>>.addIf(
+        isTrue: Boolean,
+        layout: () -> MutableList<Visitable<*>>
+    ): MutableList<Visitable<*>> {
+        return if (isTrue) {
+            layout.invoke()
+        } else {
+            this
+        }
+    }
+
+    fun MutableList<Visitable<*>>.removeLoadMore(): MutableList<Visitable<*>> {
+        removeFirst { it is LoadingMoreModel }
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.removeRetry(): MutableList<Visitable<*>> {
+        removeFirst { it is ShoppingListRetryUiModel }
+        return this
     }
 }

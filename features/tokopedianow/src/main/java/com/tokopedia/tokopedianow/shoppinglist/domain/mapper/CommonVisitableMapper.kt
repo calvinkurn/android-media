@@ -2,8 +2,9 @@ package com.tokopedia.tokopedianow.shoppinglist.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.SHOW
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 
 internal object CommonVisitableMapper {
     fun MutableList<Visitable<*>>.addRecommendedProducts(
@@ -18,7 +19,7 @@ internal object CommonVisitableMapper {
                 weight = it.labelGroupList.firstOrNull { label -> label.isWeightPosition() }?.title.orEmpty(),
                 percentage = it.discountPercentage,
                 slashPrice = it.slashedPrice,
-                type = ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION,
+                type = PRODUCT_RECOMMENDATION,
                 state = SHOW
             )
         }

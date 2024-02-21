@@ -147,7 +147,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
             layout
                 .addIf(availableItems.isNotEmpty()) {
                     layout
-                        .addTopCheckAllShoppingList(shoppingListData.metadata)
+                        .addTopCheckAllShoppingList()
                         .addAvailableShoppingList(shoppingListData.listAvailableItem)
                         .addIf(unavailableItems.isNotEmpty()) {
                             layout.addDivider()
