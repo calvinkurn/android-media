@@ -13,14 +13,13 @@ sealed class AutomateCouponCtaState {
     object OutOfStock : AutomateCouponCtaState()
 
     data class Properties(
-        val isDisabled: Boolean,
         val text: String,
         val appLink: String,
         val url: String
     ) {
 
         companion object {
-            fun empty() = Properties(false, "", "", "")
+            fun empty() = Properties("", "", "")
         }
     }
 }

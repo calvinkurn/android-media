@@ -15,7 +15,7 @@ import com.tokopedia.discovery2.repository.automatecoupon.IAutomateCouponGqlRepo
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
 import com.tokopedia.discovery_component.widgets.automatecoupon.DynamicColorText
 import com.tokopedia.discovery_component.widgets.automatecoupon.TimeLimit
-import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.asCamelCase
@@ -119,7 +119,6 @@ class GetAutomateCouponUseCase @Inject constructor(
         val jsonMetadata = CtaRedirectionMetadata.parse(cta.metadata.orEmpty())
 
         val properties = AutomateCouponCtaState.Properties(
-            isDisabled = cta.isDisabled.orFalse(),
             text = cta.text.orEmpty(),
             appLink = jsonMetadata.appLink,
             url = jsonMetadata.url
