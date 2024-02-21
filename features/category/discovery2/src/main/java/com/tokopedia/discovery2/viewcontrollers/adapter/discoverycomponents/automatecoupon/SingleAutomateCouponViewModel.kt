@@ -92,7 +92,9 @@ class SingleAutomateCouponViewModel(
         launchCatchError(block = {
             val state = useCase?.execute(component.id, component.pageEndPoint)
             if (state == GetAutomateCouponUseCase.State.LOADED) {
-                componentList.postValue(component.getComponentsItem() as ArrayList<ComponentsItem>)
+                if (component.getComponentsItem()?.isNotEmpty() == true) {
+                    componentList.postValue(component.getComponentsItem() as ArrayList<ComponentsItem>)
+                }
             }
         }, onError = {
             Timber.e(it)

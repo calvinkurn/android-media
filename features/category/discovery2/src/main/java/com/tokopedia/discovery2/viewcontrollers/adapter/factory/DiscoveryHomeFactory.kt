@@ -703,7 +703,7 @@ class DiscoveryHomeFactory {
             initializeComponent(
                 ComponentsList.CarouselAutomateCouponItem,
                 ::CarouselAutomateCouponItemViewHolder,
-                ::ListAutomateCouponViewModel
+                ::ListAutomateCouponItemViewModel
             )
         }
 

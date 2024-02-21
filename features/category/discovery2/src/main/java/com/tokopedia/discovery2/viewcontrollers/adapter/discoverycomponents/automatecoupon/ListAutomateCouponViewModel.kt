@@ -40,7 +40,13 @@ class ListAutomateCouponViewModel(
     private fun fetch() {
         launchCatchError(block = {
             useCase?.execute(component.id, component.pageEndPoint)
-            componentList.postValue(component.getComponentsItem() as ArrayList<ComponentsItem>)
+            if (component.getComponentsItem()?.isNotEmpty() == true) {
+                val coupons = component.getComponentsItem()?.filter {
+                    it.automateCoupons?.isNotEmpty() == true
+                }
+
+                componentList.postValue(coupons as ArrayList<ComponentsItem>)
+            }
         }, onError = {
             Timber.e(it)
         })

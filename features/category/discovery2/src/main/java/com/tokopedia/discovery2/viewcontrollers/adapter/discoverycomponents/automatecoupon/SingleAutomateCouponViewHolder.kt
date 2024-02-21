@@ -12,6 +12,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
 import com.tokopedia.discovery_component.widgets.automatecoupon.ButtonState
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -39,6 +40,7 @@ class SingleAutomateCouponViewHolder(
         lifecycleOwner?.let {
             viewModel?.getComponentList()?.observe(it) { items ->
                 items.firstOrNull()?.automateCoupons?.firstOrNull()?.let { model ->
+                    binding?.couponView?.show()
                     binding?.renderCoupon(model)
                 }
             }
