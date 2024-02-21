@@ -54,6 +54,20 @@ data class DynamicProductInfoP1(
             }
         }
 
+    val originalPrice: Double
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.originalPrice
+            } else {
+                data.price.value
+            }
+        }
+
+    val originalPriceFmt: String
+        get() {
+            return data.campaign.slashPriceFmt.ifBlank { data.price.priceFmt }
+        }
+
     val isFromCache
         get() = cacheState.isFromCache
 
