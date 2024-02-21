@@ -109,7 +109,7 @@ fun CtaSellerOffering(
         ) {
             Box {
                 this@Column.AnimatedVisibility(
-                    visible = switchState == 0,
+                    visible = switchState == 0 || switchState > maxSwitchState,
                     enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
                     exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
                 ) {
