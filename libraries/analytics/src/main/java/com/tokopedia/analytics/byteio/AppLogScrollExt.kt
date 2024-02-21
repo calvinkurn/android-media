@@ -24,9 +24,9 @@ data class GlidePageTrackObject(
  * USe this to track horizontal scrolling (ex: carousel)
  */
 data class SlideTrackObject(
-    val moduleName: String,
-    val barName: String,
-    val shopId: String,
+    val moduleName: String = "",
+    val barName: String = "",
+    val shopId: String = "",
 )
 
 /**
