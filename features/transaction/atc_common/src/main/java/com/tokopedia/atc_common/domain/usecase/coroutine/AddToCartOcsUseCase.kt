@@ -2,7 +2,6 @@ package com.tokopedia.atc_common.domain.usecase.coroutine
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.AtcConstant.ATC_ERROR_GLOBAL
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.response.ocs.AddToCartOcsGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
@@ -16,7 +15,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
-import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 import kotlin.math.roundToLong
 
@@ -71,26 +69,22 @@ class AddToCartOcsUseCase @Inject constructor(
         )
         val response = graphqlRepository.response(listOf(request))
             .getSuccessData<AddToCartOcsGqlResponse>()
-        if (response.addToCartResponse.status.equals("OK", true)) {
-            val result = addToCartDataMapper.mapAddToCartOcsResponse(response)
-            if (!result.isStatusError()) {
-                AddToCartBaseAnalytics.sendAppsFlyerTracking(
-                    params.productId,
-                    params.productName,
-                    params.price,
-                    params.quantity.toString(),
-                    params.category
-                )
-                AddToCartBaseAnalytics.sendBranchIoTracking(
-                    params.productId, params.productName, params.price,
-                    params.quantity.toString(), params.category, params.categoryLevel1Id,
-                    params.categoryLevel1Name, params.categoryLevel2Id, params.categoryLevel2Name,
-                    params.categoryLevel3Id, params.categoryLevel3Name, params.userId, params.shopId
-                )
-            }
-            return result
-        } else {
-            throw MessageErrorException(ATC_ERROR_GLOBAL)
+        val result = addToCartDataMapper.mapAddToCartOcsResponse(response)
+        if (!result.isStatusError()) {
+            AddToCartBaseAnalytics.sendAppsFlyerTracking(
+                params.productId,
+                params.productName,
+                params.price,
+                params.quantity.toString(),
+                params.category
+            )
+            AddToCartBaseAnalytics.sendBranchIoTracking(
+                params.productId, params.productName, params.price,
+                params.quantity.toString(), params.category, params.categoryLevel1Id,
+                params.categoryLevel1Name, params.categoryLevel2Id, params.categoryLevel2Name,
+                params.categoryLevel3Id, params.categoryLevel3Name, params.userId, params.shopId
+            )
         }
+        return result
     }
 }

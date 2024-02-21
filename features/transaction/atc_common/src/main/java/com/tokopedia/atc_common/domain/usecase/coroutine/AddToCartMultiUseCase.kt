@@ -2,7 +2,6 @@ package com.tokopedia.atc_common.domain.usecase.coroutine
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.AtcConstant.ATC_ERROR_GLOBAL
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
@@ -13,7 +12,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -42,34 +40,30 @@ class AddToCartMultiUseCase @Inject constructor(
             AtcMultiData::class.java,
             param
         )
-        val response = graphqlRepository.response(listOf(request))
-            .getSuccessData<AtcMultiData>()
-        if (response.atcMulti.buyAgainData.success == 1) {
-            for (param in params) {
-                AddToCartBaseAnalytics.sendAppsFlyerTracking(
-                    param.productId,
-                    param.productName,
-                    param.productPrice.roundToLong().toString(),
-                    param.qty.toString(),
-                    param.category
-                )
-                AddToCartBaseAnalytics.sendBranchIoTracking(
-                    param.productId, param.productName, param.productPrice.roundToLong().toString(),
-                    param.qty.toString(), param.category, "",
-                    "", "", "",
-                    "", "", param.custId,
-                    param.shopName
-                )
+        return try {
+            val response = graphqlRepository.response(listOf(request))
+                .getSuccessData<AtcMultiData>()
+            if (response.atcMulti.buyAgainData.success == 1) {
+                for (param in params) {
+                    AddToCartBaseAnalytics.sendAppsFlyerTracking(
+                        param.productId,
+                        param.productName,
+                        param.productPrice.roundToLong().toString(),
+                        param.qty.toString(),
+                        param.category
+                    )
+                    AddToCartBaseAnalytics.sendBranchIoTracking(
+                        param.productId, param.productName, param.productPrice.roundToLong().toString(),
+                        param.qty.toString(), param.category, "",
+                        "", "", "",
+                        "", "", param.custId,
+                        param.shopName
+                    )
+                }
             }
             return Success(response)
-        } else {
-            return if (response.atcMulti.errorMessage.isNotEmpty()) {
-                Fail(MessageErrorException(response.atcMulti.errorMessage))
-            } else if (response.atcMulti.buyAgainData.message.isNotEmpty()) {
-                Fail(MessageErrorException(response.atcMulti.buyAgainData.message.firstOrNull() ?: ""))
-            } else {
-                Fail(MessageErrorException(ATC_ERROR_GLOBAL))
-            }
+        } catch (throwable: Throwable) {
+            Fail(throwable)
         }
     }
 }
