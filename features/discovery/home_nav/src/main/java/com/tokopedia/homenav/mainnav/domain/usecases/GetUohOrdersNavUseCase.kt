@@ -6,7 +6,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.order.UohData
 import com.tokopedia.homenav.mainnav.data.pojo.order.UohOrders
 import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
-import com.tokopedia.homenav.mainnav.domain.usecases.query.GetOrderHistoryMePageQuery
 import com.tokopedia.homenav.mainnav.domain.usecases.query.GetOrderHistoryQuery
 import com.tokopedia.usecase.coroutines.UseCase
 

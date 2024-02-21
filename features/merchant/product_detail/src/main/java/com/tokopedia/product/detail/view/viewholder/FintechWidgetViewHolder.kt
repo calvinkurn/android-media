@@ -10,9 +10,9 @@ import com.tokopedia.pdp.fintech.view.PdpFintechWidget
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
-class FintechWidgetViewHolder(val view: View, val listener: DynamicProductDetailListener) :
+class FintechWidgetViewHolder(val view: View, val listener: ProductDetailListener) :
     AbstractViewHolder<FintechWidgetDataModel>(view), ProductUpdateListner {
 
     companion object {

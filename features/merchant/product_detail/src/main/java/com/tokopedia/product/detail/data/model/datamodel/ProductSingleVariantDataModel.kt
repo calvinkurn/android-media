@@ -6,7 +6,7 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.components.Lo
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 
 /**
  * Created by Yehezkiel on 21/05/21
@@ -31,7 +31,7 @@ data class ProductSingleVariantDataModel(
 
     override fun type(): String = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int = typeFactory.type(this)
 
     override fun name(): String = name
 

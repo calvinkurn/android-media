@@ -10,12 +10,14 @@ import com.tokopedia.thankyou_native.databinding.ThankWaitingHeaderBinding
 import com.tokopedia.thankyou_native.presentation.adapter.model.WaitingHeaderUiModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
 import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment
 import com.tokopedia.thankyou_native.presentation.views.listener.HeaderListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 import java.util.*
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -67,6 +69,27 @@ class WaitingHeaderViewHolder(
         }
         binding?.seeDetailBtn?.setOnClickListener {
             listener.onSeeDetailInvoice()
+        }
+        binding?.headerTicker?.apply {
+            shouldShowWithAction(data.tickerData.isNotEmpty()) {
+                val tickerViewPagerAdapter = TickerPagerAdapter(context, data.tickerData)
+                addPagerView(tickerViewPagerAdapter, data.tickerData)
+                tickerViewPagerAdapter.setPagerDescriptionClickEvent(object :
+                    TickerPagerCallback {
+                    override fun onPageDescriptionViewClick(
+                        linkUrl: CharSequence,
+                        itemData: Any?
+                    ) {
+                        if (itemData is ThankPageTopTickerData) {
+                            if (itemData.isAppLink()) {
+                                listener.openApplink(linkUrl.toString())
+                            } else {
+                                listener.openApplink(linkUrl.toString())
+                            }
+                        }
+                    }
+                })
+            }
         }
     }
 

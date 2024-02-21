@@ -76,7 +76,7 @@ class GetAutomateCouponUseCase @Inject constructor(
         forEachIndexed { index, it ->
             if (it.info == null) return@forEachIndexed
 
-            val compName = when(component.data?.firstOrNull()?.couponLayout?.asCamelCase()) {
+            val compName = when (component.data?.firstOrNull()?.couponLayout?.asCamelCase()) {
                 Layout.Single.name -> ComponentNames.SingleAutomateCoupon.componentName
                 Layout.Double.name -> ComponentNames.GridAutomateCouponItem.componentName
                 Layout.Carousel.name -> ComponentNames.CarouselAutomateCouponItem.componentName
