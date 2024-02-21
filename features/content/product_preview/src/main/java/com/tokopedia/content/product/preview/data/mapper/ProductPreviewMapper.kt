@@ -131,14 +131,12 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
         return BottomNavUiModel(
             title = response.data.product.name,
             price = if (response.data.promo.isActive) {
-                BottomNavUiModel.NettPrice(
-                    ogPriceFmt = response.data.product.priceFmt,
+                BottomNavUiModel.Price.NettPrice(
+                    ogPriceFmt = ogPrice,
                     nettPriceFmt = response.data.promo.nettPriceFmt,
-                    iconUrl = response.data.promo.iconUrl,
-                    textColor = response.data.promo.color,
                 )
             } else if (response.data.campaign.isActive) {
-                BottomNavUiModel.DiscountedPrice(
+                BottomNavUiModel.Price.DiscountedPrice(
                     discountedPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         price = response.data.campaign.discountedPrice,
                         hasSpace = false
@@ -147,7 +145,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                     discountPercentage = "${response.data.campaign.discountPercentage}%"
                 )
             } else {
-                BottomNavUiModel.NormalPrice(priceFmt = ogPrice)
+                BottomNavUiModel.Price.NormalPrice(ogPriceFmt = ogPrice)
             },
             stock = response.data.product.stock,
             shop = BottomNavUiModel.Shop(
