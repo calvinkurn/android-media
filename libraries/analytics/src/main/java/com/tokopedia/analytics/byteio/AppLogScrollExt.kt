@@ -6,27 +6,44 @@ import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import org.json.JSONObject
 
+/**
+ * Model for tiktokec_glide_page
+ * Use this to track vertical scrolling on page level
+ */
 data class GlideTrackObject(
-    val listName: String,
-    val listNum: Int,
-    val isUseCache: Boolean,
-    val recommendedTriggerObject: RecommendedTriggerObject? = null
+    val listName: String = "",
+    val listNum: Int = 0,
+    val isUseCache: Boolean = false,
 )
 
+/**
+ * Model for tiktokec_slide_bar
+ * USe this to track horizontal scrolling (ex: carousel)
+ */
 data class SlideTrackObject(
     val moduleName: String,
-    val barName: String
+    val barName: String,
+    val shopId: String,
 )
 
-data class RecommendedTriggerObject(
-    val sessionId: String,
-    val requestId: String,
-    val moduleName: String,
-    val isUnderGuide: Boolean = false
+/**
+ * Model for tiktokec_rec_trigger
+ * Use this to track vertical scrolling on recommendation section (usually infinite)
+ */
+data class RecommendationTriggerObject(
+    val sessionId: String = "",
+    val requestId: String = "",
+    val moduleName: String = "",
+    val isUnderGuide: Boolean = false,
+    val listName: String = "",
+    val listNum: Int = 0,
+    val recommendationViewHolders: List<Class<*>> = emptyList(),
 )
 
-class VerticalTrackScrollListener(private val glideTrackObject: GlideTrackObject) :
-    RecyclerView.OnScrollListener() {
+class VerticalTrackScrollListener(
+    private val glideTrackObject: GlideTrackObject?,
+    private val recommendationTriggerObject: RecommendationTriggerObject?
+) : RecyclerView.OnScrollListener() {
     // total scroll is total offset for multiple glide.
     // for ex. User glide 3 times repeatly, means total scroll = total 3 glides.
     private var totalScroll = 0F
@@ -50,8 +67,10 @@ class VerticalTrackScrollListener(private val glideTrackObject: GlideTrackObject
             if (isIdle) {
                 // send this offset position.
                 totalScroll += dragScroll
-                sendScrollDrag(dragScroll)
-                sendScrollEnd(totalScroll)
+                sendGlidePage(dragScroll)
+                if(recyclerView.shouldTriggerGlideRecommendation()) {
+                    sendGlideRecommendation(totalScroll)
+                }
                 totalScroll = 0F
                 dragScroll = 0F
             } else if (isStartDrag) {
@@ -59,7 +78,7 @@ class VerticalTrackScrollListener(private val glideTrackObject: GlideTrackObject
                 // when the recyclerview is still moving
                 // this will send previous scroll.
                 totalScroll += dragScroll
-                sendScrollDrag(dragScroll)
+                sendGlidePage(dragScroll)
                 dragScroll = 0F
             }
         }
@@ -67,12 +86,29 @@ class VerticalTrackScrollListener(private val glideTrackObject: GlideTrackObject
         super.onScrollStateChanged(recyclerView, newState)
     }
 
-    private fun sendScrollEnd(totalScroll: Float) {
-        sendVerticalScrollEnd(totalScroll, glideTrackObject)
+    private fun RecyclerView.shouldTriggerGlideRecommendation(): Boolean {
+        recommendationTriggerObject ?: return false
+        if(recommendationTriggerObject.recommendationViewHolders.isEmpty()) return true
+
+        val size = layoutManager?.itemCount ?: return false
+
+        loop@ for(i in 0 until size) {
+            val viewHolder = findViewHolderForAdapterPosition(i) ?: break@loop
+            if(recommendationTriggerObject.recommendationViewHolders.contains(viewHolder.javaClass)) {
+                return true
+            }
+        }
+        return false
     }
 
-    private fun sendScrollDrag(scrollOffset: Float) {
-        sendVerticalScrollTrack(totalScroll, glideTrackObject)
+    private fun sendGlideRecommendation(totalScroll: Float) {
+        recommendationTriggerObject ?: return
+        sendGlideRecommendationTrack(totalScroll, recommendationTriggerObject)
+    }
+
+    private fun sendGlidePage(scrollOffset: Float) {
+        glideTrackObject ?: return
+        sendGlidePageTrack(scrollOffset, glideTrackObject)
     }
 }
 
@@ -101,61 +137,63 @@ class HorizontalTrackScrollListener(private val slideTrackObject: SlideTrackObje
     }
 
     private fun sendScrollDrag(scrollOffset: Float) {
-        sendHorizontalScrollTrack(scrollOffset, slideTrackObject)
+        sendHorizontalSlideTrack(scrollOffset, slideTrackObject)
     }
 }
 
 // https://bytedance.sg.larkoffice.com/docx/MSiydFty1o0xIYxUe4LltuRHgue
-fun sendVerticalScrollTrack(scrollOffset: Float, glideTrackObject: GlideTrackObject) {
+fun sendGlidePageTrack(scrollOffset: Float, model: GlideTrackObject) {
     AppLogAnalytics.send(EventName.GLIDE_PAGE, JSONObject().also {
         it.addPage()
         it.put(AppLogParam.ENTER_FROM, "") //TODO
         it.put(AppLogParam.GLIDE_TYPE, if (scrollOffset > 0) "more" else "less")
         it.put(AppLogParam.GLIDE_DISTANCE, scrollOffset)
 
-        it.put(AppLogParam.LIST_NAME, glideTrackObject.listName)
-        it.put(AppLogParam.LIST_NUM, glideTrackObject.listNum)
-        it.put(AppLogParam.IS_USE_CACHE, glideTrackObject.isUseCache)
+        it.put(AppLogParam.LIST_NAME, model.listName)
+        it.put(AppLogParam.LIST_NUM, model.listNum)
+        it.put(AppLogParam.IS_USE_CACHE, model.isUseCache)
     })
 }
 
-fun sendVerticalScrollEnd(scrollOffset: Float, glideTrackObject: GlideTrackObject) {
-    val recObject = glideTrackObject.recommendedTriggerObject ?: return
+fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTriggerObject) {
     AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject().also {
         it.addPage()
         it.put(AppLogParam.ENTER_FROM, "") //TODO
         it.put(AppLogParam.GLIDE_TYPE, if (scrollOffset > 0) "more" else "less")
         it.put(AppLogParam.GLIDE_DISTANCE, scrollOffset)
 
-        it.put(AppLogParam.LIST_NAME, glideTrackObject.listName)
-        it.put(AppLogParam.LIST_NUM, glideTrackObject.listNum)
+        it.put(AppLogParam.LIST_NAME, model.listName)
+        it.put(AppLogParam.LIST_NUM, model.listNum)
 
-        it.put(AppLogParam.ENTER_FROM, "") // TODO
         it.put(AppLogParam.ACTION_TYPE, ActionType.GLIDE)
-        it.put(AppLogParam.MODULE_NAME, "") //TODO
-        it.put(AppLogParam.REC_SESSION_ID, recObject.sessionId)
-        it.put(AppLogParam.REQUEST_ID, recObject.requestId)
+        it.put(AppLogParam.MODULE_NAME, model.moduleName)
+        it.put(AppLogParam.REC_SESSION_ID, model.sessionId)
+        it.put(AppLogParam.REQUEST_ID, model.requestId)
     })
 }
 
-fun sendHorizontalScrollTrack(scrollOffset: Float, slideTrackObject: SlideTrackObject) {
+fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
     AppLogAnalytics.send(EventName.SLIDE_BAR, JSONObject().also {
         it.addPage()
         it.put(AppLogParam.ENTER_FROM, "") //TODO
         it.put(AppLogParam.SLIDE_TYPE, if (scrollOffset > 0) "show_right" else "show_left")
 
-        it.put(AppLogParam.MODULE_NAME, slideTrackObject.moduleName)
-        it.put(AppLogParam.BAR_NAME, slideTrackObject.barName)
+        it.put(AppLogParam.MODULE_NAME, model.moduleName)
+        it.put(AppLogParam.BAR_NAME, model.barName)
+        it.put(AppLogParam.SHOP_ID, model.shopId)
     })
 }
 
 /**
  * event: tiktokec_rec_trigger & tiktokec_glide_page
  * Add track listener after success fetching data from BE.
- * If we are sure this is not recommendation product, leave recommendedTriggerObject as null
+ * If no recommendation on the page, leave recommendedTriggerObject as null
  */
-fun RecyclerView.addVerticalTrackListener(glideTrackObject: GlideTrackObject) {
-    this.addOnScrollListener(VerticalTrackScrollListener(glideTrackObject))
+fun RecyclerView.addVerticalTrackListener(
+    glideTrackObject: GlideTrackObject? = null,
+    recommendationTriggerObject: RecommendationTriggerObject? = null
+) {
+    this.addOnScrollListener(VerticalTrackScrollListener(glideTrackObject, recommendationTriggerObject))
 }
 
 /**

@@ -32,6 +32,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
+import com.tokopedia.analytics.byteio.GlideTrackObject
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.performance.perf.*
@@ -822,6 +825,12 @@ open class HomeRevampFragment :
                 evaluateHomeComponentOnScroll(recyclerView)
             }
         })
+        homeRecyclerView?.addVerticalTrackListener(
+            glideTrackObject = GlideTrackObject(),
+            recommendationTriggerObject = RecommendationTriggerObject(
+                recommendationViewHolders = listOf(HomeRecommendationFeedViewHolder::class.java)
+            ),
+        )
         setupEmbraceBreadcrumbListener()
         setupHomePlayWidgetListener()
     }
