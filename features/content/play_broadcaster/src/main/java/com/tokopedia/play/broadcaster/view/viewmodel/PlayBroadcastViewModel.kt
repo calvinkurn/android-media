@@ -2384,7 +2384,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun buildErrorModel(): BroadcasterErrorLog {
         return BroadcasterErrorLog(
-            channelId = try { channelId } catch (_: Throwable) { "" },
+            channelId = runCatching { channelId }.getOrElse { "" },
             authorId = authorId,
             authorType = authorType,
         )
