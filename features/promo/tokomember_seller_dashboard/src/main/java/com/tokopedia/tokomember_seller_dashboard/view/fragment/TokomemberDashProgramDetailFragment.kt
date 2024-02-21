@@ -13,11 +13,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.media.loader.loadImageBackground
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.domain.TM_PROGRAM_FORM
@@ -78,17 +76,7 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         tmTracker = TmTracker()
         tmTracker?.viewProgramDetail(shopId.toString(), programId.toString())
 
-        Glide.with(linear_top)
-            .asDrawable()
-            .load(TM_DETAIL_BG)
-            .into(object : CustomTarget<Drawable>(){
-                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                    linear_top.background = resource
-                }
-                override fun onLoadCleared(placeholder: Drawable?) {
-
-                }
-            })
+        linear_top.loadImageBackground(TM_DETAIL_BG)
         observeViewModel()
         tmDashCreateViewModel.getProgramInfo(programId, shopId, ACTION_DETAIL, TM_PROGRAM_FORM)
         setHeader()

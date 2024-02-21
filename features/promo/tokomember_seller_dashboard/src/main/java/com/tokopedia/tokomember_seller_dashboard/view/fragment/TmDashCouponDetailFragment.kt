@@ -14,7 +14,6 @@ import android.widget.ViewFlipper
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.header.HeaderUnify
@@ -25,6 +24,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_common_widget.TokomemberMultiTextView
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
@@ -485,9 +485,7 @@ class TmDashCouponDetailFragment : BaseDaggerFragment(), TmCouponListRefreshCall
     private fun renderCouponImage() {
         couponImage?.let { it1 ->
             tmCouponDetailVm.couponDetailResult.value?.data?.merchantPromotionGetMVDataByID?.data?.let {
-                Glide.with(requireContext())
-                    .load(it.voucherImageSquare)
-                    .into(it1)
+                it1.loadImage(it.voucherImageSquare)
             }
         }
     }

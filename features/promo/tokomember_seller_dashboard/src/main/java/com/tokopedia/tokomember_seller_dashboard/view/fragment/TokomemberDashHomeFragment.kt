@@ -7,10 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.shape.CornerFamily
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -21,6 +19,7 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
@@ -153,28 +152,20 @@ class TokomemberDashHomeFragment : BaseDaggerFragment(), EditCardCallback {
                 }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     tokomemberDashHomeViewmodel.refreshHomeData(LOADED)
-                    Glide.with(flShop)
-                        .asDrawable()
-                        .load(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCardTemplate?.backgroundImgUrl)
-                        .into(object : CustomTarget<Drawable>() {
-                            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                                val bitmap = cropImage(resource)
-                                flShopbg.setImageBitmap(bitmap)
-                                flShopbg.shapeAppearanceModel = flShopbg.shapeAppearanceModel.toBuilder().setTopRightCorner(
-                                    CornerFamily.ROUNDED,
-                                    30f
-                                )
-                                    .setTopLeftCorner(CornerFamily.ROUNDED, 30f)
-                                    .build()
-                            }
-                            override fun onLoadCleared(placeholder: Drawable?) {
-                            }
-                        })
+                    it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCardTemplate?.backgroundImgUrl?.getBitmapImageUrl(flShop.context) { bitmapResult ->
+                        val bitmap = cropImage(bitmapResult.toDrawable(flShop.resources))
+                        flShopbg.setImageBitmap(bitmap)
+                        flShopbg.shapeAppearanceModel = flShopbg.shapeAppearanceModel.toBuilder().setTopRightCorner(
+                            CornerFamily.ROUNDED,
+                            30f
+                        )
+                            .setTopLeftCorner(CornerFamily.ROUNDED, 30f)
+                            .build()
+                    }
                     shopAvatar = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.shop?.avatar.toString()
-                    Glide.with(ivShopIcon)
-                        .load(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.shop?.avatar)
-                        .circleCrop()
-                        .into(ivShopIcon)
+                    ivShopIcon.loadImage(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.shop?.avatar) {
+                        isCircular(true)
+                    }
                     tvShopName.text = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.shop?.name
                     renderTicker(it.data?.membershipGetSellerAnalyticsTopSection?.ticker)
                     val prefManager = context?.let { it1 -> TmPrefManager(it1) }
