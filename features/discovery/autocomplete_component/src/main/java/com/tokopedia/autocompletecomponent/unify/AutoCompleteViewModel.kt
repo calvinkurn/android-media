@@ -54,9 +54,6 @@ internal class AutoCompleteViewModel @Inject constructor(
     val isSuggestion
         get() = stateValue.isSuggestion
 
-    val currentQuery
-        get() = stateValue.parameter[SearchApiConst.Q] ?: ""
-
     fun onScreenInitialized() {
         actOnParameter()
     }
@@ -99,7 +96,7 @@ internal class AutoCompleteViewModel @Inject constructor(
             currentAppLogData.newSugSessionId
         }
         _stateFlow.value = stateValue.copy(
-            appLogData = AutoCompleteAppLogData(imprId = newImprId, newSugSessionId = newSessionId)
+            appLogData = currentAppLogData.copy(imprId = newImprId, newSugSessionId = newSessionId)
         )
     }
 
@@ -136,13 +133,14 @@ internal class AutoCompleteViewModel @Inject constructor(
 
     fun trackTrendingShow() {
         val appLogData = stateValue.appLogData
+        val currentSearchTerm = stateValue.resultList.firstOrNull()?.searchTerm ?: ""
         AppLogSearch.eventTrendingShow(
             AppLogSearch.TrendingShow(
                 searchPosition = appLogData.enterFrom,
                 searchEntrance = appLogData.searchEntrance,
                 imprId = "", // TODO milhamj: wait from BE
                 newSugSessionId = appLogData.newSugSessionId,
-                rawQuery = currentQuery,
+                rawQuery = currentSearchTerm,
                 enterMethod = appLogData.enterMethod,
                 wordsNum = stateValue.resultList.filter {
                     it.domainModel.isMasterTemplate()
@@ -160,7 +158,7 @@ internal class AutoCompleteViewModel @Inject constructor(
                 groupId = "", // TODO milhamj: wait from BE
                 imprId = "", // TODO milhamj: wait from BE
                 newSugSessionId = appLogData.newSugSessionId,
-                rawQuery = currentQuery,
+                rawQuery = item.searchTerm,
                 enterMethod = appLogData.enterMethod,
                 sugType = "", // TODO milhamj: wait from BE
                 wordsContent = item.domainModel.title.text,
@@ -178,7 +176,7 @@ internal class AutoCompleteViewModel @Inject constructor(
                 groupId = "", // TODO milhamj: wait from BE
                 imprId = "", // TODO milhamj: wait from BE
                 newSugSessionId = appLogData.newSugSessionId,
-                rawQuery = currentQuery,
+                rawQuery = item.searchTerm,
                 enterMethod = appLogData.enterMethod,
                 sugType = "", // TODO milhamj: wait from BE
                 wordsContent = item.domainModel.title.text,
