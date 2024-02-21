@@ -10,8 +10,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.asLifecycleOwner
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
@@ -47,7 +49,7 @@ class RecommendationWidgetView : LinearLayout {
     fun bind(
         model: RecommendationWidgetModel,
         parentRootView: View? = null,
-        callback: Callback? = null,
+        callback: Callback? = null
     ) {
         val lifecycleOwner = context.asLifecycleOwner() ?: return
 
@@ -60,7 +62,7 @@ class RecommendationWidgetView : LinearLayout {
         lifecycleOwner: LifecycleOwner,
         model: RecommendationWidgetModel,
         parentRootView: View?,
-        callback: Callback?,
+        callback: Callback?
     ) {
         job?.forEach { it.cancel() }
         job?.clear()
@@ -120,16 +122,22 @@ class RecommendationWidgetView : LinearLayout {
 
     private fun renderView(
         visitableList: List<RecommendationVisitable>?,
-        callback: Callback?,
+        callback: Callback?
     ) {
         if (visitableList.isNullOrEmpty()) {
             hide()
 
-            if (visitableList?.isEmpty() == true)
+            if (visitableList?.isEmpty() == true) {
                 callback?.onError()
+            }
         } else {
             show()
-            callback?.onShow()
+            val recommendationModel = visitableList.find { visitable ->
+                visitable is RecommendationCarouselModel
+            } as? RecommendationCarouselModel
+            val recommendationItems: List<RecommendationItem> =
+                recommendationModel?.widget?.recommendationItemList ?: emptyList()
+            callback?.onShow(recommendationItems)
         }
     }
 
@@ -171,7 +179,7 @@ class RecommendationWidgetView : LinearLayout {
     }
 
     interface Callback {
-        fun onShow() { }
+        fun onShow(recommendationItems: List<RecommendationItem>) { }
         fun onError() { }
     }
 }
