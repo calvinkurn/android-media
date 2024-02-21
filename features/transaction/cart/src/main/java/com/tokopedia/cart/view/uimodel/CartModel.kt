@@ -9,6 +9,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 
 data class CartModel(
+    var buyAgainList: List<CartBuyAgainItemHolderData>? = null,
     var wishlists: List<CartWishlistItemHolderData>? = null,
     var recentViewList: List<CartRecentViewItemHolderData>? = null,
     var isLastApplyResponseStillValid: Boolean = true,
@@ -36,5 +37,8 @@ data class CartModel(
     // adapter
     var tmpCollapsedUnavailableShop: DisabledCollapsedHolderData? = null,
     var firstCartSectionHeaderPosition: Int = -1,
-    var tmpAllUnavailableShop: MutableList<Any>? = null
+    var tmpAllUnavailableShop: MutableList<Any>? = null,
+
+    var shouldReloadRecentViewList: Boolean = false,
+    var shouldReloadBuyAgainList: Boolean = false
 )

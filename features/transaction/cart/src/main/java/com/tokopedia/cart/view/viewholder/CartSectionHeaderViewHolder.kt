@@ -8,6 +8,7 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.purchase_platform.common.utils.Utils
 
 /**
  * Created by Irfan Khoirul on 2019-05-29.
@@ -21,7 +22,7 @@ class CartSectionHeaderViewHolder(private val binding: ItemCartSectionHeaderBind
 
     fun bind(element: CartSectionHeaderHolderData) {
         with(binding) {
-            labelTitle.text = element.title
+            labelTitle.text = Utils.getHtmlFormat(element.title)
             if (TextUtils.isEmpty(element.showAllAppLink)) {
                 labelShowAll.gone()
                 icShowAll.gone()

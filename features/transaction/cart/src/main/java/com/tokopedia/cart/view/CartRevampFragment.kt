@@ -85,12 +85,13 @@ import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.mapper.RecentViewMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
-import com.tokopedia.cart.view.pref.CartPreferences
 import com.tokopedia.cart.view.pref.CartOnBoardingPreferences
+import com.tokopedia.cart.view.pref.CartPreferences
 import com.tokopedia.cart.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cart.view.uimodel.AddToCartEvent
 import com.tokopedia.cart.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainHolderData
 import com.tokopedia.cart.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
 import com.tokopedia.cart.view.uimodel.CartDeleteItemData
@@ -303,7 +304,6 @@ class CartRevampFragment :
 
     private var hasTriedToLoadWishList: Boolean = false
     private var hasTriedToLoadRecentViewList: Boolean = false
-    private var shouldReloadRecentViewList: Boolean = false
     private var hasTriedToLoadRecommendation: Boolean = false
     private var delayShowPromoButtonJob: Job? = null
     private var delayShowSelectedAmountJob: Job? = null
@@ -369,6 +369,8 @@ class CartRevampFragment :
 
     private var enablePromoEntryPointNewInterface: Boolean = false
 
+    private var buyAgainFloatingButtonJob: Job? = null
+
     companion object {
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
@@ -397,6 +399,7 @@ class CartRevampFragment :
         const val SELECTED_AMOUNT_ANIMATION_DURATION = 400L
         const val COACHMARK_VISIBLE_DELAY_DURATION = 500L
         const val DELAY_SHOW_SWIPE_TO_DELETE_ONBOARDING = 1000L
+        const val DELAY_SHOW_BUY_AGAIN_FLOATING_BUTTON = 3000L
         const val DELAY_CHECK_BOX_GLOBAL = 500L
         const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
         const val KEY_NEW_BUNDLE_ID = "new_bundle_id"
@@ -561,19 +564,6 @@ class CartRevampFragment :
         initVM()
         initCoachMark()
         binding?.rvCart?.setViewBinderHelper(binderHelper)
-
-        if (cartPreferences.hasClickedBuyAgainFloatingButton()) {
-            binding?.fabBuyAgain?.visible()
-        } else {
-            binding?.fabBuyAgain?.setContent {
-                CartBuyAgainFloatingButtonView(
-                    onClick = {
-                        cartPreferences.setHasClickedBuyAgainFloatingButton()
-                    }
-                )
-            }
-            binding?.fabBuyAgain?.gone()
-        }
     }
 
     override fun getFragment(): Fragment {
@@ -774,7 +764,7 @@ class CartRevampFragment :
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                     guardCartClick {
                         if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                            .isNotEmpty()
+                                .isNotEmpty()
                         ) {
                             showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                         }
@@ -1228,12 +1218,20 @@ class CartRevampFragment :
             CartDeleteButtonSource.TrashBin -> {
                 cartPageAnalytics.eventClickAtcCartClickTrashBin()
             }
+
             CartDeleteButtonSource.SwipeToDelete -> {
                 val analyticItems =
-                    CartPageAnalyticsUtil.generateRemoveCartFromSubtractButtonAnalytics(cartItemHolderData)
-                cartPageAnalytics.sendEventClickRemoveCartFromSwipe(analyticItems, userSession.userId)
+                    CartPageAnalyticsUtil.generateRemoveCartFromSubtractButtonAnalytics(
+                        cartItemHolderData
+                    )
+                cartPageAnalytics.sendEventClickRemoveCartFromSwipe(
+                    analyticItems,
+                    userSession.userId
+                )
             }
-            else -> { /* no-op */ }
+
+            else -> { /* no-op */
+            }
         }
         val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
         if (cartItemHolderData.isBundlingItem) {
@@ -1780,6 +1778,12 @@ class CartRevampFragment :
 
                 handlePromoButtonVisibilityOnIdle(newState)
                 handleSelectedAmountVisibilityOnIdle(newState)
+
+                buyAgainFloatingButtonJob?.cancel()
+                buyAgainFloatingButtonJob = lifecycleScope.launch {
+                    delay(DELAY_SHOW_BUY_AGAIN_FLOATING_BUTTON)
+                    handleBuyAgainFloatingButtonVisibilityOnIdle(recyclerView)
+                }
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -1791,6 +1795,8 @@ class CartRevampFragment :
                     bulkActionCoachMark?.dismissCoachMark()
                 }
 
+                buyAgainFloatingButtonJob?.cancel()
+
                 if (shouldShowSwipeToDeleteDefaultProductOnBoarding() || shouldShowSwipeToDeleteBundlingProductOnBoarding()) {
                     lifecycleScope.launch {
                         swipeToDeleteOnBoardingFlow.emit(true)
@@ -1800,6 +1806,7 @@ class CartRevampFragment :
                 handleSelectedAmountVisibilityOnScroll(dy)
                 handlePromoButtonVisibilityOnScroll(dy)
                 handleFloatingSelectedAmountVisibility(recyclerView)
+                handleBuyAgainFloatingButtonVisibility(recyclerView, dy)
             }
         })
     }
@@ -2370,10 +2377,10 @@ class CartRevampFragment :
         val firstVisibleItemData = adapterData[topItemPosition]
 
         if ((
-            CartDataHelper.getAllAvailableCartItemData(adapterData).isNotEmpty() &&
-                CartDataHelper.hasSelectedCartItem(adapterData) &&
-                firstVisibleItemData !is CartSelectedAmountHolderData
-            ) || binderHelper.openCount > 1
+                CartDataHelper.getAllAvailableCartItemData(adapterData).isNotEmpty() &&
+                    CartDataHelper.hasSelectedCartItem(adapterData) &&
+                    firstVisibleItemData !is CartSelectedAmountHolderData
+                ) || binderHelper.openCount > 1
         ) {
             disableSwipeRefresh()
             setTopLayoutVisibility(true)
@@ -2381,6 +2388,48 @@ class CartRevampFragment :
             setTopLayoutVisibility(false)
             enableSwipeRefresh()
             handleSelectedAmountVisibilityOnIdle(RecyclerView.SCROLL_STATE_IDLE)
+        }
+    }
+
+    private fun handleBuyAgainFloatingButtonVisibility(recyclerView: RecyclerView, dy: Int) {
+        if (cartPreferences.hasClickedBuyAgainFloatingButton()) return
+
+        if (dy != 0) {
+            binding?.fabBuyAgain?.gone()
+        }
+
+        val topItemPosition =
+            (recyclerView.layoutManager as GridLayoutManager).findLastVisibleItemPosition()
+        if (topItemPosition == RecyclerView.NO_POSITION) return
+
+        val adapterData = viewModel.cartDataList.value
+        if (topItemPosition >= adapterData.size) return
+
+        val indexOfBuyAgain =
+            viewModel.cartDataList.value.indexOfFirst { it is CartBuyAgainHolderData }
+
+        if (topItemPosition >= indexOfBuyAgain) {
+            binding?.fabBuyAgain?.gone()
+        }
+    }
+
+    private fun handleBuyAgainFloatingButtonVisibilityOnIdle(recyclerView: RecyclerView) {
+        if (cartPreferences.hasClickedBuyAgainFloatingButton()) return
+
+        val topItemPosition =
+            (recyclerView.layoutManager as GridLayoutManager).findLastVisibleItemPosition()
+        if (topItemPosition == RecyclerView.NO_POSITION) return
+
+        val adapterData = viewModel.cartDataList.value
+        if (topItemPosition >= adapterData.size) return
+
+        val indexOfBuyAgain =
+            viewModel.cartDataList.value.indexOfFirst { it is CartBuyAgainHolderData }
+
+        if (topItemPosition >= indexOfBuyAgain) {
+            binding?.fabBuyAgain?.gone()
+        } else {
+            binding?.fabBuyAgain?.visible()
         }
     }
 
@@ -2617,6 +2666,8 @@ class CartRevampFragment :
         observeEntryPointInfo()
 
         observeBmGmGroupProductTicker()
+
+        observeBuyAgainFloatingButton()
     }
 
     private fun initToolbar() {
@@ -2744,7 +2795,7 @@ class CartRevampFragment :
                         addToCartEvent.addToCartDataModel,
                         addToCartEvent.productModel
                     )
-                    resetRecentViewList()
+                    resetBottomSectionList()
                     viewModel.processInitialGetCartData(
                         cartId = "0",
                         initialLoad = false,
@@ -3157,7 +3208,11 @@ class CartRevampFragment :
                                     guardCartClick {
                                         if (data.isNoItemSelected) {
                                             showToastMessageGreen(getString(R.string.promo_choose_item_cart))
-                                            PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
+                                            PromoRevampAnalytics.eventCartViewPromoMessage(
+                                                getString(
+                                                    R.string.promo_choose_item_cart
+                                                )
+                                            )
                                         }
                                     }
                                 }
@@ -3479,8 +3534,9 @@ class CartRevampFragment :
             when (data) {
                 is GetBmGmGroupProductTickerState.Success -> {
                     val (cartItemHolderData, groupProductTickerResponse) = data.pairOfferIdBmGmTickerResponse
-                    val groupProductTickerData = groupProductTickerResponse.getGroupProductTicker.data
-                        .multipleData.firstOrNull()
+                    val groupProductTickerData =
+                        groupProductTickerResponse.getGroupProductTicker.data
+                            .multipleData.firstOrNull()
                     val (index, cartItems) = CartDataHelper.getCartItemHolderDataListAndIndexByCartStringOrderAndOfferId(
                         viewModel.cartDataList.value,
                         cartItemHolderData.cartStringOrder,
@@ -3503,16 +3559,20 @@ class CartRevampFragment :
                                     bmGmData.totalDiscount = groupProductTickerData.discountAmount
                                     val isLastProduct = idx == cartItems.lastIndex
                                     bmGmTierProductList.firstOrNull()?.let { tier ->
-                                        val tierResponseData = groupProductTickerData.bmgmData.tierProductList.firstOrNull()
+                                        val tierResponseData =
+                                            groupProductTickerData.bmgmData.tierProductList.firstOrNull()
                                         tier.tierId = tierResponseData?.tierId ?: 0
                                         tier.purchaseBenefitData = CartPurchaseBenefitData(
                                             isShown = isLastProduct && groupProductTickerData.bmgmData.isValidGiftPurchase(),
                                             benefitWording = tierResponseData?.benefitWording ?: "",
                                             actionWording = tierResponseData?.actionWording ?: "",
-                                            purchaseBenefitProducts = CartDataHelper.getBenefitProducts(tierResponseData?.productsBenefit)
+                                            purchaseBenefitProducts = CartDataHelper.getBenefitProducts(
+                                                tierResponseData?.productsBenefit
+                                            )
                                         )
                                     }
-                                    cartItem.cartBmGmTickerData.isShowBmGmDivider = !isLastProduct || groupProductTickerData.bmgmData.isValidGiftPurchase()
+                                    cartItem.cartBmGmTickerData.isShowBmGmDivider =
+                                        !isLastProduct || groupProductTickerData.bmgmData.isValidGiftPurchase()
                                 }
                             }
                         }
@@ -3540,6 +3600,29 @@ class CartRevampFragment :
                 }
 
                 else -> {}
+            }
+        }
+    }
+
+    private fun observeBuyAgainFloatingButton() {
+        viewModel.buyAgainFloatingButtonVisibilityState.observe(viewLifecycleOwner) { isVisible ->
+            if (cartPreferences.hasClickedBuyAgainFloatingButton() || !isVisible) {
+                binding?.fabBuyAgain?.gone()
+            } else {
+                binding?.fabBuyAgain?.setContent {
+                    CartBuyAgainFloatingButtonView(
+                        onClick = {
+//                            cartPreferences.setHasClickedBuyAgainFloatingButton()
+                            val buyAgainViewHolderIndex =
+                                CartDataHelper.getBuyAgainViewHolderIndex(viewModel.cartDataList.value)
+                            if (buyAgainViewHolderIndex != RecyclerView.NO_POSITION) {
+                                binding?.rvCart?.smoothScrollToPosition(buyAgainViewHolderIndex)
+                            }
+                            binding?.fabBuyAgain?.gone()
+                        }
+                    )
+                }
+                binding?.fabBuyAgain?.visible()
             }
         }
     }
@@ -3654,8 +3737,15 @@ class CartRevampFragment :
 
         val needRefresh = removeAllItems || cartDeleteItemData.isFromEditBundle
         val updateListResult =
-            viewModel.removeProductByCartId(deletedCartIds, needRefresh, cartDeleteItemData.isFromGlobalCheckbox)
-        removeLocalCartItem(updateListResult, cartDeleteItemData.forceExpandCollapsedUnavailableItems)
+            viewModel.removeProductByCartId(
+                deletedCartIds,
+                needRefresh,
+                cartDeleteItemData.isFromGlobalCheckbox
+            )
+        removeLocalCartItem(
+            updateListResult,
+            cartDeleteItemData.forceExpandCollapsedUnavailableItems
+        )
 
         hideProgressLoading()
 
@@ -3786,10 +3876,10 @@ class CartRevampFragment :
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnTitle = addOnProductDataResult.aggregatedData.title
                     newAddOnPrice = "(${
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        addOnProductDataResult.aggregatedData.price,
-                        false
-                    ).removeDecimalSuffix()
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            addOnProductDataResult.aggregatedData.price,
+                            false
+                        ).removeDecimalSuffix()
                     })"
                 }
 
@@ -3937,7 +4027,7 @@ class CartRevampFragment :
     }
 
     private fun refreshCartWithProgressDialog(getCartState: Int = CartViewModel.GET_CART_STATE_DEFAULT) {
-        resetRecentViewList()
+        resetBottomSectionList()
         if (viewModel.dataHasChanged()) {
             showMainContainer()
             viewModel.processToUpdateAndReloadCartData(getCartId(), getCartState)
@@ -3955,7 +4045,7 @@ class CartRevampFragment :
         bulkActionCoachMark?.dismissCoachMark()
         hasShowBulkActionCoachMark = false
         refreshHandler?.isRefreshing = true
-        resetRecentViewList()
+        resetBottomSectionList()
         if (viewModel.dataHasChanged()) {
             showMainContainer()
             viewModel.processToUpdateAndReloadCartData(getCartId())
@@ -4021,6 +4111,7 @@ class CartRevampFragment :
     }
 
     private fun renderAdditionalWidget() {
+        validateRenderBuyAgain()
         validateRenderWishlist()
         validateRenderRecentView()
         loadRecommendation()
@@ -4232,7 +4323,11 @@ class CartRevampFragment :
         }
 
         context?.let { ctx ->
-            if (cartData.onboardingBottomSheet.shouldShowOnBoardingBottomSheet() && !CoachMarkPreference.hasShown(ctx, cartData.onboardingBottomSheet.type)) {
+            if (cartData.onboardingBottomSheet.shouldShowOnBoardingBottomSheet() && !CoachMarkPreference.hasShown(
+                    ctx,
+                    cartData.onboardingBottomSheet.type
+                )
+            ) {
                 showOnboardingBottomSheet(cartData)
             } else {
                 setMainFlowCoachMark(cartData)
@@ -4352,7 +4447,7 @@ class CartRevampFragment :
         cartRecentViewHolderData.recentViewList = cartRecentViewItemHolderDataList
         viewModel.addCartRecentViewData(cartSectionHeaderHolderData, cartRecentViewHolderData)
         viewModel.cartModel.recentViewList = cartRecentViewItemHolderDataList
-        shouldReloadRecentViewList = false
+        viewModel.cartModel.shouldReloadRecentViewList = false
     }
 
     private fun renderRecommendation(recommendationWidget: RecommendationWidget?) {
@@ -4523,8 +4618,9 @@ class CartRevampFragment :
         arguments?.putLong(CartActivity.EXTRA_PRODUCT_ID, 0)
     }
 
-    private fun resetRecentViewList() {
-        shouldReloadRecentViewList = true
+    private fun resetBottomSectionList() {
+        viewModel.cartModel.shouldReloadRecentViewList = true
+        viewModel.cartModel.shouldReloadBuyAgainList = true
     }
 
     private fun retryGoToShipment() {
@@ -4909,9 +5005,9 @@ class CartRevampFragment :
             override fun getSpanSize(position: Int): Int {
                 return if (position != RecyclerView.NO_POSITION) {
                     if (position < (
-                        cartAdapter?.itemCount
-                            ?: 0
-                        ) && cartAdapter?.getItemViewType(position) == CartRecommendationViewHolder.LAYOUT
+                            cartAdapter?.itemCount
+                                ?: 0
+                            ) && cartAdapter?.getItemViewType(position) == CartRecommendationViewHolder.LAYOUT
                     ) {
                         SPAN_SIZE_ONE
                     } else {
@@ -4941,7 +5037,8 @@ class CartRevampFragment :
     }
 
     private fun showOnboardingBottomSheet(cartData: CartData) {
-        val bottomSheet = CartOnBoardingBottomSheet.newInstance(cartData.onboardingBottomSheet.getBottomSheetOnBoardingData())
+        val bottomSheet =
+            CartOnBoardingBottomSheet.newInstance(cartData.onboardingBottomSheet.getBottomSheetOnBoardingData())
         bottomSheet.setOnDismissListener {
             showMainFlowCoachMark(cartData)
             showPlusCoachMark()
@@ -4961,7 +5058,8 @@ class CartRevampFragment :
 
         val data = viewModel.cartDataList.value
 
-        val cartGroupViewHolderWithPlusPosition = data.indexOfFirst { it is CartGroupHolderData && it.coachmarkPlus.isShown }
+        val cartGroupViewHolderWithPlusPosition =
+            data.indexOfFirst { it is CartGroupHolderData && it.coachmarkPlus.isShown }
 
         val layoutManager: GridLayoutManager = rvCart.layoutManager as GridLayoutManager
         val position = layoutManager.findLastVisibleItemPosition()
@@ -4974,8 +5072,10 @@ class CartRevampFragment :
         if (cartGroupViewHolderWithPlusPosition != RecyclerView.NO_POSITION) {
             val coachMarkItem = arrayListOf<CoachMark2Item>()
 
-            val cartGroupViewHolder = rvCart.findViewHolderForAdapterPosition(cartGroupViewHolderWithPlusPosition)
-            val cartGroupHolderData = data[cartGroupViewHolderWithPlusPosition] as CartGroupHolderData
+            val cartGroupViewHolder =
+                rvCart.findViewHolderForAdapterPosition(cartGroupViewHolderWithPlusPosition)
+            val cartGroupHolderData =
+                data[cartGroupViewHolderWithPlusPosition] as CartGroupHolderData
             if (cartGroupViewHolder is CartGroupViewHolder) {
                 coachMarkItem.add(
                     CoachMark2Item(
@@ -5084,9 +5184,9 @@ class CartRevampFragment :
             plusCoachMark?.dismissCoachMark()
             mainFlowCoachMark?.dismissCoachMark()
             if ((
-                viewModel.cartModel.cartListData?.onboardingData?.size
-                    ?: 0
-                ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
+                    viewModel.cartModel.cartListData?.onboardingData?.size
+                        ?: 0
+                    ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
             ) {
                 return
             }
@@ -5190,11 +5290,12 @@ class CartRevampFragment :
                         val nearestCartItemViewHolder =
                             findViewHolderForAdapterPosition(nearestItemHolderDataPosition)
                         if (nearestCartItemViewHolder is CartItemViewHolder) {
-                            val minusButtonAnchorView = if (nearestCartItemViewHolder.isUsingNewQuantityEditor()) {
-                                nearestCartItemViewHolder.getNewQuantityEditorAnchorView().anchorMinusButton
-                            } else {
-                                nearestCartItemViewHolder.getOldQuantityEditorAnchorView().subtractButton
-                            }
+                            val minusButtonAnchorView =
+                                if (nearestCartItemViewHolder.isUsingNewQuantityEditor()) {
+                                    nearestCartItemViewHolder.getNewQuantityEditorAnchorView().anchorMinusButton
+                                } else {
+                                    nearestCartItemViewHolder.getOldQuantityEditorAnchorView().subtractButton
+                                }
                             minusButtonAnchorView?.let { anchorView ->
                                 bulkActionCoachMarkItems.add(
                                     CoachMark2Item(
@@ -5710,10 +5811,18 @@ class CartRevampFragment :
     }
 
     private fun validateRenderRecentView() {
-        if (viewModel.cartModel.recentViewList == null || shouldReloadRecentViewList) {
+        if (viewModel.cartModel.recentViewList == null || viewModel.cartModel.shouldReloadRecentViewList) {
             viewModel.processGetRecentViewData()
         } else {
             renderRecentView(null)
+        }
+    }
+
+    private fun validateRenderBuyAgain() {
+        if (viewModel.cartModel.buyAgainList == null || viewModel.cartModel.shouldReloadBuyAgainList) {
+            viewModel.processGetBuyAgainData()
+        } else {
+            viewModel.renderBuyAgain(null)
         }
     }
 
@@ -5901,31 +6010,31 @@ class CartRevampFragment :
     override fun onChangeAddressClicked() {
         val chooseAddressBottomSheet = ChooseAddressBottomSheet()
         chooseAddressBottomSheet.setListener(object :
-                ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
-                override fun onLocalizingAddressServerDown() {
-                    // no-op
-                }
+            ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+            override fun onLocalizingAddressServerDown() {
+                // no-op
+            }
 
-                override fun onAddressDataChanged() {
-                    val clearBoPromo = generateParamClearBo()
-                    if (clearBoPromo != null) {
-                        viewModel.clearAllBo(clearBoPromo)
-                    }
-                    refreshCartWithProgressDialog(CartViewModel.GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
+            override fun onAddressDataChanged() {
+                val clearBoPromo = generateParamClearBo()
+                if (clearBoPromo != null) {
+                    viewModel.clearAllBo(clearBoPromo)
                 }
+                refreshCartWithProgressDialog(CartViewModel.GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
+            }
 
-                override fun getLocalizingAddressHostSourceBottomSheet(): String {
-                    return CART_PAGE
-                }
+            override fun getLocalizingAddressHostSourceBottomSheet(): String {
+                return CART_PAGE
+            }
 
-                override fun onLocalizingAddressLoginSuccessBottomSheet() {
-                    // no-op
-                }
+            override fun onLocalizingAddressLoginSuccessBottomSheet() {
+                // no-op
+            }
 
-                override fun onDismissChooseAddressBottomSheet() {
-                    // no-op
-                }
-            })
+            override fun onDismissChooseAddressBottomSheet() {
+                // no-op
+            }
+        })
         chooseAddressBottomSheet.show(childFragmentManager)
     }
 

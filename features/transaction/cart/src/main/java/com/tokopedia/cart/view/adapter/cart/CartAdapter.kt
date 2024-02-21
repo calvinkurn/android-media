@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.cart.databinding.ItemCartBuyAgainBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledAccordionRevampBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledCollapsedBinding
 import com.tokopedia.cart.databinding.ItemCartDisabledHeaderRevampBinding
@@ -23,6 +24,7 @@ import com.tokopedia.cart.view.adapter.diffutil.CartDiffUtilCallback
 import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
 import com.tokopedia.cart.view.customview.CartViewBinderHelper
+import com.tokopedia.cart.view.uimodel.CartBuyAgainHolderData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
@@ -39,6 +41,7 @@ import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.uimodel.DisabledCollapsedHolderData
 import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
+import com.tokopedia.cart.view.viewholder.CartBuyAgainViewHolder
 import com.tokopedia.cart.view.viewholder.CartEmptyViewHolder
 import com.tokopedia.cart.view.viewholder.CartGroupViewHolder
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
@@ -119,6 +122,7 @@ class CartAdapter(
             is DisabledReasonHolderData -> DisabledReasonViewHolder.LAYOUT
             is DisabledAccordionHolderData -> DisabledAccordionViewHolder.LAYOUT
             is DisabledCollapsedHolderData -> DisabledCollapsedViewHolder.LAYOUT
+            is CartBuyAgainHolderData -> CartBuyAgainViewHolder.LAYOUT
             else -> super.getItemViewType(position)
         }
     }
@@ -128,13 +132,21 @@ class CartAdapter(
         when (viewType) {
             CartSelectedAmountViewHolder.LAYOUT -> {
                 val binding =
-                    ItemSelectedAmountBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                    ItemSelectedAmountBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
                 return CartSelectedAmountViewHolder(binding, actionListener)
             }
 
             CartGroupViewHolder.LAYOUT -> {
                 val binding =
-                    ItemGroupRevampBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                    ItemGroupRevampBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
                 return CartGroupViewHolder(
                     binding,
                     actionListener,
@@ -149,7 +161,12 @@ class CartAdapter(
                     parent,
                     false
                 )
-                return CartItemViewHolder(binding, cartItemActionListener, mainCoachMark, binderHelper)
+                return CartItemViewHolder(
+                    binding,
+                    cartItemActionListener,
+                    mainCoachMark,
+                    binderHelper
+                )
             }
 
             CartShopBottomViewHolder.LAYOUT -> {
@@ -270,6 +287,15 @@ class CartAdapter(
                 return DisabledCollapsedViewHolder(binding, actionListener)
             }
 
+            CartBuyAgainViewHolder.LAYOUT -> {
+                val binding = ItemCartBuyAgainBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                return CartBuyAgainViewHolder(binding, actionListener)
+            }
+
             else -> throw RuntimeException("No view holder type found")
         }
     }
@@ -367,6 +393,11 @@ class CartAdapter(
             DisabledCollapsedViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledCollapsedHolderData
                 (holder as DisabledCollapsedViewHolder).bind(data)
+            }
+
+            CartBuyAgainViewHolder.LAYOUT -> {
+                val data = cartDataList[position] as CartBuyAgainHolderData
+                (holder as CartBuyAgainViewHolder).bind(data)
             }
         }
     }
