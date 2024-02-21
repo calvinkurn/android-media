@@ -208,6 +208,7 @@ ext {
             contactUs                       : ":features:operational:contact_us",
             csat_rating                     : ":features:operational:csat_rating",
             discovery2                      : ":features:category:discovery2",
+			discoveryComponent				: ":features:category:discovery_component",
 
             commonPayment                   : ":features:payment:common_payment",
             thankYouNative                  : ":features:payment:thankyou_native",

@@ -9,15 +9,16 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.databinding.ItemComparisonWidgetViewholderBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetInterface
 import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
 
 class PdpComparisonWidgetViewHolder(
-      private val view: View,
-      private val listener: DynamicProductDetailListener)
+    private val view: View,
+    private val listener: ProductDetailListener
+)
 : AbstractViewHolder<PdpComparisonWidgetDataModel>(view), ComparisonWidgetInterface {
 
     private var componentTrackDataModel: ComponentTrackDataModel? = null
