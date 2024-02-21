@@ -184,7 +184,8 @@ data class Properties(
 
     // use custom listener for the image loader callback
     /**
-     * onSuccess: (resource, dataSource, isFirstResource)
+     * onSuccessWithResource: (resource, dataSource, isFirstResource)
+     * onSuccess: (resource, dataSource)
      * onError: (exception)
      * onSuccessGif: (resource, dataSource)
      */

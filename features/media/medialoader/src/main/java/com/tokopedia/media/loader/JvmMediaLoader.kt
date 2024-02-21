@@ -52,7 +52,7 @@ object JvmMediaLoader {
     fun loadImage(
         imageView: ImageView,
         url: String,
-        onSuccess: (Bitmap?, MediaDataSource?) -> Unit,
+        onSuccess: (Bitmap?, MediaDataSource?, Boolean) -> Unit,
         onError: (MediaException?) -> Unit
     ) {
         imageView.loadImage(url) {
@@ -60,8 +60,8 @@ object JvmMediaLoader {
                 // for GIF format
                 override fun onLoaded(resource: GifDrawable?, dataSource: MediaDataSource?) {}
 
-                override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?) {
-                    onSuccess(resource, dataSource)
+                override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?, isFirstResource: Boolean) {
+                    onSuccess(resource, dataSource, isFirstResource)
                 }
 
                 override fun onFailed(error: MediaException?) {
