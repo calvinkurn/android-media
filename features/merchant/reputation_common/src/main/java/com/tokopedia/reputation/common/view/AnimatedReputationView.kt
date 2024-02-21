@@ -2,14 +2,15 @@ package com.tokopedia.reputation.common.view
 
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import com.tokopedia.reputation.common.R
 import com.tokopedia.reputation.common.data.source.cloud.model.AnimModel
+import com.tokopedia.reputation.common.databinding.AnimatedReputationPickerBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.animated_reputation_picker.view.*
 
 /**
  * This animated stars using AnimatedVectorDrawable, already support API <21
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.animated_reputation_picker.view.*
  * @property renderInitialReviewWithData If you want to animating the view without any trigger
  */
 class AnimatedReputationView @JvmOverloads constructor(
-        context: Context, val attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, val attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     var listOfStarsView: List<AnimModel> = listOf()
@@ -31,26 +32,31 @@ class AnimatedReputationView @JvmOverloads constructor(
      */
     var reviewable = true
 
-    private var handle = Handler()
+    private var handle = Handler(Looper.getMainLooper())
     private var listener: AnimatedReputationListener? = null
     private var shouldShowDesc = false
 
+    private val binding by lazy {
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(R.layout.animated_reputation_picker, this)
+        AnimatedReputationPickerBinding.bind(view)
+    }
+
     init {
-        val styleable = context.obtainStyledAttributes(attrs, R.styleable.AnimatedReviewPicker, 0, 0)
+        val styleable =
+            context.obtainStyledAttributes(attrs, R.styleable.AnimatedReviewPicker, 0, 0)
         try {
             shouldShowDesc = styleable.getBoolean(R.styleable.AnimatedReviewPicker_show_desc, false)
         } finally {
             styleable.recycle()
         }
 
-
-        LayoutInflater.from(context).inflate(R.layout.animated_reputation_picker, this)
         listOfStarsView = listOf(
-                AnimModel(false, anim_1),
-                AnimModel(false, anim_2),
-                AnimModel(false, anim_3),
-                AnimModel(false, anim_4),
-                AnimModel(false, anim_5)
+            AnimModel(false, binding.anim1),
+            AnimModel(false, binding.anim2),
+            AnimModel(false, binding.anim3),
+            AnimModel(false, binding.anim4),
+            AnimModel(false, binding.anim5)
         )
         listOfStarsView.forEachIndexed { index, animatedStarsView ->
             animatedStarsView.reviewView.setOnClickListener {
@@ -67,10 +73,10 @@ class AnimatedReputationView @JvmOverloads constructor(
             }
         }
 
-        if (shouldShowDesc) {
-            txt_desc_status.visibility = View.VISIBLE
+        binding.txtDescStatus.visibility = if (shouldShowDesc) {
+            View.VISIBLE
         } else {
-            txt_desc_status.visibility = View.GONE
+            View.GONE
         }
     }
 
@@ -118,13 +124,14 @@ class AnimatedReputationView @JvmOverloads constructor(
         return count <= clickAt && !reviewData.isAnimated
     }
 
-    private fun generateReviewText(index: Int) {
-        when (index) {
-            1 -> txt_desc_status.text = resources.getString(R.string.rating_1_star)
-            2 -> txt_desc_status.text = resources.getString(R.string.rating_2_star)
-            3 -> txt_desc_status.text = resources.getString(R.string.rating_3_star)
-            4 -> txt_desc_status.text = resources.getString(R.string.rating_4_star)
-            5 -> txt_desc_status.text = resources.getString(R.string.rating_5_star)
+    private fun generateReviewText(index: Int) = with(binding.txtDescStatus) {
+        text = when (index) {
+            1 -> resources.getString(R.string.rating_1_star)
+            2 -> resources.getString(R.string.rating_2_star)
+            3 -> resources.getString(R.string.rating_3_star)
+            4 -> resources.getString(R.string.rating_4_star)
+            5 -> resources.getString(R.string.rating_5_star)
+            else -> ""
         }
     }
 

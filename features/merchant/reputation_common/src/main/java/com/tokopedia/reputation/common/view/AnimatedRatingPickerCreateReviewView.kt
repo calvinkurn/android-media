@@ -9,8 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.reputation.common.R
 import com.tokopedia.reputation.common.data.source.cloud.model.AnimCreateReviewModel
+import com.tokopedia.reputation.common.databinding.AnimatedRatingPickerCreateReviewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.animated_rating_picker_create_review.view.*
 
 /**
  * This animated stars using AnimatedVectorDrawable, already support API <21
@@ -46,6 +46,11 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
     private var shouldShowDesc = false
     private var starHeight = ViewGroup.LayoutParams.MATCH_PARENT
     private var starWidth = ViewGroup.LayoutParams.MATCH_PARENT
+    private val binding by lazy(LazyThreadSafetyMode.NONE) {
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(R.layout.animated_rating_picker_create_review, this)
+        AnimatedRatingPickerCreateReviewBinding.bind(view)
+    }
 
     init {
         val styleable = context.obtainStyledAttributes(attrs, R.styleable.AnimatedRatingPickerCreateReviewView)
@@ -57,20 +62,19 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
             styleable.recycle()
         }
 
-        LayoutInflater.from(context).inflate(R.layout.animated_rating_picker_create_review, this)
         listOfStarsView = listOf(
-            AnimCreateReviewModel(false, anim_1_create_review),
-            AnimCreateReviewModel(false, anim_2_create_review),
-            AnimCreateReviewModel(false, anim_3_create_review),
-            AnimCreateReviewModel(false, anim_4_create_review),
-            AnimCreateReviewModel(false, anim_5_create_review)
+            AnimCreateReviewModel(false, binding.anim1CreateReview),
+            AnimCreateReviewModel(false, binding.anim2CreateReview),
+            AnimCreateReviewModel(false, binding.anim3CreateReview),
+            AnimCreateReviewModel(false, binding.anim4CreateReview),
+            AnimCreateReviewModel(false, binding.anim5CreateReview)
         )
         setStarClickListener()
 
         if (shouldShowDesc) {
-            txt_desc_status.visibility = View.VISIBLE
+            binding.txtDescStatus.visibility = View.VISIBLE
         } else {
-            txt_desc_status.visibility = View.GONE
+            binding.txtDescStatus.visibility = View.GONE
         }
 
         setStarHeight()
@@ -96,17 +100,17 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         }
     }
 
-    private fun setStarHeight() {
+    private fun setStarHeight() = with(binding) {
         if (starHeight != ViewGroup.LayoutParams.MATCH_PARENT) {
-            arrayOf(anim_1_create_review, anim_2_create_review, anim_3_create_review, anim_4_create_review, anim_5_create_review).forEach {
+            arrayOf(anim1CreateReview, anim2CreateReview, anim3CreateReview, anim4CreateReview, anim5CreateReview).forEach {
                 it.layoutParams.height = starHeight
             }
         }
     }
 
-    private fun setStarWidth() {
+    private fun setStarWidth() = with(binding) {
         if (starWidth != ViewGroup.LayoutParams.MATCH_PARENT) {
-            arrayOf(anim_1_create_review, anim_2_create_review, anim_3_create_review, anim_4_create_review, anim_5_create_review).forEach {
+            arrayOf(anim1CreateReview, anim2CreateReview, anim3CreateReview, anim4CreateReview, anim5CreateReview).forEach {
                 it.layoutParams.width = starWidth
             }
         }
@@ -180,13 +184,14 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         return count <= clickAt && !reviewData.isAnimated
     }
 
-    private fun generateReviewText(index: Int) {
-        when (index) {
-            RATING_ONE -> txt_desc_status.text = resources.getString(R.string.rating_1_star_create_review)
-            RATING_TWO -> txt_desc_status.text = resources.getString(R.string.rating_2_star_create_review)
-            RATING_THREE -> txt_desc_status.text = resources.getString(R.string.rating_3_star_create_review)
-            RATING_FOUR -> txt_desc_status.text = resources.getString(R.string.rating_4_star_create_review)
-            RATING_FIVE -> txt_desc_status.text = resources.getString(R.string.rating_5_star_create_review)
+    private fun generateReviewText(index: Int) = with (binding.txtDescStatus) {
+        text = when (index) {
+            RATING_ONE -> resources.getString(R.string.rating_1_star_create_review)
+            RATING_TWO -> resources.getString(R.string.rating_2_star_create_review)
+            RATING_THREE -> resources.getString(R.string.rating_3_star_create_review)
+            RATING_FOUR -> resources.getString(R.string.rating_4_star_create_review)
+            RATING_FIVE -> resources.getString(R.string.rating_5_star_create_review)
+            else -> ""
         }
     }
 

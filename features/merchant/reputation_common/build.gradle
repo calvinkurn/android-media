@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-android-extensions'
 
 buildscript {
     repositories {
@@ -17,6 +16,10 @@ buildscript {
 android {
     namespace 'com.tokopedia.reputation.common'
     testNamespace 'com.tokopedia.reputation.common.test'
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {

@@ -2,15 +2,14 @@ package com.tokopedia.reputation.common.view
 
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
-import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.reputation.common.R
 import com.tokopedia.reputation.common.data.source.cloud.model.ReviewLottieModel
+import com.tokopedia.reputation.common.databinding.AnimatedReviewLayoutBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.animated_review_layout.view.*
 
 
 /**
@@ -28,11 +27,14 @@ class AnimatedReviewPicker @JvmOverloads constructor(
     private var lastReviewClickAt = 0
     private var reviewClickAt = 0
     private var listOfStarsView: MutableList<ReviewLottieModel> = mutableListOf()
-    private var handle = Handler()
+    private var handle = Handler(Looper.getMainLooper())
     private var listener: AnimatedReviewPickerListener? = null
-    private var txtReviewStatus: TextView
     private var shouldShowDesc: Boolean = true
 
+    private val binding by lazy {
+        val view = LayoutInflater.from(context).inflate(R.layout.animated_review_layout, this)
+        AnimatedReviewLayoutBinding.bind(view)
+    }
     init {
         val styleable = context.obtainStyledAttributes(attrs, R.styleable.AnimatedReviewPicker, 0, 0)
         try {
@@ -41,19 +43,16 @@ class AnimatedReviewPicker @JvmOverloads constructor(
             styleable.recycle()
         }
 
-        val view = LayoutInflater.from(context).inflate(R.layout.animated_review_layout, this)
-        val lottieStars1: LottieAnimationView = view.findViewById(R.id.lottie_star_1)
-        val lottieStars2: LottieAnimationView = view.findViewById(R.id.lottie_star_2)
-        val lottieStars3: LottieAnimationView = view.findViewById(R.id.lottie_star_3)
-        val lottieStars4: LottieAnimationView = view.findViewById(R.id.lottie_star_4)
-        val lottieStars5: LottieAnimationView = view.findViewById(R.id.lottie_star_5)
-        txtReviewStatus = view.findViewById(R.id.txt_review_status)
-        listOfStarsView = mutableListOf(ReviewLottieModel(reviewView = lottieStars1), ReviewLottieModel(reviewView = lottieStars2), ReviewLottieModel(reviewView = lottieStars3), ReviewLottieModel(reviewView = lottieStars4)
-                , ReviewLottieModel(reviewView = lottieStars5))
-        if (shouldShowDesc) {
-            txt_review_status.visibility = View.VISIBLE
+        listOfStarsView = mutableListOf(
+            ReviewLottieModel(reviewView = binding.lottieStar1),
+            ReviewLottieModel(reviewView = binding.lottieStar2),
+            ReviewLottieModel(reviewView = binding.lottieStar3),
+            ReviewLottieModel(reviewView = binding.lottieStar4)
+                , ReviewLottieModel(reviewView = binding.lottieStar5))
+        binding.txtReviewStatus.visibility = if (shouldShowDesc) {
+            View.VISIBLE
         } else {
-            txt_review_status.visibility = View.GONE
+            View.GONE
         }
         initReviewPicker()
     }
@@ -146,13 +145,14 @@ class AnimatedReviewPicker @JvmOverloads constructor(
 
     fun getReviewClickAt(): Int = reviewClickAt
 
-    private fun generateReviewText(index: Int) {
-        when (index) {
-            1 -> txtReviewStatus.text = resources.getString(R.string.rating_1_star)
-            2 -> txtReviewStatus.text = resources.getString(R.string.rating_2_star)
-            3 -> txtReviewStatus.text = resources.getString(R.string.rating_3_star)
-            4 -> txtReviewStatus.text = resources.getString(R.string.rating_4_star)
-            5 -> txtReviewStatus.text = resources.getString(R.string.rating_5_star)
+    private fun generateReviewText(index: Int) = with(binding.txtReviewStatus) {
+        text = when (index) {
+            1 -> resources.getString(R.string.rating_1_star)
+            2 -> resources.getString(R.string.rating_2_star)
+            3 -> resources.getString(R.string.rating_3_star)
+            4 -> resources.getString(R.string.rating_4_star)
+            5 -> resources.getString(R.string.rating_5_star)
+            else -> ""
         }
     }
 
