@@ -19,12 +19,12 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.product.preview.data.mapper.ProductPreviewSourceMapper
-import com.tokopedia.content.product.preview.utils.KEY_CONTENT_PRODUCT_PREVIEW_CONFIG
 import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
@@ -90,7 +90,7 @@ class ReviewGalleryFragment :
     lateinit var remoteConfig: RemoteConfig
 
     private val enableContentProductPreview: Boolean
-        get() = remoteConfig.getBoolean(KEY_CONTENT_PRODUCT_PREVIEW_CONFIG, false)
+        get() = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CONTENT_PRODUCT_PREVIEW, false)
 
     private var reviewGalleryCoordinatorLayout: CoordinatorLayout? = null
     private var reviewHeader: ReadReviewHeader? = null

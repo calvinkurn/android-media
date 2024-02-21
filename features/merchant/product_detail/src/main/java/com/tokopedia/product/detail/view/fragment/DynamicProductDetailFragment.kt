@@ -72,7 +72,6 @@ import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.product.preview.data.mapper.ProductPreviewSourceMapper
-import com.tokopedia.content.product.preview.utils.KEY_CONTENT_PRODUCT_PREVIEW_CONFIG
 import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
@@ -618,7 +617,7 @@ open class DynamicProductDetailFragment :
     }
 
     private val enableContentProductPreview: Boolean
-        get() = remoteConfig.getBoolean(KEY_CONTENT_PRODUCT_PREVIEW_CONFIG, false)
+        get() = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CONTENT_PRODUCT_PREVIEW, false)
 
     override val rootView: Fragment
         get() = this
