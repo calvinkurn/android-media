@@ -23,8 +23,7 @@ import com.tokopedia.product.detail.common.R as productdetailcommonR
  * Created by Yehezkiel on 25/05/20
  */
 class PartialContentView(
-    private val binding: ItemDynamicProductContentBinding,
-    private val listener: ProductDetailListener
+    private val binding: ItemDynamicProductContentBinding
 ) {
 
     private val context = binding.root.context
