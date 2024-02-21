@@ -3,11 +3,11 @@ package com.tokopedia.discovery2.data
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.Constant.LABEL_FULFILLMENT
+import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponUiModel
 import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.data.mycoupon.MyCoupon
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
-import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.orFalse
@@ -119,7 +119,7 @@ data class ComponentsItem(
     var itemPosition: Int = 0,
     var isBackgroundPresent: Boolean = false,
     var isTargetedTabComponent: Boolean = false,
-    var automateCoupons: List<AutomateCouponModel>? = null
+    var automateCoupons: List<AutomateCouponUiModel>? = null
 ) {
 
     private var componentsItem: List<ComponentsItem>? = null

@@ -3,15 +3,19 @@ package com.tokopedia.discovery2.usecase.automatecoupon
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponCtaState
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponRequest
+import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponUiModel
 import com.tokopedia.discovery2.data.automatecoupon.CouponInfo
 import com.tokopedia.discovery2.data.automatecoupon.CouponListWidgets
+import com.tokopedia.discovery2.data.automatecoupon.CtaRedirectionMetadata
 import com.tokopedia.discovery2.data.automatecoupon.Layout
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.automatecoupon.IAutomateCouponGqlRepository
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
 import com.tokopedia.discovery_component.widgets.automatecoupon.DynamicColorText
 import com.tokopedia.discovery_component.widgets.automatecoupon.TimeLimit
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.asCamelCase
@@ -76,12 +80,6 @@ class GetAutomateCouponUseCase @Inject constructor(
                 Layout.Single.name -> ComponentNames.SingleAutomateCoupon.componentName
                 Layout.Double.name -> ComponentNames.GridAutomateCouponItem.componentName
                 Layout.Carousel.name -> ComponentNames.CarouselAutomateCouponItem.componentName
-
-//                if (component.data?.firstOrNull()?.couponLayout == Layout.Single.name.asLowerCase()) {
-//                    ComponentNames.SingleAutomateCoupon.componentName
-//                } else {
-//                    ComponentNames.GridAutomateCouponItem.componentName
-//                }
                 else -> { return@forEachIndexed }
             }
 
@@ -95,18 +93,43 @@ class GetAutomateCouponUseCase @Inject constructor(
                 properties = component.properties
                 data = component.data
 
-                val models = if (component.name == ComponentNames.GridAutomateCoupon.componentName) {
-                    mutableListOf(it.info.mapToGridModel())
+                val automateCouponModel = if (component.name == ComponentNames.GridAutomateCoupon.componentName) {
+                    it.info.mapToGridModel()
                 } else {
-                    mutableListOf(it.info.mapToListModel())
+                    it.info.mapToListModel()
                 }
-                automateCoupons = models
+
+                automateCoupons = listOf(
+                    AutomateCouponUiModel(
+                        data = automateCouponModel,
+                        ctaState = it.info.mapToCtaState()
+                    )
+                )
             }
 
             list.add(componentsItem)
         }
 
         return list
+    }
+
+    private fun CouponInfo.mapToCtaState(): AutomateCouponCtaState {
+        val cta = ctaList?.firstOrNull() ?: return AutomateCouponCtaState.OutOfStock
+
+        val jsonMetadata = CtaRedirectionMetadata.parse(cta.metadata.orEmpty())
+
+        val properties = AutomateCouponCtaState.Properties(
+            isDisabled = cta.isDisabled.orFalse(),
+            text = cta.text.orEmpty(),
+            appLink = jsonMetadata.appLink,
+            url = jsonMetadata.url
+        )
+
+        return when (cta.type.orEmpty()) {
+            CTA_CLAIM -> AutomateCouponCtaState.Claim(properties)
+            CTA_REDIRECT -> AutomateCouponCtaState.Redirect(properties)
+            else -> AutomateCouponCtaState.OutOfStock
+        }
     }
 
     private fun CouponInfo.mapToListModel(): AutomateCouponModel.List {
@@ -203,5 +226,8 @@ class GetAutomateCouponUseCase @Inject constructor(
 
     companion object {
         private const val SOURCE = "discovery-page"
+
+        private const val CTA_CLAIM = "claim"
+        private const val CTA_REDIRECT = "redirect"
     }
 }

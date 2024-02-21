@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponUiModel
 import com.tokopedia.discovery2.usecase.ClaimCouponClickUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.common.launchCatchError
@@ -27,7 +27,7 @@ class ListAutomateCouponItemViewModel(
     val position: Int
 ) : DiscoveryBaseViewModel(), CoroutineScope {
 
-    private val models = MutableLiveData<AutomateCouponModel>()
+    private val models = MutableLiveData<AutomateCouponUiModel>()
     private val redirectionAfterClaim = MutableLiveData<String>()
 
     private val _showErrorClaimCoupon: SingleLiveEvent<String> = SingleLiveEvent()
@@ -52,7 +52,7 @@ class ListAutomateCouponItemViewModel(
         }
     }
 
-    fun getCouponModel(): LiveData<AutomateCouponModel> = models
+    fun getCouponModel(): LiveData<AutomateCouponUiModel> = models
 
     fun claim() {
         launchCatchError(block = {

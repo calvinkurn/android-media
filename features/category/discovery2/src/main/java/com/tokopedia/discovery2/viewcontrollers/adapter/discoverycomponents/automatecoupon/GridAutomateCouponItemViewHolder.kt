@@ -5,12 +5,13 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponCtaState
+import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponUiModel
 import com.tokopedia.discovery2.databinding.GridAutomateCouponItemLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
-import com.tokopedia.discovery_component.widgets.automatecoupon.ButtonState
 import com.tokopedia.unifycomponents.Toaster
 
 class GridAutomateCouponItemViewHolder(
@@ -58,13 +59,22 @@ class GridAutomateCouponItemViewHolder(
         lifecycleOwner?.let { viewModel?.getCouponModel()?.removeObservers(it) }
     }
 
-    private fun GridAutomateCouponItemLayoutBinding.renderCoupon(model: AutomateCouponModel) {
-        couponGrid.setModel(model)
+    private fun GridAutomateCouponItemLayoutBinding.renderCoupon(model: AutomateCouponUiModel) {
+        val handler = CtaActionHandler(model.ctaState, object : CtaActionHandler.Listener {
 
-        couponGrid.setState(
-            ButtonState.Claim {
+            override fun claim() {
                 viewModel?.claim()
             }
-        )
+
+            override fun redirect(properties: AutomateCouponCtaState.Properties) {
+                val target = properties.appLink.ifEmpty { properties.url }
+                val intent = RouteManager.getIntent(itemView.context, target)
+
+                itemView.context.startActivity(intent)
+            }
+        })
+
+        couponGrid.setModel(model.data)
+        couponGrid.setState(handler)
     }
 }
