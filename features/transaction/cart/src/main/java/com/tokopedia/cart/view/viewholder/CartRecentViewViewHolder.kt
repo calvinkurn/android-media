@@ -30,23 +30,34 @@ class CartRecentViewViewHolder(
             model = RecommendationWidgetModel(
                 metadata = element.recommendationWidgetMetadata,
                 listener = object : RecommendationWidgetListener {
-                    override fun onProductClick(item: RecommendationItem): Boolean {
-                        // TODO: Adjust product click listener
-                        listener?.onRecentViewProductClicked(0, item)
+
+                    override fun onProductClick(
+                        position: Int,
+                        item: RecommendationItem
+                    ): Boolean {
+                        listener?.onRecentViewProductClicked(position, item)
                         return true
                     }
 
-                    // TODO: Add product impression listener
-                    // listener?.onRecentViewProductImpression()
+                    override fun onProductImpress(
+                        position: Int,
+                        item: RecommendationItem
+                    ): Boolean {
+                        listener?.onRecentViewProductImpression(position, item)
+                        return true
+                    }
 
-                    // TODO: Add product ATC listener
-                    // listener?.onButtonAddToCartClicked()
+                    override fun onProductAddToCartClick(
+                        item: RecommendationItem
+                    ): Boolean {
+                        listener?.onButtonAddToCartClicked(item)
+                        return true
+                    }
                 }
             ),
             callback = object : RecommendationWidgetView.Callback {
                 override fun onShow() {
                     super.onShow()
-                    // TODO: Adjust recommendation data for impression tracking
                     if (element.hasSentImpressionAnalytics) {
                         listener?.onRecentViewImpression(emptyList())
                         element.hasSentImpressionAnalytics = true
