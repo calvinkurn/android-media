@@ -10,7 +10,6 @@ import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponMo
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.common.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,10 +34,6 @@ class ListAutomateCouponItemViewModel(
 
     @JvmField
     @Inject
-    var userSession: UserSessionInterface? = null
-
-    @JvmField
-    @Inject
     var claimCouponClickUseCase: ClaimCouponClickUseCase? = null
 
     override val coroutineContext: CoroutineContext
@@ -56,28 +51,26 @@ class ListAutomateCouponItemViewModel(
 
     fun claim() {
         launchCatchError(block = {
-            if (userSession?.isLoggedIn == true) {
-                val catalogId = component.data?.firstOrNull()?.catalogIds?.firstOrNull()?.toLongOrZero()
-                val response = claimCouponClickUseCase?.redeemCoupon(catalogId.orZero())
-                val ctaList = response?.hachikoRedeem?.ctaList
+            val catalogId = component.data?.firstOrNull()?.catalogIds?.firstOrNull()?.toLongOrZero()
+            val response = claimCouponClickUseCase?.redeemCoupon(catalogId.orZero())
+            val ctaList = response?.hachikoRedeem?.ctaList
 
-                if (ctaList?.isNotEmpty() == true) {
-                    ctaList.first().metadata?.let {
-                        try {
-                            val jsonObject = JSONObject(it)
-                            val appLink = jsonObject.getString("app_link")
-                            if (appLink.isNotEmpty()) {
-                                redirectionAfterClaim.postValue(appLink)
-                            }
-                        } catch (e: JSONException) {
-                            Timber.e(e)
+            if (ctaList?.isNotEmpty() == true) {
+                ctaList.first().metadata?.let {
+                    try {
+                        val jsonObject = JSONObject(it)
+                        val appLink = jsonObject.getString("app_link")
+                        if (appLink.isNotEmpty()) {
+                            redirectionAfterClaim.postValue(appLink)
                         }
+                    } catch (e: JSONException) {
+                        Timber.e(e)
                     }
                 }
             }
         }, onError = {
-            _showErrorClaimCoupon.value = it.message.orEmpty()
-            Timber.e(it)
-        })
+                _showErrorClaimCoupon.value = it.message.orEmpty()
+                Timber.e(it)
+            })
     }
 }
