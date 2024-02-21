@@ -3,6 +3,7 @@ package com.tokopedia.content.product.preview.utils
 /**
  * @author by astidhiyaa on 11/12/23
  */
+const val KEY_CONTENT_PRODUCT_PREVIEW_CONFIG = "android_enable_content_product_preview"
 internal const val PAGE_SOURCE = "fullscreen_media_pdp"
 internal const val REVIEW_CREDIBILITY_APPLINK = "tokopedia-android-internal://marketplace/review/credibility/{authorId}/{source}/"
 internal const val PRODUCT_PREVIEW_SOURCE = "product_preview_source"
