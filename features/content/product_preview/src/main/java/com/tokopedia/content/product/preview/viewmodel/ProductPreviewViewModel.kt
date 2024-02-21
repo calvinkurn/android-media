@@ -509,7 +509,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                                     )
                                 )
                             } else {
-                                review.copy(likeState = state.copy(withAnimation = false))
+                                review
                             }
                         }
                     )

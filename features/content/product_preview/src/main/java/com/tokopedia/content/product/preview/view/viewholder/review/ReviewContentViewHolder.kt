@@ -58,6 +58,7 @@ class ReviewContentViewHolder(
             override fun onViewAttachedToWindow(p0: View) {
                 if (reviewMediaAdapter.itemCount < 0) return
                 binding.rvReviewMedia.addOnScrollListener(mediaScrollListener)
+                binding.ivDanceLike.gone()
                 addLikeAnimationListener()
             }
 
@@ -145,7 +146,7 @@ class ReviewContentViewHolder(
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
-        setupTap(item)
+        setupTap()
     }
 
     fun bindScrolling(isScrolling: Boolean) {
@@ -296,7 +297,7 @@ class ReviewContentViewHolder(
         binding.ivDanceLike.removeAllAnimationListeners()
     }
 
-    private fun setupTap(item: ReviewContentUiModel) {
+    private fun setupTap() {
         binding.ivReviewMenu.setOnClickListener {
             reviewInteractionListener.onMenuClicked()
         }
