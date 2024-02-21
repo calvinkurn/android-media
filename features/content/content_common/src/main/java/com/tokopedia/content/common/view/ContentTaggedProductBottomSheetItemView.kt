@@ -89,7 +89,7 @@ class ContentTaggedProductBottomSheetItemView(
 
     private fun bindCampaign(campaign: ContentTaggedProductUiModel.Campaign) {
         if (campaign.status is ContentTaggedProductUiModel.CampaignStatus.Ongoing) {
-            binding.pbStock.setValue(campaign.status.stockInPercent.roundToInt(), true)
+            binding.pbStock.setValue(campaign.status.stockInPercent.roundToInt(), false)
             binding.pbStock.progressBarColor = intArrayOf(
                 ContextCompat.getColor(
                     context,
