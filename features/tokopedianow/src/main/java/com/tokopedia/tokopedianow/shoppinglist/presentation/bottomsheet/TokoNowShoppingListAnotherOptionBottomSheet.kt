@@ -13,14 +13,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.UiState
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowErrorViewHolder
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowShoppingListAnotherOptionBinding
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.bottomsheet.ShoppingListAnotherOptionBottomSheetAdapterTypeFactory
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListComponent
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.bottomsheet.ShoppingListAnotherOptionBottomSheetAdapter
-import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListDecoration
-import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.bottomsheet.ShoppingListAnotherOptionBottomSheetErrorStateViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListAnotherOptionBottomSheetDecoration
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListAnotherOptionBottomSheetViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.launch
@@ -58,7 +58,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
     private val adapter by lazy {
         ShoppingListAnotherOptionBottomSheetAdapter(
             ShoppingListAnotherOptionBottomSheetAdapterTypeFactory(
-                bottomSheetErrorStateListener = createBottomSheetErrorStatCallback()
+                errorListener = createErrorCallback()
             )
         )
     }
@@ -130,11 +130,6 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
                                 adapter.submitList(uiState.data)
                             }
                         }
-                        is UiState.Empty -> {
-                            if (!uiState.data.isNullOrEmpty()) {
-                                adapter.submitList(uiState.data)
-                            }
-                        }
                         is UiState.Success -> {
                             adapter.submitList(uiState.data)
                         }
@@ -158,7 +153,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         binding?.recyclerView?.apply {
             adapter = this@TokoNowShoppingListAnotherOptionBottomSheet.adapter
             layoutManager = LinearLayoutManager(context)
-            addItemDecoration(ShoppingListDecoration())
+            addItemDecoration(ShoppingListAnotherOptionBottomSheetDecoration())
         }
     }
 
@@ -166,7 +161,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
      * -- callback function section --
      */
 
-    private fun createBottomSheetErrorStatCallback() = object : ShoppingListAnotherOptionBottomSheetErrorStateViewHolder.ShoppingListAnotherOptionBottomSheetErrorStateListener {
+    private fun createErrorCallback() = object : TokoNowErrorViewHolder.TokoNowErrorListener {
         override fun onClickRefresh() {
             viewModel.loadLoadingState()
             viewModel.loadLayout(productId.orEmpty())

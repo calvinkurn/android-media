@@ -10,9 +10,12 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.model.UiState
+import com.tokopedia.tokopedianow.common.model.UiState.Success
+import com.tokopedia.tokopedianow.common.model.UiState.Loading
+import com.tokopedia.tokopedianow.common.model.UiState.Error
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.addEmptyState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.addErrorState
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.addShimmeringRecommendedProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.addLoadingState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.addRecommendedProducts
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +33,7 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
 
     private val layout: MutableList<Visitable<*>> = mutableListOf()
 
-    private val _uiState: MutableStateFlow<UiState<List<Visitable<*>>>> = MutableStateFlow(UiState.Loading(data = layout.addShimmeringRecommendedProducts()))
+    private val _uiState: MutableStateFlow<UiState<List<Visitable<*>>>> = MutableStateFlow(UiState.Loading(data = layout.addLoadingState()))
 
     val uiState
         get() = _uiState.asStateFlow()
@@ -48,24 +51,17 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
                 )
                 val productRecommendation = productRecommendationUseCase.getData(param)
                 layout.clear()
-                _uiState.value = UiState.Success(
-                    data = if (productRecommendation.recommendationItemList.isNotEmpty()) layout.addRecommendedProducts(productRecommendation) else layout.addEmptyState()
-                )
+                _uiState.value = Success(if (productRecommendation.recommendationItemList.isNotEmpty()) layout.addRecommendedProducts(productRecommendation) else layout.addEmptyState())
             },
             onError = { throwable ->
                 layout.clear()
-                _uiState.value = UiState.Error(
-                    data = layout.addErrorState(throwable),
-                    throwable = throwable
-                )
+                _uiState.value = Error(layout.addErrorState(throwable), throwable)
             }
         )
     }
 
     fun loadLoadingState() {
         layout.clear()
-        _uiState.value = UiState.Loading(
-            data = layout.addShimmeringRecommendedProducts()
-        )
+        _uiState.value = Loading(layout.addLoadingState())
     }
 }

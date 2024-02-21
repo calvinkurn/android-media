@@ -6,35 +6,33 @@ import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
 import com.tokopedia.tokopedianow.common.model.TokoNowDividerUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowErrorUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTitleUiModel
-import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
+import com.tokopedia.tokopedianow.shoppinglist.domain.model.GetShoppingListDataResponse
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.ATC_WISHLIST
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.EMPTY_STOCK
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.AVAILABLE_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.UNAVAILABLE_SHOPPING_LIST
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListEmptyUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListRetryUiModel
 
-object MainVisitableMapper {
-
-    /**
-     * -- Header Section --
-     */
-
-    fun MutableList<Visitable<*>>.addShimmeringPage(): MutableList<Visitable<*>> {
+internal object MainVisitableMapper {
+    fun MutableList<Visitable<*>>.addLoadingState(): MutableList<Visitable<*>> {
         val newList = arrayListOf(
             TokoNowThematicHeaderUiModel(
                 state = LOADING
             ),
             ShoppingListHorizontalProductCardItemUiModel(
-                type = ATC_WISHLIST,
+                type = AVAILABLE_SHOPPING_LIST,
                 state = LOADING
             ),
             ShoppingListHorizontalProductCardItemUiModel(
-                type = ATC_WISHLIST,
+                type = AVAILABLE_SHOPPING_LIST,
                 state = LOADING
             ),
             TokoNowDividerUiModel(),
@@ -60,6 +58,15 @@ object MainVisitableMapper {
         )
         addAll(newList)
         return this
+    }
+
+    fun MutableList<Visitable<*>>.addErrorState(throwable: Throwable) {
+        add(
+            TokoNowErrorUiModel(
+                isFullPage = true,
+                throwable = throwable
+            )
+        )
     }
 
     fun MutableList<Visitable<*>>.addHeader(
@@ -100,97 +107,64 @@ object MainVisitableMapper {
         return this
     }
 
-    fun MutableList<Visitable<*>>.addWishlistProducts() {
-        val list = listOf(
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = "123121",
-                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                price = "Rp5.000",
-                name = "Baby Pak Choy Baby Pak ChoyBaby Pak ChoyBaby Pak ChoyBaby Pak ChoyBaby Pak ChoyBaby Pak ChoyBaby Pak ChoyBaby Pak Choy",
-                weight = "350gr",
-                percentage = "50%",
-                slashPrice = "Rp100.000000000000000000000000000000000",
-                type = ATC_WISHLIST
-            ),
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = "123121",
-                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                price = "Rp5.000",
-                name = "Baby Pak Choy",
-                weight = "350gr",
-                percentage = "50%",
-                slashPrice = "Rp100.000",
-                type = ATC_WISHLIST
-            ),
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = "123121",
-                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                price = "Rp5.000",
-                name = "Baby Pak Choy",
-                weight = "350gr",
-                percentage = "50%",
-                slashPrice = "Rp100.000",
-                type = ATC_WISHLIST
-            ),
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = "123121",
-                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                price = "Rp5.000",
-                name = "Baby Pak Choy",
-                weight = "350gr",
-                percentage = "50%",
-                slashPrice = "Rp100.000",
-                type = ATC_WISHLIST
-            ),
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = "123121",
-                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                price = "Rp5.000",
-                name = "Baby Pak Choy",
-                weight = "350gr",
-                percentage = "50%",
-                slashPrice = "Rp100.000",
-                type = ATC_WISHLIST
-            ),
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = "123121",
-                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                price = "Rp5.000",
-                name = "Baby Pak Choy",
-                weight = "350gr",
-                percentage = "50%",
-                slashPrice = "Rp100.000",
-                type = ATC_WISHLIST
-            ),
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = "123121",
-                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                price = "Rp5.000",
-                name = "Baby Pak Choy",
-                weight = "350gr",
-                percentage = "50%",
-                slashPrice = "Rp100.000",
-                type = ATC_WISHLIST
-            ),
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = "123121",
-                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                price = "Rp5.000",
-                name = "Baby Pak Choy",
-                weight = "350gr",
-                percentage = "50%",
-                slashPrice = "Rp100.000",
-                type = ATC_WISHLIST
-            )
-        )
+    fun MutableList<Visitable<*>>.addTopCheckAllShoppingList(
+        metadata: GetShoppingListDataResponse.Metadata
+    ): MutableList<Visitable<*>> {
         add(
             ShoppingListTopCheckAllUiModel(
-                id = "2222",
-                allPrice = "Semua (Rp.12.000)",
-                selectedProductCounter = "1 produk terpilih"
+                allPrice = metadata.inStockSelectedTotalPriceFmt
             )
         )
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.addAvailableShoppingList(
+        listAvailableItem: List<GetShoppingListDataResponse.AvailableItem>
+    ): MutableList<Visitable<*>> {
+        val list = listAvailableItem.map {
+            ShoppingListHorizontalProductCardItemUiModel(
+                id = it.id,
+                image = it.imageUrl,
+                price = it.price,
+                name = it.name,
+                weight = it.getWeight(),
+                percentage = it.discountPercentage.toString(),
+                slashPrice = it.originalPrice,
+                type = AVAILABLE_SHOPPING_LIST
+            )
+        }
         addAll(list)
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.addUnavailableShoppingList(
+        listUnavailableItem: List<GetShoppingListDataResponse.UnavailableItem>
+    ): MutableList<Visitable<*>> {
+        val list = listUnavailableItem.map {
+            ShoppingListHorizontalProductCardItemUiModel(
+                id = it.id,
+                image = it.imageUrl,
+                price = it.price,
+                name = it.name,
+                weight = it.getWeight(),
+                percentage = it.discountPercentage.toString(),
+                slashPrice = it.originalPrice,
+                type = UNAVAILABLE_SHOPPING_LIST
+            )
+        }
+        addAll(list)
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.addIf(
+        isTrue: Boolean,
+        layout: () -> MutableList<Visitable<*>>
+    ): MutableList<Visitable<*>> {
+        return if (isTrue) {
+            layout.invoke()
+        } else {
+            this
+        }
     }
 
     fun MutableList<Visitable<*>>.addDivider(): MutableList<Visitable<*>> {
@@ -209,40 +183,9 @@ object MainVisitableMapper {
         return this
     }
 
-    fun MutableList<Visitable<*>>.addEmptyStockProducts() {
-        val list = listOf(
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = "123121",
-                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                price = "Rp5.000",
-                name = "Baby Pak Choy",
-                weight = "350gr",
-                percentage = "50%",
-                slashPrice = "Rp100.000",
-                type = EMPTY_STOCK
-            ),
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = "123121",
-                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                price = "Rp5.000",
-                name = "Baby Pak Choy",
-                weight = "350gr",
-                percentage = "50%",
-                slashPrice = "Rp100.000",
-                type = EMPTY_STOCK
-            ),
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = "123121",
-                image = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp",
-                price = "Rp5.000",
-                name = "Baby Pak Choy",
-                weight = "350gr",
-                percentage = "50%",
-                slashPrice = "Rp100.000000000000000000000000000000000",
-                type = EMPTY_STOCK
-            )
-        )
-        addAll(list)
+    fun MutableList<Visitable<*>>.addEmptyShoppingList(): MutableList<Visitable<*>> {
+        add(ShoppingListEmptyUiModel())
+        return this
     }
 
     fun MutableList<Visitable<*>>.addProductInCartWidget() {

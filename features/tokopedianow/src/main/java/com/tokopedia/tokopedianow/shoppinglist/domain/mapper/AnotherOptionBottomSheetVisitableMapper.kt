@@ -2,13 +2,13 @@ package com.tokopedia.tokopedianow.shoppinglist.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.bottomsheet.ShoppingListAnotherOptionBottomSheetEmptyStateUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.bottomsheet.ShoppingListAnotherOptionBottomSheetErrorStateUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
+import com.tokopedia.tokopedianow.common.model.TokoNowErrorUiModel
 
-object AnotherOptionBottomSheetVisitableMapper {
-    fun MutableList<Visitable<*>>.addShimmeringRecommendedProducts(): MutableList<Visitable<*>> {
+internal object AnotherOptionBottomSheetVisitableMapper {
+    fun MutableList<Visitable<*>>.addLoadingState(): MutableList<Visitable<*>> {
         val newList = arrayListOf(
             ShoppingListHorizontalProductCardItemUiModel(
                 type = PRODUCT_RECOMMENDATION,
@@ -39,7 +39,12 @@ object AnotherOptionBottomSheetVisitableMapper {
     fun MutableList<Visitable<*>>.addErrorState(
         throwable: Throwable
     ): MutableList<Visitable<*>> {
-        add(ShoppingListAnotherOptionBottomSheetErrorStateUiModel(throwable = throwable))
+        add(
+            TokoNowErrorUiModel(
+                isFullPage = false,
+                throwable = throwable
+            )
+        )
         return this
     }
 }

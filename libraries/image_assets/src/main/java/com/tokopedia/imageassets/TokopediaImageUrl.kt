@@ -64,6 +64,7 @@ object TokopediaImageUrl {
     const val IMG_DARK_MODE = "https://images.tokopedia.net/img/tokopedianow/see-all-category-dark.png"
     const val IMG_LIGHT_MODE = "https://images.tokopedia.net/img/tokopedianow/see-all-category-light.png"
     const val BACKGROUND_BOTTOMSHEET = "https://images.tokopedia.net/img/android/tokonow/bg_bottomsheet_tokomart_educational_information.png"
+    const val IMG_SHOPPING_LIST_EMPTY = "https://images.tokopedia.net/img/android/tokonow/shopping_list_empty.png"
     const val ERROR_STATE_NOT_FOUND_IMAGE_URL = "https://images.tokopedia.net/img/error_page_400_category_list.png"
     const val ILLUSTRATION_OUT_OF_COVERAGE = "https://images.tokopedia.net/img/tokonow/recipe/illustration_out_of_coverage.png"
     const val DEFAULT_BANNER_IMAGE_URL_1 = "https://images.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg"

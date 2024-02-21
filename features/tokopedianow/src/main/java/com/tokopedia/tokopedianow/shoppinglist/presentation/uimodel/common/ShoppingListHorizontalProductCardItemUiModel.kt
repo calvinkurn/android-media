@@ -20,8 +20,8 @@ data class ShoppingListHorizontalProductCardItemUiModel(
     override fun type(typeFactory: ShoppingListHorizontalProductCardItemTypeFactory): Int = typeFactory.type(this)
 
     enum class LayoutType {
-        ATC_WISHLIST,
-        EMPTY_STOCK,
+        AVAILABLE_SHOPPING_LIST,
+        UNAVAILABLE_SHOPPING_LIST,
         PRODUCT_RECOMMENDATION
     }
 }

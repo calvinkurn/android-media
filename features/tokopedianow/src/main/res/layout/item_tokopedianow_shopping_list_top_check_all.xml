@@ -19,7 +19,7 @@
         android:layout_marginStart="8dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="Semua"
+        android:text="@string/tokopedianow_shopping_list_top_check_all_title"
         app:layout_constraintBottom_toBottomOf="@+id/cb_add_all"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/cb_add_all"

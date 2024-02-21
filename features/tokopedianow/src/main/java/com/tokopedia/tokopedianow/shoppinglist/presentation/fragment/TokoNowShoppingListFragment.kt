@@ -19,12 +19,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
-import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.compact.similarproduct.presentation.bottomsheet.ProductCardCompactSimilarProductBottomSheet
 import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
@@ -34,12 +35,13 @@ import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.UiState
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowErrorViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowThematicHeaderViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowShoppingListBinding
 import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListComponent
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
-import com.tokopedia.tokopedianow.shoppinglist.domain.model.HeaderModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.activity.TokoNowShoppingListActivity
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapterTypeFactory
@@ -73,16 +75,6 @@ class TokoNowShoppingListFragment :
     lateinit var viewModel: TokoNowShoppingListViewModel
 
     /**
-     * -- internal variable section --
-     */
-
-    internal val strRefreshLayout: ParentIconSwipeRefreshLayout?
-        get() = binding?.strRefreshLayout
-
-    internal val navToolbar: NavToolbar?
-        get() = binding?.navToolbar
-
-    /**
      * -- private variable section --
      */
 
@@ -93,19 +85,22 @@ class TokoNowShoppingListFragment :
                 headerListener = createHeaderCallback(),
                 chooseAddressListener = this@TokoNowShoppingListFragment,
                 productCardItemListener = createHorizontalProductCardItemCallback(),
-                retryListener = createRetryCallback()
+                retryListener = createRetryCallback(),
+                errorListener = createErrorCallback()
             )
         )
     }
 
     private val loadMoreListener: RecyclerView.OnScrollListener
-        by lazy { createLoadMoreListener() }
+        by lazy { createLoadMoreCallback() }
 
     private var binding: FragmentTokopedianowShoppingListBinding?
         by autoClearedNullable()
 
     private var layoutManager: LinearLayoutManager?
         by autoClearedNullable()
+
+    private var isNavToolbarScrollingBehaviourEnabled: Boolean = true
 
     /**
      * -- override function section --
@@ -151,31 +146,8 @@ class TokoNowShoppingListFragment :
     override fun onClickChooseAddressWidgetTracker() { }
 
     /**
-     * -- private function section --
+     * -- private suspend function section --
      */
-
-    private fun initInjector() {
-        DaggerShoppingListComponent.builder()
-            .baseAppComponent((context?.applicationContext as? BaseMainApplication)?.baseAppComponent)
-            .shoppingListModule(ShoppingListModule(requireContext()))
-            .build()
-            .inject(this)
-    }
-
-    private fun setHeaderModel(context: Context) {
-        viewModel.headerModel = HeaderModel(
-            pageTitle = getString(R.string.tokopedianow_shopping_list_page_title),
-            pageTitleColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White),
-            ctaText = getString(R.string.tokopedianow_shopping_list_repurchase),
-            ctaTextColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White),
-            ctaChevronIsShown = true,
-            ctaChevronColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White),
-            backgroundGradientColor = TokoNowThematicHeaderUiModel.GradientColor(
-                startColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN500),
-                endColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN400)
-            )
-        )
-    }
 
     private suspend fun collectUiState(
         binding: FragmentTokopedianowShoppingListBinding
@@ -189,12 +161,6 @@ class TokoNowShoppingListFragment :
                     }
                 }
                 is UiState.Error -> {
-                    val layout = uiState.data?.layout
-                    if (!layout.isNullOrEmpty()) {
-                        adapter.submitList(layout)
-                    }
-                }
-                is UiState.Empty -> {
                     val layout = uiState.data?.layout
                     if (!layout.isNullOrEmpty()) {
                         adapter.submitList(layout)
@@ -221,6 +187,60 @@ class TokoNowShoppingListFragment :
         }
     }
 
+    private suspend fun collectErrorNavToolbar(
+        binding: FragmentTokopedianowShoppingListBinding
+    ) {
+        viewModel.isNavToolbarScrollingBehaviourEnabled.collect { isEnabled ->
+            binding.navToolbar.apply {
+                isNavToolbarScrollingBehaviourEnabled = isEnabled
+
+                if (isEnabled) {
+                    setToolbarContentType(TOOLBAR_TYPE_TITLE)
+                    setShowShadowEnabled(false)
+                    switchToDarkIcon()
+                    switchToDarkStatusBar()
+                    setBackButtonColor(unifyprinciplesR.color.Unify_Static_White)
+                    hideShadow()
+                } else {
+                    setToolbarContentType(TOOLBAR_TYPE_SEARCH)
+                    setShowShadowEnabled(true)
+                    switchToLightIcon()
+                    switchToLightStatusBar()
+                    setBackButtonColor(if (context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)
+                    showShadow()
+                }
+            }
+        }
+    }
+
+    /**
+     * -- private function section --
+     */
+
+    private fun initInjector() {
+        DaggerShoppingListComponent.builder()
+            .baseAppComponent((context?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .shoppingListModule(ShoppingListModule(requireContext()))
+            .build()
+            .inject(this)
+    }
+
+    private fun setHeaderModel(context: Context) {
+        viewModel.headerModel = HeaderModel(
+            pageTitle = getString(R.string.tokopedianow_shopping_list_page_title),
+            pageTitleColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White),
+            ctaText = getString(R.string.tokopedianow_shopping_list_repurchase),
+            ctaTextColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White),
+            ctaChevronIsShown = true,
+            ctaChevronColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White),
+            backgroundGradientColor = TokoNowThematicHeaderUiModel.GradientColor(
+                startColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN500),
+                endColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN400)
+            ),
+            emptyStockTitle = getString(R.string.tokopedianow_shopping_list_empty_stock)
+        )
+    }
+
     /**
      * Create a new coroutine in the [lifecycleScope]. [repeatOnLifecycle] launches the block in a new coroutine
      * every time the lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
@@ -234,6 +254,7 @@ class TokoNowShoppingListFragment :
                  */
                 launch { collectUiState(this@collectStateFlow) }
                 launch { collectScrollState(this@collectStateFlow) }
+                launch { collectErrorNavToolbar(this@collectStateFlow) }
             }
         }
     }
@@ -250,7 +271,7 @@ class TokoNowShoppingListFragment :
             layoutManager = this@TokoNowShoppingListFragment.layoutManager
             addItemDecoration(ShoppingListDecoration())
             addOnScrollListener(loadMoreListener)
-            animation = null
+            itemAnimator = null
         }
     }
 
@@ -263,7 +284,6 @@ class TokoNowShoppingListFragment :
                     .addCart()
                     .addNavGlobal()
             )
-            bringToFront()
         }
     }
 
@@ -284,6 +304,10 @@ class TokoNowShoppingListFragment :
         disableDefaultGtmTracker = true
     ) { /* nothing to do */ }
 
+    private fun NavToolbar.setBackButtonColor(color: Int) = setCustomBackButton(
+        color = ContextCompat.getColor(context, color)
+    )
+
     /**
      * -- callback function section --
      */
@@ -297,7 +321,7 @@ class TokoNowShoppingListFragment :
         }
 
         override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView) {
-            strRefreshLayout?.setContentChildViewPullRefresh(view)
+            binding?.strRefreshLayout?.setContentChildViewPullRefresh(view)
         }
     }
 
@@ -313,23 +337,26 @@ class TokoNowShoppingListFragment :
                 override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */ }
 
                 override fun onSwitchToLightToolbar() {
-                    navToolbar.setBackButtonColor(if (navToolbar.context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)
-                    switchToLightStatusBar()
-                    navToolbar.setToolbarTitle(getString(R.string.tokopedianow_shopping_list_page_title))
+                    if (isNavToolbarScrollingBehaviourEnabled) {
+                        navToolbar.setBackButtonColor(if (navToolbar.context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)
+                        switchToLightStatusBar()
+                        navToolbar.setToolbarTitle(getString(R.string.tokopedianow_shopping_list_page_title))
+                    }
                 }
 
                 override fun onYposChanged(yOffset: Int) { /* nothing to do */ }
 
                 override fun onSwitchToDarkToolbar() {
-                    if (navToolbar.context.isDarkMode()) {
+                    if (isNavToolbarScrollingBehaviourEnabled) {
+                        if (navToolbar.context.isDarkMode()) {
+                            switchToLightStatusBar()
+                        } else {
+                            switchToDarkStatusBar()
+                        }
                         navToolbar.setBackButtonColor(unifyprinciplesR.color.Unify_Static_White)
-                        switchToLightStatusBar()
-                    } else {
-                        navToolbar.setBackButtonColor(unifyprinciplesR.color.Unify_Static_White)
-                        switchToDarkStatusBar()
+                        navToolbar.setToolbarTitle(String.EMPTY)
+                        navToolbar.hideShadow()
                     }
-                    navToolbar.setToolbarTitle(String.EMPTY)
-                    navToolbar.hideShadow()
                 }
             }
         )
@@ -349,7 +376,7 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private fun createLoadMoreListener()  = object : RecyclerView.OnScrollListener() {
+    private fun createLoadMoreCallback()  = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             val lastVisiblePosition = layoutManager?.findLastVisibleItemPosition()
@@ -362,6 +389,12 @@ class TokoNowShoppingListFragment :
         }
     }
 
+    private fun createErrorCallback() = object : TokoNowErrorViewHolder.TokoNowErrorListener {
+        override fun onClickRefresh() {
+            viewModel.refreshLayout()
+        }
+    }
+
     /**
      * -- internal function section --
      */
@@ -369,6 +402,4 @@ class TokoNowShoppingListFragment :
     internal fun switchToDarkStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToDarkToolbar()
 
     internal fun switchToLightStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToLightToolbar()
-
-    internal fun NavToolbar.setBackButtonColor(color: Int) = setCustomBackButton(color = ContextCompat.getColor(context, color))
 }

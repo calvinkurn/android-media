@@ -6,11 +6,13 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
@@ -19,9 +21,9 @@ import com.tokopedia.tokopedianow.common.util.ImageUtil.applyBrightnessFilter
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListHorizontalProductCardBinding
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.ATC_WISHLIST
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.EMPTY_STOCK
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.AVAILABLE_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.UNAVAILABLE_SHOPPING_LIST
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -61,6 +63,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
                     setupRightButton(data)
                     setupCheckbox(data)
                 }
+                else -> { /* nothing to do */ }
             }
         }
     }
@@ -92,7 +95,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     ) {
         tpPrice.showIfWithBlock(data.price.isNotBlank()) {
             text = data.price
-            tpPrice.setTextColor(ContextCompat.getColor(context, if (data.type == EMPTY_STOCK) unifyprinciplesR.color.Unify_NN600 else unifyprinciplesR.color.Unify_NN950))
+            tpPrice.setTextColor(ContextCompat.getColor(context, if (data.type == UNAVAILABLE_SHOPPING_LIST) unifyprinciplesR.color.Unify_NN600 else unifyprinciplesR.color.Unify_NN950))
         }
     }
 
@@ -101,7 +104,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     ) {
         tpName.showIfWithBlock(data.name.isNotBlank()) {
             text = data.name
-            tpName.setTextColor(ContextCompat.getColor(context, if (data.type == EMPTY_STOCK) unifyprinciplesR.color.Unify_NN600 else unifyprinciplesR.color.Unify_NN950))
+            tpName.setTextColor(ContextCompat.getColor(context, if (data.type == UNAVAILABLE_SHOPPING_LIST) unifyprinciplesR.color.Unify_NN600 else unifyprinciplesR.color.Unify_NN950))
         }
     }
 
@@ -116,16 +119,16 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.setupPercentage(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
-        tpPercentage.showIfWithBlock(data.percentage.isNotBlank()) {
+        tpPercentage.showIfWithBlock(data.percentage.isNotBlank() && data.percentage.toIntSafely() != Int.ZERO) {
             text = data.percentage
-            tpPercentage.setTextColor(ContextCompat.getColor(context, if (data.type == EMPTY_STOCK) unifyprinciplesR.color.Unify_NN400 else unifyprinciplesR.color.Unify_RN500))
+            tpPercentage.setTextColor(ContextCompat.getColor(context, if (data.type == UNAVAILABLE_SHOPPING_LIST) unifyprinciplesR.color.Unify_NN400 else unifyprinciplesR.color.Unify_RN500))
         }
     }
 
     private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.setupSlashPrice(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
-        tpSlashPrice.showIfWithBlock(data.slashPrice.isNotBlank()) {
+        tpSlashPrice.showIfWithBlock(data.slashPrice.isNotBlank() && data.percentage.toIntSafely() != Int.ZERO) {
             text = data.slashPrice
             paintFlags = tpSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
@@ -179,7 +182,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.setupCheckbox(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
-        if (data.type == ATC_WISHLIST) {
+        if (data.type == AVAILABLE_SHOPPING_LIST) {
             iuProduct.setMargin(
                 root.getDimens(unifyprinciplesR.dimen.unify_space_8),
                 root.getDimens(unifyprinciplesR.dimen.unify_space_0),
@@ -231,7 +234,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.setupShimmeringCheckbox(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
-        if (data.type == ATC_WISHLIST) {
+        if (data.type == AVAILABLE_SHOPPING_LIST) {
             loadingLayout.luImage.setMargin(
                 root.getDimens(unifyprinciplesR.dimen.unify_space_8),
                 root.getDimens(unifyprinciplesR.dimen.unify_space_0),
@@ -249,9 +252,9 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         }
     }
 
-    private fun isOos(layoutType: LayoutType): Boolean = layoutType == EMPTY_STOCK
+    private fun isOos(layoutType: LayoutType): Boolean = layoutType == UNAVAILABLE_SHOPPING_LIST
 
-    private fun getImageBrightness(layoutType: LayoutType): Float = if (layoutType == EMPTY_STOCK) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS
+    private fun getImageBrightness(layoutType: LayoutType): Float = if (layoutType == UNAVAILABLE_SHOPPING_LIST) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS
 
     interface ShoppingListHorizontalProductCardItemListener {
         fun onClickOtherOptions()

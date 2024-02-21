@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.shoppinglist.domain.model
+package com.tokopedia.tokopedianow.shoppinglist.presentation.model
 
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel.GradientColor
@@ -10,5 +10,6 @@ data class HeaderModel(
     val ctaTextColor: Int? = null,
     val ctaChevronIsShown: Boolean = true,
     val ctaChevronColor: Int? = null,
-    val backgroundGradientColor: GradientColor? = null
+    val backgroundGradientColor: GradientColor? = null,
+    val emptyStockTitle: String = String.EMPTY
 )

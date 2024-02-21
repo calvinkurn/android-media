@@ -5,7 +5,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.SHOW
 
-object CommonVisitableMapper {
+internal object CommonVisitableMapper {
     fun MutableList<Visitable<*>>.addRecommendedProducts(
         recommendationWidget: RecommendationWidget
     ): MutableList<Visitable<*>> {

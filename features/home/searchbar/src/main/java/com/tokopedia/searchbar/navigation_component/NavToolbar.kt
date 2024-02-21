@@ -942,6 +942,14 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         }
     }
 
+    fun switchToLightIcon() {
+        navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
+    }
+
+    fun switchToDarkIcon() {
+        navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK)
+    }
+
     fun setupSearchBarWithStaticLightModeColor() {
         val searchBackgroundColor = getDrawable(R.drawable.nav_toolbar_searchbar_bg_corner_static)
         val blendIconSearchColor =
