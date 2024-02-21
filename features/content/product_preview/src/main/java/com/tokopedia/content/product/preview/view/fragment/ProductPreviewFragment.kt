@@ -226,10 +226,9 @@ class ProductPreviewFragment @Inject constructor(
                         event.appLink
                     )
                     is ProductPreviewEvent.ShowSuccessToaster -> {
-                        if (event.type == ProductPreviewEvent.ShowSuccessToaster.Type.Report) return@collect
                         Toaster.build(
                             requireView().rootView,
-                            text = getString(event.message.orZero()),
+                            text = getString(event.message ?: return@collect),
                             actionText = if (event.type == ProductPreviewEvent.ShowSuccessToaster.Type.ATC) {
                                 getString(
                                     contentproductpreviewR.string.bottom_atc_success_click_toaster

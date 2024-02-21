@@ -204,22 +204,7 @@ class ReviewFragment @Inject constructor(
                         }
 
                         is ProductPreviewEvent.ShowSuccessToaster -> {
-                            val view = if (ReviewReportBottomSheet.get(childFragmentManager) != null) ReviewReportBottomSheet.get(childFragmentManager)?.requireView()?.rootView else requireView().rootView
-                            Toaster.build(
-                                view ?: return@collect,
-                                text = getString(event.message.orZero()),
-                                actionText = if (event.type == ProductPreviewEvent.ShowSuccessToaster.Type.ATC) {
-                                    getString(
-                                        R.string.bottom_atc_success_click_toaster
-                                    )
-                                } else {
-                                    ""
-                                },
-                                duration = Toaster.LENGTH_LONG,
-                                clickListener = {
-                                    viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))
-                                }
-                            ).show()
+                            if (event.type == ProductPreviewEvent.ShowSuccessToaster.Type.Report) dismissSheets()
                         }
 
                         is ProductPreviewEvent.ShowErrorToaster -> {
@@ -243,6 +228,11 @@ class ReviewFragment @Inject constructor(
                     }
                 }
         }
+    }
+
+    private fun dismissSheets() {
+        ReviewReportBottomSheet.get(childFragmentManager)?.dismiss()
+        MenuBottomSheet.get(childFragmentManager)?.dismiss()
     }
 
     private fun renderList(prev: ReviewUiModel?, data: ReviewUiModel) {
