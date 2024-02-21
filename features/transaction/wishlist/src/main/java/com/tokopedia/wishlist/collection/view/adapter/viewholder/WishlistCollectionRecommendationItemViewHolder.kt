@@ -23,6 +23,7 @@ class WishlistCollectionRecommendationItemViewHolder(
                 setProductModel(item.dataObject)
 
                 setOnClickListener {
+                    AppLogRecommendation.sendProductClickAppLog(item.recommItem.asTrackingModel())
                     actionListener?.onRecommendationItemClick(item.recommItem, adapterPosition)
                 }
 
