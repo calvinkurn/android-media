@@ -37,8 +37,10 @@ data class RecommendationTriggerObject(
     val isUnderGuide: Boolean = false,
     val listName: String = "",
     val listNum: Int = 0,
-    val recommendationViewHolders: List<Class<*>> = emptyList(),
-)
+    val viewHolders: List<Class<*>> = emptyList(),
+) {
+    val viewHolderMap: Map<Class<*>, Boolean> = viewHolders.associateWith { true }
+}
 
 class VerticalTrackScrollListener(
     private val glidePageTrackObject: GlidePageTrackObject?,
@@ -88,13 +90,13 @@ class VerticalTrackScrollListener(
 
     private fun RecyclerView.shouldTriggerGlideRecommendation(): Boolean {
         recommendationTriggerObject ?: return false
-        if(recommendationTriggerObject.recommendationViewHolders.isEmpty()) return true
+        if(recommendationTriggerObject.viewHolders.isEmpty()) return true
 
         val size = layoutManager?.itemCount ?: return false
 
         loop@ for(i in 0 until size) {
             val viewHolder = findViewHolderForAdapterPosition(i) ?: break@loop
-            if(recommendationTriggerObject.recommendationViewHolders.contains(viewHolder.javaClass)) {
+            if(recommendationTriggerObject.viewHolderMap[viewHolder.javaClass] == true) {
                 return true
             }
         }

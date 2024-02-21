@@ -747,7 +747,7 @@ class HomeGlobalRecommendationFragment :
         recyclerView?.addVerticalTrackListener(
             glidePageTrackObject = GlidePageTrackObject(),
             recommendationTriggerObject = RecommendationTriggerObject(
-                recommendationViewHolders = listOf(),
+                viewHolders = listOf(),
             ),
         )
     }
