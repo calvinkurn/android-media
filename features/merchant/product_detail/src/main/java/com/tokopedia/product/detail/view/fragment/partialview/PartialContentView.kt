@@ -18,7 +18,6 @@ import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignR
 import com.tokopedia.product.detail.view.widget.productNameDelegate
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.product.detail.common.R as productdetailcommonR
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Yehezkiel on 25/05/20
@@ -65,16 +64,6 @@ class PartialContentView(
     fun renderFreeOngkir(freeOngkirImgUrl: String, isShowPrice: Boolean) = with(binding) {
         imgFreeOngkir.shouldShowWithAction(freeOngkirImgUrl.isNotEmpty() && isShowPrice) {
             imgFreeOngkir.loadImageWithoutPlaceholder(freeOngkirImgUrl)
-        }
-    }
-
-    fun updateUniversalShareWidget(shouldShow: Boolean) = with(binding.universalShareWidget) {
-        if (shouldShow) {
-            listener.onUniversalShareWidget(this)
-            setColorShareIcon(unifyprinciplesR.color.Unify_NN700)
-            show()
-        } else {
-            hide()
         }
     }
 
