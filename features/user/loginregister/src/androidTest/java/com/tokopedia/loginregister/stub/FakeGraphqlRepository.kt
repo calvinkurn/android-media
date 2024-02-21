@@ -11,9 +11,7 @@ import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.common.domain.pojo.TickerInfoData
 import com.tokopedia.loginregister.common.domain.pojo.TickersInfoPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestV2
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
-import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
