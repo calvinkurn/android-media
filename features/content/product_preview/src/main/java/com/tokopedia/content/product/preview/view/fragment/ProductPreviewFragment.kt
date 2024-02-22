@@ -134,6 +134,7 @@ class ProductPreviewFragment @Inject constructor(
         onClickHandler()
         observeData()
         observeEvent()
+        handleCoachMark()
     }
 
     override fun onStart() {
@@ -281,8 +282,7 @@ class ProductPreviewFragment @Inject constructor(
                         binding.viewFooter.gone()
                     }
                     is ProductPreviewEvent.UnknownSourceData -> activity?.finish()
-                    ProductPreviewEvent.ShowCoachMark -> handleCoachMark()
-                    is ProductPreviewEvent.TrackAllHorizontalScroll -> {
+                   is ProductPreviewEvent.TrackAllHorizontalScroll -> {
                         analytics.onSwipeContentAndTab()
                     }
                     else -> return@collect
@@ -350,11 +350,12 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun handleCoachMark() {
-        if (productPreviewSource.source !is ProductPreviewSourceModel.ProductSourceData) return
+        if (productPreviewSource.source !is ProductPreviewSourceModel.ProductSourceData || viewModel.hasVisit) return
         coachMarkJob?.cancel()
         coachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
             delay(DELAY_COACH_MARK)
             coachMark.showCoachMark(step = coachMarkItems)
+            viewModel.onAction(ProductPreviewAction.HasVisitCoachMark)
         }
     }
 

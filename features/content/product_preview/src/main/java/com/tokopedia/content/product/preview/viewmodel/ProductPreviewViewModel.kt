@@ -125,14 +125,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             }
         }
 
-    init {
-        viewModelScope.launchCatchError(block = {
-            val hasVisit = productPrevSharedPref.hasVisited()
-            if (hasVisit) return@launchCatchError
-            _uiEvent.emit(ProductPreviewEvent.ShowCoachMark)
-            productPrevSharedPref.setHasVisit(true)
-        }){}
-    }
+    val hasVisit get() = productPrevSharedPref.hasVisited()
 
     fun onAction(action: ProductPreviewAction) {
         when (action) {
@@ -154,6 +147,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is SubmitReport -> handleSubmitReport(action.model)
             is ClickMenu -> handleClickMenu(action.isFromLogin)
             is Like -> handleLikeFromResult(action.item)
+            ProductPreviewAction.HasVisitCoachMark -> productPrevSharedPref.setHasVisit()
         }
     }
 

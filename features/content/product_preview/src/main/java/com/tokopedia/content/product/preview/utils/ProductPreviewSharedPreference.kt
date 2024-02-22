@@ -18,8 +18,8 @@ class ProductPreviewSharedPreference @Inject constructor(
     private val sharedPref =
         context.getSharedPreferences(PRODUCT_PREVIEW_PREFERENCE_NAME, Context.MODE_PRIVATE)
 
-    fun setHasVisit(isVisit: Boolean) {
-        sharedPref.edit().putBoolean(String.format(COACH_MARK_PREF, userId), isVisit).apply()
+    fun setHasVisit() {
+        sharedPref.edit().putBoolean(String.format(COACH_MARK_PREF, userId), true).apply()
     }
     fun hasVisited(): Boolean {
         return sharedPref.getBoolean(String.format(COACH_MARK_PREF, userId), false)

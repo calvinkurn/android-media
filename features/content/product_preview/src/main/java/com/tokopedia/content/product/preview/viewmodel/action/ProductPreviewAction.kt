@@ -26,4 +26,5 @@ sealed interface ProductPreviewAction {
     data class SubmitReport(val model: ReviewReportUiModel) : ProductPreviewAction
     data class ClickMenu(val isFromLogin: Boolean) : ProductPreviewAction
     data class Like(val item: ReviewLikeUiState) : ProductPreviewAction
+    object HasVisitCoachMark : ProductPreviewAction
 }
