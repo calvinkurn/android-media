@@ -7,7 +7,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import dagger.Module
 import dagger.Provides
 
@@ -20,11 +19,8 @@ import dagger.Provides
 class LoginUseCaseModule {
 
     @Provides
-    fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
-
-    @Provides
-    fun provideRegisterCheckGraphQlUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): GraphqlUseCase<RegisterCheckPojo> =
-        GraphqlUseCase(graphqlRepository)
+    fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase =
+        GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 
     @Provides
     fun provideActivateUserUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): ActivateUserUseCase {

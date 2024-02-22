@@ -13,10 +13,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
 import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.common.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckParam
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.common.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessPreference
@@ -24,9 +27,7 @@ import com.tokopedia.loginregister.goto_seamless.model.GetTemporaryKeyParam
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase.Companion.MODULE_GOTO_SEAMLESS
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
-import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.model.LoginOption
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -159,15 +160,15 @@ class LoginEmailPhoneViewModel @Inject constructor(
         get() = mutableLoginOption
 
     fun registerCheck(id: String) {
-        launchCatchError(coroutineContext, {
-            registerCheckUseCase.setRequestParams(registerCheckUseCase.getRequestParams(id))
-            val response = registerCheckUseCase.executeOnBackground()
-            if (response.data.errors.isEmpty()) {
-                mutableRegisterCheckResponse.value = Success(response.data)
+        launchCatchError(block = {
+            val params = RegisterCheckParam(id)
+            val result = registerCheckUseCase(params)
+            if (result.data.errors.isEmpty()) {
+                mutableRegisterCheckResponse.value = Success(result.data)
             } else {
-                mutableRegisterCheckResponse.value = Fail(MessageErrorException(response.data.errors.first()))
+                mutableRegisterCheckResponse.value = Fail(MessageErrorException(result.data.errors.first()))
             }
-        }, {
+        }, onError = {
             mutableRegisterCheckResponse.value = Fail(it)
         })
     }

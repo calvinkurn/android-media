@@ -378,11 +378,6 @@ class UniversalShareWidget(context: Context, attrs: AttributeSet) : FrameLayout(
                 )
     }
 
-    fun isWidgetRollenceActive(): Boolean {
-        return getVariant().isNotBlank() &&
-            getVariant() != UniversalShareConst.RemoteConfigKey.CONTROL_VARIANT
-    }
-
     companion object {
         private const val CHANNEL_WHATSAPP = 0
         private const val CHANNEL_TELEGRAM = 1
