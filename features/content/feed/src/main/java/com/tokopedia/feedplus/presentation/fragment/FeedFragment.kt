@@ -1455,17 +1455,10 @@ class FeedFragment :
                 is Success -> {
                     currentTrackerData?.let { data ->
                         if (it.data.source == FeedProductActionModel.Source.CardHighlight) {
-                            if (it.data.product.showGlobalVariant) {
-                                feedAnalytics?.atcFromProductHighlightWithVariant(
-                                    trackerModel = data,
-                                    product = it.data
-                                )
-                            } else {
-                                feedAnalytics?.atcFromProductHighlight(
-                                    trackerModel = data,
-                                    product = it.data
-                                )
-                            }
+                           feedAnalytics?.atcFromProductHighlight(
+                               trackerModel = data,
+                               product = it.data
+                           )
                         } else {
                             feedAnalytics?.eventClickBuyButton(
                                 trackerData = data,
@@ -1852,6 +1845,7 @@ class FeedFragment :
         when {
             userSession.isLoggedIn -> {
                 if (product.showGlobalVariant) {
+                    checkAvailableTracker(product, source)
                     dismissFeedProductBottomSheet()
                     openVariantBottomSheet(product)
                 } else {
@@ -2310,6 +2304,21 @@ class FeedFragment :
             ) {}
         ) {
             checkAddToCartAction(taggedProduct, FeedProductActionModel.Source.CardHighlight)
+        }
+    }
+
+    private fun checkAvailableTracker(product: ContentTaggedProductUiModel, source: FeedProductActionModel.Source) {
+        currentTrackerData?.let { data ->
+            if (source == FeedProductActionModel.Source.CardHighlight) {
+                feedAnalytics?.atcFromProductHighlightWithVariant(
+                    trackerModel = data,
+                    product = FeedProductActionModel(
+                        cartId = "",
+                        product = product,
+                        source = source
+                    )
+                )
+            }
         }
     }
 

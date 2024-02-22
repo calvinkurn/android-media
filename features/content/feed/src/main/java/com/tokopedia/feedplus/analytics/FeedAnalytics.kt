@@ -1039,7 +1039,7 @@ class FeedAnalytics @AssistedInject constructor(
                     productPrice = product.product.finalPrice
                 )))
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.VIEW_ITEM_LIST, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.CLICK_CONTENT, bundle)
     }
 
     companion object {
