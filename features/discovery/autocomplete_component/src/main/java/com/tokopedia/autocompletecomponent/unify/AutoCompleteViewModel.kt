@@ -170,7 +170,7 @@ internal class AutoCompleteViewModel @Inject constructor(
 
     fun trackTrendingWordsClick(item: AutoCompleteUnifyDataView) {
         val appLogData = stateValue.appLogData
-        AppLogSearch.eventTrendingWordsShowSuggestion(
+        AppLogSearch.eventTrendingWordsClickSuggestion(
             AppLogSearch.TrendingWordsSuggestion(
                 searchPosition = appLogData.enterFrom,
                 searchEntrance = appLogData.searchEntrance,

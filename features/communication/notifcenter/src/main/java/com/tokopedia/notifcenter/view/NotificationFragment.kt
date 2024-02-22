@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -479,6 +481,9 @@ class NotificationFragment @Inject constructor(
                 }
             }
         })
+        rv?.addVerticalTrackListener(
+            recommendationTriggerObject = RecommendationTriggerObject()
+        )
     }
 
     private fun getLastVisibleItemPosition(): Int? {

@@ -44,6 +44,8 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
@@ -1736,6 +1738,12 @@ class CartRevampFragment :
         viewModel.addAvailableCartItemImpression(availableCartItems)
     }
 
+    private fun addRecommendationScrollListener(cartRecyclerView: RecyclerView) {
+        cartRecyclerView.addVerticalTrackListener(
+            recommendationTriggerObject = RecommendationTriggerObject()
+        )
+    }
+
     private fun addEndlessRecyclerViewScrollListener(
         cartRecyclerView: RecyclerView,
         gridLayoutManager: GridLayoutManager
@@ -2437,6 +2445,7 @@ class CartRevampFragment :
             addItemDecoration(cartItemDecoration)
             setSpanSize(gridLayoutManager)
             addRecyclerViewScrollListener(this)
+            addRecommendationScrollListener(this)
             addEndlessRecyclerViewScrollListener(this, gridLayoutManager)
         }
     }

@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -189,6 +191,12 @@ class UniversalInboxFragment @Inject constructor(
         binding?.inboxRv?.adapter = adapter
         binding?.inboxRv?.isNestedScrollingEnabled = false
         binding?.inboxRv?.addItemDecoration(UniversalInboxRecommendationDecoration())
+    }
+
+    private fun addRecommendationScrollListener() {
+        binding?.inboxRv?.addVerticalTrackListener(
+            recommendationTriggerObject = RecommendationTriggerObject()
+        )
     }
 
     private fun setupRecyclerViewLoadMore() {
