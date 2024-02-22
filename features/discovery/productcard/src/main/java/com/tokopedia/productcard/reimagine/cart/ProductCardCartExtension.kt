@@ -3,6 +3,7 @@ package com.tokopedia.productcard.reimagine.cart
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -11,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.reimagine.ProductCardType
 import com.tokopedia.productcard.reimagine.lazyView
@@ -54,6 +56,8 @@ internal class ProductCardCartExtension(
 
         if (!productCardModel.useQuantityEditor()) removeQuantityEditorComponents()
         else showQuantityEditorComponents(productCardModel)
+        
+        overrideColor(productCardModel.colorMode)
     }
 
     private fun renderAddToCart(productCardModel: ProductCardModel) {
@@ -223,5 +227,20 @@ internal class ProductCardCartExtension(
 
     interface QuantityEditorDebounce {
         fun onQuantityChanged(quantity: Int)
+    }
+
+    private fun overrideColor(colorMode: ProductCardColor?) {
+        if (colorMode == null) return
+
+        val quantityTextColor = ContextCompat.getColor(context, colorMode.quantityEditorColor.quantityTextColor)
+        val buttonDeleteCartColor = ContextCompat.getColor(context, colorMode.quantityEditorColor.buttonDeleteCartColor)
+
+        quantityEditor?.editText?.setTextColor(quantityTextColor)
+        deleteCartButton?.setImage(
+            newIconId = IconUnify.DELETE,
+            newLightEnable = buttonDeleteCartColor,
+            newDarkDisable = buttonDeleteCartColor
+        )
+        addToCartButton?.applyColorMode(colorMode.buttonColorMode)
     }
 }

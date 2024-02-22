@@ -15,5 +15,9 @@ data class DarkThemedShopProductCard(
     override val discountTextColor: Int= R.color.dms_static_dark_RN500
     override val ratingTextColor: Int = R.color.dms_static_dark_NN950_68
     override val buttonColorMode: ColorMode = ColorMode.LIGHT_MODE
-    override val labelBenefitViewColor: ProductCardColor.LabelBenefitViewColor = ProductCardColor.LabelBenefitViewColor(cutoutFillColor = labelBenefitCutoutFillColor)
+    override val labelBenefitViewColor = ProductCardColor.LabelBenefitViewColor(cutoutFillColor = labelBenefitCutoutFillColor)
+    override val quantityEditorColor = ProductCardColor.QuantityEditorColor(
+        buttonDeleteCartColor = R.color.dms_static_dark_NN900,
+        quantityTextColor = R.color.dms_static_dark_NN950
+    )
 }
