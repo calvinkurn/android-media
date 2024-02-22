@@ -6,14 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowErrorViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.util.Constant.ADAPTER_START_INDEX
+import com.tokopedia.tokopedianow.shoppinglist.util.Constant.INVALID_INDEX
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShoppingListAnotherOptionBottomSheetDecoration: RecyclerView.ItemDecoration() {
-    companion object {
-        const val INVALID_VIEW_TYPE = -1
-        const val ADAPTER_START_INDEX = 0
-    }
-
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
@@ -38,8 +35,8 @@ class ShoppingListAnotherOptionBottomSheetDecoration: RecyclerView.ItemDecoratio
     private fun isError(parent: RecyclerView, viewPosition: Int): Boolean = TokoNowErrorViewHolder.LAYOUT == getRecyclerViewViewType(parent, viewPosition)
 
     private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
-        val adapter = parent.adapter ?: return INVALID_VIEW_TYPE
+        val adapter = parent.adapter ?: return INVALID_INDEX
         val isInvalidPosition = viewPosition !in ADAPTER_START_INDEX until adapter.itemCount
-        return if (isInvalidPosition) INVALID_VIEW_TYPE else adapter.getItemViewType(viewPosition)
+        return if (isInvalidPosition) INVALID_INDEX else adapter.getItemViewType(viewPosition)
     }
 }

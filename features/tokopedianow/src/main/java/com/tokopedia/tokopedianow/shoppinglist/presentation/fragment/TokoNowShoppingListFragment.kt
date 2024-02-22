@@ -39,6 +39,8 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowErrorViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowThematicHeaderViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowShoppingListBinding
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState
 import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListComponent
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
@@ -47,11 +49,10 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.Shoppin
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapterTypeFactory
 import com.tokopedia.tokopedianow.shoppinglist.presentation.bottomsheet.TokoNowShoppingListAnotherOptionBottomSheet
 import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListDecoration
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListExpandCollapseViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListRetryViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListTopCheckAllViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
@@ -90,7 +91,8 @@ class TokoNowShoppingListFragment :
                 productCardItemListener = createHorizontalProductCardItemCallback(),
                 retryListener = createRetryCallback(),
                 errorListener = createErrorCallback(),
-                expandCollapseListener = createExpandCollapseCallback()
+                expandCollapseListener = createExpandCollapseCallback(),
+                topCheckAllListener = createTopCheckAllCallback()
             )
         )
     }
@@ -131,7 +133,7 @@ class TokoNowShoppingListFragment :
             setupNavigationToolbar()
             setupOnScrollListener()
 
-            loadFirstPage()
+            loadLayout()
         }
     }
 
@@ -263,7 +265,7 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private fun FragmentTokopedianowShoppingListBinding.loadFirstPage() {
+    private fun FragmentTokopedianowShoppingListBinding.loadLayout() {
         setHeaderModel(navToolbar.context)
         viewModel.loadLayout()
     }
@@ -401,13 +403,22 @@ class TokoNowShoppingListFragment :
 
     private fun createExpandCollapseCallback() = object : ShoppingListExpandCollapseViewHolder.ShoppingListExpandCollapseListener {
         override fun onClickWidget(
-            state: ShoppingListExpandCollapseUiModel.State,
-            productLayoutType: ShoppingListHorizontalProductCardItemUiModel.Type
+            productState: ShoppingListProductState,
+            productLayoutType: ShoppingListProductLayoutType
         ) {
             viewModel.expandCollapseShoppingList(
-                state = state,
+                productState = productState,
                 productLayoutType = productLayoutType
             )
+        }
+    }
+
+    private fun createTopCheckAllCallback() = object : ShoppingListTopCheckAllViewHolder.ShoppingListTopCheckAllListener {
+        override fun onSelectCheckbox(
+            productState: ShoppingListProductState,
+            isSelected: Boolean
+        ) {
+            viewModel.selectAllAvailableProducts(productState, isSelected)
         }
     }
 

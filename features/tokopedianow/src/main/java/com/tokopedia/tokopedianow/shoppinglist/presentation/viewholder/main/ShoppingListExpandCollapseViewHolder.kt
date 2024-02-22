@@ -8,10 +8,11 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.TypographyUtil.setRightImageDrawable
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListExpandCollapseBinding
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState.EXPAND
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState.COLLAPSE
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel.State.EXPAND
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel.State.COLLAPSE
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -29,7 +30,7 @@ class ShoppingListExpandCollapseViewHolder(
     override fun bind(data: ShoppingListExpandCollapseUiModel) {
         binding?.apply {
             val color = ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_GN500)
-            when(data.state) {
+            when(data.productState) {
                 COLLAPSE -> {
                     tpTitle.text = root.context.getString(R.string.tokopedianow_shopping_list_expand_text, data.remainingTotalProduct)
                     tpTitle.setRightImageDrawable(
@@ -40,7 +41,7 @@ class ShoppingListExpandCollapseViewHolder(
                     )
                     root.setOnClickListener {
                         listener?.onClickWidget(
-                            state = EXPAND,
+                            productState = EXPAND,
                             productLayoutType = data.productLayoutType
                         )
                     }
@@ -55,7 +56,7 @@ class ShoppingListExpandCollapseViewHolder(
                     )
                     root.setOnClickListener {
                         listener?.onClickWidget(
-                            state = COLLAPSE,
+                            productState = COLLAPSE,
                             productLayoutType = data.productLayoutType
                         )
                     }
@@ -66,8 +67,8 @@ class ShoppingListExpandCollapseViewHolder(
 
     interface ShoppingListExpandCollapseListener {
         fun onClickWidget(
-            state: ShoppingListExpandCollapseUiModel.State,
-            productLayoutType: ShoppingListHorizontalProductCardItemUiModel.Type
+            productState: ShoppingListProductState,
+            productLayoutType: ShoppingListProductLayoutType
         )
     }
 }

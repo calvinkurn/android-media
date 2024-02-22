@@ -19,11 +19,11 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.L
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.SHOW
 import com.tokopedia.tokopedianow.common.util.ImageUtil.applyBrightnessFilter
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListHorizontalProductCardBinding
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.PRODUCT_RECOMMENDATION
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.UNAVAILABLE_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.Type
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.Type.AVAILABLE_SHOPPING_LIST
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.Type.PRODUCT_RECOMMENDATION
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.Type.UNAVAILABLE_SHOPPING_LIST
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -84,7 +84,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         iuProduct.loadImage(data.image) {
             listener(
                 onSuccess = { _,_ ->
-                    iuProduct.applyBrightnessFilter(getImageBrightness(data.type))
+                    iuProduct.applyBrightnessFilter(getImageBrightness(data.productLayoutType))
                 }
             )
         }
@@ -95,7 +95,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     ) {
         tpPrice.showIfWithBlock(data.price.isNotBlank()) {
             text = data.price
-            tpPrice.setTextColor(ContextCompat.getColor(context, if (data.type == UNAVAILABLE_SHOPPING_LIST) unifyprinciplesR.color.Unify_NN600 else unifyprinciplesR.color.Unify_NN950))
+            tpPrice.setTextColor(ContextCompat.getColor(context, if (data.productLayoutType == UNAVAILABLE_SHOPPING_LIST) unifyprinciplesR.color.Unify_NN600 else unifyprinciplesR.color.Unify_NN950))
         }
     }
 
@@ -104,7 +104,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     ) {
         tpName.showIfWithBlock(data.name.isNotBlank()) {
             text = data.name
-            tpName.setTextColor(ContextCompat.getColor(context, if (data.type == UNAVAILABLE_SHOPPING_LIST) unifyprinciplesR.color.Unify_NN600 else unifyprinciplesR.color.Unify_NN950))
+            tpName.setTextColor(ContextCompat.getColor(context, if (data.productLayoutType == UNAVAILABLE_SHOPPING_LIST) unifyprinciplesR.color.Unify_NN600 else unifyprinciplesR.color.Unify_NN950))
         }
     }
 
@@ -121,7 +121,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     ) {
         tpPercentage.showIfWithBlock(data.percentage.isNotBlank() && data.percentage.toIntSafely() != Int.ZERO) {
             text = data.percentage
-            tpPercentage.setTextColor(ContextCompat.getColor(context, if (data.type == UNAVAILABLE_SHOPPING_LIST) unifyprinciplesR.color.Unify_NN400 else unifyprinciplesR.color.Unify_RN500))
+            tpPercentage.setTextColor(ContextCompat.getColor(context, if (data.productLayoutType == UNAVAILABLE_SHOPPING_LIST) unifyprinciplesR.color.Unify_NN400 else unifyprinciplesR.color.Unify_RN500))
         }
     }
 
@@ -137,7 +137,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.setupOtherOption(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
-        tpOtherOption.showIfWithBlock(isOos(data.type)) {
+        tpOtherOption.showIfWithBlock(isOos(data.productLayoutType)) {
             setOnClickListener {
                 listener?.onClickOtherOptions()
             }
@@ -147,7 +147,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.setupRightButton(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
-        tpAddWishlist.showIfWithBlock(data.type == PRODUCT_RECOMMENDATION) {
+        tpAddWishlist.showIfWithBlock(data.productLayoutType == PRODUCT_RECOMMENDATION) {
             val constraintSet = ConstraintSet().apply {
                 clone(normalLayout)
             }
@@ -162,7 +162,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
 
             setOnClickListener { }
         }
-        icuDelete.showIfWithBlock(data.type != PRODUCT_RECOMMENDATION) {
+        icuDelete.showIfWithBlock(data.productLayoutType != PRODUCT_RECOMMENDATION) {
             val constraintSet = ConstraintSet().apply {
                 clone(normalLayout)
             }
@@ -182,7 +182,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.setupCheckbox(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
-        if (data.type == AVAILABLE_SHOPPING_LIST) {
+        if (data.productLayoutType == AVAILABLE_SHOPPING_LIST) {
             iuProduct.setMargin(
                 root.getDimens(unifyprinciplesR.dimen.unify_space_8),
                 root.getDimens(unifyprinciplesR.dimen.unify_space_0),
@@ -190,6 +190,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
                 root.getDimens(unifyprinciplesR.dimen.unify_space_0)
             )
             cbProduct.show()
+            cbProduct.isChecked = data.isSelected
         } else {
             iuProduct.setMargin(
                 root.getDimens(unifyprinciplesR.dimen.unify_space_0),
@@ -203,7 +204,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.setupShimmeringRightButton(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
-        loadingLayout.luAddWishlist.showIfWithBlock(data.type == PRODUCT_RECOMMENDATION) {
+        loadingLayout.luAddWishlist.showIfWithBlock(data.productLayoutType == PRODUCT_RECOMMENDATION) {
             val constraintSet = ConstraintSet().apply {
                 clone(root)
             }
@@ -216,7 +217,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
             )
             constraintSet.applyTo(root)
         }
-        loadingLayout.luDelete.showIfWithBlock(data.type != PRODUCT_RECOMMENDATION) {
+        loadingLayout.luDelete.showIfWithBlock(data.productLayoutType != PRODUCT_RECOMMENDATION) {
             val constraintSet = ConstraintSet().apply {
                 clone(root)
             }
@@ -234,7 +235,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.setupShimmeringCheckbox(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
-        if (data.type == AVAILABLE_SHOPPING_LIST) {
+        if (data.productLayoutType == AVAILABLE_SHOPPING_LIST) {
             loadingLayout.luImage.setMargin(
                 root.getDimens(unifyprinciplesR.dimen.unify_space_8),
                 root.getDimens(unifyprinciplesR.dimen.unify_space_0),
@@ -252,9 +253,9 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         }
     }
 
-    private fun isOos(type: Type): Boolean = type == UNAVAILABLE_SHOPPING_LIST
+    private fun isOos(type: ShoppingListProductLayoutType): Boolean = type == UNAVAILABLE_SHOPPING_LIST
 
-    private fun getImageBrightness(type: Type): Float = if (type == UNAVAILABLE_SHOPPING_LIST) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS
+    private fun getImageBrightness(type: ShoppingListProductLayoutType): Float = if (type == UNAVAILABLE_SHOPPING_LIST) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS
 
     interface ShoppingListHorizontalProductCardItemListener {
         fun onClickOtherOptions()

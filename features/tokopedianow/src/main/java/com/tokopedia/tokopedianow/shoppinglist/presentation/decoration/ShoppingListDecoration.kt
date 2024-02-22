@@ -8,14 +8,11 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowDividerViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowTitleViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListTopCheckAllViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.util.Constant.ADAPTER_START_INDEX
+import com.tokopedia.tokopedianow.shoppinglist.util.Constant.INVALID_INDEX
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShoppingListDecoration: RecyclerView.ItemDecoration() {
-    companion object {
-        const val INVALID_VIEW_TYPE = -1
-        const val ADAPTER_START_INDEX = 0
-    }
-
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
@@ -56,8 +53,8 @@ class ShoppingListDecoration: RecyclerView.ItemDecoration() {
     private fun isDivider(parent: RecyclerView, viewPosition: Int): Boolean = TokoNowDividerViewHolder.LAYOUT == getRecyclerViewViewType(parent, viewPosition)
 
     private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
-        val adapter = parent.adapter ?: return INVALID_VIEW_TYPE
+        val adapter = parent.adapter ?: return INVALID_INDEX
         val isInvalidPosition = viewPosition !in ADAPTER_START_INDEX until adapter.itemCount
-        return if (isInvalidPosition) INVALID_VIEW_TYPE else adapter.getItemViewType(viewPosition)
+        return if (isInvalidPosition) INVALID_INDEX else adapter.getItemViewType(viewPosition)
     }
 }

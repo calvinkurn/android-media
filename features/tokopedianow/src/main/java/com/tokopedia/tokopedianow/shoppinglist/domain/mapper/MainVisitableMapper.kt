@@ -8,24 +8,25 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.L
 import com.tokopedia.tokopedianow.common.model.TokoNowDividerUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTitleUiModel
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState.EXPAND
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.GetShoppingListDataResponse
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.Type.AVAILABLE_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.Type.PRODUCT_RECOMMENDATION
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.Type.UNAVAILABLE_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListEmptyUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListRetryUiModel
+import com.tokopedia.tokopedianow.shoppinglist.util.Constant.INVALID_INDEX
+import com.tokopedia.tokopedianow.shoppinglist.util.Constant.MAX_TOTAL_PRODUCT_DISPLAYED
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.PRODUCT_RECOMMENDATION
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.UNAVAILABLE_SHOPPING_LIST
 
 internal object MainVisitableMapper {
-
-    const val MAX_ITEM_DISPLAYED = 10
-    const val INVALID_INDEX = -1
-
     fun mapAvailableShoppingList(
         listAvailableItem: List<GetShoppingListDataResponse.AvailableItem>
     ): List<ShoppingListHorizontalProductCardItemUiModel> = listAvailableItem.map {
@@ -37,7 +38,8 @@ internal object MainVisitableMapper {
             weight = it.getWeight(),
             percentage = it.discountPercentage.toString(),
             slashPrice = it.originalPrice,
-            type = AVAILABLE_SHOPPING_LIST
+            isSelected = it.isSelected,
+            productLayoutType = AVAILABLE_SHOPPING_LIST
         )
     }
 
@@ -52,7 +54,7 @@ internal object MainVisitableMapper {
             weight = it.getWeight(),
             percentage = it.discountPercentage.toString(),
             slashPrice = it.originalPrice,
-            type = UNAVAILABLE_SHOPPING_LIST
+            productLayoutType = UNAVAILABLE_SHOPPING_LIST
         )
     }
 
@@ -69,11 +71,11 @@ internal object MainVisitableMapper {
                 state = LOADING
             ),
             ShoppingListHorizontalProductCardItemUiModel(
-                type = AVAILABLE_SHOPPING_LIST,
+                productLayoutType = AVAILABLE_SHOPPING_LIST,
                 state = LOADING
             ),
             ShoppingListHorizontalProductCardItemUiModel(
-                type = AVAILABLE_SHOPPING_LIST,
+                productLayoutType = AVAILABLE_SHOPPING_LIST,
                 state = LOADING
             ),
             TokoNowDividerUiModel(),
@@ -81,19 +83,19 @@ internal object MainVisitableMapper {
                 state = LOADING
             ),
             ShoppingListHorizontalProductCardItemUiModel(
-                type = PRODUCT_RECOMMENDATION,
+                productLayoutType = PRODUCT_RECOMMENDATION,
                 state = LOADING
             ),
             ShoppingListHorizontalProductCardItemUiModel(
-                type = PRODUCT_RECOMMENDATION,
+                productLayoutType = PRODUCT_RECOMMENDATION,
                 state = LOADING
             ),
             ShoppingListHorizontalProductCardItemUiModel(
-                type = PRODUCT_RECOMMENDATION,
+                productLayoutType = PRODUCT_RECOMMENDATION,
                 state = LOADING
             ),
             ShoppingListHorizontalProductCardItemUiModel(
-                type = PRODUCT_RECOMMENDATION,
+                productLayoutType = PRODUCT_RECOMMENDATION,
                 state = LOADING
             )
         )
@@ -124,8 +126,16 @@ internal object MainVisitableMapper {
         return this
     }
 
-    fun MutableList<Visitable<*>>.addTopCheckAllShoppingList(): MutableList<Visitable<*>> {
-        add(ShoppingListTopCheckAllUiModel())
+    fun MutableList<Visitable<*>>.addTopCheckAllShoppingList(
+        productState: ShoppingListProductState,
+        isSelected: Boolean
+    ): MutableList<Visitable<*>> {
+        add(
+            ShoppingListTopCheckAllUiModel(
+                productState = productState,
+                isSelected = isSelected
+            )
+        )
         return this
     }
 
@@ -175,13 +185,13 @@ internal object MainVisitableMapper {
     }
 
     fun MutableList<Visitable<*>>.addExpandCollapse(
-        state: ShoppingListExpandCollapseUiModel.State,
-        productLayoutType: ShoppingListHorizontalProductCardItemUiModel.Type,
+        productState: ShoppingListProductState,
+        productLayoutType: ShoppingListProductLayoutType,
         remainingTotalProduct: Int
     ): MutableList<Visitable<*>> {
         add(
             ShoppingListExpandCollapseUiModel(
-                state = state,
+                productState = productState,
                 remainingTotalProduct = remainingTotalProduct,
                 productLayoutType = productLayoutType
             )
@@ -222,13 +232,12 @@ internal object MainVisitableMapper {
     }
 
     fun MutableList<Visitable<*>>.modifyExpandCollapseProducts(
-        state: ShoppingListExpandCollapseUiModel.State,
-        productLayoutType: ShoppingListHorizontalProductCardItemUiModel.Type,
-        availableItems: List<ShoppingListHorizontalProductCardItemUiModel>,
-        unavailableItems: List<ShoppingListHorizontalProductCardItemUiModel>
+        state: ShoppingListProductState,
+        productLayoutType: ShoppingListProductLayoutType,
+        products: List<ShoppingListHorizontalProductCardItemUiModel>
     ): MutableList<Visitable<*>> {
-        val firstProductIndex = indexOfFirst { it is ShoppingListHorizontalProductCardItemUiModel && it.type == productLayoutType }
-        val lastProductIndex = indexOfLast { it is ShoppingListHorizontalProductCardItemUiModel && it.type == productLayoutType }
+        val firstProductIndex = indexOfFirst { it is ShoppingListHorizontalProductCardItemUiModel && it.productLayoutType == productLayoutType }
+        val lastProductIndex = indexOfLast { it is ShoppingListHorizontalProductCardItemUiModel && it.productLayoutType == productLayoutType }
 
         if (firstProductIndex != INVALID_INDEX && lastProductIndex != INVALID_INDEX) {
             subList(
@@ -236,32 +245,56 @@ internal object MainVisitableMapper {
                 lastProductIndex.inc()
             ).clear()
 
-            val items = if (productLayoutType == AVAILABLE_SHOPPING_LIST) {
-                if (state == ShoppingListExpandCollapseUiModel.State.EXPAND) availableItems else availableItems.take(MAX_ITEM_DISPLAYED)
-            } else {
-                if (state == ShoppingListExpandCollapseUiModel.State.EXPAND) unavailableItems else unavailableItems.take(MAX_ITEM_DISPLAYED)
-            }
-
-            addAll(firstProductIndex, items)
+            addAll(firstProductIndex, if (state == EXPAND) products else products.take(MAX_TOTAL_PRODUCT_DISPLAYED))
         }
+
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.modifyTopCheckAllState(
+        productState: ShoppingListProductState
+    ): MutableList<Visitable<*>> {
+        val index = indexOfFirst { it is ShoppingListTopCheckAllUiModel }
+
+        if (index != INVALID_INDEX) {
+            val item = this[index] as ShoppingListTopCheckAllUiModel
+            removeAt(index)
+            add(index, item.copy(productState = productState))
+        }
+
         return this
     }
 
     fun MutableList<Visitable<*>>.modifyExpandCollapseState(
-        state: ShoppingListExpandCollapseUiModel.State,
-        productLayoutType: ShoppingListHorizontalProductCardItemUiModel.Type
+        productState: ShoppingListProductState,
+        productLayoutType: ShoppingListProductLayoutType
     ): MutableList<Visitable<*>> {
         val index = indexOfFirst { it is ShoppingListExpandCollapseUiModel && it.productLayoutType == productLayoutType }
 
         if (index != INVALID_INDEX) {
             val item = this[index] as ShoppingListExpandCollapseUiModel
             removeAt(index)
-            add(index, item.copy(state = state))
+            add(index, item.copy(productState = productState))
         }
+
         return this
     }
 
-    fun MutableList<Visitable<*>>.addIf(
+    fun MutableList<Visitable<*>>.modifyTopCheckAll(
+        isSelected: Boolean
+    ): MutableList<Visitable<*>> {
+        val index = indexOfFirst { it is ShoppingListTopCheckAllUiModel }
+
+        if (index != INVALID_INDEX) {
+            val item = this[index] as ShoppingListTopCheckAllUiModel
+            removeAt(index)
+            add(index, item.copy(isSelected = isSelected))
+        }
+
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.doIf(
         isTrue: Boolean,
         layout: () -> MutableList<Visitable<*>>
     ): MutableList<Visitable<*>> {

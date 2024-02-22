@@ -19,8 +19,6 @@ class ShoppingListProductInCartViewHolder (
     itemView: View
 ): AbstractViewHolder<ShoppingListProductInCartUiModel>(itemView) {
     companion object {
-        private const val DEFAULT_BOUND = 0
-
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_shopping_list_product_in_cart
     }

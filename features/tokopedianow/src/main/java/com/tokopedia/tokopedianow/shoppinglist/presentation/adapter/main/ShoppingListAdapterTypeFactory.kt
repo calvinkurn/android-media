@@ -44,7 +44,8 @@ class ShoppingListAdapterTypeFactory(
     private val productCardItemListener: ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener? = null,
     private val retryListener: ShoppingListRetryViewHolder.ShoppingListRetryListener? = null,
     private val errorListener: TokoNowErrorViewHolder.TokoNowErrorListener? = null,
-    private val expandCollapseListener: ShoppingListExpandCollapseViewHolder.ShoppingListExpandCollapseListener? = null
+    private val expandCollapseListener: ShoppingListExpandCollapseViewHolder.ShoppingListExpandCollapseListener? = null,
+    private val topCheckAllListener: ShoppingListTopCheckAllViewHolder.ShoppingListTopCheckAllListener? = null
 ):
     BaseAdapterTypeFactory(),
     ShoppingListTypeFactory,
@@ -102,7 +103,8 @@ class ShoppingListAdapterTypeFactory(
                 itemView = parent
             )
             ShoppingListTopCheckAllViewHolder.LAYOUT -> ShoppingListTopCheckAllViewHolder(
-                itemView = parent
+                itemView = parent,
+                listener = topCheckAllListener
             )
             ShoppingListRetryViewHolder.LAYOUT -> ShoppingListRetryViewHolder(
                 itemView = parent,
