@@ -69,7 +69,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
             mockUriBuilder()
 
             coEvery {
-                getGeneratedImageUseCase.getData(any(), any())
+                getGeneratedImageUseCase.getData(any())
             } returns flow {
                 emit(ShareExResult.Loading)
                 emit(ShareExResult.Error(dummyThrowable))
@@ -152,7 +152,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
             mockUriBuilder()
 
             coEvery {
-                getGeneratedImageUseCase.getData(any(), any())
+                getGeneratedImageUseCase.getData(any())
             } throws dummyThrowable
 
             coEvery {
@@ -232,7 +232,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
             mockUriBuilder()
 
             coEvery {
-                getGeneratedImageUseCase.getData(any(), any())
+                getGeneratedImageUseCase.getData(any())
             } returns flow {
                 emit(ShareExResult.Loading)
                 emit(
@@ -322,7 +322,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
             mockUriBuilder()
 
             coEvery {
-                getGeneratedImageUseCase.getData(any(), any())
+                getGeneratedImageUseCase.getData(any())
             } returns flow {
                 emit(ShareExResult.Loading)
                 emit(
@@ -412,7 +412,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
             mockUriBuilder()
 
             coEvery {
-                getGeneratedImageUseCase.getData(any(), any())
+                getGeneratedImageUseCase.getData(any())
             } returns flow {
                 emit(ShareExResult.Loading)
                 emit(

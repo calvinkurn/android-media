@@ -1,5 +1,7 @@
 package com.tokopedia.shareexperience.test
 
+import android.content.ClipboardManager
+import android.content.Context
 import com.tokopedia.shareexperience.stub.data.GqlResponseStub
 import com.tokopedia.shareexperience.test.base.ShareExBaseTest
 import com.tokopedia.shareexperience.test.robot.channelResult
@@ -54,8 +56,8 @@ class ShareExAppLinkTest : ShareExBaseTest() {
         stubAllIntents()
 
         channelRobot {
-            scrollSocialToPosition(1)
-            clickSocialChannelOn(1)
+            scrollSocialToPosition(7)
+            clickSocialChannelOn(7)
         }
 
         // Then
@@ -71,8 +73,8 @@ class ShareExAppLinkTest : ShareExBaseTest() {
         stubAllIntents()
 
         channelRobot {
-            scrollSocialToPosition(2)
-            clickSocialChannelOn(2)
+            scrollSocialToPosition(6)
+            clickSocialChannelOn(6)
         }
 
         // Then
@@ -105,8 +107,8 @@ class ShareExAppLinkTest : ShareExBaseTest() {
         stubAllIntents()
 
         channelRobot {
-            scrollSocialToPosition(4)
-            clickSocialChannelOn(4)
+            scrollSocialToPosition(2)
+            clickSocialChannelOn(2)
         }
 
         // Then
@@ -122,8 +124,8 @@ class ShareExAppLinkTest : ShareExBaseTest() {
         stubAllIntents()
 
         channelRobot {
-            scrollSocialToPosition(5)
-            clickSocialChannelOn(5)
+            scrollSocialToPosition(4)
+            clickSocialChannelOn(4)
         }
 
         // Then
@@ -139,8 +141,8 @@ class ShareExAppLinkTest : ShareExBaseTest() {
         stubAllIntents()
 
         channelRobot {
-            scrollSocialToPosition(6)
-            clickSocialChannelOn(6)
+            scrollSocialToPosition(5)
+            clickSocialChannelOn(5)
         }
 
         // Then
@@ -156,8 +158,8 @@ class ShareExAppLinkTest : ShareExBaseTest() {
         stubAllIntents()
 
         channelRobot {
-            scrollSocialToPosition(7)
-            clickSocialChannelOn(7)
+            scrollSocialToPosition(8)
+            clickSocialChannelOn(8)
         }
 
         // Then
@@ -173,13 +175,81 @@ class ShareExAppLinkTest : ShareExBaseTest() {
         stubAllIntents()
 
         channelRobot {
-            scrollSocialToPosition(8)
-            clickSocialChannelOn(8)
+            scrollSocialToPosition(1)
+            clickSocialChannelOn(1)
         }
 
         // Then
         channelResult {
             assertTelegram()
+        }
+    }
+
+    @Test
+    fun copy_link() {
+        // When
+        launchActivity()
+        stubAllIntents()
+
+        channelRobot {
+            scrollCommonToPosition(0)
+            clickCommonChannelOn(0)
+        }
+
+        // Then
+        channelResult {
+            assertCopyLink(context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+        }
+    }
+
+    @Test
+    fun open_SMS() {
+        // When
+        launchActivity()
+        stubAllIntents()
+
+        channelRobot {
+            scrollCommonToPosition(1)
+            clickCommonChannelOn(1)
+        }
+
+        // Then
+        channelResult {
+            assertSMS()
+        }
+    }
+
+    @Test
+    fun open_email() {
+        // When
+        launchActivity()
+        stubAllIntents()
+
+        channelRobot {
+            scrollCommonToPosition(2)
+            clickCommonChannelOn(2)
+        }
+
+        // Then
+        channelResult {
+            assertEmail()
+        }
+    }
+
+    @Test
+    fun open_others() {
+        // When
+        launchActivity()
+        stubAllIntents()
+
+        channelRobot {
+            scrollCommonToPosition(3)
+            clickCommonChannelOn(3)
+        }
+
+        // Then
+        channelResult {
+            assertOthers()
         }
     }
 }

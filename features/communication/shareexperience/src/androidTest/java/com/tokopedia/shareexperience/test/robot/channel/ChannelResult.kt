@@ -1,5 +1,6 @@
 package com.tokopedia.shareexperience.test.robot.channel
 
+import android.content.ClipboardManager
 import android.content.Intent
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
@@ -9,6 +10,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasType
 import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.domain.util.ShareExConstants
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.equalTo
+import org.junit.Assert.assertEquals
 
 object ChannelResult {
     fun assertWhatsapp() {
@@ -90,5 +93,47 @@ object ChannelResult {
         val typeMatcher = hasType(ShareExMimeTypeEnum.IMAGE.textType)
 
         intended(allOf(actionMatcher, extraMatcher, packageMatcher, typeMatcher))
+    }
+
+    fun assertCopyLink(clipboard: ClipboardManager) {
+        val expectedText = "https://tokopedia.link/test123"
+        val clipData = clipboard.primaryClip
+        val copiedText = clipData?.getItemAt(0)?.text.toString()
+
+        assertEquals(expectedText, copiedText)
+    }
+
+    fun assertSMS() {
+        val actionMatcher = hasAction(Intent.ACTION_SEND)
+        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://tokopedia.link/test123")
+        val packageMatcher = hasPackage("dummy.sms.package")
+        val typeMatcher = hasType(ShareExMimeTypeEnum.ALL.textType)
+
+        intended(allOf(actionMatcher, extraMatcher, packageMatcher, typeMatcher))
+    }
+
+    fun assertEmail() {
+        val actionMatcher = hasAction(Intent.ACTION_SEND)
+        val extraMatcher = hasExtra(Intent.EXTRA_TEXT, "Halo ada barang bagus loh https://tokopedia.link/test123")
+        val packageMatcher = hasPackage(ShareExConstants.PackageName.GMAIL)
+        val typeMatcher = hasType(ShareExMimeTypeEnum.ALL.textType)
+
+        intended(allOf(actionMatcher, extraMatcher, packageMatcher, typeMatcher))
+    }
+
+    fun assertOthers() {
+        intended(
+            allOf(
+                hasAction(Intent.ACTION_CHOOSER),
+                hasExtra(Intent.EXTRA_TITLE, "Bagikan ke teman kamu"),
+                hasExtra(
+                    equalTo(Intent.EXTRA_INTENT),
+                    allOf(
+                        hasAction(Intent.ACTION_SEND),
+                        hasType(ShareExMimeTypeEnum.TEXT.textType)
+                    )
+                )
+            )
+        )
     }
 }

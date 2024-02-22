@@ -8,6 +8,8 @@ import android.os.Build
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.shareexperience.data.dto.ShareExChannelListItemResponseDto
+import com.tokopedia.shareexperience.data.dto.ShareExChannelResponseDto
 import com.tokopedia.shareexperience.data.util.ShareExResourceProvider
 import com.tokopedia.shareexperience.data.util.ShareExTelephonyUtil
 import com.tokopedia.shareexperience.data.util.toArray
@@ -29,6 +31,87 @@ open class ShareExChannelMapper @Inject constructor(
     private val remoteConfig: RemoteConfig,
     private val userSession: UserSessionInterface
 ) {
+
+    fun mapToSocialMediaChannel(dto: ShareExChannelResponseDto): ShareExChannelModel {
+        return mapToChannelModel(
+            title = dto.title,
+            list = dto.list,
+            defaultChannelModel = generateSocialMediaChannel()
+        )
+    }
+
+    fun mapToCommonChannel(dto: ShareExChannelResponseDto): ShareExChannelModel {
+        return mapToChannelModel(
+            title = "",
+            list = dto.list,
+            defaultChannelModel = generateDefaultChannel()
+        )
+    }
+
+    private fun mapToChannelModel(
+        title: String,
+        list: List<ShareExChannelListItemResponseDto>,
+        defaultChannelModel: ShareExChannelModel
+    ): ShareExChannelModel {
+        // Convert response list to a map for quick access
+        val responseItemMap = list.associateBy { it.channelId }
+
+        // Filtering: Include only channels present in response
+        val filteredChannelList = filterChannels(
+            responseItemMap = responseItemMap,
+            defaultChannelModel = defaultChannelModel
+        )
+
+        // Sorting: Based on the order of channels in response list
+        val sortedAndFilteredSocialMediaChannelList = sortChannels(
+            responseList = list,
+            channelList = filteredChannelList
+        )
+
+        // Mapping: Update channels as necessary
+        val finalSocialMediaChannelList = updateChannels(
+            responseItemMap = responseItemMap,
+            channelList = sortedAndFilteredSocialMediaChannelList
+        )
+
+        return ShareExChannelModel(
+            description = title,
+            listChannel = finalSocialMediaChannelList
+        )
+    }
+
+    private fun filterChannels(
+        responseItemMap: Map<Long, ShareExChannelListItemResponseDto>,
+        defaultChannelModel: ShareExChannelModel
+    ): List<ShareExChannelItemModel> {
+        return defaultChannelModel.listChannel.filter {
+            it.channelEnum.id in responseItemMap.keys
+        }
+    }
+
+    private fun sortChannels(
+        responseList: List<ShareExChannelListItemResponseDto>,
+        channelList: List<ShareExChannelItemModel>
+    ): List<ShareExChannelItemModel> {
+        val indexMap = responseList.mapIndexed { index, item -> item.channelId to index }.toMap()
+        return channelList.sortedBy { channelItem ->
+            indexMap[channelItem.channelEnum.id] ?: Int.MAX_VALUE
+        }
+    }
+
+    private fun updateChannels(
+        responseItemMap: Map<Long, ShareExChannelListItemResponseDto>,
+        channelList: List<ShareExChannelItemModel>
+    ): List<ShareExChannelItemModel> {
+        return channelList.map { channelItem ->
+            responseItemMap[channelItem.channelEnum.id]?.let { responseItem ->
+                channelItem.copy(
+                    platform = responseItem.platform,
+                    imageResolution = responseItem.imageResolution
+                )
+            } ?: channelItem
+        }
+    }
 
     open fun generateSocialMediaChannel(): ShareExChannelModel {
         var socialMediaChannelList = generateSocialMediaChannelList()
@@ -175,7 +258,7 @@ open class ShareExChannelMapper @Inject constructor(
             ShareExChannelItemModel(
                 channelEnum = ShareExChannelEnum.X_TWITTER,
                 title = resourceProvider.getXTwitterChannelTitle(),
-                icon = IconUnify.TWITTER,
+                icon = IconUnify.SOCIAL_X,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
                 packageName = ShareExConstants.PackageName.TWITTER
             )

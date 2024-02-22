@@ -80,7 +80,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
             } returns "123"
 
             coEvery {
-                getGeneratedImageUseCase.getData(any(), any())
+                getGeneratedImageUseCase.getData(any())
             } returns flow {
                 emit(ShareExResult.Loading)
                 emit(
@@ -178,7 +178,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
             mockUriBuilder()
 
             coEvery {
-                getGeneratedImageUseCase.getData(any(), any())
+                getGeneratedImageUseCase.getData(any())
             } returns flow {
                 emit(ShareExResult.Loading)
                 emit(
@@ -273,7 +273,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
             mockUriBuilder(query = "testQuery")
 
             coEvery {
-                getGeneratedImageUseCase.getData(any(), any())
+                getGeneratedImageUseCase.getData(any())
             } returns flow {
                 emit(ShareExResult.Loading)
                 emit(
@@ -359,7 +359,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
             mockUriBuilder(mockUriDetails = false, query = "")
 
             coEvery {
-                getGeneratedImageUseCase.getData(any(), any())
+                getGeneratedImageUseCase.getData(any())
             } returns flow {
                 emit(ShareExResult.Loading)
                 emit(
@@ -473,7 +473,11 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 title = "testTitle",
                 subtitle = "testSubtitle",
                 bottomSheetPage = ShareExBottomSheetPageModel(
-                    socialChannel = ShareExChannelModel(listChannel = listOf(dummyChannel))
+                    listShareProperty = listOf(
+                        ShareExPropertyModel(
+                            socialChannel = ShareExChannelModel(listChannel = listOf(dummyChannel))
+                        )
+                    )
                 )
             )
 
