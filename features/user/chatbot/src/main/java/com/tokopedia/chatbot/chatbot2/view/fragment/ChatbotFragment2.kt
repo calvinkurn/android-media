@@ -323,6 +323,7 @@ class ChatbotFragment2 :
     private var replyBubbleBottomSheet: ChatbotReplyBottomSheet? = null
     private var mediaRetryBottomSheet: ChatbotMediaRetryBottomSheet? = null
     private var bigReplyBoxPlaceHolder: String = ""
+    private var hasRemovedDynamicStickyButtonOnNewMessage: Boolean = false
 
     // Used for resetting the usecase when user replies to message from not page 1
     private var messageSentNotFromFirstPage = false
@@ -1529,6 +1530,14 @@ class ChatbotFragment2 :
         mapMessageToList(visitable)
         getViewState()?.hideEmptyMessage(visitable)
         getViewState()?.onCheckToHideQuickReply(visitable)
+        removeDynamicStickyButtonOnNewMessage(visitable)
+    }
+
+    private fun removeDynamicStickyButtonOnNewMessage(visitable: Visitable<*>) {
+        if (!hasRemovedDynamicStickyButtonOnNewMessage && visitable is MessageUiModel && !visitable.isSender) {
+            getViewState()?.removeDynamicStickyButton()
+            hasRemovedDynamicStickyButtonOnNewMessage = true
+        }
     }
 
     private fun manageVideoBubble() {
