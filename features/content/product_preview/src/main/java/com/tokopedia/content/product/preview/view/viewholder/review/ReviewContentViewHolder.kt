@@ -385,11 +385,13 @@ class ReviewContentViewHolder(
     override fun onScrubbing() {
         binding.groupReviewDetails.hide()
         binding.groupReviewInteraction.hide()
+        binding.pcReviewContent.hide()
     }
 
     override fun onStopScrubbing() {
         binding.groupReviewDetails.show()
         binding.groupReviewInteraction.show()
+        binding.pcReviewContent.show()
     }
 
     data class DescriptionUiModel(

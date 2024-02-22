@@ -288,7 +288,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         if (currentTabKey == TAB_PRODUCT_KEY) {
             when (_productMediaState.value.productMedia[position].type) {
                 MediaType.Image -> scheduleAutoScrollProductMedia()
-                else -> return
+                else -> autoScrollProductMedia?.cancel()
             }
         } else {
             autoScrollProductMedia?.cancel()

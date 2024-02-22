@@ -54,7 +54,7 @@ class ProductPreviewExoPlayer(private val context: Context) {
                 val isReady = Player.STATE_READY
                 val isPlaying = playWhenReady && playbackState == isReady
                 val isReadyToPlay = !playWhenReady && playbackState == isReady
-                val isBuffering = playbackState == Player.STATE_BUFFERING
+                val isBuffering = playWhenReady && playbackState == Player.STATE_BUFFERING
                 val isEnded = playWhenReady && playbackState == Player.STATE_ENDED
 
                 when {
