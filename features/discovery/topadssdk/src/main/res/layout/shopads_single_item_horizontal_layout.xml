@@ -157,13 +157,16 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/original_price"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:paddingRight="12dp"
                 android:textColor="@color/Unify_NN400"
                 android:textSize="11sp"
                 app:layout_constraintBottom_toBottomOf="@id/discounted_price"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/discounted_price"
                 app:layout_constraintTop_toTopOf="@id/discounted_price"
                 app:typographyType="paragraph_3"
