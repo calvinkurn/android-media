@@ -73,7 +73,7 @@ class VideoPictureView @JvmOverloads constructor(
         updateMediaLabel(position = pagerSelectedLastPosition)
         setupRecommendationLabel(recommendation = recommendation)
         setupRecommendationLabelListener(position = pagerSelectedLastPosition)
-        setupLiveIndicatorAnalytics()
+        setupLiveIndicatorAnalytic()
         shouldShowLiveIndicatorXOverlayRecomm(position = pagerSelectedLastPosition)
         renderVideoOnceAtPosition(position = initialScrollPosition)
 
@@ -115,7 +115,7 @@ class VideoPictureView @JvmOverloads constructor(
             // NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
         }
 
-        viewPager.updateLayoutParams<ConstraintLayout.LayoutParams> {
+        viewPager.updateLayoutParams<LayoutParams> {
             if (this != null) {
                 dimensionRatio = containerType.ratio
             }
@@ -240,7 +240,7 @@ class VideoPictureView @JvmOverloads constructor(
         }
     }
 
-    private fun setupLiveIndicatorAnalytics() = with(binding.liveIndicatorView) {
+    private fun setupLiveIndicatorAnalytic() = with(binding.liveIndicatorView) {
         val p1 = mListener?.getProductInfo() ?: return
 
         setAnalyticModel(
