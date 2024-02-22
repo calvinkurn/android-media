@@ -46,6 +46,7 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.mapUnavailableShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.modifyExpandCollapseProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.modifyExpandCollapseState
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.modifyProduct
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.modifyTopCheckAll
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.modifyTopCheckAllState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeLoadMore
@@ -339,6 +340,18 @@ class TokoNowShoppingListViewModel @Inject constructor(
             state = state,
             productLayoutType = AVAILABLE_SHOPPING_LIST,
             products = availableProducts
+        )
+
+        _uiState.value = Success(getUpdatedLayout())
+    }
+
+    fun selectAvailableProduct(
+        productId: String,
+        isSelected: Boolean
+    ) {
+        layout.modifyProduct(
+            productId = productId,
+            isSelected = isSelected
         )
 
         _uiState.value = Success(getUpdatedLayout())

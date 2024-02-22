@@ -369,8 +369,17 @@ class TokoNowShoppingListFragment :
     }
 
     private fun createHorizontalProductCardItemCallback() = object : ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener {
-        override fun onClickOtherOptions() {
-            val bottomSheet = TokoNowShoppingListAnotherOptionBottomSheet.newInstance("12514021813")
+        override fun onSelectCheckbox(
+            productId: String,
+            isSelected: Boolean
+        ) {
+            viewModel.selectAvailableProduct(productId, isSelected)
+        }
+
+        override fun onClickOtherOptions(
+            productId: String
+        ) {
+            val bottomSheet = TokoNowShoppingListAnotherOptionBottomSheet.newInstance(productId)
             bottomSheet.show(childFragmentManager, ProductCardCompactSimilarProductBottomSheet::class.java.simpleName)
         }
     }

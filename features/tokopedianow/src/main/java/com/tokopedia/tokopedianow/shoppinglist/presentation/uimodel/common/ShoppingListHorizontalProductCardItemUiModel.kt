@@ -20,4 +20,11 @@ data class ShoppingListHorizontalProductCardItemUiModel(
     val productLayoutType: ShoppingListProductLayoutType
 ): Visitable<ShoppingListHorizontalProductCardItemTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: ShoppingListHorizontalProductCardItemTypeFactory): Int = typeFactory.type(this)
+
+    fun getChangePayload(item: ShoppingListHorizontalProductCardItemUiModel): Any? {
+        return when {
+            isSelected != item.isSelected -> true
+            else -> null
+        }
+    }
 }

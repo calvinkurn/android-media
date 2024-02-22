@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 
 class ShoppingListDiffer : BaseTokopediaNowDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
@@ -11,7 +11,7 @@ class ShoppingListDiffer : BaseTokopediaNowDiffer() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        return  if (oldItem is ShoppingListTopCheckAllUiModel && newItem is ShoppingListTopCheckAllUiModel) {
+        return if (oldItem is ShoppingListHorizontalProductCardItemUiModel && newItem is ShoppingListHorizontalProductCardItemUiModel) {
             oldItem.id == newItem.id
         } else {
             oldItem == newItem
@@ -39,7 +39,7 @@ class ShoppingListDiffer : BaseTokopediaNowDiffer() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return if (oldItem is ShoppingListTopCheckAllUiModel && newItem is ShoppingListTopCheckAllUiModel) {
+        return if (oldItem is ShoppingListHorizontalProductCardItemUiModel && newItem is ShoppingListHorizontalProductCardItemUiModel) {
             oldItem.getChangePayload(newItem)
         } else {
             super.getChangePayload(oldItemPosition, newItemPosition)

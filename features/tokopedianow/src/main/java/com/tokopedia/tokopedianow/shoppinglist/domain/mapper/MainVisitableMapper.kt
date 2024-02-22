@@ -294,6 +294,21 @@ internal object MainVisitableMapper {
         return this
     }
 
+    fun MutableList<Visitable<*>>.modifyProduct(
+        productId: String,
+        isSelected: Boolean
+    ): MutableList<Visitable<*>> {
+        val index = indexOfFirst { it is ShoppingListHorizontalProductCardItemUiModel && it.id == productId }
+
+        if (index != INVALID_INDEX) {
+            val item = this[index] as ShoppingListHorizontalProductCardItemUiModel
+            removeAt(index)
+            add(index, item.copy(isSelected = isSelected))
+        }
+
+        return this
+    }
+
     fun MutableList<Visitable<*>>.doIf(
         isTrue: Boolean,
         layout: () -> MutableList<Visitable<*>>

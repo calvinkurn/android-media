@@ -68,6 +68,19 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         }
     }
 
+    override fun bind(
+        data: ShoppingListHorizontalProductCardItemUiModel,
+        payloads: MutableList<Any>
+    ) {
+        binding?.apply {
+            if (payloads.firstOrNull() == true) {
+                setupCheckbox(data)
+            } else {
+                bind(data)
+            }
+        }
+    }
+
     private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.setupNormalLayout() {
         normalLayout.show()
         loadingLayout.root.hide()
@@ -139,7 +152,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     ) {
         tpOtherOption.showIfWithBlock(isOos(data.productLayoutType)) {
             setOnClickListener {
-                listener?.onClickOtherOptions()
+                listener?.onClickOtherOptions(data.id)
             }
         }
     }
@@ -190,7 +203,11 @@ class ShoppingListHorizontalProductCardItemViewHolder(
                 root.getDimens(unifyprinciplesR.dimen.unify_space_0)
             )
             cbProduct.show()
+            cbProduct.setOnCheckedChangeListener(null)
             cbProduct.isChecked = data.isSelected
+            cbProduct.setOnCheckedChangeListener { _, isSelected ->
+                listener?.onSelectCheckbox(data.id, isSelected)
+            }
         } else {
             iuProduct.setMargin(
                 root.getDimens(unifyprinciplesR.dimen.unify_space_0),
@@ -258,6 +275,12 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     private fun getImageBrightness(type: ShoppingListProductLayoutType): Float = if (type == UNAVAILABLE_SHOPPING_LIST) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS
 
     interface ShoppingListHorizontalProductCardItemListener {
-        fun onClickOtherOptions()
+        fun onSelectCheckbox(
+            productId: String,
+            isSelected: Boolean
+        )
+        fun onClickOtherOptions(
+            productId: String
+        )
     }
 }

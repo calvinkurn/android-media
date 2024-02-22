@@ -24,19 +24,11 @@ class ShoppingListTopCheckAllViewHolder(
         data: ShoppingListTopCheckAllUiModel
     ) {
         binding?.apply {
+            cbAddAll.setOnCheckedChangeListener(null)
             cbAddAll.isChecked = data.isSelected
             cbAddAll.setOnCheckedChangeListener { _, isSelected ->
                 listener?.onSelectCheckbox(data.productState, isSelected)
             }
-        }
-    }
-
-    override fun bind(
-        data: ShoppingListTopCheckAllUiModel,
-        payloads: MutableList<Any>
-    ) {
-        if (payloads.firstOrNull() == null) {
-            bind(data)
         }
     }
 
