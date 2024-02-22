@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.databinding.UniversalInboxRecommendationProductItemBinding
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WISHLIST_STATUS_IS_WISHLIST
@@ -37,11 +38,15 @@ class UniversalInboxRecommendationProductViewHolder(
             )
 
             addOnImpression1pxListener(uiModel.recommendationItem) {
-                AppLogRecommendation.sendProductShowAppLog(uiModel.recommendationItem.asProductTrackModel())
+                AppLogRecommendation.sendProductShowAppLog(
+                    uiModel.recommendationItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+                )
             }
 
             setOnClickListener {
-                AppLogRecommendation.sendProductClickAppLog(uiModel.recommendationItem.asProductTrackModel())
+                AppLogRecommendation.sendProductClickAppLog(
+                    uiModel.recommendationItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+                )
 
                 recommendationListener.onProductClick(
                     uiModel.recommendationItem,

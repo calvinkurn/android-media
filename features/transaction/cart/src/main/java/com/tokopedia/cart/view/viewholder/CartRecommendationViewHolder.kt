@@ -2,6 +2,7 @@ package com.tokopedia.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartRecommendationBinding
 import com.tokopedia.cart.view.ActionListener
@@ -31,7 +32,9 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
                 element.recommendationItem.toProductCardModel(true, UnifyButton.Type.MAIN)
             )
             setOnClickListener {
-                AppLogRecommendation.sendProductClickAppLog(element.recommendationItem.asProductTrackModel())
+                AppLogRecommendation.sendProductClickAppLog(
+                    element.recommendationItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+                )
                 actionListener?.onRecommendationProductClicked(
                     element.recommendationItem
                 )
@@ -52,7 +55,9 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
             )
 
             addOnImpression1pxListener(element.recommendationItem) {
-                AppLogRecommendation.sendProductShowAppLog(element.recommendationItem.asProductTrackModel())
+                AppLogRecommendation.sendProductShowAppLog(
+                    element.recommendationItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+                )
             }
         }
 

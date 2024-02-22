@@ -54,10 +54,6 @@ object AppLogAnalytics {
     @JvmField
     var entranceForm: EntranceForm? = null
 
-    // TODO check how to make this null again
-    @JvmField
-    var sourceModule: SourceModule? = null
-
     private val lock = Any()
 
     internal fun addPageName(activity: Activity) {
@@ -96,7 +92,6 @@ object AppLogAnalytics {
             it.addPage()
             it.addEntranceForm()
             it.addSourcePageType()
-            it.addSourceModule()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
@@ -133,7 +128,6 @@ object AppLogAnalytics {
             it.addPage()
             it.addEntranceForm()
             it.addSourcePageType()
-            it.addSourceModule()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
@@ -156,7 +150,6 @@ object AppLogAnalytics {
             it.addPage()
             it.addEntranceForm()
             it.addSourcePageType()
-            it.addSourceModule()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
@@ -194,7 +187,6 @@ object AppLogAnalytics {
             it.addPage()
             it.addEntranceForm()
             it.addSourcePageType()
-            it.addSourceModule()
             it.put("is_success", if (model.isSuccess) 1 else 0)
             it.put("fail_reason", model.failReason)
             it.put("shipping_price", model.shippingPrice)
@@ -231,10 +223,6 @@ object AppLogAnalytics {
         )
     }
 
-    internal fun JSONObject.addSourceModule() {
-        put(SOURCE_MODULE, sourceModule?.str)
-    }
-
     private fun currentPageName(): String {
         return synchronized(lock) {
             pageNames.findLast { it.first == currentActivityName }?.second ?: ""
@@ -260,7 +248,6 @@ object AppLogAnalytics {
             it.addPage()
             it.addEntranceForm()
             it.addSourcePageType()
-            it.addSourceModule()
             it.put("stay_time", durationInMs)
             it.put("is_load_data", if (product.isLoadData) 1 else 0)
             it.put("quit_type", quitType)

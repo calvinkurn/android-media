@@ -27,6 +27,7 @@ import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCa
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardShowAppLog
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductClickAppLog
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductShowAppLog
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -441,7 +442,8 @@ class HomeRecommendationFragment :
         sendProductShowAppLog(
             model.asProductTrackModel(
                 tabName = tabName,
-                tabPosition = tabIndex
+                tabPosition = tabIndex,
+                type = AppLogRecommendationType.VERTICAL,
             )
         )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
@@ -494,13 +496,8 @@ class HomeRecommendationFragment :
         sendProductClickAppLog(
             model.asProductTrackModel(
                 tabName = tabName,
-                tabPosition = tabIndex
-            )
-        )
-        sendCardClickAppLog(
-            model.asCardTrackModel(
-                tabName = tabName,
                 tabPosition = tabIndex,
+                type = AppLogRecommendationType.VERTICAL,
             )
         )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
@@ -595,6 +592,7 @@ class HomeRecommendationFragment :
             model.asCardTrackModel(
                 tabName = tabName,
                 tabPosition = tabIndex,
+                type = AppLogRecommendationType.VERTICAL,
             )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -625,6 +623,7 @@ class HomeRecommendationFragment :
             model.asCardTrackModel(
                 tabName = tabName,
                 tabPosition = tabIndex,
+                type = AppLogRecommendationType.VERTICAL,
             )
         )
         trackingQueue.putEETracking(
@@ -649,6 +648,7 @@ class HomeRecommendationFragment :
             item.asCardTrackModel(
                 tabName = tabName,
                 tabPosition = tabIndex,
+                type = AppLogRecommendationType.VERTICAL,
             )
         )
         trackingQueue.putEETracking(
@@ -665,6 +665,7 @@ class HomeRecommendationFragment :
             item.asCardTrackModel(
                 tabName = tabName,
                 tabPosition = tabIndex,
+                type = AppLogRecommendationType.VERTICAL,
             )
         )
         HomeRecommendationTracking.sendClickEntityCardTracking(
