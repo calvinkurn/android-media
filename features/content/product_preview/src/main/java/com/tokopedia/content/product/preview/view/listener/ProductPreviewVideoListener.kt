@@ -9,4 +9,5 @@ interface ProductPreviewVideoListener {
     fun resumeVideo(id: String)
     fun onScrubbing()
     fun onStopScrubbing()
+    fun onDoubleTapVideo() {}
 }
