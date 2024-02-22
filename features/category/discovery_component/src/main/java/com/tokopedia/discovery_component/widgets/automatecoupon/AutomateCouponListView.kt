@@ -60,7 +60,7 @@ class AutomateCouponListView @JvmOverloads constructor(
     }
 
     private fun renderShopName(text: DynamicColorText?) {
-        if (text == null) {
+        if (text == null || text.value.isEmpty()) {
             binding.tvStoreName.hide()
             return
         }
@@ -135,6 +135,10 @@ class AutomateCouponListView @JvmOverloads constructor(
     }
 
     private fun onClicked(action: () -> Unit) {
+        binding.btnAction.apply {
+            isInverse = false
+            isEnabled = true
+        }
         binding.btnAction.setOnClickListener {
             action.invoke()
         }
