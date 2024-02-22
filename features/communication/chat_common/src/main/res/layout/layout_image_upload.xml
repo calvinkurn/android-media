@@ -92,7 +92,7 @@
         android:layout_alignBottom="@+id/card_group_chat_message"
         android:layout_toStartOf="@+id/card_group_chat_message"
         android:visibility="visible"
-        app:srcCompat="@drawable/ic_error_to_send"
+        app:srcCompat="@drawable/ic_chatcommon_error_to_send"
         android:contentDescription="left_action" />
 
     <ProgressBar

@@ -90,7 +90,7 @@ object ShipmentInfoUiStateMapper {
     ): ShipmentInfoUiState {
         return ShipmentInfoUiState.HasData.Showing(
             mapShipmentInfoUiModel(
-                buyerOrderDetailData.additionalData.groupOrderData,
+                buyerOrderDetailData.additionalData?.groupOrderData,
                 buyerOrderDetailData.groupType,
                 buyerOrderDetailData.shipment,
                 buyerOrderDetailData.meta,
@@ -343,7 +343,7 @@ object ShipmentInfoUiStateMapper {
 
     private fun mapStringRes(
         @StringRes resId: Int
-    ): com.tokopedia.buyerorderdetail.presentation.model.StringRes {
-        return com.tokopedia.buyerorderdetail.presentation.model.StringRes(resId)
+    ): com.tokopedia.order_management_common.presentation.uimodel.StringRes {
+        return com.tokopedia.order_management_common.presentation.uimodel.StringRes(resId)
     }
 }

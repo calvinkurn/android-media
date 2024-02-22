@@ -5,7 +5,7 @@ import com.tokopedia.imageassets.TokopediaImageUrl
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.notifcenter.R
@@ -33,7 +33,7 @@ class EmptyNotificationViewHolder(
     }
 
     private fun bindImage(element: EmptyNotificationUiModel) {
-        ImageHandler.LoadImage(image, emptyImageUrl)
+        image?.loadImageFitCenter(emptyImageUrl)
     }
 
     private fun bindEmptyFilterText(element: EmptyNotificationUiModel) {

@@ -15,7 +15,7 @@
         android:layout_marginRight="@dimen/spacing_lvl3"
         android:maxHeight="19.5dp"
         android:maxWidth="19.5dp"
-        android:src="@drawable/circle_red"
+        android:src="@drawable/topchat_circle_red"
         android:visibility="visible"
         android:contentDescription="icon" />
 
@@ -37,7 +37,7 @@
         android:layout_height="@dimen/spacing_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:src="@drawable/circle_red"
+        android:src="@drawable/topchat_circle_red"
         android:visibility="gone"
         tools:visibility="visible"
         android:contentDescription="circle" />

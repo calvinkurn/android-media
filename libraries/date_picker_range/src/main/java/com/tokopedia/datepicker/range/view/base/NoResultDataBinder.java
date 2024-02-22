@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import com.tokopedia.baselist.R;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.media.loader.JvmMediaLoader;
 
 /**
  * Created by Nisie on 2/26/16.
@@ -41,8 +41,7 @@ public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder
 
     @Override
     public void bindViewHolder(ViewHolder holder, int position) {
-        ImageHandler.loadImageWithId(holder.emptyImage, getDrawableAsset());
-
+        JvmMediaLoader.loadImage(holder.emptyImage, getDrawableAsset());
     }
 
     @DrawableRes

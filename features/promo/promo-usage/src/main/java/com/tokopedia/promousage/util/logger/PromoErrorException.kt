@@ -3,7 +3,7 @@ package com.tokopedia.promousage.util.logger
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.network.constant.ErrorNetMessage
 
-internal class PromoErrorException : ResponseErrorException {
+class PromoErrorException : ResponseErrorException {
 
     private var messageError: String? = null
 

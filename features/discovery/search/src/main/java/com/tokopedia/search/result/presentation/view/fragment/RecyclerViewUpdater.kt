@@ -131,6 +131,10 @@ class RecyclerViewUpdater @Inject constructor(
         productListAdapter?.refreshItemAtIndex(index)
     }
 
+    override fun refreshItemAtIndex(index: Int, refreshItem: Visitable<*>) {
+        productListAdapter?.refreshItemAtIndex(index, refreshItem)
+    }
+
     override fun addLoading() {
         productListAdapter?.addLoading()
     }

@@ -2,6 +2,7 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
+			bmsmWidget						: ":features:merchant:bmsm_widget",
 			buyMoreGetMore					: ":features:merchant:buy_more_get_more",
             sellerShopNib                   : ":features:merchant:seller_shop_nib",
             sellerPersona                   : ":features:merchant:seller_persona",
@@ -74,6 +75,7 @@ ext {
             digitalCheckout                 : ":features:recharge:digital_checkout",
             digitalTopupBills               : ":features:recharge:digital_topup_bills",
             rechargeGeneral                 : ":features:recharge:recharge_general",
+            rechargeOcr                     : ":features:recharge:rechargeocr",
             rechargeCreditCard              : ":features:recharge:recharge_credit_card",
             rechargeComponent               : ":features:recharge:recharge_component",
             rechargePdpEmoney               : ":features:recharge:recharge_pdp_emoney",
@@ -206,6 +208,7 @@ ext {
             contactUs                       : ":features:operational:contact_us",
             csat_rating                     : ":features:operational:csat_rating",
             discovery2                      : ":features:category:discovery2",
+			discoveryComponent				: ":features:category:discovery_component",
 
             commonPayment                   : ":features:payment:common_payment",
             thankYouNative                  : ":features:payment:thankyou_native",

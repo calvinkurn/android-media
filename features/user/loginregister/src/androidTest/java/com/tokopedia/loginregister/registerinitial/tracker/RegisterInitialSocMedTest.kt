@@ -13,7 +13,8 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.validate
-import com.tokopedia.loginregister.registerinitial.RegisterInitialBase
+import com.tokopedia.loginregister.registerinitial.base.RegisterInitialBase
+import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.test.application.annotations.CassavaTest
 import org.junit.After
 import org.junit.Rule
@@ -30,8 +31,7 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
 
     @Test
     fun check_failed_register_tracker_google() {
-        isDefaultRegisterCheck = false
-        registerCheckUseCase.isError = true
+        fakeRepo.registerCheckConfig = Config.Error
 
         runTest {
             checkRegisterGoogle()
@@ -83,10 +83,5 @@ class RegisterInitialSocMedTest: RegisterInitialBase() {
             )
             //Cannot mock GoogleSignInStatusCodes
         )
-    }
-
-    @After
-    fun finishTest() {
-        isDefaultRegisterCheck = true
     }
 }

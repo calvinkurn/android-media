@@ -13,7 +13,7 @@ import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewUiModel
 import com.tokopedia.product.detail.databinding.ShopReviewListItemBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.unifycomponents.toPx
 
 /**
@@ -23,7 +23,7 @@ import com.tokopedia.unifycomponents.toPx
 
 class ShopReviewListItemViewHolder(
     private val binding: ShopReviewListItemBinding,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(uiModel: ProductShopReviewUiModel.Review, trackData: ComponentTrackDataModel?) = with(binding) {
@@ -96,7 +96,7 @@ class ShopReviewListItemViewHolder(
 
         fun create(
             parent: ViewGroup,
-            listener: DynamicProductDetailListener
+            listener: ProductDetailListener
         ): ShopReviewListItemViewHolder {
             val inflate = LayoutInflater.from(parent.context)
             val binding = ShopReviewListItemBinding.inflate(inflate, parent, false)

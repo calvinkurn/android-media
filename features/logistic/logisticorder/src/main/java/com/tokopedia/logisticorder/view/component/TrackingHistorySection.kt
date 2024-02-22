@@ -1,0 +1,301 @@
+package com.tokopedia.logisticorder.view.component
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.compose.Visibility
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.compose.NestIcon
+import com.tokopedia.logisticorder.uimodel.ProofModel
+import com.tokopedia.logisticorder.uimodel.TrackHistoryModel
+import com.tokopedia.logisticorder.uimodel.TrackOrderModel
+import com.tokopedia.nest.components.NestImage
+import com.tokopedia.nest.principles.NestTypography
+import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.toAnnotatedString
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.logisticorder.R as logisticorderR
+
+@Composable
+fun TrackingHistory(
+    trackHistory: TrackOrderModel?,
+    seeProofOfDelivery: (proof: ProofModel) -> Unit
+) {
+    trackHistory?.let { model ->
+        val list = model.trackHistory
+        if (list.isNotEmpty() && !model.invalid && model.orderStatus != INVALID_ORDER_STATUS && model.change != 0) {
+            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                repeat(list.size) { index ->
+                    TrackingHistoryItem(
+                        list[index],
+                        index == 0,
+                        index == list.size - 1,
+                        seeProofOfDelivery
+                    )
+                }
+            }
+        } else {
+            EmptyTracking(model)
+        }
+    }
+}
+
+@Composable
+fun TrackingHistoryItem(
+    trackHistoryModel: TrackHistoryModel,
+    isFirst: Boolean,
+    isLast: Boolean,
+    seeProofOfDelivery: (proof: ProofModel) -> Unit
+) {
+    ConstraintLayout {
+        val (day, time, description, courier, circle, line, pod, endSpacing) = createRefs()
+        val circleColor = if (isFirst) NestTheme.colors.GN._500 else NestTheme.colors.NN._50
+        Box(
+            Modifier
+                .clip(CircleShape)
+                .size(24.dp, 24.dp)
+                .background(circleColor)
+                .constrainAs(circle) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                }
+        ) {
+            NestIcon(
+                iconId = IconUnify.CHECK,
+                colorLightEnable = NestTheme.colors.NN._0,
+                colorNightEnable = NestTheme.colors.NN._0
+            )
+        }
+        NestTypography(
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(day) {
+                    start.linkTo(circle.end, margin = 8.dp)
+                    top.linkTo(circle.top)
+                    bottom.linkTo(circle.bottom)
+                },
+            text = DateUtil.formatDate("yyyy-MM-dd", "EEEE, dd MMM yyyy", trackHistoryModel.date),
+            textStyle = NestTheme.typography.heading5.copy(color = if (isFirst) NestTheme.colors.GN._500 else NestTheme.colors.NN._950)
+        )
+        NestTypography(
+            modifier = Modifier.constrainAs(time) {
+                end.linkTo(parent.end)
+                top.linkTo(day.top)
+            },
+            text = "${DateUtil.formatDate("HH:mm:ss", "HH:mm", trackHistoryModel.time)} WIB",
+            textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._950)
+        )
+
+        NestTypography(
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(description) {
+                    start.linkTo(day.start)
+                    top.linkTo(day.bottom, margin = 5.dp)
+                },
+            textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._950),
+            text = HtmlLinkHelper(
+                LocalContext.current,
+                trackHistoryModel.status
+            ).spannedString?.toAnnotatedString() ?: ""
+        )
+
+        NestTypography(
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(courier) {
+                    start.linkTo(day.start)
+                    top.linkTo(description.bottom, margin = 5.dp)
+                    visibility =
+                        if (trackHistoryModel.partnerName.isNotEmpty()) Visibility.Visible else Visibility.Gone
+                },
+            textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._950),
+            text = "Kurir: ${trackHistoryModel.partnerName}"
+        )
+        Spacer(
+            modifier = Modifier.height(4.dp).constrainAs(endSpacing) {
+                top.linkTo(pod.bottom)
+                start.linkTo(day.start)
+            }
+        )
+        Box(
+            Modifier
+                .constrainAs(line) {
+                    top.linkTo(circle.bottom)
+                    start.linkTo(circle.start)
+                    end.linkTo(circle.end)
+                    bottom.linkTo(endSpacing.bottom)
+                    height = Dimension.fillToConstraints
+                    visibility = if (isLast) Visibility.Gone else Visibility.Visible
+                }
+                .width(1.dp)
+                .background(NestTheme.colors.NN._50)
+        )
+        NestImage(
+            modifier = Modifier
+                .size(58.dp, 58.dp)
+                .constrainAs(pod) {
+                    top.linkTo(courier.bottom, margin = 4.dp, goneMargin = 4.dp)
+                    start.linkTo(description.start)
+                    visibility =
+                        if (trackHistoryModel.proof.imageId.isNotEmpty()) Visibility.Visible else Visibility.Gone
+                }
+                .clickable { seeProofOfDelivery(trackHistoryModel.proof) },
+            source = ImageSource.Remote(
+                trackHistoryModel.proof.imageUrl,
+                customHeaders = mapOf("Accounts-Authorization" to "Bearer ${trackHistoryModel.proof.accessToken}")
+            )
+        )
+    }
+}
+
+@Composable
+fun EmptyTracking(history: TrackOrderModel) {
+    ConstraintLayout(modifier = Modifier.padding(horizontal = 16.dp)) {
+        val (icon, description, invalidTrackingNotes) = createRefs()
+        NestImage(
+            modifier = Modifier.constrainAs(icon) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+            },
+            source = ImageSource.Painter(logisticorderR.drawable.info)
+        )
+        NestTypography(
+            modifier = Modifier.constrainAs(description) {
+                top.linkTo(icon.top)
+                start.linkTo(icon.end, margin = 4.dp)
+            },
+            text = history.emptyTrackingTitle
+        )
+        if (history.invalid) {
+            InvalidTrackingNotes(
+                Modifier.constrainAs(invalidTrackingNotes) {
+                    top.linkTo(description.bottom)
+                    start.linkTo(parent.start)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun InvalidTrackingNotes(modifier: Modifier) {
+    Column(modifier) {
+        InvalidTrackingNotesItem(text = stringResource(id = logisticorderR.string.empty_notes_1))
+        InvalidTrackingNotesItem(text = stringResource(id = logisticorderR.string.empty_notes_2))
+        InvalidTrackingNotesItem(text = stringResource(id = logisticorderR.string.empty_notes_3))
+    }
+}
+
+@Composable
+private fun InvalidTrackingNotesItem(text: String) {
+    Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.Top) {
+        Box(
+            modifier = Modifier
+                .size(8.dp, 8.dp)
+                .border(BorderStroke(width = 1.dp, color = NestTheme.colors.NN._300), CircleShape)
+        )
+        NestTypography(
+            text = text
+        )
+    }
+}
+
+private val TrackOrderModel.emptyTrackingTitle: String
+    @Composable get() {
+        return if (invalid) {
+            stringResource(id = logisticorderR.string.warning_courier_invalid)
+        } else if (orderStatus == INVALID_ORDER_STATUS || change == 0 || trackHistory.isEmpty()) {
+            stringResource(id = logisticorderR.string.warning_no_courier_change)
+        } else {
+            ""
+        }
+    }
+
+private const val INVALID_ORDER_STATUS = 501
+
+@Preview
+@Composable
+private fun TrackingHistoryNormalPreview() {
+    val data = TrackOrderModel(
+        trackHistory = listOf(
+            TrackHistoryModel(
+                dateTime = "2021-11-12 22:38:55",
+                date = "2021-11-12",
+                status = "Pesanan dalam perjalanan",
+                city = "Bandung",
+                time = "22:38:55",
+                partnerName = "JNT",
+                proof = ProofModel(imageId = "bbb")
+            ),
+            TrackHistoryModel(
+                dateTime = "2021-11-12 22:38:55",
+                date = "2021-11-12",
+                status = "Pesanan dalam perjalanan",
+                city = "Bandung",
+                time = "22:38:55",
+                partnerName = "JNT"
+            ),
+            TrackHistoryModel(
+                dateTime = "2021-11-10 22:38:55",
+                date = "2021-11-10",
+                status = "Pesanan telah di pickup",
+                city = "Surabaya",
+                time = "22:38:55"
+            )
+        )
+    )
+
+    NestTheme {
+        TrackingHistory(trackHistory = data, seeProofOfDelivery = {})
+    }
+}
+
+@Preview
+@Composable
+private fun TrackingHistoryEmptyPreview() {
+    val data = TrackOrderModel(
+        trackHistory = listOf()
+    )
+
+    NestTheme {
+        TrackingHistory(trackHistory = data, seeProofOfDelivery = {})
+    }
+}
+
+@Preview
+@Composable
+private fun TrackingHistoryInvalidPreview() {
+    val data = TrackOrderModel(
+        trackHistory = listOf(),
+        invalid = true
+    )
+
+    NestTheme {
+        TrackingHistory(trackHistory = data, seeProofOfDelivery = {})
+    }
+}
