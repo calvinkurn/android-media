@@ -21,6 +21,7 @@ data class ContentCardModel(
     val position: Int,
     val isAds: Boolean,
     val shopId: String,
+    val pageName: String
 ) : ImpressHolder(), ForYouRecommendationVisitable {
 
     data class LabelState(

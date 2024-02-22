@@ -11,9 +11,8 @@ import android.view.ViewConfiguration
 import android.view.animation.Interpolator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
-import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asCardTrackerModel
-import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asProductTrackerModel
-import com.tokopedia.home_component.R as home_componentR
+import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asCardTrackModel
+import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.home_component.databinding.HomeComponentItemMissionWidgetClearBinding
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
@@ -28,13 +27,14 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.home_component.R as home_componentR
 
 /**
  * Created by dhaba
  */
 class MissionWidgetClearItemViewHolder(
     view: View,
-    private val missionWidgetComponentListener: MissionWidgetComponentListener,
+    private val missionWidgetComponentListener: MissionWidgetComponentListener
 ) : AbstractViewHolder<CarouselMissionWidgetDataModel>(view) {
     val pathInputClick = UnifyMotion.EASE_OUT
     val pathOutputClick = UnifyMotion.EASE_IN_OUT
@@ -72,20 +72,20 @@ class MissionWidgetClearItemViewHolder(
         setOnTouchListener()
         binding?.run {
             containerMissionWidget.setOnClickListener {
-                if(element.isProduct()) {
-                    AppLogRecommendation.sendProductClickAppLog(element.asProductTrackerModel(element.isCache))
+                if (element.isProduct()) {
+                    AppLogRecommendation.sendProductClickAppLog(element.asProductTrackModel(element.isCache))
                 }
-                AppLogRecommendation.sendCardClickAppLog(element.asCardTrackerModel(element.isCache))
+                AppLogRecommendation.sendCardClickAppLog(element.asCardTrackModel(element.isCache))
                 missionWidgetComponentListener.onMissionClicked(element, element.cardPosition)
             }
             containerMissionWidget.addOnImpressionListener(element) {
                 missionWidgetComponentListener.onMissionImpressed(element, element.cardPosition)
             }
             containerMissionWidget.addOnImpression1pxListener(element) {
-                if(element.isProduct()) {
-                    AppLogRecommendation.sendProductShowAppLog(element.asProductTrackerModel(element.isCache))
+                if (element.isProduct()) {
+                    AppLogRecommendation.sendProductShowAppLog(element.asProductTrackModel(element.isCache))
                 }
-                AppLogRecommendation.sendCardShowAppLog(element.asCardTrackerModel(element.isCache))
+                AppLogRecommendation.sendCardShowAppLog(element.asCardTrackModel(element.isCache))
             }
         }
     }
@@ -108,7 +108,7 @@ class MissionWidgetClearItemViewHolder(
                 imageUrl,
                 itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_mission_widget_clear_image_corner_radius)
             )
-            if(HomeComponentFeatureFlag.isMissionExpVariant()) {
+            if (HomeComponentFeatureFlag.isMissionExpVariant()) {
                 overlay()
             }
         }
@@ -122,10 +122,10 @@ class MissionWidgetClearItemViewHolder(
     }
 
     private fun Typography.renderTitle(element: CarouselMissionWidgetDataModel) {
-        if(element.data.title.isEmpty()) {
+        if (element.data.title.isEmpty()) {
             hide()
         } else {
-            val fontWeight = if(element.withSubtitle) {
+            val fontWeight = if (element.withSubtitle) {
                 Typography.BOLD
             } else {
                 Typography.REGULAR
@@ -137,7 +137,7 @@ class MissionWidgetClearItemViewHolder(
     }
 
     private fun Typography.renderSubtitle(element: CarouselMissionWidgetDataModel) {
-        if(element.data.subTitle.isEmpty() || !element.withSubtitle) {
+        if (element.data.subTitle.isEmpty() || !element.withSubtitle) {
             hide()
         } else {
             text = element.data.subTitle

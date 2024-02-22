@@ -32,7 +32,7 @@ object ForYouDataMapper {
             affinityLabel = affinityLabel,
             shopId = shopId,
             categoryPersona = categoryPersona,
-            tabName = tabName,
+            tabName = tabName
         )
     }
 
@@ -40,7 +40,7 @@ object ForYouDataMapper {
         return BannerOldTopAdsModel(
             topAdsImageViewModel = topAdsImageViewModel,
             position = position,
-            bannerType = bannerType,
+            bannerType = bannerType
         )
     }
 
@@ -51,7 +51,8 @@ object ForYouDataMapper {
             layoutCard = layoutCard,
             layoutItem = layoutItem,
             categoryId = categoryId,
-            position = position
+            position = position,
+            pageName = pageName
         )
     }
 
@@ -89,14 +90,14 @@ object ForYouDataMapper {
                         imageUrl = it.imageUrl,
                         name = it.name,
                         reputation = it.reputation,
-                        url = it.url,
+                        url = it.url
                     )
-                },
+                }
             ),
             pageName = pageName,
             layoutName = layoutName,
             position = position,
-            tabName = tabName,
+            tabName = tabName
         )
     }
 
@@ -112,10 +113,11 @@ object ForYouDataMapper {
                 playChannelId = playVideoTrackerUiModel.playChannelId,
                 layoutCard = playVideoTrackerUiModel.layoutCard,
                 layoutItem = playVideoTrackerUiModel.layoutItem,
-                categoryId = playVideoTrackerUiModel.categoryId,
+                categoryId = playVideoTrackerUiModel.categoryId
             ),
             isAds = isAds,
             shopId = shopId,
+            pageName = pageName
         )
     }
 
@@ -138,6 +140,7 @@ object ForYouDataMapper {
             position = position,
             isAds = isAds,
             shopId = shopId,
+            pageName = pageName
         )
     }
 }

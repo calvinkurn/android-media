@@ -7,7 +7,6 @@ object Constants {
     const val EVENT_ORIGIN_FEATURE_VALUE = "TEMAI"
 }
 
-
 data class TrackProduct(
     val productId: String,
     val isAd: Boolean,
@@ -22,7 +21,7 @@ data class TrackProductDetail(
     val productType: ProductType,
     val originalPrice: String,
     val salePrice: String,
-    val isSingleSku: Boolean,
+    val isSingleSku: Boolean
 )
 
 data class TrackStayProductDetail(
@@ -37,7 +36,7 @@ data class TrackStayProductDetail(
     val mainPhotoViewCount: Int,
     val skuPhotoViewCount: Int,
     val isSkuSelected: Boolean = true, // always selected in case of P1 flow
-    val isAddCartSelected: Boolean,
+    val isAddCartSelected: Boolean
 )
 
 data class TrackConfirmSku(
@@ -51,7 +50,7 @@ data class TrackConfirmSku(
     val currency: String = "IDR",
     val isSingleSku: Boolean,
     val qty: String,
-    val isHaveAddress: Boolean,
+    val isHaveAddress: Boolean
 )
 
 data class TrackConfirmCart(
@@ -84,7 +83,7 @@ data class TrackConfirmCartResult(
     val skuNumAfter: Int = 0, // need development from BE
     var isSuccess: Boolean? = null,
     var failReason: String = "",
-    var cartItemId: String? = "",
+    var cartItemId: String? = ""
 )
 
 data class SubmitOrderResult(
@@ -106,13 +105,12 @@ data class SubmitOrderResult(
     val productId: String
 )
 
-
 enum class ProductType(val type: Int) {
     AVAILABLE(1),
     SOLD_OUT(2),
     NOT_AVAILABLE(3),
     LIVE_REGION_NOT_AVAILABLE(4),
-    NON_LIVE_REGION_NOT_AVAILABLE_OR_REMOVED(5),
+    NON_LIVE_REGION_NOT_AVAILABLE_OR_REMOVED(5)
 }
 
 object PageName {
@@ -138,8 +136,10 @@ enum class EntranceForm(val str: String) {
     SEARCH_HORIZONTAL_GOODS_CARD("search_horizontal_goods_card"),
     PURE_GOODS_CARD("pure_goods_card"),
     DETAIL_GOODS_CARD("detail_goods_card"),
+    CONTENT_GOODS_CARD("content_goods_card"),
     HORIZONTAL_GOODS_CARD("horizontal_goods_card"),
-    APPEND_GOODS_CARD("append_goods_card"),
+    MISSION_HORIZONTAL_GOODS_CARD("mission_horizontal_goods_card"),
+    APPEND_GOODS_CARD("append_goods_card")
 }
 
 enum class SourcePageType(val str: String) {
@@ -190,7 +190,6 @@ object ActionType {
     const val CLICK_CARD = "click_card"
     const val SWITCH_TAB = "switch_tab"
 }
-
 
 object AppLogParam {
     const val ACTION_TYPE = "action_type"

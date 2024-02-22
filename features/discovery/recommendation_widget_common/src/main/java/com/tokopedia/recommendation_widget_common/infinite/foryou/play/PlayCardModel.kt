@@ -12,6 +12,7 @@ data class PlayCardModel(
     val playVideoTrackerUiModel: PlayVideoTrackerUiModel,
     val isAds: Boolean,
     val shopId: String,
+    val pageName: String
 ) : ForYouRecommendationVisitable, ImpressHolder() {
 
     override fun type(typeFactory: ForYouRecommendationTypeFactory): Int {

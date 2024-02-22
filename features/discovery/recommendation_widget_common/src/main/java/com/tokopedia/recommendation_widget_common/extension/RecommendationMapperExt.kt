@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.extension
 
+import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.home_component_header.model.ChannelHeader
@@ -33,12 +34,15 @@ fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel()
 fun RecommendationEntity.RecommendationData.toRecommendationWidget(): RecommendationWidget {
     return RecommendationWidget(
         recommendationItemList = recommendation.mapIndexed { index, recommendation ->
-            val badges = if (isTokonow()) emptyList()
-            else recommendation.badges.map {
-                RecommendationItem.Badge(
-                    title = it.title,
-                    imageUrl = it.imageUrl
-                )
+            val badges = if (isTokonow()) {
+                emptyList()
+            } else {
+                recommendation.badges.map {
+                    RecommendationItem.Badge(
+                        title = it.title,
+                        imageUrl = it.imageUrl
+                    )
+                }
             }
 
             RecommendationItem(
@@ -113,7 +117,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 },
                 parentID = recommendation.parentID,
                 addToCartType = getAtcType(),
-                gridPosition = recommendation.getGridPosition(),
+                gridPosition = recommendation.getGridPosition()
             )
         },
         title = title,
@@ -131,7 +135,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
         pageName = pageName,
         recommendationBanner = campaign.mapToBannerData(),
         isTokonow = isTokonow(),
-        endDate = campaign.endDate,
+        endDate = campaign.endDate
     )
 }
 
@@ -151,9 +155,9 @@ fun RecommendationItem.toProductCardModel(
     productCardListType: ProductListType = ProductListType.CONTROL,
     cardType: Int = CardUnify2.TYPE_SHADOW,
     animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
-    forceLightMode: Boolean = false,
+    forceLightMode: Boolean = false
 ): ProductCardModel {
-    val productCardAnimate = if(cardInteraction == true) CardUnify2.ANIMATE_OVERLAY_BOUNCE else animateOnPress
+    val productCardAnimate = if (cardInteraction == true) CardUnify2.ANIMATE_OVERLAY_BOUNCE else animateOnPress
     var variant: ProductCardModel.Variant? = null
     var nonVariant: ProductCardModel.NonVariant? = null
     var hasThreeDotsFinalValue = hasThreeDots
@@ -211,7 +215,7 @@ fun RecommendationItem.toProductCardModel(
         cardType = cardType,
         animateOnPress = productCardAnimate,
         productListType = productCardListType,
-        forceLightModeColor = forceLightMode,
+        forceLightModeColor = forceLightMode
     )
 }
 
@@ -260,12 +264,15 @@ fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean {
 }
 
 private fun RecommendationEntity.RecommendationData.getAtcType(): RecommendationItem.AddToCartType {
-    return if (hasQuantityEditor()) RecommendationItem.AddToCartType.QuantityEditor
-    else RecommendationItem.AddToCartType.None
+    return if (hasQuantityEditor()) {
+        RecommendationItem.AddToCartType.QuantityEditor
+    } else {
+        RecommendationItem.AddToCartType.None
+    }
 }
 
 private fun RecommendationEntity.Recommendation.getGridPosition(): RecommendationItem.GridPosition {
-    return when(gridPosition) {
+    return when (gridPosition) {
         GRID_POS_LEFT -> RecommendationItem.GridPosition.Left
         GRID_POS_TOP_RIGHT -> RecommendationItem.GridPosition.TopRight
         GRID_POS_BOTTOM_RIGHT -> RecommendationItem.GridPosition.BottomRight
@@ -324,16 +331,22 @@ fun RecommendationWidget.mapToChannelHeader(): ChannelHeader {
 fun RecommendationItem.asProductTrackModel(
     isCache: Boolean = false,
     type: AppLogRecommendationType,
+    entranceForm: EntranceForm? = null
 ): AppLogRecommendationProductModel {
     return AppLogRecommendationProductModel.create(
         productId = productId.toString(),
         position = position,
-        moduleName = "", //TODO recom
+        moduleName = pageName,
         isAd = isTopAds,
         isUseCache = isCache,
-        recParams = "", //TODO recom
-        requestId = "", //TODO recom
+        recParams = "", // TODO recom
+        requestId = "", // TODO recom
         shopId = shopId.toString(),
         type = type,
+        entranceForm = entranceForm ?: when (type) {
+            AppLogRecommendationType.PRODUCT_CAROUSEL -> EntranceForm.HORIZONTAL_GOODS_CARD
+            AppLogRecommendationType.SINGLE_PRODUCT -> EntranceForm.DETAIL_GOODS_CARD
+            else -> EntranceForm.PURE_GOODS_CARD
+        }
     )
 }
