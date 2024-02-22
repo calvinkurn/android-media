@@ -71,10 +71,10 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         )
         setStarClickListener()
 
-        if (shouldShowDesc) {
-            binding.txtDescStatus.visibility = View.VISIBLE
+        binding.txtDescStatus.visibility = if (shouldShowDesc) {
+             View.VISIBLE
         } else {
-            binding.txtDescStatus.visibility = View.GONE
+            View.GONE
         }
 
         setStarHeight()
