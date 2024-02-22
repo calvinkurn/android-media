@@ -34,12 +34,14 @@ class CropUseCase @Inject constructor() {
                         overrideSize(Resize(w, h))
                     })
 
-                    if (mBmp.width != w || mBmp.height != h) {
-                        val tmpBitmap = Bitmap.createScaledBitmap(mBmp,w,h,false)
-                        mBmp = tmpBitmap
+                    if (mBmp?.width != w || mBmp.height != h) {
+                        mBmp?.let { bitmapResult ->
+                            val tmpBitmap = Bitmap.createScaledBitmap(bitmapResult,w,h,false)
+                            mBmp = tmpBitmap
 
-                        if (mBmp.width != w || mBmp.height != h) {
-                            throw Exception("Unable to get specified bitmap")
+                            if (bitmapResult.width != w || bitmapResult.height != h) {
+                                throw Exception("Unable to get specified bitmap")
+                            }
                         }
                     }
 

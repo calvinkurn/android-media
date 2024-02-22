@@ -27,10 +27,10 @@ fun ImageView.loadGif(url: String) = loadAsGif(url)
 fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: MediaListener? = null) {
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        listener({ resource, dataSource ->
+        listener(onSuccessWithResource = { resource, dataSource, isFirstResource ->
             handleOnResourceReady(dataSource, resource, performanceMonitoring, fpmItemLabel)
-            listener?.onLoaded(resource, dataSource)
-        }, {
+            listener?.onLoaded(resource, dataSource, isFirstResource)
+        }, onError = {
             GlideErrorLogHelper().logError(context, it, url)
             listener?.onFailed(it)
         })

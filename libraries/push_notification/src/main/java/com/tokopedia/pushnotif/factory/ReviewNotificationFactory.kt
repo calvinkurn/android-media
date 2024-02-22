@@ -198,7 +198,7 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
                 setErrorDrawable(com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp)
             }) { bitmap ->
                 notificationBuilder
-                    .setCustomContentView(setupSimpleRemoteWithHandler(resultReviewModel.applinkNotificationModel.title, resultReviewModel.applinkNotificationModel.desc, resource))
+                    .setCustomContentView(setupSimpleRemoteWithHandler(resultReviewModel.applinkNotificationModel.title, resultReviewModel.applinkNotificationModel.desc, bitmap))
                     .setCustomBigContentView(setupBigRemoteWithHandler(bitmap))
                 updateStars(context, reviewPosition)
                 notificationManager.notify(resultReviewModel.notificationId, notificationBuilder.build())

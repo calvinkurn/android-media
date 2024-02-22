@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.CustomViewTarget
-import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 
 class MediaTarget<T : View>(
@@ -33,7 +32,7 @@ class MediaBitmapEmptyTarget<T : Any> : CustomTarget<T> {
     private var onCleared: (placeholder: Drawable?) -> Unit = {}
     private var onReady: (resource: Bitmap) -> Unit = {}
     private var onFailed: (errorDrawable: Drawable?) -> Unit = {}
-    private var onLoadStarted: (placeHolder: Drawable?) -> Unit = {}
+    private var onLoadStart: (placeHolder: Drawable?) -> Unit = {}
 
     constructor(
         onCleared: (placeholder: Drawable?) -> Unit = {},
@@ -44,7 +43,7 @@ class MediaBitmapEmptyTarget<T : Any> : CustomTarget<T> {
         this.onCleared = onCleared
         this.onReady = onReady
         this.onFailed = onFailed
-        this.onLoadStarted = onLoadStarted
+        this.onLoadStart = onLoadStarted
     }
 
     constructor(
@@ -74,6 +73,6 @@ class MediaBitmapEmptyTarget<T : Any> : CustomTarget<T> {
     }
 
     override fun onLoadStarted(placeholder: Drawable?) {
-        onLoadStarted(placeholder)
+        onLoadStart(placeholder)
     }
 }

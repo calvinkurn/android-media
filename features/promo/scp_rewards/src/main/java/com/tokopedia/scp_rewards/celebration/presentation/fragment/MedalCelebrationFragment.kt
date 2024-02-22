@@ -426,6 +426,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                     error?.invoke()
                 }
             ))
+        }
     }
 
     private fun startPageAnimation() {
