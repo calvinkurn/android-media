@@ -25,6 +25,7 @@ import com.tokopedia.logisticseller.common.LogisticSellerConst
 import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_CURR_IS_CHANGE_SHIPPING
 import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_ORDER_ID
 import com.tokopedia.logisticseller.common.Utils
+import com.tokopedia.logisticseller.common.Utils.updateShopActive
 import com.tokopedia.logisticseller.common.errorhandler.LogisticSellerErrorHandler
 import com.tokopedia.logisticseller.ui.confirmshipping.ConfirmShippingScreen
 import com.tokopedia.logisticseller.ui.confirmshipping.data.ConfirmShippingAnalytics
@@ -218,6 +219,11 @@ class ConfirmShippingComposeActivity : AppCompatActivity(),
                 )
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateShopActive()
     }
 
     private fun getBarcode(requestCode: Int, resultCode: Int, data: Intent): String {
