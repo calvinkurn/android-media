@@ -206,7 +206,6 @@ data class CheckoutOrderShipment(
     val courierItemData: CourierItemData? = null,
     val shippingCourierUiModels: List<ShippingCourierUiModel> = emptyList(),
     val logisticPromoViewModel: LogisticPromoUiModel? = null,
-    val logisticPromoShipping: ShippingCourierUiModel? = null,
     val isApplyLogisticPromo: Boolean = false,
     val insurance: CheckoutOrderInsurance = CheckoutOrderInsurance(),
     val isHideChangeCourierCard: Boolean = false,

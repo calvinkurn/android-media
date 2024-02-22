@@ -407,6 +407,7 @@ class CheckoutDataConverter @Inject constructor() {
             name = product.productName,
             shopId = groupShopV2.shop.shopId.toString(),
             shopName = product.shopName,
+            shopTier = groupShopV2.shop.shopTypeInfoData.shopTier,
             imageUrl = product.productImageSrc200Square,
             price = if (product.productWholesalePrice != 0.0) product.productWholesalePrice else product.productPrice,
             isWholesalePrice = product.productWholesalePrice != 0.0,

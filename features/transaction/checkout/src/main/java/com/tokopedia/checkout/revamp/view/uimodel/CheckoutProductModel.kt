@@ -105,6 +105,7 @@ data class CheckoutProductModel(
     val warehouseId: String = "",
     val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
     val cartStringOrder: String = "",
+    val shopTier: Int = 0,
 
     // group data
     val uiGroupType: Int = 0,

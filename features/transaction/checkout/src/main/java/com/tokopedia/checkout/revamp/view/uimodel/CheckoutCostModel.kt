@@ -2,6 +2,7 @@ package com.tokopedia.checkout.revamp.view.uimodel
 
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 
 data class CheckoutCostModel(
     override val cartStringGroup: String = "",
@@ -42,5 +43,6 @@ data class CheckoutCostModel(
     var dynamicPlatformFee: ShipmentPaymentFeeModel = ShipmentPaymentFeeModel(),
     var listAddOnSummary: List<ShipmentAddOnSummaryModel> = emptyList(),
     val totalOtherFee: Double = 0.0,
-    var isExpandOtherFee: Boolean = false
+    var isExpandOtherFee: Boolean = false,
+    val dynamicPaymentFees: List<OrderPaymentFee>? = emptyList()
 ) : CheckoutItem

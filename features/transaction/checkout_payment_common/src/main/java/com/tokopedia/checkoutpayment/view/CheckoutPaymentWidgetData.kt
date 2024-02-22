@@ -2,9 +2,6 @@ package com.tokopedia.checkoutpayment.view
 
 data class CheckoutPaymentWidgetData(
     val state: CheckoutPaymentWidgetState = CheckoutPaymentWidgetState.None,
-    val metadata: String = "",
-    val enable: Boolean = false,
-    val defaultErrorMessage: String = ""
 )
 
 sealed class CheckoutPaymentWidgetState {

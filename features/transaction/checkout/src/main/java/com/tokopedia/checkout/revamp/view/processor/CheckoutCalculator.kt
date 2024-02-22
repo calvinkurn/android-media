@@ -363,7 +363,10 @@ class CheckoutCalculator @Inject constructor(
         summariesAddOnUiModel: HashMap<Int, String>
     ): List<CheckoutItem> {
         val newList = calculateWithoutPayment(listData, isTradeInByDropOff, summariesAddOnUiModel)
-        var shipmentCost = newList.cost()!!.copy(dynamicPlatformFee = newCost.dynamicPlatformFee)
+        var shipmentCost = newList.cost()!!.copy(
+            dynamicPlatformFee = newCost.dynamicPlatformFee,
+            dynamicPaymentFees = newCost.dynamicPaymentFees
+        )
         var buttonPaymentModel = newList.buttonPayment()!!
         var cartItemCounter = 0
         var cartItemErrorCounter = 0
@@ -397,7 +400,13 @@ class CheckoutCalculator @Inject constructor(
         val priceTotal: Double =
             if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
         val platformFee: Double =
-            if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
+            if (shipmentCost.dynamicPaymentFees != null) {
+                shipmentCost.dynamicPaymentFees?.sumOf { it.fee } ?: 0.0
+            } else if (shipmentCost.dynamicPlatformFee.fee <= 0) {
+                0.0
+            } else {
+                shipmentCost.dynamicPlatformFee.fee
+            }
         val finalPrice = priceTotal + platformFee
         if (cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) {
             val priceTotalFormatted =
