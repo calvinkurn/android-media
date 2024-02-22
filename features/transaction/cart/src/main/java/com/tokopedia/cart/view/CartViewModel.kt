@@ -821,22 +821,12 @@ class CartViewModel @Inject constructor(
         _cartProgressLoading.value = false
         if (updateCartV2Data.data.status) {
             val checklistCondition = getChecklistCondition()
-            val analyticsModel = CartClickAnalyticsModel(
-                cartItemId = cartItemDataList.joinToString(",") { it.cartId },
-                originalPriceValue = cartItemDataList.sumOf { it.productOriginalPrice * it.quantity },
-                productId = cartItemDataList.map { it.parentId }.distinct().joinToString(","),
-                skuId = cartItemDataList.joinToString(",") { it.productId },
-                skuNum = cartItemDataList.size,
-                ItemCnt = cartItemDataList.sumOf { it.quantity },
-                salePriceValue = cartItemDataList.sumOf { it.productPrice * it.quantity },
-                discountedAmount = cartItemDataList.sumOf { (it.productPrice - it.productOriginalPrice) * it.quantity },
-            )
             _updateCartForCheckoutState.value = UpdateCartCheckoutState.Success(
                 CartPageAnalyticsUtil.generateCheckoutDataAnalytics(
                     cartItemDataList,
                     EnhancedECommerceActionField.STEP_1
                 ),
-                analyticsModel,
+                CartPageAnalyticsUtil.generateByteIoAnalyticsModel(cartItemDataList),
                 isCheckoutProductEligibleForCashOnDelivery(cartItemDataList),
                 checklistCondition
             )

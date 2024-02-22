@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view.util
 
+import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -36,6 +37,19 @@ object CartPageAnalyticsUtil {
         checkoutMapData[EnhancedECommerceCheckout.KEY_CHECKOUT] =
             enhancedECommerceCheckout.getCheckoutMap()
         return checkoutMapData
+    }
+
+    fun generateByteIoAnalyticsModel(cartItemDataList: List<CartItemHolderData>): CartClickAnalyticsModel {
+        return CartClickAnalyticsModel(
+            cartItemId = cartItemDataList.joinToString(",") { it.cartId },
+            originalPriceValue = cartItemDataList.sumOf { it.productOriginalPrice * it.quantity },
+            productId = cartItemDataList.map { it.parentId }.distinct().joinToString(","),
+            skuId = cartItemDataList.joinToString(",") { it.productId },
+            skuNum = cartItemDataList.size,
+            ItemCnt = cartItemDataList.sumOf { it.quantity },
+            salePriceValue = cartItemDataList.sumOf { it.productPrice * it.quantity },
+            discountedAmount = cartItemDataList.sumOf { (it.productPrice - it.productOriginalPrice) * it.quantity },
+        )
     }
 
     private fun getCheckoutEnhancedECommerceProductCartMapData(cartItemHolderData: CartItemHolderData): EnhancedECommerceProductCartMapData {
