@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.preview.view.components
+package com.tokopedia.content.common.ui.custom
 
 import android.content.Context
 import android.graphics.Canvas
@@ -14,9 +14,8 @@ import android.widget.FrameLayout
 
 /**
  * Created by kenny.hadisaputra on 18/07/23
- * TODO: move to common
  */
-class CustomFadingLayout : FrameLayout {
+class ContentCaptionFadingLayout : FrameLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)

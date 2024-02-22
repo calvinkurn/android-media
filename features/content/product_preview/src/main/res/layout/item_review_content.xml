@@ -106,7 +106,7 @@
         app:typographyType="display_2"
         tools:text="5 - " />
 
-    <com.tokopedia.content.product.preview.view.components.CustomFadingLayout
+    <com.tokopedia.content.common.ui.custom.ContentCaptionFadingLayout
         android:id="@+id/review_overlay"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
             android:textColor="@color/Unify_Static_White"
             app:typographyType="display_2"
             tools:text="TextView description" />
-    </com.tokopedia.content.product.preview.view.components.CustomFadingLayout>
+    </com.tokopedia.content.common.ui.custom.ContentCaptionFadingLayout>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_review_menu"
