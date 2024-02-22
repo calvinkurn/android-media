@@ -6,10 +6,8 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -111,12 +109,11 @@ fun FeedProductHighlight(
                     UnifyButton(it).apply {
                         text = ctx.getText(R.string.feed_product_highlight_atc)
                         buttonVariant = UnifyButton.Variant.FILLED
-                        buttonSize = UnifyButton.Size.SMALL
+                        buttonSize = UnifyButton.Size.MICRO
                         setDrawable(MethodChecker.getDrawable(ctx, unifycomponentsR.drawable.iconunify_cart), UnifyButton.DrawablePosition.RIGHT)
                         setOnClickListener { onAtcClick(product) }
                     }
                 }, modifier = Modifier
-                    .wrapContentWidth()
                     .constrainAs(btnAtc) {
                         end.linkTo(parent.end)
                         bottom.linkTo(parent.bottom)
@@ -150,7 +147,6 @@ fun FeedProductHighlight(
                             start.linkTo(ogPrice.start)
                             end.linkTo(btnAtc.start, 4.dp)
                         })
-                    NestRibbon(text = product.discountFmt, top = 2.dp)
                 }
             }
         }
