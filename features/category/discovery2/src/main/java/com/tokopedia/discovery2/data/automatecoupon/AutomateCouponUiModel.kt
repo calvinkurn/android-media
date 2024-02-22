@@ -4,7 +4,8 @@ import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponMo
 
 data class AutomateCouponUiModel(
     val data: AutomateCouponModel,
-    val ctaState: AutomateCouponCtaState
+    val ctaState: AutomateCouponCtaState,
+    val redirectAppLink: String
 )
 
 sealed class AutomateCouponCtaState {

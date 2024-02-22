@@ -43,6 +43,12 @@ class AutomateCouponListView @JvmOverloads constructor(
         }
     }
 
+    override fun onClick(action: () -> Unit) {
+        binding.root.setOnClickListener {
+            action.invoke()
+        }
+    }
+
     //region private methods
     private fun renderDetails(model: AutomateCouponModel.List) {
         with(binding) {

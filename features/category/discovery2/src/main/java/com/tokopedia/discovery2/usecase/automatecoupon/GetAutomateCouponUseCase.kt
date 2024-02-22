@@ -15,7 +15,6 @@ import com.tokopedia.discovery2.repository.automatecoupon.IAutomateCouponGqlRepo
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
 import com.tokopedia.discovery_component.widgets.automatecoupon.DynamicColorText
 import com.tokopedia.discovery_component.widgets.automatecoupon.TimeLimit
-import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.asCamelCase
@@ -102,7 +101,8 @@ class GetAutomateCouponUseCase @Inject constructor(
                 automateCoupons = listOf(
                     AutomateCouponUiModel(
                         data = automateCouponModel,
-                        ctaState = it.info.mapToCtaState()
+                        ctaState = it.info.mapToCtaState(),
+                        redirectAppLink = it.info.parseRedirectionAppLink()
                     )
                 )
             }
@@ -129,6 +129,12 @@ class GetAutomateCouponUseCase @Inject constructor(
             CTA_REDIRECT -> AutomateCouponCtaState.Redirect(properties)
             else -> AutomateCouponCtaState.OutOfStock
         }
+    }
+
+    private fun CouponInfo.parseRedirectionAppLink(): String {
+        val jsonMetadata = CtaRedirectionMetadata.parse(action?.metadata.orEmpty())
+
+        return jsonMetadata.appLink.ifEmpty { jsonMetadata.url }
     }
 
     private fun CouponInfo.mapToListModel(): AutomateCouponModel.List {

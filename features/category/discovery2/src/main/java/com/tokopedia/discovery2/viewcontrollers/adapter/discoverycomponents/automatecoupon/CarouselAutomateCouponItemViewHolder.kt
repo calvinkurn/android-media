@@ -12,8 +12,7 @@ import com.tokopedia.discovery2.databinding.CarouselAutomateCouponItemLayoutBind
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
-import com.tokopedia.discovery_component.widgets.automatecoupon.ButtonState
+import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponListView
 import com.tokopedia.unifycomponents.Toaster
 
 class CarouselAutomateCouponItemViewHolder(
@@ -61,21 +60,35 @@ class CarouselAutomateCouponItemViewHolder(
     }
 
     private fun CarouselAutomateCouponItemLayoutBinding.renderCoupon(model: AutomateCouponUiModel) {
-        val handler = CtaActionHandler(model.ctaState, object : CtaActionHandler.Listener {
+        val handler = CtaActionHandler(
+            model.ctaState,
+            object : CtaActionHandler.Listener {
 
-            override fun claim() {
-                viewModel?.claim()
+                override fun claim() {
+                    viewModel?.claim()
+                }
+
+                override fun redirect(properties: AutomateCouponCtaState.Properties) {
+                    val target = properties.appLink.ifEmpty { properties.url }
+                    val intent = RouteManager.getIntent(itemView.context, target)
+
+                    itemView.context.startActivity(intent)
+                }
             }
+        )
 
-            override fun redirect(properties: AutomateCouponCtaState.Properties) {
-                val target = properties.appLink.ifEmpty { properties.url }
-                val intent = RouteManager.getIntent(itemView.context, target)
+        couponView.apply {
+            setModel(model.data)
+            setState(handler)
+            setClickAction(model.redirectAppLink)
+        }
+    }
 
-                itemView.context.startActivity(intent)
-            }
-        })
+    private fun AutomateCouponListView.setClickAction(redirectAppLink: String) {
+        if (redirectAppLink.isEmpty()) return
 
-        couponView.setModel(model.data)
-        couponView.setState(handler)
+        onClick {
+            RouteManager.route(itemView.context, redirectAppLink)
+        }
     }
 }
