@@ -376,7 +376,7 @@ class StoriesViewModel @AssistedInject constructor(
         }
 
         if (mGroupPos != mGroupSize - 1 || mDetailPos != mDetailSize - 1) return
-        setHasSeenAllStories(mGroup.author.id, mGroup.author.type)
+        setHasSeenAllStories(args.authorId, AuthorType.getByType(args.authorType))
     }
 
     private fun setHasSeenAllStories(authorId: String, authorType: AuthorType) {
