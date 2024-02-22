@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.ViewGroup;
 
 import androidx.collection.SparseArrayCompat;
@@ -60,25 +61,45 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
+    @SuppressLint("Method Call Prohibited")
     public Fragment getItem(int position) {
-        HomeGlobalRecommendationFragment homeFeedFragment = HomeGlobalRecommendationFragment.Companion.newInstance(
-                position,
-                Integer.parseInt(recommendationTabDataModelList.get(position).getId()),
-                recommendationTabDataModelList.get(position).getName(),
-                recommendationTabDataModelList.get(position).getSourceType()
-        );
-        homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
-        homeFeedFragment.setParentPool(parentPool);
-        return homeFeedFragment;
+        if (shouldUseGlobalForYouComponent) {
+            HomeGlobalRecommendationFragment homeFeedFragment = HomeGlobalRecommendationFragment.Companion.newInstance(
+                    position,
+                    Integer.parseInt(recommendationTabDataModelList.get(position).getId()),
+                    recommendationTabDataModelList.get(position).getName(),
+                    recommendationTabDataModelList.get(position).getSourceType()
+            );
+            homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
+            homeFeedFragment.setParentPool(parentPool);
+            return homeFeedFragment;
+        } else {
+            HomeRecommendationFragment homeFeedFragment = HomeRecommendationFragment.Companion.newInstance(
+                    position,
+                    Integer.parseInt(recommendationTabDataModelList.get(position).getId()),
+                    recommendationTabDataModelList.get(position).getName(),
+                    recommendationTabDataModelList.get(position).getSourceType()
+            );
+            homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
+            homeFeedFragment.setParentPool(parentPool);
+            return homeFeedFragment;
+        }
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Object o = super.instantiateItem(container, position);
-        HomeGlobalRecommendationFragment homeFeedFragment = (HomeGlobalRecommendationFragment) o;
-        homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
-        homeFeedFragment.setParentPool(parentPool);
-        registeredFragments.put(position, homeFeedFragment);
+        if (shouldUseGlobalForYouComponent) {
+            HomeGlobalRecommendationFragment homeFeedFragment = (HomeGlobalRecommendationFragment) o;
+            homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
+            homeFeedFragment.setParentPool(parentPool);
+            registeredFragments.put(position, homeFeedFragment);
+        } else {
+            HomeRecommendationFragment homeFeedFragment = (HomeRecommendationFragment) o;
+            homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
+            homeFeedFragment.setParentPool(parentPool);
+            registeredFragments.put(position, homeFeedFragment);
+        }
         return o;
     }
 

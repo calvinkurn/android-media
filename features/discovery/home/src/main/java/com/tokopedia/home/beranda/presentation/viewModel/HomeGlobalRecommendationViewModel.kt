@@ -38,9 +38,6 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
     private val loadMoreModel = LoadMoreStateModel()
     val buttonRetryUiModel = RetryButtonStateModel()
     val emptyModel = EmptyStateModel()
-    val homeRecommendationLiveData get() = _homeRecommendationLiveData
-    private val _homeRecommendationLiveData: MutableLiveData<HomeGlobalRecommendationDataModel> =
-        MutableLiveData()
     val homeRecommendationNetworkLiveData get() = _homeRecommendationNetworkLiveData
     private val _homeRecommendationNetworkLiveData: MutableLiveData<Result<HomeGlobalRecommendationDataModel>> =
         MutableLiveData()
