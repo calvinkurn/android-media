@@ -63,17 +63,9 @@ class ProductNotifyMeViewHolder(
     private fun CampaignRibbon.setupCampaignRibbon(element: ProductNotifyMeUiModel) {
         setComponentTrackDataModel(getComponentTrackData(element))
         setData(
-            upComingData = element.data.copy(isOwner = listener.isOwner()),
+            upComingData = element.data,
             onGoingData = null
         )
-    }
-
-    private fun CampaignRibbon.hideComponent() {
-        setLayoutHeight(Int.ZERO)
-    }
-
-    private fun CampaignRibbon.showComponent() {
-        setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     override fun bind(element: ProductNotifyMeUiModel?, payloads: MutableList<Any>) {
@@ -84,7 +76,7 @@ class ProductNotifyMeViewHolder(
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_NOTIFY_ME -> {
                 val campaignRibbon = binding.upcomingCampaignRibbon
-                campaignRibbon.updateRemindMeButton(element.data.copy(isOwner = listener.isOwner()))
+                campaignRibbon.updateRemindMeButton(element.data)
             }
         }
     }

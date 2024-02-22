@@ -10,8 +10,7 @@ data class UpcomingCampaignComposeUiModel(
     val timerLabel: String = "",
     val labelButton: String = "",
     val backgroundColorString: String = "",
-    val showRemainderButton: Boolean = true,
-    val isOwner: Boolean = false
+    val showRemainderButton: Boolean = true
 )
 
 val Long.secondToMs

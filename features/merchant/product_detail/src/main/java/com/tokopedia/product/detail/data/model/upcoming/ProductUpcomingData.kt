@@ -50,7 +50,9 @@ data class ProductUpcomingData(
 
         @SerializedName("bgColor")
         @Expose
-        val bgColorUpcoming: String? = ""
-) {
-        fun isUpcomingNplType(): Boolean = upcomingType == ProductUpcomingTypeDef.UPCOMING_NPL
-}
+        val bgColorUpcoming: String? = "",
+
+        @SerializedName("showRemindMe")
+        @Expose
+        val showRemindMe: Boolean = false
+)

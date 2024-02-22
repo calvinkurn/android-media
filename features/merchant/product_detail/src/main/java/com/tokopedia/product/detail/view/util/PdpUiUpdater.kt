@@ -740,17 +740,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     ) {
         updateData(ProductDetailConstant.UPCOMING_DEALS) {
             notifyMeMap?.run {
-                val selectedUpcoming = upcomingData?.get(productId)
+                val selectedUpcoming = upcomingData?.get(productId) ?: ProductUpcomingData()
                 data = UpcomingCampaignUiModel(
-                    campaignID = selectedUpcoming?.campaignId.orEmpty(),
-                    campaignType = selectedUpcoming?.campaignType.orEmpty(),
-                    campaignTypeName = selectedUpcoming?.campaignTypeName.orEmpty(),
-                    startDate = selectedUpcoming?.startDate.orEmpty(),
-                    notifyMe = selectedUpcoming?.notifyMe.orFalse(),
-                    bgColorUpcoming = selectedUpcoming?.bgColorUpcoming.orEmpty(),
-                    campaignLogo = selectedUpcoming?.campaignLogo.orEmpty(),
-                    upcomingType = selectedUpcoming?.upcomingType.orEmpty(),
-                    ribbonCopy = selectedUpcoming?.campaignTypeName.orEmpty()
+                    campaignID = selectedUpcoming.campaignId.orEmpty(),
+                    campaignType = selectedUpcoming.campaignType.orEmpty(),
+                    campaignTypeName = selectedUpcoming.campaignTypeName.orEmpty(),
+                    startDate = selectedUpcoming.startDate.orEmpty(),
+                    notifyMe = selectedUpcoming.notifyMe.orFalse(),
+                    bgColorUpcoming = selectedUpcoming.bgColorUpcoming.orEmpty(),
+                    campaignLogo = selectedUpcoming.campaignLogo.orEmpty(),
+                    upcomingType = selectedUpcoming.upcomingType.orEmpty(),
+                    ribbonCopy = selectedUpcoming.campaignTypeName.orEmpty(),
+                    showReminderButton = selectedUpcoming.showRemindMe.orFalse()
                 )
 
                 val hasOngoingCampaign = ongoingCampaignData?.data?.hasOngoingCampaign.orFalse()
@@ -886,7 +887,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         return dataModel?.recomWidgetData?.nextPage
     }
 
-    fun removeComponentP2Data(it: ProductInfoP2UiData, countReview: String) {
+    fun removeComponentP2Data(it: ProductInfoP2UiData) {
         if (it.ratesEstimate.isEmpty()) {
             removeComponent(ProductDetailConstant.SHIPMENT_V2)
             removeComponent(ProductDetailConstant.SHIPMENT)

@@ -339,15 +339,16 @@ class CampaignRibbon @JvmOverloads constructor(
         campaignType1Binding?.root?.background = drawable
     }
 
-    private fun getUpcomingBackground(upcomingData: UpcomingCampaignUiModel) = if (upcomingData.bgColorUpcoming.isBlank()) {
-        if (upcomingData.isNpl) {
-            context.getDrawableChecker(R.drawable.bg_gradient_default_blue)
+    private fun getUpcomingBackground(upcomingData: UpcomingCampaignUiModel) =
+        if (upcomingData.bgColorUpcoming.isBlank()) {
+            if (upcomingData.isNpl) {
+                context.getDrawableChecker(R.drawable.bg_gradient_default_blue)
+            } else {
+                context.getDrawableChecker(R.drawable.bg_gradient_default_red)
+            }
         } else {
-            context.getDrawableChecker(R.drawable.bg_gradient_default_red)
+            getGradientDrawableForBackGround(upcomingData.bgColorUpcoming)
         }
-    } else {
-        getGradientDrawableForBackGround(upcomingData.bgColorUpcoming)
-    }
 
     private fun renderUpComingNplCountDownTimer(
         startDateData: String,
@@ -595,7 +596,8 @@ class CampaignRibbon @JvmOverloads constructor(
     }
 
     private fun renderUpcomingCampaignCompose(data: UpcomingCampaignUiModel) {
-        val labelButton = context.getString(if (data.notifyMe) R.string.notify_me_active else R.string.notify_me_inactive)
+        val labelButton =
+            context.getString(if (data.notifyMe) R.string.notify_me_active else R.string.notify_me_inactive)
 
         val type = CampaignType.UpComing(
             data = UpcomingCampaignComposeUiModel(

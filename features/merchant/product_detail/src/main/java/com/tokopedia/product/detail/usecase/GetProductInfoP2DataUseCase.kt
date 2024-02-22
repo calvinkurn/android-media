@@ -335,6 +335,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                upcomingType
                productID
                bgColor
+               showRemindMe
              }
             shopTopChatSpeed {
               messageResponseTime
@@ -718,10 +719,15 @@ class GetProductInfoP2DataUseCase @Inject constructor(
 
         try {
             val gqlResponse = graphqlRepository.response(listOf(p2DataRequest), cacheStrategy)
-            val successData = gqlResponse.getData<ProductInfoP2Data.Response>(ProductInfoP2Data.Response::class.java)
-            val errorData: List<GraphqlError>? = gqlResponse.getError(ProductInfoP2Data.Response::class.java)
+            val successData =
+                gqlResponse.getData<ProductInfoP2Data.Response>(ProductInfoP2Data.Response::class.java)
+            val errorData: List<GraphqlError>? =
+                gqlResponse.getError(ProductInfoP2Data.Response::class.java)
 
-            if (successData == null || errorData?.isNotEmpty() == true || successData.response.error.errorCode != 0) {
+            if (successData == null ||
+                errorData?.isNotEmpty() == true ||
+                successData.response.error.errorCode != 0
+            ) {
                 throw RuntimeException()
             }
 
