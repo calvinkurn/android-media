@@ -98,14 +98,17 @@ class SingleAutomateCouponViewHolder(
             object : CtaActionHandler.Listener {
 
                 override fun claim() {
-                    trackClickCTAEvent()
+                    val ctaText = (ctaState as? AutomateCouponCtaState.Claim)
+                        ?.properties?.text.orEmpty()
+
+                    trackClickCTAEvent(ctaText)
 
                     val catalogId = (ctaState as? AutomateCouponCtaState.Claim)?.catalogId
                     viewModel?.claim(catalogId)
                 }
 
                 override fun redirect(properties: AutomateCouponCtaState.Properties) {
-                    trackClickCTAEvent()
+                    trackClickCTAEvent(properties.text)
 
                     val target = properties.appLink.ifEmpty { properties.url }
                     val intent = RouteManager.getIntent(itemView.context, target)
@@ -136,11 +139,11 @@ class SingleAutomateCouponViewHolder(
         }
     }
 
-    private fun trackClickCTAEvent() {
+    private fun trackClickCTAEvent(ctaText: String) {
         viewModel?.component?.let { component ->
 
             val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-            val properties = component.toTrackingProperties()
+            val properties = component.toTrackingProperties(ctaText)
 
             analytics?.trackCouponCTAClickEvent(properties)
         }
