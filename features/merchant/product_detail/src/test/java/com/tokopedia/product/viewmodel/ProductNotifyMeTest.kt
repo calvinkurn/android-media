@@ -21,7 +21,7 @@ import org.junit.Test
  *  - 518076286 with initial value registered ingatkan saya
  */
 @ExperimentalCoroutinesApi
-class ProductNotifyMeTest : DynamicProductDetailViewModelTest() {
+class ProductNotifyMeTest : ProductDetailViewModelTest() {
 
     @Test
     fun `on success toggle notify me register`() = runBlockingTest {
@@ -31,11 +31,11 @@ class ProductNotifyMeTest : DynamicProductDetailViewModelTest() {
         val isNotifyMe = false
 
         val mockSuccessData = TeaserNotifyMe(
-                result = Result(
-                        isSuccess = true,
-                        errorMessage = "",
-                        message = "Sukses register notify me"
-                )
+            result = Result(
+                isSuccess = true,
+                errorMessage = "",
+                message = "Sukses register notify me"
+            )
         )
 
         coEvery {

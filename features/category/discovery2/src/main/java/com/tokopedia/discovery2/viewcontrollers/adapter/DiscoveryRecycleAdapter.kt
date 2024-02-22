@@ -117,7 +117,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
             ?: super.getItemId(position)
     }
 
-    fun <T: DiscoveryBaseViewModel> getFirstViewModel(
+    fun <T : DiscoveryBaseViewModel> getFirstViewModel(
         viewModelClass: Class<T>
     ): DiscoveryBaseViewModel? {
         return viewHolderListModel.getFirstViewModel(viewModelClass)
@@ -137,11 +137,11 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         }
     }
 
-    fun getTabItem(): DiscoveryBaseViewModel?{
-       var tabsIndex = 0
-       componentList.forEachIndexed { index, item ->
-            if (item.name == ComponentNames.Tabs.componentName ) {
-                tabsIndex =  index
+    fun getTabItem(): DiscoveryBaseViewModel? {
+        var tabsIndex = 0
+        componentList.forEachIndexed { index, item ->
+            if (item.name == ComponentNames.Tabs.componentName) {
+                tabsIndex = index
                 return@forEachIndexed
             }
         }
@@ -208,6 +208,10 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
     fun notifySectionId(it: String) {
         (fragment as? DiscoveryFragment)?.updateSelectedSection(it)
+    }
+
+    fun notifyFestiveSectionId(sectionId: String, childComponentId: String) {
+        (fragment as? DiscoveryFragment)?.rebindSelectedSection(sectionId, childComponentId)
     }
 }
 
