@@ -2,10 +2,12 @@ package com.tokopedia.search.result.product.inspirationlistatc.postatccarousel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.ByteIOTrackingData
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
@@ -22,34 +24,36 @@ data class InspirationListPostAtcDataView(
 
     object InspirationListPostAtcDataViewMapper {
         fun convertToInspirationListPostAtcDataView (
-            productAtc : Option.Product,
+            byteIOTrackingData: ByteIOTrackingData,
+            productDataView: Option.Product,
             inspirationPostAtc: SearchProductModel.InspirationCarouselData?,
         ): Visitable<*>?  {
             val mapper = InspirationCarouselProductDataViewMapper()
-            val opt = inspirationPostAtc?.inspirationCarouselOptions?.get(0) ?: return null
-            return  InspirationListPostAtcDataView(
-                productAtc = productAtc,
+            val optionModel = inspirationPostAtc?.inspirationCarouselOptions?.get(0) ?: return null
+            return InspirationListPostAtcDataView(
+                productAtc = productDataView,
                 option = Option(
                     inspirationPostAtc.title,
-                    opt.subtitle,
-                    opt.iconSubtitle,
-                    opt.url,
-                    opt.applink,
-                    opt.bannerImageUrl,
-                    opt.bannerLinkUrl,
-                    opt.bannerApplinkUrl,
-                    opt.identifier,
+                    optionModel.subtitle,
+                    optionModel.iconSubtitle,
+                    optionModel.url,
+                    optionModel.applink,
+                    optionModel.bannerImageUrl,
+                    optionModel.bannerLinkUrl,
+                    optionModel.bannerApplinkUrl,
+                    optionModel.identifier,
                     mapper.convertToInspirationCarouselProductDataView(
-                        opt.inspirationCarouselProducts,
-                        inspirationPostAtc.position,
-                        inspirationPostAtc.type,
-                        inspirationPostAtc.layout,
-                        { it.mapToLabelGroupDataViewList() },
-                        opt.title,
-                        inspirationPostAtc.title,
-                        "",
-                        "",
-                        inspirationPostAtc.trackingOption.toIntOrZero()
+                        inspirationCarouselProduct = optionModel.inspirationCarouselProducts,
+                        productPosition = inspirationPostAtc.position,
+                        inspirationCarouselType = inspirationPostAtc.type,
+                        layout = inspirationPostAtc.layout,
+                        mapLabelGroupDataViewList = { it.mapToLabelGroupDataViewList() },
+                        optionTitle = optionModel.title,
+                        carouselTitle = inspirationPostAtc.title,
+                        dimension90 = "",
+                        externalReference = "",
+                        trackingOption = inspirationPostAtc.trackingOption.toIntOrZero(),
+                        byteIOTrackingData = byteIOTrackingData,
                     ),
                     inspirationPostAtc.type,
                     inspirationPostAtc.layout,
@@ -57,15 +61,16 @@ data class InspirationListPostAtcDataView(
                     inspirationPostAtc.title,
                     inspirationPostAtc.position,
                     false,
-                    if (inspirationPostAtc.type == SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS) opt.meta else "",
-                    if (inspirationPostAtc.type != SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS) opt.meta else "",
-                    opt.componentId,
+                    if (inspirationPostAtc.type == TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS) optionModel.meta else "",
+                    if (inspirationPostAtc.type != TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS) optionModel.meta else "",
+                    optionModel.componentId,
                     inspirationPostAtc.trackingOption.toIntOrZero(),
                     "",
-                    createInspirationCarouselCardButtonViewModel(opt),
-                    InspirationCarouselDataView.Bundle.create(opt),
+                    createInspirationCarouselCardButtonViewModel(optionModel),
+                    InspirationCarouselDataView.Bundle.create(optionModel),
                     "",
                     "",
+                    byteIOTrackingData,
                 ),
                 type = inspirationPostAtc.type
             )

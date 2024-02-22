@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.reimagine.Search2Component
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductTopAdsBannerLayoutReimagineBinding
@@ -18,7 +19,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CpmReimagineViewHolder(
     itemView: View,
-    bannerAdsListener: BannerAdsListener?,
+    private val bannerAdsListener: BannerAdsListener?,
     private val reimagineSearch2Component: Search2Component = Search2Component.CONTROL,
 ) : AbstractViewHolder<CpmDataView>(itemView) {
 
@@ -30,28 +31,30 @@ class CpmReimagineViewHolder(
 
     private var binding: SearchResultProductTopAdsBannerLayoutReimagineBinding? by viewBinding()
 
-    init {
-        binding?.adsBanner?.let {
-            it.setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
+    override fun bind(element: CpmDataView) {
+        adjustMargin(reimagineSearch2Component.isReimagineShopAds(), element)
+
+        binding?.adsBanner?.run {
+            setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
                 override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
-                    bannerAdsListener?.onBannerAdsClicked(position, applink, data)
+                    bannerAdsListener?.onBannerAdsClicked(position, applink, data, element, bindingAdapterPosition)
                 }
             })
-            it.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
+            setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
                 override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {
-                    bannerAdsListener?.onBannerAdsImpressionListener(position, data)
+                    bannerAdsListener?.onBannerAdsImpressionListener(position, data, element, bindingAdapterPosition)
                     if (data.cpm.layout == LAYOUT_6 || data.cpm.layout == LAYOUT_5) {
                         bannerAdsListener?.onTopAdsCarouselItemImpressionListener(binding?.adsBanner?.impressionCount ?: 0)
                     }
                 }
             })
+
+            addOnImpression1pxListener(element.byteIOImpressHolder) {
+                bannerAdsListener?.onBannerAdsImpression1PxListener(bindingAdapterPosition, element)
+            }
+
+            displayHeadlineAds(element.cpmModel)
         }
-    }
-
-
-    override fun bind(element: CpmDataView) {
-        adjustMargin(reimagineSearch2Component.isReimagineShopAds(), element)
-        binding?.adsBanner?.displayHeadlineAds(element.cpmModel)
     }
 
     private fun adjustMargin(isReimagine: Boolean, itemCPM: CpmDataView) {
