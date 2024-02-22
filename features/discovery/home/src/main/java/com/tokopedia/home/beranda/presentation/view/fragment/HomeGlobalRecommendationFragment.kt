@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -38,6 +37,7 @@ import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.GlobalHomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
+import com.tokopedia.home.beranda.presentation.view.helper.ScrollToTopAdapterDataObserver
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeGlobalRecommendationViewModel
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
@@ -49,8 +49,8 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommen
 import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.recommendation_widget_common.infinite.foryou.banner.BannerRecommendationModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayVideoWidgetManager
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayVideoWidgetManager
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardGridViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerOldTopAdsModel
@@ -119,23 +119,8 @@ class HomeGlobalRecommendationFragment :
         createScrollTouchListener()
     }
 
-    private var shouldOnlyFirstTimeScrollToTop = false
     private val observeRecyclerViewScrollToTop by lazy {
-        object : RecyclerView.AdapterDataObserver() {
-
-            private fun onceScrollToTop() {
-                if (shouldOnlyFirstTimeScrollToTop) return
-
-                recyclerView?.scrollToPosition(0)
-            }
-
-            override fun onChanged() = onceScrollToTop()
-            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) = onceScrollToTop()
-            override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) = onceScrollToTop()
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) = onceScrollToTop()
-            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) = onceScrollToTop()
-            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) = onceScrollToTop()
-        }
+        ScrollToTopAdapterDataObserver(recyclerView)
     }
 
     private var endlessRecyclerViewScrollListener: HomeFeedEndlessScrollListener? = null
@@ -201,7 +186,6 @@ class HomeGlobalRecommendationFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.setBackgroundColor(Color.CYAN)
 
         setupArgs()
         fetchHomeRecommendationRollence()
@@ -381,8 +365,9 @@ class HomeGlobalRecommendationFragment :
         endlessRecyclerViewScrollListener =
             object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    observeRecyclerViewScrollToTop.forciblyFirstTimeScrollToTop = false
+
                     homeRecomCurrentPage = page
-                    shouldOnlyFirstTimeScrollToTop = true
                     viewModel.fetchNextHomeRecommendation(
                         tabName,
                         recomId,
