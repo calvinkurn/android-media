@@ -48,7 +48,7 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
     private var starWidth = ViewGroup.LayoutParams.MATCH_PARENT
     private val binding by lazy(LazyThreadSafetyMode.NONE) {
         val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.animated_rating_picker_create_review, this)
+        val view = inflater.inflate(R.layout.animated_rating_picker_create_review, this, false)
         AnimatedRatingPickerCreateReviewBinding.bind(view)
     }
 
