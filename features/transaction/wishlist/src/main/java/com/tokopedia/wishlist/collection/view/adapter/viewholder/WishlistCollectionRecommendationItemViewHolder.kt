@@ -2,6 +2,7 @@ package com.tokopedia.wishlist.collection.view.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardGridView
@@ -23,7 +24,9 @@ class WishlistCollectionRecommendationItemViewHolder(
                 setProductModel(item.dataObject)
 
                 setOnClickListener {
-                    AppLogRecommendation.sendProductClickAppLog(item.recommItem.asProductTrackModel())
+                    AppLogRecommendation.sendProductClickAppLog(
+                        item.recommItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+                    )
                     actionListener?.onRecommendationItemClick(item.recommItem, adapterPosition)
                 }
 
@@ -40,7 +43,9 @@ class WishlistCollectionRecommendationItemViewHolder(
                 )
 
                 addOnImpression1pxListener(item.recommItem) {
-                    AppLogRecommendation.sendProductShowAppLog(item.recommItem.asProductTrackModel())
+                    AppLogRecommendation.sendProductShowAppLog(
+                        item.recommItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+                    )
                 }
             }
         }
