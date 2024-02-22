@@ -15,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -33,6 +34,7 @@ import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.item.RecipeBook
 import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.item.RecipeBookmarkShimmeringItem
 import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkEvent
 import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkState
+import kotlinx.coroutines.launch
 
 private const val FIRST_ITEM_INDEX = 0
 
@@ -81,7 +83,9 @@ fun RecipeBookmarkList(
 ) {
     val items = remember { state.items }
     val scrollToTop = state.scrollToTop
+
     val lazyListState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     val isScrolledToEnd by remember {
         derivedStateOf {
@@ -121,8 +125,10 @@ fun RecipeBookmarkList(
     }
 
     LaunchedEffect(scrollToTop) {
-        if (scrollToTop) {
-            lazyListState.animateScrollToItem(FIRST_ITEM_INDEX)
+        coroutineScope.launch {
+            if (scrollToTop) {
+                lazyListState.animateScrollToItem(FIRST_ITEM_INDEX)
+            }
         }
     }
 }
