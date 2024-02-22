@@ -20,10 +20,10 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.S
 import com.tokopedia.tokopedianow.common.util.ImageUtil.applyBrightnessFilter
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListHorizontalProductCardBinding
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.AVAILABLE_SHOPPING_LIST
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.UNAVAILABLE_SHOPPING_LIST
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.Type
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.Type.AVAILABLE_SHOPPING_LIST
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.Type.PRODUCT_RECOMMENDATION
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.Type.UNAVAILABLE_SHOPPING_LIST
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -252,9 +252,9 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         }
     }
 
-    private fun isOos(layoutType: LayoutType): Boolean = layoutType == UNAVAILABLE_SHOPPING_LIST
+    private fun isOos(type: Type): Boolean = type == UNAVAILABLE_SHOPPING_LIST
 
-    private fun getImageBrightness(layoutType: LayoutType): Float = if (layoutType == UNAVAILABLE_SHOPPING_LIST) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS
+    private fun getImageBrightness(type: Type): Float = if (type == UNAVAILABLE_SHOPPING_LIST) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS
 
     interface ShoppingListHorizontalProductCardItemListener {
         fun onClickOtherOptions()

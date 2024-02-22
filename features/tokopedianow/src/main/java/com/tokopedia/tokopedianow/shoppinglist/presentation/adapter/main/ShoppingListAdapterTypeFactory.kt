@@ -26,11 +26,13 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowTitleViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.common.ShoppingListHorizontalProductCardItemTypeFactory
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListEmptyUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListRetryUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListEmptyViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListExpandCollapseViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListRetryViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListProductInCartViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListTopCheckAllViewHolder
@@ -41,7 +43,8 @@ class ShoppingListAdapterTypeFactory(
     private val chooseAddressListener: TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener? = null,
     private val productCardItemListener: ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener? = null,
     private val retryListener: ShoppingListRetryViewHolder.ShoppingListRetryListener? = null,
-    private val errorListener: TokoNowErrorViewHolder.TokoNowErrorListener? = null
+    private val errorListener: TokoNowErrorViewHolder.TokoNowErrorListener? = null,
+    private val expandCollapseListener: ShoppingListExpandCollapseViewHolder.ShoppingListExpandCollapseListener? = null
 ):
     BaseAdapterTypeFactory(),
     ShoppingListTypeFactory,
@@ -64,6 +67,7 @@ class ShoppingListAdapterTypeFactory(
     override fun type(uiModel: ShoppingListTopCheckAllUiModel): Int = ShoppingListTopCheckAllViewHolder.LAYOUT
     override fun type(uiModel: ShoppingListRetryUiModel): Int = ShoppingListRetryViewHolder.LAYOUT
     override fun type(uiModel: ShoppingListEmptyUiModel): Int = ShoppingListEmptyViewHolder.LAYOUT
+    override fun type(uiModel: ShoppingListExpandCollapseUiModel): Int = ShoppingListExpandCollapseViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -106,6 +110,10 @@ class ShoppingListAdapterTypeFactory(
             )
             ShoppingListEmptyViewHolder.LAYOUT -> ShoppingListEmptyViewHolder(
                 itemView = parent
+            )
+            ShoppingListExpandCollapseViewHolder.LAYOUT -> ShoppingListExpandCollapseViewHolder(
+                itemView = parent,
+                listener = expandCollapseListener
             )
             else -> super.createViewHolder(parent, type)
         }

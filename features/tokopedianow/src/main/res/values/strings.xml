@@ -289,4 +289,6 @@
     <string name="tokopedianow_shopping_list_top_check_all_title">Semua</string>
     <string name="tokopedianow_shopping_list_empty_description">List masih kosong. Mulai masukkan produk dari rekomendasi di bawah, yuk.</string>
     <string name="tokopedianow_shopping_list_empty_title">Isi produk yang rencana kamu beli</string>
+    <string name="tokopedianow_shopping_list_expand_text">Tampilkan %1$d Produk Lainnya</string>
+    <string name="tokopedianow_shopping_list_collapse_text">Tampilkan Lebih Sedikit</string>
 </resources>

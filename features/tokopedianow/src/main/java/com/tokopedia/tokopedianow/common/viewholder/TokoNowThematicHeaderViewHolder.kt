@@ -24,6 +24,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.SHOW
 import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
+import com.tokopedia.tokopedianow.common.util.TypographyUtil.setRightImageDrawable
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHeaderBinding
@@ -181,12 +182,13 @@ class TokoNowThematicHeaderViewHolder(
         if (data.ctaChevronIsShown) {
             tpCta.setType(DISPLAY_3)
             if (data.ctaTextColor != null) tpCta.setTextColor(data.ctaTextColor)
-            ContextCompat.getDrawable(root.context, unifycomponentsR.drawable.iconunify_chevron_right)?.apply {
-                val width = root.resources.getDimensionPixelSize(R.dimen.tokopedianow_shopping_list_header_chevron_icon_size)
-                val height = root.resources.getDimensionPixelSize(R.dimen.tokopedianow_shopping_list_header_chevron_icon_size)
-                setBounds(DEFAULT_BOUND, DEFAULT_BOUND, width, height)
-                if (data.ctaChevronColor != null) colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(data.ctaChevronColor, BlendModeCompat.SRC_ATOP)
-                tpCta.setCompoundDrawables(null, null, this@apply, null)
+            if (data.ctaChevronColor != null) {
+                tpCta.setRightImageDrawable(
+                    drawable = ContextCompat.getDrawable(root.context, unifycomponentsR.drawable.iconunify_chevron_right),
+                    width = root.getDimens(R.dimen.tokopedianow_shopping_list_chevron_icon_size),
+                    height = root.getDimens(R.dimen.tokopedianow_shopping_list_chevron_icon_size),
+                    color = data.ctaChevronColor
+                )
             }
         }
     }

@@ -24,26 +24,37 @@ import com.tokopedia.tokopedianow.common.model.UiState.Loading
 import com.tokopedia.tokopedianow.common.model.UiState.Error
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.addErrorState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.addRecommendedProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.MAX_ITEM_DISPLAYED
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addLoadingState
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addAvailableShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addDivider
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addEmptyShoppingList
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addErrorState
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addExpandCollapse
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addHeader
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addIf
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addLoadMore
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProductInCartWidget
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addRetry
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addShoppingListProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addTitle
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addTopCheckAllShoppingList
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addUnavailableShoppingList
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.mapAvailableShoppingList
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.mapUnavailableShoppingList
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.modifyExpandCollapseProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.modifyExpandCollapseState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeLoadMore
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeRetry
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.GetShoppingListDataResponse
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.GetShoppingListUseCase
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.LayoutModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.Type.AVAILABLE_SHOPPING_LIST
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.Type.UNAVAILABLE_SHOPPING_LIST
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel.State.COLLAPSE
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel.State.EXPAND
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -85,7 +96,9 @@ class TokoNowShoppingListViewModel @Inject constructor(
      * -- private variable section --
      */
 
-    private val layout: MutableList<Visitable<*>> = arrayListOf()
+    private val layout = mutableListOf<Visitable<*>> ()
+    private val availableItems = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
+    private val unavailableItems = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
 
     private val _isOnScrollNotNeeded: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val _isNavToolbarScrollingBehaviourEnabled: MutableStateFlow<Boolean> = MutableStateFlow(true)
@@ -140,15 +153,28 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     private fun addShoppingListSection(shoppingListData: GetShoppingListDataResponse.Data) {
-        val availableItems = shoppingListData.listAvailableItem
-        val unavailableItems = shoppingListData.listUnavailableItem
+        availableItems.clear()
+        unavailableItems.clear()
+
+        availableItems.addAll(mapAvailableShoppingList(shoppingListData.listAvailableItem))
+        unavailableItems.addAll(mapUnavailableShoppingList(shoppingListData.listUnavailableItem))
 
         if (availableItems.isNotEmpty() || unavailableItems.isNotEmpty()) {
+            val displayedAvailableItems = availableItems.take(MAX_ITEM_DISPLAYED)
+            val displayedUnavailableItems = unavailableItems.take(MAX_ITEM_DISPLAYED)
+
             layout
                 .addIf(availableItems.isNotEmpty()) {
                     layout
                         .addTopCheckAllShoppingList()
-                        .addAvailableShoppingList(shoppingListData.listAvailableItem)
+                        .addShoppingListProducts(displayedAvailableItems)
+                        .addIf(availableItems.size > MAX_ITEM_DISPLAYED) {
+                            layout.addExpandCollapse(
+                                state = COLLAPSE,
+                                remainingTotalProduct = availableItems.size - displayedAvailableItems.size,
+                                productLayoutType = AVAILABLE_SHOPPING_LIST
+                            )
+                        }
                         .addIf(unavailableItems.isNotEmpty()) {
                             layout.addDivider()
                         }
@@ -156,7 +182,14 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 .addIf(unavailableItems.isNotEmpty()) {
                     layout
                         .addTitle(headerModel.emptyStockTitle)
-                        .addUnavailableShoppingList(shoppingListData.listUnavailableItem)
+                        .addShoppingListProducts(displayedUnavailableItems)
+                        .addIf(unavailableItems.size > MAX_ITEM_DISPLAYED) {
+                            layout.addExpandCollapse(
+                                state = COLLAPSE,
+                                remainingTotalProduct = unavailableItems.size - displayedUnavailableItems.size,
+                                productLayoutType = UNAVAILABLE_SHOPPING_LIST
+                            )
+                        }
                 }
         } else {
             layout.addEmptyShoppingList()
@@ -171,13 +204,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
         )
         layout.addProductInCartWidget()
     }
-
-    private fun getUpdatedLayout(
-        isRequiredToScrollUp: Boolean = false
-    ): LayoutModel = LayoutModel(
-        layout = layout.toList(),
-        isRequiredToScrollUp = isRequiredToScrollUp
-    )
 
     private fun addProductRecommendationSection(productRecommendation: RecommendationWidget) {
         if (productRecommendation.recommendationItemList.isNotEmpty()) {
@@ -197,11 +223,22 @@ class TokoNowShoppingListViewModel @Inject constructor(
         }
     }
 
+
+    private fun getUpdatedLayout(
+        isRequiredToScrollUp: Boolean = false
+    ): LayoutModel = LayoutModel(
+        layout = layout.toList(),
+        isRequiredToScrollUp = isRequiredToScrollUp
+    )
+
     private fun loadErrorState(
         throwable: Throwable
     ) {
         layout.clear()
-        layout.addErrorState(throwable)
+        layout.addErrorState(
+            isFullPage = true,
+            throwable = throwable
+        )
 
         _uiState.value = Error(getUpdatedLayout(), throwable)
 
@@ -256,6 +293,24 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 loadErrorState(throwable)
             }
         )
+    }
+
+    fun expandCollapseShoppingList(
+        state: ShoppingListExpandCollapseUiModel.State,
+        productLayoutType: ShoppingListHorizontalProductCardItemUiModel.Type
+    ) {
+        layout
+            .modifyExpandCollapseProducts(
+                state = state,
+                productLayoutType = productLayoutType,
+                availableItems = availableItems,
+                unavailableItems = unavailableItems
+            ).modifyExpandCollapseState(
+                state = state,
+                productLayoutType = productLayoutType
+            )
+
+        _uiState.value = Success(getUpdatedLayout())
     }
 
     fun refreshLayout() {

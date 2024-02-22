@@ -2,8 +2,9 @@ package com.tokopedia.tokopedianow.shoppinglist.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.LayoutType.PRODUCT_RECOMMENDATION
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel.Type.PRODUCT_RECOMMENDATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.SHOW
+import com.tokopedia.tokopedianow.common.model.TokoNowErrorUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 
 internal object CommonVisitableMapper {
@@ -24,6 +25,19 @@ internal object CommonVisitableMapper {
             )
         }
         addAll(newList)
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.addErrorState(
+        isFullPage: Boolean,
+        throwable: Throwable
+    ): MutableList<Visitable<*>> {
+        add(
+            TokoNowErrorUiModel(
+                isFullPage = isFullPage,
+                throwable = throwable
+            )
+        )
         return this
     }
 }

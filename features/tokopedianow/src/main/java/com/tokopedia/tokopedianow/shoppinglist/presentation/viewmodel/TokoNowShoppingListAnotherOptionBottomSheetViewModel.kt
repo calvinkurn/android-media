@@ -14,8 +14,8 @@ import com.tokopedia.tokopedianow.common.model.UiState.Success
 import com.tokopedia.tokopedianow.common.model.UiState.Loading
 import com.tokopedia.tokopedianow.common.model.UiState.Error
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.addEmptyState
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.addErrorState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.addLoadingState
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.addErrorState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.addRecommendedProducts
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,17 +51,28 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
                 )
                 val productRecommendation = productRecommendationUseCase.getData(param)
                 layout.clear()
-                _uiState.value = Success(if (productRecommendation.recommendationItemList.isNotEmpty()) layout.addRecommendedProducts(productRecommendation) else layout.addEmptyState())
+                _uiState.value = Success(
+                    data = if (productRecommendation.recommendationItemList.isNotEmpty()) layout.addRecommendedProducts(productRecommendation) else layout.addEmptyState()
+                )
             },
             onError = { throwable ->
                 layout.clear()
-                _uiState.value = Error(layout.addErrorState(throwable), throwable)
+                _uiState.value = Error(
+                    data = layout
+                        .addErrorState(
+                            isFullPage = false,
+                            throwable = throwable
+                        ),
+                    throwable = throwable
+                )
             }
         )
     }
 
     fun loadLoadingState() {
         layout.clear()
-        _uiState.value = Loading(layout.addLoadingState())
+        _uiState.value = Loading(
+            data = layout.addLoadingState()
+        )
     }
 }

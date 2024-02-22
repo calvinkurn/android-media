@@ -47,7 +47,10 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.Shoppin
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapterTypeFactory
 import com.tokopedia.tokopedianow.shoppinglist.presentation.bottomsheet.TokoNowShoppingListAnotherOptionBottomSheet
 import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListDecoration
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListExpandCollapseViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListRetryViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -86,7 +89,8 @@ class TokoNowShoppingListFragment :
                 chooseAddressListener = this@TokoNowShoppingListFragment,
                 productCardItemListener = createHorizontalProductCardItemCallback(),
                 retryListener = createRetryCallback(),
-                errorListener = createErrorCallback()
+                errorListener = createErrorCallback(),
+                expandCollapseListener = createExpandCollapseCallback()
             )
         )
     }
@@ -392,6 +396,18 @@ class TokoNowShoppingListFragment :
     private fun createErrorCallback() = object : TokoNowErrorViewHolder.TokoNowErrorListener {
         override fun onClickRefresh() {
             viewModel.refreshLayout()
+        }
+    }
+
+    private fun createExpandCollapseCallback() = object : ShoppingListExpandCollapseViewHolder.ShoppingListExpandCollapseListener {
+        override fun onClickWidget(
+            state: ShoppingListExpandCollapseUiModel.State,
+            productLayoutType: ShoppingListHorizontalProductCardItemUiModel.Type
+        ) {
+            viewModel.expandCollapseShoppingList(
+                state = state,
+                productLayoutType = productLayoutType
+            )
         }
     }
 

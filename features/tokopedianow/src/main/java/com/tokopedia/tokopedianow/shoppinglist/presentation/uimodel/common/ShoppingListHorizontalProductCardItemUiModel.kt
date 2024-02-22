@@ -14,12 +14,12 @@ data class ShoppingListHorizontalProductCardItemUiModel(
     val weight: String = String.EMPTY,
     val percentage: String = String.EMPTY,
     val slashPrice: String = String.EMPTY,
-    val type: LayoutType,
+    val type: Type,
     @TokoNowLayoutState val state: Int = TokoNowLayoutState.SHOW
 ): Visitable<ShoppingListHorizontalProductCardItemTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: ShoppingListHorizontalProductCardItemTypeFactory): Int = typeFactory.type(this)
 
-    enum class LayoutType {
+    enum class Type {
         AVAILABLE_SHOPPING_LIST,
         UNAVAILABLE_SHOPPING_LIST,
         PRODUCT_RECOMMENDATION
