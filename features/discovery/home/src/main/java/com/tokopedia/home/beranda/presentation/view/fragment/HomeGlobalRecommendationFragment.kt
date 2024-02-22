@@ -150,6 +150,8 @@ class HomeGlobalRecommendationFragment :
     private var startY = 0.0F
     private var startX = 0.0F
 
+    private var hasRecomScrollListener = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -746,12 +748,18 @@ class HomeGlobalRecommendationFragment :
                 }
             }
         })
+        trackVerticalScroll()
+    }
+
+    private fun trackVerticalScroll() {
+        if(hasRecomScrollListener) return
         recyclerView?.addVerticalTrackListener(
             glidePageTrackObject = GlidePageTrackObject(),
             recommendationTriggerObject = RecommendationTriggerObject(
                 viewHolders = listOf(),
             ),
         )
+        hasRecomScrollListener = true
     }
 
     private fun goToProductDetail(productId: String, position: Int) {

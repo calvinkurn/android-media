@@ -136,6 +136,7 @@ class UniversalInboxFragment @Inject constructor(
     private var trackingQueue: TrackingQueue? = null
     private var shouldImpressTracker = true
     private var hasTrackEnterPage = false
+    private var hasRecomScrollListener = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -198,6 +199,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun addRecommendationScrollListener() {
+        if(hasRecomScrollListener) return
         binding?.inboxRv?.addVerticalTrackListener(
             recommendationTriggerObject = RecommendationTriggerObject(
                 viewHolders = listOf(
@@ -206,6 +208,7 @@ class UniversalInboxFragment @Inject constructor(
                 )
             )
         )
+        hasRecomScrollListener = true
     }
 
     private fun setupRecyclerViewLoadMore() {

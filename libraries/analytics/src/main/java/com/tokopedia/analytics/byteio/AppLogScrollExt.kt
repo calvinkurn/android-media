@@ -244,6 +244,6 @@ fun RecyclerView.addVerticalTrackListener(
  * event: tiktokec_slide_bar
  * Add track listener after success fetching data from BE.
  */
-fun RecyclerView.addHorizontalTrackListener(slideTrackObject: SlideTrackObject) {
+fun RecyclerView.addHorizontalTrackListener(slideTrackObject: SlideTrackObject = SlideTrackObject()) {
     this.addOnScrollListener(HorizontalTrackScrollListener(slideTrackObject))
 }

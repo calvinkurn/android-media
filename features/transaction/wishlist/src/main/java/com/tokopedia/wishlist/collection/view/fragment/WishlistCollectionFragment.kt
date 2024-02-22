@@ -154,6 +154,7 @@ class WishlistCollectionFragment :
     private var isAffiliateRegistered: Boolean = false
 
     private var hasTrackEnterPage: Boolean = false
+    private var hasRecomScrollListener: Boolean = false
 
     override fun getScreenName(): String = ""
 
@@ -344,6 +345,7 @@ class WishlistCollectionFragment :
     }
 
     private fun addRecommendationScrollListener() {
+        if(hasRecomScrollListener) return
         binding?.rvWishlistCollection?.addVerticalTrackListener(
             recommendationTriggerObject = RecommendationTriggerObject(
                 viewHolders = listOf(
@@ -354,6 +356,7 @@ class WishlistCollectionFragment :
                 )
             )
         )
+        hasRecomScrollListener = true
     }
 
     private fun loadRecommendationList(page: Int) {
