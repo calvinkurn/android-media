@@ -17,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -92,6 +93,7 @@ import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
@@ -128,6 +130,7 @@ import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.resources.common.R as resourcescommonR
 
 open class BuyerOrderDetailFragment :
     BaseDaggerFragment(),
@@ -155,6 +158,10 @@ open class BuyerOrderDetailFragment :
         }
 
         private const val SOURCE_NAME_FOR_MEDAL_TOUCH_POINT = "order_detail_page"
+        private const val BREADCRUMB_BOM_DETAIL_SHOWING_DATA = "Order detail page is showing data"
+        private const val BREADCRUMB_BOM_DETAIL_SHOWING_ERROR = "Order detail page is showing error"
+        private const val BREADCRUMB_BOM_DETAIL_FULL_SCREEN_LOADING = "Order detail page is showing fullscreen loading"
+        private const val BREADCRUMB_BOM_DETAIL_PULL_REFRESH_LOADING = "Order detail page is showing pull refresh loading"
 
         const val RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST = 100
         const val RESULT_CODE_CANCEL_ORDER_DISABLE = 102
@@ -193,23 +200,25 @@ open class BuyerOrderDetailFragment :
     }
     protected open val typeFactory: BuyerOrderDetailTypeFactory by lazy {
         BuyerOrderDetailTypeFactory(
-            this,
-            this,
-            digitalRecommendationData,
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
-            this,
-            navigator,
-            this,
-            this,
-            recyclerViewSharedPool,
-            this
+            productBundlingViewListener = this,
+            tickerViewHolderListener = this,
+            digitalRecommendationData = digitalRecommendationData,
+            digitalRecommendationListener = this,
+            courierInfoViewHolderListener = this,
+            productListToggleListener = this,
+            pofRefundInfoListener = this,
+            scpRewardsMedalTouchPointWidgetListener = this,
+            owocInfoListener = this,
+            bmgmListener = this,
+            productBenefitListener = ProductBenefitListener(),
+            orderResolutionListener = this,
+            recyclerViewSharedPool = recyclerViewSharedPool,
+            productViewListener = this,
+            bottomSheetListener = this,
+            navigator = navigator,
+            buyerOrderDetailBindRecomWidgetListener = this,
+            courierButtonListener = this,
+            addOnListener = AddOnListener()
         )
     }
     protected open val adapter: BuyerOrderDetailAdapter by lazy {
@@ -320,8 +329,8 @@ open class BuyerOrderDetailFragment :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         activity?.overridePendingTransition(
-            com.tokopedia.resources.common.R.anim.slide_left_in_medium,
-            com.tokopedia.resources.common.R.anim.slide_right_out_medium
+            resourcescommonR.anim.slide_left_in_medium,
+            resourcescommonR.anim.slide_right_out_medium
         )
         when (requestCode) {
             BuyerOrderDetailIntentCode.REQUEST_CODE_REQUEST_CANCEL_ORDER -> handleRequestCancelResult(
@@ -560,9 +569,9 @@ open class BuyerOrderDetailFragment :
                             )
                             viewModel.updateScpRewardsMedalTouchPointWidgetState(
                                 data = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder,
-                                marginLeft = resources.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_left).toIntSafely(),
-                                marginTop = resources.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_top).toIntSafely(),
-                                marginRight = resources.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_right).toIntSafely()
+                                marginLeft = context?.resources?.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_left).toIntSafely(),
+                                marginTop = context?.resources?.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_top).toIntSafely(),
+                                marginRight = context?.resources?.getDimension(R.dimen.buyer_order_detail_scp_rewards_medal_touch_point_margin_right).toIntSafely()
                             )
                         }
                     } else {
@@ -597,6 +606,7 @@ open class BuyerOrderDetailFragment :
         updateSavingsWidget(uiState)
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stopLoadTimeMonitoring()
+        EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_SHOWING_DATA)
     }
 
     private fun showGlobalErrorState() {
@@ -737,7 +747,7 @@ open class BuyerOrderDetailFragment :
 
     private fun onFailedMultiAddToCart(result: MultiATCState.Fail) {
         if (result.throwable == null) {
-            showErrorToaster(result.message.getStringValue(context))
+            showErrorToaster(result.message.getString(context))
         } else {
             val errorMessage = context?.let {
                 ErrorHandler.getErrorMessage(it, result.throwable)
@@ -766,11 +776,13 @@ open class BuyerOrderDetailFragment :
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stickyActionButton?.hideSavingWidget()
         stopLoadTimeMonitoring()
+        EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_SHOWING_ERROR)
     }
 
     private fun onFullscreenLoadingBuyerOrderDetail() {
         showLoader()
         toolbarMenuAnimator?.transitionToEmpty()
+        EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_FULL_SCREEN_LOADING)
     }
 
     private fun onPullRefreshLoadingBuyerOrderDetail(
@@ -781,6 +793,7 @@ open class BuyerOrderDetailFragment :
         updateContent(uiState)
         updateStickyButtons(uiState)
         updateSavingsWidget(uiState)
+        EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_PULL_REFRESH_LOADING)
     }
 
     private fun GlobalError.showMessageExceptionError(
@@ -1168,6 +1181,26 @@ open class BuyerOrderDetailFragment :
         // no op for bmgm add on because there is no function copy
     }
 
+    override fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String) {
+        viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
+    }
+
+    override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+        BuyerOrderDetailTracker.AddOnsInformation.clickAddOnsInfo(
+            orderId = viewModel.getOrderId(),
+            addOnsType = type
+        )
+        navigator.openAppLink(infoLink, false)
+    }
+
+    override fun onAddOnsInfoClickedNonBundle(infoLink: String, type: String) {
+        onAddOnsInfoLinkClicked(infoLink, type)
+    }
+
+    override fun onAddOnsExpand(addOnsIdentifier: String, isExpand: Boolean) {
+        viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
+    }
+
     private fun showToaster(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
@@ -1218,6 +1251,46 @@ open class BuyerOrderDetailFragment :
                     }
                 }
             }
+        }
+    }
+
+    inner class AddOnListener : BmgmAddOnViewHolder.Listener {
+        override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
+            // noop, buyer add on doesn't have copy function
+        }
+
+        override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
+            viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
+        }
+
+        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+            BuyerOrderDetailTracker.AddOnsInformation.clickAddOnsInfo(
+                orderId = viewModel.getOrderId(),
+                addOnsType = type
+            )
+            navigator.openAppLink(infoLink, false)
+        }
+
+        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+            // noop, add on is not clickable
+        }
+    }
+
+    inner class ProductBenefitListener : BmgmAddOnViewHolder.Listener {
+        override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
+            // noop, product benefit doesn't have copyable description
+        }
+
+        override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
+            viewModel.expandCollapseBmgmProductBenefit(addOnsIdentifier, isExpand)
+        }
+
+        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+            // noop, product benefit doesn't have clickable info
+        }
+
+        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+            navigator.goToProductSnapshotPage(addOn.orderId, addOn.orderDetailId)
         }
     }
 }

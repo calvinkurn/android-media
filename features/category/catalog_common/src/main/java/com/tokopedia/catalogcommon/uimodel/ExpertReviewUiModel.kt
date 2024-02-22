@@ -34,7 +34,7 @@ data class ExpertReviewUiModel(
         val textReviewColor: Int,
         val textTitleColor: Int,
         val textSubTitleColor: Int,
-        val backgroundColor: Int = catalogcommonR.drawable.bg_rounded_border_light,
+        val backgroundColor: String = "#FFFFFF",
         val styleIconPlay: StyleIconPlay = StyleIconPlay()
     )
 

@@ -3,6 +3,7 @@ package com.tokopedia.catalog.ui.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -103,5 +104,13 @@ class CatalogDetailPageActivity :
             View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.statusBarColor = Color.TRANSPARENT
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        val newOverride = Configuration(newBase?.resources?.configuration)
+        newOverride.fontScale = 1.0f
+        applyOverrideConfiguration(newOverride)
+
+        super.attachBaseContext(newBase)
     }
 }

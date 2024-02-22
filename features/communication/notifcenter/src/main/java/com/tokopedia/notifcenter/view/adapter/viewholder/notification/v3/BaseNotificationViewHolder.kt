@@ -12,7 +12,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -182,7 +182,7 @@ abstract class BaseNotificationViewHolder constructor(
 
     private fun bindIcon(element: NotificationUiModel) {
         icon?.let {
-            ImageHandler.LoadImage(icon, element.sectionIcon)
+            icon?.loadImageFitCenter(element.sectionIcon)
         }
     }
 

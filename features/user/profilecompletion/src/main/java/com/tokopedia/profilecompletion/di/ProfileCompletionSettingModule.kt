@@ -10,7 +10,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql
 import com.tokopedia.network.NetworkRouter
-import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -27,13 +26,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
-open class ProfileCompletionSettingModule(private val context: Context) {
-
-    @Provides
-    @ProfileCompletionContext
-    fun provideContext(): Context {
-        return context
-    }
+open class ProfileCompletionSettingModule {
 
     @Provides
     open fun provideGraphQlRepository(): GraphqlRepository =
@@ -54,9 +47,6 @@ open class ProfileCompletionSettingModule(private val context: Context) {
     fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
     }
-
-    @Provides
-    fun provideLoadingDialog(): LoadingDialog = LoadingDialog(context)
 
     @Provides
     @ProfileCompletionSettingScope

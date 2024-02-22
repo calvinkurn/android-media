@@ -33,7 +33,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.profileinfo.view.viewholder.ProfileInfoItemViewHolder
+import com.tokopedia.profilecompletion.settingprofile.profileinfo.view.viewholder.ProfileInfoItemViewHolder
 import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import org.hamcrest.CoreMatchers.allOf

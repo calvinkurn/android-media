@@ -400,7 +400,6 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_TOPADS, PathType.PATTERN, "/dashboard", TOP_ADS_DASHBOARD),
         DFP(SCHEME_SELLERAPP, HOST_TOPADS, PathType.PATH, "/buy"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/buy"),
-        DFP(SCHEME_SELLERAPP, HOST_TOPADS, PathType.PATH, "/add-credit"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/add-credit"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/headline-ad-detail"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/history-credit"),
@@ -436,6 +435,7 @@ object DeeplinkDFApp {
 
         // seller_menu
         DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "/seller-menu"),
+        DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "/seller-menu-compose"),
         DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "/seller-settings"),
 
         // shop_admin
@@ -512,7 +512,8 @@ object DeeplinkDFApp {
     private fun getDfPromoGamification() = mutableListOf(
         // gamification
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification_gift_daily"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification_gift_60s")
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification_gift_60s"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification/ketupat_rewards_landing_page")
     )
 
     private fun getDfPromoTokopoints() = mutableListOf(

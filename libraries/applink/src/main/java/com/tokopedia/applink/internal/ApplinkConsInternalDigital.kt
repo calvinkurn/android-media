@@ -23,7 +23,6 @@ object ApplinkConsInternalDigital {
     const val TELCO_POSTPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopost"
     const val VOUCHER_GAME = "$INTERNAL_DIGITAL/vouchergame"
     const val GENERAL_TEMPLATE = "$INTERNAL_DIGITAL/general"
-    const val CAMERA_OCR = "$INTERNAL_RECHARGE/ocr"
     const val CREDIT_CARD_TEMPLATE = "$INTERNAL_RECHARGE/cc"
     const val DYNAMIC_SUBHOMEPAGE = "$INTERNAL_RECHARGE/home/dynamic"
     const val DYNAMIC_SUBHOMEPAGE_WITHOUT_PERSONALIZE = "$INTERNAL_RECHARGE/home/dynamic?platform_id={platform_id}"

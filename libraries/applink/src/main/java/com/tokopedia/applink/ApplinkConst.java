@@ -1,6 +1,9 @@
 package com.tokopedia.applink;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_REFRESH_FOR_RELEVANT_POST;
 import static com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_OTP_TYPE;
+
+import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 
 /**
  * @author ricoharisin .
@@ -20,6 +23,7 @@ public interface ApplinkConst {
     String FEED_EXPLORE = "tokopedia://feed/explore";
     String FEED_VIDEO = "tokopedia://feed/video";
     String FEED_FOLLOWING = "tokopedia://feed/following";
+    String FEED_RELEVANT_POST = FEED + "/{post_id}?" + UF_EXTRA_REFRESH_FOR_RELEVANT_POST + "=true";
     String FIND = "tokopedia://find";
     String AMP_FIND = "tokopedia://amp/find";
     String FEED_HASHTAG = "tokopedia://feed/hashtag/{hashtag}";
@@ -285,6 +289,8 @@ public interface ApplinkConst {
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
 
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
+
+    String TIPPING_DRIVER = "tokopedia://shipping/tipping";
     String LOGISTIC_SELLER_RESCHEDULE = "tokopedia://seller/reschedulepickup";
     String ORDER_POD = "tokopedia://shipping/pod/{order_id}";
     String PINPOINT_WEBVIEW = "tokopedia://pin-point-picker-result";

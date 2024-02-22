@@ -119,6 +119,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.thematicheader.ThematicHeaderViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -904,16 +905,10 @@ open class DiscoveryFragment :
         discoveryViewModel.miniCartAdd.observe(viewLifecycleOwner) {
             if (it is Success) {
                 if (it.data.requestParams.isGeneralCartATC) {
-                    showToasterWithAction(
+                    showToaster(
                         message = it.data.addToCartDataModel.errorMessage.joinToString(separator = ", "),
                         Toaster.LENGTH_LONG,
-                        type = Toaster.TYPE_NORMAL,
-                        actionText = getString(R.string.disco_lihat),
-                        clickListener = {
-                            context?.let { context ->
-                                RouteManager.route(context, ApplinkConst.CART)
-                            }
-                        }
+                        type = Toaster.TYPE_NORMAL
                     )
                     if (bmGmDataParam != null) {
                         analytics.trackEventProductBmGmATC(
@@ -1017,15 +1012,26 @@ open class DiscoveryFragment :
             )
         }
 
-        discoveryViewModel.bmGmDataList.observe(viewLifecycleOwner) { (data, offerMessages) ->
+        discoveryViewModel.bmGmDataList.observe(viewLifecycleOwner) { (data, bmGmTierData) ->
             discoveryAdapter.getViewModelAtPosition(data.parentPosition)
                 ?.let { discoveryBaseViewModel ->
                     if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
-                        discoveryBaseViewModel.changeTier(false, offerMessages)
+                        discoveryBaseViewModel.changeTier(
+                            false,
+                            BmGmTierData(
+                                offerMessages = bmGmTierData.offerMessages,
+                                flipTierImage = bmGmTierData.flipTierImage,
+                                flipTierWording = bmGmTierData.flipTierWording
+                            )
+                        )
                     } else if (discoveryBaseViewModel is SectionViewModel) {
                         discoveryBaseViewModel.notifyChildViewModel(
                             data.offerId,
-                            offerMessages,
+                            BmGmTierData(
+                                offerMessages = bmGmTierData.offerMessages,
+                                flipTierImage = bmGmTierData.flipTierImage,
+                                flipTierWording = bmGmTierData.flipTierWording
+                            ),
                             ComponentsList.ShopOfferHeroBrand
                         )
                     }
@@ -1926,6 +1932,10 @@ open class DiscoveryFragment :
         )
         AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
             if (bmGmDataParam != null && cartId.isNotBlankOrZero()) {
+                showToaster(
+                    atcMessage,
+                    type = Toaster.TYPE_NORMAL
+                )
                 getMiniCart(bmGmDataParam)
             }
         }
@@ -2421,6 +2431,7 @@ open class DiscoveryFragment :
                 AtcVariantHelper.goToAtcVariant(
                     context = it,
                     productId = productId,
+                    dismissAfterTransaction = true,
                     pageSource = VariantPageSource.BUY_MORE_GET_MORE,
                     extParams = AtcVariantHelper.generateExtParams(
                         mapOf(
@@ -2513,6 +2524,20 @@ open class DiscoveryFragment :
             it[sectionID]?.let { position ->
                 if (position >= 0) {
                     anchorViewHolder?.viewModel?.updateSelectedSection(sectionID, false)
+                }
+            }
+        }
+    }
+
+    fun rebindSelectedSection(sectionID: String, componentID: String) {
+        getSectionPositionMap(pageEndPoint)?.let {
+            it[sectionID]?.let { position ->
+                if (position >= 0) {
+                    (discoveryAdapter.getViewModelAtPosition(position) as? SectionViewModel)?.notifyChildViewModel(
+                        componentID,
+                        Any(),
+                        ComponentsList.FlashSaleTokoTab
+                    )
                 }
             }
         }

@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
@@ -14,10 +13,14 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.databinding.HomeRecommendationFeedViewholderBinding
 import com.tokopedia.home.util.HomeServerLogger
-import java.util.*
+import com.tokopedia.kotlin.extensions.view.onTabReselected
+import com.tokopedia.kotlin.extensions.view.onTabSelected
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfig
 
 /**
  * Created by henrypriyono on 22/03/18.
@@ -25,6 +28,7 @@ import java.util.*
 
 class HomeRecommendationFeedViewHolder(
     view: View,
+    private val remoteConfig: RemoteConfig,
     private val listener: HomeCategoryListener,
     private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<HomeRecommendationFeedDataModel>(view), HomeTabFeedListener {
@@ -34,7 +38,7 @@ class HomeRecommendationFeedViewHolder(
     private var homeFeedPagerAdapter: HomeFeedPagerAdapter? = null
     private var recommendationTabDataModelList: List<RecommendationTabDataModel>? = null
 
-    override fun bind(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel) {
+    override fun bind(model: HomeRecommendationFeedDataModel) {
         with(binding) {
             val layoutParams = homeRecommendationFeedContainer.layoutParams
 
@@ -50,36 +54,37 @@ class HomeRecommendationFeedViewHolder(
                 HEIGHT_8.toDpInt()
             homeRecommendationFeedContainer.layoutParams = layoutParams
 
-            recommendationTabDataModelList =
-                homeRecommendationFeedDataModel.recommendationTabDataModel
+            recommendationTabDataModelList = model.recommendationTabDataModel
 
-            tabLayoutHomeFeeds.visibility = View.VISIBLE
-            viewPagerHomeFeeds.visibility = View.VISIBLE
+            initViewPager()
 
-            initViewPagerAndTablayout(
-                homeFeedsViewPager = viewPagerHomeFeeds,
-                homeFeedsTabLayout = tabLayoutHomeFeeds
-            )
-            homeRecommendationFeedDataModel.isNewData = false
+            if (isMegaTabEnabled()) {
+                initMegaTabLayout()
+            } else {
+                initCarouselTabLayout()
+            }
+
+            model.isNewData = false
         }
     }
 
-    private fun initViewPagerAndTablayout(
-        homeFeedsViewPager: ViewPager?,
-        homeFeedsTabLayout: CollapsingTabLayout?
-    ) {
+    private fun initViewPager() {
+        binding.viewPagerHomeFeeds.show()
+
         homeFeedPagerAdapter = HomeFeedPagerAdapter(
             listener,
             listener.eggListener,
             this,
             listener.childsFragmentManager,
             recommendationTabDataModelList,
-            listener.parentPool
+            listener.parentPool,
+            remoteConfig
         )
 
-        homeFeedsViewPager?.offscreenPageLimit = DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT
+        binding.viewPagerHomeFeeds.offscreenPageLimit = DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT
+
         try {
-            homeFeedsViewPager?.adapter = homeFeedPagerAdapter
+            binding.viewPagerHomeFeeds.adapter = homeFeedPagerAdapter
         } catch (e: IllegalStateException) {
             HomeServerLogger.logWarning(
                 type = HomeServerLogger.TYPE_RECOM_SET_ADAPTER_ERROR,
@@ -87,63 +92,75 @@ class HomeRecommendationFeedViewHolder(
                 reason = e.message.toString()
             )
         }
-        homeFeedsTabLayout?.setup(
-            homeFeedsViewPager,
-            convertToTabItemDataList(recommendationTabDataModelList!!),
-            cardInteraction
-        )
-        homeFeedsTabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                if (tab.position < recommendationTabDataModelList!!.size) {
-                    val selectedFeedTabModel = recommendationTabDataModelList!![tab.position]
-                    HomePageTracking.eventClickOnHomePageRecommendationTab(
-                        selectedFeedTabModel
-                    )
-                }
-            }
+    }
 
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-            }
+    private fun initMegaTabLayout() {
+        with(binding) {
+            recommendationTabDataModelList
+                ?.map { it.toMegaTabItem() }
+                ?.let { tabRecommendation.set(it, viewPagerHomeFeeds) }
 
-            override fun onTabReselected(tab: TabLayout.Tab) {
-                val homeFeedFragment = homeFeedPagerAdapter!!.getRegisteredFragment(tab.position)
-                homeFeedFragment?.scrollToTop()
-                homeFeedsTabLayout.resetCollapseState()
-            }
-        })
+            tabRecommendation.onTabSelected(::onTabLayoutSelected)
+            tabRecommendation.onTabReselected(::onTabLayoutReselected)
+            tabRecommendation.show()
+            megatabStroke.show()
+        }
+    }
+
+    private fun initCarouselTabLayout() {
+        with(binding) {
+            recommendationTabDataModelList
+                ?.map { it.toCarouselTabItem() }
+                ?.let { tabLayoutHomeFeeds.setup(viewPagerHomeFeeds, it, cardInteraction) }
+
+            tabLayoutHomeFeeds.onTabSelected(::onTabLayoutSelected)
+            tabLayoutHomeFeeds.onTabReselected(::onTabLayoutReselected)
+            tabLayoutHomeFeeds.show()
+        }
+    }
+
+    private fun onTabLayoutSelected(tab: TabLayout.Tab) {
+        if (tab.position < recommendationTabDataModelList!!.size) {
+            val selectedFeedTabModel = recommendationTabDataModelList!![tab.position]
+            HomePageTracking.eventClickOnHomePageRecommendationTab(
+                selectedFeedTabModel
+            )
+        }
+    }
+
+    private fun onTabLayoutReselected(tab: TabLayout.Tab) {
+        homeFeedPagerAdapter
+            ?.getRegisteredFragment(tab.position)
+            ?.scrollToTop()
+
+        if (isMegaTabEnabled().not()) {
+            binding.tabLayoutHomeFeeds.resetCollapseState()
+        }
     }
 
     fun selectJumperTab() {
         val tabIndex = recommendationTabDataModelList?.indexOfFirst { it.isJumperTab }
             ?: RecyclerView.NO_POSITION
         if (tabIndex != RecyclerView.NO_POSITION) {
-            val tabToSelect = binding.tabLayoutHomeFeeds.getTabAt(tabIndex)
+            val tabToSelect = if (isMegaTabEnabled().not()) {
+                binding.tabLayoutHomeFeeds.getTabAt(tabIndex)
+            } else {
+                binding.tabRecommendation.getTabAt(tabIndex)
+            }
+
             tabToSelect?.select()
         }
     }
 
-    private fun convertToTabItemDataList(recommendationTabDataModelList: List<RecommendationTabDataModel>): List<CollapsingTabLayout.TabItemData> {
-        val tabItemDataList = ArrayList<CollapsingTabLayout.TabItemData>()
-        for (feedTabModel in recommendationTabDataModelList) {
-            tabItemDataList.add(
-                CollapsingTabLayout.TabItemData(
-                    feedTabModel.name,
-                    feedTabModel.imageUrl
-                )
-            )
-        }
-        return tabItemDataList
-    }
-
     override fun onFeedContentScrolled(dy: Int, totalScrollY: Int) {
-        binding.tabLayoutHomeFeeds.adjustTabCollapseOnScrolled(dy, totalScrollY)
+        binding.tabLayoutHomeFeeds.ifVisible { adjustTabCollapseOnScrolled(dy, totalScrollY) }
     }
 
     override fun onFeedContentScrollStateChanged(newState: Int) {
         if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-            binding.tabLayoutHomeFeeds.scrollActiveTabToLeftScreen()
+            binding.tabLayoutHomeFeeds.ifVisible { scrollActiveTabToLeftScreen() }
         } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-            binding.tabLayoutHomeFeeds.snapCollapsingTab()
+            binding.tabLayoutHomeFeeds.ifVisible { snapCollapsingTab() }
         }
     }
 
@@ -155,10 +172,15 @@ class HomeRecommendationFeedViewHolder(
         }
     }
 
+    private fun isMegaTabEnabled() = HomeRollenceController.isMegaTabEnabled
+
+    private inline fun <T : CollapsingTabLayout> T.ifVisible(invoke: T.() -> Unit) {
+        if (visibility == View.VISIBLE && isMegaTabEnabled()) invoke()
+    }
+
     companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.home_recommendation_feed_viewholder
-        private val TAG = HomeRecommendationFeedViewHolder::class.java.simpleName
+        @LayoutRes val LAYOUT = R.layout.home_recommendation_feed_viewholder
+
         private const val DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT = 10
         private const val HEIGHT_8 = 8f
     }

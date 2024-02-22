@@ -25,7 +25,8 @@ class ProductCardColumnListViewModel(
     val position: Int
 ) : DiscoveryBaseViewModel(), CoroutineScope {
 
-    private val _carouselPagingGroupProductModel: MutableLiveData<CarouselPagingGroupProductModel> = MutableLiveData()
+    private val _carouselPagingGroupProductModel: MutableLiveData<CarouselPagingGroupProductModel> =
+        MutableLiveData()
     private val _errorState: MutableLiveData<Unit> = MutableLiveData()
 
     val carouselPagingGroupProductModel: LiveData<CarouselPagingGroupProductModel>
@@ -51,11 +52,15 @@ class ProductCardColumnListViewModel(
 
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
-            productCardsUseCase?.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, NO_PRODUCT_PER_PAGE)
+            productCardsUseCase?.loadFirstPageComponents(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                NO_PRODUCT_PER_PAGE
+            )
             setProductList()
         }, onError = {
-            _errorState.postValue(Unit)
-        })
+                _errorState.postValue(Unit)
+            })
     }
 
     private fun setProductList() {
@@ -67,9 +72,11 @@ class ProductCardColumnListViewModel(
         }
     }
 
-    fun getProduct(position: Int): DataItem? = componentsItem.getComponentItem(position)?.data?.firstOrNull()
+    fun getProduct(position: Int): DataItem? =
+        componentsItem.getComponentItem(position)?.data?.firstOrNull()
 
-    fun getItemPerPage(): Int = if (componentsItem.getComponentsItemSize() < componentsItem.getPropertyRows()) componentsItem.getComponentsItemSize() else componentsItem.getPropertyRows()
+    fun getItemPerPage(): Int =
+        if (componentsItem.getComponentsItemSize() < componentsItem.getPropertyRows()) componentsItem.getComponentsItemSize() else componentsItem.getPropertyRows()
 
     fun isLoggedIn(): Boolean = userSession?.isLoggedIn.orFalse()
 }

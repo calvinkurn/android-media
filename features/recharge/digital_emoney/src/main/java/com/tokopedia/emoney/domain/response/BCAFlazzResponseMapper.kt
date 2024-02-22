@@ -5,6 +5,7 @@ import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiryError
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.emoney.domain.request.BCAFlazzStatus
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 object BCAFlazzResponseMapper {
     private const val ISSUER_ID_BCA = 5
@@ -22,7 +23,7 @@ object BCAFlazzResponseMapper {
                 issuer_id = ISSUER_ID_BCA,
                 pendingBalance = pendingBalance,
                 extraPendingBalance = hasMorePendingBalance,
-                showAdditionalBalance = false,
+                showAdditionalBalance = (status == BCAFlazzStatus.DONE.status && pendingBalance > Int.ZERO),
             ),
             isBCAGenOne = isBCAGenOne,
             error = EmoneyInquiryError(
