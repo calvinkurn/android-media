@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.usecase.ClaimCouponClickUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.notifications.common.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +36,10 @@ class ListAutomateCouponItemViewModel(
     @Inject
     var claimCouponClickUseCase: ClaimCouponClickUseCase? = null
 
+    @JvmField
+    @Inject
+    var userSession: UserSessionInterface? = null
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -54,6 +59,12 @@ class ListAutomateCouponItemViewModel(
 
     fun claim(catalogId: Long?) {
         launchCatchError(block = {
+            if (userSession?.isLoggedIn == false) {
+                _showErrorClaimCoupon.value = NEED_LOGIN_MESSAGE
+
+                return@launchCatchError
+            }
+
             val response = claimCouponClickUseCase?.redeemCoupon(catalogId.orZero())
             val ctaList = response?.hachikoRedeem?.ctaList
             ctaStateAfterClaim.postValue(ctaList.mapToCtaState())
@@ -61,5 +72,9 @@ class ListAutomateCouponItemViewModel(
                 _showErrorClaimCoupon.value = it.message.orEmpty()
                 Timber.e(it)
             })
+    }
+
+    companion object {
+        private const val NEED_LOGIN_MESSAGE = "Silakan login terlebih dahulu"
     }
 }
