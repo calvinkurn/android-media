@@ -14,6 +14,7 @@ data class ShopDiscountManageProductSubsidyUiModel(
     val mode: String = ShopDiscountManageDiscountMode.UPDATE,
     val entrySource: ShopDiscountManageEntrySource = ShopDiscountManageEntrySource.EDIT,
     val selectedProductToOptOut: MutableList<ShopDiscountProductDetailUiModel.ProductDetailData> = mutableListOf(),
+    val hasNonSubsidyProduct: Boolean = false
 ) : Parcelable {
 
     fun getListProductParentIdWithNonSubsidyVariant(): List<String> {
@@ -43,12 +44,6 @@ data class ShopDiscountManageProductSubsidyUiModel(
     fun getTotalProductWithSubsidy(): Int {
         return listProductDetailData.count { productDetail ->
             productDetail.isSubsidy
-        }
-    }
-
-    fun hasNonSubsidyProduct(): Boolean {
-        return listProductDetailData.any { productDetail ->
-            !productDetail.isSubsidy
         }
     }
 

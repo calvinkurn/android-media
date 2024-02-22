@@ -171,7 +171,7 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
     private fun configButtonOptOut() {
         buttonOptOut?.apply {
             if (subsidyProductAdapter.getTotalSelectedProduct() == Int.ZERO) {
-                if (data.hasNonSubsidyProduct()) {
+                if (data.hasNonSubsidyProduct) {
                     isEnabled = true
                     setOnClickListener {
                         sendClickCtaOptOutVariantTracker()

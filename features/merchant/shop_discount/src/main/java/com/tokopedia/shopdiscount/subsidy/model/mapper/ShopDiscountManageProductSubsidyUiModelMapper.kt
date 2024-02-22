@@ -13,7 +13,8 @@ object ShopDiscountManageProductSubsidyUiModelMapper {
         return ShopDiscountManageProductSubsidyUiModel(
             listProductDetailData = listProductDetailData,
             mode = mode,
-            entrySource = entrySource
+            entrySource = entrySource,
+            hasNonSubsidyProduct = listProductDetailData.any { !it.isSubsidy }
         )
     }
 }
