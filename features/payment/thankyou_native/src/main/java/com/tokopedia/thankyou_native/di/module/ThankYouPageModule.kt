@@ -9,7 +9,9 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.presentation.adapter.DetailedInvoiceAdapter
+import com.tokopedia.thankyou_native.presentation.adapter.PurchaseDetailAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.factory.InvoiceTypeFactory
+import com.tokopedia.thankyou_native.presentation.adapter.factory.PurchaseDetailTypeFactory
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
@@ -57,6 +59,16 @@ class ThankYouPageModule {
     @Provides
     fun provideDetailInvoiceAdapter(invoiceTypeFactory: InvoiceTypeFactory): DetailedInvoiceAdapter {
         return DetailedInvoiceAdapter(arrayListOf(), invoiceTypeFactory)
+    }
+
+    @Provides
+    fun providePurchaseDetailTypeFactory(): PurchaseDetailTypeFactory {
+        return PurchaseDetailTypeFactory()
+    }
+
+    @Provides
+    fun providePurchaseDetailAdapter(purchaseDetailTypeFactory: PurchaseDetailTypeFactory): PurchaseDetailAdapter {
+        return PurchaseDetailAdapter(arrayListOf(), purchaseDetailTypeFactory)
     }
 
     @Provides
