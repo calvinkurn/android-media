@@ -814,10 +814,12 @@ class FeedAnalytics @AssistedInject constructor(
         productName: String,
         productPrice: Double,
         shopId: String,
-        cartId: String
+        cartId: String,
+        dimension40 : String = "",
+        index: Int? = null,
     ) = Bundle().apply {
         putString(EnhanceEcommerce.KEY_CATEGORY_ID, "")
-        putString(EnhanceEcommerce.KEY_DIMENSION40, "")
+        putString(EnhanceEcommerce.KEY_DIMENSION40, dimension40)
         putString(
             EnhanceEcommerce.KEY_ITEM_BRAND,
             shopName
@@ -833,6 +835,7 @@ class FeedAnalytics @AssistedInject constructor(
         putString(EnhanceEcommerce.KEY_SHOP_TYPE, "")
         if (cartId.isNotBlank()) putString(EnhanceEcommerce.KEY_DIMENSION45, cartId)
         putString(EnhanceEcommerce.KEY_DIMENSION90, pageSource)
+        if (index != null) putInt(EnhanceEcommerce.KEY_INDEX, index)
     }
 
     private fun sendEventTracker(params: Map<String, Any>) {
@@ -951,8 +954,9 @@ class FeedAnalytics @AssistedInject constructor(
                 cartId = "",
                 productId = product.id,
                 productName = product.name,
-                productPrice = product.price
+                productPrice = product.price, dimension40 = ITEM_LIST_PRODUCT_HIGHLIGHT, index = 1,
             )))
+            bundle.putString(KEY_PAGE_SOURCE, pageSource)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.VIEW_ITEM_LIST, bundle)
     }
@@ -975,8 +979,11 @@ class FeedAnalytics @AssistedInject constructor(
                     cartId = "",
                     productId = product.id,
                     productName = product.name,
-                    productPrice = product.price
+                    productPrice = product.price,
+                    dimension40 = ITEM_LIST_PRODUCT_HIGHLIGHT,
+                    index = 1,
                 )))
+            bundle.putString(KEY_PAGE_SOURCE, pageSource)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.VIEW_ITEM_LIST, bundle)
     }
@@ -998,8 +1005,11 @@ class FeedAnalytics @AssistedInject constructor(
                     cartId = product.cartId,
                     productId = product.product.id,
                     productName = product.product.title,
-                    productPrice = product.product.finalPrice
+                    productPrice = product.product.finalPrice,
+                    dimension40 = ITEM_LIST_PRODUCT_HIGHLIGHT,
+                    index = 1,
                 )))
+            bundle.putString(KEY_PAGE_SOURCE, pageSource)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.VIEW_ITEM_LIST, bundle)
     }
@@ -1036,7 +1046,9 @@ class FeedAnalytics @AssistedInject constructor(
                     cartId = product.cartId,
                     productId = product.product.id,
                     productName = product.product.title,
-                    productPrice = product.product.finalPrice
+                    productPrice = product.product.finalPrice,
+                    dimension40 = ITEM_LIST_PRODUCT_HIGHLIGHT,
+                    index = 1,
                 )))
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.CLICK_CONTENT, bundle)
