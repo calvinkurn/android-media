@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -43,7 +42,7 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
     private var productSlashedPrice: Typography? = null
     private var productDiscountPercent: Typography? = null
     private var productContainer: CardUnify2? = null
-    private var productDiscountGroup: Group? = null
+    private var productDiscountGroup: View? = null
 
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context)

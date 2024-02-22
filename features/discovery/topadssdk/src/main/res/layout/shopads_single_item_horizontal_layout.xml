@@ -10,83 +10,82 @@
     tools:viewBindingIgnore="true">
 
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/headerShopImage"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout2"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout2"
-        app:layout_constraintTop_toTopOf="@+id/product_container"
-        app:unify_image_type="circle" />
-
     <LinearLayout
-        android:id="@+id/linearLayout2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="horizontal"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/divider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerShopImage">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/shopAdsText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="2dp"
-            android:text="@string/topads_ads_text"
-            android:textColor="@color/Unify_NN600"
-            app:typographyType="paragraph_3"
-            app:typographyWeight="bold" />
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/shop_badge"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:contentDescription="@string/topads_sdk_shop_banner_content_description"
-            app:layout_constraintBottom_toBottomOf="@+id/shop_name"
-            app:layout_constraintTop_toTopOf="@+id/shop_name"
-            app:layout_constraintVertical_bias="0.0"
-            app:unify_image_type="rect"
-            tools:src="@tools:sample/avatars" />
+            android:id="@+id/headerShopImage"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            app:unify_image_type="circle" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/shop_name"
+        <LinearLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:ellipsize="end"
-            android:maxLines="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/shopAdsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="2dp"
+                android:text="@string/topads_ads_text"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="paragraph_3"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/shop_badge"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:contentDescription="@string/topads_sdk_shop_banner_content_description"
+                app:layout_constraintBottom_toBottomOf="@+id/shop_name"
+                app:layout_constraintTop_toTopOf="@+id/shop_name"
+                app:layout_constraintVertical_bias="0.0"
+                app:unify_image_type="rect"
+                tools:src="@tools:sample/avatars" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/shop_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
+                tools:text="Lego Official Store" />
+
+        </LinearLayout>
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/merchantVoucher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:labelType="highlight_light_red"
+            tools:labelTitle="Cashback 3%" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shop_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textAlignment="center"
             android:textColor="@color/Unify_NN950"
-            app:typographyType="display_2"
-            app:typographyWeight="bold"
-            tools:text="Lego Official Store" />
+            app:typographyType="paragraph_3"
+            tools:text="Mainan dengan kualitas produk dan harga terbaik, hanya di Mama Sing! " />
 
     </LinearLayout>
-
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/merchantVoucher"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:labelType="highlight_light_red"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout2"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        tools:labelTitle="Cashback 3%" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/shop_desc"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/Unify_NN950"
-        android:layout_margin="10dp"
-        app:layout_constraintEnd_toStartOf="@+id/divider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/merchantVoucher"
-        app:typographyType="paragraph_3"
-        tools:text="Mainan dengan kualitas produk dan harga terbaik, hanya di Mama Sing! " />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/divider"
@@ -98,6 +97,7 @@
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/product_container"
         android:layout_width="0dp"
+        android:layout_marginLeft="4dp"
         android:layout_height="wrap_content"
         android:layout_marginVertical="12dp"
         app:cardCornerRadius="8dp"
@@ -169,54 +169,38 @@
                 app:typographyType="paragraph_3"
                 tools:text="1.999.999" />
 
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.tokopedia.unifycomponents.CardUnify2>
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imageRibbonArch"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:contentDescription="@string/product_card_content_desc_ribbon"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="@id/imageRibbonContent"
-        app:layout_constraintEnd_toStartOf="@id/product_container"
-        app:layout_constraintTop_toTopOf="@id/imageRibbonContent"
-        app:srcCompat="@drawable/product_card_ribbon_arch_red" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imageRibbonContent"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:contentDescription="@string/product_card_content_desc_ribbon"
-        android:elevation="5dp"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="@id/textRibbon"
-        app:layout_constraintEnd_toEndOf="@id/textRibbon"
-        app:layout_constraintStart_toStartOf="@id/imageRibbonArch"
-        app:layout_constraintTop_toTopOf="@id/textRibbon"
-        app:srcCompat="@drawable/product_card_ribbon_content_red" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/textRibbon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:elevation="5dp"
-        android:paddingEnd="8dp"
-        android:text="90%"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintStart_toStartOf="@id/product_container"
-        app:layout_constraintTop_toTopOf="@id/product_container"
-        app:typographyType="display_3"
-        app:typographyWeight="bold" />
-
-    <androidx.constraintlayout.widget.Group
+    <LinearLayout
         android:id="@+id/discount_percent_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:constraint_referenced_ids="imageRibbonArch,imageRibbonContent,textRibbon" />
+        android:orientation="vertical"
+        android:elevation="1dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="@+id/divider"
+        app:layout_constraintTop_toTopOf="@+id/product_container">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textRibbon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/product_card_ribbon_background"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="20%" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/productCardRibbonSlip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/product_card_ribbon_slip" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
