@@ -32,7 +32,9 @@ fun ItemImageProductPreview(imageUrl: String) {
             modifier = Modifier
                 .graphicsLayer(
                     scaleX = if (scale < DEFAULT_SCALING) DEFAULT_SCALING else scale,
-                    scaleY = if (scale < DEFAULT_SCALING) DEFAULT_SCALING else scale
+                    scaleY = if (scale < DEFAULT_SCALING) DEFAULT_SCALING else scale,
+                    translationX = offset.x, // need improvement
+                    translationY = offset.y // need improvement
                 )
                 .transformable(state)
         )

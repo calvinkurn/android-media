@@ -5,8 +5,8 @@ data class ProductPreviewTabUiModel(val tabs: List<ProductReviewTab>) {
     data class ProductReviewTab(val key: String)
 
     companion object {
-        const val TAB_PRODUCT_KEY = "product_tab"
-        const val TAB_REVIEW_KEY = "review_tab"
+        const val TAB_PRODUCT_KEY = "product"
+        const val TAB_REVIEW_KEY = "review"
         const val TAB_PRODUCT_POS = 0
         const val TAB_REVIEW_POS = 1
 
