@@ -19,7 +19,7 @@ class CouponWidgetCallback(val listener: HomeCategoryListener) : CouponWidgetLis
                 listener.onCouponWidgetClaim(data, state.data.catalogId, position)
             }
             is CouponCtaState.Redirect -> {
-                val actionLink = state.data.url.ifEmpty { state.data.appLink }
+                val actionLink = state.data.appLink.ifEmpty { state.data.url }
                 listener.onDynamicChannelClicked(actionLink)
             }
             is CouponCtaState.OutOfStock -> Unit
