@@ -45,6 +45,7 @@ import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxR
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactory
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactoryImpl
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationProductViewHolder
+import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationTitleViewHolder
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxEndlessScrollListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
@@ -198,7 +199,12 @@ class UniversalInboxFragment @Inject constructor(
 
     private fun addRecommendationScrollListener() {
         binding?.inboxRv?.addVerticalTrackListener(
-            recommendationTriggerObject = RecommendationTriggerObject()
+            recommendationTriggerObject = RecommendationTriggerObject(
+                viewHolders = listOf(
+                    UniversalInboxRecommendationTitleViewHolder::class.java,
+                    UniversalInboxRecommendationProductViewHolder::class.java
+                )
+            )
         )
     }
 

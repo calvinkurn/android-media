@@ -1743,7 +1743,9 @@ class CartRevampFragment :
 
     private fun addRecommendationScrollListener(cartRecyclerView: RecyclerView) {
         cartRecyclerView.addVerticalTrackListener(
-            recommendationTriggerObject = RecommendationTriggerObject()
+            recommendationTriggerObject = RecommendationTriggerObject(
+                viewHolders = listOf(CartRecommendationViewHolder::class.java)
+            )
         )
     }
 

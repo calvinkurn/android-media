@@ -58,6 +58,7 @@ import com.tokopedia.notifcenter.view.adapter.typefactory.NotificationTypeFactor
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotificationTypeFactoryImpl
 import com.tokopedia.notifcenter.view.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.LoadMoreViewHolder
+import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.RecommendationViewHolder
 import com.tokopedia.notifcenter.view.customview.NotificationTopAdsHeadlineHelper
 import com.tokopedia.notifcenter.view.customview.bottomsheet.BottomSheetFactory
 import com.tokopedia.notifcenter.view.customview.bottomsheet.NotificationLongerContentBottomSheet
@@ -490,7 +491,9 @@ class NotificationFragment @Inject constructor(
             }
         })
         rv?.addVerticalTrackListener(
-            recommendationTriggerObject = RecommendationTriggerObject()
+            recommendationTriggerObject = RecommendationTriggerObject(
+                viewHolders = listOf(RecommendationViewHolder::class.java)
+            )
         )
     }
 
