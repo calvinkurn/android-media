@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -246,6 +247,8 @@ class WishlistCollectionDetailFragment :
     private val wishlistPref: WishlistLayoutPreference? by lazy {
         activity?.let { WishlistLayoutPreference(it) }
     }
+
+    private var hasTrackEnterPage: Boolean = false
 
     override fun getScreenName(): String = ""
 
@@ -610,6 +613,7 @@ class WishlistCollectionDetailFragment :
                                 if (collectionDetail.sortFilters.isEmpty() && collectionDetail.items.isEmpty()) {
                                     onFailedGetWishlistV2(ResponseErrorException())
                                 } else {
+                                    trackEnterPage()
                                     showRvWishlist()
                                     isFetchRecommendation = true
                                     hideTotalLabel()
@@ -1567,6 +1571,11 @@ class WishlistCollectionDetailFragment :
     private fun loadRecommendationList() {
         currRecommendationListPage += 1
         wishlistCollectionDetailViewModel.loadRecommendation(currRecommendationListPage)
+    }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
     }
 
     private fun initTrackingQueue() {

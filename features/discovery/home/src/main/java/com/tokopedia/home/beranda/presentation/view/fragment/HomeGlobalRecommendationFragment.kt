@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardClickAppLog
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardShowAppLog
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductClickAppLog
@@ -80,6 +79,7 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
 
 @RecomTemporary
 class HomeGlobalRecommendationFragment :
@@ -149,8 +149,6 @@ class HomeGlobalRecommendationFragment :
 
     private var startY = 0.0F
     private var startX = 0.0F
-
-    private val hasTrackEnterPage = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -265,7 +263,7 @@ class HomeGlobalRecommendationFragment :
                                 getString(R.string.home_error_connection),
                                 Snackbar.LENGTH_LONG,
                                 Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.abstraction.R.string.title_try_again),
+                                getString(abstractionR.string.title_try_again),
                                 View.OnClickListener {
                                     endlessRecyclerViewScrollListener?.loadMoreNextPage()
                                 }
@@ -288,7 +286,6 @@ class HomeGlobalRecommendationFragment :
                             is HomeRecommendationCardState.Success -> {
                                 adapter.submitList(it.data.homeRecommendations) {
                                     updateScrollEndlessListener(it.data.isHasNextPage)
-                                    trackEnterPage()
                                 }
                             }
 
@@ -316,11 +313,6 @@ class HomeGlobalRecommendationFragment :
                 }
             }
         }
-    }
-
-    private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
-        AppLogRecommendation.sendEnterPageAppLog()
     }
 
     private fun updateScrollEndlessListener(hasNextPage: Boolean) {

@@ -160,8 +160,6 @@ class HomeRecommendationFragment :
     private var startY = 0.0F
     private var startX = 0.0F
 
-    private val hasTrackEnterPage = false
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -298,7 +296,6 @@ class HomeRecommendationFragment :
                             is HomeRecommendationCardState.Success -> {
                                 adapter.submitList(it.data.homeRecommendations) {
                                     updateScrollEndlessListener(it.data.isHasNextPage)
-                                    trackEnterPage()
                                 }
                             }
 
@@ -326,11 +323,6 @@ class HomeRecommendationFragment :
                 }
             }
         }
-    }
-
-    private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
-        AppLogRecommendation.sendEnterPageAppLog()
     }
 
     private fun updateScrollEndlessListener(hasNextPage: Boolean) {
