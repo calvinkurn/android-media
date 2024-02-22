@@ -4,12 +4,15 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
+import com.tokopedia.discovery2.analytics.CouponTrackingMapper.toTrackingProperties
+import com.tokopedia.discovery2.analytics.CouponTrackingProperties
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.databinding.GridAutomateCouponLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -60,6 +63,7 @@ class GridAutomateCouponViewHolder(
 
         viewModel?.getComponentList()?.observe(lifecycleOwner) { items ->
             binding?.showWidget(items)
+            trackImpression(items)
         }
     }
 
@@ -73,6 +77,18 @@ class GridAutomateCouponViewHolder(
     private fun GridAutomateCouponLayoutBinding.showWidget(items: ArrayList<ComponentsItem>) {
         automateCouponRv.show()
         mAdapter.setDataList(items)
+    }
+
+    private fun trackImpression(items: ArrayList<ComponentsItem>) {
+        val properties = mutableListOf<CouponTrackingProperties>()
+
+        items.forEach {
+            properties.add(it.toTrackingProperties())
+        }
+
+        val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+
+        if (properties.isNotEmpty()) analytics?.trackCouponImpression(properties)
     }
 
     private fun GridAutomateCouponLayoutBinding.setupRecyclerView() {

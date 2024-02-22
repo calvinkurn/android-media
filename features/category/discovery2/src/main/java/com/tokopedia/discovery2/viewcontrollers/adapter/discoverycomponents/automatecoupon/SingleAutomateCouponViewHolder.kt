@@ -6,12 +6,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.analytics.CouponTrackingMapper.toTrackingProperties
+import com.tokopedia.discovery2.analytics.CouponTrackingProperties
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponCtaState
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponUiModel
 import com.tokopedia.discovery2.databinding.SingleAutomateCouponLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponListView
 import com.tokopedia.discovery_component.widgets.automatecoupon.ButtonState
 import com.tokopedia.kotlin.extensions.view.show
@@ -44,6 +47,7 @@ class SingleAutomateCouponViewHolder(
                 items.firstOrNull()?.automateCoupons?.firstOrNull()?.let { model ->
                     binding?.couponView?.show()
                     binding?.renderCoupon(model)
+                    trackImpression()
                 }
             }
 
@@ -66,6 +70,16 @@ class SingleAutomateCouponViewHolder(
                 }
             }
         }
+    }
+
+    private fun trackImpression() {
+        val properties = mutableListOf<CouponTrackingProperties>()
+
+        viewModel?.component?.toTrackingProperties()?.let { properties.add(it) }
+
+        val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+
+        if (properties.isNotEmpty()) analytics?.trackCouponImpression(properties)
     }
 
     private fun SingleAutomateCouponLayoutBinding?.renderCoupon(model: AutomateCouponUiModel) {

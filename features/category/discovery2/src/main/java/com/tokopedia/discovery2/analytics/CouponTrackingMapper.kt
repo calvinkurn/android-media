@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.analytics
 
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponCtaState
 import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.data.mycoupon.MyCoupon
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -73,6 +74,34 @@ object CouponTrackingMapper {
             tabName.orEmpty()
         )
     }
+    //endregion
+
+    //region automate claim coupon
+    fun ComponentsItem.toTrackingProperties(): CouponTrackingProperties {
+        val slug = data?.firstOrNull()?.catalogSlug?.firstOrNull().orEmpty()
+        val gtmItemName = data?.firstOrNull()
+            ?.gtmItemName
+            .orEmpty()
+
+        val action = when (val ctaState = automateCoupons?.firstOrNull()?.ctaState) {
+            is AutomateCouponCtaState.Claim -> ctaState.properties.text
+            is AutomateCouponCtaState.Redirect -> ctaState.properties.text
+            else -> "Habis"
+        }
+
+        return CouponTrackingProperties(
+            componentName = parentComponentName.orEmpty(),
+            name = slug,
+            id = id.substringAfter("_"),
+            promoCode = slug,
+            creativeName = creativeName.orEmpty(),
+            position = position,
+            action = action,
+            gtmItem = gtmItemName,
+            tabName = tabName.orEmpty()
+        )
+    }
+
     //endregion
 
     private fun getGTMItemName(componentId: String, pageName: String) =
