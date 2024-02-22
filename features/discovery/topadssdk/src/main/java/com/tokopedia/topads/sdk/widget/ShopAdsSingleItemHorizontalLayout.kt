@@ -178,7 +178,7 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
         val colorCode = getBackgroundColor(shopAdsWithSingleProductModel)
         bodyContainer?.background =
             ContextCompat.getDrawable(context, colorCode)
-        merchantVoucher?.setLabelType(if (shopAdsWithSingleProductModel.isPMPro || shopAdsWithSingleProductModel.isPowerMerchant) Label.GENERAL_GREEN else Label.HIGHLIGHT_LIGHT_GREEN)
+        merchantVoucher?.setLabelType(if (shopAdsWithSingleProductModel.isPMPro || shopAdsWithSingleProductModel.isPowerMerchant) Label.GENERAL_RED else Label.HIGHLIGHT_LIGHT_RED)
     }
 
     private fun getBackgroundColor(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel): Int {
