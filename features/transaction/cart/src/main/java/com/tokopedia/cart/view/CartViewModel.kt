@@ -286,6 +286,8 @@ class CartViewModel @Inject constructor(
         private const val RECENT_VIEW_XSOURCE = "recentview"
         private const val PAGE_NAME_RECENT_VIEW = "cart_recent_view"
         private const val PAGE_NAME_RECENT_VIEW_TEST = "cart_recent_view_test" // FOR TESTING ONLY, REVERT THIS BEFORE MERGE!!!
+        private const val PAGE_NAME_RECOMMENDATION = "cart"
+        private const val PAGE_NAME_RECOMMENDATION_TEST = "cart_test_2" // FOR TESTING ONLY, REVERT THIS BEFORE MERGE!!!
 
         private const val QUERY_APP_CLIENT_ID = "{app_client_id}"
         private val REGEX_NUMBER = "[^0-9]".toRegex()
@@ -1029,7 +1031,7 @@ class CartViewModel @Inject constructor(
                     GetRecommendationRequestParam(
                         pageNumber = cartModel.recommendationPage,
                         xSource = "recom_widget",
-                        pageName = "cart",
+                        pageName = PAGE_NAME_RECOMMENDATION_TEST, // TODO: REVERT THIS BEFORE MERGE!!!
                         productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
                         queryParam = "",
                         hasNewProductCardEnabled = true
