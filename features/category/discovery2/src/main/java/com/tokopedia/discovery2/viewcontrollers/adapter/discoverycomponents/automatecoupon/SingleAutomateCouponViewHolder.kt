@@ -110,7 +110,12 @@ class SingleAutomateCouponViewHolder(
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         if (lifecycleOwner == null) return
 
-        viewModel?.getComponentList()?.removeObservers(lifecycleOwner)
+        viewModel?.apply {
+            getComponentList().removeObservers(lifecycleOwner)
+            shouldShowErrorClaimCouponToaster().removeObservers(lifecycleOwner)
+            getCTAState().removeObservers(lifecycleOwner)
+        }
+
         super.removeObservers(lifecycleOwner)
     }
 }

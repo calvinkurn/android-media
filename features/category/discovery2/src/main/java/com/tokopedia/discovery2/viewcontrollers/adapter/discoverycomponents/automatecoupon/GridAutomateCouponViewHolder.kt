@@ -63,6 +63,13 @@ class GridAutomateCouponViewHolder(
         }
     }
 
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        if (lifecycleOwner == null) return
+        viewModel?.getComponentList()?.removeObservers(lifecycleOwner)
+
+        super.removeObservers(lifecycleOwner)
+    }
+
     private fun GridAutomateCouponLayoutBinding.showWidget(items: ArrayList<ComponentsItem>) {
         automateCouponRv.show()
         mAdapter.setDataList(items)

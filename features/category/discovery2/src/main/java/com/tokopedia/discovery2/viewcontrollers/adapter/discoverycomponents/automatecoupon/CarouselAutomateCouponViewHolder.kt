@@ -16,7 +16,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class CarouselAutomateCouponViewHolder(
     itemView: View,
     val fragment: Fragment
-): AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private val binding: CarouselAutomateCouponLayoutBinding?
         by viewBinding()
@@ -57,6 +57,14 @@ class CarouselAutomateCouponViewHolder(
         }
     }
 
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        if (lifecycleOwner == null) return
+
+        viewModel?.getComponentList()?.removeObservers(lifecycleOwner)
+
+        super.removeObservers(lifecycleOwner)
+    }
+
     private fun CarouselAutomateCouponLayoutBinding.showWidget(items: ArrayList<ComponentsItem>) {
         automateCouponRv.show()
         couponAdapter.setDataList(items)
@@ -68,6 +76,4 @@ class CarouselAutomateCouponViewHolder(
             layoutManager = linearLayoutManager
         }
     }
-
-
 }

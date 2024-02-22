@@ -61,7 +61,11 @@ class CarouselAutomateCouponItemViewHolder(
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
-        lifecycleOwner?.let { viewModel?.getCouponModel()?.removeObservers(it) }
+        lifecycleOwner?.let {
+            viewModel?.getCouponModel()?.removeObservers(it)
+            viewModel?.shouldShowErrorClaimCouponToaster()?.removeObservers(it)
+            viewModel?.getCTAState()?.removeObservers(it)
+        }
     }
 
     private fun CarouselAutomateCouponItemLayoutBinding.renderCoupon(model: AutomateCouponUiModel) {
