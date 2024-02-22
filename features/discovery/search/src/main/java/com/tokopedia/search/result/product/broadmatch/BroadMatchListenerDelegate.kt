@@ -17,16 +17,25 @@ class BroadMatchListenerDelegate(
     SearchParameterProvider by searchParameterProvider,
     FragmentProvider by fragmentProvider {
 
-    override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {
-        presenter?.onBroadMatchItemImpressed(broadMatchItemDataView)
+    override fun onBroadMatchItemImpressed(
+        broadMatchItemDataView: BroadMatchItemDataView,
+        adapterPosition: Int,
+    ) {
+        presenter?.onBroadMatchItemImpressed(broadMatchItemDataView, adapterPosition)
     }
 
-    override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {
-        presenter?.onBroadMatchItemClick(broadMatchItemDataView)
+    override fun onBroadMatchItemClicked(
+        broadMatchItemDataView: BroadMatchItemDataView,
+        adapterPosition: Int,
+    ) {
+        presenter?.onBroadMatchItemClick(broadMatchItemDataView, adapterPosition)
     }
 
-    override fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView) {
-        presenter?.onBroadMatchImpressed(broadMatchDataView)
+    override fun onBroadMatchImpressed(
+        broadMatchDataView: BroadMatchDataView,
+        adapterPosition: Int,
+    ) {
+        presenter?.onBroadMatchImpressed(broadMatchDataView, adapterPosition)
     }
 
     override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {

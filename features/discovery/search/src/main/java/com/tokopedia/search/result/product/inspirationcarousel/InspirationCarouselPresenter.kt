@@ -3,7 +3,10 @@ package com.tokopedia.search.result.product.inspirationcarousel
 interface InspirationCarouselPresenter {
     fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product)
 
-    fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product)
+    fun onInspirationCarouselProductClick(
+        product: InspirationCarouselDataView.Option.Product,
+        optionAdapterPosition: Int,
+    )
 
     fun onInspirationCarouselChipsClick(
         adapterPosition: Int,

@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.broadmatch
 
 import android.content.Context
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.iris.Iris
 import com.tokopedia.product.detail.common.ProductDetailPrefetch
@@ -31,7 +32,10 @@ class BroadMatchViewDelegate @Inject constructor(
     ContextProvider by WeakReferenceContextProvider(context),
     QueryKeyProvider by queryKeyProvider {
 
-    override fun trackEventClickBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView) {
+    override fun trackEventClickBroadMatchItem(
+        broadMatchItemDataView: BroadMatchItemDataView,
+        adapterPosition: Int,
+    ) {
         val broadMatchItem = ArrayList<Any>()
         broadMatchItem.add(broadMatchItemDataView.asClickObjectDataLayer())
 
@@ -43,9 +47,16 @@ class BroadMatchViewDelegate @Inject constructor(
             broadMatchItemDataView.componentId,
             broadMatchItem,
         )
+
+        AppLogSearch.eventSearchResultClick(
+            broadMatchItemDataView.asByteIOSearchResult(adapterPosition, "")
+        )
     }
 
-    override fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView) {
+    override fun trackEventImpressionBroadMatchItem(
+        broadMatchItemDataView: BroadMatchItemDataView,
+        adapterPosition: Int
+    ) {
         val trackingQueue = trackingQueue
         val broadMatchItemAsObjectDataLayer = ArrayList<Any>()
         broadMatchItemAsObjectDataLayer.add(broadMatchItemDataView.asImpressionObjectDataLayer())
@@ -57,12 +68,23 @@ class BroadMatchViewDelegate @Inject constructor(
             getUserId(userSession),
             broadMatchItemAsObjectDataLayer,
         )
+
+        AppLogSearch.eventSearchResultShow(
+            broadMatchItemDataView.asByteIOSearchResult(adapterPosition, null)
+        )
     }
 
-    override fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView) {
+    override fun trackEventImpressionBroadMatch(
+        broadMatchDataView: BroadMatchDataView,
+        adapterPosition: Int,
+    ) {
         BroadMatchTracking.trackEventImpressionBroadMatch(
             iris,
             broadMatchDataView,
+        )
+
+        AppLogSearch.eventSearchResultShow(
+            broadMatchDataView.asByteIOSearchResult(adapterPosition)
         )
     }
 

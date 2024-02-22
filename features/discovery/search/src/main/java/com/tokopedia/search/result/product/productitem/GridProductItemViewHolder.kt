@@ -3,6 +3,7 @@ package com.tokopedia.search.result.product.productitem
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardReimagineGridBinding
@@ -45,6 +46,10 @@ class GridProductItemViewHolder(
 
             setOnClickListener {
                 productListener.onItemClicked(productItemData, bindingAdapterPosition)
+            }
+
+            addOnImpression1pxListener(productItemData.byteIOImpressHolder) {
+                productListener.onProductImpressedByteIO(productItemData)
             }
         }
     }

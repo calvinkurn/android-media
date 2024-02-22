@@ -1,11 +1,15 @@
 package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.VIDEO_GOODS
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.ByteIOTrackingData
 import com.tokopedia.search.result.product.addtocart.AddToCartConstant.DEFAULT_PARENT_ID
 import com.tokopedia.search.result.product.productitem.ProductItemVisitable
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
@@ -74,6 +78,8 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
     var parentId: String = DEFAULT_PARENT_ID
     var isPortrait: Boolean = false
     var isImageBlurred: Boolean = false
+    var byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData()
+    val byteIOImpressHolder = ImpressHolder()
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
         if (this.productID == productID) {
@@ -148,7 +154,9 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
         )
     }
 
-    fun shouldOpenVariantBottomSheet(): Boolean = parentId != "" && parentId != DEFAULT_PARENT_ID
+    fun shouldOpenVariantBottomSheet(): Boolean = hasParent()
+
+    private fun hasParent() = parentId != "" && parentId != DEFAULT_PARENT_ID
 
     private fun getDimension81(): String {
         val shopType = badgesList?.find { it.isShown && it.imageUrl.isNotEmpty() && it.title.isNotEmpty() }
@@ -190,6 +198,34 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
     val isKeywordIntentionLow : Boolean
         get() = keywordIntention == KEYWORD_INTENT_LOW
 
+    fun asByteIOSearchResult(aladdinButtonType: String?): AppLogSearch.SearchResult {
+        val searchResultId =
+            if (customVideoURL.isBlank())
+                if (hasParent()) parentId
+                else productID
+            else
+                ""
+
+        return AppLogSearch.SearchResult(
+            imprId = byteIOTrackingData.imprId,
+            searchId = byteIOTrackingData.searchId,
+            searchEntrance = byteIOTrackingData.searchEntrance,
+            enterFrom = byteIOTrackingData.enterFrom,
+            searchResultId = searchResultId,
+            listItemId = null,
+            itemRank = null,
+            listResultType = null,
+            productID = productID,
+            searchKeyword = byteIOTrackingData.keyword,
+            tokenType = if (customVideoURL.isBlank()) GOODS else VIDEO_GOODS,
+            rank = position,
+            isAd = isAds,
+            isFirstPage = byteIOTrackingData.isFirstPage,
+            shopId = shopID,
+            aladdinButtonType = aladdinButtonType,
+        )
+    }
+
     companion object {
         private const val LABEL_POSITION_SHOW_BLUR = "show"
         private const val LABEL_POSITION_BLUR = "blur"
@@ -201,6 +237,7 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
             externalReference: String,
             keywordIntention: Int,
             showButtonAtc: Boolean,
+            byteIOTrackingData: ByteIOTrackingData,
         ): ProductItemDataView {
             val item = ProductItemDataView()
             item.productID = topAds.product.id
@@ -242,6 +279,7 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
             item.keywordIntention = keywordIntention
             item.showButtonAtc = showButtonAtc
             item.parentId = topAds.product.parentId
+            item.byteIOTrackingData = byteIOTrackingData
             return item
         }
 

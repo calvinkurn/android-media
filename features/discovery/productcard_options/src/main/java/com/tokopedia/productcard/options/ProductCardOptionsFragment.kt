@@ -14,11 +14,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_ATC
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_SEE_SIMILAR_PRODUCT
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_SHARE_PRODUCT
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_VISIT_SHOP
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
-import com.tokopedia.discovery.common.manager.startSimilarSearch
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.productcard.options.databinding.ProductCardOptionsFragmentLayoutBinding
@@ -92,17 +92,8 @@ internal class ProductCardOptionsFragment @Inject constructor(
 
     private fun observeRouteToSimilarSearchEventLiveData() {
         productCardOptionsViewModel?.getRouteToSimilarSearchEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            routeToSimilarSearch()
+            sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_SEE_SIMILAR_PRODUCT)
         })
-    }
-
-    private fun routeToSimilarSearch() {
-        activity?.let { activity ->
-            val productCardOptionsModel = productCardOptionsViewModel?.productCardOptionsModel
-                    ?: return
-
-            startSimilarSearch(activity, productCardOptionsModel.productId, productCardOptionsModel.keyword)
-        }
     }
 
     private fun observeCloseProductCardOptionsEventLiveData() {
