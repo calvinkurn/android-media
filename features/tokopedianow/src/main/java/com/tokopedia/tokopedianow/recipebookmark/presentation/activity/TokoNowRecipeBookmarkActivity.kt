@@ -13,10 +13,10 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.recipebookmark.analytics.RecipeBookmarkAnalytics
 import com.tokopedia.tokopedianow.recipebookmark.di.component.DaggerRecipeBookmarkComponent
-import com.tokopedia.tokopedianow.recipebookmark.presentation.viewmodel.TokoNowRecipeBookmarkViewModel
-import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.layout.RecipeBookmarkLayout
 import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkAction
 import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkEvent
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.layout.RecipeBookmarkLayout
+import com.tokopedia.tokopedianow.recipebookmark.presentation.viewmodel.TokoNowRecipeBookmarkViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import javax.inject.Inject
@@ -34,7 +34,7 @@ class TokoNowRecipeBookmarkActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectDependencies()
-        if(remoteConfig.getBoolean(RemoteConfigKey.ANDROID_DISABLE_RECIPE_BOOKMARK_COMPOSE, false)) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_DISABLE_RECIPE_BOOKMARK_COMPOSE, false)) {
             startActivity(
                 Intent(
                     this,
@@ -95,7 +95,7 @@ class TokoNowRecipeBookmarkActivity : AppCompatActivity() {
 
         val text = getString(
             R.string.tokopedianow_recipe_toaster_description_success_removing_bookmark,
-            title
+            model.title
         )
         val actionText = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel)
 
