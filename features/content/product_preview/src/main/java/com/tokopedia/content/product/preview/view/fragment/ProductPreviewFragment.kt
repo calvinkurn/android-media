@@ -20,6 +20,8 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.doOnApplyWindowInsets
 import com.tokopedia.content.common.util.requestApplyInsetsWhenAttached
@@ -49,6 +51,8 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -60,17 +64,17 @@ class ProductPreviewFragment @Inject constructor(
     private val analyticsFactory: ProductPreviewAnalytics.Factory
 ) : TkpdBaseV4Fragment() {
 
+    private val productPreviewSource: ProductPreviewSourceModel
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(
+                PRODUCT_PREVIEW_SOURCE,
+                ProductPreviewSourceModel::class.java
+            )
+        } else {
+            arguments?.getParcelable(PRODUCT_PREVIEW_SOURCE)
+        } ?: ProductPreviewSourceModel.Empty
+
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        val productPreviewSource: ProductPreviewSourceModel by lazyThreadSafetyNone {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arguments?.getParcelable(
-                    PRODUCT_PREVIEW_SOURCE,
-                    ProductPreviewSourceModel::class.java
-                )
-            } else {
-                arguments?.getParcelable(PRODUCT_PREVIEW_SOURCE)
-            } ?: ProductPreviewSourceModel.Empty
-        }
         viewModelFactory.create(productPreviewSource)
     }
 
@@ -107,6 +111,12 @@ class ProductPreviewFragment @Inject constructor(
         viewModel.onAction(ProductPreviewAction.ProductActionFromResult)
     }
 
+    private val coachMark by lazyThreadSafetyNone {
+        CoachMark2(requireContext())
+    }
+
+    private var coachMarkJob: Job? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -124,6 +134,7 @@ class ProductPreviewFragment @Inject constructor(
         onClickHandler()
         observeData()
         observeEvent()
+        handleCoachMark()
     }
 
     override fun onStart() {
@@ -140,6 +151,17 @@ class ProductPreviewFragment @Inject constructor(
                 bottom = padding.bottom + if (isNavVisible) navInsets.bottom else 0
             )
         }
+    }
+
+    private val coachMarkItems by lazyThreadSafetyNone {
+        arrayListOf(
+            CoachMark2Item(
+                anchorView = binding.layoutProductPreviewTab.anchorCoachmark,
+                title = "",
+                description = getString(contentproductpreviewR.string.product_prev_coachmark_onboard),
+                position = CoachMark2.POSITION_BOTTOM
+            )
+        )
     }
 
     private fun initViews() = with(binding) {
@@ -260,7 +282,7 @@ class ProductPreviewFragment @Inject constructor(
                         binding.viewFooter.gone()
                     }
                     is ProductPreviewEvent.UnknownSourceData -> activity?.finish()
-                    is ProductPreviewEvent.TrackAllHorizontalScroll -> {
+                   is ProductPreviewEvent.TrackAllHorizontalScroll -> {
                         analytics.onSwipeContentAndTab()
                     }
                     else -> return@collect
@@ -327,8 +349,19 @@ class ProductPreviewFragment @Inject constructor(
         }
     }
 
+    private fun handleCoachMark() {
+        if (productPreviewSource.source !is ProductPreviewSourceModel.ProductSourceData || viewModel.hasVisit) return
+        coachMarkJob?.cancel()
+        coachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
+            delay(DELAY_COACH_MARK)
+            coachMark.showCoachMark(step = coachMarkItems)
+            viewModel.onAction(ProductPreviewAction.HasVisitCoachMark)
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        coachMarkJob?.cancel()
         binding.vpProductPreview.unregisterOnPageChangeCallback(
             pagerListener
         )
@@ -336,6 +369,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     companion object {
+        private const val DELAY_COACH_MARK = 2000L
         fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,

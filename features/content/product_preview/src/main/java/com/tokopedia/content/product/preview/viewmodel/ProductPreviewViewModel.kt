@@ -3,6 +3,7 @@ package com.tokopedia.content.product.preview.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
+import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreference
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
@@ -58,7 +59,8 @@ import kotlinx.coroutines.launch
 class ProductPreviewViewModel @AssistedInject constructor(
     @Assisted val productPreviewSource: ProductPreviewSourceModel,
     private val repo: ProductPreviewRepository,
-    private val userSessionInterface: UserSessionInterface
+    private val userSessionInterface: UserSessionInterface,
+    private val productPrevSharedPref: ProductPreviewSharedPreference
 ) : ViewModel() {
 
     @AssistedFactory
@@ -123,6 +125,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
             }
         }
 
+    val hasVisit get() = productPrevSharedPref.hasVisited()
+
     fun onAction(action: ProductPreviewAction) {
         when (action) {
             CheckInitialSource -> handleCheckInitialSource()
@@ -143,6 +147,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is SubmitReport -> handleSubmitReport(action.model)
             is ClickMenu -> handleClickMenu(action.isFromLogin)
             is Like -> handleLikeFromResult(action.item)
+            ProductPreviewAction.HasVisitCoachMark -> productPrevSharedPref.setHasVisit()
         }
     }
 
