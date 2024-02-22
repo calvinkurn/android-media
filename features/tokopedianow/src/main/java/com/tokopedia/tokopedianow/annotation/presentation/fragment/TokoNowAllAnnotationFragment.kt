@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.R
@@ -29,6 +30,7 @@ import com.tokopedia.tokopedianow.annotation.presentation.viewholder.AnnotationV
 import com.tokopedia.tokopedianow.annotation.presentation.viewmodel.TokoNowAllAnnotationViewModel
 import com.tokopedia.tokopedianow.common.decoration.SeeAllPageDecoration
 import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil.setupLayout
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -39,7 +41,6 @@ class TokoNowAllAnnotationFragment : Fragment() {
     companion object {
         private const val SPAN_COUNT = 3
         private const val SPAN_FULL_SPACE = 1
-        private const val SCROLL_DOWN_DIRECTION = 1
 
         fun newInstance(
             categoryId: String?,
@@ -69,6 +70,8 @@ class TokoNowAllAnnotationFragment : Fragment() {
     private var binding: FragmentTokopedianowAllAnnotationBinding?
         by autoClearedNullable()
     private var adapter: AllAnnotationAdapter?
+        by autoClearedNullable()
+    private var layoutManager: GridLayoutManager?
         by autoClearedNullable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -108,21 +111,22 @@ class TokoNowAllAnnotationFragment : Fragment() {
 
     private fun FragmentTokopedianowAllAnnotationBinding.setupRecyclerView() {
         adapter = AllAnnotationAdapter(AllAnnotationAdapterTypeFactory(annotationCallback()))
+        layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return when (adapter?.getItemViewType(position)) {
+                        AnnotationViewHolder.LAYOUT -> SPAN_FULL_SPACE
+                        else -> SPAN_COUNT
+                    }
+                }
+            }
+        }
         rvAllAnnotation.apply {
             addItemDecoration(SeeAllPageDecoration(getDpFromDimen(context, unifyprinciplesR.dimen.unify_space_16).toIntSafely()))
             addOnScrollListener(loadMoreListener)
             animation = null
             adapter = this@TokoNowAllAnnotationFragment.adapter
-            layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
-                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                    override fun getSpanSize(position: Int): Int {
-                        return when (adapter?.getItemViewType(position)) {
-                            AnnotationViewHolder.LAYOUT -> SPAN_FULL_SPACE
-                            else -> SPAN_COUNT
-                        }
-                    }
-                }
-            }
+            layoutManager = this@TokoNowAllAnnotationFragment.layoutManager
         }
     }
 
@@ -200,12 +204,15 @@ class TokoNowAllAnnotationFragment : Fragment() {
     private fun createLoadMoreListener(): RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            val isAtTheBottomOfThePage = !recyclerView.canScrollVertically(SCROLL_DOWN_DIRECTION)
-            viewModel.loadMore(
-                categoryId,
-                annotationType,
-                isAtTheBottomOfThePage
-            )
+            val lastVisiblePosition = layoutManager?.findLastVisibleItemPosition()
+            if (lastVisiblePosition != RecyclerView.NO_POSITION) {
+                val lastVisibleViewHolder = recyclerView.findViewHolderForAdapterPosition(lastVisiblePosition.orZero())
+                viewModel.loadMore(
+                    categoryId,
+                    annotationType,
+                    lastVisibleViewHolder is TokoNowLoadingMoreViewHolder
+                )
+            }
         }
     }
 

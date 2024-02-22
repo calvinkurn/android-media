@@ -7,7 +7,7 @@ import com.tokopedia.tokopedianow.annotation.presentation.adapter.AllAnnotationT
 data class AnnotationUiModel(
     val id: String,
     val name: String,
-    val imageUrl: String,
+    val imageUrl: String?,
     val appLink: String
 ): Visitable<AllAnnotationTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: AllAnnotationTypeFactory): Int = typeFactory.type(this)

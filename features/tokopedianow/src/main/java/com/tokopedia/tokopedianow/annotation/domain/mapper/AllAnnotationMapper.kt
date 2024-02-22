@@ -6,10 +6,12 @@ import com.tokopedia.tokopedianow.annotation.presentation.uimodel.AnnotationUiMo
 object AllAnnotationMapper {
     fun GetAnnotationListResponse.mapToAnnotationUiModels(): List<AnnotationUiModel> {
         return annotationList.map {
+            // tempImageUrl logic will handle broken image issue, will delete the logic if from media solves the issue
+            val tempImageUrl = it.imageURL.ifBlank { null }
             AnnotationUiModel(
                 id = it.annotationID,
                 name = it.name,
-                imageUrl = it.imageURL,
+                imageUrl = tempImageUrl,
                 appLink = it.appLink
             )
         }

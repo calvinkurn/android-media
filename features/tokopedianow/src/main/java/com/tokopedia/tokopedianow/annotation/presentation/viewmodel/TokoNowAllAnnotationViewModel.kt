@@ -3,10 +3,10 @@ package com.tokopedia.tokopedianow.annotation.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokopedianow.annotation.domain.mapper.VisitableMapper.addAnnotations
 import com.tokopedia.tokopedianow.annotation.domain.mapper.VisitableMapper.addLoadMore
@@ -17,6 +17,7 @@ import com.tokopedia.tokopedianow.annotation.presentation.model.LoadMoreDataMode
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.Job
 import javax.inject.Inject
 
 class TokoNowAllAnnotationViewModel @Inject constructor(
@@ -30,6 +31,7 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
 
     private val layout: MutableList<Visitable<*>> = arrayListOf()
     private var needToLoadMoreData: LoadMoreDataModel = LoadMoreDataModel(isNeededToLoadMore = true)
+    private var job: Job? = null
 
     val headerTitle: LiveData<Result<String>>
         get() = _headerTitle
@@ -44,7 +46,7 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
         categoryId: String,
         annotationType: String
     ) {
-        launchCatchError(block = {
+        job = launchCatchError(block = {
             val response = getAllAnnotationPageUseCase.execute(
                 categoryId = categoryId,
                 annotationType = AnnotationType.valueOf(annotationType),
@@ -52,6 +54,11 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
             )
 
             layout.addAnnotations(response)
+
+            if (response.isNeededToLoadMore()) {
+                layout.addLoadMore()
+            }
+
             _firstPage.postValue(Success(layout))
             _headerTitle.postValue(Success(response.annotationHeader.title))
 
@@ -68,46 +75,49 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
     fun loadMore(
         categoryId: String,
         annotationType: String,
-        isAtTheBottomOfThePage: Boolean
+        isLastVisibleLoadingMore: Boolean
     ) {
-        if (isAtTheBottomOfThePage) {
-            when {
-                layout.last() is LoadingMoreModel -> {
-                    launchCatchError(block = {
-                        val response = getAllAnnotationPageUseCase.execute(
-                            categoryId = categoryId,
-                            annotationType = AnnotationType.valueOf(annotationType),
-                            pageLastId = needToLoadMoreData.pageLastId
-                        )
+        when {
+            !needToLoadMoreData.isNeededToLoadMore -> {
+                _isOnScrollNotNeeded.value = Unit
+            }
+            isLastVisibleLoadingMore && job?.isCompleted.orFalse() -> {
+                job = launchCatchError(block = {
+                    val response = getAllAnnotationPageUseCase.execute(
+                        categoryId = categoryId,
+                        annotationType = AnnotationType.valueOf(annotationType),
+                        pageLastId = needToLoadMoreData.pageLastId
+                    )
 
-                        needToLoadMoreData = if (response.annotationList.isNotEmpty()) {
-                            layout.removeLoadMore()
-                            layout.addAnnotations(response)
-                            _loadMore.postValue(layout)
+                    needToLoadMoreData = if (response.annotationList.isNotEmpty()) {
+                        layout.removeLoadMore()
+                        layout.addAnnotations(response)
 
-                            needToLoadMoreData.copy(
-                                isNeededToLoadMore = response.isNeededToLoadMore(),
-                                pageLastId = response.pagination.pageLastID
-                            )
-                        } else {
-                            layout.removeLoadMore()
-                            _loadMore.postValue(layout)
-
-                            needToLoadMoreData.copy(
-                                isNeededToLoadMore = false
-                            )
+                        if (response.isNeededToLoadMore()) {
+                            layout.addLoadMore()
                         }
-                    }) {
+
+                        _loadMore.postValue(layout)
+
+                        needToLoadMoreData.copy(
+                            isNeededToLoadMore = response.isNeededToLoadMore(),
+                            pageLastId = response.pagination.pageLastID
+                        )
+                    } else {
                         layout.removeLoadMore()
                         _loadMore.postValue(layout)
+
+                        needToLoadMoreData.copy(
+                            isNeededToLoadMore = false
+                        )
                     }
-                }
-                needToLoadMoreData.isNeededToLoadMore -> {
-                    layout.addLoadMore()
-                    _loadMore.value = layout
-                }
-                else -> {
-                    _isOnScrollNotNeeded.value = Unit
+                }) {
+                    layout.removeLoadMore()
+                    _loadMore.postValue(layout)
+
+                    needToLoadMoreData = needToLoadMoreData.copy(
+                        isNeededToLoadMore = false
+                    )
                 }
             }
         }
