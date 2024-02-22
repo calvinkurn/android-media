@@ -2,19 +2,23 @@ package com.tokopedia.shop.product.utils.mapper
 
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.data.model.Actions
 import com.tokopedia.shop.common.data.model.RestrictionEngineModel
 import com.tokopedia.shop.common.data.response.RestrictionEngineDataResponse
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.common.data.source.cloud.model.LabelGroupStyle
 import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
+import com.tokopedia.shop.common.util.productcard.ShopProductCardColorHelper
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel.Companion.THRESHOLD_VIEW_COUNT
@@ -25,6 +29,8 @@ object ShopPageProductListMapper {
     private const val POSTFIX_VIEW_COUNT = "%1s orang"
     private const val PRODUCT_RATING_DIVIDER = 20
     private const val ZERO_PRODUCT_DISCOUNT = "0"
+    
+    private val productCardColorHelper = ShopProductCardColorHelper()
 
     fun mapToShopProductEtalaseListDataModel(
         listShopEtalaseModel: List<ShopEtalaseModel>
@@ -77,11 +83,14 @@ object ShopPageProductListMapper {
                 it.isShowFreeOngkir = freeOngkir.isActive
                 it.freeOngkirPromoIcon = freeOngkir.imgUrl
                 it.etalaseId = etalaseId
+                it.badge = badge.map { badge -> ShopBadgeUiModel(title = badge.title, imageUrl = badge.imageUrl) }
                 it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                 it.etalaseType = etalaseType
                 it.stock = stock.toLong()
                 it.maximumOrder = getMaximumOrder(shopProduct)
                 it.isEnableDirectPurchase = isEnableDirectPurchase
+                it.isFulfillment = shopProduct.labelGroupList.any { it.position == ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT }
+                it.warehouseId = shopProduct.warehouseId
                 when (it.etalaseType) {
                     ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
                         it.isUpcoming = campaign.isUpcoming
@@ -143,7 +152,8 @@ object ShopPageProductListMapper {
             position = labelGroup.position,
             title = labelGroup.title,
             type = labelGroup.type,
-            url = labelGroup.url
+            url = labelGroup.url,
+            styles = labelGroup.styles.map { style -> LabelGroupStyle(style.key, style.value) }
         )
     }
 
@@ -209,7 +219,10 @@ object ShopPageProductListMapper {
         shopProductUiModel: ShopProductUiModel,
         isWideContent: Boolean,
         isShowThreeDots: Boolean = true,
-        isForceLightMode: Boolean = false
+        isForceLightMode: Boolean = false,
+        patternType: String = "",
+        backgroundColor: String = "",
+        isDeviceOnDarkModeTheme: Boolean = false
     ): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
@@ -241,7 +254,21 @@ object ShopPageProductListMapper {
             stockBarLabel = shopProductUiModel.stockLabel,
             stockBarPercentage = shopProductUiModel.stockBarPercentage,
             isWideContent = isWideContent,
-            forceLightModeColor = isForceLightMode
+            isWishlisted = shopProductUiModel.isWishList,
+            forceLightModeColor = isForceLightMode,
+            shopBadgeList = shopProductUiModel.badge.map {
+                ProductCardModel.ShopBadge(
+                    isShown = false,
+                    imageUrl = it.imageUrl,
+                    title = it.title
+                )
+            },
+            colorMode = productCardColorHelper.determineProductCardColorMode(
+                isDeviceOnDarkModeTheme = isDeviceOnDarkModeTheme,
+                shouldOverrideTheme = isForceLightMode,
+                patternColorType = patternType,
+                backgroundColor = backgroundColor
+            )
         )
         return if (shopProductUiModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(shopProductUiModel.isSoldOut)) {
             val productCardModel = if (shopProductUiModel.isVariant) {
@@ -329,7 +356,10 @@ object ShopPageProductListMapper {
             position = labelGroupUiModel.position,
             title = labelGroupUiModel.title,
             type = labelGroupUiModel.type,
-            imageUrl = labelGroupUiModel.url
+            imageUrl = labelGroupUiModel.url,
+            styleList = labelGroupUiModel.styles.map {
+                ProductCardModel.LabelGroup.Style(key = it.key, value = it.value)
+            }
         )
     }
 

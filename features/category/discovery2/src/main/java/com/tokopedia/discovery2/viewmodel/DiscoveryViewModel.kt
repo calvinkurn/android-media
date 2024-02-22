@@ -68,6 +68,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.VARIANT_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.WishListManager
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewmodel.livestate.DiscoveryLiveState
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
@@ -145,9 +146,9 @@ class DiscoveryViewModel @Inject constructor(
         get() = _addToCartActionNonVariant
     private val _addToCartActionNonVariant = MutableLiveData<DiscoATCRequestParams>()
 
-    val bmGmDataList: LiveData<Pair<Int, List<String>>>
+    val bmGmDataList: LiveData<Pair<BmGmDataParam, BmGmTierData>>
         get() = _bmGmDataList
-    private val _bmGmDataList = MutableLiveData<Pair<Int, List<String>>>()
+    private val _bmGmDataList = MutableLiveData<Pair<BmGmDataParam, BmGmTierData>>()
 
     private val _scrollState = MutableLiveData<ScrollData>()
     val scrollState: LiveData<ScrollData> = _scrollState
@@ -316,7 +317,16 @@ class DiscoveryViewModel @Inject constructor(
                 )
             )
             executeGetMiniCartUseCase {
-                _bmGmDataList.postValue(Pair(bmGmDataParam.parentPosition, it.bmgmData.offerMessage))
+                _bmGmDataList.postValue(
+                    Pair(
+                        bmGmDataParam,
+                        BmGmTierData(
+                            flipTierImage = it.bmgmData.tierImage,
+                            flipTierWording = it.bmgmData.tierMessage,
+                            offerMessages = it.bmgmData.offerMessage
+                        )
+                    )
+                )
             }
         }) {
             _miniCart.postValue(Fail(it))

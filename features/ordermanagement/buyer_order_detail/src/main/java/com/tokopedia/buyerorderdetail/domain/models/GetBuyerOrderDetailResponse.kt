@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailLogisticSectionInfoID
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.order_management_common.domain.data.ProductBenefit
 
 data class GetBuyerOrderDetailResponse(
     @Expose
@@ -345,6 +346,9 @@ data class GetBuyerOrderDetailResponse(
 
             data class Shipment(
                 @Expose
+                @SerializedName("title")
+                val title: String = String.EMPTY,
+                @Expose
                 @SerializedName("driver")
                 val driver: Driver = Driver(),
                 @Expose
@@ -567,15 +571,18 @@ data class GetBuyerOrderDetailResponse(
                         data class Metadata(
                             @SerializedName("add_on_note")
                             @Expose
-                            val addonNote: AddonNote = AddonNote()
+                            val addonNote: AddonNote = AddonNote(),
+                            @SerializedName("info_link")
+                            @Expose
+                            val infoLink: String = ""
                         ) {
                             data class AddonNote(
                                 @SerializedName("notes")
                                 @Expose
                                 val notes: String = "",
-                                @SerializedName("short_notes")
+                                @SerializedName("tips")
                                 @Expose
-                                val shortNotes: String = "",
+                                val tips: String = "",
                                 @SerializedName("to")
                                 @Expose
                                 val to: String = "",
@@ -637,7 +644,9 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("tier_discount_amount")
                     val tierDiscountAmount: Int = 0,
                     @SerializedName("tier_discount_amount_formatted")
-                    val tierDiscountAmountFormatted: String = ""
+                    val tierDiscountAmountFormatted: String = "",
+                    @SerializedName("product_benefit")
+                    val productBenefit: ProductBenefit? = null
                 ) {
                     data class OrderDetail(
                         @SerializedName("order_detail_id")
@@ -667,7 +676,7 @@ data class GetBuyerOrderDetailResponse(
                         @SerializedName("category_id")
                         val categoryId: String = "0",
                         @SerializedName("addon_summary")
-                        val addonSummary: AddonSummary? = AddonSummary()
+                        val addonSummary: AddonSummary? = null
                     )
                 }
 
@@ -773,7 +782,11 @@ data class GetBuyerOrderDetailResponse(
 
                         @Expose
                         @SerializedName("price_text")
-                        val priceText: String = ""
+                        val priceText: String = "",
+
+                        @SerializedName("addon_summary")
+                        @Expose
+                        val addonSummary: AddonSummary? = AddonSummary()
                     )
                 }
 

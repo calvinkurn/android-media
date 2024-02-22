@@ -25,6 +25,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TAB_DEFAULT_BACKGROUND
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -130,6 +131,7 @@ class DiscoveryPageDataMapper(
         when (component.name) {
             ComponentNames.Tabs.componentName,
             ComponentNames.TabsIcon.componentName,
+            ComponentNames.TabsImage.componentName,
             ComponentNames.FlashSaleTokoTab.componentName -> listComponents.addAll(
                 parseTab(component, position)
             )
@@ -141,10 +143,6 @@ class DiscoveryPageDataMapper(
             }
 
             ComponentNames.BannerInfinite.componentName -> listComponents.addAll(
-                parseProductVerticalList(component, false)
-            )
-
-            ComponentNames.ContentCard.componentName -> listComponents.addAll(
                 parseProductVerticalList(component, false)
             )
 
@@ -225,9 +223,17 @@ class DiscoveryPageDataMapper(
             }
 
             ComponentNames.ProductCardSingle.componentName -> {
-                if (!shouldHideSingleProdCard) {
-                    addRecomQueryProdID(component)
-                    listComponents.add(component)
+                if (component.properties?.cardType.equals("V1", true)) {
+                    if (!shouldHideSingleProdCard) {
+                        addRecomQueryProdID(component)
+                        listComponents.add(component)
+                    }
+                } else {
+                    if (!shouldHideSingleProdCard) {
+                        component.name = ComponentNames.ProductCardSingleReimagine.componentName
+                        addRecomQueryProdID(component)
+                        listComponents.add(component)
+                    }
                 }
             }
 
@@ -394,6 +400,10 @@ class DiscoveryPageDataMapper(
 
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
 
+        if (checkImageAvailableOnPlainTab(component)) {
+            component.name = ComponentNames.TabsImage.componentName
+        }
+
         listComponents.add(component)
 
         if (component.getComponentsItem().isNullOrEmpty()) {
@@ -465,19 +475,27 @@ class DiscoveryPageDataMapper(
                 }
             }
 
-            val saleTabStatus = checkSaleTimer(componentsItem)
-
-            if (saleTabStatus) {
-                val componentList =
-                    handleProductState(componentsItem, ComponentNames.SaleEndState.componentName)
-                tabsChildComponentsItemList.addAll(componentList)
-                listComponents.addAll(componentList)
-            }
-
             componentsItem.setComponentsItem(tabsChildComponentsItemList, tabData.name)
         }
 
         return listComponents
+    }
+
+    private fun checkImageAvailableOnPlainTab(component: ComponentsItem): Boolean {
+        if (component.properties?.background != TAB_DEFAULT_BACKGROUND) return false
+
+        var isUnifyTabWithImage = false
+
+        component.data?.let {
+            loop@ for (data in it) {
+                isUnifyTabWithImage = !data.tabActiveImageUrl.isNullOrEmpty() &&
+                    !data.tabInactiveImageUrl.isNullOrEmpty()
+
+                if (isUnifyTabWithImage) break@loop
+            }
+        }
+
+        return isUnifyTabWithImage
     }
 
     private fun generateTabIdentifier(
@@ -549,36 +567,6 @@ class DiscoveryPageDataMapper(
         return tabChildComponentsItem
     }
 
-    private fun checkSaleTimer(tab: ComponentsItem): Boolean {
-        tab.apply {
-            if (!data.isNullOrEmpty()) {
-                data?.get(0)?.let { tabData ->
-                    val targetComponentIdList = tabData.targetComponentId
-                        ?.split(",")
-                        ?.map { it.trim() }
-
-                    if (!targetComponentIdList.isNullOrEmpty()) {
-                        targetComponentIdList.forEach { componentId ->
-                            getComponent(componentId, pageInfo.identifier!!)?.let { componentItem ->
-                                if (componentItem.name == ComponentNames.TimerSprintSale.componentName) {
-                                    if (!componentItem.data.isNullOrEmpty() && Utils.isSaleOver(
-                                            componentItem.data!![0].endDate
-                                                ?: ""
-                                        )
-                                    ) {
-                                        data!![0].targetComponentId = componentId
-                                        return true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false
-    }
-
     private fun parseProductVerticalList(
         component: ComponentsItem,
         showEmptyState: Boolean = true
@@ -648,17 +636,6 @@ class DiscoveryPageDataMapper(
                             }
                         }
                     )
-                    if (component.name == ComponentNames.ContentCard.componentName) {
-                        if ((component.data?.size?.rem(2) ?: 0) != 0) {
-                            listComponents.addAll(
-                                handleProductState(
-                                    component,
-                                    ComponentNames.ContentCardEmptyState.componentName,
-                                    queryParameterMap
-                                )
-                            )
-                        }
-                    }
                 }
                 if (component.properties?.index != null &&
                     component.properties?.index!! > Int.ZERO &&
@@ -794,13 +771,86 @@ class DiscoveryPageDataMapper(
 
         val shouldSupportFestive = componentsItem?.find { !it.isBackgroundPresent } == null
 
+        markTargetedFST(componentsItem)
+
         if (!shouldSupportFestive) {
             componentsItem?.let {
-                listComponents.addAll(getSectionComponentList(it, component.position + 1))
+                listComponents.addAll(
+                    getSectionComponentList(it.filter { !it.isTargetedTabComponent }, component.position + 1)
+                )
+            }
+        } else {
+            val updatedComponents = parseFestiveFlashSaleTab(componentsItem?.filter { !it.isTargetedTabComponent })
+
+            if (updatedComponents.isNotEmpty()) {
+                listComponents.first().setComponentsItem(updatedComponents)
+                overwriteFlashSaleTabParentCompId(listComponents)
             }
         }
 
         return listComponents
+    }
+
+    private fun overwriteFlashSaleTabParentCompId(listComponents: ArrayList<ComponentsItem>) {
+        val targetedIds = listComponents.first().getComponentsItem()
+            ?.filter {
+                it.name == ComponentNames.FlashSaleTokoTab.componentName
+            }
+            ?.map { it.data?.firstOrNull()?.targetComponentId.orEmpty() to it.id }
+            ?.filter { it.first.isNotEmpty() }
+
+        targetedIds?.forEach { (targetComponentId, tabId) ->
+            listComponents.first().getComponentsItem()
+                ?.find { it.isTargetedTabComponent && it.dynamicOriginalId == targetComponentId }
+                ?.parentComponentId = tabId
+        }
+    }
+
+    private fun markTargetedFST(componentsItem: List<ComponentsItem>?) {
+        val flashSaleTab = componentsItem
+            ?.find {
+                it.name == ComponentNames.FlashSaleTokoTab.componentName
+            }
+
+        if (flashSaleTab != null) {
+            val targetedComponentId = flashSaleTab.data?.firstOrNull()?.targetComponentId.orEmpty()
+            val index = componentsItem.indexOfFirst {
+                it.name == ComponentNames.ProductCardCarousel.componentName &&
+                    (it.id == targetedComponentId || it.dynamicOriginalId == targetedComponentId)
+            }
+
+            if (index != -1) {
+                componentsItem[index].isTargetedTabComponent = true
+            }
+        }
+    }
+
+    private fun parseFestiveFlashSaleTab(componentsItem: List<ComponentsItem>?): List<ComponentsItem> {
+        val flashSaleTab = componentsItem
+            ?.find {
+                it.name == ComponentNames.FlashSaleTokoTab.componentName
+            }
+
+        val updatedComponentItems = mutableListOf<ComponentsItem>()
+
+        flashSaleTab?.let {
+            val parsedTab = parseTab(it, it.position)
+
+            componentsItem.forEach { component ->
+                val isFSTComponent = component.name == ComponentNames.FlashSaleTokoTab.componentName
+
+                when {
+                    isFSTComponent -> {
+                        updatedComponentItems.addAll(parsedTab)
+                    }
+                    else -> {
+                        updatedComponentItems.add(component)
+                    }
+                }
+            }
+        }
+
+        return updatedComponentItems
     }
 
     private fun getSectionComponentList(

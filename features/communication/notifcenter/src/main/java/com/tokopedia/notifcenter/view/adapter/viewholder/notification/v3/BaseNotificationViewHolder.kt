@@ -12,7 +12,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -25,6 +25,7 @@ import com.tokopedia.notifcenter.view.listener.NotificationItemListener
 import com.tokopedia.notifcenter.view.customview.widget.NotificationConstraintLayout
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.time.TimeHelper
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 abstract class BaseNotificationViewHolder constructor(
         itemView: View?,
@@ -45,7 +46,7 @@ abstract class BaseNotificationViewHolder constructor(
     )
 
     private val pinnedColor = MethodChecker.getColor(
-        itemView?.context, com.tokopedia.unifyprinciples.R.color.Unify_YN50
+        itemView?.context, unifyprinciplesR.color.Unify_YN50
     )
 
     override fun bind(element: NotificationUiModel) {
@@ -135,13 +136,13 @@ abstract class BaseNotificationViewHolder constructor(
         }
     }
 
-    protected fun markNotificationAsRead(element: NotificationUiModel) {
+    private fun markNotificationAsRead(element: NotificationUiModel) {
         element.markNotificationAsRead()
         bindContainer(element)
         listener?.markNotificationAsRead(element)
     }
 
-    private fun bindTitle(element: NotificationUiModel) {
+    protected open fun bindTitle(element: NotificationUiModel) {
         title?.text = element.title
     }
 
@@ -154,7 +155,7 @@ abstract class BaseNotificationViewHolder constructor(
             shorten = "$shorten... $inFull"
             val spannable = SpannableString(shorten)
 
-            val color = getColorResource(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            val color = getColorResource(unifyprinciplesR.color.Unify_GN500)
             spannable.setSpan(
                     ForegroundColorSpan(color),
                     shorten.indexOf(inFull),
@@ -181,7 +182,7 @@ abstract class BaseNotificationViewHolder constructor(
 
     private fun bindIcon(element: NotificationUiModel) {
         icon?.let {
-            ImageHandler.LoadImage(icon, element.sectionIcon)
+            icon?.loadImageFitCenter(element.sectionIcon)
         }
     }
 

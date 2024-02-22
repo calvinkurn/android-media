@@ -20,6 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
@@ -81,6 +82,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isNumeric
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -182,6 +184,8 @@ class DigitalPDPPulsaFragment :
     private var actionTypeTrackingJob: Job? = null
     private var loader: LoaderDialog? = null
     private var isAlreadyTrackImpressionMultiButton: Boolean = false
+
+    private var onRenderProductsGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
 
     private val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
@@ -333,6 +337,7 @@ class DigitalPDPPulsaFragment :
                     }
                 }
                 showEmptyState()
+                onHideBuyWidget()
             }
         }
     }
@@ -367,10 +372,8 @@ class DigitalPDPPulsaFragment :
 
         viewModel.autoCompleteData.observe(viewLifecycleOwner) {
             when (it) {
-                is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
-                else -> {
-                    // no-op
-                }
+                is RechargeNetworkResult.Success -> setAutoCompleteList(it.data)
+                else -> setAutoCompleteList(emptyList())
             }
         }
 
@@ -621,16 +624,32 @@ class DigitalPDPPulsaFragment :
             setupDynamicScrollViewPadding()
         }
     }
-
-    private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
-        binding?.rechargePdpPulsaClientNumberWidget?.run {
-            if (autoComplete.isNotEmpty()) {
-                setAutoCompleteList(
-                    DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(
-                        autoComplete
-                    )
-                )
+    private fun getContactByPermission(): MutableList<TopupBillsContact> {
+        context?.let {
+            val hasContactPermission = permissionCheckerHelper.hasPermission(
+                it,
+                arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT)
+            )
+            return if (hasContactPermission) {
+                val contacts = viewModel.getContactList()
+                contacts
+            } else {
+                mutableListOf()
             }
+        }
+        return mutableListOf()
+    }
+
+    private fun setAutoCompleteList(autoComplete: List<AutoCompleteModel>) {
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            val contacts = getContactByPermission()
+            val mappedContacts = DigitalPDPWidgetMapper.mapContactToWidgetModels(contacts)
+            setAutoCompleteList(
+                DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(
+                    autoComplete
+                ),
+                mappedContacts
+            )
         }
     }
 
@@ -828,7 +847,11 @@ class DigitalPDPPulsaFragment :
     private fun initClientNumberWidget() {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             setCustomInputNumberFormatter { inputNumber ->
-                CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
+                if (inputNumber.isNumeric()) {
+                    CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
+                } else {
+                    inputNumber
+                }
             }
             setInputFieldStaticLabel(
                 getString(
@@ -1365,8 +1388,6 @@ class DigitalPDPPulsaFragment :
         stopPageMonitoring()
     }
 
-    private var onRenderProductsGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
-
     private fun startProductsRenderMonitoring() {
         startRenderMonitoring()
 
@@ -1491,17 +1512,17 @@ class DigitalPDPPulsaFragment :
     //endregion
 
     //region ClientNumberAutoCompleteListener
-    override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
+    override fun onClickAutoComplete(autoCompleteItem: TopupBillsAutoCompleteContactModel) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-        if (favorite.name.isNotEmpty()) {
-            digitalPDPAnalytics.clickFavoriteContactAutoComplete(
+        if (autoCompleteItem.isFavoriteNumber) {
+            digitalPDPAnalytics.clickFavoriteNumberAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId
             )
         } else {
-            digitalPDPAnalytics.clickFavoriteNumberAutoComplete(
+            digitalPDPAnalytics.clickFavoriteContactAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,

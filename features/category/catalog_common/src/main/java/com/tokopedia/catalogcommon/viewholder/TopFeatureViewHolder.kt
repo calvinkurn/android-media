@@ -29,7 +29,7 @@ class TopFeatureViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.widget_item_top_feature
 
-        private const val BORDER_COLOR = "#AAB4C8"
+        private const val BORDER_COLOR = "AAB4C8"
     }
 
     private val binding by viewBinding<WidgetItemTopFeatureBinding>()
@@ -45,7 +45,7 @@ class TopFeatureViewHolder(
                 }
             }
         }
-        listener?.onTopFeatureImpression(element.items)
+        listener?.onTopFeatureImpression(element.items, element.widgetName)
         onceCreateView = true
     }
 
@@ -80,7 +80,7 @@ class TopFeatureViewHolder(
         shapeDrawable.cornerRadius = cornerRadius
         shapeDrawable.setStroke(
             1.dpToPx(displayMetrics),
-            BORDER_COLOR.stringHexColorParseToInt(30)
+            "#${BORDER_COLOR}".stringHexColorParseToInt(30)
         )
         shapeDrawable.setColor(backgroundColor.orDefaultColor(itemView.context))
         linearLayout.background = shapeDrawable

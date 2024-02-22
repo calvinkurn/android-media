@@ -15,7 +15,7 @@ class SearchProductTopAdsUseCase(
     override fun createObservable(
         requestParams: RequestParams
     ): Observable<TopAdsModel> {
-        val params = UrlParamUtils.generateUrlParamString(requestParams.parameters)
+        val params = UrlParamUtils.generateUrlParamString(requestParams.parameters) + sreParams()
 
         val graphqlRequestList = graphqlRequests {
             addProductAdsRequest(requestParams, params)

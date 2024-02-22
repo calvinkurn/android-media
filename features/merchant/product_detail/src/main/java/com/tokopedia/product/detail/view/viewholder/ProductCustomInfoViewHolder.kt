@@ -14,7 +14,7 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicCustomInfoBinding
 import com.tokopedia.product.detail.databinding.ItemDynamicInfoContentBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 /**
@@ -33,7 +33,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
  */
 class ProductCustomInfoViewHolder(
     val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<ProductCustomInfoDataModel>(view) {
 
     companion object {

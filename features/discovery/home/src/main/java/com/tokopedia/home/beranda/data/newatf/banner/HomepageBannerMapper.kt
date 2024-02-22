@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateChannelOneModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel

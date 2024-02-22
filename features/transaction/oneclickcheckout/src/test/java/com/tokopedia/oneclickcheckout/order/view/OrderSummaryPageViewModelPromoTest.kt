@@ -16,6 +16,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -23,6 +24,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -507,7 +509,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         val promoCode = "abc"
         val response = ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200", promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "green")))
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns response
@@ -536,7 +541,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         val promoCode = "abc"
         val promoType = "type"
         val response = ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200", promoUiModel = PromoUiModel(voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(code = promoCode, type = promoType, messageUiModel = MessageUiModel(state = "green")))))
@@ -566,7 +574,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         val lastResponse = ValidateUsePromoRevampUiModel(
             status = "OK",
             errorCode = "200",
@@ -599,7 +610,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
@@ -1295,5 +1309,93 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         val useNewPromoPage = orderSummaryPageViewModel.useNewPromoPage()
         // Then
         assertTrue(useNewPromoPage)
+    }
+
+    @Test
+    fun `Validate Use External Promo Success`() {
+        // Given
+        val promoCode = "abc"
+        orderSummaryPageViewModel.listPromoExternalAutoApplyCode =
+            arrayListOf(
+                PromoExternalAutoApply(
+                    code = promoCode,
+                    type = "mv"
+                )
+            )
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        val response = ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200", promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "green")))
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns response
+
+        // When
+        orderSummaryPageViewModel.validateUsePromo()
+
+        // Then
+        verify(exactly = 1) {
+            orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(any(), any(), isSuccess = true)
+        }
+        assertEquals(response, orderSummaryPageViewModel.validateUsePromoRevampUiModel)
+        assertEquals(OccButtonState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
+    }
+
+    @Test
+    fun `Validate Use External Promo Error Akamai`() {
+        // Given
+        val promoCode = "abc"
+        orderSummaryPageViewModel.listPromoExternalAutoApplyCode =
+            arrayListOf(
+                PromoExternalAutoApply(
+                    code = promoCode,
+                    type = "mv"
+                )
+            )
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        val exception = AkamaiErrorException("")
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } throws exception
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
+
+        // When
+        orderSummaryPageViewModel.validateUsePromo()
+
+        // Then
+        verify(exactly = 1) {
+            orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(any(), any(), isSuccess = false)
+        }
+        assertEquals(OrderPromo(state = OccButtonState.NORMAL), orderSummaryPageViewModel.orderPromo.value)
+        assertEquals(OccButtonState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+        assertEquals(OccGlobalEvent.Error(exception), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Validate Use External Promo Failed`() {
+        // Given
+        val promoCode = "abc"
+        orderSummaryPageViewModel.listPromoExternalAutoApplyCode =
+            arrayListOf(
+                PromoExternalAutoApply(
+                    code = promoCode,
+                    type = "mv"
+                )
+            )
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        val response = ValidateUsePromoRevampUiModel(status = "FAILED", errorCode = "400", promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "red")))
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns response
+
+        // When
+        orderSummaryPageViewModel.validateUsePromo()
+
+        // Then
+        verify(exactly = 1) {
+            orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(any(), any(), isSuccess = false)
+        }
     }
 }

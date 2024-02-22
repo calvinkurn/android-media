@@ -65,7 +65,13 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 filterAndSort = FilterSortChip(fullFilter, quickFilter.filterChip)
                 _filterSortChip.postValue(Response.success(filterAndSort))
             }
-            val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), queryParam = queryParam)
+
+            val params = singleRecommendationUseCase.getRecomParams(
+                pageNumber = page,
+                productIds = listOf(productId),
+                queryParam = queryParam,
+                hasNewProductCardEnabled = true
+            )
 
             val recommendationWidget = singleRecommendationUseCase.createObservable(params).toBlocking().first()
             val recommendationItems = recommendationWidget.toRecommendationWidget().recommendationItemList

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.play_common.view.RoundedConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:rcl_cornerRadius="8dp"
+    >
+
+    <com.tokopedia.play_common.view.RoundedImageView
+        android:id="@+id/img_cover"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_title"
+        app:layout_constraintDimensionRatio="H, 158:280"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:rImg_cornerRadius="8dp"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_play_widget_top_gradient"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <com.tokopedia.play.widget.ui.custom.PlayTotalWatchBadgeView
+        android:id="@+id/total_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/img_cover"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toTopOf="@id/ll_partner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_cover"
+        app:typographyType="display_2"
+        tools:text="Terong goreng super simple hanya 4 bahan"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_partner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        >
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_avatar"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:unify_image_type="circle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_badge"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/img_avatar"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_partner_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/img_badge"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginStart="4dp"
+            app:typographyType="display_3"
+            tools:text="Chef Devina Cooking"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.play_common.view.RoundedConstraintLayout>

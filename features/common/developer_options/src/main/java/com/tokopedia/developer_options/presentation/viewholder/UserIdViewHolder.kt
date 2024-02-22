@@ -5,6 +5,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.UserIdUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 
@@ -17,6 +19,7 @@ class UserIdViewHolder(
         val btn = itemView.findViewById<UnifyButton>(R.id.user_id)
         btn.text = String.format(Locale.getDefault(), "User Id: ${listener.getUserId()}")
         btn.setOnClickListener {
+            DevOpsTracker.trackEntryEvent(DevopsFeature.USER_ID)
             listener.onClickUserIdButton()
         }
     }

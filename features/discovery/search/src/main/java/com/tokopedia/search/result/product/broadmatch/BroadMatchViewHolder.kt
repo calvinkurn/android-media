@@ -32,7 +32,6 @@ import com.tokopedia.search.utils.convertToChannelHeader
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
-import com.tokopedia.productcard.reimagine.ProductCardModel.FreeShipping as FreeShippingReimagine
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup as LabelGroupReimagine
 import com.tokopedia.productcard.reimagine.ProductCardModel.ShopBadge as ShopBadgeReimagine
 
@@ -134,16 +133,18 @@ class BroadMatchViewHolder(
                             position = labelGroup.position,
                             type = labelGroup.type,
                             imageUrl = labelGroup.imageUrl,
+                            styles = labelGroup.styleList.map { item ->
+                                LabelGroupReimagine.Style(
+                                    item.key,
+                                    item.value
+                                )
+                            }
                         )
                     },
                     shopBadge = ShopBadgeReimagine(
                         imageUrl = shopBadge?.imageUrl ?: "",
                         title = shopBadge?.title ?: "",
                     ),
-                    freeShipping = FreeShippingReimagine(
-                        imageUrl = item.freeOngkirDataView.imageUrl,
-                    ),
-                    hasMultilineName = reimagineSearch2Component.hasMultilineProductName(),
                     stockInfo = StockInfo(
                         percentage = item.stockBarDataView.percentageValue,
                         label = item.stockBarDataView.value,

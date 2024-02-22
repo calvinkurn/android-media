@@ -3,10 +3,10 @@ package com.tokopedia.cart.view.viewmodel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.view.uimodel.AddToCartEvent
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.AddToCartEvent
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.model.CpmData

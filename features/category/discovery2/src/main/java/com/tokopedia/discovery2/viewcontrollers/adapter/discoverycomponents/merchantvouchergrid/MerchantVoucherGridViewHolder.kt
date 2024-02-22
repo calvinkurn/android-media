@@ -1,13 +1,15 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid
 
 import android.view.View
+import android.widget.Space
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.Redirection
-import com.tokopedia.discovery2.databinding.MerchantVoucherGridLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -15,23 +17,20 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.binding.viewBinding
 
 class MerchantVoucherGridViewHolder(
     itemView: View,
     val fragment: Fragment
-): AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     companion object {
         private const val SCROLL_UP_DIRECTION = 1
         private const val GRID_SPAN_COUNT = 2
     }
-
-    private val binding: MerchantVoucherGridLayoutBinding?
-        by viewBinding()
 
     private val mAdapter: DiscoveryRecycleAdapter
         by lazy {
@@ -55,8 +54,12 @@ class MerchantVoucherGridViewHolder(
 
     private var viewModel: MerchantVoucherGridViewModel? = null
 
+    private val merchantVoucherRv = itemView.findViewById<RecyclerView>(R.id.merchant_voucher_rv)
+    private val seeMoreBtn = itemView.findViewById<UnifyButton>(R.id.see_more_btn)
+    private val seeMoreBtnSpace = itemView.findViewById<Space>(R.id.see_more_btn_space)
+
     init {
-        binding?.setupRecyclerView()
+        setupRecyclerView()
         handlePagination()
     }
 
@@ -95,7 +98,8 @@ class MerchantVoucherGridViewHolder(
 
     private fun handlePagination() {
         getParentFragment()?.onMerchantVoucherScrolledCallback = { parentRecyclerView ->
-            val isAtTheBottomOfThePage = !parentRecyclerView.canScrollVertically(SCROLL_UP_DIRECTION)
+            val isAtTheBottomOfThePage =
+                !parentRecyclerView.canScrollVertically(SCROLL_UP_DIRECTION)
             viewModel?.loadMore(isAtTheBottomOfThePage)
         }
     }
@@ -105,12 +109,10 @@ class MerchantVoucherGridViewHolder(
     private fun MerchantVoucherGridViewModel.observeCouponList(
         lifecycleOwner: LifecycleOwner
     ) {
-        binding?.apply {
-            couponList.observe(lifecycleOwner) { result ->
-                when (result) {
-                    is Success -> showWidget(result.data)
-                    is Fail -> hideWidget()
-                }
+        couponList.observe(lifecycleOwner) { result ->
+            when (result) {
+                is Success -> showWidget(result.data)
+                is Fail -> hideWidget()
             }
         }
     }
@@ -126,23 +128,26 @@ class MerchantVoucherGridViewHolder(
     private fun MerchantVoucherGridViewModel.observeSeeMore(
         lifecycleOwner: LifecycleOwner
     ) {
-        seeMore.observe(lifecycleOwner) { redirection ->
-            binding?.renderSeeMoreButton(redirection)
+        seeMore.observe(lifecycleOwner) { result ->
+            when (result) {
+                is Success -> renderSeeMoreButton(result.data)
+                is Fail -> seeMoreBtn.hide()
+            }
         }
     }
 
-    private fun MerchantVoucherGridLayoutBinding.showWidget(items: ArrayList<ComponentsItem>?) {
+    private fun showWidget(items: ArrayList<ComponentsItem>?) {
         merchantVoucherRv.show()
         mAdapter.setDataList(items)
     }
 
-    private fun MerchantVoucherGridLayoutBinding.hideWidget() {
+    private fun hideWidget() {
         merchantVoucherRv.hide()
         seeMoreBtn.hide()
         seeMoreBtnSpace.hide()
     }
 
-    private fun MerchantVoucherGridLayoutBinding.renderSeeMoreButton(redirection: Redirection) {
+    private fun renderSeeMoreButton(redirection: Redirection) {
         seeMoreBtn.apply {
             show()
 
@@ -158,7 +163,7 @@ class MerchantVoucherGridViewHolder(
         seeMoreBtnSpace.show()
     }
 
-    private fun MerchantVoucherGridLayoutBinding.setupRecyclerView() {
+    private fun setupRecyclerView() {
         merchantVoucherRv.adapter = mAdapter
         merchantVoucherRv.layoutManager = mLayoutManager
     }

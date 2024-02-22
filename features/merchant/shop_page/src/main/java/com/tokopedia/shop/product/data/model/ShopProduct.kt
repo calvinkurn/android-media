@@ -68,6 +68,10 @@ data class ShopProduct(
     @Expose
     val labelGroupList: List<LabelGroup> = listOf(),
 
+    @SerializedName("badge")
+    @Expose
+    val badge: List<Badge> = listOf(),
+    
     @SerializedName("hasVariant")
     @Expose
     val hasVariant: Boolean = false,
@@ -83,6 +87,10 @@ data class ShopProduct(
     @SerializedName("show_stockbar")
     @Expose
     val showStockBar: Boolean = false,
+
+    @SerializedName("warehouse_id")
+    @Expose
+    val warehouseId: String = ""
 ) {
     data class Response(
         @SerializedName("GetShopProduct")
@@ -90,6 +98,16 @@ data class ShopProduct(
         val getShopProduct: GetShopProduct = GetShopProduct()
     )
 
+    data class Badge(
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+
+        @SerializedName("image_url")
+        @Expose
+        val imageUrl: String = "",
+    )
+    
     data class GetShopProduct(
         @SerializedName("data")
         @Expose

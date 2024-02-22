@@ -12,7 +12,7 @@
         android:id="@+id/common_topup_bills_autocomplete_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/common_topup_autocomplete_header"
+        android:text="@string/common_topup_autocomplete_header_favorite"
         android:textColor="@color/Unify_NN950_68"
         app:typographyType="small"
         app:typographyWeight="bold"

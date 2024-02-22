@@ -24,6 +24,7 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
@@ -55,6 +56,7 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogis
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
+import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.util.PromoUsageRollenceManager
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
@@ -64,6 +66,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -75,6 +78,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -132,6 +136,7 @@ class OrderSummaryPageViewModel @Inject constructor(
 
     var isCartCheckoutRevamp: Boolean = false
     var usePromoEntryPointNewInterface: Boolean = false
+    var listPromoExternalAutoApplyCode: ArrayList<PromoExternalAutoApply> = arrayListOf()
 
     fun getShopId(): String {
         return orderCart.shop.shopId
@@ -162,7 +167,13 @@ class OrderSummaryPageViewModel @Inject constructor(
         getCartJob?.cancel()
         getCartJob = launch(executorDispatchers.immediate) {
             globalEvent.value = OccGlobalEvent.Normal
-            val result = cartProcessor.getOccCart(source, gatewayCode, tenor, isCartCheckoutRevamp)
+            val result = cartProcessor.getOccCart(
+                source,
+                gatewayCode,
+                tenor,
+                isCartCheckoutRevamp,
+                listPromoExternalAutoApplyCode
+            )
             val isPromoRevamp =
                 PromoUsageRollenceManager().isRevamp(result.orderPromo.lastApply.userGroupMetadata)
             addressState.value = result.addressState
@@ -191,7 +202,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             )
             when {
                 result.globalEvent != null -> {
-                    globalEvent.value = result.globalEvent
+                    globalEvent.value = result.globalEvent!!
                 }
 
                 uiMessage is OccToasterAction -> {
@@ -1149,6 +1160,14 @@ class OrderSummaryPageViewModel @Inject constructor(
                     clearAllPromoFromLastRequest()
                     calculateTotal()
                     globalEvent.value = newGlobalEvent
+                    if (listPromoExternalAutoApplyCode.isNotEmpty()) {
+                        orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(
+                            shopId = orderShop.value.shopId,
+                            userId = userSession.userId,
+                            isSuccess = false
+                        )
+                        listPromoExternalAutoApplyCode = arrayListOf()
+                    }
                 }
 
                 resultValidateUse != null -> {
@@ -1157,12 +1176,28 @@ class OrderSummaryPageViewModel @Inject constructor(
                     if (newGlobalEvent != null) {
                         globalEvent.value = newGlobalEvent
                     }
+                    if (listPromoExternalAutoApplyCode.isNotEmpty()) {
+                        orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(
+                            shopId = orderShop.value.shopId,
+                            userId = userSession.userId,
+                            isSuccess = true
+                        )
+                        listPromoExternalAutoApplyCode = arrayListOf()
+                    }
                 }
 
                 newGlobalEvent != null && !isAkamaiError -> {
                     orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
                     orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                     globalEvent.value = newGlobalEvent
+                    if (listPromoExternalAutoApplyCode.isNotEmpty()) {
+                        orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(
+                            shopId = orderShop.value.shopId,
+                            userId = userSession.userId,
+                            isSuccess = false
+                        )
+                        listPromoExternalAutoApplyCode = arrayListOf()
+                    }
                 }
 
                 else -> {
@@ -1279,7 +1314,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         onSuccessCheckout: (CheckoutOccResult) -> Unit,
         skipCheckIneligiblePromo: Boolean
     ) {
-        if (orderTotal.value.buttonState == OccButtonState.NORMAL && orderPromo.value.state == OccButtonState.NORMAL && !orderShipment.value.isLoading) {
+        if (isEligibleCheckout(orderTotal.value, orderPromo.value, orderShipment.value)) {
             if (uploadPrescriptionUiModel.value.showImageUpload && uploadPrescriptionUiModel.value.uploadedImageCount < 1 && uploadPrescriptionUiModel.value.frontEndValidation) {
                 uploadPrescriptionUiModel.value =
                     uploadPrescriptionUiModel.value.copy(isError = true)
@@ -1344,6 +1379,33 @@ class OrderSummaryPageViewModel @Inject constructor(
             }
             globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
         }
+    }
+
+    private fun isEligibleCheckout(
+        orderTotal: OrderTotal,
+        orderPromo: OrderPromo,
+        orderShipment: OrderShipment
+    ): Boolean {
+        // check valid total
+        val isValidTotal = orderTotal.buttonState == OccButtonState.NORMAL
+        // check valid promo
+        val isValidPromo = if (orderPromo.isCartCheckoutRevamp) {
+            val isValidPromoState = orderPromo.state != OccButtonState.LOADING
+            val validStatusCodes = listOf(
+                ResultStatus.STATUS_USER_BLACKLISTED,
+                ResultStatus.STATUS_PHONE_NOT_VERIFIED,
+                ResultStatus.STATUS_COUPON_LIST_EMPTY
+            )
+            val isValidPromoStatusCode = orderPromo.entryPointInfo.isSuccess ||
+                (!orderPromo.entryPointInfo.isSuccess && validStatusCodes.any { code -> code == orderPromo.entryPointInfo.statusCode })
+            isValidPromoState && isValidPromoStatusCode
+        } else {
+            orderPromo.state == OccButtonState.NORMAL
+        }
+        // check valid shipment
+        val isValidShipment = !orderShipment.isLoading
+
+        return isValidTotal && isValidPromo && isValidShipment
     }
 
     private fun finalValidateUse(
@@ -1431,7 +1493,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             validateUsePromoRevampUiModel,
             orderPayment.value
         )
-        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
+        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost, generatePaymentRequest(orderCost))
         val newOrderPayment = orderPayment.value
         orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
         if (dynamicPaymentFee == null) {
@@ -1449,7 +1511,8 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderPayment.value,
             userSession.userId,
             orderCost,
-            orderCart
+            orderCart,
+            generatePaymentRequest(orderCost)
         )
         if (installmentTermList == null) {
             val newOrderPayment = orderPayment.value
@@ -1491,7 +1554,8 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderCost,
             orderCart,
             orderProfile.value,
-            promoProcessor.getValidPromoCodes(validateUsePromoRevampUiModel)
+            promoProcessor.getValidPromoCodes(validateUsePromoRevampUiModel),
+            generatePaymentRequest(orderCost)
         )
     }
 
@@ -1508,7 +1572,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderCost.totalPriceWithoutPaymentFees <= payment.walletAmount
         ) {
             val dynamicPaymentFee =
-                paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
+                paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost, generatePaymentRequest(orderCost))
             val newOrderPayment = orderPayment.value
             orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
             if (dynamicPaymentFee == null) {
@@ -1562,7 +1626,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             validateUsePromoRevampUiModel,
             orderPayment.value
         )
-        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
+        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost, generatePaymentRequest(orderCost))
         val newOrderPayment = orderPayment.value
         orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
         calculator.calculateTotal(
@@ -1631,13 +1695,21 @@ class OrderSummaryPageViewModel @Inject constructor(
     }
 
     fun getShippingBottomsheetParam(): RatesParam? {
-        return logisticProcessor.generateRatesParam(
-            orderCart,
-            orderProfile.value,
-            orderTotal.value.orderCost,
-            orderShop.value.shopShipment,
-            orderShipment.value
-        ).first
+        return runBlocking {
+            val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(
+                orderCart,
+                orderShipment.value,
+                validateUsePromoRevampUiModel,
+                orderPayment.value
+            )
+            logisticProcessor.generateRatesParam(
+                orderCart,
+                orderProfile.value,
+                orderCost,
+                orderShop.value.shopShipment,
+                orderShipment.value
+            ).first
+        }
     }
 
     fun updatePrescriptionIds(it: ArrayList<String>) {
@@ -1681,6 +1753,19 @@ class OrderSummaryPageViewModel @Inject constructor(
         orderProducts.value.find { it.productId == productId }?.apply {
             addOnsProductData.data.find { it.id == addOnProductId }?.status = status
         }
+    }
+
+    fun generatePaymentRequest(orderCost: OrderCost): PaymentRequest {
+        return paymentProcessor.get().generatePaymentRequest(
+            orderCart,
+            orderProducts.value,
+            orderShop.value,
+            orderProfile.value,
+            orderShipment.value,
+            orderPayment.value,
+            orderCost,
+            orderPromo.value
+        )
     }
 
     override fun onCleared() {

@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -50,6 +51,8 @@ import com.tokopedia.feedback_form.feedbackpage.ui.preference.Preferences
 import com.tokopedia.feedback_form.feedbackpage.util.*
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.screenshot_observer.ScreenshotData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -67,8 +70,31 @@ import java.io.File
 import java.util.*
 import javax.inject.Inject
 
+class FeedbackPageFragment : BaseDaggerFragment(), FeedbackPageContract.View, ImageClickListener, PageItemAdapter.OnPageMenuSelected {
 
-class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, ImageClickListener, PageItemAdapter.OnPageMenuSelected {
+    companion object {
+        @JvmStatic
+        fun newInstance(uri: Uri?, className: String?, isFromScreenshot: Boolean): FeedbackPageFragment {
+            return FeedbackPageFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(EXTRA_URI_IMAGE, uri)
+                    putString(EXTRA_IS_CLASS_NAME, className)
+                    putBoolean(EXTRA_IS_FROM_SCREENSHOT, isFromScreenshot)
+                }
+            }
+        }
+
+        private const val REQUEST_CODE_IMAGE = 111
+        private const val REQUEST_CODE_EDIT_IMAGE = 101
+        private const val REQUEST_CODE_TICKET_CREATED = 1313
+        private const val DEFAULT_MAX_IMAGE_SIZE_IN_KB_PRO = 10240 // 10 * 1024KB (maks 10MB)
+
+        private val PROJECTION = arrayOf(
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DATA
+        )
+    }
 
     @Inject
     lateinit var feedbackPagePresenter: FeedbackPagePresenter
@@ -91,7 +117,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private var lastAccessedPage: String? = ""
     private var categoryItem: Int = -1
     private var reportType: Int = 0
-    private var labelsId: ArrayList<Int> = arrayListOf()
+    private var labelsId: ArrayList<Long> = arrayListOf()
     private var isFromScreenshot: Boolean = false
 
     private var userSession: UserSessionInterface? = null
@@ -102,22 +128,21 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         get() = if (Build.VERSION.SDK_INT < VERSION_CODES.Q) {
             arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
         } else {
-            if(Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU){
+            if (Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
                 arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
-            }else{
+            } else {
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
         }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_feedback_page, container, false)
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(!allPermissionsGranted()) {
+        if (!allPermissionsGranted()) {
             requestPermissions(requiredPermissions, 5111)
         }
         initViews()
@@ -134,7 +159,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(grantResults.size == requiredPermissions.size) {
+        if (grantResults.size == requiredPermissions.size) {
             initImageUri()
         }
     }
@@ -154,7 +179,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             }
             REQUEST_CODE_EDIT_IMAGE -> if (resultCode == RESULT_OK) {
                 data?.let {
-                    val oldPath = it.getStringExtra(EXTRA_DRAW_IMAGE_URI_OLD)?: ""
+                    val oldPath = it.getStringExtra(EXTRA_DRAW_IMAGE_URI_OLD) ?: ""
                     val newUri = it.getParcelableExtra<Uri>(EXTRA_DRAW_IMAGE_URI)
                     imageAdapter.setImageFeedbackData(feedbackPagePresenter.drawOnPictureResult(newUri, oldPath))
                     selectedImage = arrayListOf(newUri.toString())
@@ -176,11 +201,23 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         }
     }
 
+    override fun hideLoadingFrame() {
+        frameLoader.gone()
+        frame_button.visible()
+        svFeedbackForm.visible()
+    }
+
+    override fun showLoadingFrame() {
+        frameLoader.visible()
+        frame_button.gone()
+        svFeedbackForm.gone()
+    }
+
     override fun setSubmitFlag() {
         myPreferences?.setSubmitFlag(emailTokopedia, userSession?.userId.toString())
     }
 
-    override fun checkUriImage(feedbackId: Int, imageCount: Int) {
+    override fun checkUriImage(feedbackId: Long, imageCount: Int) {
         var imageSize: Long = 0
         if (selectedImage.isNotEmpty()) {
             val totalImage = selectedImage.size
@@ -189,7 +226,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 initCountImage++
                 val originalFile = File(image)
                 val imageType = originalFile.absolutePath
-                imageSize = originalFile.length()/1000
+                imageSize = originalFile.length() / 1000
 
                 if (!imageType.contains(".mp4") && imageSize > 250) {
                     resizeImage(image)?.let { imageFile ->
@@ -204,31 +241,37 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         } else {
             feedbackPagePresenter.commitData(feedbackId)
         }
-
     }
 
+    @Suppress("DEPRECATION")
+    @SuppressLint("DeprecatedMethod")
     override fun goToTicketCreatedActivity(issueUrl: String?) {
-        activity?.finish()
-        Intent(context, TicketCreatedActivity::class.java).apply {
-            putExtra(EXTRA_IS_TICKET_LINK, issueUrl)
-            startActivityForResult(this, 1212)
+        activity?.let {
+            it.finish()
+            Intent(it, TicketCreatedActivity::class.java).apply {
+                putExtra(EXTRA_IS_TICKET_LINK, issueUrl)
+                startActivityForResult(this, REQUEST_CODE_TICKET_CREATED)
+            }
         }
     }
 
     override fun showError(throwable: Throwable) {
         Toast.makeText(activity, throwable.toString(), Toast.LENGTH_SHORT).show()
+        logException(throwable)
     }
 
     override fun addImageClick() {
         context?.let {
             val builder = ImagePickerBuilder(
-                    title = getString(R.string.image_picker_title),
-                    imagePickerTab = arrayOf(ImagePickerTab.TYPE_GALLERY),
-                    galleryType = GalleryType.ALL,
-                    maxFileSizeInKB = DEFAULT_MAX_IMAGE_SIZE_IN_KB_PRO,
-                    imageRatioType = ImageRatioType.ORIGINAL,
-                    imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
-                            initialSelectedImagePathList = feedbackPagePresenter.getSelectedImageUrl()))
+                title = getString(R.string.image_picker_title),
+                imagePickerTab = arrayOf(ImagePickerTab.TYPE_GALLERY),
+                galleryType = GalleryType.ALL,
+                maxFileSizeInKB = DEFAULT_MAX_IMAGE_SIZE_IN_KB_PRO,
+                imageRatioType = ImageRatioType.ORIGINAL,
+                imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
+                    initialSelectedImagePathList = feedbackPagePresenter.getSelectedImageUrl()
+                )
+            )
             val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
             intent.putParamPageSource(ImagePickerPageSource.FEEDBACK_PAGE)
@@ -243,8 +286,10 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     override fun onImageClick(data: ImageFeedbackUiModel, position: Int) {
         val imageUriClicked = data.imageUrl
-        startActivityForResult(DrawOnPictureActivity.getIntent(requireContext(), Uri.parse(imageUriClicked)),
-                REQUEST_CODE_EDIT_IMAGE)
+        startActivityForResult(
+            DrawOnPictureActivity.getIntent(requireContext(), Uri.parse(imageUriClicked)),
+            REQUEST_CODE_EDIT_IMAGE
+        )
     }
 
     override fun setFeedbackData(model: FeedbackModel) {
@@ -259,7 +304,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         bottomSheetPage?.dismiss()
         page.setText(pageName)
         feedbackPagePresenter.setSelectedPage(selection)
-        labelsId = arrayListOf(selection)
+        labelsId = arrayListOf(selection.toLong())
     }
 
     private fun allPermissionsGranted(): Boolean {
@@ -271,25 +316,28 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         return true
     }
 
-    private fun initViews(){
+    private fun initViews() {
         feedbackPagePresenter.attachView(this)
 
         compositeSubscription = CompositeSubscription()
         myPreferences = Preferences(context)
         loadingDialog = context?.let { LoadingDialog(it) }
 
-        context?.let { ArrayAdapter.createFromResource(it,
+        context?.let {
+            ArrayAdapter.createFromResource(
+                it,
                 R.array.bug_type_array,
                 R.layout.item_spinner_bug
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            bugType.adapter = adapter
-        } }
+            ).also { adapter ->
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                bugType.adapter = adapter
+            }
+        }
         userSession = UserSession(activity)
         feedbackPagePresenter.getFeedbackData()
         uriImage = arguments?.getParcelable(EXTRA_URI_IMAGE)
         lastAccessedPage = arguments?.getString(EXTRA_IS_CLASS_NAME, "")
-        isFromScreenshot = arguments?.getBoolean(EXTRA_IS_FROM_SCREENSHOT)?: false
+        isFromScreenshot = arguments?.getBoolean(EXTRA_IS_FROM_SCREENSHOT) ?: false
 
         if (isFromScreenshot) {
             FeedbackPageAnalytics.eventOpenFeedbackFromScreenshot()
@@ -336,7 +384,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
         var codeName = "UNKNOWN"
         fields.filter { it.getInt(VERSION_CODES::class) == Build.VERSION.SDK_INT }
-                .forEach { codeName = it.name }
+            .forEach { codeName = it.name }
 
         when {
             codeName.startsWith("M") -> { codeName = getString(R.string.marshmallow) }
@@ -379,7 +427,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                //no-op
+                // no-op
             }
         }
 
@@ -388,7 +436,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         }
 
         submitButton.setOnClickListener {
-            var emailText= email.text.toString()
+            var emailText = email.text.toString()
             val affectedPageText = page.text.toString()
             val journeyText = journey.text.toString()
             val expectedResultText = expectedResult.text.toString()
@@ -406,7 +454,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                     setWrapperError(et_affected_page_wrapper, getString(R.string.warning_page))
                 }
 
-                if(journeyText.isEmpty()) {
+                if (journeyText.isEmpty()) {
                     validate = false
                     setWrapperError(et_str_wrapper, getString(R.string.warning_str))
                 }
@@ -417,7 +465,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 }
             }
 
-            if(validate) {
+            if (validate) {
                 if (emailText.contains("@tokopedia.com")) emailText = emailText.substringBefore("@tokopedia.com", "")
                 emailTokopedia = "$emailText@tokopedia.com"
                 feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, journeyText, expectedResultText, detailFeedback))
@@ -430,7 +478,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 }
             }
         }
-
     }
 
     private fun setWrapperError(wrapper: TextInputLayout, s: String?) {
@@ -463,49 +510,54 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     }
 
     private fun generateScreenshotDataFromCursor(cursor: Cursor): ScreenshotData? {
-        val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
-        val fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME))
-        val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
-        return ScreenshotData(id, fileName, path)
+        return try {
+            val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
+            val fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME))
+            val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+            ScreenshotData(id, fileName, path)
+        } catch(e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            null
+        }
     }
 
     private fun requestMapper(email: String, journey: String, expectedResult: String, detailFeedback: String): FeedbackFormRequest {
         val affectedVersion = if (GlobalConfig.isSellerApp()) "SA-$appVersion" else "MA-$appVersion"
         return FeedbackFormRequest(
-                platformID = 2,
-                email = userSession?.email,
-                appVersion = affectedVersion,
-                bundleVersion = versionCode,
-                device = deviceInfo,
-                os = androidVersion,
-                tokopediaUserID = userId,
-                tokopediaEmail = email,
-                sessionToken = sessionToken,
-                fcmToken = "",
-                loginState = loginState,
-                lastAccessedPage = lastAccessedPage,
-                category = categoryItem,
-                journey = journey,
-                expected = expectedResult,
-                labelsId = labelsId,
-                type = reportType,
-                detail = detailFeedback
+            platformID = 2,
+            email = userSession?.email,
+            appVersion = affectedVersion,
+            bundleVersion = versionCode,
+            device = deviceInfo,
+            os = androidVersion,
+            tokopediaUserID = userId,
+            tokopediaEmail = email,
+            sessionToken = sessionToken,
+            fcmToken = "",
+            loginState = loginState,
+            lastAccessedPage = lastAccessedPage,
+            category = categoryItem,
+            journey = journey,
+            expected = expectedResult,
+            labelsId = labelsId,
+            type = reportType,
+            detail = detailFeedback
         )
     }
 
-    private fun sendAttachmentImage(feedbackId: Int, file: File, totalImage: Int, countImage: Int) {
+    private fun sendAttachmentImage(feedbackId: Long, file: File, totalImage: Int, countImage: Int) {
         val requestFile: RequestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
         val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
         feedbackPagePresenter.sendAttachment(feedbackId, fileData, totalImage, countImage)
     }
 
-    private fun sendAttachmentVideo(feedbackId: Int, file: File, totalImage: Int, countImage: Int) {
+    private fun sendAttachmentVideo(feedbackId: Long, file: File, totalImage: Int, countImage: Int) {
         val requestFile: RequestBody = file.asRequestBody("video/*".toMediaTypeOrNull())
         val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
         feedbackPagePresenter.sendAttachment(feedbackId, fileData, totalImage, countImage)
     }
 
-    private fun resizeImage(data: String):File? {
+    private fun resizeImage(data: String): File? {
         val b = BitmapFactory.decodeFile(data)
         val origWidth = b.width
         val origHeight = b.height
@@ -520,7 +572,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         deselected?.chipType = ChipsUnify.TYPE_ALTERNATE
     }
 
-    private fun openBottomSheetPage(){
+    private fun openBottomSheetPage() {
         bottomSheetPage = BottomSheetUnify()
         val viewBottomSheetPage = View.inflate(context, R.layout.bottomsheet_pages_name, null).apply {
             val rvPages = findViewById<RecyclerView>(R.id.rv_pages)
@@ -559,28 +611,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(uri: Uri?, className: String?, isFromScreenshot: Boolean) : FeedbackPageFragment {
-            return FeedbackPageFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(EXTRA_URI_IMAGE, uri)
-                    putString(EXTRA_IS_CLASS_NAME, className)
-                    putBoolean(EXTRA_IS_FROM_SCREENSHOT, isFromScreenshot)
-                }
-            }
+    private fun logException(t: Throwable) {
+        if (!GlobalConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(t)
+        } else {
+            t.printStackTrace()
         }
-
-        private const val REQUEST_CODE_IMAGE = 111
-        private const val REQUEST_CODE_EDIT_IMAGE = 101
-        private const val DEFAULT_MAX_IMAGE_SIZE_IN_KB_PRO = 10240 // 10 * 1024KB (maks 10MB)
-
-
-        private val PROJECTION = arrayOf(
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.DATA
-        )
     }
-
 }

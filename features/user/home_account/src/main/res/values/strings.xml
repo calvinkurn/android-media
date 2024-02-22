@@ -23,12 +23,6 @@
     <string name="new_home_account_label_logout_confirmation">Apakah Anda ingin keluar?</string>
     <string name="new_home_account_label_cancel">Batal</string>
 
-    <string name="new_home_account_title_geolocation_alertdialog">Bagikan lokasimu ke Tokopedia?</string>
-    <string name="new_home_account_body_geolocation_alertdialog">Kami perlu lokasimu biar bisa kasih rekomendasi yang cocok. Aktifkan pengaturan HP untuk membagikan lokasi.</string>
-
-    <string name="new_home_account_ok_geolocation_alertdialog">Bagikan Lokasi</string>
-    <string name="new_home_account_batal_geolocation_alertdialog">Batal</string>
-
     <string name="new_home_account_safe_mode_selected_dialog_title">Aktifkan Safe Mode</string>
     <string name="new_home_account_safe_mode_selected_dialog_msg">Fitur ini akan otomatis menyaring hasil pencarian sesuai kebijakan dan batasan usia pengguna</string>
     <string name="new_home_account_safe_mode_unselected_dialog_msg">Hasil pencarian tidak disaring otomatis sesuai kebijakan dan batasan usia pengguna</string>
@@ -51,8 +45,6 @@
     <string name="menu_account_title_notification">Notifikasi</string>
     <string name="menu_account_title_privacy_account">Privasi Akun</string>
     <string name="menu_account_title_explicit_profile">Preferensi Belanja</string>
-    <string name="menu_account_title_shake">Shake Shake</string>
-    <string name="menu_account_title_geolocation">Geolokasi</string>
     <string name="menu_account_title_safe_mode">Safe Mode</string>
     <string name="menu_account_title_dark_mode">Tampilan</string>
     <string name="menu_account_title_quality_setting">Kualitas Gambar</string>
@@ -61,7 +53,6 @@
     <string name="menu_account_title_play_widget_autoplay">Putar Otomatis Video</string>
     <string name="menu_account_title_about_us">Kenali Tokopedia</string>
     <string name="menu_account_title_terms">Syarat dan Ketentuan</string>
-    <string name="menu_account_title_privacy_policy">Pemberitahuan Privasi</string>
     <string name="menu_account_title_intellectual_property">Hak Kekayaan Intelektual</string>
     <string name="menu_account_title_review">Ulas Aplikasi Ini</string>
     <string name="menu_account_title_sign_out">Keluar Akun</string>
@@ -78,8 +69,6 @@
     <string name="menu_account_desc_notification">Atur segala jenis pesan notifikasi</string>
     <string name="menu_account_desc_privacy_account">Atur penggunaan data</string>
     <string name="menu_account_desc_explicit_profile">Atur rekomendasi produk sesuai pilihanmu</string>
-    <string name="menu_account_desc_shake">Goyang HP untuk dapat promo menarik</string>
-    <string name="menu_account_desc_geolocation">Atur rekomendasi berdasarkan lokasi</string>
     <string name="menu_account_desc_safe_mode">Hasil pencarian aman untuk segala usia</string>
     <string name="menu_account_desc_dark_mode">Atur tampilan warna di Tokopedia</string>
     <string name="menu_account_desc_quality_setting">Atur kualitas gambar yang kamu lihat</string>
@@ -224,6 +213,7 @@
     <string name="title_password_setting">Ubah Kata Sandi</string>
     <string name="title_setting_pin">PIN Tokopedia</string>
     <string name="title_kyc_setting">Verifikasi Data Diri</string>
+    <string name="title_fingerprint">Sidik Jari</string>
     <string name="title_signin_with_notification">Masuk Lewat Notifikasi</string>
     <string name="image_quality_setting_subtitle">Pilihanmu akan menentukan kejelasan gambar yang kamu lihat di berbagai halaman Tokopedia.</string>
     <string name="message_success_change_profile">Sukses mengubah profil</string>
@@ -242,29 +232,6 @@
     <string name="explicit_profile_back_dialog_exit">Tetap keluar</string>
     <string name="explicit_profile_max_selection_answer_no_limit">Bisa pilih lebih dari 1 jawaban</string>
     <string name="explicit_profile_max_selection_answer_limit">Hanya pilih %s jawaban</string>
-
-    <!--opt in/out for network-->
-    <string name="title_privacy_account">Privasi Akun</string>
-    <string name="opt_header">Aktifkan Penggunaan Data Akun</string>
-    <string name="opt_desc">Datamu akan dipakai untuk rekomendasi teman yang bisa di-follow di Feed. Cek Data yang Dipakai</string>
-    <string name="opt_link_account_header">Akun tersambung</string>
-    <string name="opt_link_account_desc">Atur akun yang tersambung ke Tokopedia.</string>
-    <string name="opt_bottom_sheet_verification_enabled_title">Aktifkan penggunaan data akun?</string>
-    <string name="opt_bottom_sheet_verification_enabled_sub_title">Kami akan kasih rekomendasi teman yang bisa di-follow di Feed kamu, berdasarkan datamu di fitur Referral dan Berbagi Alamat.</string>
-    <string name="opt_bottom_sheet_verification_enabled_checkbox_desc">Saya telah membaca dan menyetujui Syarat &amp; Ketentuan serta Pemberitahuan Privasi yang berlaku.</string>
-    <string name="opt_bottom_sheet_verification_enabled_button_title">Aktifkan Sekarang</string>
-    <string name="opt_bottom_sheet_header_info_lengkap">Info lengkap</string>
-    <string name="opt_bottom_sheet_header_clarification_data_usage">Data yang dipakai</string>
-    <string name="opt_dialog_disabled_title">Matikan penggunaan data akun?</string>
-    <string name="opt_dialog_disabled_sub_title">Kamu nggak akan dapat rekomendasi teman yang mungkin kamu kenal di Feed.</string>
-    <string name="opt_batal">Batal</string>
-    <string name="opt_ya_matikan">Ya, Matikan</string>
-    <string name="opt_desc_clarification_data_usage">Sudah punya Profil di Feed? 👆\nKami akan kasih rekomendasi teman yang bisa kamu follow di situ, berdasarkan datamu di beberapa fitur yang tertera dalam halaman ini.</string>
-    <string name="opt_text_header_failed">Konten gagal ditampilkan</string>
-    <string name="opt_text_desc_failed">Klik ikon di samping buat coba lagi.</string>
-    <string name="opt_link_account">Sambungin Akun</string>
-    <string name="opt_failed_enabled_consent">Gagal mengaktifkan penggunaan data</string>
-    <string name="opt_failed_disabled_consent">Gagal menonaktifkan penggunaan data</string>
 
     <!-- ADD/VERIFY PHONE -->
     <string name="add_phone_success_message">Yay! Nomor HP berhasil ditambah.</string>

@@ -126,6 +126,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           y
                         }
                       }
+                      warehouseID
                     }
                     ... on EtalaseWidget {
                       imageUrl
@@ -161,6 +162,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         title
                         url
                       }
+                      warehouseID
                       minimumOrder
                       maximumOrder
                       stock
@@ -274,6 +276,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         parentID
                         showStockbar
                         rating
+                        warehouseID
                       }
                       backgroundGradientColor {
                         firstColor
@@ -290,6 +293,68 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         linkType
                         linkID
                         Name
+                      }
+                    }                 
+                    ... on CampaignOfferingWidget {
+                      OfferID
+                      OfferName
+                      OfferCtaText
+                      WarehouseIDs
+                      Thumbnails
+                      RedirectionOfferURL
+                      RedirectionOfferAppLink
+                      OfferDetail {
+                        TermAndCondition
+                        StartDate
+                        EndDate
+                        TierList {
+                          TierID
+                          Level
+                          TierWording
+                          Rules {
+                            TypeID
+                            Operation
+                            Value
+                          }
+                          Benefit {
+                            TypeID
+                            Operation
+                            Value
+                          }
+                        }
+                      }
+                      Products {
+                        id
+                        name
+                        url
+                        urlApps
+                        urlMobile
+                        imageURL
+                        price
+                        countSold
+                        stock
+                        status
+                        discountedPrice
+                        discountPercentage
+                        position
+                        stockWording {
+                          title
+                        }
+                        hideGimmick
+                        stockSoldPercentage
+                        labelGroups {
+                          position
+                          type
+                          title
+                          url
+                        }
+                        minimumOrder
+                        maximumOrder
+                        childIDs
+                        isVbs
+                        parentID
+                        showStockbar
+                        rating
                       }
                     }
                   }

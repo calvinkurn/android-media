@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.animation.Animator
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import com.google.android.exoplayer2.Player
@@ -14,7 +15,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.FADE_IN_VIDE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.HIDE_VALUE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOW_VALUE
 import com.tokopedia.product.detail.databinding.PdpVideoViewHolderBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.widget.ProductExoPlayer
 import com.tokopedia.product.detail.view.widget.VideoStateListener
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
@@ -24,7 +25,7 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
  */
 class ProductVideoViewHolder(
     val view: View,
-    private val listener: DynamicProductDetailListener?
+    private val listener: ProductDetailListener?
 ) :
 
     AbstractViewHolder<MediaDataModel>(view), ProductVideoReceiver {
@@ -52,7 +53,7 @@ class ProductVideoViewHolder(
         mVideoId = data.id
         thumbnail = data.urlOriginal
         listener?.getProductVideoCoordinator()?.configureVideoCoordinator(view.context, data.id, data.videoUrl)
-        setThumbnail()
+        setThumbnail(data.prefetchResource)
         videoVolume?.setOnClickListener {
             listener?.onVideoVolumeCLicked(mPlayer?.isMute() != true)
             listener?.getProductVideoCoordinator()?.configureVolume(mPlayer?.isMute() != true, data.id)
@@ -62,8 +63,12 @@ class ProductVideoViewHolder(
         }
     }
 
-    private fun setThumbnail() = with(binding) {
-        pdpVideoOverlay.loadImageWithoutPlaceholder(thumbnail)
+    private fun setThumbnail(prefetchResource: Drawable? = null) = with(binding) {
+        if (prefetchResource == null) {
+            pdpVideoOverlay.loadImageWithoutPlaceholder(thumbnail)
+        } else {
+            pdpVideoOverlay.setImageDrawable(prefetchResource)
+        }
         pdpVideoOverlay.alpha = SHOW_VALUE
         pdpVideoOverlay.show()
     }

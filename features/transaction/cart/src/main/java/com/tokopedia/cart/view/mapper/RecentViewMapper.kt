@@ -13,16 +13,16 @@ class RecentViewMapper @Inject constructor() {
 
     private fun convertToViewHolderModel(recentView: RecommendationItem): CartRecentViewItemHolderData {
         val cartRecentViewItemHolderData = CartRecentViewItemHolderData()
-        cartRecentViewItemHolderData.id = recentView.productId.toString() ?: ""
-        cartRecentViewItemHolderData.name = recentView.name ?: ""
-        cartRecentViewItemHolderData.price = recentView.price ?: ""
-        cartRecentViewItemHolderData.imageUrl = recentView.imageUrl ?: ""
+        cartRecentViewItemHolderData.id = recentView.productId.toString()
+        cartRecentViewItemHolderData.name = recentView.name
+        cartRecentViewItemHolderData.price = recentView.price
+        cartRecentViewItemHolderData.imageUrl = recentView.imageUrl
         cartRecentViewItemHolderData.isWishlist = recentView.isWishlist
         cartRecentViewItemHolderData.rating = recentView.rating
         cartRecentViewItemHolderData.reviewCount = recentView.countReview
-        cartRecentViewItemHolderData.shopLocation = recentView.location ?: ""
-        cartRecentViewItemHolderData.shopId = recentView.shopId.toString() ?: ""
-        cartRecentViewItemHolderData.shopName = recentView.shopName ?: ""
+        cartRecentViewItemHolderData.shopLocation = recentView.location
+        cartRecentViewItemHolderData.shopId = recentView.shopId.toString()
+        cartRecentViewItemHolderData.shopName = recentView.shopName
         cartRecentViewItemHolderData.minOrder = 1
         cartRecentViewItemHolderData.isTopAds = recentView.isTopAds
         cartRecentViewItemHolderData.discountPercentage = recentView.discountPercentage
@@ -33,11 +33,11 @@ class RecentViewMapper @Inject constructor() {
         cartRecentViewItemHolderData.clickUrl = recentView.clickUrl
         cartRecentViewItemHolderData.trackerImageUrl = recentView.trackerImageUrl
 
-        if (recentView.badgesUrl.isNotEmpty()) {
-            cartRecentViewItemHolderData.badgesUrl = recentView.badgesUrl
-            if (recentView.badgesUrl[0].equals("Official Store", ignoreCase = true)) {
+        if (recentView.badges.isNotEmpty()) {
+            cartRecentViewItemHolderData.badgesUrl = recentView.badges.map { it.imageUrl }
+            if (recentView.badges[0].imageUrl.equals("Official Store", ignoreCase = true)) {
                 cartRecentViewItemHolderData.shopType = "official_store"
-            } else if (recentView.badgesUrl[0].equals("Power Badge", ignoreCase = true)) {
+            } else if (recentView.badges[0].imageUrl.equals("Power Badge", ignoreCase = true)) {
                 cartRecentViewItemHolderData.shopType = "power_badge"
             }
         }

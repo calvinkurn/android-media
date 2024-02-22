@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -42,6 +41,7 @@ import com.tokopedia.chatbot.chatbot2.view.uimodel.videoupload.VideoUploadUiMode
 import com.tokopedia.chatbot.chatbot2.view.util.helper.toQuickReplyUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -160,12 +160,11 @@ class ChatbotViewStateImpl(
 
     override fun loadAvatar(avatarUrl: String) {
         val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
-        ImageHandler.loadImageCircle2(
-            avatar.context,
-            avatar,
-            avatarUrl,
-            R.drawable.chatbot_avatar
-        )
+        if (avatarUrl.isEmpty()) {
+            avatar.loadImageCircle(R.drawable.chatbot_avatar)
+        } else {
+            avatar.loadImageCircle(avatarUrl)
+        }
     }
 
     override fun clearChatOnLoadChatHistory() {

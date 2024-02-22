@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.InflateException;
@@ -53,6 +54,10 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -124,6 +129,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
     private static final String GOJEK_APP_LINK = "https://gojek.link/goclub/membership?source=toko_status_match";
     private static final String GOFOOD_LINK = "https://gofood.link/";
+    private static final String OPEN_CONTACT_PICKER_APPLINK = "tokopedia://open-contact-picker";
 
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
@@ -165,7 +171,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private UserSession userSession;
     private PermissionCheckerHelper permissionCheckerHelper;
+
+    private ContactPickerListener contactPicker;
     private RemoteConfig remoteConfig;
+
+    private PageLoadLogger pageLoadLogger;
 
     /**
      * return the url to load in the webview
@@ -217,6 +227,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         isTokopediaUrl = host != null && host.endsWith(TOKOPEDIA_COM) && !host.contains(ZOOM_US_STRING);
+        contactPicker = new ContactPicker();
     }
 
     private String getUrlFromArguments(Bundle args) {
@@ -272,6 +283,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private View onCreateWebView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
         View view = inflater.inflate(getLayout(), container, false);
+        pageLoadLogger = new PageLoadLogger(getActivity());
         webView = view.findViewById(setWebView());
         progressBar = view.findViewById(setProgressBar());
         swipeRefreshLayout = view.findViewById(R.id.general_web_view_lib_swipe_refresh_layout);
@@ -346,7 +358,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (isTokopediaUrl) {
             webView.requestFocus();
             webView.loadAuthUrl(url, new UserSession(getContext()));
-        } else if(WebViewHelper.isUrlWhitelisted(getContext(), url)) {
+        } else if (WebViewHelper.isUrlWhitelisted(getContext(), url)) {
             webView.requestFocus();
             webView.loadAuthUrl(url, null);
         } else {
@@ -360,10 +372,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             startActivity(browserIntent);
             getActivity().finish();
         } catch (Throwable th) {
-            Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type", "browser");
-            messageMap.put("url", url);
-            ServerLogger.log(Priority.P1, "INVALID_WEBVIEW_URL", messageMap);
+            WebViewLoggerKt.logInvalidWebviewUrl(getActivity(), url);
         }
     }
 
@@ -433,11 +442,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     }
 
                     String dataString = intent.getDataString();
-                    if(dataString != null) {
+                    if (dataString != null) {
                         results = new Uri[]{Uri.parse(dataString)};
-                    }else {
+                    } else {
                         List<String> images = MediaPicker.INSTANCE.result(intent).getOriginalPaths();
-                        if(!images.isEmpty()){
+                        if (!images.isEmpty()) {
                             results = new Uri[]{Uri.parse(FILE_PREFIX + images.get(0))};
                             Context context = getContext();
                             if (context != null) {
@@ -491,6 +500,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             proceedPartnerKyc(intent);
         }
 
+        contactPicker.onContactSelected(requestCode, resultCode, intent, BaseWebViewFragment.this.getActivity().getContentResolver(), getContext(), webView);
     }
 
     private void proceedPartnerKyc(Intent intent) {
@@ -708,6 +718,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (permissionCheckerHelper != null) {
             permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+            contactPicker.getPermissionCheckerHelper().onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
         }
     }
 
@@ -724,6 +735,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            pageLoadLogger.stop();
             String title = view.getTitle();
             Activity activityInstance = getActivity();
             if (activityInstance instanceof BaseSimpleWebViewActivity) {
@@ -777,6 +789,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
+            pageLoadLogger.triggerCheckPageLoad(url, BaseWebViewFragment.this.url);
             try {
                 getActivity().setProgressBarIndeterminateVisibility(true);
             } catch (Exception e) {
@@ -787,7 +800,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String requestUrl) {
-            if (hasCheckOverrideAtInitialization(requestUrl) && !shouldReloadContactUsUrl(requestUrl)) return false;
+            if (hasCheckOverrideAtInitialization(requestUrl) && !shouldReloadContactUsUrl(requestUrl))
+                return false;
             boolean overrideUrl = BaseWebViewFragment.this.shouldOverrideUrlLoading(view, requestUrl);
             checkActivityFinish();
             return overrideUrl;
@@ -807,12 +821,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
             super.onReceivedSslError(view, handler, error);
             handler.cancel();
+            pageLoadLogger.stop();
             progressBar.setVisibility(View.GONE);
         }
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             String webUrl = view.getUrl();
+            pageLoadLogger.stop();
             onWebPageReceivedError(failingUrl, errorCode, description, webUrl);
         }
 
@@ -821,6 +837,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             super.onReceivedError(view, request, error);
             String webUrl = view.getUrl();
+            pageLoadLogger.stop();
             onWebPageReceivedError(request.getUrl().toString(), error.getErrorCode(),
                     error.getDescription().toString(), webUrl);
         }
@@ -829,6 +846,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         @Override
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
             super.onReceivedHttpError(view, request, errorResponse);
+            pageLoadLogger.stop();
             String webUrl = view.getUrl();
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", request.getUrl().toString());
@@ -841,12 +859,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private void onWebPageReceivedError(String failingUrl, int errorCode, String description, String webUrl) {
         progressBar.setVisibility(View.GONE);
-        Map<String, String> messageMap = new HashMap<>();
-        messageMap.put("type", failingUrl);
-        messageMap.put("error_code", String.valueOf(errorCode));
-        messageMap.put("desc", description);
-        messageMap.put("web_url", webUrl);
-        ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", messageMap);
+        WebViewLoggerKt.logWebReceivedError(getActivity(), webView, failingUrl, String.valueOf(errorCode), description);
         if (errorCode == WebViewClient.ERROR_HOST_LOOKUP &&
                 description.contains(ERR_INTERNET_DISCONNECTED) &&
                 globalError != null && swipeRefreshLayout != null) {
@@ -892,9 +905,19 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (activity == null) {
             return false;
         }
+
+        if (url.contains(OPEN_CONTACT_PICKER_APPLINK)) {
+            contactPicker.openContactPicker(
+                    BaseWebViewFragment.this,
+                    intent -> startActivityForResult(intent, ContactPicker.CONTACT_PICKER_REQUEST_CODE)
+            );
+            return true;
+        }
+
         if ("".equals(url)) {
             return false;
         }
+
         Uri uri = Uri.parse(url);
         if (uri.isOpaque()) {
             return false;
@@ -904,7 +927,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
 
-        if (webView != null && shouldReloadContactUsUrl(url)){
+        if (webView != null && shouldReloadContactUsUrl(url)) {
             launchWebviewForNewUrl(url);
             return true;
         }
@@ -1052,7 +1075,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     LOGIN.equals(pathSegments.get(0)) &&
                     !userSession.isLoggedIn()) {
                 gotoLoginPage();
-            return true;
+                return true;
             }
         }
         return false;
@@ -1161,13 +1184,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private void logApplinkErrorOpen(String url) {
         String referrer = getPreviousUri();
-        Map<String, String> messageMap = new HashMap<>();
-        messageMap.put("type", "Webview");
-        messageMap.put("source", getClass().getSimpleName());
-        messageMap.put("referrer", referrer);
-        messageMap.put("uri", url);
-        messageMap.put("journey", "-");
-        ServerLogger.log(Priority.P1, "APPLINK_OPEN_ERROR", messageMap);
+        WebViewLoggerKt.logApplinkErrorOpen(getActivity(), referrer, url);
     }
 
     private void checkActivityFinish() {
@@ -1257,7 +1274,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (globalError != null) {
             globalError.setVisibility(View.GONE);
         }
-        if (shouldReloadContactUsUrl(url)){
+        if (shouldReloadContactUsUrl(url)) {
             launchWebviewForNewUrl(url);
             return;
         }

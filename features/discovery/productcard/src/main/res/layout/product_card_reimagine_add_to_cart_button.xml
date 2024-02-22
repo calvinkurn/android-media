@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.UnifyButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@id/productCardAddToCart"
+    android:layout_width="0dp"
+    android:layout_height="@dimen/product_card_reimagine_button_atc_height"
+    android:text="@string/product_card_text_add_to_cart_grid"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    app:layout_constraintVertical_bias="1.0"
+    app:unifyButtonSize="micro"
+    app:unifyButtonVariant="ghost" />

@@ -114,6 +114,7 @@ import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftPaddingComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
+import com.tokopedia.home_component.viewholders.OrigamiSDUIViewHolder
 import com.tokopedia.home_component.viewholders.ProductHighlightComponentViewHolder
 import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
@@ -138,12 +139,15 @@ import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixLeftPaddingDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.home_component.visitable.OrigamiSDUIDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
+import com.tokopedia.home_component.widget.lego3auto.Lego3AutoModel
+import com.tokopedia.home_component.widget.lego3auto.Lego3AutoViewHolder
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetViewHolder
@@ -161,6 +165,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerVi
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.remoteconfig.RemoteConfig
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -202,7 +207,8 @@ class HomeAdapterFactory(
     private val bestSellerListener: BestSellerListener,
     private val specialReleaseRevampListener: SpecialReleaseRevampListener,
     private val shopFlashSaleWidgetListener: ShopFlashSaleWidgetListener,
-    private val homeThematicUtil: HomeThematicUtil
+    private val homeThematicUtil: HomeThematicUtil,
+    private val remoteConfig: RemoteConfig
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -446,8 +452,16 @@ class HomeAdapterFactory(
         return SpecialReleaseRevampViewHolder.LAYOUT
     }
 
+    override fun type(lego3AutoModel: Lego3AutoModel): Int {
+        return Lego3AutoViewHolder.LAYOUT
+    }
+
     override fun type(shopFlashSaleWidgetDataModel: ShopFlashSaleWidgetDataModel): Int {
         return ShopFlashSaleWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(origamiSDUIDataModel: OrigamiSDUIDataModel): Int {
+        return OrigamiSDUIViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -465,7 +479,7 @@ class HomeAdapterFactory(
             RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, homeFeedsListener)
             EmptyBlankViewHolder.LAYOUT -> viewHolder = EmptyBlankViewHolder(view)
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
-            HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener, cardInteraction = true)
+            HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, remoteConfig, listener, cardInteraction = true)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener, cardInteraction = true)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener, cardInteraction = true)
@@ -624,6 +638,8 @@ class HomeAdapterFactory(
                 )
             SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
             ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
+            OrigamiSDUIViewHolder.LAYOUT -> viewHolder = OrigamiSDUIViewHolder(view, campaignWidgetComponentListener)
+            Lego3AutoViewHolder.LAYOUT -> viewHolder = Lego3AutoViewHolder(view, legoListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

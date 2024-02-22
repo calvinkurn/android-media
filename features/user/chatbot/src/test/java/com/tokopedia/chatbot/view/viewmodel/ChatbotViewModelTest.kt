@@ -30,6 +30,7 @@ import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.data.resolink.ResoLinkResponse
+import com.tokopedia.chatbot.chatbot2.data.slowmode.DynamicAttachmentSlowMode
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatResponse
 import com.tokopedia.chatbot.chatbot2.data.uploadsecure.CheckUploadSecureResponse
@@ -2494,7 +2495,7 @@ class ChatbotViewModelTest {
         chatRoomViewModel.listChat.add(
             CsatOptionsUiModel(
                 "", "", "", "", "", "", "",
-                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1, null)
             )
         )
 
@@ -2554,7 +2555,7 @@ class ChatbotViewModelTest {
         chatRoomViewModel.listChat.add(
             CsatOptionsUiModel(
                 "", "", "", "", "", "", "",
-                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1, null)
             )
         )
 
@@ -2637,7 +2638,7 @@ class ChatbotViewModelTest {
         chatRoomViewModel.listChat.add(
             CsatOptionsUiModel(
                 "", "", "", "", "", "", "",
-                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1, null)
             )
         )
 
@@ -2855,7 +2856,7 @@ class ChatbotViewModelTest {
         chatRoomViewModel.listChat.add(
             CsatOptionsUiModel(
                 "", "", "", "", "", "", "",
-                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1, null)
             )
         )
 
@@ -2935,7 +2936,7 @@ class ChatbotViewModelTest {
         chatRoomViewModel.listChat.add(
             CsatOptionsUiModel(
                 "", "", "", "", "", "", "",
-                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1, null)
             )
         )
 
@@ -3070,7 +3071,7 @@ class ChatbotViewModelTest {
         chatRoomViewModel.listChat.add(
             CsatOptionsUiModel(
                 "", "", "", "", "", "", "",
-                "", CsatAttributesPojo.Csat("1", "", emptyList(), "", listOf(), "", "", 123)
+                "", CsatAttributesPojo.Csat("1", "", emptyList(), "", listOf(), "", "", 123, null)
             )
         )
 
@@ -3119,7 +3120,7 @@ class ChatbotViewModelTest {
         chatRoomViewModel.listChat.add(
             CsatOptionsUiModel(
                 "", "", "", "", "", "", "",
-                "", CsatAttributesPojo.Csat("2", "", emptyList(), "", listOf(), "", "", 123), "", true
+                "", CsatAttributesPojo.Csat("2", "", emptyList(), "", listOf(), "", "", 123, null), "", true
             )
         )
 
@@ -3308,13 +3309,26 @@ class ChatbotViewModelTest {
             SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_110_NEW_CHATBOT_SESSION)
         chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
 
-        val dynamicAttachmentContents =
-            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
-
         // WHEN
         viewModel.handleDynamicAttachment34(chatResponse)
 
         // THEN
         assert(viewModel.dynamicAttachmentNewChatbotSession.value == true)
+    }
+
+    @Test
+    fun `WHEN websocket chat has dynamic attachment 111 THEN slow mode should be updated`() {
+        // GIVEN
+        val data = DynamicAttachmentSlowMode(true, 3)
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_111_SLOW_MODE)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        // WHEN
+        viewModel.handleDynamicAttachment34(chatResponse)
+
+        // THEN
+        assert(viewModel.dynamicAttachmentSlowMode.value?.isUsingSlowMode == true)
+        assert(viewModel.dynamicAttachmentSlowMode.value?.slowModeDurationInSeconds == 3)
     }
 }

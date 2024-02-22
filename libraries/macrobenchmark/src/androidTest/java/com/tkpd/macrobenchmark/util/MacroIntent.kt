@@ -84,14 +84,10 @@ object MacroIntent {
 
     object Session {
         fun getSessionMacroSetupIntent(): Intent {
-            val intent = Intent("com.tokopedia.internal.VIEW")
+            val intent = Intent("android.intent.action.VIEW")
             intent.setPackage(TKPD_PACKAGE_NAME)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            var loginParam = "non-login"
-            if (MacroArgs.isLogin(InstrumentationRegistry.getArguments())) {
-                loginParam = "login"
-            }
-            intent.data = Uri.parse("tokopedia-android-internal://session-setting/opt/$loginParam")
+            intent.data = Uri.parse("tokopedia://login")
             return intent
         }
     }
@@ -202,7 +198,7 @@ object MacroIntent {
 
         fun getSearchResultIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://discovery/search-result?q=samsung")
+            intent.data = Uri.parse("tokopedia-android-internal://discovery/search-result?q=Sarung+Tangan")
             return intent
         }
     }
@@ -294,10 +290,27 @@ object MacroIntent {
     object DigitalProductDetail {
 
         const val RV_DENOM_GRID = "rv_denom_grid_card"
+        const val RV_DENOM_FULL = "rv_denom_full_card"
 
         fun getPulsaPdpIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://digital/pdp_pulsa_macrobenchmark")
+            return intent
+        }
+
+        fun getDataPlanPdpIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://digital/pdp_data_plan_macrobenchmark")
+            return intent
+        }
+    }
+
+    object RechargeHomepage {
+        const val RV_RECHARGE_HOMEPAGE = "recycler_view"
+
+        fun getRechargeHomepageIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://recharge/home/dynamic_macrobenchmark")
             return intent
         }
     }

@@ -19,7 +19,6 @@ import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
 import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.generateSaveAddOnStateRequestParams
 import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.generateSaveAllAddOnsStateRequestParams
 import com.tokopedia.oneclickcheckout.order.view.model.AddressState
-import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
@@ -37,6 +36,7 @@ import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.A
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EpharmacyPrescriptionDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -78,19 +78,28 @@ class OrderSummaryPageCartProcessor @Inject constructor(
         source: String,
         gatewayCode: String,
         tenor: Int,
-        isCartReimagine: Boolean
+        isCartReimagine: Boolean,
+        promoExternalAutoApplyCode: ArrayList<PromoExternalAutoApply>
     ): ResultGetOccCart {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
                 val orderData = getOccCartUseCase
-                    .executeSuspend(getOccCartUseCase.createRequestParams(source, gatewayCode, tenor, isCartReimagine))
+                    .executeSuspend(
+                        getOccCartUseCase.createRequestParams(
+                            source,
+                            gatewayCode,
+                            tenor,
+                            isCartReimagine
+                        ),
+                        promoExternalAutoApplyCode
+                    )
                 return@withContext ResultGetOccCart(
                     orderCart = orderData.cart,
                     orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference.isValidProfile),
                     orderProfile = orderData.preference,
                     orderPayment = orderData.payment,
-                    orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
+                    orderPromo = orderData.promo,
                     globalEvent = when {
                         orderData.prompt.shouldShowPrompt() -> {
                             OccGlobalEvent.Prompt(orderData.prompt)

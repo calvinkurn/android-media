@@ -116,8 +116,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmDataParam
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.thematicheader.ThematicHeaderViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -199,7 +201,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import com.tokopedia.unifyprinciples.R as RUnify
+import com.tokopedia.searchbar.R as searchbarR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
@@ -902,16 +905,10 @@ open class DiscoveryFragment :
         discoveryViewModel.miniCartAdd.observe(viewLifecycleOwner) {
             if (it is Success) {
                 if (it.data.requestParams.isGeneralCartATC) {
-                    showToasterWithAction(
+                    showToaster(
                         message = it.data.addToCartDataModel.errorMessage.joinToString(separator = ", "),
                         Toaster.LENGTH_LONG,
-                        type = Toaster.TYPE_NORMAL,
-                        actionText = getString(R.string.disco_lihat),
-                        clickListener = {
-                            context?.let { context ->
-                                RouteManager.route(context, ApplinkConst.CART)
-                            }
-                        }
+                        type = Toaster.TYPE_NORMAL
                     )
                     if (bmGmDataParam != null) {
                         analytics.trackEventProductBmGmATC(
@@ -1015,11 +1012,28 @@ open class DiscoveryFragment :
             )
         }
 
-        discoveryViewModel.bmGmDataList.observe(viewLifecycleOwner) { (parentPosition, offerMessages) ->
-            discoveryAdapter.getViewModelAtPosition(parentPosition)
+        discoveryViewModel.bmGmDataList.observe(viewLifecycleOwner) { (data, bmGmTierData) ->
+            discoveryAdapter.getViewModelAtPosition(data.parentPosition)
                 ?.let { discoveryBaseViewModel ->
                     if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
-                        discoveryBaseViewModel.changeTier(false, offerMessages)
+                        discoveryBaseViewModel.changeTier(
+                            false,
+                            BmGmTierData(
+                                offerMessages = bmGmTierData.offerMessages,
+                                flipTierImage = bmGmTierData.flipTierImage,
+                                flipTierWording = bmGmTierData.flipTierWording
+                            )
+                        )
+                    } else if (discoveryBaseViewModel is SectionViewModel) {
+                        discoveryBaseViewModel.notifyChildViewModel(
+                            data.offerId,
+                            BmGmTierData(
+                                offerMessages = bmGmTierData.offerMessages,
+                                flipTierImage = bmGmTierData.flipTierImage,
+                                flipTierWording = bmGmTierData.flipTierWording
+                            ),
+                            ComponentsList.ShopOfferHeroBrand
+                        )
                     }
                 }
         }
@@ -1918,6 +1932,10 @@ open class DiscoveryFragment :
         )
         AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
             if (bmGmDataParam != null && cartId.isNotBlankOrZero()) {
+                showToaster(
+                    atcMessage,
+                    type = Toaster.TYPE_NORMAL
+                )
                 getMiniCart(bmGmDataParam)
             }
         }
@@ -2164,12 +2182,12 @@ open class DiscoveryFragment :
     private fun getTabTextColor(context: Context, textColor: String?): Int {
         return try {
             if (textColor.isNullOrEmpty()) {
-                ContextCompat.getColor(context, RUnify.color.Unify_G500)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
             } else {
                 Color.parseColor(textColor)
             }
         } catch (exception: Exception) {
-            ContextCompat.getColor(context, RUnify.color.Unify_G500)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
         }
     }
 
@@ -2222,9 +2240,9 @@ open class DiscoveryFragment :
 
     override fun onChangeTextColor(): Int {
         return if (hasColouredStatusBar && isLightThemeStatusBar != false) {
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            unifyprinciplesR.color.Unify_Static_White
         } else {
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+            unifyprinciplesR.color.Unify_NN950_96
         }
     }
 
@@ -2270,7 +2288,7 @@ open class DiscoveryFragment :
             parentLayout.setBackgroundColor(
                 MethodChecker.getColor(
                     it,
-                    RUnify.color.Unify_GN950
+                    unifyprinciplesR.color.Unify_GN950
                 )
             )
         }
@@ -2284,7 +2302,7 @@ open class DiscoveryFragment :
             parentLayout.setBackgroundColor(
                 MethodChecker.getColor(
                     it,
-                    RUnify.color.Unify_NN0
+                    unifyprinciplesR.color.Unify_NN0
                 )
             )
         }
@@ -2413,6 +2431,7 @@ open class DiscoveryFragment :
                 AtcVariantHelper.goToAtcVariant(
                     context = it,
                     productId = productId,
+                    dismissAfterTransaction = true,
                     pageSource = VariantPageSource.BUY_MORE_GET_MORE,
                     extParams = AtcVariantHelper.generateExtParams(
                         mapOf(
@@ -2510,6 +2529,20 @@ open class DiscoveryFragment :
         }
     }
 
+    fun rebindSelectedSection(sectionID: String, componentID: String) {
+        getSectionPositionMap(pageEndPoint)?.let {
+            it[sectionID]?.let { position ->
+                if (position >= 0) {
+                    (discoveryAdapter.getViewModelAtPosition(position) as? SectionViewModel)?.notifyChildViewModel(
+                        componentID,
+                        Any(),
+                        ComponentsList.FlashSaleTokoTab
+                    )
+                }
+            }
+        }
+    }
+
     fun handleHideSection(sectionID: String) {
         if (sectionID.isNotEmpty()) {
             anchorViewHolder?.viewModel?.deleteSectionTab(sectionID)
@@ -2583,10 +2616,10 @@ open class DiscoveryFragment :
         return if (context.isDarkMode()) {
             ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                unifyprinciplesR.color.Unify_Static_White
             )
         } else {
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
         }
     }
 
@@ -2594,12 +2627,12 @@ open class DiscoveryFragment :
         return if (context.isDarkMode()) {
             ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                unifyprinciplesR.color.Unify_Static_White
             )
         } else {
             ContextCompat.getColor(
                 context,
-                com.tokopedia.searchbar.R.color.searchbar_dms_state_light_icon
+                searchbarR.color.searchbar_dms_state_light_icon
             )
         }
     }

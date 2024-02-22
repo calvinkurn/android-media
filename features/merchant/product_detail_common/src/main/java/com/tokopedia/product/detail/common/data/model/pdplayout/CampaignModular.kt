@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
@@ -16,6 +17,9 @@ data class CampaignModular(
     val campaignType: String = "",
     @SerializedName("campaignTypeName")
     val campaignTypeName: String = "",
+    @SerializedName("campaignLogo")
+    @Expose
+    val campaignLogo: String = "",
     @SerializedName("discountedPrice")
     val discountedPrice: Double = 0.0,
     @SerializedName("endDate")
@@ -24,6 +28,10 @@ data class CampaignModular(
     val endDateUnix: String = "",
     @SerializedName("hideGimmick")
     val hideGimmick: Boolean = false,
+    /**
+     * isActive is false when identifier is thematic and no campaign(0)
+     * otherwise when identifier 1,2,3,4,7
+     */
     @SerializedName("isActive")
     val isActive: Boolean = false,
     @SerializedName("isAppsOnly")
@@ -69,7 +77,7 @@ data class CampaignModular(
             val endDateMillis = endDateLong * ONE_THOUSAND
             val endDate = Date(endDateMillis)
             val now = System.currentTimeMillis()
-            val diff = (endDate?.time ?: 0 - now).toFloat()
+            val diff = (endDate.time - now).toFloat()
             if (diff < 0) {
                 // End date is out dated
                 false
@@ -92,20 +100,8 @@ data class CampaignModular(
         get() = isActive && (campaignID.toIntOrNull() ?: 0) > 0
 
     fun processMaskingPrice(price: Price) {
-        discPercentageFmt = price.discPercentage.ifNullOrBlank {
-            percentageAmount.percentFormatted()
-        }
-        slashPriceFmt = price.slashPriceFmt.ifNullOrBlank {
-            discountedPrice.getCurrencyFormatted()
-        }
-        priceFmt = price.priceFmt.ifNullOrBlank {
-            originalPrice.getCurrencyFormatted()
-        }
-
-        if (hideGimmick) {
-            priceFmt = price.slashPriceFmt.ifNullOrBlank {
-                discountedPrice.getCurrencyFormatted()
-            }
-        }
+        discPercentageFmt = price.discPercentage
+        slashPriceFmt = price.slashPriceFmt
+        priceFmt = price.priceFmt
     }
 }

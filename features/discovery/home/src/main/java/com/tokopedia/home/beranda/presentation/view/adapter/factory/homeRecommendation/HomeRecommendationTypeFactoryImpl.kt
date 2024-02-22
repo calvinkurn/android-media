@@ -4,18 +4,42 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationButtonRetryUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationEmpty
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationError
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationHeadlineTopAdsDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationLoadMore
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationLoading
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.getLayout
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.*
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationVideoWidgetManager
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeBannerFeedViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationBannerTopAdsOldViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationBannerTopAdsViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationButtonRetryViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationEmptyViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationErrorViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationHeadlineTopAdsViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemListViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationLoadingMoreViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationLoadingViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationPlayWidgetViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.RecomEntityCardViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
+import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayVideoWidgetManager
 
 class HomeRecommendationTypeFactoryImpl(
-    private val topAdsBannerClickListener: TopAdsBannerClickListener,
-    private val homeRecommendationListener: HomeRecommendationListener,
-    private val homeRecommendationVideoWidgetManager: HomeRecommendationVideoWidgetManager
+    private val listener: GlobalRecomListener,
+    private val homeRecommendationVideoWidgetManager: PlayVideoWidgetManager
 ) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
+    override fun type(dataModel: RecomEntityCardUiModel): Int {
+        return RecomEntityCardViewHolder.LAYOUT
+    }
     override fun type(dataModel: HomeRecommendationItemDataModel): Int {
         return dataModel.getLayout()
     }
@@ -60,36 +84,29 @@ class HomeRecommendationTypeFactoryImpl(
         return HomeRecommendationButtonRetryViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: RecomEntityCardUiModel): Int {
-        return RecomEntityCardViewHolder.LAYOUT
-    }
-
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             HomeRecommendationItemGridViewHolder.LAYOUT -> HomeRecommendationItemGridViewHolder(
                 parent,
-                homeRecommendationListener
+                listener
             )
 
-            RecomEntityCardViewHolder.LAYOUT -> RecomEntityCardViewHolder(
-                parent,
-                homeRecommendationListener
-            )
+            RecomEntityCardViewHolder.LAYOUT -> RecomEntityCardViewHolder(parent, listener)
 
             HomeRecommendationItemListViewHolder.LAYOUT -> HomeRecommendationItemListViewHolder(
                 parent,
-                homeRecommendationListener
+                listener
             )
 
             HomeRecommendationLoadingViewHolder.LAYOUT -> HomeRecommendationLoadingViewHolder(parent)
             HomeBannerFeedViewHolder.LAYOUT -> HomeBannerFeedViewHolder(
                 parent,
-                homeRecommendationListener
+                listener
             )
 
             HomeRecommendationErrorViewHolder.LAYOUT -> HomeRecommendationErrorViewHolder(
                 parent,
-                homeRecommendationListener
+                listener
             )
 
             EmptyViewHolder.LAYOUT -> HomeRecommendationEmptyViewHolder(parent)
@@ -100,19 +117,19 @@ class HomeRecommendationTypeFactoryImpl(
 
             HomeRecommendationBannerTopAdsOldViewHolder.LAYOUT -> HomeRecommendationBannerTopAdsOldViewHolder(
                 parent,
-                homeRecommendationListener
+                listener
             )
 
             HomeRecommendationHeadlineTopAdsViewHolder.LAYOUT -> HomeRecommendationHeadlineTopAdsViewHolder(
                 parent,
-                topAdsBannerClickListener
+                listener
             )
 
-            HomeRecommendationPlayWidgetViewHolder.LAYOUT -> HomeRecommendationPlayWidgetViewHolder(parent, homeRecommendationVideoWidgetManager, homeRecommendationListener)
+            HomeRecommendationPlayWidgetViewHolder.LAYOUT -> HomeRecommendationPlayWidgetViewHolder(parent, homeRecommendationVideoWidgetManager, listener)
 
-            HomeRecommendationBannerTopAdsViewHolder.LAYOUT -> HomeRecommendationBannerTopAdsViewHolder(parent, homeRecommendationListener)
+            HomeRecommendationBannerTopAdsViewHolder.LAYOUT -> HomeRecommendationBannerTopAdsViewHolder(parent, listener)
 
-            HomeRecommendationButtonRetryViewHolder.LAYOUT -> HomeRecommendationButtonRetryViewHolder(parent, homeRecommendationListener)
+            HomeRecommendationButtonRetryViewHolder.LAYOUT -> HomeRecommendationButtonRetryViewHolder(parent, listener)
 
             else -> super.createViewHolder(parent, type)
         }

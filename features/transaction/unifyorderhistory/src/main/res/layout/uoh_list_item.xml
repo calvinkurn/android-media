@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="4dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginRight="4dp"
-    android:layout_marginBottom="8dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginBottom="2dp"
+    android:layout_marginEnd="10dp"
     app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -74,20 +73,20 @@
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/divider_uoh_order_1"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
+            android:layout_height="1dp"
             android:layout_marginTop="12dp"
             android:background="@color/dms_uoh_order_list_divider_color"
             app:layout_constraintTop_toBottomOf="@id/tv_uoh_date" />
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/ticker_info_inside_card"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:visibility="gone"
             app:closeButtonVisibility="gone"
-            app:layout_constraintLeft_toLeftOf="@id/cl_data_product"
-            app:layout_constraintRight_toRightOf="@id/cl_data_product"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_uoh_order_1"
             app:tickerShapeType="loose"
             app:tickerType="warning"
@@ -95,12 +94,12 @@
 
         <RelativeLayout
             android:id="@+id/rl_uoh_product"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="12dp"
-            app:layout_constraintLeft_toLeftOf="@id/cl_data_product"
-            app:layout_constraintStart_toStartOf="@id/cl_data_product"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ticker_info_inside_card">
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -180,7 +179,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             app:layout_goneMarginEnd="0dp"
-            android:minWidth="80dp"
+            android:minWidth="76dp"
             app:layout_constraintBottom_toTopOf="@id/layout_review_rating"
             app:layout_constraintEnd_toStartOf="@+id/uoh_btn_action_2"
             app:layout_constraintHorizontal_bias="1.0"
@@ -196,7 +195,7 @@
             android:id="@+id/uoh_btn_action_2"
             android:layout_width="wrap_content"
             android:layout_height="24dp"
-            android:minWidth="80dp"
+            android:minWidth="76dp"
             app:layout_constraintBottom_toTopOf="@id/layout_review_rating"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="12dp"

@@ -51,6 +51,27 @@
     <string name="text_comparison_title">Detail Perbandingan</string>
     <string name="catalog_retry_action">Coba lagi</string>
     <string name="catalog_error_message_no_connection">Wah, internet putus. Cek paket data atau WiFi-mu, ya.</string>
-    <string name="catalog_error_message_inactive">1 katalog gagal ditampilkan. Perbandingan produk diubah ke semula, ya.</string>
-
+    <string name="catalog_error_message_inactive">%d katalog gagal ditampilkan. Perbandingan produk diubah ke semula, ya.</string>
+    <string name="catalog_title_first_comparison">Main Katalog 1</string>
+    <string name="catalog_title_comparison">Katalog %d</string>
+    <string name="catalog_title_change_comparison">Ubah Perbandingan</string>
+    <string name="catalog_subtitle_change_comparison">Bandingkan min. 1 dan maks. 4 katalog</string>
+    <string name="catalog_text_title_catalog_listing">Daftar Catalog</string>
+    <string name="catalog_text_title_find_catalog">Cari katalog</string>
+    <string name="catalog_action_see_comparison">Lihat Perbandingan</string>
+    <string name="catalog_message_unselect">%1$s katalog dihapus dari perbandingan.</string>
+    <string name="catalog_btn_title_reset">Reset ke Semula</string>
+    <string name="catalog_text_reset_comparison">Kamu bisa reset perbandingan produk ke semula atau hapus semua produk yang sudah dipilih untuk perbandingan.</string>
+    <string name="catalog_btn_title_remove_all">Hapus Perbandingan</string>
+    <string name="catalog_title_bottom_sheet_reset">Mau reset perbandingan?</string>
+    <string name="catalog_label_oke">Oke</string>
+    <string name="catalog_info_message_min_max_total_selection_catalog">"Kamu bisa bandingkan min. 1 dan maks. 4 katalog di halaman ini, ya."</string>
+    <string name="catalog_message_failed_load_initial_data">Ada gangguan yang lagi dibereskan. Coba lagi atau balik lagi nanti, ya.</string>
+    <string name="catalog_switching_confirm_exit_title">Yakin mau kembali?</string>
+    <string name="catalog_switching_confirm_desc_title">Kalau kamu kembali ke halaman sebelumnya, perbandingan produk akan diubah ke semula, ya.</string>
+    <string name="catalog_cancel">Batal</string>
+    <string name="catalog_keep_back">Tetap Kembali</string>
+    <string name="catalog_switching_catalong_not_found">Katalog tidak ditemukan</string>
+    <string name="catalog_switching_catalong_not_found_sub_title">Coba gunakan kata kunci lain, ya.</string>
+    <string name="catalog_text_lainnya">Lainnya</string>
 </resources>

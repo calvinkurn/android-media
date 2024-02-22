@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -84,7 +83,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
@@ -150,7 +148,8 @@ import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefresh
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.ImageHandler
+import com.tokopedia.home_component.usecase.thematic.ThematicModel
+import com.tokopedia.home_component.util.ImageLoaderStateListener
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.iris.Iris
@@ -168,8 +167,6 @@ import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.locationmanager.DeviceLocation
-import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.HomeBottomNavListener
@@ -180,6 +177,7 @@ import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.notifications.inApp.ketupat.GamificationPopUpHandler
 import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
@@ -226,8 +224,6 @@ import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
-import rx.Observable
-import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.util.*
@@ -359,6 +355,8 @@ open class HomeRevampFragment :
 
     @Inject
     lateinit var homeRemoteConfigController: HomeRemoteConfigController
+
+    var gamificationPopUpHandler: GamificationPopUpHandler? = null
 
     @Inject
     lateinit var homePrefController: HomePrefController
@@ -925,7 +923,7 @@ open class HomeRevampFragment :
         getHomeViewModel().thematicLiveData.observe(viewLifecycleOwner) { thematic ->
             if (thematic.isShown) {
                 context?.let { ctx ->
-                    val thematicImageLoadListener = object : ImageHandler.ImageLoaderStateListener {
+                    val thematicImageLoadListener = object : ImageLoaderStateListener {
                         override fun successLoad(view: ImageView) {
                             view.show()
                             if (view == thematicBackground) {
@@ -973,7 +971,7 @@ open class HomeRevampFragment :
     }
 
     private fun notifyHomeThematicChanges(
-        thematicModel: HomeThematicModel,
+        thematicModel: ThematicModel,
         isBackgroundLoaded: Boolean = false
     ) {
         getThematicUtil().thematicModel = thematicModel
@@ -1095,6 +1093,15 @@ open class HomeRevampFragment :
 
         // refresh home-to-do-widget data if needed
         getHomeViewModel().getCMHomeWidgetData(false)
+        // trigger gamification popup flow
+        executeGamificationPopUpFlow()
+    }
+
+    private fun executeGamificationPopUpFlow() {
+        if (gamificationPopUpHandler == null) {
+            gamificationPopUpHandler = GamificationPopUpHandler()
+        }
+        activity?.let { gamificationPopUpHandler?.onFragmentResume(it) }
     }
 
     private fun conditionalViewModelRefresh() {
@@ -1601,7 +1608,8 @@ open class HomeRevampFragment :
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
             ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
-            getThematicUtil()
+            getThematicUtil(),
+            getRemoteConfig()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1960,47 +1968,6 @@ open class HomeRevampFragment :
 
     private fun remoteConfigIsNewBalanceWidget(): Boolean {
         return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_NEW_BALANCE_WIDGET, true)
-    }
-
-    private fun detectAndSendLocation() {
-        activity?.let {
-            Observable.just(true).map { aBoolean: Boolean? ->
-                val locationDetectorHelper = LocationDetectorHelper(
-                    permissionCheckerHelper.get(),
-                    LocationServices.getFusedLocationProviderClient(it.applicationContext),
-                    it.applicationContext
-                )
-                locationDetectorHelper.getLocation(
-                    onGetLocation(),
-                    it,
-                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                    rationaleText = ""
-                )
-                true
-            }.subscribeOn(Schedulers.io()).subscribe({ }) { }
-        }
-    }
-
-    private fun onGetLocation(): Function1<DeviceLocation, Unit> {
-        return { (latitude, longitude) ->
-            saveLocation(activity, latitude, longitude)
-        }
-    }
-
-    private fun saveLocation(context: Context?, latitude: Double, longitude: Double) {
-        val editor: SharedPreferences.Editor
-        if (context != null && !TextUtils.isEmpty(ConstantKey.LocationCache.KEY_LOCATION)) {
-            sharedPrefs = context.getSharedPreferences(
-                ConstantKey.LocationCache.KEY_LOCATION,
-                Context.MODE_PRIVATE
-            )
-            editor = sharedPrefs.edit()
-        } else {
-            return
-        }
-        editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LAT, latitude.toString())
-        editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LONG, longitude.toString())
-        editor.apply()
     }
 
     private fun saveFirstInstallTime() {

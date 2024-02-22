@@ -2,6 +2,8 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,7 @@ import com.tokopedia.notifications.inApp.external.CmEventListener;
 import com.tokopedia.notifications.inApp.external.ExternalCallbackImpl;
 import com.tokopedia.notifications.inApp.external.IExternalInAppCallback;
 import com.tokopedia.notifications.inApp.external.PushIntentHandler;
+import com.tokopedia.notifications.inApp.ketupat.GamificationPopUpHandler;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
@@ -36,6 +39,8 @@ import com.tokopedia.notifications.inApp.viewEngine.CMInAppProcessor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.utils.date.DateUtil;
+import com.tokopedia.utils.date.DateUtilKt;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,6 +50,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.tokopedia.notifications.common.InAppRemoteConfigKey.ENABLE_NEW_INAPP_LOCAL_FETCH;
 import static com.tokopedia.notifications.common.InAppRemoteConfigKey.ENABLE_NEW_INAPP_LOCAL_SAVE;
@@ -53,6 +60,7 @@ import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConverto
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_SILENT;
+import static com.tokopedia.utils.date.DateUtil.YYYY_MM_DD;
 
 /**
  * @author lalit.singh
@@ -64,7 +72,7 @@ public class CMInAppManager implements CmInAppListener,
         CMInAppController.OnNewInAppDataStoreListener {
 
     private static final CMInAppManager inAppManager;
-
+    public static Boolean isInappFlowChecked = false;
 
     private Application application;
     private CmInAppListener cmInAppListener;
@@ -163,6 +171,15 @@ public class CMInAppManager implements CmInAppListener,
                 );
     }
 
+    public boolean existsActiveInAppCampaign(String name, boolean isActivity){
+        AtomicBoolean activityValidInAppCampaign = new AtomicBoolean(false);
+        InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
+                .getInAppData(name, isActivity, inAppList ->
+                        activityValidInAppCampaign.set(canShowInApp((List<CMInApp>) inAppList))
+                );
+        return activityValidInAppCampaign.get();
+    }
+
     private Boolean isFetchInAppNewFlowEnabled() {
         return cmRemoteConfigUtils != null && cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_FETCH,
                 false);
@@ -174,11 +191,15 @@ public class CMInAppManager implements CmInAppListener,
             if (canShowInApp(inAppDataList)) {
                 CMInApp cmInApp = inAppDataList.get(0);
                 sendEventInAppPrepared(cmInApp);
-                if (checkForOtherSources(cmInApp, entityHashCode, screenName)) return;
+                if (checkForOtherSources(cmInApp, entityHashCode, screenName)) {
+                    isInappFlowChecked = true;
+                    return;
+                }
                 if (canShowDialog()) {
-                    showDialog(cmInApp);
+                    showDialog(cmInApp, screenName);
                 }
             }
+            isInappFlowChecked = true;
         }
     }
 
@@ -205,7 +226,26 @@ public class CMInAppManager implements CmInAppListener,
         }
     }
 
-    private void showDialog(CMInApp data) {
+    private void showDialog(CMInApp data, String screenName) {
+        if(screenName.equals("com.tokopedia.navigation.presentation.activity.MainParentActivity")) {
+            String ketupatShownTime = application.getApplicationContext().getSharedPreferences(
+                    "ketupat_shown_time",
+                    Context.MODE_PRIVATE
+            ).getString("ketupat_shown_time", null);
+            if(ketupatShownTime != null) {
+              int diff = (int) Math.abs(DateUtilKt.getDayDiffFromToday(GamificationPopUpHandler.toDate(ketupatShownTime,YYYY_MM_DD)));
+              if(diff < 1) {
+                  return;
+              }
+            }
+        }
+        if(screenName.equals("com.tokopedia.navigation.presentation.activity.MainParentActivity")) {
+            application.getApplicationContext().getSharedPreferences(
+                    "inapp_shown_time",
+                    Context.MODE_PRIVATE
+            ).edit().putString("inapp_shown_time", GamificationPopUpHandler.getCurrentDate()).apply();
+        }
+        isInappFlowChecked = true;
         WeakReference<Activity> currentActivity = activityLifecycleHandler.getCurrentWeakActivity();
         String type = data.type;
         if (!TextUtils.isEmpty(type)) {
