@@ -267,6 +267,7 @@ class BmsmWidgetTabFragment :
             when (atc) {
                 is Success -> {
                     if (atc.data.isDataError()) {
+                        binding?.pdUpsellingLoader?.gone()
                         onErrorAtc.invoke(atc.data.getAtcErrorMessage().orEmpty())
                     } else {
                         getOfferingData()
