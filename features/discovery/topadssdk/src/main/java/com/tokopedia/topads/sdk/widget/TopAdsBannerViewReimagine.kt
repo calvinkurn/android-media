@@ -99,6 +99,8 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                     shopAdsProductView.hide()
                     adsBannerShopCardView?.visible()
                     shopAdsWithThreeProducts.hide()
+                    shopAdsWithSingleProductHorizontal.hide()
+                    shopAdsWithSingleProductVertical.hide()
                     container?.setBackgroundResource(0)
                     (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 4.toPx(), 0, 0)
 
@@ -111,6 +113,8 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                     shopAdsProductView.hide()
                     shopAdsWithThreeProducts.hide()
                     adsBannerShopCardView?.gone()
+                    shopAdsWithSingleProductHorizontal.hide()
+                    shopAdsWithSingleProductVertical.hide()
                     list.isNestedScrollingEnabled = false
 
                     val shop_badge = findViewById<ImageView>(R.id.topAdsShopBadge)
@@ -188,6 +192,8 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             list?.gone()
             shopAdsWithThreeProducts.hide()
             topAdsCarousel.show()
+            shopAdsWithSingleProductHorizontal.hide()
+            shopAdsWithSingleProductVertical.hide()
             container?.background = ContextCompat.getDrawable(context, R.drawable.bg_os_gradient)
             setTopAdsCarousel(cpmModel, topAdsCarousel)
         } else if (cpmData.cpm?.layout == LAYOUT_5 && isEligible(cpmData)) {
@@ -196,6 +202,8 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             list?.gone()
             shopAdsProductView.show()
             shopAdsWithThreeProducts.hide()
+            shopAdsWithSingleProductHorizontal.hide()
+            shopAdsWithSingleProductVertical.hide()
             container?.setBackgroundResource(0)
             setShopAdsProduct(cpmModel, shopAdsProductView)
         } else if ((cpmData.cpm?.layout == LAYOUT_8 || cpmData.cpm?.layout == LAYOUT_9) && isEligible(cpmData)) {
@@ -204,6 +212,8 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             shopAdsProductView.hide()
             adsBannerShopCardView?.hide()
             shopAdsWithThreeProducts.show()
+            shopAdsWithSingleProductHorizontal.hide()
+            shopAdsWithSingleProductVertical.hide()
             list?.hide()
             setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerViewClickListener, hasAddProductToCartButton)
         } else if (cpmData?.cpm?.layout == TopAdsConstants.LAYOUT_10) {

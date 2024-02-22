@@ -165,6 +165,8 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     shopAdsProductView.hide()
                     adsBannerShopCardView?.visible()
                     shopAdsWithThreeProducts.hide()
+                    shopAdsWithSingleProductHorizontal.hide()
+                    shopAdsWithSingleProductVertical.hide()
                     container?.setBackgroundResource(0)
                     (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 4.toPx(), 0, 0)
 
@@ -176,6 +178,8 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     topAdsCarousel.hide()
                     shopAdsProductView.hide()
                     shopAdsWithThreeProducts.hide()
+                    shopAdsWithSingleProductHorizontal.hide()
+                    shopAdsWithSingleProductVertical.hide()
                     adsBannerShopCardView?.gone()
                     list.isNestedScrollingEnabled = false
 
@@ -282,6 +286,8 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             shopDetail?.gone()
             list?.gone()
             shopAdsWithThreeProducts.hide()
+            shopAdsWithSingleProductHorizontal.hide()
+            shopAdsWithSingleProductVertical.hide()
             topAdsCarousel.show()
             container?.background = ContextCompat.getDrawable(context, R.drawable.bg_os_gradient)
             setTopAdsCarousel(cpmModel, topAdsCarousel)
@@ -291,6 +297,8 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             list?.gone()
             shopAdsProductView.show()
             shopAdsWithThreeProducts.hide()
+            shopAdsWithSingleProductHorizontal.hide()
+            shopAdsWithSingleProductVertical.hide()
             container?.setBackgroundResource(0)
             setShopAdsProduct(cpmModel, shopAdsProductView)
         } else if ((cpmData.cpm?.layout == LAYOUT_8 || cpmData.cpm?.layout == LAYOUT_9) && isEligible(cpmData)) {
@@ -299,6 +307,8 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             shopAdsProductView.hide()
             adsBannerShopCardView?.hide()
             shopAdsWithThreeProducts.show()
+            shopAdsWithSingleProductHorizontal.hide()
+            shopAdsWithSingleProductVertical.hide()
             list?.hide()
             setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerViewClickListener, hasAddProductToCartButton)
         } else if (cpmData?.cpm?.layout == LAYOUT_10) {

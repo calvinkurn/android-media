@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -33,7 +34,7 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
 
     private var shopBadge: ImageUnify? = null
     private var shopImage: ImageUnify? = null
-    private var productImage: ImageUnify? = null
+    private var productImage: AppCompatImageView? = null
     private var bodyContainer: ConstraintLayout? = null
     private var merchantVoucher: Label? = null
     private var shopSlogan: Typography? = null
@@ -106,14 +107,14 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
             setDiscountPercent(productModel)
 
             shopAdsWithSingleProductModel.impressHolder?.let { impressHolder ->
-                productContainer?.addOnImpressionListener(impressHolder){
+                productContainer?.addOnImpressionListener(impressHolder) {
                     shopAdsWithSingleProductModel.impressionListener?.onImpressionProductAdsItem(Int.ZERO, shopAdsWithSingleProductModel.listItem, shopAdsWithSingleProductModel.cpmData)
                     shopAdsWithSingleProductModel.impressionListener?.onImpressionHeadlineAdsItem(Int.ZERO, shopAdsWithSingleProductModel.cpmData)
                 }
             }
 
             shopAdsWithSingleProductModel.impressHolder?.let { impressHolder ->
-                shopImage?.addOnImpressionListener(impressHolder){
+                shopImage?.addOnImpressionListener(impressHolder) {
                     shopAdsWithSingleProductModel.impressionListener?.let {
                         it.onImpressionHeadlineAdsItem(Int.ZERO, shopAdsWithSingleProductModel.cpmData)
                         topAdsUrlHitter.hitImpressionUrl(
@@ -127,7 +128,7 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
                 }
             }
 
-            productContainer?.setOnClickListener{
+            productContainer?.setOnClickListener {
                 shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(
                     Int.ZERO,
                     product.applinks,
@@ -213,9 +214,9 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
     }
 
     private fun getIsImageShopBadgeVisible(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel): Boolean {
-        return shopAdsWithSingleProductModel.isOfficial
-            || shopAdsWithSingleProductModel.isPMPro
-            || shopAdsWithSingleProductModel.isPowerMerchant
+        return shopAdsWithSingleProductModel.isOfficial ||
+            shopAdsWithSingleProductModel.isPMPro ||
+            shopAdsWithSingleProductModel.isPowerMerchant
     }
 
     private fun getProductCardViewModel(
@@ -241,7 +242,7 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
                     add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
                 }
             },
-            hasAddToCartButton = hasAddToCartButton,
+            hasAddToCartButton = hasAddToCartButton
         )
     }
 }
