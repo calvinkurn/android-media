@@ -40,8 +40,13 @@ class StoriesGroupsUseCase @Inject constructor(
                     webLink
                     author {
                         id
+                        type
+                        name
+                        badgeURL
                         hasStory
                         isUnseenStoryExist
+                        thumbnailURL
+                        appLink
                     }
                   }
                 meta{

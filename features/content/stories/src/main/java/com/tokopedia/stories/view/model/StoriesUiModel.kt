@@ -24,6 +24,7 @@ data class StoriesGroupItem(
     val groupId: String = "",
     val groupName: String = "",
     val detail: StoriesDetail = StoriesDetail(),
+    val author: StoryAuthor = StoryAuthor.Unknown,
     val type: StoriesType = StoriesType.Category
 )
 

@@ -371,12 +371,12 @@ class StoriesViewModel @AssistedInject constructor(
             if (mDetailPos == mDetailSize - 1) {
                 val type = mGroup.type
                 if (type != StoriesType.Author) return@run
-                setHasSeenAllStories(mGroup.groupId, AuthorType.Seller)
+                setHasSeenAllStories(mGroup.author.id, AuthorType.Seller)
             }
         }
 
         if (mGroupPos != mGroupSize - 1 || mDetailPos != mDetailSize - 1) return
-        setHasSeenAllStories(args.authorId, AuthorType.getByType(args.authorType))
+        setHasSeenAllStories(mGroup.author.id, AuthorType.getByType(args.authorType))
     }
 
     private fun setHasSeenAllStories(authorId: String, authorType: AuthorType) {
@@ -421,7 +421,7 @@ class StoriesViewModel @AssistedInject constructor(
         val currentDetail = if (isCached) {
             mGroup.detail
         } else {
-            val detailData = requestStoriesDetailData(mGroup.groupId)
+            val detailData = requestStoriesDetailData(mGroup)
             updateMainData(detail = detailData, groupPosition = mGroupPos)
             detailData
         }
@@ -468,9 +468,7 @@ class StoriesViewModel @AssistedInject constructor(
         val isPrevGroupCached = prevGroupItem.detail.detailItems.isNotEmpty()
         if (isPrevGroupCached) return
 
-        val prevGroupId = prevGroupItem.groupId
-
-        val prevGroupData = requestStoriesDetailData(prevGroupId)
+        val prevGroupData = requestStoriesDetailData(prevGroupItem)
         updateMainData(detail = prevGroupData, groupPosition = prevGroupPos)
     }
 
@@ -480,9 +478,7 @@ class StoriesViewModel @AssistedInject constructor(
         val isNextGroupCached = nextGroupItem.detail.detailItems.isNotEmpty()
         if (isNextGroupCached) return
 
-        val nextGroupId = nextGroupItem.groupId
-
-        val nextGroupData = requestStoriesDetailData(nextGroupId)
+        val nextGroupData = requestStoriesDetailData(nextGroupItem)
         updateMainData(detail = nextGroupData, groupPosition = nextGroupPos)
     }
 
@@ -778,14 +774,24 @@ class StoriesViewModel @AssistedInject constructor(
         )
     }
 
-    private suspend fun requestStoriesDetailData(sourceId: String): StoriesDetail {
-        return repository.getStoriesDetailData(
-            authorId = args.authorId,
-            authorType = args.authorType,
-            source = StoriesSource.STORY_GROUP.value,
-            sourceId = sourceId,
-            entryPoint = args.entryPoint
-        )
+    private suspend fun requestStoriesDetailData(group: StoriesGroupItem): StoriesDetail {
+        return if (args.source == StoriesSource.BROWSE_WIDGET.value) {
+            repository.getStoriesDetailData(
+                authorId = group.author.id,
+                authorType = group.author.type.type,
+                source = args.source,
+                sourceId = args.sourceId,
+                entryPoint = args.entryPoint
+            )
+        } else {
+            repository.getStoriesDetailData(
+                authorId = args.authorId,
+                authorType = args.authorType,
+                source = StoriesSource.STORY_GROUP.value,
+                sourceId = group.groupId,
+                entryPoint = args.entryPoint
+            )
+        }
     }
 
     private suspend fun requestSetStoriesTrackActivity(trackerId: String): Boolean {

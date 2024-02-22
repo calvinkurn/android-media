@@ -64,6 +64,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     } else {
                         StoriesDetail()
                     },
+                    author = buildAuthor(group.author),
                     type = StoriesType.get(group.type)
                 )
             }
@@ -159,6 +160,28 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
         }
 
     private fun buildAuthor(author: ContentStoriesDetails.Stories.Author): StoryAuthor {
+        val type = AuthorType.convertValue(author.type)
+        val name = MethodChecker.fromHtml(author.name).toString()
+
+        return if (type == AuthorType.User) {
+            StoryAuthor.Buyer(
+                userName = name,
+                userId = author.id,
+                avatarUrl = author.thumbnailURL,
+                appLink = author.appLink
+            )
+        } else {
+            StoryAuthor.Shop(
+                shopName = name,
+                shopId = author.id,
+                avatarUrl = author.thumbnailURL,
+                badgeUrl = author.badgeURL,
+                appLink = author.appLink
+            )
+        }
+    }
+
+    private fun buildAuthor(author: StoriesGroupsResponseModel.Author): StoryAuthor {
         val type = AuthorType.convertValue(author.type)
         val name = MethodChecker.fromHtml(author.name).toString()
 
