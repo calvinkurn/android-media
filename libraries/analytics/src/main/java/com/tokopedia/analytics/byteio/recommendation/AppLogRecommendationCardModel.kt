@@ -68,7 +68,7 @@ data class AppLogRecommendationCardModel (
             moduleName: String = "",
             isAd: Boolean = false,
             isUseCache: Boolean = false,
-            recSessionId: String,
+            recSessionId: String = "",
             recParams: String = "",
             requestId: String = "",
             shopId: String = "",
