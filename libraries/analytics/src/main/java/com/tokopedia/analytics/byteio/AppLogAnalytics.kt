@@ -54,10 +54,6 @@ object AppLogAnalytics {
     @JvmField
     var entranceForm: EntranceForm? = null
 
-    // TODO check how to make this null again
-    @JvmField
-    var sourceModule: SourceModule? = null
-
     private val lock = Any()
 
     internal fun addPageName(activity: Activity) {
@@ -96,7 +92,6 @@ object AppLogAnalytics {
             it.addPage()
             it.addEntranceForm()
             it.addSourcePageType()
-            it.addSourceModule()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
@@ -133,7 +128,6 @@ object AppLogAnalytics {
             it.addPage()
             it.addEntranceForm()
             it.addSourcePageType()
-            it.addSourceModule()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
@@ -156,7 +150,6 @@ object AppLogAnalytics {
             it.addPage()
             it.addEntranceForm()
             it.addSourcePageType()
-            it.addSourceModule()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
@@ -177,15 +170,28 @@ object AppLogAnalytics {
         })
     }
 
-    fun sendCartEnterPage() {
+    fun sendCartEnterPage(cartCount: Int, cartUnavailCount: Int) {
         send(EventName.ENTER_PAGE, JSONObject().also {
             it.addPage()
+            it.put("cart_item_cnt", cartCount)
+            it.put("cart_unavailable_cnt", cartUnavailCount)
         })
     }
 
-    fun sendCartButtonClick() {
+    fun sendCartButtonClick(model: CartClickAnalyticsModel) {
         send(EventName.BUTTON_CLICK, JSONObject().also {
             it.addPage()
+            it.addEntranceForm()
+            it.put("button_name", model.buttonName)
+            it.put("cart_item_id", model.cartItemId)
+            it.put("original_price_value", model.originalPriceValue)
+            it.put("sale_price_value", model.salePriceValue)
+            it.put("discounted_amount", model.discountedAmount)
+            it.put("currency", "IDR")
+            it.put("item_cnt", model.ItemCnt)
+            it.put("sku_num", model.skuNum)
+            it.put("product_id", model.productId)
+            it.put("sku_id", model.skuId)
         })
     }
 
@@ -194,7 +200,6 @@ object AppLogAnalytics {
             it.addPage()
             it.addEntranceForm()
             it.addSourcePageType()
-            it.addSourceModule()
             it.put("is_success", if (model.isSuccess) 1 else 0)
             it.put("fail_reason", model.failReason)
             it.put("shipping_price", model.shippingPrice)
@@ -231,10 +236,6 @@ object AppLogAnalytics {
         )
     }
 
-    internal fun JSONObject.addSourceModule() {
-        put(SOURCE_MODULE, sourceModule?.str)
-    }
-
     private fun currentPageName(): String {
         return synchronized(lock) {
             pageNames.findLast { it.first == currentActivityName }?.second ?: ""
@@ -260,7 +261,6 @@ object AppLogAnalytics {
             it.addPage()
             it.addEntranceForm()
             it.addSourcePageType()
-            it.addSourceModule()
             it.put("stay_time", durationInMs)
             it.put("is_load_data", if (product.isLoadData) 1 else 0)
             it.put("quit_type", quitType)

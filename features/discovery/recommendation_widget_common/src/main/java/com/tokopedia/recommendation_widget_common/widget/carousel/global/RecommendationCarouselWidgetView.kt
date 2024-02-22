@@ -6,6 +6,10 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.analytics.byteio.SlideTrackObject
+import com.tokopedia.analytics.byteio.addHorizontalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -16,6 +20,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetCarouselLayoutBinding
+import com.tokopedia.recommendation_widget_common.extension.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.asLifecycleOwner
@@ -47,6 +52,8 @@ class RecommendationCarouselWidgetView :
     private val trackingQueue: TrackingQueue = TrackingQueue(context)
     private val recommendationWidgetViewModel by recommendationWidgetViewModel()
 
+    private var hasRecomScrollListener: Boolean = false
+
     init {
         context.asLifecycleOwner()?.lifecycle?.addObserver(this)
     }
@@ -74,6 +81,8 @@ class RecommendationCarouselWidgetView :
             binding.recommendationCarouselLoading.root.show()
         }
 
+        trackHorizontalScroll(model)
+
         binding.recommendationCarouselProduct.bindCarouselProductCardViewGrid(
             productCardModelList = model.widget.recommendationItemList.toProductCardModels(),
             showSeeMoreCard = model.widget.seeMoreAppLink.isNotBlank(),
@@ -83,6 +92,17 @@ class RecommendationCarouselWidgetView :
             carouselProductCardOnItemATCNonVariantClickListener = itemAddToCartNonVariantListener(model),
             finishCalculate = ::finishCalculateCarouselHeight
         )
+    }
+
+    private fun trackHorizontalScroll(model: RecommendationCarouselModel) {
+        if(hasRecomScrollListener) return
+        binding.recommendationCarouselProduct.carouselProductCardRecyclerView.addHorizontalTrackListener(
+            slideTrackObject = SlideTrackObject(
+                moduleName = model.widget.pageName,
+                barName = model.widget.pageName,
+            )
+        )
+        hasRecomScrollListener = true
     }
 
     private fun itemImpressionListener(model: RecommendationCarouselModel) =
@@ -119,6 +139,12 @@ class RecommendationCarouselWidgetView :
                         model.trackingModel
                     )
                 }
+
+                AppLogRecommendation.sendProductShowAppLog(
+                    productRecommendation.asProductTrackModel(
+                        type = AppLogRecommendationType.CAROUSEL
+                    )
+                )
             }
         }
 
@@ -147,6 +173,12 @@ class RecommendationCarouselWidgetView :
                         productRecommendation,
                         model.trackingModel
                     )
+
+                AppLogRecommendation.sendProductClickAppLog(
+                    productRecommendation.asProductTrackModel(
+                        type = AppLogRecommendationType.CAROUSEL
+                    )
+                )
 
                 RouteManager.route(context, productRecommendation.appUrl)
             }

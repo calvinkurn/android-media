@@ -2,7 +2,6 @@ package com.tokopedia.analytics.byteio.search
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
@@ -585,7 +584,7 @@ object AppLogSearch {
         )
     ).apply {
         addPage()
-        addSourceModule()
+//        addSourceModule() // TODO milhamj diapain ini?
         addSourcePageType()
     }
 }

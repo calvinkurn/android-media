@@ -10,6 +10,9 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.animation.Interpolator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asCardTrackerModel
+import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asProductTrackerModel
 import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.databinding.HomeComponentItemMissionWidgetClearBinding
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
@@ -17,9 +20,8 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMi
 import com.tokopedia.home_component.util.HomeComponentFeatureFlag
 import com.tokopedia.home_component.util.loadImageRounded
 import com.tokopedia.home_component.util.overlay
-import com.tokopedia.home_component.viewholders.DynamicIconItemViewHolder
-import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -70,10 +72,20 @@ class MissionWidgetClearItemViewHolder(
         setOnTouchListener()
         binding?.run {
             containerMissionWidget.setOnClickListener {
+                if(element.isProduct()) {
+                    AppLogRecommendation.sendProductClickAppLog(element.asProductTrackerModel(element.isCache))
+                }
+                AppLogRecommendation.sendCardClickAppLog(element.asCardTrackerModel(element.isCache))
                 missionWidgetComponentListener.onMissionClicked(element, element.cardPosition)
             }
             containerMissionWidget.addOnImpressionListener(element) {
                 missionWidgetComponentListener.onMissionImpressed(element, element.cardPosition)
+            }
+            containerMissionWidget.addOnImpression1pxListener(element) {
+                if(element.isProduct()) {
+                    AppLogRecommendation.sendProductShowAppLog(element.asProductTrackerModel(element.isCache))
+                }
+                AppLogRecommendation.sendCardShowAppLog(element.asCardTrackerModel(element.isCache))
             }
         }
     }

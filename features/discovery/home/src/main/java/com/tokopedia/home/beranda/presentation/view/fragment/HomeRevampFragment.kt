@@ -32,6 +32,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
+import com.tokopedia.analytics.byteio.GlidePageTrackObject
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.performance.perf.*
@@ -430,6 +434,9 @@ open class HomeRevampFragment :
     @Inject
     lateinit var homeThematicUtil: HomeThematicUtil
 
+    private var hasTrackEnterPage = false
+    private var hasRecomScrollListener = false
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         createDaggerComponent()
@@ -822,8 +829,17 @@ open class HomeRevampFragment :
                 evaluateHomeComponentOnScroll(recyclerView)
             }
         })
+        trackVerticalScroll()
         setupEmbraceBreadcrumbListener()
         setupHomePlayWidgetListener()
+    }
+
+    private fun trackVerticalScroll() {
+        if(hasRecomScrollListener) return
+        homeRecyclerView?.addVerticalTrackListener(
+            glidePageTrackObject = GlidePageTrackObject(),
+        )
+        hasRecomScrollListener = true
     }
 
     private fun setupEmbraceBreadcrumbListener() {
@@ -1453,8 +1469,17 @@ open class HomeRevampFragment :
 
             performanceTrace?.setBlock(data.take(takeLimit))
 
+            if(data.any { it is HomeRecommendationFeedDataModel }) {
+                trackEnterPage()
+            }
+
             adapter?.submitList(data)
         }
+    }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
     }
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {

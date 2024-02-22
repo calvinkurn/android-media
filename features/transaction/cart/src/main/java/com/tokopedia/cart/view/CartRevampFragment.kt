@@ -44,6 +44,11 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
@@ -362,6 +367,9 @@ class CartRevampFragment :
     private val swipeToDeleteOnBoardingFlow: MutableSharedFlow<Boolean> = MutableSharedFlow()
 
     private var enablePromoEntryPointNewInterface: Boolean = false
+
+    private var hasTrackEnterPage: Boolean = false
+    private var hasRecomScrollListener: Boolean = false
 
     companion object {
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
@@ -1736,6 +1744,16 @@ class CartRevampFragment :
         viewModel.addAvailableCartItemImpression(availableCartItems)
     }
 
+    private fun addRecommendationScrollListener(cartRecyclerView: RecyclerView) {
+        if(hasRecomScrollListener) return
+        cartRecyclerView.addVerticalTrackListener(
+            recommendationTriggerObject = RecommendationTriggerObject(
+                viewHolders = listOf(CartRecommendationViewHolder::class.java)
+            )
+        )
+        hasRecomScrollListener = true
+    }
+
     private fun addEndlessRecyclerViewScrollListener(
         cartRecyclerView: RecyclerView,
         gridLayoutManager: GridLayoutManager
@@ -2437,6 +2455,7 @@ class CartRevampFragment :
             addItemDecoration(cartItemDecoration)
             setSpanSize(gridLayoutManager)
             addRecyclerViewScrollListener(this)
+            addRecommendationScrollListener(this)
             addEndlessRecyclerViewScrollListener(this, gridLayoutManager)
         }
     }
@@ -2900,6 +2919,7 @@ class CartRevampFragment :
                 is LoadRecommendationState.Success -> {
                     hideItemLoading()
                     if (data.recommendationWidgets.isNotEmpty() && data.recommendationWidgets[0].recommendationItemList.isNotEmpty()) {
+                        trackEnterPage()
                         renderRecommendation(data.recommendationWidgets[0])
                     }
                     setHasTriedToLoadRecommendation()
@@ -2914,6 +2934,12 @@ class CartRevampFragment :
             }
         }
     }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
+    }
+
 
     private fun observeRemoveFromWishlist() {
         viewModel.removeFromWishlistEvent.observe(viewLifecycleOwner) { removeFromWishlistEvent ->
@@ -3385,7 +3411,8 @@ class CartRevampFragment :
                     renderToShipmentFormSuccess(
                         data.eeCheckoutData,
                         data.checkoutProductEligibleForCashOnDelivery,
-                        data.condition
+                        data.condition,
+                        data.byteIOTracker
                     )
                 }
 
@@ -4222,6 +4249,14 @@ class CartRevampFragment :
         }
 
         sendAnalyticsScreenNameCartPage()
+        val availCount = cartData.availableSection.availableGroupGroups.sumOf {
+            group -> group.groupShopCartData.sumOf { it.cartDetails.sumOf { c -> c.products.size } }
+        }
+        val unavailCount = cartData.unavailableSections.sumOf { it.productsCount.toInt() }
+        /**
+         * This will hit when user refresh the cart TBC
+         * */
+        AppLogAnalytics.sendCartEnterPage(availCount, unavailCount)
         updateStateAfterFinishGetCartList()
 
         renderTickerAnnouncement(cartData)
@@ -4394,7 +4429,8 @@ class CartRevampFragment :
     private fun renderToShipmentFormSuccess(
         eeCheckoutData: Map<String, Any>,
         checkoutProductEligibleForCashOnDelivery: Boolean,
-        condition: Int
+        condition: Int,
+        byteIoModel: CartClickAnalyticsModel
     ) {
         when (condition) {
             CartViewModel.ITEM_CHECKED_ALL_WITHOUT_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(

@@ -1,5 +1,8 @@
 package com.tokopedia.analytics.byteio
 
+import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
+
 internal val TAG = "BYTEIO"
 
 object Constants {
@@ -104,7 +107,30 @@ data class SubmitOrderResult(
     val orderId: String,
     val comboId: String,
     val productId: String
-)
+) {
+    data class DeliveryInfo(
+        @SerializedName("ship_from")
+        val shipFrom: String = "local",
+        @SerializedName("shipping_type")
+        val shippingType: String,
+        @SerializedName("eta")
+        val eta: String,
+    ) {
+        fun toJsonString(): String = Gson().toJson(this)
+    }
+}
+
+data class CartClickAnalyticsModel(
+    val buttonName: String = "cart_check_out",
+    val cartItemId: String,
+    val originalPriceValue: Double,
+    val productId: String,
+    val skuId: String,
+    val skuNum: Int,
+    val ItemCnt: Int,
+    val salePriceValue: Double,
+    val discountedAmount: Double,
+    )
 
 
 enum class ProductType(val type: Int) {
@@ -140,12 +166,6 @@ enum class EntranceForm(val str: String) {
     DETAIL_GOODS_CARD("detail_goods_card"),
     HORIZONTAL_GOODS_CARD("horizontal_goods_card"),
     APPEND_GOODS_CARD("append_goods_card"),
-}
-
-enum class SourceModule(val str: String) {
-    HOME_FOR_YOU("rec/ads/ops_homepage_outer_flow"),
-    FOR_YOU_BEST_SELLER("rec/ads/ops_foru_bestseller_outer_flow"),
-    FOR_YOU_TRENDING("rec/ads/ops_foru_trending_outer_flow"),
 }
 
 enum class SourcePageType(val str: String) {

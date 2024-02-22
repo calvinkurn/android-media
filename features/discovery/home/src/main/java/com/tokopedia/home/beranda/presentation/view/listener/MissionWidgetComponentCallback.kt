@@ -17,11 +17,7 @@ import kotlinx.coroutines.FlowPreview
 class MissionWidgetComponentCallback(
     val homeCategoryListener: HomeCategoryListener,
     val homeRevampViewModel: HomeRevampViewModel
-) :
-    MissionWidgetComponentListener {
-    companion object {
-        private const val ZERO_PRODUCT_ID = "0"
-    }
+) : MissionWidgetComponentListener {
 
     override fun refreshMissionWidget(missionWidgetListDataModel: MissionWidgetListDataModel) {
         homeRevampViewModel.getMissionWidgetRefresh()
@@ -62,9 +58,5 @@ class MissionWidgetComponentCallback(
                 )
             }
         }
-    }
-
-    private fun CarouselMissionWidgetDataModel.isProduct(): Boolean {
-        return this.data.productID.isNotBlank() && this.data.productID != ZERO_PRODUCT_ID
     }
 }
