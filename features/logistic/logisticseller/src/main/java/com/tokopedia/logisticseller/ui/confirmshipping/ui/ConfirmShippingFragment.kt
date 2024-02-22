@@ -116,10 +116,24 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkRemoteConfig()
         setupLayout()
         setupListeners()
         observingCourierList()
         observingChangeCourier()
+    }
+
+    private fun checkRemoteConfig() {
+        // todo
+        val toggle = true
+        if (toggle) {
+            val intent = Intent(requireContext(), ConfirmShippingComposeActivity::class.java).apply {
+                putExtra(PARAM_ORDER_ID, currOrderId)
+                putExtra(PARAM_CURR_IS_CHANGE_SHIPPING, currIsChangeShipping)
+            }
+            startActivity(intent)
+            activity?.finish()
+        }
     }
 
     override fun onResume() {
