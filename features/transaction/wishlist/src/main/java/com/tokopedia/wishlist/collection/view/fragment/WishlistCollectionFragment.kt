@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -151,6 +152,9 @@ class WishlistCollectionFragment :
     private var coachMarkSharing2: CoachMark2? = null
 
     private var isAffiliateRegistered: Boolean = false
+
+    private var hasTrackEnterPage: Boolean = false
+    private var hasRecomScrollListener: Boolean = false
 
     override fun getScreenName(): String = ""
 
@@ -341,6 +345,7 @@ class WishlistCollectionFragment :
     }
 
     private fun addRecommendationScrollListener() {
+        if(hasRecomScrollListener) return
         binding?.rvWishlistCollection?.addVerticalTrackListener(
             recommendationTriggerObject = RecommendationTriggerObject(
                 viewHolders = listOf(
@@ -351,10 +356,17 @@ class WishlistCollectionFragment :
                 )
             )
         )
+        hasRecomScrollListener = true
     }
 
     private fun loadRecommendationList(page: Int) {
+        trackEnterPage()
         collectionViewModel.loadRecommendation(page)
+    }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
     }
 
     private fun setToolbarTitle(title: String) {

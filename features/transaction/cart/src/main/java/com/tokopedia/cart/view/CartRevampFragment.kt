@@ -48,6 +48,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
@@ -366,6 +367,9 @@ class CartRevampFragment :
     private val swipeToDeleteOnBoardingFlow: MutableSharedFlow<Boolean> = MutableSharedFlow()
 
     private var enablePromoEntryPointNewInterface: Boolean = false
+
+    private var hasTrackEnterPage: Boolean = false
+    private var hasRecomScrollListener: Boolean = false
 
     companion object {
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
@@ -1741,9 +1745,13 @@ class CartRevampFragment :
     }
 
     private fun addRecommendationScrollListener(cartRecyclerView: RecyclerView) {
+        if(hasRecomScrollListener) return
         cartRecyclerView.addVerticalTrackListener(
-            recommendationTriggerObject = RecommendationTriggerObject()
+            recommendationTriggerObject = RecommendationTriggerObject(
+                viewHolders = listOf(CartRecommendationViewHolder::class.java)
+            )
         )
+        hasRecomScrollListener = true
     }
 
     private fun addEndlessRecyclerViewScrollListener(
@@ -2911,6 +2919,7 @@ class CartRevampFragment :
                 is LoadRecommendationState.Success -> {
                     hideItemLoading()
                     if (data.recommendationWidgets.isNotEmpty() && data.recommendationWidgets[0].recommendationItemList.isNotEmpty()) {
+                        trackEnterPage()
                         renderRecommendation(data.recommendationWidgets[0])
                     }
                     setHasTriedToLoadRecommendation()
@@ -2925,6 +2934,12 @@ class CartRevampFragment :
             }
         }
     }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
+    }
+
 
     private fun observeRemoveFromWishlist() {
         viewModel.removeFromWishlistEvent.observe(viewLifecycleOwner) { removeFromWishlistEvent ->

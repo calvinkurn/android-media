@@ -160,7 +160,7 @@ class HomeRecommendationFragment :
     private var startY = 0.0F
     private var startX = 0.0F
 
-    private val hasTrackEnterPage = false
+    private var hasRecomScrollListener = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -298,7 +298,6 @@ class HomeRecommendationFragment :
                             is HomeRecommendationCardState.Success -> {
                                 adapter.submitList(it.data.homeRecommendations) {
                                     updateScrollEndlessListener(it.data.isHasNextPage)
-                                    trackEnterPage()
                                 }
                             }
 
@@ -326,11 +325,6 @@ class HomeRecommendationFragment :
                 }
             }
         }
-    }
-
-    private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
-        AppLogRecommendation.sendEnterPageAppLog()
     }
 
     private fun updateScrollEndlessListener(hasNextPage: Boolean) {
@@ -752,12 +746,18 @@ class HomeRecommendationFragment :
                 }
             }
         })
+        trackVerticalScroll()
+    }
+
+    private fun trackVerticalScroll() {
+        if(hasRecomScrollListener) return
         recyclerView?.addVerticalTrackListener(
             glidePageTrackObject = GlidePageTrackObject(),
             recommendationTriggerObject = RecommendationTriggerObject(
                 viewHolders = listOf(),
             ),
         )
+        hasRecomScrollListener = true
     }
 
     private fun goToProductDetail(productId: String, position: Int) {
