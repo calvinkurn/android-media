@@ -62,7 +62,7 @@ object CartPageAnalyticsUtil {
             skuNum = cartItemDataList.size,
             ItemCnt = cartItemDataList.sumOf { it.quantity },
             salePriceValue = salePrice,
-            discountedAmount = originalPriceWithWholesale - salePrice,
+            discountedAmount = originalPriceValueWithoutWholesale - salePrice,
         )
     }
 
