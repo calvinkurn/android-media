@@ -356,6 +356,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         showStockbar
                         rating
                       }
+                      TotalProduct
                     }
                   }
                 }

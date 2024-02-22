@@ -210,7 +210,9 @@ data class ShopLayoutWidget(
             @SerializedName("Products")
             val bmsmListProduct: List<Product> = listOf(),
             @SerializedName("OfferDetail")
-            val offeringDetail: OfferingDetail = OfferingDetail()
+            val offeringDetail: OfferingDetail = OfferingDetail(),
+            @SerializedName("TotalProduct")
+            val bmsmTotalProduct: Int = 0
         ) {
             data class Component(
                 @SerializedName("componentID")
