@@ -6,9 +6,7 @@ import android.text.SpannedString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.view.GestureDetector
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +32,7 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiM
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewDescriptionUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState.ReviewLikeStatus
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -59,11 +58,14 @@ class ReviewContentViewHolder(
             override fun onViewAttachedToWindow(p0: View) {
                 if (reviewMediaAdapter.itemCount < 0) return
                 binding.rvReviewMedia.addOnScrollListener(mediaScrollListener)
+                binding.ivDanceLike.gone()
+                addLikeAnimationListener()
             }
 
             override fun onViewDetachedFromWindow(p0: View) {
                 mVideoPlayer = null
                 binding.rvReviewMedia.removeOnScrollListener(mediaScrollListener)
+                removeLikeAnimationListener()
             }
         })
     }
@@ -132,6 +134,9 @@ class ReviewContentViewHolder(
 
     init {
         binding.tvReviewDescription.movementMethod = LinkMovementMethod.getInstance()
+        binding.layoutLikeReview.root.setOnClickListener {
+            reviewInteractionListener.onLike(false)
+        }
     }
 
     fun bind(item: ReviewContentUiModel) {
@@ -141,7 +146,7 @@ class ReviewContentViewHolder(
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
-        setupTap(item)
+        setupTap()
     }
 
     fun bindScrolling(isScrolling: Boolean) {
@@ -268,18 +273,15 @@ class ReviewContentViewHolder(
         binding.tvReviewDescription.text = text
     }
 
-    fun bindLike(state: ReviewLikeUiState) = with(binding.layoutLikeReview) {
+    fun bindLike(state: ReviewLikeUiState) {
         val icon = when (state.state) {
-            ReviewLikeUiState.ReviewLikeStatus.Reset, ReviewLikeUiState.ReviewLikeStatus.Dislike -> IconUnify.THUMB
+            ReviewLikeStatus.Reset, ReviewLikeStatus.Dislike -> IconUnify.THUMB
             else -> IconUnify.THUMB_FILLED
         }
-        ivReviewLike.setImage(newIconId = icon)
-        tvLikeCount.text = state.count.toString()
-        root.setOnClickListener {
-            reviewInteractionListener.onLike(state.copy(withAnimation = false))
-        }
+        binding.layoutLikeReview.ivReviewLike.setImage(newIconId = icon)
+        binding.layoutLikeReview.tvLikeCount.text = state.count.toString()
 
-        if (!state.withAnimation) return@with
+        if (!state.withAnimation) return
         binding.ivDanceLike.onAnimStartAction = { binding.ivDanceLike.show() }
         binding.ivDanceLike.onAnimEndAction = { binding.ivDanceLike.gone() }
         binding.ivDanceLike.setIconEnabled(isEnabled = true)
@@ -287,23 +289,17 @@ class ReviewContentViewHolder(
         binding.ivDanceLike.playLikeAnimation()
     }
 
-    private fun setupTap(item: ReviewContentUiModel) {
+    private fun addLikeAnimationListener() {
+        binding.ivDanceLike.addAnimationListeners()
+    }
+
+    private fun removeLikeAnimationListener() {
+        binding.ivDanceLike.removeAllAnimationListeners()
+    }
+
+    private fun setupTap() {
         binding.ivReviewMenu.setOnClickListener {
             reviewInteractionListener.onMenuClicked()
-        }
-
-        val gesture = GestureDetector(
-            binding.root.context,
-            object : GestureDetector.SimpleOnGestureListener() {
-                override fun onDoubleTap(e: MotionEvent): Boolean {
-                    reviewInteractionListener.onLike(item.likeState.copy(withAnimation = true))
-                    return true
-                }
-            }
-        )
-        binding.root.setOnTouchListener { _, motionEvent ->
-            gesture.onTouchEvent(motionEvent)
-            true
         }
     }
 
@@ -343,6 +339,14 @@ class ReviewContentViewHolder(
 
     override fun onImpressedImage() {
         reviewMediaListener.onImpressedImage()
+    }
+
+    override fun onDoubleTapImage() {
+        reviewInteractionListener.onLike(true)
+    }
+
+    override fun onDoubleTapVideo() {
+        reviewInteractionListener.onLike(true)
     }
 
     override fun onImpressedVideo() {

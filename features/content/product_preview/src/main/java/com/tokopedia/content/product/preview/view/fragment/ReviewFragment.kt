@@ -314,9 +314,9 @@ class ReviewFragment @Inject constructor(
         }
     }
 
-    override fun onLike(status: ReviewLikeUiState) {
+    override fun onLike(isDoubleTap: Boolean) {
         analytics.onClickLikeOrUnlike()
-        viewModel.onAction(ProductPreviewAction.Like(status))
+        viewModel.onAction(ProductPreviewAction.Like(isDoubleTap))
     }
 
     override fun updateReviewWatchMode() {
