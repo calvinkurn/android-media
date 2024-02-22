@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -820,11 +821,22 @@ class CartViewModel @Inject constructor(
         _cartProgressLoading.value = false
         if (updateCartV2Data.data.status) {
             val checklistCondition = getChecklistCondition()
+            val analyticsModel = CartClickAnalyticsModel(
+                cartItemId = cartItemDataList.joinToString(",") { it.cartId },
+                originalPriceValue = cartItemDataList.sumOf { it.productOriginalPrice * it.quantity },
+                productId = cartItemDataList.map { it.parentId }.distinct().joinToString(","),
+                skuId = cartItemDataList.joinToString(",") { it.productId },
+                skuNum = cartItemDataList.size,
+                ItemCnt = cartItemDataList.sumOf { it.quantity },
+                salePriceValue = cartItemDataList.sumOf { it.productPrice * it.quantity },
+                discountedAmount = cartItemDataList.sumOf { (it.productPrice - it.productOriginalPrice) * it.quantity },
+            )
             _updateCartForCheckoutState.value = UpdateCartCheckoutState.Success(
                 CartPageAnalyticsUtil.generateCheckoutDataAnalytics(
                     cartItemDataList,
                     EnhancedECommerceActionField.STEP_1
                 ),
+                analyticsModel,
                 isCheckoutProductEligibleForCashOnDelivery(cartItemDataList),
                 checklistCondition
             )

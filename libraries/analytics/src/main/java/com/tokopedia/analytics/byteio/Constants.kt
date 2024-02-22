@@ -106,8 +106,8 @@ data class SubmitOrderResult(
     val productId: String
 )
 
-data class CartButtonClick(
-    val buttonName: String,
+data class CartClickAnalyticsModel(
+    val buttonName: String = "cart_check_out",
     val cartItemId: String,
     val originalPriceValue: Double,
     val productId: String,

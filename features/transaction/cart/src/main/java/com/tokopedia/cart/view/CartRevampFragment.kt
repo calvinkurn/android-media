@@ -44,6 +44,8 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -3394,7 +3396,8 @@ class CartRevampFragment :
                     renderToShipmentFormSuccess(
                         data.eeCheckoutData,
                         data.checkoutProductEligibleForCashOnDelivery,
-                        data.condition
+                        data.condition,
+                        data.byteIOTracker
                     )
                 }
 
@@ -4231,6 +4234,11 @@ class CartRevampFragment :
         }
 
         sendAnalyticsScreenNameCartPage()
+        val availCount = cartData.availableSection.availableGroupGroups.sumOf {
+            group -> group.groupShopCartData.sumOf { it.cartDetails.size }
+        }
+        val unavailCount = cartData.unavailableSections.sumOf { it.productsCount.toInt() }
+        AppLogAnalytics.sendCartEnterPage(availCount, unavailCount)
         updateStateAfterFinishGetCartList()
 
         renderTickerAnnouncement(cartData)
@@ -4403,7 +4411,8 @@ class CartRevampFragment :
     private fun renderToShipmentFormSuccess(
         eeCheckoutData: Map<String, Any>,
         checkoutProductEligibleForCashOnDelivery: Boolean,
-        condition: Int
+        condition: Int,
+        byteIoModel: CartClickAnalyticsModel
     ) {
         when (condition) {
             CartViewModel.ITEM_CHECKED_ALL_WITHOUT_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(
@@ -4441,6 +4450,7 @@ class CartRevampFragment :
                 viewModel.getPromoFlag()
             )
         }
+        AppLogAnalytics.sendCartButtonClick(byteIoModel)
         navigateToShipmentPage()
     }
 

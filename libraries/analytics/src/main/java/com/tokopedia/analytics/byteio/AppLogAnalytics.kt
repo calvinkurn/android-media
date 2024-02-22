@@ -178,7 +178,7 @@ object AppLogAnalytics {
         })
     }
 
-    fun sendCartButtonClick(model: CartButtonClick) {
+    fun sendCartButtonClick(model: CartClickAnalyticsModel) {
         send(EventName.BUTTON_CLICK, JSONObject().also {
             it.addPage()
             it.addEntranceForm()

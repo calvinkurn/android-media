@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.uimodel
 
 import androidx.lifecycle.LiveData
+import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.cartcommon.data.response.common.OutOfService
@@ -161,6 +162,7 @@ sealed class UpdateCartAndGetLastApplyEvent {
 sealed class UpdateCartCheckoutState {
     data class Success(
         val eeCheckoutData: Map<String, Any>,
+        val byteIOTracker: CartClickAnalyticsModel,
         val checkoutProductEligibleForCashOnDelivery: Boolean,
         val condition: Int
     ) : UpdateCartCheckoutState()
