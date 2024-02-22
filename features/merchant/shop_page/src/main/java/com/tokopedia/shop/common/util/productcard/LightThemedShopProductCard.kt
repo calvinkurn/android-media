@@ -16,6 +16,7 @@ data class LightThemedShopProductCard(
     override val ratingTextColor: Int = R.color.dms_static_light_NN950_68
     override val buttonColorMode: ColorMode = ColorMode.LIGHT_MODE
     override val labelBenefitViewColor = ProductCardColor.LabelBenefitViewColor(cutoutFillColor = labelBenefitCutoutFillColor)
+    override val shopBadgeTextColor: Int = R.color.dms_static_Unify_NN600_light
     override val quantityEditorColor = ProductCardColor.QuantityEditorColor(
         buttonDeleteCartColor = R.color.dms_static_light_NN900,
         quantityTextColor = R.color.dms_static_light_NN950
