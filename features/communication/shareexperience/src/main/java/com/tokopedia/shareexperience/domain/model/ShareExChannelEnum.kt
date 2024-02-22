@@ -29,7 +29,10 @@ package com.tokopedia.shareexperience.domain.model
  *    "salinlink": 18,
  *    "email":    19,
  *    "lainnya":  20,
- *    "igdm":     21,
+ *    "play":     21,
+ *    "video":    22, // not used
+ * 	  "igdm" :    23,
+ * 	  "tokopediablog" : 24, // not used
  */
 enum class ShareExChannelEnum(
     val appName: String,
@@ -42,7 +45,7 @@ enum class ShareExChannelEnum(
     LINE("Line", "line", 4, "Line"),
     IG_STORY("IG_Story", "igstory", 17, "Instagram Story"),
     IG_FEED("IG_Feed", "igfeed", 16, "Instagram Feed"),
-    IG_DM("IG_DM", "igdm", 21, "Instagram Message"),
+    IG_DM("IG_DM", "igdm", 23, "Instagram Message"),
     FB_STORY("FB_Story", "fbstory", 15, "Facebook Story"),
     FB_FEED("FB_Feed", "fbfeed", 14, "Facebook NewsFeed"),
     X_TWITTER("Twitter", "twitter", 10, "Twitter"),
