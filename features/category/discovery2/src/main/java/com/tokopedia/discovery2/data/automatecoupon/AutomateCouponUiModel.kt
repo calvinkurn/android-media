@@ -9,7 +9,10 @@ data class AutomateCouponUiModel(
 )
 
 sealed class AutomateCouponCtaState {
-    data class Claim(val properties: Properties = Properties.empty()) : AutomateCouponCtaState()
+    data class Claim(
+        val catalogId: Long,
+        val properties: Properties = Properties.empty()
+    ) : AutomateCouponCtaState()
     data class Redirect(val properties: Properties) : AutomateCouponCtaState()
     object OutOfStock : AutomateCouponCtaState()
 

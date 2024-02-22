@@ -3,13 +3,13 @@ package com.tokopedia.discovery2.usecase.automatecoupon
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponCtaState
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponRequest
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponUiModel
 import com.tokopedia.discovery2.data.automatecoupon.CouponInfo
 import com.tokopedia.discovery2.data.automatecoupon.CouponListWidgets
 import com.tokopedia.discovery2.data.automatecoupon.CtaRedirectionMetadata
 import com.tokopedia.discovery2.data.automatecoupon.Layout
+import com.tokopedia.discovery2.datamapper.AutomateCouponMapper.mapToCtaState
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.automatecoupon.IAutomateCouponGqlRepository
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
@@ -101,7 +101,7 @@ class GetAutomateCouponUseCase @Inject constructor(
                 automateCoupons = listOf(
                     AutomateCouponUiModel(
                         data = automateCouponModel,
-                        ctaState = it.info.mapToCtaState(),
+                        ctaState = it.info.ctaList.mapToCtaState(),
                         redirectAppLink = it.info.parseRedirectionAppLink()
                     )
                 )
@@ -111,24 +111,6 @@ class GetAutomateCouponUseCase @Inject constructor(
         }
 
         return list
-    }
-
-    private fun CouponInfo.mapToCtaState(): AutomateCouponCtaState {
-        val cta = ctaList?.firstOrNull() ?: return AutomateCouponCtaState.OutOfStock
-
-        val jsonMetadata = CtaRedirectionMetadata.parse(cta.metadata.orEmpty())
-
-        val properties = AutomateCouponCtaState.Properties(
-            text = cta.text.orEmpty(),
-            appLink = jsonMetadata.appLink,
-            url = jsonMetadata.url
-        )
-
-        return when (cta.type.orEmpty()) {
-            CTA_CLAIM -> AutomateCouponCtaState.Claim(properties)
-            CTA_REDIRECT -> AutomateCouponCtaState.Redirect(properties)
-            else -> AutomateCouponCtaState.OutOfStock
-        }
     }
 
     private fun CouponInfo.parseRedirectionAppLink(): String {
@@ -231,8 +213,5 @@ class GetAutomateCouponUseCase @Inject constructor(
 
     companion object {
         private const val SOURCE = "discovery-page"
-
-        private const val CTA_CLAIM = "claim"
-        private const val CTA_REDIRECT = "redirect"
     }
 }

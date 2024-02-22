@@ -20,7 +20,9 @@ class ClaimCouponClickUseCase @Inject constructor(val claimCouponRepository: ICl
             IS_GIFT to Int.ZERO,
             GIFT_USER_ID to Int.ZERO,
             GIFT_EMAIL to String.EMPTY,
-            NOTES to String.EMPTY
+            NOTES to String.EMPTY,
+            API_VERSION to "2.0.0"
+
         )
     }
 
@@ -30,5 +32,6 @@ class ClaimCouponClickUseCase @Inject constructor(val claimCouponRepository: ICl
         private const val GIFT_USER_ID = "giftUserId"
         private const val GIFT_EMAIL = "giftEmail"
         private const val NOTES = "notes"
+        private const val API_VERSION = "apiVersion"
     }
 }

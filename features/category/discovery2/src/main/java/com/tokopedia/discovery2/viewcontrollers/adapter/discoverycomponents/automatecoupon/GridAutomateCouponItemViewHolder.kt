@@ -13,6 +13,7 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponGridView
+import com.tokopedia.discovery_component.widgets.automatecoupon.ButtonState
 import com.tokopedia.unifycomponents.Toaster
 
 class GridAutomateCouponItemViewHolder(
@@ -38,6 +39,10 @@ class GridAutomateCouponItemViewHolder(
                 binding.renderCoupon(it)
             }
 
+            viewModel?.getCTAState()?.observe(lifeCycle) { ctaState ->
+                binding.couponGrid.setState(mapToCTAHandler(ctaState))
+            }
+
             viewModel?.shouldShowErrorClaimCouponToaster()?.observe(lifeCycle) { message ->
                 if (message.isNotEmpty()) {
                     fragment.activity?.let { activity ->
@@ -61,12 +66,23 @@ class GridAutomateCouponItemViewHolder(
     }
 
     private fun GridAutomateCouponItemLayoutBinding.renderCoupon(model: AutomateCouponUiModel) {
+        val handler = mapToCTAHandler(model.ctaState)
+
+        couponGrid.apply {
+            setModel(model.data)
+            setState(handler)
+            setClickAction(model.redirectAppLink)
+        }
+    }
+
+    private fun mapToCTAHandler(ctaState: AutomateCouponCtaState): ButtonState {
         val handler = CtaActionHandler(
-            model.ctaState,
+            ctaState,
             object : CtaActionHandler.Listener {
 
                 override fun claim() {
-                    viewModel?.claim()
+                    val catalogId = (ctaState as? AutomateCouponCtaState.Claim)?.catalogId
+                    viewModel?.claim(catalogId)
                 }
 
                 override fun redirect(properties: AutomateCouponCtaState.Properties) {
@@ -77,12 +93,7 @@ class GridAutomateCouponItemViewHolder(
                 }
             }
         )
-
-        couponGrid.apply {
-            setModel(model.data)
-            setState(handler)
-            setClickAction(model.redirectAppLink)
-        }
+        return handler
     }
 
     private fun AutomateCouponGridView.setClickAction(redirectAppLink: String) {

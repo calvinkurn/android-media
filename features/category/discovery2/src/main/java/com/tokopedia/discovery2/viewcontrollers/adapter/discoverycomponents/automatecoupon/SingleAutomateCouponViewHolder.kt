@@ -47,12 +47,8 @@ class SingleAutomateCouponViewHolder(
                 }
             }
 
-            viewModel?.getRedirectLink()?.observe(it) {
-                binding?.couponView?.setState(
-                    ButtonState.Redirection {
-                        RouteManager.route(fragment.requireContext(), it)
-                    }
-                )
+            viewModel?.getCTAState()?.observe(it) { ctaState ->
+                binding?.couponView?.setState(mapToCTAHandler(ctaState))
             }
 
             viewModel?.shouldShowErrorClaimCouponToaster()?.observe(it) { message ->
@@ -73,12 +69,23 @@ class SingleAutomateCouponViewHolder(
     }
 
     private fun SingleAutomateCouponLayoutBinding?.renderCoupon(model: AutomateCouponUiModel) {
+        val handler = mapToCTAHandler(model.ctaState)
+
+        this?.couponView?.apply {
+            setModel(model.data)
+            setState(handler)
+            setClickAction(model.redirectAppLink)
+        }
+    }
+
+    private fun mapToCTAHandler(ctaState: AutomateCouponCtaState): ButtonState {
         val handler = CtaActionHandler(
-            model.ctaState,
+            ctaState,
             object : CtaActionHandler.Listener {
 
                 override fun claim() {
-                    viewModel?.claim()
+                    val catalogId = (ctaState as? AutomateCouponCtaState.Claim)?.catalogId
+                    viewModel?.claim(catalogId)
                 }
 
                 override fun redirect(properties: AutomateCouponCtaState.Properties) {
@@ -89,12 +96,7 @@ class SingleAutomateCouponViewHolder(
                 }
             }
         )
-
-        this?.couponView?.apply {
-            setModel(model.data)
-            setState(handler)
-            setClickAction(model.redirectAppLink)
-        }
+        return handler
     }
 
     private fun AutomateCouponListView.setClickAction(redirectAppLink: String) {

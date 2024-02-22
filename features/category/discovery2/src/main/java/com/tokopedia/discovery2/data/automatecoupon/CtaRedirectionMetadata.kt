@@ -9,6 +9,9 @@ data class CtaRedirectionMetadata(
 
     @SerializedName("app_link")
     val appLink: String = "",
+
+    @SerializedName("catalog_id")
+    val catalogId: Long = 0
 ) {
 
     companion object {
