@@ -74,8 +74,9 @@ fun RecipeBookmarkItem(
             }
     }
 
-    val cardModifier = remember {
+    val cardModifier = remember(position) {
         Modifier
+            .padding(top = 8.dp, bottom = 8.dp)
             .fillMaxWidth()
             .clickable {
                 val appLink = UriUtil.buildUriAppendParam(
