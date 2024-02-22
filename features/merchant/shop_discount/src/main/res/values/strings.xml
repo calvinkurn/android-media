@@ -189,6 +189,7 @@
     <string name="sd_subsidy_program_information_description_chip_in"><![CDATA[Produkmu mendapatkan diskon subsidi sebagian. Kamu bisa pelajari tentang subsidi lebih lanjut <a href="%1s">di sini</a>.]]></string>
     <string name="sd_subsidy_program_information_description_full_subsidy"><![CDATA[Produkmu mendapatkan diskon subsidi penuh. Kamu bisa pelajari tentang subsidi lebih lanjut <a href="%1s">di sini</a>.]]></string>
     <string name="sd_subsidy_program_information_description_multi_warehouse"><![CDATA[Produkmu di beberapa lokasi mendapatkan diskon subsidi. Kamu bisa pelajari tentang subsidi lebih lanjut <a href="%1s">di sini</a>.]]></string>
+    <string name="sd_subsidy_program_information_description_variant"><![CDATA[Varian dalam produk ini mendapat subsidi dari Tokopedia. Pelajari <a href="%1s">di sini</a>.]]></string>
     <string name="sd_subsidy_disable_edit_product_title">Ubah diskon</string>
     <string name="sd_subsidy_disable_delete_product_title">Hapus diskon</string>
     <string name="sd_subsidy_disable_edit_product_desc">Produk yang disubsidi tidak bisa langsung diubah, kamu bisa keluar dulu dari subsidi jika kamu ingin ubah diskon.</string>

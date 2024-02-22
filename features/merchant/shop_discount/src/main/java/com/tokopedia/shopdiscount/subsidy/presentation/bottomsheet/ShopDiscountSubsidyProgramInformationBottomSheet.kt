@@ -433,19 +433,24 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun getStringDescription(): String {
-        val isMultiWarehouse = programInformationDetailUiModel?.isMultiWarehouse.orFalse()
-        return if (isMultiWarehouse) {
-            getString(R.string.sd_subsidy_program_information_description_multi_warehouse)
+        val isVariant = programInformationDetailUiModel?.isVariant.orFalse()
+        return if (isVariant) {
+            getString(R.string.sd_subsidy_program_information_description_variant)
         } else {
-            val subsidyType = programInformationDetailUiModel?.subsidyInfo?.subsidyType
-                ?: ShopDiscountSubsidyInfoUiModel.SubsidyType.CHIP_IN
-            when (subsidyType) {
-                ShopDiscountSubsidyInfoUiModel.SubsidyType.CHIP_IN -> {
-                    getString(R.string.sd_subsidy_program_information_description_chip_in)
-                }
+            val isMultiWarehouse = programInformationDetailUiModel?.isMultiWarehouse.orFalse()
+            if (isMultiWarehouse) {
+                getString(R.string.sd_subsidy_program_information_description_multi_warehouse)
+            } else {
+                val subsidyType = programInformationDetailUiModel?.subsidyInfo?.subsidyType
+                    ?: ShopDiscountSubsidyInfoUiModel.SubsidyType.CHIP_IN
+                when (subsidyType) {
+                    ShopDiscountSubsidyInfoUiModel.SubsidyType.CHIP_IN -> {
+                        getString(R.string.sd_subsidy_program_information_description_chip_in)
+                    }
 
-                ShopDiscountSubsidyInfoUiModel.SubsidyType.FULL -> {
-                    getString(R.string.sd_subsidy_program_information_description_full_subsidy)
+                    ShopDiscountSubsidyInfoUiModel.SubsidyType.FULL -> {
+                        getString(R.string.sd_subsidy_program_information_description_full_subsidy)
+                    }
                 }
             }
         }
