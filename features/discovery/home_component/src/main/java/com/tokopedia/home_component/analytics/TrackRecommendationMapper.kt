@@ -2,6 +2,7 @@ package com.tokopedia.home_component.analytics
 
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationCardModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
 
 object TrackRecommendationMapper {
@@ -12,12 +13,13 @@ object TrackRecommendationMapper {
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = data.productID,
-            sourceModule = "", //TODO need to confirm
+            moduleName = "", //TODO need to confirm
             isAd = data.isTopads,
             isUseCache = isCache,
             recParams = "", //TODO need to confirm
             requestId = "", //TODO need BE deployment
             shopId = data.shopId,
+            type = AppLogRecommendationType.CAROUSEL,
         )
     }
 
@@ -26,12 +28,13 @@ object TrackRecommendationMapper {
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             productId = data.productID,
-            sourceModule = "", //TODO need to confirm
+            moduleName = "", //TODO need to confirm
             isAd = data.isTopads,
             isUseCache = isCache,
             recParams = "", //TODO need to confirm
             requestId = "", //TODO need BE deployment
             shopId = data.shopId,
+            type = AppLogRecommendationType.CAROUSEL,
         )
     }
 }

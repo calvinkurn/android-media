@@ -142,12 +142,6 @@ enum class EntranceForm(val str: String) {
     APPEND_GOODS_CARD("append_goods_card"),
 }
 
-enum class SourceModule(val str: String) {
-    HOME_FOR_YOU("rec/ads/ops_homepage_outer_flow"),
-    FOR_YOU_BEST_SELLER("rec/ads/ops_foru_bestseller_outer_flow"),
-    FOR_YOU_TRENDING("rec/ads/ops_foru_trending_outer_flow"),
-}
-
 enum class SourcePageType(val str: String) {
     VIDEO("video"),
     LIVE("live"),

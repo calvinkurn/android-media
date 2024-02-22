@@ -204,7 +204,6 @@ fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTrigg
     AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject().also {
         it.addPage()
         it.put(AppLogParam.ENTER_FROM, "") //TODO
-        it.put(AppLogParam.GLIDE_TYPE, if (scrollOffset > 0) "more" else "less")
         it.put(AppLogParam.GLIDE_DISTANCE, scrollOffset)
 
         it.put(AppLogParam.LIST_NAME, model.listName)

@@ -1,8 +1,8 @@
 package com.tokopedia.analytics.byteio.recommendation
 
+import com.tokopedia.analytics.byteio.ActionType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogParam
 import org.json.JSONObject
@@ -12,22 +12,41 @@ import org.json.JSONObject
  */
 data class AppLogRecommendationProductModel (
     val productId: String,
-    val listName: String?,
-    val listNum: Int?,
-    val sourceModule: String,
+    val listName: String,
+    val listNum: Int,
+    val moduleName: String,
     val trackId: String,
     val isAd: Int,
     val isUseCache: Int,
+    val recSessionId: String,
     val recParams: String,
     val requestId: String,
     val shopId: String,
     val itemOrder: Int,
+    val type: AppLogRecommendationType,
 ) {
 
-    fun toJson() = JSONObject().apply {
+    fun asCardModel() = AppLogRecommendationCardModel(
+        productId = productId,
+        listName = listName,
+        listNum = listNum,
+        moduleName = moduleName,
+        isAd = isAd,
+        isUseCache = isUseCache,
+        recSessionId = recSessionId,
+        recParams = recParams,
+        requestId = requestId,
+        shopId = shopId,
+        type = type,
+        cardName = "",
+        groupId = "",
+        itemOrder = itemOrder,
+    )
+
+    fun toShowClickJson() = JSONObject().apply {
         put(AppLogParam.LIST_NAME, listName)
         put(AppLogParam.LIST_NUM, listNum)
-        put(AppLogParam.SOURCE_MODULE, sourceModule)
+        put(AppLogParam.SOURCE_MODULE, moduleName)
         put(AppLogParam.TRACK_ID, trackId)
         put(AppLogParam.PRODUCT_ID, productId)
         put(AppLogParam.IS_AD, isAd)
@@ -39,7 +58,19 @@ data class AppLogRecommendationProductModel (
         addPage()
         addEntranceForm()
         addSourcePageType()
-        addSourceModule()
+    }
+
+    fun toRecTriggerJson() = JSONObject().apply {
+        addPage()
+        put(AppLogParam.GLIDE_DISTANCE, "0")
+
+        put(AppLogParam.LIST_NAME, listName)
+        put(AppLogParam.LIST_NUM, listNum)
+
+        put(AppLogParam.ACTION_TYPE, ActionType.CLICK_CARD)
+        put(AppLogParam.MODULE_NAME, moduleName)
+        put(AppLogParam.REC_SESSION_ID, recSessionId)
+        put(AppLogParam.REQUEST_ID, requestId)
     }
 
     companion object {
@@ -48,25 +79,29 @@ data class AppLogRecommendationProductModel (
             position: Int = 0,
             tabName: String = "",
             tabPosition: Int = 0,
-            sourceModule: String = "",
+            moduleName: String = "",
             isAd: Boolean = false,
             isUseCache: Boolean = false,
+            recSessionId: String = "",
             recParams: String = "",
             requestId: String = "",
             shopId: String = "",
+            type: AppLogRecommendationType,
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
                 productId = productId,
                 listName = tabName,
                 listNum = tabPosition.inc(),
-                sourceModule = sourceModule,
+                moduleName = moduleName,
                 trackId = "${requestId}_${productId}_${position.inc()}",
                 isAd = if(isAd) 1 else 0,
                 isUseCache = if(isUseCache) 1 else 0,
+                recSessionId = recSessionId,
                 recParams = recParams,
                 requestId = requestId,
                 shopId = shopId,
-                itemOrder = position.inc()
+                itemOrder = position.inc(),
+                type = type,
             )
         }
     }
