@@ -30,7 +30,7 @@ class CartCampaignProductLabel @JvmOverloads constructor(
         private const val LABEL_STROKE_WIDTH_DP = 1
 
         private const val COUNTDOWN_TIMER_INTERVAL_MS = 1_000L
-        private const val COUnTDOWN_TIMER_DEFAULT_TEXT = "00 : 00 : 00"
+        private const val COUNTDOWN_TIMER_DEFAULT_TEXT = "00 : 00 : 00"
     }
 
     private val binding: LayoutCartCampaignProductLabelBinding =
@@ -49,6 +49,11 @@ class CartCampaignProductLabel @JvmOverloads constructor(
         backgroundStartColor: HexColor,
         backgroundEndColor: HexColor
     ) {
+        if (logoUrl.isBlank() || backgroundStartColor.hexCode.isBlank() || backgroundEndColor.hexCode.isBlank()) {
+            binding.container.gone()
+            return
+        }
+
         with(binding) {
             iuCampaignIcon.gone()
             iuCampaignLogo.loadImage(
@@ -88,11 +93,18 @@ class CartCampaignProductLabel @JvmOverloads constructor(
         backgroundStartColor: HexColor,
         backgroundEndColor: HexColor
     ) {
+        if (text.isBlank() || textColor.hexCode.isBlank() || backgroundStartColor.hexCode.isBlank() || backgroundEndColor.hexCode.isBlank()) {
+            binding.container.gone()
+            return
+        }
+
         with(binding) {
             iuCampaignIcon.gone()
             iuCampaignLogo.gone()
             tpgCampaignLabel.text = text
-            tpgCampaignLabel.setTextColor(Color.parseColor(textColor.hexCode))
+            if (textColor.hexCode.isNotBlank()) {
+                tpgCampaignLabel.setTextColor(Color.parseColor(textColor.hexCode))
+            }
             tpgCampaignLabel.visible()
             if (backgroundStartColor.hexCode.isNotBlank() && backgroundEndColor.hexCode.isNotBlank()) {
                 val tickerBackgroundDrawable = GradientDrawable().apply {
@@ -116,6 +128,11 @@ class CartCampaignProductLabel @JvmOverloads constructor(
         iconUrl: String,
         backgroundColor: HexColor
     ) {
+        if (!remainingTimeMillis.isMoreThanZero() || iconUrl.isBlank() || backgroundColor.hexCode.isBlank()) {
+            binding.container.gone()
+            return
+        }
+
         with(binding) {
             if (iconUrl.isNotBlank()) {
                 iuCampaignIcon.loadImage(url = iconUrl)
@@ -189,7 +206,7 @@ class CartCampaignProductLabel @JvmOverloads constructor(
                 }
 
                 override fun onFinish() {
-                    tpgProductLabelCountdown.text = COUnTDOWN_TIMER_DEFAULT_TEXT
+                    tpgProductLabelCountdown.text = COUNTDOWN_TIMER_DEFAULT_TEXT
                 }
             }
             tpgProductLabelCountdown.visible()
