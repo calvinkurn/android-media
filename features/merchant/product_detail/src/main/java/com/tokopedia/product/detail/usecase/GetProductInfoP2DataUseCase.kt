@@ -645,6 +645,18 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 offerID
               }
             }
+            onelinerVariant {
+              productIDs
+              data {
+                name
+                text
+                applink
+                separator
+                icon
+                status
+                chevronPos
+              }
+            }
             gwp {
               separator
               data {

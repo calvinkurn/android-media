@@ -33,7 +33,6 @@ import com.tokopedia.product.detail.data.model.bmgm.BMGMData
 import com.tokopedia.product.detail.data.model.bmgm.asUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
@@ -66,6 +65,8 @@ import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataMod
 import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
+import com.tokopedia.product.detail.data.model.dynamic_oneliner_variant.DynamicOneLinerVariantResponse
+import com.tokopedia.product.detail.data.model.dynamiconeliner.DynamicOneLiner
 import com.tokopedia.product.detail.data.model.gwp.GWPData
 import com.tokopedia.product.detail.data.model.gwp.asUiModel
 import com.tokopedia.product.detail.data.model.promoprice.PromoPriceStyle
@@ -87,6 +88,7 @@ import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
+import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.DynamicOneLinerUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.GWPUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiState
 import com.tokopedia.product.detail.view.viewholder.promo_price.ui.ProductPriceUiModel
@@ -614,7 +616,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.SHOP_REVIEW) {
                 updateReviewList(it)
             }
-            updateDynamicOneLiner(it)
+            updateDynamicOneLiner(productId, it)
 
             updateBMGMSneakPeak(productId = productId, bmgm = it.bmgm)
 
@@ -1361,22 +1363,50 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         )
     }
 
-    private fun updateDynamicOneLiner(p2: ProductInfoP2UiData) {
+    private fun updateDynamicOneLiner(
+        productId: String,
+        p2: ProductInfoP2UiData
+    ) {
         val dynamicOneLiner = p2.dynamicOneLiner
+        val dynamicOneLinerVariant = p2.dynamicOneLinerVariant
+        updateDynamicOneLinerParentLevel(dynamicOneLiner)
+        updateDynamicOneLinerVariantLevel(productId, dynamicOneLinerVariant)
+    }
+
+    fun updateDynamicOneLinerVariantLevel(
+        productId: String,
+        dynamicOneLinerVariant: List<DynamicOneLinerVariantResponse>
+    ) {
+        mapOfData.values.asSequence().filter {
+            it.type() == ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER_VARIANT
+        }.onEach { visitable ->
+            val selectedDynamicOneLiner = dynamicOneLinerVariant.firstOrNull {
+                it.dynamicOneLinerData.name == visitable.name() && productId in it.productIds
+            }?.dynamicOneLinerData ?: DynamicOneLiner() //return default data to hide the component
+
+            updateMapDynamicOneLiner(visitable.name(), selectedDynamicOneLiner)
+        }
+    }
+
+    private fun updateDynamicOneLinerParentLevel(dynamicOneLiner: List<DynamicOneLiner>) {
         dynamicOneLiner.forEach { item ->
-            val dataModel = mapOfData[item.name] as? DynamicOneLinerDataModel ?: return@forEach
-            mapOfData[item.name] = (dataModel.newInstance() as DynamicOneLinerDataModel).apply {
-                data = DynamicOneLinerDataModel.Data(
-                    text = item.text,
-                    applink = item.applink,
-                    separator = item.separator,
-                    icon = item.icon,
-                    status = item.status,
-                    chevronPos = item.chevronPos,
-                    paddingTop = item.padding.top,
-                    paddingBottom = item.padding.bottom
-                )
-            }
+            updateMapDynamicOneLiner(item.name, item)
+        }
+    }
+
+    private fun updateMapDynamicOneLiner(componentName: String, item: DynamicOneLiner) {
+        val dataModel = mapOfData[componentName] as? DynamicOneLinerUiModel ?: return
+        mapOfData[componentName] = (dataModel.newInstance() as DynamicOneLinerUiModel).apply {
+            data = DynamicOneLinerUiModel.Data(
+                text = item.text,
+                applink = item.applink,
+                separator = item.separator,
+                icon = item.icon,
+                status = item.status,
+                chevronPos = item.chevronPos,
+                paddingTop = item.padding.top,
+                paddingBottom = item.padding.bottom
+            )
         }
     }
 

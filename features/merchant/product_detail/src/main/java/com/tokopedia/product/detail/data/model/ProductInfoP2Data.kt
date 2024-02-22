@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.data.model.bmgm.BMGMData
 import com.tokopedia.product.detail.data.model.bottom_sheet_edu.BottomSheetEduData
 import com.tokopedia.product.detail.data.model.bottom_sheet_edu.asUiModel
 import com.tokopedia.product.detail.data.model.custom_info_title.CustomInfoTitle
+import com.tokopedia.product.detail.data.model.dynamic_oneliner_variant.DynamicOneLinerVariantResponse
 import com.tokopedia.product.detail.data.model.dynamiconeliner.DynamicOneLiner
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
@@ -191,7 +192,11 @@ data class ProductInfoP2Data(
 
     @SerializedName("promoPriceStyle")
     @Expose
-    val promoPriceStyle: List<PromoPriceStyle> = listOf()
+    val promoPriceStyle: List<PromoPriceStyle> = listOf(),
+
+    @SerializedName("onelinerVariant")
+    @Expose
+    val dynamicOneLinerVariant: List<DynamicOneLinerVariantResponse> = listOf()
 ) {
     data class Response(
         @SerializedName("pdpGetData")
@@ -237,5 +242,6 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     dynamicOneLiner = dynamicOneLiner,
     bmgm = bmgm,
     gwp = gwp,
-    promoPriceStyle = promoPriceStyle
+    promoPriceStyle = promoPriceStyle,
+    dynamicOneLinerVariant = dynamicOneLinerVariant
 )

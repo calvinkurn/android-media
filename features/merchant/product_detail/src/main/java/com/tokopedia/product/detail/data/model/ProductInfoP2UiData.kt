@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.data.model.bmgm.BMGMData
 import com.tokopedia.product.detail.data.model.bottom_sheet_edu.BottomSheetEduUiModel
 import com.tokopedia.product.detail.data.model.custom_info_title.CustomInfoTitle
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewUiModel
+import com.tokopedia.product.detail.data.model.dynamic_oneliner_variant.DynamicOneLinerVariantResponse
 import com.tokopedia.product.detail.data.model.dynamiconeliner.DynamicOneLiner
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
@@ -75,7 +76,8 @@ data class ProductInfoP2UiData(
     var dynamicOneLiner: List<DynamicOneLiner> = emptyList(),
     var bmgm: BMGMData = BMGMData(),
     var gwp: GWPData = GWPData(),
-    var promoPriceStyle: List<PromoPriceStyle> = emptyList()
+    var promoPriceStyle: List<PromoPriceStyle> = emptyList(),
+    var dynamicOneLinerVariant: List<DynamicOneLinerVariantResponse> = emptyList()
 ) {
 
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {

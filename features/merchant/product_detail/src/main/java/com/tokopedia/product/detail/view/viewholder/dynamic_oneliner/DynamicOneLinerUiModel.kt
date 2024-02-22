@@ -1,11 +1,13 @@
-package com.tokopedia.product.detail.data.model.datamodel
+package com.tokopedia.product.detail.view.viewholder.dynamic_oneliner
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
 import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 import com.tokopedia.unifycomponents.toPx
 
-data class DynamicOneLinerDataModel(
+data class DynamicOneLinerUiModel(
     val name: String,
     val type: String,
     var data: Data,
@@ -18,7 +20,7 @@ data class DynamicOneLinerDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? = null
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean =
-        newData is DynamicOneLinerDataModel &&
+        newData is DynamicOneLinerUiModel &&
             newData.data.hashCode() == data.hashCode()
 
     data class Data(

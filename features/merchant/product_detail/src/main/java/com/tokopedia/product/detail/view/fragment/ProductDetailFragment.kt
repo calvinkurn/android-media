@@ -2772,6 +2772,13 @@ open class ProductDetailFragment :
         viewModel.getP2()?.gwp?.let {
             pdpUiUpdater?.updateGWPSneakPeak(productId = productId.orEmpty(), gwp = it)
         }
+
+        viewModel.getP2()?.dynamicOneLinerVariant?.let {
+            pdpUiUpdater?.updateDynamicOneLinerVariantLevel(
+                productId = productId.orEmpty(),
+                dynamicOneLinerVariant = it
+            )
+        }
     }
 
     /**
