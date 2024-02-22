@@ -60,7 +60,7 @@ fun FeedProductHighlight(
         ) {
             ConstraintLayout(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .size(276.dp, 88.dp)
                     .background(color = Color(0xB22E3137), shape = RoundedCornerShape(12.dp))
                     .padding(8.dp)
                     .clickable {
@@ -71,7 +71,7 @@ fun FeedProductHighlight(
                 //Product Image
                 NestImage(
                     source = ImageSource.Remote(source = product.coverUrl),
-                    type = NestImageType.Rect(20.dp),
+                    type = NestImageType.Rect(12.dp),
                     modifier = Modifier
                         .size(72.dp)
                         .constrainAs(image) {
