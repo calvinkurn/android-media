@@ -67,7 +67,7 @@ ext {
     playServiceBase = '18.0.1'
     playServiceAnalytics = '17.0.0'
     playServiceLocation = '17.0.0'
-    playServiceMaps = '17.0.0'
+    playServiceMaps = '18.2.0'
     playServiceAuth = '17.0.0'
     playServicePlace = '17.0.0'
     playServiceAuthApiPhone = '16.0.0'

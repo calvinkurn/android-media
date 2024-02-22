@@ -332,12 +332,12 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = false
 
-        activity?.let { MapsInitializer.initialize(activity) }
+        activity?.let { MapsInitializer.initialize(it) }
 
         moveMap(
             getLatLng(viewModel.uiModel.lat, viewModel.uiModel.long)
