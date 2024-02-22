@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 
 /**
  * Created by Lukas on 2019-07-15
@@ -31,14 +32,16 @@ class HomeRecommendationItemGridViewHolder(
 
     override fun bind(element: HomeRecommendationItemDataModel) {
         setLayout(element)
-        productCardImpressionListener(element)
-        setItemProductCardClickListener(element)
-        setItemThreeDotsClickListener(element)
+
+        val model = element.toModel()
+        productCardImpressionListener(model)
+        setItemProductCardClickListener(model)
+        setItemThreeDotsClickListener(model)
     }
 
     override fun bindPayload(newItem: HomeRecommendationItemDataModel?) {
         newItem?.let {
-            setItemThreeDotsClickListener(it)
+            setItemThreeDotsClickListener(it.toModel())
         }
     }
 
@@ -48,13 +51,13 @@ class HomeRecommendationItemGridViewHolder(
         productCardView.setProductModel(element.productCardModel)
     }
 
-    private fun productCardImpressionListener(element: HomeRecommendationItemDataModel) {
+    private fun productCardImpressionListener(element: RecommendationCardModel) {
         productCardView.setImageProductViewHintListener(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
                     listener.onProductCardImpressed(
-                        element.toModel(),
+                        element,
                         bindingAdapterPosition
                     )
                 }
@@ -62,19 +65,19 @@ class HomeRecommendationItemGridViewHolder(
         )
     }
 
-    private fun setItemProductCardClickListener(element: HomeRecommendationItemDataModel) {
+    private fun setItemProductCardClickListener(element: RecommendationCardModel) {
         productCardView.setOnClickListener {
             listener.onProductCardClicked(
-                element.toModel(),
+                element,
                 bindingAdapterPosition
             )
         }
     }
 
-    private fun setItemThreeDotsClickListener(productCardItem: HomeRecommendationItemDataModel) {
+    private fun setItemThreeDotsClickListener(productCardItem: RecommendationCardModel) {
         productCardView.setThreeDotsOnClickListener {
             listener.onProductCardThreeDotsClicked(
-                productCardItem.toModel(),
+                productCardItem,
                 bindingAdapterPosition
             )
         }

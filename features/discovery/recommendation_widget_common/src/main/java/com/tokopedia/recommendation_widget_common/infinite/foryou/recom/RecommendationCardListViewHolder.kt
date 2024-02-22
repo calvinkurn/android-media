@@ -3,11 +3,10 @@ package com.tokopedia.recommendation_widget_common.infinite.foryou.recom
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.recommendation_widget_common.databinding.WidgetForYouRecomListBinding
+import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ParentRecommendationListener
-import com.tokopedia.utils.view.binding.viewBinding
 
 class RecommendationCardListViewHolder constructor(
     view: View,
@@ -17,7 +16,7 @@ class RecommendationCardListViewHolder constructor(
     RecommendationCardModel::class.java
 ) {
 
-    private val binding: WidgetForYouRecomListBinding? by viewBinding()
+    private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
 
     override fun bind(element: RecommendationCardModel) {
         setLayout(element)
@@ -35,11 +34,11 @@ class RecommendationCardListViewHolder constructor(
     private fun setLayout(
         element: RecommendationCardModel
     ) {
-        binding?.productCardView?.setProductModel(element.productCardModel)
+        productCardView?.setProductModel(element.productCardModel)
     }
 
     private fun productCardImpressionListener(element: RecommendationCardModel) {
-        binding?.productCardView?.setImageProductViewHintListener(
+        productCardView?.setImageProductViewHintListener(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
@@ -53,7 +52,7 @@ class RecommendationCardListViewHolder constructor(
     }
 
     private fun setItemProductCardClickListener(element: RecommendationCardModel) {
-        binding?.productCardView?.setOnClickListener {
+        productCardView?.setOnClickListener {
             listener.onProductCardClicked(
                 element,
                 bindingAdapterPosition
@@ -62,7 +61,7 @@ class RecommendationCardListViewHolder constructor(
     }
 
     private fun setItemThreeDotsClickListener(element: RecommendationCardModel) {
-        binding?.productCardView?.setThreeDotsOnClickListener {
+        productCardView?.setThreeDotsOnClickListener {
             listener.onProductCardThreeDotsClicked(
                 element,
                 bindingAdapterPosition

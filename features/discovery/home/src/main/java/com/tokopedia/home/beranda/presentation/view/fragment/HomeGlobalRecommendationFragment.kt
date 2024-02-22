@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -16,7 +17,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -37,7 +37,6 @@ import com.tokopedia.home.beranda.listener.HomeEggListener
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.GlobalHomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeGlobalRecommendationViewModel
@@ -52,6 +51,7 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.banner.BannerR
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayVideoWidgetManager
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardGridViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerOldTopAdsModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
@@ -119,6 +119,25 @@ class HomeGlobalRecommendationFragment :
         createScrollTouchListener()
     }
 
+    private var shouldOnlyFirstTimeScrollToTop = false
+    private val observeRecyclerViewScrollToTop by lazy {
+        object : RecyclerView.AdapterDataObserver() {
+
+            private fun onceScrollToTop() {
+                if (shouldOnlyFirstTimeScrollToTop) return
+
+                recyclerView?.scrollToPosition(0)
+            }
+
+            override fun onChanged() = onceScrollToTop()
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) = onceScrollToTop()
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) = onceScrollToTop()
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) = onceScrollToTop()
+            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) = onceScrollToTop()
+            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) = onceScrollToTop()
+        }
+    }
+
     private var endlessRecyclerViewScrollListener: HomeFeedEndlessScrollListener? = null
 
     private var totalScrollY = 0
@@ -182,13 +201,14 @@ class HomeGlobalRecommendationFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.setBackgroundColor(Color.CYAN)
+
         setupArgs()
         fetchHomeRecommendationRollence()
         setupRecyclerView()
         loadFirstPageData()
         initListeners()
         observeStateFlow()
-        observeLiveData()
     }
 
     override fun onPause() {
@@ -232,70 +252,35 @@ class HomeGlobalRecommendationFragment :
             .baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
     }
 
-    private fun observeLiveData() {
-        if (!HomeRecommendationController.isUsingRecommendationCard()) {
-            viewModel.homeRecommendationLiveData.observe(
-                viewLifecycleOwner
-            ) { data ->
-                adapter.submitList(data.homeRecommendations)
-            }
-
-            viewModel.homeRecommendationNetworkLiveData.observe(
-                viewLifecycleOwner
-            ) { result ->
-                if (result.isFailure) {
-                    view?.let {
-                        if (adapter.itemCount > 1) {
-                            Toaster.build(
-                                it,
-                                getString(R.string.home_error_connection),
-                                Snackbar.LENGTH_LONG,
-                                Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.abstraction.R.string.title_try_again),
-                                View.OnClickListener {
-                                    endlessRecyclerViewScrollListener?.loadMoreNextPage()
-                                }
-                            ).show()
-                        }
-                    }
-                } else {
-                    updateScrollEndlessListener(result.getOrNull()?.isHasNextPage ?: false)
-                }
-            }
-        }
-    }
-
     private fun observeStateFlow() {
-        if (HomeRecommendationController.isUsingRecommendationCard()) {
-            viewLifecycleOwner.lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.homeRecommendationCardState.collect {
-                        when (it) {
-                            is HomeRecommendationCardState.Success -> {
-                                adapter.submitList(it.data.homeRecommendations) {
-                                    updateScrollEndlessListener(it.data.isHasNextPage)
-                                }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.homeRecommendationCardState.collect {
+                    when (it) {
+                        is HomeRecommendationCardState.Success -> {
+                            adapter.submitList(it.data.homeRecommendations) {
+                                updateScrollEndlessListener(it.data.isHasNextPage)
                             }
+                        }
 
-                            is HomeRecommendationCardState.Loading -> {
-                                adapter.submitList(it.data.homeRecommendations)
-                            }
+                        is HomeRecommendationCardState.Loading -> {
+                            adapter.submitList(it.data.homeRecommendations)
+                        }
 
-                            is HomeRecommendationCardState.EmptyData -> {
-                                adapter.submitList(it.data.homeRecommendations)
-                            }
+                        is HomeRecommendationCardState.EmptyData -> {
+                            adapter.submitList(it.data.homeRecommendations)
+                        }
 
-                            is HomeRecommendationCardState.Fail -> {
-                                adapter.submitList(it.data.homeRecommendations)
-                            }
+                        is HomeRecommendationCardState.Fail -> {
+                            adapter.submitList(it.data.homeRecommendations)
+                        }
 
-                            is HomeRecommendationCardState.FailNextPage -> {
-                                adapter.submitList(it.data.homeRecommendations)
-                            }
+                        is HomeRecommendationCardState.FailNextPage -> {
+                            adapter.submitList(it.data.homeRecommendations)
+                        }
 
-                            is HomeRecommendationCardState.LoadingMore -> {
-                                adapter.submitList(it.data.homeRecommendations)
-                            }
+                        is HomeRecommendationCardState.LoadingMore -> {
+                            adapter.submitList(it.data.homeRecommendations)
                         }
                     }
                 }
@@ -317,12 +302,15 @@ class HomeGlobalRecommendationFragment :
         recyclerView?.addItemDecoration(HomeFeedItemDecoration())
         recyclerView?.adapter = adapter
         parentPool?.setMaxRecycledViews(
-            HomeRecommendationItemGridViewHolder.LAYOUT,
+            RecommendationCardGridViewHolder.LAYOUT,
             MAX_RECYCLED_VIEWS
         )
         recyclerView?.setRecycledViewPool(parentPool)
         createEndlessRecyclerViewListener()
         endlessRecyclerViewScrollListener?.let { recyclerView?.addOnScrollListener(it) }
+
+        // fixes staggered inflation issue
+        adapter.registerAdapterDataObserver(observeRecyclerViewScrollToTop)
     }
 
     private fun createScrollTouchListener() = object : RecyclerView.OnItemTouchListener {
@@ -394,6 +382,7 @@ class HomeGlobalRecommendationFragment :
             object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     homeRecomCurrentPage = page
+                    shouldOnlyFirstTimeScrollToTop = true
                     viewModel.fetchNextHomeRecommendation(
                         tabName,
                         recomId,
@@ -885,7 +874,7 @@ class HomeGlobalRecommendationFragment :
 
     companion object {
         private const val className =
-            "com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment"
+            "com.tokopedia.home.beranda.presentation.view.fragment.HomeGlobalRecommendationFragment"
         private const val HOME_RECOMMENDATION_FRAGMENT = "home_recommendation_fragment"
         const val ARG_TAB_INDEX = "ARG_TAB_INDEX"
         const val ARG_RECOM_ID = "ARG_RECOM_ID"
@@ -926,6 +915,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onDestroyView() {
         Toaster.onCTAClick = View.OnClickListener { }
+        adapter.unregisterAdapterDataObserver(observeRecyclerViewScrollToTop)
         super.onDestroyView()
     }
 
