@@ -19,7 +19,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
  *
  */
 class AnimatedReviewPicker @JvmOverloads constructor(
-        context: Context, val attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, val attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     private var count = 1
@@ -32,11 +32,14 @@ class AnimatedReviewPicker @JvmOverloads constructor(
     private var shouldShowDesc: Boolean = true
 
     private val binding by lazy {
-        val view = LayoutInflater.from(context).inflate(R.layout.animated_review_layout, this)
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(R.layout.animated_review_layout, this, false)
         AnimatedReviewLayoutBinding.bind(view)
     }
+
     init {
-        val styleable = context.obtainStyledAttributes(attrs, R.styleable.AnimatedReviewPicker, 0, 0)
+        val styleable =
+            context.obtainStyledAttributes(attrs, R.styleable.AnimatedReviewPicker, 0, 0)
         try {
             shouldShowDesc = styleable.getBoolean(R.styleable.AnimatedReviewPicker_show_desc, false)
         } finally {
@@ -47,8 +50,9 @@ class AnimatedReviewPicker @JvmOverloads constructor(
             ReviewLottieModel(reviewView = binding.lottieStar1),
             ReviewLottieModel(reviewView = binding.lottieStar2),
             ReviewLottieModel(reviewView = binding.lottieStar3),
-            ReviewLottieModel(reviewView = binding.lottieStar4)
-                , ReviewLottieModel(reviewView = binding.lottieStar5))
+            ReviewLottieModel(reviewView = binding.lottieStar4),
+            ReviewLottieModel(reviewView = binding.lottieStar5)
+        )
         binding.txtReviewStatus.visibility = if (shouldShowDesc) {
             View.VISIBLE
         } else {
@@ -61,7 +65,7 @@ class AnimatedReviewPicker @JvmOverloads constructor(
         listOfStarsView.forEachIndexed { index, it ->
             it.reviewView.setOnClickListener {
                 //Start from 1
-                reviewClickAt = index+1
+                reviewClickAt = index + 1
                 if (reviewClickAt < lastReviewClickAt) {
                     handle.post(reverseAnimation)
                 } else {
@@ -78,7 +82,7 @@ class AnimatedReviewPicker @JvmOverloads constructor(
     private val normalAnimation = object : Runnable {
         override fun run() {
             if (count <= 5) {
-                val reviewData = listOfStarsView[count-1]
+                val reviewData = listOfStarsView[count - 1]
                 if (isNormalAnim(reviewData)) { // Animating in normal way
                     if (isReservedAnim(reviewData)) { // Check if last view is animated then reverse it to make it to normal animation again *If you dont reverse back, the status is still reversed
                         reviewData.reviewView.reverseAnimationSpeed()
@@ -101,7 +105,7 @@ class AnimatedReviewPicker @JvmOverloads constructor(
     private val reverseAnimation = object : Runnable {
         override fun run() {
             if (countMinus >= 1) {
-                val reviewData = listOfStarsView[countMinus-1]
+                val reviewData = listOfStarsView[countMinus - 1]
                 if (shouldReserveAnim(reviewData)) { // When review clicked is under last review click then reverse animation
                     reviewData.isAnimated = false
                     reviewData.reviewView.reverseAnimationSpeed()

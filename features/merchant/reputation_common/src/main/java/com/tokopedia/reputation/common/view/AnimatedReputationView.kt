@@ -38,7 +38,7 @@ class AnimatedReputationView @JvmOverloads constructor(
 
     private val binding by lazy {
         val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.animated_reputation_picker, this)
+        val view = inflater.inflate(R.layout.animated_reputation_picker, this, false)
         AnimatedReputationPickerBinding.bind(view)
     }
 
