@@ -8,14 +8,12 @@ object CtaActionHandler {
     operator fun invoke(state: AutomateCouponCtaState, listener: Listener?): ButtonState {
         return when (state) {
             is AutomateCouponCtaState.Claim -> {
-                ButtonState.Custom(
-                    text = state.properties.text,
+                ButtonState.Claim(
                     action = { listener?.claim() }
                 )
             }
             is AutomateCouponCtaState.Redirect -> {
-                ButtonState.Custom(
-                    text = state.properties.text,
+                ButtonState.Redirection(
                     action = { listener?.claim() }
                 )
             }
