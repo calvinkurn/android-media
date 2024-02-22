@@ -34,6 +34,7 @@ import com.tokopedia.translator.ui.CommonUtil
 import com.tokopedia.translator.ui.SharedPrefsUtils
 import com.tokopedia.translator.ui.TranslatorSettingView.*
 import com.tokopedia.translator.util.ViewUtil
+import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -192,7 +193,8 @@ class TranslatorManager() {
 
         val service =
             RetrofitClientInstance.getRetrofitInstance().create(GetDataService::class.java)
-        val call = service.getTranslatedStringY(API_KEY, origStrings!!, mLangsGroup, "plain")
+//        val call = service.getTranslatedStringY(API_KEY, origStrings!!, mLangsGroup, "plain")
+        val call = service.getTranslatedString("dict-chrome-ex", "id","en", "t", origStrings!!)
         CommonUtil.showToast(mApplication, "Translation starting...");
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
@@ -203,14 +205,15 @@ class TranslatorManager() {
                             TAG,
                             "Received response from server: $strJson --> ${getCurrentActivity()}"
                         )
-                        val data = JSONObject(strJson)
-                        val resCode = data.getInt(TAG_CODE)
-                        if (resCode == 200) {
-                            val arrText = data.getJSONArray(TAG_TEXT_ARRAY)
+                        val data = JSONArray(strJson)
+//                        val resCode = data.get(0)
+                        if (data != null) {
+//                            val arrText = data.getJSONArray(TAG_TEXT_ARRAY)
+                            val arrText = data.getString(0)
 
                             mStringPoolManager.updateCache(
                                 origStrings!!.split(DELIM.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray(),
-                                arrText.getString(0).split(
+                                arrText.split(
                                     DELIM.toRegex()
                                 ).dropLastWhile { it.isEmpty() }.toTypedArray()
                             )
