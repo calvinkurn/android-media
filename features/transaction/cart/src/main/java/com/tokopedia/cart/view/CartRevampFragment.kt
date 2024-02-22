@@ -3411,8 +3411,7 @@ class CartRevampFragment :
                     renderToShipmentFormSuccess(
                         data.eeCheckoutData,
                         data.checkoutProductEligibleForCashOnDelivery,
-                        data.condition,
-                        data.byteIOTracker
+                        data.condition
                     )
                 }
 
@@ -4430,7 +4429,6 @@ class CartRevampFragment :
         eeCheckoutData: Map<String, Any>,
         checkoutProductEligibleForCashOnDelivery: Boolean,
         condition: Int,
-        byteIoModel: CartClickAnalyticsModel
     ) {
         when (condition) {
             CartViewModel.ITEM_CHECKED_ALL_WITHOUT_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(
