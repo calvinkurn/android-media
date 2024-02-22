@@ -3,7 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.mapper
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
 import com.tokopedia.buyerorderdetail.domain.models.AddToCartSingleRequestState
-import com.tokopedia.buyerorderdetail.domain.models.AddonSummary
+import com.tokopedia.order_management_common.domain.data.AddOnSummary
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
@@ -1139,7 +1139,7 @@ object ProductListUiStateMapper {
 
     private fun mapAddOnSummary(
         addOnsIdentifier: String,
-        addonSummary: AddonSummary?,
+        addonSummary: AddOnSummary?,
         addOnLabel: String,
         addOnIcon: String,
         addOnsExpandableState: List<String>,

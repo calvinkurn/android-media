@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailLogisticSectionInfoID
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.order_management_common.domain.data.AddOnSummary
 import com.tokopedia.order_management_common.domain.data.ProductBenefit
 
 data class GetBuyerOrderDetailResponse(
@@ -516,7 +517,7 @@ data class GetBuyerOrderDetailResponse(
                 val label: String = "",
                 @SerializedName("order_level")
                 @Expose
-                val addonSummary: AddonSummary? = null
+                val addonSummary: AddOnSummary? = null
             )
 
             data class Details(
@@ -600,7 +601,7 @@ data class GetBuyerOrderDetailResponse(
                         @SerializedName("category_id")
                         val categoryId: String = "0",
                         @SerializedName("addon_summary")
-                        val addonSummary: AddonSummary? = null
+                        val addonSummary: AddOnSummary? = null
                     )
                 }
 
@@ -710,14 +711,14 @@ data class GetBuyerOrderDetailResponse(
 
                         @SerializedName("addon_summary")
                         @Expose
-                        val addonSummary: AddonSummary? = AddonSummary()
+                        val addonSummary: AddOnSummary? = null
                     )
                 }
 
                 data class NonBundle(
                     @SerializedName("addon_summary")
                     @Expose
-                    val addonSummary: AddonSummary? = AddonSummary(),
+                    val addonSummary: AddOnSummary? = null,
 
                     @SerializedName("button")
                     @Expose
