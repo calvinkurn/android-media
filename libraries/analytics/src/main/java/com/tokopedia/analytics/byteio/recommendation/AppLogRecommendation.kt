@@ -32,7 +32,7 @@ object AppLogRecommendation {
     }
 
     fun sendCardClickAppLog(model: AppLogRecommendationCardModel) {
-        AppLogAnalytics.globalTrackId = model.trackId
+        AppLogAnalytics.globalTrackId = null
         AppLogAnalytics.globalRequestId = model.requestId
         AppLogAnalytics.sourcePageType = SourcePageType.PRODUCT_CARD
         AppLogAnalytics.entranceForm = EntranceForm.PURE_GOODS_CARD
