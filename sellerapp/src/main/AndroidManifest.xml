@@ -1062,6 +1062,9 @@
                     android:host="www.tokopedia.com"
                     android:pathPattern=".*"
                     android:scheme="https" />
+                <data
+                    android:host="ta.tokopedia.com"
+                    android:pathPattern="/v2/manage/*" />
             </intent-filter>
         </activity>
 
