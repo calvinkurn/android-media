@@ -1,5 +1,8 @@
 package com.tokopedia.analytics.byteio
 
+import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
+
 internal val TAG = "BYTEIO"
 
 object Constants {
@@ -104,7 +107,18 @@ data class SubmitOrderResult(
     val orderId: String,
     val comboId: String,
     val productId: String
-)
+) {
+    data class DeliveryInfo(
+        @SerializedName("ship_from")
+        val shipFrom: String = "local",
+        @SerializedName("shipping_type")
+        val shippingType: String,
+        @SerializedName("eta")
+        val eta: String,
+    ) {
+        fun toJsonString(): String = Gson().toJson(this)
+    }
+}
 
 data class CartClickAnalyticsModel(
     val buttonName: String = "cart_check_out",
