@@ -29,7 +29,7 @@ class AnimatedRatingPickerReviewPendingView @JvmOverloads constructor(
 
     private val binding by lazy {
         val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.animated_rating_picker_review_pending, this)
+        val view = inflater.inflate(R.layout.animated_rating_picker_review_pending, this, false)
         AnimatedRatingPickerReviewPendingBinding.bind(view)
     }
 
