@@ -5,7 +5,7 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.components.Bl
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.pdp.fintech.view.FintechPriceURLDataModel
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 
 data class FintechWidgetDataModel(
     val name: String = "",
@@ -24,7 +24,7 @@ data class FintechWidgetDataModel(
     ) {
     override fun type() = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory) = typeFactory.type(this)
+    override fun type(typeFactory: ProductDetailAdapterFactory) = typeFactory.type(this)
 
     override fun name() = name
 

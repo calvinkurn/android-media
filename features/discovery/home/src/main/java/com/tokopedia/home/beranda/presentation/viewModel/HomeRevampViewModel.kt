@@ -67,6 +67,7 @@ import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -107,7 +108,8 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeRemoteConfigController: Lazy<HomeRemoteConfigController>,
     private val homeAtfUseCase: Lazy<HomeAtfUseCase>,
     private val todoWidgetRepository: Lazy<TodoWidgetRepository>,
-    private val homeThematicUseCase: Lazy<ThematicUseCase>
+    private val homeThematicUseCase: Lazy<ThematicUseCase>,
+    private val remoteConfig: Lazy<RemoteConfig>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -427,6 +429,8 @@ open class HomeRevampViewModel @Inject constructor(
     fun getUserId() = userSession.get().userId ?: ""
 
     fun getUserName() = userSession.get().name ?: ""
+
+    fun getRemoteConfig() = remoteConfig.get()
 
     fun refreshWithThreeMinsRules(forceRefresh: Boolean = false, isFirstInstall: Boolean = false) {
         if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
