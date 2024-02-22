@@ -98,7 +98,6 @@ fun RecipeBookmarkItem(
         shape = RoundedCornerShape(12.dp),
         elevation = 0.dp
     ) {
-
         Column(modifier = Modifier.fillMaxWidth()) {
             NestImage(
                 modifier = Modifier
@@ -122,14 +121,16 @@ fun RecipeBookmarkItem(
                 NestTypography(
                     modifier = Modifier.weight(1f),
                     text = title,
-                    textStyle = NestTheme.typography.display3
-                        .copy(fontWeight = FontWeight.Bold)
+                    textStyle = NestTheme.typography.display3.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = NestTheme.colors.NN._1000
+                    )
                 )
                 NestIcon(
                     modifier = iconModifier,
                     iconId = IconUnify.BOOKMARK_FILLED,
                     colorLightEnable = NestTheme.colors.NN._500,
-                    colorNightEnable = NestTheme.colors.NN._500,
+                    colorNightEnable = NestTheme.colors.NN._500
                 )
             }
 
@@ -153,7 +154,9 @@ fun RecipeBookmarkItem(
                         portion
                     )
                 },
-                textStyle = NestTheme.typography.small
+                textStyle = NestTheme.typography.small.copy(
+                    color = NestTheme.colors.NN._1000
+                )
             )
         }
 
