@@ -14,6 +14,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 class GridAutomateCouponViewHolder(
@@ -54,6 +55,8 @@ class GridAutomateCouponViewHolder(
 
         viewModel?.apply {
             getSubComponent().inject(this)
+
+            fetch(itemView.context.isDarkMode())
         }
     }
 

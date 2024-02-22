@@ -19,6 +19,7 @@ import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponLi
 import com.tokopedia.discovery_component.widgets.automatecoupon.ButtonState
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SingleAutomateCouponViewHolder(
@@ -34,8 +35,10 @@ class SingleAutomateCouponViewHolder(
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as? SingleAutomateCouponViewModel
 
-        viewModel?.let {
-            getSubComponent().inject(it)
+        viewModel?.run {
+            getSubComponent().inject(this)
+
+            fetch(itemView.context.isDarkMode())
         }
     }
 

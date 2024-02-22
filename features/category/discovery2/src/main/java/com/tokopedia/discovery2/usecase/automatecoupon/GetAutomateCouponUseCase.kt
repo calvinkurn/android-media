@@ -25,7 +25,11 @@ class GetAutomateCouponUseCase @Inject constructor(
     private val repository: IAutomateCouponGqlRepository
 ) {
 
-    suspend fun execute(componentId: String, pageIdentifier: String): State {
+    suspend fun execute(
+        componentId: String,
+        pageIdentifier: String,
+        isDarkMode: Boolean
+    ): State {
         val component = getComponent(componentId, pageIdentifier)
 
         if (component?.noOfPagesLoaded == Int.ONE) {
@@ -37,7 +41,7 @@ class GetAutomateCouponUseCase @Inject constructor(
 
             val data = it.data?.firstOrNull() ?: return State.FAILED
 
-            val response = repository.fetchData(data.mapToCouponRequest(), it.name)
+            val response = repository.fetchData(data.mapToCouponRequest(isDarkMode), it.name)
 
             response.promoCatalog?.catalogWithCouponList?.let { coupons ->
                 if (coupons.isNotEmpty()) {
@@ -54,12 +58,14 @@ class GetAutomateCouponUseCase @Inject constructor(
         return State.FAILED
     }
 
-    private fun DataItem.mapToCouponRequest(): AutomateCouponRequest {
+    private fun DataItem.mapToCouponRequest(isDarkMode: Boolean): AutomateCouponRequest {
         val slugs = catalogSlug?.filterNotNull()
+
+        val theme = if (isDarkMode) DARK_THEME else String.EMPTY
 
         return AutomateCouponRequest(
             source = SOURCE,
-            theme = String.EMPTY,
+            theme = theme,
             widgetType = couponLayout.orEmpty(),
             ids = catalogIds.orEmpty(),
             categoryIDs = catalogCategoryIds.orEmpty(),
@@ -213,5 +219,6 @@ class GetAutomateCouponUseCase @Inject constructor(
 
     companion object {
         private const val SOURCE = "discovery-page"
+        private const val DARK_THEME = "dark"
     }
 }

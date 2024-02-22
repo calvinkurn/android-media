@@ -55,11 +55,6 @@ class SingleAutomateCouponViewModel(
         return ctaStateAfterClaim
     }
 
-    override fun onAttachToViewHolder() {
-        super.onAttachToViewHolder()
-        fetch()
-    }
-
     fun claim(catalogId: Long?) {
         launchCatchError(block = {
             if (userSession?.isLoggedIn == false) {
@@ -77,9 +72,9 @@ class SingleAutomateCouponViewModel(
             })
     }
 
-    private fun fetch() {
+    fun fetch(isDarkMode: Boolean) {
         launchCatchError(block = {
-            val state = useCase?.execute(component.id, component.pageEndPoint)
+            val state = useCase?.execute(component.id, component.pageEndPoint, isDarkMode)
             if (state == GetAutomateCouponUseCase.State.LOADED) {
                 if (component.getComponentsItem()?.isNotEmpty() == true) {
                     componentList.postValue(component.getComponentsItem() as ArrayList<ComponentsItem>)

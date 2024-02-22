@@ -32,14 +32,9 @@ class ListAutomateCouponViewModel(
         return componentList
     }
 
-    override fun onAttachToViewHolder() {
-        super.onAttachToViewHolder()
-        fetch()
-    }
-
-    private fun fetch() {
+    fun fetch(isDarkMode: Boolean) {
         launchCatchError(block = {
-            useCase?.execute(component.id, component.pageEndPoint)
+            useCase?.execute(component.id, component.pageEndPoint, isDarkMode)
             if (component.getComponentsItem()?.isNotEmpty() == true) {
                 val coupons = component.getComponentsItem()?.filter {
                     it.automateCoupons?.isNotEmpty() == true
@@ -48,8 +43,7 @@ class ListAutomateCouponViewModel(
                 componentList.postValue(coupons as ArrayList<ComponentsItem>)
             }
         }, onError = {
-            Timber.e(it)
-        })
+                Timber.e(it)
+            })
     }
-
 }
