@@ -1612,6 +1612,22 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check setting profile internal appLink then should return tokopedia internal setting profile in customerapp`() {
+        val settingProfileApplink = ApplinkConstInternalUserPlatform.SETTING_PROFILE
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/setting-profile"
+
+        assertEqualsDeepLinkMapper(settingProfileApplink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check setting profile global appLink then should return tokopedia internal setting profile in customerapp`() {
+        val settingProfileApplink = ApplinkConst.SETTING_PROFILE
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/setting-profile"
+
+        assertEqualsDeepLinkMapper(settingProfileApplink, expectedDeepLink)
+    }
+
+    @Test
     fun `check notification troubleshooter appLink then should return tokopedia internal notification troubleshooter in customerapp`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://user/push-notification-troubleshooter"
