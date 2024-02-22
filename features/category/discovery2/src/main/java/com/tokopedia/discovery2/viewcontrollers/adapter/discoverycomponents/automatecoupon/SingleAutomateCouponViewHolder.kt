@@ -117,7 +117,18 @@ class SingleAutomateCouponViewHolder(
         if (redirectAppLink.isEmpty()) return
 
         onClick {
+            trackClickEvent()
             RouteManager.route(itemView.context, redirectAppLink)
+        }
+    }
+
+    private fun trackClickEvent() {
+        viewModel?.component?.let { component ->
+
+            val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+            val properties = component.toTrackingProperties()
+
+            analytics?.trackCouponClickEvent(properties)
         }
     }
 
