@@ -10,6 +10,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationVisitable
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetView
@@ -74,8 +76,13 @@ class CartRecentViewViewHolder(
                 }
             ),
             callback = object : RecommendationWidgetView.Callback {
-                override fun onShow(recommendationItems: List<RecommendationItem>) {
-                    super.onShow(recommendationItems)
+                override fun onShow(visitableList: List<RecommendationVisitable>?) {
+                    super.onShow(visitableList)
+                    val recommendationModel = visitableList?.find { visitable ->
+                        visitable is RecommendationCarouselModel
+                    } as? RecommendationCarouselModel
+                    val recommendationItems: List<RecommendationItem> =
+                        recommendationModel?.widget?.recommendationItemList ?: emptyList()
                     if (element.hasSentImpressionAnalytics) {
                         listener?.onRecentViewImpression(recommendationItems)
                         element.hasSentImpressionAnalytics = true

@@ -10,10 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.asLifecycleOwner
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
-import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
@@ -132,12 +130,7 @@ class RecommendationWidgetView : LinearLayout {
             }
         } else {
             show()
-            val recommendationModel = visitableList.find { visitable ->
-                visitable is RecommendationCarouselModel
-            } as? RecommendationCarouselModel
-            val recommendationItems: List<RecommendationItem> =
-                recommendationModel?.widget?.recommendationItemList ?: emptyList()
-            callback?.onShow(recommendationItems)
+            callback?.onShow(visitableList)
         }
     }
 
@@ -179,7 +172,7 @@ class RecommendationWidgetView : LinearLayout {
     }
 
     interface Callback {
-        fun onShow(recommendationItems: List<RecommendationItem>) { }
+        fun onShow(visitableList: List<RecommendationVisitable>?) { }
         fun onError() { }
     }
 }
