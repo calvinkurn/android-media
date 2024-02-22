@@ -39,8 +39,8 @@ private const val FIRST_ITEM_INDEX = 0
 @Composable
 fun RecipeBookmarkLayout(
     state: RecipeBookmarkState,
-    onEvent: (RecipeBookmarkEvent) -> Unit,
-    analytics: RecipeBookmarkAnalytics
+    analytics: RecipeBookmarkAnalytics,
+    onEvent: (RecipeBookmarkEvent) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -89,12 +89,6 @@ fun RecipeBookmarkList(
         }
     }
 
-    LaunchedEffect(scrollToTop) {
-        if (scrollToTop) {
-            lazyListState.animateScrollToItem(FIRST_ITEM_INDEX)
-        }
-    }
-
     LaunchedEffect(isScrolledToEnd) {
         onEvent(RecipeBookmarkEvent.LoadMoreRecipeBookmarkList(isScrolledToEnd))
     }
@@ -123,6 +117,12 @@ fun RecipeBookmarkList(
                 is RecipeShimmeringUiModel -> RecipeBookmarkShimmeringItem()
                 is RecipeProgressBarUiModel -> TokoNowLoadMoreProgressItem()
             }
+        }
+    }
+
+    LaunchedEffect(scrollToTop) {
+        if (scrollToTop) {
+            lazyListState.animateScrollToItem(FIRST_ITEM_INDEX)
         }
     }
 }

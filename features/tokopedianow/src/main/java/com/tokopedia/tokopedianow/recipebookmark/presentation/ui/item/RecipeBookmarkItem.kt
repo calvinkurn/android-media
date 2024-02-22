@@ -1,7 +1,8 @@
 package com.tokopedia.tokopedianow.recipebookmark.presentation.ui.item
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,21 +11,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -32,16 +32,17 @@ import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.PARAM_RECIPE_ID
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.nest.components.card.NestCard
-import com.tokopedia.nest.components.card.NestCardType
+import com.tokopedia.nest.components.NestImage
+import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.analytics.ListItemImpression
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.analytics.RecipeBookmarkAnalytics
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkEvent
+import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipecommon.ui.item.RecipeTagItem
 import com.tokopedia.tokopedianow.recipecommon.ui.model.TagUiModel
 import com.tokopedia.user.session.UserSession
@@ -67,32 +68,44 @@ fun RecipeBookmarkItem(
         analytics.impressRecipeCard(id, title, position)
     }
 
-    NestCard(
-        modifier = Modifier.fillMaxWidth(),
-        type = NestCardType.Border,
-        onClick = {
-            val appLink = UriUtil.buildUriAppendParam(
-                ApplinkConstInternalTokopediaNow.RECIPE_DETAIL,
-                mapOf(PARAM_RECIPE_ID to id)
-            )
-            RouteManager.route(context, appLink)
-            analytics.clickRecipeCard(id, title, position)
-        }
-    ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            val painter = rememberAsyncImagePainter(
-                ImageRequest
-                    .Builder(LocalContext.current)
-                    .data(data = imageUrl)
-                    .build()
-            )
+    val iconModifier = remember {
+        Modifier
+            .height(15.dp)
+            .width(15.dp)
+            .clickable {
+                onEvent.removeRecipeBookmark(position, recipe)
+                analytics.clickUnBookmark(id, title)
+            }
+    }
 
-            Image(
-                painter = painter,
-                contentDescription = null,
+    val cardModifier = remember {
+        Modifier
+            .fillMaxWidth()
+            .clickable {
+                val appLink = UriUtil.buildUriAppendParam(
+                    ApplinkConstInternalTokopediaNow.RECIPE_DETAIL,
+                    mapOf(PARAM_RECIPE_ID to id)
+                )
+                RouteManager.route(context, appLink)
+                analytics.clickRecipeCard(id, title, position)
+            }
+    }
+
+    Card(
+        modifier = cardModifier,
+        backgroundColor = getCardBackgroundColor(),
+        border = BorderStroke(1.dp, NestTheme.colors.NN._200),
+        shape = RoundedCornerShape(12.dp),
+        elevation = 0.dp
+    ) {
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            NestImage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(88.dp),
+                source = ImageSource.Remote(imageUrl),
+                type = NestImageType.Rect(rounded = 0.dp),
                 contentScale = ContentScale.Crop
             )
 
@@ -113,16 +126,10 @@ fun RecipeBookmarkItem(
                         .copy(fontWeight = FontWeight.Bold)
                 )
                 NestIcon(
-                    modifier = Modifier
-                        .height(15.dp)
-                        .width(15.dp)
-                        .clickable {
-                            onEvent.removeRecipeBookmark(position, recipe)
-                            analytics.clickUnBookmark(id, title)
-                        },
+                    modifier = iconModifier,
                     iconId = IconUnify.BOOKMARK_FILLED,
                     colorLightEnable = NestTheme.colors.NN._500,
-                    colorNightEnable = NestTheme.colors.NN._500
+                    colorNightEnable = NestTheme.colors.NN._500,
                 )
             }
 
@@ -150,18 +157,17 @@ fun RecipeBookmarkItem(
             )
         }
 
-        LazyRow(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
                     top = 12.dp,
                     end = 4.dp
                 ),
-            state = rememberLazyListState(),
             horizontalArrangement = Arrangement.End
         ) {
-            items(items = tags, key = { item -> item.tag }) { item ->
-                RecipeTagItem(data = item)
+            tags.forEach {
+                RecipeTagItem(data = it)
             }
         }
     }
@@ -194,6 +200,15 @@ private fun RecipeBookmarkItemPreview() {
         lazyListState = rememberLazyListState(),
         onEvent = {}
     )
+}
+
+@Composable
+private fun getCardBackgroundColor(): Color {
+    return if (isSystemInDarkTheme()) {
+        NestTheme.colors.NN._50
+    } else {
+        NestTheme.colors.NN._0
+    }
 }
 
 private fun ((RecipeBookmarkEvent) -> Unit).removeRecipeBookmark(

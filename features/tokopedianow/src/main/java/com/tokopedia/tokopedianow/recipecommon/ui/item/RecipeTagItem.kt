@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.recipecommon.ui.item
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -15,7 +16,7 @@ import com.tokopedia.tokopedianow.recipecommon.ui.model.TagUiModel
 @Composable
 fun RecipeTagItem(data: TagUiModel) {
     val tag = data.tag
-    val shouldFormatTag = data.shouldFormatTag
+    val shouldFormatTag = remember { data.shouldFormatTag }
 
     val text = if (shouldFormatTag) {
         stringResource(R.string.tokopedianow_recipe_other_label, tag.toIntSafely())

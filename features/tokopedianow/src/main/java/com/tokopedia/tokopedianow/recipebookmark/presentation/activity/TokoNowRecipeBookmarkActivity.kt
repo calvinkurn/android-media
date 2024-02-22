@@ -60,7 +60,7 @@ class TokoNowRecipeBookmarkActivity : AppCompatActivity() {
                     }
                 }
 
-                RecipeBookmarkLayout(state.value, viewModel::onEvent, analytics)
+                RecipeBookmarkLayout(state.value, analytics, viewModel::onEvent)
             }
         }
         loadBookmarkList()
