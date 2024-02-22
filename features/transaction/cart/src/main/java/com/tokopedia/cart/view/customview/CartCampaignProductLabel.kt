@@ -149,22 +149,13 @@ class CartCampaignProductLabel @JvmOverloads constructor(
                 val countdownBackgroundDrawable = GradientDrawable().apply {
                     shape = GradientDrawable.RECTANGLE
                     val cornerRadius = context.dpToPx(LABEL_CORNER_RADIUS_DP)
-                    cornerRadii = floatArrayOf(
-                        0f,
-                        0f,
-                        cornerRadius,
-                        cornerRadius,
-                        cornerRadius,
-                        cornerRadius,
-                        0f,
-                        0f
-                    )
+                    setCornerRadius(cornerRadius)
                     setStroke(
                         context.dpToPx(LABEL_STROKE_WIDTH_DP).toInt(),
                         Color.parseColor(backgroundColor.hexCode)
                     )
                 }
-                tpgProductLabelCountdown.background = countdownBackgroundDrawable
+                container.background = countdownBackgroundDrawable
             }
             timer?.cancel()
             timer = object : CountDownTimer(remainingTimeMillis, COUNTDOWN_TIMER_INTERVAL_MS) {
