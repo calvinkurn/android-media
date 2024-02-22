@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="8dp"
-    android:fillViewport="true"
-    tools:viewBindingIgnore="true">
+    android:fillViewport="true">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/topCreditSheetScrollView"

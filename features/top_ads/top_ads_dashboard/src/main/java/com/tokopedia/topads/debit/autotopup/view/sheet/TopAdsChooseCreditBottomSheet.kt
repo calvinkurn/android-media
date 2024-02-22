@@ -7,18 +7,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioGroup
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
 import androidx.core.text.HtmlCompat
 import androidx.core.view.updateLayoutParams
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.extension.EIGHT
 import com.tokopedia.topads.common.extension.ZERO
@@ -33,11 +30,13 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopA
 import com.tokopedia.topads.dashboard.data.model.CreditResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.getTextFromFrequency
+import com.tokopedia.topads.dashboard.databinding.TopadsDashChooseCreditSheetBinding
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsPaymentCreditActivity
 import com.tokopedia.topads.debit.autotopup.data.model.*
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.topads.debit.autotopup.view.adapter.TopAdsCreditListAdapter
+import com.tokopedia.topads.debit.autotopup.view.uimodel.AutoTopUpConfirmationUiModel
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
 import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickAktifkanTambahKreditManualDiModalTambahKreditEvent
 import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickAktifkanTambahKreditOtomatisDiModalTambahKreditEvent
@@ -56,45 +55,17 @@ import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickPilihTamba
 import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickPilihTambahKreditOtomatisEvent
 import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickUbahPengaturanKreditOtomatisDiModalTambahKreditEvent
 import com.tokopedia.unifycomponents.*
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
 import javax.inject.Inject
+import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 class TopAdsChooseCreditBottomSheet :
     BottomSheetUnify(),
     TopAdsCreditListAdapter.NominalClickListener {
-
-    private var creditItemRecyclerView: RecyclerView? = null
-    private var textPilihNominal: com.tokopedia.unifyprinciples.Typography? = null
-    private var topCreditSheetScrollView: NestedScrollView? = null
-    private var manualRadioButton: RadioButtonUnify? = null
-    private var autoRadioButton: RadioButtonUnify? = null
-    private var radioGroupAutoTopUpFrequency: RadioGroup? = null
-    private var topUpSwitchRadioButtonGroup: RadioGroup? = null
-    private var jarangRadioButton: RadioButtonUnify? = null
-    private var normalRadioButton: RadioButtonUnify? = null
-    private var seringRadioButton: RadioButtonUnify? = null
-    private var cancelButton: UnifyButton? = null
-    private var saveButton: UnifyButton? = null
-    private var applyButton: UnifyButton? = null
-    private var groupFrequencyAutoTopUp: Group? = null
-    private var groupAutoTopUpCreditHistory: Group? = null
-    private var autoTopUpCreditTips: TipsUnify? = null
-    private var tncAutoCreditCheckBox: CheckboxUnify? = null
-    private var autoTopUpActiveLabel: Label? = null
-    private var autoRadioButtonTextDescription: com.tokopedia.unifyprinciples.Typography? = null
-    private var selectedPrice: com.tokopedia.unifyprinciples.Typography? = null
-    private var selectedBonus: com.tokopedia.unifyprinciples.Typography? = null
-    private var maxCreditLimit: com.tokopedia.unifyprinciples.Typography? = null
-    private var selectedFrequncyTambahCredit: com.tokopedia.unifyprinciples.Typography? = null
-    private var creditHistoryShimmer: LoaderUnify? = null
-    private var toolTipAuto: ImageUnify? = null
-    private var toolTipFrequency: ImageUnify? = null
-    private var toolTipMaxCreditLimit: ImageUnify? = null
-    private var toolTipFrequencyHistory: ImageUnify? = null
 
     private var autoTopUpCreditHistoryTriple: Triple<String, String, Pair<String, Int>>? = null
     private var selectedNominal: TopUpCreditItemData? = null
@@ -105,6 +76,8 @@ class TopAdsChooseCreditBottomSheet :
     private var autoTopUpAvailableNominalList: MutableList<AutoTopUpItem> = mutableListOf()
     private var autoTopUpMaxCreditLimit: Long = Long.ZERO
     private var autoTopUpFrequencySelected: Int = DEFAULT_TOP_UP_FREQUENCY
+    private var statusBonus = 1.0
+
     var isAutoTopUpActive: Boolean = false
     var isAutoTopUpSelected: Boolean = false
     var isShowEditHistory: Boolean = false
@@ -119,7 +92,13 @@ class TopAdsChooseCreditBottomSheet :
     @Inject
     var viewModelFactory: ViewModelProvider.Factory? = null
 
+    private var binding by autoClearedNullable<TopadsDashChooseCreditSheetBinding>()
+
     companion object {
+
+        private const val TOP_ADS_TAX_VALUE = 1.11
+        private const val PPN_PERCENT = 11
+        private const val PPN_PERCENT_FORMULA = 0.11
         fun newInstance() = TopAdsChooseCreditBottomSheet()
     }
 
@@ -138,7 +117,7 @@ class TopAdsChooseCreditBottomSheet :
         savedInstanceState: Bundle?
     ): View? {
         initInjector()
-        initChildLayout()
+        initChildLayout(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -148,11 +127,10 @@ class TopAdsChooseCreditBottomSheet :
             .build().inject(this)
     }
 
-    private fun initChildLayout() {
-        val contentView = View.inflate(context, R.layout.topads_dash_choose_credit_sheet, null)
+    private fun initChildLayout(inflater: LayoutInflater, container: ViewGroup?) {
+        binding = TopadsDashChooseCreditSheetBinding.inflate(inflater, container, false)
         setDefaultConfigs()
-        setChild(contentView)
-        initView(contentView)
+        setChild(binding?.root)
     }
 
     private fun setDefaultConfigs() {
@@ -161,38 +139,6 @@ class TopAdsChooseCreditBottomSheet :
         showCloseIcon = true
         setTitle(getString(R.string.title_top_ads_add_credit))
         customPeekHeight = Resources.getSystem().displayMetrics.heightPixels
-    }
-
-    private fun initView(contentView: View?) {
-        topCreditSheetScrollView = contentView?.findViewById(R.id.topCreditSheetScrollView)
-        manualRadioButton = contentView?.findViewById(R.id.manualRadioButton)
-        autoRadioButton = contentView?.findViewById(R.id.autoRadioButton)
-        creditItemRecyclerView = contentView?.findViewById(R.id.creditItemRecyclerView)
-        saveButton = contentView?.findViewById(R.id.saveButton)
-        cancelButton = contentView?.findViewById(R.id.cancelButton)
-        applyButton = contentView?.findViewById(R.id.applyButton)
-        groupFrequencyAutoTopUp = contentView?.findViewById(R.id.groupFrequencyAutoTopUp)
-        groupAutoTopUpCreditHistory = contentView?.findViewById(R.id.autoTopUpCreditHistory)
-        autoTopUpCreditTips = contentView?.findViewById(R.id.autoTopUpCreditTips)
-        jarangRadioButton = contentView?.findViewById(R.id.jarangRadioButton)
-        normalRadioButton = contentView?.findViewById(R.id.normalRadioButton)
-        seringRadioButton = contentView?.findViewById(R.id.seringRadioButton)
-        radioGroupAutoTopUpFrequency = contentView?.findViewById(R.id.radioGroupAutoTopUpFrequency)
-        topUpSwitchRadioButtonGroup = contentView?.findViewById(R.id.topUpSwitchRadioButtonGroup)
-        tncAutoCreditCheckBox = contentView?.findViewById(R.id.tncAutoCreditCheckBox)
-        autoTopUpActiveLabel = contentView?.findViewById(R.id.autoTopUpActiveLabel)
-        autoRadioButtonTextDescription =
-            contentView?.findViewById(R.id.autoRadioButtonTextDescription)
-        selectedPrice = contentView?.findViewById(R.id.selectedPrice)
-        selectedBonus = contentView?.findViewById(R.id.selectedBonus)
-        maxCreditLimit = contentView?.findViewById(R.id.maxCreditLimit)
-        textPilihNominal = contentView?.findViewById(R.id.textPilihNominal)
-        selectedFrequncyTambahCredit = contentView?.findViewById(R.id.selectedFrequncyTambahCredit)
-        creditHistoryShimmer = contentView?.findViewById(R.id.creditHistoryShimmer)
-        toolTipAuto = contentView?.findViewById(R.id.toolTipAuto)
-        toolTipFrequency = contentView?.findViewById(R.id.toolTipFrequency)
-        toolTipFrequencyHistory = contentView?.findViewById(R.id.toolTipFrequencyHistory)
-        toolTipMaxCreditLimit = contentView?.findViewById(R.id.toolTipMaxCreditLimit)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -218,231 +164,327 @@ class TopAdsChooseCreditBottomSheet :
 
     private fun checkRadioDefaultTopUpType() {
         if (isAutoTopUpSelected) {
-            autoRadioButton?.isChecked =
+            binding?.autoRadioButton?.isChecked =
                 true
         } else {
-            manualRadioButton?.isChecked = true
+            binding?.manualRadioButton?.isChecked = true
         }
     }
 
     private fun setAutoRadioButtonLabel() {
-        autoTopUpActiveLabel?.visibleWithCondition(isAutoTopUpActive)
-        autoRadioButtonTextDescription?.visibleWithCondition(!isAutoTopUpActive)
+        binding?.autoTopUpActiveLabel?.visibleWithCondition(isAutoTopUpActive)
+        binding?.autoRadioButtonTextDescription?.visibleWithCondition(!isAutoTopUpActive)
     }
 
     private fun setDefaultState() {
         addNominalList(manualNominalList)
         changeButtonState(true)
-        if (manualRadioButton?.isChecked == true) {
+        if (binding?.manualRadioButton?.isChecked == true) {
             changeToManualState()
-        } else if (autoRadioButton?.isChecked == true) {
+        } else if (binding?.autoRadioButton?.isChecked == true) {
             changeToAutoState()
         }
     }
 
     private fun setUpRecyclerView() {
         adapter.setNominalClickListener(this)
-        creditItemRecyclerView?.adapter = adapter
-        creditItemRecyclerView?.layoutManager =
+        binding?.creditItemRecyclerView?.adapter = adapter
+        binding?.creditItemRecyclerView?.layoutManager =
             GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
     }
 
     private fun setUpClickListener() {
-        saveButton?.setOnClickListener {
-            if (it.tag == IS_EDIT_TOP_UP) {
-                sendClickUbahPengaturanKreditOtomatisDiModalTambahKreditEvent()
-                enableEditAutoTopUpState()
-            } else if (manualRadioButton?.isChecked == true) {
-                sendClickAktifkanTambahKreditManualDiModalTambahKreditEvent(
-                    selectedNominal?.productPrice ?: ""
-                )
-                openManualAdsCreditWebView()
-            } else {
-                sendClickAktifkanTambahKreditOtomatisDiModalTambahKreditEvent(
-                    "${selectedNominal?.productPrice}, ${
-                    getTextFromFrequency(
-                        context,
-                        autoTopUpFrequencySelected
+        binding?.run {
+            saveButton.setOnClickListener {
+                if (it.tag == IS_EDIT_TOP_UP) {
+                    sendClickUbahPengaturanKreditOtomatisDiModalTambahKreditEvent()
+                    enableEditAutoTopUpState()
+                } else if (binding?.manualRadioButton?.isChecked == true) {
+                    sendClickAktifkanTambahKreditManualDiModalTambahKreditEvent(
+                        selectedNominal?.productPrice ?: ""
                     )
-                    }"
-                )
+                    openManualAdsCreditWebView()
+                } else {
+                    sendClickAktifkanTambahKreditOtomatisDiModalTambahKreditEvent(
+                        "${selectedNominal?.productPrice}, ${
+                            getTextFromFrequency(
+                                context,
+                                autoTopUpFrequencySelected
+                            )
+                        }"
+                    )
+                    saveAutoTopUp()
+                }
+            }
+
+            cancelButton.setOnClickListener {
+                sendClickBatalPerubahanPengaturanKreditOtomatisEvent()
+                resetToCreditHistoryState()
+            }
+
+            applyButton.setOnClickListener {
+                sendClickAktifkanTambahKreditOtomatisEvent()
                 saveAutoTopUp()
             }
-        }
 
-        cancelButton?.setOnClickListener {
-            sendClickBatalPerubahanPengaturanKreditOtomatisEvent()
-            resetToCreditHistoryState()
-        }
+            toolTipAuto.setOnClickListener {
+                sendClickInformasiKreditOtomatisEvent()
+                TopAdsToolTipBottomSheet.newInstance().also {
+                    it.setTitle(context?.getString(R.string.label_topads_automatic_topup) ?: "")
+                    it.setDescription(
+                        context?.getString(R.string.top_ads_tool_tip_auto_description) ?: ""
+                    )
+                }.show(childFragmentManager)
+            }
 
-        applyButton?.setOnClickListener {
-            sendClickAktifkanTambahKreditOtomatisEvent()
-            saveAutoTopUp()
-        }
+            toolTipFrequency.setOnClickListener {
+                TopAdsToolTipBottomSheet.newInstance().also {
+                    it.setTitle(context?.getString(R.string.top_ads_frekuensi_tambah_kredit) ?: "")
+                    it.setDescription(
+                        context?.getString(R.string.top_ads_tool_tip_frequency_description) ?: ""
+                    )
+                }.show(childFragmentManager)
+            }
 
-        toolTipAuto?.setOnClickListener {
-            sendClickInformasiKreditOtomatisEvent()
-            TopAdsToolTipBottomSheet.newInstance().also {
-                it.setTitle(context?.getString(R.string.label_topads_automatic_topup) ?: "")
-                it.setDescription(
-                    context?.getString(R.string.top_ads_tool_tip_auto_description) ?: ""
-                )
-            }.show(childFragmentManager)
-        }
+            toolTipMaxCreditLimit.setOnClickListener {
+                sendClickInfoMinimalTresholdKreditOtomatisEvent()
+                TopAdsToolTipBottomSheet.newInstance().also {
+                    it.setTitle(context?.getString(R.string.toapds_dash_tooltip_title) ?: "")
+                    it.setDescription(
+                        context?.getString(R.string.top_ads_tool_tip_max_credit_limit_description)
+                            ?: ""
+                    )
+                }.show(childFragmentManager)
+            }
 
-        toolTipFrequency?.setOnClickListener {
-            TopAdsToolTipBottomSheet.newInstance().also {
-                it.setTitle(context?.getString(R.string.top_ads_frekuensi_tambah_kredit) ?: "")
-                it.setDescription(
-                    context?.getString(R.string.top_ads_tool_tip_frequency_description) ?: ""
-                )
-            }.show(childFragmentManager)
-        }
-
-        toolTipMaxCreditLimit?.setOnClickListener {
-            sendClickInfoMinimalTresholdKreditOtomatisEvent()
-            TopAdsToolTipBottomSheet.newInstance().also {
-                it.setTitle(context?.getString(R.string.toapds_dash_tooltip_title) ?: "")
-                it.setDescription(
-                    context?.getString(R.string.top_ads_tool_tip_max_credit_limit_description) ?: ""
-                )
-            }.show(childFragmentManager)
-        }
-
-        toolTipFrequencyHistory?.setOnClickListener {
-            sendClickInfoFrekuensiTambahKreditOtomatisEvent()
-            TopAdsToolTipBottomSheet.newInstance().also {
-                it.setTitle(context?.getString(R.string.top_ads_frekuensi_tambah_kredit) ?: "")
-                it.setDescription(
-                    context?.getString(R.string.top_ads_tool_tip_frequency_description) ?: ""
-                )
-            }.show(childFragmentManager)
+            toolTipFrequencyHistory.setOnClickListener {
+                sendClickInfoFrekuensiTambahKreditOtomatisEvent()
+                TopAdsToolTipBottomSheet.newInstance().also {
+                    it.setTitle(context?.getString(R.string.top_ads_frekuensi_tambah_kredit) ?: "")
+                    it.setDescription(
+                        context?.getString(R.string.top_ads_tool_tip_frequency_description) ?: ""
+                    )
+                }.show(childFragmentManager)
+            }
         }
     }
 
     private fun resetToCreditHistoryState() {
-        textPilihNominal?.hide()
-        creditItemRecyclerView?.hide()
-        groupFrequencyAutoTopUp?.hide()
-        changeButtonState(true)
-        tncAutoCreditCheckBox?.hide()
-        groupAutoTopUpCreditHistory?.show()
-        saveButton?.isEnabled = true
-        saveButton?.tag = IS_EDIT_TOP_UP
+        binding?.run {
+            textPilihNominal.hide()
+            creditItemRecyclerView.hide()
+            groupFrequencyAutoTopUp.hide()
+            changeButtonState(true)
+            tncAutoCreditCheckBox.hide()
+            autoTopUpCreditHistory.show()
+            saveButton.isEnabled = true
+            saveButton.tag = IS_EDIT_TOP_UP
+        }
     }
 
     private fun enableEditAutoTopUpState() {
-        textPilihNominal?.show()
-        creditItemRecyclerView?.show()
-        groupFrequencyAutoTopUp?.show()
-        groupAutoTopUpCreditHistory?.hide()
-        when (autoTopUpCreditHistoryTriple?.third?.second) {
-            TOP_UP_FREQUENCY_FOUR -> jarangRadioButton?.isChecked = true
-            DEFAULT_TOP_UP_FREQUENCY -> normalRadioButton?.isChecked = true
-            TOP_UP_FREQUENCY_EIGHT -> seringRadioButton?.isChecked = true
-        }
-        tncAutoCreditCheckBox?.isChecked = true
-        tncAutoCreditCheckBox?.isEnabled = false
-        tncAutoCreditCheckBox?.show()
-        topCreditSheetScrollView?.post {
-            topCreditSheetScrollView?.let { it1 ->
-                it1.smoothScrollTo(
-                    Int.ZERO,
-                    it1.bottom
+        binding?.run {
+            textPilihNominal.show()
+            creditItemRecyclerView.show()
+            groupFrequencyAutoTopUp.show()
+            autoTopUpCreditHistory.hide()
+            when (autoTopUpCreditHistoryTriple?.third?.second) {
+                TOP_UP_FREQUENCY_FOUR -> jarangRadioButton.isChecked = true
+                DEFAULT_TOP_UP_FREQUENCY -> normalRadioButton.isChecked = true
+                TOP_UP_FREQUENCY_EIGHT -> seringRadioButton.isChecked = true
+            }
+            tncAutoCreditCheckBox.isChecked = true
+            tncAutoCreditCheckBox.isEnabled = false
+            tncAutoCreditCheckBox.show()
+            topCreditSheetScrollView.post {
+                topCreditSheetScrollView.let { it1 ->
+                    it1.smoothScrollTo(
+                        Int.ZERO,
+                        it1.bottom
+                    )
+                }
+            }
+            changeButtonState(false)
+
+            val defaultEditList = autoTopUpCreditHistoryTriple?.let { triple ->
+                viewModel?.getAutoTopUpCreditListFromSelected(
+                    triple.first,
+                    autoTopUpNominalList
                 )
             }
-        }
-        changeButtonState(false)
 
-        val defaultEditList = autoTopUpCreditHistoryTriple?.let { triple ->
-            viewModel?.getAutoTopUpCreditListFromSelected(
-                triple.first,
-                autoTopUpNominalList
-            )
+            defaultEditList?.first?.let { list -> adapter.submitList(list) }
+            selectedNominalIndex = defaultEditList?.second ?: INVALID_NOMINAL_INDEX
+            applyButton.isEnabled = false
+            setCheckBoxText()
+            resetSaveButtonTag()
+            expandBottomSheet()
         }
-
-        defaultEditList?.first?.let { list -> adapter.submitList(list) }
-        selectedNominalIndex = defaultEditList?.second ?: INVALID_NOMINAL_INDEX
-        applyButton?.isEnabled = false
-        setCheckBoxText()
-        resetSaveButtonTag()
-        expandBottomSheet()
     }
 
     private fun resetSaveButtonTag() {
-        saveButton?.tag = ""
+        binding?.saveButton?.tag = ""
     }
 
     private fun changeButtonState(isDefault: Boolean) {
-        if (isDefault) {
-            saveButton?.visible()
-            cancelButton?.invisible()
-            applyButton?.invisible()
-        } else {
-            saveButton?.invisible()
-            cancelButton?.visible()
-            applyButton?.visible()
+        binding?.run {
+            if (isDefault) {
+                saveButton.visible()
+                cancelButton.invisible()
+                applyButton.invisible()
+            } else {
+                saveButton.invisible()
+                cancelButton.visible()
+                applyButton.visible()
+            }
         }
     }
 
     private fun setUpCheckChangeListener() {
-        topUpSwitchRadioButtonGroup?.setOnCheckedChangeListener { _, id ->
-            if (id == manualRadioButton?.id) {
-                changeToManualState()
-            } else {
-                changeToAutoState()
-            }
-        }
-
-        radioGroupAutoTopUpFrequency?.setOnCheckedChangeListener { _, id ->
-            when (id) {
-                jarangRadioButton?.id -> {
-                    autoTopUpFrequencySelected = TOP_UP_FREQUENCY_FOUR
-                    sendClickFrekuensiKreditOtomatisDiModalTambahKreditEvent(
-                        isFromEditAutoTopUp,
-                        context?.getString(R.string.topads_frequency_four_text) ?: ""
-                    )
-                }
-                normalRadioButton?.id -> {
-                    autoTopUpFrequencySelected = DEFAULT_TOP_UP_FREQUENCY
-                    sendClickFrekuensiKreditOtomatisDiModalTambahKreditEvent(
-                        isFromEditAutoTopUp,
-                        context?.getString(R.string.topads_frequency_six_text) ?: ""
-                    )
-                }
-                seringRadioButton?.id -> {
-                    autoTopUpFrequencySelected = TOP_UP_FREQUENCY_EIGHT
-                    sendClickFrekuensiKreditOtomatisDiModalTambahKreditEvent(
-                        isFromEditAutoTopUp,
-                        context?.getString(R.string.topads_frequency_eight_text) ?: ""
-                    )
+        binding?.run {
+            topUpSwitchRadioButtonGroup.setOnCheckedChangeListener { _, id ->
+                if (id == manualRadioButton.id) {
+                    changeToManualState()
+                } else {
+                    changeToAutoState()
                 }
             }
 
-            if (autoRadioButton?.isChecked == true) {
-                setAutoStateFields()
-                tncAutoCreditCheckBox?.isChecked = false
-                applyButton?.isEnabled = tncAutoCreditCheckBox?.isChecked ?: false
-            }
-        }
+            radioGroupAutoTopUpFrequency.setOnCheckedChangeListener { _, id ->
+                when (id) {
+                    jarangRadioButton.id -> {
+                        autoTopUpFrequencySelected = TOP_UP_FREQUENCY_FOUR
+                        sendClickFrekuensiKreditOtomatisDiModalTambahKreditEvent(
+                            isFromEditAutoTopUp,
+                            context?.getString(R.string.topads_frequency_four_text) ?: ""
+                        )
+                    }
 
-        tncAutoCreditCheckBox?.setOnCheckedChangeListener { compoundButton, _ ->
-            sendClickChecklistTncKreditOtomatisDiModalTambahKreditEvent(isFromEditAutoTopUp)
-            saveButton?.isEnabled =
-                compoundButton.isChecked && !selectedNominal?.productPrice.isNullOrEmpty()
-            applyButton?.isEnabled =
-                compoundButton.isChecked && !selectedNominal?.productPrice.isNullOrEmpty() && compoundButton?.isEnabled == true
+                    normalRadioButton.id -> {
+                        autoTopUpFrequencySelected = DEFAULT_TOP_UP_FREQUENCY
+                        sendClickFrekuensiKreditOtomatisDiModalTambahKreditEvent(
+                            isFromEditAutoTopUp,
+                            context?.getString(R.string.topads_frequency_six_text) ?: ""
+                        )
+                    }
+
+                    seringRadioButton.id -> {
+                        autoTopUpFrequencySelected = TOP_UP_FREQUENCY_EIGHT
+                        sendClickFrekuensiKreditOtomatisDiModalTambahKreditEvent(
+                            isFromEditAutoTopUp,
+                            context?.getString(R.string.topads_frequency_eight_text) ?: ""
+                        )
+                    }
+                }
+
+                if (autoRadioButton.isChecked) {
+                    setAutoStateFields()
+                    tncAutoCreditCheckBox.isChecked = false
+                    applyButton.isEnabled = tncAutoCreditCheckBox.isChecked ?: false
+                }
+            }
+
+            tncAutoCreditCheckBox.setOnCheckedChangeListener { compoundButton, _ ->
+                sendClickChecklistTncKreditOtomatisDiModalTambahKreditEvent(isFromEditAutoTopUp)
+                saveButton.isEnabled =
+                    compoundButton.isChecked && !selectedNominal?.productPrice.isNullOrEmpty()
+                applyButton.isEnabled =
+                    compoundButton.isChecked && !selectedNominal?.productPrice.isNullOrEmpty() && compoundButton?.isEnabled == true
+            }
         }
     }
 
     private fun saveAutoTopUp() {
         if (autoTopUpAvailableNominalList.isNotEmpty() && selectedNominalIndex != INVALID_NOMINAL_INDEX) {
+
+            //new approach
+            val autoTopUpNominal = autoTopUpAvailableNominalList.getOrNull(selectedNominalIndex)
+            val nominalConfirmation = if (autoTopUpNominal?.additionalFee?.isNotEmpty() == true) {
+                //after April, 1 2024
+                getNominalConfirmationUpAfterApril(autoTopUpNominal)
+            } else {
+                //before April, 1 2024
+                getNominalConfirmationBeforeApril(autoTopUpNominal)
+            }
+
+            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+
+            cacheManager?.put(
+                AutoTopUpConfirmationBottomSheet.AUTO_TOP_UP_CONFIRMATION_KEY,
+                nominalConfirmation
+            )
+
+            val bottomSheet = AutoTopUpConfirmationBottomSheet.newInstance(cacheManager?.id.orEmpty())
+            bottomSheet.onSaved = onSaved
+            bottomSheet.show(childFragmentManager)
+
+            //old approach
             viewModel?.saveSelection(
                 true,
                 autoTopUpAvailableNominalList[selectedNominalIndex],
                 autoTopUpFrequencySelected.toString()
             )
         }
+    }
+
+    private fun getNominalConfirmationBeforeApril(autoTopUpNominal: AutoTopUpItem?): AutoTopUpConfirmationUiModel {
+        val topAdsCredit = autoTopUpNominal?.priceFmt.orEmpty()
+        val topAdsValue = Utils.convertMoneyToValue(topAdsCredit)
+
+        val topAdsBonus = Utils.convertToCurrencyString((topAdsValue * statusBonus / 100).toLong())
+
+        val frequencyText = getString(R.string.topads_auto_top_up_confirmation_frequency_every_day, autoTopUpFrequencySelected.toString())
+
+
+        val subTotalActual = (topAdsValue / TOP_ADS_TAX_VALUE).roundToLong()
+        val subTotalActualFmt = Utils.convertToCurrencyString(subTotalActual)
+
+        val ppnAmount = (topAdsValue * PPN_PERCENT_FORMULA).roundToLong()
+        val ppnAmountFmt = Utils.convertToCurrencyString(ppnAmount)
+
+        val totalAmount = Utils.convertToCurrencyString(subTotalActual + ppnAmount)
+
+        return AutoTopUpConfirmationUiModel(
+            topAdsCredit = topAdsCredit,
+            topAdsBonus = topAdsBonus,
+            frequencyText = frequencyText,
+            autoTopUpFrequencySelected = autoTopUpFrequencySelected,
+            subTotalStrikethrough = topAdsCredit,
+            subTotalActual = subTotalActualFmt,
+            ppnPercent = "$PPN_PERCENT%",
+            ppnAmount = ppnAmountFmt,
+            totalAmount = totalAmount,
+            selectedItemId = autoTopUpNominal?.id.orZero().toString()
+        )
+    }
+
+    private fun getNominalConfirmationUpAfterApril(autoTopUpNominal: AutoTopUpItem?): AutoTopUpConfirmationUiModel {
+        val topAdsCredit = autoTopUpNominal?.priceFmt.orEmpty()
+        val topAdsValue = Utils.convertMoneyToValue(topAdsCredit)
+
+        val tax = autoTopUpNominal?.additionalFee?.find { it.type == "tax" }
+
+        val topAdsBonus = Utils.convertToCurrencyString((topAdsValue * statusBonus / 100).toLong())
+
+        val frequencyText = getString(R.string.topads_auto_top_up_confirmation_frequency_every_day, autoTopUpFrequencySelected.toString())
+
+        val ppnAmount = tax?.amount.orZero()
+        val ppnAmountFmt = Utils.convertToCurrencyString(ppnAmount)
+
+        val totalAmount = Utils.convertToCurrencyString(autoTopUpNominal?.totalAmount.orZero())
+
+        return AutoTopUpConfirmationUiModel(
+            topAdsCredit = topAdsCredit,
+            topAdsBonus = topAdsBonus,
+            frequencyText = frequencyText,
+            subTotalStrikethrough = "",
+            autoTopUpFrequencySelected = autoTopUpFrequencySelected,
+            subTotalActual = topAdsCredit,
+            ppnPercent = "${tax?.percent}%",
+            ppnAmount = ppnAmountFmt,
+            totalAmount = totalAmount,
+            selectedItemId = autoTopUpNominal?.id.orZero().toString()
+        )
     }
 
     private fun openManualAdsCreditWebView() {
@@ -458,30 +500,30 @@ class TopAdsChooseCreditBottomSheet :
         sendClickPilihTambahKreditManualEvent()
         manageAutoTopUpActiveState()
         addNominalList(manualNominalList)
-        groupFrequencyAutoTopUp?.hide()
-        autoTopUpCreditTips?.hide()
-        tncAutoCreditCheckBox?.isChecked = false
-        tncAutoCreditCheckBox?.hide()
+        binding?.groupFrequencyAutoTopUp?.hide()
+        binding?.autoTopUpCreditTips?.hide()
+        binding?.tncAutoCreditCheckBox?.isChecked = false
+        binding?.tncAutoCreditCheckBox?.hide()
         autoTopUpNominalList.reset()
-        saveButton?.text = context?.getString(R.string.label_add_credit)
-        saveButton?.isEnabled = false
+        binding?.saveButton?.text = context?.getString(R.string.label_add_credit)
+        binding?.saveButton?.isEnabled = false
         selectedNominalIndex = INVALID_NOMINAL_INDEX
         changeButtonState(true)
-        groupAutoTopUpCreditHistory?.hide()
-        saveButton?.buttonVariant = UnifyButton.Variant.FILLED
+        binding?.autoTopUpCreditHistory?.hide()
+        binding?.saveButton?.buttonVariant = UnifyButton.Variant.FILLED
         resetSaveButtonTag()
         collapseBottomSheet()
     }
 
     private fun changeToAutoState() {
         sendClickPilihTambahKreditOtomatisEvent()
-        normalRadioButton?.isChecked = true
-        groupFrequencyAutoTopUp?.showWithCondition(!isAutoTopUpActive)
+        binding?.normalRadioButton?.isChecked = true
+        binding?.groupFrequencyAutoTopUp?.showWithCondition(!isAutoTopUpActive)
         manualNominalList.reset()
         autoTopUpMaxCreditLimit = 0
-        autoTopUpCreditTips?.hide()
-        saveButton?.text = context?.getString(R.string.top_ads_auto_top_up_save_btn)
-        saveButton?.isEnabled = false
+        binding?.autoTopUpCreditTips?.hide()
+        binding?.saveButton?.text = context?.getString(R.string.top_ads_auto_top_up_save_btn)
+        binding?.saveButton?.isEnabled = false
         selectedNominalIndex = INVALID_NOMINAL_INDEX
         manageAutoTopUpActiveState()
         addNominalList(autoTopUpNominalList)
@@ -490,96 +532,100 @@ class TopAdsChooseCreditBottomSheet :
 
     private fun manageAutoTopUpActiveState() {
         if (isAutoTopUpActive) {
-            if (manualRadioButton?.isChecked == true) {
+            if (binding?.manualRadioButton?.isChecked == true) {
                 resetManualState()
             } else {
                 setCreditHistoryData()
             }
         } else {
-            groupAutoTopUpCreditHistory?.hide()
+            binding?.autoTopUpCreditHistory?.hide()
         }
     }
 
     private fun setCreditHistoryData() {
-        textPilihNominal?.hide()
-        creditItemRecyclerView?.hide()
-        selectedNominal = TopUpCreditItemData(
-            autoTopUpCreditHistoryTriple?.first ?: "",
-            autoTopUpCreditHistoryTriple?.second ?: ""
-        )
-        selectedPrice?.text = selectedNominal?.productPrice
-        selectedBonus?.text = HtmlCompat.fromHtml(
-            String.format(
-                getString(R.string.topads_dash_auto_topup_bonus),
-                selectedNominal?.bonus
-            ),
-            HtmlCompat.FROM_HTML_MODE_LEGACY
-        )
-        maxCreditLimit?.text = autoTopUpCreditHistoryTriple?.third?.first
-        val autoTopUpFrequencySelectedText =
-            getTextFromFrequency(context, autoTopUpCreditHistoryTriple?.third?.second)
-        selectedFrequncyTambahCredit?.text = HtmlCompat.fromHtml(
-            String.format(
-                getString(R.string.topads_dash_auto_topup_frequency),
-                autoTopUpFrequencySelectedText,
-                autoTopUpCreditHistoryTriple?.third?.second
-            ),
-            HtmlCompat.FROM_HTML_MODE_LEGACY
-        )
-        autoTopUpMaxCreditLimit = viewModel?.getAutoTopUpMaxCreditLimit(
-            autoTopUpFrequencySelected,
-            autoTopUpCreditHistoryTriple?.first
-        ) ?: 0L
-        autoTopUpCreditTips?.description =
-            context?.let { Utils.getSpannableForTips(it, autoTopUpMaxCreditLimit) } ?: ""
-        saveButton?.text = context?.getString(R.string.topads_edit_auto_top_up)
-        saveButton?.buttonVariant = UnifyButton.Variant.GHOST
-        saveButton?.isEnabled = isCreditHistoryReceived
-        creditHistoryShimmer?.showWithCondition(!isCreditHistoryReceived)
-        saveButton?.tag = IS_EDIT_TOP_UP
-        groupAutoTopUpCreditHistory?.showWithCondition(isCreditHistoryReceived)
-        autoTopUpCreditTips?.updateLayoutParams<ConstraintLayout.LayoutParams> {
-            if (selectedFrequncyTambahCredit?.id != null) {
-                topToBottom =
-                    selectedFrequncyTambahCredit?.id!!
+        binding?.run {
+            textPilihNominal.hide()
+            creditItemRecyclerView.hide()
+            selectedNominal = TopUpCreditItemData(
+                autoTopUpCreditHistoryTriple?.first ?: "",
+                autoTopUpCreditHistoryTriple?.second ?: ""
+            )
+            selectedPrice.text = selectedNominal?.productPrice
+            selectedBonus.text = HtmlCompat.fromHtml(
+                String.format(
+                    getString(R.string.topads_dash_auto_topup_bonus),
+                    selectedNominal?.bonus
+                ),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+            maxCreditLimit.text = autoTopUpCreditHistoryTriple?.third?.first
+            val autoTopUpFrequencySelectedText =
+                getTextFromFrequency(context, autoTopUpCreditHistoryTriple?.third?.second)
+            selectedFrequncyTambahCredit.text = HtmlCompat.fromHtml(
+                String.format(
+                    getString(R.string.topads_dash_auto_topup_frequency),
+                    autoTopUpFrequencySelectedText,
+                    autoTopUpCreditHistoryTriple?.third?.second
+                ),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+            autoTopUpMaxCreditLimit = viewModel?.getAutoTopUpMaxCreditLimit(
+                autoTopUpFrequencySelected,
+                autoTopUpCreditHistoryTriple?.first
+            ) ?: 0L
+            autoTopUpCreditTips.description =
+                context?.let { Utils.getSpannableForTips(it, autoTopUpMaxCreditLimit) } ?: ""
+            saveButton.text = context?.getString(R.string.topads_edit_auto_top_up)
+            saveButton.buttonVariant = UnifyButton.Variant.GHOST
+            saveButton.isEnabled = isCreditHistoryReceived
+            creditHistoryShimmer.showWithCondition(!isCreditHistoryReceived)
+            saveButton.tag = IS_EDIT_TOP_UP
+            autoTopUpCreditHistory.showWithCondition(isCreditHistoryReceived)
+            autoTopUpCreditTips.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                if (selectedFrequncyTambahCredit.id != null) {
+                    topToBottom =
+                        selectedFrequncyTambahCredit.id!!
+                }
             }
+            autoTopUpCreditTips.showWithCondition(isCreditHistoryReceived)
         }
-        autoTopUpCreditTips?.showWithCondition(isCreditHistoryReceived)
     }
 
     private fun resetManualState() {
-        textPilihNominal?.show()
-        creditItemRecyclerView?.show()
-        saveButton?.text = context?.getString(R.string.label_add_credit)
+        binding?.run {
+            textPilihNominal.show()
+            creditItemRecyclerView.show()
+            saveButton.text = context?.getString(R.string.label_add_credit)
+        }
     }
 
     private fun setAutoStateFields() {
         if (selectedNominal?.productPrice?.isNotEmpty() == true) {
-            tncAutoCreditCheckBox?.isEnabled = true
+            binding?.tncAutoCreditCheckBox?.isEnabled = true
         }
         autoTopUpMaxCreditLimit = viewModel?.getAutoTopUpMaxCreditLimit(
             autoTopUpFrequencySelected,
             selectedNominal?.productPrice
         ) ?: 0L
-        autoTopUpCreditTips?.description =
+        binding?.autoTopUpCreditTips?.description =
             context?.let { Utils.getSpannableForTips(it, autoTopUpMaxCreditLimit) } ?: ""
-        autoTopUpCreditTips?.show()
+        binding?.autoTopUpCreditTips?.show()
         if (selectedNominalIndex != INVALID_NOMINAL_INDEX) {
-            topCreditSheetScrollView?.post {
-                topCreditSheetScrollView?.bottom?.let {
-                    topCreditSheetScrollView?.smoothScrollTo(
+            binding?.topCreditSheetScrollView?.post {
+                binding?.topCreditSheetScrollView?.bottom?.let {
+                    binding?.topCreditSheetScrollView?.smoothScrollTo(
                         Int.ZERO,
                         it
                     )
                 }
             }
             setCheckBoxText()
-            tncAutoCreditCheckBox?.show()
+            binding?.tncAutoCreditCheckBox?.show()
         }
     }
 
     private fun setCheckBoxText() {
-        tncAutoCreditCheckBox?.text = context?.let {
+        binding?.tncAutoCreditCheckBox?.text = context?.let {
             Utils.getTncSpannable(
                 it,
                 autoTopUpAvailableNominalList.getOrNull(selectedNominalIndex)?.minCreditFmt
@@ -603,14 +649,14 @@ class TopAdsChooseCreditBottomSheet :
         viewModel?.statusSaveSelection?.observe(viewLifecycleOwner) {
             when (it) {
                 is ResponseSaving -> {
-                    saveButton?.isLoading = false
+                    binding?.saveButton?.isLoading = false
                     onSaved?.invoke(true)
                     isAutoTopUpActive = true
                     handleResponseSaving()
                     dismiss()
                 }
                 is Loading -> {
-                    saveButton?.isLoading = true
+                    binding?.saveButton?.isLoading = true
                 }
             }
         }
@@ -627,11 +673,12 @@ class TopAdsChooseCreditBottomSheet :
 
     private fun onSuccessGetAutoCreditListData(data: AutoTopUpStatus) {
         val list = viewModel?.getAutoTopUpCreditList(data, isAutoTopUpActive)
+        statusBonus = data.statusBonus
         autoTopUpAvailableNominalList.clear()
         autoTopUpAvailableNominalList.addAll(data.availableNominals)
         autoTopUpNominalList.clear()
         list?.let { autoTopUpNominalList.addAll(it) }
-        if (autoRadioButton?.isChecked == true) addNominalList(autoTopUpNominalList)
+        if (binding?.autoRadioButton?.isChecked == true) addNominalList(autoTopUpNominalList)
         autoTopUpCreditHistoryTriple = viewModel?.getAutoTopUpCreditHistoryData(data)
         isCreditHistoryReceived = true
         manageAutoTopUpActiveState()
@@ -645,7 +692,7 @@ class TopAdsChooseCreditBottomSheet :
         )
         manualNominalList.clear()
         list?.let { manualNominalList.addAll(it) }
-        if (manualRadioButton?.isChecked == true) addNominalList(manualNominalList)
+        if (binding?.manualRadioButton?.isChecked == true) addNominalList(manualNominalList)
     }
 
     private fun addNominalList(list: MutableList<TopUpCreditItemData>?) {
@@ -673,19 +720,23 @@ class TopAdsChooseCreditBottomSheet :
         nominalList.reset()
         selectedNominal?.clicked = true
         adapter.submitList(nominalList.toMutableList())
-        if (autoRadioButton?.isChecked == true) {
-            if (!isFromEditAutoTopUp) {
-                sendClickAmountOfAutoTopupEvent(selectedNominal?.productPrice ?: "")
+
+        binding?.run {
+            if (autoRadioButton.isChecked) {
+                if (!isFromEditAutoTopUp) {
+                    sendClickAmountOfAutoTopupEvent(selectedNominal?.productPrice ?: "")
+                } else {
+                    sendClickAmountOfAutoTopupDiModalTambahKreditEvent()
+                }
+                setAutoStateFields()
+                tncAutoCreditCheckBox.isEnabled = true
+                tncAutoCreditCheckBox.isChecked = false
+                applyButton.isEnabled = tncAutoCreditCheckBox.isChecked ?: false
             } else {
-                sendClickAmountOfAutoTopupDiModalTambahKreditEvent()
+                sendClickAmountOfManualTopupDiModalTambahKreditEvent(selectedNominal?.productPrice
+                    ?: "")
+                saveButton.isEnabled = true
             }
-            setAutoStateFields()
-            tncAutoCreditCheckBox?.isEnabled = true
-            tncAutoCreditCheckBox?.isChecked = false
-            applyButton?.isEnabled = tncAutoCreditCheckBox?.isChecked ?: false
-        } else {
-            sendClickAmountOfManualTopupDiModalTambahKreditEvent(selectedNominal?.productPrice ?: "")
-            saveButton?.isEnabled = true
         }
     }
 

@@ -73,6 +73,26 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         })
     }
 
+    fun activateTopAds(isActive: Boolean, selectedItemId: String, frequency: String = DEFAULT_TOP_UP_FREQUENCY.toString()) {
+        saveSelectionUseCase.setParam(isActive, selectedItemId, frequency)
+        saveSelectionUseCase.execute({ data ->
+
+            when {
+                data.response == null -> {
+                    throw Exception("Tidak ada data")
+                }
+                data.response.errors.isEmpty() -> {
+                    statusSaveSelection.value = ResponseSaving(true, null)
+                }
+                else -> {
+                    throw ResponseErrorException(data.response.errors)
+                }
+            }
+        }, {
+            statusSaveSelection.value = ResponseSaving(false, it)
+        })
+    }
+
     @GqlQuery("CategoryList", TKPD_PRODUCT)
     fun populateCreditList(onSuccess: ((CreditResponse) -> Unit)) {
         val params = mapOf(

@@ -21,6 +21,12 @@ const val QUERY = """query topAdsAutoTopupV2(${'$'}shopId: String!) {
                 min_credit_fmt
                 price_fmt
                 tkpd_product_id
+                additional_fee {
+                    type
+                    amount
+                    percent
+                }
+                total_amount
             }
             frequency
         }

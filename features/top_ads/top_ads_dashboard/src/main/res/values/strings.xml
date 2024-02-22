@@ -677,4 +677,26 @@
     <string name="topads_autops_deactivation_inprogress_description">Iklanmu sedang dalam proses dinonaktifkan. Setelah 5-10 menit, coba muat lagi halaman ini, ya.</string>
     <string name="topads_autops_headline_upsell_modal_title">Yay, iklanmu berhasil dibuat. Buat Iklan Toko juga, yuk~</string>
     <string name="topads_autops_product_upsell_modal_title">Yay, iklanmu berhasil dibuat. Buat Iklan Produk juga, yuk~</string>
+
+    <!-- Auto Topup Confirmation -->
+    <string name="topads_auto_top_top_up_credit_title">Otomatis top-up kredit sebesar</string>
+    <string name="topads_auto_top_top_up_credit_frequency">Frekuensi top-up</string>
+
+    <string name="topads_auto_top_up_confirmation_bottom_sheet_title">Cek kembali pesananmu</string>
+    <string name="topads_auto_top_up_confirmation_detail_information_title">Perhitungan Setiap Pengisian</string>
+    <string name="topads_auto_top_up_confirmation_detail_information_desc">Rincian nominal yang akan ditarik setiap kali melakukan top-up otomatis.</string>
+    <string name="topads_auto_top_up_confirmation_subtotal">Subtotal</string>
+    <string name="topads_auto_top_up_confirmation_ppn">PPN %s</string>
+    <string name="topads_auto_top_up_confirmation_nominal_to_be_withdrawn">Nominal yang akan ditarik</string>
+    <string name="topads_auto_top_up_confirmation_button_title">Aktifkan Kredit Otomatis</string>
+
+    <string name="topads_auto_top_up_confirmation_frequency_every_day">Maks. %s kali/hari</string>
+
+    <string name="topads_auto_top_up_confirmation_actual_subtotal"><![CDATA[<strike>%1$s</strike>]]></string>
+
+    <string name="topads_auto_top_up_confirmation_subtotal_discount_tooltip">Harga untuk pembelian Kredit TopAds, termasuk diskon dari Tokopedia.</string>
+
+    <string name="topads_auto_top_up_confirmation_subtotal_no_discount_tooltip">Harga untuk pembelian Kredit TopAds.</string>
+
+    <string name="topads_auto_top_up_confirmation_nominal_top_be_withdrawn_tooltip">Nominal yang akan ditarik dari sumber danamu setiap kali pengisian kredit.</string>
 </resources>

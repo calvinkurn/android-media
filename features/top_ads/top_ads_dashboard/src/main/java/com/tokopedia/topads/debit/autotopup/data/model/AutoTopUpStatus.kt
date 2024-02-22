@@ -5,27 +5,27 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.DEFAULT_TOP_UP_FREQUENCY
 
 data class AutoTopUpStatus(
-        @SerializedName("status")
-        @Expose
-        val status: String = "",
+    @SerializedName("status")
+    @Expose
+    val status: String = "",
 
-        @SerializedName("status_desc")
-        @Expose
-        val statusDesc: String = "",
+    @SerializedName("status_desc")
+    @Expose
+    val statusDesc: String = "",
 
-        @SerializedName("extra_credit_percent")
-        @Expose
-        val statusBonus :Double = 1.0,
+    @SerializedName("extra_credit_percent")
+    @Expose
+    val statusBonus: Double = 1.0,
 
-        @SerializedName("tkpd_product_id")
-        @Expose
-        val id: Int = -1,
+    @SerializedName("tkpd_product_id")
+    @Expose
+    val id: Int = -1,
 
-        @SerializedName("available_nominal")
-        @Expose
-        val availableNominals: MutableList<AutoTopUpItem> = mutableListOf(),
+    @SerializedName("available_nominal")
+    @Expose
+    val availableNominals: MutableList<AutoTopUpItem> = mutableListOf(),
 
-        @SerializedName("frequency")
-        @Expose
-        val frequency :Int = DEFAULT_TOP_UP_FREQUENCY,
+    @SerializedName("frequency")
+    @Expose
+    val frequency: Int = DEFAULT_TOP_UP_FREQUENCY,
 )

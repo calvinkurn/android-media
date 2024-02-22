@@ -34,6 +34,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_ADS_TOP_UP_CREDIT_SP_NAME
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.toDp
+import java.lang.NumberFormatException
 import java.text.DateFormat
 import java.text.NumberFormat
 import java.text.ParseException
@@ -201,7 +202,11 @@ object Utils {
     }
 
     fun convertMoneyToValue(price: String): Int {
-        return price.replace("Rp", "").replace(".", "").replace(",", "").trim().toIntOrZero()
+        return try {
+            price.replace("Rp", "").replace(".", "").replace(",", "").trim().toIntOrZero()
+        } catch (e: NumberFormatException) {
+            Int.ZERO
+        }
     }
 
     fun calculatePercentage(number: String, percent: Double): Double {
