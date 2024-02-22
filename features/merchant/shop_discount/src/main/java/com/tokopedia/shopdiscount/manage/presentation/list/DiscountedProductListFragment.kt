@@ -78,7 +78,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
         //need to add delay to fix delay data from BE
-        private const val DELAY_SLASH_PRICE_OPT_OUT = 1000L
+        private const val DELAY_SLASH_PRICE_OPT_OUT = 2000L
 
         @JvmStatic
         fun newInstance(
@@ -852,9 +852,21 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         this.optOutSuccessMessage = optOutSuccessMessage
         when(data.mode){
             ShopDiscountManageDiscountMode.DELETE -> {
-                showLoaderDialog()
-                listParentProductIdWithSubsidy = data.getListProductParentIdWithSubsidyVariant().toMutableList()
-                viewModel.deleteDiscount(discountStatusId, data.getListProductIdVariantNonSubsidy())
+                if (data.isAllSelectedProductFullSubsidy() && !data.hasNonSubsidyProduct) {
+                    binding?.recyclerView showToaster getString(R.string.sd_discount_deleted)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(DELAY_SLASH_PRICE_OPT_OUT)
+                        loadInitialData()
+                    }
+                } else {
+                    showLoaderDialog()
+                    listParentProductIdWithSubsidy =
+                        data.getListProductParentIdWithSubsidyVariant().toMutableList()
+                    viewModel.deleteDiscount(
+                        discountStatusId,
+                        data.getListProductIdVariantNonSubsidy()
+                    )
+                }
             }
             ShopDiscountManageDiscountMode.UPDATE -> {
                 if (data.isAllSelectedProductFullSubsidy() && !data.hasNonSubsidyProduct) {

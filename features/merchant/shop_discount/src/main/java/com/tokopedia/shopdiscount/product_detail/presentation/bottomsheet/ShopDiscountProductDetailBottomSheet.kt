@@ -98,7 +98,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         private const val PARAM_PARENT_PRODUCT_POSITION = "param_parent_product_position"
         private const val MARGIN_TOP_BOTTOM_VALUE_DIVIDER = 16
         //need to add delay to fix delay data from BE
-        private const val DELAY_SLASH_PRICE_OPT_OUT = 1000L
+        private const val DELAY_SLASH_PRICE_OPT_OUT = 2000L
 
         fun newInstance(
             productId: String,
@@ -397,8 +397,19 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         this.optOutSuccessMessage = optOutSuccessMessage
         when (dataModel.mode) {
             ShopDiscountManageDiscountMode.DELETE -> {
-                showLoading()
-                deleteSelectedProductDiscount(dataModel.getListProductIdVariantNonSubsidy().firstOrNull().orEmpty())
+                if (dataModel.isAllSelectedProductFullSubsidy()) {
+                    showToaster(getString(R.string.sd_discount_deleted))
+                    showLoading()
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(DELAY_SLASH_PRICE_OPT_OUT)
+                        getProductListData()
+                    }
+                }else {
+                    showLoading()
+                    deleteSelectedProductDiscount(
+                        dataModel.getListProductIdVariantNonSubsidy().firstOrNull().orEmpty()
+                    )
+                }
             }
 
             ShopDiscountManageDiscountMode.UPDATE -> {
