@@ -55,6 +55,8 @@ fun RecipeBookmarkItem(
     lazyListState: LazyListState,
     onEvent: (RecipeBookmarkEvent) -> Unit
 ) {
+    val context = LocalContext.current
+
     val id = recipe.id
     val title = recipe.title
     val duration = recipe.duration
@@ -62,13 +64,7 @@ fun RecipeBookmarkItem(
     val portion = recipe.portion
     val tags = remember { recipe.tags.orEmpty() }
 
-    val context = LocalContext.current
-
-    ListItemImpression(key = recipe.getUniqueId(), lazyListState = lazyListState) {
-        analytics.impressRecipeCard(id, title, position)
-    }
-
-    val iconModifier = remember {
+    val iconModifier = remember(position) {
         Modifier
             .height(15.dp)
             .width(15.dp)
@@ -173,6 +169,10 @@ fun RecipeBookmarkItem(
                 RecipeTagItem(data = it)
             }
         }
+    }
+
+    ListItemImpression(key = recipe.getUniqueId(), lazyListState = lazyListState) {
+        analytics.impressRecipeCard(id, title, position)
     }
 }
 
