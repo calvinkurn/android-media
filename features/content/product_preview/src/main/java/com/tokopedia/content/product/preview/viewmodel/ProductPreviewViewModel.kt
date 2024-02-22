@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreference
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_KEY
@@ -22,6 +23,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchMiniInfo
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchReview
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchReviewByIds
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.HasVisitCoachMark
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeReviewMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.Like
@@ -30,6 +32,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaVideoEnded
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewContentScrolling
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewContentSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewMediaSelected
@@ -157,7 +160,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
             LikeFromResult -> handleLikeFromResult(false)
             FetchReviewByIds -> handleFetchReviewByIds()
             ToggleReviewWatchMode -> handleReviewWatchMode()
-            ProductPreviewAction.HasVisitCoachMark -> productPrevSharedPref.setHasVisit()
+            HasVisitCoachMark -> productPrevSharedPref.setHasVisit()
+            ProductMediaVideoEnded -> handleProductMediaVideoEnded()
             is ProductMediaSelected -> handleProductMediaSelected(action.position)
             is ReviewContentSelected -> handleReviewContentSelected(action.position)
             is ReviewContentScrolling -> handleReviewContentScrolling(action.position, action.isScrolling)
@@ -221,6 +225,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }) { _uiEvent.emit(UnknownSourceData) }
     }
 
+    private fun handleProductMediaVideoEnded() {
+        val nextPosition = currentProductMediaPosition.plus(1)
+        handleProductMediaSelected(nextPosition)
+    }
+
     private fun handleProductMediaSelected(position: Int) {
         val currentPos = _productMediaState.value.productMedia.indexOfFirst { it.selected }
         if (currentPos < 0 || currentPos == position) return
@@ -235,7 +244,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
         emitTrackAllHorizontalScrollEvent()
 
-        scheduleAutoScrollProductMedia()
+        when (_productMediaState.value.productMedia[position].type) {
+            MediaType.Image -> scheduleAutoScrollProductMedia()
+            else -> autoScrollProductMedia?.cancel()
+        }
     }
 
     private fun handleReviewContentSelected(position: Int) {
@@ -274,7 +286,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
         currentTabPosition.value = position
         if (isScrolling) emitTrackAllHorizontalScrollEvent()
         if (currentTabKey == TAB_PRODUCT_KEY) {
-            scheduleAutoScrollProductMedia()
+            when (_productMediaState.value.productMedia[position].type) {
+                MediaType.Image -> scheduleAutoScrollProductMedia()
+                else -> return
+            }
         } else {
             autoScrollProductMedia?.cancel()
         }
@@ -346,6 +361,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun scheduleAutoScrollProductMedia() {
         autoScrollProductMedia?.cancel()
+
+        if (currentProductMediaSize == 1) return
         autoScrollProductMedia = Timer().apply {
             scheduleAtFixedRate(
                 object : TimerTask() {

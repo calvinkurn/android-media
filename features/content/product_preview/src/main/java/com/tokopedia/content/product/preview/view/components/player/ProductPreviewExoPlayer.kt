@@ -55,10 +55,11 @@ class ProductPreviewExoPlayer(private val context: Context) {
                 val isPlaying = playWhenReady && playbackState == isReady
                 val isReadyToPlay = !playWhenReady && playbackState == isReady
                 val isBuffering = playbackState == Player.STATE_BUFFERING
+                val isEnded = playWhenReady && playbackState == Player.STATE_ENDED
 
                 when {
-                    isPlaying || playbackState == Player.STATE_ENDED -> {
-                        videoStateListener?.onVideoReadyToPlay(playWhenReady)
+                    isPlaying -> {
+                        videoStateListener?.onVideoReadyToPlay(true)
                     }
 
                     isReadyToPlay -> {
@@ -67,6 +68,11 @@ class ProductPreviewExoPlayer(private val context: Context) {
 
                     isBuffering -> {
                         videoStateListener?.onBuffering()
+                    }
+
+                    isEnded -> {
+                        videoStateListener?.onVideoEnded()
+                        ended()
                     }
                 }
             }
@@ -93,7 +99,7 @@ class ProductPreviewExoPlayer(private val context: Context) {
 
         val mediaSource = getMediaSourceByUri(context, Uri.parse(videoUrl))
         toggleVideoVolume(isMute)
-        exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
+        exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
         exoPlayer.playWhenReady = playWhenReady
         exoPlayer.prepare(mediaSource, true, false)
     }
@@ -117,6 +123,11 @@ class ProductPreviewExoPlayer(private val context: Context) {
     fun stop() {
         exoPlayer.playWhenReady = false
         exoPlayer.stop()
+    }
+
+    private fun ended() {
+        exoPlayer.playWhenReady = false
+        exoPlayer.seekTo(0)
     }
 
     fun release() {
@@ -155,7 +166,8 @@ class ProductPreviewExoPlayer(private val context: Context) {
 
     interface VideoStateListener {
         fun onVideoReadyToPlay(isPlaying: Boolean)
-        fun onBuffering() {}
+        fun onBuffering()
+        fun onVideoEnded()
     }
 
     companion object {

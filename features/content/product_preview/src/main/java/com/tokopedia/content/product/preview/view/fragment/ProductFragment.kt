@@ -29,6 +29,7 @@ import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
 import com.tokopedia.kotlin.extensions.view.hide
@@ -295,6 +296,10 @@ class ProductFragment @Inject constructor(
     override fun onStopScrubbing() {
         binding.tvThumbnailLabel.show()
         binding.rvThumbnailProduct.show()
+    }
+
+    override fun onVideoEnded() {
+        viewModel.onAction(ProductPreviewAction.ProductMediaVideoEnded)
     }
 
     override fun onDestroyView() {
