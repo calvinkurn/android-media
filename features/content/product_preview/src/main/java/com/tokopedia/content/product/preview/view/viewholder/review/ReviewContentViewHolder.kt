@@ -71,10 +71,10 @@ class ReviewContentViewHolder(
             binding.tvReviewDescription.setOnScrollChangeListener { view, _, _, _, _ ->
                 if (!descriptionUiModel.isExpanded) return@setOnScrollChangeListener
                 binding.reviewOverlay.setBottomFadingEdgeBounds(
-                    if (binding.tvReviewDescription.canScrollVertically(1)) FADING_EDGE_HEIGHT else 0
+                    if (binding.tvReviewDescription.canScrollVertically(VERTICAL_POSITIVE_DIRECTION)) FADING_EDGE_HEIGHT else DEFAULT_ZERO
                 )
                 binding.reviewOverlay.setTopFadingEdgeBounds(
-                    if (binding.tvReviewDescription.canScrollVertically(-1)) FADING_EDGE_HEIGHT else 0
+                    if (binding.tvReviewDescription.canScrollVertically(VERTICAL_NEGATIVE_DIRECTION)) FADING_EDGE_HEIGHT else DEFAULT_ZERO
                 )
             }
         }
@@ -407,6 +407,9 @@ class ReviewContentViewHolder(
         private const val MAX_LINES_THRESHOLD = 2
         private const val READ_MORE_COUNT = 16
         private const val FADING_EDGE_HEIGHT = 20
+        private const val VERTICAL_POSITIVE_DIRECTION = 1
+        private const val VERTICAL_NEGATIVE_DIRECTION = -1
+        private const val DEFAULT_ZERO = 0
 
         fun create(
             parent: ViewGroup,
