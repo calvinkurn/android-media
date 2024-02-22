@@ -4238,6 +4238,9 @@ class CartRevampFragment :
             group -> group.groupShopCartData.sumOf { it.cartDetails.size }
         }
         val unavailCount = cartData.unavailableSections.sumOf { it.productsCount.toInt() }
+        /**
+         * This will hit when user refresh the cart TBC
+         * */
         AppLogAnalytics.sendCartEnterPage(availCount, unavailCount)
         updateStateAfterFinishGetCartList()
 

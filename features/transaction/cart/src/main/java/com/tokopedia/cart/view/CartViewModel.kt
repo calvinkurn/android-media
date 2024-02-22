@@ -125,6 +125,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
@@ -684,6 +685,7 @@ class CartViewModel @Inject constructor(
 
         _subTotalState.value = SubTotalState(
             subtotalCashback,
+            subtotalBeforeSlashedPrice,
             totalItemQty.toString(),
             finalSubtotal,
             dataList.isEmpty()
@@ -826,7 +828,9 @@ class CartViewModel @Inject constructor(
                     cartItemDataList,
                     EnhancedECommerceActionField.STEP_1
                 ),
-                CartPageAnalyticsUtil.generateByteIoAnalyticsModel(cartItemDataList),
+                CartPageAnalyticsUtil.generateByteIoAnalyticsModel(
+                    cartItemDataList, subTotalState.value
+                ),
                 isCheckoutProductEligibleForCashOnDelivery(cartItemDataList),
                 checklistCondition
             )
