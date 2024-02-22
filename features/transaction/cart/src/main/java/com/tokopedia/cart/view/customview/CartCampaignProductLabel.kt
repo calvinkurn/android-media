@@ -30,6 +30,7 @@ class CartCampaignProductLabel @JvmOverloads constructor(
         private const val LABEL_STROKE_WIDTH_DP = 1
 
         private const val COUNTDOWN_TIMER_INTERVAL_MS = 1_000L
+        private const val COUnTDOWN_TIMER_DEFAULT_TEXT = "00 : 00 : 00"
     }
 
     private val binding: LayoutCartCampaignProductLabelBinding =
@@ -188,7 +189,7 @@ class CartCampaignProductLabel @JvmOverloads constructor(
                 }
 
                 override fun onFinish() {
-                    // no-op
+                    tpgProductLabelCountdown.text = COUnTDOWN_TIMER_DEFAULT_TEXT
                 }
             }
             tpgProductLabelCountdown.visible()
