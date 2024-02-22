@@ -7,7 +7,7 @@ data class ShareExAffiliateLinkPropertiesRequest(
     val source: String = "",
 
     @SerializedName("channel")
-    val channel: List<Int> = listOf(),
+    val channel: List<Long> = listOf(),
 
     @SerializedName("link")
     val link: List<ShareExAffiliateLinkRequest> = listOf()

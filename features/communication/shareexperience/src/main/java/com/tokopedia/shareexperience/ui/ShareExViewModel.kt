@@ -264,7 +264,7 @@ class ShareExViewModel @Inject constructor(
                     campaign = campaign
                 )
                 // Get generated image first
-                generateImageFlow(channelEnum).collectLatest { model ->
+                generateImageFlow(channelItemModel).collectLatest { model ->
                     val isAffiliate = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition].affiliate.eligibility.isEligible
                     val finalLinkProperties = linkPropertiesWithCampaign.copy(
                         ogImageUrl = model.imageUrl
@@ -427,7 +427,7 @@ class ShareExViewModel @Inject constructor(
     }
 
     @OptIn(FlowPreview::class)
-    private suspend fun generateImageFlow(channelEnum: ShareExChannelEnum): Flow<ShareExImageGeneratorModel> {
+    private suspend fun generateImageFlow(channel: ShareExChannelItemModel): Flow<ShareExImageGeneratorModel> {
         return try {
             // Source Id and Args are nullable, that means do not use image generator
             val imageGeneratorParam = ShareExImageGeneratorRequest(
@@ -438,10 +438,12 @@ class ShareExViewModel @Inject constructor(
             )
             val param = ShareExImageGeneratorWrapperRequest(
                 params = imageGeneratorParam,
-                originalImageUrl = _imageGeneratorUiState.value.selectedImageUrl
+                originalImageUrl = _imageGeneratorUiState.value.selectedImageUrl,
+                platform = channel.platform,
+                imageResolution = channel.imageResolution
             )
             // Change to flow with model of generated image url (short link) and image type (tracking)
-            getGeneratedImageUseCase.getData(param, channelEnum).flatMapConcat {
+            getGeneratedImageUseCase.getData(param).flatMapConcat {
                 var flowResult: Flow<ShareExImageGeneratorModel> = flowOf()
                 when (it) {
                     is ShareExResult.Success -> {

@@ -84,18 +84,17 @@ fun ShareExBottomSheetModel.map(
             )
             result.add(affiliateRegistrationUiModel)
         }
-    }
 
-    // Channel Ui
-    val socialChannelUiModel = ShareExSocialChannelUiModel(this.bottomSheetPage.socialChannel)
-    if (socialChannelUiModel.socialChannel.listChannel.isNotEmpty()) {
-        result.add(socialChannelUiModel)
+        // Channel Ui
+        val socialChannelUiModel = ShareExSocialChannelUiModel(shareExPropertyModel.socialChannel)
+        if (socialChannelUiModel.socialChannel.listChannel.isNotEmpty()) {
+            result.add(socialChannelUiModel)
+        }
+        val commonChannelUiModel = ShareExCommonChannelUiModel(shareExPropertyModel.commonChannel)
+        if (commonChannelUiModel.commonChannel.listChannel.isNotEmpty()) {
+            result.add(commonChannelUiModel)
+        }
     }
-    val commonChannelUiModel = ShareExCommonChannelUiModel(this.bottomSheetPage.commonChannel)
-    if (commonChannelUiModel.commonChannel.listChannel.isNotEmpty()) {
-        result.add(commonChannelUiModel)
-    }
-
     return result
 }
 
@@ -116,15 +115,16 @@ fun ShareExBottomSheetModel.mapError(
         val result = arrayListOf<Visitable<in ShareExTypeFactory>>()
         // Only shows the channel for share, no share body
         // Channel Ui
-        val socialChannelUiModel = ShareExSocialChannelUiModel(this.bottomSheetPage.socialChannel)
-        if (socialChannelUiModel.socialChannel.listChannel.isNotEmpty()) {
-            result.add(socialChannelUiModel)
+        this.bottomSheetPage.listShareProperty.firstOrNull()?.let {
+            val socialChannelUiModel = ShareExSocialChannelUiModel(it.socialChannel)
+            if (socialChannelUiModel.socialChannel.listChannel.isNotEmpty()) {
+                result.add(socialChannelUiModel)
+            }
+            val commonChannelUiModel = ShareExCommonChannelUiModel(it.commonChannel)
+            if (commonChannelUiModel.commonChannel.listChannel.isNotEmpty()) {
+                result.add(commonChannelUiModel)
+            }
         }
-        val commonChannelUiModel = ShareExCommonChannelUiModel(this.bottomSheetPage.commonChannel)
-        if (commonChannelUiModel.commonChannel.listChannel.isNotEmpty()) {
-            result.add(commonChannelUiModel)
-        }
-
         result
     }
 }

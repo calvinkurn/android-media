@@ -341,6 +341,15 @@ class ShareExPropertiesTest : ShareExBaseTest() {
             assertChipItemAt(3, "Four")
 
             assertShareLinkTitle("Jual Full Update Product KVI, lagi murah loh!")
+
+            assertSocialChannelAt(3)
+            assertSocialChannelTotal(9)
+
+            assertCommonChannelAt(4)
+            assertCommonChannelTotal(4)
+        }
+        generalResult {
+            assertRvTotalItem(5)
         }
 
         // When
@@ -351,6 +360,11 @@ class ShareExPropertiesTest : ShareExBaseTest() {
         // Then
         propertiesResult {
             assertShareLinkTitle("Properties tab ke 2")
+            assertSocialChannelAt(3)
+            assertSocialChannelTotal(9)
+        }
+        generalResult {
+            assertRvTotalItem(4)
         }
 
         // When
@@ -361,6 +375,11 @@ class ShareExPropertiesTest : ShareExBaseTest() {
         // Then
         propertiesResult {
             assertShareLinkTitle("Properties tab ke 3")
+            assertCommonChannelAt(3)
+            assertCommonChannelTotal(4)
+        }
+        generalResult {
+            assertRvTotalItem(4)
         }
 
         // When
@@ -371,6 +390,9 @@ class ShareExPropertiesTest : ShareExBaseTest() {
         // Then
         propertiesResult {
             assertShareLinkTitle("Properties tab ke 4")
+        }
+        generalResult {
+            assertRvTotalItem(3)
         }
     }
 
