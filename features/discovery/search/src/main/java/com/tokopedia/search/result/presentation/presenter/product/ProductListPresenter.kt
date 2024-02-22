@@ -35,7 +35,6 @@ import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
-import com.tokopedia.search.result.domain.usecase.getpostatccarousel.GetPostATCCarouselUseCase
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.model.ProductDataView
@@ -1035,10 +1034,10 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun <T> DataValue.mapFilter(transform: (Filter) -> T): List<T> =
-        filter.map(transform)
+    private fun <T> DataValue.mapFilter(transform: (Int, Filter) -> T): List<T> =
+        filter.mapIndexed(transform)
 
-    private fun sortFilterItemReimagine(filter: Filter): SortFilterItemReimagine {
+    private fun sortFilterItemReimagine(index: Int, filter: Filter): SortFilterItemReimagine {
         val (isChipSelected, title, isSingleFilter) = quickFilterData(filter)
         val imageUrlActive = filter.getImageUrlActive(title)
         val imageUrlInactive = filter.getImageUrlInActive(title)
@@ -1074,14 +1073,14 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun sortFilterItem(filter: Filter): SortFilterItem {
+    private fun sortFilterItem(index:Int, filter: Filter): SortFilterItem {
         val (isChipSelected, title, hasChevron) = quickFilterData(filter)
         val item = SortFilterItem(
             title = title,
             iconUrl = filter.getIconImage(title)
         )
 
-        setSortFilterItemListener(item, filter, hasChevron)
+        setSortFilterItemListener(item, filter, hasChevron, index)
         setSortFilterItemState(item, isChipSelected)
 
         return item
@@ -1112,11 +1111,12 @@ class ProductListPresenter @Inject constructor(
     private fun setSortFilterItemListener(
         item: SortFilterItem,
         filter: Filter,
-        isSingleFilter: Boolean
+        isSingleFilter: Boolean,
+        position: Int
     ) {
         if (isSingleFilter) {
             item.listener = {
-                view.onQuickFilterSelected(filter, filter.options.first(), dimension90)
+                view.onQuickFilterSelected(filter, filter.options.first(), dimension90, position)
             }
         } else {
             item.listener = {

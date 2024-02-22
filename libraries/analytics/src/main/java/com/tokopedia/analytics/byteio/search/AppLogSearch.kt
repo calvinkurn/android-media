@@ -532,32 +532,45 @@ object AppLogSearch {
         )
     }
 
-    fun <K, V> eventChooseSearchFilter() {
-        AppLogAnalytics.send(
-            CHOOSE_SEARCH_FILTER,
-            JSONObject(
-                mapOf(
-                    SEARCH_ENTRANCE to HOMEPAGE,
-                    SEARCH_ID to "",
-                    SEARCH_TYPE to "", // TODO:: GOODS_SEARCH || STORE_SEARCH
-                    SEARCH_KEYWORD to "", // TODO:: keyword
-                    // TODO:: Sorting type:
-                    //sort_relevance: related (toko: Paling Sesuai)
-                    //sort_best_sellers: sales (toko: no such item)
-                    //sort_review: good review (toko: Ulasan, TT no such sorting method)
-                    //sort_price_asc: Price in ascending order (Toko: Harga Terendah)
-                    //sort_price_desc: Price in descending order (Toko: Harga Tertinggi)
-                    //sort_newest: New and Old (toko: Terbaru)
-                    ECOM_SORT_NAME to "",
-                    ECOM_FILTER_NAME to "",
-                    ECOM_FILTER_POSITION to "",// Filter position, starts from 0
-                    //TODO::
+    data class ChooseSearchFilter(
+        val searchEntrance: String = HOMEPAGE,
+        val searchId: String,
+        val searchType: String,
+        val searchKeyword: String,
+        val ecomSortName: String,
+        val ecomFilterName: String,
+        val ecomFilterPosition: Int,
+        val buttonTypeClick: String
+    ) {
+        fun json() = JSONObject(
+            mapOf(
+                SEARCH_ENTRANCE to searchEntrance,
+                SEARCH_ID to searchId,
+                SEARCH_TYPE to searchType, // TODO:: GOODS_SEARCH || STORE_SEARCH
+                SEARCH_KEYWORD to searchKeyword, // TODO:: keyword
+                // TODO:: Sorting type:
+                //sort_relevance: related (toko: Paling Sesuai)
+                //sort_best_sellers: sales (toko: no such item)
+                //sort_review: good review (toko: Ulasan, TT no such sorting method)
+                //sort_price_asc: Price in ascending order (Toko: Harga Terendah)
+                //sort_price_desc: Price in descending order (Toko: Harga Tertinggi)
+                //sort_newest: New and Old (toko: Terbaru)
+                ECOM_SORT_NAME to ecomSortName,
+                ECOM_FILTER_NAME to ecomFilterName,
+                ECOM_FILTER_POSITION to ecomFilterPosition, // Filter position, starts from 0
+                //TODO::
 //                FILTER_PANEL = "filter_panel"
 //                FILTER_GUID = "filter_guid" // TODO:: What is navigation filtering?
 //                FILTER_QUICK = "filter_quick"
-                    BUTTON_TYPE_CLICK to "",
-                )
+                BUTTON_TYPE_CLICK to buttonTypeClick,
             )
+        )
+    }
+
+    fun eventChooseSearchFilter(chooseSearchFilter: ChooseSearchFilter) {
+        AppLogAnalytics.send(
+            CHOOSE_SEARCH_FILTER,
+            chooseSearchFilter.json()
         )
     }
 
