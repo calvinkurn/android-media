@@ -1474,22 +1474,44 @@ class FeedFragment :
                         }
                     }
 
-                    productBottomSheet?.doShowToaster(
-                        message = getString(feedplusR.string.feeds_add_to_cart_success_text),
-                        actionText = getString(feedplusR.string.feeds_add_to_cart_toaster_action_text),
-                        actionClickListener = {
-                            currentTrackerData?.let { trackerData ->
-                                feedAnalytics?.eventClickViewCart(trackerData)
+                    if (productBottomSheet != null) {
+                        productBottomSheet.doShowToaster(
+                            message = getString(feedplusR.string.feeds_add_to_cart_success_text),
+                            actionText = getString(feedplusR.string.feeds_add_to_cart_toaster_action_text),
+                            actionClickListener = {
+                                currentTrackerData?.let { trackerData ->
+                                    feedAnalytics?.eventClickViewCart(trackerData)
+                                }
+                                goToCartPage()
                             }
-                            goToCartPage()
-                        }
-                    )
+                        )
+                    } else {
+                        showToast(
+                            message = getString(feedplusR.string.feeds_add_to_cart_success_text),
+                            actionText = getString(feedplusR.string.feeds_add_to_cart_toaster_action_text),
+                            actionClickListener = {
+                                currentTrackerData?.let { trackerData ->
+                                    feedAnalytics?.eventClickViewCart(trackerData)
+                                }
+                                goToCartPage()
+                            }
+                        )
+                    }
                 }
 
-                is Fail -> productBottomSheet?.doShowToaster(
-                    message = it.throwable.localizedMessage.orEmpty(),
-                    type = Toaster.TYPE_ERROR
-                )
+                is Fail -> {
+                    if (productBottomSheet != null) {
+                        productBottomSheet.doShowToaster(
+                            message = it.throwable.localizedMessage.orEmpty(),
+                            type = Toaster.TYPE_ERROR
+                        )
+                    } else {
+                        showToast(
+                            message = it.throwable.localizedMessage.orEmpty(),
+                            type = Toaster.TYPE_ERROR
+                        )
+                    }
+                }
             }
         }
     }
