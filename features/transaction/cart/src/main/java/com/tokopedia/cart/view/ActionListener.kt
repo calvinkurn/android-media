@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view
 
 import androidx.fragment.app.Fragment
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
@@ -47,6 +48,12 @@ interface ActionListener {
     fun onRecommendationImpression(recommendationItem: CartRecommendationItemHolderData)
 
     fun onButtonAddToCartClicked(productModel: Any)
+
+    fun onAddToCartRecentViewClicked(recommendationItem: RecommendationItem)
+
+    fun onAddToCartRecentViewSuccess(recommendationItem: RecommendationItem, addToCartData: AddToCartDataModel)
+
+    fun onAddToCartRecentViewFailed()
 
     fun onDeleteAllDisabledProduct()
 

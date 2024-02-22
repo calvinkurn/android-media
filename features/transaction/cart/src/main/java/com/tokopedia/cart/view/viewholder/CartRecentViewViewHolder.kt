@@ -1,13 +1,17 @@
 package com.tokopedia.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartRecentViewBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationVisitable
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetView
@@ -23,6 +27,9 @@ class CartRecentViewViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_cart_recent_view
+
+        private const val RECOM_WIDGET_TOP_PADDING_DP = 20
+        private const val RECOM_WIDGET_BOTTOM_PADDING_DP = 20
     }
 
     fun bind(element: CartRecentViewHolderData) {
@@ -30,33 +37,73 @@ class CartRecentViewViewHolder(
             model = RecommendationWidgetModel(
                 metadata = element.recommendationWidgetMetadata,
                 listener = object : RecommendationWidgetListener {
-                    override fun onProductClick(item: RecommendationItem): Boolean {
-                        // TODO: Adjust product click listener
-                        listener?.onRecentViewProductClicked(0, item)
+
+                    override fun onProductClick(
+                        position: Int,
+                        item: RecommendationItem
+                    ): Boolean {
+                        listener?.onRecentViewProductClicked(position, item)
                         return true
                     }
 
-                    // TODO: Add product impression listener
-                    // listener?.onRecentViewProductImpression()
+                    override fun onProductImpress(
+                        position: Int,
+                        item: RecommendationItem
+                    ): Boolean {
+                        listener?.onRecentViewProductImpression(position, item)
+                        return true
+                    }
 
-                    // TODO: Add product ATC listener
-                    // listener?.onButtonAddToCartClicked()
+                    override fun onProductAddToCartClick(
+                        item: RecommendationItem
+                    ): Boolean {
+                        listener?.onAddToCartRecentViewClicked(item)
+                        return false
+                    }
+
+                    override fun onProductAddToCartSuccess(
+                        item: RecommendationItem,
+                        addToCartData: AddToCartDataModel
+                    ): Boolean {
+                        listener?.onAddToCartRecentViewSuccess(item, addToCartData)
+                        return true
+                    }
+
+                    override fun onProductAddToCartFailed(): Boolean {
+                        listener?.onAddToCartRecentViewFailed()
+                        return true
+                    }
                 }
             ),
             callback = object : RecommendationWidgetView.Callback {
-                override fun onShow() {
-                    super.onShow()
-                    // TODO: Adjust recommendation data for impression tracking
-                    if (element.hasSentImpressionAnalytics) {
-                        listener?.onRecentViewImpression(emptyList())
+                override fun onShow(visitableList: List<RecommendationVisitable>?) {
+                    super.onShow(visitableList)
+                    val recommendationModel = visitableList?.find { visitable ->
+                        visitable is RecommendationCarouselModel
+                    } as? RecommendationCarouselModel
+                    val recommendationItems: List<RecommendationItem> =
+                        recommendationModel?.widget?.recommendationItemList ?: emptyList()
+                    if (element.hasSentImpressionAnalytics && recommendationItems.isNotEmpty()) {
+                        listener?.onRecentViewImpression(recommendationItems)
                         element.hasSentImpressionAnalytics = true
                     }
-                    binding.recommendationWidgetView.visible()
+                    with(binding) {
+                        recommendationWidgetView.setPadding(
+                            0,
+                            root.context.pxToDp(RECOM_WIDGET_TOP_PADDING_DP).toInt(),
+                            0,
+                            root.context.pxToDp(RECOM_WIDGET_BOTTOM_PADDING_DP).toInt()
+                        )
+                        recommendationWidgetView.visible()
+                    }
                 }
 
                 override fun onError() {
                     super.onError()
-                    binding.recommendationWidgetView.gone()
+                    with(binding) {
+                        recommendationWidgetView.setPadding(0, 0, 0, 0)
+                        recommendationWidgetView.gone()
+                    }
                 }
             }
         )

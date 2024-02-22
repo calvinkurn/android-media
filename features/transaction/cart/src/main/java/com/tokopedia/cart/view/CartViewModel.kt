@@ -1625,6 +1625,12 @@ class CartViewModel @Inject constructor(
         )
     }
 
+    fun processAddToCartRecentViewProduct(recommendationItem: RecommendationItem) {
+        if (recommendationItem.clickUrl.isNotEmpty() && recommendationItem.isTopAds) {
+            _cartTrackerEvent.value = CartTrackerEvent.ATCTrackingURLRecent(recommendationItem)
+        }
+    }
+
     // ANALYTICS ATC
     fun generateAddToCartEnhanceEcommerceDataLayer(
         cartWishlistItemHolderData: CartWishlistItemHolderData,
