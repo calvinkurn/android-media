@@ -13,27 +13,8 @@ import javax.inject.Inject
 class PlayMultipleLikesMapper @Inject constructor() {
 
     fun mapMultipleLikeConfig(configs: List<MultipleLikeConfig>): PlayLikeBubbleConfig {
-        val newConfigs = listOf(
-            MultipleLikeConfig(
-                "https://images.tokopedia.net/img/tokopediaplay/sreimages/multiplelike/Large%20spark_yellow.png",
-                "#00FFFFFF",
-            ),
-            MultipleLikeConfig(
-                "https://images.tokopedia.net/img/tokopediaplay/sreimages/multiplelike/Large%20spark_cyan.png",
-                "#00FFFFFF",
-            ),
-            MultipleLikeConfig(
-                "https://images.tokopedia.net/img/tokopediaplay/sreimages/multiplelike/Large%20spark_green.png",
-                "#00FFFFFF",
-            ),
-            MultipleLikeConfig(
-                "https://images.tokopedia.net/img/tokopediaplay/sreimages/multiplelike/Large%20spark_red.png",
-                "#00FFFFFF",
-            ),
-        )
         val bubbleMap = mutableMapOf<String, List<Int>>()
-//        configs.forEach { config ->
-        newConfigs.forEach { config ->
+        configs.forEach { config ->
             val color = try {
                 if (config.bgColor.isNotBlank()) {
                     Color.parseColor(config.bgColor)
