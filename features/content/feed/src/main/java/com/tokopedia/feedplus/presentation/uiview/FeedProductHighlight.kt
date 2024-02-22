@@ -5,9 +5,11 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -56,97 +59,111 @@ fun FeedProductHighlight(
             enter = slideInVertically(),
             exit = slideOutVertically()
         ) {
-            ConstraintLayout(
-                modifier = Modifier
-                    .size(276.dp, 88.dp)
-                    .background(color = Color(0xB22E3137), shape = RoundedCornerShape(12.dp))
-                    .padding(8.dp)
-                    .clickable {
-                        onProductClick(product)
-                    }
-            ) {
-                val (image, title, ogPrice, discountedPrice, btnAtc, btnClose) = createRefs()
-                //Product Image
-                NestImage(
-                    source = ImageSource.Remote(source = product.coverUrl),
-                    type = NestImageType.Rect(12.dp),
-                    modifier = Modifier
-                        .size(72.dp)
-                        .constrainAs(image) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                            start.linkTo(parent.start)
-                        })
-                //Product Title
-                NestTypography(text = product.name,
-                    maxLines = 2,
-                    textStyle = NestTheme.typography.paragraph3.copy(
-                        color = NestTheme.colors.NN._0
-                    ),
-                    modifier = Modifier.constrainAs(title) {
-                        width = Dimension.fillToConstraints
-                        top.linkTo(image.top)
-                        start.linkTo(image.end, 12.dp)
-                        end.linkTo(btnClose.start, 4.dp)
-                    })
-                //Product Final Price
-                val finalPrice =
-                    if (product.isDiscount) product.priceDiscountFmt else product.priceFmt
-                NestTypography(
-                    text = finalPrice,
-                    textStyle = NestTheme.typography.heading3.copy(
-                        color = NestTheme.colors.NN._0
-                    ),
-                    modifier = Modifier.constrainAs(ogPrice) {
-                        width = Dimension.fillToConstraints
-                        top.linkTo(title.bottom, 4.dp)
-                        start.linkTo(title.start)
-                        end.linkTo(btnAtc.start, 4.dp)
-                    })
-
-                //Button ATC
-                AndroidView(factory = {
-                    UnifyButton(it).apply {
-                        text = ctx.getText(R.string.feed_product_highlight_atc)
-                        buttonVariant = UnifyButton.Variant.FILLED
-                        buttonSize = UnifyButton.Size.MICRO
-                        setDrawable(MethodChecker.getDrawable(ctx, unifycomponentsR.drawable.iconunify_cart), UnifyButton.DrawablePosition.RIGHT)
-                        setOnClickListener { onAtcClick(product) }
-                    }
-                }, modifier = Modifier
-                    .constrainAs(btnAtc) {
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                    }) {}
-                
-                //Close Button: close show label again
-                NestIcon(iconId = IconUnify.CLOSE,
-                    colorLightEnable = NestTheme.colors.NN._0,
-                    colorLightDisable = NestTheme.colors.NN._0,
-                    colorNightEnable = NestTheme.colors.NN._0,
-                    colorNightDisable = NestTheme.colors.NN._0,
-                    modifier = Modifier
-                        .size(16.dp)
-                        .constrainAs(btnClose) {
-                            end.linkTo(parent.end)
-                            top.linkTo(parent.top)
-                        }
-                        .clickable { onClose() }
-                )
-
+            Box(modifier = Modifier
+                .wrapContentSize()
+                .padding(horizontal = 4.dp)) {
                 if (product.isDiscount) {
-                    NestTypography(
-                        text = product.priceFmt,
-                        textStyle = NestTheme.typography.small.copy(
-                            color = NestTheme.colors.NN._0,
-                            textDecoration = TextDecoration.LineThrough
+                    NestRibbon(
+                        text = product.discountFmt, top = 2.dp, modifier = Modifier.zIndex(16f)
+                    )
+                }
+                ConstraintLayout(
+                    modifier = Modifier
+                        .size(276.dp, 88.dp)
+                        .background(color = Color(0xB22E3137), shape = RoundedCornerShape(12.dp))
+                        .padding(8.dp)
+                        .clickable {
+                            onProductClick(product)
+                        }
+                ) {
+                    val (image, title, ogPrice, discountedPrice, btnAtc, btnClose) = createRefs()
+                    //Product Image
+                    NestImage(
+                        source = ImageSource.Remote(source = product.coverUrl),
+                        type = NestImageType.Rect(12.dp),
+                        modifier = Modifier
+                            .size(72.dp)
+                            .constrainAs(image) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(parent.start)
+                            })
+                    //Product Title
+                    NestTypography(text = product.name,
+                        maxLines = 2,
+                        textStyle = NestTheme.typography.paragraph3.copy(
+                            color = NestTheme.colors.NN._0
                         ),
-                        modifier = Modifier.constrainAs(discountedPrice) {
+                        modifier = Modifier.constrainAs(title) {
                             width = Dimension.fillToConstraints
-                            top.linkTo(ogPrice.bottom, 4.dp)
-                            start.linkTo(ogPrice.start)
+                            top.linkTo(image.top)
+                            start.linkTo(image.end, 12.dp)
+                            end.linkTo(btnClose.start, 4.dp)
+                        })
+                    //Product Final Price
+                    val finalPrice =
+                        if (product.isDiscount) product.priceDiscountFmt else product.priceFmt
+                    NestTypography(
+                        text = finalPrice,
+                        textStyle = NestTheme.typography.heading3.copy(
+                            color = NestTheme.colors.NN._0
+                        ),
+                        modifier = Modifier.constrainAs(ogPrice) {
+                            width = Dimension.fillToConstraints
+                            top.linkTo(title.bottom, 4.dp)
+                            start.linkTo(title.start)
                             end.linkTo(btnAtc.start, 4.dp)
                         })
+
+                    //Button ATC
+                    AndroidView(factory = {
+                        UnifyButton(it).apply {
+                            text = ctx.getText(R.string.feed_product_highlight_atc)
+                            buttonVariant = UnifyButton.Variant.FILLED
+                            buttonSize = UnifyButton.Size.MICRO
+                            setDrawable(
+                                MethodChecker.getDrawable(
+                                    ctx,
+                                    unifycomponentsR.drawable.iconunify_cart
+                                ), UnifyButton.DrawablePosition.RIGHT
+                            )
+                            setOnClickListener { onAtcClick(product) }
+                        }
+                    }, modifier = Modifier
+                        .constrainAs(btnAtc) {
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                        }) {}
+
+                    //Close Button: close show label again
+                    NestIcon(iconId = IconUnify.CLOSE,
+                        colorLightEnable = NestTheme.colors.NN._0,
+                        colorLightDisable = NestTheme.colors.NN._0,
+                        colorNightEnable = NestTheme.colors.NN._0,
+                        colorNightDisable = NestTheme.colors.NN._0,
+                        modifier = Modifier
+                            .size(16.dp)
+                            .constrainAs(btnClose) {
+                                end.linkTo(parent.end)
+                                top.linkTo(parent.top)
+                            }
+                            .clickable { onClose() }
+                    )
+
+                    if (product.isDiscount) {
+                        NestTypography(
+                            text = product.priceFmt,
+                            textStyle = NestTheme.typography.small.copy(
+                                color = NestTheme.colors.NN._0,
+                                textDecoration = TextDecoration.LineThrough
+                            ),
+                            modifier = Modifier.constrainAs(discountedPrice) {
+                                width = Dimension.fillToConstraints
+                                top.linkTo(ogPrice.bottom, 4.dp)
+                                start.linkTo(ogPrice.start)
+                                end.linkTo(btnAtc.start, 4.dp)
+                            })
+                    }
                 }
             }
         }
