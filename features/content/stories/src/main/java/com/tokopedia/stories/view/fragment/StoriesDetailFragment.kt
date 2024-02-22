@@ -798,7 +798,7 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) =
+    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) {
         with(binding.vStoriesError) {
             show()
             type = errorType
@@ -807,6 +807,9 @@ class StoriesDetailFragment @Inject constructor(
             translationZ =
                 if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
         }
+
+        binding.vStoriesPartner.root.hide()
+    }
 
     private fun hideError() = binding.vStoriesError.gone()
 

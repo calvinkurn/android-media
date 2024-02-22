@@ -371,12 +371,12 @@ class StoriesViewModel @AssistedInject constructor(
             if (mDetailPos == mDetailSize - 1) {
                 val type = mGroup.type
                 if (type != StoriesType.Author) return@run
-                setHasSeenAllStories(mGroup.author.id, AuthorType.Seller)
+                setHasSeenAllStories(mGroup.author.id, mGroup.author.type)
             }
         }
 
         if (mGroupPos != mGroupSize - 1 || mDetailPos != mDetailSize - 1) return
-        setHasSeenAllStories(mGroup.author.id, AuthorType.getByType(args.authorType))
+        setHasSeenAllStories(mGroup.author.id, mGroup.author.type)
     }
 
     private fun setHasSeenAllStories(authorId: String, authorType: AuthorType) {
