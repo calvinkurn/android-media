@@ -4235,7 +4235,7 @@ class CartRevampFragment :
 
         sendAnalyticsScreenNameCartPage()
         val availCount = cartData.availableSection.availableGroupGroups.sumOf {
-            group -> group.groupShopCartData.sumOf { it.cartDetails.size }
+            group -> group.groupShopCartData.sumOf { it.cartDetails.sumOf { c -> c.products.size } }
         }
         val unavailCount = cartData.unavailableSections.sumOf { it.productsCount.toInt() }
         /**
@@ -4453,7 +4453,6 @@ class CartRevampFragment :
                 viewModel.getPromoFlag()
             )
         }
-        AppLogAnalytics.sendCartButtonClick(byteIoModel)
         navigateToShipmentPage()
     }
 
