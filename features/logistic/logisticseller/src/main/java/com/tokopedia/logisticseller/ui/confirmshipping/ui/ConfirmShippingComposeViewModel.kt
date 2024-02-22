@@ -145,7 +145,6 @@ class ConfirmShippingComposeViewModel @Inject constructor(
                     chosenService = chosenService
                 )
             }
-            // todo todo
             getTickerData(result.tickerUnificationParams)
         }, onError = {
             _uiState.update { state -> state.copy(loading = false) }

@@ -32,6 +32,9 @@ android {
     testOptions {
         animationsDisabled = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
+    }
 }
 
 dependencies {

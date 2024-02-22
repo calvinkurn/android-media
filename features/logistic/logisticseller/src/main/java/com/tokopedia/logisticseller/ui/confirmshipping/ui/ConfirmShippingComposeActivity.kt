@@ -174,6 +174,17 @@ class ConfirmShippingComposeActivity : AppCompatActivity(),
                     }
                 }
             })
+            LaunchedEffect(key1 = confirmShippingViewModel.error, block = {
+                confirmShippingViewModel.error.collectLatest {
+                    Utils.showToasterError(
+                        LogisticSellerErrorHandler.getErrorMessage(
+                            it,
+                            this@ConfirmShippingComposeActivity
+                        ), view
+                    )
+                }
+            })
+
             NestTheme {
                 ConfirmShippingScreen(
                     state = state.value,
