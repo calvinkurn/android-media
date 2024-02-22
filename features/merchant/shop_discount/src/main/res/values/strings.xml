@@ -195,7 +195,7 @@
     <string name="sd_subsidy_disable_edit_product_desc">Produk yang disubsidi tidak bisa langsung diubah, kamu bisa keluar dari subsidi dulu untuk ubah diskon. Jika yang keluar adalah produk disubsidi penuh, maka diskonnya akan langsung dihapus.</string>
     <string name="sd_subsidy_disable_delete_product_desc">Produk yang disubsidi tidak bisa langsung dihapus, kamu bisa keluar dulu dari subsidi jika kamu ingin hapus diskon.</string>
     <string name="sd_subsidy_coach_mark_non_variant_desc">Produk ini sedang mendapat subsidi dari Tokopedia. Kamu bisa cek detailnya dengan klik icon informasi.</string>
-    <string name="sd_subsidy_coach_mark_variant_desc">Ada varian produk yang dapat subsidi dari Tokopedia. Kamu bisa cek detailnya dengan klik icon informasi pada varian produk yang disubsidi.</string>
+    <string name="sd_subsidy_coach_mark_variant_desc">Untuk mengetahui produk yang mendapat subsidi dari Tokopedia, cek detail produknya dan cari varian yang bertanda Disubsidi.</string>
     <string name="sd_subsidy_single_product_opt_out_edit_mode_title">Ubah diskon</string>
     <string name="sd_subsidy_single_product_opt_out_delete_mode_title">Hapus diskon</string>
     <string name="sd_subsidy_opt_out_bottom_sheet_title_no_product">Keluar dari program subsidi</string>
