@@ -49,7 +49,6 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
             searchProductModel = searchProductModelSecondPage,
             topAdsPositionStart = topAdsIndexStart,
             organicPositionStart = organicIndexStart,
-            isFirstPage = false,
         )
     }
 
@@ -281,7 +280,6 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
             searchProductModel = searchProductModelSecondPage,
             topAdsPositionStart = topAdsIndexStart,
             organicPositionStart = organicIndexStart,
-            isFirstPage = false,
         )
     }
 

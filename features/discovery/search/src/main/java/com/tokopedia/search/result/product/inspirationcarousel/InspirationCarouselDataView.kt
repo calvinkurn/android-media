@@ -18,7 +18,7 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.model.StockBarDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
-import com.tokopedia.search.result.product.ByteIOTrackingData
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking.getInspirationCarouselUnificationListName
 import com.tokopedia.search.utils.getFormattedPositionName
 import com.tokopedia.search.utils.orNone

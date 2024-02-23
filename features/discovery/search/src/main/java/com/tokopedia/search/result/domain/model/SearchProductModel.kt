@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.domain.model
 
 import android.annotation.SuppressLint
+import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PMAX
@@ -57,6 +58,9 @@ data class SearchProductModel(
     ) {
 
     private val topAdsImageViewModelList: MutableList<TopAdsImageViewModel> = mutableListOf()
+
+    val requestId: String
+        get() = searchProductV5.header.meta.dynamicFields.requestId
 
     fun hasProducts(isV5: Boolean): Boolean =
         if (isV5) searchProductV5.data.productList.isNotEmpty()
@@ -212,7 +216,24 @@ data class SearchProductModel(
 
         @SerializedName("showButtonAtc", alternate = ["hasButtonATC"])
         val showButtonAtc: Boolean = false,
-    )
+
+        @SerializedName("dynamicFields")
+        val dynamicFieldsJSON: String = "",
+    ) {
+
+        val dynamicFields: DynamicFields
+            get() =
+                try {
+                    Gson().fromJson(dynamicFieldsJSON, DynamicFields::class.java)
+                } catch (t: Throwable) {
+                    DynamicFields()
+                }
+
+        data class DynamicFields(
+            @SerializedName("request_id")
+            val requestId: String = ""
+        )
+    }
 
     data class SearchProductData(
             @SerializedName("isQuerySafe")

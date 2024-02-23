@@ -25,6 +25,7 @@ import com.tokopedia.search.result.domain.usecase.searchsamesessionrecommendatio
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule
 import com.tokopedia.search.result.product.banned.BannedProductsViewModule
 import com.tokopedia.search.result.product.broadmatch.BroadMatchModule
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactoryModule
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressViewModule
 import com.tokopedia.search.result.product.cpm.TopAdsHeadlineModule
 import com.tokopedia.search.result.product.deduplication.DeduplicationModule
@@ -99,6 +100,7 @@ import dagger.Component
     DeduplicationModule::class,
     BottomSheetInappropriateModule::class,
     GetPostATCCarouselUseCaseModule::class,
+    ByteIOTrackingDataFactoryModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 

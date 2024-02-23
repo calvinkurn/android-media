@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
-import com.tokopedia.search.result.product.ByteIOTrackingData
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.addtocart.AddToCartConstant.DEFAULT_PARENT_ID
 import com.tokopedia.search.result.product.productitem.ProductItemVisitable
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT

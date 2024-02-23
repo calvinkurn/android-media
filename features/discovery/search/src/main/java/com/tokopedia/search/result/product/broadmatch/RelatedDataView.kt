@@ -2,7 +2,7 @@ package com.tokopedia.search.result.product.broadmatch
 
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductV5
-import com.tokopedia.search.result.product.ByteIOTrackingData
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 
 data class RelatedDataView(
         val relatedKeyword: String = "",

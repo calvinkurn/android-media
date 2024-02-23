@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.product.cpm
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EntranceForm.SEARCH_SHOP_CARD_BIG
 import com.tokopedia.analytics.byteio.EntranceForm.SEARCH_SHOP_CARD_SMALL
 import com.tokopedia.analytics.byteio.search.AppLogSearch
@@ -10,7 +9,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SHOP_SMALL
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
-import com.tokopedia.search.result.product.ByteIOTrackingData
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.topads.sdk.domain.model.CpmModel
