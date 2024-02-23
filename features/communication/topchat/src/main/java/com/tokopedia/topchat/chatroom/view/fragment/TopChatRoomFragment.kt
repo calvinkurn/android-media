@@ -3228,8 +3228,10 @@ open class TopChatRoomFragment :
     private suspend fun observeChatRoomUiState() {
         webSocketViewModel.chatRoomUiState.collectLatest {
             if (it.isRefresh) {
-                loadInitialData()
+                viewModel.attachments.clear()
+                topchatViewState?.hideReplyBox()
                 resetItemList()
+                loadInitialData()
                 webSocketViewModel.processAction(TopChatRoomAction.PageRefreshed)
             }
         }
