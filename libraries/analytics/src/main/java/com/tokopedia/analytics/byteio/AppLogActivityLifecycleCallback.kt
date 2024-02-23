@@ -3,9 +3,11 @@ package com.tokopedia.analytics.byteio
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
 import com.tokopedia.analytics.byteio.AppLogAnalytics.sendStayProductDetail
+import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +17,8 @@ import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
 
 class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, CoroutineScope {
+
+    var pdpCheckpointStay: WeakReference<Activity>? = null
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         AppLogAnalytics.activityCount++
@@ -42,17 +46,41 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
                 activity.startTime = System.currentTimeMillis()
             }
         }
+        if (isAtcVariantPage(activity) && activity is BaseSimpleActivity) {
+            val pdpActivity = pdpCheckpointStay?.get()
+            if (pdpActivity is IAppLogPdpActivity && pdpActivity is BaseSimpleActivity && pdpActivity.startTime == 0L) {
+                pdpActivity.startTime = System.currentTimeMillis()
+            }
+        }
     }
 
     override fun onActivityPaused(activity: Activity) {
         if (isPdpPage(activity) && activity is BaseSimpleActivity) {
             launch {
+                if (activity is IAppLogPdpActivity && activity.isExiting().not()) {
+                    pdpCheckpointStay = WeakReference(activity)
+                    return@launch
+                }
                 suspendSendStayProductDetail(
                     System.currentTimeMillis() - activity.startTime,
                     (activity as IAppLogPdpActivity).getProductTrack(),
                     activity.isFinishing, AppLogAnalytics.activityCount
                 )
                 activity.startTime = 0L
+            }
+        }
+        // Sending stay data in ATC Variant when paused
+        if (isAtcVariantPage(activity) && activity is BaseSimpleActivity && !activity.isFinishing) {
+            launch {
+                val pdpActivity = pdpCheckpointStay?.get()
+                if (pdpActivity is IAppLogPdpActivity && pdpActivity is BaseSimpleActivity) {
+                    suspendSendStayProductDetail(
+                        System.currentTimeMillis() - pdpActivity.startTime,
+                        (pdpActivity as IAppLogPdpActivity).getProductTrack(),
+                        pdpActivity.isFinishing, AppLogAnalytics.activityCount
+                    )
+                    pdpActivity.startTime = 0L
+                }
             }
         }
     }
@@ -105,6 +133,11 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
     private fun isPdpPage(activity: Activity): Boolean {
         return (activity is IAppLogPdpActivity &&
                 activity.getPageName() == PageName.PDP)
+    }
+
+    private fun isAtcVariantPage(activity: Activity): Boolean {
+        return (activity is IAppLogActivity &&
+            activity.getPageName() == PageName.SKU)
     }
 
     override val coroutineContext: CoroutineContext

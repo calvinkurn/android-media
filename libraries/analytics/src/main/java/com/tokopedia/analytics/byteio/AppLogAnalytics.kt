@@ -242,9 +242,9 @@ object AppLogAnalytics {
         }
     }
 
-    private fun previousPageName(): String {
+    private fun previousPageName(skip: Int = 1): String {
         return synchronized(lock) {
-            (pageNames.getOrNull(pageNames.indexOf(pageNames.findLast { it.first == currentActivityName }) - 1)?.second)
+            (pageNames.getOrNull(pageNames.indexOf(pageNames.findLast { it.first == currentActivityName }) - skip)?.second)
                 ?: ""
         }
     }
@@ -258,7 +258,8 @@ object AppLogAnalytics {
             return
         }
         send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
-            it.addPage()
+            it.put(PREVIOUS_PAGE, previousPageName(2))
+            it.put(PAGE_NAME, PageName.PDP)
             it.addEntranceForm()
             it.addSourcePageType()
             it.put("stay_time", durationInMs)
