@@ -22,9 +22,7 @@ fun RecipeBookmarkShimmeringLayout() {
                 end = 16.dp
             )
     ) {
-        Spacer(modifier = Modifier.height(8.dp))
         RecipeBookmarkShimmeringItem()
-        Spacer(modifier = Modifier.height(16.dp))
         RecipeBookmarkShimmeringItem()
     }
 }

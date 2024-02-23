@@ -20,7 +20,9 @@ import com.tokopedia.nest.components.loader.NestShimmerType
 @Composable
 fun RecipeBookmarkShimmeringItem() {
     NestCard(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, bottom = 8.dp),
         type = NestCardType.Border
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
