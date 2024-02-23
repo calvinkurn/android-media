@@ -215,7 +215,7 @@ class BmgmMiniCartDetailBottomSheet : BottomSheetUnify() {
 
     private fun setOnCloseClicked() {
         cartData?.let { data ->
-            super.setCloseClickListener {
+            bottomSheetClose.setOnClickListener {
                 BmgmMiniCartTracker.sendClickCloseMinicartEvent(
                     offerId = data.offerId.toString(),
                     warehouseId = data.warehouseId.toString(),

@@ -6,14 +6,14 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.ItemDynamicProductMediaBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 /**
  * Created by Yehezkiel on 04/05/20
  */
 class ProductMediaViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<ProductMediaDataModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_media

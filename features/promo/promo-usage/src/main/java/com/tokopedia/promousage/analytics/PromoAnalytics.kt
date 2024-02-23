@@ -42,6 +42,13 @@ open class PromoAnalytics {
         const val CLICK_EXPAND_PROMO_SECTION_DETAIL = "click expand promo section detail"
         const val CLICK_CHECKOUT_PROMO = "click checkout - promo"
         const val CLICK_EXIT_PROMO_BOTTOMSHEET = "click exit promo bottomsheet"
+
+        //Gopay Later Activation
+        const val IMPRESSION_GOPAY_LATER_ACTIVATION = "impression gopay later"
+        const val CLICK_GOPAY_LATER = "click gopay later"
+        const val IMPRESSION_AUTOAPPLY_GPL = "impression autoapply gpl"
+        const val IMPRESSION_GPL_ELIGIBLE = "impression gpl eligible"
+        const val CLICK_GPL_ELIGIBLE = "click gpl eligible"
     }
 
     object ExtraKey {
@@ -61,6 +68,7 @@ open class PromoAnalytics {
         const val TRACKER_ID = "trackerId"
         const val USER_ID = "userId"
         const val SESSION_IRIS = "sessionIris"
+        const val SHOP_ID = "shopId"
     }
 
     object TrackerId {
@@ -84,6 +92,15 @@ open class PromoAnalytics {
         const val CLICK_EXPAND_PROMO_SECTION_DETAIL = "47129"
         const val CLICK_CHECKOUT_PROMO = "47130"
         const val CLICK_EXIT_PROMO_BOTTOMSHEET = "47131"
+
+        // Promo GopayLater Activation
+        const val IMPRESSION_GOPAY_LATER_ACTIVATION = "49867"
+        const val CLICK_GOPAY_LATER = "49868"
+        const val IMPRESSION_AUTOAPPLY_GPL = "49869"
+        const val IMPRESSION_GPL_ELIGIBLE = "49870"
+        const val CLICK_GPL_ELIGIBLE = "49884"
+
+
     }
 
     object CustomDimension {

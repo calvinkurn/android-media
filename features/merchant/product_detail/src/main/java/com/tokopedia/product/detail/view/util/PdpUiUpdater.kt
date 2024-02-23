@@ -14,8 +14,8 @@ import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.PromoCodesResponse
 import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoListPromoIdsString
@@ -66,30 +66,30 @@ import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataMod
 import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
-import com.tokopedia.product.detail.data.model.promoprice.PromoPriceStyle
-import com.tokopedia.product.detail.data.model.promoprice.getPromoStyleByProductId
 import com.tokopedia.product.detail.data.model.gwp.GWPData
 import com.tokopedia.product.detail.data.model.gwp.asUiModel
+import com.tokopedia.product.detail.data.model.promoprice.PromoPriceStyle
+import com.tokopedia.product.detail.data.model.promoprice.getPromoStyleByProductId
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
+import com.tokopedia.product.detail.data.util.ProductDetailMapper
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
-import com.tokopedia.product.detail.view.viewholder.promo_price.ui.ProductPriceUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.GWPUiModel
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiState
+import com.tokopedia.product.detail.view.viewholder.promo_price.ui.ProductPriceUiModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.extension.toViewToViewItemModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -216,7 +216,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         get() = mapOfData[ProductDetailConstant.GWP_SNEAK_PEEK_NAME] as? GWPUiModel
 
     fun updateDataP1(
-        dataP1: DynamicProductInfoP1?,
+        dataP1: ProductInfoP1?,
         loadInitialData: Boolean = false
     ) {
         dataP1?.let {
@@ -306,10 +306,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun DynamicProductInfoP1.createProductContentData() = createContentMainData()
-    private fun DynamicProductInfoP1.createOngoingCampaignData() = createContentMainData()
+    private fun ProductInfoP1.createProductContentData() = createContentMainData()
+    private fun ProductInfoP1.createOngoingCampaignData() = createContentMainData()
 
-    private fun DynamicProductInfoP1.createContentMainData() = ProductContentMainData(
+    private fun ProductInfoP1.createContentMainData() = ProductContentMainData(
         campaign = data.campaign,
         thematicCampaign = data.thematicCampaign,
         cashbackPercentage = data.isCashback.percentage,
@@ -333,7 +333,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.MEDIA, true) {
             mediaMap?.let {
                 it.initialScrollPosition = if (mediaMap?.initialScrollPosition == -1) -1 else 0
-                it.listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(
+                it.listOfMedia = ProductDetailMapper.convertMediaToDataModel(
                     media.toMutableList()
                 )
                 it.containerType = if (GlobalConfig.isSellerApp()) {
@@ -341,7 +341,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 } else {
                     containerType.asMediaContainerType()
                 }
-                it.recommendation = DynamicProductDetailMapper.convertRecomToDataModel(
+                it.recommendation = ProductDetailMapper.convertRecomToDataModel(
                     productMediaRecomBasicInfo
                 )
             }
@@ -361,7 +361,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     private fun updateBestSellerData(
-        dataP1: DynamicProductInfoP1? = null,
+        dataP1: ProductInfoP1? = null,
         productId: String? = null
     ) {
         updateData(ProductDetailConstant.BEST_SELLER) {
@@ -408,7 +408,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     fun updateFintechData(
         selectedProductId: String,
         variantData: ProductVariant?,
-        productInfo: DynamicProductInfoP1?,
+        productInfo: ProductInfoP1?,
         loggedIn: Boolean
     ) {
         productInfo?.let { productDetail ->
@@ -700,7 +700,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 val selectedUpcoming = upcomingData?.get(productId)
                 this.isNpl = !selectedUpcoming?.upcomingType.isNullOrBlank()
                 this.freeOngkirImgUrl = freeOngkirImgUrl
-                this.shouldShowShareWidget = true
             }
         }
 
@@ -1203,7 +1202,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             shipmentData?.freeOngkirType = freeOngkirData.boType
             shipmentData?.freeOngkirUrl = freeOngkirData.imageURL
             shipmentData?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
-            shipmentData?.shipmentPlusData = DynamicProductDetailMapper.mapToShipmentPlusData(
+            shipmentData?.shipmentPlusData = ProductDetailMapper.mapToShipmentPlusData(
                 shipmentPlus,
                 freeOngkirData.boType
             )
@@ -1218,7 +1217,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 this.freeOngkirType = freeOngkirData.boType
                 this.freeOngkirUrl = freeOngkirData.imageURL
                 this.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
-                this.shipmentPlusData = DynamicProductDetailMapper.mapToShipmentPlusData(
+                this.shipmentPlusData = ProductDetailMapper.mapToShipmentPlusData(
                     shipmentPlus,
                     freeOngkirData.boType
                 )
@@ -1272,7 +1271,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     /**
      * Return a new [List] of [DynamicPdpDataModel] filled with components that will be showed on PDP.
-     * Only call this to supply a list of components for [com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment.submitInitialList].
+     * Only call this to supply a list of components for [com.tokopedia.product.detail.view.fragment.ProductDetailFragment.submitInitialList].
      *
      * @param aPlusContentExpanded A [Boolean] indicating whether A+ content section is expanded or not.
      */
@@ -1286,7 +1285,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     /**
      * Return a new [List] of [DynamicPdpDataModel] filled with components that will be showed on PDP.
-     * Only call this to supply a list of components for [com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment.submitList].
+     * Only call this to supply a list of components for [com.tokopedia.product.detail.view.fragment.ProductDetailFragment.submitList].
      *
      * @param aPlusContentExpanded A [Boolean] indicating whether A+ content section is expanded or not.
      */
@@ -1382,7 +1381,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateInitialAPlusContent(
-        productInfo: DynamicProductInfoP1,
+        productInfo: ProductInfoP1,
         userID: String,
         aPlusContentExpanded: Boolean
     ) {

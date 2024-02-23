@@ -21,7 +21,7 @@ import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2LoginUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
 import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
-import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ThumbnailVariantSubViewModel
@@ -145,7 +145,7 @@ abstract class BasePdpViewModelTest {
     @RelaxedMockK
     lateinit var affiliateEligibilityCheckUseCase: AffiliateEligibilityCheckUseCase
 
-    lateinit var spykViewModel: DynamicProductDetailViewModel
+    lateinit var spykViewModel: ProductDetailViewModel
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -182,8 +182,8 @@ abstract class BasePdpViewModelTest {
         createViewModel()
     }
 
-    fun createViewModel(): DynamicProductDetailViewModel {
-        return DynamicProductDetailViewModel(
+    fun createViewModel(): ProductDetailViewModel {
+        return ProductDetailViewModel(
             dispatcher = CoroutineTestDispatchersProvider,
             getPdpLayoutUseCase = { getPdpLayoutUseCase },
             getProductInfoP2LoginUseCase = { getProductInfoP2LoginUseCase },
