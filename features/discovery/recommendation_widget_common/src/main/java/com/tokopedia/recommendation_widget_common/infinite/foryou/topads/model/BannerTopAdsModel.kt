@@ -11,7 +11,8 @@ data class BannerTopAdsModel(
     val layoutCard: String,
     val layoutItem: String,
     val categoryId: String,
-    val position: Int = -1
+    val position: Int = -1,
+    val pageName: String
 ) : ForYouRecommendationVisitable, ImpressHolder() {
 
     override fun type(typeFactory: ForYouRecommendationTypeFactory): Int {

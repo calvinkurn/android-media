@@ -3,6 +3,7 @@ package com.tokopedia.search.result.product.cpm
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductTopAdsBannerLayoutBinding
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
@@ -14,7 +15,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class CpmViewHolder(
     itemView: View,
-    bannerAdsListener: BannerAdsListener?,
+    private val bannerAdsListener: BannerAdsListener?,
 ) : AbstractViewHolder<CpmDataView>(itemView) {
 
     companion object {
@@ -25,24 +26,27 @@ class CpmViewHolder(
 
     private var binding: SearchResultProductTopAdsBannerLayoutBinding? by viewBinding()
 
-    init {
-        binding?.adsBanner?.let {
-            it.setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
+    override fun bind(element: CpmDataView) {
+        binding?.adsBanner?.run {
+            setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
                 override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
-                    bannerAdsListener?.onBannerAdsClicked(position, applink, data)
+                    bannerAdsListener?.onBannerAdsClicked(position, applink, data, element, bindingAdapterPosition)
                 }
             })
-            it.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
+            setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
                 override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {
-                    bannerAdsListener?.onBannerAdsImpressionListener(position, data)
+                    bannerAdsListener?.onBannerAdsImpressionListener(position, data, element, bindingAdapterPosition)
                     if (data.cpm.layout == LAYOUT_6 || data.cpm.layout == LAYOUT_5) {
                         bannerAdsListener?.onTopAdsCarouselItemImpressionListener(binding?.adsBanner?.impressionCount ?: 0)
                     }
                 }
             })
+
+            addOnImpression1pxListener(element.byteIOImpressHolder) {
+                bannerAdsListener?.onBannerAdsImpression1PxListener(bindingAdapterPosition, element)
+            }
+
+            displayHeadlineAds(element.cpmModel)
         }
-    }
-    override fun bind(element: CpmDataView) {
-        binding?.adsBanner?.displayHeadlineAds(element.cpmModel)
     }
 }

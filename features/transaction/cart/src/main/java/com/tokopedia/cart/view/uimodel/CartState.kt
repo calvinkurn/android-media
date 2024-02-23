@@ -182,6 +182,7 @@ sealed interface UpdateCartPromoState {
 
 data class SubTotalState(
     val subtotalCashback: Double,
+    val subtotalBeforeSlashedPrice: Double,
     val qty: String,
     val subtotalPrice: Double,
     val noAvailableItems: Boolean

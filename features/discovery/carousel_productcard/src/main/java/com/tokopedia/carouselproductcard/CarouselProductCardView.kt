@@ -45,7 +45,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
 
     override val coroutineContext = masterJob + Dispatchers.Main
-    private val carouselProductCardRecyclerView: RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
+    val carouselProductCardRecyclerView: RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.carouselProductCardRecyclerView)
     }
 

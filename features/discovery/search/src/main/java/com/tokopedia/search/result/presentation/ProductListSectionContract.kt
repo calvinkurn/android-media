@@ -59,6 +59,7 @@ interface ProductListSectionContract {
         fun sendTopAdsGTMTrackingProductImpression(item: ProductItemDataView)
         fun sendTopAdsGTMTrackingProductClick(item: ProductItemDataView)
         fun sendGTMTrackingProductClick(item: ProductItemDataView, userId: String, suggestedRelatedKeyword: String)
+        fun sendByteIOTrackingProductClick(item: ProductItemDataView)
         fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int)
         fun sendProductImpressionTrackingEvent(item: ProductItemDataView, suggestedRelatedKeyword: String)
         fun openAddToCartToaster(message: String, isSuccess: Boolean)
@@ -77,6 +78,7 @@ interface ProductListSectionContract {
         val className: String
         fun redirectionStartActivity(applink: String?, url: String?)
         fun trackEventLongPress(productID: String)
+        fun trackEventThreeDotsClickByteIO(productItemDataView: ProductItemDataView)
         fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel)
         fun addLocalSearchRecommendation(visitableList: List<Visitable<*>>)
         fun refreshItemAtIndex(index: Int)
@@ -112,6 +114,7 @@ interface ProductListSectionContract {
         fun trackProductClick(item: ProductItemDataView)
         fun onProductAddToCart(item: ProductItemDataView)
         val quickFilterList: List<Filter>
+        val threeDotsProductItem: ProductItemDataView?
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
         fun onViewResumed()
         fun onLocalizingAddressSelected()

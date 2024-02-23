@@ -10,7 +10,8 @@ data class HomeRecommendationBannerTopAdsUiModel(
     val layoutCard: String,
     val layoutItem: String,
     val categoryId: String,
-    val position: Int = -1
+    val position: Int = -1,
+    val pageName: String
 ) : BaseHomeRecommendationVisitable, ImpressHolder() {
 
     override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {

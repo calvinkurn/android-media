@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_recom.model.entity.FilterSortChip
 import com.tokopedia.home_recom.util.Response
 import com.tokopedia.home_recom.util.getOption
@@ -11,6 +12,7 @@ import com.tokopedia.home_recom.util.getSelectedOption
 import com.tokopedia.home_recom.util.isActivated
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
@@ -44,8 +46,8 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         private val dispatcher: RecommendationDispatcher
 ) : BaseViewModel(dispatcher.getMainDispatcher()){
 
-    private val _recommendationItem = MutableLiveData<Response<Pair<List<RecommendationItem>, Boolean>>>()
-    val recommendationItem: LiveData<Response<Pair<List<RecommendationItem>, Boolean>>> get() = _recommendationItem
+    private val _recommendationItem = MutableLiveData<Response<Pair<List<RecommendationItemDataModel>, Boolean>>>()
+    val recommendationItem: LiveData<Response<Pair<List<RecommendationItemDataModel>, Boolean>>> get() = _recommendationItem
     private val _filterSortChip = MutableLiveData<Response<FilterSortChip>>()
     val filterSortChip: LiveData<Response<FilterSortChip>> get() = _filterSortChip
 
@@ -79,9 +81,13 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 _filterSortChip.postValue(Response.error(Exception()))
                 _recommendationItem.postValue(Response.error(Exception()))
             } else {
-                _recommendationItem.postValue(Response.success(Pair(recommendationItems.map {
-                    it.copy(position = it.position + (page - 1) * COUNT_PRODUCT)
-                }, recommendationWidget.pagination.hasNext)))
+                _recommendationItem.postValue(
+                    Response.success(
+                        Pair(recommendationItems.map {
+                            RecommendationItemDataModel(it.copy(position = it.position + (page - 1) * COUNT_PRODUCT))
+                        }, recommendationWidget.pagination.hasNext)
+                    )
+                )
             }
         }){ throwable ->
             if(page == 1) _filterSortChip.postValue(Response.error(throwable))
@@ -106,9 +112,9 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                     it.isActivated = !it.isActivated
                 }
 
-                val selectedQuickFilter = _filterSortChip.value?.data?.quickFilterList?.getOption()?.find { opt -> opt.name == title}
+                val selectedQuickFilter = _filterSortChip.value?.data?.quickFilterList?.getOption()?.withIndex()?.find { opt -> opt.value.name == title}
                 selectedQuickFilter?.let {
-                    it.isActivated = !it.isActivated
+                    it.value.isActivated = !it.value.isActivated
                 }
 
                 val filterString = _filterSortChip.value?.data?.filterAndSort?.filterChip?.getSelectedOption()?.joinToString(separator = "&") { opt ->
@@ -140,7 +146,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                             recomFilterChip.copy(
                                     options = recomFilterChip.options.map {
                                         it.copy(
-                                                isActivated = it.name == title && selectedQuickFilter?.isActivated ?: false
+                                                isActivated = it.name == title && selectedQuickFilter?.value?.isActivated ?: false
                                         )
                                     }
                             )
@@ -151,7 +157,20 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 if (recommendationWidget.recommendation.isNotEmpty()) {
                     val recommendationItems = recommendationWidget.toRecommendationWidget().recommendationItemList
                     val dimension61 = filterString + if(sortString?.isNotEmpty() == true)"&" else "" + sortString
-                    _recommendationItem.postValue(Response.success(Pair(recommendationItems.map { it.copy(dimension61 = dimension61) }, recommendationWidget.pagination.hasNext)))
+                    _recommendationItem.postValue(
+                        Response.success(
+                            Pair(
+                                recommendationItems.map {
+                                    RecommendationItemDataModel(
+                                        productItem = it.copy(dimension61 = dimension61),
+                                        chipName = selectedQuickFilter?.value?.name.orEmpty(),
+                                        chipPosition = selectedQuickFilter?.index.orZero(),
+                                    )
+                                },
+                                recommendationWidget.pagination.hasNext
+                            )
+                        )
+                    )
                 } else {
                     _recommendationItem.postValue(Response.empty())
                 }
@@ -232,7 +251,18 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
 
                 if (recommendationWidget.recommendation.isNotEmpty()) {
                     val recommendationItems = recommendationWidget.toRecommendationWidget().recommendationItemList
-                    _recommendationItem.postValue(Response.success(Pair(recommendationItems.map { it.copy(dimension61 = dimension61) }, recommendationWidget.pagination.hasNext)))
+                    _recommendationItem.postValue(
+                        Response.success(
+                            Pair(
+                                recommendationItems.map {
+                                    RecommendationItemDataModel(
+                                        productItem = it.copy(dimension61 = dimension61),
+                                        chipName = selectedFilterString,
+                                    )
+                                },
+                                recommendationWidget.pagination.hasNext)
+                        )
+                    )
                 } else {
                     _recommendationItem.postValue(Response.empty())
                 }

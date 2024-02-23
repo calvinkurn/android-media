@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -57,6 +58,7 @@ import com.tokopedia.notifcenter.view.adapter.typefactory.NotificationTypeFactor
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotificationTypeFactoryImpl
 import com.tokopedia.notifcenter.view.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.LoadMoreViewHolder
+import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.RecommendationViewHolder
 import com.tokopedia.notifcenter.view.customview.NotificationTopAdsHeadlineHelper
 import com.tokopedia.notifcenter.view.customview.bottomsheet.BottomSheetFactory
 import com.tokopedia.notifcenter.view.customview.bottomsheet.NotificationLongerContentBottomSheet
@@ -108,6 +110,8 @@ class NotificationFragment @Inject constructor(
     private var trackingQueue: TrackingQueue? = null
     private val viewHolderLoading = ArrayMap<Any, ViewHolderState>()
     private val scrollState = ScrollToBottomState()
+    private var hasTrackEnterPage = false
+    private var hasRecomScrollListener = false
 
     override fun hasInitialSwipeRefresh(): Boolean = true
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
@@ -436,10 +440,16 @@ class NotificationFragment @Inject constructor(
     }
 
     private fun renderRecomList(recoms: RecommendationDataModel) {
+        trackEnterPage()
         hideLoading()
         rvAdapter?.addRecomProducts(recoms.item)
         loadShopAds()
         updateScrollListenerState(recoms)
+    }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
     }
 
     private fun loadShopAds() {
@@ -481,9 +491,13 @@ class NotificationFragment @Inject constructor(
                 }
             }
         })
+        if(hasRecomScrollListener) return
         rv?.addVerticalTrackListener(
-            recommendationTriggerObject = RecommendationTriggerObject()
+            recommendationTriggerObject = RecommendationTriggerObject(
+                viewHolders = listOf(RecommendationViewHolder::class.java)
+            )
         )
+        hasRecomScrollListener = true
     }
 
     private fun getLastVisibleItemPosition(): Int? {

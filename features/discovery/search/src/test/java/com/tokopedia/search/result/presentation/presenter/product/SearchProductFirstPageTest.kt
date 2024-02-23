@@ -42,7 +42,11 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
             searchProductModel.searchProduct.data.autocompleteApplink,
         )
         `Then verify start from is incremented`()
-        `Then verify visitable list with product items`(visitableListSlot, searchProductModel)
+        `Then verify visitable list with product items`(
+            visitableListSlot = visitableListSlot,
+            searchProductModel = searchProductModel,
+            isFirstPage = true,
+        )
         `Then assert page component id`(searchProductModel.searchProduct.header.componentId)
     }
 
@@ -128,7 +132,11 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
             searchProductModel.searchProductV5.header.autocompleteApplink
         )
         `Then verify start from is incremented`()
-        `Then verify visitable list with product items for reimagine`(visitableListSlot, searchProductModel)
+        `Then verify visitable list with product items for reimagine`(
+            visitableListSlot = visitableListSlot,
+            searchProductModel = searchProductModel,
+            isFirstPage = true,
+        )
         `Then assert page component id`(searchProductModel.searchProductV5.header.componentID)
     }
 
@@ -200,7 +208,11 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
             searchProductModel.searchProduct.data.autocompleteApplink
         )
         `Then verify start from is incremented`()
-        `Then verify visitable list with product items`(visitableListSlot, searchProductModel)
+        `Then verify visitable list with product items`(
+            visitableListSlot = visitableListSlot,
+            searchProductModel = searchProductModel,
+            isFirstPage = true,
+        )
     }
 
     private fun `Given View is first active tab`() {

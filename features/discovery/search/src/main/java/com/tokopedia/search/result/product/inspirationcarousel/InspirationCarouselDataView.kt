@@ -2,6 +2,7 @@ package com.tokopedia.search.result.product.inspirationcarousel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_DILAYANI_TOKOPEDIA
@@ -15,6 +16,7 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.model.StockBarDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.ByteIOTrackingData
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking.getInspirationCarouselUnificationListName
 import com.tokopedia.search.utils.getFormattedPositionName
 import com.tokopedia.search.utils.orNone
@@ -73,7 +75,10 @@ data class InspirationCarouselDataView(
         val bundle: Bundle = Bundle(),
         val keyword: String = "",
         val externalReference: String = "",
+        val byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData(),
     ): Visitable<InspirationCarouselOptionTypeFactory> {
+
+        val byteIOImpressHolder = ImpressHolder()
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
             return typeFactory.type(layout)
@@ -95,6 +100,26 @@ data class InspirationCarouselDataView(
         fun hasProducts() = product.isNotEmpty()
 
         fun isShowChipsIcon() = hexColor.isNotEmpty() || chipImageUrl.isNotEmpty()
+
+        fun asByteIOSearchResult(adapterPosition: Int) =
+            AppLogSearch.SearchResult(
+                imprId = byteIOTrackingData.imprId,
+                searchId = byteIOTrackingData.searchId,
+                searchEntrance = byteIOTrackingData.searchEntrance,
+                enterFrom = byteIOTrackingData.enterFrom,
+                searchResultId = adapterPosition.toString(),
+                listItemId = null,
+                itemRank = null,
+                listResultType = null,
+                productID = null,
+                searchKeyword = byteIOTrackingData.keyword,
+                tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
+                rank = adapterPosition,
+                isAd = false,
+                isFirstPage = byteIOTrackingData.isFirstPage,
+                shopId = null,
+                aladdinButtonType = null,
+            )
 
         @Suppress("LongParameterList")
         data class Product(
@@ -140,12 +165,15 @@ data class InspirationCarouselDataView(
             val stockBarDataView: StockBarDataView = StockBarDataView(),
             val warehouseID: String = "",
             val categoryID: String = "",
+            val byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData(),
         ): ImpressHolder(),
             Visitable<InspirationCarouselOptionTypeFactory> {
 
             companion object {
                 private const val ZERO_PARENT_ID = "0"
             }
+
+            val byteIOImpressHolder = ImpressHolder()
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
                 return typeFactory.type(layout)
@@ -168,7 +196,9 @@ data class InspirationCarouselDataView(
             }
 
             fun shouldOpenVariantBottomSheet(): Boolean =
-                parentId != "" && parentId != ZERO_PARENT_ID
+                hasParentId()
+
+            private fun hasParentId() = parentId != "" && parentId != ZERO_PARENT_ID
 
             fun getInspirationCarouselInfoProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(
@@ -243,6 +273,36 @@ data class InspirationCarouselDataView(
                     applink = applink,
                     dimension90 = dimension90
                 )
+
+            fun asByteIOSearchResult(
+                optionAdapterPosition: Int,
+                aladdinButtonType: String?,
+            ): AppLogSearch.SearchResult {
+                val searchResultId =
+                    if (customVideoURL.isBlank())
+                        if (hasParentId()) parentId
+                        else id
+                    else ""
+
+                return AppLogSearch.SearchResult(
+                    imprId = byteIOTrackingData.imprId,
+                    searchId = byteIOTrackingData.searchId,
+                    searchEntrance = byteIOTrackingData.searchEntrance,
+                    enterFrom = byteIOTrackingData.enterFrom,
+                    searchResultId = searchResultId,
+                    listItemId = id,
+                    itemRank = position,
+                    listResultType = AppLogSearch.ParamValue.GOODS,
+                    productID = id,
+                    searchKeyword = byteIOTrackingData.keyword,
+                    tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
+                    rank = optionAdapterPosition,
+                    isAd = isOrganicAds,
+                    isFirstPage = byteIOTrackingData.isFirstPage,
+                    shopId = shopId,
+                    aladdinButtonType = aladdinButtonType,
+                )
+            }
         }
     }
 

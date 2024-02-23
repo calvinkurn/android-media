@@ -7,6 +7,8 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.product.ByteIOTrackingData
+import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
 import com.tokopedia.search.result.product.cpm.CpmDataView
@@ -46,7 +48,8 @@ class VisitableFactory @Inject constructor(
     private val broadMatchDelegate: BroadMatchPresenterDelegate,
     private val topAdsImageViewPresenterDelegate: TopAdsImageViewPresenterDelegate,
     private val pagination: Pagination,
-) {
+    queryKeyProvider: QueryKeyProvider,
+): QueryKeyProvider by queryKeyProvider {
 
     private var isGlobalNavWidgetAvailable = false
     private var isShowHeadlineAdsBasedOnGlobalNav = false
@@ -212,7 +215,11 @@ class VisitableFactory @Inject constructor(
             val cpmDataView = createCpmDataView(
                 searchProductModel.cpmModel,
                 cpmDataList,
-                verticalSeparator
+                verticalSeparator,
+                ByteIOTrackingData( // TODO
+                    keyword = queryKey,
+                    isFirstPage = true,
+                )
             )
 
             if (index == 0) processHeadlineAdsAtTop(list, cpmDataView)
@@ -250,9 +257,10 @@ class VisitableFactory @Inject constructor(
         cpmModel: CpmModel,
         cpmData: ArrayList<CpmData>,
         verticalSeparator: VerticalSeparator,
+        byteIOTrackingData: ByteIOTrackingData,
     ): CpmDataView {
         val cpmForViewModel = createCpmForViewModel(cpmModel, cpmData)
-        return CpmDataView(cpmForViewModel, verticalSeparator)
+        return CpmDataView(cpmForViewModel, verticalSeparator, byteIOTrackingData)
     }
 
     private fun createCpmForViewModel(cpmModel: CpmModel, cpmData: ArrayList<CpmData>): CpmModel {
@@ -272,16 +280,22 @@ class VisitableFactory @Inject constructor(
         inspirationCarouselPresenter.setInspirationCarouselDataViewList(
             inspirationCarouselDataView
         )
-        processInspirationCarouselPosition(list, externalReference)
+        processInspirationCarouselPosition(
+            list,
+            externalReference,
+            true,
+        )
     }
 
     private fun processInspirationCarouselPosition(
         list: MutableList<Visitable<*>>,
         externalReference: String,
+        isFirstPage: Boolean,
     ) {
         inspirationCarouselPresenter.processInspirationCarouselPosition(
             visitableList.getTotalProductItem(),
             externalReference,
+            isFirstPage,
         ) { position, inspirationCarouselVisitableList ->
             val visitableIndex = visitableList.getIndexForWidgetPosition(position)
             list.addAll(visitableIndex, inspirationCarouselVisitableList)
@@ -421,7 +435,11 @@ class VisitableFactory @Inject constructor(
             val cpmDataView = createCpmDataView(
                 searchProductModel.cpmModel,
                 cpmDataList,
-                verticalSeparator
+                verticalSeparator,
+                ByteIOTrackingData( //TODO
+                    keyword = queryKey,
+                    isFirstPage = false,
+                )
             )
 
             processHeadlineAdsAtBottom(list, cpmDataView)
@@ -447,6 +465,7 @@ class VisitableFactory @Inject constructor(
         processInspirationCarouselPosition(
             visitableList,
             data.externalReference,
+            false,
         )
         processBannerAndBroadMatchInSamePosition(visitableList, data.responseCode)
         addBanner(visitableList)
