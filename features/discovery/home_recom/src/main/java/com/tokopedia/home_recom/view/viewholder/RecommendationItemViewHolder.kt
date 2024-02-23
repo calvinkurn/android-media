@@ -2,11 +2,16 @@ package com.tokopedia.home_recom.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.recommendation_widget_common.extension.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.listener.RecommendationTokonowListener
@@ -69,6 +74,14 @@ class RecommendationItemViewHolder(
                         element.productItem.imageUrl,
                         RECOM_ITEM
                 )
+                AppLogRecommendation.sendProductClickAppLog(
+                    element.productItem.asProductTrackModel(
+                        type = AppLogRecommendationType.VERTICAL,
+                        entranceForm = EntranceForm.PURE_GOODS_CARD,
+                        tabName = element.chipName,
+                        tabPosition = element.chipPosition,
+                    )
+                )
             }
 
             setThreeDotsOnClickListener {
@@ -90,6 +103,17 @@ class RecommendationItemViewHolder(
                 tokonowListener?.onProductTokonowVariantClicked(
                         recomItem = element.productItem,
                         adapterPosition = adapterPosition
+                )
+            }
+
+            addOnImpression1pxListener(element.productItem) {
+                AppLogRecommendation.sendProductShowAppLog(
+                    element.productItem.asProductTrackModel(
+                        type = AppLogRecommendationType.VERTICAL,
+                        entranceForm = EntranceForm.PURE_GOODS_CARD,
+                        tabName = element.chipName,
+                        tabPosition = element.chipPosition,
+                    )
                 )
             }
         }

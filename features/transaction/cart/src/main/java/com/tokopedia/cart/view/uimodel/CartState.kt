@@ -162,7 +162,6 @@ sealed class UpdateCartAndGetLastApplyEvent {
 sealed class UpdateCartCheckoutState {
     data class Success(
         val eeCheckoutData: Map<String, Any>,
-        val byteIOTracker: CartClickAnalyticsModel,
         val checkoutProductEligibleForCashOnDelivery: Boolean,
         val condition: Int
     ) : UpdateCartCheckoutState()

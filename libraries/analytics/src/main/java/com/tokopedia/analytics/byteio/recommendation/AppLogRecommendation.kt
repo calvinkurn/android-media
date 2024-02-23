@@ -15,6 +15,9 @@ object AppLogRecommendation {
 
     fun sendProductShowAppLog(model: AppLogRecommendationProductModel) {
         AppLogAnalytics.send(EventName.PRODUCT_SHOW, model.toShowClickJson())
+        if (model.type == AppLogRecommendationType.MIXED_CAROUSEL) {
+            AppLogAnalytics.send(EventName.CARD_SHOW, model.asCardModel().toShowClickJson())
+        }
     }
 
     fun sendProductClickAppLog(model: AppLogRecommendationProductModel) {
@@ -23,8 +26,10 @@ object AppLogRecommendation {
         AppLogAnalytics.sourcePageType = SourcePageType.PRODUCT_CARD
         AppLogAnalytics.entranceForm = EntranceForm.PURE_GOODS_CARD
         AppLogAnalytics.send(EventName.PRODUCT_CLICK, model.toShowClickJson())
-        if(model.type == AppLogRecommendationType.VERTICAL) {
+        if (model.type == AppLogRecommendationType.MIXED_CAROUSEL) {
             AppLogAnalytics.send(EventName.CARD_CLICK, model.asCardModel().toShowClickJson())
+        }
+        if (model.type == AppLogRecommendationType.VERTICAL) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
     }
@@ -39,7 +44,7 @@ object AppLogRecommendation {
         AppLogAnalytics.sourcePageType = SourcePageType.PRODUCT_CARD
         AppLogAnalytics.entranceForm = EntranceForm.PURE_GOODS_CARD
         AppLogAnalytics.send(EventName.CARD_CLICK, model.toShowClickJson())
-        if(model.type == AppLogRecommendationType.VERTICAL) {
+        if (model.type == AppLogRecommendationType.VERTICAL) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
     }
@@ -48,7 +53,7 @@ object AppLogRecommendation {
         AppLogAnalytics.send(
             EventName.ENTER_PAGE,
             JSONObject().apply {
-                //TODO enter_from, enter_method
+                // TODO enter_from, enter_method
                 addPage()
             }
         )

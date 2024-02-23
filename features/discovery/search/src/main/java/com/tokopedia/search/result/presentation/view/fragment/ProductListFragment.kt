@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_QUICK
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_FAVORITE_BUTTON
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_MORE_BUTTON
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_MORE_FINDALIKE
@@ -56,6 +57,7 @@ import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
@@ -1115,7 +1117,12 @@ class ProductListFragment: BaseDaggerFragment(),
         return filterController.getFilterViewState(option.uniqueId)
     }
 
-    override fun onQuickFilterSelected(filter: Filter, option: Option, pageSource: String) {
+    override fun onQuickFilterSelected(
+        filter: Filter,
+        option: Option,
+        pageSource: String,
+        position: Int
+    ) {
         val isQuickFilterSelectedReversed = !isFilterSelected(option)
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed)
 
@@ -1137,6 +1144,7 @@ class ProductListFragment: BaseDaggerFragment(),
             isQuickFilterSelectedReversed,
             pageSource,
         )
+        trackChooseSearchFilter(isQuickFilterSelectedReversed, option.value, position)
     }
 
     private fun setFilterToQuickFilterController(option: Option, isQuickFilterSelected: Boolean) {
@@ -1159,6 +1167,21 @@ class ProductListFragment: BaseDaggerFragment(),
             keyword = queryKey,
             pageSource = pageSource,
         )
+    }
+
+    private fun trackChooseSearchFilter(isSelected: Boolean,
+                                        filterValue: String,
+                                        position: Int) {
+        if (!isSelected) return
+        AppLogSearch.eventChooseSearchFilter(AppLogSearch.ChooseSearchFilter(
+            searchId = "", // TODO milhamj: wait for BE data
+            searchType = GOODS_SEARCH,
+            searchKeyword = queryKey,
+            ecomSortName = "",
+            ecomFilterName = filterValue,
+            ecomFilterPosition = position,
+            buttonTypeClick = FILTER_QUICK
+        ))
     }
 
     override fun initFilterController(quickFilterList: List<Filter>) {
@@ -1221,6 +1244,7 @@ class ProductListFragment: BaseDaggerFragment(),
             onQuickFilterSelected(
                 filter = filter,
                 option = firstOption,
+                position =  position,
                 pageSource = Dimension90Utils.getDimension90(searchParameter)
             )
         }
@@ -1230,7 +1254,7 @@ class ProductListFragment: BaseDaggerFragment(),
             position: Int
         ) {
             val filter = presenter?.quickFilterList?.getOrNull(position) ?: return
-            openBottomsheetMultipleOptionsQuickFilter(filter)
+            openBottomsheetMultipleOptionsQuickFilter(filter, position)
         }
 
         override fun onFilterClicked() { openBottomSheetFilterRevamp() }
@@ -1490,10 +1514,22 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     //region dropdown quick filter
-    override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter) {
+    override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter, position: Int) {
         val filterDetailCallback = object: FilterGeneralDetailBottomSheet.OptionCallback {
             override fun onApplyButtonClicked(optionList: List<IOption>?) {
-                presenter?.onApplyDropdownQuickFilter(optionList?.filterIsInstance<Option>())
+                val options = optionList?.filterIsInstance<Option>()
+                presenter?.onApplyDropdownQuickFilter(options)
+                val selectedOptions = options?.filter {
+                    it.inputState.toBooleanStrictOrNull().orFalse()
+                }
+                val filterValue = selectedOptions?.joinToString {
+                    it.value
+                }.orEmpty() // TODO milhamj: value or name or key?
+                trackChooseSearchFilter(
+                    selectedOptions?.isNotEmpty().orFalse(),
+                    filterValue,
+                    position
+                )
             }
         }
 

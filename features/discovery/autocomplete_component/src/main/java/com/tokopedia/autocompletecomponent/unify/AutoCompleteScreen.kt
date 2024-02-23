@@ -56,7 +56,7 @@ internal fun AutoCompleteScreen(
                 LaunchedEffect(key1 = !item.impressionHolder.impressed, block = {
                     item.impressionHolder.impressed = true
                     item.impress(iris)
-                    if (item.domainModel.isMasterTemplate()) {
+                    if (item.domainModel.isTrendingWord()) {
                         viewModel.trackTrendingWordsShow(item)
                     }
                 })
@@ -67,7 +67,7 @@ internal fun AutoCompleteScreen(
                             onItemClicked = {
                                 viewModel.onAutoCompleteItemClick(it)
                                 it.click(analytics)
-                                if (item.domainModel.isMasterTemplate()) {
+                                if (item.domainModel.isTrendingWord()) {
                                     viewModel.trackTrendingWordsClick(item)
                                 }
                             },

@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -783,6 +784,10 @@ class CartViewModel @Inject constructor(
 
         val updateCartRequestList = getUpdateCartRequest(cartItemDataList, onlyTokoNowProducts)
         if (updateCartRequestList.isNotEmpty()) {
+            val buttonClickTracker = CartPageAnalyticsUtil.generateByteIoAnalyticsModel(
+                cartItemDataList, subTotalState.value
+            )
+            AppLogAnalytics.sendCartButtonClick(buttonClickTracker)
             if (fireAndForget) {
                 // Trigger use case without composite subscription, because this should continue even after view destroyed
                 updateCartUseCase.setParams(
@@ -827,9 +832,6 @@ class CartViewModel @Inject constructor(
                 CartPageAnalyticsUtil.generateCheckoutDataAnalytics(
                     cartItemDataList,
                     EnhancedECommerceActionField.STEP_1
-                ),
-                CartPageAnalyticsUtil.generateByteIoAnalyticsModel(
-                    cartItemDataList, subTotalState.value
                 ),
                 isCheckoutProductEligibleForCashOnDelivery(cartItemDataList),
                 checklistCondition
