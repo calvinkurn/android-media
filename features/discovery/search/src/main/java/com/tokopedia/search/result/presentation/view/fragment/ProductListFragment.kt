@@ -57,6 +57,7 @@ import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
@@ -1251,7 +1252,7 @@ class ProductListFragment: BaseDaggerFragment(),
             position: Int
         ) {
             val filter = presenter?.quickFilterList?.getOrNull(position) ?: return
-            openBottomsheetMultipleOptionsQuickFilter(filter)
+            openBottomsheetMultipleOptionsQuickFilter(filter, position)
         }
 
         override fun onFilterClicked() { openBottomSheetFilterRevamp() }
@@ -1511,10 +1512,22 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     //region dropdown quick filter
-    override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter) {
+    override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter, position: Int) {
         val filterDetailCallback = object: FilterGeneralDetailBottomSheet.OptionCallback {
             override fun onApplyButtonClicked(optionList: List<IOption>?) {
-                presenter?.onApplyDropdownQuickFilter(optionList?.filterIsInstance<Option>())
+                val options = optionList?.filterIsInstance<Option>()
+                presenter?.onApplyDropdownQuickFilter(options)
+                val selectedOptions = options?.filter {
+                    it.inputState.toBooleanStrictOrNull().orFalse()
+                }
+                val filterValue = selectedOptions?.joinToString {
+                    it.value
+                }.orEmpty() // TODO milhamj: value or name or key?
+                trackChooseSearchFilter(
+                    selectedOptions?.isNotEmpty().orFalse(),
+                    filterValue,
+                    position
+                )
             }
         }
 

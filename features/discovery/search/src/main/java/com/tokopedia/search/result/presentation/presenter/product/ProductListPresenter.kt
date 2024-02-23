@@ -1129,16 +1129,16 @@ class ProductListPresenter @Inject constructor(
             }
         } else {
             item.listener = {
-                onDropDownQuickFilterClick(filter)
+                onDropDownQuickFilterClick(filter, position)
             }
             item.chevronListener = {
-                onDropDownQuickFilterClick(filter)
+                onDropDownQuickFilterClick(filter, position)
             }
         }
     }
 
-    private fun onDropDownQuickFilterClick(filter: Filter) {
-        view.openBottomsheetMultipleOptionsQuickFilter(filter)
+    private fun onDropDownQuickFilterClick(filter: Filter, position: Int) {
+        view.openBottomsheetMultipleOptionsQuickFilter(filter, position)
     }
 
     override fun onApplyDropdownQuickFilter(optionList: List<Option>?) {
