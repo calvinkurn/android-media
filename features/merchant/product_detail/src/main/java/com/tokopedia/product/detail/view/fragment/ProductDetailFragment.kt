@@ -206,6 +206,8 @@ import com.tokopedia.product.detail.data.util.ProductDetailMapper.generateAffili
 import com.tokopedia.product.detail.data.util.ProductDetailMapper.generateImageGeneratorData
 import com.tokopedia.product.detail.data.util.ProductDetailMapper.generatePersonalizedData
 import com.tokopedia.product.detail.data.util.ProductDetailMapper.generateProductShareData
+import com.tokopedia.product.detail.data.util.ProductDetailMapper.generateShareExBottomSheetArg
+import com.tokopedia.product.detail.data.util.ProductDetailMapper.generateShareExInitializerArg
 import com.tokopedia.product.detail.data.util.ProductDetailMapper.generateUserLocationRequestRates
 import com.tokopedia.product.detail.data.util.ProductDetailMapper.zeroIfEmpty
 import com.tokopedia.product.detail.data.util.ProductDetailSwipeTrackingState
@@ -309,6 +311,8 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.shareexperience.domain.util.ShareExConstants.Rollence.ROLLENCE_SHARE_EX
+import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
@@ -539,6 +543,9 @@ open class ProductDetailFragment :
     // Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
     private var isAffiliateShareIcon = false
+
+    // Share Experience
+    private var shareExInitializer: ShareExInitializer? = null
 
     // View
     private lateinit var actionButtonView: PartialButtonActionView
@@ -864,6 +871,7 @@ open class ProductDetailFragment :
         assignDeviceId()
         loadData()
         registerCallback(mediator = this)
+        initializeShareEx()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -3070,7 +3078,7 @@ open class ProductDetailFragment :
 
             mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
 
-            checkAffiliateEligibility(p2Data.shopInfo)
+            handleShareAdditionalCheck(p2Data.shopInfo)
 
             if (p2Data.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
                 ProductDetailTracking.Impression.eventPurchaseProtectionAvailable(
@@ -3090,6 +3098,33 @@ open class ProductDetailFragment :
         viewModel.resultAffiliate.observe(viewLifecycleOwner) {
             if (it is Success && it.data.eligibleCommission?.isEligible.orFalse()) {
                 updateToolbarShareAffiliate()
+            }
+        }
+    }
+
+    private fun handleShareAdditionalCheck(shopInfo: ShopInfo) {
+        if (isUsingShareEx()) {
+            additionalCheckShareEx(shopInfo)
+        } else {
+            checkAffiliateEligibility(shopInfo)
+        }
+    }
+
+    private fun additionalCheckShareEx(shopInfo: ShopInfo) {
+        viewModel.getProductInfoP1?.let { dataP1 ->
+            if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
+                shareExInitializer?.additionalCheck(
+                    generateShareExInitializerArg(
+                        dataP1,
+                        shopInfo,
+                        viewModel.variantData,
+                        onSuccess = {
+                            if (it.isEligibleAffiliate) {
+                                updateToolbarShareAffiliate()
+                            }
+                        }
+                    )
+                )
             }
         }
     }
@@ -4109,15 +4144,37 @@ open class ProductDetailFragment :
 
     private fun onClickShareProduct() {
         viewModel.getProductInfoP1?.let { productInfo ->
+            handleShareProduct(productInfo)
+        }
+    }
+
+    private fun handleShareProduct(
+        dynamicProductInfoP1: ProductInfoP1
+    ) {
+        if (isUsingShareEx()) {
+            openShareExBottomSheet(dynamicProductInfoP1)
+        } else {
             ProductDetailTracking.Click.eventClickPdpShare(
-                productId = productInfo.basic.productID,
+                productId = dynamicProductInfoP1.basic.productID,
                 userId = viewModel.userId,
-                campaignId = zeroIfEmpty(productInfo.data.campaign.campaignID),
+                campaignId = zeroIfEmpty(dynamicProductInfoP1.data.campaign.campaignID),
                 bundleId = "0",
                 isAffiliateShareIcon = isAffiliateShareIcon
             )
-            shareProduct(productInfo)
+            shareProduct(dynamicProductInfoP1)
         }
+    }
+
+    private fun openShareExBottomSheet(
+        dynamicProductInfoP1: ProductInfoP1
+    ) {
+        shareExInitializer?.openShareBottomSheet(
+            generateShareExBottomSheetArg(
+                productId = dynamicProductInfoP1.basic.productID,
+                productUrl = dynamicProductInfoP1.basic.url,
+                campaignId = dynamicProductInfoP1.data.campaign.campaignID
+            )
+        )
     }
 
     private fun shareProduct(productInfoP1: ProductInfoP1? = null, path: String? = null) {
@@ -6238,5 +6295,24 @@ open class ProductDetailFragment :
             component = component,
             trackingQueue = trackingQueue
         )
+    }
+
+    private fun initializeShareEx() {
+        if (isUsingShareEx()) {
+            context?.let {
+                shareExInitializer = ShareExInitializer(it)
+            }
+        }
+    }
+
+    /**
+     * This function only for transition period
+     * from old share to share 2.0
+     */
+    private fun isUsingShareEx(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            ROLLENCE_SHARE_EX,
+            ""
+        ) == ROLLENCE_SHARE_EX
     }
 }
