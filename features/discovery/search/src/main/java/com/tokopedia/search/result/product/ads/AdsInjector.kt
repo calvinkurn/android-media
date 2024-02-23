@@ -3,7 +3,8 @@ package com.tokopedia.search.result.product.ads
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.helper.isPostProcessingFilter
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.product.ByteIOTrackingData
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactory
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import timber.log.Timber
 
@@ -24,7 +25,7 @@ class AdsInjector {
         keywordIntention: Int,
         showButtonAtc: Boolean,
         isFirstPage: Boolean,
-        keyword: String,
+        byteIOTrackingDataFactory: ByteIOTrackingDataFactory,
     ): List<Visitable<*>> {
         val list = mutableListOf<ProductItemDataView>()
         list.addAll(productList)
@@ -47,10 +48,7 @@ class AdsInjector {
                     externalReference,
                     keywordIntention,
                     showButtonAtc,
-                    ByteIOTrackingData( // TODO
-                        keyword = keyword,
-                        isFirstPage = isFirstPage,
-                    ),
+                    byteIOTrackingDataFactory.create(isFirstPage)
                 )
 
                 list.add(i, item)

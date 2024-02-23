@@ -374,6 +374,18 @@ open class FilterController {
     fun getActiveFilterOptionList() =
         filterViewState.map { OptionHelper.generateOptionFromUniqueId(it) }
 
+    fun getActiveFilterOptionIndexed() =
+        filterViewState.map { selectedOptionUniqueId ->
+            val option = OptionHelper.generateOptionFromUniqueId(selectedOptionUniqueId)
+            val position = filterList.withIndex().find { filterIndexed ->
+                filterIndexed.value.options.any {
+                    opt -> opt.uniqueId == selectedOptionUniqueId
+                }
+            }?.index ?: 0
+
+            position to option
+        }
+
     @JvmOverloads
     fun setFilter(option: Option?, isFilterApplied: Boolean, isCleanUpExistingFilterWithSameKey: Boolean = false) {
         if(option == null) return

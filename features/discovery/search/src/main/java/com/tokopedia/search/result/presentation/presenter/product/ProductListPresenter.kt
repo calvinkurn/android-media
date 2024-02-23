@@ -40,7 +40,6 @@ import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
-import com.tokopedia.search.result.product.ByteIOTrackingData
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.ads.AdsInjector
 import com.tokopedia.search.result.product.ads.AdsLowOrganic
@@ -50,6 +49,7 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
 import com.tokopedia.search.result.product.broadmatch.RelatedDataView
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactoryImpl
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
@@ -172,7 +172,8 @@ class ProductListPresenter @Inject constructor(
     private val inspirationProductItemPresenter: InspirationProductPresenterDelegate,
     private val reimagineRollence: ReimagineRollence,
     private val lastClickProductIdProvider: LastClickedProductIdProviderImpl,
-    private val deduplication: Deduplication
+    private val deduplication: Deduplication,
+    private val byteIOTrackingDataFactoryImpl: ByteIOTrackingDataFactoryImpl,
 ) : BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -249,6 +250,12 @@ class ProductListPresenter @Inject constructor(
 
     override val isUserLoggedIn: Boolean
         get() = userSession.isLoggedIn
+
+    override val requestId: String
+        get() = byteIOTrackingDataFactoryImpl.requestId
+
+    override val searchId: String
+        get() = byteIOTrackingDataFactoryImpl.searchId
 
     //region Load Data / Load More / Recommendations
     override fun clearData() {
@@ -366,6 +373,8 @@ class ProductListPresenter @Inject constructor(
     ) {
         if (isViewNotAttached) return
 
+        byteIOTrackingDataFactoryImpl.update(searchProductModel.requestId)
+
         val productDataView = createProductDataView(searchProductModel, false)
 
         additionalParams = productDataView.additionalParams
@@ -406,10 +415,7 @@ class ProductListPresenter @Inject constructor(
             externalReference,
             newCardType,
             safeSearchPresenter.isShowAdultEnableAndProfileVerify(),
-            ByteIOTrackingData( // TODO
-                keyword = view.queryKey,
-                isFirstPage = isFirstPage,
-            ),
+            byteIOTrackingDataFactoryImpl.create(isFirstPage),
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -485,7 +491,7 @@ class ProductListPresenter @Inject constructor(
                 productDataView.keywordIntention,
                 productDataView.isShowButtonAtc,
                 productDataView.isFirstPage,
-                productDataView.keyword,
+                byteIOTrackingDataFactoryImpl,
             )
         }
     }
@@ -629,6 +635,9 @@ class ProductListPresenter @Inject constructor(
         if (isViewNotAttached) return
 
         safeSearchPresenter.setUserProfileDob(searchProductModel.userDOB)
+
+        byteIOTrackingDataFactoryImpl.renew(searchProductModel.requestId)
+
         val productDataView = createFirstProductDataView(searchProductModel)
 
         if (isSearchRedirected(productDataView)) {
@@ -1217,7 +1226,7 @@ class ProductListPresenter @Inject constructor(
                 externalReference = externalReference
             )
         )
-        view.sendTrackingByteIO("") //TODO:: IMPR_ID from BE
+        view.sendTrackingByteIO()
     }
 
     private fun createGeneralSearchTrackingEventCategory() =

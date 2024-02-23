@@ -1,15 +1,19 @@
 package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.analytics.byteio.EntranceForm.SEARCH_PURE_GOODS_CARD
+import com.tokopedia.analytics.byteio.EntranceForm.SEARCH_VIDEO_GOODS_CARD
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.VIDEO_GOODS
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
-import com.tokopedia.search.result.product.ByteIOTrackingData
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.addtocart.AddToCartConstant.DEFAULT_PARENT_ID
 import com.tokopedia.search.result.product.productitem.ProductItemVisitable
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
@@ -78,6 +82,7 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
     var parentId: String = DEFAULT_PARENT_ID
     var isPortrait: Boolean = false
     var isImageBlurred: Boolean = false
+    var soldCount: Int = 0 // TODO
     var byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData()
     val byteIOImpressHolder = ImpressHolder()
 
@@ -198,20 +203,13 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
     val isKeywordIntentionLow : Boolean
         get() = keywordIntention == KEYWORD_INTENT_LOW
 
-    fun asByteIOSearchResult(aladdinButtonType: String?): AppLogSearch.SearchResult {
-        val searchResultId =
-            if (customVideoURL.isBlank())
-                if (hasParent()) parentId
-                else productID
-            else
-                ""
-
-        return AppLogSearch.SearchResult(
+    fun asByteIOSearchResult(aladdinButtonType: String?) =
+        AppLogSearch.SearchResult(
             imprId = byteIOTrackingData.imprId,
             searchId = byteIOTrackingData.searchId,
             searchEntrance = byteIOTrackingData.searchEntrance,
             enterFrom = byteIOTrackingData.enterFrom,
-            searchResultId = searchResultId,
+            searchResultId = byteIOTrackingSearchResultID(),
             listItemId = null,
             itemRank = null,
             listResultType = null,
@@ -224,7 +222,32 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
             shopId = shopID,
             aladdinButtonType = aladdinButtonType,
         )
-    }
+
+    private fun byteIOTrackingSearchResultID(): String =
+        if (customVideoURL.isBlank())
+            if (hasParent()) parentId
+            else productID
+        else
+            ""
+
+    fun asByteIOProduct() = AppLogSearch.Product(
+        entranceForm = if (customVideoURL.isBlank()) SEARCH_PURE_GOODS_CARD else SEARCH_VIDEO_GOODS_CARD,
+        volume = soldCount,
+        rate = ratingString.toFloatOrZero(),
+        isAd = isAds,
+        productID = productID,
+        searchID = byteIOTrackingData.searchId,
+        requestID = byteIOTrackingData.imprId,
+        searchResultID = byteIOTrackingSearchResultID(),
+        enterFrom = GOODS_SEARCH,
+        listItemId = null,
+        itemRank = null,
+        listResultType = null,
+        searchKeyword = byteIOTrackingData.keyword,
+        tokenType = if (customVideoURL.isBlank()) GOODS else VIDEO_GOODS,
+        rank = position,
+        shopID = shopID,
+    )
 
     companion object {
         private const val LABEL_POSITION_SHOW_BLUR = "show"

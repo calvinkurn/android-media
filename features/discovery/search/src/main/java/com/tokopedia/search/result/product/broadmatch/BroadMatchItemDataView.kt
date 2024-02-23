@@ -1,8 +1,10 @@
 package com.tokopedia.search.result.product.broadmatch
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProduct
 import com.tokopedia.search.result.domain.model.SearchProductV5
@@ -11,7 +13,7 @@ import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.model.StockBarDataView
-import com.tokopedia.search.result.product.ByteIOTrackingData
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option.Product
 import com.tokopedia.search.result.product.wishlist.Wishlistable
@@ -88,26 +90,43 @@ data class BroadMatchItemDataView(
     fun asByteIOSearchResult(
         optionAdapterPosition: Int,
         aladdinButtonType: String?,
-    ): AppLogSearch.SearchResult {
-        return AppLogSearch.SearchResult(
-            imprId = byteIOTrackingData.imprId,
-            searchId = byteIOTrackingData.searchId,
-            searchEntrance = byteIOTrackingData.searchEntrance,
-            enterFrom = byteIOTrackingData.enterFrom,
-            searchResultId = id,
-            listItemId = id,
-            itemRank = position,
-            listResultType = AppLogSearch.ParamValue.GOODS,
-            productID = id,
-            searchKeyword = byteIOTrackingData.keyword,
-            tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
-            rank = optionAdapterPosition,
-            isAd = isOrganicAds,
-            isFirstPage = byteIOTrackingData.isFirstPage,
-            shopId = null,
-            aladdinButtonType = aladdinButtonType,
-        )
-    }
+    ) = AppLogSearch.SearchResult(
+        imprId = byteIOTrackingData.imprId,
+        searchId = byteIOTrackingData.searchId,
+        searchEntrance = byteIOTrackingData.searchEntrance,
+        enterFrom = byteIOTrackingData.enterFrom,
+        searchResultId = id,
+        listItemId = id,
+        itemRank = position,
+        listResultType = AppLogSearch.ParamValue.GOODS,
+        productID = id,
+        searchKeyword = byteIOTrackingData.keyword,
+        tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
+        rank = optionAdapterPosition,
+        isAd = isOrganicAds,
+        isFirstPage = byteIOTrackingData.isFirstPage,
+        shopId = null,
+        aladdinButtonType = aladdinButtonType,
+    )
+
+    fun asByteIOProduct(optionAdapterPosition: Int) = AppLogSearch.Product(
+        entranceForm = EntranceForm.SEARCH_HORIZONTAL_GOODS_CARD,
+        volume = null,
+        rate = ratingAverage.toFloatOrZero(),
+        isAd = isOrganicAds,
+        productID = id,
+        searchID = byteIOTrackingData.searchId,
+        requestID = byteIOTrackingData.imprId,
+        searchResultID = id,
+        enterFrom = byteIOTrackingData.enterFrom,
+        listItemId = id,
+        itemRank = position,
+        listResultType = AppLogSearch.ParamValue.GOODS,
+        searchKeyword = byteIOTrackingData.keyword,
+        tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
+        rank = optionAdapterPosition,
+        shopID = null,
+    )
 
     companion object {
 

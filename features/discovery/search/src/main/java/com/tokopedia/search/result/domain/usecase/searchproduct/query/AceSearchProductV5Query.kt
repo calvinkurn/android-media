@@ -23,6 +23,7 @@ object AceSearchProductV5Query {
                 productListType
                 hasPostProcessing
                 hasButtonATC
+                dynamicFields
               }
               isQuerySafe
               additionalParams
