@@ -340,4 +340,6 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_CHATBOT_ENABLE_DYNAMIC_CSAT = "android_chatbot_enable_dynamic_csat";
 
+    public static final String ANDROID_ENABLE_AUTO_APPLY_PROMO_TRACKER = "android_enable_auto_apply_promo_tracker";
+
 }
