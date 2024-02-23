@@ -3,16 +3,15 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
 import com.tokopedia.discovery_component.widgets.automatecoupon.DynamicColorText
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeClaimCouponUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.model.ClaimCouponUiModel
-import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
+import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.CouponCtaState
 import com.tokopedia.home_component.visitable.CouponTrackerModel
@@ -20,14 +19,11 @@ import com.tokopedia.home_component.visitable.CouponWidgetDataItemModel
 import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -37,7 +33,6 @@ class HomeViewModelClaimCouponTest {
 
     private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
     private val claimCouponUseCase = mockk<HomeClaimCouponUseCase>(relaxed = true)
-    private val errorExceptionObserver = mockk<Observer<Event<Throwable>>>(relaxed = true)
 
     private lateinit var homeViewModel: HomeRevampViewModel
 
@@ -114,18 +109,16 @@ class HomeViewModelClaimCouponTest {
 
     @Test
     fun `It should be unable to claim coupon`() = runTest {
-        val mockException = MessageErrorException("Yah, kuota kupon habis.")
+        coEvery { claimCouponUseCase.invoke(any()) } throws MessageErrorException("Yah, kuota kupon habis.")
 
-        coEvery { claimCouponUseCase.invoke(any()) } returns ClaimCouponUiModel(
-            isRedeemSucceed = false,
-            errorException = mockException
+        homeViewModel = createHomeViewModel(
+            homeClaimCouponUseCase = claimCouponUseCase
         )
-
-        homeViewModel = createHomeViewModel(homeClaimCouponUseCase = claimCouponUseCase)
-        homeViewModel.errorEventLiveData.observeForever(errorExceptionObserver)
 
         homeViewModel.onCouponClaim(model, "", 0)
 
-        verify { homeViewModel.errorEventLiveData.value }
+        homeViewModel.errorEventLiveData.observeOnce {
+            Assert.assertTrue(it.getContentIfNotHandled() is MessageErrorException)
+        }
     }
 }
