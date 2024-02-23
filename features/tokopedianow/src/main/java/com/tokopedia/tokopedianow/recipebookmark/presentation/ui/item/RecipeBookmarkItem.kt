@@ -64,7 +64,7 @@ fun RecipeBookmarkItem(
     val portion = recipe.portion
     val tags = remember { recipe.tags.orEmpty() }
 
-    val iconModifier = remember(position) {
+    val iconModifier = remember(recipe) {
         Modifier
             .height(15.dp)
             .width(15.dp)
@@ -74,7 +74,7 @@ fun RecipeBookmarkItem(
             }
     }
 
-    val cardModifier = remember(position) {
+    val cardModifier = remember(recipe) {
         Modifier
             .padding(top = 8.dp, bottom = 8.dp)
             .fillMaxWidth()
