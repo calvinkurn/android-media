@@ -65,7 +65,6 @@ object AppLogPdp {
             it.put("quit_type", quitType)
             it.put("source_module",/*TODO*/ "")
             it.put("product_id", product.productId)
-            it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
             it.put("main_photo_view_cnt", product.mainPhotoViewCount)
