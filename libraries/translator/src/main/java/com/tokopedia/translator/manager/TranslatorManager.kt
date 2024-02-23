@@ -25,6 +25,7 @@ import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.TextView
+import com.google.gson.Gson
 import com.tokopedia.translator.R
 import com.tokopedia.translator.callback.ActivityTranslatorCallbacks
 import com.tokopedia.translator.repository.model.StringPoolItem
@@ -34,8 +35,6 @@ import com.tokopedia.translator.ui.CommonUtil
 import com.tokopedia.translator.ui.SharedPrefsUtils
 import com.tokopedia.translator.ui.TranslatorSettingView.*
 import com.tokopedia.translator.util.ViewUtil
-import org.json.JSONArray
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,6 +42,9 @@ import java.lang.ref.WeakReference
 
 
 class TranslatorManager() {
+
+    private val gson = Gson()
+
     private var mApplication: Application? = null
     private var mSelectors = HashMap<String, String>()
     private var mStringPoolManager: StringPoolManager = StringPoolManager()
@@ -194,7 +196,8 @@ class TranslatorManager() {
         val service =
             RetrofitClientInstance.getRetrofitInstance().create(GetDataService::class.java)
 //        val call = service.getTranslatedStringY(API_KEY, origStrings!!, mLangsGroup, "plain")
-        val call = service.getTranslatedString("dict-chrome-ex", "id","en", "t", origStrings!!)
+        val originStrList = origStrings!!.split(DELIM.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val call = service.getTranslatedString("dict-chrome-ex", "id","en", "t", originStrList)
         CommonUtil.showToast(mApplication, "Translation starting...");
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
@@ -205,17 +208,14 @@ class TranslatorManager() {
                             TAG,
                             "Received response from server: $strJson --> ${getCurrentActivity()}"
                         )
-                        val data = JSONArray(strJson)
-//                        val resCode = data.get(0)
-                        if (data != null) {
-//                            val arrText = data.getJSONArray(TAG_TEXT_ARRAY)
-                            val arrText = data.getString(0)
+
+                        val arrayStr = jsonStringToArray(strJson)
+
+                        if (arrayStr.isNotEmpty()) {
 
                             mStringPoolManager.updateCache(
                                 origStrings!!.split(DELIM.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray(),
-                                arrText.split(
-                                    DELIM.toRegex()
-                                ).dropLastWhile { it.isEmpty() }.toTypedArray()
+                                arrayStr
                             )
 
                             val charCountOld =
@@ -248,6 +248,11 @@ class TranslatorManager() {
                 t.printStackTrace()
             }
         })
+    }
+
+    fun jsonStringToArray(jsonString: String?): Array<String> {
+        if (jsonString?.isBlank() == true) return emptyArray()
+        return gson.fromJson(jsonString, Array<String>::class.java)
     }
 
     public fun updateScreenWithTranslatedString() {
