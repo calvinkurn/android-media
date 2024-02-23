@@ -12,6 +12,7 @@ import com.tokopedia.media.loader.utils.MediaTarget
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import java.io.File
 
 private const val DEFAULT_TIMEOUT_MS = 2_500L // 2.5 sec
 
@@ -81,6 +82,14 @@ fun Any.getBitmapFromUrl(
     properties: Properties.() -> Unit = {}
 ): Bitmap? {
     return MediaLoaderTarget.loadImageFuture(context, timeout, Properties().apply(properties).setSource(this))
+}
+
+fun Any.downloadImageFromUrl(
+    context: Context,
+    timeout: Long = DEFAULT_TIMEOUT_MS,
+    properties: Properties.() -> Unit = {}
+): File? {
+    return MediaLoaderTarget.downloadImageFuture(context, timeout, Properties().apply(properties).setSource(this))
 }
 
 fun String.getBitmapImageUrlAsFlow(
