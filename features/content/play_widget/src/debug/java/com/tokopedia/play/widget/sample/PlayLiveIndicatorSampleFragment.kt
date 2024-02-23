@@ -36,7 +36,7 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
 
     private fun setupViewBased() {
         binding.indicatorView.setAnalyticModel(
-            PlayWidgetLiveIndicatorView.AnalyticModel("channel_id", "product_id", "shop_id")
+            PlayWidgetLiveIndicatorView.AnalyticModel("12345", "67890", "13579")
         )
         binding.indicatorView.setImpressionTag("view_based")
 
