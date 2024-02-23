@@ -889,30 +889,34 @@ class CheckoutViewModel @Inject constructor(
             )
             val shouldGetPayment = shouldGetPayment(listData.value)
             if (shouldGetPayment) {
-                getPaymentData()
+                getCheckoutPaymentData()
             } else {
-                var cost = listData.value.cost()!!
-                val paymentFeeCheckoutRequest = PaymentFeeCheckoutRequest(
-                    gatewayCode = "",
-                    profileCode = shipmentPlatformFeeData.profileCode,
-                    paymentAmount = cost.totalPrice,
-                    additionalData = shipmentPlatformFeeData.additionalData
-                )
-                cost = paymentProcessor.checkPlatformFee(
-                    shipmentPlatformFeeData,
-                    cost,
-                    paymentFeeCheckoutRequest
-                )
-                listData.value =
-                    calculator.updateShipmentCostModel(
-                        listData.value,
-                        cost,
-                        null,
-                        isTradeInByDropOff,
-                        summariesAddOnUiModel
-                    )
+                getCheckoutPlatformFee()
             }
         }
+    }
+
+    private suspend fun getCheckoutPlatformFee() {
+        var cost = listData.value.cost()!!
+        val paymentFeeCheckoutRequest = PaymentFeeCheckoutRequest(
+            gatewayCode = "",
+            profileCode = shipmentPlatformFeeData.profileCode,
+            paymentAmount = cost.totalPrice,
+            additionalData = shipmentPlatformFeeData.additionalData
+        )
+        cost = paymentProcessor.checkPlatformFee(
+            shipmentPlatformFeeData,
+            cost,
+            paymentFeeCheckoutRequest
+        )
+        listData.value =
+            calculator.updateShipmentCostModel(
+                listData.value,
+                cost,
+                null,
+                isTradeInByDropOff,
+                summariesAddOnUiModel
+            )
     }
 
     fun updateAddOnGiftingProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
@@ -3031,25 +3035,64 @@ class CheckoutViewModel @Inject constructor(
         return hasValidOrder && isPaymentWidgetEnable
     }
 
-    private suspend fun getPaymentData() {
+    private suspend fun getCheckoutPaymentData() {
         val checkoutItems = listData.value.toMutableList()
         var payment = checkoutItems.payment() ?: return
+
+        // show loading
         payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading))
         checkoutItems[checkoutItems.size - 4] = payment
         listData.value = checkoutItems
+
         var cost = listData.value.cost()!!
-        // has selected payment data?
         val paymentRequest = paymentProcessor.generatePaymentRequest(checkoutItems)
+
         if (payment.data == null) {
+            // get payment widget if not yet
             payment = paymentProcessor.getPaymentWidget(
                 GetPaymentWidgetRequest(
                     paymentRequest = paymentRequest
                 ),
                 payment
             )
+
+            if (payment.widget.state == CheckoutPaymentWidgetState.Error) {
+                // show error
+                val newItems = listData.value.toMutableList()
+                cost = cost.copy(
+                    dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
+                    usePaymentFees = true
+                )
+                listData.value =
+                    calculator.updateShipmentCostModel(
+                        newItems,
+                        cost,
+                        payment,
+                        isTradeInByDropOff,
+                        summariesAddOnUiModel
+                    )
+                return
+            }
         }
-        if (payment.widget.state == CheckoutPaymentWidgetState.Error) {
+
+        // get platform fee
+        val paymentFeeCheckoutRequest = PaymentFeeRequest(
+            gatewayCode = "",
+            profileCode = shipmentPlatformFeeData.profileCode,
+            additionalData = shipmentPlatformFeeData.additionalData,
+            transactionAmount = cost.totalPrice,
+            paymentRequest = paymentRequest
+        )
+        cost = paymentProcessor.checkPlatformFeeOcc(
+            cost,
+            paymentFeeCheckoutRequest
+        )
+        if (cost.dynamicPaymentFees == null) {
+            // show error
             val newItems = listData.value.toMutableList()
+            payment = payment.copy(
+                widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Error)
+            )
             cost = cost.copy(
                 dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
                 usePaymentFees = true
@@ -3064,17 +3107,7 @@ class CheckoutViewModel @Inject constructor(
                 )
             return
         }
-        val paymentFeeCheckoutRequest = PaymentFeeRequest(
-            gatewayCode = "",
-            profileCode = shipmentPlatformFeeData.profileCode,
-            additionalData = shipmentPlatformFeeData.additionalData,
-            transactionAmount = cost.totalPrice,
-            paymentRequest = paymentRequest
-        )
-        cost = paymentProcessor.checkPlatformFeeOcc(
-            cost,
-            paymentFeeCheckoutRequest
-        )
+
         listData.value =
             calculator.updateShipmentCostModel(
                 listData.value,

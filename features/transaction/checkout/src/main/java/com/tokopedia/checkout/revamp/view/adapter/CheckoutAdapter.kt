@@ -161,7 +161,7 @@ class CheckoutAdapter(
             }
 
             CheckoutPaymentViewHolder.VIEW_TYPE -> {
-                CheckoutPaymentViewHolder(ItemCheckoutPaymentBinding.inflate(inflater, parent, false))
+                CheckoutPaymentViewHolder(ItemCheckoutPaymentBinding.inflate(inflater, parent, false), listener)
             }
 
             CheckoutCostViewHolder.VIEW_TYPE -> {

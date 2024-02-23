@@ -2779,4 +2779,8 @@ class CheckoutFragment :
             )
         }
     }
+
+    override fun onRetryGetPayment() {
+        viewModel.calculateTotal()
+    }
 }

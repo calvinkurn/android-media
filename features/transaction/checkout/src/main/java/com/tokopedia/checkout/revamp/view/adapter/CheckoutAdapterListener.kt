@@ -169,4 +169,6 @@ interface CheckoutAdapterListener {
     fun onSendImpressionDropshipWidgetAnalytics()
 
     fun onViewGwpBenefit(benefit: CheckoutProductBenefitModel)
+
+    fun onRetryGetPayment()
 }

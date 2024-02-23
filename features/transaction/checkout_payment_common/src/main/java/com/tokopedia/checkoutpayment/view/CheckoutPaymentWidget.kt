@@ -28,9 +28,14 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.purchase_platform.common.utils.LightAndDarkModePreview
+import com.tokopedia.purchase_platform.common.utils.setOnClickDebounceListener
 
 @Composable
-fun CheckoutPaymentWidget(data: CheckoutPaymentWidgetData, modifier: Modifier = Modifier) {
+fun CheckoutPaymentWidget(
+    data: CheckoutPaymentWidgetData,
+    modifier: Modifier = Modifier,
+    onRetryClickedListener: () -> Unit = {}
+) {
     if (data.state != CheckoutPaymentWidgetState.None) {
         NestTheme {
             Column(
@@ -77,6 +82,9 @@ fun CheckoutPaymentWidget(data: CheckoutPaymentWidgetData, modifier: Modifier = 
                                 .fillMaxWidth()
                                 .background(NestTheme.colors.YN._50)
                                 .padding(start = 16.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
+                                .setOnClickDebounceListener {
+                                    onRetryClickedListener()
+                                }
                         ) {
                             NestTypography(
                                 text = "Pembayaran gagal ditampilkan. Coba lagi, yuk! Pembayaran gagal ditampilkan. Coba lagi, yuk!",
