@@ -113,6 +113,11 @@
     <string name="recharge_order_detail_about_orders_title">Tentang Pesananmu</string>
     <string name="recharge_order_detail_help_center_title">Pusat Bantuan</string>
     <string name="recharge_order_detail_help_center_detail">Info lebih lanjut, jika ada kendala</string>
+    <string name="recharge_order_detail_cancel_order_dialog_title">Yakin batalkan transaksi?</string>
+    <string name="recharge_order_detail_cancel_order_dialog_description">Setelah dibatalkan, dana kamu akan dikembalikan ke metode pembayaran yang kamu pilih.</string>
+    <string name="recharge_order_detail_cancel_order_dialog_cta_primary">Batalkan</string>
+    <string name="recharge_order_detail_cancel_order_dialog_cta_secondary">Kembali</string>
+    <string name="recharge_order_detail_cancel_order_dialog_failed">Terjadi kesalahan, mohon dicoba kembali</string>
 
     <string name="recharge_order_detail_copied_message" formatted="false">%s berhasil tersalin</string>
     <string name="deals_order_detail_copied_message">Kode voucher berhasil disalin</string>

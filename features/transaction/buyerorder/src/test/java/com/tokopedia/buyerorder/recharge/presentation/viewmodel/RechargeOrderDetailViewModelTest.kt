@@ -6,6 +6,8 @@ import com.tokopedia.buyerorder.recharge.data.response.RechargeEmoneyVoidRespons
 import com.tokopedia.buyerorder.recharge.domain.RechargeEmoneyVoidUseCase
 import com.tokopedia.buyerorder.recharge.domain.RechargeOrderDetailUseCase
 import com.tokopedia.buyerorder.recharge.presentation.model.*
+import com.tokopedia.common_digital.common.data.model.RechargeSetFailData
+import com.tokopedia.common_digital.common.usecase.RechargeSetFailUseCase
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -42,6 +44,7 @@ class RechargeOrderDetailViewModelTest {
     private val getRecommendationUseCaseCoroutine: GetRecommendationUseCase = mockk()
     private val bestSellerMapper: BestSellerMapper = mockk()
     private val recommendationUseCase: DigitalRecommendationUseCase = mockk()
+    private val rechargeSetFailUseCase: RechargeSetFailUseCase = mockk(relaxed = true)
 
     @Before
     fun setUp() {
@@ -51,6 +54,7 @@ class RechargeOrderDetailViewModelTest {
             getRecommendationUseCaseCoroutine,
             bestSellerMapper,
             recommendationUseCase,
+            rechargeSetFailUseCase,
             dispatcher
         )
     }
@@ -446,5 +450,34 @@ class RechargeOrderDetailViewModelTest {
         viewModel.voidEmoneyData(orderId)
         // then
         assertEquals(error, (viewModel.emoneyVoidResponse.value as Fail).throwable)
+    }
+
+    @Test
+    fun executeCancelOrder_shouldReturnSuccess() {
+        // given
+        coEvery {
+            rechargeSetFailUseCase(any())
+        } returns RechargeSetFailData(RechargeSetFailData.RechargeSetOrderToFail(RechargeSetFailData.RechargeSetOrderToFail.Attributes(-1, -1, true, "")))
+
+        // when
+        viewModel.executeCancelOrder(-1)
+
+        // then
+        assert(viewModel.rechargeSetFailResult.value is Success)
+        assert((viewModel.rechargeSetFailResult.value as Success<RechargeSetFailData>).data.rechargeSetOrderToFail.attributes.isSuccess)
+    }
+
+    @Test
+    fun executeCancelOrder_shouldReturnFail() {
+        // given
+        coEvery {
+            rechargeSetFailUseCase(any())
+        } throws Exception()
+
+        // when
+        viewModel.executeCancelOrder(-1)
+
+        // then
+        assert(viewModel.rechargeSetFailResult.value is Fail)
     }
 }

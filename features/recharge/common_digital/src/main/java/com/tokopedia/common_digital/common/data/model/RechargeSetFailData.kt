@@ -1,4 +1,4 @@
-package com.tokopedia.unifyorderhistory.data.model
+package com.tokopedia.common_digital.common.data.model
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName

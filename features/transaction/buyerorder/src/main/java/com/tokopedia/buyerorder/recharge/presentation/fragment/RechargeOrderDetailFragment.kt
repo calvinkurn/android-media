@@ -34,6 +34,7 @@ import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRe
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
@@ -207,6 +208,27 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
     override fun onVoidButtonClicked() {
         showVoidDialog()
+    }
+
+    override fun onCancelOrderButtonClicked() {
+        context?.let {
+            DialogUnify(
+                it,
+                DialogUnify.HORIZONTAL_ACTION,
+                DialogUnify.NO_IMAGE
+            ).apply {
+                setTitle(it.getString(R.string.recharge_order_detail_cancel_order_dialog_title))
+                setDescription(it.getString(R.string.recharge_order_detail_cancel_order_dialog_description))
+                setPrimaryCTAText(it.getString(R.string.recharge_order_detail_cancel_order_dialog_cta_primary))
+                setPrimaryCTAClickListener {
+                    rechargeViewModel.executeCancelOrder(orderId.toIntOrZero())
+                }
+                setSecondaryCTAText(it.getString(R.string.recharge_order_detail_cancel_order_dialog_cta_secondary))
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+            }.show()
+        }
     }
 
     override fun onBestSellerClick(
@@ -406,6 +428,36 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 }
             }
         })
+
+        rechargeViewModel.rechargeSetFailResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    val isSuccess = it.data.rechargeSetOrderToFail.attributes.isSuccess
+                    if (isSuccess) {
+                        activity?.finish()
+                    } else {
+                        Toaster.build(
+                            binding.root,
+                            it.data.rechargeSetOrderToFail.attributes.errorMessage,
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                }
+
+                is Fail -> {
+                    context?.getString(R.string.recharge_order_detail_cancel_order_dialog_failed)
+                        ?.let { errMsg ->
+                            Toaster.build(
+                                binding.root,
+                                errMsg,
+                                Toaster.LENGTH_SHORT,
+                                Toaster.TYPE_NORMAL
+                            ).show()
+                        }
+                }
+            }
+        }
     }
 
     private fun showMainView() {

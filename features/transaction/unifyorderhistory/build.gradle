@@ -90,6 +90,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.scpRewardsTouchpoints)
     implementation projectOrAar(rootProject.ext.features.reviewCommon)
+    implementation projectOrAar(rootProject.ext.features.commonDigital)
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger
