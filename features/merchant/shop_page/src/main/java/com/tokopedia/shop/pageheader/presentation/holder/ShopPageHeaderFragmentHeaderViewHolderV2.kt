@@ -499,12 +499,11 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 ShopPageHeaderLayoutUiModel.BgObjectType.VIDEO
             )
             val backgroundColor = shopHeaderConfig?.listBackgroundColor?.firstOrNull().orEmpty()
+            setHeaderBackgroundColor(backgroundColor)
             if (null != backgroundVideo) {
                 setHeaderBackgroundVideo(backgroundVideo.url)
             } else if (null != backgroundImage) {
                 setHeaderBackgroundImage(backgroundImage.url)
-            } else {
-                setHeaderBackgroundColor(backgroundColor)
             }
         }
     }
@@ -514,8 +513,6 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     private fun setHeaderBackgroundColor(backgroundColor: String) {
-        backgroundVideoShopHeader?.hide()
-        backgroundImageShopHeader?.hide()
         backgroundColorShopHeader?.apply {
             show()
             val finalBackgroundColor = if (backgroundColor.isEmpty()) {
@@ -531,10 +528,8 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     private fun setHeaderBackgroundImage(imageUrl: String) {
-        backgroundColorShopHeader?.hide()
         backgroundVideoShopHeader?.hide()
         backgroundImageShopHeader?.apply {
-            backgroundColorShopHeader?.hide()
             show()
             loadImage(imageUrl)
         }
@@ -904,7 +899,6 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 
     private fun setHeaderBackgroundVideo(videoUrl: String) {
         backgroundImageShopHeader?.hide()
-        backgroundColorShopHeader?.hide()
         if (playVideoWrapper == null) {
             playVideoWrapper = PlayVideoWrapper.Builder(context).build()
             playVideoWrapper?.addListener(object : PlayVideoWrapper.Listener {
