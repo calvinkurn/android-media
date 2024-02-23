@@ -65,5 +65,13 @@ data class SuggestionUnify(
     @Expose
     val url: String = ""
 ) {
+    companion object {
+        const val RECENT_SEARCH = "recent_search"
+    }
+
     fun isMasterTemplate(): Boolean = template == AutoCompleteTemplateEnum.Master.toString()
+
+    fun isRecentSearchFeature(): Boolean = featureId == RECENT_SEARCH
+
+    fun isTrendingWord(): Boolean = isMasterTemplate() && !isRecentSearchFeature()
 }

@@ -401,7 +401,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     private fun `Then verify quick filter clicked`(filter: Filter, option: Option) {
         verify {
-            productListView.onQuickFilterSelected(filter, option, any())
+            productListView.onQuickFilterSelected(filter, option, any(), position)
         }
     }
 

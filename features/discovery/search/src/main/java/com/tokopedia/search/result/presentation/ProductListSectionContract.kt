@@ -65,7 +65,7 @@ interface ProductListSectionContract {
         fun openAddToCartToaster(message: String, isSuccess: Boolean)
         fun openVariantBottomSheet(data: ProductItemDataView)
         fun sendGTMTrackingProductATC(productItemDataView: ProductItemDataView?, cartId: String?)
-        fun onQuickFilterSelected(filter: Filter, option: Option, pageSource: String)
+        fun onQuickFilterSelected(filter: Filter, option: Option, pageSource: String, position: Int)
         fun initFilterController(quickFilterList: List<Filter>)
         fun setAutoFilterToggle(autoFilterParameter: String)
         fun setSortFilterIndicatorCounter()
