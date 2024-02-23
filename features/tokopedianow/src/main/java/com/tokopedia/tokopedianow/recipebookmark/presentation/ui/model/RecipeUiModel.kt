@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel
+package com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model
 
 import androidx.compose.runtime.Immutable
 import com.tokopedia.abstraction.base.view.adapter.Visitable

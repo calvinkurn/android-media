@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.recipebookmark.presentation.model
 
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.ToasterModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.ToasterModel
 
 sealed class RecipeBookmarkAction {
 

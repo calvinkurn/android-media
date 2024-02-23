@@ -11,8 +11,8 @@ import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.ToasterModel
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.ToasterUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.ToasterModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.ToasterUiModel
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToDuration
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToIngredientIds
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToPortion
@@ -179,7 +179,8 @@ open class BaseTokoNowRecipeListViewModel(
                         recipeId = recipeId,
                         isSuccess = true
                 )
-            ))
+            )
+            )
 
             visitableItems.updateRecipeBookmark(
                 recipeId = recipeId,
@@ -195,7 +196,8 @@ open class BaseTokoNowRecipeListViewModel(
                         recipeId = recipeId,
                         isSuccess = false
                 )
-            ))
+            )
+            )
         }
     }
 

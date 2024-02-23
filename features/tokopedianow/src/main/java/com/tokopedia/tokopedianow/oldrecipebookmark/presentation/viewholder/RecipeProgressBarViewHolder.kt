@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeProgressBarUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeProgressBarUiModel
 
 class RecipeProgressBarViewHolder(
     itemView: View

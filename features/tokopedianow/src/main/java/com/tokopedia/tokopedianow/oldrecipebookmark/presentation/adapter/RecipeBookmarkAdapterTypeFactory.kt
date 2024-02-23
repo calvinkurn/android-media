@@ -4,9 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeProgressBarUiModel
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeShimmeringUiModel
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeProgressBarUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeShimmeringUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeUiModel
 import com.tokopedia.tokopedianow.oldrecipebookmark.presentation.viewholder.RecipeProgressBarViewHolder
 import com.tokopedia.tokopedianow.oldrecipebookmark.presentation.viewholder.RecipeShimmeringViewHolder
 import com.tokopedia.tokopedianow.oldrecipebookmark.presentation.viewholder.RecipeViewHolder

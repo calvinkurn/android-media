@@ -1,12 +1,9 @@
 package com.tokopedia.tokopedianow.recipebookmark.presentation.ui.layout
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -29,9 +26,9 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.ui.item.TokoNowLoadMoreProgressItem
 import com.tokopedia.tokopedianow.common.ui.layout.TokoNowGlobalErrorLayout
 import com.tokopedia.tokopedianow.recipebookmark.analytics.RecipeBookmarkAnalytics
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeProgressBarUiModel
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeShimmeringUiModel
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeProgressBarUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeShimmeringUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeUiModel
 import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.item.RecipeBookmarkItem
 import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.item.RecipeBookmarkShimmeringItem
 import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkEvent

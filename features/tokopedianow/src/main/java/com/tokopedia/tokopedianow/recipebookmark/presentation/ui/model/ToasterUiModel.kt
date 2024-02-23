@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel
+package com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model
 
 data class ToasterUiModel(
     val model: ToasterModel? = null,

@@ -42,7 +42,7 @@ import com.tokopedia.tokopedianow.common.analytics.ListItemImpression
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.analytics.RecipeBookmarkAnalytics
 import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkEvent
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeUiModel
 import com.tokopedia.tokopedianow.recipecommon.ui.item.RecipeTagItem
 import com.tokopedia.tokopedianow.recipecommon.ui.model.TagUiModel
 import com.tokopedia.user.session.UserSession

@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.oldrecipebookmark.presentation.viewmodel
 
 import com.tokopedia.tokopedianow.recipebookmark.domain.mapper.RecipeBookmarksMapper.mapResponseToUiModelList
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.GetRecipeBookmarksResponse
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeProgressBarUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeProgressBarUiModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.verifyEquals

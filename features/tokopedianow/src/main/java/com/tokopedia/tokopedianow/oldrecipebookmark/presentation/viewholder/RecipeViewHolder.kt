@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeBookmarkBinding
 import com.tokopedia.tokopedianow.oldrecipebookmark.presentation.adapter.TagAdapter
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecipeViewHolder(

@@ -1,8 +1,8 @@
 package com.tokopedia.tokopedianow.oldrecipebookmark.presentation.adapter
 
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeProgressBarUiModel
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeShimmeringUiModel
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeProgressBarUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeShimmeringUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeUiModel
 
 interface RecipeBookmarkTypeFactory {
     fun type(recipeUiModel: RecipeUiModel): Int

@@ -19,10 +19,10 @@ import com.tokopedia.tokopedianow.recipebookmark.domain.model.GetRecipeBookmarks
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.GetRecipeBookmarksUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeProgressBarUiModel
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeShimmeringUiModel
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeUiModel
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.ToasterModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeProgressBarUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeShimmeringUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.ToasterModel
 import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkAction
 import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkEvent
 import com.tokopedia.tokopedianow.recipebookmark.presentation.model.RecipeBookmarkEvent.AddRecipeBookmark

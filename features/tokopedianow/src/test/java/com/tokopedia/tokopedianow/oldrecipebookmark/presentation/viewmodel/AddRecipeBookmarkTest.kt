@@ -2,8 +2,8 @@ package com.tokopedia.tokopedianow.oldrecipebookmark.presentation.viewmodel
 
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.AddRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.ToasterModel
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.ToasterUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.ToasterModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.ToasterUiModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.util.TestUtils.verifyEquals
 import com.tokopedia.tokopedianow.util.TestUtils.verifyFail

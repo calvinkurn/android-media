@@ -30,8 +30,8 @@ import com.tokopedia.tokopedianow.oldrecipebookmark.presentation.viewholder.Reci
 import com.tokopedia.tokopedianow.oldrecipebookmark.presentation.viewmodel.TokoNowRecipeBookmarkViewModel
 import com.tokopedia.tokopedianow.recipebookmark.analytics.RecipeBookmarkAnalytics
 import com.tokopedia.tokopedianow.recipebookmark.di.component.DaggerRecipeBookmarkComponent
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.RecipeShimmeringUiModel
-import com.tokopedia.tokopedianow.recipebookmark.presentation.uimodel.ToasterUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.RecipeShimmeringUiModel
+import com.tokopedia.tokopedianow.recipebookmark.presentation.ui.model.ToasterUiModel
 import com.tokopedia.tokopedianow.recipebookmark.util.RecyclerViewSpaceItemDecoration
 import com.tokopedia.tokopedianow.recipebookmark.util.UiState
 import com.tokopedia.tokopedianow.recipebookmark.util.repeatOnLifecycle
