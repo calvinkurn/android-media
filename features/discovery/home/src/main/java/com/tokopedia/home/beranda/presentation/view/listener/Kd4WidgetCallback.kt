@@ -24,7 +24,7 @@ class Kd4WidgetCallback constructor(
     }
 
     override fun onCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             Kd4SquareTracker.cardClicked(
                 channel,
                 channelGrid,
@@ -35,7 +35,7 @@ class Kd4WidgetCallback constructor(
     }
 
     override fun onViewAllChevronClicked(channel: ChannelModel) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             Kd4SquareTracker.viewAllChevronClicked(channel) as HashMap<String, Any>
         )
     }

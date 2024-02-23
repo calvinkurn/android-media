@@ -74,12 +74,11 @@ object Kd4SquareTracker : BaseTrackerConst() {
     fun viewAllChevronClicked(model: ChannelModel): Map<String, Any> {
         val attribute = model.trackingAttributionModel
 
-        val trackingBuilder = BaseTrackerBuilder().constructBasicPromotionClick(
+        val trackingBuilder = BaseTrackerBuilder().constructBasicGeneralClick(
             event = PROMO_CLICK,
             eventAction = CHEVRON_CLICK_ACTION,
             eventCategory = Category.HOMEPAGE,
-            eventLabel = "${attribute.channelId} - ${attribute.headerName}",
-            promotions = listOf()
+            eventLabel = "${attribute.channelId} - ${attribute.headerName}"
         )
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
