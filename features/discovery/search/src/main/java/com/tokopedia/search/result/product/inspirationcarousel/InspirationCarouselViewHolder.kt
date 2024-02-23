@@ -15,6 +15,7 @@ import com.tokopedia.carouselproductcard.reimagine.grid.CarouselProductCardGridM
 import com.tokopedia.carouselproductcard.reimagine.viewallcard.CarouselProductCardViewAllCardModel
 import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.home_component_header.view.HomeComponentHeaderListener
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -276,10 +277,16 @@ class InspirationCarouselViewHolder(
                 ),
                 impressHolder = { product },
                 onImpressed = {
-                    inspirationCarouselListener.onImpressedInspirationCarouselChipsProduct(product)
+                    inspirationCarouselListener.onImpressedInspirationCarouselChipsProduct(
+                        product,
+                        bindingAdapterPosition,
+                    )
                 },
                 onClick = {
-                    inspirationCarouselListener.onInspirationCarouselChipsProductClicked(product)
+                    inspirationCarouselListener.onInspirationCarouselChipsProductClicked(
+                        product,
+                        bindingAdapterPosition,
+                    )
                 }
             )
         }
@@ -318,7 +325,10 @@ class InspirationCarouselViewHolder(
                     ) {
                         val product =
                             activeOptionsProducts.getOrNull(carouselProductCardPosition) ?: return
-                        inspirationCarouselListener.onInspirationCarouselChipsProductClicked(product)
+                        inspirationCarouselListener.onInspirationCarouselChipsProductClicked(
+                            product,
+                            bindingAdapterPosition,
+                        )
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object :
@@ -331,7 +341,8 @@ class InspirationCarouselViewHolder(
                             activeOptionsProducts.getOrNull(carouselProductCardPosition) ?: return
 
                         inspirationCarouselListener.onImpressedInspirationCarouselChipsProduct(
-                            product
+                            product,
+                            bindingAdapterPosition,
                         )
                     }
 
@@ -369,9 +380,16 @@ class InspirationCarouselViewHolder(
 
             if (element.layout == LAYOUT_INSPIRATION_CAROUSEL_GRID) {
                 val option = element.options.getOrNull(0) ?: return
-                val productList = option.product.map{ product -> product.toProductCardModel() }
+                val productList = option.product.map { product -> product.toProductCardModel() }
                 it.initRecyclerViewForGrid(option, productList)
                 configureSeeAllButton(option)
+
+                it.addOnImpression1pxListener(option.byteIOImpressHolder) {
+                    inspirationCarouselListener.onInspirationCarouselOptionImpressed1Px(
+                        option,
+                        bindingAdapterPosition,
+                    )
+                }
             } else {
                 it.setDefaultHeightInspirationCarouselOptionList()
                 it.layoutManager = createLayoutManager()
@@ -499,6 +517,7 @@ class InspirationCarouselViewHolder(
         val typeFactory = InspirationCarouselOptionAdapterTypeFactory(
             inspirationCarouselListener,
             reimagineSearch2Component,
+            bindingAdapterPosition,
         )
         val inspirationCarouselProductAdapter = InspirationCarouselOptionAdapter(typeFactory)
         inspirationCarouselProductAdapter.clearData()

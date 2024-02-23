@@ -8,6 +8,7 @@ import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.StockBarDataView
+import com.tokopedia.search.result.product.ByteIOTrackingData
 
 class InspirationCarouselProductDataViewMapper {
 
@@ -22,7 +23,8 @@ class InspirationCarouselProductDataViewMapper {
         carouselTitle: String,
         dimension90: String,
         externalReference: String,
-        trackingOption: Int = 0,
+        trackingOption: Int,
+        byteIOTrackingData: ByteIOTrackingData,
     ): List<InspirationCarouselDataView.Option.Product> {
 
         return inspirationCarouselProduct.mapIndexed { index, product ->
@@ -70,7 +72,8 @@ class InspirationCarouselProductDataViewMapper {
                 trackingOption = trackingOption,
                 stockBarDataView = StockBarDataView.create(product.stockBar),
                 warehouseID = product.warehouseIdDefault,
-                categoryID = product.categoryId
+                categoryID = product.categoryId,
+                byteIOTrackingData = byteIOTrackingData,
             )
         }
     }

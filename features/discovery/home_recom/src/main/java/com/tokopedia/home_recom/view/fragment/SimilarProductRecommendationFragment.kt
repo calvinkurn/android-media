@@ -240,10 +240,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                             val recommendationItems = pair.first
                             if (recommendationItems.isNotEmpty()) {
                                 recommendationItems.getOrNull(0)?.let {
-                                    navToolbar?.setToolbarTitle(if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation))
+                                    navToolbar?.setToolbarTitle(
+                                        it.productItem.header.ifEmpty { getString(R.string.recom_similar_recommendation) })
                                 }
                                 hasNextPage = pair.second
-                                renderList(mapDataModel(recommendationItems), pair.second)
+                                renderList(recommendationItems, pair.second)
                                 if(!hasNextPage) showToastSuccess(getString(R.string.recom_msg_empty_next_page))
                             }else{
                                 hideLoading()
@@ -598,16 +599,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      * Private function
      * =================================================================================
      */
-
-    /**
-     * Function [mapDataModel]
-     * It handling mapper pojo into dataModel
-     * @param listRecommendationModel list pojo recommendationWidget from API
-     * @return list of dataModel
-     */
-    private fun mapDataModel(listRecommendationModel: List<RecommendationItem>): List<RecommendationItemDataModel>{
-        return listRecommendationModel.map { RecommendationItemDataModel(it) }
-    }
 
     private fun createProductCardOptionsModel(recommendationItem: RecommendationItem, position: Int): ProductCardOptionsModel {
         val productCardOptionsModel = ProductCardOptionsModel()

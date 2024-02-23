@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
@@ -63,5 +64,9 @@ class BigGridProductItemViewHolder(
             productItemData,
             createImageProductViewHintListener(productItemData)
         )
+
+        productCardView.addOnImpression1pxListener(productItemData.byteIOImpressHolder) {
+            productListener.onProductImpressedByteIO(productItemData)
+        }
     }
 }

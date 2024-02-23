@@ -21,6 +21,10 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_QUICK
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_FAVORITE_BUTTON
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_MORE_BUTTON
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_MORE_FINDALIKE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.REFRESH
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -32,9 +36,11 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.discovery.common.manager.AdultManager
+import com.tokopedia.discovery.common.manager.ProductCardOptionsResult
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.manager.startSimilarSearch
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
@@ -721,14 +727,33 @@ class ProductListFragment: BaseDaggerFragment(),
         activity?.let {
             AdultManager.handleActivityResult(it, requestCode, resultCode, data)
             handleProductCardOptionsActivityResult(
-                    requestCode = requestCode,
-                    resultCode = resultCode,
-                    data = data,
-                    wishlistCallback = object : ProductCardOptionsWishlistCallback {
-                        override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
-                            handleWishlistAction(productCardOptionsModel)
-                        }
+                requestCode = requestCode,
+                resultCode = resultCode,
+                data = data,
+                wishlistCallback = object : ProductCardOptionsWishlistCallback {
+                    override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                        handleWishlistAction(productCardOptionsModel)
+
+                        val threeDotsProductItem = presenter?.threeDotsProductItem ?: return
+                        AppLogSearch.eventSearchResultClick(
+                            threeDotsProductItem.asByteIOSearchResult(CLICK_FAVORITE_BUTTON)
+                        )
                     }
+                },
+                seeSimilarProductCallback = object : ProductCardOptionsResult {
+                    override fun onReceiveResult(productCardOptionsModel: ProductCardOptionsModel) {
+                        startSimilarSearch(
+                            it,
+                            productCardOptionsModel.productId,
+                            productCardOptionsModel.keyword,
+                        )
+
+                        val threeDotsProductItem = presenter?.threeDotsProductItem ?: return
+                        AppLogSearch.eventSearchResultClick(
+                            threeDotsProductItem.asByteIOSearchResult(CLICK_MORE_FINDALIKE)
+                        )
+                    }
+                }
             )
 
             atcVariantBottomSheetLauncher.onActivityResult(requestCode, resultCode, data)
@@ -750,6 +775,11 @@ class ProductListFragment: BaseDaggerFragment(),
     //region product item (organic and topads) impression, click, and 3 dots click
     override fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int) {
         presenter?.onProductImpressed(item, adapterPosition)
+    }
+
+    override fun onProductImpressedByteIO(item: ProductItemDataView?) {
+        item ?: return
+        AppLogSearch.eventSearchResultShow(item.asByteIOSearchResult(null))
     }
 
     private val additionalPositionMap: Map<String, String>
@@ -896,6 +926,10 @@ class ProductListFragment: BaseDaggerFragment(),
         )
     }
 
+    override fun sendByteIOTrackingProductClick(item: ProductItemDataView) {
+        AppLogSearch.eventSearchResultClick(item.asByteIOSearchResult(""))
+    }
+
     override fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int) {
         item ?: return
         val intent = getProductIntent(item.productID, item.warehouseID, item.applink) ?: return
@@ -950,6 +984,12 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun trackEventLongPress(productID: String) {
         SearchTracking.trackEventProductLongPress(queryKey, productID)
+    }
+
+    override fun trackEventThreeDotsClickByteIO(productItemDataView: ProductItemDataView) {
+        AppLogSearch.eventSearchResultClick(
+            productItemDataView.asByteIOSearchResult(CLICK_MORE_BUTTON)
+        )
     }
 
     override fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel) {
@@ -1074,7 +1114,12 @@ class ProductListFragment: BaseDaggerFragment(),
         return filterController.getFilterViewState(option.uniqueId)
     }
 
-    override fun onQuickFilterSelected(filter: Filter, option: Option, pageSource: String) {
+    override fun onQuickFilterSelected(
+        filter: Filter,
+        option: Option,
+        pageSource: String,
+        position: Int
+    ) {
         val isQuickFilterSelectedReversed = !isFilterSelected(option)
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed)
 
@@ -1096,6 +1141,7 @@ class ProductListFragment: BaseDaggerFragment(),
             isQuickFilterSelectedReversed,
             pageSource,
         )
+        trackChooseSearchFilter(isQuickFilterSelectedReversed, option.value, position)
     }
 
     private fun setFilterToQuickFilterController(option: Option, isQuickFilterSelected: Boolean) {
@@ -1118,6 +1164,21 @@ class ProductListFragment: BaseDaggerFragment(),
             keyword = queryKey,
             pageSource = pageSource,
         )
+    }
+
+    private fun trackChooseSearchFilter(isSelected: Boolean,
+                                        filterValue: String,
+                                        position: Int) {
+        if (!isSelected) return
+        AppLogSearch.eventChooseSearchFilter(AppLogSearch.ChooseSearchFilter(
+            searchId = "", // TODO milhamj: wait for BE data
+            searchType = GOODS_SEARCH,
+            searchKeyword = queryKey,
+            ecomSortName = "",
+            ecomFilterName = filterValue,
+            ecomFilterPosition = position,
+            buttonTypeClick = FILTER_QUICK
+        ))
     }
 
     override fun initFilterController(quickFilterList: List<Filter>) {
@@ -1180,6 +1241,7 @@ class ProductListFragment: BaseDaggerFragment(),
             onQuickFilterSelected(
                 filter = filter,
                 option = firstOption,
+                position =  position,
                 pageSource = Dimension90Utils.getDimension90(searchParameter)
             )
         }

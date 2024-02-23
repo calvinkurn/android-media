@@ -8,6 +8,7 @@ import com.tokopedia.discovery.common.reimagine.Search2Component
 class InspirationCarouselOptionAdapterTypeFactory(
     private val listener: InspirationCarouselListener,
     private val reimagineSearch2Component: Search2Component,
+    private val optionAdapterPosition: Int,
 ) : BaseAdapterTypeFactory(), InspirationCarouselOptionTypeFactory {
 
     private val isReimagine: Boolean
@@ -37,13 +38,14 @@ class InspirationCarouselOptionAdapterTypeFactory(
             InspirationCarouselOptionInfoViewHolder.LAYOUT ->
                 InspirationCarouselOptionInfoViewHolder(parent, listener)
             InspirationCarouselOptionGridViewHolder.LAYOUT ->
-                InspirationCarouselOptionGridViewHolder(parent, listener)
+                InspirationCarouselOptionGridViewHolder(parent, listener, optionAdapterPosition)
             InspirationCarouselOptionGridBannerViewHolder.LAYOUT ->
                 InspirationCarouselOptionGridBannerViewHolder(parent, listener)
             InspirationCarouselOptionGridReimagineViewHolder.LAYOUT ->
                 InspirationCarouselOptionGridReimagineViewHolder(
                     parent,
                     listener,
+                    optionAdapterPosition,
                 )
             else -> super.createViewHolder(parent, type)
         }

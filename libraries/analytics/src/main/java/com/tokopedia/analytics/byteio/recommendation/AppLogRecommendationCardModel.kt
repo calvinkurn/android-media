@@ -1,21 +1,24 @@
 package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.ActionType
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.EntranceForm
 import org.json.JSONObject
 
 /**
  * Byte.io tracking model
  */
-data class AppLogRecommendationCardModel (
-    val cardName: String,
+data class AppLogRecommendationCardModel(
+    val cardName: CardName,
+    val cardType: String,
     val productId: String,
     val listName: String?,
     val listNum: Int?,
     val moduleName: String,
+    val sourceModule: String,
+    val trackId: String,
     val isAd: Int,
     val isUseCache: Int,
     val recSessionId: String,
@@ -24,24 +27,33 @@ data class AppLogRecommendationCardModel (
     val shopId: String,
     val groupId: String,
     val itemOrder: Int,
-    val type: AppLogRecommendationType,
+    val entranceForm: EntranceForm,
+    val volume: Int? = null,
+    val rate: Float? = null,
+    val originalPrice: Float? = null,
+    val salesPrice: Float? = null,
+    val type: AppLogRecommendationType
 ) {
 
     fun toShowClickJson() = JSONObject().apply {
-        put(AppLogParam.CARD_NAME, cardName)
+        put(AppLogParam.CARD_NAME, cardName.str.format(cardType))
+        put(AppLogParam.PRODUCT_ID, productId)
         put(AppLogParam.LIST_NAME, listName)
         put(AppLogParam.LIST_NUM, listNum)
-        put(AppLogParam.SOURCE_MODULE, moduleName)
-        put(AppLogParam.PRODUCT_ID, productId)
         put(AppLogParam.IS_AD, isAd)
         put(AppLogParam.IS_USE_CACHE, isUseCache)
-        put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.SHOP_ID, shopId)
-        put(AppLogRecommendationConst.REC_PARAMS, recParams)
-        put(AppLogParam.GROUP_ID, groupId)
+
         put(AppLogParam.ITEM_ORDER, itemOrder)
+        put(AppLogParam.TRACK_ID, trackId)
+
+        put(AppLogParam.REQUEST_ID, requestId)
+        put(AppLogRecommendationConst.REC_PARAMS, recParams)
+
+        put(AppLogParam.ENTRANCE_FORM, entranceForm.str)
+        put(AppLogParam.SOURCE_MODULE, sourceModule)
+
         addPage()
-        addEntranceForm()
         addSourcePageType()
     }
 
@@ -60,8 +72,10 @@ data class AppLogRecommendationCardModel (
 
     companion object {
         fun create(
-            cardName: String = "",
+            cardId: String = "",
             productId: String = "",
+            cardName: CardName,
+            cardType: String = "",
             position: Int = 0,
             tabName: String = "",
             tabPosition: Int = 0,
@@ -73,23 +87,36 @@ data class AppLogRecommendationCardModel (
             requestId: String = "",
             shopId: String = "",
             groupId: String = "",
-            type: AppLogRecommendationType,
+            entranceForm: EntranceForm,
+            volume: Int? = null,
+            rate: Float? = null,
+            originalPrice: Float? = null,
+            salesPrice: Float? = null,
+            type: AppLogRecommendationType
         ): AppLogRecommendationCardModel {
             return AppLogRecommendationCardModel(
                 cardName = cardName,
+                cardType = cardType,
                 productId = productId,
                 listName = tabName,
                 listNum = tabPosition.inc(),
                 moduleName = moduleName,
-                isAd = if(isAd) 1 else 0,
-                isUseCache = if(isUseCache) 1 else 0,
+                sourceModule = constructSourceModule(false, isAd, moduleName, type),
+                trackId = "${requestId}_${cardId}_${position.inc()}",
+                isAd = if (isAd) 1 else 0,
+                isUseCache = if (isUseCache) 1 else 0,
                 recSessionId = recSessionId,
                 recParams = recParams,
                 requestId = requestId,
                 shopId = shopId,
                 groupId = groupId,
                 itemOrder = position.inc(),
-                type = type,
+                entranceForm = entranceForm,
+                volume = volume,
+                rate = rate,
+                originalPrice = originalPrice,
+                salesPrice = salesPrice,
+                type = type
             )
         }
     }

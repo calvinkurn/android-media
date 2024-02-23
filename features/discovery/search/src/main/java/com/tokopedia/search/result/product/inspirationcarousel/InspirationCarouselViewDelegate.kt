@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.inspirationcarousel
 
 import android.content.Context
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.result.presentation.view.fragment.RecyclerViewUpdater
 import com.tokopedia.search.result.product.QueryKeyProvider
@@ -49,7 +50,10 @@ class InspirationCarouselViewDelegate @Inject constructor(
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
     }
 
-    override fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product) {
+    override fun trackEventClickInspirationCarouselGridItem(
+        product: InspirationCarouselDataView.Option.Product,
+        optionAdapterPosition: Int,
+    ) {
         val data =
             InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData(
                 product,
@@ -57,6 +61,10 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselClick(data)
+
+        AppLogSearch.eventSearchResultClick(
+            product.asByteIOSearchResult(optionAdapterPosition, "")
+        )
     }
 
     override fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product) {
@@ -80,7 +88,10 @@ class InspirationCarouselViewDelegate @Inject constructor(
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
     }
 
-    override fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product) {
+    override fun trackEventClickInspirationCarouselChipsItem(
+        product: InspirationCarouselDataView.Option.Product,
+        optionAdapterPosition: Int,
+    ) {
         val data =
             InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData(
                 product,
@@ -88,6 +99,10 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselClick(data)
+
+        AppLogSearch.eventSearchResultClick(
+            product.asByteIOSearchResult(optionAdapterPosition, "")
+        )
     }
 
     override fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option) {

@@ -1,16 +1,15 @@
 package com.tokopedia.search.result.product.broadmatch
 
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 
 interface BroadMatchListener {
-    fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
+    fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView, adapterPosition: Int)
 
     fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView)
 
-    fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
+    fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView, adapterPosition: Int)
 
-    fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView)
+    fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView, adapterPosition: Int)
 
     fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView)
 
