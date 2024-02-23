@@ -38,7 +38,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
     override fun onActivityResumed(activity: Activity) {
         if (isPdpPage(activity) && activity is BaseSimpleActivity) {
             // in case the activity is resuming, we start the startTime in onResume, not onCreate
-            if (activity.startTime <= 0) {
+            if (activity.startTime == 0L) {
                 activity.startTime = System.currentTimeMillis()
             }
         }
@@ -52,6 +52,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
                     (activity as IAppLogPdpActivity).getProductTrack(),
                     activity.isFinishing, AppLogAnalytics.activityCount
                 )
+                activity.startTime = 0L
             }
         }
     }
