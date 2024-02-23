@@ -2,11 +2,13 @@ package com.tokopedia.analytics.byteio.pdp
 
 import android.annotation.SuppressLint
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addRequestId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePreviousPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
@@ -40,7 +42,6 @@ object AppLogPdp {
             it.put("original_price", product.originalPrice)
             it.put("sale_price", product.salePrice)
             it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
-            it.put("track_id", AppLogAnalytics.globalTrackId)
         })
     }
 
@@ -72,7 +73,6 @@ object AppLogPdp {
             it.put("product_type", product.productType.type)
             it.put("original_price", product.originalPrice)
             it.put("sale_price", product.salePrice)
-            it.put("track_id", AppLogAnalytics.globalTrackId)
             it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
             it.put("is_sku_selected", product.isSkuSelected)
             it.put("is_add_cart", product.isAddCartSelected)
@@ -99,8 +99,6 @@ object AppLogPdp {
             it.put("currency", product.currency)
             it.put("quantity", product.qty)
             it.put("is_have_address", (if (product.isHaveAddress) 1 else 0))
-            it.put("request_id", AppLogAnalytics.globalRequestId)
-            it.put("track_id", AppLogAnalytics.globalTrackId)
         })
     }
 
@@ -111,7 +109,7 @@ object AppLogPdp {
             it.addSourcePageType()
             it.addEntranceForm()
             it.addSourceModule()
-            // it.addSourcePreviousPage
+            it.addSourcePreviousPage()
             it.addRequestId()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
@@ -125,8 +123,6 @@ object AppLogPdp {
             it.put("add_sku_num", product.addSkuNum)
 //            it.put("sku_num_before", product.skuNumBefore)
 //            it.put("sku_num_after", product.skuNumAfter)
-            it.put("request_id", AppLogAnalytics.globalRequestId)
-            it.put("track_id", AppLogAnalytics.globalTrackId)
         })
     }
 
@@ -137,7 +133,7 @@ object AppLogPdp {
             it.addSourcePageType()
             it.addEntranceForm()
             it.addSourceModule()
-            // it.addSourcePreviousPage
+            it.addSourcePreviousPage()
             it.addRequestId()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
@@ -154,14 +150,14 @@ object AppLogPdp {
             it.put("cart_item_id", product.cartItemId)
             it.put("is_success", if (product.isSuccess == true) 1 else 0)
             it.put("fail_reason", product.failReason)
-            it.put("request_id", AppLogAnalytics.globalRequestId)
-            it.put("track_id", AppLogAnalytics.globalTrackId)
         })
     }
 
     fun sendCartEnterPage(cartCount: Int, cartUnavailCount: Int) {
         AppLogAnalytics.send(EventName.ENTER_PAGE, JSONObject().also {
             it.addPage()
+            it.addEnterFrom()
+            it.addSourcePreviousPage()
             it.put("cart_item_cnt", cartCount)
             it.put("cart_unavailable_cnt", cartUnavailCount)
         })
@@ -170,6 +166,7 @@ object AppLogPdp {
     fun sendCartButtonClick(model: CartClickAnalyticsModel) {
         AppLogAnalytics.send(EventName.BUTTON_CLICK, JSONObject().also {
             it.addPage()
+            it.addSourcePreviousPage()
             it.addEntranceForm()
             it.put("button_name", model.buttonName)
             it.put("cart_item_id", model.cartItemId)
