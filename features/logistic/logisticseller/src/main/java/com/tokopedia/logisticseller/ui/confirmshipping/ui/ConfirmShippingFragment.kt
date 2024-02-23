@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -76,6 +77,22 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
         false
     }
 
+    private val composeIntent =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                activity?.setResult(
+                    Activity.RESULT_OK,
+                    Intent().apply {
+                        putExtra(
+                            RESULT_CONFIRM_SHIPPING,
+                            result.data?.extras?.getString(RESULT_CONFIRM_SHIPPING)
+                        )
+                    }
+                )
+            }
+            activity?.finish()
+        }
+
     private val binding by viewBinding(FragmentSomConfirmShippingBinding::bind)
 
     companion object {
@@ -133,8 +150,7 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
                 putExtra(PARAM_ORDER_ID, currOrderId)
                 putExtra(PARAM_CURR_IS_CHANGE_SHIPPING, currIsChangeShipping)
             }
-            startActivity(intent)
-            activity?.finish()
+            composeIntent.launch(intent)
         }
     }
 
