@@ -46,7 +46,6 @@ import com.tokopedia.contactus.inboxtickets.view.customview.CustomEditText
 import com.tokopedia.contactus.inboxtickets.view.fragment.CloseComplainBottomSheet
 import com.tokopedia.contactus.inboxtickets.view.fragment.HelpFullBottomSheet
 import com.tokopedia.contactus.inboxtickets.view.fragment.ServicePrioritiesBottomSheet
-import com.tokopedia.contactus.inboxtickets.view.listeners.InboxDetailListener
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity.Companion.BUNDLE_ID_TICKET
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity.Companion.IS_OFFICIAL_STORE
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstanta.KEY_DISLIKED
@@ -58,9 +57,10 @@ import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailConstant
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailViewModel.Companion.FIND_KEYWORD
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailViewModel.Companion.NOT_FIND_ANY_TEXT
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailViewModel.Companion.OUT_OF_BOND
-import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.OnFindKeywordAtTicket
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetailUiEffect
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetailUiState
+import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.OnFindKeywordAtTicket
+import com.tokopedia.contactus.inboxtickets.view.listeners.InboxDetailListener
 import com.tokopedia.contactus.inboxtickets.view.utils.CLOSED
 import com.tokopedia.contactus.inboxtickets.view.utils.Utils
 import com.tokopedia.contactus.utils.CommonConstant.FIRST_INITIALIZE_ZERO
@@ -156,9 +156,10 @@ class TicketFragment :
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[InboxDetailViewModel::class.java] }
 
-    private val imagePicker= getImagePickerResultActivityLauncher()
+    private val imagePicker = getImagePickerResultActivityLauncher()
 
-    private val csatPageActivityForResult= getCSATResultActivityLauncher()
+    private val csatPageActivityForResult = getCSATResultActivityLauncher()
+    private val dynamicCsatPageActivityForResult = getDynamicCsatResultActivityLauncher()
 
     @JvmField
     var mMenu: Menu? = null
@@ -377,7 +378,7 @@ class TicketFragment :
         goToImagePicker(intent)
     }
 
-    private fun goToImagePicker(intent : Intent){
+    private fun goToImagePicker(intent: Intent) {
         imagePicker.launch(intent)
     }
 
@@ -563,6 +564,23 @@ class TicketFragment :
             val rating = dataResult?.getLongExtra(BaseFragmentProvideRating.EMOJI_STATE, 0L).orZero()
             val reason = dataResult?.getStringExtra(BaseFragmentProvideRating.SELECTED_ITEM).orEmpty()
             viewModel.submitCsatRating(reason, rating.toInt())
+        }
+    }
+
+    private fun handlingSubmitDynamicCsatRating(result: ActivityResult) {
+        if (result.resultCode == Activity.RESULT_OK) {
+            showProgressBar()
+            val service = result.data?.getStringExtra(DynamicCsatConst.SERVICE).orEmpty()
+            val otherReason = result.data?.getStringExtra(DynamicCsatConst.OTHER_REASON).orEmpty()
+            val dynamicReasons = result.data?.getStringArrayListExtra(DynamicCsatConst.DYNAMIC_REASON).orEmpty()
+            val rating = result.data?.extras?.getInt(DynamicCsatConst.EMOJI_STATE).orZero()
+            viewModel.submitCsatRating(
+                reason = "",
+                rating = rating,
+                otherReason = otherReason,
+                service = service,
+                dynamicReasons = dynamicReasons
+            )
         }
     }
 
@@ -790,7 +808,7 @@ class TicketFragment :
         }
     }
 
-    private fun goToCSATPage(intentToPageCsat : Intent){
+    private fun goToCSATPage(intentToPageCsat: Intent) {
         csatPageActivityForResult.launch(intentToPageCsat)
     }
 
@@ -865,11 +883,11 @@ class TicketFragment :
                 } else {
                     helpFullBottomSheet = HelpFullBottomSheet()
                     helpFullBottomSheet?.setCloseListener(object :
-                        HelpFullBottomSheet.CloseSHelpFullBottomSheet {
-                        override fun onClick(agreed: Boolean) {
-                            setHelpOnClick(agreed)
-                        }
-                    })
+                            HelpFullBottomSheet.CloseSHelpFullBottomSheet {
+                            override fun onClick(agreed: Boolean) {
+                                setHelpOnClick(agreed)
+                            }
+                        })
                     helpFullBottomSheet?.show(parentFragmentManager, "helpFullBottomSheet")
 
                     binding?.viewRplyBottonBeforeCsatRating?.root?.hide()
@@ -903,11 +921,11 @@ class TicketFragment :
             if (viewModel.isTicketAllowClose()) {
                 closeComplainBottomSheet = CloseComplainBottomSheet()
                 closeComplainBottomSheet?.setCloseListener(object :
-                    CloseComplainBottomSheet.CloseComplainBottomSheetListner {
-                    override fun onClickComplain(agreed: Boolean) {
-                        sendComplain(agreed)
-                    }
-                })
+                        CloseComplainBottomSheet.CloseComplainBottomSheetListner {
+                        override fun onClickComplain(agreed: Boolean) {
+                            sendComplain(agreed)
+                        }
+                    })
                 closeComplainBottomSheet?.show(parentFragmentManager, "closeComplainBottomSheet")
             } else {
                 binding?.layoutReplayMessage?.root?.show()
@@ -1109,9 +1127,11 @@ class TicketFragment :
                 override fun onCompleted() {}
                 override fun onError(e: Throwable) {}
                 override fun onNext(aLong: Long) {
-                    if ((rvMessageList?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() != position) scrollToResult(
-                        position
-                    )
+                    if ((rvMessageList?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() != position) {
+                        scrollToResult(
+                            position
+                        )
+                    }
                 }
             })
     }
@@ -1184,7 +1204,9 @@ class TicketFragment :
         for (item in imagesAttachment) {
             if (item.url?.isNotEmpty() == true) {
                 imagesUrl.add(item.url ?: "")
-            } else imagesUrl.add(item.thumbnail ?: "")
+            } else {
+                imagesUrl.add(item.thumbnail ?: "")
+            }
         }
         startActivity(
             ImagePreviewActivity.getCallingIntent(
@@ -1223,7 +1245,7 @@ class TicketFragment :
             if (viewModel.isShowRating()) {
                 toggleTextToolbar(View.GONE)
             } else if (viewModel.getTicketStatus()
-                    .equals(CLOSED, ignoreCase = true) && !viewModel.isShowRating()
+                .equals(CLOSED, ignoreCase = true) && !viewModel.isShowRating()
             ) {
                 showIssueClosed()
             } else {
@@ -1243,8 +1265,8 @@ class TicketFragment :
 
     private fun onBackPressed() {
         if ((
-                imageUploadAdapter?.itemCount.orZero()
-                ) > 1 || binding?.layoutReplayMessage?.root?.visibility == View.VISIBLE &&
+            imageUploadAdapter?.itemCount.orZero()
+            ) > 1 || binding?.layoutReplayMessage?.root?.visibility == View.VISIBLE &&
             edMessage?.isFocused == true && edMessage?.text?.isNotEmpty() == true && parentFragmentManager.backStackEntryCount <= 0
         ) {
             val builder = AlertDialog.Builder(context)
@@ -1279,7 +1301,7 @@ class TicketFragment :
         }
     }
 
-    private fun handleImageResult(it: ActivityResult){
+    private fun handleImageResult(it: ActivityResult) {
         if (it.resultCode == Activity.RESULT_OK) {
             val imagePathList = ImagePickerResultExtractor.extract(it.data).imageUrlOrPathList
             if (imagePathList.size > SIZE_ZERO) {
@@ -1297,10 +1319,16 @@ class TicketFragment :
     }
 
     private fun getCSATResultActivityLauncher(): ActivityResultLauncher<Intent> {
-         return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                 handlingSubmitCsatRating(it)
-         }
-     }
+        return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            handlingSubmitCsatRating(it)
+        }
+    }
+
+    private fun getDynamicCsatResultActivityLauncher(): ActivityResultLauncher<Intent> {
+        return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            handlingSubmitDynamicCsatRating(it)
+        }
+    }
 }
 
 interface BackTicketListener {

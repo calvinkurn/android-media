@@ -147,13 +147,16 @@ class InboxDetailViewModel @Inject constructor(
         getTicketDetails(ticketId)
     }
 
-    fun submitCsatRating(reason: String, rating: Int) {
+    fun submitCsatRating(reason: String, rating: Int, otherReason: String? = "", service: String? = "", dynamicReasons: List<String>? = emptyList()) {
         launchCatchError(
             block = {
                 val requestParams = submitRatingUseCase.createRequestParams(
                     getFirstCommentId(),
                     rating,
-                    reason
+                    reason, // failed if empty string
+                    otherReason,
+                    service,
+                    dynamicReasons
                 )
                 val chipGetInboxDetail = submitRatingUseCase(requestParams).getInboxDetail()
                 if (chipGetInboxDetail.getErrorListMessage().isNotEmpty()) {
@@ -603,7 +606,6 @@ class InboxDetailViewModel @Inject constructor(
                 if (isCanUploadImageWithSecureUpload(chipUploadHostConfig)) {
                     securelyUploadedImages =
                         secureUploadUseCase.uploadSecureImage(files, chipUploadHostConfig, uniqIDs)
-
                 } else {
                     val errorMessage =
                         chipUploadHostConfig.getUploadHostConfig().getErrorMessage()
@@ -652,12 +654,12 @@ class InboxDetailViewModel @Inject constructor(
         )
     }
 
-    private fun isCanUploadImageWithSecureUpload(chipUploadHostConfig: ChipUploadHostConfig) : Boolean {
+    private fun isCanUploadImageWithSecureUpload(chipUploadHostConfig: ChipUploadHostConfig): Boolean {
         return chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData().getHost()
             .getServerID() != FAILURE_KEY_UPLOAD_HOST_CONFIG
     }
 
-    private fun isReplayingTicketSuccess(replayingTicketResponse: TicketReplyResponse) : Boolean{
+    private fun isReplayingTicketSuccess(replayingTicketResponse: TicketReplyResponse): Boolean {
         return replayingTicketResponse.getTicketReplay()
             .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
     }
@@ -696,7 +698,7 @@ class InboxDetailViewModel @Inject constructor(
         )
     }
 
-    private fun isSendAttachmentSuccess(sendingAttachmentUrlResponse: StepTwoResponse) : Boolean {
+    private fun isSendAttachmentSuccess(sendingAttachmentUrlResponse: StepTwoResponse): Boolean {
         return sendingAttachmentUrlResponse.getTicketAttach().getAttachment().isSuccess > INDEX_ZERO
     }
 
