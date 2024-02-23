@@ -22,6 +22,7 @@ import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.StyleDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.product.ByteIOTrackingData
 import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.broadmatch.RelatedDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
@@ -50,7 +51,8 @@ class ProductViewModelMapper(
         isLocalSearchRecommendation: Boolean,
         externalReference: String,
         newCardType: String = "",
-        isEnableAdultContent: Boolean = true,
+        isEnableAdultContent: Boolean,
+        byteIOTrackingData: ByteIOTrackingData,
     ): ProductDataView {
         val productDataView = ProductDataView()
         val productListType =
@@ -63,13 +65,6 @@ class ProductViewModelMapper(
             dimension90,
         )
         productDataView.cpmModel = searchProductModel.cpmModel
-        productDataView.relatedDataView = relatedDataView(
-            searchProductModel,
-            isLocalSearch,
-            dimension90,
-            keyword,
-            externalReference
-        )
         productDataView.productList = convertToProductItemDataViewList(
             lastProductItemPosition,
             searchProductModel,
@@ -80,7 +75,21 @@ class ProductViewModelMapper(
             externalReference,
             searchProductModel.keywordIntention(isUseAceSearchProductV5),
             searchProductModel.isShowButtonAtc(isUseAceSearchProductV5),
-            if(isUseAceSearchProductV5) isEnableAdultContent else true
+            if (isUseAceSearchProductV5) isEnableAdultContent else true,
+            byteIOTrackingData,
+        )
+
+        val productCount =
+            productDataView.productList.size + searchProductModel.topAdsModel.data.size
+
+        productDataView.relatedDataView = relatedDataView(
+            searchProductModel,
+            isLocalSearch,
+            dimension90,
+            keyword,
+            externalReference,
+            byteIOTrackingData,
+            productCount,
         )
         productDataView.tickerModel = convertToTickerDataView(
             searchProductModel,
@@ -102,6 +111,8 @@ class ProductViewModelMapper(
             dimension90,
             externalReference,
             keyword,
+            byteIOTrackingData,
+            productCount,
         )
         productDataView.inspirationCarouselDataView =
             inspirationCarouselDataView.filter { !it.isCarouselSeamlessLayout() }
@@ -141,6 +152,7 @@ class ProductViewModelMapper(
             searchProductModel.isShowButtonAtc(isUseAceSearchProductV5)
         productDataView.isReimagineProductCard =
             reimagineRollence.search3ProductCard().isReimagineProductCard()
+        productDataView.keyword = keyword
 
         return productDataView
     }
@@ -150,7 +162,9 @@ class ProductViewModelMapper(
         isLocalSearch: Boolean,
         dimension90: String,
         keyword: String,
-        externalReference: String
+        externalReference: String,
+        byteIOTrackingData: ByteIOTrackingData,
+        productCount: Int,
     ): RelatedDataView =
         if (isUseAceSearchProductV5)
             RelatedDataView.create(
@@ -159,6 +173,13 @@ class ProductViewModelMapper(
                 dimension90,
                 keyword,
                 externalReference,
+                byteIOTrackingData.copy(
+                    isFirstPage = isWidgetInFirstPage(
+                        byteIOTrackingData.isFirstPage,
+                        searchProductModel.searchProductV5.data.related.position,
+                        productCount,
+                    ),
+                )
             )
         else
             RelatedDataView.create(
@@ -167,6 +188,13 @@ class ProductViewModelMapper(
                 dimension90,
                 keyword,
                 externalReference,
+                byteIOTrackingData.copy(
+                    isFirstPage = isWidgetInFirstPage(
+                        byteIOTrackingData.isFirstPage,
+                        searchProductModel.searchProductV5.data.related.position,
+                        productCount,
+                    ),
+                )
             )
 
     private fun convertToProductItemDataViewList(
@@ -179,7 +207,8 @@ class ProductViewModelMapper(
         externalReference: String,
         keywordIntention: Int,
         showButtonAtc: Boolean,
-        isEnableAdultContent: Boolean = true,
+        isEnableAdultContent: Boolean,
+        byteIOTrackingData: ByteIOTrackingData,
     ): List<ProductItemDataView> {
         return if (isUseAceSearchProductV5) {
             searchProductModel.searchProductV5.data.productList.mapIndexed { index, productModel ->
@@ -193,7 +222,8 @@ class ProductViewModelMapper(
                     productListType,
                     externalReference,
                     keywordIntention,
-                    isEnableAdultContent
+                    isEnableAdultContent,
+                    byteIOTrackingData,
                 )
             }
         } else {
@@ -208,7 +238,8 @@ class ProductViewModelMapper(
                     productListType,
                     externalReference,
                     keywordIntention,
-                    showButtonAtc
+                    showButtonAtc,
+                    byteIOTrackingData,
                 )
             }
         }
@@ -223,7 +254,8 @@ class ProductViewModelMapper(
         productListType: String,
         externalReference: String,
         keywordIntention: Int,
-        isEnableAdultContent: Boolean = true,
+        isEnableAdultContent: Boolean,
+        byteIOTrackingData: ByteIOTrackingData,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
 
@@ -236,6 +268,7 @@ class ProductViewModelMapper(
             productListType,
             externalReference,
             keywordIntention,
+            byteIOTrackingData,
         )
 
         productItem.productID = productModel.id
@@ -287,6 +320,7 @@ class ProductViewModelMapper(
         productListType: String,
         externalReference: String,
         keywordIntention: Int,
+        byteIOTrackingData: ByteIOTrackingData,
     ) {
         productItem.position = position
         productItem.pageTitle = if (isLocalSearchRecommendation) pageTitle else ""
@@ -294,6 +328,7 @@ class ProductViewModelMapper(
         productItem.productListType = productListType
         productItem.dimension131 = externalReference
         productItem.keywordIntention = keywordIntention
+        productItem.byteIOTrackingData = byteIOTrackingData
     }
 
     private fun convertToProductItem(
@@ -306,6 +341,7 @@ class ProductViewModelMapper(
         externalReference: String,
         keywordIntention: Int,
         showButtonAtc: Boolean,
+        byteIOTrackingData: ByteIOTrackingData,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
 
@@ -318,6 +354,7 @@ class ProductViewModelMapper(
             productListType,
             externalReference,
             keywordIntention,
+            byteIOTrackingData,
         )
 
         productItem.productID = productModel.id
@@ -439,11 +476,20 @@ class ProductViewModelMapper(
         dimension90: String,
         externalReference: String,
         keyword: String,
+        byteIOTrackingData: ByteIOTrackingData,
+        productCount: Int,
     ): List<InspirationCarouselDataView> =
         searchInspirationCarousel
             .data
             .map { data ->
-                inspirationCarouselDataView(data, dimension90, externalReference, keyword)
+                inspirationCarouselDataView(
+                    data,
+                    dimension90,
+                    externalReference,
+                    keyword,
+                    byteIOTrackingData,
+                    productCount,
+                )
             }
 
     private fun inspirationCarouselDataView(
@@ -451,6 +497,8 @@ class ProductViewModelMapper(
         dimension90: String,
         externalReference: String,
         keyword: String,
+        byteIOTrackingData: ByteIOTrackingData,
+        productCount: Int,
     ) = InspirationCarouselDataView(
         data.title,
         data.type,
@@ -462,6 +510,8 @@ class ProductViewModelMapper(
             dimension90,
             externalReference,
             keyword,
+            byteIOTrackingData,
+            productCount,
         ),
     )
 
@@ -470,8 +520,18 @@ class ProductViewModelMapper(
         dimension90: String,
         externalReference: String,
         keyword: String,
+        byteIOTrackingData: ByteIOTrackingData,
+        productCount: Int,
     ): List<InspirationCarouselDataView.Option> {
         val mapper = InspirationCarouselProductDataViewMapper()
+        val isCarouselInFirstPage = isWidgetInFirstPage(
+            byteIOTrackingData.isFirstPage,
+            data.position,
+            productCount,
+        )
+        val carouselByteIOTrackingData = byteIOTrackingData.copy(
+            isFirstPage = isCarouselInFirstPage
+        )
 
         return data.inspirationCarouselOptions.mapIndexed { index, opt ->
             val position = index + 1
@@ -496,7 +556,8 @@ class ProductViewModelMapper(
                     data.title,
                     dimension90,
                     externalReference,
-                    data.trackingOption.toIntOrZero()
+                    data.trackingOption.toIntOrZero(),
+                    carouselByteIOTrackingData,
                 ),
                 data.type,
                 data.layout,
@@ -513,9 +574,16 @@ class ProductViewModelMapper(
                 InspirationCarouselDataView.Bundle.create(opt),
                 keyword,
                 externalReference,
+                carouselByteIOTrackingData,
             )
         }
     }
+
+    private fun isWidgetInFirstPage(
+        isFirstPage: Boolean,
+        position: Int,
+        productCount: Int,
+    ): Boolean = isFirstPage && position <= productCount
 
     private fun createInspirationCarouselCardButtonViewModel(
         option: InspirationCarouselOption,

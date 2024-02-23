@@ -9,7 +9,6 @@ import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
-import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
@@ -22,6 +21,17 @@ object AppLogAnalytics {
 
     @JvmField
     var currentActivityReference: WeakReference<Activity>? = null
+
+    /**
+     * Stores page data in a stack
+     */
+    private val _pageDataList = ArrayList<HashMap<String, Any>>()
+
+    /**
+     * Return immutable list
+     */
+    val pageDataList: List<HashMap<String, Any>>
+        get() = _pageDataList.toList()
 
     @JvmField
     var currentActivityName: String = ""
@@ -170,15 +180,28 @@ object AppLogAnalytics {
         })
     }
 
-    fun sendCartEnterPage() {
+    fun sendCartEnterPage(cartCount: Int, cartUnavailCount: Int) {
         send(EventName.ENTER_PAGE, JSONObject().also {
             it.addPage()
+            it.put("cart_item_cnt", cartCount)
+            it.put("cart_unavailable_cnt", cartUnavailCount)
         })
     }
 
-    fun sendCartButtonClick() {
+    fun sendCartButtonClick(model: CartClickAnalyticsModel) {
         send(EventName.BUTTON_CLICK, JSONObject().also {
             it.addPage()
+            it.addEntranceForm()
+            it.put("button_name", model.buttonName)
+            it.put("cart_item_id", model.cartItemId)
+            it.put("original_price_value", model.originalPriceValue)
+            it.put("sale_price_value", model.salePriceValue)
+            it.put("discounted_amount", model.discountedAmount)
+            it.put("currency", "IDR")
+            it.put("item_cnt", model.ItemCnt)
+            it.put("sku_num", model.skuNum)
+            it.put("product_id", model.productId)
+            it.put("sku_id", model.skuId)
         })
     }
 
@@ -218,7 +241,7 @@ object AppLogAnalytics {
     internal fun JSONObject.addSourcePageType() {
         put(
             SOURCE_PAGE_TYPE,
-            if(sourcePageType == SourcePageType.PRODUCT_CARD) previousPageName()
+            if (sourcePageType == SourcePageType.PRODUCT_CARD) previousPageName()
             else sourcePageType?.str
         )
     }
@@ -229,9 +252,9 @@ object AppLogAnalytics {
         }
     }
 
-    private fun previousPageName(): String {
+    private fun previousPageName(skip: Int = 1): String {
         return synchronized(lock) {
-            (pageNames.getOrNull(pageNames.indexOf(pageNames.findLast { it.first == currentActivityName }) - 1)?.second)
+            (pageNames.getOrNull(pageNames.indexOf(pageNames.findLast { it.first == currentActivityName }) - skip)?.second)
                 ?: ""
         }
     }
@@ -245,7 +268,8 @@ object AppLogAnalytics {
             return
         }
         send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
-            it.addPage()
+            it.put(PREVIOUS_PAGE, previousPageName(2))
+            it.put(PAGE_NAME, PageName.PDP)
             it.addEntranceForm()
             it.addSourcePageType()
             it.put("stay_time", durationInMs)
@@ -280,7 +304,58 @@ object AppLogAnalytics {
         initAppLog(application.applicationContext)
         EventsSenderUtils.setEventsSenderEnable("573733", true, application)
         EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net")
-        Log.d(TAG, "AppLog dId: ${AppLog.getDid()} userUniqueId: ${AppLog.getUserUniqueID()} userId: ${AppLog.getUserUniqueID()}")
+        Log.d(
+            TAG,
+            "AppLog dId: ${AppLog.getDid()} userUniqueId: ${AppLog.getUserUniqueID()} userId: ${AppLog.getUserUniqueID()}"
+        )
     }
 
+    /**
+     * To add page data for every page
+     */
+    fun pushPageData() {
+        val tempHashMap = HashMap<String, Any>()
+        _pageDataList.add(tempHashMap)
+    }
+
+    /**
+     * To remove last page data
+     */
+    fun popPageData() {
+        _pageDataList.removeLast()
+    }
+
+    /**
+     * To update current page data
+     */
+    fun putPageData(key: String, value: Any) {
+        _pageDataList.last()[key] = value
+    }
+
+    fun getCurrentData(key: String): Any? {
+        return _pageDataList.last()[key]
+    }
+
+    fun getLastData(key: String): Any? {
+        _pageDataList.reversed().forEach { hashMap ->
+            hashMap[key]?.let {
+                return it
+            }
+        }
+        return null
+    }
+
+    fun getLastDataBeforeCurrent(key: String): Any? {
+        if (_pageDataList.isEmpty()) return null
+        _pageDataList.reversed().subList(1, _pageDataList.size).forEach { hashMap ->
+            hashMap[key]?.let {
+                return it
+            }
+        }
+        return null
+    }
+
+    fun resetPageData() {
+        _pageDataList.clear()
+    }
 }

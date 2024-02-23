@@ -44,6 +44,8 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
@@ -4246,6 +4248,14 @@ class CartRevampFragment :
         }
 
         sendAnalyticsScreenNameCartPage()
+        val availCount = cartData.availableSection.availableGroupGroups.sumOf {
+            group -> group.groupShopCartData.sumOf { it.cartDetails.sumOf { c -> c.products.size } }
+        }
+        val unavailCount = cartData.unavailableSections.sumOf { it.productsCount.toInt() }
+        /**
+         * This will hit when user refresh the cart TBC
+         * */
+        AppLogAnalytics.sendCartEnterPage(availCount, unavailCount)
         updateStateAfterFinishGetCartList()
 
         renderTickerAnnouncement(cartData)
@@ -4418,7 +4428,7 @@ class CartRevampFragment :
     private fun renderToShipmentFormSuccess(
         eeCheckoutData: Map<String, Any>,
         checkoutProductEligibleForCashOnDelivery: Boolean,
-        condition: Int
+        condition: Int,
     ) {
         when (condition) {
             CartViewModel.ITEM_CHECKED_ALL_WITHOUT_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(

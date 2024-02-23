@@ -11,11 +11,17 @@ interface InspirationCarouselView {
 
     fun trackEventImpressionInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
 
-    fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
+    fun trackEventClickInspirationCarouselGridItem(
+        product: InspirationCarouselDataView.Option.Product,
+        optionAdapterPosition: Int,
+    )
 
     fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
 
-    fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
+    fun trackEventClickInspirationCarouselChipsItem(
+        product: InspirationCarouselDataView.Option.Product,
+        optionAdapterPosition: Int,
+    )
 
     fun openLink(applink: String, url: String)
 }

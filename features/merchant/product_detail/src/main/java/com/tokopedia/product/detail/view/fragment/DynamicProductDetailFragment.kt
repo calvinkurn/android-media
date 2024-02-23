@@ -480,6 +480,8 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    var isExiting: Boolean = true
+
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
@@ -1017,6 +1019,7 @@ open class DynamicProductDetailFragment :
 
         context?.let {
             AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
+                isExiting = true
                 onResultVariantBottomSheet(this)
             }
         }
@@ -3807,6 +3810,7 @@ open class DynamicProductDetailFragment :
 
                     viewModel.clearCacheP2Data()
 
+                    isExiting = false
                     AtcVariantHelper.pdpToAtcVariant(
                         context = ctx,
                         pageSource = VariantPageSource.PDP_PAGESOURCE,

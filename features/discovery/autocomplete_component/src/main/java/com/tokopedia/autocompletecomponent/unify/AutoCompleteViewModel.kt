@@ -144,7 +144,7 @@ internal class AutoCompleteViewModel @Inject constructor(
                 rawQuery = query,
                 enterMethod = stateValue.enterMethod,
                 wordsNum = stateValue.resultList.filter {
-                    it.domainModel.isMasterTemplate()
+                    it.domainModel.isTrendingWord()
                 }.size
             )
         )

@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -124,6 +126,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
@@ -683,6 +686,7 @@ class CartViewModel @Inject constructor(
 
         _subTotalState.value = SubTotalState(
             subtotalCashback,
+            subtotalBeforeSlashedPrice,
             totalItemQty.toString(),
             finalSubtotal,
             dataList.isEmpty()
@@ -780,6 +784,10 @@ class CartViewModel @Inject constructor(
 
         val updateCartRequestList = getUpdateCartRequest(cartItemDataList, onlyTokoNowProducts)
         if (updateCartRequestList.isNotEmpty()) {
+            val buttonClickTracker = CartPageAnalyticsUtil.generateByteIoAnalyticsModel(
+                cartItemDataList, subTotalState.value
+            )
+            AppLogAnalytics.sendCartButtonClick(buttonClickTracker)
             if (fireAndForget) {
                 // Trigger use case without composite subscription, because this should continue even after view destroyed
                 updateCartUseCase.setParams(

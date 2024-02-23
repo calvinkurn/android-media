@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEARCH_BAR
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARCH
@@ -256,13 +257,17 @@ class SearchActivity :
                         IconList.ID_CART,
                         disableRouteManager = false,
                         disableDefaultGtmTracker = false
-                    ) { }
+                    ) {
+                        AppLogSearch.eventCartEntranceClick()
+                    }
                     .addIcon(
                         IconList.ID_NAV_GLOBAL,
                         disableRouteManager = false,
                         disableDefaultGtmTracker = false
                     ) { }
             )
+
+            AppLogSearch.eventCartEntranceShow()
         }
     }
 

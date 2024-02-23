@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.uimodel
 
 import androidx.lifecycle.LiveData
+import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.cartcommon.data.response.common.OutOfService
@@ -180,6 +181,7 @@ sealed interface UpdateCartPromoState {
 
 data class SubTotalState(
     val subtotalCashback: Double,
+    val subtotalBeforeSlashedPrice: Double,
     val qty: String,
     val subtotalPrice: Double,
     val noAvailableItems: Boolean

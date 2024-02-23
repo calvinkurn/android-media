@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.broadmatch
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProduct
@@ -10,6 +11,7 @@ import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.model.StockBarDataView
+import com.tokopedia.search.result.product.ByteIOTrackingData
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option.Product
 import com.tokopedia.search.result.product.wishlist.Wishlistable
@@ -45,6 +47,7 @@ data class BroadMatchItemDataView(
     val externalReference: String = "",
     val stockBarDataView: StockBarDataView = StockBarDataView(),
     val warehouseID: String = "",
+    val byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData(),
 ) : ImpressHolder(), Wishlistable {
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
@@ -82,6 +85,30 @@ data class BroadMatchItemDataView(
         }
     }
 
+    fun asByteIOSearchResult(
+        optionAdapterPosition: Int,
+        aladdinButtonType: String?,
+    ): AppLogSearch.SearchResult {
+        return AppLogSearch.SearchResult(
+            imprId = byteIOTrackingData.imprId,
+            searchId = byteIOTrackingData.searchId,
+            searchEntrance = byteIOTrackingData.searchEntrance,
+            enterFrom = byteIOTrackingData.enterFrom,
+            searchResultId = id,
+            listItemId = id,
+            itemRank = position,
+            listResultType = AppLogSearch.ParamValue.GOODS,
+            productID = id,
+            searchKeyword = byteIOTrackingData.keyword,
+            tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
+            rank = optionAdapterPosition,
+            isAd = isOrganicAds,
+            isFirstPage = byteIOTrackingData.isFirstPage,
+            shopId = null,
+            aladdinButtonType = aladdinButtonType,
+        )
+    }
+
     companion object {
 
         fun create(
@@ -90,6 +117,7 @@ data class BroadMatchItemDataView(
             alternativeKeyword: String,
             dimension90: String,
             externalReference: String,
+            byteIOTrackingData: ByteIOTrackingData,
         ) = BroadMatchItemDataView(
             id = otherRelatedProduct.id,
             name = otherRelatedProduct.name,
@@ -115,6 +143,7 @@ data class BroadMatchItemDataView(
             componentId = otherRelatedProduct.componentId,
             externalReference = externalReference,
             warehouseID = otherRelatedProduct.warehouseIdDefault,
+            byteIOTrackingData = byteIOTrackingData,
         )
 
         fun create(
@@ -123,6 +152,7 @@ data class BroadMatchItemDataView(
             option: Option,
             index: Int,
             externalReference: String,
+            byteIOTrackingData: ByteIOTrackingData,
         ) = BroadMatchItemDataView(
             id = product.id,
             name = product.name,
@@ -150,6 +180,7 @@ data class BroadMatchItemDataView(
             externalReference = externalReference,
             stockBarDataView = product.stockBarDataView,
             warehouseID = product.warehouseID,
+            byteIOTrackingData = byteIOTrackingData,
         )
 
         fun create(
@@ -158,6 +189,7 @@ data class BroadMatchItemDataView(
             alternativeKeyword: String,
             dimension90: String,
             externalReference: String,
+            byteIOTrackingData: ByteIOTrackingData,
         ) = BroadMatchItemDataView(
             id = otherRelatedProduct.id,
             name = otherRelatedProduct.name,
@@ -183,6 +215,7 @@ data class BroadMatchItemDataView(
             componentId = otherRelatedProduct.meta.componentID,
             externalReference = externalReference,
             warehouseID = otherRelatedProduct.meta.warehouseID,
+            byteIOTrackingData = byteIOTrackingData,
         )
     }
 }

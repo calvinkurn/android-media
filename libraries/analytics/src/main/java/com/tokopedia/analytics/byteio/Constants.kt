@@ -1,5 +1,8 @@
 package com.tokopedia.analytics.byteio
 
+import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
+
 internal val TAG = "BYTEIO"
 
 object Constants {
@@ -103,7 +106,30 @@ data class SubmitOrderResult(
     val orderId: String,
     val comboId: String,
     val productId: String
-)
+) {
+    data class DeliveryInfo(
+        @SerializedName("ship_from")
+        val shipFrom: String = "local",
+        @SerializedName("shipping_type")
+        val shippingType: String,
+        @SerializedName("eta")
+        val eta: String,
+    ) {
+        fun toJsonString(): String = Gson().toJson(this)
+    }
+}
+
+data class CartClickAnalyticsModel(
+    val buttonName: String = "cart_check_out",
+    val cartItemId: String,
+    val originalPriceValue: Double,
+    val productId: String,
+    val skuId: String,
+    val skuNum: Int,
+    val ItemCnt: Int,
+    val salePriceValue: Double,
+    val discountedAmount: Double,
+    )
 
 enum class ProductType(val type: Int) {
     AVAILABLE(1),
@@ -183,6 +209,8 @@ object EventName {
     const val GLIDE_PAGE = "tiktokec_glide_page"
     const val REC_TRIGGER = "tiktokec_rec_trigger"
     const val SLIDE_BAR = "tiktokec_slide_bar"
+    const val CART_ENTRANCE_SHOW = "tiktokec_cart_entrance_show"
+    const val CART_ENTRANCE_CLICK = "tiktokec_cart_entrance_click"
 }
 
 object ActionType {
