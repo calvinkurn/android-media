@@ -9,6 +9,8 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,8 +40,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.play_common.view.ImageLoaderStateListener
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play_common.view.ImageLoaderStateListener
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
@@ -181,6 +183,21 @@ class StoriesDetailFragment @Inject constructor(
 
     override fun getScreenName(): String {
         return TAG_FRAGMENT_STORIES_DETAIL
+    }
+
+    private val variantSheetObserver by lazyThreadSafetyNone {
+        object : DefaultLifecycleObserver {
+            override fun onResume(owner: LifecycleOwner) {
+                variantSheet?.bottomSheetClose?.setOnClickListener {
+                    variantSheet?.dismiss()
+                    viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
+                }
+                variantSheet?.setOnDismissListener {
+                    viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
+                }
+                super.onResume(owner)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -769,16 +786,7 @@ class StoriesDetailFragment @Inject constructor(
         )
         showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
             variantSheet = AtcVariantBottomSheet()
-            variantSheet?.setOnDismissListener { }
-            variantSheet?.setShowListener {
-                variantSheet?.bottomSheetClose?.setOnClickListener {
-                    variantSheet?.dismiss()
-                    viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
-                }
-                variantSheet?.setOnDismissListener {
-                    viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
-                }
-            }
+            variantSheet?.lifecycle?.addObserver(variantSheetObserver)
             variantSheet ?: AtcVariantBottomSheet()
         }
     }
@@ -803,6 +811,8 @@ class StoriesDetailFragment @Inject constructor(
         _dialog = null
 
         mCoachMark = null
+
+        variantSheet?.lifecycle?.addObserver(variantSheetObserver)
 
         _binding = null
         super.onDestroyView()
