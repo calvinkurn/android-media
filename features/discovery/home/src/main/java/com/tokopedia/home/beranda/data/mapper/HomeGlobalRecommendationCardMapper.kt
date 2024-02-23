@@ -54,7 +54,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                 TYPE_RECOM_CARD -> {
                     if (getHomeRecommendationCard.layoutName != HomeRecommendationUtil.LAYOUT_NAME_LIST) {
                         homeRecommendationTypeFactoryImplList.add(
-                            mapToEntityCardRecommendationCard(card, index)
+                            mapToEntityCardRecommendationCard(card, index, getHomeRecommendationCard.pageName)
                         )
                     }
                 }
@@ -74,7 +74,8 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                                     cardId = card.id,
                                     topAdsImageViewModel = mapToTopAdsImageViewModel(
                                         bannerItemResponse
-                                    )
+                                    ),
+                                    pageName = getHomeRecommendationCard.pageName
                                 )
                             )
                         }
@@ -92,6 +93,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                                 mapToHomeRecommendationPlayWidget(
                                     card = card,
                                     playVideoWidgetResponse = it,
+                                    pageName = getHomeRecommendationCard.pageName
                                 )
                             )
                         }
@@ -109,6 +111,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
     private fun mapToHomeRecommendationPlayWidget(
         card: RecommendationCard,
         playVideoWidgetResponse: PlayVideoWidgetResponse,
+        pageName: String
     ): PlayCardModel {
         return PlayCardModel(
             cardId = card.id,
@@ -140,12 +143,14 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
             ),
             isAds = card.isTopads,
             shopId = card.shop.id,
+            pageName = pageName
         )
     }
 
     private fun mapToEntityCardRecommendationCard(
         recommendationCard: RecommendationCard,
         index: Int,
+        pageName: String
     ): ContentCardModel {
         return ContentCardModel(
             id = recommendationCard.id,
@@ -165,6 +170,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
             position = index,
             isAds = recommendationCard.isTopads,
             shopId = recommendationCard.shop.id,
+            pageName = pageName
         )
     }
 

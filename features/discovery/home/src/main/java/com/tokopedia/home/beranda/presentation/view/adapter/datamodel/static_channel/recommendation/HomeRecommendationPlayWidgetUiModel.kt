@@ -11,6 +11,7 @@ data class HomeRecommendationPlayWidgetUiModel(
     val playVideoTrackerUiModel: HomeRecommendationPlayVideoTrackerUiModel,
     val isAds: Boolean,
     val shopId: String,
+    val pageName: String
 ) : BaseHomeRecommendationVisitable, ImpressHolder() {
 
     override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {

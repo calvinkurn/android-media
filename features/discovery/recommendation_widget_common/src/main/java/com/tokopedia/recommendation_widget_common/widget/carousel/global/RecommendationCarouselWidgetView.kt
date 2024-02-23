@@ -95,11 +95,11 @@ class RecommendationCarouselWidgetView :
     }
 
     private fun trackHorizontalScroll(model: RecommendationCarouselModel) {
-        if(hasRecomScrollListener) return
+        if (hasRecomScrollListener) return
         binding.recommendationCarouselProduct.carouselProductCardRecyclerView.addHorizontalTrackListener(
             slideTrackObject = SlideTrackObject(
                 moduleName = model.widget.pageName,
-                barName = model.widget.pageName,
+                barName = model.widget.pageName
             )
         )
         hasRecomScrollListener = true
@@ -142,7 +142,7 @@ class RecommendationCarouselWidgetView :
 
                 AppLogRecommendation.sendProductShowAppLog(
                     productRecommendation.asProductTrackModel(
-                        type = AppLogRecommendationType.CAROUSEL
+                        type = AppLogRecommendationType.PRODUCT_CAROUSEL
                     )
                 )
             }
@@ -156,7 +156,7 @@ class RecommendationCarouselWidgetView :
             ) {
                 val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
 
-                if (productCardModel.isTopAds)
+                if (productCardModel.isTopAds) {
                     TopAdsUrlHitter(context).hitClickUrl(
                         this@RecommendationCarouselWidgetView::class.java.simpleName,
                         productRecommendation.clickUrl,
@@ -164,19 +164,21 @@ class RecommendationCarouselWidgetView :
                         productRecommendation.name,
                         productRecommendation.imageUrl
                     )
-                if(model.listener?.onProductClick(productRecommendation) == true) return
-                if (model.widgetTracking != null)
+                }
+                if (model.listener?.onProductClick(productRecommendation) == true) return
+                if (model.widgetTracking != null) {
                     model.widgetTracking.sendEventItemClick(productRecommendation)
-                else
+                } else {
                     RecommendationCarouselTracking.sendEventItemClick(
                         model.widget,
                         productRecommendation,
                         model.trackingModel
                     )
+                }
 
                 AppLogRecommendation.sendProductClickAppLog(
                     productRecommendation.asProductTrackModel(
-                        type = AppLogRecommendationType.CAROUSEL
+                        type = AppLogRecommendationType.PRODUCT_CAROUSEL
                     )
                 )
 

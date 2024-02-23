@@ -17,6 +17,7 @@ data class RecomEntityCardUiModel(
     val position: Int,
     val isAds: Boolean,
     val shopId: String,
+    val pageName: String
 ) : BaseHomeRecommendationVisitable, ImpressHolder() {
     data class LabelState(
         val iconUrl: String,

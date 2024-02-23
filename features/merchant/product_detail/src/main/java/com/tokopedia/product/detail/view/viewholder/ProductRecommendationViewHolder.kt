@@ -197,7 +197,7 @@ class ProductRecommendationViewHolder(
                     )
 
                     AppLogRecommendation.sendProductClickAppLog(
-                        productRecommendation.asProductTrackModel(type = AppLogRecommendationType.CAROUSEL)
+                        productRecommendation.asProductTrackModel(type = AppLogRecommendationType.PRODUCT_CAROUSEL)
                     )
 
                     view.context?.run {
@@ -241,7 +241,7 @@ class ProductRecommendationViewHolder(
                     )
 
                     AppLogRecommendation.sendProductShowAppLog(
-                        productRecommendation.asProductTrackModel(type = AppLogRecommendationType.CAROUSEL)
+                        productRecommendation.asProductTrackModel(type = AppLogRecommendationType.PRODUCT_CAROUSEL)
                     )
                 }
             },
