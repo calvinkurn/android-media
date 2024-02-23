@@ -20,9 +20,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.csat.di.CsatComponent
 import com.tokopedia.chatbot.chatbot2.csat.di.DaggerCsatComponent
-import com.tokopedia.chatbot.chatbot2.csat.view.CsatActivity.Companion.EXTRA_CSAT_DATA
-import com.tokopedia.chatbot.chatbot2.csat.view.CsatActivity.Companion.EXTRA_CSAT_SELECTED_SCORE
 import com.tokopedia.chatbot.databinding.BottomsheetCsatBinding
+import com.tokopedia.csat_rating.dynamiccsat.DynamicCsatConst
 import com.tokopedia.csat_rating.dynamiccsat.domain.model.CsatModel
 import com.tokopedia.csat_rating.dynamiccsat.domain.model.PointModel
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -95,8 +94,8 @@ class CsatBottomsheet :
     }
 
     private fun initializeCsatData() {
-        val selectedScore: Int? = arguments?.getInt(EXTRA_CSAT_SELECTED_SCORE)
-        val csatModel: CsatModel? = arguments?.getParcelable(EXTRA_CSAT_DATA)
+        val selectedScore: Int? = arguments?.getInt(DynamicCsatConst.EXTRA_CSAT_SELECTED_SCORE)
+        val csatModel: CsatModel? = arguments?.getParcelable(DynamicCsatConst.EXTRA_CSAT_DATA)
         if (selectedScore != null && csatModel != null) {
             viewModel.initializeData(selectedScore, csatModel)
         } else {
@@ -152,15 +151,15 @@ class CsatBottomsheet :
     private fun navigateToSubmitCsat(csatEvent: CsatEvent.NavigateToSubmitCsat) {
         activity?.let {
             val intentResult = Intent().apply {
-                putExtra(CASE_ID, csatEvent.csatData.caseId)
-                putExtra(CASE_CHAT_ID, csatEvent.csatData.caseChatId)
-                putExtra(EMOJI_STATE, csatEvent.csatData.selectedPoint.score)
-                putExtra(SERVICE, csatEvent.csatData.service)
-                putExtra(OTHER_REASON, csatEvent.csatData.otherReason)
+                putExtra(DynamicCsatConst.CASE_ID, csatEvent.csatData.caseId)
+                putExtra(DynamicCsatConst.CASE_CHAT_ID, csatEvent.csatData.caseChatId)
+                putExtra(DynamicCsatConst.EMOJI_STATE, csatEvent.csatData.selectedPoint.score)
+                putExtra(DynamicCsatConst.SERVICE, csatEvent.csatData.service)
+                putExtra(DynamicCsatConst.OTHER_REASON, csatEvent.csatData.otherReason)
                 val dynamicReasons = arrayListOf<String>().apply {
                     addAll(csatEvent.csatData.selectedReasons)
                 }
-                putStringArrayListExtra(DYNAMIC_REASON, dynamicReasons)
+                putStringArrayListExtra(DynamicCsatConst.DYNAMIC_REASON, dynamicReasons)
             }
             it.setResult(Activity.RESULT_OK, intentResult)
             it.finish()
@@ -313,21 +312,14 @@ class CsatBottomsheet :
 
     companion object {
 
-        const val CASE_ID = "caseID"
-        const val CASE_CHAT_ID = "caseChatID"
-        const val EMOJI_STATE = "emoji_state"
-        const val SERVICE = "service"
-        const val OTHER_REASON = "other_reason"
-        const val DYNAMIC_REASON = "dynamic_reason"
-
         const val OTHER_REASON_MIN_LINE = 4
         const val SCROLL_DELAY = 200L
 
         fun newInstance(selectedScore: Int, csatModel: CsatModel): CsatBottomsheet {
             val bottomSheet = CsatBottomsheet()
             val bundle = Bundle()
-            bundle.putInt(EXTRA_CSAT_SELECTED_SCORE, selectedScore)
-            bundle.putParcelable(EXTRA_CSAT_DATA, csatModel)
+            bundle.putInt(DynamicCsatConst.EXTRA_CSAT_SELECTED_SCORE, selectedScore)
+            bundle.putParcelable(DynamicCsatConst.EXTRA_CSAT_DATA, csatModel)
             bottomSheet.arguments = bundle
             return bottomSheet
         }
