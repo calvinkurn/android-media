@@ -3,6 +3,7 @@ package com.tokopedia.logisticseller.ui.confirmshipping
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -55,38 +56,63 @@ fun ConfirmShippingScreen(
             )
         )
     }) {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .padding(16.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                TargetedTickerWidgetCompose(
-                    tickerData = state.tickerData,
-                    openWebview = openWebview
-                )
-                InputReference(
-                    modifier = Modifier,
-                    state = state,
-                    onClickBarcodeIcon = onClickBarcodeIcon,
-                    onChangeRefNum = onChangeRefNum,
-                )
-                ChangeCourierSection(
-                    modifier = Modifier,
-                    state = state,
-                    onSwitchChanged = onSwitchChanged,
-                    onClickCourier = onClickCourier,
-                    onClickService = onClickService
-                )
-            }
-            NestButton(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = logisticsellerR.string.btn_konfirmasi),
-                onClick = onSubmit
+        ConfirmShippingContent(
+            paddingValues = it,
+            state = state,
+            onClickBarcodeIcon = onClickBarcodeIcon,
+            onSwitchChanged = onSwitchChanged,
+            onClickCourier = onClickCourier,
+            onClickService = onClickService,
+            onChangeRefNum = onChangeRefNum,
+            openWebview = openWebview,
+            onSubmit = onSubmit
+        )
+    }
+}
+
+@Composable
+private fun ConfirmShippingContent(
+    paddingValues: PaddingValues,
+    state: ConfirmShippingState,
+    onClickBarcodeIcon: () -> Unit,
+    onSwitchChanged: (Boolean) -> Unit,
+    onClickCourier: (state: ConfirmShippingState) -> Unit,
+    onClickService: (state: ConfirmShippingState) -> Unit,
+    onChangeRefNum: (String) -> Unit,
+    openWebview: (url: String) -> Unit,
+    onSubmit: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .padding(paddingValues)
+            .padding(16.dp)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            TargetedTickerWidgetCompose(
+                tickerData = state.tickerData,
+                openWebview = openWebview
+            )
+            InputReference(
+                modifier = Modifier,
+                state = state,
+                onClickBarcodeIcon = onClickBarcodeIcon,
+                onChangeRefNum = onChangeRefNum,
+            )
+            ChangeCourierSection(
+                modifier = Modifier,
+                state = state,
+                onSwitchChanged = onSwitchChanged,
+                onClickCourier = onClickCourier,
+                onClickService = onClickService
             )
         }
+        NestButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = logisticsellerR.string.btn_konfirmasi),
+            onClick = onSubmit
+        )
     }
 }
 
