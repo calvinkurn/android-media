@@ -25,18 +25,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.databinding.BottomsheetTippingGojekBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
 import com.tokopedia.logisticorder.uimodel.LogisticDriverModel
-import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TIPPING
 import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
-import com.tokopedia.logisticorder.view.TrackingPageViewModel
 import com.tokopedia.logisticorder.view.adapter.TippingValueAdapter
+import com.tokopedia.logisticorder.view.tipping.TippingDriverViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -46,6 +44,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
+import com.tokopedia.logisticorder.R as logisticorderR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageComponent>, TippingValueAdapter.ActionListener {
 
@@ -53,12 +53,12 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var binding by autoCleared<BottomsheetTippingGojekBinding>()
-    private val viewModel: TrackingPageViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[TrackingPageViewModel::class.java]
+    private val viewModel: TippingDriverViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[TippingDriverViewModel::class.java]
     }
 
     private var orderId: String? = ""
-    private var trackingDataModel: TrackingDataModel? = null
+    private var refNum: String? = ""
     private var tippingValueAdapter: TippingValueAdapter? = null
     private var selectedTippingValue: Int? = null
 
@@ -150,7 +150,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
         binding.resultTippingLayout.visible()
         binding.paymentTippingLayout.gone()
         binding.btnTipping.run {
-            text = getString(com.tokopedia.logisticorder.R.string.button_tipping_done)
+            text = getString(logisticorderR.string.button_tipping_done)
             isEnabled = true
             setOnClickListener {
                 dismiss()
@@ -159,9 +159,14 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
 
         binding.apply {
             imgTipDriver.urlSrc = IMG_SUCCESS_TIPPING
-            tvTipResult.text = getString(if (logisticDriverModel.status == SUCCESS_PAYMENT) com.tokopedia.logisticorder.R.string.tipping_success_payment_text else com.tokopedia.logisticorder.R.string.tipping_success_to_gojek_text)
-            tvTipResultDesc.text = HtmlLinkHelper(this.root.context, getString(com.tokopedia.logisticorder.R.string.tipping_result_desc)).spannedString
-            tvResiValue.text = trackingDataModel?.trackOrder?.shippingRefNum
+            tvTipResult.text = getString(if (logisticDriverModel.status == SUCCESS_PAYMENT) logisticorderR.string.tipping_success_payment_text else logisticorderR.string.tipping_success_to_gojek_text)
+            tvTipResultDesc.text = HtmlLinkHelper(this.root.context, getString(logisticorderR.string.tipping_result_desc)).spannedString
+            if (!refNum.isNullOrEmpty()) {
+                tvResiValue.text = refNum
+            } else {
+                tvResiValue.gone()
+                tvResi.gone()
+            }
             tvInvoiceValue.text = orderId
             tvDriverNameValue.text = logisticDriverModel.lastDriver.name
             tvPhoneNumberValue.text = logisticDriverModel.lastDriver.phone
@@ -172,17 +177,17 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
                 tippingMethod.visibility = View.GONE
             }
             tippingValue.run {
-                text = MethodChecker.fromHtml(String.format(getString(R.string.payment_value), logisticDriverModel.payment.method, logisticDriverModel.payment.amountFormatted))
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+                text = MethodChecker.fromHtml(String.format(getString(logisticorderR.string.payment_value), logisticDriverModel.payment.method, logisticDriverModel.payment.amountFormatted))
+                setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950))
             }
         }
     }
 
     private fun setInputTippingLayout(logisticDriverModel: LogisticDriverModel) {
-        setTitle(getString(com.tokopedia.logisticorder.R.string.title_prepayment_tipping))
+        setTitle(getString(logisticorderR.string.title_prepayment_tipping))
         binding.paymentTippingLayout.visible()
         binding.resultTippingLayout.gone()
-        binding.btnTipping.text = getString(com.tokopedia.logisticorder.R.string.button_tipping_payment)
+        binding.btnTipping.text = getString(logisticorderR.string.button_tipping_payment)
 
         val chipsLayoutManagerTipping = ChipsLayoutManager.newBuilder(binding.root.context)
             .setOrientation(ChipsLayoutManager.HORIZONTAL)
@@ -212,7 +217,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
         binding.etNominalTip.run {
             setMessage(
                 getString(
-                    R.string.nominal_tip_message,
+                    logisticorderR.string.nominal_tip_message,
                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.minAmount),
                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.maxAmount)
                 )
@@ -264,7 +269,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
                     setWrapperError(
                         wrapper,
                         getString(
-                            com.tokopedia.logisticorder.R.string.minimum_tipping,
+                            logisticorderR.string.minimum_tipping,
                             CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(minAmount)
                         )
                     )
@@ -273,7 +278,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
                     setWrapperError(
                         wrapper,
                         getString(
-                            com.tokopedia.logisticorder.R.string.maksimum_tipping,
+                            logisticorderR.string.maksimum_tipping,
                             CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(maxAmount)
                         )
                     )
@@ -314,9 +319,9 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
         binding.etNominalTip.editText.setText(tippingValue.toString())
     }
 
-    fun show(fm: FragmentManager, orderId: String?, trackingDataModel: TrackingDataModel) {
+    fun show(fm: FragmentManager, orderId: String?, refNum: String?) {
         this.orderId = orderId
-        this.trackingDataModel = trackingDataModel
+        this.refNum = refNum
         show(fm, "TAG")
     }
 

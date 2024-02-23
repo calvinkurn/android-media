@@ -5,7 +5,7 @@
     android:id="@+id/calendar_card_unify"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:card_type="shadow">
+    app:card_type="border">
 
 </com.tokopedia.unifycomponents.CardUnify>
 

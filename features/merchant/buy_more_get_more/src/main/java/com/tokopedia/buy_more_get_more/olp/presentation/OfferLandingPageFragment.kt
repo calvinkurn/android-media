@@ -237,11 +237,6 @@ class OfferLandingPageFragment :
     private fun initMiniCart() {
         binding?.miniCartView?.apply {
             init(lifecycleOwner = viewLifecycleOwner)
-            setOnCheckCartClickListener(currentState.endDate) { isOfferEnded ->
-                if (isOfferEnded) {
-                    setViewState(VIEW_ERROR, Status.OFFER_ENDED)
-                }
-            }
         }
     }
 
@@ -261,6 +256,7 @@ class OfferLandingPageFragment :
                     viewModel.processEvent(OlpEvent.SetOfferTypeId(offerInfoForBuyer.data.offerings.firstOrNull()?.offerTypeId.orZero()))
                     setupHeader(offerInfoForBuyer.data)
                     setupTncBottomSheet()
+                    setMiniCartOnOfferEnd()
                     fetchMiniCart()
                 }
 
@@ -353,6 +349,14 @@ class OfferLandingPageFragment :
 
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
             setDefaultErrorSelection(throwable)
+        }
+    }
+
+    private fun setMiniCartOnOfferEnd() {
+        binding?.miniCartView?.setOnCheckCartClickListener(currentState.endDate) { isOfferEnded ->
+            if (isOfferEnded) {
+                setViewState(VIEW_ERROR, Status.OFFER_ENDED)
+            }
         }
     }
 
@@ -848,6 +852,11 @@ class OfferLandingPageFragment :
             setViewState(VIEW_ERROR, Status.OFFER_ENDED)
             return
         }
+        tracker.sendClickHadiahEntryEvent(
+            offerId = currentState.offerIds.firstOrNull().toString(),
+            warehouseId = currentState.warehouseIds.toSafeString(),
+            shopId = currentState.shopData.shopId.toString()
+        )
         viewModel.processEvent(OlpEvent.TapTier(selectedTier, offerInfo))
     }
 

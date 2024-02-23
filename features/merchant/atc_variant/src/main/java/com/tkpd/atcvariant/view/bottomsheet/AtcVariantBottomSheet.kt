@@ -47,7 +47,6 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
@@ -63,6 +62,7 @@ import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
+import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoPromoExternalAutoApply
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
@@ -553,7 +553,7 @@ class AtcVariantBottomSheet :
             }
 
             ProductDetailCommonConstant.OCC_BUTTON -> {
-                ProductCartHelper.goToOneClickCheckout(getAtcActivity())
+                goToOcc(result.data.productId)
             }
 
             ProductDetailCommonConstant.BUY_BUTTON -> {
@@ -564,6 +564,22 @@ class AtcVariantBottomSheet :
                 onSuccessAtc(result)
             }
         }
+    }
+
+    private fun goToOcc(productId: String) {
+        val aggregatorData = viewModel.getVariantAggregatorData() ?: return
+        val selectedPromoCodes =
+            aggregatorData
+                .variantData
+                .getChildByProductId(productId)
+                ?.promoPrice
+                ?.promoCodes
+                ?.mapIntoPromoExternalAutoApply() ?: return
+
+        ProductCartHelper.goToOneClickCheckoutWithAutoApplyPromo(
+            (context as AtcVariantActivity),
+            ArrayList(selectedPromoCodes)
+        )
     }
 
     private fun trackSuccessAtc(cartId: String) {
@@ -962,7 +978,7 @@ class AtcVariantBottomSheet :
 
             viewModel.hitAtc(
                 buttonAction,
-                sharedData?.shopId?.toIntOrZero() ?: 0,
+                sharedData?.shopId.orEmpty(),
                 viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted()
                     ?: "",
                 userSessionInterface.userId,
