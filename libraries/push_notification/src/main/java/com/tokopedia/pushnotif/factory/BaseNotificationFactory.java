@@ -7,16 +7,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.webkit.URLUtil;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.media.loader.JvmMediaLoader;
+import com.tokopedia.media.loader.data.Resize;
 import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.R;
 import com.tokopedia.pushnotif.data.repository.TransactionRepository;
@@ -28,7 +26,6 @@ import com.tokopedia.pushnotif.services.DismissBroadcastReceiver;
 import com.tokopedia.pushnotif.util.NotificationChannelBuilder;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static com.tokopedia.pushnotif.util.NotificationRingtoneUtil.ringtoneUri;
@@ -106,12 +103,11 @@ public abstract class BaseNotificationFactory {
 
     protected Bitmap getBitmap(String url) {
         try {
-            return Glide.with(context)
-                    .asBitmap()
-                    .load(url)
-                    .submit(getImageWidth(), getImageHeight())
-                    .get(3, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e) {
+            return JvmMediaLoader.getBitmapImageUrl(context, url, 3_000, properties -> {
+                properties.overrideSize(new Resize(getImageWidth(), getImageHeight()));
+                return null;
+            });
+        } catch (Exception e) {
             return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());
         }
     }

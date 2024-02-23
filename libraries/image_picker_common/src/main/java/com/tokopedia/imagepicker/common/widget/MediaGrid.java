@@ -10,9 +10,10 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.imagepicker.common.R;
 import com.tokopedia.imagepicker.common.model.MediaItem;
+import com.tokopedia.media.loader.JvmMediaLoader;
+import com.tokopedia.media.loader.data.Resize;
 
 import java.util.ArrayList;
 
@@ -80,23 +81,17 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
             max = height;
         }
         boolean loadFitCenter = min != 0 && (max / min) > 2;
-        if (loadFitCenter) {
-            Glide.with(getContext())
-                    .load(mMedia.getContentUri())
-                    .placeholder(mPreBindInfo.mPlaceholder)
-                    .error(mPreBindInfo.error)
-                    .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
-                    .fitCenter()
-                    .into(mThumbnail);
-        } else {
-            Glide.with(getContext())
-                    .load(mMedia.getContentUri())
-                    .placeholder(mPreBindInfo.mPlaceholder)
-                    .error(mPreBindInfo.error)
-                    .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
-                    .centerCrop()
-                    .into(mThumbnail);
-        }
+        JvmMediaLoader.loadImage(mThumbnail, mMedia.getContentUri(), properties -> {
+            properties.setPlaceHolder(mPreBindInfo.mPlaceholder);
+            properties.setErrorDrawable(mPreBindInfo.error);
+            properties.overrideSize(new Resize(mPreBindInfo.mResize, mPreBindInfo.mResize));
+            if (loadFitCenter) {
+                properties.fitCenter();
+            } else {
+                properties.centerCrop();
+            }
+            return null;
+        });
     }
 
     private void setVideoDuration() {

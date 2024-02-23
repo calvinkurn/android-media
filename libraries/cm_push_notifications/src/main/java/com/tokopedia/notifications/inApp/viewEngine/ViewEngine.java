@@ -25,9 +25,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.CMInAppManager;
@@ -276,9 +276,7 @@ public class ViewEngine {
         ImageView imageView = view.findViewById(resCmImage);
         String imageUrlStr = cmLayout.getImg();
         if (!TextUtils.isEmpty(imageUrlStr)) {
-            Glide.with(activityWeakReference.get())
-                    .load(imageUrlStr)
-                    .into(imageView);
+            JvmMediaLoader.loadImage(imageView, imageUrlStr);
         } else {
             imageView.setVisibility(View.GONE);
         }

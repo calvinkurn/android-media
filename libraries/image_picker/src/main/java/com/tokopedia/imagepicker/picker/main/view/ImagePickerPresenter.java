@@ -11,6 +11,8 @@ import com.bumptech.glide.request.FutureTarget;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
+import com.tokopedia.media.loader.JvmMediaLoader;
+import com.tokopedia.media.loader.data.Resize;
 import com.tokopedia.utils.file.FileUtil;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
@@ -243,12 +245,26 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                             if (!isViewAttached()) {
                                 return null;
                             }
-                            FutureTarget<File> future = Glide.with(getView().getContext())
-                                    .load(url)
-                                    .downloadOnly(ImageProcessingUtil.DEF_WIDTH, ImageProcessingUtil.DEF_HEIGHT);
+
                             try {
-                                return future.get();
-                            } catch (InterruptedException | ExecutionException e) {
+                                return JvmMediaLoader.downloadBitmapFromUrl(getView().getContext(), url, properties -> {
+                                    properties.listener(
+                                            ( bitmap, mediaDataSource) -> { // onSuccess
+                                                return null;
+                                            },
+                                            ( exception ) -> { // onError
+                                                throw new RuntimeException(exception.getMessage());
+                                            },
+                                            (a, b) -> { // onSuccessGif
+                                                return null;
+                                            },
+                                            (a, b, c) -> { // onSuccess with source state
+                                                return null;
+                                            }
+                                    );
+                                    return null;
+                                });
+                            } catch (Exception e) {
                                 e.printStackTrace();
                                 throw new RuntimeException(e.getMessage());
                             }

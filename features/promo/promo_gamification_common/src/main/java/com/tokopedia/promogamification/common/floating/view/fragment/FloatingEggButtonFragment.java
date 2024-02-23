@@ -32,19 +32,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.ImageViewTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.HexValidator;
 import com.tokopedia.iconunify.IconUnify;
+import com.tokopedia.media.loader.JvmMediaLoader;
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy;
 import com.tokopedia.promogamification.common.R;
 import com.tokopedia.promogamification.common.applink.ApplinkUtil;
 import com.tokopedia.promogamification.common.applink.CoreGamificationEventTracking;
@@ -563,37 +558,24 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         if (!TextUtils.isEmpty(imageUrl) && !(requireActivity()).isFinishing()) {
             try {
             if (imageUrl.endsWith(".gif")) {
-                Glide.with(requireActivity())
-                        .asGif()
-                        .load(imageUrl)
-                        .diskCacheStrategy(DiskCacheStrategy.DATA)
-                        .into(new ImageViewTarget<GifDrawable>(ivFloatingEgg) {
-                            @Override
-                            protected void setResource(GifDrawable resource) {
-                                if (resource != null) {
-                                    ivFloatingEgg.setImageDrawable(resource);
-                                    resource.start();
-                                    onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
-                                }
-                            }
-                        });
+                JvmMediaLoader.loadGif(ivFloatingEgg, imageUrl, properties -> {
+                    properties.setCacheStrategy(MediaCacheStrategy.DATA);
+                    return null;
+                },(gifDrawable, dataSource) -> { // onSuccess
+                    gifDrawable.start();
+                    onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
+                    return null;
+                },(exception) -> { // onFailed
+                    return null;
+                });
             } else {
-                Glide.with(requireActivity())
-                        .asBitmap()
-                        .load(imageUrl)
-                        .diskCacheStrategy(DiskCacheStrategy.DATA)
-                        .into(new CustomTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                ivFloatingEgg.setImageBitmap(resource);
-                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
-                            }
-
-                            @Override
-                            public void onLoadCleared(@Nullable Drawable placeholder) {
-
-                            }
-                        });
+                JvmMediaLoader.loadImage(ivFloatingEgg, imageUrl, properties -> {
+                    properties.setCacheStrategy(MediaCacheStrategy.DATA);
+                    return null;
+                }, (a,b,c) -> {
+                    onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
+                    return null;
+                }, (a) -> null);
             }
             } catch (Exception e) {
                 Timber.e(e);
