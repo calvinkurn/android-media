@@ -6,6 +6,7 @@ import com.tokopedia.contactus.inboxtickets.domain.AttachmentItem
 import com.tokopedia.contactus.inboxtickets.domain.CommentsItem
 import com.tokopedia.contactus.inboxtickets.domain.CreatedBy
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
+import com.tokopedia.csat_rating.dynamiccsat.data.model.DynamicCsat
 
 class Tickets {
     @SerializedName("badCsatReasonList")
@@ -54,6 +55,9 @@ class Tickets {
 
     @SerializedName("allowClose")
     var isAllowClose = false
+
+    @SerializedName("dynamicCSAT")
+    val dynamicCsat: DynamicCsat = DynamicCsat()
 
     fun isCommentsNull() = comments == null
 

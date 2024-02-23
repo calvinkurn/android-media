@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
@@ -68,6 +69,7 @@ import com.tokopedia.contactus.utils.CommonConstant.INDEX_ZERO
 import com.tokopedia.contactus.utils.CommonConstant.INVALID_NUMBER
 import com.tokopedia.contactus.utils.CommonConstant.SIZE_ZERO
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
+import com.tokopedia.csat_rating.dynamiccsat.DynamicCsatConst
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -768,17 +770,32 @@ class TicketFragment :
     private fun onClickEmoji(emojiNumber: Int, ticketNumber: String) {
         sendGTMEventView()
         sendGTMEventClick(emojiNumber, ticketNumber)
-        val intentToPageCsat = ContactUsProvideRatingActivity.getInstance(
-            activity as Context,
-            emojiNumber,
-            viewModel.getFirstCommentId(),
-            viewModel.getCSATBadReasonList() as ArrayList<BadCsatReasonListItem>
-        )
-        goToCSATPage(intentToPageCsat)
+
+        val dynamicCsatData = viewModel.getDynamicCsatData()
+        if (dynamicCsatData.points.isNotEmpty()) {
+            // Go to dynamic csat
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalOperational.DYNAMIC_CSAT)
+            intent.putExtra(DynamicCsatConst.EXTRA_CSAT_SELECTED_SCORE, emojiNumber)
+            intent.putExtra(DynamicCsatConst.EXTRA_CSAT_DATA, dynamicCsatData)
+            goToDynamicCsatPage(intent)
+        } else {
+            // Go to old csat
+            val intentToPageCsat = ContactUsProvideRatingActivity.getInstance(
+                activity as Context,
+                emojiNumber,
+                viewModel.getFirstCommentId(),
+                viewModel.getCSATBadReasonList() as ArrayList<BadCsatReasonListItem>
+            )
+            goToCSATPage(intentToPageCsat)
+        }
     }
 
     private fun goToCSATPage(intentToPageCsat : Intent){
         csatPageActivityForResult.launch(intentToPageCsat)
+    }
+
+    private fun goToDynamicCsatPage(intent: Intent) {
+        dynamicCsatPageActivityForResult.launch(intent)
     }
 
     private fun sendGTMEventView() {
