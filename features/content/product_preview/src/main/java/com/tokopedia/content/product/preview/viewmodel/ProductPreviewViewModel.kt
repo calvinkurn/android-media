@@ -144,7 +144,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         get() {
             val tabPosition = currentTabPosition.value.coerceAtLeast(0)
             val tabSize = _tabContentState.value.tabs.size
-            return _tabContentState.value.tabs[tabPosition.coerceAtMost(tabSize)].key
+            return _tabContentState.value.tabs[tabPosition.coerceAtMost(tabSize.minus(1))].key
         }
 
     private var autoScrollProductMedia: Timer? = null
@@ -243,8 +243,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
             )
         }
 
-        emitTrackAllHorizontalScrollEvent()
-
         when (_productMediaState.value.productMedia[position].type) {
             MediaType.Image -> scheduleAutoScrollProductMedia()
             else -> autoScrollProductMedia?.cancel()
@@ -253,7 +251,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun handleReviewContentSelected(position: Int) {
         if (_reviewPosition.value == position) return
-        if (_reviewPosition.value < position) emitTrackReviewNextVerticalScrollEvent()
 
         _reviewPosition.value = position
         updateReviewToUnWatchMode()
@@ -261,7 +258,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun handleReviewContentScrolling(position: Int, isScrolling: Boolean) {
         updateReviewContentScrollingState(position, isScrolling)
-        emitTrackAllHorizontalScrollEvent()
     }
 
     private fun handleReviewMediaSelected(mediaPosition: Int) {
@@ -377,18 +373,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 DELAY_AUTO_SCROLL_PRODUCT_MEDIA,
                 DELAY_AUTO_SCROLL_PRODUCT_MEDIA
             )
-        }
-    }
-
-    private fun emitTrackAllHorizontalScrollEvent() {
-        viewModelScope.launch {
-            _uiEvent.emit(ProductPreviewEvent.TrackAllHorizontalScroll)
-        }
-    }
-
-    private fun emitTrackReviewNextVerticalScrollEvent() {
-        viewModelScope.launch {
-            _uiEvent.emit(ProductPreviewEvent.TrackReviewNextVerticalScroll)
         }
     }
 

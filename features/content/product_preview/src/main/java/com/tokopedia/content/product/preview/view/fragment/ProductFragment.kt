@@ -94,6 +94,7 @@ class ProductFragment @Inject constructor(
     private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+            analytics.onSwipeContentAndTab()
             val position = getMediaCurrentPosition()
             scrollTo(position)
             viewModel.onAction(ProductMediaSelected(position))

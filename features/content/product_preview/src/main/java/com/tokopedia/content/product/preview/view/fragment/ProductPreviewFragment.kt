@@ -284,9 +284,6 @@ class ProductPreviewFragment @Inject constructor(
                         binding.viewFooter.gone()
                     }
                     is ProductPreviewEvent.UnknownSourceData -> activity?.finish()
-                    is ProductPreviewEvent.TrackAllHorizontalScroll -> {
-                        analytics.onSwipeContentAndTab()
-                    }
                     else -> return@collect
                 }
             }

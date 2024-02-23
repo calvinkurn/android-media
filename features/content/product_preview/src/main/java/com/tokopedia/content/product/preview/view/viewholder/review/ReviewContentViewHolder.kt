@@ -88,6 +88,7 @@ class ReviewContentViewHolder(
     private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+            reviewInteractionListener.onReviewMediaScrolled()
             val position = getContentCurrentPosition()
             binding.pcReviewContent.setCurrentIndicator(position)
             reviewMediaListener.onMediaSelected(position)

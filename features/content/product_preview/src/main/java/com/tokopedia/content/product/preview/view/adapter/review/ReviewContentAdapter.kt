@@ -81,16 +81,12 @@ class ReviewContentAdapter(
             oldItem: ReviewContentUiModel,
             newItem: ReviewContentUiModel
         ): Any? {
-            return if (oldItem.likeState != newItem.likeState) {
-                Like(newItem.likeState)
-            } else if (oldItem.isWatchMode != newItem.isWatchMode) {
-                WatchMode(newItem.isWatchMode)
-            } else if (oldItem.medias != newItem.medias) {
-                MediaDataChanged(newItem.medias)
-            } else if (oldItem.isScrolling != newItem.isScrolling) {
-                ScrollingChanged(newItem.isScrolling)
-            } else {
-                super.getChangePayload(oldItem, newItem)
+            return when {
+                oldItem.likeState != newItem.likeState -> Like(newItem.likeState)
+                oldItem.isWatchMode != newItem.isWatchMode -> WatchMode(newItem.isWatchMode)
+                oldItem.medias != newItem.medias -> MediaDataChanged(newItem.medias)
+                oldItem.isScrolling != newItem.isScrolling -> ScrollingChanged(newItem.isScrolling)
+                else -> super.getChangePayload(oldItem, newItem)
             }
         }
     }
