@@ -264,13 +264,13 @@ class BmsmWidgetTabFragment :
         }
 
         viewModel.miniCartAdd.observe(viewLifecycleOwner) { atc ->
+            getOfferingData()
+            viewModel.getMinicartV3()
             when (atc) {
                 is Success -> {
                     if (atc.data.isDataError()) {
-                        binding?.pdUpsellingLoader?.gone()
                         onErrorAtc.invoke(atc.data.getAtcErrorMessage().orEmpty())
                     } else {
-                        getOfferingData()
                         onSuccessAtc.invoke(
                             currentState.offerIds.firstOrNull().toString(),
                             offerTypeId.toString(),

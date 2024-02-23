@@ -273,7 +273,6 @@ class BmsmWidgetTabViewModel @Inject constructor(
                     addToCartUseCase.setParams(param)
                     val result = addToCartUseCase.executeOnBackground()
                     _miniCartAdd.postValue(Success(result))
-                    getMinicartV3()
                 }
             },
             onError = {
