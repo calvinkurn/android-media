@@ -1,4 +1,4 @@
-package com.tokopedia.logisticseller.ui.confirmshipping
+package com.tokopedia.logisticseller.ui.confirmshipping.ui
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -14,10 +14,6 @@ import com.tokopedia.logisticseller.R
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingMode
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingState
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
-import com.tokopedia.logisticseller.ui.confirmshipping.ui.ConfirmShippingBottomSheet
-import com.tokopedia.logisticseller.ui.confirmshipping.ui.ConfirmShippingBottomSheetState
-import com.tokopedia.logisticseller.ui.confirmshipping.ui.ConfirmShippingContent
-import com.tokopedia.logisticseller.ui.confirmshipping.ui.getBottomSheetTitle
 import com.tokopedia.nest.components.NestBottomSheetScreen
 import com.tokopedia.nest.components.rememberNestBottomSheetState
 import com.tokopedia.nest.principles.ui.NestTheme

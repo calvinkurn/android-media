@@ -1,6 +1,5 @@
 package com.tokopedia.logisticseller.ui.confirmshipping.ui
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -12,8 +11,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.CaptureActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -27,14 +24,11 @@ import com.tokopedia.logisticseller.common.LogisticSellerConst.PARAM_ORDER_ID
 import com.tokopedia.logisticseller.common.Utils
 import com.tokopedia.logisticseller.common.Utils.updateShopActive
 import com.tokopedia.logisticseller.common.errorhandler.LogisticSellerErrorHandler
-import com.tokopedia.logisticseller.ui.confirmshipping.ConfirmShippingScreen
 import com.tokopedia.logisticseller.ui.confirmshipping.data.ConfirmShippingAnalytics
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingErrorStateSource
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingEvent
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingMode
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingResult
-import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingState
-import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
 import com.tokopedia.logisticseller.ui.confirmshipping.di.ConfirmShippingComponent
 import com.tokopedia.logisticseller.ui.confirmshipping.di.DaggerConfirmShippingComponent
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -245,7 +239,7 @@ class ConfirmShippingComposeActivity : AppCompatActivity() {
             Intent().apply {
                 putExtra(
                     LogisticSellerConst.RESULT_CONFIRM_SHIPPING,
-                    message.orEmpty()
+                    message
                 )
             }
         )
