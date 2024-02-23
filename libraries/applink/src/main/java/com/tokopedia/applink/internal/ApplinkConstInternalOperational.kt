@@ -12,6 +12,7 @@ object ApplinkConstInternalOperational {
     const val TICKET_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_TICKET/{id}/"
     const val SUCCESS_RESO = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_RESOLUTION/success-create"
     const val DETAIL_COMPLAIN = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_RESOLUTION/detail-complain"
+    const val DYNAMIC_CSAT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_TICKET/csat"
 
     fun buildApplinkResolution(uri: Uri): String {
         val url = uri.getQueryParameter("URL").orEmpty()
