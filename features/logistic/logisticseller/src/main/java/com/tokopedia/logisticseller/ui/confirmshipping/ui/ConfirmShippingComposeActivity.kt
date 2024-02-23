@@ -29,6 +29,7 @@ import com.tokopedia.logisticseller.common.Utils.updateShopActive
 import com.tokopedia.logisticseller.common.errorhandler.LogisticSellerErrorHandler
 import com.tokopedia.logisticseller.ui.confirmshipping.ConfirmShippingScreen
 import com.tokopedia.logisticseller.ui.confirmshipping.data.ConfirmShippingAnalytics
+import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingErrorStateSource
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingEvent
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingMode
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingResult
@@ -66,14 +67,6 @@ class ConfirmShippingComposeActivity : AppCompatActivity(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var currOrderId = ""
-    private var currShipmentId = 0L
-    private var currShipmentProductId = "0"
-    private var currIsChangeShipping = false
-    private var confirmShippingResponseMsg = ""
-    private var courierListResponse =
-        listOf<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>()
-    private var changeCourierResponseMsg = ""
     private lateinit var somBottomSheetCourierListAdapter: BottomSheetCourierListAdapter
     private lateinit var bottomSheetUnify: BottomSheetUnify
 
@@ -124,14 +117,24 @@ class ConfirmShippingComposeActivity : AppCompatActivity(),
                     }
                 }
             })
+
             LaunchedEffect(key1 = confirmShippingViewModel.error, block = {
                 confirmShippingViewModel.error.collectLatest {
-                    Utils.showToasterError(
-                        LogisticSellerErrorHandler.getErrorMessage(
-                            it,
-                            this@ConfirmShippingComposeActivity
-                        ), view
-                    )
+                    when (it.source) {
+                        ConfirmShippingErrorStateSource.COURIER_LIST -> handleErrorCourierList(
+                            it.throwable,
+                            view
+                        )
+
+                        ConfirmShippingErrorStateSource.TARGETED_TICKER -> {
+                            Utils.showToasterError(
+                                LogisticSellerErrorHandler.getErrorMessage(
+                                    it.throwable,
+                                    this@ConfirmShippingComposeActivity
+                                ), view
+                            )
+                        }
+                    }
                 }
             })
 
@@ -168,6 +171,21 @@ class ConfirmShippingComposeActivity : AppCompatActivity(),
                 )
             }
         }
+    }
+
+    private fun handleErrorCourierList(throwable: Throwable, view: View) {
+        LogisticSellerErrorHandler.logExceptionToCrashlytics(
+            throwable,
+            ERROR_GET_COURIER_LIST
+        )
+        Utils.showToasterError(getString(R.string.global_error), view)
+        LogisticSellerErrorHandler.logExceptionToServer(
+            errorTag = LogisticSellerErrorHandler.SOM_TAG,
+            throwable = throwable,
+            errorType =
+            LogisticSellerErrorHandler.SomMessage.GET_COURIER_LIST_ERROR,
+            deviceId = userSession.deviceId.orEmpty()
+        )
     }
 
     private fun handleErrorConfirmShipping(throwable: Throwable, view: View) {

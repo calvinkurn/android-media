@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingErrorState
+import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingErrorStateSource
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingEvent
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingMode
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingResult
@@ -37,8 +39,8 @@ class ConfirmShippingComposeViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(ConfirmShippingState())
     val uiState: StateFlow<ConfirmShippingState> = _uiState.asStateFlow()
-    private val _error = MutableSharedFlow<Throwable>(replay = 1)
-    val error: SharedFlow<Throwable> = _error.asSharedFlow()
+    private val _error = MutableSharedFlow<ConfirmShippingErrorState>(replay = 1)
+    val error: SharedFlow<ConfirmShippingErrorState> = _error.asSharedFlow()
     private val _result = MutableSharedFlow<ConfirmShippingResult>(replay = 1)
     val result: SharedFlow<ConfirmShippingResult> = _result.asSharedFlow()
 
@@ -148,32 +150,41 @@ class ConfirmShippingComposeViewModel @Inject constructor(
             getTickerData(result.tickerUnificationParams)
         }, onError = {
             _uiState.update { state -> state.copy(loading = false) }
-            _error.emit(it)
+            _error.emit(ConfirmShippingErrorState(it, ConfirmShippingErrorStateSource.COURIER_LIST))
         })
     }
 
     private fun getTickerData(tickerUnificationTargets: SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.TickerUnificationParams) {
-        launchCatchError(block = {
-            val template = TargetedTickerParamModel.Template().copy(
-                contents = tickerUnificationTargets.template.contents.map {
-                    TargetedTickerParamModel.Template.Content(it.key, it.value)
+        launchCatchError(
+            block = {
+                val template = TargetedTickerParamModel.Template().copy(
+                    contents = tickerUnificationTargets.template.contents.map {
+                        TargetedTickerParamModel.Template.Content(it.key, it.value)
+                    }
+                )
+                val target = tickerUnificationTargets.target.map {
+                    TargetedTickerParamModel.Target(it.type, it.values)
                 }
-            )
-            val target = tickerUnificationTargets.target.map {
-                TargetedTickerParamModel.Target(it.type, it.values)
-            }
-            val param = TargetedTickerParamModel(
-                page = tickerUnificationTargets.page,
-                target = target,
-                template = template
-            )
-            val response = targetedTickerUseCase(param)
-            val model =
-                TargetedTickerMapper.convertTargetedTickerToUiModel(response.getTargetedTickerData)
-            _uiState.update {
-                it.copy(tickerData = model)
-            }
-        }, onError = { _error.emit(it) })
+                val param = TargetedTickerParamModel(
+                    page = tickerUnificationTargets.page,
+                    target = target,
+                    template = template
+                )
+                val response = targetedTickerUseCase(param)
+                val model =
+                    TargetedTickerMapper.convertTargetedTickerToUiModel(response.getTargetedTickerData)
+                _uiState.update {
+                    it.copy(tickerData = model)
+                }
+            },
+            onError = {
+                _error.emit(
+                    ConfirmShippingErrorState(
+                        it,
+                        ConfirmShippingErrorStateSource.TARGETED_TICKER
+                    )
+                )
+            })
     }
 
     private fun changeCourier(orderId: String, shippingRef: String, agencyId: Long, spId: Long) {

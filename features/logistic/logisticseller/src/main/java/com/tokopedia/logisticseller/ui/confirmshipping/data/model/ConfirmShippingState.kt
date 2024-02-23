@@ -12,6 +12,15 @@ data class ConfirmShippingState(
     val tickerData: TickerModel? = null,
 )
 
+data class ConfirmShippingErrorState(
+    val throwable: Throwable,
+    val source: ConfirmShippingErrorStateSource
+)
+
+enum class ConfirmShippingErrorStateSource {
+    COURIER_LIST, TARGETED_TICKER
+}
+
 enum class ConfirmShippingMode {
     CHANGE_COURIER, CONFIRM_SHIPPING
 }
