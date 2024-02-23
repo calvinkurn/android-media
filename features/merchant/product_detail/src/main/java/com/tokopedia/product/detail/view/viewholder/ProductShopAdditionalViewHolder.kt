@@ -11,7 +11,7 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicShopAdditionalBinding
 import com.tokopedia.product.detail.databinding.ItemDynamicShopAdditionalContentBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.unifycomponents.Label
 
 /**
@@ -21,7 +21,7 @@ import com.tokopedia.unifycomponents.Label
 
 class ProductShopAdditionalViewHolder(
     val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<ProductShopAdditionalDataModel>(view) {
 
     companion object {

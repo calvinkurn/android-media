@@ -13,11 +13,11 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.ItemDynamicOneLinerBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 class DynamicOneLinerViewHolder(
     view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<DynamicOneLinerDataModel>(view) {
 
     companion object {

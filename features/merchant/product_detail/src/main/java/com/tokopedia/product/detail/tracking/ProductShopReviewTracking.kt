@@ -1,6 +1,6 @@
 package com.tokopedia.product.detail.tracking
 
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.TrackingUtil
 
@@ -11,7 +11,7 @@ import com.tokopedia.product.detail.data.util.TrackingUtil
 object ProductShopReviewTracking {
 
     fun onItemClicked(
-        productInfo: DynamicProductInfoP1?,
+        productInfo: ProductInfoP1?,
         trackDataModel: ComponentTrackDataModel?,
         eventLabel: String
     ) {

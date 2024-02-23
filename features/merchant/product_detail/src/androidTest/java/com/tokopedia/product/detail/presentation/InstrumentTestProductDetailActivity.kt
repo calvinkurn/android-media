@@ -3,9 +3,9 @@ package com.tokopedia.product.detail.presentation
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
-import com.tokopedia.product.detail.test.R
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.product.detail.test.R as productdetailtestR
 
 class InstrumentTestProductDetailActivity : AppCompatActivity(), InstrumentTestTopAdsCounter {
 
@@ -14,7 +14,7 @@ class InstrumentTestProductDetailActivity : AppCompatActivity(), InstrumentTestT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_product_detail_test)
+        setContentView(productdetailtestR.layout.activity_product_detail_test)
         InstrumentationAuthHelper.login()
         showAddToCartDoneBottomSheet()
     }
@@ -28,13 +28,13 @@ class InstrumentTestProductDetailActivity : AppCompatActivity(), InstrumentTestT
         val productName = "Paket HDMI Dongle + HDMI To AV Alat Konverter Dari Hp ke TV Tabung"
         val productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/10/26/13988587/13988587_26632e2e-cb31-4729-8471-f56de2375c4b_806_806"
         val addedProductDataModel = AddToCartDoneAddedProductDataModel(
-                "8787687640",
-                productName,
-                productImageUrl,
-                false,
-                333311,
-                "",
-                ""
+            "8787687640",
+            productName,
+            productImageUrl,
+            false,
+            "333311",
+            "",
+            ""
         )
         val bundleData = Bundle()
         bundleData.putParcelable(AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
@@ -44,11 +44,11 @@ class InstrumentTestProductDetailActivity : AppCompatActivity(), InstrumentTestT
         }
         supportFragmentManager.let {
             addToCartDoneBottomSheet.show(
-                    it, "ADD_TO_CART"
+                it,
+                "ADD_TO_CART"
             )
         }
     }
-
 
     fun getTopAdsCount(): Int {
         return topAdsCount
