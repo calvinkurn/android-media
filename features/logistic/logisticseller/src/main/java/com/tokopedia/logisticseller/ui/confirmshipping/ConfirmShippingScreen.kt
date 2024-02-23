@@ -7,12 +7,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -158,17 +161,20 @@ private fun ChangeCourierSection(
 ) {
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
         val (switch, title, courier, service) = createRefs()
-        NestTypography(modifier = Modifier.constrainAs(title) {
-            start.linkTo(parent.start)
-            top.linkTo(switch.top)
-            bottom.linkTo(switch.bottom)
-        }, text = stringResource(id = logisticsellerR.string.change_courier_label))
+        NestTypography(
+            modifier = Modifier.constrainAs(title) {
+                start.linkTo(parent.start)
+                top.linkTo(switch.top)
+                bottom.linkTo(switch.bottom)
+            }, textStyle = NestTheme.typography.body2.copy(color = NestTheme.colors.NN._950),
+            text = stringResource(id = logisticsellerR.string.change_courier_label)
+        )
         NestSwitch(
             isChecked = state.mode == ConfirmShippingMode.CHANGE_COURIER,
             onCheckedChanged = onSwitchChanged,
             modifier = Modifier.constrainAs(switch) {
                 end.linkTo(parent.end)
-                top.linkTo(parent.top, margin = 16.dp)
+                top.linkTo(parent.top, margin = 30.dp)
             })
         if (state.mode == ConfirmShippingMode.CHANGE_COURIER && !state.courierList.isNullOrEmpty()) {
             ChangeCourierOptionItem(
@@ -202,22 +208,33 @@ private fun ChangeCourierOptionItem(
 ) {
     ConstraintLayout(modifier.fillMaxWidth()) {
         val (tvTitle, tvValue, button, divider) = createRefs()
-        NestTypography(text = title, modifier = Modifier.constrainAs(tvTitle) {
-            top.linkTo(button.top)
-            bottom.linkTo(button.bottom)
-            start.linkTo(parent.start)
-        })
-        NestTypography(text = value, modifier = Modifier.constrainAs(tvValue) {
-            top.linkTo(button.top)
-            bottom.linkTo(button.bottom)
-            end.linkTo(button.start)
-        })
-        NestIcon(iconId = IconUnify.CHEVRON_RIGHT, modifier = Modifier
+        NestTypography(text = title,
+            textStyle = NestTheme.typography.body2.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.constrainAs(tvTitle) {
+                top.linkTo(button.top)
+                bottom.linkTo(button.bottom)
+                start.linkTo(parent.start)
+            })
+        NestTypography(
+            text = value,
+            textStyle = NestTheme.typography.body2.copy(color = NestTheme.colors.GN._500),
+            modifier = Modifier.constrainAs(tvValue) {
+                top.linkTo(button.top)
+                bottom.linkTo(button.bottom)
+                end.linkTo(button.start)
+            })
+        NestIcon(iconId = IconUnify.CHEVRON_RIGHT,
+            colorLightEnable = NestTheme.colors.NN._500,
+            colorLightDisable = NestTheme.colors.NN._500,
+            colorNightEnable = NestTheme.colors.NN._500,
+            colorNightDisable = NestTheme.colors.NN._500,
+            modifier = Modifier
+            .clickable { onClick() }
             .constrainAs(button) {
                 end.linkTo(parent.end)
                 top.linkTo(parent.top, margin = 4.dp)
             }
-            .clickable { onClick() })
+        )
         NestDivider(size = NestDividerSize.Small, modifier = Modifier
             .constrainAs(divider) {
                 top.linkTo(button.bottom, margin = 4.dp)
