@@ -25,7 +25,7 @@ import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
-import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingEvent
+import com.tokopedia.logisticseller.common.LogisticSellerConst
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingMode
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingState
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
@@ -82,7 +82,7 @@ fun ConfirmShippingScreen(
     }
 
     NestBottomSheetScreen(
-        title = "todo",
+        title = getBottomSheetTitle(bottomSheetState),
         state = sheetState,
         showCloseIcon = true,
         isHideable = true,
@@ -115,6 +115,17 @@ fun ConfirmShippingScreen(
                 onOpenBottomSheet = ::setBottomSheetContentState
             )
         }
+    }
+}
+
+
+private fun getBottomSheetTitle(bsState: ConfirmShippingBottomSheetState): String {
+    return when (bsState) {
+        ConfirmShippingBottomSheetState.COURIER -> LogisticSellerConst.TITLE_KURIR_PENGIRIMAN
+
+        ConfirmShippingBottomSheetState.SERVICE -> LogisticSellerConst.TITLE_JENIS_LAYANAN
+
+        else -> ""
     }
 }
 
