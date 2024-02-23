@@ -1,0 +1,86 @@
+{
+  "readme": "Play Widget - Live Indicator",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "view_item",
+      "eventAction": "view - badge",
+      "eventCategory": "product detail page - live indicator",
+      "eventLabel": ".* - \\d+ - \\d+",
+      "trackerId": "49936",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "promotions":[
+        {
+          "creative_name": "play indicator in product detail page",
+          "creative_slot": "\\d+",
+          "item_id": ".*",
+          "item_name": "play-indicator-pdp"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - badge",
+      "eventCategory": "product detail page - live indicator",
+      "eventLabel": ".* - \\d+ - \\d+",
+      "trackerId": "49937",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "promotions":[
+        {
+          "creative_name": "play indicator in product detail page",
+          "creative_slot": "\\d+",
+          "item_id": ".*",
+          "item_name": "play-indicator-pdp"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "view_item",
+      "eventAction": "view - thumbnail",
+      "eventCategory": "product detail page - live indicator",
+      "eventLabel": ".* - \\d+ - \\d+",
+      "trackerId": "49986",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "promotions":[
+        {
+          "creative_name": "play indicator in product detail page",
+          "creative_slot": "\\d+",
+          "item_id": ".*",
+          "item_name": "play-indicator-pdp"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - thumbnail",
+      "eventCategory": "product detail page - live indicator",
+      "eventLabel": ".* - \\d+ - \\d+",
+      "trackerId": "49987",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "productId": ".*",
+      "promotions":[
+        {
+          "creative_name": "play indicator in product detail page",
+          "creative_slot": "\\d+",
+          "item_id": ".*",
+          "item_name": "play-indicator-pdp"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}
