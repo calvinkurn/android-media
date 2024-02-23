@@ -10,6 +10,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.grid.ProductGridType
@@ -86,7 +87,7 @@ interface ProductListSectionContract {
         fun applyDropdownQuickFilter(optionList: List<Option>?)
         fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?, pageSource: String)
         fun updateSearchBarNotification()
-        fun sendTrackingByteIO(imprId: String)
+        fun sendTrackingByteIO()
     }
 
     interface Presenter :
@@ -119,5 +120,9 @@ interface ProductListSectionContract {
         fun onViewResumed()
         fun onLocalizingAddressSelected()
         fun onApplyDropdownQuickFilter(optionList: List<Option>?)
+
+        val requestId: String
+
+        val searchId: String
     }
 }

@@ -5,8 +5,10 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
+import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_CLICK
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_SHOW
@@ -62,9 +64,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_CONTENT
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_NUM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_POSITION
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_SOURCE
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CORRECT_WORD
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.ENTER
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_PANEL
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_BAR_OUTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SUG
@@ -177,9 +177,11 @@ object AppLogSearch {
         const val SORT_PRICE_DESC = "sort_price_desc"
         const val SORT_NEWEST = "sort_newest"
         const val FILTER_PANEL = "filter_panel"
-        const val FILTER_GUID = "filter_guid" // TODO:: What is navigation filtering?
         const val FILTER_QUICK = "filter_quick"
         const val CORRECT_WORD = "correct_word"
+        const val PRODUCT_SEARCH = "product_search"
+        const val SHOP_SEARCH = "shop_search"
+        const val SEARCH_RESULT = "search_result"
     }
 
     fun eventShowSearch(currentPageName: String) {
@@ -263,121 +265,6 @@ object AppLogSearch {
     fun eventSearch(search: Search) {
         AppLogAnalytics.send(SEARCH, search.json())
     }
-
-    sealed class EventSearch(val from: String) {
-        class Placeholder : EventSearch(PLACEHOLDER) {
-            override fun json() = JSONObject(
-                mapOf(
-                    IMPR_ID to "", // TODO:: Search ID From BE
-                    ENTER_FROM to "", // TODO:: Homepage, otherwise EMPTY
-                    SEARCH_TYPE to "", // TODO:: GOODS_SEARCH || STORE_SEARCH
-                    // TODO:: DEFAULT_SEARCH_KEYWORD (Enter SRP From Initial State)
-                    //  || DEFAULT_SEARCH_KEYWORD_OUTER (Homepage, not applicable for tokopedia)
-                    ENTER_METHOD to "",
-                    SEARCH_KEYWORD to "", // TODO:: Keyword
-                    DURATION to 0, // TODO:: PLT in Millisecond!
-                    IS_SUCCESS to 0, // TODO:: 0 Fail, 1 Success
-                    PRE_SEARCH_ID to "", // TODO:: Previous Search ID, make similar to PREVIOUS_KEYWORD?
-                    EC_SEARCH_SESSION_ID to "", // TODO:: Search Session ID. From FE? Need SharedPreferences to clear on Homepage
-                )
-            )
-        }
-
-        class InitialState : EventSearch(INITIAL_STATE) {
-            override fun json() = JSONObject(
-                mapOf(
-                    IMPR_ID to "", // TODO:: Search ID From BE
-                    ENTER_FROM to "", // TODO:: Homepage, otherwise EMPTY
-                    SEARCH_TYPE to "", // TODO:: GOODS_SEARCH || STORE_SEARCH
-                    //  TODO:: || RECOM_SEARCH (suggestion? what's this?)
-                    //   || SEARCH_HISTORY (search history on initial state)
-                    ENTER_METHOD to "",
-                    SEARCH_KEYWORD to "", // TODO:: Keyword
-                    DURATION to 0, // TODO:: PLT in Millisecond!
-                    IS_SUCCESS to 0, // TODO:: 0 Fail, 1 Success
-                    PRE_SEARCH_ID to "", // TODO:: Previous Search ID, make similar to PREVIOUS_KEYWORD?
-                    EC_SEARCH_SESSION_ID to "", // TODO:: Search Session ID. From FE? Need SharedPreferences to clear on Homepage
-                )
-            )
-        }
-
-        class Suggestion : EventSearch(SUGGESTION) {
-            override fun json() = JSONObject(
-                mapOf(
-                    IMPR_ID to "", // TODO:: Search ID From BE
-                    ENTER_FROM to "", // TODO:: Homepage, otherwise EMPTY
-                    SEARCH_TYPE to "", // TODO:: GOODS_SEARCH || STORE_SEARCH
-                    ENTER_METHOD to "", // TODO:: SEARCH_SUG (Sug word) || NORMAL_SEARCH (Manual input) || SUG_RECOM (Recommended words)
-                    SEARCH_KEYWORD to "", // TODO:: Keyword
-                    DURATION to 0, // TODO:: PLT in Millisecond!
-                    IS_SUCCESS to 0, // TODO:: 0 Fail, 1 Success
-                    PRE_SEARCH_ID to "", // TODO:: Previous Search ID, make similar to PREVIOUS_KEYWORD?
-                    EC_SEARCH_SESSION_ID to "", // TODO:: Search Session ID. From FE? Need SharedPreferences to clear on Homepage
-                    SUG_TYPE to "", // TODO:: CAMPAIGN || PRODUCT || STORE.
-                    NEW_SUG_SESSION_ID to "", // TODO:: Reset every time query is entirely deleted. Similar to ec_search_session_id ? How to generate? What about opening Suggestion from SRP?
-                    PRE_CLICK_ID to "", // TODO:: Can show tech implementation on TikTok?
-                    BLANKPAGE_ENTER_FROM to "", // TODO:: ENTER_FROM of eventEnterSearchBlankPage(). Don't send this key if not from Initial State
-                    BLANKPAGE_ENTER_METHOD to "", // TODO:: ENTER_METHOD of eventEnterSearchBlankPage(). Don't send this key if not from Initial State
-                )
-            )
-        }
-
-        class Filter : EventSearch(FILTER) {
-            override fun json() = JSONObject(
-                mapOf(
-                    IMPR_ID to "", // TODO:: Search ID From BE
-                    ENTER_FROM to "", // TODO:: Homepage, otherwise EMPTY
-                    SEARCH_TYPE to "", // TODO:: GOODS_SEARCH || STORE_SEARCH
-                    ENTER_METHOD to "", // TODO:: SEARCH_SUG (Sug word) || NORMAL_SEARCH (Manual input) || SUG_RECOM (Recommended words)
-                    // TODO::
-                    //                //sort_relevance: related (toko: Paling Sesuai)
-                    //                //sort_best_sellers: sales (toko: no such item)
-                    //                //sort_review: good review (toko: Ulasan, TT no such sorting method)
-                    //                //sort_price_asc: Price in ascending order (Toko: Harga Terendah)
-                    //                //sort_price_desc: Price in descending order (Toko: Harga Tertinggi)
-                    //                //sort_newest: New and Old (toko: Terbaru)
-                    ECOM_SORT_CHOSEN to "",
-                    ECOM_FILTER_CHOSEN to JSONObject(),
-                    ECOM_FILTER_TYPE to FILTER_PANEL,
-                    SEARCH_KEYWORD to "", // TODO:: Keyword
-                )
-            )
-        }
-
-        class TypoCorrection : EventSearch(TYPO_CORRECTION) {
-            override fun json() = JSONObject(
-                mapOf(
-                    ENTER_METHOD to CORRECT_WORD,
-                    SEARCH_KEYWORD to "", //TODO:: Keyword
-                )
-            )
-        }
-
-        fun send() {
-            AppLogAnalytics.send(SEARCH, json())
-        }
-
-        abstract fun json(): JSONObject
-
-        companion object {
-            const val PLACEHOLDER = "PLACEHOLDER"
-            const val INITIAL_STATE = "INITIAL_STATE"
-            const val SUGGESTION = "SUGGESTION"
-            const val FILTER = "FILTER"
-            const val TYPO_CORRECTION = "TYPO_CORRECTION"
-
-            fun create(from: String): EventSearch = when (from) {
-                PLACEHOLDER -> Placeholder()
-                INITIAL_STATE -> InitialState()
-                SUGGESTION -> Suggestion()
-                FILTER -> Filter()
-                TYPO_CORRECTION -> TypoCorrection()
-                else -> Placeholder()
-            }
-        }
-    }
-
-    // /////////////// -- IJ -- /////////////
 
     fun eventEnterSearchBlankPage(
         enterFrom: String,
@@ -470,9 +357,6 @@ object AppLogSearch {
         )
     }
 
-
-    // /////////////// -- IJ -- /////////////
-
     data class SearchResult(
         val imprId: String,
         val searchId: String,
@@ -523,84 +407,83 @@ object AppLogSearch {
     }
 
     data class ChooseSearchFilter(
-        val searchEntrance: String = HOMEPAGE,
-        val searchId: String,
+        val searchID: String,
         val searchType: String,
-        val searchKeyword: String,
+        val keyword: String,
         val ecomSortName: String,
         val ecomFilterName: String,
-        val ecomFilterPosition: Int,
-        val buttonTypeClick: String
+        val ecomFilterPosition: String,
+        val buttonTypeClick: String,
     ) {
-        fun json() = JSONObject(
-            mapOf(
-                SEARCH_ENTRANCE to searchEntrance,
-                SEARCH_ID to searchId,
-                SEARCH_TYPE to searchType, // TODO:: GOODS_SEARCH || STORE_SEARCH
-                SEARCH_KEYWORD to searchKeyword, // TODO:: keyword
-                // TODO:: Sorting type:
-                //sort_relevance: related (toko: Paling Sesuai)
-                //sort_best_sellers: sales (toko: no such item)
-                //sort_review: good review (toko: Ulasan, TT no such sorting method)
-                //sort_price_asc: Price in ascending order (Toko: Harga Terendah)
-                //sort_price_desc: Price in descending order (Toko: Harga Tertinggi)
-                //sort_newest: New and Old (toko: Terbaru)
-                ECOM_SORT_NAME to ecomSortName,
-                ECOM_FILTER_NAME to ecomFilterName,
-                ECOM_FILTER_POSITION to ecomFilterPosition, // Filter position, starts from 0
-                //TODO::
-//                FILTER_PANEL = "filter_panel"
-//                FILTER_GUID = "filter_guid" // TODO:: What is navigation filtering?
-//                FILTER_QUICK = "filter_quick"
-                BUTTON_TYPE_CLICK to buttonTypeClick,
-            )
-        )
+
+        fun json() = JSONObject(buildMap {
+            put(SEARCH_ENTRANCE, HOMEPAGE)
+            put(SEARCH_ID, searchID)
+            put(SEARCH_KEYWORD, keyword)
+            put(ECOM_SORT_NAME, ecomSortName)
+            put(ECOM_FILTER_NAME, ecomFilterName)
+            put(ECOM_FILTER_POSITION, ecomFilterPosition)
+            put(BUTTON_TYPE_CLICK, buttonTypeClick)
+        })
     }
 
     fun eventChooseSearchFilter(chooseSearchFilter: ChooseSearchFilter) {
-        AppLogAnalytics.send(
-            CHOOSE_SEARCH_FILTER,
-            chooseSearchFilter.json()
-        )
+        AppLogAnalytics.send(CHOOSE_SEARCH_FILTER, chooseSearchFilter.json())
     }
 
-    fun <K, V> eventProductShow() {
-        AppLogAnalytics.send(EventName.PRODUCT_SHOW, tiktokecJSON())
-    }
+    data class Product(
+        val entranceForm: EntranceForm,
+        val volume: Int?,
+        val rate: Float,
+        val isAd: Boolean,
+        val productID: String,
+        val searchID: String,
+        val requestID: String,
+        val searchResultID: String,
+        val enterFrom: String,
+        val listItemId: String?,
+        val itemRank: Int?,
+        val listResultType: String?,
+        val searchKeyword: String,
+        val tokenType: String,
+        val rank: Int,
+        val shopID: String?
+    ) {
 
-    fun <K, V> eventProductClick() {
-        AppLogAnalytics.send(EventName.PRODUCT_CLICK, tiktokecJSON())
-    }
-
-    //TODO:: Update source_module to null
-    //TODO:: Update source_page_type to goods_search
-    //TODO:: Update entrance_form
-    private fun tiktokecJSON() = JSONObject(
-        mapOf(
-            SOURCE_MODULE to "", // TODO:: Is this search?
-            ITEM_ORDER to 0, // TODO:: Product Position from 1
-            VOLUME to 0, // TODO:: Count sold of product
-            RATE to 0f, // TODO:: Rating
-            IS_AD to 0, // TODO:: Is ad
-            PRODUCT_ID to "", // TODO:: productid
-            AppLogParam.TRACK_ID to "", // TODO:: search_id + _ + item_rank
-            AppLogParam.REQUEST_ID to "", // TODO:: Request ID from BE
-            SEARCH_ID to "", // TODO:: Search ID, check above
-            SEARCH_RESULT_ID to "", //TODO:: Search Result ID from BE
-            SEARCH_ENTRANCE to HOMEPAGE,
-            ENTER_FROM to "", // TODO:: GOODS_SEARCH || STORE_SEARCH
-            LIST_ITEM_ID to "",
-            ITEM_RANK to 0, // TODO:: item index in carousels
-            LIST_RESULT_TYPE to "",
-            SEARCH_KEYWORD to "",
-            TOKEN_TYPE to "",
-            RANK to 0, // TODO:: Item index in whole page
-            SHOP_ID to "",
-        )
-    ).apply {
-        addPage()
+        fun json() = JSONObject(buildMap {
+            put(SOURCE_MODULE, "") // TODO:: Is this search?
+            put(ENTRANCE_FORM, entranceForm.str)
+            put(ITEM_ORDER, rank + 1)
+            volume?.let { put(VOLUME, it) }
+            put(RATE, rate)
+            put(IS_AD, isAd.intValue)
+            put(PRODUCT_ID, productID)
+            put(AppLogParam.TRACK_ID, "${searchID}_${(itemRank ?: rank)}")
+            put(AppLogParam.REQUEST_ID, requestID) // TODO:: Request ID from BE
+            put(SEARCH_ID, searchID) // TODO:: Search ID, check above
+            put(SEARCH_RESULT_ID, searchResultID)
+            put(SEARCH_ENTRANCE, HOMEPAGE)
+            put(ENTER_FROM, enterFrom) //TODO:: GOODS_SEARCH || STORE_SEARCH
+            listItemId?.let { put(LIST_ITEM_ID, it) }
+            itemRank?.let { put(ITEM_RANK, it) }
+            listResultType?.let { put(LIST_RESULT_TYPE, it) }
+            put(SEARCH_KEYWORD, searchKeyword)
+            put(TOKEN_TYPE, tokenType)
+            put(RANK, rank)
+            shopID?.let { put(SHOP_ID, it) }
+        }).apply {
+            addPage()
 //        addSourceModule() // TODO milhamj diapain ini?
-        addSourcePageType()
+            addSourcePageType()
+        }
+    }
+
+    fun eventProductShow(product: Product) {
+        AppLogAnalytics.send(EventName.PRODUCT_SHOW, product.json())
+    }
+
+    fun eventProductClick(product: Product) {
+        AppLogAnalytics.send(EventName.PRODUCT_CLICK, product.json())
     }
 
     fun eventCartEntranceShow() {

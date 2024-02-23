@@ -19,5 +19,11 @@ class SortHelper {
 
             return sortParameter
         }
+
+        const val PALING_SESUAI = "Paling Sesuai"
+        const val ULASAN = "Ulasan"
+        const val TERBARU = "Terbaru"
+        const val HARGA_TERTINGGI = "Harga Tertinggi"
+        const val HARGA_TERENDAH = "Harga Terendah"
     }
 }

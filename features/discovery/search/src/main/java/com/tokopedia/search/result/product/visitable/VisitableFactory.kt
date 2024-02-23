@@ -7,10 +7,11 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
-import com.tokopedia.search.result.product.ByteIOTrackingData
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactory
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
@@ -48,8 +49,8 @@ class VisitableFactory @Inject constructor(
     private val broadMatchDelegate: BroadMatchPresenterDelegate,
     private val topAdsImageViewPresenterDelegate: TopAdsImageViewPresenterDelegate,
     private val pagination: Pagination,
-    queryKeyProvider: QueryKeyProvider,
-): QueryKeyProvider by queryKeyProvider {
+    private val byteIOTrackingDataFactory: ByteIOTrackingDataFactory,
+) {
 
     private var isGlobalNavWidgetAvailable = false
     private var isShowHeadlineAdsBasedOnGlobalNav = false
@@ -216,10 +217,7 @@ class VisitableFactory @Inject constructor(
                 searchProductModel.cpmModel,
                 cpmDataList,
                 verticalSeparator,
-                ByteIOTrackingData( // TODO
-                    keyword = queryKey,
-                    isFirstPage = true,
-                )
+                byteIOTrackingDataFactory.create(true),
             )
 
             if (index == 0) processHeadlineAdsAtTop(list, cpmDataView)
@@ -436,10 +434,7 @@ class VisitableFactory @Inject constructor(
                 searchProductModel.cpmModel,
                 cpmDataList,
                 verticalSeparator,
-                ByteIOTrackingData( //TODO
-                    keyword = queryKey,
-                    isFirstPage = false,
-                )
+                byteIOTrackingDataFactory.create(false),
             )
 
             processHeadlineAdsAtBottom(list, cpmDataView)
