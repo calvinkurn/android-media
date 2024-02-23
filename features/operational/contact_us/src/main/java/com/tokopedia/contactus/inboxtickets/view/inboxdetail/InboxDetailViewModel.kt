@@ -42,7 +42,6 @@ import com.tokopedia.contactus.utils.CommonConstant.SIZE_ZERO
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.dynamiccsat.domain.model.CsatModel
 import com.tokopedia.csat_rating.dynamiccsat.domain.model.PointModel
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -153,7 +152,7 @@ class InboxDetailViewModel @Inject constructor(
                 val requestParams = submitRatingUseCase.createRequestParams(
                     getFirstCommentId(),
                     rating,
-                    reason, // failed if empty string
+                    reason, // failed if empty string, todo : FU to BE
                     otherReason,
                     service,
                     dynamicReasons
@@ -198,7 +197,7 @@ class InboxDetailViewModel @Inject constructor(
 
     fun getDynamicCsatData(): CsatModel {
 //        return currentState.dynamicCsat
-
+        // Todo: Remove dummy
         return CsatModel(
             caseId = "12345",
             title = "Gimana pengalamanmu dengan Tokopedia Care?",
@@ -340,21 +339,7 @@ class InboxDetailViewModel @Inject constructor(
                                     isShowRating = false
                                 },
                                 isIssueClose = false,
-                                dynamicCsat = CsatModel(
-                                    caseId = ticketId,
-                                    title = chipGetInboxDetail.getDataTicket().dynamicCsat.title,
-                                    service = chipGetInboxDetail.getDataTicket().dynamicCsat.service,
-                                    points = chipGetInboxDetail.getDataTicket().dynamicCsat.points.map { point ->
-                                        PointModel(
-                                            score = point.score,
-                                            caption = point.caption,
-                                            reasonTitle = point.reasonTitle,
-                                            otherReasonTitle = point.otherReasonTitle,
-                                            reasons = point.reasons
-                                        )
-                                    }.toMutableList(),
-                                    minimumOtherReasonChar = chipGetInboxDetail.getDataTicket().dynamicCsat.minimumOtherReasonChar.orZero()
-                                )
+                                dynamicCsat = CsatMapper.mapCsatModel(ticketId, chipGetInboxDetail.getDataTicket().dynamicCsat)
                             )
                         }
                     } else {
@@ -364,21 +349,7 @@ class InboxDetailViewModel @Inject constructor(
                                 csatReasonListBadReview = chipGetInboxDetail.getDataTicket()
                                     .getBadCsatReasons(),
                                 ticketDetail = chipGetInboxDetail.getDataTicket(),
-                                dynamicCsat = CsatModel(
-                                    caseId = ticketId,
-                                    title = chipGetInboxDetail.getDataTicket().dynamicCsat.title,
-                                    service = chipGetInboxDetail.getDataTicket().dynamicCsat.service,
-                                    points = chipGetInboxDetail.getDataTicket().dynamicCsat.points.map { point ->
-                                        PointModel(
-                                            score = point.score,
-                                            caption = point.caption,
-                                            reasonTitle = point.reasonTitle,
-                                            otherReasonTitle = point.otherReasonTitle,
-                                            reasons = point.reasons
-                                        )
-                                    }.toMutableList(),
-                                    minimumOtherReasonChar = chipGetInboxDetail.getDataTicket().dynamicCsat.minimumOtherReasonChar.orZero()
-                                )
+                                dynamicCsat = CsatMapper.mapCsatModel(ticketId, chipGetInboxDetail.getDataTicket().dynamicCsat)
                             )
                         }
                     }
