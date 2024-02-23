@@ -131,7 +131,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardStockInfoLabel"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
@@ -142,7 +142,6 @@
                 app:layout_constraintBottom_toBottomOf="@id/productCardStockInfoBackground"
                 app:layout_constraintStart_toStartOf="@id/productCardStockInfoBackground"
                 app:layout_constraintTop_toTopOf="@id/productCardStockInfoBackground"
-                app:layout_constraintEnd_toStartOf="@+id/productCardStockInfoBar"
                 app:layout_constraintHorizontal_bias="0"
                 app:typographyType="small"
                 app:typographyWeight="bold"
@@ -151,13 +150,15 @@
 
             <com.tokopedia.unifycomponents.ProgressBarUnify
                 android:id="@+id/productCardStockInfoBar"
-                android:layout_width="40dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
+                android:layout_marginStart="18dp"
                 android:visibility="gone"
                 app:layout_constraintCircleRadius="16dp"
                 app:layout_constraintBottom_toBottomOf="@id/productCardStockInfoBackground"
                 app:layout_constraintEnd_toEndOf="@id/productCardStockInfoBackground"
+                app:layout_constraintStart_toEndOf="@id/productCardStockInfoLabel"
                 app:layout_constraintTop_toTopOf="@id/productCardStockInfoBackground"
                 app:unify_progress_bar_height="6"
                 tools:layout_height="6dp"
