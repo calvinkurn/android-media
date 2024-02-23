@@ -16,7 +16,7 @@ import kotlin.coroutines.CoroutineContext
 
 class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, CoroutineScope {
 
-    var pdpCheckpointStay: WeakReference<Activity>? = null
+    private var pdpCheckpointStay: WeakReference<Activity>? = null
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         AppLogAnalytics.activityCount++
@@ -67,7 +67,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
                 activity.startTime = 0L
             }
         }
-        // Sending stay data in ATC Variant when paused
+        // Sending stay data in ATC Variant when it's a close, not sending when it's a return
         if (isAtcVariantPage(activity) && activity is BaseSimpleActivity && !activity.isFinishing) {
             launch {
                 val pdpActivity = pdpCheckpointStay?.get()
