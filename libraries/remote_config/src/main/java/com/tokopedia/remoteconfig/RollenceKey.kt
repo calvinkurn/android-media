@@ -30,11 +30,6 @@ object RollenceKey {
     const val HOME_MISSION_SIZE_VARIANT = "exp_var"
     // end of home rollence section
 
-    // navigation rollence section
-    const val ME_PAGE_EXP = "GlobalMenuRV"
-    const val ME_PAGE_VARIANT = "Varian1"
-    // end of navigation rollence section
-
     // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
 

@@ -89,7 +89,7 @@ data class GetBuyerOrderDetailResponse(
             val hasInsurance: Boolean? = false,
             @SerializedName("additional_data")
             @Expose
-            val additionalData: BomAdditionalData = BomAdditionalData(),
+            val additionalData: BomAdditionalData? = null,
             @SerializedName("is_pof")
             @Expose
             val isPof: Boolean? = false,
@@ -108,12 +108,12 @@ data class GetBuyerOrderDetailResponse(
             data class BomAdditionalData(
                 @SerializedName("epharmacy_data")
                 @Expose
-                val epharmacyData: EpharmacyData = EpharmacyData(),
+                val epharmacyData: EpharmacyData? = null,
                 @SerializedName("plus_savings")
                 @Expose
-                val plusSavings: PlusSavings = PlusSavings(),
+                val plusSavings: PlusSavings? = null,
                 @SerializedName("group_order_data")
-                val groupOrderData: GroupOrderData? = GroupOrderData()
+                val groupOrderData: GroupOrderData? = null
             ) {
                 data class GroupOrderData(
                     @SerializedName("tx_id")
@@ -782,7 +782,11 @@ data class GetBuyerOrderDetailResponse(
 
                         @Expose
                         @SerializedName("price_text")
-                        val priceText: String = ""
+                        val priceText: String = "",
+
+                        @SerializedName("addon_summary")
+                        @Expose
+                        val addonSummary: AddonSummary? = AddonSummary()
                     )
                 }
 

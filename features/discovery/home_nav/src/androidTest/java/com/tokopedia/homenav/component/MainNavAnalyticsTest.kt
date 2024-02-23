@@ -53,7 +53,6 @@ class MainNavAnalyticsTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(MainNavMockResponseConfig())
-            setupAbTestRemoteConfig()
         }
     }
 
@@ -248,12 +247,5 @@ class MainNavAnalyticsTest {
             }
         }
         endActivityTest()
-    }
-
-    private fun setupAbTestRemoteConfig() {
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-            RollenceKey.ME_PAGE_EXP,
-            RollenceKey.ME_PAGE_VARIANT
-        )
     }
 }

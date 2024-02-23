@@ -11,9 +11,9 @@
         android:id="@+id/container_img_header_main"
         android:layout_width="144dp"
         android:layout_height="144dp"
+        android:layout_marginStart="16dp"
         android:background="@drawable/bg_image_outline"
         android:padding="1dp"
-        android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -32,10 +32,10 @@
             android:layout_gravity="end|bottom"
             android:layout_margin="8dp"
             android:adjustViewBounds="true"
-            tools:background="@drawable/bg_circle_grey"
             android:scaleType="centerCrop"
             app:icon_color_light_enable="@color/Unify_NN0"
-            app:icon_name="SCREEN_FIT" />
+            app:icon_name="SCREEN_FIT"
+            tools:background="@drawable/bg_circle_grey" />
 
     </FrameLayout>
 
@@ -80,69 +80,32 @@
             app:layout_constraintTop_toTopOf="@+id/lbl_variant_name_1"
             tools:text="Kuning asdas dasa d dsa asda sdasdasd asdas das sad asdsa" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_header_main_price"
-            android:layout_width="wrap_content"
+        <com.tkpd.atcvariant.view.widget.AtcVariantPromoPriceWidget
+            android:id="@+id/widget_header_promo_price"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            tools:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lbl_variant_name_1" />
+
+        <com.tkpd.atcvariant.view.widget.AtcVariantNormalPriceWidget
+            android:id="@+id/widget_header_normal_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lbl_variant_name_1"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            tools:text="Rp150.000" />
-
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/lbl_header_cashback_percentage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:visibility="gone"
-            app:labelType="general_light_green"
-            app:layout_constraintStart_toStartOf="@+id/txt_header_main_price"
-            app:layout_constraintTop_toBottomOf="@+id/txt_header_main_price"
-            tools:text="Cashback 5%"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/lbl_header_discounted_percentage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:visibility="gone"
-            app:labelType="general_light_red"
-            app:layout_constraintStart_toEndOf="@+id/lbl_header_cashback_percentage"
-            app:layout_constraintTop_toBottomOf="@+id/txt_header_main_price"
-            app:layout_goneMarginStart="0dp"
-            tools:text="50%"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_header_slash_price"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/Unify_NN400"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@+id/lbl_header_discounted_percentage"
-            app:layout_constraintTop_toTopOf="@+id/lbl_header_discounted_percentage"
-            app:layout_goneMarginStart="0dp"
-            app:layout_goneMarginTop="6dp"
-            app:typographyType="body_3"
-            tools:text="Rp300.000"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier_cashback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="txt_header_slash_price, lbl_header_discounted_percentage,
-            lbl_header_cashback_percentage" />
+            app:constraint_referenced_ids="widget_header_promo_price, widget_header_normal_price" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_header_stock"
@@ -150,9 +113,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textColor="@color/Unify_NN950"
-            app:layout_constraintStart_toStartOf="@+id/txt_header_main_price"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/barrier_cashback"
-            app:typographyType="small"
+            app:typographyType="paragraph_3"
             tools:text="Stock > 50" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -160,12 +123,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:text="@string/atc_variant_tokocabang"
             android:textColor="@color/Unify_GN500"
             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@+id/txt_header_main_price"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_header_stock"
-            app:typographyType="small"
-            android:text="@string/atc_variant_tokocabang"
+            app:typographyType="paragraph_3"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

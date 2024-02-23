@@ -83,7 +83,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/fl_image_container"
             app:layout_constraintEnd_toStartOf="@+id/fl_image_container"
             app:layout_constraintTop_toTopOf="@+id/fl_image_container"
-            app:srcCompat="@drawable/ic_error_to_send" />
+            app:srcCompat="@drawable/ic_chatcommon_error_to_send" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
