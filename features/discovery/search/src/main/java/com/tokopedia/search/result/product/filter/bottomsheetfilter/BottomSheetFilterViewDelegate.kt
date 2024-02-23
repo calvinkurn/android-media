@@ -5,6 +5,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_PANEL
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.PRODUCT_SEARCH
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SORT_NEWEST
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SORT_PRICE_ASC
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SORT_PRICE_DESC
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SORT_RELEVANCE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SORT_REVIEW
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
@@ -14,9 +21,15 @@ import com.tokopedia.filter.common.data.IOption
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.data.SortModel
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.filter.newdynamicfilter.helper.SortHelper.Companion.HARGA_TERENDAH
+import com.tokopedia.filter.newdynamicfilter.helper.SortHelper.Companion.HARGA_TERTINGGI
+import com.tokopedia.filter.newdynamicfilter.helper.SortHelper.Companion.PALING_SESUAI
+import com.tokopedia.filter.newdynamicfilter.helper.SortHelper.Companion.TERBARU
+import com.tokopedia.filter.newdynamicfilter.helper.SortHelper.Companion.ULASAN
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.ProductListParameterListener
+import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.ScreenNameProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.filter.analytics.SearchSortFilterTracking
@@ -43,11 +56,13 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private val screenNameProvider: ScreenNameProvider,
     private val userSessionInterface: UserSessionInterface,
     private val reimagineRollence: ReimagineRollence,
+    queryKeyProvider: QueryKeyProvider,
 ) : BottomSheetFilterView,
     ContextProvider by WeakReferenceContextProvider(context),
     FragmentProvider by fragmentProvider,
     SearchParameterProvider by searchParameterProvider,
     ScreenNameProvider by screenNameProvider,
+    QueryKeyProvider by queryKeyProvider,
     SortFilterBottomSheet.Callback,
     LifecycleObserver {
 
@@ -129,7 +144,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
             val sortParam = selectedSort.toMapParam()
 
-            trackEventApplySort(sortParam)
+            trackEventApplySort(sortParam, selectedSort)
 
             val parameter = filterController.getParameter() +
                 sortParam +
@@ -141,11 +156,23 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         }
     }
 
-    private fun trackEventApplySort(sortParam: Map<String, String>) {
+    private fun trackEventApplySort(sortParam: Map<String, String>, selectedSort: Sort) {
         SearchSortFilterTracking.eventApplySort(
             keyword = getSearchParameter()?.getSearchQuery().orEmpty(),
             pageSource = pageSource,
             selectedSort = sortParam,
+        )
+
+        AppLogSearch.eventChooseSearchFilter(
+            AppLogSearch.ChooseSearchFilter(
+                searchID = "", // TODO
+                searchType = PRODUCT_SEARCH,
+                keyword = queryKey,
+                ecomSortName = ecomSortName(selectedSort.name),
+                ecomFilterName = "",
+                ecomFilterPosition = "",
+                buttonTypeClick = FILTER_PANEL,
+            )
         )
     }
 
@@ -202,7 +229,37 @@ class BottomSheetFilterViewDelegate @Inject constructor(
             selectedFilter = applySortFilterModel.selectedFilterMapParameter,
             sortApplyFilter = applySortFilterModel.sortAutoFilterMapParameter,
         )
+
+        val selectedOptionWithIndex = applySortFilterModel.selectedOptionWithIndex
+
+        val ecomFilterName =
+            selectedOptionWithIndex.joinToString(separator = ",") { it.second.name }
+
+        val ecomFilterPosition =
+            selectedOptionWithIndex.joinToString(separator = ",") { it.first.toString() }
+
+        AppLogSearch.eventChooseSearchFilter(
+            AppLogSearch.ChooseSearchFilter(
+                searchID = "", // TODO
+                searchType = PRODUCT_SEARCH,
+                keyword = queryKey,
+                ecomSortName = ecomSortName(applySortFilterModel.selectedSortName),
+                ecomFilterName = ecomFilterName,
+                ecomFilterPosition = ecomFilterPosition,
+                buttonTypeClick = FILTER_PANEL,
+            )
+        )
     }
+
+    private fun ecomSortName(selectedSortName: String): String =
+        when (selectedSortName) {
+            PALING_SESUAI -> SORT_RELEVANCE
+            ULASAN -> SORT_REVIEW
+            TERBARU -> SORT_NEWEST
+            HARGA_TERTINGGI -> SORT_PRICE_DESC
+            HARGA_TERENDAH -> SORT_PRICE_ASC
+            else -> ""
+        }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
         callback?.getProductCount(mapParameter)
