@@ -4,7 +4,10 @@ import com.tokopedia.analytics.byteio.ActionType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.ContentType
+import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.SourcePageType
 import org.json.JSONObject
 
 /**
@@ -14,8 +17,8 @@ data class AppLogRecommendationCardModel(
     val cardName: CardName,
     val cardType: String,
     val productId: String,
-    val listName: String?,
-    val listNum: Int?,
+    val listName: String,
+    val listNum: Int,
     val moduleName: String,
     val sourceModule: String,
     val trackId: String,
@@ -32,7 +35,9 @@ data class AppLogRecommendationCardModel(
     val rate: Float? = null,
     val originalPrice: Float? = null,
     val salesPrice: Float? = null,
-    val type: AppLogRecommendationType
+    val sourcePageType: SourcePageType? = null,
+    val type: AppLogRecommendationType,
+    val enterMethod: String = "",
 ) {
 
     fun toShowClickJson() = JSONObject().apply {
@@ -48,13 +53,12 @@ data class AppLogRecommendationCardModel(
         put(AppLogParam.TRACK_ID, trackId)
 
         put(AppLogParam.REQUEST_ID, requestId)
-        put(AppLogRecommendationConst.REC_PARAMS, recParams)
+        put(AppLogParam.REC_PARAMS, recParams)
 
         put(AppLogParam.ENTRANCE_FORM, entranceForm.str)
         put(AppLogParam.SOURCE_MODULE, sourceModule)
 
         addPage()
-        addSourcePageType()
     }
 
     fun toRecTriggerJson() = JSONObject().apply {
@@ -92,7 +96,9 @@ data class AppLogRecommendationCardModel(
             rate: Float? = null,
             originalPrice: Float? = null,
             salesPrice: Float? = null,
-            type: AppLogRecommendationType
+            type: AppLogRecommendationType,
+            enterMethod: String = "",
+            sourcePageType: SourcePageType? = null,
         ): AppLogRecommendationCardModel {
             return AppLogRecommendationCardModel(
                 cardName = cardName,
@@ -116,7 +122,9 @@ data class AppLogRecommendationCardModel(
                 rate = rate,
                 originalPrice = originalPrice,
                 salesPrice = salesPrice,
-                type = type
+                type = type,
+                enterMethod = enterMethod,
+                sourcePageType = sourcePageType
             )
         }
     }

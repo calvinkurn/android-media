@@ -1,10 +1,11 @@
 package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.ActionType
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.SourcePageType
 import org.json.JSONObject
 
 /**
@@ -29,7 +30,8 @@ data class AppLogRecommendationProductModel(
     val volume: Int? = null,
     val rate: Float? = null,
     val originalPrice: Float? = null,
-    val salesPrice: Float? = null
+    val salesPrice: Float? = null,
+    val enterMethod: String = ""
 ) {
 
     fun asCardModel() = AppLogRecommendationCardModel(
@@ -50,7 +52,8 @@ data class AppLogRecommendationProductModel(
         cardType = "",
         groupId = "",
         itemOrder = itemOrder,
-        entranceForm = entranceForm
+        entranceForm = entranceForm,
+        sourcePageType = SourcePageType.PRODUCT_CARD,
     )
 
     fun toShowClickJson() = JSONObject().apply {
@@ -65,13 +68,17 @@ data class AppLogRecommendationProductModel(
         put(AppLogParam.TRACK_ID, trackId)
 
         put(AppLogParam.REQUEST_ID, requestId)
-        put(AppLogRecommendationConst.REC_PARAMS, recParams)
+        put(AppLogParam.REC_PARAMS, recParams)
 
         put(AppLogParam.ENTRANCE_FORM, entranceForm.str)
         put(AppLogParam.SOURCE_MODULE, sourceModule)
 
+        put(
+            AppLogParam.SOURCE_PAGE_TYPE,
+            AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME)
+        )
+
         addPage()
-        addSourcePageType()
     }
 
     fun toRecTriggerJson() = JSONObject().apply {
@@ -106,7 +113,8 @@ data class AppLogRecommendationProductModel(
             rate: Float? = null,
             originalPrice: Float? = null,
             salesPrice: Float? = null,
-            type: AppLogRecommendationType
+            enterMethod: String = "",
+            type: AppLogRecommendationType,
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
                 productId = productId,
@@ -127,7 +135,8 @@ data class AppLogRecommendationProductModel(
                 rate = rate,
                 originalPrice = originalPrice,
                 salesPrice = salesPrice,
-                type = type
+                type = type,
+                enterMethod = enterMethod
             )
         }
     }

@@ -188,7 +188,6 @@ enum class EnterMethod(val str: String) {
     CLICK_VIDEO_GUIDE("click_video_guide"),
     CLICK_TT_TASK_PAGE_MALL_BROWSE_TASK("click_tt_task_page_mall_browse_task"),
     CLICK_TT_TASK_PAGE_COUPON_POPUP("click_tt_task_page_coupon_popup"),
-    OTHER("other")
 }
 
 object EventName {
@@ -244,4 +243,11 @@ object AppLogParam {
     const val SOURCE_MODULE = "source_module"
     const val SOURCE_PAGE_TYPE = "source_page_type"
     const val TRACK_ID = "track_id"
+    const val REC_PARAMS = "rec_params"
+}
+
+enum class ContentType(val str: String) {
+    VIDEO("video"),
+    LIVE("live"),
+    OTHER("")
 }

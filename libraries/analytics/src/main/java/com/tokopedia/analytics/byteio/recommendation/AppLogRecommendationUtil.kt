@@ -7,7 +7,6 @@ import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationConst.S
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationConst.SOURCE_MODULE_VERTICAL_FORMAT
 
 object AppLogRecommendationConst {
-    const val REC_PARAMS = "rec_params"
     const val SOURCE_MODULE_REC = "rec"
     const val SOURCE_MODULE_ADS = "ads"
     const val SOURCE_MODULE_OPS = "ops"

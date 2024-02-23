@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.extension
 
+import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
@@ -332,6 +333,7 @@ fun RecommendationItem.asProductTrackModel(
     isCache: Boolean = false,
     type: AppLogRecommendationType,
     entranceForm: EntranceForm? = null,
+    enterMethod: String = "",
     tabName: String = "",
     tabPosition: Int = 0,
 ): AppLogRecommendationProductModel {
@@ -353,5 +355,6 @@ fun RecommendationItem.asProductTrackModel(
         tabName = tabName,
         tabPosition = tabPosition,
         rate = ratingAverage.toFloatOrNull(),
+        enterMethod = enterMethod,
     )
 }

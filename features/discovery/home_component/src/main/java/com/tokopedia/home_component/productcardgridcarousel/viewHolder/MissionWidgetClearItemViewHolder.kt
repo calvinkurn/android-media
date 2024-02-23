@@ -73,7 +73,12 @@ class MissionWidgetClearItemViewHolder(
         binding?.run {
             containerMissionWidget.setOnClickListener {
                 if (element.isProduct()) {
-                    AppLogRecommendation.sendProductClickAppLog(element.asProductTrackModel(element.isCache))
+                    AppLogRecommendation.sendProductClickAppLog(
+                        element.asProductTrackModel(
+                            isCache = element.isCache,
+                            enterMethod = "${element.data.pageName}_${element.cardPosition+1}"
+                        )
+                    )
                 }
                 AppLogRecommendation.sendCardClickAppLog(element.asCardTrackModel(element.isCache))
                 missionWidgetComponentListener.onMissionClicked(element, element.cardPosition)
