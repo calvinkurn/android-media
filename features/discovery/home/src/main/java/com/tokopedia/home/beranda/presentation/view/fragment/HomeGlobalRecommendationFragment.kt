@@ -16,6 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -192,6 +193,7 @@ class HomeGlobalRecommendationFragment :
         setupRecyclerView()
         loadFirstPageData()
         initListeners()
+        observeLiveData()
         observeStateFlow()
     }
 
@@ -234,6 +236,39 @@ class HomeGlobalRecommendationFragment :
     private fun initBuilderComponent(): DaggerBerandaComponent.Builder {
         return DaggerBerandaComponent.builder()
             .baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
+    }
+
+    private fun observeLiveData() {
+        if (!HomeRecommendationController.isUsingRecommendationCard()) {
+            viewModel.homeRecommendationLiveData.observe(
+                viewLifecycleOwner
+            ) { data ->
+                adapter.submitList(data.homeRecommendations)
+            }
+
+            viewModel.homeRecommendationNetworkLiveData.observe(
+                viewLifecycleOwner
+            ) { result ->
+                if (result.isFailure) {
+                    view?.let {
+                        if (adapter.itemCount > 1) {
+                            Toaster.build(
+                                it,
+                                getString(R.string.home_error_connection),
+                                Snackbar.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.abstraction.R.string.title_try_again),
+                                View.OnClickListener {
+                                    endlessRecyclerViewScrollListener?.loadMoreNextPage()
+                                }
+                            ).show()
+                        }
+                    }
+                } else {
+                    updateScrollEndlessListener(result.getOrNull()?.isHasNextPage ?: false)
+                }
+            }
+        }
     }
 
     private fun observeStateFlow() {
