@@ -46,6 +46,7 @@ data class HomeRecommendationItemDataModel(
         val imageUrl: String = "",
         val recommendationType: String = "",
         val priceInt: Int = 0,
+        val slashedPriceInt: Int = 0,
         val freeOngkirIsActive: Boolean = false,
         val labelGroup: List<LabelGroup> = emptyList(),
         val categoryBreadcrumbs: String = "",

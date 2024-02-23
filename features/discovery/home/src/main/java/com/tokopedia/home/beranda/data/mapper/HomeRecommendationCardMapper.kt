@@ -93,7 +93,8 @@ class HomeRecommendationCardMapper @Inject constructor(
                                 mapToHomeRecommendationPlayWidget(
                                     card = card,
                                     playVideoWidgetResponse = it,
-                                    pageName = getHomeRecommendationCard.pageName
+                                    pageName = getHomeRecommendationCard.pageName,
+                                    position = index
                                 )
                             )
                         }
@@ -111,7 +112,8 @@ class HomeRecommendationCardMapper @Inject constructor(
     private fun mapToHomeRecommendationPlayWidget(
         card: RecommendationCard,
         playVideoWidgetResponse: PlayVideoWidgetResponse,
-        pageName: String
+        pageName: String,
+        position: Int,
     ): HomeRecommendationPlayWidgetUiModel {
         return HomeRecommendationPlayWidgetUiModel(
             cardId = card.id,
@@ -143,7 +145,8 @@ class HomeRecommendationCardMapper @Inject constructor(
             ),
             isAds = card.isTopads,
             shopId = card.shop.id,
-            pageName = pageName
+            pageName = pageName,
+            position = position,
         )
     }
 

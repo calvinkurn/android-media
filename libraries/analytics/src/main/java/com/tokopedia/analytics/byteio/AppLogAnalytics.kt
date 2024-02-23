@@ -17,6 +17,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ENTER_METHOD
 import com.tokopedia.analyticsdebugger.cassava.Cassava
 import org.json.JSONObject
 import java.lang.ref.WeakReference
@@ -128,6 +129,10 @@ object AppLogAnalytics {
 
     internal fun JSONObject.addTrackId() {
         put(TRACK_ID, getLastData(TRACK_ID))
+    }
+
+    internal fun JSONObject.addEnterMethod() {
+        put(ENTER_METHOD, getLastData(ENTER_METHOD))
     }
 
     private fun currentPageName(): String {

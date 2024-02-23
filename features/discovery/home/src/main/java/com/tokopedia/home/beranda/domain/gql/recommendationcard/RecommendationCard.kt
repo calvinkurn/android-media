@@ -86,6 +86,7 @@ data class RecommendationCard(
             imageUrl = imageUrl,
             recommendationType = recommendationType,
             priceInt = priceInt,
+            slashedPriceInt = slashedPriceInt,
             freeOngkirIsActive = freeOngkir.isActive,
             labelGroup = labelGroup.map {
                 HomeRecommendationItemDataModel.HomeRecommendationProductItem.LabelGroup(

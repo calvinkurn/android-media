@@ -62,6 +62,8 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var averageRating: String = ""
     var isFulfillment: Boolean? = null
     var warehouseId: String? = null
+    var shopId: String = ""
+    var widgetName: String = ""
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return when (typeFactory) {
             is ShopHomeAdapterTypeFactory -> {

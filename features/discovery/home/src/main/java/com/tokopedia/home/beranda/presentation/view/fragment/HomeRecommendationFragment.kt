@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -22,7 +21,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardClickAppLog
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardShowAppLog
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductClickAppLog
@@ -432,7 +430,6 @@ class HomeRecommendationFragment :
     }
 
     override fun onProductCardImpressed(model: RecommendationCardModel, position: Int) {
-        Log.d("byteio2", "onProductCardImpressed: $position")
         sendProductShowAppLog(
             model.asProductTrackModel(
                 tabName = tabName,
@@ -985,7 +982,6 @@ class HomeRecommendationFragment :
             tabName: String,
             sourceType: String
         ): HomeRecommendationFragment {
-            Log.d("byteio2", "newInstance: foryou lama $tabIndex")
             val homeFeedFragment = HomeRecommendationFragment()
             val bundle = Bundle()
             bundle.putInt(ARG_TAB_INDEX, tabIndex)
