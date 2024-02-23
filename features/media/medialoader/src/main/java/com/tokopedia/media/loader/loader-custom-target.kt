@@ -7,6 +7,7 @@ import android.view.View
 import androidx.core.graphics.drawable.toDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.gif.GifDrawable
+import com.bumptech.glide.request.target.AppWidgetTarget
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
@@ -91,6 +92,14 @@ fun Any.downloadImageFromUrl(
     properties: Properties.() -> Unit = {}
 ): File? {
     return MediaLoaderTarget.downloadImageFuture(context, timeout, Properties().apply(properties).setSource(this))
+}
+
+fun AppWidgetTarget.loadImage(context: Context, url: String, properties: Properties.() -> Unit) {
+    MediaLoaderTarget.loadImageAWT(context, this,  Properties().apply(properties).setSource(url))
+}
+
+fun AppWidgetTarget.loadImage(context: Context, resId: Int, properties: Properties.() -> Unit) {
+    MediaLoaderTarget.loadImageAWT(context, this,  Properties().apply(properties).setSource(resId))
 }
 
 fun Any.imagePreload(

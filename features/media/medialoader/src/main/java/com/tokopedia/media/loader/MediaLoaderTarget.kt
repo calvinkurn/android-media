@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.load.resource.gif.GifDrawable
+import com.bumptech.glide.request.target.AppWidgetTarget
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.media.loader.MediaLoaderApi.setThumbnailUrl
@@ -114,6 +115,30 @@ object MediaLoaderTarget {
                 )
             )
             .mediaLoad(properties)
+    }
+
+    fun loadImageAWT(context: Context, target: AppWidgetTarget, properties: Properties) {
+        // startTimeRequest will use for performance tracking
+        val startTimeRequest = System.currentTimeMillis()
+
+        GlideApp
+            .with(context)
+            .asBitmap()
+            .transform(properties)
+            .commonOptions(properties)
+            .dynamicPlaceHolder(context, properties)
+            .thumbnail(setThumbnailUrl(context, properties))
+            .transition(properties)
+            .timeout(properties)
+            .listener(
+                MediaListenerBuilder<Bitmap>(
+                    context,
+                    properties,
+                    startTimeRequest
+                )
+            )
+            .mediaLoad(properties)
+            .into(target)
     }
 
 }
