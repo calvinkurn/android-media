@@ -133,8 +133,12 @@ object AppLogPdp {
     fun sendConfirmCartResult(product: TrackConfirmCartResult) {
         AppLogAnalytics.send(EventName.CONFIRM_CART_RESULT, JSONObject().also {
             it.addPage()
-            it.addEntranceForm()
+            it.addTrackId()
             it.addSourcePageType()
+            it.addEntranceForm()
+            it.addSourceModule()
+            // it.addSourcePreviousPage
+            it.addRequestId()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
