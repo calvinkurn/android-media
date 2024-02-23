@@ -9,19 +9,30 @@ import androidx.work.WorkerParameters
 import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 class ShareExMediaCleanupStorageWorker(private val context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        val filesInCache = context.cacheDir.listFiles()
-        if (filesInCache != null) {
-            for (file in filesInCache) {
-                file.delete()
+        val shareFolder = File("${context.cacheDir}/share")
+        return if (!shareFolder.exists() || !shareFolder.isDirectory) {
+            Result.success()
+        } else {
+            val filesInCache = shareFolder.listFiles()
+            if (filesInCache != null) {
+                val currentTime = System.currentTimeMillis()
+                val oneHourInMillis = 60 * 60 * 1000 // 1 hour in milliseconds
+                for (file in filesInCache) {
+                    val lastModified = file.lastModified()
+                    if ((currentTime - lastModified) > oneHourInMillis) {
+                        file.delete()
+                    }
+                }
             }
+            Result.success()
         }
-        return Result.success()
     }
 
     companion object {
