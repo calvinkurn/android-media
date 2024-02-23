@@ -50,6 +50,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.analytics.byteio.AppLogFragmentLifecycleCallback;
 import com.tokopedia.analytics.byteio.IAppLogActivity;
 import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -300,6 +301,7 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         super.onCreate(savedInstanceState);
+        getSupportFragmentManager().registerFragmentLifecycleCallbacks(new AppLogFragmentLifecycleCallback(), true);
         HomeRollenceController.fetchIconJumperValue();
         initInjector();
         presenter.get().setView(this);

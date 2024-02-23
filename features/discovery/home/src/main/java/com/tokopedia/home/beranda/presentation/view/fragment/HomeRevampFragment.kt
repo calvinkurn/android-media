@@ -32,6 +32,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
+import com.tokopedia.analytics.byteio.AppLogActivityLifecycleCallback
+import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
@@ -261,7 +263,8 @@ open class HomeRevampFragment :
     PlayWidgetListener,
     RecommendationWidgetListener,
     CMHomeWidgetCallback,
-    HomePayLaterWidgetListener {
+    HomePayLaterWidgetListener,
+    AppLogInterface {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -529,6 +532,14 @@ open class HomeRevampFragment :
 
     override fun getScreenName(): String {
         return ConstantKey.Analytics.AppScreen.UnifyTracking.SCREEN_UNIFY_HOME_BERANDA
+    }
+
+    override fun getPageName(): String {
+        return "Home"
+    }
+
+    override fun isEnterFromWhitelisted(): Boolean {
+        return true
     }
 
     override fun initInjector() {
