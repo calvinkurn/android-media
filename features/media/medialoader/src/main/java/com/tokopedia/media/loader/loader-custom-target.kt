@@ -96,7 +96,7 @@ fun Any.downloadImageFromUrl(
 fun Any.imagePreload(
     context: Context
 ) {
-    Glide.with(context).load(this).preload()
+    this.imagePreload(context)
 }
 
 fun String.getBitmapImageUrlAsFlow(

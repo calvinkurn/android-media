@@ -58,6 +58,10 @@ object MediaLoaderTarget {
         GlideApp.with(context).clear(target)
     }
 
+    fun <T: Any>imagePreload(context: Context, target: MediaBitmapEmptyTarget<T>) {
+        GlideApp.with(context).load(this).preload()
+    }
+
     private fun loadImageTarget(context: Context, properties: Properties): GlideRequest<Bitmap>? {
         if (properties.data.toString().isEmpty()) return null
         if (properties.data !is String) return null
