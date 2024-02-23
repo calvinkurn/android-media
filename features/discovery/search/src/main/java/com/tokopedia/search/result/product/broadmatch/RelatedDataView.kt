@@ -2,6 +2,7 @@ package com.tokopedia.search.result.product.broadmatch
 
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductV5
+import com.tokopedia.search.result.product.ByteIOTrackingData
 
 data class RelatedDataView(
         val relatedKeyword: String = "",
@@ -17,6 +18,7 @@ data class RelatedDataView(
             dimension90: String,
             actualKeyword: String,
             externalReference: String,
+            byteIOTrackingData: ByteIOTrackingData,
         ) = RelatedDataView(
             related.relatedKeyword,
             related.position,
@@ -28,6 +30,7 @@ data class RelatedDataView(
                     related.trackingOption,
                     actualKeyword,
                     externalReference,
+                    byteIOTrackingData,
                 )
             }
         )
@@ -38,6 +41,7 @@ data class RelatedDataView(
             dimension90: String,
             actualKeyword: String,
             externalReference: String,
+            byteIOTrackingData: ByteIOTrackingData,
         ) = RelatedDataView(
             related.relatedKeyword,
             related.position,
@@ -49,6 +53,7 @@ data class RelatedDataView(
                     related.trackingOption,
                     actualKeyword,
                     externalReference,
+                    byteIOTrackingData,
                 )
             }
         )

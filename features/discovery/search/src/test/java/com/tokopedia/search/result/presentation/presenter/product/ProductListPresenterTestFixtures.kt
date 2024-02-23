@@ -81,6 +81,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import rx.schedulers.Schedulers
@@ -239,6 +241,7 @@ internal open class ProductListPresenterTestFixtures {
             requestParamsGenerator,
             chooseAddressPresenterDelegate,
             responseCodeImpl,
+            queryKeyProvider,
         )
 
         val visitableFactory = VisitableFactory(
@@ -325,7 +328,8 @@ internal open class ProductListPresenterTestFixtures {
         visitableListSlot: CapturingSlot<List<Visitable<*>>>,
         searchProductModel: SearchProductModel,
         topAdsPositionStart: Int = 0,
-        organicPositionStart: Int = 0
+        organicPositionStart: Int = 0,
+        isFirstPage: Boolean = true,
     ) {
         val expectedProductListType = searchProductModel.searchProduct.header.meta.productListType
         val expectedShowButtonATC = searchProductModel.searchProduct.header.meta.showButtonAtc
@@ -336,7 +340,8 @@ internal open class ProductListPresenterTestFixtures {
             topAdsPositionStart,
             organicPositionStart,
             expectedProductListType,
-            expectedShowButtonATC
+            expectedShowButtonATC,
+            isFirstPage,
         )
     }
 
@@ -346,6 +351,7 @@ internal open class ProductListPresenterTestFixtures {
         topAdsPositionStart: Int = 0,
         organicPositionStart: Int = 0,
         expectedBlurred: Boolean = true,
+        isFirstPage: Boolean = true,
     ) {
         val expectedShowButtonATC = searchProductModel.searchProductV5.header.meta.showButtonAtc
 
@@ -357,6 +363,7 @@ internal open class ProductListPresenterTestFixtures {
             FIXED_GRID,
             expectedShowButtonATC,
             expectedBlurred,
+            isFirstPage,
         )
     }
 
@@ -366,7 +373,8 @@ internal open class ProductListPresenterTestFixtures {
         topAdsPositionStart: Int,
         organicPositionStart: Int,
         expectedProductListType: String,
-        expectedShowButtonATC: Boolean
+        expectedShowButtonATC: Boolean,
+        isFirstPage: Boolean,
     ) {
         val organicProductList = searchProductModel.searchProduct.data.productList
         val topAdsProductList = searchProductModel.topAdsModel.data
@@ -403,6 +411,8 @@ internal open class ProductListPresenterTestFixtures {
                 expectedOrganicProductPosition++
                 organicProductListIndex++
             }
+
+            assertThat(productItem.isFirstPage, `is`(isFirstPage))
         }
     }
 
@@ -494,6 +504,7 @@ internal open class ProductListPresenterTestFixtures {
         expectedProductListType: String,
         expectedShowButtonATC: Boolean,
         expectedBlurred: Boolean = true,
+        isFirstPage: Boolean,
     ) {
         val organicProductList = searchProductModel.searchProductV5.data.productList
         val topAdsProductList = searchProductModel.topAdsModel.data
@@ -530,6 +541,8 @@ internal open class ProductListPresenterTestFixtures {
                 expectedOrganicProductPosition++
                 organicProductListIndex++
             }
+
+            assertThat(productItem.isFirstPage, `is`(isFirstPage))
         }
     }
 

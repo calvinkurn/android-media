@@ -2,10 +2,14 @@ package com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.recommendation_widget_common.extension.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
@@ -46,10 +50,19 @@ class RecommendationViewHolder constructor(
                     }
                 }
         )
+
+        productCard?.addOnImpression1pxListener(element.recommendationItem) {
+            AppLogRecommendation.sendProductShowAppLog(
+                element.recommendationItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+            )
+        }
     }
 
     private fun bindProductCardClick(element: RecommendationUiModel) {
         productCard?.setOnClickListener {
+            AppLogRecommendation.sendProductClickAppLog(
+                element.recommendationItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+            )
             recommendationListener?.onProductClick(
                     element.recommendationItem, null
             )

@@ -106,7 +106,7 @@ internal class SearchProductHandleInspirationCarouselClickTest :
     }
 
     private fun `When inspiration carousel product clicked`(product: InspirationCarouselDataView.Option.Product) {
-        productListPresenter.onInspirationCarouselProductClick(product)
+        productListPresenter.onInspirationCarouselProductClick(product, -1)
     }
 
     private fun `Then verify inspiration carousel product top ads clicked`(product: InspirationCarouselDataView.Option.Product) {
@@ -131,20 +131,20 @@ internal class SearchProductHandleInspirationCarouselClickTest :
         }
 
         verify(exactly = 0) {
-            inspirationCarouselView.trackEventClickInspirationCarouselGridItem(product)
-            inspirationCarouselView.trackEventClickInspirationCarouselChipsItem(product)
+            inspirationCarouselView.trackEventClickInspirationCarouselGridItem(product, -1)
+            inspirationCarouselView.trackEventClickInspirationCarouselChipsItem(product, -1)
         }
     }
 
     private fun `Then verify interaction for Inspiration Carousel Product Grid click`(product: InspirationCarouselDataView.Option.Product) {
         verify {
             inspirationCarouselView.openLink(product.applink, product.url)
-            inspirationCarouselView.trackEventClickInspirationCarouselGridItem(product)
+            inspirationCarouselView.trackEventClickInspirationCarouselGridItem(product, -1)
         }
 
         verify(exactly = 0) {
             inspirationCarouselView.trackEventClickInspirationCarouselListItem(product)
-            inspirationCarouselView.trackEventClickInspirationCarouselChipsItem(product)
+            inspirationCarouselView.trackEventClickInspirationCarouselChipsItem(product, -1)
         }
     }
 
@@ -153,12 +153,12 @@ internal class SearchProductHandleInspirationCarouselClickTest :
     ) {
         verify {
             inspirationCarouselView.openLink(product.applink, product.url)
-            inspirationCarouselView.trackEventClickInspirationCarouselChipsItem(product)
+            inspirationCarouselView.trackEventClickInspirationCarouselChipsItem(product, -1)
         }
 
         verify(exactly = 0) {
             inspirationCarouselView.trackEventClickInspirationCarouselListItem(product)
-            inspirationCarouselView.trackEventClickInspirationCarouselGridItem(product)
+            inspirationCarouselView.trackEventClickInspirationCarouselGridItem(product, -1)
         }
     }
 

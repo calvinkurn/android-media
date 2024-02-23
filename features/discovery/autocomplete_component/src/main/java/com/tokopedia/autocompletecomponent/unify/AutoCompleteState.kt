@@ -77,7 +77,7 @@ data class AutoCompleteState(
                 } else {
                     it
                 }
-            if (domainModel.isMasterTemplate()) {
+            if (domainModel.isTrendingWord()) {
                 masterIndex += 1
             }
             AutoCompleteUnifyDataView(

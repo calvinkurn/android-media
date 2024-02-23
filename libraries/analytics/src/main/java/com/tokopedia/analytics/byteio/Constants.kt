@@ -1,12 +1,14 @@
 package com.tokopedia.analytics.byteio
 
+import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
+
 internal val TAG = "BYTEIO"
 
 object Constants {
     const val EVENT_ORIGIN_FEATURE_KEY = "EVENT_ORIGIN_FEATURE"
     const val EVENT_ORIGIN_FEATURE_VALUE = "TEMAI"
 }
-
 
 data class TrackProduct(
     val productId: String,
@@ -22,7 +24,7 @@ data class TrackProductDetail(
     val productType: ProductType,
     val originalPrice: String,
     val salePrice: String,
-    val isSingleSku: Boolean,
+    val isSingleSku: Boolean
 )
 
 data class TrackStayProductDetail(
@@ -37,7 +39,7 @@ data class TrackStayProductDetail(
     val mainPhotoViewCount: Int,
     val skuPhotoViewCount: Int,
     val isSkuSelected: Boolean = true, // always selected in case of P1 flow
-    val isAddCartSelected: Boolean,
+    val isAddCartSelected: Boolean
 )
 
 data class TrackConfirmSku(
@@ -51,7 +53,7 @@ data class TrackConfirmSku(
     val currency: String = "IDR",
     val isSingleSku: Boolean,
     val qty: String,
-    val isHaveAddress: Boolean,
+    val isHaveAddress: Boolean
 )
 
 data class TrackConfirmCart(
@@ -84,7 +86,7 @@ data class TrackConfirmCartResult(
     val skuNumAfter: Int = 0, // need development from BE
     var isSuccess: Boolean? = null,
     var failReason: String = "",
-    var cartItemId: String? = "",
+    var cartItemId: String? = ""
 )
 
 data class SubmitOrderResult(
@@ -104,15 +106,37 @@ data class SubmitOrderResult(
     val orderId: String,
     val comboId: String,
     val productId: String
-)
+) {
+    data class DeliveryInfo(
+        @SerializedName("ship_from")
+        val shipFrom: String = "local",
+        @SerializedName("shipping_type")
+        val shippingType: String,
+        @SerializedName("eta")
+        val eta: String,
+    ) {
+        fun toJsonString(): String = Gson().toJson(this)
+    }
+}
 
+data class CartClickAnalyticsModel(
+    val buttonName: String = "cart_check_out",
+    val cartItemId: String,
+    val originalPriceValue: Double,
+    val productId: String,
+    val skuId: String,
+    val skuNum: Int,
+    val ItemCnt: Int,
+    val salePriceValue: Double,
+    val discountedAmount: Double,
+    )
 
 enum class ProductType(val type: Int) {
     AVAILABLE(1),
     SOLD_OUT(2),
     NOT_AVAILABLE(3),
     LIVE_REGION_NOT_AVAILABLE(4),
-    NON_LIVE_REGION_NOT_AVAILABLE_OR_REMOVED(5),
+    NON_LIVE_REGION_NOT_AVAILABLE_OR_REMOVED(5)
 }
 
 object PageName {
@@ -138,14 +162,10 @@ enum class EntranceForm(val str: String) {
     SEARCH_HORIZONTAL_GOODS_CARD("search_horizontal_goods_card"),
     PURE_GOODS_CARD("pure_goods_card"),
     DETAIL_GOODS_CARD("detail_goods_card"),
+    CONTENT_GOODS_CARD("content_goods_card"),
     HORIZONTAL_GOODS_CARD("horizontal_goods_card"),
-    APPEND_GOODS_CARD("append_goods_card"),
-}
-
-enum class SourceModule(val str: String) {
-    HOME_FOR_YOU("rec/ads/ops_homepage_outer_flow"),
-    FOR_YOU_BEST_SELLER("rec/ads/ops_foru_bestseller_outer_flow"),
-    FOR_YOU_TRENDING("rec/ads/ops_foru_trending_outer_flow"),
+    MISSION_HORIZONTAL_GOODS_CARD("mission_horizontal_goods_card"),
+    APPEND_GOODS_CARD("append_goods_card")
 }
 
 enum class SourcePageType(val str: String) {
@@ -189,6 +209,8 @@ object EventName {
     const val GLIDE_PAGE = "tiktokec_glide_page"
     const val REC_TRIGGER = "tiktokec_rec_trigger"
     const val SLIDE_BAR = "tiktokec_slide_bar"
+    const val CART_ENTRANCE_SHOW = "tiktokec_cart_entrance_show"
+    const val CART_ENTRANCE_CLICK = "tiktokec_cart_entrance_click"
 }
 
 object ActionType {
@@ -196,7 +218,6 @@ object ActionType {
     const val CLICK_CARD = "click_card"
     const val SWITCH_TAB = "switch_tab"
 }
-
 
 object AppLogParam {
     const val ACTION_TYPE = "action_type"

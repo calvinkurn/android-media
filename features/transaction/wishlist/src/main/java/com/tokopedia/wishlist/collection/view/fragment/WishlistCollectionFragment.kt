@@ -37,7 +37,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.recommendation_widget_common.extension.asTrackingModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -89,7 +88,6 @@ import com.tokopedia.wishlist.detail.data.model.response.DeleteWishlistProgressR
 import com.tokopedia.wishlist.detail.util.WishlistAnalytics
 import com.tokopedia.wishlist.detail.util.WishlistConsts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
 import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter.Companion.LAYOUT_RECOMMENDATION_TITLE
-import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistRecommendationCarouselViewHolder
 import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistRecommendationItemViewHolder
 import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistRecommendationTitleViewHolder
 import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
@@ -154,6 +152,9 @@ class WishlistCollectionFragment :
     private var coachMarkSharing2: CoachMark2? = null
 
     private var isAffiliateRegistered: Boolean = false
+
+    private var hasTrackEnterPage: Boolean = false
+    private var hasRecomScrollListener: Boolean = false
 
     override fun getScreenName(): String = ""
 
@@ -344,10 +345,10 @@ class WishlistCollectionFragment :
     }
 
     private fun addRecommendationScrollListener() {
+        if(hasRecomScrollListener) return
         binding?.rvWishlistCollection?.addVerticalTrackListener(
             recommendationTriggerObject = RecommendationTriggerObject(
                 viewHolders = listOf(
-                    WishlistRecommendationCarouselViewHolder::class.java,
                     WishlistRecommendationTitleViewHolder::class.java,
                     WishlistRecommendationItemViewHolder::class.java,
                     WishlistCollectionRecommendationTitleViewHolder::class.java,
@@ -355,10 +356,17 @@ class WishlistCollectionFragment :
                 )
             )
         )
+        hasRecomScrollListener = true
     }
 
     private fun loadRecommendationList(page: Int) {
+        trackEnterPage()
         collectionViewModel.loadRecommendation(page)
+    }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
     }
 
     private fun setToolbarTitle(title: String) {
@@ -1150,7 +1158,6 @@ class WishlistCollectionFragment :
                 recommendationItem.imageUrl
             )
         }
-        AppLogRecommendation.sendProductClickAppLog(recommendationItem.asTrackingModel())
         activity?.let {
             val intent = if (recommendationItem.appUrl.isNotEmpty()) {
                 RouteManager.getIntent(it, recommendationItem.appUrl)

@@ -1,11 +1,15 @@
 package com.tokopedia.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartRecommendationBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
+import com.tokopedia.recommendation_widget_common.extension.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -28,6 +32,9 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
                 element.recommendationItem.toProductCardModel(true, UnifyButton.Type.MAIN)
             )
             setOnClickListener {
+                AppLogRecommendation.sendProductClickAppLog(
+                    element.recommendationItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+                )
                 actionListener?.onRecommendationProductClicked(
                     element.recommendationItem
                 )
@@ -46,6 +53,12 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
                     }
                 }
             )
+
+            addOnImpression1pxListener(element.recommendationItem) {
+                AppLogRecommendation.sendProductShowAppLog(
+                    element.recommendationItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+                )
+            }
         }
 
         if (!element.hasSentImpressionAnalytics) {

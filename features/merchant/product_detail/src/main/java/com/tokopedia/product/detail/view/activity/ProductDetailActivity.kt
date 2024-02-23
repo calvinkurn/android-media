@@ -455,6 +455,11 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         return pdpFragment?.getStayAnalyticsData() ?: throw Exception()
     }
 
+    override fun isExiting(): Boolean {
+        val pdpFragment = supportFragmentManager.findFragmentByTag(tagFragment) as? DynamicProductDetailFragment
+        return pdpFragment?.isExiting == true
+    }
+
     override fun getPageName(): String {
         return PageName.PDP
     }

@@ -2,11 +2,14 @@ package com.tokopedia.search.result.product.inspirationcarousel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.product.ByteIOTrackingData
 import com.tokopedia.search.result.product.ClassNameProvider
+import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
@@ -41,8 +44,10 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
     private val viewUpdater: ViewUpdater,
     private val deduplication: Deduplication,
+    queryKeyProvider: QueryKeyProvider,
 ) : InspirationCarouselPresenter,
-    ApplinkOpener by ApplinkOpenerDelegate {
+    ApplinkOpener by ApplinkOpenerDelegate,
+    QueryKeyProvider by queryKeyProvider {
 
     private var inspirationCarouselSeamlessDataViewList = mutableListOf<InspirationCarouselDataView>()
     private var inspirationCarouselDataViewList = mutableListOf<InspirationCarouselDataView>()
@@ -101,6 +106,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     fun processInspirationCarouselPosition(
         totalProductItem: Int,
         externalReference: String,
+        isFirstPage: Boolean,
         action: (Int, List<Visitable<*>>) -> Unit,
     ) {
         if (inspirationCarouselDataViewList.isEmpty()) return
@@ -116,7 +122,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
             if (data.position <= totalProductItem && shouldShowInspirationCarousel(data.layout)) {
                 val inspirationCarouselVisitableList =
-                    constructInspirationCarouselVisitableList(data, externalReference)
+                    constructInspirationCarouselVisitableList(data, externalReference, isFirstPage)
 
                 inspirationCarouselVisitableList?.let { action(data.position, it) }
 
@@ -157,9 +163,10 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     private fun constructInspirationCarouselVisitableList(
         data: InspirationCarouselDataView,
         externalReference: String,
+        isFirstPage: Boolean,
     ) = when {
         data.isDynamicProductLayout() ->
-            convertInspirationCarouselToBroadMatch(data, externalReference)
+            convertInspirationCarouselToBroadMatch(data, externalReference, isFirstPage)
 
         data.isVideoLayout() ->
             convertInspirationCarouselToInspirationCarouselVideo(data)
@@ -201,6 +208,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     private fun convertInspirationCarouselToBroadMatch(
         data: InspirationCarouselDataView,
         externalReference: String,
+        isFirstPage: Boolean,
     ): List<Visitable<*>>? {
         val broadMatchVisitableList = mutableListOf<Visitable<*>>()
 
@@ -210,7 +218,16 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
             broadMatchVisitableList.add(SuggestionDataView.create(data))
 
         val optionList =
-            BroadMatchDataView.createList(data, externalReference, !hasTitle, deduplication)
+            BroadMatchDataView.createList(
+                data,
+                externalReference,
+                !hasTitle,
+                deduplication,
+                ByteIOTrackingData( // TODO
+                    keyword = queryKey,
+                    isFirstPage = isFirstPage,
+                ),
+            )
 
         if (optionList.isEmpty()) return null
 
@@ -285,15 +302,18 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         )
     }
 
-    override fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product) {
+    override fun onInspirationCarouselProductClick(
+        product: InspirationCarouselDataView.Option.Product,
+        optionAdapterPosition: Int,
+    ) {
         view.openLink(product.applink, product.url)
 
         when (product.layout) {
             LAYOUT_INSPIRATION_CAROUSEL_GRID ->
-                view.trackEventClickInspirationCarouselGridItem(product)
+                view.trackEventClickInspirationCarouselGridItem(product, optionAdapterPosition)
 
             LAYOUT_INSPIRATION_CAROUSEL_CHIPS ->
-                view.trackEventClickInspirationCarouselChipsItem(product)
+                view.trackEventClickInspirationCarouselChipsItem(product, optionAdapterPosition)
 
             else -> view.trackEventClickInspirationCarouselListItem(product)
         }
@@ -400,16 +420,21 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         inspirationCarouselTitle: String,
     ) {
         val mapper = InspirationCarouselProductDataViewMapper()
+        val inspirationCarouselProduct =
+            inspirationCarouselChipsProductModel.searchProductCarouselByIdentifier.product
+
         val productList = mapper.convertToInspirationCarouselProductDataView(
-            inspirationCarouselChipsProductModel.searchProductCarouselByIdentifier.product,
-            clickedInspirationCarouselOption.optionPosition,
-            clickedInspirationCarouselOption.inspirationCarouselType,
-            clickedInspirationCarouselOption.layout,
-            this::productLabelGroupToLabelGroupDataView,
-            clickedInspirationCarouselOption.title,
-            inspirationCarouselTitle,
-            clickedInspirationCarouselOption.dimension90,
-            clickedInspirationCarouselOption.externalReference,
+            inspirationCarouselProduct = inspirationCarouselProduct,
+            productPosition = clickedInspirationCarouselOption.optionPosition,
+            inspirationCarouselType = clickedInspirationCarouselOption.inspirationCarouselType,
+            layout = clickedInspirationCarouselOption.layout,
+            mapLabelGroupDataViewList = this::productLabelGroupToLabelGroupDataView,
+            optionTitle = clickedInspirationCarouselOption.title,
+            carouselTitle = inspirationCarouselTitle,
+            dimension90 = clickedInspirationCarouselOption.dimension90,
+            externalReference = clickedInspirationCarouselOption.externalReference,
+            byteIOTrackingData = clickedInspirationCarouselOption.byteIOTrackingData,
+            trackingOption = clickedInspirationCarouselOption.trackingOption,
         )
 
         clickedInspirationCarouselOption.product = productList

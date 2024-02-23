@@ -13,7 +13,9 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  * @param productItem the pojo of product recommendation from the network
  */
 data class RecommendationItemDataModel(
-    var productItem: RecommendationItem
+    var productItem: RecommendationItem,
+    val chipName: String = "",
+    val chipPosition: Int = 0,
 ) : HomeRecommendationDataModel {
 
     companion object {

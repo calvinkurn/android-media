@@ -6,6 +6,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationModel
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.StyleDataView
+import com.tokopedia.search.result.product.ByteIOTrackingData
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
 
@@ -28,6 +29,8 @@ class SameSessionRecommendationMapper {
             carouselTitle = "",
             dimension90 = dimension90,
             externalReference = externalReference,
+            trackingOption = 0,
+            byteIOTrackingData = ByteIOTrackingData(),
         )
         val valueName = data.products.joinToString(",") { it.id }
         return SameSessionRecommendationDataView(

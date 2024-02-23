@@ -2,11 +2,12 @@ package com.tokopedia.wishlist.collection.view.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.extension.asTrackingModel
+import com.tokopedia.recommendation_widget_common.extension.asProductTrackModel
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlist.collection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlist.databinding.WishlistRecommendationItemBinding
@@ -23,7 +24,9 @@ class WishlistCollectionRecommendationItemViewHolder(
                 setProductModel(item.dataObject)
 
                 setOnClickListener {
-                    AppLogRecommendation.sendProductClickAppLog(item.recommItem.asTrackingModel())
+                    AppLogRecommendation.sendProductClickAppLog(
+                        item.recommItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+                    )
                     actionListener?.onRecommendationItemClick(item.recommItem, adapterPosition)
                 }
 
@@ -40,7 +43,9 @@ class WishlistCollectionRecommendationItemViewHolder(
                 )
 
                 addOnImpression1pxListener(item.recommItem) {
-                    AppLogRecommendation.sendProductShowAppLog(item.recommItem.asTrackingModel())
+                    AppLogRecommendation.sendProductShowAppLog(
+                        item.recommItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+                    )
                 }
             }
         }

@@ -401,7 +401,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     private fun `Then verify quick filter clicked`(filter: Filter, option: Option) {
         verify {
-            productListView.onQuickFilterSelected(filter, option, any())
+            productListView.onQuickFilterSelected(filter, option, any(), position)
         }
     }
 
@@ -433,7 +433,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     private fun `Then verify dropdown quick filter bottomsheet has opened and track sent`(filter: Filter) {
         verify {
-            productListView.openBottomsheetMultipleOptionsQuickFilter(filter)
+            productListView.openBottomsheetMultipleOptionsQuickFilter(filter, position)
         }
     }
 

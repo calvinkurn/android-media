@@ -24,9 +24,9 @@ data class GlidePageTrackObject(
  * USe this to track horizontal scrolling (ex: carousel)
  */
 data class SlideTrackObject(
-    val moduleName: String,
-    val barName: String,
-    val shopId: String,
+    val moduleName: String = "",
+    val barName: String = "",
+    val shopId: String = "",
 )
 
 /**
@@ -204,7 +204,6 @@ fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTrigg
     AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject().also {
         it.addPage()
         it.put(AppLogParam.ENTER_FROM, "") //TODO
-        it.put(AppLogParam.GLIDE_TYPE, if (scrollOffset > 0) "more" else "less")
         it.put(AppLogParam.GLIDE_DISTANCE, scrollOffset)
 
         it.put(AppLogParam.LIST_NAME, model.listName)
@@ -245,6 +244,6 @@ fun RecyclerView.addVerticalTrackListener(
  * event: tiktokec_slide_bar
  * Add track listener after success fetching data from BE.
  */
-fun RecyclerView.addHorizontalTrackListener(slideTrackObject: SlideTrackObject) {
+fun RecyclerView.addHorizontalTrackListener(slideTrackObject: SlideTrackObject = SlideTrackObject()) {
     this.addOnScrollListener(HorizontalTrackScrollListener(slideTrackObject))
 }

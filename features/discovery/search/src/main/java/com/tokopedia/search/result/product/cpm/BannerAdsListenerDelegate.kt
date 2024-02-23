@@ -1,6 +1,8 @@
 package com.tokopedia.search.result.product.cpm
 
 import android.content.Context
+import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SHOP_NAME
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.utils.contextprovider.ContextProvider
@@ -18,14 +20,25 @@ class BannerAdsListenerDelegate(
     QueryKeyProvider by queryKeyProvider,
     ContextProvider by WeakReferenceContextProvider(context) {
 
-    override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
+    override fun onBannerAdsClicked(
+        position: Int,
+        applink: String?,
+        data: CpmData?,
+        dataView: CpmDataView,
+        adapterPosition: Int,
+    ) {
         if (applink == null || data == null) return
 
         redirectionListener?.startActivityWithApplink(applink)
-        trackBannerAdsClicked(position, applink, data)
+        trackBannerAdsClicked(position, applink, data, dataView, adapterPosition)
     }
 
-    override fun onBannerAdsImpressionListener(position: Int, data: CpmData?) {
+    override fun onBannerAdsImpressionListener(
+        position: Int,
+        data: CpmData?,
+        dataView: CpmDataView,
+        adapterPosition: Int,
+    ) {
         if (data == null) return
 
         TopAdsGtmTracker.eventTopAdsHeadlineShopView(position, data, queryKey, userId)
@@ -35,14 +48,45 @@ class BannerAdsListenerDelegate(
         bannerAdsPresenter.shopAdsImpressionCount(impressionCount)
     }
 
-    private fun trackBannerAdsClicked(position: Int, applink: String, data: CpmData) {
+    private fun trackBannerAdsClicked(
+        position: Int,
+        applink: String,
+        data: CpmData,
+        dataView: CpmDataView,
+        adapterPosition: Int,
+    ) {
         if (applink.contains(SHOP)) {
             TopAdsGtmTracker.eventTopAdsHeadlineShopClick(position, queryKey, data, userId)
             TopAdsGtmTracker.eventSearchResultPromoShopClick(data, position)
+            AppLogSearch.eventSearchResultClick(dataView.asByteIOSearchResult(adapterPosition, CLICK_SHOP_NAME))
         } else {
             TopAdsGtmTracker.eventTopAdsHeadlineProductClick(position, data, userId)
             TopAdsGtmTracker.eventSearchResultPromoProductClick(data, position)
+            trackByteIOProductClick(data, applink, dataView, adapterPosition, position)
         }
+    }
+
+    private fun trackByteIOProductClick(
+        data: CpmData,
+        applink: String,
+        dataView: CpmDataView,
+        adapterPosition: Int,
+        productPosition: Int,
+    ) {
+        val cpmProduct = data.cpm.cpmShop.products.find { it.applinks == applink } ?: return
+
+        AppLogSearch.eventSearchResultClick(
+            dataView.asByteIOProductSearchResult(
+                cpmProduct,
+                adapterPosition,
+                productPosition,
+                "",
+            )
+        )
+    }
+
+    override fun onBannerAdsImpression1PxListener(adapterPosition: Int, data: CpmDataView) {
+        AppLogSearch.eventSearchResultShow(data.asByteIOSearchResult(adapterPosition, null))
     }
 
     companion object {

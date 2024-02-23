@@ -2,13 +2,14 @@ package com.tokopedia.analytics.byteio.search
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.EventName
+import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_CLICK
+import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_SHOW
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.CHOOSE_SEARCH_FILTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.ENTER_SEARCH_BLANKPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.SEARCH
@@ -239,7 +240,7 @@ object AppLogSearch {
     ) {
         fun json() = JSONObject(buildMap {
             put(IMPR_ID, imprId)
-            put(ENTER_FROM, enterFrom)
+            put(ENTER_FROM, "home or empty")
             put(SEARCH_TYPE, searchType)
             put(ENTER_METHOD, enterMethod)
             put(SEARCH_KEYWORD, searchKeyword)
@@ -472,93 +473,94 @@ object AppLogSearch {
 
     // /////////////// -- IJ -- /////////////
 
-    fun <K, V> eventSearchResultShow() {
-        AppLogAnalytics.send(
-            SEARCH_RESULT_SHOW,
-            JSONObject(
-                mapOf(
-                    IMPR_ID to "", // TODO:: From BE
-                    SEARCH_ID to "", // TODO:: Generated System.currentTimeMillis()
-                    SEARCH_ENTRANCE to "", // TODO:: HOMEPAGE. What about other page?
-                    ENTER_FROM to "", // TODO:: GOODS_SEARCH || STORE_SEARCH
-                    SEARCH_RESULT_ID to "", // TODO:: Id of impressed search widgets (Headline ads, carousel, regular products etc). To be decided with BE?
-                    LIST_ITEM_ID to "", //TODO:: Only add for widget with sub items (Headline Ads, Carousel). Id of sub cards
-                    ITEM_RANK to 0, // TODO:: Index of position inside widget. should still send for non carousel ?
-                    LIST_RESULT_TYPE to "", // TODO:: GOODS if going to PDP || SHOP if going to Shop Page.
-                    PRODUCT_ID to "", // TODO:: Product Id
-                    SEARCH_KEYWORD to "", // TODO:: Query
-                    TOKEN_TYPE to "", // TODO:: GOODS || VIDEO_GOODS || SHOP_SMALL || SHOP_BIG || GOODS_COLLECT
-                    RANK to 0, // TODO:: Index in SRP
-                    IS_AD to "", // TODO:: Is Ad. Should this be int?
-                    IS_FIRST_SCREEN to 0, // TODO:: Is first page?
-                    SHOP_ID to "" // TODO:: Shop Id of product cards
-                )
-            )
+    data class SearchResult(
+        val imprId: String,
+        val searchId: String,
+        val searchEntrance: String,
+        val enterFrom: String,
+        val searchResultId: String,
+        val listItemId: String?,
+        val itemRank: Int?,
+        val listResultType: String?,
+        val productID: String?,
+        val searchKeyword: String,
+        val tokenType: String,
+        val rank: Int,
+        val isAd: Boolean,
+        val isFirstPage: Boolean,
+        val shopId: String?,
+        val aladdinButtonType: String?,
+    ) {
+
+        fun json() = JSONObject(
+            buildMap {
+                put(IMPR_ID, imprId) // TODO:: From BE
+                put(SEARCH_ID, searchId)
+                put(SEARCH_ENTRANCE, searchEntrance) // TODO:: HOMEPAGE. What about other page?
+                put(ENTER_FROM, enterFrom) // TODO:: GOODS_SEARCH || STORE_SEARCH
+                put(SEARCH_RESULT_ID, searchResultId) // TODO:: Id of impressed search widgets (Headline ads, carousel, regular products etc). To be decided with BE?
+                listItemId?.let { put(LIST_ITEM_ID, it) } //TODO:: Only add for widget with sub items (Headline Ads, Carousel). Id of sub cards
+                itemRank?.let { put(ITEM_RANK, it) } // TODO:: Index of position inside widget. should still send for non carousel ?
+                listResultType?.let { put(LIST_RESULT_TYPE, it) } // TODO:: GOODS if going, PDP || SHOP if going, Shop Page.
+                productID?.let { put(PRODUCT_ID, it) }
+                put(SEARCH_KEYWORD, searchKeyword)
+                put(TOKEN_TYPE, tokenType)
+                put(RANK, rank)
+                put(IS_AD, isAd.intValue)
+                put(IS_FIRST_SCREEN, isFirstPage.intValue)
+                shopId?.let { put(SHOP_ID, it) }
+                aladdinButtonType?.let { put(ALADDIN_BUTTON_TYPE, it) }
+            }
         )
     }
 
-    fun <K, V> eventSearchResultClick() {
-        AppLogAnalytics.send(
-            SEARCH_RESULT_CLICK,
-            JSONObject(
-                mapOf(
-                    IMPR_ID to "", // TODO:: From BE
-                    SEARCH_ID to "", // TODO:: What's the difference with IMPR_ID? Is this IMPR_ID from Page 1?
-                    SEARCH_ENTRANCE to "", // TODO:: HOMEPAGE. What about other page?
-                    ENTER_FROM to "", // TODO:: GOODS_SEARCH || STORE_SEARCH
-                    SEARCH_RESULT_ID to "", // TODO:: Id of impressed search widgets (Headline ads, carousel, regular products etc). To be decided with BE.
-                    LIST_ITEM_ID to "", //TODO:: Only add for widget with sub items (Headline Ads, Carousel). Id of sub cards
-                    ITEM_RANK to 0, // TODO:: Index of position inside widget. should still send for non carousel ?
-                    LIST_RESULT_TYPE to "", // TODO:: GOODS if going to PDP || SHOP if going to Shop Page.
-                    PRODUCT_ID to "", // TODO:: Product Id
-                    SEARCH_KEYWORD to "", // TODO:: Query
-                    TOKEN_TYPE to "", // TODO:: GOODS || VIDEO_GOODS || SHOP_SMALL || SHOP_BIG || GOODS_COLLECT
-                    RANK to 0, // TODO:: Index in SRP
-                    IS_AD to "", // TODO:: Is Ad. Should this be int?
-                    IS_FIRST_SCREEN to 0, // TODO:: Is first page?
-                    SHOP_ID to "", // TODO:: Shop Id of product cards
-                    //TODO::
-                    //"{
-                    //""click_more_button"": ""Click three dots on the product card""
-                    //""click_favourite_button:"" Click on the three dots of the product card to add to favorites ""
-                    //""click_more_findalike"": ""Click on the three points of the product card to find similarities""
-                    //""click_back"": ""Top back button""
-                    //""click_shopping_cart"": ""Click on shopping cart""
-                    //""click_setting"": ""Click Settings""
-                    //""click_shop_name"": ""Click on the name of the shop to go to the shop homepage"" (Shop Ads)
-                    //}"
-                    ALADDIN_BUTTON_TYPE to "",
-                )
-            )
-        )
+    fun eventSearchResultShow(searchResult: SearchResult) {
+        AppLogAnalytics.send(SEARCH_RESULT_SHOW, searchResult.json())
     }
 
-    fun <K, V> eventChooseSearchFilter() {
-        AppLogAnalytics.send(
-            CHOOSE_SEARCH_FILTER,
-            JSONObject(
-                mapOf(
-                    SEARCH_ENTRANCE to HOMEPAGE,
-                    SEARCH_ID to "",
-                    SEARCH_TYPE to "", // TODO:: GOODS_SEARCH || STORE_SEARCH
-                    SEARCH_KEYWORD to "", // TODO:: keyword
-                    // TODO:: Sorting type:
-                    //sort_relevance: related (toko: Paling Sesuai)
-                    //sort_best_sellers: sales (toko: no such item)
-                    //sort_review: good review (toko: Ulasan, TT no such sorting method)
-                    //sort_price_asc: Price in ascending order (Toko: Harga Terendah)
-                    //sort_price_desc: Price in descending order (Toko: Harga Tertinggi)
-                    //sort_newest: New and Old (toko: Terbaru)
-                    ECOM_SORT_NAME to "",
-                    ECOM_FILTER_NAME to "",
-                    ECOM_FILTER_POSITION to "",// Filter position, starts from 0
-                    //TODO::
+    fun eventSearchResultClick(searchResult: SearchResult) {
+        AppLogAnalytics.send(SEARCH_RESULT_CLICK, searchResult.json())
+    }
+
+    data class ChooseSearchFilter(
+        val searchEntrance: String = HOMEPAGE,
+        val searchId: String,
+        val searchType: String,
+        val searchKeyword: String,
+        val ecomSortName: String,
+        val ecomFilterName: String,
+        val ecomFilterPosition: Int,
+        val buttonTypeClick: String
+    ) {
+        fun json() = JSONObject(
+            mapOf(
+                SEARCH_ENTRANCE to searchEntrance,
+                SEARCH_ID to searchId,
+                SEARCH_TYPE to searchType, // TODO:: GOODS_SEARCH || STORE_SEARCH
+                SEARCH_KEYWORD to searchKeyword, // TODO:: keyword
+                // TODO:: Sorting type:
+                //sort_relevance: related (toko: Paling Sesuai)
+                //sort_best_sellers: sales (toko: no such item)
+                //sort_review: good review (toko: Ulasan, TT no such sorting method)
+                //sort_price_asc: Price in ascending order (Toko: Harga Terendah)
+                //sort_price_desc: Price in descending order (Toko: Harga Tertinggi)
+                //sort_newest: New and Old (toko: Terbaru)
+                ECOM_SORT_NAME to ecomSortName,
+                ECOM_FILTER_NAME to ecomFilterName,
+                ECOM_FILTER_POSITION to ecomFilterPosition, // Filter position, starts from 0
+                //TODO::
 //                FILTER_PANEL = "filter_panel"
 //                FILTER_GUID = "filter_guid" // TODO:: What is navigation filtering?
 //                FILTER_QUICK = "filter_quick"
-                    BUTTON_TYPE_CLICK to "",
-                )
+                BUTTON_TYPE_CLICK to buttonTypeClick,
             )
+        )
+    }
+
+    fun eventChooseSearchFilter(chooseSearchFilter: ChooseSearchFilter) {
+        AppLogAnalytics.send(
+            CHOOSE_SEARCH_FILTER,
+            chooseSearchFilter.json()
         )
     }
 
@@ -597,7 +599,15 @@ object AppLogSearch {
         )
     ).apply {
         addPage()
-        addSourceModule()
+//        addSourceModule() // TODO milhamj diapain ini?
         addSourcePageType()
+    }
+
+    fun eventCartEntranceShow() {
+        AppLogAnalytics.send(CART_ENTRANCE_SHOW, JSONObject().apply { addPage() })
+    }
+
+    fun eventCartEntranceClick() {
+        AppLogAnalytics.send(CART_ENTRANCE_CLICK, JSONObject().apply { addPage() })
     }
 }

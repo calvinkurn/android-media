@@ -1,82 +1,105 @@
 package com.tokopedia.home.analytics.byteio
 
+import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationCardModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
+import com.tokopedia.analytics.byteio.recommendation.CardName
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.HomeRecommendationUtil.isFullSpan
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
 
 object TrackRecommendationMapper {
-    fun RecommendationCardModel.asTrackerModel(
+    fun RecommendationCardModel.asProductTrackModel(
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
+        type: AppLogRecommendationType,
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = recommendationProductItem.id,
             tabName = tabName,
             tabPosition = tabPosition,
-            sourceModule = "", //TODO need to confirm
+            moduleName = pageName,
             isAd = recommendationProductItem.isTopAds,
             isUseCache = isCache,
-            recParams = "", //TODO need to confirm
-            requestId = "", //TODO need BE deployment
+            recParams = "", // TODO need to confirm
+            requestId = "", // TODO need BE deployment
             shopId = recommendationProductItem.shop.id,
+            entranceForm = getEntranceForm(),
+            type = type,
         )
     }
 
-    fun BannerTopAdsModel.asTrackerModel(
+    private fun RecommendationCardModel.getEntranceForm(): EntranceForm {
+        return if(isFullSpan()) EntranceForm.DETAIL_GOODS_CARD
+        else EntranceForm.PURE_GOODS_CARD
+    }
+
+    fun BannerTopAdsModel.asCardTrackModel(
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
+        type: AppLogRecommendationType
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
-            cardName = topAdsImageViewModel?.bannerName.orEmpty(),
+            cardName = CardName.AD_FEED_CARD,
             tabName = tabName,
             tabPosition = tabPosition,
-            sourceModule = "", //TODO need to confirm
+            moduleName = pageName,
             isAd = !topAdsImageViewModel?.adViewUrl.isNullOrEmpty() && !topAdsImageViewModel?.adClickUrl.isNullOrEmpty(),
             isUseCache = isCache,
-            recParams = "", //TODO need to confirm
-            requestId = "", //TODO need BE deployment
+            recParams = "", // TODO need to confirm
+            requestId = "", // TODO need BE deployment
             shopId = topAdsImageViewModel?.shopId.orEmpty(),
+            entranceForm = EntranceForm.CONTENT_GOODS_CARD,
+            type = type
         )
     }
 
-    fun ContentCardModel.asTrackerModel(
+    fun ContentCardModel.asCardTrackModel(
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
+        type: AppLogRecommendationType
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
-            cardName = title,
+            cardName = CardName.REC_CONTENT_CARD,
+            cardType = layoutItem,
             tabName = tabName,
             tabPosition = tabPosition,
-            sourceModule = "", //TODO need to confirm
+            moduleName = pageName,
             isAd = isAds,
             isUseCache = isCache,
-            recParams = "", //TODO need to confirm
-            requestId = "", //TODO need BE deployment
+            recParams = "", // TODO need to confirm
+            requestId = "", // TODO need BE deployment
             shopId = shopId,
+            entranceForm = EntranceForm.CONTENT_GOODS_CARD,
+            type = type
         )
     }
 
-    fun PlayCardModel.asTrackerModel(
+    fun PlayCardModel.asCardTrackModel(
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
+        type: AppLogRecommendationType
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
-            cardName = playVideoWidgetUiModel.title,
+            cardName = CardName.REC_VIDEO_CARD,
             tabName = tabName,
             tabPosition = tabPosition,
+            moduleName = pageName,
             isAd = isAds,
             isUseCache = isCache,
-            recParams = "", //TODO need to confirm
-            requestId = "", //TODO need BE deployment
+            recParams = "", // TODO need to confirm
+            requestId = "", // TODO need BE deployment
             shopId = shopId,
-            groupId = playVideoWidgetUiModel.id
+            groupId = playVideoWidgetUiModel.id,
+            entranceForm = EntranceForm.CONTENT_GOODS_CARD,
+            type = type
         )
     }
 }
