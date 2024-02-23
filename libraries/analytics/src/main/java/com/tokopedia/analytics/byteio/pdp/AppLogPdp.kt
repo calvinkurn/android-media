@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addRequestId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
@@ -82,6 +83,11 @@ object AppLogPdp {
     fun sendConfirmSku(product: TrackConfirmSku) {
         AppLogAnalytics.send(EventName.CONFIRM_SKU, JSONObject().also {
             it.addPage()
+            it.addTrackId()
+            it.addRequestId()
+            it.addSourcePageType()
+            it.addEntranceForm()
+            it.addSourceModule()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO
@@ -101,8 +107,12 @@ object AppLogPdp {
     fun sendConfirmCart(product: TrackConfirmCart) {
         AppLogAnalytics.send(EventName.CONFIRM_CART, JSONObject().also {
             it.addPage()
-            it.addEntranceForm()
+            it.addTrackId()
             it.addSourcePageType()
+            it.addEntranceForm()
+            it.addSourceModule()
+            // it.addSourcePreviousPage
+            it.addRequestId()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
 //            it.put("entrance_info", ) TODO

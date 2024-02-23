@@ -10,6 +10,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
+import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
@@ -114,6 +115,10 @@ object AppLogAnalytics {
 
     internal fun JSONObject.addSourceModule() {
         put(SOURCE_MODULE, getLastData(SOURCE_MODULE))
+    }
+
+    internal fun JSONObject.addRequestId() {
+        put(REQUEST_ID, getLastData(REQUEST_ID))
     }
 
     internal fun JSONObject.addTrackId() {
