@@ -70,6 +70,7 @@ import com.tokopedia.contactus.utils.CommonConstant.INVALID_NUMBER
 import com.tokopedia.contactus.utils.CommonConstant.SIZE_ZERO
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.dynamiccsat.DynamicCsatConst
+import com.tokopedia.csat_rating.dynamiccsat.domain.model.CsatModel
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -791,28 +792,26 @@ class TicketFragment :
 
         val dynamicCsatData = viewModel.getDynamicCsatData()
         if (dynamicCsatData.points.isNotEmpty()) {
-            // Go to dynamic csat
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalOperational.DYNAMIC_CSAT)
-            intent.putExtra(DynamicCsatConst.EXTRA_CSAT_SELECTED_SCORE, emojiNumber)
-            intent.putExtra(DynamicCsatConst.EXTRA_CSAT_DATA, dynamicCsatData)
-            goToDynamicCsatPage(intent)
+            goToDynamicCsatPage(emojiNumber, dynamicCsatData)
         } else {
-            // Go to old csat
-            val intentToPageCsat = ContactUsProvideRatingActivity.getInstance(
-                activity as Context,
-                emojiNumber,
-                viewModel.getFirstCommentId(),
-                viewModel.getCSATBadReasonList() as ArrayList<BadCsatReasonListItem>
-            )
-            goToCSATPage(intentToPageCsat)
+            goToCSATPage(emojiNumber)
         }
     }
 
-    private fun goToCSATPage(intentToPageCsat: Intent) {
+    private fun goToCSATPage(emojiNumber: Int) {
+        val intentToPageCsat = ContactUsProvideRatingActivity.getInstance(
+            activity as Context,
+            emojiNumber,
+            viewModel.getFirstCommentId(),
+            viewModel.getCSATBadReasonList() as ArrayList<BadCsatReasonListItem>
+        )
         csatPageActivityForResult.launch(intentToPageCsat)
     }
 
-    private fun goToDynamicCsatPage(intent: Intent) {
+    private fun goToDynamicCsatPage(emojiNumber: Int, dynamicCsatData: CsatModel) {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalOperational.DYNAMIC_CSAT)
+        intent.putExtra(DynamicCsatConst.EXTRA_CSAT_SELECTED_SCORE, emojiNumber)
+        intent.putExtra(DynamicCsatConst.EXTRA_CSAT_DATA, dynamicCsatData)
         dynamicCsatPageActivityForResult.launch(intent)
     }
 
