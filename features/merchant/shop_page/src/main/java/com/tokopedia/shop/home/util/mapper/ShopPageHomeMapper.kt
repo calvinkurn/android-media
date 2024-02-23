@@ -680,7 +680,7 @@ object ShopPageHomeMapper {
         type = widgetResponse.type,
         header = mapToHeaderModel(widgetResponse.header, widgetLayout, isOverrideTheme, colorSchema),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
-        productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct, isEnableDirectPurchase, shopId),
+        productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct, isEnableDirectPurchase, shopId, widgetResponse.name),
         shopId = shopId,
     )
 
@@ -1184,7 +1184,8 @@ object ShopPageHomeMapper {
         data: List<ShopLayoutWidget.Widget.Data>,
         isMyOwnProduct: Boolean,
         isEnableDirectPurchase: Boolean,
-        shopId: String
+        shopId: String,
+        widgetName: String
     ): List<ShopHomeProductUiModel> {
         return data.map {
             ShopHomeProductUiModel().apply {
@@ -1215,6 +1216,7 @@ object ShopPageHomeMapper {
                 isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
                 warehouseId = it.warehouseID
                 this.shopId = shopId
+                this.widgetName = widgetName
             }
         }
     }

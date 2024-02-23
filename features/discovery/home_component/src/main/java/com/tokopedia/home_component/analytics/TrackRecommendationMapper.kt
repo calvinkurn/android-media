@@ -25,6 +25,7 @@ object TrackRecommendationMapper {
             type = AppLogRecommendationType.MIXED_CAROUSEL,
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
             enterMethod = enterMethod,
+            position = cardPosition,
         )
     }
 
@@ -45,7 +46,7 @@ object TrackRecommendationMapper {
             type = AppLogRecommendationType.PRODUCT_CAROUSEL,
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
             enterMethod = enterMethod,
-
+            position = cardPosition,
         )
     }
 }

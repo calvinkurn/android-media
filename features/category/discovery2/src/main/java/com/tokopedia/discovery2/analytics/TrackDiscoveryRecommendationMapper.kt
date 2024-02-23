@@ -6,6 +6,7 @@ import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 
 object TrackDiscoveryRecommendationMapper {
     fun DataItem.asProductTrackModel(
@@ -24,7 +25,9 @@ object TrackDiscoveryRecommendationMapper {
             recParams = "", // TODO waiting for BE
             shopId = shopId.orEmpty(),
             entranceForm = getEntranceForm(),
-            type = getType()
+            type = getType(),
+            originalPrice = price.toFloatOrZero(),
+            salesPrice = discountedPrice.toFloatOrZero(),
         )
     }
 

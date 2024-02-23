@@ -84,7 +84,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                     itemView.context.getString(R.string.occ_text)
                 } else "",
                 element.name,
-                forceLightModeColor = shopHomeListener.isOverrideTheme()
+                forceLightModeColor = shopHomeListener.isOverrideTheme(),
             )
         }
 

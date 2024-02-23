@@ -2,6 +2,8 @@ package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.ActionType
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
@@ -26,12 +28,14 @@ data class AppLogRecommendationProductModel(
     val shopId: String,
     val itemOrder: Int,
     val type: AppLogRecommendationType,
-    val entranceForm: EntranceForm,
-    val volume: Int? = null,
-    val rate: Float? = null,
-    val originalPrice: Float? = null,
-    val salesPrice: Float? = null,
-    val enterMethod: String = ""
+    val entranceForm: String,
+    val volume: Int?,
+    val rate: Float?,
+    val originalPrice: Float?,
+    val salesPrice: Float?,
+    val enterMethod: String,
+    val authorId: String,
+    val groupId: String,
 ) {
 
     fun asCardModel() = AppLogRecommendationCardModel(
@@ -50,47 +54,52 @@ data class AppLogRecommendationProductModel(
         type = type,
         cardName = CardName.REC_GOODS_CARD,
         cardType = "",
-        groupId = "",
+        groupId = groupId,
         itemOrder = itemOrder,
         entranceForm = entranceForm,
-        sourcePageType = SourcePageType.PRODUCT_CARD,
+        sourcePageType = SourcePageType.PRODUCT_CARD.str,
+        enterMethod = enterMethod,
+        originalPrice = originalPrice,
+        salesPrice = salesPrice,
+        rate = rate,
+        volume = volume,
+        authorId = authorId,
     )
 
     fun toShowClickJson() = JSONObject().apply {
-        put(AppLogParam.PRODUCT_ID, productId)
+        addPage()
         put(AppLogParam.LIST_NAME, listName)
         put(AppLogParam.LIST_NUM, listNum)
+        addEnterFrom()
+        put(AppLogParam.SOURCE_PAGE_TYPE, AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME))
+        put(AppLogParam.ENTRANCE_FORM, entranceForm)
+        put(AppLogParam.SOURCE_MODULE, sourceModule)
+        addEnterMethod()
+        put(AppLogParam.AUTHOR_ID, authorId)
+        put(AppLogParam.PRODUCT_ID, productId)
         put(AppLogParam.IS_AD, isAd)
         put(AppLogParam.IS_USE_CACHE, isUseCache)
-        put(AppLogParam.SHOP_ID, shopId)
-
-        put(AppLogParam.ITEM_ORDER, itemOrder)
+        put(AppLogParam.GROUP_ID, groupId)
         put(AppLogParam.TRACK_ID, trackId)
-
-        put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.REC_PARAMS, recParams)
-
-        put(AppLogParam.ENTRANCE_FORM, entranceForm.str)
-        put(AppLogParam.SOURCE_MODULE, sourceModule)
-
-        put(
-            AppLogParam.SOURCE_PAGE_TYPE,
-            AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME)
-        )
-
-        addPage()
+        put(AppLogParam.REQUEST_ID, requestId)
+        put(AppLogParam.SHOP_ID, shopId)
+        put(AppLogParam.ITEM_ORDER, itemOrder)
+        put(AppLogParam.VOLUME, volume)
+        put(AppLogParam.RATE, rate)
+        put(AppLogParam.ORIGINAL_PRICE, rate)
+        put(AppLogParam.SALES_PRICE, rate)
+        //TODO P1: group_id, main_video_id
     }
 
     fun toRecTriggerJson() = JSONObject().apply {
         addPage()
-        put(AppLogParam.GLIDE_DISTANCE, "0")
-
+        addEnterFrom()
         put(AppLogParam.LIST_NAME, listName)
         put(AppLogParam.LIST_NUM, listNum)
-
         put(AppLogParam.ACTION_TYPE, ActionType.CLICK_CARD)
         put(AppLogParam.MODULE_NAME, moduleName)
-
+        put(AppLogParam.GLIDE_DISTANCE, "0")
         put(AppLogParam.REC_SESSION_ID, recSessionId)
         put(AppLogParam.REQUEST_ID, requestId)
     }
@@ -109,12 +118,14 @@ data class AppLogRecommendationProductModel(
             requestId: String = "",
             shopId: String = "",
             entranceForm: EntranceForm,
-            volume: Int? = null,
-            rate: Float? = null,
-            originalPrice: Float? = null,
-            salesPrice: Float? = null,
+            volume: Int = 0,
+            rate: Float = 0f,
+            originalPrice: Float = 0f,
+            salesPrice: Float = 0f,
             enterMethod: String = "",
+            authorId: String = "",
             type: AppLogRecommendationType,
+            groupId: String = "",
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
                 productId = productId,
@@ -130,13 +141,15 @@ data class AppLogRecommendationProductModel(
                 requestId = requestId,
                 shopId = shopId,
                 itemOrder = position.inc(),
-                entranceForm = entranceForm,
+                entranceForm = entranceForm.str,
                 volume = volume,
                 rate = rate,
                 originalPrice = originalPrice,
                 salesPrice = salesPrice,
                 type = type,
-                enterMethod = enterMethod
+                enterMethod = enterMethod,
+                authorId = authorId,
+                groupId = groupId
             )
         }
     }

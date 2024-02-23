@@ -23,10 +23,6 @@ object AppLogRecommendation {
     }
 
     fun sendProductClickAppLog(model: AppLogRecommendationProductModel) {
-        AppLogAnalytics.globalTrackId = model.trackId
-        AppLogAnalytics.globalRequestId = model.requestId
-        AppLogAnalytics.sourcePageType = SourcePageType.PRODUCT_CARD
-        AppLogAnalytics.entranceForm = EntranceForm.PURE_GOODS_CARD
         AppLogAnalytics.send(EventName.PRODUCT_CLICK, model.toShowClickJson())
         if (model.type == AppLogRecommendationType.MIXED_CAROUSEL ||
             model.type == AppLogRecommendationType.VERTICAL) {
@@ -98,7 +94,7 @@ object AppLogRecommendation {
     }
 
     private fun setGlobalParam(
-        entranceForm: EntranceForm,
+        entranceForm: String,
         enterMethod: String = "",
         sourceModule: String,
         listName: String,
@@ -111,7 +107,7 @@ object AppLogRecommendation {
         recParams: String,
         requestId: String,
     ) {
-        AppLogAnalytics.putPageData(AppLogParam.ENTRANCE_FORM, entranceForm.str)
+        AppLogAnalytics.putPageData(AppLogParam.ENTRANCE_FORM, entranceForm)
         AppLogAnalytics.putPageData(AppLogParam.ENTER_FROM, enterMethod)
         AppLogAnalytics.putPageData(AppLogParam.SOURCE_MODULE, sourceModule)
         AppLogAnalytics.putPageData(AppLogParam.LIST_NAME, listName)

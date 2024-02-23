@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.util.mapper
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
 object TrackShopRecommendationMapper {
@@ -12,7 +13,7 @@ object TrackShopRecommendationMapper {
         return AppLogRecommendationProductModel.create(
             productId = id,
             position = position,
-            moduleName = "", // TODO pageName from BE
+            moduleName = widgetName,
             isAd = false,
             isUseCache = false,
             recSessionId = "", // TODO pageName from BE
@@ -22,6 +23,9 @@ object TrackShopRecommendationMapper {
             entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
             rate = rating.toFloat(),
             type = AppLogRecommendationType.PRODUCT_CAROUSEL,
+            originalPrice = originalPrice.toFloatOrZero(),
+            salesPrice = displayedPrice.toFloatOrZero(),
+            volume = stock
         )
     }
 }

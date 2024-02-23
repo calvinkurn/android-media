@@ -1,11 +1,10 @@
 package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.ActionType
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogParam
-import com.tokopedia.analytics.byteio.ContentType
-import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SourcePageType
 import org.json.JSONObject
@@ -30,35 +29,38 @@ data class AppLogRecommendationCardModel(
     val shopId: String,
     val groupId: String,
     val itemOrder: Int,
-    val entranceForm: EntranceForm,
-    val volume: Int? = null,
-    val rate: Float? = null,
-    val originalPrice: Float? = null,
-    val salesPrice: Float? = null,
-    val sourcePageType: SourcePageType? = null,
+    val entranceForm: String,
+    val volume: Int?,
+    val rate: Float?,
+    val originalPrice: Float?,
+    val salesPrice: Float?,
+    val sourcePageType: String,
     val type: AppLogRecommendationType,
-    val enterMethod: String = "",
+    val enterMethod: String,
+    val authorId: String,
 ) {
 
     fun toShowClickJson() = JSONObject().apply {
+        addPage()
         put(AppLogParam.CARD_NAME, cardName.str.format(cardType))
-        put(AppLogParam.PRODUCT_ID, productId)
         put(AppLogParam.LIST_NAME, listName)
         put(AppLogParam.LIST_NUM, listNum)
+        addEnterFrom()
+        put(AppLogParam.SOURCE_PAGE_TYPE, sourcePageType)
+        put(AppLogParam.SOURCE_MODULE, sourceModule)
+        put(AppLogParam.AUTHOR_ID, authorId)
+        put(AppLogParam.PRODUCT_ID, productId)
         put(AppLogParam.IS_AD, isAd)
         put(AppLogParam.IS_USE_CACHE, isUseCache)
-        put(AppLogParam.SHOP_ID, shopId)
-
-        put(AppLogParam.ITEM_ORDER, itemOrder)
         put(AppLogParam.TRACK_ID, trackId)
-
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.REC_PARAMS, recParams)
-
-        put(AppLogParam.ENTRANCE_FORM, entranceForm.str)
-        put(AppLogParam.SOURCE_MODULE, sourceModule)
-
-        addPage()
+        put(AppLogParam.SHOP_ID, shopId)
+        put(AppLogParam.ITEM_ORDER, itemOrder)
+        put(AppLogParam.VOLUME, volume)
+        put(AppLogParam.ORIGINAL_PRICE, originalPrice)
+        put(AppLogParam.SALES_PRICE, salesPrice)
+        //TODO P1: group_id, main_video_id
     }
 
     fun toRecTriggerJson() = JSONObject().apply {
@@ -92,13 +94,14 @@ data class AppLogRecommendationCardModel(
             shopId: String = "",
             groupId: String = "",
             entranceForm: EntranceForm,
-            volume: Int? = null,
-            rate: Float? = null,
-            originalPrice: Float? = null,
-            salesPrice: Float? = null,
+            volume: Int = 0,
+            rate: Float = 0f,
+            originalPrice: Float = 0f,
+            salesPrice: Float = 0f,
             type: AppLogRecommendationType,
             enterMethod: String = "",
             sourcePageType: SourcePageType? = null,
+            authorId: String = "",
         ): AppLogRecommendationCardModel {
             return AppLogRecommendationCardModel(
                 cardName = cardName,
@@ -117,14 +120,15 @@ data class AppLogRecommendationCardModel(
                 shopId = shopId,
                 groupId = groupId,
                 itemOrder = position.inc(),
-                entranceForm = entranceForm,
+                entranceForm = entranceForm.str,
                 volume = volume,
                 rate = rate,
                 originalPrice = originalPrice,
                 salesPrice = salesPrice,
                 type = type,
                 enterMethod = enterMethod,
-                sourcePageType = sourcePageType
+                sourcePageType = sourcePageType?.str ?: AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME).toString(),
+                authorId = authorId,
             )
         }
     }

@@ -225,6 +225,7 @@ object AppLogParam {
     const val ENTER_FROM = "enter_from"
     const val ENTRANCE_FORM = "entrance_form"
     const val GLIDE_DISTANCE = "glide_distance"
+    const val DISTANCE_TO_TOP = "distance_to_top"
     const val GLIDE_TYPE = "glide_type"
     const val GROUP_ID = "group_id"
     const val IS_AD = "is_ad"
@@ -245,6 +246,12 @@ object AppLogParam {
     const val SOURCE_PREVIOUS_PAGE = "source_previous_page"
     const val TRACK_ID = "track_id"
     const val REC_PARAMS = "rec_params"
+    const val AUTHOR_ID = "author_id"
+    const val VOLUME = "volume"
+    const val RATE = "rate"
+    const val ORIGINAL_PRICE = "original_price"
+    const val SALES_PRICE = "sales_price"
+    const val MAIN_VIDEO_ID = "main_video_id"
 }
 
 enum class ContentType(val str: String) {

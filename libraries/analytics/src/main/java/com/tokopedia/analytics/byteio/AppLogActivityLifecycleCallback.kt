@@ -29,8 +29,10 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
             activity.startTime = System.currentTimeMillis()
         }
         if (activity is AppLogInterface) {
+            val previousPage = AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME) ?: ""
             AppLogAnalytics.pushPageData()
             AppLogAnalytics.putPageData(AppLogParam.PAGE_NAME, activity.getPageName())
+            AppLogAnalytics.putPageData(AppLogParam.PREVIOUS_PAGE, previousPage)
             if (activity.isEnterFromWhitelisted()) {
                 AppLogAnalytics.putPageData(AppLogParam.ENTER_FROM, activity.getPageName())
             }
