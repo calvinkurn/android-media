@@ -87,7 +87,7 @@ class AutomateCouponGridView @JvmOverloads constructor(
     }
 
     private fun renderBadge(badgeText: String?) {
-//        binding.remainingBadge.render(badgeText)
+        binding.remainingBadge.render(badgeText)
     }
 
     private fun disableActionButton() {

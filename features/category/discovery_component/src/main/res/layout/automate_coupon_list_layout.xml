@@ -6,13 +6,13 @@
     android:layout_height="wrap_content"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-<!--    <com.tokopedia.discovery_component.widgets.automatecoupon.BadgeView-->
-<!--        android:id="@+id/remainingBadge"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:translationZ="8dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <com.tokopedia.discovery_component.widgets.automatecoupon.BadgeView
+        android:id="@+id/remainingBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationZ="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.discovery_component.widgets.automatecoupon.CouponCardView
         android:id="@+id/cardView"
