@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.chatbot2.csat.data.response
+package com.tokopedia.csat_rating.dynamiccsat.data.model
 
 import com.google.gson.annotations.SerializedName
 
