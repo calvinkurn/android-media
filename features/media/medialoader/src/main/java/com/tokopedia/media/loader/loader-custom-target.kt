@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.view.View
 import androidx.core.graphics.drawable.toDrawable
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
@@ -90,6 +91,12 @@ fun Any.downloadImageFromUrl(
     properties: Properties.() -> Unit = {}
 ): File? {
     return MediaLoaderTarget.downloadImageFuture(context, timeout, Properties().apply(properties).setSource(this))
+}
+
+fun Any.imagePreload(
+    context: Context
+) {
+    Glide.with(context).load(this).preload()
 }
 
 fun String.getBitmapImageUrlAsFlow(
