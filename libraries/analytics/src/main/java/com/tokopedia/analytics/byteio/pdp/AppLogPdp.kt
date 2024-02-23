@@ -187,8 +187,10 @@ object AppLogPdp {
     fun sendSubmitOrderResult(model: SubmitOrderResult) {
         AppLogAnalytics.send(EventName.SUBMIT_ORDER_RESULT, JSONObject().also {
             it.addPage()
-            it.addEntranceForm()
+            it.addTrackId()
             it.addSourcePageType()
+            it.addEntranceForm()
+            it.addSourceModule()
             it.put("is_success", if (model.isSuccess) 1 else 0)
             it.put("fail_reason", model.failReason)
             it.put("shipping_price", model.shippingPrice)
