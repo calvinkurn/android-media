@@ -233,13 +233,14 @@ internal class ProductCardCartExtension(
         if (colorMode == null) return
 
         val quantityTextColor = ContextCompat.getColor(context, colorMode.quantityEditorColor.quantityTextColor)
-        val buttonDeleteCartColor = ContextCompat.getColor(context, colorMode.quantityEditorColor.buttonDeleteCartColor)
+        val buttonDeleteCartLightColor = ContextCompat.getColor(context, colorMode.quantityEditorColor.buttonDeleteCartColorLight)
+        val buttonDeleteCartDarkColor = ContextCompat.getColor(context, colorMode.quantityEditorColor.buttonDeleteCartColorDark)
 
         quantityEditor?.editText?.setTextColor(quantityTextColor)
         deleteCartButton?.setImage(
             newIconId = IconUnify.DELETE,
-            newLightEnable = buttonDeleteCartColor,
-            newDarkDisable = buttonDeleteCartColor
+            newLightEnable = buttonDeleteCartLightColor,
+            newDarkDisable = buttonDeleteCartDarkColor
         )
         addToCartButton?.applyColorMode(colorMode.buttonColorMode)
     }
