@@ -14,6 +14,7 @@ import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
 import com.tokopedia.analyticsdebugger.cassava.Cassava
 import org.json.JSONObject
+import timber.log.Timber
 import java.lang.ref.WeakReference
 
 
@@ -316,6 +317,7 @@ object AppLogAnalytics {
     fun pushPageData() {
         val tempHashMap = HashMap<String, Any>()
         _pageDataList.add(tempHashMap)
+        Timber.d("Push _pageDataList: ${_pageDataList}}")
     }
 
     /**
@@ -323,6 +325,11 @@ object AppLogAnalytics {
      */
     fun popPageData() {
         _pageDataList.removeLast()
+        Timber.d("Pop _pageDataList: ${_pageDataList}}")
+    }
+
+    fun clearCurrentPageData() {
+        _pageDataList.last().clear()
     }
 
     /**
@@ -330,6 +337,7 @@ object AppLogAnalytics {
      */
     fun putPageData(key: String, value: Any) {
         _pageDataList.last()[key] = value
+        Timber.d("Put _pageDataList: ${_pageDataList}}")
     }
 
     fun getCurrentData(key: String): Any? {
@@ -355,7 +363,23 @@ object AppLogAnalytics {
         return null
     }
 
-    fun resetPageData() {
+    fun clearPageData() {
         _pageDataList.clear()
+    }
+
+    fun pushPageData(appLogInterface: AppLogInterface) {
+        pushPageData()
+        putPageData(PAGE_NAME, appLogInterface.getPageName())
+        if (appLogInterface.isEnterFromWhitelisted()) {
+            putPageData(AppLogParam.ENTER_FROM, appLogInterface.getPageName())
+        }
+    }
+
+    fun updateCurrentPageData(appLogInterface: AppLogInterface) {
+        clearCurrentPageData()
+        putPageData(PAGE_NAME, appLogInterface.getPageName())
+        if (appLogInterface.isEnterFromWhitelisted()) {
+            putPageData(AppLogParam.ENTER_FROM, appLogInterface.getPageName())
+        }
     }
 }

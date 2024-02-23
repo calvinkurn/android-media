@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
@@ -106,7 +108,8 @@ class WishlistCollectionFragment :
     WishlistCollectionAdapter.ActionListener,
     BottomSheetUpdateWishlistCollectionName.ActionListener,
     BottomSheetOnboardingWishlistCollection.ActionListener,
-    ActionListenerBottomSheetMenu {
+    ActionListenerBottomSheetMenu,
+    AppLogInterface {
     private var onlyAllCollection: Boolean = false
     private var binding by autoClearedNullable<FragmentCollectionWishlistBinding>()
     private lateinit var collectionAdapter: WishlistCollectionAdapter
@@ -157,6 +160,14 @@ class WishlistCollectionFragment :
     private var hasRecomScrollListener: Boolean = false
 
     override fun getScreenName(): String = ""
+
+    override fun getPageName(): String {
+        return PageName.WHISLIST
+    }
+
+    override fun isEnterFromWhitelisted(): Boolean {
+        return true
+    }
 
     override fun initInjector() {
         activity?.let { activity ->

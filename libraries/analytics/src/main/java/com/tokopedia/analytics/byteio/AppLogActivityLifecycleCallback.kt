@@ -28,11 +28,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
             activity.startTime = System.currentTimeMillis()
         }
         if (activity is AppLogInterface) {
-            AppLogAnalytics.pushPageData()
-            AppLogAnalytics.putPageData(AppLogParam.PAGE_NAME, activity.getPageName())
-            if (activity.isEnterFromWhitelisted()) {
-                AppLogAnalytics.putPageData(AppLogParam.ENTER_FROM, activity.getPageName())
-            }
+            pushPageData(activity)
         }
     }
 
@@ -132,7 +128,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         }
         removePageName(activity)
         if (activity is AppLogInterface) {
-            AppLogAnalytics.popPageData()
+            popPageData()
         }
     }
 

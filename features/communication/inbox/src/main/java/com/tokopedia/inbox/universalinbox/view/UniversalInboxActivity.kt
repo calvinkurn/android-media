@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.iconnotification.IconNotification
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.inbox.R
@@ -25,7 +27,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.NotificationUnify
 import javax.inject.Inject
 
-class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInboxComponent> {
+class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInboxComponent>,
+    AppLogInterface {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -152,5 +155,13 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
             }
         }
         notificationCounter = strCounter
+    }
+
+    override fun getPageName(): String {
+        return PageName.INBOX
+    }
+
+    override fun isEnterFromWhitelisted(): Boolean {
+        return true
     }
 }

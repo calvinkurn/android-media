@@ -50,7 +50,9 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.analytics.byteio.AppLogFragmentLifecycleCallback;
+import com.tokopedia.analytics.byteio.AppLogAnalytics;
+import com.tokopedia.analytics.byteio.AppLogInterface;
+import com.tokopedia.analytics.byteio.AppLogParam;
 import com.tokopedia.analytics.byteio.IAppLogActivity;
 import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -86,9 +88,9 @@ import com.tokopedia.navigation.analytics.performance.PerformanceData;
 import com.tokopedia.navigation.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.customview.BottomMenu;
-import com.tokopedia.navigation.presentation.customview.IconJumper;
 import com.tokopedia.navigation.presentation.customview.IBottomClickListener;
 import com.tokopedia.navigation.presentation.customview.IBottomHomeForYouClickListener;
+import com.tokopedia.navigation.presentation.customview.IconJumper;
 import com.tokopedia.navigation.presentation.customview.LottieBottomNavbar;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
@@ -148,7 +150,8 @@ public class MainParentActivity extends BaseActivity implements
         InAppCallback,
         HomeCoachmarkListener,
         HomeBottomNavListener,
-        IAppLogActivity {
+        IAppLogActivity,
+        AppLogInterface {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -301,7 +304,6 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         super.onCreate(savedInstanceState);
-        getSupportFragmentManager().registerFragmentLifecycleCallbacks(new AppLogFragmentLifecycleCallback(), true);
         HomeRollenceController.fetchIconJumperValue();
         initInjector();
         presenter.get().setView(this);
@@ -1349,6 +1351,9 @@ public class MainParentActivity extends BaseActivity implements
         }
         this.embracePageName = pageTitle;
         MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
+        if (fragment instanceof AppLogInterface appLogInterface) {
+            AppLogAnalytics.INSTANCE.updateCurrentPageData(appLogInterface);
+        }
         return true;
     }
 
@@ -1502,6 +1507,11 @@ public class MainParentActivity extends BaseActivity implements
     @NonNull
     @Override
     public String getPageName() {
-        return PageName.MAINPAGE;
+        return PageName.HOME;
+    }
+
+    @Override
+    public boolean isEnterFromWhitelisted() {
+        return false;
     }
 }
