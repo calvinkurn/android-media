@@ -3,11 +3,9 @@ package com.tokopedia.analytics.byteio
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import android.util.Log
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
 import com.tokopedia.analytics.byteio.AppLogAnalytics.sendStayProductDetail
-import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -132,7 +130,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
 
     private fun isPdpPage(activity: Activity): Boolean {
         return (activity is IAppLogPdpActivity &&
-                activity.getPageName() == PageName.PDP)
+            activity.getPageName() == PageName.PDP)
     }
 
     private fun isAtcVariantPage(activity: Activity): Boolean {
