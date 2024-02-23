@@ -2,12 +2,11 @@ package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.visitable.OrigamiSDUIDataModel
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentOrigamiSduiBinding
-import com.tokopedia.home_component.listener.CampaignWidgetComponentListener
 import com.tokopedia.home_component.listener.HomeComponentListener
-import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.delegate.OrigamiListenerDelegate
+import com.tokopedia.home_component.visitable.OrigamiSDUIDataModel
 import com.tokopedia.sdui.SDUIManager
 import com.tokopedia.sdui.extention.CustomActionInterface
 import com.tokopedia.sdui.interfaces.SDUITrackingInterface
@@ -20,7 +19,7 @@ hardcoded the tracker for campaign widget for POC purpose
  */
 open class OrigamiSDUIViewHolder(
     itemView: View,
-    val listenerTracker: CampaignWidgetComponentListener,
+    private val listenerDelegate: OrigamiListenerDelegate,
     val homeComponentListener: HomeComponentListener
 ) : AbstractViewHolder<OrigamiSDUIDataModel>(itemView), SDUITrackingInterface, CustomActionInterface {
     companion object {
@@ -52,61 +51,13 @@ open class OrigamiSDUIViewHolder(
     }
 
     override fun onViewClick(trackerPayload: JSONObject?) {
-        trackerPayload?.let {
-            origamiSDUIDataModel?.channel?.let {
-                when (trackerPayload.get("eventAction")) {
-                    "click campaign card" -> listenerTracker.onProductCardClicked(
-                        it.channelModel,
-                        it.channelModel.channelGrids[trackerPayload.getInt("position")],
-                        adapterPosition,
-                        trackerPayload.getInt("position"),
-                        ""
-                    )
-
-                    "click see all header" -> listenerTracker.onSeeAllBannerClicked(
-                        it.channelModel,
-                        ""
-                    )
-
-                    "click see all card" -> listenerTracker.onSeeMoreCardClicked(
-                        it.channelModel,
-                        ""
-                    )
-
-                    // Kd4
-                    "click product" -> {
-                        listenerTracker.onCardClicked(
-                            it.channelModel,
-                            it.channelModel.channelGrids[trackerPayload.getInt("position")],
-                            bindingAdapterPosition
-                        )
-                    }
-
-                    "click chevron" -> {
-                        listenerTracker.onViewAllChevronClicked(it.channelModel)
-                    }
-                }
-            }
-        }
+        listenerDelegate.setDelegate(trackerPayload, origamiSDUIDataModel)
+        listenerDelegate.onViewClicked(bindingAdapterPosition)
     }
 
     override fun onViewVisible(trackerPayload: JSONObject?) {
-        trackerPayload?.let {
-            origamiSDUIDataModel?.channel?.let {
-                when (trackerPayload.get("eventAction")) {
-                    "view campaign card" -> listenerTracker.onProductCardImpressed(
-                        it.channelModel,
-                        it.channelModel.channelGrids[trackerPayload.getInt("position")],
-                        adapterPosition,
-                        trackerPayload.getInt("position")
-                    )
-
-                    "view product" -> {
-                        listenerTracker.onWidgetImpressed(it.channelModel, bindingAdapterPosition)
-                    }
-                }
-            }
-        }
+        listenerDelegate.setDelegate(trackerPayload, origamiSDUIDataModel)
+        listenerDelegate.onViewImpressed(bindingAdapterPosition)
     }
 
     override fun onHandleCustomAction(queryParameter: String?) {

@@ -91,6 +91,7 @@ import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.listener.MixTopComponentListener
+import com.tokopedia.home_component.delegate.OrigamiListenerDelegate
 import com.tokopedia.home_component.listener.ProductHighlightListener
 import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.listener.ReminderWidgetListener
@@ -208,6 +209,7 @@ class HomeAdapterFactory(
     private val specialReleaseRevampListener: SpecialReleaseRevampListener,
     private val shopFlashSaleWidgetListener: ShopFlashSaleWidgetListener,
     private val homeThematicUtil: HomeThematicUtil,
+    private val origamiListenerDelegate: OrigamiListenerDelegate,
     private val remoteConfig: RemoteConfig
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
@@ -638,7 +640,7 @@ class HomeAdapterFactory(
                 )
             SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
             ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
-            OrigamiSDUIViewHolder.LAYOUT -> viewHolder = OrigamiSDUIViewHolder(view, campaignWidgetComponentListener, homeComponentListener)
+            OrigamiSDUIViewHolder.LAYOUT -> viewHolder = OrigamiSDUIViewHolder(view, origamiListenerDelegate, homeComponentListener)
             Lego3AutoViewHolder.LAYOUT -> viewHolder = Lego3AutoViewHolder(view, legoListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }

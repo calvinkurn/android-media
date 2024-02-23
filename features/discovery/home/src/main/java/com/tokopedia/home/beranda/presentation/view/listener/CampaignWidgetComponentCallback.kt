@@ -68,31 +68,4 @@ class CampaignWidgetComponentCallback(
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
         homeCategoryListener.onDynamicChannelClicked(applink = applink)
     }
-
-    override fun onWidgetImpressed(channel: ChannelModel, position: Int) {
-        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
-            Kd4SquareTracker.widgetImpressed(
-                channel,
-                homeCategoryListener.userId,
-                position
-            ) as HashMap<String, Any>
-        )
-    }
-
-    override fun onCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            Kd4SquareTracker.cardClicked(
-                channel,
-                channelGrid,
-                homeCategoryListener.userId,
-                position
-            ) as HashMap<String, Any>
-        )
-    }
-
-    override fun onViewAllChevronClicked(channel: ChannelModel) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            Kd4SquareTracker.viewAllChevronClicked(channel) as HashMap<String, Any>
-        )
-    }
 }
