@@ -30,8 +30,6 @@ class ByteIOTrackingDataFactoryImpl @Inject constructor(
         ByteIOTrackingData(
             imprId = requestId,
             searchId = searchId,
-            searchEntrance = "", // TODO
-            enterFrom = "", // TODO
             keyword = queryKey,
             isFirstPage = isFirstPage,
         )

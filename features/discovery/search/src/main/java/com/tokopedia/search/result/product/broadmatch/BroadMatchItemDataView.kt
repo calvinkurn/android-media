@@ -93,8 +93,6 @@ data class BroadMatchItemDataView(
     ) = AppLogSearch.SearchResult(
         imprId = byteIOTrackingData.imprId,
         searchId = byteIOTrackingData.searchId,
-        searchEntrance = byteIOTrackingData.searchEntrance,
-        enterFrom = byteIOTrackingData.enterFrom,
         searchResultId = id,
         listItemId = id,
         itemRank = position,
@@ -118,7 +116,6 @@ data class BroadMatchItemDataView(
         searchID = byteIOTrackingData.searchId,
         requestID = byteIOTrackingData.imprId,
         searchResultID = id,
-        enterFrom = byteIOTrackingData.enterFrom,
         listItemId = id,
         itemRank = position,
         listResultType = AppLogSearch.ParamValue.GOODS,

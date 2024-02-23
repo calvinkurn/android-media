@@ -65,12 +65,16 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_NUM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_POSITION
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_SOURCE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.ENTER
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_BAR_OUTER
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SUG
 import org.json.JSONObject
 
 object AppLogSearch {
+
+    private val whitelistedEnterFromForBlankPage = listOf(GOODS_SEARCH, STORE_SEARCH, HOMEPAGE)
 
     object Event {
         const val SHOW_SEARCH = "show_search"
@@ -82,8 +86,6 @@ object AppLogSearch {
         const val SEARCH_RESULT_SHOW = "search_result_show"
         const val SEARCH_RESULT_CLICK = "search_result_click"
         const val CHOOSE_SEARCH_FILTER = "choose_search_filter"
-        const val SEARCH_REVISE_WORD_SHOW = "search_revise_word_show"
-        const val SEARCH_REVISE_WORD_CLICK = "search_revise_word_click"
     }
 
     object ParamKey {
@@ -241,8 +243,11 @@ object AppLogSearch {
         val ecomFilterType: String? = null,
     ) {
         fun json() = JSONObject(buildMap {
+            val actualEnterFrom = (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
+            val enterFrom = if (actualEnterFrom == HOMEPAGE) actualEnterFrom else ""
+
             put(IMPR_ID, imprId)
-            put(ENTER_FROM, "home or empty")
+            put(ENTER_FROM, enterFrom)
             put(SEARCH_TYPE, searchType)
             put(ENTER_METHOD, enterMethod)
             put(SEARCH_KEYWORD, searchKeyword)
@@ -266,10 +271,12 @@ object AppLogSearch {
         AppLogAnalytics.send(SEARCH, search.json())
     }
 
-    fun eventEnterSearchBlankPage(
-        enterFrom: String,
-        searchEntrance: String
-    ) {
+    fun eventEnterSearchBlankPage(searchEntrance: String) {
+        val actualEnterFrom = (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
+        val enterFrom =
+            if (whitelistedEnterFromForBlankPage.contains(actualEnterFrom)) actualEnterFrom
+            else ""
+
         AppLogAnalytics.send(
             ENTER_SEARCH_BLANKPAGE,
             JSONObject(
@@ -360,8 +367,6 @@ object AppLogSearch {
     data class SearchResult(
         val imprId: String,
         val searchId: String,
-        val searchEntrance: String,
-        val enterFrom: String,
         val searchResultId: String,
         val listItemId: String?,
         val itemRank: Int?,
@@ -378,14 +383,17 @@ object AppLogSearch {
 
         fun json() = JSONObject(
             buildMap {
-                put(IMPR_ID, imprId) // TODO:: From BE
+                val actualEnterFrom = (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
+                val enterFrom = if (actualEnterFrom == HOMEPAGE) HOMEPAGE else ""
+
+                put(IMPR_ID, imprId)
                 put(SEARCH_ID, searchId)
-                put(SEARCH_ENTRANCE, searchEntrance) // TODO:: HOMEPAGE. What about other page?
-                put(ENTER_FROM, enterFrom) // TODO:: GOODS_SEARCH || STORE_SEARCH
-                put(SEARCH_RESULT_ID, searchResultId) // TODO:: Id of impressed search widgets (Headline ads, carousel, regular products etc). To be decided with BE?
-                listItemId?.let { put(LIST_ITEM_ID, it) } //TODO:: Only add for widget with sub items (Headline Ads, Carousel). Id of sub cards
-                itemRank?.let { put(ITEM_RANK, it) } // TODO:: Index of position inside widget. should still send for non carousel ?
-                listResultType?.let { put(LIST_RESULT_TYPE, it) } // TODO:: GOODS if going, PDP || SHOP if going, Shop Page.
+                put(SEARCH_ENTRANCE, GOODS_SEARCH)
+                put(ENTER_FROM, enterFrom)
+                put(SEARCH_RESULT_ID, searchResultId)
+                listItemId?.let { put(LIST_ITEM_ID, it) }
+                itemRank?.let { put(ITEM_RANK, it) }
+                listResultType?.let { put(LIST_RESULT_TYPE, it) }
                 productID?.let { put(PRODUCT_ID, it) }
                 put(SEARCH_KEYWORD, searchKeyword)
                 put(TOKEN_TYPE, tokenType)
@@ -440,7 +448,6 @@ object AppLogSearch {
         val searchID: String,
         val requestID: String,
         val searchResultID: String,
-        val enterFrom: String,
         val listItemId: String?,
         val itemRank: Int?,
         val listResultType: String?,
@@ -451,7 +458,6 @@ object AppLogSearch {
     ) {
 
         fun json() = JSONObject(buildMap {
-            put(SOURCE_MODULE, "") // TODO:: Is this search?
             put(ENTRANCE_FORM, entranceForm.str)
             put(ITEM_ORDER, rank + 1)
             volume?.let { put(VOLUME, it) }
@@ -459,11 +465,11 @@ object AppLogSearch {
             put(IS_AD, isAd.intValue)
             put(PRODUCT_ID, productID)
             put(AppLogParam.TRACK_ID, "${searchID}_${(itemRank ?: rank)}")
-            put(AppLogParam.REQUEST_ID, requestID) // TODO:: Request ID from BE
-            put(SEARCH_ID, searchID) // TODO:: Search ID, check above
+            put(AppLogParam.REQUEST_ID, requestID)
+            put(SEARCH_ID, searchID)
             put(SEARCH_RESULT_ID, searchResultID)
             put(SEARCH_ENTRANCE, HOMEPAGE)
-            put(ENTER_FROM, enterFrom) //TODO:: GOODS_SEARCH || STORE_SEARCH
+            put(ENTER_FROM, GOODS_SEARCH)
             listItemId?.let { put(LIST_ITEM_ID, it) }
             itemRank?.let { put(ITEM_RANK, it) }
             listResultType?.let { put(LIST_RESULT_TYPE, it) }
@@ -473,7 +479,6 @@ object AppLogSearch {
             shopID?.let { put(SHOP_ID, it) }
         }).apply {
             addPage()
-//        addSourceModule() // TODO milhamj diapain ini?
             addSourcePageType()
         }
     }
