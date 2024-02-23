@@ -66,7 +66,7 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val creditCardData = processor.getCreditCardAdminFee(
+                val creditCardData = processor.getCreditCardTenorList(
                     generateCreditCardTenorListRequest(
                         orderPayment,
                         userId,

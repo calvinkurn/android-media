@@ -404,9 +404,11 @@ class CheckoutCalculator @Inject constructor(
         val checkoutOrderModels = newList.filterIsInstance(CheckoutOrderModel::class.java)
         val priceTotal: Double =
             if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
+
+        shipmentCost = shipmentCost.copy(originalPaymentFees = payment.data?.paymentFeeDetails ?: emptyList())
         val paymentFee: Double =
             if (shipmentCost.usePaymentFees) {
-                shipmentCost.dynamicPaymentFees?.sumOf { it.fee } ?: 0.0
+                (shipmentCost.dynamicPaymentFees?.sumOf { it.fee } ?: 0.0) + shipmentCost.originalPaymentFees.sumOf { it.amount }
             } else if (shipmentCost.dynamicPlatformFee.fee <= 0) {
                 0.0
             } else {

@@ -25,7 +25,7 @@ class PaymentProcessor @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) {
 
-    suspend fun getCreditCardAdminFee(param: CreditCardTenorListRequest): List<TenorListData>? {
+    suspend fun getCreditCardTenorList(param: CreditCardTenorListRequest): List<TenorListData>? {
         return withContext(dispatchers.io) {
             try {
                 val creditCardData = creditCardTenorListUseCase(param)

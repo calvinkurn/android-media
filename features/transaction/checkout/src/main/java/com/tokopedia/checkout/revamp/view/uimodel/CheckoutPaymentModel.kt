@@ -1,6 +1,8 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetResponse
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentData
+import com.tokopedia.checkoutpayment.domain.TenorListData
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
 
 data class CheckoutPaymentModel(
@@ -9,5 +11,7 @@ data class CheckoutPaymentModel(
     val metadata: String = "",
     val enable: Boolean = false,
     val defaultErrorMessage: String = "",
-    val data: GetPaymentWidgetResponse? = null
+    val data: GetPaymentWidgetResponse? = null,
+    val tenorList: List<TenorListData>? = null,
+    val installmentData: GoCicilInstallmentData? = null
 ) : CheckoutItem

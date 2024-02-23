@@ -29,11 +29,15 @@ import com.tokopedia.checkoutpayment.data.CartProductCategoryData
 import com.tokopedia.checkoutpayment.data.CartProductData
 import com.tokopedia.checkoutpayment.data.CartShippingInfoData
 import com.tokopedia.checkoutpayment.data.CartShopOrderData
+import com.tokopedia.checkoutpayment.data.CreditCardTenorListRequest
 import com.tokopedia.checkoutpayment.data.DetailsItemData
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetRequest
+import com.tokopedia.checkoutpayment.data.GoCicilAddressRequest
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentRequest
 import com.tokopedia.checkoutpayment.data.PaymentData
 import com.tokopedia.checkoutpayment.data.PaymentFeeRequest
 import com.tokopedia.checkoutpayment.data.PaymentRequest
+import com.tokopedia.checkoutpayment.data.PaymentWidgetDataResponse
 import com.tokopedia.checkoutpayment.data.PromoDetail
 import com.tokopedia.checkoutpayment.data.SummariesItemData
 import com.tokopedia.checkoutpayment.data.UsageSummariesData
@@ -367,5 +371,47 @@ class CheckoutPaymentProcessor @Inject constructor(
         delay(5_000)
         val data = processor.getPaymentWidget(param)
         return payment.copy(data = data, widget = payment.widget.copy(state = if (data == null) CheckoutPaymentWidgetState.Error else CheckoutPaymentWidgetState.Normal))
+    }
+
+    private fun generateCreditCardTenorRequest(payment: CheckoutPaymentModel, paymentData: PaymentWidgetDataResponse, paymentRequest: PaymentRequest): CreditCardTenorListRequest {
+        return CreditCardTenorListRequest(
+            tokenId = paymentData.installmentPaymentData.creditCardAttribute.tokenId,
+            userId = userSessionInterface.userId.toLongOrZero(),
+            totalAmount = paymentRequest.payment.paymentAmount,
+            discountAmount = 0.0,
+            profileCode = paymentData.profileCode,
+            otherAmount = 0.0,
+            cartDetails = emptyList(),
+            ccfeeSignature = paymentData.installmentPaymentData.creditCardAttribute.tenureSignature,
+            timestamp = paymentData.unixTimestamp,
+            additionalData = payment.metadata,
+            detailData = paymentRequest
+        )
+    }
+
+    suspend fun getTenorList(payment: CheckoutPaymentModel, paymentData: PaymentWidgetDataResponse, paymentRequest: PaymentRequest): CheckoutPaymentModel {
+        val tenorList = processor.getCreditCardTenorList(generateCreditCardTenorRequest(payment, paymentData, paymentRequest))
+        return payment.copy(tenorList = tenorList)
+    }
+
+    private fun generateInstallmentRequest(payment: CheckoutPaymentModel, paymentData: PaymentWidgetDataResponse, paymentRequest: PaymentRequest): GoCicilInstallmentRequest {
+        return GoCicilInstallmentRequest(
+            gatewayCode = paymentData.gatewayCode,
+            merchantCode = paymentData.merchantCode,
+            profileCode = paymentData.profileCode,
+            userId = userSessionInterface.userId.toLongOrZero(),
+            paymentAmount = 0.0,
+            merchantType = "",
+            address = GoCicilAddressRequest(),
+            shopId = "",
+            products = emptyList(),
+            additionalData = payment.metadata,
+            detailData = paymentRequest
+        )
+    }
+
+    suspend fun getInstallmentList(payment: CheckoutPaymentModel, paymentData: PaymentWidgetDataResponse, paymentRequest: PaymentRequest): CheckoutPaymentModel {
+        val installmentData = processor.getGocicilInstallmentOption(generateInstallmentRequest(payment, paymentData, paymentRequest))
+        return payment.copy(installmentData = installmentData)
     }
 }

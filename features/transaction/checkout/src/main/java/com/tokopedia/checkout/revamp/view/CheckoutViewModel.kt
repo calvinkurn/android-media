@@ -3108,6 +3108,57 @@ class CheckoutViewModel @Inject constructor(
             return
         }
 
+        val paymentData = payment.data?.paymentWidgetData?.firstOrNull()
+        if (paymentData?.mandatoryHit?.contains("credit_card") == true) {
+            payment = paymentProcessor.getTenorList(payment, paymentData, paymentRequest)
+
+            if (payment.tenorList == null) {
+                // show error
+                val newItems = listData.value.toMutableList()
+                payment = payment.copy(
+                    widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Error)
+                )
+                cost = cost.copy(
+                    dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
+                    usePaymentFees = true
+                )
+                listData.value =
+                    calculator.updateShipmentCostModel(
+                        newItems,
+                        cost,
+                        payment,
+                        isTradeInByDropOff,
+                        summariesAddOnUiModel
+                    )
+                return
+            }
+        }
+
+        if (paymentData?.mandatoryHit?.contains("gocicil") == true) {
+            payment = paymentProcessor.getInstallmentList(payment, paymentData, paymentRequest)
+
+            if (payment.installmentData == null) {
+                // show error
+                val newItems = listData.value.toMutableList()
+                payment = payment.copy(
+                    widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Error)
+                )
+                cost = cost.copy(
+                    dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
+                    usePaymentFees = true
+                )
+                listData.value =
+                    calculator.updateShipmentCostModel(
+                        newItems,
+                        cost,
+                        payment,
+                        isTradeInByDropOff,
+                        summariesAddOnUiModel
+                    )
+                return
+            }
+        }
+
         listData.value =
             calculator.updateShipmentCostModel(
                 listData.value,
