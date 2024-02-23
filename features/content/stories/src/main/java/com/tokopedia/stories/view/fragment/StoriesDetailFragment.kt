@@ -812,7 +812,7 @@ class StoriesDetailFragment @Inject constructor(
 
         mCoachMark = null
 
-        variantSheet?.lifecycle?.addObserver(variantSheetObserver)
+        variantSheet?.lifecycle?.removeObserver(variantSheetObserver)
 
         _binding = null
         super.onDestroyView()
