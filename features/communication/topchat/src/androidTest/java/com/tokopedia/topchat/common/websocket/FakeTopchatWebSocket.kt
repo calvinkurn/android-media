@@ -273,11 +273,19 @@ class FakeTopchatWebSocket @Inject constructor(
         }
     }
 
+    fun generateRefreshResponse(messageId: String): WebSocketResponse {
+        return alterResponseOf<WebSocketResponse>(
+            "ws/refresh_response.json") {
+            val data = it.getAsJsonObject(FakeTopchatWebSocket.data)
+            data.addProperty(msg_id, messageId)
+        }
+    }
+
     companion object {
         const val exStartTime = "123123123"
         const val START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        private val data = "data"
-        private val msg_id = "msg_id"
+        const val data = "data"
+        const val msg_id = "msg_id"
         private val from_uid = "from_uid"
         private val to_uid = "to_uid"
         private val is_opposite = "is_opposite"

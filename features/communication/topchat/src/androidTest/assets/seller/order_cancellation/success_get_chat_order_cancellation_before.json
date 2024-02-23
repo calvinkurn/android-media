@@ -1,0 +1,207 @@
+{
+  "status": "OK",
+  "chatReplies": {
+    "minReplyTime": "1708592867988",
+    "maxReplyTime": "1708599855677",
+    "block": {
+      "blockedUntil": "2022-02-23T10:32:54.047253+07:00",
+      "isBlocked": false,
+      "isPromoBlocked": false
+    },
+    "hasNext": false,
+    "hasNextAfter": false,
+    "textareaReply": 1,
+    "attachmentIDs": "741907,741997,742003",
+    "replyIDsAttachment": "29331188,29331376,29331388",
+    "contacts": [
+      {
+        "role": "Shop Admin",
+        "userId": 9122157,
+        "shopId": 6551357,
+        "interlocutor": false,
+        "name": "shop-1234567891123456789",
+        "tag": "Penjual",
+        "thumbnail": "https://images.tokopedia.net/img/seller_no_logo_1.png",
+        "domain": "shop-1234567891123456789",
+        "isOfficial": false,
+        "isGold": false,
+        "shopType": 1,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "Shop Owner",
+        "userId": 9075737,
+        "shopId": 6551357,
+        "interlocutor": false,
+        "name": "shop-1234567891123456789",
+        "tag": "Penjual",
+        "thumbnail": "https://images.tokopedia.net/img/seller_no_logo_1.png",
+        "domain": "shop-1234567891123456789",
+        "isOfficial": false,
+        "isGold": false,
+        "shopType": 1,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "User",
+        "userId": 9075738,
+        "shopId": 6551357,
+        "interlocutor": true,
+        "name": "bcdua",
+        "tag": "Pengguna",
+        "thumbnail": "https://images-staging.tokopedia.net/img/cache/300/tPxBYm/2023/1/20/cf438cd7-a9f8-435f-910d-726100b587db.jpg",
+        "domain": "",
+        "isOfficial": false,
+        "isGold": false,
+        "shopType": 0,
+        "badge": "",
+        "status": {
+          "timestamp": 1708599858,
+          "timestampStr": "1708599858",
+          "isOnline": true
+        }
+      },
+      {
+        "role": "Shop Admin",
+        "userId": 9089137,
+        "shopId": 6551357,
+        "interlocutor": false,
+        "name": "shop-1234567891123456789",
+        "tag": "Penjual",
+        "thumbnail": "https://images.tokopedia.net/img/seller_no_logo_1.png",
+        "domain": "shop-1234567891123456789",
+        "isOfficial": false,
+        "isGold": false,
+        "shopType": 1,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "Shop Admin",
+        "userId": 9089191,
+        "shopId": 6551357,
+        "interlocutor": false,
+        "name": "shop-1234567891123456789",
+        "tag": "Penjual",
+        "thumbnail": "https://images.tokopedia.net/img/seller_no_logo_1.png",
+        "domain": "shop-1234567891123456789",
+        "isOfficial": false,
+        "isGold": false,
+        "shopType": 1,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      }
+    ],
+    "list": [
+      {
+        "date": "22 Feb 2024",
+        "chats": [
+          {
+            "time": "18:04",
+            "replies": [
+              {
+                "msgId": 4018211,
+                "replyId": "29331388",
+                "senderId": 9075738,
+                "senderName": "bcdua",
+                "role": "User",
+                "msg": "\u003ca rel\u003d\"nofollow\" target\u003d\"_blank\" href\u003d\"http://staging.tokopedia.com/invoice?id\u003dINV/20240222/MPL/20929311\u0026source\u003dsom\"\u003ehttp://staging.tokopedia.com/invoice?id\u003dINV/20240222/MPL/20929311\u0026source\u003dsom\u003c/a\u003e",
+                "fraudStatus": 0,
+                "replyTime": "1708599855415784000",
+                "status": 11,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "widget_cancellation",
+                "label": "Dikirim otomatis oleh sistem",
+                "parentReply": null,
+                "attachment": {
+                  "id": 742003,
+                  "type": 7,
+                  "attributes": "{\"invoice_link\":{\"attributes\":{\"id\":167963098,\"code\":\"INV/20240222/MPL/20929311\",\"image_url\":\"https://images.tokopedia.net/img/cache/100-square/VqbcmM/2024/1/2/871c10e5-1180-4c50-8dc1-44010eb27aeb.jpg\",\"href_url\":\"tokopedia://seller/order?order_id\u003d167963098\",\"status_id\":400,\"status\":\"Pesanan Diproses\",\"total_amount\":\"Rp1.000\",\"color\":\"green\"}}}",
+                  "fallback": {
+                    "message": "Tanggapi Pembatalan",
+                    "html": "\u003cdiv\u003eTanggapi Pembatalan\u003c/div\u003e"
+                  }
+                }
+              },
+              {
+                "msgId": 4018211,
+                "replyId": "29331389",
+                "senderId": 9075738,
+                "senderName": "bcdua",
+                "role": "User",
+                "msg": "Yaah, pembeli telah membatalkan pesanan ini. Yuk, segera tanggapi pembatalannya.",
+                "fraudStatus": 0,
+                "replyTime": "1708599855612206000",
+                "status": 11,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "widget_cancellation",
+                "label": "Dikirim otomatis oleh sistem",
+                "parentReply": null,
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "Tanggapi Pembatalan",
+                    "html": "\u003cdiv\u003eTanggapi Pembatalan\u003c/div\u003e"
+                  }
+                }
+              },
+              {
+                "msgId": 4018211,
+                "replyId": "29331390",
+                "senderId": 9075738,
+                "senderName": "bcdua",
+                "role": "User",
+                "msg": "Tanggapi Pembatalan",
+                "fraudStatus": 0,
+                "replyTime": "1708599855677377000",
+                "status": 11,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": false,
+                "blastId": 0,
+                "source": "widget_cancellation",
+                "label": "Dikirim otomatis oleh sistem",
+                "parentReply": null,
+                "attachment": {
+                  "id": 742004,
+                  "type": 36,
+                  "attributes": "{\"button_cancellation\":{\"order_id\":167963098,\"order_status\":400,\"invoice_ref_num\":\"INV/20240222/MPL/20929311\",\"button_attributes\":{\"title\":\"Tanggapi Pembatalan\",\"description\":\"Alasan pembeli mengajukan pembatalan pesanan:\",\"reason\":\"Ingin mengubah produk yang dibeli\",\"primary_button_text\":\"Batalkan Pesanan\",\"secondary_button_text\":\"Proses Pesanan\",\"app_link\":\"tokopedia://seller/buyer-request-cancel-respond?orderId\u003d167963098\\u0026statusCode\u003d400\\u0026statusText\u003dPesanan Diproses\\u0026reason\u003dIngin mengubah produk yang dibeli\\u0026description\u003dAlasan pembeli mengajukan pembatalan pesanan:\\u0026primaryButtonText\u003dBatalkan Pesanan\\u0026secondaryButtonText\u003dProses Pesanan\\u0026primaryButtonKey\u003dreject_order\\u0026secondaryButtonKey\u003daccept_order\\u0026pageSource\u003dchat\"}}}",
+                  "fallback": {
+                    "message": "Tanggapi Pembatalan",
+                    "html": "\u003cdiv\u003eTanggapi Pembatalan\u003c/div\u003e"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

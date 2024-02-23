@@ -1,0 +1,16 @@
+{
+  "chatAttachments": {
+    "list": [
+      {
+        "id": 742003,
+        "type": 7,
+        "attributes": "{\"invoice_link\":{\"attributes\":{\"id\":167963098,\"code\":\"INV/20240222/MPL/20929311\",\"image_url\":\"https://images.tokopedia.net/img/cache/100-square/VqbcmM/2024/1/2/871c10e5-1180-4c50-8dc1-44010eb27aeb.jpg\",\"href_url\":\"tokopedia://seller/order?order_id\u003d167963098\",\"status_id\":400,\"status\":\"Pesanan Diproses\",\"total_amount\":\"Rp1.000\",\"color\":\"green\"}}}",
+        "fallback": {
+          "message": "http://staging.tokopedia.com/invoice?id\u003dINV/20240222/MPL/20929311\u0026source\u003dsom",
+          "html": "\u003cdiv\u003ehttp://staging.tokopedia.com/invoice?id\u003dINV/20240222/MPL/20929311\u0026source\u003dsom\u003c/div\u003e"
+        },
+        "isActual": true
+      }
+    ]
+  }
+}
