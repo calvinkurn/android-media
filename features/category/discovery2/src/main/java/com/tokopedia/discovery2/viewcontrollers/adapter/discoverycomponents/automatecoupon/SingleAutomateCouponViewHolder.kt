@@ -10,8 +10,10 @@ import com.tokopedia.discovery2.analytics.CouponTrackingMapper.toTrackingPropert
 import com.tokopedia.discovery2.analytics.CouponTrackingProperties
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponCtaState
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponUiModel
+import com.tokopedia.discovery2.data.automatecoupon.ClaimFailure
 import com.tokopedia.discovery2.databinding.SingleAutomateCouponLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -58,21 +60,48 @@ class SingleAutomateCouponViewHolder(
                 binding?.couponView?.setState(mapToCTAHandler(ctaState))
             }
 
-            viewModel?.shouldShowErrorClaimCouponToaster()?.observe(it) { message ->
-                if (message.isNotEmpty()) {
-                    fragment.activity?.let { activity ->
-                        SnackbarManager.getContentView(activity)
-                    }?.let { contentView ->
-                        Toaster.build(
-                            contentView,
-                            message,
-                            Toast.LENGTH_SHORT,
-                            Toaster.TYPE_ERROR
-                        ).show()
-                    }
+            viewModel?.shouldShowErrorClaimCouponToaster()?.observe(it) { reason ->
+                showErrorMessage(reason)
+            }
+        }
+    }
+
+    private fun showErrorMessage(reason: ClaimFailure) {
+        fragment.activity?.let { activity ->
+            SnackbarManager.getContentView(activity)
+        }?.let { contentView ->
+            when (reason) {
+                ClaimFailure.Unauthorized -> {
+                    showUnauthorizedToaster(contentView)
+                }
+
+                is ClaimFailure.Ineligible -> {
+                    showIneligibleToaster(contentView, reason)
                 }
             }
         }
+    }
+
+    private fun showIneligibleToaster(
+        contentView: View,
+        reason: ClaimFailure.Ineligible
+    ) {
+        Toaster.build(
+            contentView,
+            reason.message.ifEmpty { contentView.context.getString(R.string.discovery_default_claim_message_toaster) },
+            Toast.LENGTH_SHORT,
+            Toaster.TYPE_ERROR
+        ).show()
+    }
+
+    private fun showUnauthorizedToaster(contentView: View) {
+        Toaster.build(
+            contentView,
+            contentView.context.getString(R.string.discovery_unauthorized_claim_message_toaster),
+            Toast.LENGTH_SHORT,
+            Toaster.TYPE_NORMAL,
+            contentView.context.getString(R.string.discovery_unauthorized_claim_cta_toaster)
+        ).show()
     }
 
     private fun trackImpression() {

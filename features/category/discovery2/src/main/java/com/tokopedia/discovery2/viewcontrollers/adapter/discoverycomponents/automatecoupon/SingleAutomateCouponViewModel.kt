@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.automatecoupon.AutomateCouponCtaState
+import com.tokopedia.discovery2.data.automatecoupon.ClaimFailure
 import com.tokopedia.discovery2.datamapper.AutomateCouponMapper.mapToCtaState
 import com.tokopedia.discovery2.usecase.ClaimCouponClickUseCase
 import com.tokopedia.discovery2.usecase.automatecoupon.GetAutomateCouponUseCase
@@ -29,8 +30,8 @@ class SingleAutomateCouponViewModel(
     private val componentList = MutableLiveData<ArrayList<ComponentsItem>>()
     private val ctaStateAfterClaim = MutableLiveData<AutomateCouponCtaState>()
 
-    private val _showErrorClaimCoupon: SingleLiveEvent<String> = SingleLiveEvent()
-    fun shouldShowErrorClaimCouponToaster(): LiveData<String> = _showErrorClaimCoupon
+    private val _showErrorClaimCoupon: SingleLiveEvent<ClaimFailure> = SingleLiveEvent()
+    fun shouldShowErrorClaimCouponToaster(): LiveData<ClaimFailure> = _showErrorClaimCoupon
 
     @JvmField
     @Inject
@@ -58,7 +59,7 @@ class SingleAutomateCouponViewModel(
     fun claim(catalogId: Long?) {
         launchCatchError(block = {
             if (userSession?.isLoggedIn == false) {
-                _showErrorClaimCoupon.value = NEED_LOGIN_MESSAGE
+                _showErrorClaimCoupon.value = ClaimFailure.Unauthorized
 
                 return@launchCatchError
             }
@@ -67,9 +68,9 @@ class SingleAutomateCouponViewModel(
             val ctaList = response?.hachikoRedeem?.ctaList
             ctaStateAfterClaim.postValue(ctaList.mapToCtaState())
         }, onError = {
-                _showErrorClaimCoupon.value = it.message.orEmpty()
-                Timber.e(it)
-            })
+            _showErrorClaimCoupon.value = ClaimFailure.Ineligible(it.message.orEmpty())
+            Timber.e(it)
+        })
     }
 
     fun fetch(isDarkMode: Boolean) {
@@ -81,11 +82,7 @@ class SingleAutomateCouponViewModel(
                 }
             }
         }, onError = {
-                Timber.e(it)
-            })
-    }
-
-    companion object {
-        private const val NEED_LOGIN_MESSAGE = "Silakan login terlebih dahulu"
+            Timber.e(it)
+        })
     }
 }
