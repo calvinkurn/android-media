@@ -21,6 +21,7 @@ import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.stories.analytics.StoriesAnalytics
 import com.tokopedia.stories.analytics.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
+import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.StoriesPageAnimation
 import com.tokopedia.stories.view.custom.StoriesErrorView
@@ -64,6 +65,7 @@ class StoriesGroupFragment @Inject constructor(
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
     private var mTrackGroupChanged = false
+    private var mHasShownGroupHighlight = false
 
     private val pagerListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
@@ -136,6 +138,8 @@ class StoriesGroupFragment @Inject constructor(
     }
 
     private fun showSelectedGroupHighlight(position: Int) {
+        if (args.source == StoriesSource.BROWSE_WIDGET.value && mHasShownGroupHighlight) return
+
         viewLifecycleOwner.lifecycleScope.launch {
             binding.tvHighlight.text = pagerAdapter.getCurrentPageGroupName(position)
             binding.tvHighlight.show()
@@ -143,6 +147,7 @@ class StoriesGroupFragment @Inject constructor(
             delay(1000)
             binding.tvHighlight.animate().alpha(0f)
             viewModelAction(StoriesUiAction.PageIsSelected)
+            mHasShownGroupHighlight = true
         }
     }
 
