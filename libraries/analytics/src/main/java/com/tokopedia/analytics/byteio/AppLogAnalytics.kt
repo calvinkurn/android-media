@@ -6,10 +6,13 @@ import android.app.Application
 import android.util.Log
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
+import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
 import com.tokopedia.analyticsdebugger.cassava.Cassava
@@ -98,15 +101,23 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEntranceForm() {
-        put(ENTRANCE_FORM, entranceForm?.str)
+        put(ENTRANCE_FORM, getLastData(ENTRANCE_FORM))
+    }
+
+    internal fun JSONObject.addEnterFrom() {
+        put(ENTER_FROM, getLastData(ENTER_FROM))
     }
 
     internal fun JSONObject.addSourcePageType() {
-        put(
-            SOURCE_PAGE_TYPE,
-            if (sourcePageType == SourcePageType.PRODUCT_CARD) previousPageName()
-            else sourcePageType?.str
-        )
+        put(SOURCE_PAGE_TYPE, getLastData(SOURCE_PAGE_TYPE))
+    }
+
+    internal fun JSONObject.addSourceModule() {
+        put(SOURCE_MODULE, getLastData(SOURCE_MODULE))
+    }
+
+    internal fun JSONObject.addTrackId() {
+        put(TRACK_ID, getLastData(TRACK_ID))
     }
 
     private fun currentPageName(): String {

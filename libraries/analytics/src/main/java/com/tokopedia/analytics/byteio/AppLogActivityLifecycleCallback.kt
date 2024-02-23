@@ -3,6 +3,7 @@ package com.tokopedia.analytics.byteio
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.byteio.AppLogAnalytics.popPageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.pushPageData
