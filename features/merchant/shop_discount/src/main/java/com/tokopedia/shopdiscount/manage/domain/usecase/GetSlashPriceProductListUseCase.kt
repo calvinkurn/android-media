@@ -124,7 +124,7 @@ class GetSlashPriceProductListUseCase @Inject constructor(
         ip: String = "",
         useCase: String = "",
         page: Int,
-        pageSize: Int = 10,
+        pageSize: Int = 5,
         keyword: String = "",
         categoryIds: List<String> = emptyList(),
         etalaseIds: List<String> = emptyList(),

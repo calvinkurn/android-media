@@ -71,7 +71,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         private const val BUNDLE_KEY_DISCOUNT_STATUS_NAME = "status_name"
         private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "status_id"
         private const val BUNDLE_KEY_PRODUCT_COUNT = "product_count"
-        private const val PAGE_SIZE = 10
+        private const val PAGE_SIZE = 5
         private const val MAX_PRODUCT_SELECTION = 5
         private const val ONE_PRODUCT = 1
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 300

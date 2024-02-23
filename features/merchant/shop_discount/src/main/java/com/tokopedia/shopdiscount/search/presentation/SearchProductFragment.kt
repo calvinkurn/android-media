@@ -64,7 +64,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     companion object {
         private const val BUNDLE_KEY_DISCOUNT_STATUS_NAME = "discount-status-name"
         private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "discount-status-id"
-        private const val PAGE_SIZE = 10
+        private const val PAGE_SIZE = 5
         private const val FIRST_PAGE = 1
         private const val MAX_PRODUCT_SELECTION = 5
         private const val ONE_PRODUCT = 1
