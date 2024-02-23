@@ -46,6 +46,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.NoMinimumTouchArea
 import com.tokopedia.play.widget.liveindicator.di.DaggerPlayWidgetLiveIndicatorComponent
 import com.tokopedia.play.widget.liveindicator.di.PlayWidgetLiveIndicatorComponent
+import com.tokopedia.play.widget.liveindicator.di.rememberDaggerComponent
 import com.tokopedia.play.widget.R as playwidgetR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -212,32 +213,6 @@ private fun IconChevronRight(modifier: Modifier = Modifier) {
 }
 
 private val BlinkEaseInOut = CubicBezierEasing(0.63f, 0.01f, 0.29f, 1.0f)
-
-@Composable
-private fun rememberDaggerComponent(): PlayWidgetLiveIndicatorComponent {
-
-    val context = LocalContext.current
-    val view = LocalView.current
-
-    return remember {
-        val componentFactory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return DaggerPlayWidgetLiveIndicatorComponent.builder()
-                    .baseAppComponent(
-                        (context.applicationContext as BaseMainApplication).baseAppComponent
-                    ).build() as T
-            }
-        }
-
-        ViewModelProvider(
-            checkNotNull(view.findViewTreeViewModelStoreOwner()) {
-                "No ViewModelStoreOwner was found for view $view"
-            },
-            componentFactory
-        ).get()
-    }
-}
 
 @Preview
 @Composable

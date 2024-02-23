@@ -4,14 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.widget.databinding.FragmentPlayLiveIndicatorSampleBinding
-import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveIndicator
 import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveBadgeView
+import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveIndicator
+import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveThumbnail
 import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveThumbnailView
+import com.tokopedia.play.widget.liveindicator.ui.rememberLiveThumbnailState
 import kotlin.time.Duration.Companion.seconds
 
 class PlayLiveIndicatorSampleFragment : Fragment() {
@@ -41,10 +44,9 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
         binding.indicatorView.setImpressionTag("view_based")
 
         binding.thumbnailView.setAnalyticModel(
-            PlayWidgetLiveThumbnailView.AnalyticModel("channel_id", "product_id", "shop_id")
+            PlayWidgetLiveThumbnailView.AnalyticModel("12345", "67890", "13579")
         )
-
-        binding.thumbnailView.setListener(PlayWidgetLiveThumbnailView.DefaultListener())
+        binding.thumbnailView.setImpressionTag("view_based")
 
         binding.indicatorView.setOnClickListener {
             binding.thumbnailView.playUrl(
@@ -56,13 +58,39 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
 
     private fun setupComposeBased() {
         binding.composeView.setContent {
+
+            val thumbnailState = rememberLiveThumbnailState()
+
             NestTheme {
-                PlayWidgetLiveIndicator(
-                    onClicked = {},
-                    Modifier.fillMaxSize(),
-                    analyticModel = PlayWidgetLiveBadgeView.AnalyticModel("channel_id", "product_id", "shop_id"),
-                    impressionTag = "compose_based"
-                )
+                ConstraintLayout {
+                    val (liveIndicator, liveThumbnail) = createRefs()
+
+                    PlayWidgetLiveIndicator(
+                        onClicked = {
+                            thumbnailState.playUrl(
+                                "https://live-stream.tokopedia.net/live/v0.2/play_20240206070033_bfa3a284-c482-11ee-adc4-42010a294937/live/abr.m3u8",
+                                50.seconds
+                            )
+                        },
+                        analyticModel = PlayWidgetLiveBadgeView.AnalyticModel("12345", "67890", "13579"),
+                        impressionTag = "compose_based",
+                        modifier = Modifier
+                            .constrainAs(liveIndicator) {
+                                centerTo(parent)
+                            }
+                    )
+
+                    PlayWidgetLiveThumbnail(
+                        state = thumbnailState,
+                        onClicked = {},
+                        analyticModel = PlayWidgetLiveThumbnailView.AnalyticModel("12345", "67890", "13579"),
+                        impressionTag = "compose_based",
+                        modifier = Modifier.constrainAs(liveThumbnail) {
+                            centerHorizontallyTo(parent)
+                            bottom.linkTo(liveIndicator.top, margin = 4.dp)
+                        }
+                    )
+                }
             }
         }
     }

@@ -55,6 +55,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.utils)
 
+    implementation rootProject.ext.composeDependencies.composeConstraint
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.networkDependencies.glide
