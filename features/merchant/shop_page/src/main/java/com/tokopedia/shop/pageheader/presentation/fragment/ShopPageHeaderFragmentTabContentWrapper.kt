@@ -244,11 +244,11 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 if (appbarOffsetRatio < Int.ONE.toFloat()) {
                     resumeHeaderVideo()
                     setToolbarColorFromHeaderConfig()
-                    setStatusBarColor(getShopHeaderConfig()?.patternColorType.orEmpty())
+                    setStatusBarColor(getShopHeaderConfig()?.getFinalPatternColorType(context?.isDarkMode().orFalse()).orEmpty())
                 } else {
                     pauseHeaderVideo()
                     setToolbarColorFromBodyConfig()
-                    setStatusBarColor(getShopBodyConfig()?.patternColorType.orEmpty())
+                    setStatusBarColor(getShopBodyConfig()?.getFinalPatternColorType(context?.isDarkMode().orFalse()).orEmpty())
                 }
             }
         }
@@ -259,7 +259,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             val intColor = getShopBodyConfig()?.colorSchema?.getColorIntValue(
                 ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR
             ).orZero()
-            val patternColorType = getShopBodyConfig()?.patternColorType
+            val patternColorType = getShopBodyConfig()?.getFinalPatternColorType(context?.isDarkMode().orFalse())
             configToolbarColor(it, intColor, patternColorType)
         }
     }
@@ -269,14 +269,14 @@ class ShopPageHeaderFragmentTabContentWrapper :
             val intColor = getShopHeaderConfig()?.colorSchema?.getColorIntValue(
                 ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR
             ).orZero()
-            val patternColorType = getShopHeaderConfig()?.patternColorType
+            val patternColorType = getShopHeaderConfig()?.getFinalPatternColorType(context?.isDarkMode().orFalse())
             configToolbarColor(it, intColor, patternColorType)
         }
     }
 
     private fun setNavToolbarScrollColorTransition(verticalOffset: Int) {
         val bodyBackgroundColor = getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
-        val endColor = if (shopHeaderLayoutData.isOverrideTheme) {
+        val endColor = if (shopHeaderLayoutData.isOverrideTheme && bodyBackgroundColor.isNotEmpty()) {
             ShopUtil.parseColorFromHexString(bodyBackgroundColor)
         } else {
             MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0)
@@ -427,7 +427,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 )?.value.orEmpty()
                 setupSearchBarWithStaticLightModeColor()
                 val color = ShopUtil.parseColorFromHexString(hexIconColor)
-                val patternColorType = getShopHeaderConfig()?.patternColorType
+                val patternColorType = getShopHeaderConfig()?.getFinalPatternColorType(context?.isDarkMode().orFalse())
                 configToolbarColor(this, color, patternColorType)
             }
             setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
@@ -531,7 +531,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private fun renderPageAfterOnViewCreated() {
         if (isLoadInitialData) {
             appBarLayout?.show()
-            setStatusBarColor(getShopHeaderConfig()?.patternColorType.orEmpty())
+            setStatusBarColor(getShopHeaderConfig()?.getFinalPatternColorType(context?.isDarkMode().orFalse()).orEmpty())
             setupToolbar()
             setupAppBarLayout()
             setupChooseAddressWidget()
@@ -593,9 +593,14 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     private fun setupFragmentBackgroundColor() {
-        if (shopHeaderLayoutData.isOverrideTheme) {
-            val fragmentBackgroundColor = getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
-            viewBinding?.tabFragment?.background = ColorDrawable(ShopUtil.parseColorFromHexString(fragmentBackgroundColor))
+        context?.let {
+            if (shopHeaderLayoutData.isOverrideTheme) {
+                val defaultFragmentBackgroundColorStringHex = ShopUtil.getColorHexString(it,unifyprinciplesR.color.Unify_NN0)
+                val fragmentBackgroundColor = getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty().takeIf {
+                    it.isNotEmpty()
+                } ?: defaultFragmentBackgroundColorStringHex
+                viewBinding?.tabFragment?.background = ColorDrawable(ShopUtil.parseColorFromHexString(fragmentBackgroundColor))
+            }
         }
     }
 

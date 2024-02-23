@@ -80,6 +80,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
+import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -187,7 +188,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             shopFollowButtonUiModel,
             shopHeaderConfig,
             isOverrideTheme,
-            shopHeaderConfig?.patternColorType.orEmpty()
+            shopHeaderConfig?.getFinalPatternColorType(context.isDarkMode()).orEmpty()
         )
         setSgcPlaySection(listWidgetShopData, shopHeaderConfig)
     }
@@ -517,7 +518,15 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         backgroundImageShopHeader?.hide()
         backgroundColorShopHeader?.apply {
             show()
-            setBackgroundColor(ShopUtil.parseColorFromHexString(backgroundColor))
+            val finalBackgroundColor = if (backgroundColor.isEmpty()) {
+                MethodChecker.getColor(
+                    context,
+                    unifyprinciplesR.color.Unify_NN0
+                )
+            } else {
+                ShopUtil.parseColorFromHexString(backgroundColor)
+            }
+            setBackgroundColor(finalBackgroundColor)
         }
     }
 
