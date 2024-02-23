@@ -82,7 +82,7 @@ interface ProductListSectionContract {
         fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel)
         fun addLocalSearchRecommendation(visitableList: List<Visitable<*>>)
         fun refreshItemAtIndex(index: Int)
-        fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter)
+        fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter, position: Int)
         fun applyDropdownQuickFilter(optionList: List<Option>?)
         fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?, pageSource: String)
         fun updateSearchBarNotification()
