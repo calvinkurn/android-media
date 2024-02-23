@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentFactory
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst.Inbox.*
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.RoleType
@@ -93,7 +95,8 @@ open class NotificationActivity :
     BaseActivity(),
     HasComponent<NotificationComponent>,
     NotifCenterConfig.ConfigListener,
-    NotificationFragmentContainer {
+    NotificationFragmentContainer,
+    AppLogInterface {
 
     private var source = ""
 
@@ -349,5 +352,13 @@ open class NotificationActivity :
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
         SplitCompat.installActivity(this)
+    }
+
+    override fun getPageName(): String {
+        return PageName.NOTIFICATION
+    }
+
+    override fun isEnterFromWhitelisted(): Boolean {
+        return true
     }
 }

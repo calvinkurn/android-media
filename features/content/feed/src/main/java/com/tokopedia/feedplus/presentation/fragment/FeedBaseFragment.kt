@@ -25,6 +25,8 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
@@ -91,7 +93,8 @@ import com.tokopedia.creation.common.R as creationcommonR
 class FeedBaseFragment :
     TkpdBaseV4Fragment(),
     ContentCreationBottomSheet.Listener,
-    FragmentListener {
+    FragmentListener,
+    AppLogInterface {
 
     private var _binding: FragmentFeedBaseBinding? = null
     private val binding get() = _binding!!
@@ -297,6 +300,14 @@ class FeedBaseFragment :
     }
 
     override fun getScreenName(): String = "Feed Fragment"
+
+    override fun getPageName(): String {
+        return PageName.FEED
+    }
+
+    override fun isEnterFromWhitelisted(): Boolean {
+        return true
+    }
 
     override fun onCreationNextClicked(data: ContentCreationItemModel) {
         when (data.type) {
