@@ -9,7 +9,8 @@ data class CartProductLabelData(
     val textColor: HexColor = HexColor(""),
     val backgroundStartColor: HexColor = HexColor(""),
     val backgroundEndColor: HexColor = HexColor(""),
-    val lineColor: HexColor = HexColor("")
+    val lineColor: HexColor = HexColor(""),
+    val alwaysShowTimer: Boolean = false
 ) {
 
     companion object {

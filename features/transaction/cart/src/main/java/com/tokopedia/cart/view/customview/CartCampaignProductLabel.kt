@@ -125,10 +125,11 @@ class CartCampaignProductLabel @JvmOverloads constructor(
 
     fun showTimedLabel(
         remainingTimeMillis: Long = 0L,
+        alwaysShowTimer: Boolean = false,
         iconUrl: String,
         backgroundColor: HexColor
     ) {
-        if (!remainingTimeMillis.isMoreThanZero() || iconUrl.isBlank() || backgroundColor.hexCode.isBlank()) {
+        if (iconUrl.isBlank() || backgroundColor.hexCode.isBlank()) {
             binding.container.gone()
             return
         }
@@ -176,41 +177,44 @@ class CartCampaignProductLabel @JvmOverloads constructor(
                 container.background = countdownBackgroundDrawable
             }
             timer?.cancel()
-            timer = object : CountDownTimer(remainingTimeMillis, COUNTDOWN_TIMER_INTERVAL_MS) {
+            if (alwaysShowTimer) {
+                timer = object : CountDownTimer(remainingTimeMillis, COUNTDOWN_TIMER_INTERVAL_MS) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        val seconds = (millisUntilFinished / 1000) % 60
+                        val minutes = (millisUntilFinished / (1000 * 60) % 60)
+                        val hours = (millisUntilFinished / (1000 * 60 * 60))
+                        val days = (millisUntilFinished / (1000 * 60 * 60 * 24))
 
-                override fun onTick(millisUntilFinished: Long) {
-                    val seconds = (millisUntilFinished / 1000) % 60
-                    val minutes = (millisUntilFinished / (1000 * 60) % 60)
-                    val hours = (millisUntilFinished / (1000 * 60 * 60))
-                    val days = (millisUntilFinished / (1000 * 60 * 60 * 24))
+                        val hourText = "${if (hours < 10) 0.toString() else ""}$hours"
+                        val minuteText = "${if (minutes < 10) 0.toString() else ""}$minutes"
+                        val secondText = "${if (seconds < 10) 0.toString() else ""}$seconds"
 
-                    val hourText = "${if (hours < 10) 0.toString() else ""}$hours"
-                    val minuteText = "${if (minutes < 10) 0.toString() else ""}$minutes"
-                    val secondText = "${if (seconds < 10) 0.toString() else ""}$seconds"
+                        if (days.isMoreThanZero()) {
+                            tpgProductLabelCountdown.text =
+                                context.getString(
+                                    cartR.string.label_cart_countdown_timer_days_format,
+                                    days.toInt().toString()
+                                )
+                        } else {
+                            tpgProductLabelCountdown.text =
+                                context.getString(
+                                    cartR.string.label_cart_countdown_timer_format,
+                                    hourText,
+                                    minuteText,
+                                    secondText
+                                )
+                        }
+                    }
 
-                    if (days.isMoreThanZero()) {
-                        tpgProductLabelCountdown.text =
-                            context.getString(
-                                cartR.string.label_cart_countdown_timer_days_format,
-                                days.toInt().toString()
-                            )
-                    } else {
-                        tpgProductLabelCountdown.text =
-                            context.getString(
-                                cartR.string.label_cart_countdown_timer_format,
-                                hourText,
-                                minuteText,
-                                secondText
-                            )
+                    override fun onFinish() {
+                        tpgProductLabelCountdown.text = COUNTDOWN_TIMER_DEFAULT_TEXT
                     }
                 }
-
-                override fun onFinish() {
-                    tpgProductLabelCountdown.text = COUNTDOWN_TIMER_DEFAULT_TEXT
-                }
+                timer?.start()
+            } else {
+                tpgProductLabelCountdown.text = COUNTDOWN_TIMER_DEFAULT_TEXT
             }
             tpgProductLabelCountdown.visible()
-            timer?.start()
             iuCampaignLogo.gone()
             container.visible()
         }

@@ -43,6 +43,7 @@ import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cart.view.uimodel.HexColor
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_BMGM_STATE_TICKER_ACTIVE
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
@@ -947,7 +948,8 @@ object CartUiModelMapper {
             textColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.fontColor),
             backgroundStartColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.backgroundStartColor),
             backgroundEndColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.backgroundEndColor),
-            lineColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.lineColor)
+            lineColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.lineColor),
+            alwaysShowTimer = remainingTimeMillis.isMoreThanZero()
         )
     }
 }
