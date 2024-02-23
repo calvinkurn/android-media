@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
+import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.CustomTarget
 import com.tokopedia.media.loader.MediaLoaderApi.setThumbnailUrl
 import com.tokopedia.media.loader.data.Properties
@@ -41,7 +42,11 @@ object MediaLoaderTarget {
         return loadImageTarget(context, properties)?.submit()?.get(timeout, TimeUnit.MILLISECONDS)
     }
 
-    fun clear(context: Context, target: CustomTarget<Bitmap>) {
+    fun loadGif(context: Context, properties: Properties, target: MediaBitmapEmptyTarget<GifDrawable>) {
+        loadGifTarget(context, properties)?.into(target)
+    }
+
+    fun <T: Any>clear(context: Context, target: MediaBitmapEmptyTarget<T>) {
         GlideApp.with(context).clear(target)
     }
 
@@ -64,6 +69,31 @@ object MediaLoaderTarget {
             .dynamicPlaceHolder(context, properties)
             .thumbnail(setThumbnailUrl(context, properties))
             .timeout(properties)
+            .listener(
+                MediaListenerBuilder(
+                    context,
+                    properties,
+                    startTimeRequest
+                )
+            )
+            .mediaLoad(properties)
+    }
+
+    private fun loadGifTarget(context: Context, properties: Properties): GlideRequest<GifDrawable>? {
+        if (properties.data.toString().isEmpty()) return null
+        if (properties.data !is String) return null
+
+        // instance the feature toggle instance
+        properties.featureToggle = FeatureToggleManager.instance()
+
+        // startTimeRequest will use for performance tracking
+        val startTimeRequest = System.currentTimeMillis()
+
+        return GlideApp
+            .with(context)
+            .asGif()
+            .commonOptions(properties)
+            .dynamicPlaceHolder(context, properties)
             .listener(
                 MediaListenerBuilder(
                     context,

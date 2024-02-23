@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.view.View
 import androidx.core.graphics.drawable.toDrawable
+import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
@@ -20,6 +21,34 @@ fun String.getBitmapImageUrl(
     target: MediaBitmapEmptyTarget<Bitmap> = MediaBitmapEmptyTarget()
 ) {
     MediaLoaderTarget.loadImage(
+        context,
+        Properties()
+            .apply(properties)
+            .setSource(this),
+        target
+    )
+}
+
+fun Uri.getBitmapImageUrl(
+    context: Context,
+    properties: Properties.() -> Unit = {},
+    target: MediaBitmapEmptyTarget<Bitmap> = MediaBitmapEmptyTarget()
+) {
+    MediaLoaderTarget.loadImage(
+        context,
+        Properties()
+            .apply(properties)
+            .setSource(this),
+        target
+    )
+}
+
+fun Uri.getGifDrawable(
+    context: Context,
+    properties: Properties.() -> Unit = {},
+    target: MediaBitmapEmptyTarget<GifDrawable> = MediaBitmapEmptyTarget()
+) {
+    MediaLoaderTarget.loadGif(
         context,
         Properties()
             .apply(properties)
@@ -121,7 +150,7 @@ fun Bitmap.loadResource(
     )
 }
 
-fun MediaBitmapEmptyTarget<Bitmap>.clear(context: Context) {
+fun <T : Any> MediaBitmapEmptyTarget<T>.clear(context: Context) {
     MediaLoaderTarget.clear(context, this)
 }
 
