@@ -237,7 +237,6 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
         searchID = byteIOTrackingData.searchId,
         requestID = byteIOTrackingData.imprId,
         searchResultID = byteIOTrackingSearchResultID(),
-        enterFrom = GOODS_SEARCH,
         listItemId = null,
         itemRank = null,
         listResultType = null,

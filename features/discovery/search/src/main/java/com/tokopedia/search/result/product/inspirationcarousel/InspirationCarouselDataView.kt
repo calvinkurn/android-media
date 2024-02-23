@@ -309,7 +309,6 @@ data class InspirationCarouselDataView(
                 searchID = byteIOTrackingData.searchId,
                 requestID = byteIOTrackingData.imprId,
                 searchResultID = getSearchResultId(),
-                enterFrom = byteIOTrackingData.enterFrom,
                 listItemId = id,
                 itemRank = position,
                 listResultType = AppLogSearch.ParamValue.GOODS,

@@ -448,7 +448,6 @@ object AppLogSearch {
         val searchID: String,
         val requestID: String,
         val searchResultID: String,
-        val enterFrom: String,
         val listItemId: String?,
         val itemRank: Int?,
         val listResultType: String?,
@@ -470,7 +469,7 @@ object AppLogSearch {
             put(SEARCH_ID, searchID)
             put(SEARCH_RESULT_ID, searchResultID)
             put(SEARCH_ENTRANCE, HOMEPAGE)
-            put(ENTER_FROM, enterFrom)
+            put(ENTER_FROM, GOODS_SEARCH)
             listItemId?.let { put(LIST_ITEM_ID, it) }
             itemRank?.let { put(ITEM_RANK, it) }
             listResultType?.let { put(LIST_RESULT_TYPE, it) }

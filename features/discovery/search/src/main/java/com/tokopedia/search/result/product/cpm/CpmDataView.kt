@@ -94,7 +94,6 @@ data class CpmDataView(
             searchID = byteIOTrackingData.searchId,
             requestID = byteIOTrackingData.imprId,
             searchResultID = shopId,
-            enterFrom = byteIOTrackingData.enterFrom,
             listItemId = cpmProduct.id,
             itemRank = productPosition,
             listResultType = AppLogSearch.ParamValue.GOODS,
