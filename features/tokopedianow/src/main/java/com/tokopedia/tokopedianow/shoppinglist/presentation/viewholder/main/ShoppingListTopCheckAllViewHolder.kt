@@ -24,9 +24,9 @@ class ShoppingListTopCheckAllViewHolder(
         data: ShoppingListTopCheckAllUiModel
     ) {
         binding?.apply {
-            cbAddAll.setOnCheckedChangeListener(null)
-            cbAddAll.isChecked = data.isSelected
-            cbAddAll.setOnCheckedChangeListener { _, isSelected ->
+            cbTopCheckAll.setOnCheckedChangeListener(null)
+            cbTopCheckAll.isChecked = data.isSelected
+            cbTopCheckAll.setOnCheckedChangeListener { _, isSelected ->
                 listener?.onSelectCheckbox(data.productState, isSelected)
             }
         }

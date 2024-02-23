@@ -35,13 +35,28 @@
         app:toolbarInitialTheme="light"
         app:toolbarInvertSearchBarColor="true" />
 
-<!--    <include-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        layout="@layout/item_tokopedianow_shopping_list_top_check_all"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/nav_toolbar"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"/>-->
+    <FrameLayout
+        android:id="@+id/sticky_top_check_all_layout"
+        android:background="@color/Unify_Background"
+        android:paddingTop="6dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="0dp"
+        android:translationZ="3dp"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/nav_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <include
+            android:id="@+id/sticky_top_check_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/item_tokopedianow_shopping_list_top_check_all" />
+
+    </FrameLayout>
 
     <com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
         android:id="@+id/str_refresh_layout"

@@ -6,6 +6,7 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -22,8 +23,9 @@ import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefresh
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.productcard.compact.similarproduct.presentation.bottomsheet.ProductCardCompactSimilarProductBottomSheet
-import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -68,6 +70,9 @@ class TokoNowShoppingListFragment :
     TokoNowChooseAddressWidgetListener
 {
     companion object {
+        private const val TOP_CHECK_ALL_THRESHOLD_ALPHA = 10f
+        private const val TOP_CHECK_ALL_MAX_ALPHA = 255f
+
         fun newInstance(): TokoNowShoppingListFragment = TokoNowShoppingListFragment()
     }
 
@@ -193,6 +198,18 @@ class TokoNowShoppingListFragment :
         }
     }
 
+    private suspend fun collectTopCheckAllStatus(
+        binding: FragmentTokopedianowShoppingListBinding
+    ) {
+        viewModel.isTopCheckAllSelected.collect { isSelected ->
+            binding.stickyTopCheckAll.cbTopCheckAll.apply {
+                setOnCheckedChangeListener(null)
+                isChecked = isSelected
+                setOnCheckedChangeListener(createTopCheckAllCheckedChangeCallback())
+            }
+        }
+    }
+
     private suspend fun collectErrorNavToolbar(
         binding: FragmentTokopedianowShoppingListBinding
     ) {
@@ -205,14 +222,14 @@ class TokoNowShoppingListFragment :
                     setShowShadowEnabled(false)
                     switchToDarkIcon()
                     switchToDarkStatusBar()
-                    setBackButtonColor(unifyprinciplesR.color.Unify_Static_White)
+                    setCustomBackButton(color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White))
                     hideShadow()
                 } else {
                     setToolbarContentType(TOOLBAR_TYPE_SEARCH)
                     setShowShadowEnabled(true)
                     switchToLightIcon()
                     switchToLightStatusBar()
-                    setBackButtonColor(if (context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)
+                    setCustomBackButton(color = ContextCompat.getColor(context, (if (context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)))
                     showShadow()
                 }
             }
@@ -261,6 +278,7 @@ class TokoNowShoppingListFragment :
                 launch { collectUiState(this@collectStateFlow) }
                 launch { collectScrollState(this@collectStateFlow) }
                 launch { collectErrorNavToolbar(this@collectStateFlow) }
+                launch { collectTopCheckAllStatus(this@collectStateFlow) }
             }
         }
     }
@@ -294,7 +312,7 @@ class TokoNowShoppingListFragment :
     }
 
     private fun FragmentTokopedianowShoppingListBinding.setupOnScrollListener() {
-        val callback = createNavRecyclerViewOnScrollCallback(navToolbar)
+        val callback = createNavRecyclerViewOnScrollCallback(this)
         rvShoppingList.addOnScrollListener(callback)
     }
 
@@ -309,10 +327,6 @@ class TokoNowShoppingListFragment :
         disableRouteManager = false,
         disableDefaultGtmTracker = true
     ) { /* nothing to do */ }
-
-    private fun NavToolbar.setBackButtonColor(color: Int) = setCustomBackButton(
-        color = ContextCompat.getColor(context, color)
-    )
 
     /**
      * -- callback function section --
@@ -332,21 +346,27 @@ class TokoNowShoppingListFragment :
     }
 
     private fun createNavRecyclerViewOnScrollCallback(
-        navToolbar: NavToolbar
+        binding: FragmentTokopedianowShoppingListBinding
     ): RecyclerView.OnScrollListener {
         val transitionRange = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range).orZero()
         return NavRecyclerViewScrollListener(
-            navToolbar = navToolbar,
-            startTransitionPixel = NavToolbarExt.getFullToolbarHeight(navToolbar.context) - transitionRange - transitionRange,
+            navToolbar = binding.navToolbar,
+            startTransitionPixel = NavToolbarExt.getFullToolbarHeight(binding.navToolbar.context) - transitionRange,
             toolbarTransitionRangePixel = transitionRange,
             navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */ }
+                override fun onAlphaChanged(offsetAlpha: Float) {
+                    binding.stickyTopCheckAllLayout.showIfWithBlock(offsetAlpha > TOP_CHECK_ALL_THRESHOLD_ALPHA) {
+                        binding.stickyTopCheckAllLayout.background.alpha = offsetAlpha.toInt()
+                        binding.stickyTopCheckAll.tpTopCheckAll.visibleWithCondition(offsetAlpha == TOP_CHECK_ALL_MAX_ALPHA)
+                        binding.stickyTopCheckAll.cbTopCheckAll.visibleWithCondition(offsetAlpha == TOP_CHECK_ALL_MAX_ALPHA)
+                    }
+                }
 
                 override fun onSwitchToLightToolbar() {
                     if (isNavToolbarScrollingBehaviourEnabled) {
-                        navToolbar.setBackButtonColor(if (navToolbar.context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)
+                        binding.navToolbar.setCustomBackButton(color = ContextCompat.getColor(binding.root.context, (if (binding.navToolbar.context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)))
                         switchToLightStatusBar()
-                        navToolbar.setToolbarTitle(getString(R.string.tokopedianow_shopping_list_page_title))
+                        binding.navToolbar.setToolbarTitle(getString(R.string.tokopedianow_shopping_list_page_title))
                     }
                 }
 
@@ -354,14 +374,14 @@ class TokoNowShoppingListFragment :
 
                 override fun onSwitchToDarkToolbar() {
                     if (isNavToolbarScrollingBehaviourEnabled) {
-                        if (navToolbar.context.isDarkMode()) {
+                        if (binding.navToolbar.context.isDarkMode()) {
                             switchToLightStatusBar()
                         } else {
                             switchToDarkStatusBar()
                         }
-                        navToolbar.setBackButtonColor(unifyprinciplesR.color.Unify_Static_White)
-                        navToolbar.setToolbarTitle(String.EMPTY)
-                        navToolbar.hideShadow()
+                        binding.navToolbar.setCustomBackButton(color = ContextCompat.getColor(binding.root.context, unifyprinciplesR.color.Unify_Static_White))
+                        binding.navToolbar.setToolbarTitle(String.EMPTY)
+                        binding.navToolbar.hideShadow()
                     }
                 }
             }
@@ -429,6 +449,10 @@ class TokoNowShoppingListFragment :
         ) {
             viewModel.selectAllAvailableProducts(productState, isSelected)
         }
+    }
+
+    private fun createTopCheckAllCheckedChangeCallback() = CompoundButton.OnCheckedChangeListener { _, isSelected ->
+        viewModel.selectAllAvailableProducts(isSelected)
     }
 
     /**

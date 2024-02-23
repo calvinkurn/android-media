@@ -56,6 +56,7 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.GetShoppingListUse
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.LayoutModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
 import com.tokopedia.tokopedianow.shoppinglist.util.Constant.MAX_TOTAL_PRODUCT_DISPLAYED
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
@@ -102,9 +103,10 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val availableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
     private val unavailableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
 
+    private val _uiState: MutableStateFlow<UiState<LayoutModel>> = MutableStateFlow(Loading(LayoutModel(layout.addLoadingState())))
     private val _isOnScrollNotNeeded: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val _isNavToolbarScrollingBehaviourEnabled: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    private val _uiState: MutableStateFlow<UiState<LayoutModel>> = MutableStateFlow(Loading(LayoutModel(layout.addLoadingState())))
+    private val _isTopCheckAllSelected: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private var pageCounter: Int = PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER
     private var job: Job? = null
@@ -113,12 +115,14 @@ class TokoNowShoppingListViewModel @Inject constructor(
      * -- public variable section --
      */
 
+    val uiState
+        get() = _uiState.asStateFlow()
     val isOnScrollNotNeeded
         get() = _isOnScrollNotNeeded.asStateFlow()
     val isNavToolbarScrollingBehaviourEnabled
         get() = _isNavToolbarScrollingBehaviourEnabled.asStateFlow()
-    val uiState
-        get() = _uiState.asStateFlow()
+    val isTopCheckAllSelected
+        get() = _isTopCheckAllSelected.asStateFlow()
 
     var headerModel: HeaderModel = HeaderModel()
 
@@ -167,10 +171,12 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
             layout
                 .doIf(availableProducts.isNotEmpty()) {
+                    val isTopCheckAllSelected = availableProducts.count { it.isSelected } == availableProducts.size
+                    _isTopCheckAllSelected.value = isTopCheckAllSelected
                     layout
                         .addTopCheckAllShoppingList(
                             productState = COLLAPSE,
-                            isSelected = availableProducts.count { it.isSelected } == availableProducts.size
+                            isSelected = isTopCheckAllSelected
                         )
                         .addShoppingListProducts(displayedAvailableItems)
                         .doIf(availableProducts.size > MAX_TOTAL_PRODUCT_DISPLAYED) {
@@ -330,29 +336,58 @@ class TokoNowShoppingListViewModel @Inject constructor(
         state: ShoppingListProductState,
         isSelected: Boolean
     ) {
-        layout.modifyTopCheckAll(isSelected)
-
         val tempAvailableProducts = availableProducts.map { it.copy(isSelected = isSelected) }.toList()
         availableProducts.clear()
         availableProducts.addAll(tempAvailableProducts)
 
-        layout.modifyExpandCollapseProducts(
-            state = state,
-            productLayoutType = AVAILABLE_SHOPPING_LIST,
-            products = availableProducts
-        )
+        layout
+            .modifyTopCheckAll(
+                isSelected = isSelected
+            )
+            .modifyExpandCollapseProducts(
+                state = state,
+                productLayoutType = AVAILABLE_SHOPPING_LIST,
+                products = availableProducts
+            )
+
+        _isTopCheckAllSelected.value = isSelected
 
         _uiState.value = Success(getUpdatedLayout())
+    }
+
+    fun selectAllAvailableProducts(
+        isSelected: Boolean
+    ) {
+        val topCheckAllUiModel = layout.firstOrNull { it is ShoppingListTopCheckAllUiModel } as? ShoppingListTopCheckAllUiModel
+
+        if (topCheckAllUiModel != null) {
+            selectAllAvailableProducts(
+                state = topCheckAllUiModel.productState,
+                isSelected = isSelected
+            )
+        }
     }
 
     fun selectAvailableProduct(
         productId: String,
         isSelected: Boolean
     ) {
-        layout.modifyProduct(
-            productId = productId,
-            isSelected = isSelected
-        )
+        val tempAvailableProducts = availableProducts.map { product -> if (product.id == productId) product.copy(isSelected = isSelected) else product }.toList()
+        availableProducts.clear()
+        availableProducts.addAll(tempAvailableProducts)
+
+        val isTopCheckAllSelected = availableProducts.all { it.isSelected }
+
+        layout
+            .modifyTopCheckAll(
+                isSelected = isTopCheckAllSelected
+            )
+            .modifyProduct(
+                productId = productId,
+                isSelected = isSelected
+            )
+
+        _isTopCheckAllSelected.value = isTopCheckAllSelected
 
         _uiState.value = Success(getUpdatedLayout())
     }
