@@ -787,6 +787,11 @@ object DeeplinkMainApp {
                 )
             }
         ),
+        "product-webview-bs" to mutableListOf(
+            DLP.matchPattern("") { _:String ->
+                ApplinkConstInternalMarketplace.PRODUCT_WEBVIEW_BS
+            }
+        ),
         "product-order-history" to mutableListOf(
             DLP.matchPattern("{shop_id}") { _, _, _, idList ->
                 UriUtil.buildUri(
