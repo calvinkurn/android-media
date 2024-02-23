@@ -636,7 +636,7 @@ class ProductListPresenter @Inject constructor(
 
         safeSearchPresenter.setUserProfileDob(searchProductModel.userDOB)
 
-        byteIOTrackingDataFactoryImpl.renew(searchProductModel.requestId, searchParameter)
+        byteIOTrackingDataFactoryImpl.renew(searchProductModel.requestId)
 
         val productDataView = createFirstProductDataView(searchProductModel)
 

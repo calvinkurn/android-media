@@ -31,6 +31,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.discovery.common.analytics.SearchId
 import com.tokopedia.discovery.common.analytics.SearchSessionId
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -1597,7 +1598,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         AppLogSearch.eventSearch(
             AppLogSearch.Search(
-                imprId = presenter?.requestId ?: "",
+                imprId = SearchId.value,
                 enterFrom = enterFrom,
                 searchType = GOODS_SEARCH,
                 enterMethod = enterMethod,
@@ -1605,6 +1606,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 durationMs = durationMs,
                 isSuccess = true,
                 ecSearchSessionId = SearchSessionId.value,
+                preSearchId = SearchId.previousValue,
             )
         )
     }

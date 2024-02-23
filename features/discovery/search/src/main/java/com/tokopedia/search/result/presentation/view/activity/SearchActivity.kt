@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEARCH_BAR
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
@@ -30,19 +31,16 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARC
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.discovery.common.analytics.SearchSessionId
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ACTIVE_TAB
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MPS
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PREVIOUS_KEYWORD
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.PAGE_NAME
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
 import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.discovery.common.utils.SRP
-import com.tokopedia.discovery.common.utils.SearchPage
-import com.tokopedia.discovery.common.utils.SearchPageImpl
-import com.tokopedia.discovery.common.utils.SearchPageObserver
 import com.tokopedia.discovery.common.utils.URLParser
-import com.tokopedia.discovery.common.utils.generateSearchPageKey
 import com.tokopedia.home_component.usecase.thematic.ThematicModel
 import com.tokopedia.home_component.util.ImageLoaderStateListener
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
@@ -96,8 +94,7 @@ class SearchActivity :
     SearchNavigationListener,
     PageLoadTimePerformanceInterface by searchProductPerformanceMonitoring(),
     HasComponent<BaseAppComponent>,
-    ITelemetryActivity,
-    SearchPage by SearchPageImpl() {
+    ITelemetryActivity {
 
     private var searchNavigationToolbar: NavToolbar? = null
     private var container: MotionLayout? = null
@@ -110,8 +107,6 @@ class SearchActivity :
     private var productTabTitle = ""
     private var shopTabTitle = ""
     private var autocompleteApplink = ""
-
-    private val pageKey = generateSearchPageKey(SRP)
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -151,7 +146,7 @@ class SearchActivity :
         observeSearchState()
         searchViewModel?.getThematic()
 
-        lifecycle.addObserver(SearchPageObserver(pageKey))
+        SearchSessionId.update()
     }
 
     private fun observeSearchState() {
@@ -508,6 +503,8 @@ class SearchActivity :
         if (firstPageFragment is BackToTopView) {
             firstPageFragment.backToTop()
         }
+
+        AppLogAnalytics.putPageData(PAGE_NAME, GOODS_SEARCH)
     }
 
     private fun secondPositionFragmentReselected() {
@@ -515,6 +512,8 @@ class SearchActivity :
         if (secondPageFragment is BackToTopView) {
             secondPageFragment.backToTop()
         }
+
+        AppLogAnalytics.putPageData(PAGE_NAME, STORE_SEARCH)
     }
 
     private fun setToolbarTitle() {
