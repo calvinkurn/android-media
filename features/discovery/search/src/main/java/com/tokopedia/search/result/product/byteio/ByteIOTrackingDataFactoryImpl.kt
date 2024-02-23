@@ -10,8 +10,8 @@ class ByteIOTrackingDataFactoryImpl @Inject constructor(
 ): ByteIOTrackingDataFactory,
     QueryKeyProvider by queryKeyProvider {
 
-    private var requestId = ""
-    private var searchId = ""
+    var requestId = ""; private set
+    var searchId = ""; private set
 
     fun renew(requestId: String, searchParameter: Map<String, Any>) {
         update(requestId)

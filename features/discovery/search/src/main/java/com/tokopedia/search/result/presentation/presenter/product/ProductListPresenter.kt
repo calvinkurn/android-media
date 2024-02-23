@@ -251,6 +251,12 @@ class ProductListPresenter @Inject constructor(
     override val isUserLoggedIn: Boolean
         get() = userSession.isLoggedIn
 
+    override val requestId: String
+        get() = byteIOTrackingDataFactoryImpl.requestId
+
+    override val searchId: String
+        get() = byteIOTrackingDataFactoryImpl.searchId
+
     //region Load Data / Load More / Recommendations
     override fun clearData() {
         postProcessingFilter.resetCount()
@@ -1220,7 +1226,7 @@ class ProductListPresenter @Inject constructor(
                 externalReference = externalReference
             )
         )
-        view.sendTrackingByteIO(byteIOTrackingDataFactoryImpl.create(true).imprId)
+        view.sendTrackingByteIO()
     }
 
     private fun createGeneralSearchTrackingEventCategory() =

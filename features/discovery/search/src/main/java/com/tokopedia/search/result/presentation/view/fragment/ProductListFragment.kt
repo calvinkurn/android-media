@@ -1169,17 +1169,20 @@ class ProductListFragment: BaseDaggerFragment(),
         )
     }
 
-    private fun trackChooseSearchFilter(isSelected: Boolean,
-                                        filterValue: String,
-                                        position: Int) {
+    private fun trackChooseSearchFilter(
+        isSelected: Boolean,
+        filterValue: String,
+        position: Int,
+    ) {
         if (!isSelected) return
+
         AppLogSearch.eventChooseSearchFilter(AppLogSearch.ChooseSearchFilter(
-            searchId = "", // TODO milhamj: wait for BE data
+            searchID = presenter?.searchId ?: "",
             searchType = GOODS_SEARCH,
-            searchKeyword = queryKey,
+            keyword = queryKey,
             ecomSortName = "",
             ecomFilterName = filterValue,
-            ecomFilterPosition = position,
+            ecomFilterPosition = position.toString(),
             buttonTypeClick = FILTER_QUICK
         ))
     }
@@ -1587,14 +1590,14 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.showBottomSheetInappropriate(itemProduct)
     }
 
-    override fun sendTrackingByteIO(imprId: String) {
+    override fun sendTrackingByteIO() {
         val durationMs: Long? = performanceMonitoring?.getPltPerformanceData()?.let {
             it.startPageDuration + it.networkRequestDuration
         }
 
         AppLogSearch.eventSearch(
             AppLogSearch.Search(
-                imprId = imprId,
+                imprId = presenter?.requestId ?: "",
                 enterFrom = enterFrom,
                 searchType = GOODS_SEARCH,
                 enterMethod = enterMethod,
