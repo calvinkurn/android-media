@@ -9,6 +9,7 @@
         android:id="@+id/img_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/content_desc_coupon_component_background"
         android:scaleType="fitXY"/>
 
     <com.tokopedia.home_component_header.view.HomeComponentHeaderView
