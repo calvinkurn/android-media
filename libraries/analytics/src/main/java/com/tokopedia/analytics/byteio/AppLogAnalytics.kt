@@ -9,7 +9,6 @@ import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
-import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
@@ -26,7 +25,13 @@ object AppLogAnalytics {
     /**
      * Stores page data in a stack
      */
-    private val pageDataList = ArrayList<HashMap<String, Any>>()
+    private val _pageDataList = ArrayList<HashMap<String, Any>>()
+
+    /**
+     * Return immutable list
+     */
+    val pageDataList: List<HashMap<String, Any>>
+        get() = _pageDataList.toList()
 
     @JvmField
     var currentActivityName: String = ""
@@ -236,7 +241,7 @@ object AppLogAnalytics {
     internal fun JSONObject.addSourcePageType() {
         put(
             SOURCE_PAGE_TYPE,
-            if(sourcePageType == SourcePageType.PRODUCT_CARD) previousPageName()
+            if (sourcePageType == SourcePageType.PRODUCT_CARD) previousPageName()
             else sourcePageType?.str
         )
     }
@@ -299,7 +304,10 @@ object AppLogAnalytics {
         initAppLog(application.applicationContext)
         EventsSenderUtils.setEventsSenderEnable("573733", true, application)
         EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net")
-        Log.d(TAG, "AppLog dId: ${AppLog.getDid()} userUniqueId: ${AppLog.getUserUniqueID()} userId: ${AppLog.getUserUniqueID()}")
+        Log.d(
+            TAG,
+            "AppLog dId: ${AppLog.getDid()} userUniqueId: ${AppLog.getUserUniqueID()} userId: ${AppLog.getUserUniqueID()}"
+        )
     }
 
     /**
@@ -307,29 +315,39 @@ object AppLogAnalytics {
      */
     fun pushPageData() {
         val tempHashMap = HashMap<String, Any>()
-        pageDataList.add(tempHashMap)
+        _pageDataList.add(tempHashMap)
     }
 
     /**
      * To remove last page data
      */
     fun popPageData() {
-        pageDataList.removeLast()
+        _pageDataList.removeLast()
     }
 
     /**
      * To update current page data
      */
     fun putPageData(key: String, value: Any) {
-        pageDataList.last()[key] = value
+        _pageDataList.last()[key] = value
     }
 
     fun getCurrentData(key: String): Any? {
-        return pageDataList.last()[key]
+        return _pageDataList.last()[key]
     }
 
     fun getLastData(key: String): Any? {
-        pageDataList.reversed().forEach { hashMap ->
+        _pageDataList.reversed().forEach { hashMap ->
+            hashMap[key]?.let {
+                return it
+            }
+        }
+        return null
+    }
+
+    fun getLastDataBeforeCurrent(key: String): Any? {
+        if (_pageDataList.isEmpty()) return null
+        _pageDataList.reversed().subList(1, _pageDataList.size).forEach { hashMap ->
             hashMap[key]?.let {
                 return it
             }
@@ -338,6 +356,6 @@ object AppLogAnalytics {
     }
 
     fun resetPageData() {
-        pageDataList.clear()
+        _pageDataList.clear()
     }
 }
