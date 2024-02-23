@@ -9,7 +9,8 @@ object SearchId {
     val value: String
         get() = (AppLogAnalytics.getCurrentData(SEARCH_ID) ?: "").toString()
 
-    private val currentPreSearchId = (AppLogAnalytics.getCurrentData(PRE_SEARCH_ID) ?: "").toString()
+    private val currentPreSearchId
+        get() = (AppLogAnalytics.getCurrentData(PRE_SEARCH_ID) ?: "").toString()
 
     val previousValue: String
         get() = currentPreSearchId.ifBlank {

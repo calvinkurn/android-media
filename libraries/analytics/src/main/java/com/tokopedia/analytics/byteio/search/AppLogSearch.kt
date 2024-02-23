@@ -181,6 +181,7 @@ object AppLogSearch {
         const val CORRECT_WORD = "correct_word"
         const val PRODUCT_SEARCH = "product_search"
         const val SHOP_SEARCH = "shop_search"
+        const val SEARCH_RESULT = "search_result"
     }
 
     fun eventShowSearch(currentPageName: String) {

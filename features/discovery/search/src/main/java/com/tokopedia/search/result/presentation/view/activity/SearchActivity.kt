@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SEARCH_BAR
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
@@ -94,7 +95,8 @@ class SearchActivity :
     SearchNavigationListener,
     PageLoadTimePerformanceInterface by searchProductPerformanceMonitoring(),
     HasComponent<BaseAppComponent>,
-    ITelemetryActivity {
+    ITelemetryActivity,
+    AppLogInterface {
 
     private var searchNavigationToolbar: NavToolbar? = null
     private var container: MotionLayout? = null
@@ -128,6 +130,10 @@ class SearchActivity :
     private lateinit var searchParameter: SearchParameter // initialized in getExtrasFromIntent
 
     private val binding: SearchActivitySearchBinding? by viewBinding()
+
+    override fun getPageName(): String = AppLogSearch.ParamValue.SEARCH_RESULT
+
+    override fun isEnterFromWhitelisted(): Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startMonitoring(SEARCH_RESULT_TRACE)
