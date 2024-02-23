@@ -92,7 +92,7 @@ class GetAutomateCouponUseCase @Inject constructor(
                 position = index
                 name = compName
                 parentListSize = this@mapToComponentList.size
-                parentComponentName = component.name
+                parentComponentName = ComponentNames.AutomateCoupon.componentName
                 parentComponentId = component.id
                 creativeName = component.creativeName
                 properties = component.properties

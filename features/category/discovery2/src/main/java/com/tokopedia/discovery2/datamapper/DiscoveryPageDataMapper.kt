@@ -928,7 +928,11 @@ class DiscoveryPageDataMapper(
             }
 
             val uniqueId = "${it}_${component.id}"
-            val parsedComponent = component.copy(id = uniqueId, name = componentName)
+            val parsedComponent = component.copy(
+                id = uniqueId,
+                name = componentName,
+                parentComponentName = ComponentNames.AutomateCoupon.componentName
+            )
             listComponents.add(parsedComponent)
             setComponent(uniqueId, component.pageEndPoint, parsedComponent)
         }

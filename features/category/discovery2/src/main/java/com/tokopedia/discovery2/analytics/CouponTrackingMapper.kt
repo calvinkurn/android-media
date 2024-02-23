@@ -83,7 +83,7 @@ object CouponTrackingMapper {
             .orEmpty()
 
         return CouponTrackingProperties(
-            componentName = name.orEmpty(),
+            componentName = parentComponentName.orEmpty(),
             name = slug,
             id = id.substringAfter("_"),
             promoCode = slug,
