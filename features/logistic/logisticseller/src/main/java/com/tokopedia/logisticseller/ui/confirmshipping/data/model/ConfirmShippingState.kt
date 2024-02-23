@@ -34,13 +34,11 @@ sealed interface ConfirmShippingEvent {
     object Loading : ConfirmShippingEvent
 
     data class ChooseCourier(
-        val shipmentId: Long,
-        val courierName: String
+        val courier: SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment
     ) : ConfirmShippingEvent
 
     data class ChooseService(
-        val spId: String,
-        val courierServiceName: String
+        val service: SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment.ShipmentPackage
     ) : ConfirmShippingEvent
 
     data class ChangeRefNum(

@@ -50,15 +50,12 @@ import javax.inject.Inject
  * - confirm shipping
  * - change courier
  */
-class ConfirmShippingComposeActivity : AppCompatActivity(),
-    BottomSheetCourierListAdapter.ActionListener {
+class ConfirmShippingComposeActivity : AppCompatActivity() {
 
     companion object {
         private const val ERROR_CONFIRM_SHIPPING = "Error when confirm shipping."
         private const val ERROR_GET_COURIER_LIST = "Error when get courier list."
         private const val ERROR_CHANGE_COURIER = "Error when change courier."
-
-        private const val TAG_BOTTOMSHEET = "bottomSheet"
     }
 
     @Inject
@@ -67,7 +64,6 @@ class ConfirmShippingComposeActivity : AppCompatActivity(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private lateinit var somBottomSheetCourierListAdapter: BottomSheetCourierListAdapter
     private lateinit var bottomSheetUnify: BottomSheetUnify
 
     private val confirmShippingViewModel by lazy {
@@ -151,8 +147,20 @@ class ConfirmShippingComposeActivity : AppCompatActivity(),
                             )
                         )
                     },
-                    onClickCourier = { showBottomSheetCourier(it, false) },
-                    onClickService = { showBottomSheetCourier(it, true) },
+                    onClickCourier = {
+                        confirmShippingViewModel.onEvent(
+                            ConfirmShippingEvent.ChooseCourier(
+                                it
+                            )
+                        )
+                    },
+                    onClickService = {
+                        confirmShippingViewModel.onEvent(
+                            ConfirmShippingEvent.ChooseService(
+                                it
+                            )
+                        )
+                    },
                     onChangeRefNum = {
                         confirmShippingViewModel.onEvent(
                             ConfirmShippingEvent.ChangeRefNum(
@@ -282,74 +290,6 @@ class ConfirmShippingComposeActivity : AppCompatActivity(),
         RouteManager.route(
             this,
             ApplinkConst.WEBVIEW.plus("?url=$url")
-        )
-    }
-
-    private fun showBottomSheetCourier(state: ConfirmShippingState, isCourierService: Boolean) {
-        somBottomSheetCourierListAdapter = BottomSheetCourierListAdapter(this)
-        if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
-        View.inflate(this, R.layout.bottomsheet_secondary_confirm_shipping, null).run {
-            findViewById<RecyclerView>(R.id.rv_bottomsheet_secondary)?.apply {
-                layoutManager =
-                    LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-                adapter = somBottomSheetCourierListAdapter
-            }
-            findViewById<View>(R.id.tf_extra_notes)?.visibility = View.GONE
-
-            bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
-            bottomSheetUnify.setChild(this)
-            supportFragmentManager.let {
-                bottomSheetUnify.show(
-                    it,
-                    TAG_BOTTOMSHEET
-                )
-            }
-        }
-
-        if (isCourierService) {
-            setCourierServiceListData(state)
-        } else {
-            setCourierListData(state)
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun setCourierServiceListData(state: ConfirmShippingState) {
-        state.chosenCourier?.listShipmentPackage?.run {
-            bottomSheetUnify.setTitle(LogisticSellerConst.TITLE_JENIS_LAYANAN)
-            somBottomSheetCourierListAdapter.isServiceCourier = true
-            somBottomSheetCourierListAdapter.listCourierService = this.toMutableList()
-            somBottomSheetCourierListAdapter.notifyDataSetChanged()
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun setCourierListData(state: ConfirmShippingState) {
-        state.courierList?.run {
-            bottomSheetUnify.setTitle(LogisticSellerConst.TITLE_KURIR_PENGIRIMAN)
-            somBottomSheetCourierListAdapter.listCourier = this.toMutableList()
-            somBottomSheetCourierListAdapter.isServiceCourier = false
-            somBottomSheetCourierListAdapter.notifyDataSetChanged()
-        }
-    }
-
-    override fun onChooseCourierAgent(shipmentId: Long, courierName: String) {
-        bottomSheetUnify.dismiss()
-        confirmShippingViewModel.onEvent(
-            ConfirmShippingEvent.ChooseCourier(
-                shipmentId,
-                courierName
-            )
-        )
-    }
-
-    override fun onChooseCourierService(spId: String, courierServiceName: String) {
-        bottomSheetUnify.dismiss()
-        confirmShippingViewModel.onEvent(
-            ConfirmShippingEvent.ChooseService(
-                spId,
-                courierServiceName
-            )
         )
     }
 }

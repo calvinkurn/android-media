@@ -7,14 +7,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,21 +25,31 @@ import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
+import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingEvent
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingMode
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.ConfirmShippingState
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
+import com.tokopedia.logisticseller.ui.reschedulepickup.bottomsheet.ListBottomSheetContent
+import com.tokopedia.nest.components.NestBottomSheetScreen
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestDivider
 import com.tokopedia.nest.components.NestDividerSize
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestTextField
+import com.tokopedia.nest.components.rememberNestBottomSheetState
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.targetedticker.ui.compose.TargetedTickerWidgetCompose
 import com.tokopedia.unifycomponents.compose.NestSwitch
+import kotlinx.coroutines.launch
 import com.tokopedia.logisticseller.R as logisticsellerR
 
+enum class ConfirmShippingBottomSheetState {
+    NONE, COURIER, SERVICE
+}
+
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ConfirmShippingScreen(
     state: ConfirmShippingState,
@@ -45,31 +57,93 @@ fun ConfirmShippingScreen(
     pressBack: () -> Unit,
     onClickBarcodeIcon: () -> Unit,
     onSwitchChanged: (Boolean) -> Unit,
-    onClickCourier: (state: ConfirmShippingState) -> Unit,
-    onClickService: (state: ConfirmShippingState) -> Unit,
+    onClickCourier: (courier: SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment) -> Unit,
+    onClickService: (service: SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment.ShipmentPackage) -> Unit,
     onChangeRefNum: (String) -> Unit,
     openWebview: (url: String) -> Unit,
     onSubmit: () -> Unit,
 ) {
-    Scaffold(topBar = {
-        NestHeader(
-            type = NestHeaderType.SingleLine(
-                title = source.toHeaderTitle(),
-                onBackClicked = pressBack
+    val sheetState = rememberNestBottomSheetState()
+    val scope = rememberCoroutineScope()
+    val (bottomSheetState, setBottomSheetState) = remember {
+        mutableStateOf(ConfirmShippingBottomSheetState.NONE)
+    }
+
+    fun setBottomSheetContentState(newState: ConfirmShippingBottomSheetState) {
+        scope.launch {
+            if (newState != ConfirmShippingBottomSheetState.NONE) {
+                setBottomSheetState(newState)
+                sheetState.bottomSheetState.expand()
+            } else {
+                sheetState.bottomSheetState.collapse()
+                setBottomSheetState(newState)
+            }
+        }
+    }
+
+    NestBottomSheetScreen(
+        title = "todo",
+        state = sheetState,
+        showCloseIcon = true,
+        isHideable = true,
+        bottomSheetContent = {
+            ConfirmShippingBottomSheet(
+                bsState = bottomSheetState,
+                pageState = state,
+                onBottomSheetClosed = { setBottomSheetContentState(ConfirmShippingBottomSheetState.NONE) },
+                onChooseCourier = onClickCourier,
+                onChooseService = onClickService
             )
-        )
-    }) {
-        ConfirmShippingContent(
-            paddingValues = it,
-            state = state,
-            onClickBarcodeIcon = onClickBarcodeIcon,
-            onSwitchChanged = onSwitchChanged,
-            onClickCourier = onClickCourier,
-            onClickService = onClickService,
-            onChangeRefNum = onChangeRefNum,
-            openWebview = openWebview,
-            onSubmit = onSubmit
-        )
+        }
+    ) {
+        Scaffold(topBar = {
+            NestHeader(
+                type = NestHeaderType.SingleLine(
+                    title = source.toHeaderTitle(),
+                    onBackClicked = pressBack
+                )
+            )
+        }) {
+            ConfirmShippingContent(
+                paddingValues = it,
+                state = state,
+                onClickBarcodeIcon = onClickBarcodeIcon,
+                onSwitchChanged = onSwitchChanged,
+                onChangeRefNum = onChangeRefNum,
+                openWebview = openWebview,
+                onSubmit = onSubmit,
+                onOpenBottomSheet = ::setBottomSheetContentState
+            )
+        }
+    }
+}
+
+@Composable
+private fun ConfirmShippingBottomSheet(
+    bsState: ConfirmShippingBottomSheetState,
+    pageState: ConfirmShippingState,
+    onBottomSheetClosed: () -> Unit,
+    onChooseCourier: (SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment) -> Unit,
+    onChooseService: (SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment.ShipmentPackage) -> Unit,
+) {
+    when (bsState) {
+        ConfirmShippingBottomSheetState.COURIER -> {
+            ListBottomSheetContent(
+                items = pageState.courierList.orEmpty(),
+                onBottomSheetClosed = onBottomSheetClosed,
+                onItemClicked = onChooseCourier
+            )
+        }
+
+        ConfirmShippingBottomSheetState.SERVICE -> {
+            ListBottomSheetContent(
+                items = pageState.chosenCourier?.listShipmentPackage.orEmpty(),
+                onBottomSheetClosed = onBottomSheetClosed,
+                onItemClicked = onChooseService
+            )
+        }
+
+        else -> {}
     }
 }
 
@@ -79,11 +153,10 @@ private fun ConfirmShippingContent(
     state: ConfirmShippingState,
     onClickBarcodeIcon: () -> Unit,
     onSwitchChanged: (Boolean) -> Unit,
-    onClickCourier: (state: ConfirmShippingState) -> Unit,
-    onClickService: (state: ConfirmShippingState) -> Unit,
     onChangeRefNum: (String) -> Unit,
     openWebview: (url: String) -> Unit,
     onSubmit: () -> Unit,
+    onOpenBottomSheet: (bsState: ConfirmShippingBottomSheetState) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -107,8 +180,7 @@ private fun ConfirmShippingContent(
                 modifier = Modifier,
                 state = state,
                 onSwitchChanged = onSwitchChanged,
-                onClickCourier = onClickCourier,
-                onClickService = onClickService
+                onOpenBottomSheet = onOpenBottomSheet
             )
         }
         NestButton(
@@ -156,8 +228,7 @@ private fun ChangeCourierSection(
     modifier: Modifier,
     state: ConfirmShippingState,
     onSwitchChanged: (Boolean) -> Unit,
-    onClickCourier: (state: ConfirmShippingState) -> Unit,
-    onClickService: (state: ConfirmShippingState) -> Unit
+    onOpenBottomSheet: (bsState: ConfirmShippingBottomSheetState) -> Unit
 ) {
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
         val (switch, title, courier, service) = createRefs()
@@ -184,7 +255,7 @@ private fun ChangeCourierSection(
                 },
                 title = stringResource(id = logisticsellerR.string.title_courier),
                 value = state.chosenCourier?.shipmentName.orEmpty(),
-                onClick = { onClickCourier(state) }
+                onClick = { onOpenBottomSheet(ConfirmShippingBottomSheetState.COURIER) }
             )
             ChangeCourierOptionItem(
                 modifier = Modifier.constrainAs(service) {
@@ -193,7 +264,7 @@ private fun ChangeCourierSection(
                 },
                 title = stringResource(id = logisticsellerR.string.courier_service_label),
                 value = state.chosenService?.name.orEmpty(),
-                onClick = { onClickService(state) }
+                onClick = { onOpenBottomSheet(ConfirmShippingBottomSheetState.SERVICE) }
             )
         }
     }
@@ -229,11 +300,11 @@ private fun ChangeCourierOptionItem(
             colorNightEnable = NestTheme.colors.NN._500,
             colorNightDisable = NestTheme.colors.NN._500,
             modifier = Modifier
-            .clickable { onClick() }
-            .constrainAs(button) {
-                end.linkTo(parent.end)
-                top.linkTo(parent.top, margin = 4.dp)
-            }
+                .clickable { onClick() }
+                .constrainAs(button) {
+                    end.linkTo(parent.end)
+                    top.linkTo(parent.top, margin = 4.dp)
+                }
         )
         NestDivider(size = NestDividerSize.Small, modifier = Modifier
             .constrainAs(divider) {
@@ -297,6 +368,7 @@ fun ConfirmShippingScreenPreview() {
             onClickCourier = { /*TODO*/ },
             onChangeRefNum = {},
             onClickService = {},
-            openWebview = {}, onSubmit = {})
+            openWebview = {},
+            onSubmit = {})
     }
 }

@@ -103,18 +103,14 @@ class ConfirmShippingComposeViewModel @Inject constructor(
 
     private fun chooseService(event: ConfirmShippingEvent.ChooseService) {
         _uiState.update {
-            val service =
-                it.chosenCourier?.listShipmentPackage?.firstOrNull { serviceOption -> serviceOption.spId == event.spId && serviceOption.name == event.courierServiceName }
-            it.copy(chosenService = service)
+            it.copy(chosenService = event.service)
         }
     }
 
     private fun chooseCourier(event: ConfirmShippingEvent.ChooseCourier) {
         _uiState.update {
-            val courier =
-                it.courierList?.firstOrNull { courierOption -> courierOption.shipmentId == event.shipmentId.toString() && courierOption.shipmentName == event.courierName }
-            val defaultService = courier?.listShipmentPackage?.firstOrNull()
-            it.copy(chosenCourier = courier, chosenService = defaultService)
+            val defaultService = event.courier.listShipmentPackage.firstOrNull()
+            it.copy(chosenCourier = event.courier, chosenService = defaultService)
         }
     }
 
