@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.analytics.byteio.AppLogAnalytics.popPageData
+import com.tokopedia.analytics.byteio.AppLogAnalytics.pushPageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
 import com.tokopedia.analytics.byteio.AppLogAnalytics.sendStayProductDetail
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -24,6 +26,13 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
             // In case activity is first running, we put the startTime.
             // in onResume this will not be overridden
             activity.startTime = System.currentTimeMillis()
+        }
+        if (activity is AppLogInterface) {
+            AppLogAnalytics.pushPageData()
+            AppLogAnalytics.putPageData(AppLogParam.PAGE_NAME, activity.getPageName())
+            if (activity.isEnterFromWhitelisted()) {
+                AppLogAnalytics.putPageData(AppLogParam.ENTER_FROM, activity.getPageName())
+            }
         }
     }
 
@@ -122,6 +131,9 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
             AppLogAnalytics.currentActivityReference?.clear()
         }
         removePageName(activity)
+        if (activity is AppLogInterface) {
+            AppLogAnalytics.popPageData()
+        }
     }
 
     private fun getCurrentActivity(): Activity? {
