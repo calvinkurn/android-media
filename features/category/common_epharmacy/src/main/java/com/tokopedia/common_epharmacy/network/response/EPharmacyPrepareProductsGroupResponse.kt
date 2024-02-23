@@ -21,6 +21,8 @@ data class EPharmacyPrepareProductsGroupResponse(
         data class GroupData(
             @SerializedName("checkout_flow")
             val checkoutFlow: CheckoutFlowEPharmacy?,
+            @SerializedName("user_cart_content")
+            val userCartContent: List<UpdateCart>?,
             @SerializedName("attachment_page_ticker_text")
             val attachmentPageTickerText: String?,
             @SerializedName("attachment_page_ticker_logo_url")
@@ -37,6 +39,16 @@ data class EPharmacyPrepareProductsGroupResponse(
             data class CheckoutFlowEPharmacy(
                 @SerializedName("error_message")
                 val checkoutIsBlockErrorMessage: String?
+            ) : Parcelable
+
+            @Parcelize
+            data class UpdateCart(
+                @SerializedName("cart_id")
+                val cartId: Long?,
+                @SerializedName("product_id")
+                val productId: Long,
+                @SerializedName("current_qty")
+                val currentQuantity: Int?
             ) : Parcelable
 
             @Parcelize
