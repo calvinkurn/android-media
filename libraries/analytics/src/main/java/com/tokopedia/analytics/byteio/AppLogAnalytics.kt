@@ -23,6 +23,11 @@ object AppLogAnalytics {
     @JvmField
     var currentActivityReference: WeakReference<Activity>? = null
 
+    /**
+     * Stores page data in a stack
+     */
+    private val pageDataList = ArrayList<HashMap<String, Any>>()
+
     @JvmField
     var currentActivityName: String = ""
 
@@ -296,4 +301,42 @@ object AppLogAnalytics {
         Log.d(TAG, "AppLog dId: ${AppLog.getDid()} userUniqueId: ${AppLog.getUserUniqueID()} userId: ${AppLog.getUserUniqueID()}")
     }
 
+    /**
+     * To add page data for every page
+     */
+    fun pushPageData() {
+        val tempHashMap = HashMap<String, Any>()
+        pageDataList.add(tempHashMap)
+    }
+
+    /**
+     * To remove last page data
+     */
+    fun popPageData() {
+        pageDataList.removeLast()
+    }
+
+    /**
+     * To update current page data
+     */
+    fun putPageData(key: String, value: Any) {
+        pageDataList.last()[key] = value
+    }
+
+    fun getCurrentData(key: String): Any? {
+        return pageDataList.last()[key]
+    }
+
+    fun getLastData(key: String): Any? {
+        pageDataList.reversed().forEach { hashMap ->
+            hashMap[key]?.let {
+                return it
+            }
+        }
+        return null
+    }
+
+    fun resetPageData() {
+        pageDataList.clear()
+    }
 }
