@@ -68,6 +68,10 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
             button.isEnabled = false
         }
 
+        if (actionButton.mappingUri.equals(MAPPING_URI_CANCEL_ORDER, true)) {
+            listener?.onViewCancelOrderButton()
+        }
+
         button.setOnClickListener {
             listener?.onActionButtonClicked(actionButton)
             when {
@@ -104,6 +108,7 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
     interface ActionListener {
         fun onActionButtonClicked(actionButton: RechargeOrderDetailActionButtonModel)
         fun onVoidButtonClicked()
+        fun onViewCancelOrderButton()
         fun onCancelOrderButtonClicked()
     }
 

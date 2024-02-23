@@ -47,7 +47,8 @@ import javax.inject.Inject
 /**
  * @author by furqan on 28/10/2021
  */
-class RechargeOrderDetailFragment : BaseDaggerFragment(),
+class RechargeOrderDetailFragment :
+    BaseDaggerFragment(),
     RechargeOrderDetailTopSectionViewHolder.ActionListener,
     RechargeOrderDetailProductViewHolder.ActionListener,
     RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener,
@@ -55,8 +56,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     RechargeOrderDetailAboutOrderViewHolder.ActionListener,
     RechargeOrderDetailActionButtonSectionViewHolder.ActionListener,
     RecommendationWidgetListener,
-    RechargeOrderDetailPaymentViewHolder.RechargeOrderDetailPaymentListener
-{
+    RechargeOrderDetailPaymentViewHolder.RechargeOrderDetailPaymentListener {
 
     private lateinit var binding: FragmentRechargeOrderDetailBinding
 
@@ -125,10 +125,12 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         }
 
         arguments?.let {
-            if (it.containsKey(EXTRA_ORDER_ID))
+            if (it.containsKey(EXTRA_ORDER_ID)) {
                 orderId = it.getString(EXTRA_ORDER_ID) ?: ""
-            if (it.containsKey(EXTRA_ORDER_CATEGORY))
+            }
+            if (it.containsKey(EXTRA_ORDER_CATEGORY)) {
                 orderCategory = it.getString(EXTRA_ORDER_CATEGORY) ?: ""
+            }
         }
     }
 
@@ -211,6 +213,11 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCancelOrderButtonClicked() {
+        rechargeOrderDetailAnalytics.sendClickBatalkanTransaksiButtonEvent(
+            OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData())
+        )
         context?.let {
             DialogUnify(
                 it,
@@ -229,6 +236,14 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 }
             }.show()
         }
+    }
+
+    override fun onViewCancelOrderButton() {
+        rechargeOrderDetailAnalytics.sendViewBatalkanTransaksiButtonEvent(
+            OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData())
+        )
     }
 
     override fun onBestSellerClick(
@@ -360,9 +375,11 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                         rechargeViewModel.getTopAdsData(),
                         rechargeViewModel.getRecommendationWidgetPositionData()
                     )
-                    setupStickyButton(result.data.actionButtonList.actionButtons.firstOrNull {
-                        it.buttonType.equals(PRIMARY_ACTION_BUTTON_TYPE, true)
-                    })
+                    setupStickyButton(
+                        result.data.actionButtonList.actionButtons.firstOrNull {
+                            it.buttonType.equals(PRIMARY_ACTION_BUTTON_TYPE, true)
+                        }
+                    )
                     showMainView()
                 }
                 is Fail -> {
@@ -424,7 +441,6 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                     }
                 }
                 is Fail -> {
-
                 }
             }
         })
@@ -486,9 +502,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
             if (mUri.contains(IDEM_POTENCY_KEY)) {
                 mUri = mUri.replace(
                     url.getQueryParameter(IDEM_POTENCY_KEY)
-                        ?: "", ""
+                        ?: "",
+                    ""
                 )
-                mUri = mUri.replace("${IDEM_POTENCY_KEY}=", "")
+                mUri = mUri.replace("$IDEM_POTENCY_KEY=", "")
             }
             RouteManager.route(context, mUri)
         } else if (uri.isNotEmpty()) {
@@ -593,5 +610,4 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 }
             }
     }
-
 }

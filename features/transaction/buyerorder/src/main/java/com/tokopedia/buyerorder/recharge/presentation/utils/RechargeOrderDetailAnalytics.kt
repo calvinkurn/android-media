@@ -3,6 +3,7 @@ package com.tokopedia.buyerorder.recharge.presentation.utils
 import android.os.Bundle
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -13,12 +14,12 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
 
     fun eventOpenScreen(screenName: String) {
         val map = mapOf(
-                Keys.EVENT_NAME to EventName.OPEN_SCREEN,
-                Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-                Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
-                Keys.IS_LOGGED_IN_STATUS to userSession.isLoggedIn.toString(),
-                Keys.USER_ID to userSession.userId,
-                Keys.SCREEN_NAME to screenName
+            Keys.EVENT_NAME to EventName.OPEN_SCREEN,
+            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
+            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
+            Keys.IS_LOGGED_IN_STATUS to userSession.isLoggedIn.toString(),
+            Keys.USER_ID to userSession.userId,
+            Keys.SCREEN_NAME to screenName
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -26,12 +27,12 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
 
     fun eventClickSeeInvoice(categoryName: String, operatorName: String) {
         val map = mapOf(
-                Keys.EVENT_NAME to EventName.CLICK_CHECKOUT,
-                Keys.EVENT_ACTION to EventAction.CLICK_SEE_INVOICE,
-                Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
-                Keys.EVENT_LABEL to "$categoryName - $operatorName",
-                Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-                Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT
+            Keys.EVENT_NAME to EventName.CLICK_CHECKOUT,
+            Keys.EVENT_ACTION to EventAction.CLICK_SEE_INVOICE,
+            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
+            Keys.EVENT_LABEL to "$categoryName - $operatorName",
+            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
+            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -39,27 +40,31 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
 
     fun eventClickCopyButton(categoryName: String, operatorName: String) {
         val map = mapOf(
-                Keys.EVENT_NAME to EventName.CLICK_CHECKOUT,
-                Keys.EVENT_ACTION to EventAction.CLICK_COPY_BUTTON,
-                Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
-                Keys.EVENT_LABEL to "$categoryName - $operatorName",
-                Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-                Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT
+            Keys.EVENT_NAME to EventName.CLICK_CHECKOUT,
+            Keys.EVENT_ACTION to EventAction.CLICK_COPY_BUTTON,
+            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
+            Keys.EVENT_LABEL to "$categoryName - $operatorName",
+            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
+            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventClickActionButton(categoryName: String, operatorName: String,
-                               buttonName: String, eventAction: String,
-                               isFeatureButton: Boolean = false) {
+    fun eventClickActionButton(
+        categoryName: String,
+        operatorName: String,
+        buttonName: String,
+        eventAction: String,
+        isFeatureButton: Boolean = false
+    ) {
         val map = mutableMapOf(
-                Keys.EVENT_NAME to EventName.CLICK_CHECKOUT,
-                Keys.EVENT_ACTION to eventAction,
-                Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
-                Keys.EVENT_LABEL to "$categoryName - $operatorName - $buttonName",
-                Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-                Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT
+            Keys.EVENT_NAME to EventName.CLICK_CHECKOUT,
+            Keys.EVENT_ACTION to eventAction,
+            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
+            Keys.EVENT_LABEL to "$categoryName - $operatorName - $buttonName",
+            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
+            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT
         )
 
         if (isFeatureButton) {
@@ -82,7 +87,8 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                EventName.VIEW_ITEM_LIST, bundle
+            EventName.VIEW_ITEM_LIST,
+            bundle
         )
     }
 
@@ -100,7 +106,8 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                EventName.SELECT_CONTENT, bundle
+            EventName.SELECT_CONTENT,
+            bundle
         )
     }
 
@@ -146,17 +153,56 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
         TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
     }
 
-    private fun mapTopAdsProduct(data: RecommendationItem): Bundle =
-            Bundle().apply {
-                putString(Keys.INDEX, data.position.toString())
-                putString(Keys.ITEM_BRAND, "")
-                putString(Keys.ITEM_CATEGORY, data.categoryBreadcrumbs)
-                putString(Keys.ITEM_ID, data.productId.toString())
-                putString(Keys.ITEM_NAME, data.name)
-                putString(Keys.ITEM_VARIANT, "")
-                putString(Keys.PRICE, data.priceInt.toString())
-            }
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/2775
+    // Tracker ID: 50272
+    fun sendViewBatalkanTransaksiButtonEvent(
+        productCategory: String,
+        productId: String,
+        orderStatus: String
+    ) {
+        val eventLabel = "$productCategory - $productId - $orderStatus"
+        Tracker.Builder()
+            .setEvent(EventName.VIEW_DIGITAL_IRIS)
+            .setEventAction(EventAction.VIEW_BATALKAN_TRANSAKSI_BUTTON)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.VIEW_BATALKAN_TRANSAKSI_BUTTON)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .build()
+            .send()
+    }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/2775
+    // Tracker ID: 50273
+    fun sendClickBatalkanTransaksiButtonEvent(
+        productCategory: String,
+        productId: String,
+        orderStatus: String
+    ) {
+        val eventLabel = "$productCategory - $productId - $orderStatus"
+        Tracker.Builder()
+            .setEvent(EventName.CLICK_DIGITAL)
+            .setEventAction(EventAction.CLICK_BATALKAN_TRANSAKSI_BUTTON)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.CLICK_BATALKAN_TRANSAKSI_BUTTON)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    private fun mapTopAdsProduct(data: RecommendationItem): Bundle =
+        Bundle().apply {
+            putString(Keys.INDEX, data.position.toString())
+            putString(Keys.ITEM_BRAND, "")
+            putString(Keys.ITEM_CATEGORY, data.categoryBreadcrumbs)
+            putString(Keys.ITEM_ID, data.productId.toString())
+            putString(Keys.ITEM_NAME, data.name)
+            putString(Keys.ITEM_VARIANT, "")
+            putString(Keys.PRICE, data.priceInt.toString())
+        }
 
     class Keys {
         companion object {
@@ -182,6 +228,7 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
             const val ITEM_NAME = "item_name"
             const val ITEM_VARIANT = "item_variant"
             const val PRICE = "price"
+            const val TRACKER_ID = "trackerId"
         }
     }
 
@@ -211,7 +258,9 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
 
             const val VIEW_VOID_POPUP = "view void popup"
             const val CLICK_BATALKAN_VOID_POPUP = "click batalkan void popup"
-            const val CLICK_KEMBALI_VOID_POPUP= "click kembali void popup"
+            const val CLICK_KEMBALI_VOID_POPUP = "click kembali void popup"
+            const val VIEW_BATALKAN_TRANSAKSI_BUTTON = "view batalkan transaksi button"
+            const val CLICK_BATALKAN_TRANSAKSI_BUTTON = "click batalkan transaksi button"
         }
     }
 
@@ -226,4 +275,10 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
         }
     }
 
+    class TrackerId {
+        companion object {
+            const val VIEW_BATALKAN_TRANSAKSI_BUTTON = "50272"
+            const val CLICK_BATALKAN_TRANSAKSI_BUTTON = "50273"
+        }
+    }
 }
