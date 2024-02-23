@@ -1,4 +1,4 @@
-package com.tokopedia.play.widget.ui
+package com.tokopedia.play.widget.liveindicator.ui
 
 import android.content.Context
 import android.net.Uri

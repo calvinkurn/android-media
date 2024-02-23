@@ -1,4 +1,4 @@
-package com.tokopedia.play.widget.ui
+package com.tokopedia.play.widget.liveindicator.ui
 
 import android.content.Context
 import android.util.AttributeSet
@@ -49,7 +49,7 @@ import com.tokopedia.play.widget.liveindicator.di.PlayWidgetLiveIndicatorCompone
 import com.tokopedia.play.widget.R as playwidgetR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class PlayWidgetLiveIndicatorView : AbstractComposeView {
+class PlayWidgetLiveBadgeView : AbstractComposeView {
 
     constructor(context: Context, attrs: AttributeSet?) : super(
         context,
@@ -106,7 +106,7 @@ class PlayWidgetLiveIndicatorView : AbstractComposeView {
 fun PlayWidgetLiveIndicator(
     onClicked: () -> Unit,
     modifier: Modifier = Modifier,
-    analyticModel: PlayWidgetLiveIndicatorView.AnalyticModel? = null,
+    analyticModel: PlayWidgetLiveBadgeView.AnalyticModel? = null,
     impressionTag: String = "",
 ) {
 

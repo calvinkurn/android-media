@@ -9,9 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.widget.databinding.FragmentPlayLiveIndicatorSampleBinding
-import com.tokopedia.play.widget.ui.PlayWidgetLiveIndicator
-import com.tokopedia.play.widget.ui.PlayWidgetLiveIndicatorView
-import com.tokopedia.play.widget.ui.PlayWidgetLiveThumbnailView
+import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveIndicator
+import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveBadgeView
+import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveThumbnailView
 import kotlin.time.Duration.Companion.seconds
 
 class PlayLiveIndicatorSampleFragment : Fragment() {
@@ -36,7 +36,7 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
 
     private fun setupViewBased() {
         binding.indicatorView.setAnalyticModel(
-            PlayWidgetLiveIndicatorView.AnalyticModel("12345", "67890", "13579")
+            PlayWidgetLiveBadgeView.AnalyticModel("12345", "67890", "13579")
         )
         binding.indicatorView.setImpressionTag("view_based")
 
@@ -60,7 +60,7 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
                 PlayWidgetLiveIndicator(
                     onClicked = {},
                     Modifier.fillMaxSize(),
-                    analyticModel = PlayWidgetLiveIndicatorView.AnalyticModel("channel_id", "product_id", "shop_id"),
+                    analyticModel = PlayWidgetLiveBadgeView.AnalyticModel("channel_id", "product_id", "shop_id"),
                     impressionTag = "compose_based"
                 )
             }
