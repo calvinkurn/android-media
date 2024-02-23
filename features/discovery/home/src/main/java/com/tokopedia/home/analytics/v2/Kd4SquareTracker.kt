@@ -1,13 +1,15 @@
 package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.common_digital.common.constant.DigitalTrackingConst
 import com.tokopedia.home.analytics.HomePageTracking.PROMOTIONS
+import com.tokopedia.home.analytics.HomePageTracking.PROMO_CLICK
+import com.tokopedia.home.analytics.HomePageTracking.PROMO_VIEW
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.constant.TrackerConstant
 
-object Kd4SquareTracker : BaseTracking() {
+object Kd4SquareTracker : BaseTrackerConst() {
 
     // TrackerID: 50016
     private const val IMPRESSION_TRACKER_ID = "50016"
@@ -16,7 +18,7 @@ object Kd4SquareTracker : BaseTracking() {
         val attribute = model.trackingAttributionModel
 
         return DataLayer.mapOf(
-            Event.KEY, DigitalTrackingConst.Event.VIEW_ITEM,
+            Event.KEY, PROMO_VIEW,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, IMPRESSION_ACTION,
             Label.KEY, "${attribute.channelId} - ${attribute.headerName}",
@@ -44,7 +46,7 @@ object Kd4SquareTracker : BaseTracking() {
         val attribute = model.trackingAttributionModel
 
         return DataLayer.mapOf(
-            Event.KEY, DigitalTrackingConst.Event.SELECT_CONTENT,
+            Event.KEY, PROMO_CLICK,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CARD_CLICK_ACTION,
             Label.KEY, "${attribute.channelId} - ${attribute.headerName}",
@@ -59,7 +61,7 @@ object Kd4SquareTracker : BaseTracking() {
                     "creative_name", channelGrid.attribution,
                     "creative_slot", (position + 1).toString(),
                     "item_id", "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}",
-                    "name", "/ - p${position} - dynamic channel 4 square - banner - ${attribute.headerName}",
+                    "name", "/ - p${position + 1} - dynamic channel 4 square - banner - ${attribute.headerName}",
                 )
             )
         )
@@ -72,7 +74,7 @@ object Kd4SquareTracker : BaseTracking() {
         val attribute = model.trackingAttributionModel
 
         return DataLayer.mapOf(
-            Event.KEY, Event.CLICK_HOMEPAGE,
+            Event.KEY, PROMO_CLICK,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CHEVRON_CLICK_ACTION,
             Label.KEY, "${attribute.channelId} - ${attribute.headerName}",
