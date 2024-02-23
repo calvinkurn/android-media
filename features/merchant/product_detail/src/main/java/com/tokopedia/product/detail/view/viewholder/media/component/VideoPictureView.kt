@@ -11,7 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.play.widget.ui.PlayWidgetLiveIndicatorView
+import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveBadgeView
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -240,11 +240,11 @@ class VideoPictureView @JvmOverloads constructor(
         }
     }
 
-    private fun setupLiveIndicatorAnalytic() = with(binding.liveIndicatorView) {
+    private fun setupLiveIndicatorAnalytic() = with(binding.liveBadgeView) {
         val p1 = mListener?.getProductInfo() ?: return
 
         setAnalyticModel(
-            model = PlayWidgetLiveIndicatorView.AnalyticModel(
+            model = PlayWidgetLiveBadgeView.AnalyticModel(
                 channelId = liveIndicator.channelID,
                 productId = p1.basic.productID,
                 shopId = p1.basic.shopID
@@ -263,18 +263,18 @@ class VideoPictureView @JvmOverloads constructor(
 
         when {
             shouldShowLiveIndicator -> {
-                binding.liveIndicatorView.show()
+                binding.liveBadgeView.show()
                 binding.txtAnimLabelRecommendation.hideView()
             }
 
             isPictureType -> {
                 binding.txtAnimLabelRecommendation.showView()
-                binding.liveIndicatorView.hide()
+                binding.liveBadgeView.hide()
             }
 
             else -> {
                 binding.txtAnimLabelRecommendation.hideView()
-                binding.liveIndicatorView.hide()
+                binding.liveBadgeView.hide()
             }
         }
     }
