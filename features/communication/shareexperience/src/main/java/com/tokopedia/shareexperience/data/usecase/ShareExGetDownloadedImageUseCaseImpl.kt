@@ -24,7 +24,7 @@ class ShareExGetDownloadedImageUseCaseImpl @Inject constructor(
     override suspend fun downloadImage(imageUrl: String): Flow<ShareExResult<Uri>> {
         return flow {
             val filename = getFileName()
-            val shareFolder = File("${context.cacheDir}/share")
+            val shareFolder = File("${context.externalCacheDir}/share")
             if (!shareFolder.exists()) {
                 shareFolder.mkdirs()
             }

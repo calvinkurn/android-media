@@ -16,7 +16,7 @@ class ShareExMediaCleanupStorageWorker(private val context: Context, params: Wor
     CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        val shareFolder = File("${context.cacheDir}/share")
+        val shareFolder = File("${context.externalCacheDir}/share")
         return if (!shareFolder.exists() || !shareFolder.isDirectory) {
             Result.success()
         } else {
