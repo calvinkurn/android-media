@@ -195,7 +195,6 @@ enum class EnterMethod(val str: String) {
     CLICK_VIDEO_GUIDE("click_video_guide"),
     CLICK_TT_TASK_PAGE_MALL_BROWSE_TASK("click_tt_task_page_mall_browse_task"),
     CLICK_TT_TASK_PAGE_COUPON_POPUP("click_tt_task_page_coupon_popup"),
-    OTHER("other")
 }
 
 object EventName {
@@ -233,6 +232,7 @@ object AppLogParam {
     const val ENTER_FROM = "enter_from"
     const val ENTRANCE_FORM = "entrance_form"
     const val GLIDE_DISTANCE = "glide_distance"
+    const val DISTANCE_TO_TOP = "distance_to_top"
     const val GLIDE_TYPE = "glide_type"
     const val GROUP_ID = "group_id"
     const val IS_AD = "is_ad"
@@ -250,5 +250,19 @@ object AppLogParam {
     const val SLIDE_TYPE = "slide_type"
     const val SOURCE_MODULE = "source_module"
     const val SOURCE_PAGE_TYPE = "source_page_type"
+    const val SOURCE_PREVIOUS_PAGE = "source_previous_page"
     const val TRACK_ID = "track_id"
+    const val REC_PARAMS = "rec_params"
+    const val AUTHOR_ID = "author_id"
+    const val VOLUME = "volume"
+    const val RATE = "rate"
+    const val ORIGINAL_PRICE = "original_price"
+    const val SALES_PRICE = "sales_price"
+    const val MAIN_VIDEO_ID = "main_video_id"
+}
+
+enum class ContentType(val str: String) {
+    VIDEO("video"),
+    LIVE("live"),
+    OTHER("")
 }

@@ -563,7 +563,8 @@ object ShopPageHomeMapper {
                             isEnableDirectPurchase,
                             widgetLayout,
                             isOverrideTheme,
-                            colorSchema
+                            colorSchema,
+                            shopId
                         )
                     }
 
@@ -670,7 +671,8 @@ object ShopPageHomeMapper {
         isEnableDirectPurchase: Boolean,
         widgetLayout: ShopPageWidgetUiModel?,
         isOverrideTheme: Boolean,
-        colorSchema: ShopPageColorSchema
+        colorSchema: ShopPageColorSchema,
+        shopId: String,
     ) = ShopHomeCarousellProductUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
@@ -678,7 +680,8 @@ object ShopPageHomeMapper {
         type = widgetResponse.type,
         header = mapToHeaderModel(widgetResponse.header, widgetLayout, isOverrideTheme, colorSchema),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
-        productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct, isEnableDirectPurchase)
+        productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct, isEnableDirectPurchase, shopId, widgetResponse.name),
+        shopId = shopId,
     )
 
     private fun mapToPersoProductComparisonUiModel(
@@ -1180,7 +1183,9 @@ object ShopPageHomeMapper {
     private fun mapToWidgetProductListPersonalization(
         data: List<ShopLayoutWidget.Widget.Data>,
         isMyOwnProduct: Boolean,
-        isEnableDirectPurchase: Boolean
+        isEnableDirectPurchase: Boolean,
+        shopId: String,
+        widgetName: String
     ): List<ShopHomeProductUiModel> {
         return data.map {
             ShopHomeProductUiModel().apply {
@@ -1210,6 +1215,8 @@ object ShopPageHomeMapper {
                 this.parentId = it.parentId
                 isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
                 warehouseId = it.warehouseID
+                this.shopId = shopId
+                this.widgetName = widgetName
             }
         }
     }

@@ -20,17 +20,21 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_QUICK
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_FAVORITE_BUTTON
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_MORE_BUTTON
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_MORE_FINDALIKE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.REFRESH
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.discovery.common.analytics.SearchId
 import com.tokopedia.discovery.common.analytics.SearchSessionId
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -265,9 +269,10 @@ class ProductListFragment: BaseDaggerFragment(),
     private var searchSortFilterReimagine: SortFilterReimagine? = null
     private var shimmeringView: LinearLayout? = null
     private val enterFrom: String
-        get() =
-            if (navsource == SearchApiConst.HOME) AppLogSearch.ParamValue.HOMEPAGE
-            else ""
+        get() {
+            val lastEnterFrom = (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
+            return if (lastEnterFrom == HOMEPAGE) HOMEPAGE else ""
+        }
 
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
@@ -587,9 +592,6 @@ class ProductListFragment: BaseDaggerFragment(),
         return searchParameter
     }
 
-    private val navsource: String
-        get() = searchParameter?.get(SearchApiConst.NAVSOURCE) ?: ""
-
     private val enterMethod: String
         get() = searchParameter?.get(SearchApiConst.ENTER_METHOD) ?: ""
 
@@ -781,6 +783,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onProductImpressedByteIO(item: ProductItemDataView?) {
         item ?: return
         AppLogSearch.eventSearchResultShow(item.asByteIOSearchResult(null))
+        AppLogSearch.eventProductShow(item.asByteIOProduct())
     }
 
     private val additionalPositionMap: Map<String, String>
@@ -929,6 +932,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun sendByteIOTrackingProductClick(item: ProductItemDataView) {
         AppLogSearch.eventSearchResultClick(item.asByteIOSearchResult(""))
+        AppLogSearch.eventProductClick(item.asByteIOProduct())
     }
 
     override fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int) {
@@ -1167,17 +1171,20 @@ class ProductListFragment: BaseDaggerFragment(),
         )
     }
 
-    private fun trackChooseSearchFilter(isSelected: Boolean,
-                                        filterValue: String,
-                                        position: Int) {
+    private fun trackChooseSearchFilter(
+        isSelected: Boolean,
+        filterValue: String,
+        position: Int,
+    ) {
         if (!isSelected) return
+
         AppLogSearch.eventChooseSearchFilter(AppLogSearch.ChooseSearchFilter(
-            searchId = "", // TODO milhamj: wait for BE data
+            searchID = presenter?.searchId ?: "",
             searchType = GOODS_SEARCH,
-            searchKeyword = queryKey,
+            keyword = queryKey,
             ecomSortName = "",
             ecomFilterName = filterValue,
-            ecomFilterPosition = position,
+            ecomFilterPosition = position.toString(),
             buttonTypeClick = FILTER_QUICK
         ))
     }
@@ -1585,14 +1592,14 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.showBottomSheetInappropriate(itemProduct)
     }
 
-    override fun sendTrackingByteIO(imprId: String) {
+    override fun sendTrackingByteIO() {
         val durationMs: Long? = performanceMonitoring?.getPltPerformanceData()?.let {
             it.startPageDuration + it.networkRequestDuration
         }
 
         AppLogSearch.eventSearch(
             AppLogSearch.Search(
-                imprId = imprId,
+                imprId = SearchId.value,
                 enterFrom = enterFrom,
                 searchType = GOODS_SEARCH,
                 enterMethod = enterMethod,
@@ -1600,6 +1607,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 durationMs = durationMs,
                 isSuccess = true,
                 ecSearchSessionId = SearchSessionId.value,
+                preSearchId = SearchId.previousValue,
             )
         )
     }

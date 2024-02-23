@@ -3,11 +3,12 @@ package com.tokopedia.analytics.byteio
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.byteio.AppLogAnalytics.popPageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.pushPageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
-import com.tokopedia.analytics.byteio.AppLogAnalytics.sendStayProductDetail
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp.sendStayProductDetail
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,7 @@ import kotlin.coroutines.CoroutineContext
 
 class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, CoroutineScope {
 
-    var pdpCheckpointStay: WeakReference<Activity>? = null
+    private var pdpCheckpointStay: WeakReference<Activity>? = null
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         AppLogAnalytics.activityCount++
@@ -72,7 +73,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
                 activity.startTime = 0L
             }
         }
-        // Sending stay data in ATC Variant when paused
+        // Sending stay data in ATC Variant when it's a close, not sending when it's a return
         if (isAtcVariantPage(activity) && activity is BaseSimpleActivity && !activity.isFinishing) {
             launch {
                 val pdpActivity = pdpCheckpointStay?.get()

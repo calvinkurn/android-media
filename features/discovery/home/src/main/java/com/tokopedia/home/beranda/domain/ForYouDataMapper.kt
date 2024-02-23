@@ -65,6 +65,7 @@ object ForYouDataMapper {
                 imageUrl = recommendationProductItem.imageUrl,
                 recommendationType = recommendationProductItem.recommendationType,
                 priceInt = recommendationProductItem.priceInt,
+                slashedPriceInt = recommendationProductItem.slashedPriceInt,
                 freeOngkirIsActive = recommendationProductItem.freeOngkirIsActive,
                 labelGroup = recommendationProductItem.labelGroup.map {
                     RecommendationCardModel.ProductItem.LabelGroup(
@@ -117,7 +118,8 @@ object ForYouDataMapper {
             ),
             isAds = isAds,
             shopId = shopId,
-            pageName = pageName
+            pageName = pageName,
+            position = position
         )
     }
 

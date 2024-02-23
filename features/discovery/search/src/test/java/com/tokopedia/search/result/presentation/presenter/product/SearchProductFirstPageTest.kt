@@ -45,7 +45,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         `Then verify visitable list with product items`(
             visitableListSlot = visitableListSlot,
             searchProductModel = searchProductModel,
-            isFirstPage = true,
         )
         `Then assert page component id`(searchProductModel.searchProduct.header.componentId)
     }
@@ -135,7 +134,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         `Then verify visitable list with product items for reimagine`(
             visitableListSlot = visitableListSlot,
             searchProductModel = searchProductModel,
-            isFirstPage = true,
         )
         `Then assert page component id`(searchProductModel.searchProductV5.header.componentID)
     }
@@ -211,7 +209,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         `Then verify visitable list with product items`(
             visitableListSlot = visitableListSlot,
             searchProductModel = searchProductModel,
-            isFirstPage = true,
         )
     }
 

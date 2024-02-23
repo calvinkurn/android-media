@@ -29,6 +29,7 @@ import com.tokopedia.search.result.product.banned.BannedProductsView
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
 import com.tokopedia.search.result.product.broadmatch.BroadMatchView
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactoryImpl
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
 import com.tokopedia.search.result.product.deduplication.Deduplication
@@ -81,8 +82,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import rx.schedulers.Schedulers
@@ -165,7 +164,7 @@ internal open class ProductListPresenterTestFixtures {
     private val pagination = PaginationImpl()
     private val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
     private val lastClickedProductIdProvider = LastClickedProductIdProviderImpl()
-    val deduplication = Deduplication(deduplicationView)
+    private val deduplication = Deduplication(deduplicationView)
     private val requestParamsGenerator = RequestParamsGenerator(
         userSession,
         pagination,
@@ -181,6 +180,7 @@ internal open class ProductListPresenterTestFixtures {
         { getDynamicFilterUseCase },
         dynamicFilterModel,
     )
+    private val byteIOTrackingDataFactoryImpl = mockk<ByteIOTrackingDataFactoryImpl>(relaxed = true)
 
     protected lateinit var productListPresenter: ProductListPresenter
 
@@ -210,6 +210,7 @@ internal open class ProductListPresenterTestFixtures {
             inspirationListAtcView,
             viewUpdater,
             searchParameterProvider,
+            byteIOTrackingDataFactoryImpl,
         )
         val suggestionPresenter = SuggestionPresenter()
         val bannerPresenterDelegate = BannerPresenterDelegate(pagination)
@@ -232,6 +233,7 @@ internal open class ProductListPresenterTestFixtures {
             chooseAddressPresenterDelegate,
             viewUpdater,
             deduplication,
+            byteIOTrackingDataFactoryImpl,
         )
 
         val adsLowOrganic = AdsLowOrganic(
@@ -241,7 +243,7 @@ internal open class ProductListPresenterTestFixtures {
             requestParamsGenerator,
             chooseAddressPresenterDelegate,
             responseCodeImpl,
-            queryKeyProvider,
+            byteIOTrackingDataFactoryImpl,
         )
 
         val visitableFactory = VisitableFactory(
@@ -254,6 +256,7 @@ internal open class ProductListPresenterTestFixtures {
             broadMatchDelegate = broadMatchPresenterDelegate,
             topAdsImageViewPresenterDelegate = TopAdsImageViewPresenterDelegate(),
             pagination = pagination,
+            byteIOTrackingDataFactory = byteIOTrackingDataFactoryImpl,
         )
 
         val similarSearchOnBoardingPresenterDelegate = SimilarSearchOnBoardingPresenterDelegate(
@@ -319,7 +322,8 @@ internal open class ProductListPresenterTestFixtures {
             inspirationProductPresenterDelegate,
             reimagineRollence,
             lastClickedProductIdProvider,
-            deduplication
+            deduplication,
+            byteIOTrackingDataFactoryImpl,
         )
         productListPresenter.attachView(productListView)
     }
@@ -329,7 +333,6 @@ internal open class ProductListPresenterTestFixtures {
         searchProductModel: SearchProductModel,
         topAdsPositionStart: Int = 0,
         organicPositionStart: Int = 0,
-        isFirstPage: Boolean = true,
     ) {
         val expectedProductListType = searchProductModel.searchProduct.header.meta.productListType
         val expectedShowButtonATC = searchProductModel.searchProduct.header.meta.showButtonAtc
@@ -341,7 +344,6 @@ internal open class ProductListPresenterTestFixtures {
             organicPositionStart,
             expectedProductListType,
             expectedShowButtonATC,
-            isFirstPage,
         )
     }
 
@@ -351,7 +353,6 @@ internal open class ProductListPresenterTestFixtures {
         topAdsPositionStart: Int = 0,
         organicPositionStart: Int = 0,
         expectedBlurred: Boolean = true,
-        isFirstPage: Boolean = true,
     ) {
         val expectedShowButtonATC = searchProductModel.searchProductV5.header.meta.showButtonAtc
 
@@ -363,7 +364,6 @@ internal open class ProductListPresenterTestFixtures {
             FIXED_GRID,
             expectedShowButtonATC,
             expectedBlurred,
-            isFirstPage,
         )
     }
 
@@ -374,7 +374,6 @@ internal open class ProductListPresenterTestFixtures {
         organicPositionStart: Int,
         expectedProductListType: String,
         expectedShowButtonATC: Boolean,
-        isFirstPage: Boolean,
     ) {
         val organicProductList = searchProductModel.searchProduct.data.productList
         val topAdsProductList = searchProductModel.topAdsModel.data
@@ -411,8 +410,6 @@ internal open class ProductListPresenterTestFixtures {
                 expectedOrganicProductPosition++
                 organicProductListIndex++
             }
-
-            assertThat(productItem.isFirstPage, `is`(isFirstPage))
         }
     }
 
@@ -504,7 +501,6 @@ internal open class ProductListPresenterTestFixtures {
         expectedProductListType: String,
         expectedShowButtonATC: Boolean,
         expectedBlurred: Boolean = true,
-        isFirstPage: Boolean,
     ) {
         val organicProductList = searchProductModel.searchProductV5.data.productList
         val topAdsProductList = searchProductModel.topAdsModel.data
@@ -541,8 +537,6 @@ internal open class ProductListPresenterTestFixtures {
                 expectedOrganicProductPosition++
                 organicProductListIndex++
             }
-
-            assertThat(productItem.isFirstPage, `is`(isFirstPage))
         }
     }
 

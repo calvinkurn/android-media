@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.byteio.SlideTrackObject
+import com.tokopedia.analytics.byteio.addHorizontalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.kotlin.extensions.view.*
@@ -20,6 +23,7 @@ import com.tokopedia.shop.databinding.ItemShopHomeProductRecommendationCarouselB
 import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.util.mapper.TrackShopRecommendationMapper.asProductTrackModel
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
@@ -54,6 +58,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
     private var recyclerView: CarouselProductCardView? = null
     private var recyclerViewCarouselSingleOrDoubleProduct: RecyclerView? = null
     private var productCarouselSingleOrDoubleAdapter: ShopHomeCarouselProductAdapter? = null
+    private var hasRecomScrollListener = false
 
     init {
         initView()
@@ -79,7 +84,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                     itemView.context.getString(R.string.occ_text)
                 } else "",
                 element.name,
-                forceLightModeColor = shopHomeListener.isOverrideTheme()
+                forceLightModeColor = shopHomeListener.isOverrideTheme(),
             )
         }
 
@@ -204,6 +209,11 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                         )
                     }
                 }
+                AppLogRecommendation.sendProductClickAppLog(
+                    productItem.asProductTrackModel(
+                        bindingAdapterPosition
+                    )
+                )
             }
         }
 
@@ -244,6 +254,11 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                         )
                     }
                 }
+                AppLogRecommendation.sendProductShowAppLog(
+                    productItem.asProductTrackModel(
+                        bindingAdapterPosition
+                    )
+                )
             }
 
             override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
@@ -263,6 +278,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             carouselProductCardOnItemClickListener = productClickListener,
                             carouselProductCardOnItemImpressedListener = productImpressionListener
                         )
+                        recyclerViewCarouselSingleOrDoubleProduct?.trackHorizontalScroll(element)
                     }
                     else -> {
                         recyclerView?.show()
@@ -274,6 +290,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             carouselProductCardOnItemClickListener = productClickListener,
                             carouselProductCardOnItemImpressedListener = productImpressionListener
                         )
+                        recyclerView?.carouselProductCardRecyclerView?.trackHorizontalScroll(element)
                     }
                 }
             }
@@ -389,6 +406,20 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         recyclerViewCarouselSingleOrDoubleProduct?.adapter = productCarouselSingleOrDoubleAdapter
         recyclerViewCarouselSingleOrDoubleProduct?.layoutManager = layoutManager
         recyclerViewCarouselSingleOrDoubleProduct?.setRecycledViewPool(recyclerviewPoolListener.parentPool)
+    }
+
+    private fun RecyclerView.trackHorizontalScroll(
+        model: ShopHomeCarousellProductUiModel,
+    ) {
+        if(hasRecomScrollListener) return
+        addHorizontalTrackListener(
+            slideTrackObject = SlideTrackObject(
+                moduleName = model.name,
+                barName = model.name,
+                shopId = model.shopId
+            )
+        )
+        hasRecomScrollListener = true
     }
 
     private fun configColorTheme(element: ShopHomeCarousellProductUiModel) {

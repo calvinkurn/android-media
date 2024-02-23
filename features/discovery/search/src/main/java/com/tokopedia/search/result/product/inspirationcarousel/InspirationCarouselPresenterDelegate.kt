@@ -2,16 +2,16 @@ package com.tokopedia.search.result.product.inspirationcarousel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
-import com.tokopedia.search.result.product.ByteIOTrackingData
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactory
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.deduplication.Deduplication
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
@@ -44,10 +44,9 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
     private val viewUpdater: ViewUpdater,
     private val deduplication: Deduplication,
-    queryKeyProvider: QueryKeyProvider,
+    private val byteIOTrackingDataFactory: ByteIOTrackingDataFactory,
 ) : InspirationCarouselPresenter,
-    ApplinkOpener by ApplinkOpenerDelegate,
-    QueryKeyProvider by queryKeyProvider {
+    ApplinkOpener by ApplinkOpenerDelegate {
 
     private var inspirationCarouselSeamlessDataViewList = mutableListOf<InspirationCarouselDataView>()
     private var inspirationCarouselDataViewList = mutableListOf<InspirationCarouselDataView>()
@@ -223,10 +222,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
                 externalReference,
                 !hasTitle,
                 deduplication,
-                ByteIOTrackingData( // TODO
-                    keyword = queryKey,
-                    isFirstPage = isFirstPage,
-                ),
+                byteIOTrackingDataFactory.create(isFirstPage),
             )
 
         if (optionList.isEmpty()) return null

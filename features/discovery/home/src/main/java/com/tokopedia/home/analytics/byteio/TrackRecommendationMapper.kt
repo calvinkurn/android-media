@@ -1,10 +1,12 @@
 package com.tokopedia.home.analytics.byteio
 
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationCardModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.analytics.byteio.recommendation.CardName
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.HomeRecommendationUtil.isFullSpan
@@ -23,13 +25,21 @@ object TrackRecommendationMapper {
             tabName = tabName,
             tabPosition = tabPosition,
             moduleName = pageName,
-            isAd = recommendationProductItem.isTopAds,
+            isAd = productCardModel.isTopAds,
             isUseCache = isCache,
-            recParams = "", // TODO need to confirm
-            requestId = "", // TODO need BE deployment
+            recParams = "", //TODO need to confirm
+            requestId = "", //TODO need BE deployment
             shopId = recommendationProductItem.shop.id,
             entranceForm = getEntranceForm(),
             type = type,
+            originalPrice = (
+                if(recommendationProductItem.slashedPriceInt > 0)
+                    recommendationProductItem.slashedPriceInt
+                else recommendationProductItem.priceInt
+            ).toFloat(),
+            salesPrice = recommendationProductItem.priceInt.toFloat(),
+            position = position,
+            volume = productCardModel.countSoldRating.toIntOrZero(),
         )
     }
 
@@ -55,7 +65,8 @@ object TrackRecommendationMapper {
             requestId = "", // TODO need BE deployment
             shopId = topAdsImageViewModel?.shopId.orEmpty(),
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
-            type = type
+            type = type,
+            position = position,
         )
     }
 
@@ -77,7 +88,8 @@ object TrackRecommendationMapper {
             requestId = "", // TODO need BE deployment
             shopId = shopId,
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
-            type = type
+            type = type,
+            position = position,
         )
     }
 
@@ -99,7 +111,9 @@ object TrackRecommendationMapper {
             shopId = shopId,
             groupId = playVideoWidgetUiModel.id,
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
-            type = type
+            type = type,
+            sourcePageType = SourcePageType.VIDEO,
+            position = position,
         )
     }
 }

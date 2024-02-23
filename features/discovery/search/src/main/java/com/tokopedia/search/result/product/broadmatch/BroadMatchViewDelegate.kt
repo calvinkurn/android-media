@@ -51,6 +51,10 @@ class BroadMatchViewDelegate @Inject constructor(
         AppLogSearch.eventSearchResultClick(
             broadMatchItemDataView.asByteIOSearchResult(adapterPosition, "")
         )
+
+        AppLogSearch.eventProductClick(
+            broadMatchItemDataView.asByteIOProduct(adapterPosition)
+        )
     }
 
     override fun trackEventImpressionBroadMatchItem(
@@ -71,6 +75,10 @@ class BroadMatchViewDelegate @Inject constructor(
 
         AppLogSearch.eventSearchResultShow(
             broadMatchItemDataView.asByteIOSearchResult(adapterPosition, null)
+        )
+
+        AppLogSearch.eventProductShow(
+            broadMatchItemDataView.asByteIOProduct(adapterPosition)
         )
     }
 

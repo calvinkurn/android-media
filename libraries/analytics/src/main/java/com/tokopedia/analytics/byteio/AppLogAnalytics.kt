@@ -6,12 +6,18 @@ import android.app.Application
 import android.util.Log
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
+import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
+import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ENTER_METHOD
 import com.tokopedia.analyticsdebugger.cassava.Cassava
 import org.json.JSONObject
 import timber.log.Timber
@@ -93,158 +99,41 @@ object AppLogAnalytics {
     internal val Boolean.intValue
         get() = if (this) 1 else 0
 
-    fun sendPDPEnterPage(product: TrackProductDetail?) {
-        if (sourcePageType == null || product == null) {
-            return
-        }
-        // TODO check if track id exist
-
-        send(EventName.ENTER_PRODUCT_DETAIL, JSONObject().also {
-            it.addPage()
-            it.addEntranceForm()
-            it.addSourcePageType()
-            it.put("product_id", product.productId)
-            it.put("product_category", product.productCategory)
-//            it.put("entrance_info", ) TODO
-            it.put("product_type", product.productType.type)
-            it.put("original_price", product.originalPrice)
-            it.put("sale_price", product.salePrice)
-            it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
-            it.put("track_id", globalTrackId)
-        })
-    }
-
-    @SuppressLint("PII Data Exposure")
-    fun sendConfirmSku(product: TrackConfirmSku) {
-        send(EventName.CONFIRM_SKU, JSONObject().also {
-            it.addPage()
-            it.put("product_id", product.productId)
-            it.put("product_category", product.productCategory)
-//            it.put("entrance_info", ) TODO
-            it.put("product_type", product.productType.type)
-            it.put("original_price_value", product.originalPrice)
-            it.put("sale_price_value", product.salePrice)
-            it.put("sku_id", product.skuId)
-            it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
-            it.put("currency", product.currency)
-            it.put("quantity", product.qty)
-            it.put("is_have_address", (if (product.isHaveAddress) 1 else 0))
-            it.put("request_id", globalRequestId)
-            it.put("track_id", globalTrackId)
-        })
-    }
-
-    fun sendConfirmCart(product: TrackConfirmCart) {
-        send(EventName.CONFIRM_CART, JSONObject().also {
-            it.addPage()
-            it.addEntranceForm()
-            it.addSourcePageType()
-            it.put("product_id", product.productId)
-            it.put("product_category", product.productCategory)
-//            it.put("entrance_info", ) TODO
-            it.put("product_type", product.productType.type)
-            it.put("original_price_value", product.originalPrice)
-            it.put("sale_price_value", product.salePrice)
-            it.put("button_type", product.buttonType)
-            it.put("sku_id", product.skuId)
-            it.put("currency", product.currency)
-            it.put("add_sku_num", product.addSkuNum)
-//            it.put("sku_num_before", product.skuNumBefore)
-//            it.put("sku_num_after", product.skuNumAfter)
-            it.put("request_id", globalRequestId)
-            it.put("track_id", globalTrackId)
-        })
-    }
-
-    fun sendConfirmCartResult(product: TrackConfirmCartResult) {
-        send(EventName.CONFIRM_CART_RESULT, JSONObject().also {
-            it.addPage()
-            it.addEntranceForm()
-            it.addSourcePageType()
-            it.put("product_id", product.productId)
-            it.put("product_category", product.productCategory)
-//            it.put("entrance_info", ) TODO
-            it.put("product_type", product.productType.type)
-            it.put("original_price_value", product.originalPrice)
-            it.put("sale_price_value", product.salePrice)
-            it.put("button_type", product.buttonType)
-            it.put("sku_id", product.skuId)
-            it.put("currency", product.currency)
-            it.put("add_sku_num", product.addSkuNum)
-//            it.put("sku_num_before", product.skuNumBefore)
-//            it.put("sku_num_after", product.skuNumAfter)
-            it.put("cart_item_id", product.cartItemId)
-            it.put("is_success", if (product.isSuccess == true) 1 else 0)
-            it.put("fail_reason", product.failReason)
-            it.put("request_id", globalRequestId)
-            it.put("track_id", globalTrackId)
-        })
-    }
-
-    fun sendCartEnterPage(cartCount: Int, cartUnavailCount: Int) {
-        send(EventName.ENTER_PAGE, JSONObject().also {
-            it.addPage()
-            it.put("cart_item_cnt", cartCount)
-            it.put("cart_unavailable_cnt", cartUnavailCount)
-        })
-    }
-
-    fun sendCartButtonClick(model: CartClickAnalyticsModel) {
-        send(EventName.BUTTON_CLICK, JSONObject().also {
-            it.addPage()
-            it.addEntranceForm()
-            it.put("button_name", model.buttonName)
-            it.put("cart_item_id", model.cartItemId)
-            it.put("original_price_value", model.originalPriceValue)
-            it.put("sale_price_value", model.salePriceValue)
-            it.put("discounted_amount", model.discountedAmount)
-            it.put("currency", "IDR")
-            it.put("item_cnt", model.ItemCnt)
-            it.put("sku_num", model.skuNum)
-            it.put("product_id", model.productId)
-            it.put("sku_id", model.skuId)
-        })
-    }
-
-    fun sendSubmitOrderResult(model: SubmitOrderResult) {
-        send(EventName.SUBMIT_ORDER_RESULT, JSONObject().also {
-            it.addPage()
-            it.addEntranceForm()
-            it.addSourcePageType()
-            it.put("is_success", if (model.isSuccess) 1 else 0)
-            it.put("fail_reason", model.failReason)
-            it.put("shipping_price", model.shippingPrice)
-            it.put("discounted_shipping_price", model.discountedShippingPrice)
-            it.put("total_payment", model.totalPayment)
-            it.put("discounted_amount", model.discountedAmount)
-            it.put("total_tax", model.totalTax)
-            it.put("summary_info", model.summaryInfo)
-            it.put("currency", model.currency)
-            it.put("delivery_info", model.deliveryInfo)
-            it.put("pay_type", model.payType)
-            it.put("cart_item_id", model.cartItemId)
-            it.put("sku_id", model.skuId)
-            it.put("order_id", model.orderId)
-            it.put("combo_id", model.comboId)
-            it.put("product_id", model.productId)
-        })
-    }
-
     internal fun JSONObject.addPage() {
         put(PREVIOUS_PAGE, previousPageName())
         put(PAGE_NAME, currentPageName())
     }
 
     internal fun JSONObject.addEntranceForm() {
-        put(ENTRANCE_FORM, entranceForm?.str)
+        put(ENTRANCE_FORM, getLastData(ENTRANCE_FORM))
+    }
+
+    internal fun JSONObject.addEnterFrom() {
+        put(ENTER_FROM, getLastData(ENTER_FROM))
+    }
+
+    internal fun JSONObject.addSourcePreviousPage() {
+        put(SOURCE_PREVIOUS_PAGE, getLastData(SOURCE_PREVIOUS_PAGE))
     }
 
     internal fun JSONObject.addSourcePageType() {
-        put(
-            SOURCE_PAGE_TYPE,
-            if (sourcePageType == SourcePageType.PRODUCT_CARD) previousPageName()
-            else sourcePageType?.str
-        )
+        put(SOURCE_PAGE_TYPE, getLastData(SOURCE_PAGE_TYPE))
+    }
+
+    internal fun JSONObject.addSourceModule() {
+        put(SOURCE_MODULE, getLastData(SOURCE_MODULE))
+    }
+
+    internal fun JSONObject.addRequestId() {
+        put(REQUEST_ID, getLastData(REQUEST_ID))
+    }
+
+    internal fun JSONObject.addTrackId() {
+        put(TRACK_ID, getLastData(TRACK_ID))
+    }
+
+    internal fun JSONObject.addEnterMethod() {
+        put(ENTER_METHOD, getLastData(ENTER_METHOD))
     }
 
     private fun currentPageName(): String {
@@ -253,44 +142,11 @@ object AppLogAnalytics {
         }
     }
 
-    private fun previousPageName(skip: Int = 1): String {
+    internal fun previousPageName(skip: Int = 1): String {
         return synchronized(lock) {
             (pageNames.getOrNull(pageNames.indexOf(pageNames.findLast { it.first == currentActivityName }) - skip)?.second)
                 ?: ""
         }
-    }
-
-    internal fun sendStayProductDetail(
-        durationInMs: Long,
-        product: TrackStayProductDetail,
-        quitType: String
-    ) {
-        if (sourcePageType == null) {
-            return
-        }
-        send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
-            it.put(PREVIOUS_PAGE, previousPageName(2))
-            it.put(PAGE_NAME, PageName.PDP)
-            it.addEntranceForm()
-            it.addSourcePageType()
-            it.put("stay_time", durationInMs)
-            it.put("is_load_data", if (product.isLoadData) 1 else 0)
-            it.put("quit_type", quitType)
-            it.put("source_module",/*TODO*/ "")
-            it.put("product_id", product.productId)
-            it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
-            it.put("product_category", product.productCategory)
-//            it.put("entrance_info", ) TODO
-            it.put("main_photo_view_cnt", product.mainPhotoViewCount)
-            it.put("sku_photo_view_cnt", product.skuPhotoViewCount)
-            it.put("product_type", product.productType.type)
-            it.put("original_price", product.originalPrice)
-            it.put("sale_price", product.salePrice)
-            it.put("track_id", globalTrackId)
-            it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
-            it.put("is_sku_selected", product.isSkuSelected)
-            it.put("is_add_cart", product.isAddCartSelected)
-        })
     }
 
     fun send(event: String, params: JSONObject) {

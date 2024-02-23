@@ -46,6 +46,9 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
         AppLogSearch.eventSearchResultShow(
             dynamicProductCarousel.asByteIOSearchResult(adapterPosition, null),
         )
+        AppLogSearch.eventProductShow(
+            dynamicProductCarousel.asByteIOProduct(adapterPosition)
+        )
     }
 
     override fun trackDynamicProductCarouselClick(
@@ -63,6 +66,9 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
 
         AppLogSearch.eventSearchResultShow(
             dynamicProductCarousel.asByteIOSearchResult(adapterPosition, ""),
+        )
+        AppLogSearch.eventProductShow(
+            dynamicProductCarousel.asByteIOProduct(adapterPosition)
         )
     }
 

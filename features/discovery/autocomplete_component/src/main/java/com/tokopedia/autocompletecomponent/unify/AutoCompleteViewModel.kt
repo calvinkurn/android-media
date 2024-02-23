@@ -189,7 +189,6 @@ internal class AutoCompleteViewModel @Inject constructor(
     fun trackSearchEnterBlankPage() {
         val appLogData = stateValue.appLogData
         AppLogSearch.eventEnterSearchBlankPage(
-            enterFrom = appLogData.enterFrom,
             searchEntrance = appLogData.searchEntrance
         )
     }

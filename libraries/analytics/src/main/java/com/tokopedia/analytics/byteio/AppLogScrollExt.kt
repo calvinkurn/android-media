@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import org.json.JSONObject
 
@@ -190,10 +191,10 @@ class HorizontalTrackScrollListener(private val slideTrackObject: SlideTrackObje
 fun sendGlidePageTrack(scrollOffset: Float, model: GlidePageTrackObject) {
     AppLogAnalytics.send(EventName.GLIDE_PAGE, JSONObject().also {
         it.addPage()
-        it.put(AppLogParam.ENTER_FROM, "") //TODO
+        it.addEnterFrom()
         it.put(AppLogParam.GLIDE_TYPE, if (scrollOffset > 0) "more" else "less")
         it.put(AppLogParam.GLIDE_DISTANCE, scrollOffset)
-
+        it.put(AppLogParam.DISTANCE_TO_TOP, "")
         it.put(AppLogParam.LIST_NAME, model.listName)
         it.put(AppLogParam.LIST_NUM, model.listNum)
         it.put(AppLogParam.IS_USE_CACHE, if (model.isUseCache) 1 else 0)
@@ -203,14 +204,12 @@ fun sendGlidePageTrack(scrollOffset: Float, model: GlidePageTrackObject) {
 fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTriggerObject) {
     AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject().also {
         it.addPage()
-        it.put(AppLogParam.ENTER_FROM, "") //TODO
-        it.put(AppLogParam.GLIDE_DISTANCE, scrollOffset)
-
+        it.addEnterFrom()
         it.put(AppLogParam.LIST_NAME, model.listName)
         it.put(AppLogParam.LIST_NUM, model.listNum)
-
         it.put(AppLogParam.ACTION_TYPE, ActionType.GLIDE)
         it.put(AppLogParam.MODULE_NAME, model.moduleName)
+        it.put(AppLogParam.GLIDE_DISTANCE, scrollOffset)
         it.put(AppLogParam.REC_SESSION_ID, model.sessionId)
         it.put(AppLogParam.REQUEST_ID, model.requestId)
     })
@@ -219,7 +218,7 @@ fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTrigg
 fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
     AppLogAnalytics.send(EventName.SLIDE_BAR, JSONObject().also {
         it.addPage()
-        it.put(AppLogParam.ENTER_FROM, "") //TODO
+        it.addPage()
         it.put(AppLogParam.SLIDE_TYPE, if (scrollOffset > 0) "show_right" else "show_left")
 
         it.put(AppLogParam.MODULE_NAME, model.moduleName)

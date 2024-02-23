@@ -13,6 +13,7 @@ import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.TrackConfirmSku
 import com.tokopedia.analytics.byteio.TrackProductDetail
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
@@ -514,7 +515,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             productType = p1.productType,
             originalPrice = p1.originalPriceFmt,
             salePrice = p1.data.campaign.priceFmt,
-            isSingleSku = p1.data.variant.isVariant.not()
+            isSingleSku = p1.isSingleSku
         )
     }
 
@@ -531,7 +532,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             originalPrice = p1?.originalPriceFmt.orEmpty(),
             salePrice = p1?.data?.campaign?.priceFmt.orEmpty(),
             isLoadData = isLoadData,
-            isSingleSku = p1?.data?.variant?.isVariant != true,
+            isSingleSku = p1?.isSingleSku == true,
             mainPhotoViewCount = mainCount,
             skuPhotoViewCount = skuCount,
             isAddCartSelected = hasDoneAddToCart
@@ -707,7 +708,7 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
         val data = getDynamicProductInfoP1 ?: throw Exception()
-        AppLogAnalytics.sendConfirmCart(
+        AppLogPdp.sendConfirmCart(
             TrackConfirmCart(
                 productId = data.parentProductId,
                 productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
@@ -773,7 +774,7 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     private suspend fun getAddToCartOccUseCase(atcParams: AddToCartOccMultiRequestParams) {
         val data = getDynamicProductInfoP1 ?: throw Exception()
-        AppLogAnalytics.sendConfirmSku(
+        AppLogPdp.sendConfirmSku(
             TrackConfirmSku(
                 productId = data.parentProductId,
                 productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
@@ -781,7 +782,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                 originalPrice = data.originalPrice,
                 salePrice = data.finalPrice,
                 skuId = data.basic.productID,
-                isSingleSku = data.isProductVariant(),
+                isSingleSku = data.isSingleSku,
                 qty = data.basic.minOrder.toString(),
                 isHaveAddress = false
             )

@@ -1,9 +1,11 @@
 package com.tokopedia.recommendation_widget_common.extension
 
+import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.home_component_header.model.ChannelHeader
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
@@ -332,6 +334,7 @@ fun RecommendationItem.asProductTrackModel(
     isCache: Boolean = false,
     type: AppLogRecommendationType,
     entranceForm: EntranceForm? = null,
+    enterMethod: String = "",
     tabName: String = "",
     tabPosition: Int = 0,
 ): AppLogRecommendationProductModel {
@@ -352,6 +355,10 @@ fun RecommendationItem.asProductTrackModel(
         },
         tabName = tabName,
         tabPosition = tabPosition,
-        rate = ratingAverage.toFloatOrNull(),
+        rate = ratingAverage.toFloatOrZero(),
+        enterMethod = enterMethod,
+        volume = stock,
+        originalPrice = (if(slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
+        salesPrice = price.toFloat(),
     )
 }

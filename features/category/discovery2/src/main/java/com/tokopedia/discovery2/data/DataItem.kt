@@ -15,6 +15,7 @@ import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
 import com.tokopedia.mvcwidget.multishopmvc.data.ShopInfo
 
@@ -635,7 +636,7 @@ data class DataItem(
 
     @SerializedName("warehouse_id")
     var warehouseId: Long? = null
-) {
+): ImpressHolder() {
     val leftMargin: Int
         get() {
             return leftMarginMobile?.toIntOrNull() ?: 0

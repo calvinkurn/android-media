@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.SubmitOrderResult
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
@@ -1134,7 +1135,7 @@ open class ThankYouBaseFragment :
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
         getLoadingView()?.gone()
         thanksPageData = data
-        AppLogAnalytics.sendSubmitOrderResult(
+        AppLogPdp.sendSubmitOrderResult(
             SubmitOrderResult(
                 shippingPrice = data.shopOrder.sumOf { it.shippingAmount.toDouble() },
                 discountedShippingPrice = data.shopOrder.sumOf { it.discountShippingAmount.toDouble() },

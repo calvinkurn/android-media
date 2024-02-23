@@ -11,7 +11,8 @@ object TrackRecommendationMapper {
     const val MISSION_MODULE_NAME = "mission"
 
     fun CarouselMissionWidgetDataModel.asProductTrackModel(
-        isCache: Boolean = false
+        isCache: Boolean = false,
+        enterMethod: String = "",
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = data.productID,
@@ -23,11 +24,14 @@ object TrackRecommendationMapper {
             shopId = data.shopId,
             type = AppLogRecommendationType.MIXED_CAROUSEL,
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
+            enterMethod = enterMethod,
+            position = cardPosition,
         )
     }
 
     fun CarouselMissionWidgetDataModel.asCardTrackModel(
-        isCache: Boolean = false
+        isCache: Boolean = false,
+        enterMethod: String = "",
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardName = CardName.MISSION_CARD,
@@ -40,7 +44,9 @@ object TrackRecommendationMapper {
             requestId = "", // TODO need BE deployment
             shopId = data.shopId,
             type = AppLogRecommendationType.PRODUCT_CAROUSEL,
-            entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD
+            entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
+            enterMethod = enterMethod,
+            position = cardPosition,
         )
     }
 }
