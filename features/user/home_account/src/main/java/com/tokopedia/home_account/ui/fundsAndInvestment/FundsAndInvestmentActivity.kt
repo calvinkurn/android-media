@@ -17,11 +17,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class FundsAndInvestmentComposeActivity : BaseSimpleActivity(),
+class FundsAndInvestmentActivity : BaseSimpleActivity(),
     HasComponent<HomeAccountUserComponents> {
 
     @Inject
-    lateinit var viewModel: FundsAndInvestmentComposeViewModel
+    lateinit var viewModel: FundsAndInvestmentViewModel
 
     @Inject
     lateinit var homeAccountAnalytic: HomeAccountAnalytics
