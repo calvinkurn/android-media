@@ -227,7 +227,7 @@ object AppLogAnalytics {
         pushPageData()
         putPageData(PAGE_NAME, appLogInterface.getPageName())
         if (appLogInterface.isEnterFromWhitelisted()) {
-            putPageData(AppLogParam.ENTER_FROM, appLogInterface.getPageName())
+            putPageData(ENTER_FROM, appLogInterface.getPageName())
         }
     }
 
@@ -235,7 +235,15 @@ object AppLogAnalytics {
         clearCurrentPageData()
         putPageData(PAGE_NAME, appLogInterface.getPageName())
         if (appLogInterface.isEnterFromWhitelisted()) {
-            putPageData(AppLogParam.ENTER_FROM, appLogInterface.getPageName())
+            putPageData(ENTER_FROM, appLogInterface.getPageName())
         }
+    }
+
+    fun getPreviousPage(): Any? {
+        return getLastDataBeforeCurrent(PAGE_NAME)
+    }
+
+    fun getPreviousEnterFrom(): Any? {
+        return getLastDataBeforeCurrent(ENTER_FROM)
     }
 }
