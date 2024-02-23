@@ -96,7 +96,7 @@ object JvmMediaLoader {
     }
 
     @JvmStatic
-    fun loadBitmapImageUrl(
+    fun getBitmapImageUrl(
         context: Context,
         url: String,
         properties: Properties.() -> Unit,
@@ -123,5 +123,15 @@ object JvmMediaLoader {
         properties: Properties.() -> Unit
     ): File? {
         return url.downloadImageFromUrl(context, properties = properties)
+    }
+
+    @JvmStatic
+    fun getBitmapImageUrl(
+        context: Context,
+        url: String,
+        timeout: Long,
+        properties: Properties.() -> Unit
+    ): Bitmap?{
+        return url.getBitmapFromUrl(context, timeout, properties = properties)
     }
 }
