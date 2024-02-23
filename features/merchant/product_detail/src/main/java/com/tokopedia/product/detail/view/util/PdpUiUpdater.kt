@@ -380,18 +380,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     private fun updateDataTradein(context: Context?, tradeinResponse: ValidateTradeIn) {
         updateData(ProductDetailConstant.TRADE_IN) {
             productTradeinMap?.run {
-                subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
+                subtitle = if (tradeinResponse.usedPrice.toLongOrZero() > 0) {
                     context?.getString(
                         common_tradeinR.string.text_price_holder,
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            tradeinResponse.usedPrice.toIntOrZero(),
+                            tradeinResponse.usedPrice.toLongOrZero(),
                             true
                         )
                     ).orEmpty()
                     context?.getString(
                         common_tradeinR.string.text_price_holder,
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            tradeinResponse.usedPrice.toIntOrZero(),
+                            tradeinResponse.usedPrice.toLongOrZero(),
                             true
                         )
                     ).orEmpty()
