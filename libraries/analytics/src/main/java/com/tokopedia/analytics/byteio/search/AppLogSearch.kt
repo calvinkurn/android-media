@@ -8,6 +8,8 @@ import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.EventName
+import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_CLICK
+import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_SHOW
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.CHOOSE_SEARCH_FILTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.ENTER_SEARCH_BLANKPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.SEARCH
@@ -586,5 +588,13 @@ object AppLogSearch {
         addPage()
 //        addSourceModule() // TODO milhamj diapain ini?
         addSourcePageType()
+    }
+
+    fun eventCartEntranceShow() {
+        AppLogAnalytics.send(CART_ENTRANCE_SHOW, JSONObject().apply { addPage() })
+    }
+
+    fun eventCartEntranceClick() {
+        AppLogAnalytics.send(CART_ENTRANCE_CLICK, JSONObject().apply { addPage() })
     }
 }
