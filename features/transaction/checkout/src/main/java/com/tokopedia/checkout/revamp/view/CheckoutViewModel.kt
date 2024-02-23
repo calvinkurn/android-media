@@ -51,6 +51,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.ShippingComponents
 import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetRequest
 import com.tokopedia.checkoutpayment.data.PaymentFeeRequest
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
@@ -906,6 +907,7 @@ class CheckoutViewModel @Inject constructor(
                     calculator.updateShipmentCostModel(
                         listData.value,
                         cost,
+                        null,
                         isTradeInByDropOff,
                         summariesAddOnUiModel
                     )
@@ -3030,17 +3032,38 @@ class CheckoutViewModel @Inject constructor(
     }
 
     private suspend fun getPaymentData() {
-        val checkoutItems = listData.value
-        val payment = checkoutItems.payment() ?: return
+        val checkoutItems = listData.value.toMutableList()
+        var payment = checkoutItems.payment() ?: return
+        payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading))
+        checkoutItems[checkoutItems.size - 4] = payment
+        listData.value = checkoutItems
         var cost = listData.value.cost()!!
         // has selected payment data?
         val paymentRequest = paymentProcessor.generatePaymentRequest(checkoutItems)
-        val newPayment = paymentProcessor.getPaymentWidget(
-            GetPaymentWidgetRequest(
-                paymentRequest = paymentRequest
-            ),
-            payment
-        )
+        if (payment.data == null) {
+            payment = paymentProcessor.getPaymentWidget(
+                GetPaymentWidgetRequest(
+                    paymentRequest = paymentRequest
+                ),
+                payment
+            )
+        }
+        if (payment.widget.state == CheckoutPaymentWidgetState.Error) {
+            val newItems = listData.value.toMutableList()
+            cost = cost.copy(
+                dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
+                usePaymentFees = true
+            )
+            listData.value =
+                calculator.updateShipmentCostModel(
+                    newItems,
+                    cost,
+                    payment,
+                    isTradeInByDropOff,
+                    summariesAddOnUiModel
+                )
+            return
+        }
         val paymentFeeCheckoutRequest = PaymentFeeRequest(
             gatewayCode = "",
             profileCode = shipmentPlatformFeeData.profileCode,
@@ -3049,7 +3072,6 @@ class CheckoutViewModel @Inject constructor(
             paymentRequest = paymentRequest
         )
         cost = paymentProcessor.checkPlatformFeeOcc(
-            shipmentPlatformFeeData,
             cost,
             paymentFeeCheckoutRequest
         )
@@ -3057,6 +3079,7 @@ class CheckoutViewModel @Inject constructor(
             calculator.updateShipmentCostModel(
                 listData.value,
                 cost,
+                payment,
                 isTradeInByDropOff,
                 summariesAddOnUiModel
             )

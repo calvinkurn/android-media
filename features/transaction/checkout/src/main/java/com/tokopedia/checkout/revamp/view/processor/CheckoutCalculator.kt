@@ -5,6 +5,7 @@ import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.revamp.view.buttonPayment
 import com.tokopedia.checkout.revamp.view.cost
 import com.tokopedia.checkout.revamp.view.crossSellGroup
+import com.tokopedia.checkout.revamp.view.payment
 import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutButtonPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
@@ -15,6 +16,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.upsell
@@ -23,6 +25,7 @@ import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
 import com.tokopedia.checkout.view.uimodel.ShipmentAddOnSummaryModel
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -359,6 +362,7 @@ class CheckoutCalculator @Inject constructor(
     fun updateShipmentCostModel(
         listData: List<CheckoutItem>,
         newCost: CheckoutCostModel,
+        newPayment: CheckoutPaymentModel?,
         isTradeInByDropOff: Boolean,
         summariesAddOnUiModel: HashMap<Int, String>
     ): List<CheckoutItem> {
@@ -367,6 +371,7 @@ class CheckoutCalculator @Inject constructor(
             dynamicPlatformFee = newCost.dynamicPlatformFee,
             dynamicPaymentFees = newCost.dynamicPaymentFees
         )
+        var payment = newPayment ?: newList.payment()!!
         var buttonPaymentModel = newList.buttonPayment()!!
         var cartItemCounter = 0
         var cartItemErrorCounter = 0
@@ -399,16 +404,27 @@ class CheckoutCalculator @Inject constructor(
         val checkoutOrderModels = newList.filterIsInstance(CheckoutOrderModel::class.java)
         val priceTotal: Double =
             if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
-        val platformFee: Double =
-            if (shipmentCost.dynamicPaymentFees != null) {
+        val paymentFee: Double =
+            if (shipmentCost.usePaymentFees) {
                 shipmentCost.dynamicPaymentFees?.sumOf { it.fee } ?: 0.0
             } else if (shipmentCost.dynamicPlatformFee.fee <= 0) {
                 0.0
             } else {
                 shipmentCost.dynamicPlatformFee.fee
             }
-        val finalPrice = priceTotal + platformFee
-        if (cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) {
+        val finalPrice = priceTotal + paymentFee
+
+        payment = payment.copy(
+            widget = payment.widget.copy(
+                state = if (shipmentCost.usePaymentFees && shipmentCost.dynamicPaymentFees == null) {
+                    CheckoutPaymentWidgetState.Error
+                } else {
+                    payment.widget.state
+                }
+            )
+        )
+
+        if ((cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) && payment.widget.isValidStateToContinue) {
             val priceTotalFormatted =
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     finalPrice,
@@ -424,7 +440,7 @@ class CheckoutCalculator @Inject constructor(
             shipmentCost = shipmentCost.copy(totalPriceString = "-")
             buttonPaymentModel = buttonPaymentModel.copy(
                 useInsurance = shouldShowInsuranceTnc,
-                enable = cartItemErrorCounter < checkoutOrderModels.size,
+                enable = cartItemErrorCounter < checkoutOrderModels.size && payment.widget.isValidStateToContinue,
                 totalPrice = "-"
             )
         }
@@ -434,6 +450,7 @@ class CheckoutCalculator @Inject constructor(
         )
 
         return newList.toMutableList().apply {
+            set(size - 4, payment)
             set(size - 3, shipmentCost)
             set(size - 1, buttonPaymentModel)
         }
@@ -512,8 +529,14 @@ class CheckoutCalculator @Inject constructor(
                     cartItemErrorCounter++
                 }
             }
+            if (shipmentCartItemModel is CheckoutPaymentModel) {
+                if (!hasLoadingItem) {
+                    hasLoadingItem = shipmentCartItemModel.widget.state == CheckoutPaymentWidgetState.Loading
+                }
+            }
         }
         val checkoutOrderModels = listData.filterIsInstance(CheckoutOrderModel::class.java)
+        val payment = listData.payment()!!
         if (cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) {
             val priceTotal: Double =
                 if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
@@ -533,7 +556,7 @@ class CheckoutCalculator @Inject constructor(
         } else {
             return updateShipmentButtonPaymentModel(
                 listData.buttonPayment()!!,
-                enable = cartItemErrorCounter < checkoutOrderModels.size,
+                enable = cartItemErrorCounter < checkoutOrderModels.size && payment.widget.isValidStateToContinue,
                 totalPrice = "-"
             )
         }

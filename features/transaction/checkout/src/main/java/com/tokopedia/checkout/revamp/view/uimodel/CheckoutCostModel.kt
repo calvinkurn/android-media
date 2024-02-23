@@ -44,5 +44,6 @@ data class CheckoutCostModel(
     var listAddOnSummary: List<ShipmentAddOnSummaryModel> = emptyList(),
     val totalOtherFee: Double = 0.0,
     var isExpandOtherFee: Boolean = false,
-    val dynamicPaymentFees: List<OrderPaymentFee>? = emptyList()
+    val dynamicPaymentFees: List<OrderPaymentFee>? = emptyList(),
+    val usePaymentFees: Boolean = false
 ) : CheckoutItem

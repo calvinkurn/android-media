@@ -39,6 +39,7 @@ import com.tokopedia.checkoutpayment.data.SummariesItemData
 import com.tokopedia.checkoutpayment.data.UsageSummariesData
 import com.tokopedia.checkoutpayment.data.VoucherOrderItemData
 import com.tokopedia.checkoutpayment.processor.PaymentProcessor
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -46,6 +47,7 @@ import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
@@ -133,42 +135,53 @@ class CheckoutPaymentProcessor @Inject constructor(
     }
 
     suspend fun checkPlatformFeeOcc(
-        shipmentPlatformFeeData: ShipmentPlatformFeeData,
         cost: CheckoutCostModel,
         request: PaymentFeeRequest
     ): CheckoutCostModel {
         if (!cost.hasSelectAllShipping) {
-            return cost.copy(dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false))
+            return cost.copy(
+                dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
+                usePaymentFees = true
+            )
         }
-        val platformFeeModel = cost.dynamicPlatformFee
         val paymentFees = processor.getPaymentFee(request)
         if (paymentFees != null) {
             val platformFee = ShipmentPaymentFeeModel()
             for (fee in paymentFees) {
-                platformFee.title = fee.title
-                platformFee.fee = fee.fee
-                platformFee.isShowTooltip = fee.showTooltip
-                platformFee.tooltip = fee.tooltipInfo
-                platformFee.isShowSlashed = fee.showSlashed
-                platformFee.slashedFee = fee.slashedFee.toDouble()
+                if (fee.code.equals(
+                        CheckoutViewModel.PLATFORM_FEE_CODE,
+                        ignoreCase = true
+                    )
+                ) {
+                    platformFee.title = fee.title
+                    platformFee.fee = fee.fee
+//                    platformFee.minRange = fee.minRange
+//                    platformFee.maxRange = fee.maxRange
+                    platformFee.isShowTooltip = fee.showTooltip
+                    platformFee.tooltip = fee.tooltipInfo
+                    platformFee.isShowSlashed = fee.showSlashed
+                    platformFee.slashedFee = fee.slashedFee.toDouble()
+                }
             }
-//                    checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage(
-//                        userSessionInterface.userId,
-//                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
-//                            platformFee.fee.toLong(),
-//                            false
-//                        ).removeDecimalSuffix()
-//                    )
+            checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage(
+                userSessionInterface.userId,
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    platformFee.fee.toLong(),
+                    false
+                ).removeDecimalSuffix()
+            )
             return cost.copy(
-                dynamicPlatformFee = platformFeeModel.copy(isLoading = false),
-                dynamicPaymentFees = paymentFees
+                dynamicPlatformFee = platformFee,
+                dynamicPaymentFees = paymentFees,
+                usePaymentFees = true
             )
         } else {
             return cost.copy(
+                dynamicPaymentFees = null,
                 dynamicPlatformFee = ShipmentPaymentFeeModel(
-                    isShowTicker = true,
-                    ticker = shipmentPlatformFeeData.errorWording
-                )
+                    isLoading = false
+                ),
+                usePaymentFees = true
             )
         }
     }
@@ -351,6 +364,8 @@ class CheckoutPaymentProcessor @Inject constructor(
     }
 
     suspend fun getPaymentWidget(param: GetPaymentWidgetRequest, payment: CheckoutPaymentModel): CheckoutPaymentModel {
-        return payment.copy(data = processor.getPaymentWidget(param))
+        delay(5_000)
+        val data = processor.getPaymentWidget(param)
+        return payment.copy(data = data, widget = payment.widget.copy(state = if (data == null) CheckoutPaymentWidgetState.Error else CheckoutPaymentWidgetState.Normal))
     }
 }

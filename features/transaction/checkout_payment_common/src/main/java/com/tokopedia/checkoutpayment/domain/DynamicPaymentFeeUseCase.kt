@@ -43,6 +43,7 @@ class DynamicPaymentFeeUseCase @Inject constructor(
         }
         return response.response.data.map {
             OrderPaymentFee(
+                it.code,
                 it.title,
                 it.fee,
                 it.showTooltip,
