@@ -24,7 +24,7 @@ interface GetDataService {
     fun getTranslatedString(
         @Query("client") client: String,
         @Query("sl") sl: String,
-        @Query("tl") tl: String,
+        @Query("tl") tl: String?,
         @Query("dt") dt: String,
         /* @Query("oe") oe: String, */
        /* @Query("ie") ie: String, */

@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,9 +63,9 @@ public class TranslatorSettingView extends FrameLayout {
     private void initView() {
         final View view = inflate(getContext(), R.layout.tl_layout_config, null);
         Switch switchTranslator = view.findViewById(R.id.sw_translate);
-        switchTranslator.setChecked(SharedPrefsUtils.INSTANCE.getBooleanPreference(getContext(), IS_ENABLE, false));
+        switchTranslator.setChecked(SharedPrefsUtils.getBooleanPreference(getContext(), IS_ENABLE, false));
 
-        String currKey = SharedPrefsUtils.INSTANCE.getStringPreference(getContext(), API_KEY);
+        String currKey = SharedPrefsUtils.getStringPreference(getContext(), API_KEY);
 
         if (!TextUtils.isEmpty(currKey)) {
             TextView textApiKey = view.findViewById(R.id.text_curr_key);
@@ -73,20 +74,20 @@ public class TranslatorSettingView extends FrameLayout {
 
         TextView textLangVal = view.findViewById(R.id.text_val);
         CommonUtil.setText(textLangVal, "Currently selected languages is from <b><i>"
-                + SharedPrefsUtils.INSTANCE.getStringPreference(getContext(), SOURCE_LANGUAGE).split(DELIM_LANG_CODE)[0]
+                + SharedPrefsUtils.getStringPreference(getContext(), SOURCE_LANGUAGE).split(DELIM_LANG_CODE)[0]
                 + "</i></b> to <b><i>"
-                + SharedPrefsUtils.INSTANCE.getStringPreference(getContext(), DESTINATION_LANGUAGE).split(DELIM_LANG_CODE)[0]
+                + SharedPrefsUtils.getStringPreference(getContext(), DESTINATION_LANGUAGE).split(DELIM_LANG_CODE)[0]
                 + "</i></b>");
 
         TextView textCharCount = view.findViewById(R.id.text_count_char);
-        CommonUtil.setText(textCharCount, "Total translated text: " + NumberFormat.getNumberInstance(Locale.US).format(SharedPrefsUtils.INSTANCE.getIntegerPreference(getContext(), CHARS_COUNT, 0)));
+        CommonUtil.setText(textCharCount, "Total translated text: " + NumberFormat.getNumberInstance(Locale.US).format(SharedPrefsUtils.getIntegerPreference(getContext(), CHARS_COUNT, 0)));
 
         switchTranslator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Toast.makeText(getContext(), b ? "Translator enabled" : "Translator disabled", Toast.LENGTH_SHORT).show();
                 if (listener != null) listener.onSwitched(b);
-                SharedPrefsUtils.INSTANCE.setBooleanPreference(getContext(), IS_ENABLE, b);
+                SharedPrefsUtils.setBooleanPreference(getContext(), IS_ENABLE, b);
             }
         });
 
@@ -113,7 +114,7 @@ public class TranslatorSettingView extends FrameLayout {
                                         , (TextView) findViewById(R.id.text_curr_key)
                                         , editApiKey.getTextFieldInput().getText().toString().trim());
 
-                                SharedPrefsUtils.INSTANCE.setStringPreference(getContext(), API_KEY, editApiKey.getTextFieldInput().getText().toString().trim());
+                                SharedPrefsUtils.setStringPreference(getContext(), API_KEY, editApiKey.getTextFieldInput().getText().toString().trim());
 
                             } catch (JSONException e) {
                                 CommonUtil.showToast(getContext()
@@ -131,7 +132,7 @@ public class TranslatorSettingView extends FrameLayout {
                                 , "Something went wrong, please try later");
                     }
                 });
-                SharedPrefsUtils.INSTANCE.setStringPreference(getContext(), API_KEY, editApiKey.getTextFieldInput().getText().toString().trim());
+                SharedPrefsUtils.setStringPreference(getContext(), API_KEY, editApiKey.getTextFieldInput().getText().toString().trim());
             }
         });
 
@@ -163,7 +164,7 @@ public class TranslatorSettingView extends FrameLayout {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (mIsSelectedOrigin) {
                     String[] arrSupportedLanguages = getResources().getStringArray(R.array.supported_languages);
-                    SharedPrefsUtils.INSTANCE.setStringPreference(getContext(), SOURCE_LANGUAGE, arrSupportedLanguages[i]);
+                    SharedPrefsUtils.setStringPreference(getContext(), SOURCE_LANGUAGE, arrSupportedLanguages[i]);
 
                     CommonUtil.showToastWithUIUpdate(getContext()
                             , arrSupportedLanguages[i].split(DELIM_LANG_CODE)[0] + " set as a Origin language."
@@ -171,7 +172,7 @@ public class TranslatorSettingView extends FrameLayout {
                             , "Currently selected languages is from <b><i>"
                                     + arrSupportedLanguages[i].split(DELIM_LANG_CODE)[0]
                                     + "</i></b> to <b><i>"
-                                    + SharedPrefsUtils.INSTANCE.getStringPreference(getContext(), DESTINATION_LANGUAGE).split(DELIM_LANG_CODE)[0]
+                                    + SharedPrefsUtils.getStringPreference(getContext(), DESTINATION_LANGUAGE).split(DELIM_LANG_CODE)[0]
                                     + "</i></b>");
                 } else {
                     mIsSelectedOrigin = true;
@@ -184,18 +185,32 @@ public class TranslatorSettingView extends FrameLayout {
             }
         });
 
+        // creating select item index based on the last selected
+        int index = 0;
+        String[] arrSupportedLanguages = getResources().getStringArray(R.array.supported_languages);
+        String selectedItem = SharedPrefsUtils.getStringPreference(getContext(), DESTINATION_LANGUAGE);
+
+        for (int i = 0; i < arrSupportedLanguages.length; i++) {
+            if (Objects.equals(arrSupportedLanguages[i], selectedItem)) {
+                index = i;
+                break;
+            }
+        }
+
+        spDestination.setSelection(index, false);
+
         spDestination.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                SharedPrefsUtils.setStringPreference(getContext(), DESTINATION_LANGUAGE, arrSupportedLanguages[i]);
+
                 if (mIsSelectedDestination) {
-                    String[] arrSupportedLanguages = getResources().getStringArray(R.array.supported_languages);
-                    SharedPrefsUtils.INSTANCE.setStringPreference(getContext(), DESTINATION_LANGUAGE, arrSupportedLanguages[i]);
 
                     CommonUtil.showToastWithUIUpdate(getContext()
                             , arrSupportedLanguages[i].split("-")[0] + " set as a Destination language."
                             , (TextView) findViewById(R.id.text_val)
                             , "Currently selected languages is from <b><i>"
-                                    + SharedPrefsUtils.INSTANCE.getStringPreference(getContext(), SOURCE_LANGUAGE).split(DELIM_LANG_CODE)[0]
+                                    + SharedPrefsUtils.getStringPreference(getContext(), SOURCE_LANGUAGE).split(DELIM_LANG_CODE)[0]
                                     + "</i></b> to <b><i>"
                                     + arrSupportedLanguages[i].split(DELIM_LANG_CODE)[0] + "</i></b>");
                 } else {

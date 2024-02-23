@@ -17,6 +17,8 @@ object SharedPrefsUtils {
      * @param key
      * @return The value from shared preferences, or null if the value could not be read.
      */
+
+    @JvmStatic
     fun getStringPreference(context: Context, key: String?): String? {
         var value: String? = ""
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -34,12 +36,14 @@ object SharedPrefsUtils {
      * @param value
      * @return true if the new value was successfully written to persistent storage.
      */
+    @JvmStatic
     fun setStringPreference(context: Context, key: String, value: String): Boolean {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         if (preferences != null && !TextUtils.isEmpty(key)) {
             val editor = preferences.edit()
             editor.putString(key, value)
-            return editor.commit()
+            editor.apply()
+            return true
         }
         return false
     }
@@ -52,6 +56,7 @@ object SharedPrefsUtils {
      * @param defaultValue A default to return if the value could not be read.
      * @return The value from shared preferences, or the provided default.
      */
+    @JvmStatic
     fun getFloatPreference(context: Context, key: String, defaultValue: Float): Float {
         var value = defaultValue
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -69,6 +74,7 @@ object SharedPrefsUtils {
      * @param value
      * @return true if the new value was successfully written to persistent storage.
      */
+    @JvmStatic
     fun setFloatPreference(context: Context, key: String, value: Float): Boolean {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         if (preferences != null) {
@@ -87,6 +93,7 @@ object SharedPrefsUtils {
      * @param defaultValue A default to return if the value could not be read.
      * @return The value from shared preferences, or the provided default.
      */
+    @JvmStatic
     fun getLongPreference(context: Context, key: String, defaultValue: Long): Long {
         var value = defaultValue
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -104,6 +111,7 @@ object SharedPrefsUtils {
      * @param value
      * @return true if the new value was successfully written to persistent storage.
      */
+    @JvmStatic
     fun setLongPreference(context: Context, key: String, value: Long): Boolean {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         if (preferences != null) {
@@ -122,6 +130,7 @@ object SharedPrefsUtils {
      * @param defaultValue A default to return if the value could not be read.
      * @return The value from shared preferences, or the provided default.
      */
+    @JvmStatic
     fun getIntegerPreference(context: Context, key: String, defaultValue: Int): Int {
         var value = defaultValue
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -139,6 +148,7 @@ object SharedPrefsUtils {
      * @param value
      * @return true if the new value was successfully written to persistent storage.
      */
+    @JvmStatic
     fun setIntegerPreference(context: Context, key: String, value: Int): Boolean {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         if (preferences != null) {
@@ -157,6 +167,7 @@ object SharedPrefsUtils {
      * @param defaultValue A default to return if the value could not be read.
      * @return The value from shared preferences, or the provided default.
      */
+    @JvmStatic
     fun getBooleanPreference(context: Context, key: String, defaultValue: Boolean): Boolean {
         var value = defaultValue
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -174,6 +185,7 @@ object SharedPrefsUtils {
      * @param value
      * @return true if the new value was successfully written to persistent storage.
      */
+    @JvmStatic
     fun setBooleanPreference(context: Context, key: String, value: Boolean): Boolean {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         if (preferences != null) {

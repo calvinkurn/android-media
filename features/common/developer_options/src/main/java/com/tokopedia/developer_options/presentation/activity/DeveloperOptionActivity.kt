@@ -362,7 +362,7 @@ class DeveloperOptionActivity :
     }
 
     private fun initTranslator() {
-        TranslatorManager.Companion.init(this.application, API_KEY_TRANSLATOR)
+        TranslatorManager.init(this.application, API_KEY_TRANSLATOR)
     }
 
     private fun clickAccessTokenBtn() = object : AccessTokenViewHolder.AccessTokenListener {

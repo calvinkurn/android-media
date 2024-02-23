@@ -31,7 +31,6 @@ import com.tokopedia.translator.callback.ActivityTranslatorCallbacks
 import com.tokopedia.translator.repository.model.StringPoolItem
 import com.tokopedia.translator.repository.source.GetDataService
 import com.tokopedia.translator.repository.source.RetrofitClientInstance
-import com.tokopedia.translator.ui.CommonUtil
 import com.tokopedia.translator.ui.SharedPrefsUtils
 import com.tokopedia.translator.ui.TranslatorSettingView.*
 import com.tokopedia.translator.util.ViewUtil
@@ -47,7 +46,7 @@ class TranslatorManager() {
 
     private var mApplication: Application? = null
     private var mSelectors = HashMap<String, String>()
-    private var mStringPoolManager: StringPoolManager = StringPoolManager()
+    private var mStringPoolManager: StringPoolManager = StringPoolManager.getInstance()
     private var origStrings: String? = null
     private val TAG_CODE: String = "code"
     private val TAG_LANG_ARRAY: String = "lang"
@@ -57,6 +56,8 @@ class TranslatorManager() {
     private var mStartY = 280
     private var API_KEY: String? = null
     private var mLangsGroup: String? = "id-en"
+
+    private var destinationLang: String = "en"
 
     constructor(application: Application, apiKey: String) : this() {
         mApplication = application
@@ -153,7 +154,7 @@ class TranslatorManager() {
 
                                 if (stringPoolItem === null || stringPoolItem.demandedText === null || stringPoolItem.demandedText.isBlank()) {
                                     //prepare for translate
-                                    mStringPoolManager.add(view.text.toString(), "")
+                                    mStringPoolManager.add(view.text.toString(), "", "")
                                 } else {
                                     //translate
                                     view.text = stringPoolItem.demandedText
@@ -180,6 +181,18 @@ class TranslatorManager() {
             return
         }
 
+        val currentDestLang = mApplication?.let { application ->
+            SharedPrefsUtils.getStringPreference(application.applicationContext, DESTINATION_LANGUAGE)
+                ?.split(DELIM_LANG_CODE.toRegex())
+                ?.dropLastWhile { it.isEmpty() }
+                ?.toTypedArray()?.get(1)
+        } ?: "en"
+
+        if (destinationLang != currentDestLang) {
+            destinationLang = currentDestLang
+            mStringPoolManager.updateLangDest(destinationLang)
+        }
+
         prepareSelectors(getCurrentActivity()!!)
         origStrings = mStringPoolManager.getQueryString()
         Log.d(TAG, "Here is eligible string for translation in current screen $origStrings")
@@ -189,7 +202,6 @@ class TranslatorManager() {
                 TAG,
                 "Stopping translation as no new untranslated string found in this screen, ${getCurrentActivity()}"
             )
-            CommonUtil.showToast(mApplication, "No translation needed");
             return
         }
 
@@ -197,8 +209,7 @@ class TranslatorManager() {
             RetrofitClientInstance.getRetrofitInstance().create(GetDataService::class.java)
 //        val call = service.getTranslatedStringY(API_KEY, origStrings!!, mLangsGroup, "plain")
         val originStrList = origStrings!!.split(DELIM.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        val call = service.getTranslatedString("dict-chrome-ex", "id","en", "t", originStrList)
-        CommonUtil.showToast(mApplication, "Translation starting...");
+        val call = service.getTranslatedString("dict-chrome-ex", "id",destinationLang, "t", originStrList)
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
@@ -214,8 +225,9 @@ class TranslatorManager() {
                         if (arrayStr.isNotEmpty()) {
 
                             mStringPoolManager.updateCache(
-                                origStrings!!.split(DELIM.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray(),
-                                arrayStr
+                                originStrList,
+                                arrayStr,
+                                destinationLang
                             )
 
                             val charCountOld =
@@ -231,13 +243,9 @@ class TranslatorManager() {
                                 CHARS_COUNT,
                                 origStrings!!.length + charCountOld
                             )
-
-                            CommonUtil.showToast(mApplication, "Translation succeeded...enjoy");
-
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        CommonUtil.showToast(mApplication, "Translation failed...");
                     }
                 }
 
@@ -279,7 +287,7 @@ class TranslatorManager() {
         }
     }
 
-    private fun prepareBubbleView(context: Context) {
+    fun prepareBubbleView(context: Context) {
         mLayoutFloatingButton =
             LayoutInflater.from(context).inflate(R.layout.layout_floating_button, null)
         //Add the view to the window.
@@ -338,12 +346,12 @@ class TranslatorManager() {
         next: Activity
     ) {
         if (mCurrentActivity != null) {
-            (mCurrentActivity?.get()!!.window.decorView as ViewGroup).removeView(
+            (mCurrentActivity?.get()?.window?.decorView as? ViewGroup)?.removeView(
                 mLayoutFloatingButton
             )
         }
 
-        (next.window.decorView as ViewGroup).addView(mLayoutFloatingButton)
+        (next.window.decorView as? ViewGroup)?.addView(mLayoutFloatingButton)
         applyAnimation(mLayoutFloatingButton)
     }
 
