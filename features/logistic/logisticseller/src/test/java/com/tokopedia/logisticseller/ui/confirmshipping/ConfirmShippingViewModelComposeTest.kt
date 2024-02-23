@@ -20,7 +20,6 @@ import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.TestCase
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -74,13 +73,22 @@ class ConfirmShippingViewModelComposeTest {
         )
 
         listMsg = listOf("Ok1", "Ok2", "Ok3")
+        val service1 =
+            SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment.ShipmentPackage(
+                spId = "22",
+                name = "Reguler"
+            )
 
         val courier1 =
-            SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = "123")
+            SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(
+                shipmentId = "123",
+                listShipmentPackage = listOf(service1)
+            )
         val courier2 =
             SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = "456")
         val courier3 =
             SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = "789")
+
         listCourier = listOf(courier1, courier2, courier3)
     }
 
@@ -245,13 +253,26 @@ class ConfirmShippingViewModelComposeTest {
                         type = "type",
                         values = listOf("a", "b", "c")
                     )
+                ),
+                template =
+                SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.TickerUnificationParams.Template(
+                    contents = listOf(
+                        SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.TickerUnificationParams.Template.Content(
+                            key = "key",
+                            value = "value"
+                        )
+                    )
                 )
+
             )
 
         // given
         coEvery {
             somGetCourierListUseCase.execute("123")
-        } returns SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier, targetedTickerParam)
+        } returns SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(
+            listCourier,
+            targetedTickerParam
+        )
         val response = GetTargetedTickerResponse()
         coEvery { targetedTickerUseCase(any()) } returns response
 
@@ -264,12 +285,81 @@ class ConfirmShippingViewModelComposeTest {
         )
 
 
-
         val result = confirmShippingViewModel.uiState.value
-        val tickerResult = TargetedTickerMapper.convertTargetedTickerToUiModel(response.getTargetedTickerData)
+        val tickerResult =
+            TargetedTickerMapper.convertTargetedTickerToUiModel(response.getTargetedTickerData)
 
         assertNotNull(result.tickerData)
         assert(tickerResult == result.tickerData)
+    }
+
+    @Test
+    fun `Verify modify ref number`() {
+        val refNum = "TKP-08439"
+        confirmShippingViewModel.onEvent(ConfirmShippingEvent.ChangeRefNum(refNum))
+
+        assert(confirmShippingViewModel.uiState.value.referenceNumber == refNum)
+    }
+
+    @Test
+    fun `Verify modify mode to change courier`() {
+        confirmShippingViewModel.onEvent(ConfirmShippingEvent.SwitchMode(isChangeCourier = true))
+
+        assert(confirmShippingViewModel.uiState.value.mode == ConfirmShippingMode.CHANGE_COURIER)
+    }
+
+    @Test
+    fun `Verify modify mode to confirm shipping`() {
+        confirmShippingViewModel.onEvent(ConfirmShippingEvent.SwitchMode(isChangeCourier = false))
+
+        assert(confirmShippingViewModel.uiState.value.mode == ConfirmShippingMode.CONFIRM_SHIPPING)
+    }
+
+    @Test
+    fun `Verify modify selected courier`() {
+        // given
+        coEvery {
+            somGetCourierListUseCase.execute("123")
+        } returns SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier)
+        confirmShippingViewModel.onEvent(
+            ConfirmShippingEvent.OnCreate(
+                "123",
+                ConfirmShippingMode.CONFIRM_SHIPPING
+            )
+        )
+
+        // when
+        confirmShippingViewModel.onEvent(ConfirmShippingEvent.ChooseCourier(listCourier.first()))
+
+        assert(confirmShippingViewModel.uiState.value.chosenCourier == listCourier.first())
+        assert(confirmShippingViewModel.uiState.value.chosenService == listCourier.first().listShipmentPackage.first())
+    }
+
+    @Test
+    fun `Verify modify selected service`() {
+        // given
+        coEvery {
+            somGetCourierListUseCase.execute("123")
+        } returns SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier)
+        confirmShippingViewModel.onEvent(
+            ConfirmShippingEvent.OnCreate(
+                "123",
+                ConfirmShippingMode.CONFIRM_SHIPPING
+            )
+        )
+
+        // when
+        confirmShippingViewModel.onEvent(ConfirmShippingEvent.ChooseService(listCourier.first().listShipmentPackage.first()))
+
+        assert(confirmShippingViewModel.uiState.value.chosenService == listCourier.first().listShipmentPackage.first())
+    }
+
+    @Test
+    fun `Verify loading state`() {
+        // when
+        confirmShippingViewModel.onEvent(ConfirmShippingEvent.Loading)
+
+        assert(confirmShippingViewModel.uiState.value.loading)
     }
 
     private fun runCollectingResult(block: (List<ConfirmShippingResult>) -> Unit) {
