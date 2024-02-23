@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -52,16 +53,23 @@ fun FeedProductHighlight(
     onProductClick: (FeedCardProductModel) -> Unit,
 ) {
     val ctx = LocalContext.current
+    val density = LocalDensity.current
 
     NestTheme(darkTheme = false) {
         AnimatedVisibility(
             visible = isVisible,
-            enter = slideInVertically(),
-            exit = slideOutVertically()
+            enter = slideInVertically {
+                with(density) { 60.dp.roundToPx() }
+            },
+            exit = slideOutVertically {
+                with(density) { 60.dp.roundToPx()}
+            }
         ) {
-            Box(modifier = Modifier
-                .wrapContentSize()
-                .padding(horizontal = 4.dp)) {
+            Box(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(horizontal = 4.dp)
+            ) {
                 if (product.isDiscount) {
                     NestRibbon(
                         text = product.discountFmt, top = 2.dp, modifier = Modifier.zIndex(16f)
