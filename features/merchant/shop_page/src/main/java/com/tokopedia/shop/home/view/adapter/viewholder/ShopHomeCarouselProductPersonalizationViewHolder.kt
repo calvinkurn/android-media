@@ -278,6 +278,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             carouselProductCardOnItemClickListener = productClickListener,
                             carouselProductCardOnItemImpressedListener = productImpressionListener
                         )
+                        recyclerViewCarouselSingleOrDoubleProduct?.trackHorizontalScroll(element)
                     }
                     else -> {
                         recyclerView?.show()
