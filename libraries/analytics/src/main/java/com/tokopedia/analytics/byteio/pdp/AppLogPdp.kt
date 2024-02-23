@@ -6,6 +6,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.analytics.byteio.EventName
@@ -56,6 +57,7 @@ object AppLogPdp {
             it.addSourcePageType()
             it.addEntranceForm()
             it.addSourceModule()
+            it.addTrackId()
             it.put("stay_time", durationInMs)
             it.put("is_load_data", if (product.isLoadData) 1 else 0)
             it.put("quit_type", quitType)
