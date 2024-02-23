@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -787,7 +788,7 @@ class CartViewModel @Inject constructor(
             val buttonClickTracker = CartPageAnalyticsUtil.generateByteIoAnalyticsModel(
                 cartItemDataList, subTotalState.value
             )
-            AppLogAnalytics.sendCartButtonClick(buttonClickTracker)
+            AppLogPdp.sendCartButtonClick(buttonClickTracker)
             if (fireAndForget) {
                 // Trigger use case without composite subscription, because this should continue even after view destroyed
                 updateCartUseCase.setParams(

@@ -13,6 +13,7 @@ import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.TrackConfirmSku
 import com.tokopedia.analytics.byteio.TrackProductDetail
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
@@ -707,7 +708,7 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
         val data = getDynamicProductInfoP1 ?: throw Exception()
-        AppLogAnalytics.sendConfirmCart(
+        AppLogPdp.sendConfirmCart(
             TrackConfirmCart(
                 productId = data.parentProductId,
                 productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),
@@ -773,7 +774,7 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     private suspend fun getAddToCartOccUseCase(atcParams: AddToCartOccMultiRequestParams) {
         val data = getDynamicProductInfoP1 ?: throw Exception()
-        AppLogAnalytics.sendConfirmSku(
+        AppLogPdp.sendConfirmSku(
             TrackConfirmSku(
                 productId = data.parentProductId,
                 productCategory = data.basic.category.detail.firstOrNull()?.name.orEmpty(),

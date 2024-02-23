@@ -5,7 +5,7 @@ import android.app.Application
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
-import com.tokopedia.analytics.byteio.AppLogAnalytics.sendStayProductDetail
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp.sendStayProductDetail
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

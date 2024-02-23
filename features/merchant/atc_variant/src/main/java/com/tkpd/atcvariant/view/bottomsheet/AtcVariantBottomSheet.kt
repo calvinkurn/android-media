@@ -39,6 +39,7 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.TrackConfirmCart
 import com.tokopedia.analytics.byteio.TrackConfirmSku
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
@@ -499,7 +500,7 @@ class AtcVariantBottomSheet :
                 failReason = reason
                 cartItemId = cartId
             }
-            AppLogAnalytics.sendConfirmCartResult(model)
+            AppLogPdp.sendConfirmCartResult(model)
             if (it is Success) {
                 onSuccessTransaction(it.data)
                 dismissAfterAtc()
