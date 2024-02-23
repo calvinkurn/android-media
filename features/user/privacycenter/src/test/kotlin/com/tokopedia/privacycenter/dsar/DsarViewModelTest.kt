@@ -45,6 +45,7 @@ class DsarViewModelTest {
     private var toasterErrorObserver = mockk<Observer<String>>(relaxed = true)
     private var mainLoaderObserver = mockk<Observer<Boolean>>(relaxed = true)
     private var mainLayoutObserver = mockk<Observer<Boolean>>(relaxed = true)
+    private var globalErrorObserver = mockk<Observer<Boolean>>(relaxed = true)
 
     val email = "yoris.prayogo@tokopedia.com"
     val exception = Exception("error")
@@ -57,6 +58,7 @@ class DsarViewModelTest {
         viewModel.toasterError.observeForever(toasterErrorObserver)
         viewModel.mainLoader.observeForever(mainLoaderObserver)
         viewModel.showMainLayout.observeForever(mainLayoutObserver)
+        viewModel.globalError.observeForever(globalErrorObserver)
     }
 
     @Test
@@ -349,6 +351,21 @@ class DsarViewModelTest {
         viewModel.fetchInitialData()
         val globalError = viewModel.globalError.getOrAwaitValue()
 
+        // Then
         assert(globalError)
+        globalErrorObserver.onChanged(true)
+    }
+
+    @Test
+    fun `fetchInitialData throws error`() {
+        // Given
+        val error = Throwable()
+        coEvery { getProfileUseCase(Unit) } throws error
+
+        // When
+        viewModel.fetchInitialData()
+
+        // Then
+        globalErrorObserver.onChanged(true)
     }
 }

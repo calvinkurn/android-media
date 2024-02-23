@@ -12,6 +12,8 @@ import com.tokopedia.privacycenter.domain.SubmitRequestUseCase
 import com.tokopedia.privacycenter.ui.dsar.uimodel.CustomDateModel
 import com.tokopedia.privacycenter.ui.dsar.uimodel.SubmitRequestUiModel
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toString
@@ -144,13 +146,23 @@ class DsarViewModel @Inject constructor(
     fun fetchInitialData() {
         launch {
             try {
-                getProfileUseCase(Unit)
-                checkRequestStatus()
+                when (getProfileUseCase(Unit)) {
+                    is Success -> {
+                        checkRequestStatus()
+                    }
+                    is Fail -> {
+                        onErrorInitialData()
+                    }
+                }
             } catch (_: Exception) {
-                _globalError.value = true
-                _mainLoader.value = false
+                onErrorInitialData()
             }
         }
+    }
+
+    private fun onErrorInitialData() {
+        _globalError.value = true
+        _mainLoader.value = false
     }
 
     fun checkRequestStatus() {
