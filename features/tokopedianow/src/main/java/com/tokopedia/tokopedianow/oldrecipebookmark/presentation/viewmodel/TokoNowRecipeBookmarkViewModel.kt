@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.oldrecipebookmark.presentation.viewmodel
 
+import android.annotation.SuppressLint
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -37,7 +38,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     private val layout: MutableList<Visitable<*>> = mutableListOf()
     private var pageCounter: Int = DEFAULT_PAGE
     private var noNeedLoadMore: Boolean = true
-    private var tempRecipeRemoved: MutableMap<Int, Visitable<*>> = mutableMapOf()
+    private val tempRecipeRemoved: MutableMap<String, Visitable<*>> = mutableMapOf()
 
     private val _loadRecipeBookmarks: MutableStateFlow<UiState<List<Visitable<*>>>?> = MutableStateFlow(null)
     private val _moreRecipeBookmarks: MutableStateFlow<UiState<List<Visitable<*>>>?> = MutableStateFlow(null)
@@ -53,6 +54,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     val isOnScrollNotNeeded: StateFlow<Boolean>
         get() = _isOnScrollNotNeeded
 
+    @SuppressLint("PII Data Exposure")
     private suspend fun getRecipeBookmarks(page: Int): Triple<List<RecipeUiModel>, GetRecipeBookmarksResponse.TokonowGetRecipeBookmarks.Header, Boolean> {
         val warehouseId = addressData.warehouse_id
 
@@ -72,7 +74,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     private fun onResponseAddRecipeBE(position: Int, isRemoving: Boolean, recipeId: String, errorMessage: String, isSuccess: Boolean) {
         if (isSuccess) {
             restoreRecipeRemoved(
-                tempPosition = position,
                 restorePosition = RESTORE_ADD_POSITION,
                 recipeId = recipeId
             )
@@ -160,7 +161,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
      */
     private fun onFailRemoveRecipe(isRemoving: Boolean, position: Int, recipeId: String, isSuccess: Boolean, errorMessage: String) {
         restoreRecipeRemoved(
-            tempPosition = position,
             restorePosition = position,
             recipeId = recipeId
         )
@@ -182,10 +182,11 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
      * @see tempRecipeRemoved - restore recipe back to layout
      * @see layout - will be updated by restoring recipe back
      */
-    private fun restoreRecipeRemoved(tempPosition: Int, restorePosition: Int, recipeId: String) {
+    private fun restoreRecipeRemoved(restorePosition: Int, recipeId: String) {
         layout.removeRecipeShimmering(recipeId)
-        tempRecipeRemoved[tempPosition]?.apply {
+        tempRecipeRemoved[recipeId]?.apply {
             layout.add(restorePosition, this)
+            tempRecipeRemoved.remove(recipeId)
         }
     }
 
@@ -298,7 +299,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     private fun updateLayoutWithTempRecipeRemoved(isRemoving: Boolean, position: Int, recipeId: String) {
         if (isRemoving) {
             restoreRecipeRemoved(
-                tempPosition = position,
                 restorePosition = position,
                 recipeId = recipeId
             )
@@ -321,7 +321,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         launchCatchError(block = {
             _toaster.value = UiState.Loading()
 
-            tempRecipeRemoved[position] = layout[position]
+            tempRecipeRemoved[recipeId] = layout[position]
 
             showItemLoading(
                 isRemoving = isRemoving,

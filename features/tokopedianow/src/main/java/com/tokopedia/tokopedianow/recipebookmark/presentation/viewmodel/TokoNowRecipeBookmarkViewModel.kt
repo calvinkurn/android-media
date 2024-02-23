@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.recipebookmark.presentation.viewmodel
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.viewModelScope
@@ -65,10 +66,10 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     val uiAction: SharedFlow<RecipeBookmarkAction> = _uiAction.asSharedFlow()
 
     private val visitableList: SnapshotStateList<Visitable<*>> = mutableStateListOf()
+    private val removedRecipe: MutableMap<String, Visitable<*>> = mutableMapOf()
 
     private var pageCounter: Int = DEFAULT_PAGE
     private var noNeedLoadMore: Boolean = true
-    private var tempRecipeRemoved: MutableMap<Int, Visitable<*>> = mutableMapOf()
 
     fun onEvent(event: RecipeBookmarkEvent) {
         when (event) {
@@ -81,6 +82,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private suspend fun getRecipeBookmarks(page: Int): Triple<List<RecipeUiModel>, Header, Boolean> {
         val warehouseId = chooseAddressData.warehouse_id
 
@@ -106,7 +108,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     ) {
         if (isSuccess) {
             restoreRecipeRemoved(
-                tempPosition = position,
                 restorePosition = RESTORE_ADD_POSITION,
                 recipeId = recipeId
             )
@@ -202,7 +203,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         errorMessage: String
     ) {
         restoreRecipeRemoved(
-            tempPosition = position,
             restorePosition = position,
             recipeId = recipeId
         )
@@ -221,13 +221,14 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     }
 
     /**
-     * @see tempRecipeRemoved - restore recipe back to layout
+     * @see removedRecipe - restore recipe back to layout
      * @see visitableList - will be updated by restoring recipe back
      */
-    private fun restoreRecipeRemoved(tempPosition: Int, restorePosition: Int, recipeId: String) {
+    private fun restoreRecipeRemoved(restorePosition: Int, recipeId: String) {
         visitableList.removeRecipeShimmering(recipeId)
-        tempRecipeRemoved[tempPosition]?.apply {
+        removedRecipe[recipeId]?.apply {
             visitableList.add(restorePosition, this)
+            removedRecipe.remove(recipeId)
         }
     }
 
@@ -317,7 +318,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     ) {
         if (isRemoving) {
             restoreRecipeRemoved(
-                tempPosition = position,
                 restorePosition = position,
                 recipeId = recipeId
             )
@@ -355,7 +355,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         val isRemoving = event.isRemoving
 
         launchCatchError(block = {
-            tempRecipeRemoved[position] = visitableList[position]
+            removedRecipe[recipeId] = visitableList[position]
 
             showItemLoading(
                 isRemoving = isRemoving,
