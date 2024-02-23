@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.baselist.R;
-import com.tokopedia.media.loader.JvmMediaLoader;
 
 
 /**
@@ -55,7 +54,7 @@ public class BaseEmptyViewHolder<T extends EmptyModel> extends AbstractViewHolde
         }
         if (!TextUtils.isEmpty(element.getUrlRes())) {
             if (context != null) {
-                JvmMediaLoader.loadImage(emptyIconImageView, element.getUrlRes());
+                Glide.with(context).load(element.getUrlRes()).into(emptyIconImageView);
             }
         }
         if (element.getCallback() != null) {
