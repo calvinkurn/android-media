@@ -52,6 +52,7 @@ import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.ServerLogLogger;
 import com.tokopedia.analyticsdebugger.debugger.ServerLogLoggerInterface;
 import com.tokopedia.applink.AppUtil;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -361,7 +362,11 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
             @Override
             public void onShakeDetected(boolean isLongShake) {
-                openShakeDetectCampaignPage(isLongShake);
+                if (GlobalConfig.isAllowDebuggingTools()) {
+                    openDeveloperOptions();
+                } else {
+                    openShakeDetectCampaignPage(isLongShake);
+                }
             }
         }));
 
@@ -398,6 +403,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }));
         registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new MonitoringActivityLifecycle(getApplicationContext()));
+    }
+
+    private void openDeveloperOptions() {
+        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.DEVELOPER_OPTIONS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
     }
 
     private void onCheckAppUpdateRemoteConfig(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
