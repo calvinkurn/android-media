@@ -53,8 +53,9 @@ object AppLogPdp {
         AppLogAnalytics.send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
             it.put(AppLogParam.PREVIOUS_PAGE, AppLogAnalytics.previousPageName(2))
             it.put(AppLogParam.PAGE_NAME, PageName.PDP)
-            it.addEntranceForm()
             it.addSourcePageType()
+            it.addEntranceForm()
+            it.addSourceModule()
             it.put("stay_time", durationInMs)
             it.put("is_load_data", if (product.isLoadData) 1 else 0)
             it.put("quit_type", quitType)
