@@ -76,12 +76,15 @@ class BannerAdsListenerDelegate(
         val cpmProduct = data.cpm.cpmShop.products.find { it.applinks == applink } ?: return
 
         AppLogSearch.eventSearchResultClick(
-            dataView.asByteIOProductSearchResult(
+            dataView.productAsByteIOSearchResult(
                 cpmProduct,
                 adapterPosition,
                 productPosition,
                 "",
             )
+        )
+        AppLogSearch.eventProductClick(
+            dataView.productAsByteIOProduct(cpmProduct, adapterPosition, productPosition)
         )
     }
 

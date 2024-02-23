@@ -107,6 +107,8 @@ class InspirationCarouselListenerDelegate(
         AppLogSearch.eventSearchResultShow(
             product.asByteIOSearchResult(optionAdapterPosition, null)
         )
+
+        AppLogSearch.eventProductShow(product.asByteIOProduct(optionAdapterPosition))
     }
 
     override fun onInspirationCarouselGridProductClicked(

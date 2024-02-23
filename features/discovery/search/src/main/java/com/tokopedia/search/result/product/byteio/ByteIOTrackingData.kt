@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.product
+package com.tokopedia.search.result.product.byteio
 
 data class ByteIOTrackingData(
     val imprId: String = "",

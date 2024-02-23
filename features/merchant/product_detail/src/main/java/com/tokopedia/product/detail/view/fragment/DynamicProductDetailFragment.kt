@@ -36,6 +36,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
@@ -2899,7 +2900,7 @@ open class DynamicProductDetailFragment :
                 failReason = reason
                 cartItemId = cartId
             }
-            AppLogAnalytics.sendConfirmCartResult(model)
+            AppLogPdp.sendConfirmCartResult(model)
         }
     }
 
@@ -3076,7 +3077,7 @@ open class DynamicProductDetailFragment :
             }
 
             onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
-            AppLogAnalytics.sendPDPEnterPage(viewModel.getProductDetailTrack())
+            AppLogPdp.sendPDPEnterPage(viewModel.getProductDetailTrack())
             getProductDetailActivity()?.stopMonitoringP2Data()
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()

@@ -20,6 +20,7 @@ import com.tokopedia.analytics.byteio.ProductType
 import com.tokopedia.analytics.byteio.TrackConfirmCart
 import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.TrackConfirmSku
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -501,7 +502,7 @@ class AtcVariantViewModel @Inject constructor(
         val parentId = getVariantData()?.parentId.orEmpty()
         val categoryLvl1 = aggregatorData?.simpleBasicInfo?.category?.detail?.firstOrNull()?.name.orEmpty()
         if (actionButton == ProductDetailCommonConstant.ATC_BUTTON) {
-            AppLogAnalytics.sendConfirmCart(
+            AppLogPdp.sendConfirmCart(
                 TrackConfirmCart(
                     productId = parentId,
                     productCategory = categoryLvl1,
@@ -513,7 +514,7 @@ class AtcVariantViewModel @Inject constructor(
                 )
             )
         } else if (actionButton == ProductDetailCommonConstant.OCC_BUTTON) {
-            AppLogAnalytics.sendConfirmSku(
+            AppLogPdp.sendConfirmSku(
                 TrackConfirmSku(
                     productId = parentId,
                     productCategory = categoryLvl1,
@@ -521,7 +522,7 @@ class AtcVariantViewModel @Inject constructor(
                     originalPrice = selectedChild?.finalPrice.orZero(),
                     salePrice = selectedChild?.price.orZero(),
                     skuId = selectedChild?.productId.orEmpty(),
-                    isSingleSku = false, // always false in atc variant
+                    isSingleSku = getVariantData()?.children?.size == 1,
                     qty = selectedChild?.getFinalMinOrder().orZero().toString(),
                     isHaveAddress = false
                 )

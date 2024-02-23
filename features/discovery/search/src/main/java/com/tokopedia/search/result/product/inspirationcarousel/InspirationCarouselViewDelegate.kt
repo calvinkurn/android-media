@@ -65,6 +65,8 @@ class InspirationCarouselViewDelegate @Inject constructor(
         AppLogSearch.eventSearchResultClick(
             product.asByteIOSearchResult(optionAdapterPosition, "")
         )
+
+        AppLogSearch.eventProductClick(product.asByteIOProduct(optionAdapterPosition))
     }
 
     override fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product) {
@@ -103,6 +105,8 @@ class InspirationCarouselViewDelegate @Inject constructor(
         AppLogSearch.eventSearchResultClick(
             product.asByteIOSearchResult(optionAdapterPosition, "")
         )
+
+        AppLogSearch.eventProductClick(product.asByteIOProduct(optionAdapterPosition))
     }
 
     override fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option) {
