@@ -63,7 +63,7 @@ fun RecipeBookmarkLayout(
 
         when (state) {
             is RecipeBookmarkState.Loading -> RecipeBookmarkShimmeringLayout()
-            is RecipeBookmarkState.Show -> RecipeBookmarkList(state, onEvent, analytics)
+            is RecipeBookmarkState.Show -> RecipeBookmarkList(state, analytics, onEvent)
             is RecipeBookmarkState.Empty -> RecipeBookmarkEmptyLayout()
             is RecipeBookmarkState.Error -> {
                 RecipeBookmarkErrorLayout(state) {
@@ -77,8 +77,8 @@ fun RecipeBookmarkLayout(
 @Composable
 fun RecipeBookmarkList(
     state: RecipeBookmarkState.Show,
-    onEvent: (RecipeBookmarkEvent) -> Unit,
-    analytics: RecipeBookmarkAnalytics
+    analytics: RecipeBookmarkAnalytics,
+    onEvent: (RecipeBookmarkEvent) -> Unit
 ) {
     val items = remember { state.items }
     val scrollToTop = state.scrollToTop
