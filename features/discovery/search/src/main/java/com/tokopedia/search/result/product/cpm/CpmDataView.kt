@@ -1,9 +1,13 @@
 package com.tokopedia.search.result.product.cpm
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.EntranceForm.SEARCH_SHOP_CARD_BIG
+import com.tokopedia.analytics.byteio.EntranceForm.SEARCH_SHOP_CARD_SMALL
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SHOP_BIG
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SHOP_SMALL
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.ByteIOTrackingData
@@ -21,8 +25,10 @@ data class CpmDataView(
 
     val byteIOImpressHolder = ImpressHolder()
 
-    private fun byteIOSearchResultTokenType() =
-        if (cpmModel.data.getOrNull(0)?.cpm?.layout == 2) SHOP_SMALL else SHOP_BIG
+    private fun byteIOTokenType() =
+        if (isSmallCPM()) SHOP_SMALL else SHOP_BIG
+
+    private fun isSmallCPM() = cpmModel.data.getOrNull(0)?.cpm?.layout == 2
 
     fun asByteIOSearchResult(
         adapterPosition: Int,
@@ -42,14 +48,14 @@ data class CpmDataView(
             searchKeyword = byteIOTrackingData.keyword,
             rank = adapterPosition,
             isAd = true,
-            tokenType = byteIOSearchResultTokenType(),
+            tokenType = byteIOTokenType(),
             isFirstPage = byteIOTrackingData.isFirstPage,
             shopId = shopId,
             aladdinButtonType = aladdinButtonType,
         )
     }
 
-    fun asByteIOProductSearchResult(
+    fun productAsByteIOSearchResult(
         cpmProduct: CPMProduct,
         adapterPosition: Int,
         productPosition: Int,
@@ -70,10 +76,37 @@ data class CpmDataView(
             searchKeyword = byteIOTrackingData.keyword,
             rank = adapterPosition,
             isAd = true,
-            tokenType = byteIOSearchResultTokenType(),
+            tokenType = byteIOTokenType(),
             isFirstPage = byteIOTrackingData.isFirstPage,
             shopId = shopId,
             aladdinButtonType = aladdinButtonType,
+        )
+    }
+
+    fun productAsByteIOProduct(
+        cpmProduct: CPMProduct,
+        adapterPosition: Int,
+        productPosition: Int,
+    ): AppLogSearch.Product {
+        val cpmShop = cpmModel.data.getOrNull(0)?.cpm?.cpmShop
+        val shopId = cpmShop?.id ?: ""
+        return AppLogSearch.Product(
+            entranceForm = if (isSmallCPM()) SEARCH_SHOP_CARD_BIG else SEARCH_SHOP_CARD_SMALL,
+            volume = null,
+            rate = cpmProduct.productRatingFormat.toFloatOrZero(),
+            isAd = true,
+            productID = cpmProduct.id,
+            searchID = byteIOTrackingData.searchId,
+            requestID = byteIOTrackingData.imprId,
+            searchResultID = shopId,
+            enterFrom = byteIOTrackingData.enterFrom,
+            listItemId = cpmProduct.id,
+            itemRank = productPosition,
+            listResultType = AppLogSearch.ParamValue.GOODS,
+            searchKeyword = byteIOTrackingData.keyword,
+            tokenType = byteIOTokenType(),
+            rank = adapterPosition,
+            shopID = shopId,
         )
     }
 

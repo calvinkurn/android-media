@@ -2,12 +2,14 @@ package com.tokopedia.search.result.product.inspirationcarousel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_DILAYANI_TOKOPEDIA
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
@@ -277,32 +279,49 @@ data class InspirationCarouselDataView(
             fun asByteIOSearchResult(
                 optionAdapterPosition: Int,
                 aladdinButtonType: String?,
-            ): AppLogSearch.SearchResult {
-                val searchResultId =
-                    if (customVideoURL.isBlank())
-                        if (hasParentId()) parentId
-                        else id
-                    else ""
+            ) = AppLogSearch.SearchResult(
+                imprId = byteIOTrackingData.imprId,
+                searchId = byteIOTrackingData.searchId,
+                searchEntrance = byteIOTrackingData.searchEntrance,
+                enterFrom = byteIOTrackingData.enterFrom,
+                searchResultId = getSearchResultId(),
+                listItemId = id,
+                itemRank = position,
+                listResultType = AppLogSearch.ParamValue.GOODS,
+                productID = id,
+                searchKeyword = byteIOTrackingData.keyword,
+                tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
+                rank = optionAdapterPosition,
+                isAd = isOrganicAds,
+                isFirstPage = byteIOTrackingData.isFirstPage,
+                shopId = shopId,
+                aladdinButtonType = aladdinButtonType,
+            )
 
-                return AppLogSearch.SearchResult(
-                    imprId = byteIOTrackingData.imprId,
-                    searchId = byteIOTrackingData.searchId,
-                    searchEntrance = byteIOTrackingData.searchEntrance,
-                    enterFrom = byteIOTrackingData.enterFrom,
-                    searchResultId = searchResultId,
-                    listItemId = id,
-                    itemRank = position,
-                    listResultType = AppLogSearch.ParamValue.GOODS,
-                    productID = id,
-                    searchKeyword = byteIOTrackingData.keyword,
-                    tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
-                    rank = optionAdapterPosition,
-                    isAd = isOrganicAds,
-                    isFirstPage = byteIOTrackingData.isFirstPage,
-                    shopId = shopId,
-                    aladdinButtonType = aladdinButtonType,
-                )
-            }
+            private fun getSearchResultId() =
+                if (customVideoURL.isBlank())
+                    if (hasParentId()) parentId
+                    else id
+                else ""
+
+            fun asByteIOProduct(optionAdapterPosition: Int) = AppLogSearch.Product(
+                entranceForm = EntranceForm.SEARCH_HORIZONTAL_GOODS_CARD,
+                volume = null,
+                rate = ratingAverage.toFloatOrZero(),
+                isAd = isOrganicAds,
+                productID = id,
+                searchID = byteIOTrackingData.searchId,
+                requestID = byteIOTrackingData.imprId,
+                searchResultID = getSearchResultId(),
+                enterFrom = byteIOTrackingData.enterFrom,
+                listItemId = id,
+                itemRank = position,
+                listResultType = AppLogSearch.ParamValue.GOODS,
+                searchKeyword = byteIOTrackingData.keyword,
+                tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
+                rank = optionAdapterPosition,
+                shopID = null,
+            )
         }
     }
 

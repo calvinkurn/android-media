@@ -779,6 +779,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onProductImpressedByteIO(item: ProductItemDataView?) {
         item ?: return
         AppLogSearch.eventSearchResultShow(item.asByteIOSearchResult(null))
+        AppLogSearch.eventProductShow(item.asByteIOProduct())
     }
 
     private val additionalPositionMap: Map<String, String>
@@ -927,6 +928,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun sendByteIOTrackingProductClick(item: ProductItemDataView) {
         AppLogSearch.eventSearchResultClick(item.asByteIOSearchResult(""))
+        AppLogSearch.eventProductClick(item.asByteIOProduct())
     }
 
     override fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int) {

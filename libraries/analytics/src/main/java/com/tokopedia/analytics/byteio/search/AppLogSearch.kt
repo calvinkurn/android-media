@@ -5,8 +5,10 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
+import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_CLICK
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_SHOW
@@ -551,43 +553,59 @@ object AppLogSearch {
         )
     }
 
-    fun <K, V> eventProductShow() {
-        AppLogAnalytics.send(EventName.PRODUCT_SHOW, tiktokecJSON())
-    }
+    data class Product(
+        val entranceForm: EntranceForm,
+        val volume: Int?,
+        val rate: Float,
+        val isAd: Boolean,
+        val productID: String,
+        val searchID: String,
+        val requestID: String,
+        val searchResultID: String,
+        val enterFrom: String,
+        val listItemId: String?,
+        val itemRank: Int?,
+        val listResultType: String?,
+        val searchKeyword: String,
+        val tokenType: String,
+        val rank: Int,
+        val shopID: String?
+    ) {
 
-    fun <K, V> eventProductClick() {
-        AppLogAnalytics.send(EventName.PRODUCT_CLICK, tiktokecJSON())
-    }
-
-    //TODO:: Update source_module to null
-    //TODO:: Update source_page_type to goods_search
-    //TODO:: Update entrance_form
-    private fun tiktokecJSON() = JSONObject(
-        mapOf(
-            SOURCE_MODULE to "", // TODO:: Is this search?
-            ITEM_ORDER to 0, // TODO:: Product Position from 1
-            VOLUME to 0, // TODO:: Count sold of product
-            RATE to 0f, // TODO:: Rating
-            IS_AD to 0, // TODO:: Is ad
-            PRODUCT_ID to "", // TODO:: productid
-            AppLogParam.TRACK_ID to "", // TODO:: search_id + _ + item_rank
-            AppLogParam.REQUEST_ID to "", // TODO:: Request ID from BE
-            SEARCH_ID to "", // TODO:: Search ID, check above
-            SEARCH_RESULT_ID to "", //TODO:: Search Result ID from BE
-            SEARCH_ENTRANCE to HOMEPAGE,
-            ENTER_FROM to "", // TODO:: GOODS_SEARCH || STORE_SEARCH
-            LIST_ITEM_ID to "",
-            ITEM_RANK to 0, // TODO:: item index in carousels
-            LIST_RESULT_TYPE to "",
-            SEARCH_KEYWORD to "",
-            TOKEN_TYPE to "",
-            RANK to 0, // TODO:: Item index in whole page
-            SHOP_ID to "",
-        )
-    ).apply {
-        addPage()
+        fun json() = JSONObject(buildMap {
+            put(SOURCE_MODULE, "") // TODO:: Is this search?
+            put(ENTRANCE_FORM, entranceForm.str)
+            put(ITEM_ORDER, rank + 1)
+            volume?.let { put(VOLUME, it) }
+            put(RATE, rate)
+            put(IS_AD, isAd.intValue)
+            put(PRODUCT_ID, productID)
+            put(AppLogParam.TRACK_ID, "${searchID}_${(itemRank ?: rank)}")
+            put(AppLogParam.REQUEST_ID, requestID) // TODO:: Request ID from BE
+            put(SEARCH_ID, searchID) // TODO:: Search ID, check above
+            put(SEARCH_RESULT_ID, searchResultID)
+            put(SEARCH_ENTRANCE, HOMEPAGE)
+            put(ENTER_FROM, enterFrom) //TODO:: GOODS_SEARCH || STORE_SEARCH
+            listItemId?.let { put(LIST_ITEM_ID, it) }
+            itemRank?.let { put(ITEM_RANK, it) }
+            listResultType?.let { put(LIST_RESULT_TYPE, it) }
+            put(SEARCH_KEYWORD, searchKeyword)
+            put(TOKEN_TYPE, tokenType)
+            put(RANK, rank)
+            shopID?.let { put(SHOP_ID, it) }
+        }).apply {
+            addPage()
 //        addSourceModule() // TODO milhamj diapain ini?
-        addSourcePageType()
+            addSourcePageType()
+        }
+    }
+
+    fun eventProductShow(product: Product) {
+        AppLogAnalytics.send(EventName.PRODUCT_SHOW, product.json())
+    }
+
+    fun eventProductClick(product: Product) {
+        AppLogAnalytics.send(EventName.PRODUCT_CLICK, product.json())
     }
 
     fun eventCartEntranceShow() {
