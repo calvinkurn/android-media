@@ -103,75 +103,24 @@ class ConfirmShippingComposeActivity : AppCompatActivity(),
                 confirmShippingViewModel.result.collectLatest {
                     when (it) {
                         is ConfirmShippingResult.CourierChanged -> {
-                            setResult(
-                                Activity.RESULT_OK,
-                                Intent().apply {
-                                    putExtra(
-                                        LogisticSellerConst.RESULT_CONFIRM_SHIPPING,
-                                        it.message.orEmpty()
-                                    )
-                                }
-                            )
-                            finish()
-                        }
-
-                        is ConfirmShippingResult.FailedChangeCourier -> {
-                            LogisticSellerErrorHandler.logExceptionToCrashlytics(
-                                it.throwable,
-                                ERROR_CHANGE_COURIER
-                            )
-                            Utils.showToasterError(
-                                LogisticSellerErrorHandler.getErrorMessage(
-                                    it.throwable,
-                                    this@ConfirmShippingComposeActivity
-                                ), view
-                            )
-
-                            LogisticSellerErrorHandler.logExceptionToServer(
-                                errorTag = LogisticSellerErrorHandler.SOM_TAG,
-                                throwable = it.throwable,
-                                errorType =
-                                LogisticSellerErrorHandler.SomMessage.CHANGE_COURIER_ERROR,
-                                deviceId = userSession.deviceId.orEmpty()
-                            )
-                        }
-
-                        is ConfirmShippingResult.FailedConfirmShipping -> {
-                            LogisticSellerErrorHandler.logExceptionToCrashlytics(
-                                it.throwable, ERROR_CONFIRM_SHIPPING
-                            )
-                            ConfirmShippingAnalytics.eventClickKonfirmasi(false)
-
-                            Utils.showToasterError(
-                                LogisticSellerErrorHandler.getErrorMessage(
-                                    it.throwable,
-                                    this@ConfirmShippingComposeActivity
-                                ), view
-                            )
-
-                            LogisticSellerErrorHandler.logExceptionToServer(
-                                errorTag = LogisticSellerErrorHandler.SOM_TAG,
-                                throwable = it.throwable,
-                                errorType =
-                                LogisticSellerErrorHandler.SomMessage.CONFIRM_SHIPPING_ERROR,
-                                deviceId = userSession.deviceId.orEmpty()
-                            )
+                            setResultAndFinish(it.message.orEmpty())
                         }
 
                         is ConfirmShippingResult.ShippingConfirmed -> {
                             ConfirmShippingAnalytics.eventClickKonfirmasi(true)
-                            setResult(
-                                Activity.RESULT_OK,
-                                Intent().apply {
-                                    putExtra(
-                                        LogisticSellerConst.RESULT_CONFIRM_SHIPPING,
-                                        it.message.orEmpty()
-                                            .ifEmpty { getString(R.string.default_confirm_shipping_success) }
-                                    )
-                                }
-                            )
-                            finish()
+                            setResultAndFinish(it.message.orEmpty()
+                                .ifEmpty { getString(R.string.default_confirm_shipping_success) })
                         }
+
+                        is ConfirmShippingResult.FailedChangeCourier -> handleErrorChangeCourier(
+                            it.throwable,
+                            view
+                        )
+
+                        is ConfirmShippingResult.FailedConfirmShipping -> handleErrorConfirmShipping(
+                            it.throwable,
+                            view
+                        )
                     }
                 }
             })
@@ -219,6 +168,62 @@ class ConfirmShippingComposeActivity : AppCompatActivity(),
                 )
             }
         }
+    }
+
+    private fun handleErrorConfirmShipping(throwable: Throwable, view: View) {
+        LogisticSellerErrorHandler.logExceptionToCrashlytics(
+            throwable, ERROR_CONFIRM_SHIPPING
+        )
+        ConfirmShippingAnalytics.eventClickKonfirmasi(false)
+
+        Utils.showToasterError(
+            LogisticSellerErrorHandler.getErrorMessage(
+                throwable,
+                this
+            ), view
+        )
+
+        LogisticSellerErrorHandler.logExceptionToServer(
+            errorTag = LogisticSellerErrorHandler.SOM_TAG,
+            throwable = throwable,
+            errorType =
+            LogisticSellerErrorHandler.SomMessage.CONFIRM_SHIPPING_ERROR,
+            deviceId = userSession.deviceId.orEmpty()
+        )
+    }
+
+    private fun handleErrorChangeCourier(throwable: Throwable, view: View) {
+        LogisticSellerErrorHandler.logExceptionToCrashlytics(
+            throwable,
+            ERROR_CHANGE_COURIER
+        )
+        Utils.showToasterError(
+            LogisticSellerErrorHandler.getErrorMessage(
+                throwable,
+                this
+            ), view
+        )
+
+        LogisticSellerErrorHandler.logExceptionToServer(
+            errorTag = LogisticSellerErrorHandler.SOM_TAG,
+            throwable = throwable,
+            errorType =
+            LogisticSellerErrorHandler.SomMessage.CHANGE_COURIER_ERROR,
+            deviceId = userSession.deviceId.orEmpty()
+        )
+    }
+
+    private fun setResultAndFinish(message: String) {
+        setResult(
+            Activity.RESULT_OK,
+            Intent().apply {
+                putExtra(
+                    LogisticSellerConst.RESULT_CONFIRM_SHIPPING,
+                    message.orEmpty()
+                )
+            }
+        )
+        finish()
     }
 
     override fun onResume() {
