@@ -18,7 +18,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -105,7 +104,7 @@ fun RecipeBookmarkList(
             ),
         state = lazyListState
     ) {
-        itemsIndexed(items = items, key = { index, item -> item.getId(index) }) { index, item ->
+        itemsIndexed(items = items) { index, item ->
             when (item) {
                 is RecipeUiModel -> RecipeBookmarkItem(
                     position = index,
@@ -145,11 +144,4 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     val index = layoutInfo.visibleItemsInfo.lastOrNull()?.index
     val totalItems = layoutInfo.totalItemsCount - 1
     return index == totalItems
-}
-
-fun Visitable<*>.getId(index: Int): String {
-    return when (this) {
-        is RecipeUiModel -> this.getUniqueId()
-        else -> index.toString() + this.hashCode()
-    }
 }
