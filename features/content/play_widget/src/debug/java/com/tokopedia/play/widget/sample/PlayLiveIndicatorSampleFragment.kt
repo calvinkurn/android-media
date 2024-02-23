@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.widget.databinding.FragmentPlayLiveIndicatorSampleBinding
 import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveBadgeView
-import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveIndicator
+import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveBadge
 import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveThumbnail
 import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveThumbnailView
 import com.tokopedia.play.widget.liveindicator.ui.rememberLiveThumbnailState
@@ -65,7 +65,7 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
                 ConstraintLayout {
                     val (liveIndicator, liveThumbnail) = createRefs()
 
-                    PlayWidgetLiveIndicator(
+                    PlayWidgetLiveBadge(
                         onClicked = {
                             thumbnailState.playUrl(
                                 "https://live-stream.tokopedia.net/live/v0.2/play_20240206070033_bfa3a284-c482-11ee-adc4-42010a294937/live/abr.m3u8",
