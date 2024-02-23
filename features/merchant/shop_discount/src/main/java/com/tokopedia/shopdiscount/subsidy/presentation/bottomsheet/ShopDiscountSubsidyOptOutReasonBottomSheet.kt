@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -358,7 +359,7 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
                 text = htmlDescription.spannedString
                 htmlDescription.urlList.firstOrNull()?.setOnClickListener {
                     sendClickEduArticleTracker()
-                    redirectToWebView(htmlDescription.urlList.firstOrNull()?.linkUrl.orEmpty())
+                    routeToUrl(htmlDescription.urlList.firstOrNull()?.linkUrl.orEmpty())
                 }
             }
         }
@@ -366,17 +367,6 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
 
     private fun sendClickEduArticleTracker() {
         tracker.sendClickEduArticleOptOutReasonBottomSheetEvent(data.entrySource.value)
-    }
-
-    private fun redirectToWebView(linkUrl: CharSequence) {
-        RouteManager.route(
-            context,
-            String.format(
-                "%s?url=%s",
-                ApplinkConst.WEBVIEW,
-                linkUrl.toString()
-            )
-        )
     }
 
     private fun getDescriptionText(): CharSequence {

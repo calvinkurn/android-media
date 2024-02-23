@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
@@ -427,7 +428,7 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
             text = textSubsidyProgramInfoDescription?.spannedString
             textSubsidyProgramInfoDescription?.urlList?.firstOrNull()?.setOnClickListener {
                 sendClickEduArticleTracker()
-                redirectToWebView(textSubsidyProgramInfoDescription.urlList.firstOrNull()?.linkUrl.orEmpty())
+                routeToUrl(textSubsidyProgramInfoDescription.urlList.firstOrNull()?.linkUrl.orEmpty())
             }
         }
     }
@@ -470,17 +471,6 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
         return context?.let {
             HtmlLinkHelper(it, String.format(textDescription, sellerEduUrl))
         }
-    }
-
-    private fun redirectToWebView(linkUrl: CharSequence) {
-        RouteManager.route(
-            context,
-            String.format(
-                "%s?url=%s",
-                ApplinkConst.WEBVIEW,
-                linkUrl.toString()
-            )
-        )
     }
 
     private fun setupBottomSheet() {

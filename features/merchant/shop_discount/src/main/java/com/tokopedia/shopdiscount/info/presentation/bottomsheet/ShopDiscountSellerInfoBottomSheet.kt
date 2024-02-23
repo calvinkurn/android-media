@@ -290,7 +290,6 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
 
     private fun getSellerInfoTickerData() {
         viewModel.getTargetedTickerData()
-//        viewModel.getTickerData()
     }
 
     private fun init() {
