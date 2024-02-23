@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/product_card_bg_stock_info_carousel_color"/>
+            <solid android:color="@color/dms_product_card_bg_stock_info_carousel_color"/>
             <corners
                 android:bottomLeftRadius="@dimen/product_card_reimagine_image_radius"
                 android:bottomRightRadius="@dimen/product_card_reimagine_image_radius"/>

@@ -67,7 +67,7 @@ internal class ProductCardStockInfo(view: View) {
 
         val color = ContextCompat.getColor(context, progressBarColor(stockInfo))
         progressBarStock.progressBarColor = intArrayOf(color, color)
-        progressBarStock.progressBarTrackColor = ContextCompat.getColor(context, productcardR.color.product_card_bg_stock_info_stockbar_track_color)
+        progressBarStock.progressBarTrackColor = ContextCompat.getColor(context, productcardR.color.dms_product_card_bg_stock_info_stockbar_track_color)
 
         progressBarStock.setValue(stockInfo?.percentage.orZero(), false)
     }
