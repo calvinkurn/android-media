@@ -6,7 +6,10 @@ import com.tokopedia.home_component.visitable.OrigamiSDUIDataModel
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentOrigamiSduiBinding
 import com.tokopedia.home_component.listener.CampaignWidgetComponentListener
+import com.tokopedia.home_component.listener.HomeComponentListener
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.sdui.SDUIManager
+import com.tokopedia.sdui.extention.CustomActionInterface
 import com.tokopedia.sdui.interfaces.SDUITrackingInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import org.json.JSONObject
@@ -17,8 +20,9 @@ hardcoded the tracker for campaign widget for POC purpose
  */
 open class OrigamiSDUIViewHolder(
     itemView: View,
-    val listenerTracker: CampaignWidgetComponentListener
-) : AbstractViewHolder<OrigamiSDUIDataModel>(itemView), SDUITrackingInterface {
+    val listenerTracker: CampaignWidgetComponentListener,
+    val homeComponentListener: HomeComponentListener
+) : AbstractViewHolder<OrigamiSDUIDataModel>(itemView), SDUITrackingInterface, CustomActionInterface {
     companion object {
         val LAYOUT: Int = R.layout.home_component_origami_sdui
     }
@@ -28,7 +32,7 @@ open class OrigamiSDUIViewHolder(
 
     private val sduiManager = lazy {
         SDUIManager().apply {
-            initSDUI(itemView.context, this@OrigamiSDUIViewHolder)
+            initSDUI(itemView.context, this@OrigamiSDUIViewHolder, this@OrigamiSDUIViewHolder)
         }
     }
 
@@ -50,7 +54,7 @@ open class OrigamiSDUIViewHolder(
     override fun onViewClick(trackerPayload: JSONObject?) {
         trackerPayload?.let {
             origamiSDUIDataModel?.channel?.let {
-                when(trackerPayload.get("eventAction")){
+                when (trackerPayload.get("eventAction")) {
                     "click campaign card" -> listenerTracker.onProductCardClicked(
                         it.channelModel,
                         it.channelModel.channelGrids[trackerPayload.getInt("position")],
@@ -58,8 +62,16 @@ open class OrigamiSDUIViewHolder(
                         trackerPayload.getInt("position"),
                         ""
                     )
-                    "click see all header" -> listenerTracker.onSeeAllBannerClicked(it.channelModel, "")
-                    "click see all card" -> listenerTracker.onSeeMoreCardClicked(it.channelModel, "")
+
+                    "click see all header" -> listenerTracker.onSeeAllBannerClicked(
+                        it.channelModel,
+                        ""
+                    )
+
+                    "click see all card" -> listenerTracker.onSeeMoreCardClicked(
+                        it.channelModel,
+                        ""
+                    )
 
                     // Kd4
                     "click product" -> {
@@ -69,6 +81,7 @@ open class OrigamiSDUIViewHolder(
                             bindingAdapterPosition
                         )
                     }
+
                     "click chevron" -> {
                         listenerTracker.onViewAllChevronClicked(it.channelModel)
                     }
@@ -80,17 +93,31 @@ open class OrigamiSDUIViewHolder(
     override fun onViewVisible(trackerPayload: JSONObject?) {
         trackerPayload?.let {
             origamiSDUIDataModel?.channel?.let {
-                when(trackerPayload.get("eventAction")){
+                when (trackerPayload.get("eventAction")) {
                     "view campaign card" -> listenerTracker.onProductCardImpressed(
                         it.channelModel,
                         it.channelModel.channelGrids[trackerPayload.getInt("position")],
                         adapterPosition,
                         trackerPayload.getInt("position")
                     )
+
                     "view product" -> {
                         listenerTracker.onWidgetImpressed(it.channelModel, bindingAdapterPosition)
                     }
                 }
+            }
+        }
+    }
+
+    override fun onHandleCustomAction(queryParameter: String?) {
+        //custom handling when timer from SDUI widget is expired then delete the viewholder from position
+        if (queryParameter?.equals("timer_ended") == true) {
+            origamiSDUIDataModel?.channelModel?.let {
+                homeComponentListener.onChannelExpired(
+                    it,
+                    it.verticalPosition,
+                    origamiSDUIDataModel!!
+                )
             }
         }
     }
