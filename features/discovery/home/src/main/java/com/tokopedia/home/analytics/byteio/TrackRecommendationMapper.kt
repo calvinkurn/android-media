@@ -7,6 +7,7 @@ import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.analytics.byteio.recommendation.CardName
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.HomeRecommendationUtil.isFullSpan
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
 
@@ -15,7 +16,7 @@ object TrackRecommendationMapper {
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
-        type: AppLogRecommendationType
+        type: AppLogRecommendationType,
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = recommendationProductItem.id,
@@ -27,9 +28,14 @@ object TrackRecommendationMapper {
             recParams = "", // TODO need to confirm
             requestId = "", // TODO need BE deployment
             shopId = recommendationProductItem.shop.id,
-            entranceForm = EntranceForm.PURE_GOODS_CARD,
-            type = type
+            entranceForm = getEntranceForm(),
+            type = type,
         )
+    }
+
+    private fun RecommendationCardModel.getEntranceForm(): EntranceForm {
+        return if(isFullSpan()) EntranceForm.DETAIL_GOODS_CARD
+        else EntranceForm.PURE_GOODS_CARD
     }
 
     fun BannerTopAdsModel.asCardTrackModel(

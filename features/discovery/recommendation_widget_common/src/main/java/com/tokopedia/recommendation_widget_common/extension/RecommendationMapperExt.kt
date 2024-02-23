@@ -331,7 +331,9 @@ fun RecommendationWidget.mapToChannelHeader(): ChannelHeader {
 fun RecommendationItem.asProductTrackModel(
     isCache: Boolean = false,
     type: AppLogRecommendationType,
-    entranceForm: EntranceForm? = null
+    entranceForm: EntranceForm? = null,
+    tabName: String = "",
+    tabPosition: Int = 0,
 ): AppLogRecommendationProductModel {
     return AppLogRecommendationProductModel.create(
         productId = productId.toString(),
@@ -347,6 +349,9 @@ fun RecommendationItem.asProductTrackModel(
             AppLogRecommendationType.PRODUCT_CAROUSEL -> EntranceForm.HORIZONTAL_GOODS_CARD
             AppLogRecommendationType.SINGLE_PRODUCT -> EntranceForm.DETAIL_GOODS_CARD
             else -> EntranceForm.PURE_GOODS_CARD
-        }
+        },
+        tabName = tabName,
+        tabPosition = tabPosition,
+        rate = ratingAverage.toFloatOrNull(),
     )
 }

@@ -22,7 +22,7 @@ object TrackRecommendationMapper {
             requestId = "", // TODO need BE deployment
             shopId = data.shopId,
             type = AppLogRecommendationType.MIXED_CAROUSEL,
-            entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD
+            entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
         )
     }
 
