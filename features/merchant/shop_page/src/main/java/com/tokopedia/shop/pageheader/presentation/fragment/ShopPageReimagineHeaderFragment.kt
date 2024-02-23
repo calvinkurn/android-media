@@ -1509,7 +1509,14 @@ class ShopPageReimagineHeaderFragment :
     }
 
     override fun getBodyBackgroundHexColor(): String {
-        return getShopNavBarConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
+        return context?.let {
+            getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty().takeIf {
+                it.isNotEmpty()
+            } ?: ShopUtil.getColorHexString(
+                it,
+                unifyprinciplesR.color.Unify_NN0
+            )
+        }.orEmpty()
     }
 
     private fun redirectToSearchAutoCompletePage() {
@@ -1813,7 +1820,8 @@ class ShopPageReimagineHeaderFragment :
         viewPagerAdapterHeader?.setPageTheme(
             shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme.orFalse(),
             getShopNavBarConfig()?.getFinalPatternColorType(activity?.isDarkMode().orFalse()).orEmpty(),
-            getShopNavBarConfig()?.colorSchema ?: ShopPageColorSchema()
+            getShopNavBarConfig()?.colorSchema ?: ShopPageColorSchema(),
+            getShopNavBarConfig()?.isTransparent().orFalse()
         )
         viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
         selectedPosition = getSelectedDynamicTabPosition()

@@ -56,6 +56,12 @@ data class ShopPageHeaderLayoutUiModel(
             }
         }
 
+        fun isTransparent(): Boolean {
+            val backgroundColor = listBackgroundColor.firstOrNull().orEmpty()
+            val backgroundObject = listBackgroundObject.firstOrNull()
+            return backgroundColor.isEmpty() && backgroundObject == null
+        }
+
         data class BackgroundObject(
             val url: String = "",
             val type: String = ""
