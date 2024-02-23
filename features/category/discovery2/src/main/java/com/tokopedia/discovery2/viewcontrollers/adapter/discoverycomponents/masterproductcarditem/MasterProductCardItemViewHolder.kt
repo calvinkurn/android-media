@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem
 
 import android.content.res.Resources
-import android.graphics.Color
 import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
@@ -9,18 +8,20 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
@@ -49,14 +50,17 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var lastClickTime = 0L
     private var interval: Int = 500
     private var isFullFilment: Boolean = false
+    private var isRecommendation = false
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
+        isRecommendation = masterProductCardItemViewModel?.components?.recomQueryProdId != null
         masterProductCardItemViewModel = discoveryBaseViewModel as MasterProductCardItemViewModel
         masterProductCardItemViewModel?.let {
             getSubComponent().inject(it)
         }
         lastClickTime = 0L
         initView()
+        trackShowProductCard()
     }
 
     private fun initView() {
@@ -369,6 +373,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun handleUIClick(view: View) {
+        dataItem?.let {
+            AppLogRecommendation.sendProductClickAppLog(
+                it.asProductTrackModel(bindingAdapterPosition)
+            )
+        }
         masterProductCardItemViewModel?.sendTopAdsClick()
         var applink = dataItem?.applinks ?: ""
         if ((fragment as DiscoveryFragment).isAffiliateInitialized) {
@@ -402,6 +411,16 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                     isFullFilment,
                     dataItem?.warehouseId ?: 0
                 )
+        }
+    }
+
+    private fun trackShowProductCard() {
+        dataItem?.let {
+            masterProductCardGridView?.addOnImpression1pxListener(it) {
+                AppLogRecommendation.sendProductShowAppLog(
+                    it.asProductTrackModel(bindingAdapterPosition)
+                )
+            }
         }
     }
 
