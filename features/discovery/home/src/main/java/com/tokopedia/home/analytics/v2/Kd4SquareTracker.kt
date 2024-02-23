@@ -1,13 +1,11 @@
 package com.tokopedia.home.analytics.v2
 
-import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.home.analytics.HomePageTracking.PROMOTIONS
 import com.tokopedia.home.analytics.HomePageTracking.PROMO_CLICK
 import com.tokopedia.home.analytics.HomePageTracking.PROMO_VIEW
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
-import com.tokopedia.track.constant.TrackerConstant
 
 object Kd4SquareTracker : BaseTrackerConst() {
 
@@ -17,26 +15,27 @@ object Kd4SquareTracker : BaseTrackerConst() {
     fun widgetImpressed(model: ChannelModel, userId: String, position: Int): Map<String, Any> {
         val attribute = model.trackingAttributionModel
 
-        return DataLayer.mapOf(
-            Event.KEY, PROMO_VIEW,
-            Category.KEY, Category.HOMEPAGE,
-            Action.KEY, IMPRESSION_ACTION,
-            Label.KEY, "${attribute.channelId} - ${attribute.headerName}",
-            TrackerConstant.TRACKER_ID, IMPRESSION_TRACKER_ID,
-            CampaignCode.KEY, attribute.campaignCode,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT,
-            ChannelId.KEY, attribute.channelId,
-            CurrentSite.KEY, CurrentSite.DEFAULT,
-            TrackerConstant.USERID, userId,
-            PROMOTIONS, model.channelGrids.mapIndexed { index, grid ->
-                DataLayer.mapOf(
-                    "creative_name", grid.attribution,
-                    "creative_slot", (position + 1).toString(),
-                    "item_id", "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}",
-                    "name", "/ - p${index} - dynamic channel 4 square - banner - ${attribute.headerName}",
+        val trackingBuilder = BaseTrackerBuilder().constructBasicPromotionView(
+            event = PROMO_VIEW,
+            eventAction = IMPRESSION_ACTION,
+            eventCategory = Category.HOMEPAGE,
+            eventLabel = "${attribute.channelId} - ${attribute.headerName}",
+            promotions = model.channelGrids.mapIndexed { index, grid ->
+                Promotion(
+                    id = "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}",
+                    name = "/ - p${index} - dynamic channel 4 square - banner - ${attribute.headerName}",
+                    position = (position + 1).toString(),
+                    creative = grid.attribution
                 )
             }
         )
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendChannelId(attribute.channelId)
+            .appendCustomKeyValue(TrackerId.KEY, IMPRESSION_TRACKER_ID)
+            .appendUserId(userId)
+
+        return trackingBuilder.build()
     }
 
     // TrackerID: 50021
@@ -45,26 +44,28 @@ object Kd4SquareTracker : BaseTrackerConst() {
     fun cardClicked(model: ChannelModel, channelGrid: ChannelGrid, userId: String, position: Int): Map<String, Any> {
         val attribute = model.trackingAttributionModel
 
-        return DataLayer.mapOf(
-            Event.KEY, PROMO_CLICK,
-            Category.KEY, Category.HOMEPAGE,
-            Action.KEY, CARD_CLICK_ACTION,
-            Label.KEY, "${attribute.channelId} - ${attribute.headerName}",
-            TrackerConstant.TRACKER_ID, CARD_CLICK_TRACKER_ID,
-            CampaignCode.KEY, attribute.campaignCode,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT,
-            ChannelId.KEY, attribute.channelId,
-            CurrentSite.KEY, CurrentSite.DEFAULT,
-            TrackerConstant.USERID, userId,
-            PROMOTIONS, listOf(
-                DataLayer.mapOf(
-                    "creative_name", channelGrid.attribution,
-                    "creative_slot", (position + 1).toString(),
-                    "item_id", "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}",
-                    "name", "/ - p${position + 1} - dynamic channel 4 square - banner - ${attribute.headerName}",
+        val trackingBuilder = BaseTrackerBuilder().constructBasicPromotionClick(
+            event = PROMO_CLICK,
+            eventAction = CARD_CLICK_ACTION,
+            eventCategory = Category.HOMEPAGE,
+            eventLabel = "${attribute.channelId} - ${attribute.headerName}",
+            promotions = listOf(
+                Promotion(
+                    id = "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}",
+                    name = "/ - p${position + 1} - dynamic channel 4 square - banner - ${attribute.headerName}",
+                    position = (position + 1).toString(),
+                    creative = channelGrid.attribution
                 )
             )
         )
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendChannelId(attribute.channelId)
+            .appendCustomKeyValue(TrackerId.KEY, CARD_CLICK_TRACKER_ID)
+            .appendCampaignCode(attribute.campaignCode)
+            .appendUserId(userId)
+
+        return trackingBuilder.build()
     }
 
     // TrackerID: 50022
@@ -73,16 +74,19 @@ object Kd4SquareTracker : BaseTrackerConst() {
     fun viewAllChevronClicked(model: ChannelModel): Map<String, Any> {
         val attribute = model.trackingAttributionModel
 
-        return DataLayer.mapOf(
-            Event.KEY, PROMO_CLICK,
-            Category.KEY, Category.HOMEPAGE,
-            Action.KEY, CHEVRON_CLICK_ACTION,
-            Label.KEY, "${attribute.channelId} - ${attribute.headerName}",
-            TrackerConstant.TRACKER_ID, CHEVRON_CLICK_TRACKER_ID,
-            CampaignCode.KEY, attribute.campaignCode,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT,
-            ChannelId.KEY, attribute.channelId,
-            CurrentSite.KEY, CurrentSite.DEFAULT
+        val trackingBuilder = BaseTrackerBuilder().constructBasicPromotionClick(
+            event = PROMO_CLICK,
+            eventAction = CHEVRON_CLICK_ACTION,
+            eventCategory = Category.HOMEPAGE,
+            eventLabel = "${attribute.channelId} - ${attribute.headerName}",
+            promotions = listOf()
         )
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendChannelId(attribute.channelId)
+            .appendCustomKeyValue(TrackerId.KEY, CHEVRON_CLICK_TRACKER_ID)
+            .appendCampaignCode(attribute.campaignCode)
+
+        return trackingBuilder.build()
     }
 }
