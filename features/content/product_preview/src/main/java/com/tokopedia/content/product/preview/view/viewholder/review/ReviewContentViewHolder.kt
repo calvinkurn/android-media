@@ -171,7 +171,7 @@ class ReviewContentViewHolder(
         reviewMediaAdapter.submitList(mediaData)
 
         val position = mediaData.indexOfFirst { it.selected }
-        val exactPosition = if (position < 0) 0 else position
+        val exactPosition = position.coerceAtLeast(0)
         scrollTo(exactPosition)
     }
 

@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter.Payload.Like
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter.Payload.MediaDataChanged
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter.Payload.ScrollingChanged
@@ -19,59 +18,41 @@ import com.tokopedia.content.product.preview.view.viewholder.review.ReviewConten
 class ReviewContentAdapter(
     private val reviewInteractionListener: ReviewInteractionListener,
     private val reviewMediaListener: ReviewMediaListener
-) : ListAdapter<ReviewContentUiModel, ViewHolder>(ReviewAdapterCallback()) {
+) : ListAdapter<ReviewContentUiModel, ReviewContentViewHolder>(ReviewAdapterCallback()) {
 
     private val mediaViewPool: RecycledViewPool = RecycledViewPool()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return when (viewType) {
-            TYPE_CONTENT -> {
-                ReviewContentViewHolder.create(
-                    parent = parent,
-                    reviewInteractionListener = reviewInteractionListener,
-                    reviewMediaListener = reviewMediaListener,
-                    mediaViewPool = mediaViewPool
-                )
-            }
-
-            else -> super.createViewHolder(parent, viewType)
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewContentViewHolder {
+        return ReviewContentViewHolder.create(
+            parent = parent,
+            reviewInteractionListener = reviewInteractionListener,
+            reviewMediaListener = reviewMediaListener,
+            mediaViewPool = mediaViewPool
+        )
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ReviewContentViewHolder, position: Int) {
         val item = getItem(position)
-        when (holder.itemViewType) {
-            TYPE_CONTENT -> (holder as ReviewContentViewHolder).bind(item)
-        }
+        holder.bind(item)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+    override fun onBindViewHolder(holder: ReviewContentViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) {
             onBindViewHolder(holder, position)
         } else {
-            val viewHolder = (holder as ReviewContentViewHolder)
             payloads.forEach {
                 when (val payload = it) {
-                    is Like -> viewHolder.bindLike(payload.state)
-                    is WatchMode -> viewHolder.bindWatchMode(payload.isWatchMode)
-                    is MediaDataChanged -> viewHolder.bindMediaDataChanged(payload.mediaData)
-                    is ScrollingChanged -> viewHolder.bindScrolling(payload.isScrolling)
+                    is Like -> holder.bindLike(payload.state)
+                    is WatchMode -> holder.bindWatchMode(payload.isWatchMode)
+                    is MediaDataChanged -> holder.bindMediaDataChanged(payload.mediaData)
+                    is ScrollingChanged -> holder.bindScrolling(payload.isScrolling)
                 }
             }
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return TYPE_CONTENT
-    }
-
-    override fun onViewRecycled(holder: ViewHolder) {
-        super.onViewRecycled(holder)
-        (holder as ReviewContentViewHolder).onRecycled()
-    }
-
-    companion object {
-        private const val TYPE_CONTENT = 0
+    override fun onViewRecycled(holder: ReviewContentViewHolder) {
+        holder.onRecycled()
     }
 
     sealed interface Payload {
@@ -100,12 +81,16 @@ class ReviewContentAdapter(
             oldItem: ReviewContentUiModel,
             newItem: ReviewContentUiModel
         ): Any? {
-            return when {
-                oldItem.likeState != newItem.likeState -> Like(newItem.likeState)
-                oldItem.isWatchMode != newItem.isWatchMode -> WatchMode(newItem.isWatchMode)
-                oldItem.medias != newItem.medias -> MediaDataChanged(newItem.medias)
-                oldItem.isScrolling != newItem.isScrolling -> ScrollingChanged(newItem.isScrolling)
-                else -> super.getChangePayload(oldItem, newItem)
+            return if (oldItem.likeState != newItem.likeState) {
+                Like(newItem.likeState)
+            } else if (oldItem.isWatchMode != newItem.isWatchMode) {
+                WatchMode(newItem.isWatchMode)
+            } else if (oldItem.medias != newItem.medias) {
+                MediaDataChanged(newItem.medias)
+            } else if (oldItem.isScrolling != newItem.isScrolling) {
+                ScrollingChanged(newItem.isScrolling)
+            } else {
+                super.getChangePayload(oldItem, newItem)
             }
         }
     }

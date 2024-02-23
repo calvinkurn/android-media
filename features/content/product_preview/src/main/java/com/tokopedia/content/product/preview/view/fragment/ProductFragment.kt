@@ -151,7 +151,7 @@ class ProductFragment @Inject constructor(
     }
 
     private fun observeData() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiState.withCache().collectLatest { (prevState, currState) ->
                 renderMedia(
                     prevState?.productUiModel?.productMedia,
@@ -180,7 +180,7 @@ class ProductFragment @Inject constructor(
             autoScrollFirstOpenMedia = false
         } else {
             val autoScrollPosition = state.indexOfFirst { it.selected }
-            val exactPosition = if (autoScrollPosition < 0) 0 else autoScrollPosition
+            val exactPosition = autoScrollPosition.coerceAtLeast(0)
             binding.rvMediaProduct.smoothScrollToPosition(exactPosition)
         }
     }
@@ -199,7 +199,7 @@ class ProductFragment @Inject constructor(
             autoScrollFirstOpenThumbnail = false
         } else {
             val autoScrollPosition = state.indexOfFirst { it.selected }
-            val exactPosition = if (autoScrollPosition < 0) 0 else autoScrollPosition
+            val exactPosition = autoScrollPosition.coerceAtLeast(0)
             binding.rvMediaProduct.smoothScrollToPosition(exactPosition)
         }
 

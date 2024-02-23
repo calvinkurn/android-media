@@ -134,7 +134,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private val currentProductMediaPosition: Int
         get() {
             val position = _productMediaState.value.productMedia.indexOfFirst { it.selected }
-            return if (position < 0) 0 else position
+            return position.coerceAtLeast(0)
         }
     private val currentProductMediaSize: Int
         get() {
@@ -142,8 +142,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     private val currentTabKey: String
         get() {
-            val tabPosition = if (currentTabPosition.value < 0) 0 else currentTabPosition.value
-            return _tabContentState.value.tabs[tabPosition].key
+            val tabPosition = currentTabPosition.value.coerceAtLeast(0)
+            val tabSize = _tabContentState.value.tabs.size
+            return _tabContentState.value.tabs[tabPosition.coerceAtMost(tabSize)].key
         }
 
     private var autoScrollProductMedia: Timer? = null
@@ -166,7 +167,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is ReviewContentSelected -> handleReviewContentSelected(action.position)
             is ReviewContentScrolling -> handleReviewContentScrolling(action.position, action.isScrolling)
             is ReviewMediaSelected -> handleReviewMediaSelected(action.position)
-            is TabSelected -> handleTabSelected(action.position, action.isScrolling)
+            is TabSelected -> handleTabSelected(action.position)
             is FetchReview -> handleFetchReview(action.isRefresh, action.page)
             is ProductAction -> addToChart(action.model)
             is Navigate -> handleNavigate(action.appLink)
@@ -282,9 +283,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleTabSelected(position: Int, isScrolling: Boolean) {
+    private fun handleTabSelected(position: Int) {
         currentTabPosition.value = position
-        if (isScrolling) emitTrackAllHorizontalScrollEvent()
         if (currentTabKey == TAB_PRODUCT_KEY) {
             when (_productMediaState.value.productMedia[position].type) {
                 MediaType.Image -> scheduleAutoScrollProductMedia()
@@ -367,16 +367,15 @@ class ProductPreviewViewModel @AssistedInject constructor(
             scheduleAtFixedRate(
                 object : TimerTask() {
                     override fun run() {
-                        if (currentProductMediaPosition.plus(1) < currentProductMediaSize) {
-                            val position = currentProductMediaPosition.plus(1)
-                            handleProductMediaSelected(position)
-                        } else {
-                            val position = 0
-                            handleProductMediaSelected(position)
+                        var position = currentProductMediaPosition.plus(1)
+                        if (position >= currentProductMediaSize) {
+                            position = 0
                         }
+                        handleProductMediaSelected(position)
                     }
                 },
-                DELAY_AUTO_SCROLL_PRODUCT_MEDIA, DELAY_AUTO_SCROLL_PRODUCT_MEDIA
+                DELAY_AUTO_SCROLL_PRODUCT_MEDIA,
+                DELAY_AUTO_SCROLL_PRODUCT_MEDIA
             )
         }
     }
