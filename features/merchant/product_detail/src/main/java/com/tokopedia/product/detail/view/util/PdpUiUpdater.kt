@@ -700,7 +700,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 val selectedUpcoming = upcomingData?.get(productId)
                 this.isNpl = !selectedUpcoming?.upcomingType.isNullOrBlank()
                 this.freeOngkirImgUrl = freeOngkirImgUrl
-                this.shouldShowShareWidget = true
             }
         }
 

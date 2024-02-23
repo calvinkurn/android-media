@@ -1,16 +1,17 @@
 package com.tokopedia.sessioncommon.domain.usecase
 
 import android.content.res.Resources
-import com.google.gson.JsonObject
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.sessioncommon.R
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.sessioncommon.data.register.InputRegisterGqlParam
+import com.tokopedia.sessioncommon.data.register.RegisterGqlParam
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
+import com.tokopedia.sessioncommon.data.register.ShopCreationRegisterGqlParam
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.user.session.UserSessionInterface
-import rx.Subscriber
 import javax.inject.Inject
 
 /**
@@ -18,72 +19,64 @@ import javax.inject.Inject
  */
 class RegisterUseCase @Inject constructor(
     val resources: Resources,
-    private val graphqlUseCase: GraphqlUseCase,
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface
-) {
-    fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.mutation_register)
-        val graphqlRequest = GraphqlRequest(
-            query,
-            RegisterPojo::class.java,
-            requestParams
-        )
-
-        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
-    }
+) : CoroutineUseCase<InputRegisterGqlParam, RegisterPojo>(dispatcher.io) {
 
     companion object {
-
-        private val PARAM_INPUT: String = "input"
-        private val PARAM_PHONE_NUMBER: String = "phone"
-        private val PARAM_REG_TYPE: String = "reg_type"
-        private val PARAM_FULL_NAME: String = "fullname"
-        private val PARAM_EMAIL: String = "email"
-        private val PARAM_PASSWORD: String = "password"
-        private val PARAM_OS_TYPE: String = "os_type"
-        private val PARAM_GOTO_VERIFICATION_TOKEN = "goto_verification_token"
-        private val PARAM_ACCOUNTS_TYPE_NAME: String = "accounts_type_name"
-
         private val OS_TYPE_ANDROID: String = "1"
         private val REG_TYPE_PHONE: String = "phone"
         private val ACCOUNTS_TYPE_SELLER_ONBOARDING: String = "SellerOnboarding"
 
-        fun generateParamRegisterPhone(name: String, phoneNumber: String, token: String, isScpToken: Boolean = false):
-            Map<String, Any> {
-            val requestParams = HashMap<String, Any>()
-
-            val input = JsonObject()
-            input.addProperty(PARAM_PHONE_NUMBER, phoneNumber)
-            input.addProperty(PARAM_FULL_NAME, name)
-            input.addProperty(PARAM_OS_TYPE, OS_TYPE_ANDROID)
-            input.addProperty(PARAM_REG_TYPE, REG_TYPE_PHONE)
-            if (isScpToken) {
-                input.addProperty(PARAM_GOTO_VERIFICATION_TOKEN, token)
-            }
-            requestParams[PARAM_INPUT] = input
-            return requestParams
+        fun generateParamRegisterPhone(name: String, phoneNumber: String, token: String):
+            InputRegisterGqlParam {
+            return InputRegisterGqlParam(
+                input = RegisterGqlParam(
+                    phone = phoneNumber,
+                    fullname = name,
+                    osType = OS_TYPE_ANDROID,
+                    regType = REG_TYPE_PHONE
+                )
+            )
         }
 
         fun generateParamRegisterPhoneShopCreation(name: String, phoneNumber: String):
-            Map<String, Any> {
-            val requestParams = HashMap<String, Any>()
-
-            val input = JsonObject()
-            input.addProperty(PARAM_PHONE_NUMBER, phoneNumber)
-            input.addProperty(PARAM_FULL_NAME, name)
-            input.addProperty(PARAM_ACCOUNTS_TYPE_NAME, ACCOUNTS_TYPE_SELLER_ONBOARDING)
-            input.addProperty(PARAM_OS_TYPE, OS_TYPE_ANDROID)
-            input.addProperty(PARAM_REG_TYPE, REG_TYPE_PHONE)
-
-            requestParams[PARAM_INPUT] = input
-            return requestParams
+            InputRegisterGqlParam {
+            return InputRegisterGqlParam(
+                input = ShopCreationRegisterGqlParam(
+                    phone = phoneNumber,
+                    fullname = name,
+                    accountsTypeName = ACCOUNTS_TYPE_SELLER_ONBOARDING,
+                    osType = OS_TYPE_ANDROID,
+                    regType = REG_TYPE_PHONE
+                )
+            )
         }
     }
 
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
+    override fun graphqlQuery(): String {
+        return """mutation register(${'$'}input: RegisterRequest!){
+                    register(input:${'$'}input){
+                        user_id
+                        sid
+                        access_token
+                        refresh_token
+                        token_type
+                        is_active
+                        action
+                        enable_2fa
+                        enable_skip_2fa
+                        errors {
+                          name
+                          message
+                        }
+                      }
+                }""".trim()
+    }
+
+    override suspend fun execute(params: InputRegisterGqlParam): RegisterPojo {
+        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
+        return repository.request(graphqlQuery(), params)
     }
 }
