@@ -207,8 +207,6 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
         AppLogSearch.SearchResult(
             imprId = byteIOTrackingData.imprId,
             searchId = byteIOTrackingData.searchId,
-            searchEntrance = byteIOTrackingData.searchEntrance,
-            enterFrom = byteIOTrackingData.enterFrom,
             searchResultId = byteIOTrackingSearchResultID(),
             listItemId = null,
             itemRank = null,

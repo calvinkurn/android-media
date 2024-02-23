@@ -107,8 +107,6 @@ data class InspirationCarouselDataView(
             AppLogSearch.SearchResult(
                 imprId = byteIOTrackingData.imprId,
                 searchId = byteIOTrackingData.searchId,
-                searchEntrance = byteIOTrackingData.searchEntrance,
-                enterFrom = byteIOTrackingData.enterFrom,
                 searchResultId = adapterPosition.toString(),
                 listItemId = null,
                 itemRank = null,
@@ -282,8 +280,6 @@ data class InspirationCarouselDataView(
             ) = AppLogSearch.SearchResult(
                 imprId = byteIOTrackingData.imprId,
                 searchId = byteIOTrackingData.searchId,
-                searchEntrance = byteIOTrackingData.searchEntrance,
-                enterFrom = byteIOTrackingData.enterFrom,
                 searchResultId = getSearchResultId(),
                 listItemId = id,
                 itemRank = position,
