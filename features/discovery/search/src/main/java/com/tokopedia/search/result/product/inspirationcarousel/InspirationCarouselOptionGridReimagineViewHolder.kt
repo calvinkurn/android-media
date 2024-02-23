@@ -3,6 +3,7 @@ package com.tokopedia.search.result.product.inspirationcarousel
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup
 import com.tokopedia.search.R
@@ -12,6 +13,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class InspirationCarouselOptionGridReimagineViewHolder(
     itemView: View,
     private val inspirationCarouselListener: InspirationCarouselListener,
+    private val optionAdapterPosition: Int,
 ): AbstractViewHolder<InspirationCarouselDataView.Option.Product>(itemView) {
 
     private val binding: SearchInspirationCarouselOptionGridReimagineBinding? by viewBinding()
@@ -21,11 +23,18 @@ class InspirationCarouselOptionGridReimagineViewHolder(
             setProductModel(productCardModel(product))
 
             setOnClickListener {
-                inspirationCarouselListener.onInspirationCarouselGridProductClicked(product)
+                inspirationCarouselListener.onInspirationCarouselGridProductClicked(product, optionAdapterPosition)
             }
 
             addOnImpressionListener(product) {
                 inspirationCarouselListener.onInspirationCarouselGridProductImpressed(product)
+            }
+
+            addOnImpression1pxListener(product.byteIOImpressHolder) {
+                inspirationCarouselListener.onInspirationCarouselGridProductImpressed1Px(
+                    product,
+                    optionAdapterPosition,
+                )
             }
         }
     }

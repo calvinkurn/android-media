@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetVerticalLayoutBinding
@@ -38,6 +40,8 @@ class RecommendationVerticalView :
         RecommendationVerticalAdapter(RecommendationVerticalTypeFactoryImpl(trackingQueue))
     }
 
+    private var hasRecomScrollListener: Boolean = false
+
     override val layoutId: Int
         get() = LAYOUT
 
@@ -66,7 +70,21 @@ class RecommendationVerticalView :
         if (binding.rvRecommendationVertical.adapter != recomAdapter) {
             binding.rvRecommendationVertical.adapter = recomAdapter
         }
+        trackEnterPage()
         recomAdapter.submitList(mapVisitableList(model = model))
+    }
+
+    private fun trackEnterPage() {
+        if(hasRecomScrollListener) return
+        binding.rvRecommendationVertical.addVerticalTrackListener(
+            recommendationTriggerObject = RecommendationTriggerObject(
+                viewHolders = listOf(
+                    RecommendationVerticalProductCardViewHolder::class.java,
+                    RecommendationVerticalSeeMoreViewHolder::class.java,
+                )
+            )
+        )
+        hasRecomScrollListener = true
     }
 
     override fun onSeeAllClick(link: String) {}

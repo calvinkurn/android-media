@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -44,6 +45,7 @@ import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxR
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactory
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactoryImpl
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationProductViewHolder
+import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationTitleViewHolder
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxEndlessScrollListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
@@ -133,6 +135,8 @@ class UniversalInboxFragment @Inject constructor(
     // Tracker
     private var trackingQueue: TrackingQueue? = null
     private var shouldImpressTracker = true
+    private var hasTrackEnterPage = false
+    private var hasRecomScrollListener = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -177,6 +181,7 @@ class UniversalInboxFragment @Inject constructor(
         setupRecyclerViewLoadMore()
         setupObservers()
         setupListeners()
+        addRecommendationScrollListener()
     }
 
     private fun setupRecyclerView() {
@@ -194,9 +199,16 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun addRecommendationScrollListener() {
+        if(hasRecomScrollListener) return
         binding?.inboxRv?.addVerticalTrackListener(
-            recommendationTriggerObject = RecommendationTriggerObject()
+            recommendationTriggerObject = RecommendationTriggerObject(
+                viewHolders = listOf(
+                    UniversalInboxRecommendationTitleViewHolder::class.java,
+                    UniversalInboxRecommendationProductViewHolder::class.java
+                )
+            )
         )
+        hasRecomScrollListener = true
     }
 
     private fun setupRecyclerViewLoadMore() {
@@ -347,12 +359,18 @@ class UniversalInboxFragment @Inject constructor(
             // Update view only when not loading (not waiting for network)
             // Or product recommendation is empty (refresh / re-shuffle)
             if (!it.isLoading && it.productRecommendation.isNotEmpty()) {
+                trackEnterPage()
                 addProductRecommendation(
                     title = it.title,
                     newList = it.productRecommendation
                 )
             }
         }
+    }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
     }
 
     private fun toggleLoadingProductRecommendation(isLoading: Boolean) {

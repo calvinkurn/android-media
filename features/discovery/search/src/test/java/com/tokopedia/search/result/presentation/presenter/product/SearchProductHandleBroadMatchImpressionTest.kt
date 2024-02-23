@@ -67,7 +67,7 @@ internal class SearchProductHandleBroadMatchImpressionTest: ProductListPresenter
     }
 
     private fun `When broad match product impressed`(broadMatchAdsData: BroadMatchItemDataView) {
-        productListPresenter.onBroadMatchItemImpressed(broadMatchAdsData)
+        productListPresenter.onBroadMatchItemImpressed(broadMatchAdsData, 0)
     }
 
     private fun `Then verify broad match top ads impressed`(broadMatchAdsData: BroadMatchItemDataView) {
@@ -85,14 +85,15 @@ internal class SearchProductHandleBroadMatchImpressionTest: ProductListPresenter
 
     private fun `Then verify interaction for Broad Match Item impression`(itemData: BroadMatchItemDataView) {
         verify {
-            broadMatchView.trackEventImpressionBroadMatchItem(itemData)
+            broadMatchView.trackEventImpressionBroadMatchItem(itemData, any())
         }
 
         verify(exactly = 0) {
             inspirationCarouselDynamicProductView.trackDynamicProductCarouselImpression(
                 any(),
                 any(),
-                any()
+                any(),
+                any(),
             )
         }
     }
@@ -127,11 +128,12 @@ internal class SearchProductHandleBroadMatchImpressionTest: ProductListPresenter
                 dynamicProductCarousel,
                 carouselProductType.type,
                 carouselProductType.inspirationCarouselProduct,
+                any(),
             )
         }
 
         verify(exactly = 0) {
-            broadMatchView.trackEventImpressionBroadMatchItem(any())
+            broadMatchView.trackEventImpressionBroadMatchItem(any(), any())
         }
     }
 
@@ -153,12 +155,12 @@ internal class SearchProductHandleBroadMatchImpressionTest: ProductListPresenter
     }
 
     private fun `When broad match impressed`(broadMatchDataView: BroadMatchDataView) {
-        productListPresenter.onBroadMatchImpressed(broadMatchDataView)
+        productListPresenter.onBroadMatchImpressed(broadMatchDataView, 0)
     }
 
     private fun `Then verify impression broad match`(broadMatchDataView: BroadMatchDataView) {
         verify {
-            broadMatchView.trackEventImpressionBroadMatch(broadMatchDataView)
+            broadMatchView.trackEventImpressionBroadMatch(broadMatchDataView, any())
         }
     }
 
@@ -175,7 +177,7 @@ internal class SearchProductHandleBroadMatchImpressionTest: ProductListPresenter
 
     private fun `Then verify broad match impression is not called`() {
         verify(exactly = 0) {
-            broadMatchView.trackEventImpressionBroadMatch(any())
+            broadMatchView.trackEventImpressionBroadMatch(any(), any())
         }
     }
 }

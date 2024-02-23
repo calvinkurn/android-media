@@ -40,6 +40,7 @@ import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
+import com.tokopedia.search.result.product.ByteIOTrackingData
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.ads.AdsInjector
 import com.tokopedia.search.result.product.ads.AdsLowOrganic
@@ -220,7 +221,8 @@ class ProductListPresenter @Inject constructor(
     private var keywordIntention = -1
 
     override val quickFilterList = mutableListOf<Filter>()
-    private var threeDotsProductItem: ProductItemDataView? = null
+    override var threeDotsProductItem: ProductItemDataView? = null
+        private set
     private var firstProductPositionWithBOELabel = -1
     private var suggestionKeyword = ""
     private var relatedKeyword = ""
@@ -364,7 +366,7 @@ class ProductListPresenter @Inject constructor(
     ) {
         if (isViewNotAttached) return
 
-        val productDataView = createProductDataView(searchProductModel)
+        val productDataView = createProductDataView(searchProductModel, false)
 
         additionalParams = productDataView.additionalParams
 
@@ -385,7 +387,8 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun createProductDataView(
-        searchProductModel: SearchProductModel
+        searchProductModel: SearchProductModel,
+        isFirstPage: Boolean,
     ): ProductDataView {
         deduplication.appendProductId(searchProductModel)
 
@@ -402,7 +405,11 @@ class ProductListPresenter @Inject constructor(
             isShowLocalSearchRecommendation(),
             externalReference,
             newCardType,
-            safeSearchPresenter.isShowAdultEnableAndProfileVerify()
+            safeSearchPresenter.isShowAdultEnableAndProfileVerify(),
+            ByteIOTrackingData( // TODO
+                keyword = view.queryKey,
+                isFirstPage = isFirstPage,
+            ),
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -462,7 +469,7 @@ class ProductListPresenter @Inject constructor(
 
     private fun createProductItemVisitableList(
         productDataView: ProductDataView,
-        searchParameter: Map<String, Any>
+        searchParameter: Map<String, Any>,
     ): List<Visitable<*>> {
         return if (isHideProductAds(productDataView)) {
             productDataView.productList
@@ -476,7 +483,9 @@ class ProductListPresenter @Inject constructor(
                 productDataView.productListType,
                 externalReference,
                 productDataView.keywordIntention,
-                productDataView.isShowButtonAtc
+                productDataView.isShowButtonAtc,
+                productDataView.isFirstPage,
+                productDataView.keyword,
             )
         }
     }
@@ -704,7 +713,7 @@ class ProductListPresenter @Inject constructor(
         ) {
             view.clearLastProductItemPositionFromCache()
 
-            createProductDataView(searchProductModel)
+            createProductDataView(searchProductModel, true)
         }
     }
 
@@ -908,7 +917,7 @@ class ProductListPresenter @Inject constructor(
     private fun createProductViewModelMapperLocalSearchRecommendation(searchProductModel: SearchProductModel): ProductDataView {
         if (isFirstPage()) view.clearLastProductItemPositionFromCache()
 
-        return createProductDataView(searchProductModel)
+        return createProductDataView(searchProductModel, false)
     }
 
     private fun isShowGlobalSearchRecommendation() =
@@ -1448,6 +1457,8 @@ class ProductListPresenter @Inject constructor(
         } else {
             view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
         }
+
+        view.sendByteIOTrackingProductClick(item)
     }
 
     private fun trackProductTopAdsClick(item: ProductItemDataView) {
@@ -1524,6 +1535,7 @@ class ProductListPresenter @Inject constructor(
         threeDotsProductItem = item
 
         view.trackEventLongPress(item.productID)
+        view.trackEventThreeDotsClickByteIO(item)
         view.showProductCardOptions(createProductCardOptionsModel(item))
     }
 

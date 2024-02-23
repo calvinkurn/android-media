@@ -209,6 +209,8 @@ object EventName {
     const val GLIDE_PAGE = "tiktokec_glide_page"
     const val REC_TRIGGER = "tiktokec_rec_trigger"
     const val SLIDE_BAR = "tiktokec_slide_bar"
+    const val CART_ENTRANCE_SHOW = "tiktokec_cart_entrance_show"
+    const val CART_ENTRANCE_CLICK = "tiktokec_cart_entrance_click"
 }
 
 object ActionType {

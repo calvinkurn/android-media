@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.inspirationcarousel
 
 import android.content.Context
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenter
 import com.tokopedia.search.result.product.QueryKeyProvider
@@ -80,10 +81,17 @@ class InspirationCarouselListenerDelegate(
         presenter?.onInspirationCarouselProductImpressed(product)
     }
 
+    override fun onInspirationCarouselOptionImpressed1Px(
+        option: InspirationCarouselDataView.Option,
+        adapterPosition: Int,
+    ) {
+        AppLogSearch.eventSearchResultShow(option.asByteIOSearchResult(adapterPosition))
+    }
+
     override fun onInspirationCarouselListProductClicked(
         product: InspirationCarouselDataView.Option.Product
     ) {
-        presenter?.onInspirationCarouselProductClick(product)
+        presenter?.onInspirationCarouselProductClick(product, -1)
     }
 
     override fun onInspirationCarouselGridProductImpressed(
@@ -92,20 +100,32 @@ class InspirationCarouselListenerDelegate(
         presenter?.onInspirationCarouselProductImpressed(product)
     }
 
-    override fun onInspirationCarouselGridProductClicked(
-        product: InspirationCarouselDataView.Option.Product
+    override fun onInspirationCarouselGridProductImpressed1Px(
+        product: InspirationCarouselDataView.Option.Product,
+        optionAdapterPosition: Int
     ) {
-        presenter?.onInspirationCarouselProductClick(product)
+        AppLogSearch.eventSearchResultShow(
+            product.asByteIOSearchResult(optionAdapterPosition, null)
+        )
+    }
+
+    override fun onInspirationCarouselGridProductClicked(
+        product: InspirationCarouselDataView.Option.Product,
+        optionAdapterPosition: Int,
+    ) {
+        presenter?.onInspirationCarouselProductClick(product, optionAdapterPosition)
     }
 
     override fun onInspirationCarouselChipsProductClicked(
-        product: InspirationCarouselDataView.Option.Product
+        product: InspirationCarouselDataView.Option.Product,
+        optionAdapterPosition: Int,
     ) {
-        presenter?.onInspirationCarouselProductClick(product)
+        presenter?.onInspirationCarouselProductClick(product, optionAdapterPosition)
     }
 
     override fun onImpressedInspirationCarouselChipsProduct(
         product: InspirationCarouselDataView.Option.Product,
+        optionAdapterPosition: Int,
     ) {
         presenter?.onInspirationCarouselProductImpressed(product)
     }

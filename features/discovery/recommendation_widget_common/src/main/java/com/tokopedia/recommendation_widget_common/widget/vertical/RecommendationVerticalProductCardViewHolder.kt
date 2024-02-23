@@ -2,11 +2,15 @@ package com.tokopedia.recommendation_widget_common.widget.vertical
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomVerticalProductcardBinding
+import com.tokopedia.recommendation_widget_common.extension.asProductTrackModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -51,6 +55,7 @@ class RecommendationVerticalProductCardViewHolder(
     private fun setupProductCardListener(element: RecommendationVerticalProductCardModel) {
         with(binding.productCardView) {
             addOnImpressionListener(element.recomItem) { onProductCardImpressed(element) }
+            addOnImpression1pxListener(element.recomItem) { onProductCardImpressed1px(element) }
             setOnClickListener { onProductClicked(element) }
         }
     }
@@ -73,6 +78,12 @@ class RecommendationVerticalProductCardViewHolder(
         )
     }
 
+    private fun onProductCardImpressed1px(element: RecommendationVerticalProductCardModel) {
+        AppLogRecommendation.sendProductShowAppLog(
+            element.recomItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+        )
+    }
+
     private fun onProductClicked(element: RecommendationVerticalProductCardModel) {
         val productRecommendation = element
             .recomWidget
@@ -91,6 +102,10 @@ class RecommendationVerticalProductCardViewHolder(
 
         element.widgetTracking?.sendEventItemClick(
             item = element.recomItem,
+        )
+
+        AppLogRecommendation.sendProductClickAppLog(
+            element.recomItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
         )
 
         RouteManager.route(binding.productCardView.context, productRecommendation.appUrl)
