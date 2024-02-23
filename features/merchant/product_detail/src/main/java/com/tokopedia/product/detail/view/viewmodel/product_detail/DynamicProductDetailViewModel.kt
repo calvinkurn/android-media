@@ -515,7 +515,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             productType = p1.productType,
             originalPrice = p1.originalPriceFmt,
             salePrice = p1.data.campaign.priceFmt,
-            isSingleSku = p1.data.variant.isVariant.not()
+            isSingleSku = p1.isSingleSku
         )
     }
 
@@ -532,7 +532,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             originalPrice = p1?.originalPriceFmt.orEmpty(),
             salePrice = p1?.data?.campaign?.priceFmt.orEmpty(),
             isLoadData = isLoadData,
-            isSingleSku = p1?.data?.variant?.isVariant != true,
+            isSingleSku = p1?.isSingleSku == true,
             mainPhotoViewCount = mainCount,
             skuPhotoViewCount = skuCount,
             isAddCartSelected = hasDoneAddToCart
@@ -782,7 +782,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                 originalPrice = data.originalPrice,
                 salePrice = data.finalPrice,
                 skuId = data.basic.productID,
-                isSingleSku = data.isProductVariant(),
+                isSingleSku = data.isSingleSku,
                 qty = data.basic.minOrder.toString(),
                 isHaveAddress = false
             )

@@ -522,7 +522,7 @@ class AtcVariantViewModel @Inject constructor(
                     originalPrice = selectedChild?.finalPrice.orZero(),
                     salePrice = selectedChild?.price.orZero(),
                     skuId = selectedChild?.productId.orEmpty(),
-                    isSingleSku = false, // always false in atc variant
+                    isSingleSku = getVariantData()?.children?.size == 1,
                     qty = selectedChild?.getFinalMinOrder().orZero().toString(),
                     isHaveAddress = false
                 )
