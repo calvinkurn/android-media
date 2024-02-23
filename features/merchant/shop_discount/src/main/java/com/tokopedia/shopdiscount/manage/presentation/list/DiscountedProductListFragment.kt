@@ -382,6 +382,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
 
     private fun observeProducts() {
         viewModel.products.observe(viewLifecycleOwner) {
+            dismissLoaderDialog()
             when (it) {
                 is Success -> {
                     displayProducts(it.data)
@@ -852,6 +853,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         this.optOutSuccessMessage = optOutSuccessMessage
         when(data.mode){
             ShopDiscountManageDiscountMode.DELETE -> {
+                showLoaderDialog()
                 if (data.isAllSelectedProductFullSubsidy() && !data.hasNonSubsidyProduct) {
                     binding?.recyclerView showToaster getString(R.string.sd_discount_deleted)
                     CoroutineScope(Dispatchers.Main).launch {
@@ -859,26 +861,36 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                         loadInitialData()
                     }
                 } else {
-                    showLoaderDialog()
                     listParentProductIdWithSubsidy =
                         data.getListProductParentIdWithSubsidyVariant().toMutableList()
-                    viewModel.deleteDiscount(
-                        discountStatusId,
-                        data.getListProductIdVariantNonSubsidy()
-                    )
+                    CoroutineScope(Dispatchers.Main).launch{
+                        delay(DELAY_SLASH_PRICE_OPT_OUT)
+                        viewModel.deleteDiscount(
+                            discountStatusId,
+                            data.getListProductIdVariantNonSubsidy()
+                        )
+                    }
                 }
             }
             ShopDiscountManageDiscountMode.UPDATE -> {
+                showLoaderDialog()
                 if (data.isAllSelectedProductFullSubsidy() && !data.hasNonSubsidyProduct) {
                     binding?.recyclerView showToaster getString(R.string.sd_discount_deleted)
-                    loadInitialData()
+                    CoroutineScope(Dispatchers.Main).launch{
+                        delay(DELAY_SLASH_PRICE_OPT_OUT)
+                        loadInitialData()
+                    }
                 } else {
                     val requestId = generateRequestId()
                     viewModel.setRequestId(requestId)
-                    reserveProduct(requestId, data.getListProductParentIdWithNonSubsidyVariant())
+                    CoroutineScope(Dispatchers.Main).launch{
+                        delay(DELAY_SLASH_PRICE_OPT_OUT)
+                        reserveProduct(requestId, data.getListProductParentIdWithNonSubsidyVariant())
+                    }
                 }
             }
             ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
+                showLoaderDialog()
                 binding?.recyclerView showToaster optOutSuccessMessage
                 binding?.cardViewMultiSelect?.gone()
                 viewModel.removeAllProductFromSelection()

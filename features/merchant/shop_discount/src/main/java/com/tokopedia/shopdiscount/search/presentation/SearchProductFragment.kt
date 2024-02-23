@@ -71,7 +71,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/search_not_found.png"
         //need to add delay to fix delay data from BE
-        private const val DELAY_SLASH_PRICE_OPT_OUT = 1000L
+        private const val DELAY_SLASH_PRICE_OPT_OUT = 2000L
 
         @JvmStatic
         fun newInstance(
@@ -277,6 +277,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
 
     private fun observeProducts() {
         viewModel.products.observe(viewLifecycleOwner) {
+            dismissLoaderDialog()
             when (it) {
                 is Success -> {
                     binding?.groupContent?.visible()
@@ -384,22 +385,41 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         when(dataModel.mode){
             ShopDiscountManageDiscountMode.DELETE -> {
                 showLoaderDialog()
-                viewModel.deleteDiscount(discountStatusId, dataModel.getListProductIdVariantNonSubsidy())
+                if (dataModel.isAllSelectedProductFullSubsidy() && !dataModel.hasNonSubsidyProduct) {
+                    binding?.recyclerView showToaster getString(R.string.sd_discount_deleted)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(DELAY_SLASH_PRICE_OPT_OUT)
+                        loadInitialData()
+                    }
+                } else {
+                    CoroutineScope(Dispatchers.Main).launch{
+                        delay(DELAY_SLASH_PRICE_OPT_OUT)
+                        viewModel.deleteDiscount(
+                            discountStatusId,
+                            dataModel.getListProductIdVariantNonSubsidy()
+                        )
+                    }
+                }
             }
             ShopDiscountManageDiscountMode.UPDATE -> {
-                if (dataModel.isAllSelectedProductFullSubsidy()) {
+                showLoaderDialog()
+                if (dataModel.isAllSelectedProductFullSubsidy() && !dataModel.hasNonSubsidyProduct) {
                     binding?.recyclerView showToaster getString(R.string.sd_discount_deleted)
-                    loadInitialData()
+                    CoroutineScope(Dispatchers.Main).launch{
+                        delay(DELAY_SLASH_PRICE_OPT_OUT)
+                        loadInitialData()
+                    }
                 } else {
                     val requestId = generateRequestId()
                     viewModel.setRequestId(requestId)
-                    reserveProduct(
-                        requestId,
-                        dataModel.getListProductParentIdWithNonSubsidyVariant()
-                    )
+                    CoroutineScope(Dispatchers.Main).launch{
+                        delay(DELAY_SLASH_PRICE_OPT_OUT)
+                        reserveProduct(requestId, dataModel.getListProductParentIdWithNonSubsidyVariant())
+                    }
                 }
             }
             ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
+                showLoaderDialog()
                 binding?.recyclerView showToaster optOutSuccessMessage
                 binding?.cardView?.gone()
                 viewModel.removeAllProductFromSelection()

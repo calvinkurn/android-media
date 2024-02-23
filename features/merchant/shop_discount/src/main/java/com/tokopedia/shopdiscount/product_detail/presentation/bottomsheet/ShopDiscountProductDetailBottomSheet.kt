@@ -397,18 +397,20 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         this.optOutSuccessMessage = optOutSuccessMessage
         when (dataModel.mode) {
             ShopDiscountManageDiscountMode.DELETE -> {
+                showLoading()
                 if (dataModel.isAllSelectedProductFullSubsidy()) {
                     showToaster(getString(R.string.sd_discount_deleted))
-                    showLoading()
                     CoroutineScope(Dispatchers.Main).launch {
                         delay(DELAY_SLASH_PRICE_OPT_OUT)
                         getProductListData()
                     }
                 }else {
-                    showLoading()
-                    deleteSelectedProductDiscount(
-                        dataModel.getListProductIdVariantNonSubsidy().firstOrNull().orEmpty()
-                    )
+                    CoroutineScope(Dispatchers.Main).launch{
+                        delay(DELAY_SLASH_PRICE_OPT_OUT)
+                        deleteSelectedProductDiscount(
+                            dataModel.getListProductIdVariantNonSubsidy().firstOrNull().orEmpty()
+                        )
+                    }
                 }
             }
 
@@ -426,7 +428,10 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                     } else {
                         ""
                     }
-                    updateProductDiscount(productParentId, productParentPosition, selectedProductId)
+                    CoroutineScope(Dispatchers.Main).launch{
+                        delay(DELAY_SLASH_PRICE_OPT_OUT)
+                        updateProductDiscount(productParentId, productParentPosition, selectedProductId)
+                    }
                 }
             }
 
