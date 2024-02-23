@@ -1,0 +1,28 @@
+{
+  "code":103,
+  "data":{
+    "msg_id":4018211,
+    "from":"bcdua",
+    "from_uid":9075738,
+    "from_user_name":"bcdua",
+    "from_role":"User",
+    "thumbnail":"https://images-staging.tokopedia.net/img/cache/100-square/tPxBYm/2023/1/20/cf438cd7-a9f8-435f-910d-726100b587db.jpg",
+    "reminder_ticker":null,
+    "is_opposite":true,
+    "to_uid":9075737,
+    "message":{
+      "censored_reply":"Yaah, pembeli telah membatalkan pesanan ini. Yuk, segera tanggapi pembatalannya.",
+      "original_reply":"Yaah, pembeli telah membatalkan pesanan ini. Yuk, segera tanggapi pembatalannya.",
+      "timestamp":"2024-02-22T20:44:59.368142299+07:00",
+      "timestamp_fmt":"22 February 2024, 20:44 WIB",
+      "timestamp_unix":1708609499368,
+      "timestamp_unix_nano":1708609499368142000
+    },
+    "start_time":"2024-02-22 20:44:59.368142299 +0700 WIB m=+34516.573842268",
+    "show_rating":false,
+    "rating_status":0,
+    "client_connect_time":"0001-01-01T00:00:00Z",
+    "source":"widget_cancellation",
+    "label":"Dikirim otomatis oleh sistem"
+  }
+}
