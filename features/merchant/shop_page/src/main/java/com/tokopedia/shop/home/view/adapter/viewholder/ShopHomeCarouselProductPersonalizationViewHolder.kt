@@ -289,6 +289,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             carouselProductCardOnItemClickListener = productClickListener,
                             carouselProductCardOnItemImpressedListener = productImpressionListener
                         )
+                        recyclerView?.carouselProductCardRecyclerView?.trackHorizontalScroll(element)
                     }
                 }
             }
@@ -404,7 +405,6 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         recyclerViewCarouselSingleOrDoubleProduct?.adapter = productCarouselSingleOrDoubleAdapter
         recyclerViewCarouselSingleOrDoubleProduct?.layoutManager = layoutManager
         recyclerViewCarouselSingleOrDoubleProduct?.setRecycledViewPool(recyclerviewPoolListener.parentPool)
-        recyclerViewCarouselSingleOrDoubleProduct?.trackHorizontalScroll(element)
     }
 
     private fun RecyclerView.trackHorizontalScroll(
