@@ -6,6 +6,7 @@ internal object GetShoppingListQuery: GqlQueryInterface {
 
     private const val OPERATION_NAME = "TokonowGetShoppingList"
 
+    const val PARAM_SOURCE = "source"
     const val PARAM_WAREHOUSES = "warehouses"
 
     override fun getOperationNameList(): List<String> {
@@ -14,11 +15,11 @@ internal object GetShoppingListQuery: GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-            query TokonowGetShoppingList(${'$'}warehouses: [WarehousePerService!]!) {
+            query TokonowGetShoppingList(${'$'}$PARAM_SOURCE: String!, ${'$'}$PARAM_WAREHOUSES: [WarehousePerService!]!) {
               TokonowGetShoppingList(
                 queryParam:"",
-                source: "",
-                warehouses: ${'$'}warehouses
+                source: ${'$'}$PARAM_SOURCE,
+                warehouses: ${'$'}$PARAM_WAREHOUSES
               ) {
                 header {
                   process_time

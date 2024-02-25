@@ -52,7 +52,9 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeLoadMore
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeRetry
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.GetShoppingListDataResponse
+import com.tokopedia.tokopedianow.shoppinglist.domain.model.SaveShoppingListStateActionParam
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.GetShoppingListUseCase
+import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.SaveShoppingListStateUseCase
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.LayoutModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
@@ -62,6 +64,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.runBlocking
@@ -72,6 +75,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val productRecommendationUseCase: GetSingleRecommendationUseCase,
     private val userSession: UserSessionInterface,
     private val getShoppingListUseCase: GetShoppingListUseCase,
+    private val saveShoppingListStateUseCase: SaveShoppingListStateUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
@@ -93,6 +97,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private companion object {
         const val PRODUCT_RECOMMENDATION_PAGE_NAME = "tokonow_shopping_list"
         const val PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER = 1
+        const val DEBOUNCE_TIMES_SHOPPING_LIST = 500L
     }
 
     /**
@@ -110,7 +115,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val _isStickyTopCheckAllScrollingBehaviourEnabled: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private var pageCounter: Int = PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER
-    private var job: Job? = null
+    private var loadLayoutJob: Job? = null
+    private var saveShoppingListStateJob: Job? = null
 
     /**
      * -- public variable section --
@@ -296,12 +302,22 @@ class TokoNowShoppingListViewModel @Inject constructor(
         _uiState.value = Success(getUpdatedLayout(isRequiredToScrollUp = true))
     }
 
+    private fun saveShoppingListState() {
+        saveShoppingListStateJob?.cancel()
+        saveShoppingListStateJob = launchCatchError(
+            block = {
+                delay(DEBOUNCE_TIMES_SHOPPING_LIST)
+                saveShoppingListStateUseCase.execute(availableProducts.map { SaveShoppingListStateActionParam(productId = it.id, isSelected = it.isSelected) })
+            }, onError = { /* do nothing */ }
+        )
+    }
+
     /**
      * -- public function section --
      */
 
     fun loadLayout() {
-        job = launchCatchError(
+        loadLayoutJob = launchCatchError(
             block = {
                 loadSuccessState()
             },
@@ -345,6 +361,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
         availableProducts.clear()
         availableProducts.addAll(tempAvailableProducts)
 
+        saveShoppingListState()
+
         layout
             .modifyTopCheckAll(
                 isSelected = isSelected
@@ -381,6 +399,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
         availableProducts.clear()
         availableProducts.addAll(tempAvailableProducts)
 
+        saveShoppingListState()
+
         val isTopCheckAllSelected = availableProducts.all { it.isSelected }
 
         layout
@@ -408,8 +428,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
     fun loadMoreProductRecommendation(
         isLastVisibleLoadingMore: Boolean
     ) {
-        if (isLastVisibleLoadingMore && job?.isCompleted.orFalse()) {
-            job = launchCatchError(
+        if (isLastVisibleLoadingMore && loadLayoutJob?.isCompleted.orFalse()) {
+            loadLayoutJob = launchCatchError(
                 block = {
                     val productRecommendation = getProductRecommendationDeferred().await()
 

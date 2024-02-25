@@ -138,11 +138,13 @@ data class GetShoppingListDataResponse(
     }
 
     data class Header(
-        @SerializedName("processTime")
-        val processTime: Double = 0.0,
         @SerializedName("error_code")
         val errorCode: String = "",
         @SerializedName("messages")
-        val messages: List<String> = emptyList()
+        val messages: List<String> =  emptyList(),
+        @SerializedName("process_time")
+        val processTime: Double = 0.0,
+        @SerializedName("reason")
+        val reason: String = ""
     )
 }
