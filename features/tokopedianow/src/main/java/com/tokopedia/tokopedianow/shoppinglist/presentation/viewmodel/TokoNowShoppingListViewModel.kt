@@ -107,6 +107,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val _isOnScrollNotNeeded: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val _isNavToolbarScrollingBehaviourEnabled: MutableStateFlow<Boolean> = MutableStateFlow(true)
     private val _isTopCheckAllSelected: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _isStickyTopCheckAllScrollingBehaviourEnabled: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private var pageCounter: Int = PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER
     private var job: Job? = null
@@ -123,6 +124,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
         get() = _isNavToolbarScrollingBehaviourEnabled.asStateFlow()
     val isTopCheckAllSelected
         get() = _isTopCheckAllSelected.asStateFlow()
+    val isStickyTopCheckAllScrollingBehaviourEnabled
+        get() = _isStickyTopCheckAllScrollingBehaviourEnabled.asStateFlow()
 
     var headerModel: HeaderModel = HeaderModel()
 
@@ -168,11 +171,13 @@ class TokoNowShoppingListViewModel @Inject constructor(
         if (availableProducts.isNotEmpty() || unavailableProducts.isNotEmpty()) {
             val displayedAvailableItems = availableProducts.take(MAX_TOTAL_PRODUCT_DISPLAYED)
             val displayedUnavailableItems = unavailableProducts.take(MAX_TOTAL_PRODUCT_DISPLAYED)
+            _isStickyTopCheckAllScrollingBehaviourEnabled.value = availableProducts.isNotEmpty()
 
             layout
                 .doIf(availableProducts.isNotEmpty()) {
                     val isTopCheckAllSelected = availableProducts.count { it.isSelected } == availableProducts.size
                     _isTopCheckAllSelected.value = isTopCheckAllSelected
+
                     layout
                         .addTopCheckAllShoppingList(
                             productState = COLLAPSE,

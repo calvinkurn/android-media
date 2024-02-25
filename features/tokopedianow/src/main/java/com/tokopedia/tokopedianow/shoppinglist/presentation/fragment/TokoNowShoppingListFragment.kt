@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
@@ -112,6 +113,7 @@ class TokoNowShoppingListFragment :
         by autoClearedNullable()
 
     private var isNavToolbarScrollingBehaviourEnabled: Boolean = true
+    private var isStickyTopCheckAllScrollingBehaviorEnabled: Boolean = false
 
     /**
      * -- override function section --
@@ -198,7 +200,7 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private suspend fun collectTopCheckAllStatus(
+    private suspend fun collectStickyTopCheckAllStatus(
         binding: FragmentTokopedianowShoppingListBinding
     ) {
         viewModel.isTopCheckAllSelected.collect { isSelected ->
@@ -207,6 +209,12 @@ class TokoNowShoppingListFragment :
                 isChecked = isSelected
                 setOnCheckedChangeListener(createTopCheckAllCheckedChangeCallback())
             }
+        }
+    }
+
+    private suspend fun collectStickyTopCheckAllScrollingBehaviour() {
+        viewModel.isStickyTopCheckAllScrollingBehaviourEnabled.collect { isEnabled ->
+            isStickyTopCheckAllScrollingBehaviorEnabled = isEnabled
         }
     }
 
@@ -278,7 +286,8 @@ class TokoNowShoppingListFragment :
                 launch { collectUiState(this@collectStateFlow) }
                 launch { collectScrollState(this@collectStateFlow) }
                 launch { collectErrorNavToolbar(this@collectStateFlow) }
-                launch { collectTopCheckAllStatus(this@collectStateFlow) }
+                launch { collectStickyTopCheckAllStatus(this@collectStateFlow) }
+                launch { collectStickyTopCheckAllScrollingBehaviour() }
             }
         }
     }
@@ -355,10 +364,16 @@ class TokoNowShoppingListFragment :
             toolbarTransitionRangePixel = transitionRange,
             navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                 override fun onAlphaChanged(offsetAlpha: Float) {
-                    binding.stickyTopCheckAllLayout.showIfWithBlock(offsetAlpha > TOP_CHECK_ALL_THRESHOLD_ALPHA) {
-                        binding.stickyTopCheckAllLayout.background.alpha = offsetAlpha.toInt()
-                        binding.stickyTopCheckAll.tpTopCheckAll.visibleWithCondition(offsetAlpha == TOP_CHECK_ALL_MAX_ALPHA)
-                        binding.stickyTopCheckAll.cbTopCheckAll.visibleWithCondition(offsetAlpha == TOP_CHECK_ALL_MAX_ALPHA)
+                    binding.apply {
+                        if (isStickyTopCheckAllScrollingBehaviorEnabled) {
+                            stickyTopCheckAllLayout.showIfWithBlock(offsetAlpha > TOP_CHECK_ALL_THRESHOLD_ALPHA) {
+                                stickyTopCheckAllLayout.background.alpha = offsetAlpha.toInt()
+                                stickyTopCheckAll.tpTopCheckAll.visibleWithCondition(offsetAlpha == TOP_CHECK_ALL_MAX_ALPHA)
+                                stickyTopCheckAll.cbTopCheckAll.visibleWithCondition(offsetAlpha == TOP_CHECK_ALL_MAX_ALPHA)
+                            }
+                        } else {
+                            stickyTopCheckAllLayout.hide()
+                        }
                     }
                 }
 
