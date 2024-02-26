@@ -35,6 +35,7 @@ import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
 import com.tokopedia.cart.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_HEADER
 import com.tokopedia.cart.view.uimodel.CartMainCoachMarkUiModel
+import com.tokopedia.cart.view.uimodel.CartProductLabelData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
@@ -74,7 +75,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Locale
 import com.tokopedia.nest.components.R as nestcomponentsR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -150,6 +151,7 @@ class CartItemViewHolder(
         renderBmGmOfferTicker(data)
         renderProductTagInfo(data)
         renderPurchaseBenefitWidget(data)
+        renderCartCampaignFestivityTicker(data)
     }
 
     private fun initSwipeLayout(data: CartItemHolderData) {
@@ -1901,6 +1903,50 @@ class CartItemViewHolder(
                     data.cartBmGmTickerData.bmGmCartInfoData,
                     tierProductData
                 )
+            }
+        }
+    }
+
+    private fun renderCartCampaignFestivityTicker(data: CartItemHolderData) {
+        val productLabelData = data.cartProductLabelData
+        when (productLabelData.type) {
+            CartProductLabelData.TYPE_DEFAULT -> {
+                val useImageLogo = productLabelData.imageLogoUrl.isNotBlank()
+                val useTextLogo = productLabelData.text.isNotBlank()
+                if (useImageLogo) {
+                    binding.cartCampaignProductLabel.showImageLabel(
+                        logoUrl = productLabelData.imageLogoUrl,
+                        backgroundStartColor = productLabelData.backgroundStartColor,
+                        backgroundEndColor = productLabelData.backgroundEndColor
+                    )
+                } else if (useTextLogo) {
+                    binding.cartCampaignProductLabel.showTextLabel(
+                        text = productLabelData.text,
+                        textColor = productLabelData.textColor,
+                        backgroundStartColor = productLabelData.backgroundStartColor,
+                        backgroundEndColor = productLabelData.backgroundEndColor
+                    )
+                } else {
+                    binding.cartCampaignProductLabel.hideTicker()
+                }
+            }
+
+            CartProductLabelData.TYPE_TIMER -> {
+                val remainingTimeMillis = productLabelData.localExpiredTimeMillis - System.currentTimeMillis()
+                if (productLabelData.alwaysShowTimer) {
+                    binding.cartCampaignProductLabel.showTimedLabel(
+                        remainingTimeMillis = remainingTimeMillis,
+                        iconUrl = productLabelData.iconUrl,
+                        backgroundColor = productLabelData.lineColor,
+                        alwaysShowTimer = true
+                    )
+                } else {
+                    binding.cartCampaignProductLabel.hideTicker()
+                }
+            }
+
+            else -> {
+                binding.cartCampaignProductLabel.hideTicker()
             }
         }
     }
