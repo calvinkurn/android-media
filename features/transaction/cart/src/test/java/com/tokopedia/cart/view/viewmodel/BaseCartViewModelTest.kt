@@ -92,7 +92,7 @@ open class BaseCartViewModelTest {
             getCartRevampV4UseCase, deleteCartUseCase,
             undoDeleteCartUseCase, updateCartUseCase, compositeSubscription,
             addToWishListV2UseCase, deleteWishlistV2UseCase,
-            updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+            updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,
             getWishlistV2UseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
             seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndGetLastApplyUseCase,
             setCartlistCheckboxStateUseCase, followShopUseCase,

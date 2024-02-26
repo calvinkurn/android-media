@@ -283,11 +283,11 @@ class CartViewModel @Inject constructor(
         const val ITEM_CHECKED_PARTIAL_SHOP = 3
         const val ITEM_CHECKED_PARTIAL_ITEM = 4
         const val ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5
-        private const val RECENT_VIEW_XSOURCE = "recentview"
-        private const val PAGE_NAME_RECENT_VIEW = "cart_recent_view"
-        private const val PAGE_NAME_RECENT_VIEW_TEST = "cart_recent_view_test" // FOR TESTING ONLY, REVERT THIS BEFORE MERGE!!!
-        private const val PAGE_NAME_RECOMMENDATION = "cart"
-        private const val PAGE_NAME_RECOMMENDATION_TEST = "cart_test_2" // FOR TESTING ONLY, REVERT THIS BEFORE MERGE!!!
+        const val RECENT_VIEW_XSOURCE = "recentview"
+        const val PAGE_NAME_RECENT_VIEW = "cart_recent_view"
+        const val PAGE_NAME_RECENT_VIEW_TEST = "cart_recent_view_test" // FOR TESTING ONLY, REVERT THIS BEFORE MERGE!!!
+        const val PAGE_NAME_RECOMMENDATION = "cart"
+        const val PAGE_NAME_RECOMMENDATION_TEST = "cart_test_2" // FOR TESTING ONLY, REVERT THIS BEFORE MERGE!!!
 
         private const val QUERY_APP_CLIENT_ID = "{app_client_id}"
         private val REGEX_NUMBER = "[^0-9]".toRegex()

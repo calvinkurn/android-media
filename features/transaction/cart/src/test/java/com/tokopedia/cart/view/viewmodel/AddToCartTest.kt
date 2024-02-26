@@ -4,7 +4,6 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.view.uimodel.AddToCartEvent
-import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.productcard.ProductCardModel
@@ -106,9 +105,9 @@ class AddToCartTest : BaseCartViewModelTest() {
     @Test
     fun `WHEN add to cart recent view item success THEN should render success`() {
         // GIVEN
-        val productModel = CartRecentViewItemHolderData(
-            id = "0",
-            shopId = "0",
+        val recommendationItem = RecommendationItem(
+            productId = 0,
+            shopId = 0,
             name = "a",
             price = "1",
             minOrder = 1,
@@ -132,11 +131,11 @@ class AddToCartTest : BaseCartViewModelTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartViewModel.processAddToCart(productModel)
+        cartViewModel.processAddToCart(recommendationItem)
 
         // THEN
         assertEquals(
-            AddToCartEvent.Success(addToCartDataModel, productModel),
+            AddToCartEvent.Success(addToCartDataModel, recommendationItem),
             cartViewModel.addToCartEvent.value
         )
     }
@@ -158,7 +157,7 @@ class AddToCartTest : BaseCartViewModelTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartViewModel.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
+        cartViewModel.processAddToCart(RecommendationItem(productId = 0, shopId = 0))
 
         // THEN
         MatcherAssert.assertThat(
@@ -176,7 +175,7 @@ class AddToCartTest : BaseCartViewModelTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartViewModel.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
+        cartViewModel.processAddToCart(RecommendationItem(productId = 0, shopId = 0))
 
         // THEN
         assertEquals(
