@@ -292,6 +292,7 @@ object ProductTrackingConstant {
     }
 
     object MerchantVoucher {
+        const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
     }
 
