@@ -118,6 +118,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerCo
 import com.tokopedia.home.beranda.presentation.view.listener.FeaturedShopComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.FlashSaleWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.HomeOrigamiListenerDelegate
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.listener.HomeReminderWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.Lego6AutoBannerComponentCallback
@@ -1612,6 +1613,7 @@ open class HomeRevampFragment :
             ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
             CouponWidgetCallback(this),
             getThematicUtil(),
+            HomeOrigamiListenerDelegate(context, this),
             getRemoteConfig()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
