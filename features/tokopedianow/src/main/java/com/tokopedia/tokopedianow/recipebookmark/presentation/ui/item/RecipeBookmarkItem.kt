@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -32,11 +33,8 @@ import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.PARAM_RECIPE_ID
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.nest.components.NestImage
-import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.analytics.ListItemImpression
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -96,12 +94,12 @@ fun RecipeBookmarkItem(
         elevation = 0.dp
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            NestImage(
+            AsyncImage(
+                model = imageUrl,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(88.dp),
-                source = ImageSource.Remote(imageUrl),
-                type = NestImageType.Rect(rounded = 0.dp),
+                contentDescription = null,
                 contentScale = ContentScale.Crop
             )
 
