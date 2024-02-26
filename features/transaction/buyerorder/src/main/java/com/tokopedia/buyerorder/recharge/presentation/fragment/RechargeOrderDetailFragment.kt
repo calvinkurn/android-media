@@ -560,23 +560,26 @@ class RechargeOrderDetailFragment :
             dialog.setPrimaryCTAText(getString(R.string.dialog_void_emoney_primary_cta_label))
             dialog.setPrimaryCTAClickListener {
                 rechargeViewModel.voidEmoneyData(orderId)
-                rechargeOrderDetailAnalytics.eventVoidPopupClickBatalkan(
+                rechargeOrderDetailAnalytics.sendClickBatalkanVoidPopupEvent(
                     OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
-                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+                    OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData())
                 )
             }
             dialog.setSecondaryCTAText(getString(R.string.dialog_void_emoney_secondary_cta_label))
             dialog.setSecondaryCTAClickListener {
                 dialog.dismiss()
-                rechargeOrderDetailAnalytics.eventVoidPopupClickKembali(
+                rechargeOrderDetailAnalytics.sendClickKembaliVoidPopupEvent(
                     OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
-                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+                    OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData())
                 )
             }
             dialog.setOnShowListener {
-                rechargeOrderDetailAnalytics.eventViewVoidPopup(
+                rechargeOrderDetailAnalytics.sendViewVoidPopupEvent(
                     OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
-                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+                    OrderListAnalyticsUtils.getOrderStatus(rechargeViewModel.getOrderDetailResultData())
                 )
             }
             dialog.setOverlayClose(false)

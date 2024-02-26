@@ -111,56 +111,77 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
         )
     }
 
-    fun eventViewVoidPopup(categoryName: String, productId: String) {
-        val map = mutableMapOf(
-            Keys.EVENT_NAME to EventName.VIEW_DIGITAL_IRIS,
-            Keys.EVENT_ACTION to EventAction.VIEW_VOID_POPUP,
-            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
-            Keys.EVENT_LABEL to "$categoryName - $productId",
-            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
-            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-            Keys.USER_ID to userSession.userId
-        )
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/2775
+    // Tracker ID: 28223
+    fun sendViewVoidPopupEvent(
+        categoryName: String,
+        productId: String,
+        orderStatus: String
+    ) {
+        val eventLabel = "$categoryName - $productId - $orderStatus"
+        Tracker.Builder()
+            .setEvent(EventName.VIEW_DIGITAL_IRIS)
+            .setEventAction(EventAction.VIEW_VOID_POPUP)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.VIEW_VOID_POPUP)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
     }
 
-    fun eventVoidPopupClickBatalkan(categoryName: String, productId: String) {
-        val map = mutableMapOf(
-            Keys.EVENT_NAME to EventName.CLICK_DIGITAL,
-            Keys.EVENT_ACTION to EventAction.CLICK_BATALKAN_VOID_POPUP,
-            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
-            Keys.EVENT_LABEL to "$categoryName - $productId",
-            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
-            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-            Keys.USER_ID to userSession.userId
-        )
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/2775
+    // Tracker ID: 28227
+    fun sendClickKembaliVoidPopupEvent(
+        categoryName: String,
+        productId: String,
+        orderStatus: String
+    ) {
+        val eventLabel = "$categoryName - $productId - $orderStatus"
+        Tracker.Builder()
+            .setEvent(EventName.CLICK_DIGITAL)
+            .setEventAction(EventAction.CLICK_KEMBALI_VOID_POPUP)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.CLICK_KEMBALI_VOID_POPUP)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
     }
 
-    fun eventVoidPopupClickKembali(categoryName: String, productId: String) {
-        val map = mutableMapOf(
-            Keys.EVENT_NAME to EventName.CLICK_DIGITAL,
-            Keys.EVENT_ACTION to EventAction.CLICK_KEMBALI_VOID_POPUP,
-            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
-            Keys.EVENT_LABEL to "$categoryName - $productId",
-            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
-            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-            Keys.USER_ID to userSession.userId
-        )
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/2775
+    // Tracker ID: 28224
+    fun sendClickBatalkanVoidPopupEvent(
+        categoryName: String,
+        productId: String,
+        orderStatus: String
+    ) {
+        val eventLabel = "$categoryName - $productId - $orderStatus"
+        Tracker.Builder()
+            .setEvent(EventName.CLICK_DIGITAL)
+            .setEventAction(EventAction.CLICK_BATALKAN_VOID_POPUP)
+            .setEventCategory(DefaultValue.EVENT_CATEGORY)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(Keys.TRACKER_ID, TrackerId.CLICK_BATALKAN_VOID_POPUP)
+            .setBusinessUnit(DefaultValue.BUSINESS_UNIT)
+            .setCurrentSite(DefaultValue.CURRENT_SITE)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/2775
     // Tracker ID: 50272
     fun sendViewBatalkanTransaksiButtonEvent(
-        productCategory: String,
+        categoryName: String,
         productId: String,
         orderStatus: String
     ) {
-        val eventLabel = "$productCategory - $productId - $orderStatus"
+        val eventLabel = "$categoryName - $productId - $orderStatus"
         Tracker.Builder()
             .setEvent(EventName.VIEW_DIGITAL_IRIS)
             .setEventAction(EventAction.VIEW_BATALKAN_TRANSAKSI_BUTTON)
@@ -176,11 +197,11 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/2775
     // Tracker ID: 50273
     fun sendClickBatalkanTransaksiButtonEvent(
-        productCategory: String,
+        categoryName: String,
         productId: String,
         orderStatus: String
     ) {
-        val eventLabel = "$productCategory - $productId - $orderStatus"
+        val eventLabel = "$categoryName - $productId - $orderStatus"
         Tracker.Builder()
             .setEvent(EventName.CLICK_DIGITAL)
             .setEventAction(EventAction.CLICK_BATALKAN_TRANSAKSI_BUTTON)
@@ -277,6 +298,9 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
 
     class TrackerId {
         companion object {
+            const val VIEW_VOID_POPUP = "28223"
+            const val CLICK_BATALKAN_VOID_POPUP = "28224"
+            const val CLICK_KEMBALI_VOID_POPUP = "28227"
             const val VIEW_BATALKAN_TRANSAKSI_BUTTON = "50272"
             const val CLICK_BATALKAN_TRANSAKSI_BUTTON = "50273"
         }
