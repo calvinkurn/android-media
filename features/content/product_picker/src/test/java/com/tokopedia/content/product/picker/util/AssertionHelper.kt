@@ -44,3 +44,19 @@ fun Boolean.assertFalse() {
         .assertThat(this)
         .isFalse
 }
+
+fun String.assertEmpty() {
+    Assertions
+        .assertThat(this)
+        .isEqualTo("")
+}
+
+fun <T : Any> List<T>.assertEmpty() {
+    Assertions
+        .assertThat(this.size)
+        .isEqualTo(0)
+}
+
+infix fun <T : Any> T.equalTo(expected: T) {
+    this.assertEqualTo(expected)
+}
