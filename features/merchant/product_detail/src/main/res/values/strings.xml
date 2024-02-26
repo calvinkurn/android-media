@@ -9,8 +9,6 @@
     <string name="pdp_product_info_description_title">Deskripsi produk</string>
     <string name="merchant_product_detail_label_selengkapnya">Selengkapnya</string>
     <string name="title_activity_product_detail">Rincian Produk</string>
-    <string name="ticker_atc_done_some_store">Barang dikirim dari toko yang sama</string>
-    <string name="ticker_atc_done_different_store">Barang dikirim dari toko yang berbeda</string>
     <string name="buy">Beli</string>
     <string name="pdp_promote_topads">Iklankan Produk</string>
     <string name="edit_product_text">Ubah Produk</string>
@@ -41,9 +39,6 @@
     <string name="pdp_search_hint">Cari %s di Tokopedia</string>
     <string name="pdp_search_hint_tokonow">Cari "'"%s"'" di Tokopedia NOW!</string>
 
-    <string name="atc_done_add_product_success">Barang berhasil ditambahkan</string>
-    <string name="atc_done_add_product_success_button">Berhasil ditambahkan</string>
-    <string name="atc_done_see_cart">Lihat Keranjang</string>
     <string name="recom_see_more_title">Lihat semua</string>
 
     <string name="review_out_of_total_reviews">dari %d ulasan</string>
@@ -59,8 +54,6 @@
     <string name="pdp_installment_price_ext"> /bulan</string>
     <string name="ft_min_installment_amount">Min Pembelanjaan %s</string>
     <string name="ft_max_installment_amount">Maks Pembelanjaan %s</string>
-
-    <string name="pdp_category_applink">https://www.tokopedia.com/p/</string>
 
     <string-array name="ft_installment_type_title">
         <item>@string/ft_label_without_credit_card</item>

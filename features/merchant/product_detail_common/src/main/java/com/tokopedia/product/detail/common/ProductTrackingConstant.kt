@@ -82,7 +82,6 @@ object ProductTrackingConstant {
         const val CATEGORY = "category"
         const val LIST_DEFAULT = "/product - "
         const val LIST_RECOMMENDATION = " - rekomendasi untuk anda - "
-        const val LIST_PRODUCT_AFTER_ATC = "/productafteratc  - "
         const val CURRENCY_CODE = "currencyCode"
         const val CURRENCY_DEFAULT_VALUE = "IDR"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
@@ -137,7 +136,6 @@ object ProductTrackingConstant {
         const val PRODUCT_VIEW = "productView"
         const val RECOMMENDATION_CLICK = "clickRecommendation"
         const val TOPADS_CLICK = "click - product recommendation"
-        const val TOPADS_ATC_CLICK = "click add to cart on product card after atc"
         const val TOPADS_IMPRESSION = "impression - product recommendation"
         const val CLICK_VARIANT = "click - variant"
         const val CLICK_PRODUCT_PICTURE = "click - product picture"
@@ -217,7 +215,6 @@ object ProductTrackingConstant {
         const val CLICK_INTERACTION_VIDEO = "click - video on product image"
         const val CLICK_MUTE_VIDEO = "click - mute on video"
 
-        const val CLICK_CHECK_CART = "click - cek keranjang"
         const val CLICK_PELAJARI_TOKO_CABANG = "click pelajari dikirim dari tokocabang"
         const val CLICK_SEE_OTHER_COURIER = "click - lihat kurir lainnya"
         const val CLICK_SHIPMENT_ERROR_COMPONENT = "click - ganti alamat when error on component shipping"
@@ -242,16 +239,8 @@ object ProductTrackingConstant {
         const val CLICK_LOCATION_RESTRICTION = "click - button on pdp restriction bottomsheet"
         const val IMPRESS_LOCATION_RESTRICTION = "impression - pdp restriction bottomsheet"
 
-        const val VIEW_ITEM = "view_item"
-        const val PROMO_VIEW = "promoView"
-        const val PROMOTIONS = "promotions"
-
         const val CLICK_SHARE_REGULER = "general"
         const val CLICK_SHARE_AFFILIATE_ICON = "affiliate"
-
-        const val A_PLUS_MORE = "baca selengkapnya"
-        const val A_PLUS_LESS = "lihat lebih sedikit"
-        const val IN_A_PLUS = "in a plus"
     }
 
     object Label {
@@ -303,7 +292,6 @@ object ProductTrackingConstant {
     }
 
     object MerchantVoucher {
-        const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
     }
 
@@ -346,9 +334,5 @@ object ProductTrackingConstant {
         const val TRACKER_ID_IMPRESS_SPECIFICATION = "36326"
         const val TRACKER_ID_CLICK_LOCATION_RESTRICTION = "40907"
         const val TRACKER_ID_IMPRESSION_LOCATION_RESTRICTION = "40906"
-        const val TRACKER_ID_CLICK_A_PLUS_MORE = "45824"
-        const val TRACKER_ID_CLICK_A_PLUS_LESS = "45825"
-        const val VALUE_TRACKER_ID_CLICK_SHARE_WIDGET = "48001"
-        const val VALUE_TRACKER_ID_CLICK_DIRECT_CHANNEL = "48135"
     }
 }
