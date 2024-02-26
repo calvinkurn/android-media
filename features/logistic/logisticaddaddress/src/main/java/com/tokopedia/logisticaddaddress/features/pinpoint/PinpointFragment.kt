@@ -132,6 +132,12 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 extra.getString(EXTRA_ADDRESS_STATE, AddressUiState.PinpointOnly.name)
             }
 
+            val isPositiveFlow = if (extra.containsKey(EXTRA_IS_POSITIVE_FLOW)) {
+                extra.getBoolean(EXTRA_IS_POSITIVE_FLOW)
+            } else {
+                null
+            }
+
             return PinpointFragment().apply {
                 arguments = Bundle().apply {
                     // general
@@ -141,7 +147,9 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     putString(EXTRA_ADDRESS_STATE, state)
 
                     // from address form
-                    putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
+                    if (isPositiveFlow != null) {
+                        putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+                    }
                     putString(EXTRA_ADDRESS_ID, extra.getString(EXTRA_ADDRESS_ID))
                     putLong(EXTRA_DISTRICT_ID, extra.getLong(EXTRA_DISTRICT_ID))
 
