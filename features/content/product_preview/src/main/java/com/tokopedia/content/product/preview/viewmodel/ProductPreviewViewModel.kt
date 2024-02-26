@@ -3,6 +3,7 @@ package com.tokopedia.content.product.preview.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
+import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreference
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
@@ -10,7 +11,7 @@ import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTa
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.reviewTab
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
-import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState.ReviewLikeStatus
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
@@ -58,7 +59,8 @@ import kotlinx.coroutines.launch
 class ProductPreviewViewModel @AssistedInject constructor(
     @Assisted val productPreviewSource: ProductPreviewSourceModel,
     private val repo: ProductPreviewRepository,
-    private val userSessionInterface: UserSessionInterface
+    private val userSessionInterface: UserSessionInterface,
+    private val productPrevSharedPref: ProductPreviewSharedPreference
 ) : ViewModel() {
 
     @AssistedFactory
@@ -123,15 +125,18 @@ class ProductPreviewViewModel @AssistedInject constructor(
             }
         }
 
+    val hasVisit get() = productPrevSharedPref.hasVisited()
+
     fun onAction(action: ProductPreviewAction) {
         when (action) {
             CheckInitialSource -> handleCheckInitialSource()
             FetchMiniInfo -> handleFetchMiniInfo()
             InitializeReviewMainData -> handleInitializeReviewMainData()
             ProductActionFromResult -> handleProductAction(_bottomNavContentState.value)
-            LikeFromResult -> handleLikeFromResult()
+            LikeFromResult -> handleLikeFromResult(false)
             FetchReviewByIds -> handleFetchReviewByIds()
             ToggleReviewWatchMode -> handleReviewWatchMode()
+            ProductPreviewAction.HasVisitCoachMark -> productPrevSharedPref.setHasVisit()
             is ProductMediaSelected -> handleProductMediaSelected(action.position)
             is ReviewContentSelected -> handleReviewContentSelected(action.position)
             is ReviewContentScrolling -> handleReviewContentScrolling(action.position, action.isScrolling)
@@ -142,7 +147,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is Navigate -> handleNavigate(action.appLink)
             is SubmitReport -> handleSubmitReport(action.model)
             is ClickMenu -> handleClickMenu(action.isFromLogin)
-            is Like -> handleLikeFromResult(action.item)
+            is Like -> handleLikeFromResult(action.isDoubleTap)
         }
     }
 
@@ -492,21 +497,20 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleLikeFromResult(status: ReviewLikeUiState = currentReview.likeState) {
-        if (status.withAnimation && !userSessionInterface.isLoggedIn) return
+    private fun handleLikeFromResult(isDoubleTap: Boolean) {
+        if (isDoubleTap && currentReview.likeState.state == ReviewLikeStatus.Like) return
 
+        val status = currentReview.likeState
         requiredLogin(status) {
             viewModelScope.launchCatchError(block = {
                 val state = repo.likeReview(status, currentReview.reviewId)
                 _reviewContentState.update { reviews ->
                     reviews.copy(
-                        reviewContent =
-                        reviews.reviewContent.map { review ->
+                        reviewContent = reviews.reviewContent.map { review ->
                             if (review.reviewId == currentReview.reviewId) {
                                 review.copy(
-                                    likeState =
-                                    state.copy(
-                                        withAnimation = status.withAnimation
+                                    likeState = state.copy(
+                                        withAnimation = isDoubleTap
                                     )
                                 )
                             } else {

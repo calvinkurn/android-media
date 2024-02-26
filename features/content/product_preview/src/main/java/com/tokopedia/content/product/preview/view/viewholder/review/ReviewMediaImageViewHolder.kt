@@ -32,7 +32,10 @@ class ReviewMediaImageViewHolder(
     fun bind(content: ReviewMediaUiModel) {
         binding.cvProductPreviewMediaImage.apply {
             setContent {
-                ItemImageProductPreview(imageUrl = content.url)
+                ItemImageProductPreview(
+                    imageUrl = content.url,
+                    onDoubleTap = { mediaImageLister.onDoubleTapImage() }
+                )
             }
         }
     }

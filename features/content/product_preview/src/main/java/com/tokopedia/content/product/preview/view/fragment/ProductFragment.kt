@@ -26,6 +26,7 @@ import com.tokopedia.content.product.preview.view.listener.MediaImageListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoListener
 import com.tokopedia.content.product.preview.view.listener.ProductThumbnailListener
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
@@ -251,11 +252,11 @@ class ProductFragment @Inject constructor(
     }
 
     override fun onImpressedImage() {
-        analytics.onImpressImage()
+        analytics.onImpressImage(ProductPreviewTabUiModel.TAB_PRODUCT_KEY)
     }
 
     override fun onImpressedVideo() {
-        analytics.onImpressVideo()
+        analytics.onImpressVideo(ProductPreviewTabUiModel.TAB_PRODUCT_KEY)
     }
 
     override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {

@@ -23,19 +23,19 @@ interface ProductPreviewAnalytics {
      * 2. impress video
      * 49588
      */
-    fun onImpressVideo()
+    fun onImpressVideo(pageSource: String)
 
     /**
      * 3. impress ATC button
      * 49589
      */
-    fun onImpressATC()
+    fun onImpressATC(pageSource: String)
 
     /**
      * 4. click ATC button
      * 49590
      */
-    fun onClickATC(bottomNavUiModel: BottomNavUiModel)
+    fun onClickATC(pageSource: String, bottomNavUiModel: BottomNavUiModel)
 
     /**
      * 5. click content thumbnail in Produk tab
@@ -47,19 +47,19 @@ interface ProductPreviewAnalytics {
      * 6. impress image content
      * 49598
      */
-    fun onImpressImage()
+    fun onImpressImage(pageSource: String)
 
     /**
      * 7. impress Ingatkan Saya button
      * 49600
      */
-    fun onImpressRemindMe()
+    fun onImpressRemindMe(pageSource: String)
 
     /**
      * 8. click Ingatkan Saya button
      * 49601
      */
-    fun onClickRemindMe()
+    fun onClickRemindMe(pageSource: String)
 
     /**
      * 9. swipe up down to next content in Ulasan tab
@@ -83,13 +83,13 @@ interface ProductPreviewAnalytics {
      * 12. click Back button to PDP
      * 49606
      */
-    fun onClickBackButton()
+    fun onClickBackButton(pageSource: String)
 
     /**
      * 13. click ATC to global variant bottomsheet
      * 49607
      */
-    fun onClickVariantGBVS()
+    fun onClickVariantGBVS(pageSource: String)
 
     /**
      * 14. click laporkan ulasan in ulasan tab
@@ -107,7 +107,7 @@ interface ProductPreviewAnalytics {
      * 16. click pause/play in video
      * 49845
      */
-    fun onClickPauseOrPlayVideo()
+    fun onClickPauseOrPlayVideo(pageSource: String)
 
     /**
      * 17. submit report from ulasan tab

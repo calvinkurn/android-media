@@ -1,6 +1,8 @@
 package com.tokopedia.content.product.preview.view.viewholder.review
 
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -37,9 +39,23 @@ class ReviewMediaVideoViewHolder(
                 onNotSelected()
             }
         })
-        binding.root.setOnClickListener {
-            val state = !mVideoPlayer?.exoPlayer?.playWhenReady.orFalse()
-            mVideoPlayer?.exoPlayer?.playWhenReady = state
+        val gesture = GestureDetector(
+            binding.root.context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                    val state = !mVideoPlayer?.exoPlayer?.playWhenReady.orFalse()
+                    mVideoPlayer?.exoPlayer?.playWhenReady = state
+                    return true
+                }
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+                    productPreviewVideoListener.onDoubleTapVideo()
+                    return true
+                }
+            }
+        )
+        binding.root.setOnTouchListener { _, motionEvent ->
+            gesture.onTouchEvent(motionEvent)
+            true
         }
     }
 
