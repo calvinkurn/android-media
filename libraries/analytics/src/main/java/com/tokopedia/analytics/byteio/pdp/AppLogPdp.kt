@@ -3,6 +3,7 @@ package com.tokopedia.analytics.byteio.pdp
 import android.annotation.SuppressLint
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addRequestId
@@ -160,6 +161,7 @@ object AppLogPdp {
             it.addPage()
             it.addEnterFrom()
             it.addSourcePreviousPage()
+            it.addEnterMethod()
             it.put("cart_item_cnt", cartCount)
             it.put("cart_unavailable_cnt", cartUnavailCount)
         })
