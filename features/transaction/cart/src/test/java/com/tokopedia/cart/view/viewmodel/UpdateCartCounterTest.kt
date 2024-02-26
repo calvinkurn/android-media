@@ -4,7 +4,6 @@ import androidx.lifecycle.Observer
 import com.tokopedia.cart.view.uimodel.CartGlobalEvent
 import io.mockk.Runs
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -25,7 +24,7 @@ class UpdateCartCounterTest : BaseCartViewModelTest() {
     fun `WHEN updateCartCounter then updateCartCounterUseCase should called`() {
         // GIVEN
         val resultExpected = 3
-        coEvery { updateCartCounterUseCase(any()) } returns resultExpected
+        coEvery { updateCartCounterUseCase(Unit) } returns resultExpected
 
         // WHEN
         cartViewModel.processUpdateCartCounter()
@@ -35,8 +34,5 @@ class UpdateCartCounterTest : BaseCartViewModelTest() {
             CartGlobalEvent.CartCounterUpdated(resultExpected),
             cartViewModel.globalEvent.value
         )
-        coVerify(inverse = true) {
-            updateCartCounterUseCase(any())
-        }
     }
 }

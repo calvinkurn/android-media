@@ -37,7 +37,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
         }
 
         coEvery { getCartRevampV4UseCase(any()) } returns CartData()
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         val cartDeleteItemData = CartDeleteItemData(
             removedCartItems = arrayListOf(cartItemData),
             addWishList = false,
@@ -81,7 +81,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
             )
         }
 
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         val cartDeleteItemData = CartDeleteItemData(
             removedCartItems = arrayListOf(secondCartItemData),
             addWishList = false,
@@ -123,7 +123,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
             )
         }
 
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         val cartDeleteItemData = CartDeleteItemData(
             removedCartItems = arrayListOf(secondCartItemData),
             addWishList = false,
@@ -155,7 +155,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         val cartDeleteItemData = CartDeleteItemData(
             removedCartItems = arrayListOf(cartItemData),
             addWishList = false,
@@ -183,7 +183,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         val cartDeleteItemData = CartDeleteItemData(
             removedCartItems = arrayListOf(cartItemData),
             addWishList = false,

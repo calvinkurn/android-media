@@ -45,7 +45,7 @@ class AddToCartTest : BaseCartViewModelTest() {
         }
         coEvery { addToCartUseCase.setParams(any()) } just Runs
         coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
-        coEvery { updateCartCounterUseCase(any()) } returns 0
+        coEvery { updateCartCounterUseCase(Unit) } returns 0
         coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
@@ -126,7 +126,7 @@ class AddToCartTest : BaseCartViewModelTest() {
 
         coEvery { addToCartUseCase.setParams(any()) } just Runs
         coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
-        coEvery { updateCartCounterUseCase(any()) } returns 0
+        coEvery { updateCartCounterUseCase(Unit) } returns 0
         coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
@@ -212,7 +212,7 @@ class AddToCartTest : BaseCartViewModelTest() {
 
         coEvery { addToCartUseCase.setParams(any()) } just Runs
         coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
-        coEvery { updateCartCounterUseCase(any()) } returns 0
+        coEvery { updateCartCounterUseCase(Unit) } returns 0
         coEvery { getCartRevampV4UseCase(any()) } returns CartData()
 
         every { userSessionInterface.userId } returns "123"
@@ -311,7 +311,7 @@ class AddToCartTest : BaseCartViewModelTest() {
         }
         coEvery { addToCartUseCase.setParams(any()) } just Runs
         coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
-        coEvery { updateCartCounterUseCase(any()) } returns 0
+        coEvery { updateCartCounterUseCase(Unit) } returns 0
         coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 

@@ -20,7 +20,7 @@ class GetCartListTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData(
@@ -41,7 +41,7 @@ class GetCartListTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } throws exception
 
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData(
@@ -61,7 +61,7 @@ class GetCartListTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData(
@@ -82,7 +82,7 @@ class GetCartListTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } throws exception
 
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData(
@@ -111,7 +111,7 @@ class GetCartListTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData(
@@ -140,7 +140,7 @@ class GetCartListTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData(

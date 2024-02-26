@@ -44,7 +44,7 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
         coEvery {
             getCartRevampV4UseCase(any())
         } returns cartData
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // when
         cartViewModel.processInitialGetCartData(
@@ -78,7 +78,7 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
         coEvery {
             getCartRevampV4UseCase(any())
         } returns cartData
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // when
         cartViewModel.processInitialGetCartData(
@@ -112,7 +112,7 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
         coEvery {
             getCartRevampV4UseCase(any())
         } returns cartData
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // when
         cartViewModel.processInitialGetCartData(
@@ -158,7 +158,7 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
         coEvery {
             getCartRevampV4UseCase(any())
         } returns cartData
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         every { CartDataHelper.hasSelectedCartItem(any()) } returns true
         val entryPointInfoResponse = GetPromoListRecommendationEntryPointResponse(
             promoListRecommendation = GetPromoListRecommendationResponseData(
@@ -236,7 +236,7 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
         coEvery {
             getCartRevampV4UseCase(any())
         } returns cartData
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         every { CartDataHelper.hasSelectedCartItem(any()) } returns true
         coEvery {
             getPromoListRecommendationEntryPointUseCase(any())
@@ -290,7 +290,7 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
         coEvery {
             getCartRevampV4UseCase(any())
         } returns cartData
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         every { CartDataHelper.hasSelectedCartItem(any()) } returns true
         val entryPointInfoResponse = GetPromoListRecommendationEntryPointResponse(
             promoListRecommendation = GetPromoListRecommendationResponseData(
@@ -366,7 +366,7 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
         coEvery {
             getCartRevampV4UseCase(any())
         } returns cartData
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         every { CartDataHelper.hasSelectedCartItem(any()) } returns true
         coEvery {
             getPromoListRecommendationEntryPointUseCase(any())

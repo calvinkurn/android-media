@@ -27,7 +27,7 @@ class GetPromoDataTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData("", true, false)
@@ -48,7 +48,7 @@ class GetPromoDataTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
-        coEvery { updateCartCounterUseCase(any()) } returns 1
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData("", true, false)

@@ -2242,7 +2242,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
     fun `WHEN updateCartCounter then updateCartCounterUseCase should called`() {
         // GIVEN
         val resultExpected = 3
-        coEvery { updateCartCounterUseCase(any()) } returns resultExpected
+        coEvery { updateCartCounterUseCase(Unit) } returns resultExpected
 
         // WHEN
         cartViewModel.processUpdateCartCounter()
