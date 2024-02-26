@@ -5952,7 +5952,8 @@ class CartRevampFragment :
             },
             pageSource = PageSource.CART,
             autoSelectTierChipByTierId = tierProductData.tierId,
-            shopId = item.shopHolderData.shopId
+            shopId = item.shopHolderData.shopId,
+            mainProducts = emptyList() //TODO: Replace with real data of main products from cart
         )
         giftListBottomSheet.show(parentFragmentManager, giftListBottomSheet.tag)
     }

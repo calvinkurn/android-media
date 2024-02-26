@@ -1,5 +1,6 @@
 package com.tokopedia.bmsm_widget.presentation.bottomsheet.uimodel
 
+import com.tokopedia.bmsm_widget.domain.entity.MainProduct
 import com.tokopedia.bmsm_widget.domain.entity.PageSource
 import com.tokopedia.bmsm_widget.domain.entity.TierGift
 import com.tokopedia.bmsm_widget.domain.entity.TierGifts
@@ -14,6 +15,7 @@ data class GiftListUiState(
     val selectedTierId: Long = BundleConstant.ID_NO_SELECTED_TIER,
     val tierGift: List<TierGift> = emptyList(),
     val tierProducts: List<TierGifts> = emptyList(),
+    val mainProducts: List<MainProduct> = emptyList(),
     val selectedTier: TierGift? = null,
     val error: Throwable? = null,
     val userCache: LocalCacheModel = LocalCacheModel(),

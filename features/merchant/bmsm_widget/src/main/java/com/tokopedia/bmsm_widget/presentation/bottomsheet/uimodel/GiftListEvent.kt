@@ -1,5 +1,6 @@
 package com.tokopedia.bmsm_widget.presentation.bottomsheet.uimodel
 
+import com.tokopedia.bmsm_widget.domain.entity.MainProduct
 import com.tokopedia.bmsm_widget.domain.entity.PageSource
 import com.tokopedia.bmsm_widget.domain.entity.TierGift
 import com.tokopedia.bmsm_widget.domain.entity.TierGifts
@@ -13,7 +14,8 @@ sealed interface GiftListEvent {
         val source: PageSource,
         val selectedTierId: Long,
         val userCache: LocalCacheModel,
-        val shopId: String
+        val shopId: String,
+        val mainProducts: List<MainProduct>
     ) : GiftListEvent
 
     object GetGiftList : GiftListEvent

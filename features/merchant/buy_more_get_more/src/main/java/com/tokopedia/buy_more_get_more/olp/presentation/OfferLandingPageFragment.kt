@@ -1018,7 +1018,8 @@ class OfferLandingPageFragment :
             tierGifts = tierGifts,
             pageSource = PageSource.OFFER_LANDING_PAGE,
             autoSelectTierChipByTierId = selectedTierId,
-            shopId = currentState.shopData.shopId.toString()
+            shopId = currentState.shopData.shopId.toString(),
+            mainProducts = emptyList() //TODO: Replace with real data of main products from cart
         )
 
         bottomSheet.setOnDismissListener {
