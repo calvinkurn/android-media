@@ -16,7 +16,7 @@ infix fun View?.showError(throwable : Throwable) {
     val cleanErrorMessage = try {
         errorMessage.replace("\\.{2,}".toRegex(), ".")
     } catch (e: Exception) {
-        Timber.d(throwable)
+        Timber.d(e)
         errorMessage
     }
     Toaster.build(this ?: return, cleanErrorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
