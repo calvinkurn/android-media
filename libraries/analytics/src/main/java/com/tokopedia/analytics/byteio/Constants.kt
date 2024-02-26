@@ -230,6 +230,7 @@ object AppLogParam {
     const val BAR_NAME = "bar_name"
     const val CARD_NAME = "card_name"
     const val ENTER_FROM = "enter_from"
+    const val ENTER_METHOD = "enter_method"
     const val ENTRANCE_FORM = "entrance_form"
     const val GLIDE_DISTANCE = "glide_distance"
     const val DISTANCE_TO_TOP = "distance_to_top"
