@@ -6,7 +6,7 @@ package com.tokopedia.content.product.picker.seller.model.uimodel
 sealed interface ProductChooserEvent {
 
     object SaveProductSuccess : ProductChooserEvent
-    data class ShowError(val error: Throwable, val customMessage: String?) : ProductChooserEvent
+    data class ShowError(val error: Throwable) : ProductChooserEvent
 
     data class GetDataError(
         val throwable: Throwable,

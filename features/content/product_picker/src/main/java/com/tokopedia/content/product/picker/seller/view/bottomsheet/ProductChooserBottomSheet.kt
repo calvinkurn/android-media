@@ -45,6 +45,7 @@ import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.ParseException
 import javax.inject.Inject
 
 /**
@@ -249,9 +250,14 @@ class ProductChooserBottomSheet @Inject constructor(
                         mListener?.onSetupSuccess(this@ProductChooserBottomSheet)
                     }
                     is ProductChooserEvent.ShowError -> {
+                        val customMessage = when {
+                            it.error.isNetworkError -> "Tidak ada koneksi internet"
+                            it.error is ParseException -> "Terjadi kesalahan. Silahkan coba lagi, ya."
+                            else -> it.error.message
+                        }
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = it.customMessage.ifNullOrBlank {
+                            customErrMessage = customMessage.ifNullOrBlank {
                                 getString(R.string.product_chooser_error_save)
                             }
                         )

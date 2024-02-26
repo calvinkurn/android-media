@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.common.util.throwable.isNetworkError
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.content.product.picker.seller.model.PagingType
@@ -47,7 +46,6 @@ import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.text.ParseException
 import kotlin.math.min
 
 /**
@@ -380,12 +378,7 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
 
             _uiEvent.emit(ProductChooserEvent.SaveProductSuccess)
         }) {
-            val customMessage = when {
-                it.isNetworkError -> "Tidak ada koneksi internet"
-                it is ParseException -> "Terjadi kesalahan. Silahkan coba lagi, ya."
-                else -> it.message
-            }
-            _uiEvent.emit(ProductChooserEvent.ShowError(it, customMessage))
+            _uiEvent.emit(ProductChooserEvent.ShowError(it))
         }.apply {
             invokeOnCompletion {
                 _saveState.update {

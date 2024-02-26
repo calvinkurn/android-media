@@ -15,6 +15,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
+import com.tokopedia.content.common.util.throwable.isNetworkError
 import com.tokopedia.content.product.picker.R
 import com.tokopedia.content.product.picker.databinding.BottomSheetUserProductPickerBinding
 import com.tokopedia.content.product.picker.seller.model.PriceUnknown
@@ -26,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import kotlinx.coroutines.flow.collectLatest
+import java.text.ParseException
 import javax.inject.Inject
 
 /**
@@ -218,9 +220,14 @@ class ProductPickerUserBottomSheet @Inject constructor(
                         mListener?.onFinished(this@ProductPickerUserBottomSheet)
                     }
                     is ProductChooserEvent.ShowError -> {
+                        val customMessage = when {
+                            it.error.isNetworkError -> "Tidak ada koneksi internet"
+                            it.error is ParseException -> "Terjadi kesalahan. Silahkan coba lagi, ya."
+                            else -> it.error.message
+                        }
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = it.customMessage,
+                            customErrMessage = customMessage,
                             bottomMargin = offsetToaster
                         )
                     }

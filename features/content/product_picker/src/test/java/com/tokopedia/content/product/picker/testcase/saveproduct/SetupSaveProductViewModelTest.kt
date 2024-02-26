@@ -100,7 +100,7 @@ class SetupSaveProductViewModelTest {
 
             state[state.lastIndex - 1].saveState.isLoading.assertEqualTo(true)
             state.last().saveState.isLoading.assertEqualTo(false)
-            event.last().assertEqualTo(ProductChooserEvent.ShowError(mockException, null))
+            event.last().assertEqualTo(ProductChooserEvent.ShowError(mockException))
         }
     }
 }
