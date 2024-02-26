@@ -13,6 +13,14 @@ class SearchPlaceholder {
         @SerializedName("placeholder_list")
         @Expose
         var placeholders: ArrayList<PlaceHolder>? = arrayListOf()
+
+        @SerializedName("words_source")
+        @Expose
+        val wordsSource: String = ""
+
+        @SerializedName("impr_id")
+        @Expose
+        val imprId: String = ""
     }
 
     open inner class PlaceHolder {
@@ -23,6 +31,10 @@ class SearchPlaceholder {
         @SerializedName("keyword")
         @Expose
         var keyword: String? = ""
+
+        @SerializedName("group_id")
+        @Expose
+        val groupId: String = ""
     }
 
 }

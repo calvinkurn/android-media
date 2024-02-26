@@ -45,6 +45,10 @@ object AutoCompleteUnifyRequestUtil {
                 component_id
                 tracking_option
                 tracker_url
+                suggestion_unify_tts_tracking {
+                    sug_type
+                    group_id
+                }
               }
               flags{
                 name

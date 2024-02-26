@@ -38,7 +38,6 @@ import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.byteio.search.AppLogSearch
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.performance.perf.*
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -292,7 +291,11 @@ open class HomeRevampFragment :
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
         private const val CLICK_TIME_INTERVAL: Long = 500
 
-        private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
+        private const val PARAM_APPLINK_AUTOCOMPLETE =
+            "?navsource={source}" +
+                "&hint={hint}" +
+                "&first_install={first_install}" +
+                "&enter_method={enter_method}"
         private const val HOME_SOURCE = "home"
 
         private const val DELAY_TOASTER_RESET_PASSWORD = 5000
@@ -2077,9 +2080,9 @@ open class HomeRevampFragment :
                         ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
                         HOME_SOURCE,
                         data.keyword.safeEncodeUtf8(),
-                        isFirstInstall().toString()
+                        isFirstInstall().toString(),
+                        AppLogSearch.ParamValue.ENTER,
                     )
-                    intent.putExtra("enter_from", HOMEPAGE)
 
                     navToolbarMicroInteraction
                         ?.animate(intent, ::startActivity)
@@ -2088,10 +2091,12 @@ open class HomeRevampFragment :
                 searchbarImpressionCallback = {},
                 shouldShowTransition = false,
                 hintImpressionCallback = { hintData, index ->
-                    AppLogSearch.eventTrendingWordsShow(appLogTrendingWords(index, hintData))
+                    if (hintData.imprId.isNotBlank())
+                        AppLogSearch.eventTrendingWordsShow(appLogTrendingWords(index, hintData))
                 },
                 hintClickCallback = { hintData, index ->
-                    AppLogSearch.eventTrendingWordsClick(appLogTrendingWords(index, hintData))
+                    if (hintData.imprId.isNotBlank())
+                        AppLogSearch.eventTrendingWordsClick(appLogTrendingWords(index, hintData))
                 }
             )
         }
@@ -2101,8 +2106,9 @@ open class HomeRevampFragment :
         AppLogSearch.TrendingWords(
             index = index,
             content = hintData.keyword,
-            groupId = "",
-            imprId = ""
+            groupId = hintData.groupId,
+            imprId = hintData.imprId,
+            wordsSource = hintData.wordsSource,
         )
 
     private fun hints(data: SearchPlaceholder.Data): List<HintData> {
@@ -2112,15 +2118,21 @@ open class HomeRevampFragment :
                 ?: listOf()
 
         return if (placeholders.isNotEmpty())
-            placeholders.map { hintData(it) }
+            placeholders.map { hintData(it, data.wordsSource, data.imprId) }
         else
-            listOf(hintData(data))
+            listOf(hintData(data, "", ""))
     }
 
-    private fun hintData(placeholder: SearchPlaceholder.PlaceHolder) =
-        HintData(
-            placeholder.placeholder ?: "",
-            placeholder.keyword ?: ""
+    private fun hintData(
+        placeholder: SearchPlaceholder.PlaceHolder,
+        wordsSource: String,
+        imprId: String,
+    ) = HintData(
+            placeholder = placeholder.placeholder ?: "",
+            keyword = placeholder.keyword ?: "",
+            groupId = placeholder.groupId,
+            imprId = imprId,
+            wordsSource = wordsSource,
         )
 
     private fun placeholderToHint(data: SearchPlaceholder.Data): ArrayList<HintData> {

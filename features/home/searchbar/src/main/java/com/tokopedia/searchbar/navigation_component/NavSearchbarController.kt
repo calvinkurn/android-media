@@ -160,9 +160,7 @@ class NavSearchbarController(val view: View,
             if (hint.placeholder.isEmpty()) view.context.getString(R.string.search_tokopedia) to -1
             else hint.placeholder to 0
         etSearch?.hint = placeholder
-
-        if (index >= 0)
-            hintImpressionCallback?.invoke(hint, index)
+        hintImpressionCallback?.invoke(hint, index)
 
         etSearch?.setOnClickListener {
             if (!disableDefaultGtmTracker) {
