@@ -656,8 +656,18 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     slashedPrice = product.campaign.originalPrice,
                     labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
                         product.labelGroupList.map {
-                            if (it.position != "integrity") {
-                                add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
+                            if (it.position != "integrity"){
+                                add(
+                                    ProductCardModel.LabelGroup(
+                                        position = it.position,
+                                        title = it.title,
+                                        type = it.type,
+                                        imageUrl = it.imageUrl,
+                                        styleList = it.styleList.map { style ->
+                                            ProductCardModel.LabelGroup.Style(style.key, style.value)
+                                        },
+                                    )
+                                )
                             }
                         }
                     }
