@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.content.common.databinding.FragmentContentAutocompleteBinding
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.content.common.util.showKeyboard
+import com.tokopedia.content.product.picker.databinding.FragmentContentAutocompleteBinding
 import com.tokopedia.content.product.picker.ugc.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
 import com.tokopedia.content.product.picker.ugc.view.uimodel.action.ProductTagAction

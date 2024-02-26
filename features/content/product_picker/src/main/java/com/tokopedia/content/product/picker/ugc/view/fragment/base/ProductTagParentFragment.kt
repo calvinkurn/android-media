@@ -18,7 +18,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.content.product.picker.R
-import com.tokopedia.content.common.databinding.FragmentProductTagParentBinding
 import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.product.picker.ugc.util.extension.currentSource
 import com.tokopedia.content.product.picker.ugc.util.extension.isAutocomplete
@@ -26,6 +25,7 @@ import com.tokopedia.content.product.picker.ugc.util.getAutocompleteApplink
 import com.tokopedia.content.product.picker.ugc.util.preference.ProductTagPreference
 import com.tokopedia.content.common.util.getParentFragmentByInstance
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.content.product.picker.databinding.FragmentProductTagParentBinding
 import com.tokopedia.content.product.picker.ugc.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.content.product.picker.ugc.view.fragment.ContentAutocompleteFragment
 import com.tokopedia.content.product.picker.ugc.view.fragment.GlobalSearchFragment

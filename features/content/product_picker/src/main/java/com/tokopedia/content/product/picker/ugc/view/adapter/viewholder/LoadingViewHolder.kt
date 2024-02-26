@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.content.common.databinding.ItemProductTagLoadingListBinding
+import com.tokopedia.content.product.picker.databinding.ItemProductTagLoadingListBinding
 
 /**
  * Created By : Jonathan Darwin on May 26, 2022

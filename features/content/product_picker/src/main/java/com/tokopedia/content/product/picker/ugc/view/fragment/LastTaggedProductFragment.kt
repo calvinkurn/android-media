@@ -8,13 +8,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.picker.R
-import com.tokopedia.content.common.databinding.FragmentLastTaggedProductBinding
+import com.tokopedia.content.product.picker.databinding.FragmentLastTaggedProductBinding
 import com.tokopedia.content.product.picker.ugc.analytic.coordinator.ProductImpressionCoordinator
 import com.tokopedia.content.product.picker.ugc.util.extension.getVisibleItems
 import com.tokopedia.content.product.picker.ugc.util.extension.isProductFound
-import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.picker.ugc.view.adapter.ProductTagCardAdapter
 import com.tokopedia.content.product.picker.ugc.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.content.product.picker.ugc.view.uimodel.PagedState
@@ -22,12 +21,16 @@ import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductUiModel
 import com.tokopedia.content.product.picker.ugc.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.product.picker.ugc.view.uimodel.state.ProductTagUiState
 import com.tokopedia.content.product.picker.ugc.view.viewmodel.ProductTagViewModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_LONG
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022

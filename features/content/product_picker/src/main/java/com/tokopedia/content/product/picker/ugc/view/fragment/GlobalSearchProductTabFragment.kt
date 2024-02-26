@@ -10,11 +10,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomsheet.updateScrollingChild
-import com.tokopedia.content.common.databinding.FragmentGlobalSearchProductTabBinding
-import com.tokopedia.content.product.picker.ugc.analytic.coordinator.ProductImpressionCoordinator
 import com.tokopedia.content.common.util.getParentFragmentByInstance
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.picker.R
+import com.tokopedia.content.product.picker.databinding.FragmentGlobalSearchProductTabBinding
+import com.tokopedia.content.product.picker.ugc.analytic.coordinator.ProductImpressionCoordinator
 import com.tokopedia.content.product.picker.ugc.util.extension.getVisibleItems
 import com.tokopedia.content.product.picker.ugc.util.extension.isProductFound
 import com.tokopedia.content.product.picker.ugc.view.adapter.ProductTagCardAdapter

@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.product.picker.R
-import com.tokopedia.content.common.databinding.ItemMyShopProductListBinding
+import com.tokopedia.content.product.picker.databinding.ItemMyShopProductListBinding
 import com.tokopedia.content.product.picker.ugc.view.adapter.MyShopProductAdapter
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition

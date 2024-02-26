@@ -10,12 +10,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.updateScrollingChild
-import com.tokopedia.content.common.databinding.FragmentGlobalSearchShopTabBinding
-import com.tokopedia.content.product.picker.ugc.analytic.coordinator.ShopImpressionCoordinator
 import com.tokopedia.content.common.util.getParentFragmentByInstance
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.picker.R
-import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.content.product.picker.databinding.FragmentGlobalSearchShopTabBinding
+import com.tokopedia.content.product.picker.ugc.analytic.coordinator.ShopImpressionCoordinator
 import com.tokopedia.content.product.picker.ugc.util.extension.getVisibleItems
 import com.tokopedia.content.product.picker.ugc.view.adapter.ShopCardAdapter
 import com.tokopedia.content.product.picker.ugc.view.fragment.base.BaseProductTagChildFragment
@@ -26,12 +25,13 @@ import com.tokopedia.content.product.picker.ugc.view.uimodel.event.ProductTagUiE
 import com.tokopedia.content.product.picker.ugc.view.uimodel.state.GlobalSearchShopUiState
 import com.tokopedia.content.product.picker.ugc.view.viewmodel.ProductTagViewModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created By : Jonathan Darwin on May 10, 2022

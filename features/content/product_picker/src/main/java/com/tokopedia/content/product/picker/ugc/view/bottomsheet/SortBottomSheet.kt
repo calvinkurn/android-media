@@ -6,7 +6,7 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.content.product.picker.R
-import com.tokopedia.content.common.databinding.BottomSheetSortBinding
+import com.tokopedia.content.product.picker.databinding.BottomSheetSortBinding
 import com.tokopedia.content.product.picker.ugc.view.adapter.SortAdapter
 import com.tokopedia.content.product.picker.ugc.view.decoration.SortItemDecoration
 import com.tokopedia.content.product.picker.ugc.view.uimodel.SortUiModel

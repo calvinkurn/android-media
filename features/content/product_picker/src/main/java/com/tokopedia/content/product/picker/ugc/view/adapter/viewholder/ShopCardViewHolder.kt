@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.content.product.picker.R
-import com.tokopedia.content.common.databinding.*
+import com.tokopedia.content.product.picker.databinding.ItemGlobalSearchEmptyStateListBinding
+import com.tokopedia.content.product.picker.databinding.ItemProductTagShopListBinding
 import com.tokopedia.content.product.picker.ugc.view.adapter.ShopCardAdapter
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ShopUiModel
 import com.tokopedia.empty_state.EmptyStateUnify

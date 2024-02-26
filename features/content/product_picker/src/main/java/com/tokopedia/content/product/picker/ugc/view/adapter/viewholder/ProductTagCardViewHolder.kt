@@ -5,12 +5,16 @@ import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.content.common.databinding.*
+import com.tokopedia.content.product.picker.R
+import com.tokopedia.content.product.picker.databinding.ItemGlobalSearchEmptyStateListBinding
+import com.tokopedia.content.product.picker.databinding.ItemGlobalSearchSuggestionListBinding
+import com.tokopedia.content.product.picker.databinding.ItemGlobalSearchTickerListBinding
+import com.tokopedia.content.product.picker.databinding.ItemProductTagCardListBinding
+import com.tokopedia.content.product.picker.databinding.ItemProductTagCardWithCheckboxListBinding
 import com.tokopedia.content.product.picker.ugc.view.adapter.ProductTagCardAdapter
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductUiModel
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.content.product.picker.R
 
 /**
  * Created By : Jonathan Darwin on April 26, 2022

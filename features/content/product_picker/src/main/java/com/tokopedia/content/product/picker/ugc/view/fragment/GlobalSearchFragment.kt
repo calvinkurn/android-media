@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
-import com.tokopedia.content.common.databinding.FragmentGlobalSearchBinding
-import com.tokopedia.content.product.picker.ugc.view.adapter.GlobalSearchResultPagerAdapter
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.content.product.picker.databinding.FragmentGlobalSearchBinding
+import com.tokopedia.content.product.picker.ugc.view.adapter.GlobalSearchResultPagerAdapter
 import com.tokopedia.content.product.picker.ugc.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.content.product.picker.ugc.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.product.picker.ugc.view.uimodel.event.ProductTagUiEvent

@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.content.product.picker.databinding.BottomSheetProductTagSourceBinding
 import com.tokopedia.content.product.picker.R
-import com.tokopedia.content.common.databinding.BottomSheetProductTagSourceBinding
 import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
 import com.tokopedia.kotlin.extensions.view.showWithCondition

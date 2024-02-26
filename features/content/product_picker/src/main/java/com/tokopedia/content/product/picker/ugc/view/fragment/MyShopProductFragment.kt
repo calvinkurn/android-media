@@ -11,15 +11,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.content.common.util.hideKeyboard
+import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.picker.R
-import com.tokopedia.content.common.databinding.FragmentMyShopProductBinding
+import com.tokopedia.content.product.picker.databinding.FragmentMyShopProductBinding
 import com.tokopedia.content.product.picker.ugc.analytic.coordinator.ProductImpressionCoordinator
 import com.tokopedia.content.product.picker.ugc.util.extension.getVisibleItems
 import com.tokopedia.content.product.picker.ugc.util.extension.isProductFound
 import com.tokopedia.content.product.picker.ugc.view.adapter.MyShopProductAdapter
-import com.tokopedia.content.common.util.hideKeyboard
-import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.picker.ugc.view.bottomsheet.SortBottomSheet
 import com.tokopedia.content.product.picker.ugc.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.content.product.picker.ugc.view.uimodel.PagedState
@@ -37,9 +36,9 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022

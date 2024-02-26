@@ -8,9 +8,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.content.common.databinding.FragmentLastPurchasedProductBinding
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.picker.R
+import com.tokopedia.content.product.picker.databinding.FragmentLastPurchasedProductBinding
 import com.tokopedia.content.product.picker.ugc.util.extension.isNetworkError
 import com.tokopedia.content.product.picker.ugc.util.extension.isProductFound
 import com.tokopedia.content.product.picker.ugc.view.adapter.ProductTagCardAdapter
