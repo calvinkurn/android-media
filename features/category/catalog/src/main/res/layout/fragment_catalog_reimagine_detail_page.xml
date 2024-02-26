@@ -7,7 +7,7 @@
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/groupContent"
-        app:constraint_referenced_ids="stickySingleHeaderView,container_price_cta"
+        app:constraint_referenced_ids="stickySingleHeaderView,flCta"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/transparent"
-        app:layout_constraintBottom_toTopOf="@id/container_price_cta"
+        app:layout_constraintBottom_toTopOf="@id/flCta"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -57,58 +57,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/statusBar" />
 
-    <LinearLayout
-        android:id="@+id/container_price_cta"
+
+    <FrameLayout
+        android:id="@+id/flCta"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent">
+        <include
+            android:id="@+id/icCtaNormal"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            layout="@layout/layout_cta_normal" />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="12dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tgp_catalog_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/Unify_NN950"
-                app:typographyType="display_3"
-                app:typographyWeight="reguler"
-                tools:text="{05} Out west" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tgp_price_ranges"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:layout_marginTop="2dp"
-                android:textColor="@color/Unify_NN950"
-                app:typographyType="display_2"
-                app:typographyWeight="bold"
-                tools:text="Rp100 rb - 250 rb" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnProductList"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:text="@string/catalog_action_product_list"
-            app:unifyButtonSize="medium" />
-
-    </LinearLayout>
+        <include
+            android:id="@+id/icCtaSellerOffering"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            layout="@layout/layout_cta_seller_offering"/>
+    </FrameLayout>
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/gePageError"

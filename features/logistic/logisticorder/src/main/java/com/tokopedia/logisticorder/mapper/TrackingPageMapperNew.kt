@@ -1,5 +1,8 @@
 package com.tokopedia.logisticorder.mapper
 
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.getDeliveryImage
 import com.tokopedia.logisticorder.domain.response.AdditionalInfo
 import com.tokopedia.logisticorder.domain.response.Detail
 import com.tokopedia.logisticorder.domain.response.Eta
@@ -16,11 +19,11 @@ import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.LastDriverModel
 import com.tokopedia.logisticorder.uimodel.PageModel
 import com.tokopedia.logisticorder.uimodel.ProofModel
-import com.tokopedia.logisticorder.uimodel.TargetedTickerParamModel
 import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackHistoryModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
+import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import javax.inject.Inject
 
 class TrackingPageMapperNew @Inject constructor() {
@@ -30,7 +33,24 @@ class TrackingPageMapperNew @Inject constructor() {
         return TrackingDataModel().apply {
             trackOrder = mapTrackOrder(data.trackOrder)
             page = mapPage(data.page)
-            tipping = mapTippingData(data.tipping)
+            tipping = mapTippingData(data.tipping, data.trackOrder.shippingRefNum)
+            lastDriver = mapLastDriverData(data.lastDriver)
+        }
+    }
+
+    fun mapTrackingDataCompose(
+        response: GetLogisticTrackingResponse,
+        userId: String,
+        deviceId: String,
+        orderId: String?,
+        trackingUrlFromOrder: String?,
+        accessToken: String?
+    ): TrackingDataModel {
+        val data = response.response.data
+        return TrackingDataModel().apply {
+            trackOrder = mapTrackOrder(data.trackOrder, userId, deviceId, orderId, trackingUrlFromOrder, accessToken)
+            page = mapPage(data.page)
+            tipping = mapTippingData(data.tipping, data.trackOrder.shippingRefNum)
             lastDriver = mapLastDriverData(data.lastDriver)
         }
     }
@@ -45,10 +65,17 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 
-    private fun mapTrackOrder(response: TrackOrder): TrackOrderModel {
+    private fun mapTrackOrder(
+        response: TrackOrder,
+        userId: String? = null,
+        deviceId: String? = null,
+        orderId: String? = null,
+        trackingUrlFromOrder: String? = null,
+        accessToken: String? = null
+    ): TrackOrderModel {
         return TrackOrderModel().apply {
-            detail = mapDetailOrder(response.detail)
-            trackHistory = mapTrackingHistory(response.trackHistory)
+            detail = mapDetailOrder(response.detail, trackingUrlFromOrder)
+            trackHistory = mapTrackingHistory(response.trackHistory, userId, deviceId, orderId, accessToken)
             change = response.change
             status = response.status
             orderStatus = response.orderStatus
@@ -59,7 +86,7 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 
-    private fun mapDetailOrder(detail: Detail): DetailModel {
+    private fun mapDetailOrder(detail: Detail, trackingUrlFromOrder: String?): DetailModel {
         return DetailModel().apply {
             shipperCity = detail.shipperCity
             shipperName = detail.shipperName
@@ -69,16 +96,46 @@ class TrackingPageMapperNew @Inject constructor() {
             sendTime = detail.sendTime
             receiverName = detail.receiverName
             serviceCode = detail.serviceCode
-            trackingUrl = detail.trackingUrl
+            trackingUrl = trackingUrlFromOrder?.takeIf { it.isNotEmpty() } ?: detail.trackingUrl
             eta = mapEta(detail.eta)
         }
     }
 
-    private fun mapProofOrder(proof: Proof): ProofModel {
-        return ProofModel(imageId = proof.imageId, description = proof.description)
+    private fun mapProofOrder(
+        proof: Proof,
+        userId: String?,
+        deviceId: String?,
+        orderId: String?,
+        accessToken: String?
+    ): ProofModel {
+        val imageUrl =
+            if (proof.imageId.isNotEmpty() && !userId.isNullOrEmpty() && !deviceId.isNullOrEmpty() && !orderId.isNullOrEmpty()) {
+                getDeliveryImage(
+                    proof.imageId,
+                    orderId.toLongOrZero(),
+                    LogisticImageDeliveryHelper.IMAGE_SMALL_SIZE,
+                    userId,
+                    LogisticImageDeliveryHelper.DEFAULT_OS_TYPE,
+                    deviceId
+                )
+            } else {
+                ""
+            }
+        return ProofModel(
+            imageId = proof.imageId,
+            description = proof.description,
+            imageUrl = imageUrl,
+            accessToken = accessToken.orEmpty()
+        )
     }
 
-    private fun mapTrackingHistory(trackHistory: List<TrackHistory>): List<TrackHistoryModel> {
+    private fun mapTrackingHistory(
+        trackHistory: List<TrackHistory>,
+        userId: String?,
+        deviceId: String?,
+        orderId: String?,
+        accessToken: String?
+    ): List<TrackHistoryModel> {
         return trackHistory.map {
             TrackHistoryModel(
                 it.dateTime,
@@ -87,7 +144,7 @@ class TrackingPageMapperNew @Inject constructor() {
                 it.city,
                 it.time,
                 it.partnerName,
-                mapProofOrder(it.proof)
+                mapProofOrder(it.proof, userId, deviceId, orderId, accessToken)
             )
         }
     }
@@ -127,11 +184,12 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 
-    private fun mapTippingData(tipping: Tipping): TippingModel {
+    private fun mapTippingData(tipping: Tipping, shippingRefNum: String): TippingModel {
         return TippingModel().apply {
             status = tipping.status
             statusTitle = tipping.statusTitle
             statusSubtitle = tipping.statusSubtitle
+            refNumber = shippingRefNum
         }
     }
 

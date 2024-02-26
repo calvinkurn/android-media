@@ -68,41 +68,47 @@ open class GetInboxReputationDetailSubscriber constructor(
         reviewDomain: ReviewDomain,
         itemDomain: ReviewItemDomain
     ): Visitable<*> {
-        val reviewMediaThumbnail = convertToReviewMediaThumbnail(itemDomain.reviewData.imageAttachments, itemDomain.reviewData.videoAttachments, itemDomain.feedbackID)
+        val reviewMediaThumbnail = convertToReviewMediaThumbnail(
+            itemDomain.reviewData.imageAttachments,
+            itemDomain.reviewData.videoAttachments,
+            itemDomain.feedbackID
+        )
         return InboxReputationDetailItemUiModel(
-            reviewDomain.reputationId,
-            itemDomain.productData.productId,
-            itemDomain.productData.productName,
-            itemDomain.productData.productImageUrl,
-            itemDomain.productData.productImageUrl,
-            itemDomain.reviewData.feedbackID,
-            reviewDomain.userData.fullName,
-            if (TextUtils.isEmpty(itemDomain.reviewData.reviewUpdateTime)) {
+            reputationId = reviewDomain.reputationId,
+            productId = itemDomain.productData.productId,
+            productName = itemDomain.productData.productName,
+            productAvatar = itemDomain.productData.productImageUrl,
+            productUrl = itemDomain.productData.productPageUrl,
+            reviewId = itemDomain.reviewData.feedbackID,
+            reviewerName = reviewDomain.userData.fullName,
+            reviewTime = if (TextUtils.isEmpty(itemDomain.reviewData.reviewUpdateTime)) {
                 itemDomain.reviewData.reviewCreateTime
             } else {
                 itemDomain.reviewData.reviewUpdateTime
             },
-            reviewMediaThumbnail,
-            convertToPreloadedDetailedReviewMedia(reviewMediaThumbnail),
-            itemDomain.reviewData.reviewMessage,
-            itemDomain.reviewData.reviewRating,
-            itemDomain.isReviewHasReviewed,
-            itemDomain.isReviewIsEditable,
-            itemDomain.isReviewIsSkipped,
-            reviewDomain.shopData.shopId,
-            viewListener.tab,
-            convertToReviewResponseViewModel(
+            reviewMediaThumbnailUiModel = reviewMediaThumbnail,
+            preloadedDetailedReviewMedia = convertToPreloadedDetailedReviewMedia(
+                reviewMediaThumbnail
+            ),
+            review = itemDomain.reviewData.reviewMessage,
+            reviewStar = itemDomain.reviewData.reviewRating,
+            isReviewHasReviewed = itemDomain.isReviewHasReviewed,
+            isReviewIsEditable = itemDomain.isReviewIsEditable,
+            isReviewSkipped = itemDomain.isReviewIsSkipped,
+            shopId = reviewDomain.shopData.shopId,
+            tab = viewListener.tab,
+            reviewResponseUiModel = convertToReviewResponseViewModel(
                 reviewDomain.shopData,
                 itemDomain.reviewData.responseMessage,
                 itemDomain.reviewData.responseTime
             ),
-            itemDomain.reviewData.isReviewAnonymity,
-            itemDomain.productData.productStatus == PRODUCT_IS_DELETED,
-            !TextUtils.isEmpty(itemDomain.reviewData.reviewUpdateTime),
-            reviewDomain.userData.userId,
-            itemDomain.productData.productStatus == PRODUCT_IS_BANNED,
-            itemDomain.productData.productStatus,
-            reviewDomain.orderId
+            isReviewIsAnonymous = itemDomain.reviewData.isReviewAnonymity,
+            isProductDeleted = itemDomain.productData.productStatus == PRODUCT_IS_DELETED,
+            isReviewIsEdited = !TextUtils.isEmpty(itemDomain.reviewData.reviewUpdateTime),
+            reviewerId = reviewDomain.userData.userId,
+            isProductBanned = itemDomain.productData.productStatus == PRODUCT_IS_BANNED,
+            productStatus = itemDomain.productData.productStatus,
+            orderId = reviewDomain.orderId
         )
     }
 

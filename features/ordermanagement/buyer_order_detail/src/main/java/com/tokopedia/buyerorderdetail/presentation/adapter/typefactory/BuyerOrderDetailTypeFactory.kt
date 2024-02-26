@@ -58,6 +58,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.order_management_common.presentation.typefactory.BuyMoreGetMoreTypeFactory
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.typefactory.ScpRewardsMedalTouchPointWidgetTypeFactory
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
@@ -75,13 +76,15 @@ open class BuyerOrderDetailTypeFactory(
     private val scpRewardsMedalTouchPointWidgetListener: ScpRewardsMedalTouchPointWidgetViewHolder.ScpRewardsMedalTouchPointWidgetListener,
     private val owocInfoListener: OwocInfoViewHolder.Listener,
     private val bmgmListener: BmgmSectionViewHolder.Listener,
+    private val productBenefitListener: BmgmAddOnViewHolder.Listener,
+    private val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
+    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool,
     protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
     protected val bottomSheetListener: PartialProductItemViewHolder.ShareProductBottomSheetListener,
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
-    protected val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
-    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool,
-    protected val courierButtonListener: CourierButtonListener
+    protected val courierButtonListener: CourierButtonListener,
+    protected val addOnListener: BmgmAddOnViewHolder.Listener
 ) : BaseAdapterTypeFactory(),
     ScpRewardsMedalTouchPointWidgetTypeFactory,
     BuyMoreGetMoreTypeFactory {
@@ -90,41 +93,22 @@ open class BuyerOrderDetailTypeFactory(
         return when (type) {
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
             CopyableKeyValueViewHolder.LAYOUT -> CopyableKeyValueViewHolder(parent)
-            CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(
-                parent,
-                navigator,
-                courierButtonListener
-            )
-            CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(
-                parent,
-                courierInfoViewHolderListener,
-                navigator
-            )
+            CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(parent, navigator, courierButtonListener)
+            CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(parent, courierInfoViewHolderListener, navigator)
             OrderStatusHeaderViewHolder.LAYOUT -> OrderStatusHeaderViewHolder(parent, navigator)
             OrderStatusInfoViewHolder.LAYOUT -> OrderStatusInfoViewHolder(parent, navigator)
             PaymentGrandTotalViewHolder.LAYOUT -> PaymentGrandTotalViewHolder(parent)
             PaymentInfoItemViewHolder.LAYOUT -> PaymentInfoItemViewHolder(parent)
             PlainHeaderViewHolder.LAYOUT -> PlainHeaderViewHolder(parent)
             ProductListHeaderViewHolder.LAYOUT -> ProductListHeaderViewHolder(parent, navigator)
-            ProductViewHolder.LAYOUT -> ProductViewHolder(parent, productViewListener, bottomSheetListener, navigator)
-            ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(
-                parent,
-                productBundlingViewListener,
-                navigator
-            )
+            ProductViewHolder.LAYOUT -> ProductViewHolder(parent, productViewListener, bottomSheetListener, addOnListener, navigator)
+            ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(parent, addOnListener, productBundlingViewListener, navigator)
             ThickDividerViewHolder.LAYOUT -> ThickDividerViewHolder(parent)
             ThinDashedDividerViewHolder.LAYOUT -> ThinDashedDividerViewHolder(parent)
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)
             TickerViewHolder.LAYOUT -> TickerViewHolder(parent, navigator, tickerViewHolderListener)
-            DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(
-                parent,
-                digitalRecommendationData,
-                digitalRecommendationListener
-            )
-            PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolder(
-                parent,
-                buyerOrderDetailBindRecomWidgetListener
-            )
+            DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData, digitalRecommendationListener)
+            PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolder(parent, buyerOrderDetailBindRecomWidgetListener)
             DriverTippingInfoViewHolder.LAYOUT -> DriverTippingInfoViewHolder(parent, navigator)
             AddonsViewHolder.LAYOUT -> AddonsViewHolder(parent, productViewListener, navigator)
             OrderResolutionViewHolder.LAYOUT -> OrderResolutionViewHolder(parent, navigator, orderResolutionListener)
@@ -136,7 +120,7 @@ open class BuyerOrderDetailTypeFactory(
             PofRefundInfoViewHolder.LAYOUT -> PofRefundInfoViewHolder(parent, pofRefundInfoListener)
             ScpRewardsMedalTouchPointWidgetViewHolder.LAYOUT -> ScpRewardsMedalTouchPointWidgetViewHolder(parent, scpRewardsMedalTouchPointWidgetListener)
             OwocInfoViewHolder.LAYOUT -> OwocInfoViewHolder(parent, owocInfoListener)
-            BmgmSectionViewHolder.LAYOUT -> BmgmSectionViewHolder(parent, bmgmListener, recyclerViewSharedPool)
+            BmgmSectionViewHolder.LAYOUT -> BmgmSectionViewHolder(parent, bmgmListener, productBenefitListener, recyclerViewSharedPool)
             else -> super.createViewHolder(parent, type)
         }
     }

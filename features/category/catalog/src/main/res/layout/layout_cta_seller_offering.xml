@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/container_price_cta"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:gravity="center"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.catalog.ui.composeView.CtaAtcSellerOfferingView
+        android:id="@+id/ctaAtc"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="12dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="vertical"/>
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/btnProductList"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        app:card_type="border"
+        app:card_border_color ="@color/catalog_dms_light_color"
+        android:layout_weight="0.3">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@color/transparent"
+            android:gravity="center">
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvOther"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/catalog_dms_light_color"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
+                android:text="@string/catalog_text_lainnya" />
+        </LinearLayout>
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+</LinearLayout>

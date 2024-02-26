@@ -17,6 +17,9 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirIma
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
+import com.tokopedia.product.detail.common.data.model.pdplayout.PromoCodesResponse
+import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoListPromoIdsString
+import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoPromoPriceUiModel
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
@@ -63,6 +66,8 @@ import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataMod
 import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
+import com.tokopedia.product.detail.data.model.promoprice.PromoPriceStyle
+import com.tokopedia.product.detail.data.model.promoprice.getPromoStyleByProductId
 import com.tokopedia.product.detail.data.model.gwp.GWPData
 import com.tokopedia.product.detail.data.model.gwp.asUiModel
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
@@ -79,6 +84,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
+import com.tokopedia.product.detail.view.viewholder.promo_price.ui.ProductPriceUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
@@ -203,6 +209,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val bmgmSneakPeak: BMGMUiModel?
         get() = mapOfData[ProductDetailConstant.BMGM_SNEAK_PEEK_NAME] as? BMGMUiModel
 
+    val promoPrice: ProductPriceUiModel?
+        get() = mapOfData[ProductDetailConstant.PRICE] as? ProductPriceUiModel
+
     val gwpSneakPeak: GWPUiModel?
         get() = mapOfData[ProductDetailConstant.GWP_SNEAK_PEEK_NAME] as? GWPUiModel
 
@@ -278,6 +287,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
+            updateData(ProductDetailConstant.PRICE, loadInitialData) {
+                promoPrice?.run {
+                    this.priceComponentType = dataP1.data.componentPriceType
+                    this.promoPriceData = dataP1.data.promoPrice.mapIntoPromoPriceUiModel(
+                        dataP1.data.price.slashPriceFmt
+                    )
+                    this.normalPromoUiModel = dataP1.data.price
+                    this.promoIdsString =
+                        dataP1.data.promoPrice.promoCodes.mapIntoListPromoIdsString()
+                }
+            }
+
             if (loadInitialData) {
                 updateVerticalRecommendationWidget(productId)
                 verticalRecommendationItems.clear()
@@ -296,7 +317,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         stockWording = data.stock.stockWording,
         isVariant = data.variant.isVariant,
         productName = data.name,
-        isProductActive = basic.isActive()
+        labelIcons = data.labelIcons,
+        isProductActive = basic.isActive(),
+        isShowPrice = data.isShowPrice
     ).apply {
         price = price.updatePriceFmt()
         campaign.processMaskingPrice(price)
@@ -596,6 +619,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateBMGMSneakPeak(productId = productId, bmgm = it.bmgm)
 
             updateGWPSneakPeak(productId = productId, gwp = it.gwp)
+
+            updatePromoPriceWithP2(
+                productId = productId,
+                promoPriceStyle = it.promoPriceStyle,
+                freeOngkirImgUrl = boeImageUrl
+            )
         }
     }
 
@@ -727,6 +756,42 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
                 val hasOngoingCampaign = ongoingCampaignData?.data?.hasOngoingCampaign.orFalse()
                 shouldShow = data.hasValue && !hasOngoingCampaign
+            }
+        }
+    }
+
+    fun updatePromoPriceWithP2(
+        productId: String,
+        promoPriceStyle: List<PromoPriceStyle>?,
+        freeOngkirImgUrl: String,
+        //update promoCodes when change variant, no need to update when update p2data
+        promoCodes: List<PromoCodesResponse>? = null
+    ) {
+        updateData(ProductDetailConstant.PRICE) {
+            promoPrice?.run {
+                normalPriceBoUrl = freeOngkirImgUrl
+
+                if (promoPriceData != null) {
+                    promoPriceData = promoPriceData?.copy(
+                        boIconUrl = freeOngkirImgUrl
+                    )
+
+                    if (promoCodes != null) {
+                        promoIdsString = promoCodes.mapIntoListPromoIdsString() ?: listOf()
+                    }
+
+                    val selectedPromoStyle =
+                        promoPriceStyle?.getPromoStyleByProductId(productId)
+                    if (selectedPromoStyle != null) {
+                        promoPriceData = promoPriceData?.copy(
+                            mainIconUrl = selectedPromoStyle.iconUrl,
+                            mainTextColor = selectedPromoStyle.mainTextColor,
+                            cardBackgroundColor = selectedPromoStyle.backgroundColor,
+                            superGraphicIconUrl = selectedPromoStyle.superGraphicUrl,
+                            separatorColor = selectedPromoStyle.separatorColor,
+                        )
+                    }
+                }
             }
         }
     }

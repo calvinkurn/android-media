@@ -164,6 +164,15 @@ object ShopUtil {
             Int.ZERO
         }
     }
+    
+    fun parseColorOrFallback(hexColor: String, fallbackColor: Int): Int {
+        return try {
+            Color.parseColor(hexColor)
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            fallbackColor
+        }
+    }
 
     fun joinDash(vararg s: String?): String {
         return TextUtils.join(" - ", s)
