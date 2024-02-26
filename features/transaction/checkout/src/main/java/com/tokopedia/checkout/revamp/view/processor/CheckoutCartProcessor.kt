@@ -28,6 +28,8 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.usecase.RequestParams
 import dagger.Lazy
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -57,7 +59,8 @@ class CheckoutCartProcessor @Inject constructor(
         isPlusSelected: Boolean,
         isReloadData: Boolean,
         isReloadAfterPriceChangeHigher: Boolean,
-        shipmentAction: String
+        shipmentAction: String,
+        listPromoExternalAutoApplyCode: List<PromoExternalAutoApply>
     ): CheckoutPageState {
         return withContext(dispatchers.io) {
             try {
@@ -80,7 +83,8 @@ class CheckoutCartProcessor @Inject constructor(
                     isReloadAfterPriceChangeHigher,
                     isOneClickShipment,
                     isTradeIn,
-                    isTradeInDropOff
+                    isTradeInDropOff,
+                    listPromoExternalAutoApplyCode
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
@@ -95,7 +99,8 @@ class CheckoutCartProcessor @Inject constructor(
         isReloadAfterPriceChangeHigher: Boolean,
         isOneClickShipment: Boolean,
         isTradeIn: Boolean,
-        isTradeInDropOff: Boolean
+        isTradeInDropOff: Boolean,
+        listPromoExternalAutoApplyCode: List<PromoExternalAutoApply>
     ): CheckoutPageState {
         if (cartShipmentAddressFormData.isError) {
             if (cartShipmentAddressFormData.isOpenPrerequisiteSite) {
@@ -123,7 +128,8 @@ class CheckoutCartProcessor @Inject constructor(
                 userAddress,
                 isOneClickShipment,
                 isTradeIn,
-                isTradeInDropOff
+                isTradeInDropOff,
+                listPromoExternalAutoApplyCode
             )
         }
     }
@@ -133,7 +139,8 @@ class CheckoutCartProcessor @Inject constructor(
         userAddress: UserAddress?,
         isOneClickShipment: Boolean,
         isTradeIn: Boolean,
-        isTradeInDropOff: Boolean
+        isTradeInDropOff: Boolean,
+        listPromoExternalAutoApplyCode: List<PromoExternalAutoApply>
     ): CheckoutPageState {
         when (cartShipmentAddressFormData.errorCode) {
             CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS -> {
@@ -152,7 +159,7 @@ class CheckoutCartProcessor @Inject constructor(
                 return if (userAddress == null) {
                     CheckoutPageState.EmptyData
                 } else {
-                    CheckoutPageState.Success(cartShipmentAddressFormData)
+                    CheckoutPageState.Success(injectPromoExternalAutoApply(cartShipmentAddressFormData, listPromoExternalAutoApplyCode))
                 }
             }
 
@@ -171,6 +178,26 @@ class CheckoutCartProcessor @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun injectPromoExternalAutoApply(cartShipmentAddressFormData: CartShipmentAddressFormData, listPromoExternalAutoApplyCode: List<PromoExternalAutoApply>): CartShipmentAddressFormData {
+        if (listPromoExternalAutoApplyCode.isEmpty()) {
+            return cartShipmentAddressFormData
+        }
+        val groupShop = cartShipmentAddressFormData.groupAddress.firstOrNull()?.groupShop?.firstOrNull()
+        val (listGlobalVoucher, listMerchantVoucher) = listPromoExternalAutoApplyCode.partition { it.type != TYPE_PROMO_MV }
+        val newLastApply = cartShipmentAddressFormData.lastApplyData.copy(
+            codes = listGlobalVoucher.map { it.code },
+            voucherOrders = listMerchantVoucher.map {
+                LastApplyVoucherOrdersItemUiModel(
+                    code = it.code,
+                    uniqueId = groupShop?.groupShopData?.firstOrNull()?.cartStringOrder ?: "",
+                    cartStringGroup = groupShop?.cartString ?: "",
+                    type = TYPE_PROMO_MV
+                )
+            }
+        )
+        return cartShipmentAddressFormData.copy(lastApplyData = newLastApply)
     }
 
     suspend fun changeShippingAddress(
@@ -390,3 +417,5 @@ data class ChangeAddressResult(
     val toasterMessage: String = "",
     val throwable: Throwable? = null
 )
+
+private const val TYPE_PROMO_MV = "mv"

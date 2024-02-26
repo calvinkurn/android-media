@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.checkout.revamp.view.CheckoutFragment
 import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
+import com.tokopedia.purchase_platform.common.constant.ARGS_LIST_AUTO_APPLY_PROMO
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.telemetry.ITelemetryActivity
@@ -37,6 +39,7 @@ open class ShipmentActivity :
         val isOneClickShipment = intent.getBooleanExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, false)
         val pageSource = intent.getStringExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE)
             ?: CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
+        val promos = intent.getParcelableArrayListExtra<PromoExternalAutoApply>(ARGS_LIST_AUTO_APPLY_PROMO) ?: ArrayList()
         val bundle = intent.extras
         val isTradeIn = bundle?.getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "")?.isNotEmpty() ?: false
         if (shouldRedirectToRevamp(isRevamp, isPlusSelected, isOneClickShipment, isTradeIn)) {
@@ -45,6 +48,7 @@ open class ShipmentActivity :
                 leasingId,
                 pageSource,
                 isPlusSelected,
+                ArrayList(promos),
                 bundle
             )
             return checkoutFragment

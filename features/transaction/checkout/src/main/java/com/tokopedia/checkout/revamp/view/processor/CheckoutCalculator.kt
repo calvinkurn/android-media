@@ -2,6 +2,10 @@ package com.tokopedia.checkout.revamp.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.revamp.view.BUTTON_PAYMENT_INDEX_FROM_BOTTOM
+import com.tokopedia.checkout.revamp.view.COST_INDEX_FROM_BOTTOM
+import com.tokopedia.checkout.revamp.view.CROSS_SELL_INDEX_FROM_BOTTOM
+import com.tokopedia.checkout.revamp.view.PAYMENT_INDEX_FROM_BOTTOM
 import com.tokopedia.checkout.revamp.view.buttonPayment
 import com.tokopedia.checkout.revamp.view.cost
 import com.tokopedia.checkout.revamp.view.crossSellGroup
@@ -353,9 +357,9 @@ class CheckoutCalculator @Inject constructor(
             updateCheckoutButtonData(listData, shipmentCost, isTradeInByDropOff)
 
         return listData.toMutableList().apply {
-            set(size - 3, shipmentCost)
-            set(size - 2, crossSellGroup.copy(crossSellList = listCrossSellItem))
-            set(size - 1, buttonPaymentModel)
+            set(size - COST_INDEX_FROM_BOTTOM, shipmentCost)
+            set(size - CROSS_SELL_INDEX_FROM_BOTTOM, crossSellGroup.copy(crossSellList = listCrossSellItem))
+            set(size - BUTTON_PAYMENT_INDEX_FROM_BOTTOM, buttonPaymentModel)
         }
     }
 
@@ -453,9 +457,9 @@ class CheckoutCalculator @Inject constructor(
         )
 
         return newList.toMutableList().apply {
-            set(size - 4, payment)
-            set(size - 3, shipmentCost)
-            set(size - 1, buttonPaymentModel)
+            set(size - PAYMENT_INDEX_FROM_BOTTOM, payment)
+            set(size - COST_INDEX_FROM_BOTTOM, shipmentCost)
+            set(size - BUTTON_PAYMENT_INDEX_FROM_BOTTOM, buttonPaymentModel)
         }
     }
 

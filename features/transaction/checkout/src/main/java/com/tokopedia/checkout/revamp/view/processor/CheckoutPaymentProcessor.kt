@@ -9,7 +9,6 @@ import com.tokopedia.checkout.domain.usecase.GetPaymentFeeCheckoutUseCase
 import com.tokopedia.checkout.revamp.view.CheckoutViewModel
 import com.tokopedia.checkout.revamp.view.address
 import com.tokopedia.checkout.revamp.view.cost
-import com.tokopedia.checkout.revamp.view.payment
 import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
@@ -192,11 +191,11 @@ class CheckoutPaymentProcessor @Inject constructor(
 
     @SuppressLint("PII Data Exposure")
     fun generatePaymentRequest(
-        checkoutItems: List<CheckoutItem>
+        checkoutItems: List<CheckoutItem>,
+        payment: CheckoutPaymentModel
     ): PaymentRequest {
         val address = checkoutItems.address()!!
         val promo = checkoutItems.promo()!!
-        val payment = checkoutItems.payment()!!
         val cost = checkoutItems.cost()!!
         return PaymentRequest(
             payment = PaymentData(

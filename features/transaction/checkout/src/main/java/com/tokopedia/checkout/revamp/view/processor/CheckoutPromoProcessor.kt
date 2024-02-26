@@ -2,6 +2,7 @@ package com.tokopedia.checkout.revamp.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.checkout.revamp.view.PROMO_INDEX_FROM_BOTTOM
 import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
@@ -453,7 +454,7 @@ class CheckoutPromoProcessor @Inject constructor(
                     validateUsePromoRevampUiModel.promoUiModel
                 )
             )
-            checkoutItems[checkoutItems.size - 4] = promo
+            checkoutItems[checkoutItems.size - PROMO_INDEX_FROM_BOTTOM] = promo
             showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
             return validateBBOWithSpecificOrder(
                 validateUsePromoRevampUiModel,
@@ -646,7 +647,7 @@ class CheckoutPromoProcessor @Inject constructor(
                         checkoutItem.copy(shipment = checkoutItem.shipment.copy(courierItemData = null))
                 }
             }
-            checkoutItems[checkoutItems.size - 4] =
+            checkoutItems[checkoutItems.size - PROMO_INDEX_FROM_BOTTOM] =
                 checkoutItems.promo()!!.copy(promo = LastApplyUiModel())
             toasterProcessor.commonToaster.emit(
                 CheckoutPageToaster(
@@ -859,7 +860,7 @@ class CheckoutPromoProcessor @Inject constructor(
                         val newPromo = currentPromo.copy(
                             promo = LastApplyUiModel()
                         )
-                        items[items.size - 4] = newPromo
+                        items[items.size - PROMO_INDEX_FROM_BOTTOM] = newPromo
                         return@withContext items
                     } else {
                         return@withContext items
@@ -894,7 +895,7 @@ class CheckoutPromoProcessor @Inject constructor(
                     val newPromo = items.promo()!!.copy(
                         promo = LastApplyUiModel()
                     )
-                    items[items.size - 4] = newPromo
+                    items[items.size - PROMO_INDEX_FROM_BOTTOM] = newPromo
                     for ((index, checkoutItem) in items.withIndex()) {
                         if (checkoutItem is CheckoutOrderModel) {
                             items[index] = checkoutItem.copy(
@@ -917,7 +918,7 @@ class CheckoutPromoProcessor @Inject constructor(
                             validateUsePromoRevampUiModel.promoUiModel
                         )
                     )
-                    items[items.size - 4] = newPromo
+                    items[items.size - PROMO_INDEX_FROM_BOTTOM] = newPromo
                     if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
                         mTrackerShipment.eventViewPromoAfterAdjustItem(validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text)
                     } else {
@@ -934,7 +935,7 @@ class CheckoutPromoProcessor @Inject constructor(
                 Timber.d(t)
                 if (t is AkamaiErrorException) {
                     clearAllPromo(validateUsePromoRequest)
-                    items[items.size - 4] = items.promo()!!.copy(promo = LastApplyUiModel())
+                    items[items.size - PROMO_INDEX_FROM_BOTTOM] = items.promo()!!.copy(promo = LastApplyUiModel())
                     for ((index, checkoutItem) in items.withIndex()) {
                         if (checkoutItem is CheckoutOrderModel) {
                             items[index] = checkoutItem.copy(
@@ -953,7 +954,7 @@ class CheckoutPromoProcessor @Inject constructor(
                         )
                     )
                 } else {
-                    items[items.size - 4] = items.promo()!!.copy(promo = LastApplyUiModel())
+                    items[items.size - PROMO_INDEX_FROM_BOTTOM] = items.promo()!!.copy(promo = LastApplyUiModel())
                     for ((index, checkoutItem) in items.withIndex()) {
                         if (checkoutItem is CheckoutOrderModel) {
                             items[index] = checkoutItem.copy(

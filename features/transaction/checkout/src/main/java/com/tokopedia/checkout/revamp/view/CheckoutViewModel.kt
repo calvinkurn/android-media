@@ -97,6 +97,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -155,6 +156,8 @@ class CheckoutViewModel @Inject constructor(
 
     var checkoutPageSource: String = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
 
+    var listPromoExternalAutoApplyCode: List<PromoExternalAutoApply> = emptyList()
+
     val cornerId: String?
         get() = recipientAddressModel.cornerId
 
@@ -212,7 +215,8 @@ class CheckoutViewModel @Inject constructor(
                 isPlusSelected,
                 isReloadData,
                 isReloadAfterPriceChangeHigher,
-                shipmentAction
+                shipmentAction,
+                listPromoExternalAutoApplyCode
             )
             stopEmbraceTrace()
             when (saf) {
@@ -677,6 +681,7 @@ class CheckoutViewModel @Inject constructor(
                     }
                     if (checkoutItem is CheckoutPromoModel) {
                         validatePromo()
+                        listPromoExternalAutoApplyCode = emptyList()
                     }
                 }
             }
@@ -1928,7 +1933,7 @@ class CheckoutViewModel @Inject constructor(
         if (shouldClearPromoBenefit) {
             val list = listData.value.toMutableList()
             val newPromo = list.promo()!!.copy(promo = LastApplyUiModel())
-            list[list.size - 4] = newPromo
+            list[list.size - PROMO_INDEX_FROM_BOTTOM] = newPromo
             listData.value = list
         }
         val list = listData.value.toMutableList()
@@ -2156,7 +2161,7 @@ class CheckoutViewModel @Inject constructor(
             if (validateUsePromoRevampUiModel != null) {
                 if (isForceHit) {
                     val itemListNewPromo = listData.value.toMutableList()
-                    itemListNewPromo[itemListNewPromo.size - 4] = itemListNewPromo.promo()!!.copy(
+                    itemListNewPromo[itemListNewPromo.size - PROMO_INDEX_FROM_BOTTOM] = itemListNewPromo.promo()!!.copy(
                         promo = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
                             validateUsePromoRevampUiModel.promoUiModel
                         )
@@ -2354,7 +2359,7 @@ class CheckoutViewModel @Inject constructor(
                 newList.add(checkoutCrossSellItem)
             }
         }
-        checkoutItems[checkoutItems.size - 2] = crossSellGroup.copy(crossSellList = newList)
+        checkoutItems[checkoutItems.size - CROSS_SELL_INDEX_FROM_BOTTOM] = crossSellGroup.copy(crossSellList = newList)
         listData.value = checkoutItems
         calculateTotal()
     }
@@ -2377,7 +2382,7 @@ class CheckoutViewModel @Inject constructor(
                 newList.add(checkoutCrossSellItem)
             }
         }
-        checkoutItems[checkoutItems.size - 2] = crossSellGroup.copy(crossSellList = newList)
+        checkoutItems[checkoutItems.size - CROSS_SELL_INDEX_FROM_BOTTOM] = crossSellGroup.copy(crossSellList = newList)
         listData.value = checkoutItems
         calculateTotal()
     }
@@ -2400,7 +2405,7 @@ class CheckoutViewModel @Inject constructor(
                 newList.add(checkoutCrossSellItem)
             }
         }
-        checkoutItems[checkoutItems.size - 2] = crossSellGroup.copy(crossSellList = newList)
+        checkoutItems[checkoutItems.size - CROSS_SELL_INDEX_FROM_BOTTOM] = crossSellGroup.copy(crossSellList = newList)
         listData.value = checkoutItems
         calculateTotal()
     }
@@ -2499,7 +2504,7 @@ class CheckoutViewModel @Inject constructor(
                 promo = newLastApply,
                 isAnimateWording = shouldAnimateEntryPointWording(newLastApply, oldLastApply)
             )
-            list[list.size - 4] = newPromo
+            list[list.size - PROMO_INDEX_FROM_BOTTOM] = newPromo
             listData.value = list
             checkoutItems = list
 
@@ -3041,11 +3046,11 @@ class CheckoutViewModel @Inject constructor(
 
         // show loading
         payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Loading))
-        checkoutItems[checkoutItems.size - 4] = payment
+        checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = payment
         listData.value = checkoutItems
 
         var cost = listData.value.cost()!!
-        var paymentRequest = paymentProcessor.generatePaymentRequest(checkoutItems)
+        var paymentRequest = paymentProcessor.generatePaymentRequest(checkoutItems, payment)
 
         if (payment.data == null) {
             // get payment widget if not yet
@@ -3078,8 +3083,7 @@ class CheckoutViewModel @Inject constructor(
         }
 
         // update payment request
-        checkoutItems[checkoutItems.size - 4] = payment
-        paymentRequest = paymentProcessor.generatePaymentRequest(checkoutItems)
+        paymentRequest = paymentProcessor.generatePaymentRequest(checkoutItems, payment)
 
         // get platform fee
         val paymentFeeCheckoutRequest = PaymentFeeRequest(
@@ -3194,47 +3198,56 @@ internal fun <T, R> List<T>.firstOrNullInstanceOf(kClass: Class<R>): R? {
     return item as? R
 }
 
+internal const val ERROR_TICKER_INDEX = 0
 internal fun List<CheckoutItem>.errorTicker(): CheckoutTickerErrorModel? {
-    val item = getOrNull(0)
+    val item = getOrNull(ERROR_TICKER_INDEX)
     return item as? CheckoutTickerErrorModel
 }
 
+internal const val ADDRESS_INDEX = 2
 internal fun List<CheckoutItem>.address(): CheckoutAddressModel? {
-    val item = getOrNull(2)
+    val item = getOrNull(ADDRESS_INDEX)
     return item as? CheckoutAddressModel
 }
 
+internal const val UPSELL_ADDRESS = 3
 internal fun List<CheckoutItem>.upsell(): CheckoutUpsellModel? {
-    val item = getOrNull(3)
+    val item = getOrNull(UPSELL_ADDRESS)
     return item as? CheckoutUpsellModel
 }
 
+internal const val EPHARMACY_INDEX_FROM_BOTTOM = 6
 internal fun List<CheckoutItem>.epharmacy(): CheckoutEpharmacyModel? {
-    val item = getOrNull(size - 6)
+    val item = getOrNull(size - EPHARMACY_INDEX_FROM_BOTTOM)
     return item as? CheckoutEpharmacyModel
 }
 
+internal const val PROMO_INDEX_FROM_BOTTOM = 5
 internal fun List<CheckoutItem>.promo(): CheckoutPromoModel? {
-    val item = getOrNull(size - 5)
+    val item = getOrNull(size - PROMO_INDEX_FROM_BOTTOM)
     return item as? CheckoutPromoModel
 }
 
+internal const val PAYMENT_INDEX_FROM_BOTTOM = 4
 internal fun List<CheckoutItem>.payment(): CheckoutPaymentModel? {
-    val item = getOrNull(size - 4)
+    val item = getOrNull(size - PAYMENT_INDEX_FROM_BOTTOM)
     return item as? CheckoutPaymentModel
 }
 
+internal const val COST_INDEX_FROM_BOTTOM = 3
 internal fun List<CheckoutItem>.cost(): CheckoutCostModel? {
-    val item = getOrNull(size - 3)
+    val item = getOrNull(size - COST_INDEX_FROM_BOTTOM)
     return item as? CheckoutCostModel
 }
 
+internal const val CROSS_SELL_INDEX_FROM_BOTTOM = 2
 internal fun List<CheckoutItem>.crossSellGroup(): CheckoutCrossSellGroupModel? {
-    val item = getOrNull(size - 2)
+    val item = getOrNull(size - CROSS_SELL_INDEX_FROM_BOTTOM)
     return item as? CheckoutCrossSellGroupModel
 }
 
+internal const val BUTTON_PAYMENT_INDEX_FROM_BOTTOM = 1
 internal fun List<CheckoutItem>.buttonPayment(): CheckoutButtonPaymentModel? {
-    val item = getOrNull(size - 1)
+    val item = getOrNull(size - BUTTON_PAYMENT_INDEX_FROM_BOTTOM)
     return item as? CheckoutButtonPaymentModel
 }

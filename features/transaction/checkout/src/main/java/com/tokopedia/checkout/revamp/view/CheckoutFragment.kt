@@ -153,6 +153,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUp
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -272,6 +273,11 @@ class CheckoutFragment :
                     requireArguments().getString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE)!!
             }
             return pageSource
+        }
+
+    private val promos: List<PromoExternalAutoApply>
+        get() {
+            return arguments?.getParcelableArrayList(ARG_PROMOS) ?: emptyList()
         }
 
     override fun getScreenName(): String {
@@ -425,6 +431,7 @@ class CheckoutFragment :
         viewModel.checkoutLeasingId = checkoutLeasingId
         viewModel.isPlusSelected = isPlusSelected
         viewModel.checkoutPageSource = checkoutPageSource
+        viewModel.listPromoExternalAutoApplyCode = promos
         observeData()
 
         showAtcOccMessageIfAny()
@@ -1043,11 +1050,14 @@ class CheckoutFragment :
         private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"
         private const val KEY_PREFERENCE_COACHMARK_EPHARMACY = "has_seen_epharmacy_coachmark"
 
+        private const val ARG_PROMOS = "promos"
+
         fun newInstance(
             isOneClickShipment: Boolean,
             leasingId: String,
             pageSource: String,
             isPlusSelected: Boolean,
+            promos: ArrayList<PromoExternalAutoApply>,
             bundle: Bundle?
         ): CheckoutFragment {
             val b = bundle ?: Bundle()
@@ -1059,6 +1069,7 @@ class CheckoutFragment :
             }
             b.putString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE, pageSource)
             b.putBoolean(ShipmentFragment.ARG_IS_PLUS_SELECTED, isPlusSelected)
+            b.putParcelableArrayList(ARG_PROMOS, promos)
             val checkoutFragment = CheckoutFragment()
             checkoutFragment.arguments = b
             return checkoutFragment
