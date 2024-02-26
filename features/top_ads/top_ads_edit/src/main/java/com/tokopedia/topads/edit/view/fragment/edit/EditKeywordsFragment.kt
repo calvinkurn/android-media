@@ -378,18 +378,18 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun prepareBundle(pos: Int): Bundle {
         val bundle = Bundle()
-        if ((adapter?.items?.get(pos) as EditKeywordItemViewModel).data.priceBid == Int.ZERO.toString())
-            (adapter?.items?.get(pos) as EditKeywordItemViewModel).data.priceBid = minSuggestKeyword
+        if ((adapter?.items?.getOrNull(pos) as EditKeywordItemViewModel).data.priceBid == Int.ZERO.toString())
+            (adapter?.items?.getOrNull(pos) as EditKeywordItemViewModel).data.priceBid = minSuggestKeyword
         bundle.putString(MAX_BID, maxSuggestKeyword)
         bundle.putString(MIN_BID, minSuggestKeyword)
         bundle.putString(
             SUGGESTION_BID,
-            (adapter?.items?.get(pos) as EditKeywordItemViewModel).data.priceBid
+            (adapter?.items?.getOrNull(pos) as EditKeywordItemViewModel).data.priceBid
         )
         bundle.putInt(ITEM_POSITION, pos)
         bundle.putString(
             KEYWORD_NAME,
-            (adapter?.items?.get(pos) as EditKeywordItemViewModel).data.name
+            (adapter?.items?.getOrNull(pos) as EditKeywordItemViewModel).data.name
         )
         bundle.putInt(FROM_EDIT, Int.ONE)
         bundle.putString(GROUPID, groupId.toString())
@@ -398,8 +398,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun actionStatusChange(position: Int) {
         if (isExistsOriginal(position)) {
-            deletedKeywords?.add((adapter?.items?.get(position) as EditKeywordItemViewModel).data)
-            addedKeywords?.add((adapter?.items?.get(position) as EditKeywordItemViewModel).data)
+            deletedKeywords?.add((adapter?.items?.getOrNull(position) as EditKeywordItemViewModel).data)
+            addedKeywords?.add((adapter?.items?.getOrNull(position) as EditKeywordItemViewModel).data)
         }
     }
 
@@ -409,14 +409,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             dialog.setTitle(
                 String.format(
                     getString(R.string.topads_edit_delete_keyword_conf_dialog_title),
-                    (adapter?.items?.get(position) as EditKeywordItemViewModel).data.name
+                    (adapter?.items?.getOrNull(position) as EditKeywordItemViewModel).data.name
                 )
             )
             dialog.setDescription(
                 MethodChecker.fromHtml(
                     String.format(
                         getString(R.string.topads_edit_delete_keyword_conf_dialog_desc),
-                        (adapter?.items?.get(position) as EditKeywordItemViewModel).data.name
+                        (adapter?.items?.getOrNull(position) as EditKeywordItemViewModel).data.name
                     )
                 )
             )
@@ -456,20 +456,20 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         var pos = Int.ZERO
         if (selectedData?.isNotEmpty() == true) {
             selectedData?.forEachIndexed { index, select ->
-                if (select.keyword == (adapter?.items?.get(position) as EditKeywordItemViewModel).data.name) {
+                if (select.keyword == (adapter?.items?.getOrNull(position) as EditKeywordItemViewModel).data.name) {
                     pos = index
                 }
             }
             selectedData?.removeAt(pos)
         }
-        if (adapter?.items?.get(position) is EditKeywordItemViewModel) {
+        if (adapter?.items?.getOrNull(position) is EditKeywordItemViewModel) {
             if (isExistsOriginal(position)) {
-                deletedKeywords?.add((adapter?.items?.get(position) as EditKeywordItemViewModel).data)
+                deletedKeywords?.add((adapter?.items?.getOrNull(position) as EditKeywordItemViewModel).data)
             } else {
                 if (addedKeywords?.isNotEmpty() == true) {
                     var index = Int.ZERO
                     addedKeywords?.forEachIndexed { it, key ->
-                        if (key.name == (adapter?.items?.get(position) as EditKeywordItemViewModel).data.name) {
+                        if (key.name == (adapter?.items?.getOrNull(position) as EditKeywordItemViewModel).data.name) {
                             index = it
                         }
                     }
@@ -631,10 +631,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         val list: ArrayList<KeySharedModel> = arrayListOf()
         adapter?.getCurrentItems()?.let { list.addAll(it) }
 
-        if (adapter?.items?.isNotEmpty() == true && adapter?.items?.get(0) !is EditKeywordEmptyViewModel) {
+        if (adapter?.items?.isNotEmpty() == true && adapter?.items?.getOrNull(0) !is EditKeywordEmptyViewModel) {
             adapter?.items?.forEachIndexed { index, item ->
                 if (index < (adapter?.data?.size
-                        ?: Int.ZERO) && (item as EditKeywordItemViewModel).data.priceBid != (adapter?.data?.get(
+                        ?: Int.ZERO) && (item as EditKeywordItemViewModel).data.priceBid != (adapter?.data?.getOrNull(
                         index
                     ) ?: String.EMPTY)
                 ) {
