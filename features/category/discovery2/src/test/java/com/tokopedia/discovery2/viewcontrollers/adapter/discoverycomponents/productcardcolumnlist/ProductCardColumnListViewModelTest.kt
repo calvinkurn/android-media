@@ -6,6 +6,7 @@ import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
+import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcolumnlist.ProductCardColumnListMapper.mapToCarouselPagingGroupProductModel
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -17,6 +18,7 @@ import io.mockk.mockk
 import io.mockk.mockkConstructor
 import io.mockk.spyk
 import io.mockk.unmockkConstructor
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -35,6 +37,8 @@ class ProductCardColumnListViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val productCardsUseCase: ProductCardsUseCase = mockk(relaxed = true)
+    private val topAdsUseCase: TopAdsTrackingUseCase = mockk(relaxed = true)
+
     private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
 
@@ -42,12 +46,12 @@ class ProductCardColumnListViewModelTest {
     private val position: Int = 99
 
     private var viewModel: ProductCardColumnListViewModel = spyk(
-            ProductCardColumnListViewModel(
-                application = application,
-                componentsItem = componentsItem,
-                position = position
-            )
+        ProductCardColumnListViewModel(
+            application = application,
+            componentsItem = componentsItem,
+            position = position
         )
+    )
 
     @Before
     fun setup() {
@@ -261,6 +265,132 @@ class ProductCardColumnListViewModelTest {
         Assert.assertEquals(propertyRows, viewModel.getItemPerPage())
     }
 
+    @Test
+    fun `test impression on top ads product, should track impression event`() {
+        viewModel.topAdsTrackingUseCase = topAdsUseCase
+
+        val componentId = "12313"
+        val productId = "22222"
+        val productName = "Product Name 1"
+        val imageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/$productId"
+        val topAdsViewUrl =
+            "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei"
+
+        val topAdsItem = ComponentsItem(
+            data = listOf(
+                DataItem(
+                    id = productId,
+                    productId = productId,
+                    name = productName,
+                    imageUrl = imageUrl,
+                    topadsViewUrl = topAdsViewUrl,
+                    isTopads = true
+                )
+            ),
+            id = componentId
+        )
+        mockComponentItem(topAdsItem)
+
+        mockTopAdsImpressionTrackingStatus(false)
+
+        viewModel.trackTopAdsImpression(1)
+
+        verify {
+            topAdsUseCase
+                .hitImpressions(
+                    viewModel::class.qualifiedName,
+                    topAdsViewUrl,
+                    productId,
+                    productName,
+                    imageUrl
+                )
+        }
+    }
+
+    @Test
+    fun `test click on top ads product, should track click event`() {
+        viewModel.topAdsTrackingUseCase = topAdsUseCase
+
+        val componentId = "12313"
+        val productId = "22222"
+        val productName = "Product Name 1"
+        val imageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/$productId"
+        val topAdsClickUrl =
+            "https://ta.tokopedia.com/promo/v1/clicks/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei"
+
+        val topAdsItem = ComponentsItem(
+            data = listOf(
+                DataItem(
+                    id = productId,
+                    productId = productId,
+                    name = productName,
+                    imageUrl = imageUrl,
+                    topadsClickUrl = topAdsClickUrl,
+                    isTopads = true
+                )
+            ),
+            id = componentId
+        )
+        mockComponentItem(topAdsItem)
+
+        viewModel.trackTopAdsClick(1)
+
+        verify {
+            topAdsUseCase
+                .hitClick(
+                    viewModel::class.qualifiedName,
+                    topAdsClickUrl,
+                    productId,
+                    productName,
+                    imageUrl
+                )
+        }
+    }
+
+    @Test
+    fun `test impression on top ads product, should not track impression more than once`() {
+        viewModel.topAdsTrackingUseCase = topAdsUseCase
+
+        val componentId = "12313"
+        val productId = "22222"
+        val productName = "Product Name 1"
+        val imageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/$productId"
+        val topAdsViewUrl =
+            "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei"
+
+        val topAdsItem = ComponentsItem(
+            data = listOf(
+                DataItem(
+                    id = productId,
+                    productId = productId,
+                    name = productName,
+                    imageUrl = imageUrl,
+                    topadsViewUrl = topAdsViewUrl,
+                    isTopads = true
+                )
+            ),
+            id = componentId
+        )
+
+        mockComponentItem(topAdsItem)
+
+        mockTopAdsImpressionTrackingStatus(true)
+
+        viewModel.trackTopAdsImpression(1)
+
+        verify(exactly = 0) {
+            topAdsUseCase
+                .hitImpressions(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                )
+        }
+    }
+
+    //region private methods
     private fun mockComponents(components: List<ComponentsItem>?) {
         coEvery {
             componentsItem.getComponentsItem()
@@ -309,7 +439,14 @@ class ProductCardColumnListViewModelTest {
         } throws throwable
     }
 
+    private fun mockTopAdsImpressionTrackingStatus(isTracked: Boolean) {
+        every {
+            componentsItem.topAdsTrackingStatus
+        } returns isTracked
+    }
+
     private fun ComponentsItem?.verifyValueEquals(expected: Any?) {
         Assert.assertEquals(this?.data?.firstOrNull(), expected)
     }
+    //endregion
 }

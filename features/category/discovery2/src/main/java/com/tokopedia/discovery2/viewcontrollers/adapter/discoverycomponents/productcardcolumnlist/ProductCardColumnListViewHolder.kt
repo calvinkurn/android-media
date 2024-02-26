@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 class ProductCardColumnListViewHolder(
     itemView: View,
     val fragment: Fragment
-): AbstractViewHolder(itemView, fragment.viewLifecycleOwner), CarouselPagingProductCardView.CarouselPagingListener {
+) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), CarouselPagingProductCardView.CarouselPagingListener {
 
     private var carouselPagingProductCard: CarouselPagingProductCardView = itemView.findViewById(R.id.carousel_paging_product_card)
 
@@ -88,6 +88,8 @@ class ProductCardColumnListViewHolder(
                     isFulFillment = componentsItem.isFulfillment(product),
                     warehouseId = componentsItem.getWarehouseId(product)
                 )
+
+            trackTopAdsImpression(itemPosition)
         }
     }
 
@@ -101,6 +103,8 @@ class ProductCardColumnListViewHolder(
                     isFulFillment = componentsItem.isFulfillment(product),
                     warehouseId = componentsItem.getWarehouseId(product)
                 )
+
+            trackTopAdsClick(itemPosition)
 
             RouteManager.route(itemView.context, product?.applinks)
         }

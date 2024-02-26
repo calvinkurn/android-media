@@ -8,6 +8,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase.Companion.NO_PRODUCT_PER_PAGE
+import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcolumnlist.ProductCardColumnListMapper.mapToCarouselPagingGroupProductModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -37,6 +38,10 @@ class ProductCardColumnListViewModel(
     @JvmField
     @Inject
     var productCardsUseCase: ProductCardsUseCase? = null
+
+    @JvmField
+    @Inject
+    var topAdsTrackingUseCase: TopAdsTrackingUseCase? = null
 
     @JvmField
     @Inject
@@ -79,4 +84,41 @@ class ProductCardColumnListViewModel(
         if (componentsItem.getComponentsItemSize() < componentsItem.getPropertyRows()) componentsItem.getComponentsItemSize() else componentsItem.getPropertyRows()
 
     fun isLoggedIn(): Boolean = userSession?.isLoggedIn.orFalse()
+
+    fun trackTopAdsImpression(position: Int) {
+        val dataItem = getProduct(position) ?: return
+
+        with(dataItem) {
+            if (isTopads == false || componentsItem.topAdsTrackingStatus) return@with
+
+            topadsViewUrl?.let {
+                topAdsTrackingUseCase?.hitImpressions(
+                    this@ProductCardColumnListViewModel::class.qualifiedName,
+                    it,
+                    productId.orEmpty(),
+                    name.orEmpty(),
+                    imageUrl.orEmpty()
+                )
+                componentsItem.topAdsTrackingStatus = true
+            }
+        }
+    }
+
+    fun trackTopAdsClick(position: Int) {
+        val dataItem = getProduct(position) ?: return
+
+        with(dataItem) {
+            if (isTopads == false) return@with
+
+            topadsClickUrl?.let {
+                topAdsTrackingUseCase?.hitClick(
+                    this@ProductCardColumnListViewModel::class.qualifiedName,
+                    it,
+                    productId.orEmpty(),
+                    name.orEmpty(),
+                    imageUrl.orEmpty()
+                )
+            }
+        }
+    }
 }
