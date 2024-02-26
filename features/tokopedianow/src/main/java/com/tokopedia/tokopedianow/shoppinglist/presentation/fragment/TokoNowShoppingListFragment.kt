@@ -57,6 +57,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.Shop
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListRetryViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListTopCheckAllViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify.Companion.COLOR_WHITE
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.flow.collect
@@ -137,6 +138,7 @@ class TokoNowShoppingListFragment :
             collectStateFlow()
 
             setupRecyclerView()
+            setupFloatingActionButton()
             setupNavigationToolbar()
             setupOnScrollListener()
 
@@ -308,6 +310,13 @@ class TokoNowShoppingListFragment :
         }
     }
 
+    private fun FragmentTokopedianowShoppingListBinding.setupFloatingActionButton() {
+        fbuBackToTop.color = COLOR_WHITE
+        fbuBackToTop.circleMainMenu.setOnClickListener {
+            rvShoppingList.smoothScrollToPosition(Int.ZERO)
+        }
+    }
+
     private fun FragmentTokopedianowShoppingListBinding.setupNavigationToolbar() {
         navToolbar.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
@@ -383,6 +392,7 @@ class TokoNowShoppingListFragment :
                         switchToLightStatusBar()
                         binding.navToolbar.setToolbarTitle(getString(R.string.tokopedianow_shopping_list_page_title))
                     }
+                    binding.fbuBackToTop.show()
                 }
 
                 override fun onYposChanged(yOffset: Int) { /* nothing to do */ }
@@ -398,6 +408,7 @@ class TokoNowShoppingListFragment :
                         binding.navToolbar.setToolbarTitle(String.EMPTY)
                         binding.navToolbar.hideShadow()
                     }
+                    binding.fbuBackToTop.hide()
                 }
             }
         )

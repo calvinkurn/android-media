@@ -78,4 +78,13 @@
 
     </com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout>
 
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+        android:id="@+id/fbu_back_to_top"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        app:fbSize="medium"
+        app:fbType="back_to_top"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/str_refresh_layout" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
