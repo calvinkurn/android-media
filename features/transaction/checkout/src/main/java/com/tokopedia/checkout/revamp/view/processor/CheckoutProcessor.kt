@@ -406,7 +406,7 @@ class CheckoutProcessor @Inject constructor(
         val productList: MutableList<Any> = ArrayList()
         val orderList = listData.filterIsInstance(CheckoutOrderModel::class.java)
         for (order in orderList) {
-            val orderProducts = helper.getOrderProducts(listData, order.cartStringGroup)
+            val orderProducts = helper.getOrderProducts(listData, order.cartStringGroup).filterIsInstance(CheckoutProductModel::class.java)
             for (cartItemModel in orderProducts) {
                 productList.add(
                     DataLayer.mapOf(
@@ -441,17 +441,13 @@ class CheckoutProcessor @Inject constructor(
         )
     }
 
-    fun checkProtectionAddOnOptIn(listProduct: List<CheckoutProductModel>): Boolean {
-        var isAnyAddOnProtectionOptIn = false
-        listProduct.forEach { product ->
-            product.addOnProduct.listAddOnProductData.forEach { addon ->
-                if (addon.type == AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE &&
-                        addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
-                    isAnyAddOnProtectionOptIn = true
-                }
+    fun checkProtectionAddOnOptIn(listProduct: List<CheckoutItem>): Boolean {
+        return listProduct.any {
+            it is CheckoutProductModel && it.addOnProduct.listAddOnProductData.any { addon ->
+                addon.type == AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE &&
+                    addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
             }
         }
-        return isAnyAddOnProtectionOptIn
     }
 }
 

@@ -927,7 +927,7 @@ class ShopPageReimagineHeaderFragment :
         }
     }
 
-    private fun refreshCartCounterData() {
+    fun refreshCartCounterData() {
         if (isLogin && !MvcLockedToProductUtil.isSellerApp()) {
             updateFragmentTabContentWrapperNavToolbarNotification()
         }
@@ -1134,10 +1134,9 @@ class ShopPageReimagineHeaderFragment :
     }
 
     private fun getFollowStatus() {
-        val shopFollowButtonVariantType = ShopUtil.getShopFollowButtonAbTestVariant().orEmpty()
         if (checkIfActionButtonSectionWidgetExistsOnHeader()) {
             setFragmentTabContentWrapperFollowButtonLoading(true)
-            shopHeaderViewModel?.getFollowStatusData(shopId, shopFollowButtonVariantType)
+            shopHeaderViewModel?.getFollowStatusData(shopId)
         }
     }
 
@@ -1904,9 +1903,22 @@ class ShopPageReimagineHeaderFragment :
     }
 
     private fun setTabLayoutBackgroundColor() {
-        if (shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme == true) {
-            val fragmentBackgroundColor = getShopNavBarConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
-            tabLayout?.background = ColorDrawable(ShopUtil.parseColorFromHexString(fragmentBackgroundColor))
+        context?.let {
+            if (shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme == true) {
+                val tabNavColor =
+                    getShopNavBarConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
+                val tabBackgroundColor = tabNavColor.ifEmpty {
+                    ShopUtil.getColorHexString(
+                        it,
+                        unifyprinciplesR.color.Unify_NN0
+                    )
+                }
+                tabLayout?.background = ColorDrawable(
+                    ShopUtil.parseColorFromHexString(
+                        tabBackgroundColor
+                    )
+                )
+            }
         }
     }
 

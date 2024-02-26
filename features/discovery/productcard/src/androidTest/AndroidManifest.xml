@@ -35,5 +35,13 @@
             android:name="com.tokopedia.productcard.test.reimagine.ProductCardGridActivityTest"
             android:theme="@style/Theme.White"/>
 
+        <activity
+            android:name="com.tokopedia.productcard.test.reimagine.ProductCardListActivityTest"
+            android:theme="@style/Theme.White"/>
+
+        <activity
+            android:name="com.tokopedia.productcard.test.reimagine.ProductCardListCarouselActivityTest"
+            android:theme="@style/Theme.White"/>
+
     </application>
 </manifest>

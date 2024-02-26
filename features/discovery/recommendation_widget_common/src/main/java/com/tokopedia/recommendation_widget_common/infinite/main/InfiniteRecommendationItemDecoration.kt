@@ -9,7 +9,7 @@ import com.tokopedia.recommendation_widget_common.infinite.component.product.Inf
 
 class InfiniteRecommendationItemDecoration : RecyclerView.ItemDecoration() {
 
-    private val marginHorizontal = 16f.toPx().toInt()
+    private val marginHorizontal = 12f.toPx().toInt()
 
     override fun getItemOffsets(
         outRect: Rect,

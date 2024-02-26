@@ -95,9 +95,6 @@ private fun productCardSmallInfo(): ProductCardModel {
         slashedPrice = "Rp100.000",
         discountPercentage = 10,
         labelGroupList = listOf(reimagineCredibilityLabel),
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png",
-        ),
     )
 }
 
@@ -129,9 +126,6 @@ private fun productCard(): ProductCardModel {
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png",
-        ),
     )
 }
 
@@ -175,9 +169,6 @@ private fun productCardRibbonDiscountSlashedPriceInline(): ProductCardModel {
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png",
-        )
     )
 }
 
@@ -218,9 +209,6 @@ private fun productCardRibbonDiscountSlashedPriceInlineStockInfo(percentageStock
         ),
         rating = "4.5",
         shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = "https://images.tokopedia.net/img/ic_bebas_ongkir.png",
-        ),
         stockInfo = stockInfo
     )
 }

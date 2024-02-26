@@ -83,7 +83,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
@@ -112,12 +111,14 @@ import com.tokopedia.home.beranda.presentation.view.listener.CampaignWidgetCompo
 import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CategoryWidgetV2Callback
 import com.tokopedia.home.beranda.presentation.view.listener.ChooseAddressWidgetCallback
+import com.tokopedia.home.beranda.presentation.view.listener.CouponWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CueWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.DynamicIconComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.FeaturedShopComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.FlashSaleWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.HomeOrigamiListenerDelegate
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.listener.HomeReminderWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.Lego6AutoBannerComponentCallback
@@ -149,9 +150,11 @@ import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefresh
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.ImageHandler
+import com.tokopedia.home_component.usecase.thematic.ThematicModel
+import com.tokopedia.home_component.util.ImageLoaderStateListener
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -177,6 +180,7 @@ import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.notifications.inApp.ketupat.GamificationPopUpHandler
 import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
@@ -354,6 +358,8 @@ open class HomeRevampFragment :
 
     @Inject
     lateinit var homeRemoteConfigController: HomeRemoteConfigController
+
+    var gamificationPopUpHandler: GamificationPopUpHandler? = null
 
     @Inject
     lateinit var homePrefController: HomePrefController
@@ -920,7 +926,7 @@ open class HomeRevampFragment :
         getHomeViewModel().thematicLiveData.observe(viewLifecycleOwner) { thematic ->
             if (thematic.isShown) {
                 context?.let { ctx ->
-                    val thematicImageLoadListener = object : ImageHandler.ImageLoaderStateListener {
+                    val thematicImageLoadListener = object : ImageLoaderStateListener {
                         override fun successLoad(view: ImageView) {
                             view.show()
                             if (view == thematicBackground) {
@@ -968,7 +974,7 @@ open class HomeRevampFragment :
     }
 
     private fun notifyHomeThematicChanges(
-        thematicModel: HomeThematicModel,
+        thematicModel: ThematicModel,
         isBackgroundLoaded: Boolean = false
     ) {
         getThematicUtil().thematicModel = thematicModel
@@ -1090,6 +1096,15 @@ open class HomeRevampFragment :
 
         // refresh home-to-do-widget data if needed
         getHomeViewModel().getCMHomeWidgetData(false)
+        // trigger gamification popup flow
+        executeGamificationPopUpFlow()
+    }
+
+    private fun executeGamificationPopUpFlow() {
+        if (gamificationPopUpHandler == null) {
+            gamificationPopUpHandler = GamificationPopUpHandler()
+        }
+        activity?.let { gamificationPopUpHandler?.onFragmentResume(it) }
     }
 
     private fun conditionalViewModelRefresh() {
@@ -1596,7 +1611,10 @@ open class HomeRevampFragment :
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
             ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
-            getThematicUtil()
+            CouponWidgetCallback(this),
+            getThematicUtil(),
+            HomeOrigamiListenerDelegate(context, this),
+            getRemoteConfig()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1897,6 +1915,10 @@ open class HomeRevampFragment :
                 }
             }
         }
+    }
+
+    override fun onCouponWidgetClaim(data: CouponWidgetDataModel, catalogId: String, couponPosition: Int) {
+        getHomeViewModel().onCouponClaim(data, catalogId, couponPosition)
     }
 
     override fun onChooseAddressServerDown() {

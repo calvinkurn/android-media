@@ -12,7 +12,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
@@ -148,7 +148,7 @@ class PlayWidgetSubViewModelTest {
 
         coEvery {
             viewModel.productDetailMediator.getP1()
-        } returns DynamicProductInfoP1(
+        } returns ProductInfoP1(
             basic = BasicInfo(category = Category(detail = listOf(Category.Detail())))
         )
 

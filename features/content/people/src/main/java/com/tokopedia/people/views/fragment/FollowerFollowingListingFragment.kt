@@ -240,7 +240,6 @@ internal class FollowerFollowingListingFragment @Inject constructor(
         val header = view?.findViewById<HeaderUnify>(peopleR.id.header_follower)
         header?.apply {
             title = currName
-            subheaderView?.gone()
 
             setNavigationOnClickListener {
                 activity?.onBackPressed()
@@ -335,7 +334,6 @@ internal class FollowerFollowingListingFragment @Inject constructor(
     }
 
     companion object {
-        const val REQUEST_CODE_LOGIN_TO_FOLLOW = 100
         const val EXTRA_FOLLOWING = "following"
         const val EXTRA_FOLLOWERS = "followers"
 

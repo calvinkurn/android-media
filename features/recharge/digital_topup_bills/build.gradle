@@ -105,6 +105,9 @@ dependencies {
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 
     androidTestUtil rootProject.ext.testDependencies.orchestrator
+
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {

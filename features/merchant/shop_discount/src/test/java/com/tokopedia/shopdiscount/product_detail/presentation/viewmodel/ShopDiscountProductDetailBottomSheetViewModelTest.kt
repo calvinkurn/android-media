@@ -1,12 +1,15 @@
 package com.tokopedia.shopdiscount.product_detail.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.shopdiscount.common.data.response.DoSlashPriceProductReservationResponse
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
 import com.tokopedia.shopdiscount.manage.data.response.DeleteDiscountResponse
 import com.tokopedia.shopdiscount.manage.domain.usecase.DeleteDiscountUseCase
+import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.product_detail.data.response.GetSlashPriceProductDetailResponse
+import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
 import com.tokopedia.shopdiscount.product_detail.domain.GetSlashPriceProductDetailUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -170,5 +173,52 @@ class ShopDiscountProductDetailBottomSheetViewModelTest {
         viewModel.deleteSelectedProductDiscount(mockParentProductId, mockStatus)
         val liveDataValue = viewModel.deleteProductDiscount.value
         assert(liveDataValue is Fail)
+    }
+
+    @Test
+    fun `When calling getListProductDetailForManageSubsidy for edit, result should success`() {
+        viewModel.getListProductDetailForManageSubsidy(
+            listOf(),
+            ShopDiscountManageDiscountMode.UPDATE
+        )
+        val liveDataValue = viewModel.manageProductSubsidyUiModelLiveData.value
+        assert(liveDataValue is Success)
+    }
+
+    @Test
+    fun `When calling getListProductDetailForManageSubsidy for delete, result should success`() {
+        viewModel.getListProductDetailForManageSubsidy(
+            listOf(),
+            ShopDiscountManageDiscountMode.DELETE
+        )
+        val liveDataValue = viewModel.manageProductSubsidyUiModelLiveData.value
+        assert(liveDataValue is Success)
+    }
+
+    @Test
+    fun `When calling getListProductDetailForManageSubsidy for opt out, result should success`() {
+        viewModel.getListProductDetailForManageSubsidy(
+            listOf(
+                ShopDiscountProductDetailUiModel.ProductDetailData(
+                    isSubsidy = true
+                ),
+                ShopDiscountProductDetailUiModel.ProductDetailData(
+                    isSubsidy = false
+                )
+            ),
+            ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY
+        )
+        val liveDataValue = viewModel.manageProductSubsidyUiModelLiveData.value
+        assert(liveDataValue is Success)
+    }
+
+    @Test
+    fun `When calling getListProductDetailForManageSubsidy for other mode, result should success`() {
+        viewModel.getListProductDetailForManageSubsidy(
+            listOf(),
+            String.EMPTY
+        )
+        val liveDataValue = viewModel.manageProductSubsidyUiModelLiveData.value
+        assert(liveDataValue is Success)
     }
 }

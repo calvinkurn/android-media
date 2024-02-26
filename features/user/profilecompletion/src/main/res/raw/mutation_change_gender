@@ -1,7 +1,0 @@
-mutation change_gender($gender: Int!) {
-  userProfileCompletionUpdate(gender: $gender) {
-    isSuccess
-    genderMessage
-    completionScore
-  }
-}

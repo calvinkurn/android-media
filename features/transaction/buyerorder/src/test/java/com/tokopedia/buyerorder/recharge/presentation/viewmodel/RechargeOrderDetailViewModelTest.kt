@@ -2,7 +2,7 @@ package com.tokopedia.buyerorder.recharge.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
-import com.tokopedia.buyerorder.recharge.data.response.DigitalPaymentInfoMessage
+import com.tokopedia.buyerorder.recharge.data.response.RechargeEmoneyVoidResponse
 import com.tokopedia.buyerorder.recharge.domain.RechargeEmoneyVoidUseCase
 import com.tokopedia.buyerorder.recharge.domain.RechargeOrderDetailUseCase
 import com.tokopedia.buyerorder.recharge.presentation.model.*
@@ -415,5 +415,36 @@ class RechargeOrderDetailViewModelTest {
 
         // then
         assert(viewModel.orderDetailData.value == null)
+    }
+
+    @Test
+    fun getVoid_Success() {
+        // given
+        val orderId = "1234"
+        val dataResult = RechargeEmoneyVoidResponse(
+            1,
+            "Success"
+        )
+        // when
+        coEvery {
+            emoneyVoidUseCase.execute(orderId)
+        } returns Success(dataResult)
+        viewModel.voidEmoneyData(orderId)
+        // then
+        assertEquals(dataResult, (viewModel.emoneyVoidResponse.value as Success).data)
+    }
+
+    @Test
+    fun getVoid_Fail() {
+        // given
+        val orderId = "1234"
+        val error = NullPointerException()
+        // when
+        coEvery {
+            emoneyVoidUseCase.execute(orderId)
+        } throws error
+        viewModel.voidEmoneyData(orderId)
+        // then
+        assertEquals(error, (viewModel.emoneyVoidResponse.value as Fail).throwable)
     }
 }

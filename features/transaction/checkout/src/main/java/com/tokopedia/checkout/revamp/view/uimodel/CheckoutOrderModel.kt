@@ -1,8 +1,8 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
 import android.os.Parcelable
-import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -212,7 +212,7 @@ data class CheckoutOrderShipment(
     val isHideChangeCourierCard: Boolean = false,
 
     // Analytics
-    var hasTriggerViewMessageTracking: Boolean = false
+    var isHasShownCourierError: Boolean = false
 )
 
 data class CheckoutOrderInsurance(

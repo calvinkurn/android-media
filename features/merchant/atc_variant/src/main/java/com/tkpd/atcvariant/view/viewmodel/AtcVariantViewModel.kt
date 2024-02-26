@@ -264,7 +264,7 @@ class AtcVariantViewModel @Inject constructor(
                 cartTypeData = aggregatorData?.cardRedirection,
                 isShopOwner = isShopOwner,
                 shouldUseAlternateTokoNow = aggregatorParams.showQtyEditorOrTokoNow() &&
-                        selectedMiniCart != null,
+                    selectedMiniCart != null,
                 alternateCopy = aggregatorData?.alternateCopy
             )
             val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
@@ -474,13 +474,14 @@ class AtcVariantViewModel @Inject constructor(
 
     fun hitAtc(
         actionButton: Int,
-        shopIdInt: Int,
+        shopId: String,
         categoryName: String,
         userId: String,
         shippingMinPrice: Double,
         trackerAttributionPdp: String,
         trackerListNamePdp: String,
-        showQtyEditor: Boolean
+        showQtyEditor: Boolean,
+        shopName: String
     ) {
         val selectedChild = getVariantData()?.getChildByOptionId(
             getSelectedOptionIds()?.values.orEmpty().toList()
@@ -497,14 +498,15 @@ class AtcVariantViewModel @Inject constructor(
                 actionButtonCart = actionButton,
                 selectedChild = selectedChild,
                 selectedWarehouse = selectedWarehouse,
-                shopIdInt = shopIdInt,
+                shopId = shopId,
                 trackerAttributionPdp = trackerAttributionPdp,
                 trackerListNamePdp = trackerListNamePdp,
                 categoryName = categoryName,
                 shippingMinPrice = shippingMinPrice,
                 userId = userId,
                 showQtyEditor = showQtyEditor,
-                selectedStock = updatedQuantity
+                selectedStock = updatedQuantity,
+                shopName = shopName
             )
             addToCart(atcRequestParam, showQtyEditor)
         }
