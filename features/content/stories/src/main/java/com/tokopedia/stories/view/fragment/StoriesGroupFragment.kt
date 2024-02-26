@@ -138,7 +138,10 @@ class StoriesGroupFragment @Inject constructor(
     }
 
     private fun showSelectedGroupHighlight(position: Int) {
-        if (args.source == StoriesSource.BROWSE_WIDGET.value && mHasShownGroupHighlight) return
+        if (args.source == StoriesSource.BROWSE_WIDGET.value && mHasShownGroupHighlight) {
+            viewModelAction(StoriesUiAction.PageIsSelected)
+            return
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             binding.tvHighlight.text = pagerAdapter.getCurrentPageGroupName(position)
