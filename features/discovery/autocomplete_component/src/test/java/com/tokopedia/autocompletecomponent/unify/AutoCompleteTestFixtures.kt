@@ -1,6 +1,7 @@
 package com.tokopedia.autocompletecomponent.unify
 
 import com.tokopedia.autocompletecomponent.stubExecute
+import com.tokopedia.autocompletecomponent.unify.byteio.SugSessionId
 import com.tokopedia.autocompletecomponent.unify.domain.model.UniverseSuggestionUnifyModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -34,7 +35,8 @@ abstract class AutoCompleteTestFixtures {
             suggestionStateUseCase = suggestionStateUseCase,
             deleteRecentSearchUseCase = deleteRecentUseCase,
             userSession = userSession,
-            mockk(relaxed = true)
+            mockk(relaxed = true),
+            mockk(relaxed = true),
         )
 
     fun `Given Initial Use Case Is Successful`(

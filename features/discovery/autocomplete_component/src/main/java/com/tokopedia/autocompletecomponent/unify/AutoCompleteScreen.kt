@@ -11,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_HISTORY
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_SUG
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteEducationComponent
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteMasterComponent
@@ -47,6 +49,25 @@ internal fun AutoCompleteScreen(
             replaceKeyword = state.value.actionReplaceKeyword,
             listener = listener
         )
+
+        LaunchedEffect(key1 = state.value.appLogData) {
+            if (state.value.isInitialState)
+                AppLogSearch.eventEnterSearchBlankPage()
+            else if (state.value.isSuggestion)
+                AppLogSearch.eventTrendingShow(
+                    AppLogSearch.TrendingShow(
+                        imprId = state.value.appLogData.imprId,
+                        newSugSessionId = state.value.appLogData.newSugSessionId,
+                        rawQuery = state.value.query,
+                        enterMethod = state.value.enterMethod,
+                        wordsSource = state.value.appLogData.wordsSource,
+                        wordsNum = state.value.resultList.filter {
+                            it.domainModel.isTrendingWord()
+                        }.size
+                    )
+                )
+        }
+
         LazyColumn(
             modifier = Modifier.tag("MainLazyColumn")
         ) {
@@ -56,9 +77,10 @@ internal fun AutoCompleteScreen(
                 LaunchedEffect(key1 = !item.impressionHolder.impressed, block = {
                     item.impressionHolder.impressed = true
                     item.impress(iris)
-                    if (item.domainModel.isTrendingWord()) {
-                        viewModel.trackTrendingWordsShow(item)
-                    }
+                    if (item.domainModel.isTrendingWord())
+                        AppLogSearch.eventTrendingWordsShowSuggestion(
+                            trendingWordsSuggestion(viewModel, item)
+                        )
                 })
                 when (item.domainModel.template) {
                     AutoCompleteTemplateEnum.Master.toString() -> {
@@ -67,9 +89,10 @@ internal fun AutoCompleteScreen(
                             onItemClicked = {
                                 viewModel.onAutoCompleteItemClick(it)
                                 it.click(analytics)
-                                if (item.domainModel.isTrendingWord()) {
-                                    viewModel.trackTrendingWordsClick(item)
-                                }
+                                if (item.domainModel.isTrendingWord())
+                                    AppLogSearch.eventTrendingWordsClickSuggestion(
+                                        trendingWordsSuggestion(viewModel, item)
+                                    )
                             },
                             onItemAction = {
                                 viewModel.onAutocompleteItemAction(it)
@@ -113,10 +136,8 @@ private fun EvaluateNavigation(
 }
 
 private fun enterMethod(viewModel: AutoCompleteViewModel) =
-    if (viewModel.isInitialState)
-        AppLogSearch.ParamValue.SEARCH_HISTORY
-    else if (viewModel.isSuggestion)
-        AppLogSearch.ParamValue.SEARCH_SUG
+    if (viewModel.isInitialState) SEARCH_HISTORY
+    else if (viewModel.isSuggestion) SEARCH_SUG
     else ""
 
 @Composable
@@ -130,3 +151,17 @@ private fun EvaluateActionReplace(
         viewModel.onActionReplaceAcknowledged()
     }
 }
+
+private fun trendingWordsSuggestion(
+    viewModel: AutoCompleteViewModel,
+    item: AutoCompleteUnifyDataView
+) = AppLogSearch.TrendingWordsSuggestion(
+    groupId = item.groupId,
+    imprId = viewModel.stateValue.appLogData.newSugSessionId,
+    newSugSessionId = viewModel.stateValue.appLogData.newSugSessionId,
+    rawQuery = item.searchTerm,
+    enterMethod = viewModel.stateValue.enterMethod,
+    sugType = item.sugType,
+    wordsContent = item.domainModel.title.text,
+    wordsPosition = item.appLogIndex,
+)

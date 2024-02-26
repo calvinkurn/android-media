@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.autocompletecomponent.BaseAutoCompleteActivity
 import com.tokopedia.autocompletecomponent.unify.AutoCompleteStateModule
+import com.tokopedia.autocompletecomponent.unify.byteio.SugSessionIdModule
 import com.tokopedia.autocompletecomponent.unify.domain.usecase.AutoCompleteUseCaseModule
 import com.tokopedia.autocompletecomponent.util.CoachMarkLocalCache
 import com.tokopedia.autocompletecomponent.util.SchedulersProvider
@@ -19,7 +20,8 @@ import dagger.Component
         AutoCompleteFragmentModule::class,
         AutoCompleteUseCaseModule::class,
         AutoCompleteModule::class,
-        IrisModule::class
+        IrisModule::class,
+        SugSessionIdModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )
