@@ -141,7 +141,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_parent_initial_cashback"
+            android:id="@+id/ll_parent_initial_promo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -152,17 +152,17 @@
             tools:visibility="visible">
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpg_initial_cashback_label"
+                android:id="@+id/tpg_initial_promo_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
-                android:text="Cashback awal"
+                android:text="@string/smvc_initial_cashback_label"
                 android:textColor="@color/Unify_NN600"
                 app:typographyType="display_3"
                 app:typographyWeight="reguler" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpg_initial_cashback"
+                android:id="@+id/tpg_initial_promo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
@@ -189,7 +189,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
-                android:text="Tambahan subsidi"
+                android:text="@string/smvc_additional_subsidy_label"
                 android:textColor="@color/Unify_NN600"
                 app:typographyType="display_3"
                 app:typographyWeight="reguler" />

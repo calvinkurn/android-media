@@ -261,6 +261,9 @@
     <string name="smvc_placeholder_intools_package_name">Dibuat %s</string>
     <string name="smvc_update_coupon_tip_label_not_approved">Kupon yang sedang berpartisipasi di program subsidi tidak bisa diubah hingga proses seleksi selesai.</string>
     <string name="smvc_update_coupon_tip_label_approved">Kupon yang sedang mengikuti campaign tidak bisa di edit.</string>
+    <string name="smvc_initial_cashback_label">Cashback awal</string>
+    <string name="smvc_initial_discount_label">Diskon awal</string>
+    <string name="smvc_additional_subsidy_label">Tambahan subsidi</string>
 
     <!--Voucher 3 dots menu-->
     <string name="voucher_three_bots_title">Nama Kupon Maks. 30 character</string>
