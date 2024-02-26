@@ -17,6 +17,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARCH
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.EventObserver
@@ -40,6 +44,7 @@ import com.tokopedia.search.result.presentation.view.activity.SearchComponent
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
+import com.tokopedia.search.result.shop.byteio.ShopPageNameDelegate
 import com.tokopedia.search.result.shop.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
 import com.tokopedia.search.result.shop.presentation.itemdecoration.ShopListItemDecoration
@@ -68,7 +73,8 @@ internal class ShopListFragment @Inject constructor(
     QuickFilterElevation,
     ChooseAddressListener,
     SortFilterBottomSheet.Callback,
-    BackToTopView {
+    BackToTopView,
+    AppLogInterface by ShopPageNameDelegate() {
 
     companion object {
         private const val SHOP = "shop"
@@ -531,6 +537,8 @@ internal class ShopListFragment @Inject constructor(
         trackScreen()
 
         searchShopViewModel?.onViewVisibilityChanged(isVisibleToUser, isAdded)
+
+        AppLogAnalytics.updateCurrentPageData(this)
     }
 
     private fun trackScreen() {

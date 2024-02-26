@@ -21,12 +21,13 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.search.AppLogSearch
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_QUICK
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_FAVORITE_BUTTON
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_MORE_BUTTON
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_MORE_FINDALIKE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_QUICK
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.REFRESH
@@ -61,7 +62,6 @@ import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
@@ -98,6 +98,7 @@ import com.tokopedia.search.result.product.addtocart.AddToCartVariantBottomSheet
 import com.tokopedia.search.result.product.addtocart.analytics.AddToCartTracking
 import com.tokopedia.search.result.product.banner.BannerListenerDelegate
 import com.tokopedia.search.result.product.broadmatch.BroadMatchListenerDelegate
+import com.tokopedia.search.result.product.byteio.ProductPageNameDelegate
 import com.tokopedia.search.result.product.changeview.ChangeView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.product.cpm.BannerAdsListenerDelegate
@@ -167,7 +168,8 @@ class ProductListFragment: BaseDaggerFragment(),
     FragmentProvider,
     ClassNameProvider,
     ScreenNameProvider,
-    BackToTopView {
+    BackToTopView,
+    AppLogInterface by ProductPageNameDelegate() {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -631,6 +633,8 @@ class ProductListFragment: BaseDaggerFragment(),
         super.setUserVisibleHint(isVisibleToUser)
 
         presenter?.onViewVisibilityChanged(isVisibleToUser, isAdded)
+
+        AppLogAnalytics.updateCurrentPageData(this)
     }
 
     override fun trackScreenAuthenticated() {
