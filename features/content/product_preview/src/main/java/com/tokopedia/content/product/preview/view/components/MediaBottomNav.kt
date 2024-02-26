@@ -24,6 +24,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel.ButtonState
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.nest.components.ButtonSize
 import com.tokopedia.nest.components.ButtonVariant
@@ -152,12 +153,15 @@ private fun RenderContent(
             )
         }
 
+        val isBtnEnable = product.buttonState == ButtonState.Active || product.buttonState == ButtonState.OOS
+
         NestButton(
             text = product.buttonState.text,
             onClick = onAtcClicked,
             variant = ButtonVariant.GHOST_INVERTED,
             size = ButtonSize.SMALL,
-            isClickable = product.buttonState != BottomNavUiModel.ButtonState.Inactive,
+            isEnabled = isBtnEnable,
+            isClickable = isBtnEnable,
             modifier = Modifier
                 .constrainAs(atcBtn) {
                     end.linkTo(parent.end)

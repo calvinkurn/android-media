@@ -45,11 +45,17 @@ data class BottomNavUiModel(
             override val ogPriceFmt: String,
             val nettPriceFmt: String,
         ) : Price
+
+        data class MaskPrice(
+            override val ogPriceFmt: String,
+            val maskPrice: String
+        ) : Price
     }
     enum class ButtonState(val value: String, val text: String) {
         Active("ACTIVE", "+ Keranjang"),
         Inactive("INACTIVE", "Stok Habis"),
         OOS("OOS", "Ingatkan Saya"),
+        ComingSoon("ACTIVE", "Segera Hadir"),
         Unknown("", "");
 
         companion object {
@@ -92,4 +98,5 @@ val BottomNavUiModel.Price.finalPrice: String
         is BottomNavUiModel.Price.DiscountedPrice -> this.discountedPrice
         is BottomNavUiModel.Price.NormalPrice -> this.ogPriceFmt
         is BottomNavUiModel.Price.NettPrice -> this.nettPriceFmt
+        is BottomNavUiModel.Price.MaskPrice -> this.maskPrice
     }
