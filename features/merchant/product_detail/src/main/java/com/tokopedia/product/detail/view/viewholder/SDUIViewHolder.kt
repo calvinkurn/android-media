@@ -5,14 +5,17 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.SDUIDataModel
 import com.tokopedia.product.detail.databinding.ItemSduiContainerBinding
+import com.tokopedia.product.detail.view.fragment.delegate.BasicComponentEvent
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.delegate.DynamicOneLinerCallback
+import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.event.DynamicOneLinerEvent
 import com.tokopedia.sdui.SDUIManager
 import com.tokopedia.sdui.interfaces.SDUITrackingInterface
 import org.json.JSONObject
 
 class SDUIViewHolder(
     view: View,
-    private val listener: ProductDetailListener
+    private val callback: DynamicOneLinerCallback
 ) : ProductDetailPageViewHolder<SDUIDataModel>(view) {
 
     companion object {
@@ -57,11 +60,12 @@ class SDUIViewHolder(
 
         view.addOnImpressionListener(
             holder = element.impressHolder,
-            holders = listener.getImpressionHolders(),
+            holders = callback.impressionHolders,
             name = element.name,
-            useHolders = listener.isRemoteCacheableActive()
+            useHolders = callback.isRemoteCacheableActive
         ) {
-            listener.onImpressComponent(getComponentTrackData(element))
+            val trackerData = getComponentTrackData(element = element)
+            callback.event(BasicComponentEvent.OnImpressComponent(trackData = trackerData))
         }
 
         binding.sduiViewContainer.removeAllViews()
@@ -73,7 +77,10 @@ class SDUIViewHolder(
 
             override fun onViewClick(trackerPayload: JSONObject?) {
                 val element = element ?: return
-                listener.onClickDynamicOneLiner("", "", component = getComponentTrackData(element))
+                callback.event(
+                    DynamicOneLinerEvent.OnDynamicOneLinerClicked(
+                    "", "", getComponentTrackData(element)
+                ))
             }
 
             override fun onViewVisible(trackerPayload: JSONObject?) {

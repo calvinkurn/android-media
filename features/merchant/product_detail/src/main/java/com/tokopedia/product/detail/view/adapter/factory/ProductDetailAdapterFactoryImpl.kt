@@ -449,14 +449,17 @@ class ProductDetailAdapterFactoryImpl(
             )
 
             OngoingCampaignViewHolder.LAYOUT -> OngoingCampaignViewHolder(view, listener)
-            DynamicOneLinerViewHolder.LAYOUT -> DynamicOneLinerViewHolder(view, listener)
+            DynamicOneLinerViewHolder.LAYOUT -> DynamicOneLinerViewHolder(
+                view,
+                pdpCallback.dynamicOneLiner
+            )
             APlusImageViewHolder.LAYOUT -> APlusImageViewHolder(view, listener)
             BMGMViewHolder.LAYOUT -> BMGMViewHolder(view, listener)
             ProductPriceViewHolder.LAYOUT -> ProductPriceViewHolder(view, pdpCallback.productPrice)
             TabletLeftSectionViewHolder.LAYOUT -> TabletLeftSectionViewHolder(view, listener, this)
             TabletRightSectionViewHolder.LAYOUT -> TabletRightSectionViewHolder(view, listener, this)
             GWPViewHolder.LAYOUT -> GWPViewHolder(view, pdpCallback.gwp)
-            SDUIViewHolder.LAYOUT -> SDUIViewHolder(view, listener)
+            SDUIViewHolder.LAYOUT -> SDUIViewHolder(view, pdpCallback.dynamicOneLiner)
             else -> super.createViewHolder(view, type)
         }
     }

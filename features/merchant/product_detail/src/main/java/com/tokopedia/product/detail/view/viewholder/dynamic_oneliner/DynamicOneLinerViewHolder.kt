@@ -12,12 +12,14 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.ItemDynamicOneLinerBinding
-import com.tokopedia.product.detail.view.listener.ProductDetailListener
+import com.tokopedia.product.detail.view.fragment.delegate.BasicComponentEvent
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
+import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.delegate.DynamicOneLinerCallback
+import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.event.DynamicOneLinerEvent
 
 class DynamicOneLinerViewHolder(
     view: View,
-    private val listener: ProductDetailListener
+    private val callback: DynamicOneLinerCallback
 ) : ProductDetailPageViewHolder<DynamicOneLinerUiModel>(view) {
 
     companion object {
@@ -111,7 +113,9 @@ class DynamicOneLinerViewHolder(
     ) {
         if (showClickArea) {
             itemView.setOnClickListener {
-                listener.onClickDynamicOneLiner(text, url, componentTrackDataModel)
+                callback.event(DynamicOneLinerEvent.OnDynamicOneLinerClicked(
+                    text, url, componentTrackDataModel
+                ))
             }
         } else {
             itemView.setOnClickListener(null)
@@ -128,11 +132,12 @@ class DynamicOneLinerViewHolder(
     private fun impressComponent(element: DynamicOneLinerUiModel) {
         itemView.addOnImpressionListener(
             holder = element.impressHolder,
-            holders = listener.getImpressionHolders(),
+            holders = callback.impressionHolders,
             name = element.name,
-            useHolders = listener.isRemoteCacheableActive()
+            useHolders = callback.isRemoteCacheableActive
         ) {
-            listener.onImpressComponent(getComponentTrackData(element))
+            val trackerData = getComponentTrackData(element = element)
+            callback.event(BasicComponentEvent.OnImpressComponent(trackData = trackerData))
         }
     }
 }

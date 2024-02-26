@@ -508,6 +508,19 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         b
                       }
                     }
+                    ... on pdpDataComponentDynamicOneLinerVariant {
+                      name
+                      text
+                      applink
+                      separator
+                      icon
+                      status
+                      chevronPos
+                      padding {
+                        t
+                        b
+                      }
+                    }
                     ... on pdpDataProductDetailMediaComponent {
                       title
                       description
