@@ -1,7 +1,7 @@
 package com.tokopedia.cart.view.viewmodel
 
 import com.google.gson.Gson
-import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
+import com.tokopedia.cart.view.uimodel.LoadRecentReviewState
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import io.mockk.coEvery
 import org.junit.Assert.assertEquals

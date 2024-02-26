@@ -4,7 +4,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.home_component.widget.shop_tab.ShopTabDataModel
 
 object FlashSaleTokoTabMapper {
-    fun ArrayList<ComponentsItem>.mapToShopTabDataModel(): MutableList<ShopTabDataModel> {
+    fun ArrayList<ComponentsItem>.mapToShopTabDataModel(isFestiveApplied: Boolean): MutableList<ShopTabDataModel> {
         val tabData = mutableListOf<ShopTabDataModel>()
 
         forEach { item ->
@@ -14,7 +14,8 @@ object FlashSaleTokoTabMapper {
                     shopName = name.orEmpty(),
                     imageUrl = shopLogo.orEmpty(),
                     badgesUrl = shopBadgeImageUrl.orEmpty(),
-                    isActivated = isSelected
+                    isActivated = isSelected,
+                    useGradientBackground = !isFestiveApplied
                 )
 
                 tabData.add(tab)

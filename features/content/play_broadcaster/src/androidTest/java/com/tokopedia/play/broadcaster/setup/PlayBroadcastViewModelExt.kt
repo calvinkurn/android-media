@@ -20,6 +20,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.util.helper.DefaultUriParser
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
+import com.tokopedia.play.broadcaster.util.logger.error.BroadcasterErrorLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -51,6 +52,7 @@ fun parentBroViewModel(
     broadcastTimer: PlayBroadcastTimer = mockk(relaxed = true),
     playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
     remoteConfig: RemoteConfig = mockk(relaxed = true),
+    errorLogger: BroadcasterErrorLogger = mockk(relaxed = true),
 ): PlayBroadcastViewModel {
     return PlayBroadcastViewModel(
         handle = handle,
@@ -71,6 +73,7 @@ fun parentBroViewModel(
         broadcastTimer = broadcastTimer,
         playShortsEntryPointRemoteConfig = playShortsEntryPointRemoteConfig,
         remoteConfig = remoteConfig,
+        errorLogger = errorLogger,
     )
 }
 

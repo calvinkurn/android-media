@@ -15,8 +15,8 @@ import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.mapper.ChannelModelMapper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
-import com.tokopedia.home_component.util.getGradientBackgroundViewAllWhite
 import com.tokopedia.home_component.util.getHexColorFromIdColor
+import com.tokopedia.home_component.util.hasGradientBackground
 import com.tokopedia.home_component.util.loadImageWithDefault
 import com.tokopedia.home_component.util.setGradientBackgroundRounded
 import com.tokopedia.home_component.visitable.FlashSaleDataModel
@@ -68,7 +68,15 @@ class FlashSaleViewHolder(
 
     private fun setupCarousel(element: FlashSaleDataModel, parentRecycledViewPool: RecyclerView.RecycledViewPool?) {
         val channelGrids = element.channelModel.channelGrids
-        val productCardList = channelGrids.map { ChannelModelMapper.mapToProductCardModel(it, animateOnPress = CardUnify2.ANIMATE_NONE, isTopStockbar = true, cardType = CardUnify2.TYPE_CLEAR) }
+        val productCardList = channelGrids.map {
+            ChannelModelMapper.mapToProductCardModel(
+                it,
+                animateOnPress = CardUnify2.ANIMATE_NONE,
+                isTopStockbar = true,
+                cardType = CardUnify2.TYPE_CLEAR,
+                isInBackground = element.channelModel.channelBanner.gradientColor.hasGradientBackground(itemView.context)
+            )
+        }
         binding?.run {
             carouselFlashSale.bindCarouselProductCardViewGrid(
                 productCardModelList = productCardList,
@@ -156,7 +164,7 @@ class FlashSaleViewHolder(
 
     private fun setBannerBackground(element: FlashSaleDataModel) {
         element.channelModel.channelBanner.let {
-            if (it.gradientColor.isNotEmpty() && !getGradientBackgroundViewAllWhite(it.gradientColor, context)) {
+            if (it.gradientColor.hasGradientBackground(context)) {
                 binding?.containerFlashSale?.setGradientBackgroundRounded(it.gradientColor)
             } else {
                 val defaultGradient = arrayListOf(

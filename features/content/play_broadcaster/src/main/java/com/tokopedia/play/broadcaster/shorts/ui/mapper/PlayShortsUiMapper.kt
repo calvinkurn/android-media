@@ -8,9 +8,11 @@ import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterAuthorConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.GetRecommendedChannelTagsResponse
 import com.tokopedia.play.broadcaster.shorts.domain.model.BroadcasterCheckAffiliateResponseModel
+import com.tokopedia.play.broadcaster.shorts.domain.model.CheckProductCustomVideoResponse
 import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateResponseModel
 import com.tokopedia.play.broadcaster.shorts.domain.model.PlayShortsConfig
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
+import com.tokopedia.play.broadcaster.shorts.ui.model.ProductVideoUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.BroadcasterCheckAffiliateResponseUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
@@ -59,7 +61,9 @@ class PlayShortsUiMapper @Inject constructor(
             },
             maxTitleCharacter = config.maxTitleCharacter,
             maxTaggedProduct = config.maxTaggedProduct,
-            shortsVideoSourceId = config.shortVideoSourceId
+            shortsVideoSourceId = config.shortVideoSourceId,
+            eligibleInterspersing = config.eligibleInterspersing,
+            productCountForInterspersing = config.productCountForInterspersing,
         )
     }
 
@@ -90,6 +94,14 @@ class PlayShortsUiMapper @Inject constructor(
         return OnboardAffiliateUiModel(
             errorMessage = if (responseData.status == 0) responseData.error.message
             else ""
+        )
+    }
+
+    override fun mapProductVideo(response: CheckProductCustomVideoResponse): ProductVideoUiModel {
+        return ProductVideoUiModel(
+            hasVideo = response.data.hasVideo,
+            videoUrl = response.data.videoUrl,
+            coverUrl = response.data.coverUrl,
         )
     }
 }

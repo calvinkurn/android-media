@@ -37,7 +37,6 @@ import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEvent
 import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEventUiState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailChatCounterUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailGroupBookingUiState
@@ -56,6 +55,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder
 import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
 import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
@@ -104,6 +104,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     private var getBuyerOrderDetailDataJob: Job? = null
     private var warrantyClaimButtonImpressed = false
+    private val addOnsExpandableState = mutableListOf<String>()
+    private val bmgmProductBenefitExpandableState = mutableListOf<String>()
 
     private val _finishOrderResult = MutableLiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>()
     val finishOrderResult: LiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>
@@ -236,7 +238,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
                     AddToCartParamsMapper.mapSingleAddToCartParams(
                         product = product,
                         shopId = getShopId(),
-                        userId = getUserId()
+                        userId = getUserId(),
+                        shopName = getShopName()
                     )
                 )
                 ).let { result ->
@@ -262,7 +265,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
             val params = AddToCartParamsMapper.mapMultiAddToCartParams(
                 buyerOrderDetailDataRequestState = buyerOrderDetailDataRequestState.value,
                 shopId = getShopId(),
-                userId = getUserId()
+                userId = getUserId(),
+                shopName = getShopName()
             )
             if (params.isNotEmpty()) {
                 _multiAtcResult.value = mapMultiATCResult(
@@ -409,6 +413,14 @@ class BuyerOrderDetailViewModel @Inject constructor(
         }
     }
 
+    fun expandCollapseAddOn(addOnIdentifier: String, isExpand: Boolean) {
+        if (isExpand) {
+            addOnsExpandableState.add(addOnIdentifier)
+        } else {
+            addOnsExpandableState.remove(addOnIdentifier)
+        }
+    }
+
     // https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2158935800/How+to+create+one+time+event+in+PDP
     fun changeOneTimeMethod(event: OrderOneTimeEvent) {
         when (event) {
@@ -423,8 +435,16 @@ class BuyerOrderDetailViewModel @Inject constructor(
             }
 
             OrderOneTimeEvent.Empty -> {
-                //noop
+                // noop
             }
+        }
+    }
+
+    fun expandCollapseBmgmProductBenefit(identifier: String, isExpand: Boolean) {
+        if (isExpand) {
+            bmgmProductBenefitExpandableState.remove(identifier)
+        } else {
+            bmgmProductBenefitExpandableState.add(identifier)
         }
     }
 
@@ -470,7 +490,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 getBuyerOrderDetailDataRequestState,
                 epharmacyInfoUiState.value
             )
-        } catch (e:Throwable) {
+        } catch (e: Throwable) {
+            Timber.d(e)
             EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel())
         }
     }
@@ -497,7 +518,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
             productListUiState.value,
             singleAtcRequestStates,
             collapseProductList,
-            warrantyClaimButtonImpressed
+            warrantyClaimButtonImpressed,
+            addOnsExpandableState,
+            bmgmProductBenefitExpandableState
         )
     }
 

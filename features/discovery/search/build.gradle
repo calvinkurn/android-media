@@ -45,6 +45,10 @@ android {
         }
     }
 
+    viewBinding {
+        enabled = true
+    }
+
     buildFeatures {
         buildConfig true
         viewBinding true
@@ -87,6 +91,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.homeComponentHeader)
+    implementation projectOrAar(rootProject.ext.features.homeComponent)
 
     implementation projectOrAar(rootProject.ext.libraries.linker)
 

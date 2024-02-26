@@ -7,6 +7,8 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -20,8 +22,13 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.bmsm_widget.domain.entity.PageSource
+import com.tokopedia.bmsm_widget.domain.entity.TierGifts
+import com.tokopedia.bmsm_widget.presentation.bottomsheet.GiftListBottomSheet
 import com.tokopedia.buy_more_get_more.R
 import com.tokopedia.buy_more_get_more.databinding.FragmentOfferLandingPageBinding
+import com.tokopedia.buy_more_get_more.minicart.common.utils.MiniCartUtils
 import com.tokopedia.buy_more_get_more.olp.di.component.DaggerBuyMoreGetMoreComponent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
@@ -50,21 +57,23 @@ import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.minicart.bmgm.common.utils.MiniCartUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel.Product
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties
@@ -137,7 +146,11 @@ class OfferLandingPageFragment :
         get() = viewModel.currentState
 
     private val olpAdapterTypeFactory by lazy {
-        OlpAdapterTypeFactoryImpl(this, this, this)
+        OlpAdapterTypeFactoryImpl(
+            this,
+            this,
+            this
+        )
     }
 
     private var sortId = ""
@@ -145,6 +158,7 @@ class OfferLandingPageFragment :
     private var tncBottomSheet: TncBottomSheet? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var savedImagePath = ""
+    private var shouldShowGiftListBottomSheet: Boolean = true
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -213,40 +227,53 @@ class OfferLandingPageFragment :
             isEnabled = true
             setOnRefreshListener { loadInitialData() }
         }
-        tracker.sendOpenScreenEvent(currentState.shopData.shopId.toString())
+        tracker.sendOpenScreenEvent(
+            currentState.shopData.shopId.toString(),
+            currentState.offerIds.firstOrNull().toString(),
+            currentState.warehouseIds.firstOrNull().toString()
+        )
     }
 
     private fun initMiniCart() {
-        binding?.miniCartView?.init(lifecycleOwner = viewLifecycleOwner)
+        binding?.miniCartView?.apply {
+            init(lifecycleOwner = viewLifecycleOwner)
+        }
     }
 
     private fun setupObservables() {
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
-            when (offerInfoForBuyer.responseHeader.status) {
-                Status.SUCCESS -> {
-                    viewModel.processEvent(OlpEvent.SetWarehouseIds(offerInfoForBuyer.nearestWarehouseIds))
-                    viewModel.processEvent(OlpEvent.SetShopData(offerInfoForBuyer.offerings.firstOrNull()?.shopData))
-                    viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.offeringJsonData))
-                    viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
-                    viewModel.processEvent(OlpEvent.SetEndDate(offerInfoForBuyer.offerings.firstOrNull()?.endDate.orEmpty()))
-                    viewModel.processEvent(OlpEvent.SetOfferTypeId(offerInfoForBuyer.offerings.firstOrNull()?.offerTypeId.orZero()))
-                    setupHeader(offerInfoForBuyer)
+            when (offerInfoForBuyer) {
+                is Success -> {
+                    if (MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
+                        setViewState(VIEW_ERROR, Status.OFFER_ENDED)
+                        return@observe
+                    }
+                    viewModel.processEvent(OlpEvent.SetWarehouseIds(offerInfoForBuyer.data.nearestWarehouseIds))
+                    viewModel.processEvent(OlpEvent.SetShopData(offerInfoForBuyer.data.offerings.firstOrNull()?.shopData))
+                    viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.data.offeringJsonData))
+                    viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.data.offerings.firstOrNull()?.tnc.orEmpty()))
+                    viewModel.processEvent(OlpEvent.SetEndDate(offerInfoForBuyer.data.offerings.firstOrNull()?.endDate.orEmpty()))
+                    viewModel.processEvent(OlpEvent.SetOfferTypeId(offerInfoForBuyer.data.offerings.firstOrNull()?.offerTypeId.orZero()))
+                    setupHeader(offerInfoForBuyer.data)
                     setupTncBottomSheet()
+                    setMiniCartOnOfferEnd()
                     fetchMiniCart()
-                    setMiniCartOnOfferEnd(offerInfoForBuyer)
                 }
 
-                else -> {
-                    setViewState(VIEW_ERROR, offerInfoForBuyer.responseHeader.status)
+                is Fail -> {
+                    setViewState(
+                        VIEW_ERROR,
+                        getErrorCodeFromThrowable(offerInfoForBuyer.throwable.localizedMessage.toIntOrZero())
+                    )
                 }
             }
         }
 
         viewModel.productList.observe(viewLifecycleOwner) { productList ->
-            if (productList.totalProduct.isMoreThanZero()) {
+            if (productList.totalProduct.isMoreThanZero() || productList.pagination.currentPage != Int.ONE) {
                 setupProductList(productList)
                 setViewState(VIEW_CONTENT)
-                notifyLoadResult(productList.productList.size >= PAGE_SIZE)
+                notifyLoadResult(productList.pagination.hasNext)
             } else {
                 setViewState(VIEW_ERROR, Status.OOS)
             }
@@ -302,18 +329,33 @@ class OfferLandingPageFragment :
             }
         }
 
+        viewModel.tierGifts.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    if (MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
+                        setViewState(VIEW_ERROR, Status.OFFER_ENDED)
+                        return@observe
+                    }
+                    showBottomSheetGiftList(
+                        result.data.selectedTier,
+                        result.data.offerInfo,
+                        result.data.tierGifts
+                    )
+                }
+
+                is Fail -> {}
+            }
+        }
+
         viewModel.error.observe(viewLifecycleOwner) { throwable ->
             setDefaultErrorSelection(throwable)
         }
     }
 
-    private fun setMiniCartOnOfferEnd(offerInfoForBuyer: OfferInfoForBuyerUiModel?) {
-        binding?.miniCartView?.run {
-            val offer = offerInfoForBuyer?.offerings?.firstOrNull() ?: return@run
-            setOnCheckCartClickListener(offer.endDate) { isOfferEnded ->
-                if (isOfferEnded) {
-                    setViewState(VIEW_ERROR, Status.OFFER_ENDED)
-                }
+    private fun setMiniCartOnOfferEnd() {
+        binding?.miniCartView?.setOnCheckCartClickListener(currentState.endDate) { isOfferEnded ->
+            if (isOfferEnded) {
+                setViewState(VIEW_ERROR, Status.OFFER_ENDED)
             }
         }
     }
@@ -328,12 +370,14 @@ class OfferLandingPageFragment :
                 OfferProductSortingUiModel()
             )
         )
+        setViewState(VIEW_CONTENT)
         viewModel.processEvent(OlpEvent.GetNotification)
         getProductListData(FIRST_PAGE)
     }
 
     private fun setupProductList(offerProductList: OfferProductListUiModel) {
-        val isProductCountVisible = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_SET_VISIBLE_PRODUCT_COUNTER_OLP, false)
+        val isProductCountVisible =
+            remoteConfig.getBoolean(RemoteConfigKey.ANDROID_SET_VISIBLE_PRODUCT_COUNTER_OLP, false)
         olpAdapter?.apply {
             setProductCountVisibility(isProductCountVisible)
             updateProductCount(offerProductList.totalProduct)
@@ -564,6 +608,17 @@ class OfferLandingPageFragment :
                         )
                     }
 
+                    Status.GIFT_OOS -> {
+                        setErrorPage(
+                            title = getString(R.string.bmgm_title_error_gift_out_of_stock),
+                            description = getString(R.string.bmgm_description_error_out_of_stock),
+                            errorType = GlobalError.PAGE_NOT_FOUND,
+                            primaryCtaText = getString(R.string.bmgm_cta_text_error_out_of_stock),
+                            primaryCtaAction = { activity?.finish() },
+                            imageUrl = TokopediaImageUrl.ILLUSTRATION_SHOP_ETALASE_NOT_FOUND,
+                            isShowProductList = true
+                        )
+                    }
                     Status.OOS -> {
                         setErrorPage(
                             title = getString(R.string.bmgm_title_error_out_of_stock),
@@ -662,15 +717,15 @@ class OfferLandingPageFragment :
     }
 
     override fun onProductAtcVariantClicked(product: OfferProductListUiModel.Product) {
+        if (MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
+            setViewState(VIEW_ERROR, Status.OFFER_ENDED)
+            return
+        }
         if (isLogin) {
             if (product.isVbs) {
                 openAtcVariant(product)
             } else {
-                if (!MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
-                    addToCartProduct(product)
-                } else {
-                    setViewState(VIEW_ERROR, Status.OFFER_ENDED)
-                }
+                addToCartProduct(product)
             }
         } else {
             redirectToLoginPage(REQUEST_CODE_USER_LOGIN)
@@ -789,9 +844,29 @@ class OfferLandingPageFragment :
         redirectToShopPage(shopId)
     }
 
+    override fun onTierClicked(
+        selectedTier: OfferInfoForBuyerUiModel.Offering.Tier,
+        offerInfo: OfferInfoForBuyerUiModel
+    ) {
+        if (MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
+            setViewState(VIEW_ERROR, Status.OFFER_ENDED)
+            return
+        }
+        tracker.sendClickHadiahEntryEvent(
+            offerId = currentState.offerIds.firstOrNull().toString(),
+            warehouseId = currentState.warehouseIds.toSafeString(),
+            shopId = currentState.shopData.shopId.toString()
+        )
+        viewModel.processEvent(OlpEvent.TapTier(selectedTier, offerInfo))
+    }
+
     private fun redirectToCartPage() {
         sendProductImpressionTracker()
         context?.let {
+            if (MiniCartUtils.checkIsOfferEnded(currentState.endDate)) {
+                setViewState(VIEW_ERROR, Status.OFFER_ENDED)
+                return
+            }
             val userSession = UserSession(it)
             if (userSession.isLoggedIn) {
                 RouteManager.route(it, ApplinkConst.CART)
@@ -923,5 +998,48 @@ class OfferLandingPageFragment :
 
     private fun joinDash(vararg s: String?): String {
         return TextUtils.join("-", s)
+    }
+
+    private fun showBottomSheetGiftList(
+        selectedTier: OfferInfoForBuyerUiModel.Offering.Tier,
+        offerInfo: OfferInfoForBuyerUiModel,
+        tierGifts: List<TierGifts>
+    ) {
+        if (!shouldShowGiftListBottomSheet) return
+        shouldShowGiftListBottomSheet = false
+
+        val warehouseId = offerInfo.nearestWarehouseIds.firstOrNull() ?: return
+        val selectedOfferId = offerInfo.offerings.firstOrNull()?.id.orZero()
+        val selectedTierId = selectedTier.tierId.orZero()
+
+        val bottomSheet = GiftListBottomSheet.newInstance(
+            offerId = selectedOfferId,
+            warehouseId = warehouseId,
+            tierGifts = tierGifts,
+            pageSource = PageSource.OFFER_LANDING_PAGE,
+            autoSelectTierChipByTierId = selectedTierId,
+            shopId = currentState.shopData.shopId.toString()
+        )
+
+        bottomSheet.setOnDismissListener {
+            shouldShowGiftListBottomSheet = true
+        }
+
+        bottomSheet.setCloseClickListener {
+            bottomSheet.dismiss()
+            shouldShowGiftListBottomSheet = true
+        }
+
+        bottomSheet.setShowListener {
+            shouldShowGiftListBottomSheet = false
+        }
+
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun getErrorCodeFromThrowable(errorCode: Int): Status {
+        return Status.values().firstOrNull { value ->
+            value.code == errorCode.toLong()
+        } ?: Status.SUCCESS
     }
 }

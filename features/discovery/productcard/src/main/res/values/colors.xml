@@ -30,8 +30,11 @@
     <color name="dms_gold_ribbon_gradient_dark">#FFA617</color>
 
 
+
     <color name="dms_static_white">#FFFFFF</color>
+    <color name="dms_static_light_NN0_dark">#121212</color>
     <color name="dms_static_light_NN100">#E4EBF5</color>
+    <color name="dms_static_light_NN400">#AAB4C8</color>
     <color name="dms_static_light_NN950_44">#70212121</color>
     <color name="dms_static_light_NN950_68">#AD212121</color>
     <color name="dms_static_light_YN400">#FFA617</color>
@@ -43,10 +46,19 @@
     <color name="dms_static_light_RN100">#FFDBE2</color>
     <color name="dms_static_light_GN500">#00AA5B</color>
     <color name="dms_static_light_GN100">#C9FDE0</color>
+    <color name="dms_static_light_NN200">#D6DFEB</color>
+
+    <color name="dms_static_dark_NN400">#696D78</color>
+    <color name="dms_static_dark_NN950_96">#F5F5F6FF</color>
+    <color name="dms_static_dark_NN950_44">#70F5F6FF</color>
+    <color name="dms_static_dark_NN950_68">#ADF5F6FF</color>
+    <color name="dms_static_dark_RN500">#FF425D</color>
 
     <color name="dms_stock_info_label_color">@color/Unify_N700_68</color>
     <color name="dms_label_assigned_value_gradient_end">#7ADBA5</color>
 
     <color name="dms_product_card_reimagine_image_overlay">#08000000</color>
     <color name="dms_product_card_reimagine_safe_product_image">#C7C6C6</color>
+    <color name="dms_product_card_bg_stock_info_carousel_color">@color/Unify_N50</color>
+    <color name="dms_product_card_bg_stock_info_stockbar_track_color">@color/Unify_N100</color>
 </resources>

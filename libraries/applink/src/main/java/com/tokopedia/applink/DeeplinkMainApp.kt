@@ -1037,7 +1037,8 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("pod/{order_id}") { deeplink: String ->
                 DeeplinkMapperLogistic.getRegisteredNavigationPod(deeplink)
-            }
+            },
+            DLP.startsWith("tipping", ApplinkConstInternalLogistic.TIPPING_DRIVER)
         ),
         "shop" to mutableListOf(
             DLP.matchPattern("{shop_id}/etalase-list") { _, _, _, idList ->

@@ -161,4 +161,8 @@
     <string name="search_result_product_inappropriate_button_inactive">Nonaktifkan Sementara</string>
     <string name="search_result_product_inappropriate_success_inactive">Safe Mode berhasil dinonaktifkan sementara.</string>
 
+    <string name="search_inspiration_carousel_post_atc_success_messsage_hide">Berhasil sembunyikan rekomendasi</string>
+    <string name="search_inspiration_carousel_post_atc_success_hide">Baik, rekomendasi disembunyikan!</string>
+    <string name="search_inspiration_carousel_post_atc_cancel_hide">Batal</string>
+
 </resources>

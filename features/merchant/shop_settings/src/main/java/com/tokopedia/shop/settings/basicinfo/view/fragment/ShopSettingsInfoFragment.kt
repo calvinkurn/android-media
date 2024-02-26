@@ -16,7 +16,7 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -451,9 +451,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             try {
                 if (ivShopLogo?.context?.isValidGlideContext() == true) {
                     if (TextUtils.isEmpty(logoUrl)) {
-                        ImageHandler.loadImage2(ivShopLogo, logoUrl, R.drawable.ic_shopdefault_empty)
+                        ivShopLogo?.loadImageWithError(logoUrl,R.drawable.ic_shopdefault_empty)
                     } else {
-                        ImageHandler.LoadImage(ivShopLogo, logoUrl)
+                        ivShopLogo?.loadImage(logoUrl)
                     }
                 }
             } catch (e: Exception) {}

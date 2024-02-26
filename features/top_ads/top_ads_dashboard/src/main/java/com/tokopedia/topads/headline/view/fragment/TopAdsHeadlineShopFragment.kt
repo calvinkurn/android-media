@@ -27,6 +27,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsBaseTabFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
@@ -206,6 +207,7 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
         }
         setFilterCount()
         (parentFragment as TopAdsBaseTabFragment).setGroupCount(totalCount)
+        (activity as? TopAdsDashboardActivity)?.setActiveHeadlineCount(totalCount)
     }
 
     private fun onEmptyResult() {

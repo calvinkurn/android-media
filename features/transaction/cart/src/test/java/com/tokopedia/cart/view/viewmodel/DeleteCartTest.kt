@@ -2,19 +2,17 @@ package com.tokopedia.cart.view.viewmodel
 
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.view.uimodel.CartDeleteItemData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.DeleteCartEvent
 import com.tokopedia.cartcommon.data.response.deletecart.Data
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
-import com.tokopedia.cartrevamp.view.uimodel.CartDeleteItemData
-import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DeleteCartEvent
 import io.mockk.Runs
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.just
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import rx.Observable
 
 class DeleteCartTest : BaseCartViewModelTest() {
 
@@ -39,7 +37,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
         }
 
         coEvery { getCartRevampV4UseCase(any()) } returns CartData()
-        every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         val cartDeleteItemData = CartDeleteItemData(
             removedCartItems = arrayListOf(cartItemData),
             addWishList = false,
@@ -83,7 +81,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
             )
         }
 
-        every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         val cartDeleteItemData = CartDeleteItemData(
             removedCartItems = arrayListOf(secondCartItemData),
             addWishList = false,
@@ -125,7 +123,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
             )
         }
 
-        every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         val cartDeleteItemData = CartDeleteItemData(
             removedCartItems = arrayListOf(secondCartItemData),
             addWishList = false,
@@ -157,7 +155,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         val cartDeleteItemData = CartDeleteItemData(
             removedCartItems = arrayListOf(cartItemData),
             addWishList = false,
@@ -185,7 +183,7 @@ class DeleteCartTest : BaseCartViewModelTest() {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         val cartDeleteItemData = CartDeleteItemData(
             removedCartItems = arrayListOf(cartItemData),
             addWishList = false,
