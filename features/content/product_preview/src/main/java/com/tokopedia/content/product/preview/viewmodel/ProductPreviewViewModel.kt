@@ -143,7 +143,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is ReviewMediaSelected -> handleReviewMediaSelected(action.position)
             is TabSelected -> handleTabSelected(action.position)
             is FetchReview -> handleFetchReview(action.isRefresh, action.page)
-            is ProductAction -> addToChart(action.model)
+            is ProductAction -> handleProductAction(action.model)
             is Navigate -> handleNavigate(action.appLink)
             is SubmitReport -> handleSubmitReport(action.model)
             is ClickMenu -> handleClickMenu(action.isFromLogin)
@@ -366,7 +366,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         return if (mediaPosition < 0) 0 else mediaPosition
     }
 
-    private fun addToChart(model: BottomNavUiModel) {
+    private fun addToCart(model: BottomNavUiModel) {
         requiredLogin(model) {
             viewModelScope.launchCatchError(
                 block = {
@@ -393,7 +393,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     ProductPreviewEvent.ShowErrorToaster(
                         it,
                         ProductPreviewEvent.ShowErrorToaster.Type.ATC
-                    ) { addToChart(model) }
+                    ) { addToCart(model) }
                 )
             }
         }
@@ -427,7 +427,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private fun handleProductAction(model: BottomNavUiModel) {
         when (model.buttonState) {
             BottomNavUiModel.ButtonState.OOS -> remindMe(model)
-            BottomNavUiModel.ButtonState.Active -> addToChart(model)
+            BottomNavUiModel.ButtonState.Active -> addToCart(model)
             else -> {}
         }
     }
