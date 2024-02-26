@@ -226,16 +226,20 @@ object AppLogAnalytics {
     }
 
     fun pushPageData(appLogInterface: AppLogInterface) {
+        val previousPage = getCurrentData(PAGE_NAME) ?: ""
         pushPageData()
         putPageData(PAGE_NAME, appLogInterface.getPageName())
+        putPageData(PREVIOUS_PAGE, previousPage)
         if (appLogInterface.isEnterFromWhitelisted()) {
             putPageData(ENTER_FROM, appLogInterface.getPageName())
         }
     }
 
     fun updateCurrentPageData(appLogInterface: AppLogInterface) {
+        val previousPage = getCurrentData(PAGE_NAME) ?: ""
         clearCurrentPageData()
         putPageData(PAGE_NAME, appLogInterface.getPageName())
+        putPageData(PREVIOUS_PAGE, previousPage)
         if (appLogInterface.isEnterFromWhitelisted()) {
             putPageData(ENTER_FROM, appLogInterface.getPageName())
         }
