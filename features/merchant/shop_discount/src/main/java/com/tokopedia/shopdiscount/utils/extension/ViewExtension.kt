@@ -9,12 +9,14 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
+import timber.log.Timber
 
 infix fun View?.showError(throwable : Throwable) {
     val errorMessage = ErrorHandler.getErrorMessage(this?.context, throwable)
     val cleanErrorMessage = try {
         errorMessage.replace("\\.{2,}".toRegex(), ".")
     } catch (e: Exception) {
+        Timber.d(throwable)
         errorMessage
     }
     Toaster.build(this ?: return, cleanErrorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
