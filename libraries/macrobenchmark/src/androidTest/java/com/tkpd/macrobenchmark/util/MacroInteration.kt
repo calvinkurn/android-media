@@ -8,7 +8,7 @@ import androidx.test.uiautomator.Until
 
 object MacroInteration {
     val DEFAULT_TIMEOUT = 4000L
-    private val IDLE_DURATION = 2000L
+    private val IDLE_DURATION = 5000L
 
     fun basicFlingInteraction(
         packageName: String,
@@ -69,7 +69,7 @@ object MacroInteration {
             .findObject(By.res(packageName, rvResourceId))
 
         recycler.wait(Until.scrollable(true), DEFAULT_TIMEOUT)
-        device.waitForIdle(IDLE_DURATION)
+        Thread.sleep(5000)
     }
 
     fun waitForComposableWidgetVisible(widgetContentDescription: String) {

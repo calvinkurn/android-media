@@ -17,14 +17,14 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.STOCK_ASSURANCE
 import com.tokopedia.product.detail.databinding.ItemOneLinersBinding
 import com.tokopedia.product.detail.databinding.ItemOneLinersContentBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 
 class OneLinersViewHolder(
     val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<OneLinersDataModel>(view) {
 
     companion object {

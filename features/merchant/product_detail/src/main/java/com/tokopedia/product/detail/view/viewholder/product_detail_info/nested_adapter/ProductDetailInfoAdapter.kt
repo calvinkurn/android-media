@@ -5,14 +5,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.nested_adapter.view_holder.ItemProductDetailInfoViewHolder
 
 /**
  * Created by Yehezkiel on 01/02/21
  */
 class ProductDetailInfoAdapter(
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ListAdapter<ProductDetailInfoContent, ItemProductDetailInfoViewHolder>(DIFF_CALLBACK) {
 
     private var componentTrackDataModel: ComponentTrackDataModel? = null

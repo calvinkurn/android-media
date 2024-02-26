@@ -11,11 +11,11 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHe
 import com.tokopedia.product.detail.data.model.talk.Question
 import com.tokopedia.product.detail.databinding.ItemDynamicDiscussionMostHelpfulBinding
 import com.tokopedia.product.detail.view.adapter.ProductDiscussionQuestionsAdapter
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 class ProductDiscussionMostHelpfulViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : AbstractViewHolder<ProductDiscussionMostHelpfulDataModel>(view) {
 
     companion object {

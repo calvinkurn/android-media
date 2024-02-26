@@ -15,6 +15,8 @@ import com.tokopedia.homenav.mainnav.domain.model.*
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
+import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.searchbar.navigation_component.NavSource
@@ -47,12 +49,13 @@ class TestMainNavViewModel {
     val rule = CoroutineTestRule()
 
     private lateinit var viewModel: MainNavViewModel
-    private val mockListAllCategory = listOf(HomeNavMenuDataModel())
+    private val mockGetUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
+    private val mockGetPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+    private val mockGetReviewProductUseCase = mockk<GetReviewProductUseCase>()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
-        setIsMePageRollence(false)
     }
 
     // Global
@@ -82,8 +85,8 @@ class TestMainNavViewModel {
     fun `given launch global menu when from other pages than homepage then show back to home icon`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         val pageSource = NavSource.PDP
-        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
-            .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any(), showCta = any()) }
+            .answers { HomeNavMenuDataModel(id = arg(0), notifCount = arg(1), sectionId = arg(2), showCta = arg(3)) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
@@ -199,8 +202,8 @@ class TestMainNavViewModel {
     @Test
     fun `given launch global menu when using default page source then do show back to home icon`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
-            .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any(), showCta = any()) }
+            .answers { HomeNavMenuDataModel(id = arg(0), notifCount = arg(1), sectionId = arg(2), showCta = arg(3)) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
@@ -224,8 +227,8 @@ class TestMainNavViewModel {
         var visitableList = listOf<Visitable<*>>()
         var backToHomeButton: HomeNavMenuDataModel? = null
         var backToHomeSeparator: SeparatorDataModel? = null
-        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
-            .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any(), showCta = any()) }
+            .answers { HomeNavMenuDataModel(id = arg(0), notifCount = arg(1), sectionId = arg(2), showCta = arg(3)) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
@@ -254,38 +257,15 @@ class TestMainNavViewModel {
 
     // User menu section
     @Test
-    fun `given user has no shop then create at least 3 user menu`() {
-        val defaultUserMenuCount = 3
-
-        val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
-            .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
-        every { clientMenuGenerator.getTicker(menuId = any()) }
-            .answers { HomeNavTickerDataModel() }
-        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
-            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
-
-        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
-        viewModel.setInitialState()
-
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?.filter {
-            (it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.USER_MENU)
-        }
-
-        Assert.assertEquals(defaultUserMenuCount, visitableList!!.size)
-    }
-
-    @Test
     fun `given success when logged in user get notification then viewmodel update notification counter`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         val getNavNotification = mockk<GetNavNotification>()
 
         val mockComplainCount = 10
         val mockInboxCount = 20
-        val mockReviewCount = 30
 
-        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
-            .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any(), showCta = any()) }
+            .answers { HomeNavMenuDataModel(id = arg(0), notifCount = arg(1), sectionId = arg(2), showCta = arg(3)) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
@@ -293,7 +273,6 @@ class TestMainNavViewModel {
         coEvery { getNavNotification.executeOnBackground() }.answers { NavNotificationModel(
             unreadCountComplain = mockComplainCount,
             unreadCountInboxTicket = mockInboxCount,
-            unreadCountReview = mockReviewCount
         ) }
 
         viewModel = createViewModel(
@@ -310,7 +289,6 @@ class TestMainNavViewModel {
 
         Assert.assertEquals(mockComplainCount.toString(), complainVisitable.notifCount)
         Assert.assertEquals(mockInboxCount.toString(), inboxVisitable.notifCount)
-        Assert.assertEquals(mockReviewCount.toString(), reviewVisitable.notifCount)
     }
 
     @Test
@@ -1039,384 +1017,246 @@ class TestMainNavViewModel {
         Assert.assertTrue(accountHeaderAfter.tokopediaPlusDataModel.tokopediaPlusError?.message == error.message)
     }
 
-    // Category section
+
     @Test
-    fun `given success when refresh category after got error then should be success and delete error bu list`() {
-        val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
-        // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
-        coEvery {
-            getBuListUseCase.executeOnBackground()
-        } throws MessageErrorException("")
-        every {
-            getBuListUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
-        } answers { }
-        every {
-            getBuListUseCase.setStrategyCache()
-        } answers { }
-        every {
-            getBuListUseCase.setStrategyCloudThenCache()
-        } answers { }
-        viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
+    fun `given launched from home then still show separator after profile section`() {
+        viewModel = createViewModel(userSession = getUserSession(true))
+        viewModel.setPageSource(NavSource.HOME)
 
-        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        val errorStateBuDataModel = dataList.find { it is ErrorStateBuDataModel } as? ErrorStateBuDataModel
-        Assert.assertNotNull(errorStateBuDataModel) // error state bu data model existed
-        Assert.assertTrue(viewModel.networkProcessLiveData.value == false)
-
-        coEvery {
-            getBuListUseCase.executeOnBackground()
-        }.answers { listOf() }
-
-        viewModel.refreshBuListData()
-        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        val errorStateBuDataModelRefreshed = dataListRefreshed.find { it is ErrorStateBuDataModel }
-        Assert.assertNull(errorStateBuDataModelRefreshed)
-        Assert.assertTrue(viewModel.networkProcessLiveData.value == true)
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME
+        })
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is SeparatorDataModel && it.sectionId == MainNavConst.Section.HOME
+        })
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is SeparatorDataModel && it.sectionId == MainNavConst.Section.PROFILE
+        })
     }
 
     @Test
-    fun `given default data from cache when load all categories with exception then success get data from cache`() {
-        val getCategoryGroupUseCase = mockk<GetCategoryGroupUseCase>()
-        coEvery {
-            getCategoryGroupUseCase.executeOnBackground()
-        } returns mockListAllCategory
+    fun `given user not logged in then show no visual cards`() {
+        viewModel = createViewModel(userSession = getUserSession(false))
 
-        coEvery {
-            getCategoryGroupUseCase.setStrategyCloudThenCache()
-        } throws MessageErrorException("")
-
-        every {
-            getCategoryGroupUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
-        } answers { }
-
-        every {
-            getCategoryGroupUseCase.setStrategyCache()
-        } answers { }
-
-        viewModel = createViewModel(getBuListUseCase = getCategoryGroupUseCase)
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
 
-        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        val homeNavMenuDataModel = dataList.find { it is HomeNavMenuDataModel } as? HomeNavMenuDataModel
-        Assert.assertNotNull(homeNavMenuDataModel)
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is InitialShimmerTransactionRevampDataModel })
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerReviewDataModel })
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel })
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ReviewListDataModel })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && !it.showCta
+        })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && !it.showCta
+        })
     }
 
     @Test
-    fun `given error when refresh category after got success then update with cache data`() {
-        val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
-        val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
-
-        coEvery {
-            getBuListUseCase.executeOnBackground()
-        }.answers { listOf(successResult) }
-        every {
-            getBuListUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
-        } answers { }
-        every {
-            getBuListUseCase.setStrategyCache()
-        } answers { }
-        every {
-            getBuListUseCase.setStrategyCloudThenCache()
-        } answers { }
-
-        viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
-
+    fun `given user logged in then add shimmer placeholder for transaction and review`() {
+        viewModel = createViewModel(userSession = getUserSession(true))
         viewModel.setInitialState()
-        viewModel.getMainNavData(true)
 
-        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        Assert.assertTrue(dataList.contains(successResult))
-        Assert.assertTrue(viewModel.networkProcessLiveData.value == true)
-
-        coEvery {
-            getBuListUseCase.executeOnBackground()
-        } throws MessageErrorException("")
-
-        viewModel.refreshBuListData()
-        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        Assert.assertTrue(dataListRefreshed.contains(successResult))
-        Assert.assertFalse(dataListRefreshed.any { it is ErrorStateBuDataModel }) // error state bu data model existed
-    }
-
-    @Test
-    fun `given failed data when refresh category then show retry button`() {
-        val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
-        val successResult = HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON)
-
-        // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
-        coEvery {
-            getBuListUseCase.executeOnBackground()
-        } throws MessageErrorException("")
-        every {
-            getBuListUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
-        } answers { }
-        every {
-            getBuListUseCase.setStrategyCache()
-        } answers { }
-        every {
-            getBuListUseCase.setStrategyCloudThenCache()
-        } answers { }
-        viewModel = createViewModel(getBuListUseCase = getBuListUseCase)
-
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        Assert.assertFalse(dataList.contains(successResult))
-
-        coEvery {
-            getBuListUseCase.executeOnBackground()
-        } throws MessageErrorException("")
-
-        viewModel.refreshBuListData()
-        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        Assert.assertFalse(dataListRefreshed.contains(successResult))
-        Assert.assertTrue(dataListRefreshed.any { it is ErrorStateBuDataModel }) // error state bu data model existed
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is InitialShimmerTransactionRevampDataModel })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerReviewDataModel })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && it.showCta
+        })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && it.showCta
+        })
     }
 
     // Transaction section
     @Test
-    fun `given user does not have ongoing order and payment transaction then only create transaction menu item`() {
-        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
-        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-
-        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf()
-        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf()
-
+    fun `given logged in user has ongoing payment then show payment cards and menu cta`() {
+        coEvery { mockGetPaymentOrdersNavUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
         viewModel = createViewModel(
-            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
-            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase
-        )
-        viewModel.setInitialState()
-
-        val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
-            it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.ORDER
-        } ?: listOf()
-
-        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is TransactionListItemDataModel
-        }
-
-        Assert.assertFalse(menuList.isEmpty())
-        Assert.assertNull(transactionDataModel)
-    }
-
-    @Test
-    fun `given logged in user only has ongoing order then create transaction menu item`() {
-        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
-        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        val userSession = mockk<UserSessionInterface>()
-
-        every { userSession.isLoggedIn } returns true
-        every { userSession.hasShop() } returns true
-
-        coEvery { userSession.isShopOwner } returns true
-        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf()
-        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
-
-        viewModel = createViewModel(
-            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
-            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
-            userSession = userSession
-        )
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
-            it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.ORDER
-        } ?: listOf()
-
-        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is TransactionListItemDataModel
-        }
-
-        Assert.assertFalse(menuList.isEmpty())
-        Assert.assertNotNull(transactionDataModel)
-    }
-
-    @Test
-    fun `given logged in user only has payment transaction then create transaction menu item`() {
-        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
-        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        val userSession = mockk<UserSessionInterface>()
-
-        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf(NavProductOrder())
-        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf()
-        coEvery { userSession.isShopOwner } returns true
-        every { userSession.isLoggedIn } returns true
-        every { userSession.hasShop() } returns true
-
-        viewModel = createViewModel(
-            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
-            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
-            userSession = userSession
-        )
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
-            it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.ORDER
-        } ?: listOf()
-
-        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is TransactionListItemDataModel
-        }
-
-        Assert.assertFalse(menuList.isEmpty())
-        Assert.assertNotNull(transactionDataModel)
-    }
-
-    @Test
-    fun `given success when refresh uoh and transaction then result not null`() {
-        val getNavOrderUseCase = mockk<GetUohOrdersNavUseCase>()
-        val getPaymentUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        val userSession = mockk<UserSessionInterface>()
-
-        every { userSession.isLoggedIn } returns true
-        coEvery { getNavOrderUseCase.executeOnBackground() } returns listOf(NavProductOrder())
-        coEvery { getPaymentUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
-        viewModel = createViewModel(
-            getPaymentOrdersNavUseCase = getPaymentUseCase,
-            getUohOrdersNavUseCase = getNavOrderUseCase
-        )
-        viewModel.setInitialState()
-        viewModel.refreshTransactionListData()
-
-        val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
-            it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.ORDER
-        } ?: listOf()
-
-        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is TransactionListItemDataModel
-        }
-
-        Assert.assertFalse(menuList.isEmpty())
-        Assert.assertNotNull(transactionDataModel)
-    }
-
-    @Test
-    fun `given error when logged in user get payment data and success when get ongoing order then show error state`() {
-        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
-        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        val userSession = mockk<UserSessionInterface>()
-
-        every { userSession.isLoggedIn } returns true
-        every { userSession.hasShop() } returns true
-
-        coEvery { userSession.isShopOwner } returns true
-        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf(NavProductOrder())
-        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
-
-        viewModel = createViewModel(
-            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
-            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
-            userSession = userSession
-        )
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is TransactionListItemDataModel
-        } as? TransactionListItemDataModel
-
-        val transactionError = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is ErrorStateOngoingTransactionModel
-        }
-
-        Assert.assertNull(transactionDataModel)
-        Assert.assertNotNull(transactionError)
-    }
-
-    @Test
-    fun `given error when logged in user get ongoing order data and success when get payment then show error state`() {
-        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
-        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        val userSession = mockk<UserSessionInterface>()
-
-        every { userSession.isLoggedIn } returns true
-        every { userSession.hasShop() } returns true
-
-        coEvery { userSession.isShopOwner } returns true
-        coEvery { getUohOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
-        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
-
-        viewModel = createViewModel(
-            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
-            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
-            userSession = userSession
-        )
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is TransactionListItemDataModel
-        } as? TransactionListItemDataModel
-
-        val transactionError = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is ErrorStateOngoingTransactionModel
-        }
-
-        Assert.assertNull(transactionDataModel)
-        Assert.assertNotNull(transactionError)
-    }
-
-    @Test
-    fun `given error when logged in user get ongoing order and payment data then show error`() {
-        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
-        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        val userSession = mockk<UserSessionInterface>()
-
-        every { userSession.isLoggedIn } returns true
-        every { userSession.hasShop() } returns true
-
-        coEvery { userSession.isShopOwner } returns true
-        coEvery { getUohOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
-        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } throws MessageErrorException("")
-
-        viewModel = createViewModel(
-            getUohOrdersNavUseCase = getUohOrdersNavUseCase,
-            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
-            userSession = userSession
-        )
-        viewModel.setInitialState()
-        viewModel.getMainNavData(true)
-
-        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is TransactionListItemDataModel
-        } as? TransactionListItemDataModel
-
-        val transactionError = viewModel.mainNavLiveData.value?.dataList?.find {
-            it is ErrorStateOngoingTransactionModel
-        }
-
-        Assert.assertNull(transactionDataModel)
-        Assert.assertNotNull(transactionError)
-    }
-
-    @Test
-    fun `given error when refresh order transaction with then show failed get order transaction`() {
-        val userSession = mockk<UserSessionInterface>()
-        val getPaymentOrderNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
-        every { userSession.isLoggedIn } returns true
-        coEvery {
-            getPaymentOrderNavUseCase.executeOnBackground()
-        } throws MessageErrorException("")
-
-        viewModel = createViewModel(
-            getPaymentOrdersNavUseCase = getPaymentOrderNavUseCase,
-            userSession = userSession
+            userSession = getUserSession(true),
+            getPaymentOrdersNavUseCase = mockGetPaymentOrdersNavUseCase
         )
 
         viewModel.setInitialState()
         viewModel.getMainNavData(true)
-        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        Assert.assertTrue(dataList.any { it is ErrorStateOngoingTransactionModel })
 
-        viewModel.refreshTransactionListData()
-        val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        Assert.assertTrue(dataListRefreshed.any { it is ErrorStateOngoingTransactionModel })
+        val transactionModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as TransactionListItemDataModel
+        Assert.assertTrue(transactionModel.orderListModel.paymentList.isNotEmpty())
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && it.showCta
+        })
+    }
+
+    @Test
+    fun `given logged in user has ongoing orders then show order cards and menu cta`() {
+        coEvery { mockGetUohOrdersNavUseCase.executeOnBackground() } returns listOf(NavProductOrder())
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            getUohOrdersNavUseCase = mockGetUohOrdersNavUseCase
+        )
+
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+
+        val transactionModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as TransactionListItemDataModel
+        Assert.assertTrue(transactionModel.orderListModel.orderList.isNotEmpty())
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && it.showCta
+        })
+    }
+
+    @Test
+    fun `given logged in user has more than 5 transactions then show maximum 5 items with payments being prioritized`() {
+        val mockOrders = listOf(
+            NavProductOrder(),
+            NavProductOrder(),
+            NavProductOrder(),
+            NavProductOrder(),
+        )
+        val mockPayments = listOf(
+            NavPaymentOrder(),
+            NavPaymentOrder(),
+            NavPaymentOrder(),
+        )
+
+        coEvery { mockGetUohOrdersNavUseCase.executeOnBackground() } returns mockOrders
+        coEvery { mockGetPaymentOrdersNavUseCase.executeOnBackground() } returns mockPayments
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            getUohOrdersNavUseCase = mockGetUohOrdersNavUseCase,
+            getPaymentOrdersNavUseCase = mockGetPaymentOrdersNavUseCase,
+        )
+
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+
+        val resultTransactionModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as TransactionListItemDataModel
+        val resultOrdersCount = resultTransactionModel.orderListModel.orderList.size
+        val resultPaymentsCount = resultTransactionModel.orderListModel.paymentList.size
+
+        Assert.assertTrue(resultOrdersCount + resultPaymentsCount == 5)
+        Assert.assertTrue(resultPaymentsCount == 3)
+        Assert.assertTrue(resultOrdersCount == 2)
+    }
+
+    @Test
+    fun `given logged in user has no ongoing orders and payments then remove visual cards and menu cta`() {
+        coEvery { mockGetUohOrdersNavUseCase.executeOnBackground() } returns listOf()
+        coEvery { mockGetPaymentOrdersNavUseCase.executeOnBackground() } returns listOf()
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            getUohOrdersNavUseCase = mockGetUohOrdersNavUseCase,
+            getPaymentOrdersNavUseCase = mockGetPaymentOrdersNavUseCase,
+        )
+
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is InitialShimmerTransactionRevampDataModel })
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && !it.showCta
+        })
+    }
+
+    @Test
+    fun `given logged in user gets error when fetching transaction then remove transaction cards and menu cta`() {
+        coEvery { mockGetUohOrdersNavUseCase.executeOnBackground() } throws Exception()
+
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            getUohOrdersNavUseCase = mockGetUohOrdersNavUseCase,
+        )
+
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is InitialShimmerTransactionRevampDataModel })
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION && !it.showCta
+        })
+    }
+
+    // Review section
+    @Test
+    fun `given logged in user has ongoing review then show review cards and menu cta`() {
+        coEvery { mockGetReviewProductUseCase.executeOnBackground() } returns listOf(NavReviewModel(), NavReviewModel())
+
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            getReviewProductUseCase = mockGetReviewProductUseCase
+        )
+
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerReviewDataModel })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ReviewListDataModel })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && it.showCta
+        })
+    }
+
+    @Test
+    fun `given logged in user has no review then remove review cards`() {
+        coEvery { mockGetReviewProductUseCase.executeOnBackground() } returns listOf()
+
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            getReviewProductUseCase = mockGetReviewProductUseCase
+        )
+
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerReviewDataModel })
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ReviewListDataModel })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && !it.showCta
+        })
+    }
+
+    @Test
+    fun `given logged in user gets error when fetching review then remove review cards`() {
+        coEvery { mockGetReviewProductUseCase.executeOnBackground() } throws Exception()
+
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            getReviewProductUseCase = mockGetReviewProductUseCase
+        )
+
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ShimmerReviewDataModel })
+        Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ReviewListDataModel })
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_REVIEW && !it.showCta
+        })
+    }
+
+    @Test
+    fun `given user get back when after giving review then refresh review cards`() {
+        val initialData = listOf(NavReviewModel("123"), NavReviewModel("234"))
+        coEvery { mockGetReviewProductUseCase.executeOnBackground() } returns initialData
+
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            getReviewProductUseCase = mockGetReviewProductUseCase
+        )
+
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is ReviewListDataModel && (it as? ReviewListDataModel)?.reviewList == initialData
+        })
+
+        val refreshedData = listOf(NavReviewModel("234"))
+        coEvery { mockGetReviewProductUseCase.executeOnBackground() } returns refreshedData
+        viewModel.refreshReviewData()
+
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is ReviewListDataModel && (it as? ReviewListDataModel)?.reviewList == refreshedData
+        })
     }
 }

@@ -99,7 +99,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             shopTier = 1,
             addressId = "addressid",
             warehouseId = "111",
-            orderValue = 1,
+            orderValue = 1.0,
             boMetadata = "123"
         )
 
@@ -122,7 +122,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
         Assert.assertEquals(requestParams["free_shipping_flag"], 0)
         Assert.assertEquals(requestParams["shop_tier"], 1)
         Assert.assertEquals(requestParams["unique_id"], "addressid-123-1-111")
-        Assert.assertEquals(requestParams["order_value"], 1)
+        Assert.assertEquals(requestParams["order_value"], 1.0)
         Assert.assertEquals(requestParams["bo_metadata"], "123")
     }
 
@@ -154,7 +154,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             shopTier = 1,
             addressId = "addressid",
             warehouseId = "111",
-            orderValue = 1,
+            orderValue = 1.0,
             boMetadata = expectedBoMetaData
         )
 
@@ -177,7 +177,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
         Assert.assertEquals(requestParams["free_shipping_flag"], 3)
         Assert.assertEquals(requestParams["shop_tier"], 1)
         Assert.assertEquals(requestParams["unique_id"], "addressid-123-1-111")
-        Assert.assertEquals(requestParams["order_value"], 1)
+        Assert.assertEquals(requestParams["order_value"], 1.0)
         Assert.assertEquals(requestParams["bo_metadata"], expectedBoMetaData)
     }
 
@@ -209,7 +209,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             shopTier = 1,
             addressId = "addressid",
             warehouseId = "111",
-            orderValue = 1,
+            orderValue = 1.0,
             boMetadata = expectedBoMetaData
         )
 
@@ -232,7 +232,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
         Assert.assertEquals(requestParams["free_shipping_flag"], 4)
         Assert.assertEquals(requestParams["shop_tier"], 1)
         Assert.assertEquals(requestParams["unique_id"], "addressid-123-1-111")
-        Assert.assertEquals(requestParams["order_value"], 1)
+        Assert.assertEquals(requestParams["order_value"], 1.0)
         Assert.assertEquals(requestParams["bo_metadata"], expectedBoMetaData)
     }
 
@@ -264,7 +264,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             shopTier = 1,
             addressId = "addressid",
             warehouseId = "111",
-            orderValue = 1,
+            orderValue = 1.0,
             boMetadata = expectedBoMetaData
         )
 
@@ -287,7 +287,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
         Assert.assertEquals(requestParams["free_shipping_flag"], 5)
         Assert.assertEquals(requestParams["shop_tier"], 1)
         Assert.assertEquals(requestParams["unique_id"], "addressid-123-1-111")
-        Assert.assertEquals(requestParams["order_value"], 1)
+        Assert.assertEquals(requestParams["order_value"], 1.0)
         Assert.assertEquals(requestParams["bo_metadata"], expectedBoMetaData)
     }
 
@@ -319,7 +319,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             shopTier = 1,
             addressId = "addressid",
             warehouseId = "111",
-            orderValue = 1,
+            orderValue = 1.0,
             boMetadata = expectedBoMetaData
         )
 
@@ -342,7 +342,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
         Assert.assertEquals(requestParams["free_shipping_flag"], 6)
         Assert.assertEquals(requestParams["shop_tier"], 1)
         Assert.assertEquals(requestParams["unique_id"], "addressid-123-1-111")
-        Assert.assertEquals(requestParams["order_value"], 1)
+        Assert.assertEquals(requestParams["order_value"], 1.0)
         Assert.assertEquals(requestParams["bo_metadata"], expectedBoMetaData)
     }
 
