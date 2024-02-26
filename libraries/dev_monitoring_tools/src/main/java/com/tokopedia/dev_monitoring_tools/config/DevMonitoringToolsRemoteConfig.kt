@@ -3,6 +3,7 @@ package com.tokopedia.dev_monitoring_tools.config
 import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class DevMonitoringToolsRemoteConfig {
 
@@ -23,6 +24,14 @@ class DevMonitoringToolsRemoteConfig {
                 }
             }
             return devMonitoringToolsConfig ?: DevMonitoringToolsConfig()
+        }
+
+        fun isEnableCopyCrashStackTraceToClipboardFeature(context: Context): Boolean {
+            val remoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
+            return remoteConfig.getBoolean(
+                RemoteConfigKey.ANDROID_MAIN_APP_ENABLE_COPY_CRASH_STACK_TRACE_TO_CLIPBOARD,
+                false
+            )
         }
     }
 }

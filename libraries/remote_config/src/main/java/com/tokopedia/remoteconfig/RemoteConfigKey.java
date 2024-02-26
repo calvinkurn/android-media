@@ -338,4 +338,6 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_CHATBOT_ENABLE_DYNAMIC_CSAT = "android_chatbot_enable_dynamic_csat";
 
+    public static final String ANDROID_MAIN_APP_ENABLE_COPY_CRASH_STACK_TRACE_TO_CLIPBOARD = "android_main_app_enable_copy_crash_stack_trace_to_clipboard";
+
 }
