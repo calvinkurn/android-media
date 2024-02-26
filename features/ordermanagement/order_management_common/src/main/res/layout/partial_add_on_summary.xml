@@ -30,7 +30,7 @@
         android:layout_marginBottom="0dp"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toTopOf="@id/rvAddOn"
-        app:layout_constraintEnd_toStartOf="@+id/tvBomDetailBmgmAddonsTotalPrice"
+        app:layout_constraintEnd_toStartOf="@+id/tvBomDetailAddonsTotalPrice"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/ivAddOnSummary"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,7 @@
         tools:text="@string/om_detail_add_on_sample_label" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvBomDetailBmgmAddonsTotalPrice"
+        android:id="@+id/tvBomDetailAddonsTotalPrice"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="6dp"
@@ -56,7 +56,7 @@
         tools:text="Rp. 10.000" />
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icBomDetailBmgmAddonsIconArrowDown"
+        android:id="@+id/icBomDetailAddonsIconArrowDown"
         android:layout_width="24dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -83,6 +83,6 @@
         app:layout_constraintTop_toBottomOf="@id/tvAddOnLabel"
         app:layout_constraintVertical_bias="0.0"
         tools:itemCount="5"
-        tools:listitem="@layout/item_bmgm_detail_add_on" />
+        tools:listitem="@layout/item_detail_add_on" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

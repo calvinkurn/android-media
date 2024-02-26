@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,6 +13,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars"
         app:srcCompat="@drawable/iconunify_image_broken" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -19,33 +21,48 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:textColor="@color/Unify_NN950_96"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/Unify_NN950"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@id/tvAddOnPrice"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintEnd_toStartOf="@+id/icBomDetailAddonsInfo"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@id/ivAddOn"
-        app:layout_constraintTop_toTopOf="@id/ivAddOn"
+        app:layout_constraintTop_toTopOf="@+id/ivAddOn"
         app:layout_constraintVertical_bias="0"
         app:layout_constraintVertical_chainStyle="packed"
-        app:typographyType="heading_6"
+        app:layout_goneMarginStart="0dp"
+        app:layout_goneMarginTop="0dp"
+        app:typographyType="display_3"
         tools:text="Kemasan &amp; Kartu Ucapan" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icBomDetailAddonsInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:visibility="gone"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@+id/tvAddOnName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvAddOnName"
+        app:layout_constraintTop_toTopOf="@+id/tvAddOnName"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAddOnPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginBottom="1dp"
-        android:textColor="@color/Unify_NN950_96"
+        android:textColor="@color/Unify_NN600"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/ivAddOn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/ivAddOn"
+        app:layout_constraintStart_toStartOf="@+id/tvAddOnName"
         app:layout_constraintTop_toBottomOf="@id/tvAddOnName"
         app:layout_constraintVertical_bias="0"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="1 x Rp5.000" />
 
     <androidx.constraintlayout.widget.Barrier
@@ -56,11 +73,14 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="ivAddOn, tvAddOnPrice" />
 
-    <com.tokopedia.sellerorder.detail.presentation.widget.AddOnDescriptionWidget
+    <com.tokopedia.order_management_common.presentation.widget.AddOnDescriptionWidget
         android:id="@+id/layoutAddOnDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/ivAddOn"
         app:layout_constraintTop_toBottomOf="@id/barrierTopAddOnDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

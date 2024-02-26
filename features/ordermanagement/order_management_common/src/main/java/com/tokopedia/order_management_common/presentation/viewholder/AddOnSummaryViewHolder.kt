@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
-import com.tokopedia.order_management_common.databinding.PartialBmgmAddOnSummaryBinding
+import com.tokopedia.order_management_common.databinding.PartialAddOnSummaryBinding
 import com.tokopedia.order_management_common.presentation.factory.AddOnAdapterFactory
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.StringRes
@@ -22,9 +22,9 @@ import com.tokopedia.order_management_common.util.rotateIcon
 import com.tokopedia.order_management_common.util.runSafely
 import com.tokopedia.unifycomponents.toPx
 
-class BmgmAddOnSummaryViewHolder(
-    private val bmgmAddOnListener: BmgmAddOnViewHolder.Listener,
-    private val binding: PartialBmgmAddOnSummaryBinding?,
+class AddOnSummaryViewHolder(
+    private val addOnListener: AddOnViewHolder.Listener,
+    private val binding: PartialAddOnSummaryBinding?,
     private val recyclerViewSharedPool: RecyclerView.RecycledViewPool?
 ) {
 
@@ -32,7 +32,7 @@ class BmgmAddOnSummaryViewHolder(
         private const val ITEM_DECORATION_VERTICAL_MARGIN = 12
     }
 
-    private val typeFactory = AddOnAdapterFactory(bmgmAddOnListener)
+    private val typeFactory = AddOnAdapterFactory(addOnListener)
     private val adapter = BaseAdapter(typeFactory)
 
     init {
@@ -45,16 +45,16 @@ class BmgmAddOnSummaryViewHolder(
         binding?.setupRecyclerViewItemDecoration()
     }
 
-    private fun PartialBmgmAddOnSummaryBinding.setupRecyclerviewRecycledViewPool() {
+    private fun PartialAddOnSummaryBinding.setupRecyclerviewRecycledViewPool() {
         rvAddOn.setRecycledViewPool(recyclerViewSharedPool)
     }
 
-    private fun PartialBmgmAddOnSummaryBinding.setupRecyclerViewAdapter() {
+    private fun PartialAddOnSummaryBinding.setupRecyclerViewAdapter() {
         rvAddOn.isNestedScrollingEnabled = false
         rvAddOn.adapter = adapter
     }
 
-    private fun PartialBmgmAddOnSummaryBinding.setupRecyclerViewItemDecoration() {
+    private fun PartialAddOnSummaryBinding.setupRecyclerViewItemDecoration() {
         if (rvAddOn.itemDecorationCount.isZero()) {
             val dividerDrawable = runSafely {
                 MethodChecker.getDrawable(root.context, R.drawable.ic_dash_divider)
@@ -86,7 +86,7 @@ class BmgmAddOnSummaryViewHolder(
                 if (element.canExpandCollapse) {
                     root.setOnClickListener {
                         element.isExpand = !element.isExpand
-                        bmgmAddOnListener.onAddOnsBmgmExpand(element.isExpand, element.addOnIdentifier)
+                        addOnListener.onAddOnsExpand(element.isExpand, element.addOnIdentifier)
                         setupChevronExpandable(
                             isExpand = element.isExpand,
                             totalPriceFmt = element.totalPriceText,
@@ -106,7 +106,7 @@ class BmgmAddOnSummaryViewHolder(
         }
     }
 
-    private fun PartialBmgmAddOnSummaryBinding.setupChevronExpandable(
+    private fun PartialAddOnSummaryBinding.setupChevronExpandable(
         isExpand: Boolean,
         totalPriceFmt: StringRes,
         canExpandCollapse: Boolean
@@ -118,26 +118,26 @@ class BmgmAddOnSummaryViewHolder(
         }
     }
 
-    private fun PartialBmgmAddOnSummaryBinding.expandView(canExpandCollapse: Boolean) {
-        tvBomDetailBmgmAddonsTotalPrice.hide()
+    private fun PartialAddOnSummaryBinding.expandView(canExpandCollapse: Boolean) {
+        tvBomDetailAddonsTotalPrice.hide()
         rvAddOn.show()
-        icBomDetailBmgmAddonsIconArrowDown.showIfWithBlock(canExpandCollapse) { rotateBackIcon() }
+        icBomDetailAddonsIconArrowDown.showIfWithBlock(canExpandCollapse) { rotateBackIcon() }
     }
 
-    private fun PartialBmgmAddOnSummaryBinding.collapseView(totalPriceFmt: StringRes) {
+    private fun PartialAddOnSummaryBinding.collapseView(totalPriceFmt: StringRes) {
         val totalPriceText = totalPriceFmt.getString(root.context)
-        tvBomDetailBmgmAddonsTotalPrice.showIfWithBlock(totalPriceText.isNotEmpty()) {
+        tvBomDetailAddonsTotalPrice.showIfWithBlock(totalPriceText.isNotEmpty()) {
             text = totalPriceText
         }
         rvAddOn.hide()
-        icBomDetailBmgmAddonsIconArrowDown.rotateIcon()
+        icBomDetailAddonsIconArrowDown.rotateIcon()
     }
 
-    private fun PartialBmgmAddOnSummaryBinding.setupAddOnSummaryIcon(icon: String) {
+    private fun PartialAddOnSummaryBinding.setupAddOnSummaryIcon(icon: String) {
         ivAddOnSummary.loadImage(icon)
     }
 
-    private fun PartialBmgmAddOnSummaryBinding.setupAddOnSummaryLabel(
+    private fun PartialAddOnSummaryBinding.setupAddOnSummaryLabel(
         label: String,
         isExpand: Boolean,
         totalPriceFmt: StringRes
@@ -145,16 +145,16 @@ class BmgmAddOnSummaryViewHolder(
         tvAddOnLabel.text = label
 
         if (!isExpand) {
-            tvBomDetailBmgmAddonsTotalPrice.show()
-            tvBomDetailBmgmAddonsTotalPrice.text = totalPriceFmt.getString(root.context)
+            tvBomDetailAddonsTotalPrice.show()
+            tvBomDetailAddonsTotalPrice.text = totalPriceFmt.getString(root.context)
         } else {
-            tvBomDetailBmgmAddonsTotalPrice.hide()
+            tvBomDetailAddonsTotalPrice.hide()
         }
     }
 
     private fun setupAddOnSummaryAddOns(addons: List<AddOnSummaryUiModel.AddonItemUiModel>) {
         binding?.rvAddOn?.showIfWithBlock(addons.isNotEmpty()) {
-            this@BmgmAddOnSummaryViewHolder.adapter.setElements(addons)
+            this@AddOnSummaryViewHolder.adapter.setElements(addons)
         }
     }
 
@@ -168,13 +168,13 @@ class BmgmAddOnSummaryViewHolder(
         interface Mediator {
             fun getAddOnSummaryLayout(): View?
             fun getRecycleViewSharedPool(): RecyclerView.RecycledViewPool?
-            fun getAddOnSummaryListener(): BmgmAddOnViewHolder.Listener
+            fun getAddOnSummaryListener(): AddOnViewHolder.Listener
         }
 
         class Impl : Delegate {
 
             @Suppress("LateinitUsage")
-            private lateinit var viewHolder: BmgmAddOnSummaryViewHolder
+            private lateinit var viewHolder: AddOnSummaryViewHolder
             @Suppress("LateinitUsage")
             private lateinit var _mediator: Mediator
 
@@ -187,9 +187,9 @@ class BmgmAddOnSummaryViewHolder(
                 if (addOnSummary?.addonItemList?.isNotEmpty() == true) {
                     if (layout is ViewStub) layout = layout.inflate() else layout.show()
                     if (!::viewHolder.isInitialized) {
-                        viewHolder = BmgmAddOnSummaryViewHolder(
-                            bmgmAddOnListener = _mediator.getAddOnSummaryListener(),
-                            binding = PartialBmgmAddOnSummaryBinding.bind(layout),
+                        viewHolder = AddOnSummaryViewHolder(
+                            addOnListener = _mediator.getAddOnSummaryListener(),
+                            binding = PartialAddOnSummaryBinding.bind(layout),
                             recyclerViewSharedPool = _mediator.getRecycleViewSharedPool()
                         )
                     }

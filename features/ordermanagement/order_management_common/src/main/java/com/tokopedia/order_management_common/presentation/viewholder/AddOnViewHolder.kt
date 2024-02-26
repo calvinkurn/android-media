@@ -7,24 +7,24 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
-import com.tokopedia.order_management_common.databinding.ItemBmgmDetailAddOnBinding
+import com.tokopedia.order_management_common.databinding.ItemDetailAddOnBinding
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
-import com.tokopedia.order_management_common.presentation.widget.BmgmAddOnDescriptionWidget
+import com.tokopedia.order_management_common.presentation.widget.AddOnDescriptionWidget
 import com.tokopedia.order_management_common.util.stripLastDot
 import com.tokopedia.utils.view.binding.viewBinding
 
-class BmgmAddOnViewHolder(
+class AddOnViewHolder(
     itemView: View?,
     private val listener: Listener
 ) : AbstractViewHolder<AddOnSummaryUiModel.AddonItemUiModel>(itemView),
-    BmgmAddOnDescriptionWidget.Listener {
+    AddOnDescriptionWidget.Listener {
 
     companion object {
-        val RES_LAYOUT = R.layout.item_bmgm_detail_add_on
+        val RES_LAYOUT = R.layout.item_detail_add_on
         const val MAX_RECYCLED_VIEWS = 10
     }
 
-    private val binding by viewBinding<ItemBmgmDetailAddOnBinding>()
+    private val binding by viewBinding<ItemDetailAddOnBinding>()
     private var element: AddOnSummaryUiModel.AddonItemUiModel? = null
 
     override fun bind(element: AddOnSummaryUiModel.AddonItemUiModel) {
@@ -65,15 +65,15 @@ class BmgmAddOnViewHolder(
         }
     }
 
-    private fun ItemBmgmDetailAddOnBinding.setupInfoLink(infoLink: String, type: String) {
-        icBomDetailBmgmAddonsInfo.showIfWithBlock(infoLink.isNotEmpty()) {
+    private fun ItemDetailAddOnBinding.setupInfoLink(infoLink: String, type: String) {
+        icBomDetailAddonsInfo.showIfWithBlock(infoLink.isNotEmpty()) {
             setOnClickListener {
                 listener.onAddOnsInfoLinkClicked(infoLink, type)
             }
         }
     }
 
-    private fun ItemBmgmDetailAddOnBinding.setupAddOnImage(thumbnailUrl: String) {
+    private fun ItemDetailAddOnBinding.setupAddOnImage(thumbnailUrl: String) {
         if (thumbnailUrl.isNotBlank()) {
             ivAddOn.show()
             ivAddOn.loadImage(thumbnailUrl)
@@ -82,15 +82,15 @@ class BmgmAddOnViewHolder(
         }
     }
 
-    private fun ItemBmgmDetailAddOnBinding.setupAddOnName(name: String) {
+    private fun ItemDetailAddOnBinding.setupAddOnName(name: String) {
         tvAddOnName.text = name
     }
 
-    private fun ItemBmgmDetailAddOnBinding.setupAddOnPrice(quantity: Int, priceText: String) {
+    private fun ItemDetailAddOnBinding.setupAddOnPrice(quantity: Int, priceText: String) {
         tvAddOnPrice.text = StringBuilder("$quantity x $priceText")
     }
 
-    private fun ItemBmgmDetailAddOnBinding.setupAddOnDescriptions(
+    private fun ItemDetailAddOnBinding.setupAddOnDescriptions(
         addonItemUiModel: AddOnSummaryUiModel.AddonItemUiModel
     ) {
         val description =
@@ -110,14 +110,14 @@ class BmgmAddOnViewHolder(
             )
             setIsCopyable(copyable = addonItemUiModel.noteCopyable)
             setMarginBottomAddonDescWidget()
-            listener = this@BmgmAddOnViewHolder
+            listener = this@AddOnViewHolder
             show()
         }
     }
 
     interface Listener {
         fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence)
-        fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String)
+        fun onAddOnsExpand(isExpand:Boolean, addOnsIdentifier: String)
         fun onAddOnsInfoLinkClicked(infoLink: String, type: String)
         fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel)
     }
