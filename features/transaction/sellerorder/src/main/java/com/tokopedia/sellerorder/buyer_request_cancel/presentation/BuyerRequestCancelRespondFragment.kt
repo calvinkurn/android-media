@@ -40,7 +40,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class BuyerRequestCancelRespondFragment : BaseDaggerFragment(),
+class BuyerRequestCancelRespondFragment :
+    BaseDaggerFragment(),
     IBuyerRequestCancelRespondListener.Mediator,
     IBuyerRequestCancelRespondListener by BuyerRequestCancelRespondListenerImpl(),
     IBuyerRequestCancelRespondBottomSheetManager.Mediator,
