@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.content.common.producttag.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalAuthorsViewHolder
@@ -20,6 +19,7 @@ import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.InspirationCard
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.LoadingModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.Title
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedLoadingViewHolder
 import kotlinx.coroutines.CoroutineScope
 
 internal abstract class FeedBrowseItemAdapter<Input : Any>(
@@ -109,7 +109,7 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
                 InspirationCardViewHolder.Placeholder.create(parent)
             }
             TYPE_LOADING -> {
-                LoadingViewHolder.create(parent)
+                FeedLoadingViewHolder.create(parent)
             }
             else -> error("ViewType $viewType is not supported")
         }

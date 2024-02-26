@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
-import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic

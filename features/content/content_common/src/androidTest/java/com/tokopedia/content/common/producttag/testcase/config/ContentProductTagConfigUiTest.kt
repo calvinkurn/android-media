@@ -11,7 +11,7 @@ import com.tokopedia.content.common.producttag.builder.LastTaggedModelBuilder
 import com.tokopedia.content.common.producttag.builder.ProductTagSourceBuilder
 import com.tokopedia.content.common.producttag.container.ContentProductTagTestActivity
 import com.tokopedia.content.common.producttag.container.ContentProductTagTestActivity.Companion.EXTRA_ARGUMENT
-import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.producttag.helper.*
 import com.tokopedia.content.common.producttag.helper.sourceMyAccountLabel
 import com.tokopedia.content.common.producttag.helper.sourceMyShop
@@ -42,7 +42,7 @@ class ContentProductTagConfigUiTest {
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     /** Mock */
-    private val mockRepo: ProductTagRepository = mockk(relaxed = true)
+    private val mockRepo: com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
 
     /** Builder */

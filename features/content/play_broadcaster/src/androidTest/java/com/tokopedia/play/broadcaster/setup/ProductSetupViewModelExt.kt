@@ -3,8 +3,8 @@ package com.tokopedia.play.broadcaster.setup
 import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
-import com.tokopedia.content.common.producttag.util.preference.ProductTagPreference
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
+import com.tokopedia.content.product.picker.ugc.util.preference.ProductTagPreference
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
@@ -47,12 +47,12 @@ fun productSetupViewModel(
 }
 
 fun productUGCViewModel(
-    productTagSourceRaw: String = "",
-    shopBadge: String = "",
-    authorId: String = "",
-    authorType: String = "",
-    initialSelectedProduct: List<SelectedProductUiModel> = emptyList(),
-    productTagConfig: ContentProductTagConfig = ContentProductTagConfig(
+        productTagSourceRaw: String = "",
+        shopBadge: String = "",
+        authorId: String = "",
+        authorType: String = "",
+        initialSelectedProduct: List<SelectedProductUiModel> = emptyList(),
+        productTagConfig: ContentProductTagConfig = ContentProductTagConfig(
         isMultipleSelectionProduct = true,
         isFullPageAutocomplete = false,
         maxSelectedProduct = 30,
@@ -60,9 +60,9 @@ fun productUGCViewModel(
         isShowActionBarDivider = false,
         appLinkAfterAutocomplete = "",
     ),
-    repo: ProductTagRepository = mockk(relaxed = true),
-    userSession: UserSessionInterface = mockk(relaxed = true),
-    sharedPref: ProductTagPreference = mockk(relaxed = true),
+        repo: ProductTagRepository = mockk(relaxed = true),
+        userSession: UserSessionInterface = mockk(relaxed = true),
+        sharedPref: ProductTagPreference = mockk(relaxed = true),
 ): ProductTagViewModel {
     return ProductTagViewModel(
         productTagSourceRaw = productTagSourceRaw,

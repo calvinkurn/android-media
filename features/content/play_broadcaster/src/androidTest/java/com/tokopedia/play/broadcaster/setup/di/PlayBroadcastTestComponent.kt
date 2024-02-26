@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.setup.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.content.common.onboarding.di.UGCOnboardingModule
-import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
+import com.tokopedia.content.product.picker.ugc.di.module.ContentCreationProductTagBindModule
 import com.tokopedia.play.broadcaster.di.*
 import dagger.Component
 

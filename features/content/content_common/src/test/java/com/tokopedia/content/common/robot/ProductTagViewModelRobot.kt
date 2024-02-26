@@ -1,8 +1,8 @@
 package com.tokopedia.content.common.robot
 
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
-import com.tokopedia.content.common.producttag.util.preference.ProductTagPreference
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
+import com.tokopedia.content.product.picker.ugc.util.preference.ProductTagPreference
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
@@ -20,16 +20,16 @@ import java.io.Closeable
  * Created By : Jonathan Darwin on May 30, 2022
  */
 class ProductTagViewModelRobot(
-    productTagSourceRaw: String = "",
-    shopBadge: String = "",
-    authorId: String = "",
-    authorType: String = "",
-    initialSelectedProduct: List<SelectedProductUiModel> = emptyList(),
-    productTagConfig: ContentProductTagConfig = mockk(relaxed = true),
-    repo: ProductTagRepository = mockk(relaxed = true),
-    userSession: UserSessionInterface = mockk(relaxed = true),
-    sharedPref: ProductTagPreference = mockk(relaxed = true),
-    private val dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
+        productTagSourceRaw: String = "",
+        shopBadge: String = "",
+        authorId: String = "",
+        authorType: String = "",
+        initialSelectedProduct: List<SelectedProductUiModel> = emptyList(),
+        productTagConfig: ContentProductTagConfig = mockk(relaxed = true),
+        repo: com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository = mockk(relaxed = true),
+        userSession: UserSessionInterface = mockk(relaxed = true),
+        sharedPref: com.tokopedia.content.product.picker.ugc.util.preference.ProductTagPreference = mockk(relaxed = true),
+        private val dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
 
     private val viewModel = ProductTagViewModel(

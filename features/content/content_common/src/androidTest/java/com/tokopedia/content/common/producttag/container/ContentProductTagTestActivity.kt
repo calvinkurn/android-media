@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.di.ContentProductTagTestInjector
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
@@ -27,7 +27,7 @@ class ContentProductTagTestActivity : AppCompatActivity() {
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var analytic: ContentProductTagAnalytic
+    lateinit var analytic: com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()

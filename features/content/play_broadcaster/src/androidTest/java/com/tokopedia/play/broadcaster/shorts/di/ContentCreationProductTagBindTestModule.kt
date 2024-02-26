@@ -2,9 +2,9 @@ package com.tokopedia.play.broadcaster.shorts.di
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
-import com.tokopedia.content.common.producttag.data.ProductTagRepositoryImpl
-import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
-import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.content.product.picker.ugc.data.ProductTagRepositoryImpl
+import com.tokopedia.content.product.picker.ugc.di.module.ContentCreationProductTagBindModule
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.content.common.producttag.view.fragment.*
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment

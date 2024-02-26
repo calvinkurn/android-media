@@ -6,9 +6,9 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaDatabase
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
-import com.tokopedia.content.common.producttag.model.PagedGlobalSearchProductResponse
-import com.tokopedia.content.common.producttag.model.PagedGlobalSearchShopResponse
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
+import com.tokopedia.content.product.picker.ugc.model.PagedGlobalSearchProductResponse
+import com.tokopedia.content.product.picker.ugc.model.PagedGlobalSearchShopResponse
 import com.tokopedia.content.common.producttag.view.uimodel.LastPurchasedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.PagedDataUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.PagedState

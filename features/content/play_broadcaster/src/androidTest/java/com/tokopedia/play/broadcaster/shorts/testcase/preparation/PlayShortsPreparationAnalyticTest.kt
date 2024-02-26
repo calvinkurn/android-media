@@ -5,7 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
-import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository

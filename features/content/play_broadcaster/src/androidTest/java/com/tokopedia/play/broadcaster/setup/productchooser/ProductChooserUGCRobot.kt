@@ -13,8 +13,8 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.content.common.producttag.analytic.coordinator.ProductImpressionCoordinator
-import com.tokopedia.content.common.producttag.analytic.coordinator.ShopImpressionCoordinator
+import com.tokopedia.content.product.picker.ugc.analytic.coordinator.ProductImpressionCoordinator
+import com.tokopedia.content.product.picker.ugc.analytic.coordinator.ShopImpressionCoordinator
 import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.content.common.producttag.view.fragment.ContentAutocompleteFragment
 import com.tokopedia.content.common.producttag.view.fragment.GlobalSearchFragment

@@ -3,9 +3,9 @@ package com.tokopedia.content.common.viewmodel.producttag
 import com.tokopedia.content.common.model.CommonModelBuilder
 import com.tokopedia.content.common.model.ConfigModelBuilder
 import com.tokopedia.content.common.model.ShopModelBuilder
-import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
-import com.tokopedia.content.common.producttag.util.extension.currentSource
-import com.tokopedia.content.common.producttag.util.preference.ProductTagPreference
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
+import com.tokopedia.content.product.picker.ugc.util.extension.currentSource
+import com.tokopedia.content.product.picker.ugc.util.preference.ProductTagPreference
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
@@ -31,8 +31,8 @@ class ProductTagNavigationViewModelTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
-    private val mockRepo: ProductTagRepository = mockk(relaxed = true)
-    private val mockSharedPref: ProductTagPreference = mockk(relaxed = true)
+    private val mockRepo: com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository = mockk(relaxed = true)
+    private val mockSharedPref: com.tokopedia.content.product.picker.ugc.util.preference.ProductTagPreference = mockk(relaxed = true)
 
     private val commonModelBuilder = CommonModelBuilder()
     private val shopModelBuilder = ShopModelBuilder()

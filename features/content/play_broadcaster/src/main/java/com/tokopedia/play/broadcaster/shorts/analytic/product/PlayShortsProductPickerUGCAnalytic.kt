@@ -1,11 +1,13 @@
 package com.tokopedia.play.broadcaster.shorts.analytic.product
 
-import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
-import com.tokopedia.content.common.producttag.view.uimodel.*
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
+import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductUiModel
+import com.tokopedia.content.product.picker.ugc.view.uimodel.SearchHeaderUiModel
+import com.tokopedia.content.product.picker.ugc.view.uimodel.SearchParamUiModel
+import com.tokopedia.content.product.picker.ugc.view.uimodel.ShopUiModel
 import com.tokopedia.play.broadcaster.shorts.analytic.helper.PlayShortsAnalyticHelper
 import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSender
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**

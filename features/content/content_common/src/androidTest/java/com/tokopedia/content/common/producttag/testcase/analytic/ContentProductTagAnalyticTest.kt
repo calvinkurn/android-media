@@ -7,13 +7,13 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.const.DEFAULT_DELAY
-import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.builder.GlobalSearchModelBuilder
 import com.tokopedia.content.common.producttag.builder.LastPurchasedModelBuilder
 import com.tokopedia.content.common.producttag.builder.LastTaggedModelBuilder
 import com.tokopedia.content.common.producttag.builder.ProductTagSourceBuilder
 import com.tokopedia.content.common.producttag.container.ContentProductTagTestActivity
-import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.producttag.helper.*
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
@@ -36,9 +36,9 @@ class ContentProductTagAnalyticTest {
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     /** Mock */
-    private val mockRepo: ProductTagRepository = mockk(relaxed = true)
+    private val mockRepo: com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
-    private val mockAnalytic: ContentProductTagAnalytic = mockk(relaxed = true)
+    private val mockAnalytic: com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic = mockk(relaxed = true)
 
     /** Builder */
     private val productTagSourceBuilder = ProductTagSourceBuilder()
