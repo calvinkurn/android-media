@@ -48,21 +48,26 @@ internal fun FollowingFollowerListScreen(
     totalFollowingsFmt: String,
     onPageChanged: (FollowListType) -> Unit,
     onBackClicked: () -> Unit,
+    onListRefresh: () -> Unit,
     followListViewModel: (FollowListType) -> FollowListViewModel,
     tracker: UserProfileTracker,
     initialSelectedTabType: FollowListType,
     modifier: Modifier = Modifier
 ) {
-    val pagerState = rememberPagerState(
-        if (initialSelectedTabType == FollowListType.Follower) 0 else 1
-    )
+    val pagerState = rememberPagerState(initialSelectedTabType.ordinal)
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
             .distinctUntilChanged()
             .collect {
-                onPageChanged(if (it == 0) FollowListType.Follower else FollowListType.Following)
+                onPageChanged(
+                    if (it == FollowListType.Follower.ordinal) {
+                        FollowListType.Follower
+                    } else {
+                        FollowListType.Following
+                    }
+                )
             }
     }
 
@@ -116,11 +121,11 @@ internal fun FollowingFollowerListScreen(
             when (page) {
                 0 -> {
                     val viewModel = remember { followListViewModel(FollowListType.Follower) }
-                    FollowerListScreen(viewModel, tracker)
+                    FollowListScreen(viewModel, tracker, onListRefresh)
                 }
                 1 -> {
                     val viewModel = remember { followListViewModel(FollowListType.Following) }
-                    FollowingListScreen(viewModel, tracker)
+                    FollowListScreen(viewModel, tracker, onListRefresh)
                 }
             }
         }
@@ -128,9 +133,10 @@ internal fun FollowingFollowerListScreen(
 }
 
 @Composable
-internal fun FollowerListScreen(
+internal fun FollowListScreen(
     viewModel: FollowListViewModel,
-    tracker: UserProfileTracker
+    tracker: UserProfileTracker,
+    onListRefresh: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -142,9 +148,23 @@ internal fun FollowerListScreen(
 
     fun onFollowClicked(people: PeopleUiModel) {
         if (people.isFollowed) {
-            tracker.clickUnfollowFromFollowers(people.id, people.isMySelf)
+            when (viewModel.type) {
+                FollowListType.Follower -> {
+                    tracker.clickUnfollowFromFollowers(people.id, people.isMySelf)
+                }
+                FollowListType.Following -> {
+                    tracker.clickUnfollowFromFollowing(people.id, people.isMySelf)
+                }
+            }
         } else {
-            tracker.clickFollowFromFollowers(people.id, people.isMySelf)
+            when (viewModel.type) {
+                FollowListType.Follower -> {
+                    tracker.clickFollowFromFollowers(people.id, people.isMySelf)
+                }
+                FollowListType.Following -> {
+                    tracker.clickFollowFromFollowing(people.id, people.isMySelf)
+                }
+            }
         }
 
         viewModel.onAction(FollowListAction.Follow(people))
@@ -156,48 +176,7 @@ internal fun FollowerListScreen(
 
     fun onRefresh() {
         viewModel.onAction(FollowListAction.Refresh)
-    }
-
-    val state: FollowListState by viewModel.state.collectAsStateWithLifecycle()
-
-    FollowListScreen(
-        state = state,
-        onPeopleClicked = ::onPeopleClicked,
-        onFollowClicked = ::onFollowClicked,
-        onLoadMore = ::onLoadMore,
-        onRefresh = ::onRefresh
-    )
-}
-
-@Composable
-internal fun FollowingListScreen(
-    viewModel: FollowListViewModel,
-    tracker: UserProfileTracker
-) {
-    val context = LocalContext.current
-
-    fun onPeopleClicked(people: PeopleUiModel) {
-        tracker.clickUserFollowing(people.id, people.isMySelf)
-
-        RouteManager.route(context, people.appLink)
-    }
-
-    fun onFollowClicked(people: PeopleUiModel) {
-        if (people.isFollowed) {
-            tracker.clickUnfollowFromFollowing(people.id, people.isMySelf)
-        } else {
-            tracker.clickFollowFromFollowing(people.id, people.isMySelf)
-        }
-
-        viewModel.onAction(FollowListAction.Follow(people))
-    }
-
-    fun onLoadMore() {
-        viewModel.onAction(FollowListAction.LoadMore)
-    }
-
-    fun onRefresh() {
-        viewModel.onAction(FollowListAction.Refresh)
+        onListRefresh()
     }
 
     val state: FollowListState by viewModel.state.collectAsStateWithLifecycle()

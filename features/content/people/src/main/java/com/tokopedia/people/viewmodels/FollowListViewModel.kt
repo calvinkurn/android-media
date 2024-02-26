@@ -26,7 +26,7 @@ private data class PerPageResult(
     val total: String?,
 )
 internal class FollowListViewModel @AssistedInject constructor(
-    @Assisted private val type: FollowListType,
+    @Assisted internal val type: FollowListType,
     @Assisted private val profileIdentifier: String,
     private val userFollowRepo: UserFollowRepository
 ) : ViewModel() {

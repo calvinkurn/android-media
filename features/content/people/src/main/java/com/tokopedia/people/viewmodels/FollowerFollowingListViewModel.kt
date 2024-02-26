@@ -31,6 +31,8 @@ data class FollowerFollowingListUiState(
 sealed interface FollowerFollowingListAction {
 
     object Init : FollowerFollowingListAction
+
+    object Refresh : FollowerFollowingListAction
 }
 
 internal class FollowerFollowingListViewModel @AssistedInject constructor(
@@ -56,6 +58,7 @@ internal class FollowerFollowingListViewModel @AssistedInject constructor(
     infix fun onAction(action: FollowerFollowingListAction) {
         when (action) {
             FollowerFollowingListAction.Init -> onInit()
+            FollowerFollowingListAction.Refresh -> onInit()
         }
     }
 

@@ -107,6 +107,10 @@ internal class FollowerFollowingListingFragment @Inject constructor(
         activity?.onBackPressed()
     }
 
+    private fun onListRefresh() {
+        profileViewModel.onAction(FollowerFollowingListAction.Refresh)
+    }
+
     private fun onPageChanged(type: FollowListType) {
         if (type == FollowListType.Follower) {
             userProfileTracker.openFollowersTab(userId)
@@ -135,6 +139,7 @@ internal class FollowerFollowingListingFragment @Inject constructor(
                         totalFollowingsFmt = uiState.totalFollowingsFmt,
                         onPageChanged = ::onPageChanged,
                         onBackClicked = ::onNavigationBackClicked,
+                        onListRefresh = ::onListRefresh,
                         initialSelectedTabType = if (selectedTab == EXTRA_FOLLOWING) FollowListType.Following else FollowListType.Follower,
                         followListViewModel = { type ->
                             ViewModelProvider(
