@@ -82,6 +82,7 @@ class RequestParamsGenerator @Inject constructor(
         enrichWithRelatedSearchParam(requestParams)
 
         requestParams.putString(SearchApiConst.ROWS, "0")
+        requestParams.putString(SearchApiConst.USECASE, SearchApiConst.COUNT_PRODUCT)
 
         return requestParams
     }
