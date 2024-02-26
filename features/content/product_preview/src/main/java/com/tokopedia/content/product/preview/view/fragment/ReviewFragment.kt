@@ -208,14 +208,14 @@ class ReviewFragment @Inject constructor(
                         }
 
                         is ProductPreviewEvent.ShowErrorToaster -> {
-                            val view = if (ReviewReportBottomSheet.get(childFragmentManager) != null) ReviewReportBottomSheet.get(childFragmentManager)?.requireView()?.rootView else requireView().rootView
+                            val view = ReviewReportBottomSheet.get(childFragmentManager)?.view?.rootView ?: requireView().rootView
                             Toaster.build(
                                 view ?: return@collect,
                                 text = event.message.message.ifNull { getString(event.type.textRes) },
                                 actionText = getString(R.string.bottom_atc_failed_click_toaster),
                                 duration = Toaster.LENGTH_LONG,
                                 clickListener = {
-                                    run { event.onClick() }
+                                    event.onClick()
                                 },
                                 type = Toaster.TYPE_ERROR
                             ).show()

@@ -226,19 +226,16 @@ class ProductPreviewFragment @Inject constructor(
                         event.appLink
                     )
                     is ProductPreviewEvent.ShowSuccessToaster -> {
+                        val isAtc = event.type == ProductPreviewEvent.ShowSuccessToaster.Type.ATC
                         Toaster.build(
                             requireView().rootView,
                             text = getString(event.type.textRes),
-                            actionText = if (event.type == ProductPreviewEvent.ShowSuccessToaster.Type.ATC) {
-                                getString(
+                            actionText = if (isAtc) { getString(
                                     contentproductpreviewR.string.bottom_atc_success_click_toaster
-                                )
-                            } else {
-                                ""
-                            },
+                                ) } else { "" },
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
-                                viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))
+                                if (isAtc) viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))
                             }
                         ).show()
                     }
