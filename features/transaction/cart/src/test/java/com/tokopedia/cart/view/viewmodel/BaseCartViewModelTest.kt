@@ -58,7 +58,6 @@ open class BaseCartViewModelTest {
     var updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     var userSessionInterface: UserSessionInterface = mockk()
     var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    var getRecentViewUseCase: GetRecommendationUseCase = mockk()
     var getWishlistV2UseCase: GetWishlistV2UseCase = mockk()
     var getRecommendationUseCase: GetRecommendationUseCase = mockk()
     var addToCartUseCase: AddToCartUseCase = mockk()
