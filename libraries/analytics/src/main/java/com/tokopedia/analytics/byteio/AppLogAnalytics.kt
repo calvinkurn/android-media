@@ -250,20 +250,34 @@ object AppLogAnalytics {
     }
 
     fun setGlobalParams(
-        entranceForm: String,
-        enterMethod: String = "",
-        sourceModule: String,
-        isAd: Int,
-        trackId: String,
-        sourcePageType: SourcePageType,
-        requestId: String,
+        entranceForm: String? = null,
+        enterMethod: String? = null,
+        sourceModule: String? = null,
+        isAd: Int? = null,
+        trackId: String? = null,
+        sourcePageType: SourcePageType? = null,
+        requestId: String? = null,
     ) {
-        putPageData(ENTRANCE_FORM, entranceForm)
-        putPageData(ENTER_METHOD, enterMethod)
-        putPageData(SOURCE_MODULE, sourceModule)
-        putPageData(IS_AD, isAd)
-        putPageData(TRACK_ID, trackId)
-        putPageData(SOURCE_PAGE_TYPE, sourcePageType.str)
-        putPageData(REQUEST_ID, requestId)
+        entranceForm?.let {
+            putPageData(ENTRANCE_FORM, entranceForm)
+        }
+        enterMethod?.let {
+            putPageData(ENTER_METHOD, enterMethod)
+        }
+        sourceModule?.let {
+            putPageData(SOURCE_MODULE, sourceModule)
+        }
+        isAd?.let {
+            putPageData(IS_AD, isAd)
+        }
+        trackId?.let {
+            putPageData(TRACK_ID, trackId)
+        }
+        sourcePageType?.let {
+            putPageData(SOURCE_PAGE_TYPE, sourcePageType.str)
+        }
+        requestId?.let {
+            putPageData(REQUEST_ID, requestId)
+        }
     }
 }
