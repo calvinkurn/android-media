@@ -15,17 +15,20 @@ import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.SubmitOrderResult
+import com.tokopedia.analytics.byteio.TAG
 import com.tokopedia.analytics.byteio.TrackConfirmCart
 import com.tokopedia.analytics.byteio.TrackConfirmCartResult
 import com.tokopedia.analytics.byteio.TrackConfirmSku
 import com.tokopedia.analytics.byteio.TrackProductDetail
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
 import org.json.JSONObject
+import timber.log.Timber
 
 object AppLogPdp {
 
     fun sendPDPEnterPage(product: TrackProductDetail?) {
         if (product == null) {
+            Timber.d("%s Enter PDP was not sent because of product is null", TAG)
             return
         }
 
@@ -49,9 +52,6 @@ object AppLogPdp {
         product: TrackStayProductDetail,
         quitType: String
     ) {
-//        if (AppLogAnalytics.sourcePageType == null) {
-//            return
-//        }
         AppLogAnalytics.send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
             it.put(AppLogParam.PREVIOUS_PAGE, AppLogAnalytics.previousPageName(2))
             it.put(AppLogParam.PAGE_NAME, PageName.PDP)
@@ -143,8 +143,12 @@ object AppLogPdp {
             it.put("sku_id", product.skuId)
             it.put("currency", product.currency)
             it.put("add_sku_num", product.addSkuNum)
-//            it.put("sku_num_before", product.skuNumBefore)
-//            it.put("sku_num_after", product.skuNumAfter)
+            /**
+             * Not sending these because it requires BE, not at the current priority
+             *
+             * it.put("sku_num_before", product.skuNumBefore)
+             * it.put("sku_num_after", product.skuNumAfter)
+             * */
             it.put("cart_item_id", product.cartItemId)
             it.put("is_success", if (product.isSuccess == true) 1 else 0)
             it.put("fail_reason", product.failReason)

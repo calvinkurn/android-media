@@ -153,7 +153,7 @@ object AppLogAnalytics {
         params.put(EVENT_ORIGIN_FEATURE_KEY, EVENT_ORIGIN_FEATURE_VALUE)
         Cassava.save(params, event, "ByteIO")
         AppLog.onEventV3(event, params)
-        Log.d(TAG, "sending event ($event), value: ${params.toString(2)} ")
+        Timber.d("(%s) sending event ($event), value: ${params.toString(2)}", TAG)
     }
 
     @JvmStatic
@@ -161,9 +161,11 @@ object AppLogAnalytics {
         initAppLog(application.applicationContext)
         EventsSenderUtils.setEventsSenderEnable("573733", true, application)
         EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net")
-        Log.d(
-            TAG,
-            "AppLog dId: ${AppLog.getDid()} userUniqueId: ${AppLog.getUserUniqueID()} userId: ${AppLog.getUserUniqueID()}"
+        Timber.d(
+            """(%s) 
+            |AppLog dId: ${AppLog.getDid()} 
+            |userUniqueId: ${AppLog.getUserUniqueID()} 
+            |userId: ${AppLog.getUserUniqueID()}""".trimMargin(), TAG
         )
     }
 
