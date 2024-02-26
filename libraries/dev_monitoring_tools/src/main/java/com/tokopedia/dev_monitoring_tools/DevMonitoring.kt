@@ -77,7 +77,7 @@ class DevMonitoring(private var context: Context) {
 
             // Allow some time for the Toast to be shown
             try {
-                Thread.sleep(30000)
+                Thread.sleep(3000)
                 exceptionHandler?.uncaughtException(tr, throwable)
             } catch (e: InterruptedException) {
                 e.printStackTrace()
