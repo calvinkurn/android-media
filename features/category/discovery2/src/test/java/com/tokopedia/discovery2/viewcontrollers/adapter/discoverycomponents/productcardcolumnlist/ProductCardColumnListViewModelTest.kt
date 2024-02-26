@@ -282,7 +282,7 @@ class ProductCardColumnListViewModelTest {
                     id = productId,
                     productId = productId,
                     name = productName,
-                    imageUrl = imageUrl,
+                    imageUrlMobile = imageUrl,
                     topadsViewUrl = topAdsViewUrl,
                     isTopads = true
                 )
@@ -324,7 +324,7 @@ class ProductCardColumnListViewModelTest {
                     id = productId,
                     productId = productId,
                     name = productName,
-                    imageUrl = imageUrl,
+                    imageUrlMobile = imageUrl,
                     topadsClickUrl = topAdsClickUrl,
                     isTopads = true
                 )
@@ -364,7 +364,7 @@ class ProductCardColumnListViewModelTest {
                     id = productId,
                     productId = productId,
                     name = productName,
-                    imageUrl = imageUrl,
+                    imageUrlMobile = imageUrl,
                     topadsViewUrl = topAdsViewUrl,
                     isTopads = true
                 )

@@ -97,7 +97,7 @@ class ProductCardColumnListViewModel(
                     it,
                     productId.orEmpty(),
                     name.orEmpty(),
-                    imageUrl.orEmpty()
+                    imageUrlMobile.orEmpty()
                 )
                 componentsItem.topAdsTrackingStatus = true
             }
@@ -116,7 +116,7 @@ class ProductCardColumnListViewModel(
                     it,
                     productId.orEmpty(),
                     name.orEmpty(),
-                    imageUrl.orEmpty()
+                    imageUrlMobile.orEmpty()
                 )
             }
         }
