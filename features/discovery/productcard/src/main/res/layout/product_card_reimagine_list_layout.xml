@@ -139,6 +139,50 @@
                 app:typographyWeight="bold"
                 tools:visibility="visible"/>
 
+            <View
+                android:id="@+id/productCardStockInfoBackground"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/product_card_reimagine_stock_bar_background_height"
+                android:background="@drawable/product_card_bg_stock_info_carousel"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@id/productCardImage"
+                app:layout_constraintStart_toStartOf="@id/productCardImage"
+                app:layout_constraintTop_toBottomOf="@id/productCardImage"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/productCardStockInfoLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textColor="@color/Unify_NN600"
+                android:visibility="gone"
+                android:maxLines="1"
+                android:ellipsize="end"
+                app:layout_constraintBottom_toBottomOf="@id/productCardStockInfoBackground"
+                app:layout_constraintStart_toStartOf="@id/productCardStockInfoBackground"
+                app:layout_constraintTop_toTopOf="@id/productCardStockInfoBackground"
+                app:layout_constraintEnd_toStartOf="@+id/productCardStockInfoBar"
+                app:layout_constraintHorizontal_bias="0"
+                app:typographyType="small"
+                app:typographyWeight="bold"
+                tools:text="Tersedia"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.ProgressBarUnify
+                android:id="@+id/productCardStockInfoBar"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/productCardStockInfoBackground"
+                app:layout_constraintEnd_toEndOf="@id/productCardStockInfoBackground"
+                app:layout_constraintTop_toTopOf="@id/productCardStockInfoBackground"
+                app:unify_progress_bar_height="6"
+                tools:layout_height="6dp"
+                tools:visibility="visible" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardLabelPreventiveOverlay"
                 android:layout_width="wrap_content"
@@ -425,7 +469,7 @@
                 android:id="@+id/productCardBarrierFooter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="productCardMediaAnchor,productCardShopSection"
+                app:constraint_referenced_ids="productCardMediaAnchor,productCardStockInfoBackground,productCardShopSection"
                 app:barrierDirection="bottom" />
 
             <ImageView

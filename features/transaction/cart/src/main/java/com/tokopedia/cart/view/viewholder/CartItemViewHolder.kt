@@ -546,18 +546,10 @@ class CartItemViewHolder(
     }
 
     private fun handleCheckboxRefresh(data: CartItemHolderData) {
-        if (data.wholesalePriceData.isEmpty() && shouldRefreshSingleProduct()) {
-            viewHolderListener?.onNeedToRefreshSingleProduct(bindingAdapterPosition)
-        } else {
-            viewHolderListener?.onNeedToRefreshSingleShop(
-                data,
-                bindingAdapterPosition
-            )
-        }
-    }
-
-    private fun shouldRefreshSingleProduct(): Boolean {
-        return true
+        viewHolderListener?.onNeedToRefreshSingleShop(
+            data,
+            bindingAdapterPosition
+        )
     }
 
     private fun renderShopInfo(data: CartItemHolderData) {

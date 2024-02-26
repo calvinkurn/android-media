@@ -283,6 +283,7 @@ ext {
             tokochat                        : ":features:communication:tokochat",
             tokochat_common                 : ":features:communication:tokochat_common",
             tokochat_config_common          : ":features:communication:tokochat_config_common",
+			shareexperience					: ":features:communication:shareexperience",
 
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
