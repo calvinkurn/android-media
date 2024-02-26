@@ -11,7 +11,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
@@ -1240,9 +1239,6 @@ class ShopPageReimagineHeaderFragment :
         }
         shopLandingPageInitAffiliateCookie()
         storiesManager.updateStories(listOf(shopId))
-        Handler().postDelayed({
-            throw Exception("Test Crash")
-        }, 5000)
     }
 
     private fun checkAffiliateAppLink(uri: Uri) {
