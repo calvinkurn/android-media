@@ -1,7 +1,6 @@
 package com.tokopedia.content.product.preview.viewmodel.action
 
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
-import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 
 /**
@@ -10,11 +9,14 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiM
 sealed interface ProductPreviewAction {
     object CheckInitialSource : ProductPreviewAction
     object FetchMiniInfo : ProductPreviewAction
+    object InitializeProductMainData : ProductPreviewAction
     object InitializeReviewMainData : ProductPreviewAction
     object ProductActionFromResult : ProductPreviewAction
     object LikeFromResult : ProductPreviewAction
     object ToggleReviewWatchMode : ProductPreviewAction
     object FetchReviewByIds : ProductPreviewAction
+    object HasVisitCoachMark : ProductPreviewAction
+    object ProductMediaVideoEnded : ProductPreviewAction
     data class ProductMediaSelected(val position: Int) : ProductPreviewAction
     data class ReviewContentSelected(val position: Int) : ProductPreviewAction
     data class ReviewContentScrolling(val position: Int, val isScrolling: Boolean) : ProductPreviewAction
@@ -25,5 +27,5 @@ sealed interface ProductPreviewAction {
     data class Navigate(val appLink: String) : ProductPreviewAction
     data class SubmitReport(val model: ReviewReportUiModel) : ProductPreviewAction
     data class ClickMenu(val isFromLogin: Boolean) : ProductPreviewAction
-    data class Like(val item: ReviewLikeUiState) : ProductPreviewAction
+    data class Like(val isDoubleTap: Boolean) : ProductPreviewAction
 }

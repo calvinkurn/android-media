@@ -34,7 +34,7 @@
         android:id="@+id/player_control"
         android:layout_width="0dp"
         android:layout_height="16dp"
-        android:layout_marginBottom="2dp"
+        android:layout_marginBottom="8dp"
         android:translationY="6dp"
         app:controller_layout_id="@layout/product_preview_video_player_control"
         app:layout_constraintBottom_toBottomOf="parent"

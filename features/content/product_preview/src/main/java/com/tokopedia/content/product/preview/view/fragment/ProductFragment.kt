@@ -29,6 +29,8 @@ import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -92,6 +94,7 @@ class ProductFragment @Inject constructor(
     private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+            analytics.onSwipeContentAndTab()
             val position = getMediaCurrentPosition()
             scrollTo(position)
             viewModel.onAction(ProductMediaSelected(position))
@@ -114,8 +117,15 @@ class ProductFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initializeProductMainData()
+
         setupViews()
-        setupObservers()
+
+        observeData()
+    }
+
+    private fun initializeProductMainData() {
+        viewModel.onAction(InitializeProductMainData)
     }
 
     private fun setupViews() {
@@ -141,8 +151,8 @@ class ProductFragment @Inject constructor(
         }
     }
 
-    private fun setupObservers() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+    private fun observeData() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiState.withCache().collectLatest { (prevState, currState) ->
                 renderMedia(
                     prevState?.productUiModel?.productMedia,
@@ -169,6 +179,10 @@ class ProductFragment @Inject constructor(
             val autoScrollPosition = getSelectedItemPosition(state)
             binding.rvMediaProduct.scrollToPosition(autoScrollPosition)
             autoScrollFirstOpenMedia = false
+        } else {
+            val autoScrollPosition = state.indexOfFirst { it.selected }
+            val exactPosition = autoScrollPosition.coerceAtLeast(0)
+            binding.rvMediaProduct.smoothScrollToPosition(exactPosition)
         }
     }
 
@@ -184,6 +198,10 @@ class ProductFragment @Inject constructor(
         if (autoScrollFirstOpenThumbnail) {
             binding.rvThumbnailProduct.scrollToPosition(position)
             autoScrollFirstOpenThumbnail = false
+        } else {
+            val autoScrollPosition = state.indexOfFirst { it.selected }
+            val exactPosition = autoScrollPosition.coerceAtLeast(0)
+            binding.rvMediaProduct.smoothScrollToPosition(exactPosition)
         }
 
         if (state[position].variantName.isEmpty()) {
@@ -279,6 +297,10 @@ class ProductFragment @Inject constructor(
     override fun onStopScrubbing() {
         binding.tvThumbnailLabel.show()
         binding.rvThumbnailProduct.show()
+    }
+
+    override fun onVideoEnded() {
+        viewModel.onAction(ProductPreviewAction.ProductMediaVideoEnded)
     }
 
     override fun onDestroyView() {

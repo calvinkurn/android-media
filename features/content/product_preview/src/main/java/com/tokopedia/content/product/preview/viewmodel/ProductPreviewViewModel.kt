@@ -3,14 +3,17 @@ package com.tokopedia.content.product.preview.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
+import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreference
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_KEY
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.productTab
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.reviewTab
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
-import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState.ReviewLikeStatus
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
@@ -20,6 +23,8 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchMiniInfo
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchReview
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.FetchReviewByIds
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.HasVisitCoachMark
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.InitializeReviewMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.Like
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.LikeFromResult
@@ -27,6 +32,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaVideoEnded
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewContentScrolling
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewContentSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewMediaSelected
@@ -54,11 +60,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
+import java.util.*
 
 class ProductPreviewViewModel @AssistedInject constructor(
     @Assisted val productPreviewSource: ProductPreviewSourceModel,
     private val repo: ProductPreviewRepository,
-    private val userSessionInterface: UserSessionInterface
+    private val userSessionInterface: UserSessionInterface,
+    private val productPrevSharedPref: ProductPreviewSharedPreference
 ) : ViewModel() {
 
     @AssistedFactory
@@ -122,16 +130,39 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 _reviewContentState.value.reviewContent[_reviewPosition.value]
             }
         }
+    private val currentTabPosition = MutableStateFlow(-1)
+    private val currentProductMediaPosition: Int
+        get() {
+            val position = _productMediaState.value.productMedia.indexOfFirst { it.selected }
+            return position.coerceAtLeast(0)
+        }
+    private val currentProductMediaSize: Int
+        get() {
+            return _productMediaState.value.productMedia.size
+        }
+    private val currentTabKey: String
+        get() {
+            val tabPosition = currentTabPosition.value.coerceAtLeast(0)
+            val tabSize = _tabContentState.value.tabs.size
+            return _tabContentState.value.tabs[tabPosition.coerceAtMost(tabSize.minus(1))].key
+        }
+
+    private var autoScrollProductMedia: Timer? = null
+
+    val hasVisit get() = productPrevSharedPref.hasVisited()
 
     fun onAction(action: ProductPreviewAction) {
         when (action) {
             CheckInitialSource -> handleCheckInitialSource()
             FetchMiniInfo -> handleFetchMiniInfo()
+            InitializeProductMainData -> handleInitializeProductMainData()
             InitializeReviewMainData -> handleInitializeReviewMainData()
             ProductActionFromResult -> handleProductAction(_bottomNavContentState.value)
-            LikeFromResult -> handleLikeFromResult()
+            LikeFromResult -> handleLikeFromResult(false)
             FetchReviewByIds -> handleFetchReviewByIds()
             ToggleReviewWatchMode -> handleReviewWatchMode()
+            HasVisitCoachMark -> productPrevSharedPref.setHasVisit()
+            ProductMediaVideoEnded -> handleProductMediaVideoEnded()
             is ProductMediaSelected -> handleProductMediaSelected(action.position)
             is ReviewContentSelected -> handleReviewContentSelected(action.position)
             is ReviewContentScrolling -> handleReviewContentScrolling(action.position, action.isScrolling)
@@ -142,27 +173,20 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is Navigate -> handleNavigate(action.appLink)
             is SubmitReport -> handleSubmitReport(action.model)
             is ClickMenu -> handleClickMenu(action.isFromLogin)
-            is Like -> handleLikeFromResult(action.item)
+            is Like -> handleLikeFromResult(action.isDoubleTap)
         }
     }
 
     private fun handleCheckInitialSource() {
         viewModelScope.launchCatchError(block = {
             when (val source = productPreviewSource.source) {
-                is ProductSourceData -> {
-                    updateProductMainDataSource(source)
-                    updateTabProductSource(source)
-                }
+                is ProductSourceData -> updateTabProductSource(source)
                 is ReviewSourceData -> updateTabReviewSource()
                 else -> error("Unknown Source Data")
             }
         }) {
             _uiEvent.emit(UnknownSourceData)
         }
-    }
-
-    private fun updateProductMainDataSource(source: ProductSourceData) {
-        _productMediaState.update { it.copy(productMedia = source.productSourceList) }
     }
 
     private fun updateTabProductSource(source: ProductSourceData) {
@@ -187,6 +211,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleInitializeProductMainData() {
+        val source = productPreviewSource.source as? ProductSourceData ?: return
+        _productMediaState.update { it.copy(productMedia = source.productSourceList) }
+    }
+
     private fun handleInitializeReviewMainData() {
         viewModelScope.launchCatchError(block = {
             when (productPreviewSource.source) {
@@ -195,6 +224,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 UnknownSource -> _uiEvent.emit(UnknownSourceData)
             }
         }) { _uiEvent.emit(UnknownSourceData) }
+    }
+
+    private fun handleProductMediaVideoEnded() {
+        val nextPosition = currentProductMediaPosition.plus(1)
+        handleProductMediaSelected(nextPosition)
     }
 
     private fun handleProductMediaSelected(position: Int) {
@@ -209,12 +243,14 @@ class ProductPreviewViewModel @AssistedInject constructor(
             )
         }
 
-        emitTrackAllHorizontalScrollEvent()
+        when (_productMediaState.value.productMedia[position].type) {
+            MediaType.Image -> scheduleAutoScrollProductMedia()
+            else -> autoScrollProductMedia?.cancel()
+        }
     }
 
     private fun handleReviewContentSelected(position: Int) {
         if (_reviewPosition.value == position) return
-        if (_reviewPosition.value < position) emitTrackReviewNextVerticalScrollEvent()
 
         _reviewPosition.value = position
         updateReviewToUnWatchMode()
@@ -224,23 +260,16 @@ class ProductPreviewViewModel @AssistedInject constructor(
         updateReviewContentScrollingState(position, isScrolling)
     }
 
-    private fun handleReviewMediaSelected(position: Int) {
-        val currentPos = currentReview.medias.indexOfFirst { it.selected }
-        if (currentPos < 0 || currentPos == position) return
-
+    private fun handleReviewMediaSelected(mediaPosition: Int) {
         _reviewContentState.update { reviewUiModel ->
             reviewUiModel.copy(
                 reviewContent = reviewUiModel.reviewContent.mapIndexed { indexContent, reviewContent ->
                     if (indexContent == _reviewPosition.value) {
                         reviewContent.copy(
                             medias = reviewContent.medias.mapIndexed { indexMedia, reviewMedia ->
-                                reviewMedia.copy(selected = indexMedia == position)
+                                reviewMedia.copy(selected = indexMedia == mediaPosition)
                             },
-                            mediaSelectedPosition = if (indexContent == position) {
-                                indexContent
-                            } else {
-                                reviewContent.mediaSelectedPosition
-                            }
+                            mediaSelectedPosition = mediaPosition
                         )
                     } else {
                         reviewContent
@@ -248,12 +277,18 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 }
             )
         }
-
-        emitTrackAllHorizontalScrollEvent()
     }
 
     private fun handleTabSelected(position: Int) {
-        emitTrackAllHorizontalScrollEvent()
+        currentTabPosition.value = position
+        if (currentTabKey == TAB_PRODUCT_KEY) {
+            when (_productMediaState.value.productMedia[position].type) {
+                MediaType.Image -> scheduleAutoScrollProductMedia()
+                else -> autoScrollProductMedia?.cancel()
+            }
+        } else {
+            autoScrollProductMedia?.cancel()
+        }
     }
 
     private fun handleFetchReviewByIds() {
@@ -263,13 +298,13 @@ class ProductPreviewViewModel @AssistedInject constructor(
             val ids = listOf(reviewSourceId)
             val response = repo.getReviewByIds(ids = ids)
             _reviewContentState.update { review ->
-                val reviewList = response.reviewContent.mapIndexed { index, review ->
-                    if (index == 0 && review.reviewId == reviewSourceId) {
-                        review.copy(
+                val reviewList = response.reviewContent.mapIndexed { index, reviewContent ->
+                    if (index == 0 && reviewContent.reviewId == reviewSourceId) {
+                        reviewContent.copy(
                             mediaSelectedPosition = getMediaSourcePosition(response.reviewContent)
                         )
                     } else {
-                        review
+                        reviewContent
                     }
                 }
                 review.copy(
@@ -320,15 +355,24 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun emitTrackAllHorizontalScrollEvent() {
-        viewModelScope.launch {
-            _uiEvent.emit(ProductPreviewEvent.TrackAllHorizontalScroll)
-        }
-    }
+    private fun scheduleAutoScrollProductMedia() {
+        autoScrollProductMedia?.cancel()
 
-    private fun emitTrackReviewNextVerticalScrollEvent() {
-        viewModelScope.launch {
-            _uiEvent.emit(ProductPreviewEvent.TrackReviewNextVerticalScroll)
+        if (currentProductMediaSize == 1) return
+        autoScrollProductMedia = Timer().apply {
+            scheduleAtFixedRate(
+                object : TimerTask() {
+                    override fun run() {
+                        var position = currentProductMediaPosition.plus(1)
+                        if (position >= currentProductMediaSize) {
+                            position = 0
+                        }
+                        handleProductMediaSelected(position)
+                    }
+                },
+                DELAY_AUTO_SCROLL_PRODUCT_MEDIA,
+                DELAY_AUTO_SCROLL_PRODUCT_MEDIA
+            )
         }
     }
 
@@ -492,21 +536,20 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleLikeFromResult(status: ReviewLikeUiState = currentReview.likeState) {
-        if (status.withAnimation && !userSessionInterface.isLoggedIn) return
+    private fun handleLikeFromResult(isDoubleTap: Boolean) {
+        if (isDoubleTap && currentReview.likeState.state == ReviewLikeStatus.Like) return
 
+        val status = currentReview.likeState
         requiredLogin(status) {
             viewModelScope.launchCatchError(block = {
                 val state = repo.likeReview(status, currentReview.reviewId)
                 _reviewContentState.update { reviews ->
                     reviews.copy(
-                        reviewContent =
-                        reviews.reviewContent.map { review ->
+                        reviewContent = reviews.reviewContent.map { review ->
                             if (review.reviewId == currentReview.reviewId) {
                                 review.copy(
-                                    likeState =
-                                    state.copy(
-                                        withAnimation = status.withAnimation
+                                    likeState = state.copy(
+                                        withAnimation = isDoubleTap
                                     )
                                 )
                             } else {
@@ -533,5 +576,14 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 }
             )
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        autoScrollProductMedia?.cancel()
+    }
+
+    companion object {
+        private const val DELAY_AUTO_SCROLL_PRODUCT_MEDIA = 3000L
     }
 }
