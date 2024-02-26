@@ -401,7 +401,7 @@ class CartRevampFragment :
         const val SELECTED_AMOUNT_ANIMATION_DURATION = 300L
         const val COACHMARK_VISIBLE_DELAY_DURATION = 500L
         const val DELAY_SHOW_SWIPE_TO_DELETE_ONBOARDING = 1000L
-        const val DELAY_SHOW_BUY_AGAIN_FLOATING_BUTTON = 3000L
+        const val DELAY_SHOW_BUY_AGAIN_FLOATING_BUTTON = 5000L
         const val DELAY_CHECK_BOX_GLOBAL = 500L
         const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
         const val KEY_NEW_BUNDLE_ID = "new_bundle_id"
@@ -565,6 +565,7 @@ class CartRevampFragment :
         initSharedFlow()
         initVM()
         initCoachMark()
+        initFloatingButton()
         binding?.rvCart?.setViewBinderHelper(binderHelper)
     }
 
@@ -1800,6 +1801,7 @@ class CartRevampFragment :
 
                 if (dy != 0) {
                     bulkActionCoachMark?.dismissCoachMark()
+                    updateBuyAgainFloatingButtonVisibility(false)
                 }
 
                 if (shouldShowSwipeToDeleteDefaultProductOnBoarding() || shouldShowSwipeToDeleteBundlingProductOnBoarding()) {
@@ -1811,7 +1813,6 @@ class CartRevampFragment :
                 handleSelectedAmountVisibilityOnScroll(dy)
                 handlePromoButtonVisibilityOnScroll(dy)
                 handleFloatingSelectedAmountVisibility(recyclerView)
-                handleBuyAgainFloatingButtonVisibility(recyclerView, dy)
             }
         })
     }
@@ -2396,33 +2397,11 @@ class CartRevampFragment :
         }
     }
 
-    private fun handleBuyAgainFloatingButtonVisibility(recyclerView: RecyclerView, dy: Int) {
-        if (cartPreferences.hasClickedBuyAgainFloatingButton()) return
-
-        if (dy != 0) {
-            updateBuyAgainFloatingButtonVisibility(false)
-        }
-
-        val topItemPosition =
-            (recyclerView.layoutManager as GridLayoutManager).findLastVisibleItemPosition()
-        if (topItemPosition == RecyclerView.NO_POSITION) return
-
-        val adapterData = viewModel.cartDataList.value
-        if (topItemPosition >= adapterData.size) return
-
-        val indexOfBuyAgain =
-            viewModel.cartDataList.value.indexOfFirst { it is CartBuyAgainHolderData }
-
-        if (topItemPosition >= indexOfBuyAgain) {
-            updateBuyAgainFloatingButtonVisibility(false)
-        }
-    }
-
     private fun handleBuyAgainFloatingButtonVisibilityOnIdle() {
         if (cartPreferences.hasClickedBuyAgainFloatingButton()) return
 
         updateBuyAgainFloatingButtonVisibility(false)
-        cartPreferences.hasClickedBuyAgainFloatingButton()
+        cartPreferences.setHasClickedBuyAgainFloatingButton()
     }
 
     private fun isAtcExternalFlow(): Boolean {
@@ -2513,6 +2492,12 @@ class CartRevampFragment :
         plusCoachMark = CoachMark2(requireContext())
         mainFlowCoachMark = CoachMark2(requireContext())
         bulkActionCoachMark = CoachMark2(requireContext())
+    }
+
+    private fun initFloatingButton() {
+        if (cartPreferences.hasClickedBuyAgainFloatingButton()) {
+            binding?.fabBuyAgain?.gone()
+        }
     }
 
     @OptIn(FlowPreview::class)
@@ -3613,37 +3598,16 @@ class CartRevampFragment :
                 title = floatingButtonData?.title,
                 isVisible = floatingButtonData?.isVisible == true,
                 onClick = {
-//                    cartPreferences.setHasClickedBuyAgainFloatingButton()
+                    cartPreferences.setHasClickedBuyAgainFloatingButton()
                     val buyAgainViewHolderIndex =
                         CartDataHelper.getBuyAgainViewHolderIndex(viewModel.cartDataList.value)
                     if (buyAgainViewHolderIndex != RecyclerView.NO_POSITION) {
                         binding?.rvCart?.smoothScrollToPosition(buyAgainViewHolderIndex)
                     }
-                    updateBuyAgainFloatingButtonVisibility(false)
+                    binding?.fabBuyAgain?.gone()
                 }
             )
         }
-//        viewModel.buyAgainFloatingButtonVisibilityState.observe(viewLifecycleOwner) { isVisible ->
-//            if (cartPreferences.hasClickedBuyAgainFloatingButton() || !isVisible) {
-//                binding?.fabBuyAgain?.gone()
-//            } else {
-//                binding?.fabBuyAgain?.setContent {
-//                    CartBuyAgainFloatingButtonView(
-//                        isVisible = {}
-//                        onClick = {
-// //                            cartPreferences.setHasClickedBuyAgainFloatingButton()
-//                            val buyAgainViewHolderIndex =
-//                                CartDataHelper.getBuyAgainViewHolderIndex(viewModel.cartDataList.value)
-//                            if (buyAgainViewHolderIndex != RecyclerView.NO_POSITION) {
-//                                binding?.rvCart?.smoothScrollToPosition(buyAgainViewHolderIndex)
-//                            }
-//                            binding?.fabBuyAgain?.gone()
-//                        }
-//                    )
-//                }
-//                binding?.fabBuyAgain?.visible()
-//            }
-//        }
     }
 
     private fun onAddCartToWishlistSuccess(
@@ -6105,10 +6069,7 @@ class CartRevampFragment :
     }
 
     private fun updateBuyAgainFloatingButtonVisibility(isVisible: Boolean) {
-        if (cartPreferences.hasClickedBuyAgainFloatingButton()) {
-            viewModel.updateBuyAgainFloatingButtonVisibility(false)
-            return
-        }
+        if (cartPreferences.hasClickedBuyAgainFloatingButton()) return
 
         val rvCart = binding?.rvCart ?: return
         val layoutManager = rvCart.layoutManager as GridLayoutManager
@@ -6123,8 +6084,11 @@ class CartRevampFragment :
             it is CartBuyAgainHolderData
         }
 
+        if (indexOfBuyAgain == RecyclerView.NO_POSITION) return
+
         if (topItemPosition >= indexOfBuyAgain) {
             viewModel.updateBuyAgainFloatingButtonVisibility(false)
+            cartPreferences.setHasClickedBuyAgainFloatingButton()
             return
         }
 

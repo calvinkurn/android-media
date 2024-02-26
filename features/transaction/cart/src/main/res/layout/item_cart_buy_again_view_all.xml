@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="132dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:id="@+id/fl_action"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_circle_100"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/text_view_all"
+        >
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_chevron"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            app:icon_color_light_enable="@color/Unify_NN950"
+            app:icon_color_night_enable="@color/Unify_NN950"
+            app:icon_enable_state="true"
+            app:icon_name="CHEVRON_RIGHT" />
+
+    </FrameLayout>
+    
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_view_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toBottomOf="@id/fl_action"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/Unify_GN500"
+        tools:text="Lihat Semua"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

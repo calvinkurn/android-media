@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_Background"
@@ -10,5 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="6dp"/>
+
+    <com.tokopedia.productcard.ProductCardListView
+        android:id="@+id/productCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:reimagine_template="list"
+        app:useCompatPadding="true" />
 
 </LinearLayout>

@@ -25,4 +25,4 @@ data class CartBuyAgainItemHolderData(
     var clickUrl: String = "",
     var trackerImageUrl: String = "",
     var labelGroupList: List<RecommendationLabel> = listOf()
-) : ImpressHolder()
+) : CartBuyAgainItem, ImpressHolder()
