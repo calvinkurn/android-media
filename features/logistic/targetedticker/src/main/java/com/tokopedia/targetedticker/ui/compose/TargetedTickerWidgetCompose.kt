@@ -17,7 +17,11 @@ import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 @Composable
-fun TargetedTickerWidgetCompose(tickerData: TickerModel?, openWebview: (url: String) -> Unit) {
+fun TargetedTickerWidgetCompose(
+    tickerData: TickerModel?,
+    openWebview: (url: String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     if (tickerData?.item?.isNotEmpty() == true) {
         val model = tickerData.toTickerData().map {
             NestTickerData(
@@ -31,7 +35,7 @@ fun TargetedTickerWidgetCompose(tickerData: TickerModel?, openWebview: (url: Str
             )
         }
         NestTicker(
-            modifier = Modifier.padding(horizontal = 20.dp),
+            modifier = modifier,
             ticker = model
         ) { spannedRange ->
             if (spannedRange.tag == URL_TAG) openWebview(spannedRange.item)

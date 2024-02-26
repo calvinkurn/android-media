@@ -52,7 +52,8 @@ fun ConfirmShippingContent(
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             TargetedTickerWidgetCompose(
                 tickerData = state.tickerData,
-                openWebview = openWebview
+                openWebview = openWebview,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
             InputReference(
                 modifier = Modifier,

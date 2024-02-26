@@ -17,6 +17,7 @@ import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
 import com.tokopedia.nest.components.NestBottomSheetScreen
 import com.tokopedia.nest.components.rememberNestBottomSheetState
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.targetedticker.domain.TickerModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -130,6 +131,26 @@ fun ConfirmShippingScreenPreview() {
                 )
             )
         )
+
+        val tickerData = listOf(
+            TickerModel.TickerItem(
+                type = 3,
+                title = "Pengiriman mengalami kendala",
+                content = "Pengiriman terlambat karena cuaca buruk",
+                linkUrl = "https://tokopedia/help"
+            ),
+            TickerModel.TickerItem(
+                type = 2,
+                title = "Pengiriman menggunakan Kurir Rekomendasi",
+                content = "Informasi mengenai kurir rekomendasi",
+                linkUrl = "https://tokopedia/help"
+            )
+        )
+        val tickerModel = TickerModel(
+            item = tickerData
+        )
+
+
         val state = ConfirmShippingState(
             referenceNumber = "TKP-82845",
             mode = ConfirmShippingMode.CHANGE_COURIER,
@@ -137,7 +158,7 @@ fun ConfirmShippingScreenPreview() {
             courierList = courierList,
             chosenCourier = courierList.first(),
             chosenService = courierList.first().listShipmentPackage.first(),
-            tickerData = null
+            tickerData = tickerModel
         )
         ConfirmShippingScreen(
             pressBack = { /*TODO*/ },
