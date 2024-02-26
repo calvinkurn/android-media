@@ -37,6 +37,10 @@ fun <T : Any> List<T>.assertEmpty() {
         .isEqualTo(0)
 }
 
+infix fun <T : Any> T.equalTo(expected: T) {
+    this.assertEqualTo(expected)
+}
+
 infix fun UGCOnboardingUiState.andThen(fn: UGCOnboardingUiState.() -> Unit) {
     fn()
 }
