@@ -238,7 +238,7 @@ class StoriesGroupFragment @Inject constructor(
                 StoriesEEModel(
                     creativeName = "",
                     creativeSlot = index.plus(1).toString(),
-                    itemId = "${viewModel.mGroup.groupId} - ${storiesGroupHeader.groupId} - ${args.authorId}",
+                    itemId = "${viewModel.mGroup.groupId} - ${storiesGroupHeader.groupId} - ${viewModel.validAuthorId}",
                     itemName = "/ - stories",
                 )
             },

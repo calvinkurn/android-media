@@ -80,6 +80,9 @@ class StoriesViewModel @AssistedInject constructor(
     private val _detailPos = MutableStateFlow(-1)
     private val _resetValue = MutableStateFlow(-1)
 
+    val validAuthorId: String
+        get() = mGroup.author.id.ifBlank { args.authorId }
+
     val mGroup: StoriesGroupItem
         get() {
             val groupPosition = _groupPos.value
@@ -585,7 +588,7 @@ class StoriesViewModel @AssistedInject constructor(
             _productsState.update { product -> product.copy(resultState = ResultState.Loading) }
             val productList =
                 repository.getStoriesProducts(
-                    mGroup.author.id.ifBlank { args.authorId },
+                    validAuthorId,
                     storyId,
                     mGroup.groupName,
                 )
@@ -610,7 +613,7 @@ class StoriesViewModel @AssistedInject constructor(
                 val response = repository.addToCart(
                     productId = product.id,
                     price = product.finalPrice,
-                    shopId = mGroup.author.id.ifBlank { args.authorId },
+                    shopId = validAuthorId,
                     productName = product.title
                 )
                 if (!response) throw MessageErrorException()

@@ -1,6 +1,5 @@
 package com.tokopedia.stories.view.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -531,7 +530,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun buildEventLabel(): String =
-        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - ${viewModel.mDetail.storyType} - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${viewModel.validAuthorId} - ${viewModel.mDetail.storyType} - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
 
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
@@ -735,7 +734,7 @@ class StoriesDetailFragment @Inject constructor(
                 StoriesEEModel(
                     creativeName = "",
                     creativeSlot = position.plus(1).toString(),
-                    itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.args.authorId}",
+                    itemId = "${data.groupId} - ${data.groupName} - ${viewModel.validAuthorId}",
                     itemName = "/ - stories"
                 )
             )
@@ -777,7 +776,7 @@ class StoriesDetailFragment @Inject constructor(
             ProductVariantBottomSheetParams(
                 pageSource = VariantPageSource.STORIES_PAGESOURCE.source,
                 productId = product.id,
-                shopId = mParentPage.args.authorId,
+                shopId = viewModel.validAuthorId,
                 dismissAfterTransaction = false,
                 trackerCdListName = viewModel.storyId
             )
@@ -847,7 +846,7 @@ class StoriesDetailFragment @Inject constructor(
         view: StoriesProductBottomSheet
     ) {
         val eventLabel =
-            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+            "${viewModel.storyId} - ${viewModel.validAuthorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
         if (action == StoriesProductAction.Atc) {
             analytic?.sendClickAtcButtonEvent(
                 eventLabel,
@@ -871,7 +870,7 @@ class StoriesDetailFragment @Inject constructor(
         view: StoriesProductBottomSheet
     ) {
         val eventLabel =
-            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+            "${viewModel.storyId} - ${viewModel.validAuthorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
         analytic?.sendClickProductCardEvent(
             eventLabel,
             "/stories-room - ${viewModel.storyId} - product card",
@@ -885,7 +884,7 @@ class StoriesDetailFragment @Inject constructor(
         view: StoriesProductBottomSheet
     ) {
         val eventLabel =
-            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
+            "${viewModel.storyId} - ${viewModel.validAuthorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
         analytic?.sendViewProductCardEvent(eventLabel, product)
     }
 
