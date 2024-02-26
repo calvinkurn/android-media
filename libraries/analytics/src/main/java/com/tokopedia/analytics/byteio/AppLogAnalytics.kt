@@ -8,6 +8,7 @@ import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
+import com.tokopedia.analytics.byteio.AppLogParam.IS_AD
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
@@ -17,6 +18,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
+import com.tokopedia.analytics.byteio.recommendation.CardName
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ENTER_METHOD
 import com.tokopedia.analyticsdebugger.cassava.Cassava
 import org.json.JSONObject
@@ -247,5 +249,37 @@ object AppLogAnalytics {
 
     fun getPreviousEnterFrom(): Any? {
         return getLastDataBeforeCurrent(ENTER_FROM)
+    }
+
+    fun setGlobalParams(
+        entranceForm: String? = null,
+        enterMethod: String? = null,
+        sourceModule: String? = null,
+        isAd: Int? = null,
+        trackId: String? = null,
+        sourcePageType: SourcePageType? = null,
+        requestId: String? = null,
+    ) {
+        entranceForm?.let {
+            putPageData(ENTRANCE_FORM, entranceForm)
+        }
+        enterMethod?.let {
+            putPageData(ENTER_METHOD, enterMethod)
+        }
+        sourceModule?.let {
+            putPageData(SOURCE_MODULE, sourceModule)
+        }
+        isAd?.let {
+            putPageData(IS_AD, isAd)
+        }
+        trackId?.let {
+            putPageData(TRACK_ID, trackId)
+        }
+        sourcePageType?.let {
+            putPageData(SOURCE_PAGE_TYPE, sourcePageType.str)
+        }
+        requestId?.let {
+            putPageData(REQUEST_ID, requestId)
+        }
     }
 }
