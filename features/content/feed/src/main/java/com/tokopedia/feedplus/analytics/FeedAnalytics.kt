@@ -815,8 +815,8 @@ class FeedAnalytics @AssistedInject constructor(
         productPrice: Double,
         shopId: String,
         cartId: String,
-        dimension40 : String = "",
-        index: Int? = null,
+        dimension40: String = "",
+        index: Int? = null
     ) = Bundle().apply {
         putString(EnhanceEcommerce.KEY_CATEGORY_ID, "")
         putString(EnhanceEcommerce.KEY_DIMENSION40, dimension40)
@@ -947,15 +947,21 @@ class FeedAnalytics @AssistedInject constructor(
             trackerId = "49770"
         ).also { bundle ->
             bundle.putString(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
-            bundle.putParcelableArrayList(KEY_ITEMS, arrayListOf(
-                getProductTrackerBundle(
-                shopId = product.shopId,
-                shopName = product.shopName,
-                cartId = "",
-                productId = product.id,
-                productName = product.name,
-                productPrice = product.price, dimension40 = ITEM_LIST_PRODUCT_HIGHLIGHT, index = 1,
-            )))
+            bundle.putParcelableArrayList(
+                KEY_ITEMS,
+                arrayListOf(
+                    getProductTrackerBundle(
+                        shopId = product.shopId,
+                        shopName = product.shopName,
+                        cartId = "",
+                        productId = product.id,
+                        productName = product.name,
+                        productPrice = product.price,
+                        dimension40 = ITEM_LIST_PRODUCT_HIGHLIGHT,
+                        index = 1
+                    )
+                )
+            )
             bundle.putString(KEY_PAGE_SOURCE, pageSource)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.VIEW_ITEM_LIST, bundle)
@@ -972,17 +978,21 @@ class FeedAnalytics @AssistedInject constructor(
             trackerId = "49771"
         ).also { bundle ->
             bundle.putString(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
-            bundle.putParcelableArrayList(KEY_ITEMS, arrayListOf(
-                getProductTrackerBundle(
-                    shopId = product.shopId,
-                    shopName = product.shopName,
-                    cartId = "",
-                    productId = product.id,
-                    productName = product.name,
-                    productPrice = product.price,
-                    dimension40 = ITEM_LIST_PRODUCT_HIGHLIGHT,
-                    index = 1,
-                )))
+            bundle.putParcelableArrayList(
+                KEY_ITEMS,
+                arrayListOf(
+                    getProductTrackerBundle(
+                        shopId = product.shopId,
+                        shopName = product.shopName,
+                        cartId = "",
+                        productId = product.id,
+                        productName = product.name,
+                        productPrice = product.price,
+                        dimension40 = ITEM_LIST_PRODUCT_HIGHLIGHT,
+                        index = 1
+                    )
+                )
+            )
             bundle.putString(KEY_PAGE_SOURCE, pageSource)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.VIEW_ITEM_LIST, bundle)
@@ -998,23 +1008,27 @@ class FeedAnalytics @AssistedInject constructor(
             trackerId = "49772"
         ).also { bundle ->
             bundle.putString(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
-            bundle.putParcelableArrayList(KEY_ITEMS, arrayListOf(
-                getProductTrackerBundle(
-                    shopId = product.product.shop.id,
-                    shopName = product.product.shop.name,
-                    cartId = product.cartId,
-                    productId = product.product.id,
-                    productName = product.product.title,
-                    productPrice = product.product.finalPrice,
-                    dimension40 = ITEM_LIST_PRODUCT_HIGHLIGHT,
-                    index = 1,
-                )))
+            bundle.putParcelableArrayList(
+                KEY_ITEMS,
+                arrayListOf(
+                    getProductTrackerBundle(
+                        shopId = product.product.shop.id,
+                        shopName = product.product.shop.name,
+                        cartId = product.cartId,
+                        productId = product.product.id,
+                        productName = product.product.title,
+                        productPrice = product.product.finalPrice,
+                        dimension40 = ITEM_LIST_PRODUCT_HIGHLIGHT,
+                        index = 1
+                    )
+                )
+            )
             bundle.putString(KEY_PAGE_SOURCE, pageSource)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.VIEW_ITEM_LIST, bundle)
     }
     fun closeProductHighlight(trackerModel: FeedTrackerDataModel) {
-        val eventLabel =" ${getPrefix(trackerModel.tabType)} - ${entrySource.entryPoint} - ${trackerModel.authorType.name.lowercase()} - ${trackerModel.authorId}"
+        val eventLabel = " ${getPrefix(trackerModel.tabType)} - ${entrySource.entryPoint} - ${trackerModel.authorType.name.lowercase()} - ${trackerModel.authorId}"
         Tracker.Builder()
             .setEvent(Event.CLICK_CONTENT)
             .setEventAction("click - x - product card highlight")
@@ -1038,18 +1052,23 @@ class FeedAnalytics @AssistedInject constructor(
             eventLabel = eventLabel,
             trackerId = "49891"
         ).also { bundle ->
+            bundle.putString(KEY_PAGE_SOURCE, pageSource)
             bundle.putString(KEY_ITEM_LIST, ITEM_LIST_PRODUCT_HIGHLIGHT)
-            bundle.putParcelableArrayList(KEY_ITEMS, arrayListOf(
-                getProductTrackerBundle(
-                    shopId = product.product.shop.id,
-                    shopName = product.product.shop.name,
-                    cartId = product.cartId,
-                    productId = product.product.id,
-                    productName = product.product.title,
-                    productPrice = product.product.finalPrice,
-                    dimension40 = ITEM_LIST_PRODUCT_HIGHLIGHT,
-                    index = 1,
-                )))
+            bundle.putParcelableArrayList(
+                KEY_ITEMS,
+                arrayListOf(
+                    getProductTrackerBundle(
+                        shopId = product.product.shop.id,
+                        shopName = product.product.shop.name,
+                        cartId = product.cartId,
+                        productId = product.product.id,
+                        productName = product.product.title,
+                        productPrice = product.product.finalPrice,
+                        dimension40 = ITEM_LIST_PRODUCT_HIGHLIGHT,
+                        index = 1
+                    )
+                )
+            )
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.CLICK_CONTENT, bundle)
     }
