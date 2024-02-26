@@ -139,7 +139,10 @@ class StoriesGroupFragment @Inject constructor(
 
     private fun showSelectedGroupHighlight(position: Int) {
         if (args.source == StoriesSource.BROWSE_WIDGET.value && mHasShownGroupHighlight) {
-            viewModelAction(StoriesUiAction.PageIsSelected)
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(800)
+                viewModelAction(StoriesUiAction.PageIsSelected)
+            }
             return
         }
 
