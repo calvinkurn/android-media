@@ -79,7 +79,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="15dp"
             android:inflatedId="@id/itemBmgmProductBenefitViewStub"
-            android:layout="@layout/partial_bmgm_add_on_summary"
+            android:layout="@layout/partial_add_on_summary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/dividerProductBenefit" />

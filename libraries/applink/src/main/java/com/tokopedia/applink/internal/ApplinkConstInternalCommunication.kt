@@ -15,6 +15,7 @@ object ApplinkConstInternalCommunication {
      */
 
     // General
+    const val ID = "id"
     const val SOURCE = "source"
 
     // Sharing Experience
@@ -32,8 +33,10 @@ object ApplinkConstInternalCommunication {
      */
     // TokoChatActivity
     const val TOKO_CHAT = "$INTERNAL_COMMUNICATION/tokochat"
+
     // TokoChatListActivity
     const val TOKOCHAT_LIST = "$INTERNAL_COMMUNICATION/tokochat/list"
+
     // TokoChatBottomSheetActivity
     const val TOKOCHAT_BOTTOMSHEET = "$INTERNAL_COMMUNICATION/tokochat/bottomsheet/{type}"
 

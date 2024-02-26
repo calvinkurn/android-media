@@ -5,10 +5,11 @@ import com.tokopedia.analytics.performance.perf.performanceTracing.components.Bl
 import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
+import com.tokopedia.product.detail.common.data.model.pdplayout.LabelIcons
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
 
 /**
@@ -20,10 +21,7 @@ data class ProductContentDataModel(
     var data: ProductContentMainData? = null,
     var isWishlisted: Boolean = false,
     var freeOngkirImgUrl: String = "",
-
-    // Ribbon Data
-    var isNpl: Boolean = false,
-    var shouldShowShareWidget: Boolean = false
+    var isNpl: Boolean = false
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
         { false },
@@ -38,7 +36,7 @@ data class ProductContentDataModel(
 
     override fun type(): String = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
 
@@ -66,9 +64,7 @@ data class ProductContentDataModel(
             }
 
             val bundle = Bundle()
-            if (freeOngkirImgUrl != newData.freeOngkirImgUrl ||
-                shouldShowShareWidget != newData.shouldShowShareWidget
-            ) {
+            if (freeOngkirImgUrl != newData.freeOngkirImgUrl) {
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, PAYLOAD_BOE_SHARE)
                 return bundle
             }
@@ -105,7 +101,9 @@ data class ProductContentMainData(
     var stockWording: String = "",
     var isVariant: Boolean = false,
     var productName: String = "",
-    var isProductActive: Boolean = false
+    var isProductActive: Boolean = false,
+    var isShowPrice: Boolean = true,
+    var labelIcons: List<LabelIcons> = emptyList(),
 ) {
 
     val hasCampaign

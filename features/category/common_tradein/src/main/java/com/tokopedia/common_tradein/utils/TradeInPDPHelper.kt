@@ -1,7 +1,6 @@
 package com.tokopedia.common_tradein.utils
 
 import android.content.Context
-import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -14,22 +13,24 @@ object TradeInPDPHelper {
     const val PARAM_PHONE_TYPE = "PHONE TYPE"
     const val PARAM_PHONE_PRICE = "PHONE PRICE"
 
-    fun pdpToTradeIn(context : Context?,
-                     shopID: String,
-                     shopName: String,
-                     shopBadge: String,
-                     shopLocation: String,
-                     productId: String,
-                     productPrice: Double,
-                     productName: String,
-                     productImage: String?,
-                     minOrder: Int,
-                     selectedWarehouseId: Int,
-                     trackerAttributionPdp: String,
-                     trackerListNamePdp: String,
-                     shippingMinimumPrice: Double,
-                     getProductName: String,
-                     categoryName: String) {
+    fun pdpToTradeIn(
+        context: Context?,
+        shopID: String,
+        shopName: String,
+        shopBadge: String,
+        shopLocation: String,
+        productId: String,
+        productPrice: Double,
+        productName: String,
+        productImage: String?,
+        minOrder: Int,
+        selectedWarehouseId: String,
+        trackerAttributionPdp: String,
+        trackerListNamePdp: String,
+        shippingMinimumPrice: Double,
+        getProductName: String,
+        categoryName: String
+    ) {
         context?.let {
             val cacheManager = SaveInstanceCacheManager(it, true)
             val parcelData = TradeInPDPData(
@@ -43,7 +44,7 @@ object TradeInPDPHelper {
                 productImage = productImage,
                 minOrder = minOrder,
                 selectedWarehouseId = selectedWarehouseId,
-                trackerAttributionPdp =trackerAttributionPdp,
+                trackerAttributionPdp = trackerAttributionPdp,
                 trackerListNamePdp = trackerListNamePdp,
                 shippingMinimumPrice = shippingMinimumPrice,
                 getProductName = getProductName,
@@ -56,7 +57,7 @@ object TradeInPDPHelper {
         }
     }
 
-    fun getDataFromPDP(context: Context?, id : String): TradeInPDPData? {
+    fun getDataFromPDP(context: Context?, id: String): TradeInPDPData? {
         context?.let {
             val cacheManager = SaveInstanceCacheManager(it, id)
             return cacheManager.get(TRADE_IN_PDP_PARCEL_KEY_RESPONSE, TradeInPDPData::class.java)

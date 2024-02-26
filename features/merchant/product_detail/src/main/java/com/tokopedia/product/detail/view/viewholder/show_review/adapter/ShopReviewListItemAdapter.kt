@@ -5,10 +5,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewUiModel
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 class ShopReviewListItemAdapter(
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ListAdapter<ProductShopReviewUiModel.Review, ShopReviewListItemViewHolder>(DIFF_ITEM) {
 
     companion object {
