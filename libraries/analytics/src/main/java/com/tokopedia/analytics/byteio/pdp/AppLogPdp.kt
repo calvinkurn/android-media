@@ -25,9 +25,9 @@ import org.json.JSONObject
 object AppLogPdp {
 
     fun sendPDPEnterPage(product: TrackProductDetail?) {
-//        if (AppLogAnalytics.sourcePageType == null || product == null) {
-//            return
-//        }
+        if (product == null) {
+            return
+        }
 
         AppLogAnalytics.send(EventName.ENTER_PRODUCT_DETAIL, JSONObject().also {
             it.addPage()
