@@ -359,6 +359,6 @@ fun RecommendationItem.asProductTrackModel(
         enterMethod = enterMethod,
         volume = stock,
         originalPrice = (if(slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
-        salesPrice = price.toFloat(),
+        salesPrice = priceInt.toFloat(),
     )
 }
