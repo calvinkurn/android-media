@@ -16,6 +16,7 @@ package com.tokopedia.translator.util
 import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import java.util.ArrayList
 
 internal object ViewUtil {
@@ -41,5 +42,9 @@ internal object ViewUtil {
 
     fun getContentView(activity: Activity?): View? {
         return activity?.window?.decorView?.findViewById(android.R.id.content)
+    }
+
+    fun getContentView(fragment: Fragment?): View? {
+        return fragment?.view
     }
 }
