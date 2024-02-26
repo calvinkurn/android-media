@@ -54,3 +54,10 @@ val PeopleUiModel.isFollowed: Boolean
         is PeopleUiModel.ShopUiModel -> isFollowed
         is PeopleUiModel.UserUiModel -> isFollowed
     }
+
+fun PeopleUiModel.setIsFollowed(shouldFollow: Boolean): PeopleUiModel {
+    return when (this) {
+        is PeopleUiModel.UserUiModel -> copy(isFollowed = shouldFollow)
+        is PeopleUiModel.ShopUiModel -> copy(isFollowed = shouldFollow)
+    }
+}
