@@ -4,11 +4,11 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
 import com.tokopedia.content.common.di.ContentFragmentFactoryModule
+import com.tokopedia.content.product.picker.ugc.di.module.ContentCreationProductTagBindModule
+import com.tokopedia.content.product.picker.ugc.di.module.ContentCreationProductTagModule
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
-import com.tokopedia.createpost.common.di.CreatePostScope
-import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
-import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagModule
 import com.tokopedia.createpost.common.di.ActivityContext
+import com.tokopedia.createpost.common.di.CreatePostScope
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.activity.ProductTagActivity
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew

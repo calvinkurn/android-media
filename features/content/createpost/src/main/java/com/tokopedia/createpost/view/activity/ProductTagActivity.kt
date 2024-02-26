@@ -9,12 +9,13 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.content.product.picker.ugc.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.content.product.picker.ugc.view.uimodel.ContentProductTagArgument
+import com.tokopedia.content.product.picker.ugc.view.uimodel.SelectedProductUiModel
+import com.tokopedia.content.product.picker.ugc.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.createpost.createpost.databinding.ActivityProductTagBinding
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
-import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
-import com.tokopedia.content.common.producttag.view.uimodel.*
-import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import javax.inject.Inject
 

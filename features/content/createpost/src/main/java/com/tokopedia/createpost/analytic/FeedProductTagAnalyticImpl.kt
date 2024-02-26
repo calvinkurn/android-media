@@ -1,7 +1,11 @@
 package com.tokopedia.createpost.analytic
 
-import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
-import com.tokopedia.content.common.producttag.view.uimodel.*
+import com.tokopedia.content.product.picker.ugc.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
+import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductUiModel
+import com.tokopedia.content.product.picker.ugc.view.uimodel.SearchHeaderUiModel
+import com.tokopedia.content.product.picker.ugc.view.uimodel.SearchParamUiModel
+import com.tokopedia.content.product.picker.ugc.view.uimodel.ShopUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
