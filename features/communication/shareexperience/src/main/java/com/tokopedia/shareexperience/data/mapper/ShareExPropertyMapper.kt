@@ -83,7 +83,7 @@ class ShareExPropertyMapper @Inject constructor(
         val body = ShareExBottomSheetPageModel(
             listShareProperty = listOf(
                 ShareExPropertyModel(
-                    socialChannel = channelMapper.generateSocialMediaChannel(),
+                    socialChannel = channelMapper.generateSocialMediaChannel(isDefault = true),
                     commonChannel = channelMapper.generateDefaultChannel()
                 )
             )

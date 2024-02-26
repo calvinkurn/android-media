@@ -1143,10 +1143,9 @@ class ShopPageReimagineHeaderFragment :
     }
 
     private fun getFollowStatus() {
-        val shopFollowButtonVariantType = ShopUtil.getShopFollowButtonAbTestVariant().orEmpty()
         if (checkIfActionButtonSectionWidgetExistsOnHeader()) {
             setFragmentTabContentWrapperFollowButtonLoading(true)
-            shopHeaderViewModel?.getFollowStatusData(shopId, shopFollowButtonVariantType)
+            shopHeaderViewModel?.getFollowStatusData(shopId)
         }
     }
 
