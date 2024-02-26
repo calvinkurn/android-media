@@ -11,7 +11,6 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.pdp.fintech.view.FintechPriceURLDataModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
-import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -102,7 +101,6 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlin.math.roundToLong
 import com.tokopedia.common_tradein.R as common_tradeinR
 
 /**
@@ -130,9 +128,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val productTradeinMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductGeneralInfoDataModel
-
-    val productInstallmentInfoMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.PRODUCT_INSTALLMENT_INFO] as? ProductGeneralInfoDataModel
 
     val productProtectionMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_PROTECTION] as? ProductGeneralInfoDataModel
@@ -543,23 +538,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         additionalData = it.merchantVoucherSummary.additionalData
                     )
                 }
-            }
-
-            // old installment component
-            if (it.productFinancingRecommendationData.data.partnerCode.isNotBlank()) {
-                updateData(ProductDetailConstant.PRODUCT_INSTALLMENT_INFO) {
-                    productInstallmentInfoMap?.run {
-                        subtitle = String.format(
-                            context?.getString(R.string.new_installment_template).orEmpty(),
-                            CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                it.productFinancingRecommendationData.data.monthlyPrice.roundToLong(),
-                                false
-                            )
-                        )
-                    }
-                }
-            } else {
-                removeComponent(ProductDetailConstant.PRODUCT_INSTALLMENT_INFO)
             }
 
             updatePurchaseProtectionData(it.productPurchaseProtectionInfo.ppItemDetailPage)
