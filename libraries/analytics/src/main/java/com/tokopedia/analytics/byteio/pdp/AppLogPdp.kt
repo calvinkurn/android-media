@@ -25,10 +25,9 @@ import org.json.JSONObject
 object AppLogPdp {
 
     fun sendPDPEnterPage(product: TrackProductDetail?) {
-        if (AppLogAnalytics.sourcePageType == null || product == null) {
-            return
-        }
-        // TODO check if track id exist
+//        if (AppLogAnalytics.sourcePageType == null || product == null) {
+//            return
+//        }
 
         AppLogAnalytics.send(EventName.ENTER_PRODUCT_DETAIL, JSONObject().also {
             it.addPage()
@@ -50,9 +49,9 @@ object AppLogPdp {
         product: TrackStayProductDetail,
         quitType: String
     ) {
-        if (AppLogAnalytics.sourcePageType == null) {
-            return
-        }
+//        if (AppLogAnalytics.sourcePageType == null) {
+//            return
+//        }
         AppLogAnalytics.send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
             it.put(AppLogParam.PREVIOUS_PAGE, AppLogAnalytics.previousPageName(2))
             it.put(AppLogParam.PAGE_NAME, PageName.PDP)
