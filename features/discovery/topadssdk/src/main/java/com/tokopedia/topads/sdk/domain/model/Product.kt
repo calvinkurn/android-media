@@ -32,6 +32,7 @@ private const val KEY_APPLINKS = "applinks"
 private const val KEY_IMAGE_PRODUCT = "image_product"
 private const val KEY_CAMPAIGN = "campaign"
 private const val KEY_LABEL_GROUP = "label_group"
+private const val KEY_BADGES = "badges"
 private const val KEY_FREE_ONGKIR = "free_ongkir"
 private const val KEY_CATEGORY_BREADCRUMB = "category_breadcrumb"
 private const val KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED =
@@ -152,6 +153,10 @@ data class Product(
     @SerializedName(KEY_LABEL_GROUP)
     @Expose
     var labelGroupList: MutableList<LabelGroup> = ArrayList(),
+
+    @SerializedName(KEY_BADGES)
+    @Expose
+    var badges: List<Badge> = listOf(),
 
     @SerializedName(KEY_FREE_ONGKIR)
     @Expose

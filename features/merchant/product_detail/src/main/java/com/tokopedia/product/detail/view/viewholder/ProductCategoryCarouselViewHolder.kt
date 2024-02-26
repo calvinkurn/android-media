@@ -11,21 +11,25 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.CategoryCarousel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.view.adapter.ProductCategoryCarouselAdapter
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Yehezkiel on 13/07/21
  */
-class ProductCategoryCarouselViewHolder(view: View,
-                                        private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductCategoryCarouselDataModel>(view) {
+class ProductCategoryCarouselViewHolder(
+    view: View,
+    private val listener: ProductDetailListener
+) : AbstractViewHolder<ProductCategoryCarouselDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_category_carousel_view_holder
     }
 
-    private var categoryCarouselTitle: Typography? = itemView.findViewById(R.id.product_category_title)
-    private var categoryCarouselLink: Typography? = itemView.findViewById(R.id.product_category_link)
+    private var categoryCarouselTitle: Typography? =
+        itemView.findViewById(R.id.product_category_title)
+    private var categoryCarouselLink: Typography? =
+        itemView.findViewById(R.id.product_category_link)
     private var categoryCarouselRv: RecyclerView? = itemView.findViewById(R.id.product_category_rv)
 
     private val adapter = ProductCategoryCarouselAdapter(listener)

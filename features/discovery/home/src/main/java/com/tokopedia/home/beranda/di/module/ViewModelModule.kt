@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.home.beranda.di.HomeScope
+import com.tokopedia.home.beranda.presentation.viewModel.HomeGlobalRecommendationViewModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
 import dagger.Binds
 import dagger.Module
@@ -21,4 +22,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(HomeRecommendationViewModel::class)
     internal abstract fun homeRecommendationViewModel(viewModel: HomeRecommendationViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HomeGlobalRecommendationViewModel::class)
+    internal abstract fun homeGlobalRecommendationViewModel(viewModel: HomeGlobalRecommendationViewModel): ViewModel
 }

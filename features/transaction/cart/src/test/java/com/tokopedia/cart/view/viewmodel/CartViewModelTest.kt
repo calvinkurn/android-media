@@ -2189,6 +2189,25 @@ class CartViewModelTest : BaseCartViewModelTest() {
     }
     // endregion
 
+    // region updateCartCounter
+    @Test
+    fun `WHEN updateCartCounter then updateCartCounterUseCase should called`() {
+        // GIVEN
+        val resultExpected = 3
+        coEvery { updateCartCounterUseCase(Unit) } returns resultExpected
+
+        // WHEN
+        cartViewModel.processUpdateCartCounter()
+
+        // THEN
+        assertEquals(
+            CartGlobalEvent.CartCounterUpdated(resultExpected),
+            cartViewModel.globalEvent.value
+        )
+        // assertTrue(cartViewModel.globalEvent.value is CartGlobalEvent.CartCounterUpdated)
+    }
+    // endregion
+
     override fun tearDown() {
         super.tearDown()
         cartViewModel.globalEvent.removeObserver(cartGlobalEventObserver)
