@@ -13,43 +13,43 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductPickerUserBottomSheet
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
 import com.tokopedia.content.product.picker.ugc.analytic.coordinator.ProductImpressionCoordinator
 import com.tokopedia.content.product.picker.ugc.analytic.coordinator.ShopImpressionCoordinator
-import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSourceBottomSheet
-import com.tokopedia.content.common.producttag.view.fragment.ContentAutocompleteFragment
-import com.tokopedia.content.common.producttag.view.fragment.GlobalSearchFragment
-import com.tokopedia.content.common.producttag.view.fragment.GlobalSearchProductTabFragment
-import com.tokopedia.content.common.producttag.view.fragment.GlobalSearchShopTabFragment
-import com.tokopedia.content.common.producttag.view.fragment.LastPurchasedProductFragment
-import com.tokopedia.content.common.producttag.view.fragment.LastTaggedProductFragment
-import com.tokopedia.content.common.producttag.view.fragment.ShopProductFragment
-import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
-import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
-import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
-import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
-import com.tokopedia.content.common.producttag.view.viewmodel.factory.ProductTagViewModelFactory
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.product.picker.ugc.view.bottomsheet.ProductTagSourceBottomSheet
+import com.tokopedia.content.product.picker.ugc.view.fragment.ContentAutocompleteFragment
+import com.tokopedia.content.product.picker.ugc.view.fragment.GlobalSearchFragment
+import com.tokopedia.content.product.picker.ugc.view.fragment.GlobalSearchProductTabFragment
+import com.tokopedia.content.product.picker.ugc.view.fragment.GlobalSearchShopTabFragment
+import com.tokopedia.content.product.picker.ugc.view.fragment.LastPurchasedProductFragment
+import com.tokopedia.content.product.picker.ugc.view.fragment.LastTaggedProductFragment
+import com.tokopedia.content.product.picker.ugc.view.fragment.ShopProductFragment
+import com.tokopedia.content.product.picker.ugc.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.content.product.picker.ugc.view.uimodel.SelectedProductUiModel
+import com.tokopedia.content.product.picker.ugc.view.uimodel.config.ContentProductTagConfig
+import com.tokopedia.content.product.picker.ugc.view.viewmodel.ProductTagViewModel
+import com.tokopedia.content.product.picker.ugc.view.viewmodel.factory.ProductTagViewModelFactory
 import com.tokopedia.content.test.espresso.clickOnViewChild
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
-import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productUGCViewModel
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
-import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductPickerUserBottomSheet
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.hamcrest.core.AllOf
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.empty_state.R as empty_stateR
-import com.tokopedia.unifycomponents.R as unifycomponentsR
-import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.filter.R as filterR
 import com.tokopedia.sortfilter.R as sortfilterR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * Created by kenny.hadisaputra on 16/09/22
@@ -204,7 +204,7 @@ class ProductChooserUGCRobot(
 
     fun selectProductSource() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(contentcommonR.id.tv_cc_product_tag_product_source)
+            ViewMatchers.withId(contentproductpickerR.id.tv_cc_product_tag_product_source)
         ).perform(ViewActions.click())
 
         await(500)
@@ -212,19 +212,19 @@ class ProductChooserUGCRobot(
 
     fun selectProductSourceOptionTokopedia() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(contentcommonR.id.cl_global_search)
+            ViewMatchers.withId(contentproductpickerR.id.cl_global_search)
         ).perform(ViewActions.click())
     }
 
     fun selectProductSourceOptionLastPurchased() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(contentcommonR.id.cl_last_purchase)
+            ViewMatchers.withId(contentproductpickerR.id.cl_last_purchase)
         ).perform(ViewActions.click())
     }
 
     fun selectSearchBar() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(contentcommonR.id.cl_search)
+            ViewMatchers.withId(contentproductpickerR.id.cl_search)
         ).perform(ViewActions.click())
     }
 
@@ -236,19 +236,19 @@ class ProductChooserUGCRobot(
 
     fun selectSearchBarInShopProductPage() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(contentcommonR.id.sb_shop_product)
+            ViewMatchers.withId(contentproductpickerR.id.sb_shop_product)
         ).perform(ViewActions.click())
     }
 
     fun clickBackButton() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(contentcommonR.id.ic_cc_product_tag_back)
+            ViewMatchers.withId(contentproductpickerR.id.ic_cc_product_tag_back)
         ).perform(ViewActions.click())
     }
 
     fun clickSaveButton() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(contentcommonR.id.btn_save)
+            ViewMatchers.withId(contentproductpickerR.id.btn_save)
         ).perform(ViewActions.click())
     }
 
@@ -260,7 +260,7 @@ class ProductChooserUGCRobot(
 
     fun selectProductInLastTaggedProduct(position: Int) = chainable {
         Espresso.onView(
-            ViewMatchers.withId(contentcommonR.id.rv_last_tagged_product)
+            ViewMatchers.withId(contentproductpickerR.id.rv_last_tagged_product)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 position,
@@ -271,7 +271,7 @@ class ProductChooserUGCRobot(
 
     fun selectProductInLastPurchasedProduct(position: Int) = chainable {
         Espresso.onView(
-            ViewMatchers.withId(contentcommonR.id.rv_last_purchased_product)
+            ViewMatchers.withId(contentproductpickerR.id.rv_last_purchased_product)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 position,
@@ -282,7 +282,7 @@ class ProductChooserUGCRobot(
 
     fun selectProductInGlobalSearchProduct(position: Int) = chainable {
         Espresso.onView(
-            ViewMatchers.withId(contentcommonR.id.rv_global_search_product)
+            ViewMatchers.withId(contentproductpickerR.id.rv_global_search_product)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 position,
@@ -293,7 +293,7 @@ class ProductChooserUGCRobot(
 
     fun selectShopInGlobalSearchShop(position: Int) = chainable {
         Espresso.onView(
-            ViewMatchers.withId(contentcommonR.id.rv_global_search_shop)
+            ViewMatchers.withId(contentproductpickerR.id.rv_global_search_shop)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 position,
@@ -306,7 +306,7 @@ class ProductChooserUGCRobot(
         Espresso.onView(
             AllOf.allOf(
                 ViewMatchers.isDescendantOfA(
-                    ViewMatchers.withId(contentcommonR.id.tab_layout)
+                    ViewMatchers.withId(contentproductpickerR.id.tab_layout)
                 ),
                 ViewMatchers.withText("Barang")
             )
@@ -317,7 +317,7 @@ class ProductChooserUGCRobot(
         Espresso.onView(
             AllOf.allOf(
                 ViewMatchers.isDescendantOfA(
-                    ViewMatchers.withId(contentcommonR.id.tab_layout)
+                    ViewMatchers.withId(contentproductpickerR.id.tab_layout)
                 ),
                 ViewMatchers.withText("Toko")
             )
@@ -328,7 +328,7 @@ class ProductChooserUGCRobot(
         Espresso.onView(
             AllOf.allOf(
                 ViewMatchers.isDescendantOfA(
-                    ViewMatchers.withId(contentcommonR.id.cl_global_search_product)
+                    ViewMatchers.withId(contentproductpickerR.id.cl_global_search_product)
                 ),
                 ViewMatchers.withParent(
                     ViewMatchers.withId(sortfilterR.id.sort_filter_items)
@@ -342,7 +342,7 @@ class ProductChooserUGCRobot(
         Espresso.onView(
             AllOf.allOf(
                 ViewMatchers.isDescendantOfA(
-                    ViewMatchers.withId(contentcommonR.id.cl_global_search_product)
+                    ViewMatchers.withId(contentproductpickerR.id.cl_global_search_product)
                 ),
                 ViewMatchers.withId(sortfilterR.id.sort_filter_prefix)
             )

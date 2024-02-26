@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.shorts.di
+package com.tokopedia.content.product.picker.producttag.di
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
@@ -16,10 +16,11 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 /**
- * Created By : Jonathan Darwin on December 12, 2022
+ * Created By : Jonathan Darwin on October 03, 2022
  */
 @Module
 abstract class ContentCreationProductTagBindTestModule {
+
     @Binds
     @IntoMap
     @FragmentKey(ProductTagParentFragment::class)
