@@ -139,8 +139,8 @@ class RegisterInitialViewModel @Inject constructor(
             val result = discoverUseCase(PARAM_DISCOVER_REGISTER)
             mutableGetProviderResponse.value = Success(result.data)
         }, onError = {
-            mutableGetProviderResponse.value = Fail(it)
-        })
+                mutableGetProviderResponse.value = Fail(it)
+            })
     }
 
     fun registerGoogle(accessToken: String, email: String) {
@@ -211,8 +211,8 @@ class RegisterInitialViewModel @Inject constructor(
             val result = registerCheckUseCase(params)
             onSuccessRegisterCheck().invoke(result)
         }, onError = {
-            onFailedRegisterCheck().invoke(it)
-        })
+                onFailedRegisterCheck().invoke(it)
+            })
     }
 
     fun registerRequestV2(
@@ -226,16 +226,21 @@ class RegisterInitialViewModel @Inject constructor(
             if (keyData.key.isNotEmpty()) {
                 val encryptedPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), true)
                 val registerRequestParam = RegisterRequestParam(
-                    email, encryptedPassword, OS_TYPE_ANDROID, REG_TYPE_EMAIL,
-                    fullName, validateToken, keyData.hash
+                    email,
+                    encryptedPassword,
+                    OS_TYPE_ANDROID,
+                    REG_TYPE_EMAIL,
+                    fullName,
+                    validateToken,
+                    keyData.hash
                 )
                 userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
                 val result = registerRequestV2UseCase(registerRequestParam)
                 onSuccessRegisterRequest(result.data)
             }
         }, onError = {
-            onFailedRegisterRequest(it)
-        })
+                onFailedRegisterRequest(it)
+            })
     }
 
     fun activateUser(
@@ -324,18 +329,6 @@ class RegisterInitialViewModel @Inject constructor(
     private fun onFailedGetUserInfo(throwable: Throwable) {
         mutableGetUserInfoResponse.value = Fail(throwable)
         idlingResourceProvider?.decrement()
-    }
-
-    private fun onSuccessGetTickerInfo(): (List<TickerInfoPojo>) -> Unit {
-        return {
-            mutableGetTickerInfoResponse.value = Success(it)
-        }
-    }
-
-    private fun onFailedGetTickerInfo(): (Throwable) -> Unit {
-        return {
-            mutableGetTickerInfoResponse.value = Fail(it)
-        }
     }
 
     private fun onSuccessRegisterCheck(): (RegisterCheckPojo) -> Unit {

@@ -44,7 +44,6 @@ import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndAdminUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginFingerprintUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
@@ -80,7 +79,6 @@ class LoginEmailPhoneViewModelTest {
     val discoverUseCase = mockk<DiscoverUseCase>(relaxed = true)
     val activateUserUseCase = mockk<ActivateUserUseCase>(relaxed = true)
     val loginTokenUseCase = mockk<LoginTokenUseCase>(relaxed = true)
-    val getProfileUseCase = mockk<GetUserInfoAndSaveSessionUseCase>(relaxed = true)
     val tickerInfoUseCase = mockk<TickerInfoUseCase>(relaxed = true)
     val dynamicBannerUseCase = mockk<DynamicBannerUseCase>(relaxed = true)
     val userSession = mockk<UserSessionInterface>(relaxed = true)
@@ -835,6 +833,20 @@ class LoginEmailPhoneViewModelTest {
     }
 
     @Test
+    fun `on throws exception when get user info`() {
+        /* When */
+        coEvery { getAdminTypeUseCase(Unit) } throws exception
+
+        viewModel.getUserInfo()
+
+        /* Then */
+        coVerify {
+            getAdminTypeUseCase(Unit)
+            getUserInfoObserver.onChanged(Fail(exception))
+        }
+    }
+
+    @Test
     fun `on Success Login Fingerprint`() {
         /* When */
         val responseToken =
@@ -869,6 +881,27 @@ class LoginEmailPhoneViewModelTest {
         assertEquals(
             (viewModel.loginBiometricResponse.value as Fail).throwable.message,
             exception.message
+        )
+    }
+
+    @Test
+    fun `on error login token when login fingerprint`() {
+        // When
+        val response = LoginTokenPojo(LoginToken(errors = arrayListOf(Error("error", "error"))))
+        coEvery {
+            loginFingerprintUseCase(any())
+        } returns response
+
+        viewModel.loginTokenBiometric("test", "1234")
+
+        /* Then */
+        MatcherAssert.assertThat(
+            viewModel.loginBiometricResponse.value,
+            CoreMatchers.instanceOf(Fail::class.java)
+        )
+        assertEquals(
+            (viewModel.loginBiometricResponse.value as Fail).throwable.message,
+            response.loginToken.errors.firstOrNull()?.message ?: ""
         )
     }
 

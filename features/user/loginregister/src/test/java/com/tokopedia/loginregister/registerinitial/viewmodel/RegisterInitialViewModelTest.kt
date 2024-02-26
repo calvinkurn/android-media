@@ -479,6 +479,20 @@ class RegisterInitialViewModelTest {
     }
 
     @Test
+    fun `throws exception when get user info`() {
+        /* When */
+        val exception = Exception()
+        coEvery { getProfileUseCase(Unit) } throws exception
+
+        viewModel.getUserInfo()
+
+        /* Then */
+        verify {
+            getUserInfoObserver.onChanged(Fail(exception))
+        }
+    }
+
+    @Test
     fun `on Success get user info after add pin`() {
         /* When */
         val profileInfo = ProfileInfo(firstName = "yoris")
