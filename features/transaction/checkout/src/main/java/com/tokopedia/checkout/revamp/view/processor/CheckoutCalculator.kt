@@ -369,7 +369,8 @@ class CheckoutCalculator @Inject constructor(
         val newList = calculateWithoutPayment(listData, isTradeInByDropOff, summariesAddOnUiModel)
         var shipmentCost = newList.cost()!!.copy(
             dynamicPlatformFee = newCost.dynamicPlatformFee,
-            dynamicPaymentFees = newCost.dynamicPaymentFees
+            dynamicPaymentFees = newCost.dynamicPaymentFees,
+            usePaymentFees = newCost.usePaymentFees
         )
         var payment = newPayment ?: newList.payment()!!
         var buttonPaymentModel = newList.buttonPayment()!!
@@ -531,11 +532,11 @@ class CheckoutCalculator @Inject constructor(
                     cartItemErrorCounter++
                 }
             }
-            if (shipmentCartItemModel is CheckoutPaymentModel) {
-                if (!hasLoadingItem) {
-                    hasLoadingItem = shipmentCartItemModel.widget.state == CheckoutPaymentWidgetState.Loading
-                }
-            }
+//            if (shipmentCartItemModel is CheckoutPaymentModel) {
+//                if (!hasLoadingItem) {
+//                    hasLoadingItem = shipmentCartItemModel.widget.state == CheckoutPaymentWidgetState.Loading
+//                }
+//            }
         }
         val checkoutOrderModels = listData.filterIsInstance(CheckoutOrderModel::class.java)
         val payment = listData.payment()!!
@@ -552,7 +553,7 @@ class CheckoutCalculator @Inject constructor(
                 ).removeDecimalSuffix()
             return updateShipmentButtonPaymentModel(
                 listData.buttonPayment()!!,
-                enable = !hasLoadingItem,
+                enable = !hasLoadingItem && payment.widget.isValidStateToContinue,
                 totalPrice = priceTotalFormatted
             )
         } else {

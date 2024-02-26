@@ -9,6 +9,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
@@ -171,4 +172,6 @@ interface CheckoutAdapterListener {
     fun onViewGwpBenefit(benefit: CheckoutProductBenefitModel)
 
     fun onRetryGetPayment()
+
+    fun showPaymentFeeTooltipInfoBottomSheet(paymentFee: OrderPaymentFee)
 }

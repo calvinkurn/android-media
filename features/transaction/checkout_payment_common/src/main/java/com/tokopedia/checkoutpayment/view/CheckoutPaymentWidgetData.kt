@@ -6,7 +6,7 @@ data class CheckoutPaymentWidgetData(
 
     val isValidStateToContinue: Boolean
         get() {
-            return state == CheckoutPaymentWidgetState.None || state == CheckoutPaymentWidgetState.Normal
+            return state != CheckoutPaymentWidgetState.Error
         }
 }
 

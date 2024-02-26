@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutCostBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutCostDynamicBinding
+import com.tokopedia.checkout.revamp.view.CheckoutViewModel
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
@@ -466,16 +468,90 @@ class CheckoutCostViewHolder(
     }
 
     private fun renderPaymentFee(cost: CheckoutCostModel) {
-        binding.apply {
-            tvCheckoutCostPaymentFeeTitle.isVisible = false
-            icCheckoutCostPaymentFee.isVisible = false
-            tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
-            tvCheckoutCostPaymentFeeValue.isVisible = false
-            tvCheckoutCostPaymentsTitle.isVisible = false
-            tvCheckoutCostPaymentsValue.isVisible = false
-            icCheckoutCostPaymentsToggle.isVisible = false
-            vCheckoutCostPaymentsExpandedSeparator.isVisible = false
-            llCheckoutCostPaymentsExpanded.isVisible = false
+        if (cost.usePaymentFees) {
+            val paymentFees = cost.dynamicPaymentFees?.filter {
+                !it.code.equals(CheckoutViewModel.PLATFORM_FEE_CODE,
+                    ignoreCase = true)
+            } ?: emptyList()
+
+            val originalPaymentFees = cost.originalPaymentFees
+
+            if ((paymentFees.size + originalPaymentFees.size) > 1) {
+                // render in collapsible
+            } else if (paymentFees.isNotEmpty()) {
+                // render outside
+                val paymentFee = paymentFees.first()
+                binding.apply {
+                    tvCheckoutCostPaymentFeeTitle.text = paymentFee.title
+                    tvCheckoutCostPaymentFeeTitle.isVisible = true
+                    icCheckoutCostPaymentFee.isVisible = paymentFee.showTooltip
+                    icCheckoutCostPaymentFee.setOnClickListener {
+                        if (paymentFee.showTooltip) {
+                            listener.showPaymentFeeTooltipInfoBottomSheet(paymentFee)
+                        }
+                    }
+                    tvCheckoutCostPaymentFeeSlashedValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(paymentFee.slashedFee, false).removeDecimalSuffix()
+                    tvCheckoutCostPaymentFeeSlashedValue.isVisible = paymentFee.showSlashed
+                    tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(paymentFee.fee, false).removeDecimalSuffix()
+                    tvCheckoutCostPaymentFeeValue.isVisible = true
+                    tvCheckoutCostPaymentsTitle.isVisible = false
+                    tvCheckoutCostPaymentsValue.isVisible = false
+                    icCheckoutCostPaymentsToggle.isVisible = false
+                    vCheckoutCostPaymentsExpandedSeparator.isVisible = false
+                    llCheckoutCostPaymentsExpanded.isVisible = false
+                }
+            } else if (originalPaymentFees.isNotEmpty()) {
+                // render outside
+                val paymentFee = originalPaymentFees.first()
+                binding.apply {
+                    tvCheckoutCostPaymentFeeTitle.text = paymentFee.title
+                    tvCheckoutCostPaymentFeeTitle.isVisible = true
+                    icCheckoutCostPaymentFee.isVisible = paymentFee.showTooltip
+                    icCheckoutCostPaymentFee.setOnClickListener {
+                        if (paymentFee.showTooltip) {
+                            listener.showPaymentFeeTooltipInfoBottomSheet(
+                                OrderPaymentFee(
+                                    title = paymentFee.title,
+                                    tooltipInfo = paymentFee.tooltipInfo
+                                )
+                            )
+                        }
+                    }
+                    tvCheckoutCostPaymentFeeSlashedValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(paymentFee.slashedFee, false).removeDecimalSuffix()
+                    tvCheckoutCostPaymentFeeSlashedValue.isVisible = paymentFee.showSlashed
+                    tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(paymentFee.amount, false).removeDecimalSuffix()
+                    tvCheckoutCostPaymentFeeValue.isVisible = true
+                    tvCheckoutCostPaymentsTitle.isVisible = false
+                    tvCheckoutCostPaymentsValue.isVisible = false
+                    icCheckoutCostPaymentsToggle.isVisible = false
+                    vCheckoutCostPaymentsExpandedSeparator.isVisible = false
+                    llCheckoutCostPaymentsExpanded.isVisible = false
+                }
+            } else {
+                binding.apply {
+                    tvCheckoutCostPaymentFeeTitle.isVisible = false
+                    icCheckoutCostPaymentFee.isVisible = false
+                    tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
+                    tvCheckoutCostPaymentFeeValue.isVisible = false
+                    tvCheckoutCostPaymentsTitle.isVisible = false
+                    tvCheckoutCostPaymentsValue.isVisible = false
+                    icCheckoutCostPaymentsToggle.isVisible = false
+                    vCheckoutCostPaymentsExpandedSeparator.isVisible = false
+                    llCheckoutCostPaymentsExpanded.isVisible = false
+                }
+            }
+        } else {
+            binding.apply {
+                tvCheckoutCostPaymentFeeTitle.isVisible = false
+                icCheckoutCostPaymentFee.isVisible = false
+                tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
+                tvCheckoutCostPaymentFeeValue.isVisible = false
+                tvCheckoutCostPaymentsTitle.isVisible = false
+                tvCheckoutCostPaymentsValue.isVisible = false
+                icCheckoutCostPaymentsToggle.isVisible = false
+                vCheckoutCostPaymentsExpandedSeparator.isVisible = false
+                llCheckoutCostPaymentsExpanded.isVisible = false
+            }
         }
     }
 

@@ -3045,7 +3045,7 @@ class CheckoutViewModel @Inject constructor(
         listData.value = checkoutItems
 
         var cost = listData.value.cost()!!
-        val paymentRequest = paymentProcessor.generatePaymentRequest(checkoutItems)
+        var paymentRequest = paymentProcessor.generatePaymentRequest(checkoutItems)
 
         if (payment.data == null) {
             // get payment widget if not yet
@@ -3073,7 +3073,13 @@ class CheckoutViewModel @Inject constructor(
                     )
                 return
             }
+        } else {
+            payment = payment.copy(widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Normal))
         }
+
+        // update payment request
+        checkoutItems[checkoutItems.size - 4] = payment
+        paymentRequest = paymentProcessor.generatePaymentRequest(checkoutItems)
 
         // get platform fee
         val paymentFeeCheckoutRequest = PaymentFeeRequest(
@@ -3159,6 +3165,10 @@ class CheckoutViewModel @Inject constructor(
             }
         }
 
+        // TODO: change to calculate with payment fees -> new fun
+        cost = cost.copy(
+            usePaymentFees = true
+        )
         listData.value =
             calculator.updateShipmentCostModel(
                 listData.value,

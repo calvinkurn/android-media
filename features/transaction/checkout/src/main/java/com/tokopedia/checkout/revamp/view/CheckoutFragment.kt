@@ -72,6 +72,8 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity
 import com.tokopedia.checkout.webview.UpsellWebViewActivity
+import com.tokopedia.checkoutpayment.view.OrderPaymentFee
+import com.tokopedia.checkoutpayment.view.bottomsheet.PaymentFeeInfoBottomSheet
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
@@ -2782,5 +2784,9 @@ class CheckoutFragment :
 
     override fun onRetryGetPayment() {
         viewModel.calculateTotal()
+    }
+
+    override fun showPaymentFeeTooltipInfoBottomSheet(paymentFee: OrderPaymentFee) {
+        PaymentFeeInfoBottomSheet().show(this, paymentFee)
     }
 }
