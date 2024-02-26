@@ -177,7 +177,7 @@
     <dimen name="product_card_reimagine_list_carousel_image_size">100dp</dimen>
     <dimen name="product_card_reimagine_use_compat_padding_size">4dp</dimen>
 
-    <dimen name="product_card_reimagine_image_radius">4dp</dimen>
+    <dimen name="product_card_reimagine_image_radius">12dp</dimen>
     <dimen name="product_card_reimagine_name_image_margin_top">6dp</dimen>
     <dimen name="product_card_reimagine_name_1_line_height">18dp</dimen>
     <dimen name="product_card_reimagine_name_2_line_height">36dp</dimen>
@@ -203,7 +203,7 @@
     <dimen name="product_card_reimagine_nett_price_height">20dp</dimen>
     <dimen name="product_card_reimagine_safe_product_overlay_image_radius">8dp</dimen>
     <dimen name="product_card_reimagine_content_guideline_padding_in_background">8dp</dimen>
-    <dimen name="product_card_reimagine_button_atc_height">28dp</dimen>
+    <dimen name="product_card_reimagine_button_atc_height">32dp</dimen>
     <dimen name="product_card_reimagine_button_atc_margin_top">4dp</dimen>
 
 </resources>

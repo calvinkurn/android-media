@@ -546,18 +546,10 @@ class CartItemViewHolder(
     }
 
     private fun handleCheckboxRefresh(data: CartItemHolderData) {
-        if (data.wholesalePriceData.isEmpty() && shouldRefreshSingleProduct()) {
-            viewHolderListener?.onNeedToRefreshSingleProduct(bindingAdapterPosition)
-        } else {
-            viewHolderListener?.onNeedToRefreshSingleShop(
-                data,
-                bindingAdapterPosition
-            )
-        }
-    }
-
-    private fun shouldRefreshSingleProduct(): Boolean {
-        return true
+        viewHolderListener?.onNeedToRefreshSingleShop(
+            data,
+            bindingAdapterPosition
+        )
     }
 
     private fun renderShopInfo(data: CartItemHolderData) {
@@ -1476,6 +1468,7 @@ class CartItemViewHolder(
         return if (quantity == data.minOrder) {
             binding.qtyEditorProduct.configState.value.qtyMinusButton.copy(
                 iconUnifyId = IconUnify.DELETE_SMALL,
+                layoutId = CART_TRASH_ICON_LAYOUT_ID,
                 colorInt = nestcomponentsR.color.Unify_NN950,
                 qtyEnabledCondition = { _, _ -> true },
                 onClick = {
@@ -1951,6 +1944,8 @@ class CartItemViewHolder(
         private const val BOTTOM_DIVIDER_MARGIN_START = 114
 
         private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
+
+        private const val CART_TRASH_ICON_LAYOUT_ID = "quantity_editor_trash"
     }
 
     private fun getQuantityEditorView(): View {

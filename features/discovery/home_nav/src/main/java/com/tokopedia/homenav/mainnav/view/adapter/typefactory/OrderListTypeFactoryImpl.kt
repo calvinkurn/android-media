@@ -6,14 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderEmptyViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderPaymentRevampViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderProductRevampViewHolder
-import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OtherTransactionViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderPaymentViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderProductViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OtherTransactionRevampViewHolder
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderEmptyModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentRevampModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductRevampModel
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionRevampModel
@@ -28,10 +26,6 @@ class OrderListTypeFactoryImpl(val mainNavListener: MainNavListener) : BaseAdapt
 
     override fun type(orderPaymentRevampModel: OrderPaymentRevampModel): Int {
         return OrderPaymentRevampViewHolder.LAYOUT
-    }
-
-    override fun type(otherTransactionModel: OtherTransactionModel): Int {
-        return OtherTransactionViewHolder.LAYOUT
     }
 
     override fun type(orderEmptyModel: OrderEmptyModel): Int {
@@ -57,7 +51,6 @@ class OrderListTypeFactoryImpl(val mainNavListener: MainNavListener) : BaseAdapt
             OrderEmptyViewHolder.LAYOUT -> OrderEmptyViewHolder(view, mainNavListener)
             OrderProductViewHolder.LAYOUT -> OrderProductViewHolder(view, mainNavListener)
             OrderPaymentViewHolder.LAYOUT -> OrderPaymentViewHolder(view, mainNavListener)
-            OtherTransactionViewHolder.LAYOUT -> OtherTransactionViewHolder(view, mainNavListener)
             OtherTransactionRevampViewHolder.LAYOUT -> OtherTransactionRevampViewHolder(view, mainNavListener)
             else -> super.createViewHolder(view, viewType)
         } as AbstractViewHolder<OrderNavVisitable>

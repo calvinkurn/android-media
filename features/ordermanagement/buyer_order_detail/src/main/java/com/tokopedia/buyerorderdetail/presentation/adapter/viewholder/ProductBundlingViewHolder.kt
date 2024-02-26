@@ -13,6 +13,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.ProductBundlingItemAd
 import com.tokopedia.buyerorderdetail.presentation.adapter.itemdecoration.ProductBundlingItemDecoration
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.order_management_common.util.setupCardDarkMode
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -20,9 +21,11 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ProductBundlingViewHolder(
     itemView: View?,
+    addOnListener: AddOnViewHolder.Listener,
     private val listener: Listener,
     private val navigator: BuyerOrderDetailNavigator
-): BaseToasterViewHolder<ProductListUiModel.ProductBundlingUiModel>(itemView), ProductBundlingItemAdapter.ViewHolder.Listener {
+) : BaseToasterViewHolder<ProductListUiModel.ProductBundlingUiModel>(itemView),
+    ProductBundlingItemAdapter.ViewHolder.Listener {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_product_bundling
@@ -30,7 +33,7 @@ class ProductBundlingViewHolder(
         private const val PRODUCT_BUNDLING_IMAGE_ICON_URL = TokopediaImageUrl.PRODUCT_BUNDLING_IMAGE_ICON_URL
     }
 
-    private val bundleItemAdapter = ProductBundlingItemAdapter(this)
+    private val bundleItemAdapter = ProductBundlingItemAdapter(this, addOnListener)
     private val bundleItemDecoration by lazy {
         itemView?.context?.let {
             ProductBundlingItemDecoration(it)

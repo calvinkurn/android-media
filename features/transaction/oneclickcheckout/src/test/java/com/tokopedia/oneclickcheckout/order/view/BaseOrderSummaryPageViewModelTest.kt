@@ -17,6 +17,7 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
+import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCalculator
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheckoutProcessor
@@ -117,6 +118,8 @@ open class BaseOrderSummaryPageViewModelTest {
     lateinit var helper: OrderSummaryPageViewModelTestHelper
 
     lateinit var orderSummaryPageViewModel: OrderSummaryPageViewModel
+
+    var getOccCartMapper: GetOccCartMapper = GetOccCartMapper()
 
     @Before
     fun setUp() {

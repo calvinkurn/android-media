@@ -80,6 +80,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopU
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
@@ -90,7 +91,7 @@ import kotlin.math.min
 
 class GetOccCartMapper @Inject constructor() {
 
-    fun mapGetOccCartDataToOrderData(data: GetOccCartData): OrderData {
+    fun mapGetOccCartDataToOrderData(data: GetOccCartData, listPromoExternalAutoApplyCode: ArrayList<PromoExternalAutoApply>): OrderData {
         val groupShop = data.groupShop.first()
         val orderCart = OrderCart().apply {
             cartData = data.cartData
@@ -110,7 +111,15 @@ class GetOccCartMapper @Inject constructor() {
             onboarding = mapOnboarding(data.occMainOnboarding),
             cart = orderCart,
             preference = mapProfile(data.profileResponse, groupShop),
-            promo = LastApplyMapper.mapPromo(data.promo),
+            promo = if (listPromoExternalAutoApplyCode.isNotEmpty()) {
+                LastApplyMapper.mapPromoExternalAutoApply(
+                    listPromoExternalAutoApplyCode,
+                    data.promo,
+                    groupShop.cartString
+                )
+            } else {
+                LastApplyMapper.mapPromo(data.promo)
+            },
             payment = mapOrderPayment(data),
             prompt = mapPrompt(data.prompt),
             errorCode = data.errorCode,
