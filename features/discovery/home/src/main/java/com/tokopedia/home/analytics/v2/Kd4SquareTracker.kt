@@ -14,20 +14,21 @@ object Kd4SquareTracker : BaseTrackerConst() {
     private const val IMPRESSION_ACTION = "impression on banner dynamic channel 4 square"
     fun widgetImpressed(model: ChannelModel, userId: String, position: Int): Map<String, Any> {
         val attribute = model.trackingAttributionModel
+        val grid = model.channelGrids.first()
 
         val trackingBuilder = BaseTrackerBuilder().constructBasicPromotionView(
             event = PROMO_VIEW,
             eventAction = IMPRESSION_ACTION,
             eventCategory = Category.HOMEPAGE,
             eventLabel = "${attribute.channelId} - ${attribute.headerName}",
-            promotions = model.channelGrids.mapIndexed { index, grid ->
+            promotions = listOf(
                 Promotion(
                     id = "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}",
-                    name = "/ - p${index} - dynamic channel 4 square - banner - ${attribute.headerName}",
+                    name = "/ - p${position + 1} - dynamic channel 4 square - banner - ${attribute.headerName}",
                     position = (position + 1).toString(),
                     creative = grid.attribution
                 )
-            }
+            )
         )
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
