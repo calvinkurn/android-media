@@ -40,12 +40,15 @@ class ReviewContentAdapter(
         if (payloads.isEmpty()) {
             onBindViewHolder(holder, position)
         } else {
-            payloads.forEach {
-                when (val payload = it) {
-                    is Like -> holder.bindLike(payload.state)
-                    is WatchMode -> holder.bindWatchMode(payload.isWatchMode)
-                    is MediaDataChanged -> holder.bindMediaDataChanged(payload.mediaData)
-                    is ScrollingChanged -> holder.bindScrolling(payload.isScrolling)
+            payloads.forEach { payloadData ->
+                val data = payloadData as? List<*> ?: return@forEach
+                data.forEach {
+                    when (val payload = it) {
+                        is Like -> holder.bindLike(payload.state)
+                        is WatchMode -> holder.bindWatchMode(payload.isWatchMode)
+                        is MediaDataChanged -> holder.bindMediaDataChanged(payload.mediaData)
+                        is ScrollingChanged -> holder.bindScrolling(payload.isScrolling)
+                    }
                 }
             }
         }
@@ -80,14 +83,13 @@ class ReviewContentAdapter(
         override fun getChangePayload(
             oldItem: ReviewContentUiModel,
             newItem: ReviewContentUiModel
-        ): Any? {
-            return when {
-                oldItem.likeState != newItem.likeState -> Like(newItem.likeState)
-                oldItem.isWatchMode != newItem.isWatchMode -> WatchMode(newItem.isWatchMode)
-                oldItem.medias != newItem.medias -> MediaDataChanged(newItem.medias)
-                oldItem.isScrolling != newItem.isScrolling -> ScrollingChanged(newItem.isScrolling)
-                else -> super.getChangePayload(oldItem, newItem)
-            }
+        ): Any {
+            val payloads = mutableListOf<Payload>()
+            if (oldItem.likeState != newItem.likeState) payloads.add(Like(newItem.likeState))
+            if (oldItem.isWatchMode != newItem.isWatchMode) payloads.add(WatchMode(newItem.isWatchMode))
+            if (oldItem.medias != newItem.medias) payloads.add(MediaDataChanged(newItem.medias))
+            if (oldItem.isScrolling != newItem.isScrolling) payloads.add(ScrollingChanged(newItem.isScrolling))
+            return payloads
         }
     }
 }
