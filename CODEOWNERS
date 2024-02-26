@@ -1,8 +1,9 @@
 /features/merchant/feed_shop/                           @tokopedia/android-minionlance-dev
-/features/category/       				                @tokopedia/android-miniondarth-dev
+
 /features/discovery/topadssdk/                      	@tokopedia/android-minionjerry-dev
 /features/discovery/home/                           	@tokopedia/android-miniondave-dev
 /features/discovery/home_explore_category/              @tokopedia/android-miniondave-dev
+/features/category/explore_category      			    @tokopedia/android-miniondave-dev
 /features/discovery/home_component/                    	@tokopedia/android-miniondave-dev
 /features/discovery/home_component_header/              @tokopedia/android-miniondave-dev
 /features/discovery/home_nav/                           @tokopedia/android-miniondave-dev
@@ -108,6 +109,13 @@
 /features/merchant/product_manage_list/                 @tokopedia/android-minionpaul-dev
 /features/category/catalog				                @tokopedia/android-minionpaul-dev
 /features/category/catalog_common		                @tokopedia/android-minionpaul-dev
+/features/category/catalog_library		                @tokopedia/android-minionpaul-dev
+/features/category/moneyin     				            @tokopedia/android-minionpaul-dev
+/features/category/tradein       				        @tokopedia/android-minionpaul-dev
+/features/category/common_tradein       				@tokopedia/android-minionpaul-dev
+
+/features/category/discovery2       				    @tokopedia/android-miniondarth-dev
+/features/category/discovery_component      			@tokopedia/android-miniondarth-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionjerry-dev
 /features/top_ads/top_ads_management/                   @tokopedia/android-minionjerry-dev
@@ -222,6 +230,8 @@
 /features/logistic/dilayanitokopedia/                   @tokopedia/android-minionbob-dev
 /features/logistic/targetedticker/                      @tokopedia/android-minionbob-dev
 /features/promo/promo-usage/                            @tokopedia/android-minionbob-dev
+/features/category/epharmacy       				        @tokopedia/android-minionbob-dev
+/features/category/common_epharmacy   			        @tokopedia/android-minionbob-dev
 
 /features/media/mediauploader/			                @tokopedia/android-minionlance-dev
 /features/media/medialoader/                            @tokopedia/android-minionlance-dev
