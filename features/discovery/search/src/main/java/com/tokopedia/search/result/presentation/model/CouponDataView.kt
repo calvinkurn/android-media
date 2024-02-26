@@ -107,10 +107,12 @@ data class CouponDataView(
         )
     }
 
-    fun createGetCouponDataRequestParam(): RequestParams {
+    fun createGetCouponDataRequestParam(isDarkMode: Boolean = false): RequestParams {
         val slugList = getSlugList()
+        val themeType = if(isDarkMode) REQUEST_PARAM_THEME_TYPE_DARK else REQUEST_PARAM_THEME_TYPE_LIGHT
         return RequestParams.create().apply {
             putObject(REQUEST_PARAM_SLUGS, slugList)
+            putObject(REQUEST_PARAM_THEME_TYPE, themeType)
         }
     }
 
@@ -126,7 +128,7 @@ data class CouponDataView(
                 it
             )
         }
-        val catalogId = jsonMetaDataCta?.getString(JSON_METADATA_CATALOG_ID) ?: ""
+        val catalogId = (jsonMetaDataCta?.getLong(JSON_METADATA_CATALOG_ID) ?: 0)
         val requestParams = RequestParams.create().apply {
             putObject(REQUEST_PARAM_CATALOG_ID, catalogId)
         }
@@ -171,7 +173,10 @@ data class CouponDataView(
 
     companion object {
         private const val REQUEST_PARAM_SLUGS = "slugs"
+        private const val REQUEST_PARAM_THEME_TYPE = "themeType"
         private const val REQUEST_PARAM_CATALOG_ID = "catalog_id"
+        private const val REQUEST_PARAM_THEME_TYPE_LIGHT = "light"
+        private const val REQUEST_PARAM_THEME_TYPE_DARK = "dark"
         private const val WIDGET_KEY_BENEFIT_TYPE = "benefit-type"
         private const val WIDGET_KEY_STORE_NAME = "store-name"
         private const val WIDGET_KEY_BENEFIT_AMOUNT = "benefit-amount"

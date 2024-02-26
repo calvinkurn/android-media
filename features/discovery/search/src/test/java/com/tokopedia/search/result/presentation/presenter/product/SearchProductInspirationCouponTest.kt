@@ -9,6 +9,7 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchCouponModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.SearchRedeemCouponModel
 import com.tokopedia.search.result.presentation.model.CouponDataView
 import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.shouldBe
@@ -35,6 +36,10 @@ private const val inspirationProductGetCouponDataHabisFirstPosition =
     "searchproduct/inspirationcoupon/inspiration-product-get-coupon-data-habis-first.json"
 private const val inspirationProductGetCouponDataRedirect =
     "searchproduct/inspirationcoupon/inspiration-product-get-coupon-data-redirect.json"
+private const val inspirationProductGetCouponDataClaim =
+    "searchproduct/inspirationcoupon/inspiration-product-get-coupon-data-claim.json"
+private const val inspirationProductRedeemCouponData =
+    "searchproduct/inspirationcoupon/inspiration-product-redeem-coupon-data.json"
 
 internal class SearchProductInspirationCouponTest : ProductListPresenterTestFixtures() {
     private val visitableListSlot = slot<List<Visitable<*>>>()
@@ -264,7 +269,7 @@ internal class SearchProductInspirationCouponTest : ProductListPresenterTestFixt
 
         `When Load Data Product Search With Data`(searchProductModel)
         /**
-         * 1 Address, 8 Products, carousel coupon should be deleted from visitable list
+         * 1 Address, 8 Products, carousel coupon should show second coupon
          */
         visitableList.size shouldBe 10
 
@@ -319,23 +324,112 @@ internal class SearchProductInspirationCouponTest : ProductListPresenterTestFixt
         // Get CouponDataView from visitable
         val couponList = visitableList.filterIsInstance<CouponDataView>()
         `Then assert coupon list size is search carousel size`(couponList, searchProductModel)
-        every { inspirationCarouselView.openLink(any(), any()) } returns Unit
+        `Given view openlink success`()
         // Test CTA
         val targetCouponCta = couponList[0]
-        assert(targetCouponCta.couponWidgetData1 != null)
-        productListPresenter.ctaCoupon(targetCouponCta, targetCouponCta.couponWidgetData1!!)
-        targetCouponCta.couponWidgetData1?.widgetInfo?.ctaList?.get(0)?.jsonMetadata
+        `Then Assert Widget Data Exist`(targetCouponCta)
+
+        `When cta coupon clicked`(targetCouponCta)
+
         val jsonMetaData =
             targetCouponCta.couponWidgetData1?.widgetInfo?.ctaList?.get(0)?.jsonMetadata?.let {
                 JSONObject(
                     it
                 )
             }
+        `Then verify open link called once with correct json metadata`(jsonMetaData)
+    }
+
+    private fun `Then verify open link called once with correct json metadata`(
+        jsonMetaData: JSONObject?
+    ) {
         verify(exactly = 1) {
             inspirationCarouselView.openLink(
                 jsonMetaData!!.getString("app_link"),
                 jsonMetaData.getString("url")
             )
         }
+    }
+
+    private fun `When cta coupon clicked`(targetCouponCta: CouponDataView) {
+        productListPresenter.ctaCoupon(targetCouponCta, targetCouponCta.couponWidgetData1!!)
+    }
+
+    private fun `Then Assert Widget Data Exist`(targetCouponCta: CouponDataView) {
+        assert(targetCouponCta.couponWidgetData1 != null)
+    }
+
+    private fun `Given view openlink success`() {
+        every { inspirationCarouselView.openLink(any(), any()) } returns Unit
+    }
+
+    @Test
+    fun `coupon cta claim should claim`() {
+        val searchProductModel: SearchProductModel = inspirationProductCoupon.jsonToObject()
+        val searchCouponModel: SearchCouponModel =
+            inspirationProductGetCouponData.jsonToObject<SearchCouponModel>()
+        val redeemCouponModel: SearchRedeemCouponModel =
+            inspirationProductRedeemCouponData.jsonToObject<SearchRedeemCouponModel>()
+        val requestParamsSlot = slot<RequestParams>()
+        // Setup Call Coupon UseCase
+        `Given couponusecase success`(searchCouponModel, requestParamsSlot)
+        `Given redeem coupon usecase success`(requestParamsSlot, redeemCouponModel)
+
+        `When Load Data Product Search With Data`(searchProductModel)
+        // Get CouponDataView from visitable
+        val couponList = visitableList.filterIsInstance<CouponDataView>()
+        `Then assert coupon list size is search carousel size`(couponList, searchProductModel)
+        val targetCouponCta = couponList[0]
+        val prevJsonMetaData =
+            targetCouponCta.couponWidgetData1?.widgetInfo?.ctaList?.get(0)?.jsonMetadata?.let {
+                JSONObject(
+                    it
+                )
+            }
+
+        // Test CTA
+        `Then Assert Widget Data Exist`(targetCouponCta)
+
+        `When cta coupon clicked`(targetCouponCta)
+
+        `Then assert redeem coupon is called with correct parameter`(
+            prevJsonMetaData,
+            requestParamsSlot
+        )
+
+        val updatedCouponCta = couponList[0].couponWidgetData1?.widgetInfo?.ctaList?.get(0)
+        `Then assert update coupon cta has been updated with redeem cta`(
+            updatedCouponCta,
+            redeemCouponModel
+        )
+    }
+
+    private fun `Given redeem coupon usecase success`(
+        requestParamsSlot: CapturingSlot<RequestParams>,
+        redeemCouponModel: SearchRedeemCouponModel
+    ) {
+        redeemCouponUseCase.stubExecute(requestParamsSlot) returns redeemCouponModel
+    }
+
+    private fun `Then assert redeem coupon is called with correct parameter`(
+        prevJsonMetaData: JSONObject?,
+        requestParamsSlot: CapturingSlot<RequestParams>
+    ) {
+        verify { redeemCouponUseCase.execute(any(), any(), any()) }
+        val catalogId = prevJsonMetaData?.getLong("catalog_id") ?: 0
+        requestParamsSlot.captured.getLong("catalog_id", -1) shouldBe catalogId
+    }
+
+    private fun `Then assert update coupon cta has been updated with redeem cta`(
+        updatedCouponCta: SearchCouponModel.Cta?,
+        redeemCouponModel: SearchRedeemCouponModel
+    ) {
+        updatedCouponCta?.text shouldBe redeemCouponModel.hachikoRedeem?.ctaList?.getOrNull(0)?.text
+        updatedCouponCta?.type shouldBe redeemCouponModel.hachikoRedeem?.ctaList?.getOrNull(0)?.type
+        updatedCouponCta?.isDisabled shouldBe redeemCouponModel.hachikoRedeem?.ctaList?.getOrNull(0)?.isDisabled
+        updatedCouponCta?.jsonMetadata shouldBe redeemCouponModel.hachikoRedeem?.ctaList?.getOrNull(
+            0
+        )?.jsonMetadata
+        updatedCouponCta?.toasters shouldBe redeemCouponModel.hachikoRedeem?.ctaList?.getOrNull(0)?.toasters
     }
 }
