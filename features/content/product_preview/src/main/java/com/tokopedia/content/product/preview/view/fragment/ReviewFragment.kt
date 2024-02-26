@@ -95,6 +95,7 @@ class ReviewFragment @Inject constructor(
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 when (newState) {
                     RecyclerView.SCROLL_STATE_IDLE -> {
+                        analytics.onSwipeReviewNextContent()
                         val position = getCurrentPosition()
                         viewModel.onAction(ProductPreviewAction.ReviewContentSelected(position))
                         viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(position, false))
@@ -198,10 +199,6 @@ class ReviewFragment @Inject constructor(
                             }
                         }
 
-                        is ProductPreviewEvent.TrackReviewNextVerticalScroll -> {
-                            analytics.onSwipeReviewNextContent()
-                        }
-
                         else -> {}
                     }
                 }
@@ -277,6 +274,10 @@ class ReviewFragment @Inject constructor(
     /**
      * Review Media Listener
      */
+    override fun onReviewMediaScrolled() {
+        analytics.onSwipeContentAndTab()
+    }
+
     override fun onPauseResumeVideo() {
         analytics.onClickPauseOrPlayVideo(ProductPreviewTabUiModel.TAB_REVIEW_KEY)
     }

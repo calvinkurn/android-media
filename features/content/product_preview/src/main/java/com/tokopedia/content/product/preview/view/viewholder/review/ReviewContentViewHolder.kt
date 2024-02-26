@@ -88,6 +88,7 @@ class ReviewContentViewHolder(
     private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+            reviewInteractionListener.onReviewMediaScrolled()
             val position = getContentCurrentPosition()
             binding.pcReviewContent.setCurrentIndicator(position)
             reviewMediaListener.onMediaSelected(position)
@@ -169,6 +170,10 @@ class ReviewContentViewHolder(
 
     fun bindMediaDataChanged(mediaData: List<ReviewMediaUiModel>) {
         reviewMediaAdapter.submitList(mediaData)
+
+        val position = mediaData.indexOfFirst { it.selected }
+        val exactPosition = position.coerceAtLeast(0)
+        scrollTo(exactPosition)
     }
 
     private fun bindMedia(
@@ -337,6 +342,11 @@ class ReviewContentViewHolder(
         setCurrentIndicator(mediaSelectedPosition)
     }
 
+    private fun scrollTo(position: Int) {
+        binding.rvReviewMedia.smoothScrollToPosition(position)
+        binding.pcReviewContent.setCurrentIndicator(position)
+    }
+
     override fun onImpressedImage() {
         reviewMediaListener.onImpressedImage()
     }
@@ -376,11 +386,13 @@ class ReviewContentViewHolder(
     override fun onScrubbing() {
         binding.groupReviewDetails.hide()
         binding.groupReviewInteraction.hide()
+        binding.pcReviewContent.hide()
     }
 
     override fun onStopScrubbing() {
         binding.groupReviewDetails.show()
         binding.groupReviewInteraction.show()
+        binding.pcReviewContent.show()
     }
 
     data class DescriptionUiModel(

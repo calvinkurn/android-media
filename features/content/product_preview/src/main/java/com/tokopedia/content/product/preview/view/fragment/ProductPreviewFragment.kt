@@ -199,6 +199,7 @@ class ProductPreviewFragment @Inject constructor(
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             updateSelectedTabView(position)
+            viewModel.onAction(ProductPreviewAction.TabSelected(position))
         }
 
         override fun onPageScrollStateChanged(state: Int) {
@@ -207,6 +208,7 @@ class ProductPreviewFragment @Inject constructor(
 
             val position = binding.vpProductPreview.currentItem
             viewModel.onAction(ProductPreviewAction.TabSelected(position))
+            analytics.onSwipeContentAndTab()
         }
     }
 
@@ -282,9 +284,6 @@ class ProductPreviewFragment @Inject constructor(
                         binding.viewFooter.gone()
                     }
                     is ProductPreviewEvent.UnknownSourceData -> activity?.finish()
-                   is ProductPreviewEvent.TrackAllHorizontalScroll -> {
-                        analytics.onSwipeContentAndTab()
-                    }
                     else -> return@collect
                 }
             }
