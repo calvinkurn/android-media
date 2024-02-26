@@ -84,7 +84,6 @@ class SetupSaveProductViewModelTest {
 
     @Test
     fun `when user wants to save products and failed, it should trigger trigger event error`() {
-
         coEvery { mockRepo.setProductTags(any(), any()) } throws mockException
 
         val robot = ContentProductPickerSellerViewModelRobot(
@@ -99,9 +98,9 @@ class SetupSaveProductViewModelTest {
                 robot.submitAction(ProductSetupAction.SaveProducts)
             }
 
-            state[state.lastIndex-1].saveState.isLoading.assertEqualTo(true)
+            state[state.lastIndex - 1].saveState.isLoading.assertEqualTo(true)
             state.last().saveState.isLoading.assertEqualTo(false)
-            event.last().assertEqualTo(ProductChooserEvent.ShowError(mockException))
+            event.last().assertEqualTo(ProductChooserEvent.ShowError(mockException, null))
         }
     }
 }

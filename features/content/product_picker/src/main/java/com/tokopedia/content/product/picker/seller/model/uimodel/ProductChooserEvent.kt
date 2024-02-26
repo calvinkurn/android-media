@@ -6,11 +6,11 @@ package com.tokopedia.content.product.picker.seller.model.uimodel
 sealed interface ProductChooserEvent {
 
     object SaveProductSuccess : ProductChooserEvent
-    data class ShowError(val error: Throwable) : ProductChooserEvent
+    data class ShowError(val error: Throwable, val customMessage: String?) : ProductChooserEvent
 
     data class GetDataError(
         val throwable: Throwable,
-        val action: (() -> Unit)? = null,
+        val action: (() -> Unit)? = null
     ) : ProductChooserEvent
 
     data class DeleteProductSuccess(
@@ -19,11 +19,11 @@ sealed interface ProductChooserEvent {
 
     data class DeleteProductError(
         val throwable: Throwable,
-        val action: (() -> Unit)? = null,
+        val action: (() -> Unit)? = null
     ) : ProductChooserEvent
 
     data class FailPinUnPinProduct(
         val throwable: Throwable,
-        val isPinned: Boolean,
+        val isPinned: Boolean
     ) : ProductChooserEvent
 }

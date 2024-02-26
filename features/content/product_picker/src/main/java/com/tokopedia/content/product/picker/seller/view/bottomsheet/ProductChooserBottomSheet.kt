@@ -249,12 +249,11 @@ class ProductChooserBottomSheet @Inject constructor(
                         mListener?.onSetupSuccess(this@ProductChooserBottomSheet)
                     }
                     is ProductChooserEvent.ShowError -> {
-                        val customErrorMessage = it.error.message.ifNullOrBlank {
-                            getString(R.string.product_chooser_error_save)
-                        }
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = customErrorMessage
+                            customErrMessage = it.customMessage.ifNullOrBlank {
+                                getString(R.string.product_chooser_error_save)
+                            }
                         )
                     }
                     else -> {}
