@@ -54,70 +54,34 @@ object AppLogRecommendation {
         AppLogAnalytics.send(
             EventName.ENTER_PAGE,
             JSONObject().apply {
-                // TODO enter_from, enter_method
+                AppLogAnalytics.getLastData(AppLogParam.ENTER_FROM)
+                AppLogAnalytics.getLastData(AppLogParam.ENTER_METHOD)
                 addPage()
             }
         )
     }
 
     private fun AppLogRecommendationProductModel.setGlobalParams() {
-        setGlobalParam(
+        AppLogAnalytics.setGlobalParams(
             entranceForm = entranceForm,
             enterMethod = enterMethod,
             sourceModule = sourceModule,
-            listName = listName,
-            listNum = listNum,
-            itemOrder = itemOrder,
             isAd = isAd,
             trackId = trackId,
             sourcePageType = SourcePageType.PRODUCT_CARD,
-            recParams = recParams,
             requestId = requestId,
         )
     }
 
     private fun AppLogRecommendationCardModel.setGlobalParams() {
-        setGlobalParam(
+        AppLogAnalytics.setGlobalParams(
             entranceForm = entranceForm,
             enterMethod = enterMethod,
             sourceModule = sourceModule,
-            listName = listName,
-            listNum = listNum,
-            itemOrder = itemOrder,
             isAd = isAd,
             trackId = trackId,
             sourcePageType = SourcePageType.PRODUCT_CARD,
-            recParams = recParams,
             requestId = requestId,
-            cardName = cardName,
         )
-    }
-
-    private fun setGlobalParam(
-        entranceForm: String,
-        enterMethod: String = "",
-        sourceModule: String,
-        listName: String,
-        listNum: Int,
-        itemOrder: Int,
-        isAd: Int,
-        trackId: String,
-        cardName: CardName? = null,
-        sourcePageType: SourcePageType,
-        recParams: String,
-        requestId: String,
-    ) {
-        AppLogAnalytics.putPageData(AppLogParam.ENTRANCE_FORM, entranceForm)
-        AppLogAnalytics.putPageData(AppLogParam.ENTER_FROM, enterMethod)
-        AppLogAnalytics.putPageData(AppLogParam.SOURCE_MODULE, sourceModule)
-        AppLogAnalytics.putPageData(AppLogParam.LIST_NAME, listName)
-        AppLogAnalytics.putPageData(AppLogParam.LIST_NUM, listNum)
-        AppLogAnalytics.putPageData(AppLogParam.ITEM_ORDER, itemOrder)
-        AppLogAnalytics.putPageData(AppLogParam.IS_AD, isAd)
-        AppLogAnalytics.putPageData(AppLogParam.TRACK_ID, trackId)
-        cardName?.let { AppLogAnalytics.putPageData(AppLogParam.CARD_NAME, it.str) }
-        AppLogAnalytics.putPageData(AppLogParam.SOURCE_PAGE_TYPE, sourcePageType.str)
-        AppLogAnalytics.putPageData(AppLogParam.REC_PARAMS, recParams)
-        AppLogAnalytics.putPageData(AppLogParam.REQUEST_ID, requestId)
     }
 }

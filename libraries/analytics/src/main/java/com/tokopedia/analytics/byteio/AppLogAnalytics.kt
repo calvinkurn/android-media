@@ -8,6 +8,7 @@ import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
+import com.tokopedia.analytics.byteio.AppLogParam.IS_AD
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
@@ -17,6 +18,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
+import com.tokopedia.analytics.byteio.recommendation.CardName
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ENTER_METHOD
 import com.tokopedia.analyticsdebugger.cassava.Cassava
 import org.json.JSONObject
@@ -245,5 +247,23 @@ object AppLogAnalytics {
 
     fun getPreviousEnterFrom(): Any? {
         return getLastDataBeforeCurrent(ENTER_FROM)
+    }
+
+    fun setGlobalParams(
+        entranceForm: String,
+        enterMethod: String = "",
+        sourceModule: String,
+        isAd: Int,
+        trackId: String,
+        sourcePageType: SourcePageType,
+        requestId: String,
+    ) {
+        putPageData(ENTRANCE_FORM, entranceForm)
+        putPageData(ENTER_METHOD, enterMethod)
+        putPageData(SOURCE_MODULE, sourceModule)
+        putPageData(IS_AD, isAd)
+        putPageData(TRACK_ID, trackId)
+        putPageData(SOURCE_PAGE_TYPE, sourcePageType.str)
+        putPageData(REQUEST_ID, requestId)
     }
 }
