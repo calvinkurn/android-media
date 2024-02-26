@@ -39,6 +39,17 @@ class ActionHandler(
         return super.handleAction(action, view)
     }
 
+    override fun handleAction(action: DivSightAction, view: DivViewFacade): Boolean {
+        //Send impression tracker
+        if (sduiTrackingInterface != null) {
+            sduiTrackingInterface.onViewVisible(action.payload)
+        } else {
+            sendTracker(action.payload)
+        }
+
+        return super.handleAction(action, view)
+    }
+
     override fun handleAction(
         action: DivSightAction,
         view: DivViewFacade,
