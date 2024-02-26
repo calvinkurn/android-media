@@ -9,8 +9,6 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -139,8 +137,6 @@ class StoriesDetailFragment @Inject constructor(
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
-    private var variantSheet: AtcVariantBottomSheet? = null
-
     private val atcVariantViewModel by lazyThreadSafetyNone {
         ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
     }
@@ -185,21 +181,6 @@ class StoriesDetailFragment @Inject constructor(
         return TAG_FRAGMENT_STORIES_DETAIL
     }
 
-    private val variantSheetObserver by lazyThreadSafetyNone {
-        object : DefaultLifecycleObserver {
-            override fun onResume(owner: LifecycleOwner) {
-                variantSheet?.bottomSheetClose?.setOnClickListener {
-                    variantSheet?.dismiss()
-                    viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
-                }
-                variantSheet?.setOnDismissListener {
-                    viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
-                }
-                super.onResume(owner)
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
@@ -210,6 +191,12 @@ class StoriesDetailFragment @Inject constructor(
                 is ContentReportBottomSheet -> fragment.setListener(this)
 
                 is ContentSubmitReportBottomSheet -> fragment.setListener(this)
+
+                is AtcVariantBottomSheet -> {
+                    fragment.setCloseClickListener {
+                        fragment.dismiss()
+                    }
+                }
             }
         }
         super.onCreate(savedInstanceState)
@@ -785,9 +772,7 @@ class StoriesDetailFragment @Inject constructor(
             )
         )
         showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
-            variantSheet = AtcVariantBottomSheet()
-            variantSheet?.lifecycle?.addObserver(variantSheetObserver)
-            variantSheet ?: AtcVariantBottomSheet()
+            AtcVariantBottomSheet()
         }
     }
 
@@ -811,8 +796,6 @@ class StoriesDetailFragment @Inject constructor(
         _dialog = null
 
         mCoachMark = null
-
-        variantSheet?.lifecycle?.removeObserver(variantSheetObserver)
 
         _binding = null
         super.onDestroyView()
