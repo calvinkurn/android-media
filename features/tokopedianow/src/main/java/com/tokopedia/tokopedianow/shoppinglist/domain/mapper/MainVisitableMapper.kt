@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.shoppinglist.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
@@ -202,7 +203,7 @@ internal object MainVisitableMapper {
     fun MutableList<Visitable<*>>.addTitle(
         title: String
     ): MutableList<Visitable<*>> {
-        add(TokoNowTitleUiModel(title))
+        add(TokoNowTitleUiModel(title = title))
         return this
     }
 
@@ -318,5 +319,18 @@ internal object MainVisitableMapper {
         } else {
             this
         }
+    }
+
+    fun MutableList<ShoppingListHorizontalProductCardItemUiModel>.updateProductSelections(
+        productId: String = String.EMPTY,
+        isSelected: Boolean
+    ) {
+        val products = if (productId.isNotBlank()) {
+            map { product -> if (product.id == productId) product.copy(isSelected = isSelected) else product }.toList()
+        } else {
+            map { it.copy(isSelected = isSelected) }.toList()
+        }
+        clear()
+        addAll(products)
     }
 }

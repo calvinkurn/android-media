@@ -15,8 +15,8 @@ internal object GetShoppingListQuery: GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-            query TokonowGetShoppingList(${'$'}$PARAM_SOURCE: String!, ${'$'}$PARAM_WAREHOUSES: [WarehousePerService!]!) {
-              TokonowGetShoppingList(
+            query $OPERATION_NAME(${'$'}$PARAM_SOURCE: String!, ${'$'}$PARAM_WAREHOUSES: [WarehousePerService!]!) {
+              $OPERATION_NAME(
                 queryParam:"",
                 source: ${'$'}$PARAM_SOURCE,
                 warehouses: ${'$'}$PARAM_WAREHOUSES

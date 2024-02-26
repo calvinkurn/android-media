@@ -82,9 +82,17 @@
         android:id="@+id/fbu_back_to_top"
         android:layout_width="65dp"
         android:layout_height="65dp"
+        android:translationZ="3dp"
         app:fbSize="medium"
         app:fbType="back_to_top"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/str_refresh_layout" />
+
+    <com.tokopedia.tokopedianow.common.view.BottomBulkAtcView
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

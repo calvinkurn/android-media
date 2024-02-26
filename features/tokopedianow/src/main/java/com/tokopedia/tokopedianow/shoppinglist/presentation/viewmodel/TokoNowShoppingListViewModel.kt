@@ -51,6 +51,7 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.modifyTopCheckAllState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeLoadMore
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeRetry
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.updateProductSelections
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.GetShoppingListDataResponse
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.SaveShoppingListStateActionParam
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.GetShoppingListUseCase
@@ -59,6 +60,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.LayoutModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
+import com.tokopedia.tokopedianow.shoppinglist.util.Constant.INVALID_INDEX
 import com.tokopedia.tokopedianow.shoppinglist.util.Constant.MAX_TOTAL_PRODUCT_DISPLAYED
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
@@ -97,7 +99,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private companion object {
         const val PRODUCT_RECOMMENDATION_PAGE_NAME = "tokonow_shopping_list"
         const val PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER = 1
-        const val DEBOUNCE_TIMES_SHOPPING_LIST = 500L
+        const val DEBOUNCE_TIMES_SHOPPING_LIST = 1000L
     }
 
     /**
@@ -107,6 +109,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val layout = mutableListOf<Visitable<*>> ()
     private val availableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
     private val unavailableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
+    private val tempCheckUncheckStateParams = mutableListOf<SaveShoppingListStateActionParam>()
 
     private val _uiState: MutableStateFlow<UiState<LayoutModel>> = MutableStateFlow(Loading(LayoutModel(layout.addLoadingState())))
     private val _isOnScrollNotNeeded: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -154,6 +157,12 @@ class TokoNowShoppingListViewModel @Inject constructor(
             isTokonow = true
         )
         productRecommendationUseCase.getData(param)
+    }
+
+    private suspend fun saveShoppingListState() {
+        delay(DEBOUNCE_TIMES_SHOPPING_LIST)
+        saveShoppingListStateUseCase.execute(tempCheckUncheckStateParams)
+        tempCheckUncheckStateParams.clear()
     }
 
     /**
@@ -302,16 +311,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
         _uiState.value = Success(getUpdatedLayout(isRequiredToScrollUp = true))
     }
 
-    private fun saveShoppingListState() {
-        saveShoppingListStateJob?.cancel()
-        saveShoppingListStateJob = launchCatchError(
-            block = {
-                delay(DEBOUNCE_TIMES_SHOPPING_LIST)
-                saveShoppingListStateUseCase.execute(availableProducts.map { SaveShoppingListStateActionParam(productId = it.id, isSelected = it.isSelected) })
-            }, onError = { /* do nothing */ }
-        )
-    }
-
     /**
      * -- public function section --
      */
@@ -357,25 +356,32 @@ class TokoNowShoppingListViewModel @Inject constructor(
         state: ShoppingListProductState,
         isSelected: Boolean
     ) {
-        val tempAvailableProducts = availableProducts.map { it.copy(isSelected = isSelected) }.toList()
-        availableProducts.clear()
-        availableProducts.addAll(tempAvailableProducts)
+        saveShoppingListStateJob?.cancel()
+        saveShoppingListStateJob = launchCatchError(
+            block = {
+                availableProducts.updateProductSelections(
+                    isSelected = isSelected
+                )
 
-        saveShoppingListState()
+                layout
+                    .modifyTopCheckAll(
+                        isSelected = isSelected
+                    )
+                    .modifyExpandCollapseProducts(
+                        state = state,
+                        productLayoutType = AVAILABLE_SHOPPING_LIST,
+                        products = availableProducts
+                    )
 
-        layout
-            .modifyTopCheckAll(
-                isSelected = isSelected
-            )
-            .modifyExpandCollapseProducts(
-                state = state,
-                productLayoutType = AVAILABLE_SHOPPING_LIST,
-                products = availableProducts
-            )
+                _isTopCheckAllSelected.value = isSelected
+                _uiState.value = Success(getUpdatedLayout())
 
-        _isTopCheckAllSelected.value = isSelected
+                tempCheckUncheckStateParams.clear()
+                tempCheckUncheckStateParams.addAll(availableProducts.map { SaveShoppingListStateActionParam(it.id, it.isSelected) })
 
-        _uiState.value = Success(getUpdatedLayout())
+                saveShoppingListState()
+            }, onError = { /* do nothing */ }
+        )
     }
 
     fun selectAllAvailableProducts(
@@ -395,26 +401,38 @@ class TokoNowShoppingListViewModel @Inject constructor(
         productId: String,
         isSelected: Boolean
     ) {
-        val tempAvailableProducts = availableProducts.map { product -> if (product.id == productId) product.copy(isSelected = isSelected) else product }.toList()
-        availableProducts.clear()
-        availableProducts.addAll(tempAvailableProducts)
+        saveShoppingListStateJob?.cancel()
+        saveShoppingListStateJob = launchCatchError(
+            block = {
+                availableProducts.updateProductSelections(
+                    productId = productId,
+                    isSelected = isSelected
+                )
 
-        saveShoppingListState()
+                val isTopCheckAllSelected = availableProducts.all { it.isSelected }
 
-        val isTopCheckAllSelected = availableProducts.all { it.isSelected }
+                layout
+                    .modifyTopCheckAll(
+                        isSelected = isTopCheckAllSelected
+                    )
+                    .modifyProduct(
+                        productId = productId,
+                        isSelected = isSelected
+                    )
 
-        layout
-            .modifyTopCheckAll(
-                isSelected = isTopCheckAllSelected
-            )
-            .modifyProduct(
-                productId = productId,
-                isSelected = isSelected
-            )
+                _isTopCheckAllSelected.value = isTopCheckAllSelected
+                _uiState.value = Success(getUpdatedLayout())
 
-        _isTopCheckAllSelected.value = isTopCheckAllSelected
+                val index = tempCheckUncheckStateParams.indexOfFirst { it.productId == productId }
+                if (index != INVALID_INDEX) {
+                    tempCheckUncheckStateParams[index] = SaveShoppingListStateActionParam(productId, isSelected)
+                } else {
+                    tempCheckUncheckStateParams.add(SaveShoppingListStateActionParam(productId, isSelected))
+                }
 
-        _uiState.value = Success(getUpdatedLayout())
+                saveShoppingListState()
+            }, onError = { /* do nothing */ }
+        )
     }
 
     fun switchRetryToLoadMore() {

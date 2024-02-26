@@ -15,10 +15,10 @@ internal object SaveShoppingListStateQuery: GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-            mutation TokonowSaveShoppingListState(${'$'}$PARAM_SOURCE: String!, ${'$'}$PARAM_ACTION_LIST: [TokonowShoppingListAction!]!){
-              TokonowSaveShoppingListState(
-                source: $PARAM_SOURCE,
-                actionList: $PARAM_ACTION_LIST
+            mutation $OPERATION_NAME(${'$'}$PARAM_SOURCE: String!, ${'$'}$PARAM_ACTION_LIST: [TokonowShoppingListAction!]!){
+              $OPERATION_NAME(
+                source: ${'$'}$PARAM_SOURCE,
+                actionList: ${'$'}$PARAM_ACTION_LIST
               )
               {
                 header {
