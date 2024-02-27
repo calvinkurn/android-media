@@ -5,6 +5,7 @@
     <string name="main_nav_args_source_path_key">pageSourcePath</string>
 
     <string name="content_desc_review">review star</string>
+    <string name="content_desc_product_image">product image</string>
 
     <string name="title_main_nav">Menu Utama</string>
 
@@ -30,6 +31,7 @@
     <string name="title_wishlist_section">Wishlist</string>
     <string name="title_favorite_shop_section">Toko yang di-follow</string>
     <string name="menu_transaction_menu_all_transaction">Daftar Transaksi</string>
+    <string name="menu_transaction_menu_buy_again">Beli Lagi</string>
     <string name="menu_transaction_menu_ticket">E-tiket &#38; E-voucher Aktif</string>
     <string name="menu_transaction_menu_review">Ulasan</string>
     <string name="title_activity_revamp">Aktivitasmu</string>
