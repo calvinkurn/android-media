@@ -14,7 +14,7 @@ import org.junit.runners.Parameterized
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
-class SellerHomeStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(startupMode, PACKAGE_NAME) {
+class SellerHomeStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(startupMode) {
 
     companion object {
         private const val PACKAGE_NAME = MacroIntent.TKPD_PACKAGE_SELLER_APP
@@ -46,4 +46,6 @@ class SellerHomeStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmar
     }
 
     override fun traceName(): String = TRACE_NAME
+
+    override fun packageName(): String = PACKAGE_NAME
 }
