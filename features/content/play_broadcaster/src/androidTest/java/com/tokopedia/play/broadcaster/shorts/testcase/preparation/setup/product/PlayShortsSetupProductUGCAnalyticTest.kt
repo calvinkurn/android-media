@@ -12,6 +12,7 @@ import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
+import com.tokopedia.play.broadcaster.shorts.builder.ugc.ProductPickerUgcModelBuilder
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsTestComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
@@ -50,11 +51,12 @@ class PlayShortsSetupProductUGCAnalyticTest {
     private val mockAccountManager: PlayShortsAccountManager = mockk(relaxed = true)
 
     private val uiModelBuilder = ShortsUiModelBuilder()
+    private val ugcModelBuilder = ProductPickerUgcModelBuilder()
 
     private val mockShortsConfig = uiModelBuilder.buildShortsConfig()
     private val mockAccountList = uiModelBuilder.buildAccountListModel(usernameBuyer = true, tncBuyer = true)
     private val mockAccountUser = mockAccountList[1]
-    private val mockLastTaggedProducts = uiModelBuilder.buildLastTaggedProducts()
+    private val mockLastTaggedProducts = ugcModelBuilder.buildLastTaggedProducts()
 
     init {
         coEvery { mockShortsRepo.getAccountList() } returns mockAccountList

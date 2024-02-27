@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.shorts.helper
 
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
@@ -187,7 +186,7 @@ fun clickNextOnProductPickerSummary() {
 
 /** Product Picker UGC */
 fun clickBreadcrumb() {
-    click(contentcommonR.id.tv_cc_product_tag_product_source)
+    click(contentproductpickerR.id.tv_cc_product_tag_product_source)
 }
 
 fun clickCloseBreadcrumb() {
@@ -195,7 +194,7 @@ fun clickCloseBreadcrumb() {
 }
 
 fun clickProductTagSourceTokopedia() {
-    click(contentcommonR.id.cl_global_search)
+    click(contentproductpickerR.id.cl_global_search)
 }
 
 /** Summary page */
