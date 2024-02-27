@@ -10,7 +10,6 @@ import com.yandex.div.core.DivActionHandler
 import com.yandex.div.core.DivViewFacade
 import com.yandex.div2.DivAction
 import com.yandex.div2.DivSightAction
-import com.yandex.div2.DivVisibilityAction
 import org.json.JSONObject
 
 
@@ -22,7 +21,6 @@ class ActionHandler(
 
     companion object{
         const val HOST_ROUTE = "route"
-        const val QUERY_SEPARATOR = "&&"
         const val IDENTIFIER_ANDROID_APPLINK = "android_applink="
         const val IDENTIFIER_APPLINK = "applink="
         const val KEY_TRACKING_DATA = "tracking_data"
@@ -63,16 +61,6 @@ class ActionHandler(
     ): Boolean {
         sendTracker(action.payload)
         return super.handleAction(action, view, actionUid)
-    }
-
-    override fun handleAction(action: DivVisibilityAction, view: DivViewFacade): Boolean {
-        //Send impression tracker
-        if (sduiTrackingInterface != null) {
-            sduiTrackingInterface.onViewVisible(action.payload)
-        } else {
-            sendTracker(action.payload)
-        }
-        return super.handleAction(action, view)
     }
 
     private fun onHandleRoute(url: Uri) {
