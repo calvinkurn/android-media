@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.analytics
 
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery2.analytics.merchantvoucher.MvcTrackingProperties
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -204,4 +205,7 @@ open class BaseDiscoveryAnalytics(
     open fun trackCouponCTAClickEvent(properties: CouponTrackingProperties) {}
     open fun trackSupportingBrandImpression(components: List<ComponentsItem>) {}
     open fun trackSupportingBrandClick(component: ComponentsItem, actionType: String) {}
+    open fun trackMvcImpression(list: List<MvcTrackingProperties>){}
+    open fun trackMvcClickEvent(properties: MvcTrackingProperties) {}
+    open fun trackMvcCtaClickEvent(properties: MvcTrackingProperties) {}
 }
