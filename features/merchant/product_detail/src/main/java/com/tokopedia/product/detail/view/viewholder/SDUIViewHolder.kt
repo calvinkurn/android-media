@@ -29,7 +29,8 @@ class SDUIViewHolder(
 
     private val sduiManager = lazy {
         SDUIManager().apply {
-            initSDUI(context, actionHandler)
+//            initSDUI(context, actionHandler)
+            initSDUI(context)
         }
     }
 
