@@ -4,9 +4,6 @@
 
     <application>
         <activity
-            android:name=".ui.activity.sellerOfferingList.CatalogSellerOfferingActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.activity.CatalogSwitchingComparisonActivity"
             android:exported="false" />
         <activity

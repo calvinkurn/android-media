@@ -256,6 +256,7 @@ class CatalogDetailPageFragment :
     private var categoryId = ""
     private var catalogUrl = ""
     private var brand = ""
+    private var productListConfig: ProductListConfig? = null
 
     private var compareCatalogId = ""
     private var selectNavigationFromScroll = true
@@ -480,11 +481,11 @@ class CatalogDetailPageFragment :
                 categoryId = it.data.priceCtaProperties.departmentId
                 brand = it.data.priceCtaProperties.brand
                 title = it.data.navigationProperties.title
+                productListConfig = it.data.productListConfig
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
                 binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
-                binding?.setupPriceCtaSellerOfferingWidget(it.data.priceCtaSellerOfferingProperties,
-                    it.data.productListConfig)
+                binding?.setupPriceCtaSellerOfferingWidget(it.data.priceCtaSellerOfferingProperties)
                 widgetAdapter.addWidget(it.data.widgets)
                 binding?.stickySingleHeaderView?.stickyPosition =
                     widgetAdapter.findPositionNavigation()
@@ -704,8 +705,7 @@ class CatalogDetailPageFragment :
     }
 
     private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaSellerOfferingWidget(
-        properties: PriceCtaSellerOfferingProperties,
-        productListConfig: ProductListConfig
+        properties: PriceCtaSellerOfferingProperties
     ) {
         icCtaSellerOffering.apply {
             viewModel.atcModel = CatalogProductAtcUiModel(
@@ -728,7 +728,8 @@ class CatalogDetailPageFragment :
                 addToCart(viewModel.atcModel)
             }
             btnProductList.setOnClickListener {
-                goToSellerOfferingProductListPage(viewModel.variantName.value.orEmpty(), productListConfig)
+                //Change Value VariantName if Bottom Sheet Option Variant Ready
+                goToSellerOfferingProductListPage(String.EMPTY, productListConfig)
             }
 
             if (properties.isDarkTheme) {
@@ -786,7 +787,7 @@ class CatalogDetailPageFragment :
         }
     }
 
-    private fun goToSellerOfferingProductListPage(variant:String, productListConfig: ProductListConfig) {
+    private fun goToSellerOfferingProductListPage(variant:String, productListConfig: ProductListConfig?) {
 
         val catalogProductList =
             Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
@@ -794,10 +795,10 @@ class CatalogDetailPageFragment :
                 .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
                 .appendQueryParameter(QUERY_PRODUCT_TITLE, title)
                 .appendQueryParameter(QUERY_PRODUCT_VARIANT, variant)
-                .appendQueryParameter(QUERY_BACKGROUND, "${productListConfig.headerConfig}")
-                .appendQueryParameter(QUERY_LIMIT, productListConfig.limit)
-                .appendQueryParameter(QUERY_MIN_PRICE, productListConfig.minPrice.toString())
-                .appendQueryParameter(QUERY_MAX_PRICE, productListConfig.maxPrice.toString())
+                .appendQueryParameter(QUERY_BACKGROUND, "${productListConfig?.headerConfig.orEmpty()}")
+                .appendQueryParameter(QUERY_LIMIT, productListConfig?.limit.orEmpty())
+                .appendQueryParameter(QUERY_MIN_PRICE, productListConfig?.minPrice.toString())
+                .appendQueryParameter(QUERY_MAX_PRICE, productListConfig?.maxPrice.toString())
                 .appendPath("so").toString()
 
         RouteManager.getIntent(context, catalogProductList).apply {
@@ -1257,6 +1258,7 @@ class CatalogDetailPageFragment :
     }
 
     override fun onSellerOfferingButtonRightClicked() {
-        goToProductListPage()
+        //Change Value VariantName if Bottom Sheet Option Variant Ready
+        goToSellerOfferingProductListPage(String.EMPTY, productListConfig)
     }
 }
