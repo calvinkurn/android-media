@@ -369,7 +369,6 @@ class CartRevampFragment :
 
     private var enablePromoEntryPointNewInterface: Boolean = false
 
-    private var hasTrackEnterPage: Boolean = false
     private var hasRecomScrollListener: Boolean = false
 
     companion object {
@@ -2920,7 +2919,6 @@ class CartRevampFragment :
                 is LoadRecommendationState.Success -> {
                     hideItemLoading()
                     if (data.recommendationWidgets.isNotEmpty() && data.recommendationWidgets[0].recommendationItemList.isNotEmpty()) {
-                        trackEnterPage()
                         renderRecommendation(data.recommendationWidgets[0])
                     }
                     setHasTriedToLoadRecommendation()
@@ -2934,11 +2932,6 @@ class CartRevampFragment :
                 }
             }
         }
-    }
-
-    private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
-        AppLogRecommendation.sendEnterPageAppLog()
     }
 
 

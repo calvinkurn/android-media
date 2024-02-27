@@ -16,19 +16,19 @@ object AppLogRecommendation {
 
     fun sendProductShowAppLog(model: AppLogRecommendationProductModel) {
         AppLogAnalytics.send(EventName.PRODUCT_SHOW, model.toShowClickJson())
-        if (model.type == AppLogRecommendationType.MIXED_CAROUSEL ||
-            model.type == AppLogRecommendationType.VERTICAL) {
+        if (model.entranceForm == EntranceForm.MISSION_HORIZONTAL_GOODS_CARD.str ||
+            model.entranceForm == EntranceForm.PURE_GOODS_CARD.str) {
             AppLogAnalytics.send(EventName.CARD_SHOW, model.asCardModel().toShowClickJson())
         }
     }
 
     fun sendProductClickAppLog(model: AppLogRecommendationProductModel) {
         AppLogAnalytics.send(EventName.PRODUCT_CLICK, model.toShowClickJson())
-        if (model.type == AppLogRecommendationType.MIXED_CAROUSEL ||
-            model.type == AppLogRecommendationType.VERTICAL) {
+        if (model.entranceForm == EntranceForm.MISSION_HORIZONTAL_GOODS_CARD.str ||
+            model.entranceForm == EntranceForm.PURE_GOODS_CARD.str) {
             AppLogAnalytics.send(EventName.CARD_CLICK, model.asCardModel().toShowClickJson())
         }
-        if (model.type == AppLogRecommendationType.VERTICAL) {
+        if (model.entranceForm == EntranceForm.PURE_GOODS_CARD.str) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
         model.setGlobalParams()
@@ -44,7 +44,7 @@ object AppLogRecommendation {
         AppLogAnalytics.sourcePageType = SourcePageType.PRODUCT_CARD
         AppLogAnalytics.entranceForm = EntranceForm.PURE_GOODS_CARD
         AppLogAnalytics.send(EventName.CARD_CLICK, model.toShowClickJson())
-        if (model.type == AppLogRecommendationType.VERTICAL) {
+        if (model.entranceForm == EntranceForm.PURE_GOODS_CARD.str) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
         model.setGlobalParams()

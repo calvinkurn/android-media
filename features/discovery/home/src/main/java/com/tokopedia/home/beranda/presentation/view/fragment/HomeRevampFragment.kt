@@ -1493,6 +1493,7 @@ open class HomeRevampFragment :
     private fun trackEnterPage() {
         if(hasTrackEnterPage) return
         AppLogRecommendation.sendEnterPageAppLog()
+        hasTrackEnterPage = true
     }
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {

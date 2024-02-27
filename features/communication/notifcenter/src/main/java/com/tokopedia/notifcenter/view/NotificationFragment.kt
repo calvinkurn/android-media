@@ -450,6 +450,7 @@ class NotificationFragment @Inject constructor(
     private fun trackEnterPage() {
         if(hasTrackEnterPage) return
         AppLogRecommendation.sendEnterPageAppLog()
+        hasTrackEnterPage = true
     }
 
     private fun loadShopAds() {

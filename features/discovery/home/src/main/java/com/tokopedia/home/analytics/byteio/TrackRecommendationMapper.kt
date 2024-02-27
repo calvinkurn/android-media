@@ -4,7 +4,6 @@ import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationCardModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.analytics.byteio.recommendation.CardName
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
@@ -18,7 +17,7 @@ object TrackRecommendationMapper {
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
-        type: AppLogRecommendationType,
+        entranceForm: EntranceForm,
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = recommendationProductItem.id,
@@ -31,7 +30,6 @@ object TrackRecommendationMapper {
             requestId = "", //TODO need BE deployment
             shopId = recommendationProductItem.shop.id,
             entranceForm = getEntranceForm(),
-            type = type,
             originalPrice = (
                 if(recommendationProductItem.slashedPriceInt > 0)
                     recommendationProductItem.slashedPriceInt
@@ -52,7 +50,6 @@ object TrackRecommendationMapper {
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
-        type: AppLogRecommendationType
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardName = CardName.AD_FEED_CARD,
@@ -65,7 +62,6 @@ object TrackRecommendationMapper {
             requestId = "", // TODO need BE deployment
             shopId = topAdsImageViewModel?.shopId.orEmpty(),
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
-            type = type,
             position = position,
         )
     }
@@ -74,7 +70,6 @@ object TrackRecommendationMapper {
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
-        type: AppLogRecommendationType
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardName = CardName.REC_CONTENT_CARD,
@@ -88,7 +83,6 @@ object TrackRecommendationMapper {
             requestId = "", // TODO need BE deployment
             shopId = shopId,
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
-            type = type,
             position = position,
         )
     }
@@ -97,7 +91,6 @@ object TrackRecommendationMapper {
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
-        type: AppLogRecommendationType
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardName = CardName.REC_VIDEO_CARD,
@@ -111,7 +104,6 @@ object TrackRecommendationMapper {
             shopId = shopId,
             groupId = playVideoWidgetUiModel.id,
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
-            type = type,
             sourcePageType = SourcePageType.VIDEO,
             position = position,
         )

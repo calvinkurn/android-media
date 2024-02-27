@@ -378,6 +378,7 @@ class WishlistCollectionFragment :
     private fun trackEnterPage() {
         if(hasTrackEnterPage) return
         AppLogRecommendation.sendEnterPageAppLog()
+        hasTrackEnterPage = true
     }
 
     private fun setToolbarTitle(title: String) {
