@@ -1,6 +1,7 @@
 package com.tokopedia.content.product.preview.view.viewholder.review
 
 import android.graphics.Typeface
+import android.os.Build
 import android.text.Spanned
 import android.text.SpannedString
 import android.text.TextPaint
@@ -68,6 +69,17 @@ class ReviewContentViewHolder(
                 removeLikeAnimationListener()
             }
         })
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            binding.tvReviewDescription.setOnScrollChangeListener { view, _, _, _, _ ->
+                if (!descriptionUiModel.isExpanded) return@setOnScrollChangeListener
+                binding.reviewOverlay.setBottomFadingEdgeBounds(
+                    if (binding.tvReviewDescription.canScrollVertically(VERTICAL_POSITIVE_DIRECTION)) FADING_EDGE_HEIGHT else DEFAULT_ZERO
+                )
+                binding.reviewOverlay.setTopFadingEdgeBounds(
+                    if (binding.tvReviewDescription.canScrollVertically(VERTICAL_NEGATIVE_DIRECTION)) FADING_EDGE_HEIGHT else DEFAULT_ZERO
+                )
+            }
+        }
     }
 
     private val alphaAnimator = ContentItemComponentsAlphaAnimator(object : ContentItemComponentsAlphaAnimator.Listener {
@@ -88,6 +100,7 @@ class ReviewContentViewHolder(
     private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState != RecyclerView.SCROLL_STATE_IDLE) return
+            reviewInteractionListener.onReviewMediaScrolled()
             val position = getContentCurrentPosition()
             binding.pcReviewContent.setCurrentIndicator(position)
             reviewMediaListener.onMediaSelected(position)
@@ -169,6 +182,10 @@ class ReviewContentViewHolder(
 
     fun bindMediaDataChanged(mediaData: List<ReviewMediaUiModel>) {
         reviewMediaAdapter.submitList(mediaData)
+
+        val position = mediaData.indexOfFirst { it.selected }
+        val exactPosition = position.coerceAtLeast(0)
+        scrollTo(exactPosition)
     }
 
     private fun bindMedia(
@@ -233,6 +250,11 @@ class ReviewContentViewHolder(
         tvReviewDescription.doOnLayout {
             val text = tvReviewDescription.layout
             if (text.lineCount <= MAX_LINES_THRESHOLD) return@doOnLayout
+
+            tvReviewDescription.setOnClickListener {
+                descriptionUiModel.isExpanded = !descriptionUiModel.isExpanded
+                setupExpanded()
+            }
 
             val start = text.getLineStart(0)
             val end = text.getLineEnd(MAX_LINES_THRESHOLD - 1)
@@ -337,6 +359,11 @@ class ReviewContentViewHolder(
         setCurrentIndicator(mediaSelectedPosition)
     }
 
+    private fun scrollTo(position: Int) {
+        binding.rvReviewMedia.smoothScrollToPosition(position)
+        binding.pcReviewContent.setCurrentIndicator(position)
+    }
+
     override fun onImpressedImage() {
         reviewMediaListener.onImpressedImage()
     }
@@ -376,11 +403,13 @@ class ReviewContentViewHolder(
     override fun onScrubbing() {
         binding.groupReviewDetails.hide()
         binding.groupReviewInteraction.hide()
+        binding.pcReviewContent.hide()
     }
 
     override fun onStopScrubbing() {
         binding.groupReviewDetails.show()
         binding.groupReviewInteraction.show()
+        binding.pcReviewContent.show()
     }
 
     data class DescriptionUiModel(
@@ -393,6 +422,10 @@ class ReviewContentViewHolder(
         private const val MAX_LINES_VALUE = 25
         private const val MAX_LINES_THRESHOLD = 2
         private const val READ_MORE_COUNT = 16
+        private const val FADING_EDGE_HEIGHT = 20
+        private const val VERTICAL_POSITIVE_DIRECTION = 1
+        private const val VERTICAL_NEGATIVE_DIRECTION = -1
+        private const val DEFAULT_ZERO = 0
 
         fun create(
             parent: ViewGroup,

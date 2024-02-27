@@ -199,6 +199,7 @@ class ProductPreviewFragment @Inject constructor(
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             updateSelectedTabView(position)
+            viewModel.onAction(ProductPreviewAction.TabSelected(position))
         }
 
         override fun onPageScrollStateChanged(state: Int) {
@@ -207,6 +208,7 @@ class ProductPreviewFragment @Inject constructor(
 
             val position = binding.vpProductPreview.currentItem
             viewModel.onAction(ProductPreviewAction.TabSelected(position))
+            analytics.onSwipeContentAndTab()
         }
     }
 
@@ -247,26 +249,23 @@ class ProductPreviewFragment @Inject constructor(
                         requireContext(),
                         event.appLink
                     )
-                    // TODO: need to check all toaster in PDP unified media
                     is ProductPreviewEvent.ShowSuccessToaster -> {
+                        val isAtc = event.type == ProductPreviewEvent.ShowSuccessToaster.Type.ATC
                         Toaster.build(
                             requireView().rootView,
-                            text = getString(event.message.orZero()),
-                            actionText = if (event.type == ProductPreviewEvent.ShowSuccessToaster.Type.ATC) {
-                                getString(
+                            text = getString(event.type.textRes),
+                            actionText = if (isAtc) { getString(
                                     contentproductpreviewR.string.bottom_atc_success_click_toaster
-                                )
-                            } else {
-                                ""
-                            },
+                                ) } else { "" },
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
-                                viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))
+                                if (isAtc) viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))
                             }
                         ).show()
                     }
 
                     is ProductPreviewEvent.ShowErrorToaster -> {
+                        if (event.type == ProductPreviewEvent.ShowErrorToaster.Type.Report) return@collect
                         Toaster.build(
                             requireView().rootView,
                             text = event.message.message.ifNull { getString(event.type.textRes) },
@@ -282,9 +281,6 @@ class ProductPreviewFragment @Inject constructor(
                         binding.viewFooter.gone()
                     }
                     is ProductPreviewEvent.UnknownSourceData -> activity?.finish()
-                   is ProductPreviewEvent.TrackAllHorizontalScroll -> {
-                        analytics.onSwipeContentAndTab()
-                    }
                     else -> return@collect
                 }
             }

@@ -84,6 +84,11 @@ class ReviewMediaVideoViewHolder(
                 hideLoading()
                 binding.iconPlay.showWithCondition(!isPlaying)
             }
+
+            override fun onVideoEnded() {
+                binding.iconPlay.show()
+                productPreviewVideoListener.onVideoEnded()
+            }
         })
     }
 

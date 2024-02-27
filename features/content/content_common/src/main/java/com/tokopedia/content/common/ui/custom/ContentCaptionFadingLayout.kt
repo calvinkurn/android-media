@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.presentation.customview
+package com.tokopedia.content.common.ui.custom
 
 import android.content.Context
 import android.graphics.Canvas
@@ -15,7 +15,7 @@ import android.widget.FrameLayout
 /**
  * Created by kenny.hadisaputra on 18/07/23
  */
-class FeedCaptionFadingLayout : FrameLayout {
+class ContentCaptionFadingLayout : FrameLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
