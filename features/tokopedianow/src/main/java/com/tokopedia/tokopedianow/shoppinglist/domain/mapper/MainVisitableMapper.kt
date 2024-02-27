@@ -35,6 +35,7 @@ internal object MainVisitableMapper {
             id = it.id,
             image = it.imageUrl,
             price = it.price,
+            priceInt = it.priceInt,
             name = it.name,
             weight = it.getWeight(),
             percentage = it.discountPercentage.toString(),

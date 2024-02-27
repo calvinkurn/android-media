@@ -4,7 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowBottomBulkAtcViewBinding
 
 class BottomBulkAtcView @JvmOverloads constructor(
@@ -18,22 +20,17 @@ class BottomBulkAtcView @JvmOverloads constructor(
         true
     )
 
-    init {
-        bind(
-            10,
-            1000.0
-        ) {
-
+    fun bind(
+        counter: Int,
+        priceInt: Double
+    ) {
+        binding.apply {
+            tpCounter.text = context.getString(R.string.tokopedianow_shopping_list_bulk_atc_counter_text, counter)
+            tpPrice.text = if (counter.isZero()) context.getString(R.string.tokopedianow_shopping_list_bulk_atc_empty_price_text) else priceInt.getCurrencyFormatted()
         }
     }
 
-    fun bind(
-        counter: Int,
-        price: Double,
-        onAtcClickListener: OnClickListener
-    ) {
-        binding.ubAtc.setOnClickListener(onAtcClickListener)
-        binding.tpPrice.text = price.getCurrencyFormatted()
-        binding.tpCounter.text = "$counter produk terpilih"
+    fun onAtcClickListener(onClickListener: OnClickListener) {
+        binding.ubAtc.setOnClickListener(onClickListener)
     }
 }

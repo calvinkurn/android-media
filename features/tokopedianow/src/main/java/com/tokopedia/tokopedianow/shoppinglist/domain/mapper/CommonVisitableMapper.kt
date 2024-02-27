@@ -16,6 +16,7 @@ internal object CommonVisitableMapper {
                 id = it.productId.toString(),
                 image = it.imageUrl,
                 price = it.price,
+                priceInt = it.priceInt.toDouble(),
                 name = it.name,
                 weight = it.labelGroupList.firstOrNull { label -> label.isWeightPosition() }?.title.orEmpty(),
                 percentage = it.discountPercentage,

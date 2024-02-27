@@ -89,6 +89,7 @@
         app:layout_constraintEnd_toEndOf="@+id/str_refresh_layout" />
 
     <com.tokopedia.tokopedianow.common.view.BottomBulkAtcView
+        android:id="@+id/bottom_bulk_atc_view"
         android:layout_width="match_parent"
         android:layout_height="72dp"
         app:layout_constraintBottom_toBottomOf="parent"

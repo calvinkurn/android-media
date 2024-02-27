@@ -291,4 +291,8 @@
     <string name="tokopedianow_shopping_list_empty_title">Isi produk yang rencana kamu beli</string>
     <string name="tokopedianow_shopping_list_expand_text">Tampilkan %1$d Produk Lainnya</string>
     <string name="tokopedianow_shopping_list_collapse_text">Tampilkan Lebih Sedikit</string>
+    <string name="tokopedianow_shopping_list_bulk_atc_counter_text">%1$d produk terpilih</string>
+    <string name="tokopedianow_shopping_list_bulk_atc_empty_price_text">Rp-</string>
+    <string name="tokopedianow_shopping_list_bulk_atc_plus_cart">+ Keranjang</string>
+    <string name="tokopedianow_shopping_list_bulk_atc_total">Total</string>
 </resources>

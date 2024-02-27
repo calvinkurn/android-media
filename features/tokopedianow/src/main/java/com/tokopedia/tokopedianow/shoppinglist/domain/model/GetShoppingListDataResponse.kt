@@ -108,7 +108,7 @@ data class GetShoppingListDataResponse(
         @SerializedName("inStockSelectedTotalData")
         val inStockSelectedTotalData: Int = 0,
         @SerializedName("inStockSelectedTotalPrice")
-        val inStockSelectedTotalPrice: Int = 0,
+        val inStockSelectedTotalPrice: Double = 0.0,
         @SerializedName("inStockSelectedTotalPriceFmt")
         val inStockSelectedTotalPriceFmt: String = "",
         @SerializedName("inStockTotalData")

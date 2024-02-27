@@ -56,6 +56,7 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.model.GetShoppingListDataR
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.SaveShoppingListStateActionParam
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.GetShoppingListUseCase
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.SaveShoppingListStateUseCase
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.BottomBulkAtcModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.LayoutModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
@@ -109,13 +110,14 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val layout = mutableListOf<Visitable<*>> ()
     private val availableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
     private val unavailableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
-    private val tempCheckUncheckStateParams = mutableListOf<SaveShoppingListStateActionParam>()
+    private val checkUncheckStateParams = mutableListOf<SaveShoppingListStateActionParam>()
 
     private val _uiState: MutableStateFlow<UiState<LayoutModel>> = MutableStateFlow(Loading(LayoutModel(layout.addLoadingState())))
     private val _isOnScrollNotNeeded: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val _isNavToolbarScrollingBehaviourEnabled: MutableStateFlow<Boolean> = MutableStateFlow(true)
     private val _isTopCheckAllSelected: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val _isStickyTopCheckAllScrollingBehaviourEnabled: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _bottomBulkAtcData: MutableStateFlow<BottomBulkAtcModel?> = MutableStateFlow(null)
 
     private var pageCounter: Int = PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER
     private var loadLayoutJob: Job? = null
@@ -135,6 +137,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
         get() = _isTopCheckAllSelected.asStateFlow()
     val isStickyTopCheckAllScrollingBehaviourEnabled
         get() = _isStickyTopCheckAllScrollingBehaviourEnabled.asStateFlow()
+    val bottomBulkAtcData
+        get() = _bottomBulkAtcData.asStateFlow()
 
     var headerModel: HeaderModel = HeaderModel()
 
@@ -161,8 +165,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
     private suspend fun saveShoppingListState() {
         delay(DEBOUNCE_TIMES_SHOPPING_LIST)
-        saveShoppingListStateUseCase.execute(tempCheckUncheckStateParams)
-        tempCheckUncheckStateParams.clear()
+        saveShoppingListStateUseCase.execute(checkUncheckStateParams)
+        checkUncheckStateParams.clear()
     }
 
     /**
@@ -190,7 +194,9 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
             layout
                 .doIf(availableProducts.isNotEmpty()) {
-                    val isTopCheckAllSelected = availableProducts.count { it.isSelected } == availableProducts.size
+                    calculateDataForBottomBulkAtc()
+
+                    val isTopCheckAllSelected = shoppingListData.metadata.inStockSelectedTotalData == availableProducts.size
                     _isTopCheckAllSelected.value = isTopCheckAllSelected
 
                     layout
@@ -236,7 +242,16 @@ class TokoNowShoppingListViewModel @Inject constructor(
         layout.addProductInCartWidget()
     }
 
-    private fun addProductRecommendationSection(productRecommendation: RecommendationWidget) {
+    private fun calculateDataForBottomBulkAtc() {
+        _bottomBulkAtcData.value = BottomBulkAtcModel(
+            counter = availableProducts.count { it.isSelected },
+            price = availableProducts.filter { it.isSelected }.sumOf { it.priceInt }
+        )
+    }
+
+    private fun addProductRecommendationSection(
+        productRecommendation: RecommendationWidget
+    ) {
         if (productRecommendation.recommendationItemList.isNotEmpty()) {
             layout
                 .addDivider()
@@ -253,7 +268,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
             _isOnScrollNotNeeded.value = true
         }
     }
-
 
     private fun getUpdatedLayout(
         isRequiredToScrollUp: Boolean = false
@@ -363,6 +377,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
                     isSelected = isSelected
                 )
 
+                calculateDataForBottomBulkAtc()
+
                 layout
                     .modifyTopCheckAll(
                         isSelected = isSelected
@@ -376,8 +392,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 _isTopCheckAllSelected.value = isSelected
                 _uiState.value = Success(getUpdatedLayout())
 
-                tempCheckUncheckStateParams.clear()
-                tempCheckUncheckStateParams.addAll(availableProducts.map { SaveShoppingListStateActionParam(it.id, it.isSelected) })
+                checkUncheckStateParams.clear()
+                checkUncheckStateParams.addAll(availableProducts.map { SaveShoppingListStateActionParam(it.id, it.isSelected) })
 
                 saveShoppingListState()
             }, onError = { /* do nothing */ }
@@ -409,6 +425,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
                     isSelected = isSelected
                 )
 
+                calculateDataForBottomBulkAtc()
+
                 val isTopCheckAllSelected = availableProducts.all { it.isSelected }
 
                 layout
@@ -423,11 +441,11 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 _isTopCheckAllSelected.value = isTopCheckAllSelected
                 _uiState.value = Success(getUpdatedLayout())
 
-                val index = tempCheckUncheckStateParams.indexOfFirst { it.productId == productId }
+                val index = checkUncheckStateParams.indexOfFirst { it.productId == productId }
                 if (index != INVALID_INDEX) {
-                    tempCheckUncheckStateParams[index] = SaveShoppingListStateActionParam(productId, isSelected)
+                    checkUncheckStateParams[index] = SaveShoppingListStateActionParam(productId, isSelected)
                 } else {
-                    tempCheckUncheckStateParams.add(SaveShoppingListStateActionParam(productId, isSelected))
+                    checkUncheckStateParams.add(SaveShoppingListStateActionParam(productId, isSelected))
                 }
 
                 saveShoppingListState()

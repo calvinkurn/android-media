@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.productcard.compact.similarproduct.presentation.bottomsheet.ProductCardCompactSimilarProductBottomSheet
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH
@@ -139,6 +140,7 @@ class TokoNowShoppingListFragment :
 
             setupRecyclerView()
             setupFloatingActionButton()
+            setupBottomBulkAtc()
             setupNavigationToolbar()
             setupOnScrollListener()
 
@@ -214,9 +216,25 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private suspend fun collectStickyTopCheckAllScrollingBehaviour() {
+    private suspend fun collectStickyTopCheckAllScrollingBehaviour(
+        binding: FragmentTokopedianowShoppingListBinding
+    ) {
         viewModel.isStickyTopCheckAllScrollingBehaviourEnabled.collect { isEnabled ->
             isStickyTopCheckAllScrollingBehaviorEnabled = isEnabled
+            binding.bottomBulkAtcView.showWithCondition(isEnabled)
+        }
+    }
+
+    private suspend fun collectBottomBulkAtc(
+        binding: FragmentTokopedianowShoppingListBinding
+    ) {
+        viewModel.bottomBulkAtcData.collect { model ->
+            model?.apply {
+                binding.bottomBulkAtcView.bind(
+                    counter = counter,
+                    priceInt = price
+                )
+            }
         }
     }
 
@@ -289,7 +307,8 @@ class TokoNowShoppingListFragment :
                 launch { collectScrollState(this@collectStateFlow) }
                 launch { collectErrorNavToolbar(this@collectStateFlow) }
                 launch { collectStickyTopCheckAllStatus(this@collectStateFlow) }
-                launch { collectStickyTopCheckAllScrollingBehaviour() }
+                launch { collectStickyTopCheckAllScrollingBehaviour(this@collectStateFlow) }
+                launch { collectBottomBulkAtc(this@collectStateFlow) }
             }
         }
     }
@@ -315,6 +334,10 @@ class TokoNowShoppingListFragment :
         fbuBackToTop.circleMainMenu.setOnClickListener {
             rvShoppingList.smoothScrollToPosition(Int.ZERO)
         }
+    }
+
+    private fun FragmentTokopedianowShoppingListBinding.setupBottomBulkAtc() {
+        bottomBulkAtcView.onAtcClickListener {}
     }
 
     private fun FragmentTokopedianowShoppingListBinding.setupNavigationToolbar() {
