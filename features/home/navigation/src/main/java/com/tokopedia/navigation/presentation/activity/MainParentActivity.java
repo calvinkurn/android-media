@@ -1514,4 +1514,9 @@ public class MainParentActivity extends BaseActivity implements
     public boolean isEnterFromWhitelisted() {
         return false;
     }
+
+    @Override
+    public boolean isShadow() {
+        return false;
+    }
 }
