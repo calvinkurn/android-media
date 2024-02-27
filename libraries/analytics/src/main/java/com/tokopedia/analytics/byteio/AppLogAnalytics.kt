@@ -1,14 +1,13 @@
 package com.tokopedia.analytics.byteio
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
-import android.util.Log
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.IS_AD
+import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
@@ -18,7 +17,6 @@ import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
-import com.tokopedia.analytics.byteio.recommendation.CardName
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ENTER_METHOD
 import com.tokopedia.analyticsdebugger.cassava.Cassava
 import org.json.JSONObject
@@ -102,8 +100,8 @@ object AppLogAnalytics {
         get() = if (this) 1 else 0
 
     internal fun JSONObject.addPage() {
-        put(PREVIOUS_PAGE, previousPageName())
-        put(PAGE_NAME, currentPageName())
+        put(PREVIOUS_PAGE, getLastDataBeforeCurrent(PAGE_NAME))
+        put(PAGE_NAME, getLastData(PAGE_NAME))
     }
 
     internal fun JSONObject.addEntranceForm() {
@@ -112,6 +110,10 @@ object AppLogAnalytics {
 
     internal fun JSONObject.addEnterFrom() {
         put(ENTER_FROM, getLastData(ENTER_FROM))
+    }
+
+    internal fun JSONObject.addPreviousEnterFrom() {
+        put(ENTER_FROM, getLastDataBeforeCurrent(ENTER_FROM))
     }
 
     internal fun JSONObject.addSourcePreviousPage() {
@@ -184,11 +186,17 @@ object AppLogAnalytics {
      * To remove last page data
      */
     fun popPageData() {
-        _pageDataList.removeLast()
+        if (getCurrentData(IS_SHADOW) == false) {
+            _pageDataList.removeLast()
+            // Remove shadow stack
+            if (getCurrentData(IS_SHADOW) == true) {
+                _pageDataList.removeLast()
+            }
+        }
         Timber.d("Pop _pageDataList: ${_pageDataList}}")
     }
 
-    fun clearCurrentPageData() {
+    private fun clearCurrentPageData() {
         _pageDataList.last().clear()
     }
 
@@ -223,36 +231,28 @@ object AppLogAnalytics {
         return null
     }
 
-    fun clearPageData() {
+    fun clearAllPageData() {
         _pageDataList.clear()
     }
 
     fun pushPageData(appLogInterface: AppLogInterface) {
-        val previousPage = getCurrentData(PAGE_NAME) ?: ""
         pushPageData()
-        putPageData(PAGE_NAME, appLogInterface.getPageName())
-        putPageData(PREVIOUS_PAGE, previousPage)
-        if (appLogInterface.isEnterFromWhitelisted()) {
-            putPageData(ENTER_FROM, appLogInterface.getPageName())
-        }
+        putAppLogInterfaceData(appLogInterface)
     }
 
     fun updateCurrentPageData(appLogInterface: AppLogInterface) {
-        val previousPage = getCurrentData(PAGE_NAME) ?: ""
         clearCurrentPageData()
+        putAppLogInterfaceData(appLogInterface)
+    }
+
+    private fun putAppLogInterfaceData(appLogInterface: AppLogInterface) {
         putPageData(PAGE_NAME, appLogInterface.getPageName())
-        putPageData(PREVIOUS_PAGE, previousPage)
         if (appLogInterface.isEnterFromWhitelisted()) {
             putPageData(ENTER_FROM, appLogInterface.getPageName())
         }
-    }
-
-    fun getPreviousPage(): Any? {
-        return getLastDataBeforeCurrent(PAGE_NAME)
-    }
-
-    fun getPreviousEnterFrom(): Any? {
-        return getLastDataBeforeCurrent(ENTER_FROM)
+        if (appLogInterface.isShadow()) {
+            putPageData(IS_SHADOW, appLogInterface.isShadow())
+        }
     }
 
     fun setGlobalParams(
