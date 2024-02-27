@@ -23,6 +23,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         const val ID_TICKET = 909
         const val ID_REVIEW = 910
         const val ID_HOME = 911
+        const val ID_BUY_AGAIN = 912
 
         const val ID_OPEN_SHOP_TICKER = 801
         const val PAGE_SOURCE_KEY = "pageSource"
@@ -58,6 +59,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             ID_TICKET -> return getTicketMenu(notifCount, sectionId)
             ID_REVIEW -> return getReviewMenu(notifCount, sectionId, showCta)
             ID_HOME -> return getHomeMenu(notifCount, sectionId)
+            ID_BUY_AGAIN -> return getBuyAgainMenu(notifCount, sectionId, showCta)
         }
         return HomeNavMenuDataModel()
     }
@@ -169,6 +171,18 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             srcIconId = IconUnify.LIST_TRANSACTION,
             itemTitle = context.getString(R.string.menu_transaction_menu_all_transaction),
             applink = ApplinkConst.PURCHASE_ORDER.needLoginValidation(),
+            notifCount = notifCount,
+            sectionId = sectionId,
+            showCta = showCta
+        )
+    }
+
+    private fun getBuyAgainMenu(notifCount: String, sectionId: Int, showCta: Boolean): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
+            id = ID_BUY_AGAIN,
+            srcIconId = IconUnify.CART,
+            itemTitle = context.getString(R.string.menu_transaction_menu_buy_again),
+            applink = "", // TODO: Applink ?
             notifCount = notifCount,
             sectionId = sectionId,
             showCta = showCta

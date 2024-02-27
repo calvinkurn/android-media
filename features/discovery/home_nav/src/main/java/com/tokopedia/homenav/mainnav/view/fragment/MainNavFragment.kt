@@ -263,6 +263,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         viewModel.refreshTransactionListData()
     }
 
+    override fun onRefreshBuyAgainIfError() {
+        viewModel.refreshBuyAgainData()
+    }
+
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
             hitClickTrackingBasedOnId(homeNavMenuDataModel)

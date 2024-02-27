@@ -14,10 +14,13 @@ import com.tokopedia.homenav.base.diffutil.holder.HomeNavMenuViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTickerViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.*
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.buyagain.BuyAgainViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ErrorReviewViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ReviewViewHolder
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.BuyAgainUiModel
+import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.ShimmerBuyAgainModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ErrorStateReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
@@ -84,6 +87,14 @@ class MainNavTypeFactoryImpl(
         return InitialShimmeringTransactionDataRevampViewHolder.LAYOUT
     }
 
+    override fun type(model: BuyAgainUiModel): Int {
+        return BuyAgainViewHolder.LAYOUT
+    }
+
+    override fun type(model: ShimmerBuyAgainModel): Int {
+        return InitialShimmeringTransactionDataRevampViewHolder.LAYOUT
+    }
+
     override fun type(errorStateOngoingTransactionModel: ErrorStateOngoingTransactionModel): Int {
         return ErrorStateOngoingTransactionViewHolder.LAYOUT
     }
@@ -107,6 +118,7 @@ class MainNavTypeFactoryImpl(
             InitialShimmeringTransactionDataViewHolder.LAYOUT -> InitialShimmeringTransactionDataViewHolder(view)
             ReviewViewHolder.LAYOUT -> ReviewViewHolder(view, mainNavListener)
             ErrorReviewViewHolder.LAYOUT -> ErrorReviewViewHolder(view, mainNavListener)
+            BuyAgainViewHolder.LAYOUT -> BuyAgainViewHolder(view)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
     }
