@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
-import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
+import com.tokopedia.tokopedianow.category.domain.model.CategorySharingModel
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 import java.util.*
