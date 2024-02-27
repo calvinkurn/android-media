@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import static com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD;
 import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_APPLINK_PARAM;
 import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_PARAM_TRUE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
@@ -399,6 +400,7 @@ public class MainParentActivity extends BaseActivity implements
         if (pageLoadTimePerformanceCallback != null && pageLoadTimePerformanceCallback.getCustomMetric().containsKey(MAIN_PARENT_ON_START_METRICS)) {
             pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_START_METRICS);
         }
+        handleAppLogInitialEnterMethod();
     }
 
     private void routeOnboarding() {
@@ -1356,6 +1358,13 @@ public class MainParentActivity extends BaseActivity implements
         }
         handleAppLogEnterMethod(pageTitle);
         return true;
+    }
+
+    private void handleAppLogInitialEnterMethod() {
+        Object currentEnterMethod = AppLogAnalytics.INSTANCE.getLastData(ENTER_METHOD);
+        if (currentEnterMethod instanceof String && !((String) currentEnterMethod).isEmpty()) {
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
+        }
     }
 
     private void handleAppLogEnterMethod(String pageTitle) {
