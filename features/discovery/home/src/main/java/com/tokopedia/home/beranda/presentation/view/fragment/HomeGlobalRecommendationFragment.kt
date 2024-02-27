@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
@@ -426,7 +425,6 @@ class HomeGlobalRecommendationFragment :
             model.asProductTrackModel(
                 tabName = tabName,
                 tabPosition = tabIndex,
-                entranceForm = EntranceForm.PURE_GOODS_CARD
             )
         )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
@@ -480,7 +478,6 @@ class HomeGlobalRecommendationFragment :
             model.asProductTrackModel(
                 tabName = tabName,
                 tabPosition = tabIndex,
-                entranceForm = EntranceForm.PURE_GOODS_CARD
             )
         )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
