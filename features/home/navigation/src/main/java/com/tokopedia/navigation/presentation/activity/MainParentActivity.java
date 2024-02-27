@@ -52,7 +52,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
-import com.tokopedia.analytics.byteio.AppLogParam;
+import com.tokopedia.analytics.byteio.EnterMethod;
 import com.tokopedia.analytics.byteio.IAppLogActivity;
 import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -1354,7 +1354,14 @@ public class MainParentActivity extends BaseActivity implements
         if (fragment instanceof AppLogInterface appLogInterface) {
             AppLogAnalytics.INSTANCE.updateCurrentPageData(appLogInterface);
         }
+        handleAppLogEnterMethod(pageTitle);
         return true;
+    }
+
+    private void handleAppLogEnterMethod(String pageTitle) {
+        if (pageTitle.equals(getResources().getString(R.string.wishlist))) {
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICONACCOUNT);
+        }
     }
 
     @Override
