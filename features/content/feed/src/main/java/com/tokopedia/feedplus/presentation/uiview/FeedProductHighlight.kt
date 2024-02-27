@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -72,7 +73,7 @@ fun FeedProductHighlight(
             ) {
                 if (product.isDiscount) {
                     NestRibbon(
-                        text = product.discountFmt, top = 2.dp, modifier = Modifier.zIndex(16f)
+                        text = product.discountFmt, top = 8.dp, modifier = Modifier.zIndex(16f)
                     )
                 }
                 ConstraintLayout(
@@ -113,7 +114,7 @@ fun FeedProductHighlight(
                         if (product.isDiscount) product.priceDiscountFmt else product.priceFmt
                     NestTypography(
                         text = finalPrice,
-                        textStyle = NestTheme.typography.heading3.copy(
+                        textStyle = NestTheme.typography.display2.copy(
                             color = NestTheme.colors.NN._0
                         ),
                         modifier = Modifier.constrainAs(ogPrice) {
@@ -138,6 +139,7 @@ fun FeedProductHighlight(
                             setOnClickListener { onAtcClick(product) }
                         }
                     }, modifier = Modifier
+                        .width(48.dp)
                         .constrainAs(btnAtc) {
                             end.linkTo(parent.end)
                             bottom.linkTo(parent.bottom)
