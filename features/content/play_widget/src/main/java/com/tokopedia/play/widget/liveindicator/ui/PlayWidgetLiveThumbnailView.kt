@@ -7,12 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
@@ -41,20 +42,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
-import androidx.lifecycle.get
 import com.google.android.exoplayer2.Player
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.widget.databinding.ViewLiveThumbnailPlayerBinding
-import com.tokopedia.play.widget.liveindicator.analytic.PlayWidgetLiveIndicatorAnalytic
-import com.tokopedia.play.widget.liveindicator.di.DaggerPlayWidgetLiveIndicatorComponent
-import com.tokopedia.play.widget.liveindicator.di.PlayWidgetLiveIndicatorComponent
+import com.tokopedia.play.widget.liveindicator.di.rememberDaggerComponent
 import com.tokopedia.play.widget.player.VideoPlayer
-import com.tokopedia.play_common.util.addImpressionListener
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -62,7 +55,6 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import com.tokopedia.play.widget.R as playwidgetR
 
-private typealias OnClickedHandler = () -> Unit
 class PlayWidgetLiveThumbnailView : AbstractComposeView {
 
     constructor(context: Context, attrs: AttributeSet?) : super(
@@ -77,149 +69,49 @@ class PlayWidgetLiveThumbnailView : AbstractComposeView {
         defStyleAttr
     )
 
-    private val componentFactory = object : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return DaggerPlayWidgetLiveIndicatorComponent.builder()
-                .baseAppComponent(
-                    (context.applicationContext as BaseMainApplication).baseAppComponent
-                ).build() as T
-        }
-    }
-
-    private var mComponent: PlayWidgetLiveIndicatorComponent? = null
-
-    private var mAnalyticModel: AnalyticModel? = null
-
-    private var mListener: Listener? = null
-
-    private val videoPlayer = VideoPlayer(context).apply {
-        mute(true)
-    }
-
-    private val transitionState = MutableTransitionState(visibility == View.VISIBLE)
+    private var mAnalyticModel: AnalyticModel? by mutableStateOf(null)
+    private var mImpressionTag by mutableStateOf("")
 
     private var mOnClicked by mutableStateOf({})
 
-    private fun onAnimateVisibilityFinished(isVisible: Boolean) {
-        showWithCondition(isVisible)
-    }
-
-    init {
-        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(view: View) {
-                mComponent = createComponent()
-            }
-
-            override fun onViewDetachedFromWindow(view: View) {
-                mComponent = null
-            }
-        })
-
-        addImpressionListener {
-            analytic { impressLiveThumbnail(it.channelId, it.productId, it.shopId) }
-        }
-        setOnClickListener(null)
-    }
-
-    init {
-        videoPlayer.addPlayerListener(object : Player.EventListener {
-            private var mIsIdleOrEnded = true
-
-            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                val isIdleOrEnded = playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED
-
-                if (playWhenReady && playbackState == Player.STATE_READY) {
-                    mListener?.onPreviewStarted(this@PlayWidgetLiveThumbnailView)
-                } else if (isIdleOrEnded) {
-                    run {
-                        if (mIsIdleOrEnded) return@run
-                        mListener?.onPreviewEnded(this@PlayWidgetLiveThumbnailView)
-                    }
-                }
-
-                mIsIdleOrEnded = isIdleOrEnded
-            }
-        })
-    }
+    private val thumbnailState = LiveThumbnailState(context)
 
     @Composable
     override fun Content() {
         NestTheme {
             PlayWidgetLiveThumbnail(
-                videoPlayer.player,
-                transitionState,
-                ::onAnimateVisibilityFinished,
-                mOnClicked,
+                state = thumbnailState,
+                onClicked = mOnClicked,
+                analyticModel = mAnalyticModel,
+                impressionTag = mImpressionTag,
             )
         }
     }
 
     override fun setOnClickListener(l: OnClickListener?) {
-        mOnClicked = {
-            analytic { clickLiveThumbnail(it.channelId, it.productId, it.shopId) }
-            l?.onClick(this)
-        }
+        mOnClicked = { l?.onClick(this) }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        thumbnailState.stopPlayer()
+    }
+
+    override fun setVisibility(visibility: Int) {
+        super.setVisibility(visibility)
+        if (visibility == View.GONE) thumbnailState.stopPlayer()
     }
 
     fun setAnalyticModel(model: AnalyticModel) {
         mAnalyticModel = model
     }
 
-    private fun createComponent(): PlayWidgetLiveIndicatorComponent {
-        val owner = findViewTreeViewModelStoreOwner() ?: error("VM Store Owner not found")
-        return ViewModelProvider(owner, componentFactory).get()
-    }
-
-    private fun analytic(onAnalytic: PlayWidgetLiveIndicatorAnalytic.(AnalyticModel) -> Unit) {
-        val model = mAnalyticModel ?: return
-        mComponent?.getAnalytic()?.onAnalytic(model)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        visibility = View.GONE
-    }
-
-    override fun setVisibility(visibility: Int) {
-        super.setVisibility(visibility)
-        if (visibility == View.GONE) videoPlayer.stop()
+    fun setImpressionTag(tag: String) {
+        mImpressionTag = tag
     }
 
     fun playUrl(url: String, playFor: Duration = 3.seconds) {
-        videoPlayer.loadUri(
-            Uri.parse(url),
-            config = VideoPlayer.Config(playFor, isLive = true)
-        )
-        videoPlayer.start()
-    }
-
-    fun setListener(listener: Listener?) {
-        mListener = listener
-    }
-
-    fun showAnimated() {
-        visibility = View.VISIBLE
-        transitionState.targetState = true
-    }
-
-    fun hideAnimated() {
-        transitionState.targetState = false
-    }
-
-    interface Listener {
-        fun onPreviewStarted(view: PlayWidgetLiveThumbnailView)
-        fun onPreviewEnded(view: PlayWidgetLiveThumbnailView)
-    }
-
-    class DefaultListener : Listener {
-        override fun onPreviewStarted(view: PlayWidgetLiveThumbnailView) {
-            view.showAnimated()
-        }
-
-        override fun onPreviewEnded(view: PlayWidgetLiveThumbnailView) {
-            view.hideAnimated()
-        }
+        thumbnailState.playUrl(url, playFor)
     }
 
     data class AnalyticModel(
@@ -229,14 +121,48 @@ class PlayWidgetLiveThumbnailView : AbstractComposeView {
     )
 }
 
+@Composable
+fun PlayWidgetLiveThumbnail(
+    state: LiveThumbnailState,
+    onClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+    analyticModel: PlayWidgetLiveThumbnailView.AnalyticModel? = null,
+    impressionTag: String = "",
+) {
+    var isVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        state.observeVideoState().collectLatest { state ->
+            when (state) {
+                LiveThumbnailState.VideoState.Started -> isVisible = true
+                LiveThumbnailState.VideoState.Ended -> isVisible = false
+                else -> {}
+            }
+        }
+    }
+
+    PlayWidgetLiveThumbnail(
+        player = state.player.player,
+        isVisible = isVisible,
+        onClicked = onClicked,
+        modifier = modifier,
+        analyticModel = analyticModel,
+        impressionTag = impressionTag
+    )
+}
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun PlayWidgetLiveThumbnail(
     player: Player,
-    state: MutableTransitionState<Boolean>,
-    onAnimateVisibilityFinished: (Boolean) -> Unit,
-    onClickedHandler: OnClickedHandler,
+    isVisible: Boolean,
+    onClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+    analyticModel: PlayWidgetLiveThumbnailView.AnalyticModel? = null,
+    impressionTag: String = "",
 ) {
+    val component = rememberDaggerComponent()
+
     val bgColor = colorResource(id = playwidgetR.color.play_widget_live_thumbnail_dms_bg)
 
     val density = LocalDensity.current
@@ -244,15 +170,14 @@ private fun PlayWidgetLiveThumbnail(
     val anchorSquareDiagonal = sqrt(2 * anchorSquareSize.pow(2))
     val totalHeight = 86.dp.plus(with(density) { (anchorSquareDiagonal / 4f).toDp() })
 
-    LaunchedEffect(state) {
-        snapshotFlow { state.currentState }
-            .collectLatest {
-                if (it == state.targetState) onAnimateVisibilityFinished(state.targetState)
-            }
+    LaunchedEffect(analyticModel, impressionTag) {
+        analyticModel?.let {
+            component.getAnalytic().impressLiveThumbnail(it.channelId, it.productId, it.shopId, impressionTag)
+        }
     }
 
     AnimatedVisibility(
-        visibleState = state,
+        visible = isVisible,
         enter = scaleIn(
             initialScale = 0.7f,
             transformOrigin = TransformOrigin(0.5f, 1.0f),
@@ -260,7 +185,8 @@ private fun PlayWidgetLiveThumbnail(
         exit = scaleOut(
             targetScale = 0.7f,
             transformOrigin = TransformOrigin(0.5f, 1.0f),
-        ) + fadeOut()
+        ) + fadeOut(),
+        modifier = modifier,
     ) {
         Box(
             Modifier
@@ -288,7 +214,17 @@ private fun PlayWidgetLiveThumbnail(
                         }
                     }
                 }
-                .clickable(onClick = onClickedHandler)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    analyticModel?.let {
+                        component
+                            .getAnalytic()
+                            .clickLiveThumbnail(it.channelId, it.productId, it.shopId)
+                    }
+                    onClicked()
+                }
         ) {
             PlayWidgetLivePlayer(
                 player,
@@ -320,13 +256,75 @@ private fun PlayWidgetLivePlayer(
     }
 }
 
+class LiveThumbnailState(val context: Context) {
+
+    internal val player = VideoPlayer(context).apply {
+        mute(true)
+    }
+
+    private var videoState by mutableStateOf(VideoState.Unknown)
+
+    init {
+        player.addPlayerListener(object : Player.EventListener {
+            private var mIsIdleOrEnded = true
+
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                val isIdleOrEnded = playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED
+
+                if (playWhenReady && playbackState == Player.STATE_READY) {
+                    videoState = VideoState.Started
+                } else if (isIdleOrEnded) {
+                    run {
+                        if (mIsIdleOrEnded) return@run
+                        videoState = VideoState.Ended
+                    }
+                }
+
+                mIsIdleOrEnded = isIdleOrEnded
+            }
+        })
+    }
+
+    internal fun observeVideoState(): Flow<VideoState> {
+        return snapshotFlow { videoState }
+    }
+
+    fun playUrl(url: String, playFor: Duration = 3.seconds) {
+        player.loadUri(
+            Uri.parse(url),
+            config = VideoPlayer.Config(playFor, isLive = true)
+        )
+        player.start()
+    }
+
+    fun stopPlayer() {
+        player.stop()
+    }
+
+    @JvmInline
+    value class VideoState private constructor(val state: Int) {
+        companion object {
+            val Unknown = VideoState(-1)
+            val Started = VideoState(0)
+            val Ended = VideoState(2)
+        }
+    }
+}
+
+@Composable
+fun rememberLiveThumbnailState(): LiveThumbnailState {
+    val context = LocalContext.current
+    return remember(context) {
+        LiveThumbnailState(context)
+    }
+}
+
 @Preview
 @Composable
 private fun PlayWidgetLiveThumbnailPreview() {
     PlayWidgetLiveThumbnail(
         VideoPlayer(LocalContext.current).player,
-        MutableTransitionState(false),
+        true,
         {},
-        {}
     )
 }

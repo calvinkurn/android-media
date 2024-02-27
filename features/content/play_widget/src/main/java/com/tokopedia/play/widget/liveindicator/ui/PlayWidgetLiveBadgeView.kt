@@ -21,31 +21,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.platform.AbstractComposeView
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
-import androidx.lifecycle.get
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.NoMinimumTouchArea
-import com.tokopedia.play.widget.liveindicator.di.DaggerPlayWidgetLiveIndicatorComponent
-import com.tokopedia.play.widget.liveindicator.di.PlayWidgetLiveIndicatorComponent
+import com.tokopedia.play.widget.liveindicator.di.rememberDaggerComponent
 import com.tokopedia.play.widget.R as playwidgetR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -71,7 +62,7 @@ class PlayWidgetLiveBadgeView : AbstractComposeView {
     @Composable
     override fun Content() {
         NestTheme {
-            PlayWidgetLiveIndicator(mOnClicked, analyticModel = mAnalyticModel, impressionTag = mImpressionTag)
+            PlayWidgetLiveBadge(mOnClicked, analyticModel = mAnalyticModel, impressionTag = mImpressionTag)
         }
     }
 
@@ -103,7 +94,7 @@ class PlayWidgetLiveBadgeView : AbstractComposeView {
 }
 
 @Composable
-fun PlayWidgetLiveIndicator(
+fun PlayWidgetLiveBadge(
     onClicked: () -> Unit,
     modifier: Modifier = Modifier,
     analyticModel: PlayWidgetLiveBadgeView.AnalyticModel? = null,
@@ -213,34 +204,8 @@ private fun IconChevronRight(modifier: Modifier = Modifier) {
 
 private val BlinkEaseInOut = CubicBezierEasing(0.63f, 0.01f, 0.29f, 1.0f)
 
-@Composable
-private fun rememberDaggerComponent(): PlayWidgetLiveIndicatorComponent {
-
-    val context = LocalContext.current
-    val view = LocalView.current
-
-    return remember {
-        val componentFactory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return DaggerPlayWidgetLiveIndicatorComponent.builder()
-                    .baseAppComponent(
-                        (context.applicationContext as BaseMainApplication).baseAppComponent
-                    ).build() as T
-            }
-        }
-
-        ViewModelProvider(
-            checkNotNull(view.findViewTreeViewModelStoreOwner()) {
-                "No ViewModelStoreOwner was found for view $view"
-            },
-            componentFactory
-        ).get()
-    }
-}
-
 @Preview
 @Composable
 private fun PlayWidgetLiveIndicatorViewPreview() {
-    PlayWidgetLiveIndicator(onClicked = {}, )
+    PlayWidgetLiveBadge(onClicked = {}, )
 }
