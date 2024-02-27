@@ -51,21 +51,12 @@ class CartBuyAgainItemViewHolder(
                     addToCartButtonType = UnifyButton.Type.MAIN
                 )
             )
-//            setImageProductViewHintListener(
-//                element,
-//                object : ViewHintListener {
-//                    override fun onViewHint() {
-//                        actionListener?.onRecentViewProductImpression(element)
-//                    }
-//                }
-//            )
-
-//            setOnClickListener {
-//                actionListener?.onRecentViewProductClicked(element.id)
-//            }
-//            setAddToCartOnClickListener {
-//                actionListener?.onButtonAddToCartClicked(element)
-//            }
+            setOnClickListener {
+                listener?.onBuyAgainProductClicked(element)
+            }
+            setAddToCartOnClickListener {
+                listener?.onButtonAddToCartClicked(element)
+            }
         }
     }
 }

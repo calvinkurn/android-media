@@ -17,7 +17,7 @@ class CartBuyAgainViewAllViewHolder(
 
     fun bind(data: CartBuyAgainViewAllData) {
         binding.root.setOnClickListener {
-            listener?.onShowAllItem(data.showAllAppLink)
+            listener?.onShowAllItemBuyAgain(data.showAllAppLink, false)
         }
     }
 }

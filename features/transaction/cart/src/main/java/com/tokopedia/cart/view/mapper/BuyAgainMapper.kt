@@ -27,6 +27,8 @@ object BuyAgainMapper {
         cartBuyAgainItemHolderData.slashedPrice = item.slashedPrice
         cartBuyAgainItemHolderData.clickUrl = item.clickUrl
         cartBuyAgainItemHolderData.trackerImageUrl = item.trackerImageUrl
+        cartBuyAgainItemHolderData.recommendationType = item.recommendationType
+        cartBuyAgainItemHolderData.categoryBreadcrumbs = item.categoryBreadcrumbs
 
         if (item.badges.isNotEmpty()) {
             cartBuyAgainItemHolderData.badgesUrl = item.badges.map { it.imageUrl }

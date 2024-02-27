@@ -24,5 +24,7 @@ data class CartBuyAgainItemHolderData(
     var freeOngkirImageUrl: String = "",
     var clickUrl: String = "",
     var trackerImageUrl: String = "",
-    var labelGroupList: List<RecommendationLabel> = listOf()
+    var labelGroupList: List<RecommendationLabel> = listOf(),
+    var recommendationType: String = "",
+    var categoryBreadcrumbs: String = "",
 ) : CartBuyAgainItem, ImpressHolder()

@@ -86,10 +86,10 @@ class CartBuyAgainViewHolder(
             binding.productCardView.gone()
             binding.rvBuyAgain.visible()
         }
-//        if (!element.hasSentImpressionAnalytics) {
-//            listener?.onRecentViewImpression()
-//            element.hasSentImpressionAnalytics = true
-//        }
+        if (!element.hasSentImpressionAnalytics) {
+            listener?.onBuyAgainImpression(element.buyAgainList)
+            element.hasSentImpressionAnalytics = true
+        }
     }
 }
 

@@ -32,6 +32,8 @@ object ConstantTransactionAnalytics {
         const val ITEM_NAME = "item_name"
         const val ITEM_VARIANT = "item_variant"
         const val ITEM_BRAND = "item_brand"
+        const val INDEX = "index"
+        const val ITEM_CATEGORY = "item_category"
     }
 
     object EventName {
@@ -81,6 +83,7 @@ object ConstantTransactionAnalytics {
         const val CLICK_PG = "clickPG"
         const val VIEW_PG_IRIS = "viewPGIris"
         const val CLICK_DIGITAL = "clickDigital"
+        const val VIEW_ITEM_LIST = "view_item_list"
     }
 
     object EventCategory {

@@ -56,7 +56,7 @@ class CartSectionHeaderViewHolder(private val binding: ItemCartSectionHeaderBind
                     }
                     CartSectionHeaderActionType.ICON_BUTTON -> {
                         flAction.setOnClickListener {
-                            listener?.onShowAllItem(element.showAllAppLink)
+                            listener?.onShowAllItemBuyAgain(element.showAllAppLink, true)
                         }
                         labelShowAll.gone()
                         icShowAll.gone()

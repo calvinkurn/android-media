@@ -71,6 +71,7 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.LocalizationCh
 import com.tokopedia.cart.databinding.FragmentCartRevampBinding
 import com.tokopedia.cart.view.adapter.cart.CartAdapter
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
+import com.tokopedia.cart.view.analytics.CartBuyAgainAnalytics
 import com.tokopedia.cart.view.bottomsheet.CartBundlingBottomSheet
 import com.tokopedia.cart.view.bottomsheet.CartBundlingBottomSheetListener
 import com.tokopedia.cart.view.bottomsheet.CartNoteBottomSheet
@@ -94,6 +95,8 @@ import com.tokopedia.cart.view.uimodel.AddToCartEvent
 import com.tokopedia.cart.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartBuyAgainHolderData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainItem
+import com.tokopedia.cart.view.uimodel.CartBuyAgainItemHolderData
 import com.tokopedia.cart.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
 import com.tokopedia.cart.view.uimodel.CartDeleteItemData
@@ -783,6 +786,15 @@ class CartRevampFragment :
         routeToApplink(appLink)
     }
 
+    override fun onShowAllItemBuyAgain(appLink: String, isFromHeader: Boolean) {
+        if (isFromHeader) {
+            CartBuyAgainAnalytics.sendClickLihatSemuaArrowButtonOnBuyAgainWidgetEvent()
+        } else {
+            CartBuyAgainAnalytics.sendClickLihatSemuaButtonOnBuyAgainWidgetEvent()
+        }
+        routeToApplink(appLink)
+    }
+
     override fun onRemoveWishlistFromWishlist(productId: String) {
         cartPageAnalytics.eventClickRemoveWishlist(userSession.userId, productId)
 
@@ -981,6 +993,19 @@ class CartRevampFragment :
             viewModel.processUpdateCartData(true)
         }
         viewModel.processAddToCart(productModel)
+    }
+
+    override fun onBuyAgainButtonAddToCartClicked(productModel: CartBuyAgainItemHolderData) {
+        if (viewModel.dataHasChanged()) {
+            viewModel.processUpdateCartData(true)
+        }
+        viewModel.processAddToCart(productModel)
+        CartBuyAgainAnalytics.sendClickBeliLagiButtonOnBuyAgainWidgetEvent(
+            CartPageAnalyticsUtil.generateBuyAgainDataAddToCartAnalytics(
+                listOf(productModel)
+            ),
+            userSession.userId
+        )
     }
 
     override fun onDeleteAllDisabledProduct() {
@@ -2497,6 +2522,9 @@ class CartRevampFragment :
     private fun initFloatingButton() {
         if (cartPreferences.hasClickedBuyAgainFloatingButton()) {
             binding?.fabBuyAgain?.gone()
+        } else {
+            binding?.fabBuyAgain?.visible()
+            CartBuyAgainAnalytics.sendImpressionFloatingButtonEvent(CartViewModel.BUY_AGAIN_WORDING)
         }
     }
 
@@ -3598,6 +3626,7 @@ class CartRevampFragment :
                 title = floatingButtonData?.title,
                 isVisible = floatingButtonData?.isVisible == true,
                 onClick = {
+                    CartBuyAgainAnalytics.sendClickFloatingButtonEvent(CartViewModel.BUY_AGAIN_WORDING)
                     cartPreferences.setHasClickedBuyAgainFloatingButton()
                     val buyAgainViewHolderIndex =
                         CartDataHelper.getBuyAgainViewHolderIndex(viewModel.cartDataList.value)
@@ -6093,5 +6122,25 @@ class CartRevampFragment :
         }
 
         viewModel.updateBuyAgainFloatingButtonVisibility(isVisible)
+    }
+
+    override fun onBuyAgainImpression(list: List<CartBuyAgainItem>) {
+        CartBuyAgainAnalytics.sendViewBuyAgainWidgetOnCartEvent()
+        if (list.isNotEmpty()) {
+            val buyAgainList = list.filterIsInstance(CartBuyAgainItemHolderData::class.java)
+            CartBuyAgainAnalytics.sendImpressionProductOnBuyAgainWidgetEvent(
+                buyAgainList[0].recommendationType,
+                CartPageAnalyticsUtil.generateBuyAgainDataProductAnalytics(buyAgainList),
+                userSession.userId
+            )
+        }
+    }
+
+    override fun onBuyAgainProductClicked(product: CartBuyAgainItemHolderData) {
+        CartBuyAgainAnalytics.sendClickProductOnBuyAgainWidgetEvent(
+            product.recommendationType,
+            CartPageAnalyticsUtil.generateBuyAgainDataProductAnalytics(listOf(product)),
+            userSession.userId
+        )
     }
 }

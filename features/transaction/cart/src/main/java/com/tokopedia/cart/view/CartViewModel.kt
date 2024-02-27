@@ -301,6 +301,9 @@ class CartViewModel @Inject constructor(
         const val ITEM_CHECKED_PARTIAL_SHOP = 3
         const val ITEM_CHECKED_PARTIAL_ITEM = 4
         const val ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5
+
+        const val BUY_AGAIN_WORDING = "Waktunya beli lagi!"
+
         private const val RECENT_VIEW_XSOURCE = "recentview"
         private const val PAGE_NAME_RECENT_VIEW = "cart_recent_view"
         private const val PAGE_NAME_BUY_AGAIN = "buy_it_again_cart"
@@ -1047,7 +1050,7 @@ class CartViewModel @Inject constructor(
         cartModel.shouldReloadBuyAgainList = false
 
         _buyAgainFloatingButtonData.value = CartBuyAgainFloatingButtonData(
-            title = "Waktunya beli lagi!",
+            title = BUY_AGAIN_WORDING,
             isVisible = buyAgainList.isNotEmpty()
         )
     }
@@ -1721,6 +1724,12 @@ class CartViewModel @Inject constructor(
             if (clickUrl.isNotEmpty()) {
                 _cartTrackerEvent.value = CartTrackerEvent.ATCTrackingURLBanner(productModel)
             }
+        } else if (productModel is CartBuyAgainItemHolderData) {
+            productId = productModel.id.toLongOrZero()
+            shopId = productModel.shopId.toIntOrZero()
+            productName = productModel.name
+            productPrice = productModel.price
+            quantity = productModel.minOrder
         }
 
         val addToCartRequestParams = AddToCartRequestParams().apply {
