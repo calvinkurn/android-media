@@ -191,19 +191,6 @@ enum class EnterMethod(val str: String) {
     CLICK_ATC_TOASTER_PDP("click_atc_toaster_pdp"),
     CLICK_WISHLIST_ICON("click_wishlist_icon"),
     CLICK_WISHLIST_ICONACCOUNT("click_wishlist_iconaccount"),
-    CLICK_TAB("click_tab"),
-    SWITCH_TAB("switch_tab"),
-    CLICK_BUBBLE("click_bubble"),
-    CLICK_PUSH("click_push"),
-    CLICK_WHATSAPP("click_whatsapp"),
-    CLICK_INBOX("click_inbox"),
-    CLICK_NO_ANCHOR_VIDEO_BUTTON("click_no_anchor_video_button"),
-    CLICK_NO_ANCHOR_VIDEO_PIC("click_no_anchor_video_pic"),
-    CLICK_VIEW_ORDER("click_view_order"),
-    CLICK_PLACE_ORDER("click_place_order"),
-    CLICK_VIDEO_GUIDE("click_video_guide"),
-    CLICK_TT_TASK_PAGE_MALL_BROWSE_TASK("click_tt_task_page_mall_browse_task"),
-    CLICK_TT_TASK_PAGE_COUPON_POPUP("click_tt_task_page_coupon_popup"),
 }
 
 object EventName {

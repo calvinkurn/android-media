@@ -1371,7 +1371,7 @@ public class MainParentActivity extends BaseActivity implements
         if (pageTitle.equals(getResources().getString(R.string.home))) {
             AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_HOME_ICON);
         } else if (pageTitle.equals(getResources().getString(R.string.wishlist))) {
-            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICONACCOUNT);
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICON);
         }
     }
 
