@@ -23,7 +23,7 @@ import org.junit.runners.Parameterized
 class HomeStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(startupMode) {
     override fun setupEnvironment() {
         MacroDevOps.skipOnboarding()
-        MacroDevOps.setupLoginFlow()
+//        MacroDevOps.setupLoginFlow()
     }
 
     override fun setupMock() {
