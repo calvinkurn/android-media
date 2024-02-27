@@ -528,6 +528,7 @@ class CartViewModel @Inject constructor(
         isLoadingTypeRefresh: Boolean,
         getCartState: Int = GET_CART_STATE_DEFAULT
     ) {
+        updateBuyAgainFloatingButtonVisibility(false)
         CartIdlingResource.increment()
         if (initialLoad) {
             _globalEvent.value = CartGlobalEvent.LoadGetCartData

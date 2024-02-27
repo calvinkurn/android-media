@@ -55,7 +55,7 @@ class CartBuyAgainItemViewHolder(
                 listener?.onBuyAgainProductClicked(element)
             }
             setAddToCartOnClickListener {
-                listener?.onButtonAddToCartClicked(element)
+                listener?.onBuyAgainButtonAddToCartClicked(element)
             }
         }
     }

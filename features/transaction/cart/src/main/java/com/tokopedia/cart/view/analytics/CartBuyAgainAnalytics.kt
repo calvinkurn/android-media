@@ -1,9 +1,9 @@
 package com.tokopedia.cart.view.analytics
 
+import androidx.core.os.bundleOf
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
-import com.tokopedia.track.builder.Tracker
 
 // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4520
 object CartBuyAgainAnalytics : TransactionAnalytics() {
@@ -30,114 +30,114 @@ object CartBuyAgainAnalytics : TransactionAnalytics() {
     private const val ITEM_LIST_KEY = "item_list"
 
     fun sendViewBuyAgainWidgetOnCartEvent() {
-        Tracker.Builder()
-            .setEvent(ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS)
-            .setEventAction(VIEW_BUY_AGAIN_WIDGET_ON_CART_ACTION)
-            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
-            .setEventLabel(String.EMPTY)
-            .setCustomProperty(ConstantTransactionAnalytics.ExtraKey.TRACKER_ID, VIEW_BUY_AGAIN_WIDGET_ON_CART_ACTION_TRACKER_ID)
-            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE)
-            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
-            .build()
-            .send()
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            VIEW_BUY_AGAIN_WIDGET_ON_CART_ACTION,
+            String.EMPTY
+        )
+        gtmData[ConstantTransactionAnalytics.ExtraKey.TRACKER_ID] = VIEW_BUY_AGAIN_WIDGET_ON_CART_ACTION_TRACKER_ID
+        gtmData[ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE
+        gtmData[ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
     }
 
     fun sendImpressionProductOnBuyAgainWidgetEvent(itemList: String, items: List<Map<String, Any>>, userId: String) {
-        val dataLayer = getGtmData(
-            ConstantTransactionAnalytics.EventName.VIEW_ITEM_LIST,
-            ConstantTransactionAnalytics.EventCategory.CART,
-            IMPRESSION_PRODUCT_ON_BUY_AGAIN_WIDGET,
-            String.EMPTY
+        val bundle = bundleOf(
+            ConstantTransactionAnalytics.ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.VIEW_ITEM_LIST,
+            ConstantTransactionAnalytics.ExtraKey.EVENT_CATEGORY to ConstantTransactionAnalytics.EventCategory.CART,
+            ConstantTransactionAnalytics.ExtraKey.EVENT_ACTION to IMPRESSION_PRODUCT_ON_BUY_AGAIN_WIDGET,
+            ConstantTransactionAnalytics.ExtraKey.EVENT_LABEL to String.EMPTY,
+            ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE to ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE,
+            ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT to ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE,
+            ConstantTransactionAnalytics.ExtraKey.TRACKER_ID to IMPRESSION_PRODUCT_ON_BUY_AGAIN_WIDGET_TRACKER_ID,
+            ConstantTransactionAnalytics.ExtraKey.ITEMS to items,
+            ITEM_LIST_KEY to "$ITEM_LIST_FORMAT $itemList",
+            ConstantTransactionAnalytics.ExtraKey.USER_ID to userId
         )
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.TRACKER_ID] = IMPRESSION_PRODUCT_ON_BUY_AGAIN_WIDGET_TRACKER_ID
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-        dataLayer[ITEM_LIST_KEY] = "$ITEM_LIST_FORMAT $itemList"
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.ITEMS] = items
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.USER_ID] = userId
-        sendEnhancedEcommerce(dataLayer)
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.VIEW_ITEM_LIST, bundle)
     }
 
     fun sendClickProductOnBuyAgainWidgetEvent(itemList: String, items: List<Map<String, Any>>, userId: String) {
-        val dataLayer = getGtmData(
-            ConstantTransactionAnalytics.EventName.SELECT_CONTENT,
-            ConstantTransactionAnalytics.EventCategory.CART,
-            CLICK_PRODUCT_ON_BUY_AGAIN_WIDGET,
-            String.EMPTY
+        val bundle = bundleOf(
+            ConstantTransactionAnalytics.ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.SELECT_CONTENT,
+            ConstantTransactionAnalytics.ExtraKey.EVENT_CATEGORY to ConstantTransactionAnalytics.EventCategory.CART,
+            ConstantTransactionAnalytics.ExtraKey.EVENT_ACTION to CLICK_PRODUCT_ON_BUY_AGAIN_WIDGET,
+            ConstantTransactionAnalytics.ExtraKey.EVENT_LABEL to String.EMPTY,
+            ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE to ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE,
+            ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT to ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE,
+            ConstantTransactionAnalytics.ExtraKey.TRACKER_ID to CLICK_PRODUCT_ON_BUY_AGAIN_WIDGET_TRACKER_ID,
+            ConstantTransactionAnalytics.ExtraKey.ITEMS to items,
+            ITEM_LIST_KEY to "$ITEM_LIST_FORMAT $itemList",
+            ConstantTransactionAnalytics.ExtraKey.USER_ID to userId
         )
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.TRACKER_ID] = CLICK_PRODUCT_ON_BUY_AGAIN_WIDGET_TRACKER_ID
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-        dataLayer[ITEM_LIST_KEY] = "$ITEM_LIST_FORMAT $itemList"
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.ITEMS] = items
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.USER_ID] = userId
-        sendEnhancedEcommerce(dataLayer)
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.SELECT_CONTENT, bundle)
     }
 
     fun sendClickBeliLagiButtonOnBuyAgainWidgetEvent(items: List<Map<String, Any>>, userId: String) {
-        val dataLayer = getGtmData(
-            ConstantTransactionAnalytics.EventName.ADD_TO_CART,
-            ConstantTransactionAnalytics.EventCategory.CART,
-            CLICK_BELI_LAGI_BUTTON_ON_BUY_AGAIN_WIDGET,
-            String.EMPTY
+        val bundle = bundleOf(
+            ConstantTransactionAnalytics.ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.ADD_TO_CART,
+            ConstantTransactionAnalytics.ExtraKey.EVENT_CATEGORY to ConstantTransactionAnalytics.EventCategory.CART,
+            ConstantTransactionAnalytics.ExtraKey.EVENT_ACTION to CLICK_BELI_LAGI_BUTTON_ON_BUY_AGAIN_WIDGET,
+            ConstantTransactionAnalytics.ExtraKey.EVENT_LABEL to String.EMPTY,
+            ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE to ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE,
+            ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT to ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE,
+            ConstantTransactionAnalytics.ExtraKey.TRACKER_ID to CLICK_BELI_LAGI_BUTTON_ON_BUY_AGAIN_WIDGET_TRACKER_ID,
+            ConstantTransactionAnalytics.ExtraKey.ITEMS to items,
+            ConstantTransactionAnalytics.ExtraKey.USER_ID to userId
         )
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.TRACKER_ID] = CLICK_BELI_LAGI_BUTTON_ON_BUY_AGAIN_WIDGET_TRACKER_ID
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.ITEMS] = items
-        dataLayer[ConstantTransactionAnalytics.ExtraKey.USER_ID] = userId
-        sendEnhancedEcommerce(dataLayer)
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.ADD_TO_CART, bundle)
     }
 
     fun sendClickLihatSemuaArrowButtonOnBuyAgainWidgetEvent() {
-        Tracker.Builder()
-            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PP)
-            .setEventAction(CLICK_LIHAT_SEMUA_ARROW_BUTTON_ON_BUY_AGAIN_WIDGET)
-            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
-            .setEventLabel("")
-            .setCustomProperty(ConstantTransactionAnalytics.ExtraKey.TRACKER_ID, CLICK_LIHAT_SEMUA_ARROW_BUTTON_ON_BUY_AGAIN_WIDGET_TRACKER_ID)
-            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE)
-            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
-            .build()
-            .send()
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            CLICK_LIHAT_SEMUA_ARROW_BUTTON_ON_BUY_AGAIN_WIDGET,
+            String.EMPTY
+        )
+        gtmData[ConstantTransactionAnalytics.ExtraKey.TRACKER_ID] = CLICK_LIHAT_SEMUA_ARROW_BUTTON_ON_BUY_AGAIN_WIDGET_TRACKER_ID
+        gtmData[ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE
+        gtmData[ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
     }
 
     fun sendClickLihatSemuaButtonOnBuyAgainWidgetEvent() {
-        Tracker.Builder()
-            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PP)
-            .setEventAction(CLICK_LIHAT_SEMUA_BUTTON_ON_BUY_AGAIN_WIDGET)
-            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
-            .setEventLabel("")
-            .setCustomProperty(ConstantTransactionAnalytics.ExtraKey.TRACKER_ID, CLICK_LIHAT_SEMUA_BUTTON_ON_BUY_AGAIN_WIDGET_TRACKER_ID)
-            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE)
-            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
-            .build()
-            .send()
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            CLICK_LIHAT_SEMUA_BUTTON_ON_BUY_AGAIN_WIDGET,
+            String.EMPTY
+        )
+        gtmData[ConstantTransactionAnalytics.ExtraKey.TRACKER_ID] = CLICK_LIHAT_SEMUA_BUTTON_ON_BUY_AGAIN_WIDGET_TRACKER_ID
+        gtmData[ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE
+        gtmData[ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
     }
 
     fun sendImpressionFloatingButtonEvent(eventLabel: String) {
-        Tracker.Builder()
-            .setEvent(ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS)
-            .setEventAction(IMPRESSION_FLOATING_BUTTON)
-            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(ConstantTransactionAnalytics.ExtraKey.TRACKER_ID, IMPRESSION_FLOATING_BUTTON_TRACKER_ID)
-            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
-            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
-            .build()
-            .send()
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.VIEW_PP_IRIS,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            IMPRESSION_FLOATING_BUTTON,
+            eventLabel
+        )
+        gtmData[ConstantTransactionAnalytics.ExtraKey.TRACKER_ID] = IMPRESSION_FLOATING_BUTTON_TRACKER_ID
+        gtmData[ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
     }
 
     fun sendClickFloatingButtonEvent(eventLabel: String) {
-        Tracker.Builder()
-            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PP)
-            .setEventAction(CLICK_FLOATING_BUTTON)
-            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
-            .setEventLabel(eventLabel)
-            .setCustomProperty(ConstantTransactionAnalytics.ExtraKey.TRACKER_ID, CLICK_FLOATING_BUTTON_TRACKER_ID)
-            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
-            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
-            .build()
-            .send()
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            CLICK_FLOATING_BUTTON,
+            eventLabel
+        )
+        gtmData[ConstantTransactionAnalytics.ExtraKey.TRACKER_ID] = CLICK_FLOATING_BUTTON_TRACKER_ID
+        gtmData[ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
     }
 }

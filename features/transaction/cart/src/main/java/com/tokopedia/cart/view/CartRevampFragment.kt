@@ -157,6 +157,7 @@ import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -568,7 +569,6 @@ class CartRevampFragment :
         initSharedFlow()
         initVM()
         initCoachMark()
-        initFloatingButton()
         binding?.rvCart?.setViewBinderHelper(binderHelper)
     }
 
@@ -996,16 +996,16 @@ class CartRevampFragment :
     }
 
     override fun onBuyAgainButtonAddToCartClicked(productModel: CartBuyAgainItemHolderData) {
-        if (viewModel.dataHasChanged()) {
-            viewModel.processUpdateCartData(true)
-        }
-        viewModel.processAddToCart(productModel)
         CartBuyAgainAnalytics.sendClickBeliLagiButtonOnBuyAgainWidgetEvent(
             CartPageAnalyticsUtil.generateBuyAgainDataAddToCartAnalytics(
                 listOf(productModel)
             ),
             userSession.userId
         )
+        if (viewModel.dataHasChanged()) {
+            viewModel.processUpdateCartData(true)
+        }
+        viewModel.processAddToCart(productModel)
     }
 
     override fun onDeleteAllDisabledProduct() {
@@ -1826,8 +1826,9 @@ class CartRevampFragment :
 
                 if (dy != 0) {
                     bulkActionCoachMark?.dismissCoachMark()
-                    updateBuyAgainFloatingButtonVisibility(false)
                 }
+
+                updateBuyAgainFloatingButtonVisibility(false)
 
                 if (shouldShowSwipeToDeleteDefaultProductOnBoarding() || shouldShowSwipeToDeleteBundlingProductOnBoarding()) {
                     lifecycleScope.launch {
@@ -2519,15 +2520,6 @@ class CartRevampFragment :
         bulkActionCoachMark = CoachMark2(requireContext())
     }
 
-    private fun initFloatingButton() {
-        if (cartPreferences.hasClickedBuyAgainFloatingButton()) {
-            binding?.fabBuyAgain?.gone()
-        } else {
-            binding?.fabBuyAgain?.visible()
-            CartBuyAgainAnalytics.sendImpressionFloatingButtonEvent(CartViewModel.BUY_AGAIN_WORDING)
-        }
-    }
-
     @OptIn(FlowPreview::class)
     private fun initSharedFlow() {
         lifecycleScope.launch {
@@ -2680,8 +2672,6 @@ class CartRevampFragment :
         observeEntryPointInfo()
 
         observeBmGmGroupProductTicker()
-
-        observeBuyAgainFloatingButton()
     }
 
     private fun initToolbar() {
@@ -3618,24 +3608,31 @@ class CartRevampFragment :
         }
     }
 
-    private fun observeBuyAgainFloatingButton() {
-        binding?.fabBuyAgain?.setContent {
-            val floatingButtonData by viewModel.buyAgainFloatingButtonData.observeAsState()
+    private fun setBuyAgainFloatingButton() {
+        if (cartPreferences.hasClickedBuyAgainFloatingButton()) {
+            binding?.fabBuyAgain?.gone()
+        }
+        else {
+            CartBuyAgainAnalytics.sendImpressionFloatingButtonEvent(CartViewModel.BUY_AGAIN_WORDING)
+            binding?.fabBuyAgain?.visible()
+            binding?.fabBuyAgain?.setContent {
+                val floatingButtonData by viewModel.buyAgainFloatingButtonData.observeAsState()
 
-            CartBuyAgainFloatingButtonView(
-                title = floatingButtonData?.title,
-                isVisible = floatingButtonData?.isVisible == true,
-                onClick = {
-                    CartBuyAgainAnalytics.sendClickFloatingButtonEvent(CartViewModel.BUY_AGAIN_WORDING)
-                    cartPreferences.setHasClickedBuyAgainFloatingButton()
-                    val buyAgainViewHolderIndex =
-                        CartDataHelper.getBuyAgainViewHolderIndex(viewModel.cartDataList.value)
-                    if (buyAgainViewHolderIndex != RecyclerView.NO_POSITION) {
-                        binding?.rvCart?.smoothScrollToPosition(buyAgainViewHolderIndex)
+                CartBuyAgainFloatingButtonView(
+                    title = floatingButtonData?.title,
+                    isVisible = floatingButtonData?.isVisible == true,
+                    onClick = {
+                        CartBuyAgainAnalytics.sendClickFloatingButtonEvent(CartViewModel.BUY_AGAIN_WORDING)
+                        cartPreferences.setHasClickedBuyAgainFloatingButton()
+                        val buyAgainViewHolderIndex =
+                            CartDataHelper.getBuyAgainViewHolderIndex(viewModel.cartDataList.value)
+                        if (buyAgainViewHolderIndex != RecyclerView.NO_POSITION) {
+                            binding?.rvCart?.smoothSnapToPosition(position = buyAgainViewHolderIndex)
+                        }
+                        binding?.fabBuyAgain?.gone()
                     }
-                    binding?.fabBuyAgain?.gone()
-                }
-            )
+                )
+            }
         }
     }
 
@@ -4333,6 +4330,8 @@ class CartRevampFragment :
             renderCartOutOfService(cartData.outOfService, true)
             return
         }
+
+        setBuyAgainFloatingButton()
 
         context?.let { ctx ->
             if (cartData.onboardingBottomSheet.shouldShowOnBoardingBottomSheet() && !CoachMarkPreference.hasShown(
