@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.SlideTrackObject
+import com.tokopedia.analytics.byteio.addHorizontalTrackListener
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -47,6 +49,8 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private var backgroundImage: ImageView = itemView.findViewById(R.id.background_image)
     private var shimmerSaleTimer: LoaderUnify = itemView.findViewById(R.id.shimmer_timer_shop_flash_sale)
     private var saleTimer: TimerUnifySingle = itemView.findViewById(R.id.timer_shop_flash_sale)
+
+    private var hasRecomScrollListener = false
 
     init {
         linearLayoutManager.initialPrefetchItemCount = PREFETCH_ITEM_COUNT
@@ -91,6 +95,18 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
             }
         })
         mProductCarouselRecyclerView.addOnScrollListener(getParallaxEffect())
+        mProductCarouselRecyclerView.trackHorizontalScroll()
+    }
+
+    private fun RecyclerView.trackHorizontalScroll() {
+        if(hasRecomScrollListener) return
+        addHorizontalTrackListener(
+            slideTrackObject = SlideTrackObject(
+                moduleName = mixLeftData?.creativeName.orEmpty(),
+                barName = mixLeftData?.creativeName.orEmpty(),
+            )
+        )
+        hasRecomScrollListener = true
     }
 
     private fun getParallaxEffect(): RecyclerView.OnScrollListener {
