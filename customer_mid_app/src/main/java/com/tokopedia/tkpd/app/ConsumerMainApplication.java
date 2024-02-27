@@ -180,6 +180,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         initCacheManager();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
+            Timber.plant(new Timber.DebugTree());
             new Cassava.Builder(this)
                     .setRemoteValidator(new RemoteSpec() {
                         @NonNull
