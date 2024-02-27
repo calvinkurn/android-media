@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.revamp.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest
 import com.tokopedia.checkout.data.model.request.saf.ShipmentAddressFormRequest
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.SaveShipmentStateRequest
@@ -44,6 +45,7 @@ class CheckoutCartProcessor @Inject constructor(
     private val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
     private val changeShippingAddressGqlUseCase: Lazy<ChangeShippingAddressGqlUseCase>,
     private val releaseBookingUseCase: Lazy<ReleaseBookingUseCase>,
+    private val updateCartUseCase: Lazy<UpdateCartUseCase>,
     private val helper: CheckoutDataHelper,
     private val dispatchers: CoroutineDispatchers
 ) {
