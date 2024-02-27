@@ -427,6 +427,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productServiceWidget)
     implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
     implementation projectOrAar(rootProject.ext.features.referral)
+
+    implementation rootProject.ext.miscDependencies.profileInstaller
 }
 
 apply plugin: 'com.google.gms.google-services'
