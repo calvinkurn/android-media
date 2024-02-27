@@ -1,28 +1,27 @@
 package com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.SHOW
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehousesData
-import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.UiState
 import com.tokopedia.tokopedianow.common.model.UiState.Success
 import com.tokopedia.tokopedianow.common.model.UiState.Loading
 import com.tokopedia.tokopedianow.common.model.UiState.Error
-import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
@@ -75,32 +74,20 @@ import javax.inject.Inject
 
 class TokoNowShoppingListViewModel @Inject constructor(
     private val addressData: TokoNowLocalAddress,
-    private val productRecommendationUseCase: GetSingleRecommendationUseCase,
     private val userSession: UserSessionInterface,
+    private val productRecommendationUseCase: GetSingleRecommendationUseCase,
     private val getShoppingListUseCase: GetShoppingListUseCase,
     private val saveShoppingListStateUseCase: SaveShoppingListStateUseCase,
-    getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
-    addToCartUseCase: AddToCartUseCase,
-    updateCartUseCase: UpdateCartUseCase,
-    deleteCartUseCase: DeleteCartUseCase,
-    affiliateService: NowAffiliateService,
-    getTargetedTickerUseCase: GetTargetedTickerUseCase,
+    private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     dispatchers: CoroutineDispatchers
-) : BaseTokoNowViewModel(
-    addToCartUseCase,
-    updateCartUseCase,
-    deleteCartUseCase,
-    getMiniCartUseCase,
-    affiliateService,
-    getTargetedTickerUseCase,
-    addressData,
-    userSession,
-    dispatchers
-) {
+): BaseViewModel(dispatchers.io) {
+
     private companion object {
-        const val PRODUCT_RECOMMENDATION_PAGE_NAME = "tokonow_shopping_list"
-        const val PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER = 1
-        const val DEBOUNCE_TIMES_SHOPPING_LIST = 1000L
+        private const val OOC_WAREHOUSE_ID = 0L
+        private const val INVALID_SHOP_ID = 0L
+        private const val PRODUCT_RECOMMENDATION_PAGE_NAME = "tokonow_shopping_list"
+        private const val PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER = 1
+        private const val DEBOUNCE_TIMES_SHOPPING_LIST = 1000L
     }
 
     /**
@@ -112,31 +99,36 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val unavailableProducts = mutableListOf<ShoppingListHorizontalProductCardItemUiModel>()
     private val checkUncheckStateParams = mutableListOf<SaveShoppingListStateActionParam>()
 
-    private val _uiState: MutableStateFlow<UiState<LayoutModel>> = MutableStateFlow(Loading(LayoutModel(layout.addLoadingState())))
+    private val _layoutState: MutableStateFlow<UiState<LayoutModel>> = MutableStateFlow(Loading(LayoutModel(layout.addLoadingState())))
+    private val _miniCartState: MutableStateFlow<UiState<MiniCartSimplifiedData>> = MutableStateFlow(Loading())
     private val _isOnScrollNotNeeded: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val _isNavToolbarScrollingBehaviourEnabled: MutableStateFlow<Boolean> = MutableStateFlow(true)
     private val _isTopCheckAllSelected: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    private val _isStickyTopCheckAllScrollingBehaviourEnabled: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _isProductAvailable: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val _bottomBulkAtcData: MutableStateFlow<BottomBulkAtcModel?> = MutableStateFlow(null)
 
     private var pageCounter: Int = PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER
+    private var mMiniCartData: MiniCartSimplifiedData? = null
     private var loadLayoutJob: Job? = null
     private var saveShoppingListStateJob: Job? = null
+    private var getMiniCartJob: Job? = null
 
     /**
      * -- public variable section --
      */
 
-    val uiState
-        get() = _uiState.asStateFlow()
+    val layoutState
+        get() = _layoutState.asStateFlow()
+    val miniCartState
+        get() = _miniCartState.asStateFlow()
     val isOnScrollNotNeeded
         get() = _isOnScrollNotNeeded.asStateFlow()
     val isNavToolbarScrollingBehaviourEnabled
         get() = _isNavToolbarScrollingBehaviourEnabled.asStateFlow()
     val isTopCheckAllSelected
         get() = _isTopCheckAllSelected.asStateFlow()
-    val isStickyTopCheckAllScrollingBehaviourEnabled
-        get() = _isStickyTopCheckAllScrollingBehaviourEnabled.asStateFlow()
+    val isProductAvailable
+        get() = _isProductAvailable.asStateFlow()
     val bottomBulkAtcData
         get() = _bottomBulkAtcData.asStateFlow()
 
@@ -169,6 +161,27 @@ class TokoNowShoppingListViewModel @Inject constructor(
         checkUncheckStateParams.clear()
     }
 
+    private suspend fun saveAllAvailableProductsState() {
+        checkUncheckStateParams.clear()
+        checkUncheckStateParams.addAll(availableProducts.map { SaveShoppingListStateActionParam(it.id, it.isSelected) })
+
+        saveShoppingListState()
+    }
+
+    private suspend fun saveAvailableProductState(
+        productId: String,
+        isSelected: Boolean
+    ) {
+        val index = checkUncheckStateParams.indexOfFirst { it.productId == productId }
+        if (index != INVALID_INDEX) {
+            checkUncheckStateParams[index] = SaveShoppingListStateActionParam(productId, isSelected)
+        } else {
+            checkUncheckStateParams.add(SaveShoppingListStateActionParam(productId, isSelected))
+        }
+
+        saveShoppingListState()
+    }
+
     /**
      * -- private function section --
      */
@@ -180,57 +193,132 @@ class TokoNowShoppingListViewModel @Inject constructor(
         )
     }
 
-    private fun addShoppingListSection(shoppingListData: GetShoppingListDataResponse.Data) {
+    private fun addShoppingListSection(
+        shoppingListData: GetShoppingListDataResponse.Data
+    ) {
         availableProducts.clear()
         unavailableProducts.clear()
 
         availableProducts.addAll(mapAvailableShoppingList(shoppingListData.listAvailableItem))
         unavailableProducts.addAll(mapUnavailableShoppingList(shoppingListData.listUnavailableItem))
 
-        if (availableProducts.isNotEmpty() || unavailableProducts.isNotEmpty()) {
-            val displayedAvailableItems = availableProducts.take(MAX_TOTAL_PRODUCT_DISPLAYED)
-            val displayedUnavailableItems = unavailableProducts.take(MAX_TOTAL_PRODUCT_DISPLAYED)
-            _isStickyTopCheckAllScrollingBehaviourEnabled.value = availableProducts.isNotEmpty()
+        val isShoppingListAvailable = availableProducts.isNotEmpty() || unavailableProducts.isNotEmpty()
 
-            layout
-                .doIf(availableProducts.isNotEmpty()) {
-                    calculateDataForBottomBulkAtc()
+        layout.doIf(
+            predicate = isShoppingListAvailable,
+            then = {
+                val displayedAvailableItems = availableProducts.take(MAX_TOTAL_PRODUCT_DISPLAYED)
+                val displayedUnavailableItems = unavailableProducts.take(MAX_TOTAL_PRODUCT_DISPLAYED)
+                val isAvailableProductListNotEmpty = availableProducts.isNotEmpty()
+                val isUnavailableProductListNotEmpty = unavailableProducts.isNotEmpty()
 
-                    val isTopCheckAllSelected = shoppingListData.metadata.inStockSelectedTotalData == availableProducts.size
-                    _isTopCheckAllSelected.value = isTopCheckAllSelected
+                _isProductAvailable.value = availableProducts.isNotEmpty()
 
-                    layout
-                        .addTopCheckAllShoppingList(
-                            productState = COLLAPSE,
-                            isSelected = isTopCheckAllSelected
+                /**
+                 * Add Available Products
+                 */
+
+                doIf(
+                    predicate = isAvailableProductListNotEmpty,
+                    then = layout@ {
+                        calculateDataForBottomBulkAtc()
+
+                        val areAllAvailableProductsSelected = shoppingListData.metadata.inStockSelectedTotalData == availableProducts.size
+                        val areAvailableProductsMoreThanDefaultDisplayed = availableProducts.size > MAX_TOTAL_PRODUCT_DISPLAYED
+                        val remainingTotalProduct = availableProducts.size - displayedAvailableItems.size
+
+                        _isTopCheckAllSelected.value = areAllAvailableProductsSelected
+
+                        this@layout
+                            .addTopCheckAllShoppingList(
+                                productState = COLLAPSE,
+                                isSelected = areAllAvailableProductsSelected
+                            )
+                            .addShoppingListProducts(displayedAvailableItems)
+                            .doIf(
+                                predicate = areAvailableProductsMoreThanDefaultDisplayed,
+                                then = {
+                                    addExpandCollapse(
+                                        productState = COLLAPSE,
+                                        remainingTotalProduct = remainingTotalProduct,
+                                        productLayoutType = AVAILABLE_SHOPPING_LIST
+                                    )
+                                }
+                            )
+                            doIf(
+                                predicate = isUnavailableProductListNotEmpty,
+                                then = {
+                                    addDivider()
+                                }
+                            )
+                    }
+                )
+
+                /**
+                 * Add Unavailable Products
+                 */
+
+                doIf(
+                    predicate = isUnavailableProductListNotEmpty,
+                    then = layout@ {
+                        val areUnavailableProductsMoreThanDefaultDisplayed = unavailableProducts.size > MAX_TOTAL_PRODUCT_DISPLAYED
+                        val remainingTotalProduct = unavailableProducts.size - displayedUnavailableItems.size
+
+                        this@layout
+                            .addTitle(headerModel.emptyStockTitle)
+                            .addShoppingListProducts(displayedUnavailableItems)
+                            .doIf(
+                                predicate = areUnavailableProductsMoreThanDefaultDisplayed,
+                                then = {
+                                    addExpandCollapse(
+                                        productState = COLLAPSE,
+                                        remainingTotalProduct = remainingTotalProduct,
+                                        productLayoutType = ShoppingListProductLayoutType.UNAVAILABLE_SHOPPING_LIST
+                                    )
+                                }
+                            )
+                    }
+                )
+            },
+            ifNot = {
+                addEmptyShoppingList()
+            }
+        )
+    }
+
+    private fun addProductRecommendationSection(
+        productRecommendation: RecommendationWidget
+    ) {
+        layout
+            .doIf(
+                predicate = productRecommendation.recommendationItemList.isNotEmpty(),
+                then = layout@ {
+                    val isShoppingListAvailable = availableProducts.isNotEmpty() || unavailableProducts.isNotEmpty()
+
+                    this@layout
+                        .doIf(
+                            predicate = isShoppingListAvailable,
+                            then = {
+                                addDivider()
+                            }
                         )
-                        .addShoppingListProducts(displayedAvailableItems)
-                        .doIf(availableProducts.size > MAX_TOTAL_PRODUCT_DISPLAYED) {
-                            layout.addExpandCollapse(
-                                productState = COLLAPSE,
-                                remainingTotalProduct = availableProducts.size - displayedAvailableItems.size,
-                                productLayoutType = AVAILABLE_SHOPPING_LIST
-                            )
-                        }
-                        .doIf(unavailableProducts.isNotEmpty()) {
-                            layout.addDivider()
-                        }
+                        .addTitle(productRecommendation.title)
+                        .addRecommendedProducts(productRecommendation)
+                        .doIf(
+                            predicate = productRecommendation.hasNext,
+                            then = {
+                                addLoadMore()
+                                pageCounter++
+                            },
+                            ifNot = {
+                                _isOnScrollNotNeeded.value = true
+                            }
+                        )
+                },
+                ifNot = {
+                    _isOnScrollNotNeeded.value = true
                 }
-                .doIf(unavailableProducts.isNotEmpty()) {
-                    layout
-                        .addTitle(headerModel.emptyStockTitle)
-                        .addShoppingListProducts(displayedUnavailableItems)
-                        .doIf(unavailableProducts.size > MAX_TOTAL_PRODUCT_DISPLAYED) {
-                            layout.addExpandCollapse(
-                                productState = COLLAPSE,
-                                remainingTotalProduct = unavailableProducts.size - displayedUnavailableItems.size,
-                                productLayoutType = ShoppingListProductLayoutType.UNAVAILABLE_SHOPPING_LIST
-                            )
-                        }
-                }
-        } else {
-            layout.addEmptyShoppingList()
-        }
+            )
     }
 
     private fun addProductInCartSection() {
@@ -249,24 +337,13 @@ class TokoNowShoppingListViewModel @Inject constructor(
         )
     }
 
-    private fun addProductRecommendationSection(
-        productRecommendation: RecommendationWidget
-    ) {
-        if (productRecommendation.recommendationItemList.isNotEmpty()) {
-            layout
-                .addDivider()
-                .addTitle(title = productRecommendation.title)
-                .addRecommendedProducts(productRecommendation)
-
-            if (productRecommendation.hasNext) {
-                layout.addLoadMore()
-                pageCounter++
-            } else {
-                _isOnScrollNotNeeded.value = true
-            }
-        } else {
-            _isOnScrollNotNeeded.value = true
-        }
+    private fun isGettingMiniCartAllowed(
+        shopId: Long
+    ): Boolean {
+        val isOutOfCoverage = addressData.getWarehouseId() == OOC_WAREHOUSE_ID
+        val isShopValid = shopId != INVALID_SHOP_ID
+        val isUserLoggedIn = userSession.isLoggedIn
+        return isShopValid && !isOutOfCoverage && isUserLoggedIn
     }
 
     private fun getUpdatedLayout(
@@ -280,29 +357,33 @@ class TokoNowShoppingListViewModel @Inject constructor(
         throwable: Throwable
     ) {
         layout.clear()
+
         layout.addErrorState(
             isFullPage = true,
             throwable = throwable
         )
 
-        _uiState.value = Error(getUpdatedLayout(), throwable)
+        _layoutState.value = Error(getUpdatedLayout(), throwable)
 
         _isNavToolbarScrollingBehaviourEnabled.value = false
     }
 
     private fun loadLoadingState() {
         layout.clear()
+
         layout.addLoadingState()
 
-        _uiState.value = Loading(getUpdatedLayout())
+        _layoutState.value = Loading(getUpdatedLayout())
 
         _isNavToolbarScrollingBehaviourEnabled.value = true
     }
 
     private fun loadSuccessState() {
+
         /**
          * block thread until the coroutine inside runBlocking completes
          */
+
         val result = runBlocking {
             listOf(
                 getShoppingListDeffered(),
@@ -313,8 +394,13 @@ class TokoNowShoppingListViewModel @Inject constructor(
         /**
          * cast the results to their respective types
          */
+
         val shoppingList = result.first() as GetShoppingListDataResponse.Data
         val productRecommendation = result.last() as RecommendationWidget
+
+        /**
+         * add each widget section
+         */
 
         layout.clear()
 
@@ -322,7 +408,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
         addShoppingListSection(shoppingList)
         addProductRecommendationSection(productRecommendation)
 
-        _uiState.value = Success(getUpdatedLayout(isRequiredToScrollUp = true))
+        _layoutState.value = Success(getUpdatedLayout(isRequiredToScrollUp = true))
     }
 
     /**
@@ -354,16 +440,21 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 state = productState,
                 productLayoutType = productLayoutType,
                 products = if (productLayoutType == AVAILABLE_SHOPPING_LIST) availableProducts else unavailableProducts
-            ).modifyExpandCollapseState(
+            )
+            .modifyExpandCollapseState(
                 productState = productState,
                 productLayoutType = productLayoutType
-            ).doIf(productLayoutType == AVAILABLE_SHOPPING_LIST) {
-                layout.modifyTopCheckAllState(
-                    productState = productState
-                )
-            }
+            )
+            .doIf(
+                predicate = productLayoutType == AVAILABLE_SHOPPING_LIST,
+                then = {
+                    modifyTopCheckAllState(
+                        productState = productState
+                    )
+                }
+            )
 
-        _uiState.value = Success(getUpdatedLayout())
+        _layoutState.value = Success(getUpdatedLayout())
     }
 
     fun selectAllAvailableProducts(
@@ -390,12 +481,10 @@ class TokoNowShoppingListViewModel @Inject constructor(
                     )
 
                 _isTopCheckAllSelected.value = isSelected
-                _uiState.value = Success(getUpdatedLayout())
 
-                checkUncheckStateParams.clear()
-                checkUncheckStateParams.addAll(availableProducts.map { SaveShoppingListStateActionParam(it.id, it.isSelected) })
+                _layoutState.value = Success(getUpdatedLayout())
 
-                saveShoppingListState()
+                saveAllAvailableProductsState()
             }, onError = { /* do nothing */ }
         )
     }
@@ -439,16 +528,13 @@ class TokoNowShoppingListViewModel @Inject constructor(
                     )
 
                 _isTopCheckAllSelected.value = isTopCheckAllSelected
-                _uiState.value = Success(getUpdatedLayout())
 
-                val index = checkUncheckStateParams.indexOfFirst { it.productId == productId }
-                if (index != INVALID_INDEX) {
-                    checkUncheckStateParams[index] = SaveShoppingListStateActionParam(productId, isSelected)
-                } else {
-                    checkUncheckStateParams.add(SaveShoppingListStateActionParam(productId, isSelected))
-                }
+                _layoutState.value = Success(getUpdatedLayout())
 
-                saveShoppingListState()
+                saveAvailableProductState(
+                    productId = productId,
+                    isSelected = isSelected
+                )
             }, onError = { /* do nothing */ }
         )
     }
@@ -458,7 +544,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
             .removeRetry()
             .addLoadMore()
 
-        _uiState.value = Success(getUpdatedLayout())
+        _layoutState.value = Success(getUpdatedLayout())
     }
 
     fun loadMoreProductRecommendation(
@@ -469,31 +555,67 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 block = {
                     val productRecommendation = getProductRecommendationDeferred().await()
 
-                    layout.removeLoadMore()
+                    layout
+                        .removeLoadMore()
+                        .doIf(
+                            predicate = productRecommendation.recommendationItemList.isNotEmpty(),
+                            then = layout@ {
+                                this@layout
+                                    .addRecommendedProducts(productRecommendation)
+                                    .doIf(
+                                        predicate = productRecommendation.hasNext,
+                                        then = {
+                                            addLoadMore()
+                                            pageCounter++
+                                        },
+                                        ifNot = {
+                                            _isOnScrollNotNeeded.value = true
+                                        }
+                                    )
+                            },
+                            ifNot = {
+                                _isOnScrollNotNeeded.value = true
+                            }
+                        )
 
-                    if (productRecommendation.recommendationItemList.isNotEmpty()) {
-                        layout.addRecommendedProducts(productRecommendation)
-
-                        if (productRecommendation.hasNext) {
-                            layout.addLoadMore()
-                            pageCounter++
-                        } else {
-                            _isOnScrollNotNeeded.value = true
-                        }
-                    } else {
-                        _isOnScrollNotNeeded.value = true
-                    }
-
-                    _uiState.value = Success(getUpdatedLayout())
+                    _layoutState.value = Success(getUpdatedLayout())
                 },
                 onError = {
                     layout
                         .removeLoadMore()
                         .addRetry()
 
-                    _uiState.value = Success(getUpdatedLayout())
+                    _layoutState.value = Success(getUpdatedLayout())
                 }
             )
         }
     }
+
+    fun getMiniCart() {
+        getMiniCartJob?.cancel()
+
+        val source = MiniCartSource.TokonowShoppingList
+        val shopId = addressData.getShopId()
+
+        if (isGettingMiniCartAllowed(shopId)) {
+            getMiniCartJob = launchCatchError(block = {
+                getMiniCartUseCase.setParams(listOf(shopId.toString()), source)
+                val miniCartData = getMiniCartUseCase.executeOnBackground()
+                val data = miniCartData.copy(isShowMiniCartWidget = miniCartData.isShowMiniCartWidget && !addressData.isOutOfCoverage())
+
+                setMiniCartData(miniCartData)
+                _miniCartState.value = Success(data)
+            }) {
+                _miniCartState.value = Error(throwable = it)
+            }
+        } else {
+            _miniCartState.value = Error(throwable = MessageErrorException(String.EMPTY))
+        }
+    }
+
+    fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
+        mMiniCartData = miniCartData
+    }
+
+    fun getShopId(): Long = addressData.getShopId()
 }

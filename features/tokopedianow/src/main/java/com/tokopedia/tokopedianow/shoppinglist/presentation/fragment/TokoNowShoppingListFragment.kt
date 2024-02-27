@@ -20,13 +20,21 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
+import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.productcard.compact.similarproduct.presentation.bottomsheet.ProductCardCompactSimilarProductBottomSheet
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
@@ -70,7 +78,8 @@ import com.tokopedia.searchbar.R as searchbarR
 class TokoNowShoppingListFragment :
     Fragment(),
     TokoNowView,
-    TokoNowChooseAddressWidgetListener
+    TokoNowChooseAddressWidgetListener,
+    MiniCartWidgetListener
 {
     companion object {
         private const val TOP_CHECK_ALL_THRESHOLD_ALPHA = 10f
@@ -148,9 +157,16 @@ class TokoNowShoppingListFragment :
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getMiniCart()
+    }
+
     override fun getFragmentPage(): Fragment = this@TokoNowShoppingListFragment
 
     override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
+
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) = viewModel.setMiniCartData(miniCartSimplifiedData)
 
     override fun refreshLayoutPage() {  }
 
@@ -166,10 +182,10 @@ class TokoNowShoppingListFragment :
      * -- private suspend function section --
      */
 
-    private suspend fun collectUiState(
+    private suspend fun collectLayoutState(
         binding: FragmentTokopedianowShoppingListBinding
     ) {
-        viewModel.uiState.collect { uiState ->
+        viewModel.layoutState.collect { uiState ->
             when (uiState) {
                 is UiState.Loading -> {
                     val layout = uiState.data?.layout
@@ -196,7 +212,21 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private suspend fun collectScrollState(
+    private suspend fun collectMiniCartState(
+        binding: FragmentTokopedianowShoppingListBinding
+    ) {
+        viewModel.miniCartState.collect {
+            binding.apply {
+                when(it) {
+                    is UiState.Error -> hideMiniCart()
+                    is UiState.Success -> showMiniCart(it.data)
+                    is UiState.Loading -> { /* nothing to do */ }
+                }
+            }
+        }
+    }
+
+    private suspend fun collectScrollBehavior(
         binding: FragmentTokopedianowShoppingListBinding
     ) {
         viewModel.isOnScrollNotNeeded.collect { isNotNeededToScroll ->
@@ -216,12 +246,16 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private suspend fun collectStickyTopCheckAllScrollingBehaviour(
+    private suspend fun collectProductAvailability(
         binding: FragmentTokopedianowShoppingListBinding
     ) {
-        viewModel.isStickyTopCheckAllScrollingBehaviourEnabled.collect { isEnabled ->
-            isStickyTopCheckAllScrollingBehaviorEnabled = isEnabled
-            binding.bottomBulkAtcView.showWithCondition(isEnabled)
+        viewModel.isProductAvailable.collect { isAvailable ->
+            binding.apply {
+                isStickyTopCheckAllScrollingBehaviorEnabled = isAvailable
+                bottomBulkAtcView.showWithCondition(isAvailable)
+                miniCartWidget.showWithCondition(!isAvailable)
+                adjustRecyclerViewBottomPadding()
+            }
         }
     }
 
@@ -229,10 +263,10 @@ class TokoNowShoppingListFragment :
         binding: FragmentTokopedianowShoppingListBinding
     ) {
         viewModel.bottomBulkAtcData.collect { model ->
-            model?.apply {
+            if (model != null) {
                 binding.bottomBulkAtcView.bind(
-                    counter = counter,
-                    priceInt = price
+                    counter = model.counter,
+                    priceInt = model.price
                 )
             }
         }
@@ -244,17 +278,16 @@ class TokoNowShoppingListFragment :
         viewModel.isNavToolbarScrollingBehaviourEnabled.collect { isEnabled ->
             binding.navToolbar.apply {
                 isNavToolbarScrollingBehaviourEnabled = isEnabled
+                setShowShadowEnabled(!isEnabled)
 
                 if (isEnabled) {
                     setToolbarContentType(TOOLBAR_TYPE_TITLE)
-                    setShowShadowEnabled(false)
                     switchToDarkIcon()
                     switchToDarkStatusBar()
                     setCustomBackButton(color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White))
                     hideShadow()
                 } else {
                     setToolbarContentType(TOOLBAR_TYPE_SEARCH)
-                    setShowShadowEnabled(true)
                     switchToLightIcon()
                     switchToLightStatusBar()
                     setCustomBackButton(color = ContextCompat.getColor(context, (if (context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)))
@@ -303,11 +336,12 @@ class TokoNowShoppingListFragment :
                  * Because [collect] is a suspend function, need different coroutines to collect multiple flows in parallel.
                  * The suspending function suspends until the Flow terminates.
                  */
-                launch { collectUiState(this@collectStateFlow) }
-                launch { collectScrollState(this@collectStateFlow) }
+                launch { collectLayoutState(this@collectStateFlow) }
+                launch { collectMiniCartState(this@collectStateFlow) }
+                launch { collectScrollBehavior(this@collectStateFlow) }
                 launch { collectErrorNavToolbar(this@collectStateFlow) }
                 launch { collectStickyTopCheckAllStatus(this@collectStateFlow) }
-                launch { collectStickyTopCheckAllScrollingBehaviour(this@collectStateFlow) }
+                launch { collectProductAvailability(this@collectStateFlow) }
                 launch { collectBottomBulkAtc(this@collectStateFlow) }
             }
         }
@@ -357,6 +391,45 @@ class TokoNowShoppingListFragment :
         rvShoppingList.addOnScrollListener(callback)
     }
 
+    private fun FragmentTokopedianowShoppingListBinding.adjustRecyclerViewBottomPadding() {
+        context?.apply {
+            val zero = resources.getDimensionPixelSize(unifyprinciplesR.dimen.layout_lvl0).orZero()
+            val space = if (miniCartWidget.isVisible || bottomBulkAtcView.isVisible) resources.getDimensionPixelSize(R.dimen.tokopedianow_bottom_view_height).orZero() else zero
+            rvShoppingList.setPadding(zero, zero, zero, space)
+            fbuBackToTop.setMargin(zero, zero, zero, space)
+        }
+    }
+
+    private fun FragmentTokopedianowShoppingListBinding.hideMiniCart() {
+        miniCartWidget.apply {
+            hideCoachMark()
+            hide()
+        }
+        adjustRecyclerViewBottomPadding()
+    }
+
+    private fun FragmentTokopedianowShoppingListBinding.showMiniCart(
+        data: MiniCartSimplifiedData
+    ) {
+        val isMiniCartWidgetShown = data.isShowMiniCartWidget
+        if(isMiniCartWidgetShown && !bottomBulkAtcView.isVisible) {
+            val shopIds = listOf(viewModel.getShopId().toString())
+            val pageName = MiniCartAnalytics.Page.HOME_PAGE
+            val source = MiniCartSource.TokonowShoppingList
+            miniCartWidget.initialize(
+                shopIds = shopIds,
+                fragment = this@TokoNowShoppingListFragment,
+                listener = this@TokoNowShoppingListFragment,
+                pageName = pageName,
+                source = source
+            )
+            miniCartWidget.show()
+        } else {
+            miniCartWidget.hide()
+        }
+        adjustRecyclerViewBottomPadding()
+    }
+
     private fun IconBuilder.addNavGlobal(): IconBuilder = addIcon(
         iconId = IconList.ID_NAV_GLOBAL,
         disableRouteManager = false,
@@ -382,7 +455,7 @@ class TokoNowShoppingListFragment :
         }
 
         override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView) {
-            binding?.strRefreshLayout?.setContentChildViewPullRefresh(view)
+            getRefreshLayout()?.setContentChildViewPullRefresh(view)
         }
     }
 
@@ -410,29 +483,29 @@ class TokoNowShoppingListFragment :
                 }
 
                 override fun onSwitchToLightToolbar() {
-                    if (isNavToolbarScrollingBehaviourEnabled) {
-                        binding.navToolbar.setCustomBackButton(color = ContextCompat.getColor(binding.root.context, (if (binding.navToolbar.context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)))
-                        switchToLightStatusBar()
-                        binding.navToolbar.setToolbarTitle(getString(R.string.tokopedianow_shopping_list_page_title))
+                    binding.apply {
+                        fbuBackToTop.show()
+                        if (isNavToolbarScrollingBehaviourEnabled) {
+                            navToolbar.setCustomBackButton(color = ContextCompat.getColor(binding.root.context, (if (binding.navToolbar.context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)))
+                            navToolbar.setToolbarTitle(getString(R.string.tokopedianow_shopping_list_page_title))
+                            switchToLightStatusBar()
+                        }
                     }
-                    binding.fbuBackToTop.show()
+                }
+
+                override fun onSwitchToDarkToolbar() {
+                    binding.apply {
+                        fbuBackToTop.hide()
+                        if (isNavToolbarScrollingBehaviourEnabled) {
+                            if (root.context.isDarkMode()) switchToLightStatusBar() else switchToDarkStatusBar()
+                            navToolbar.setCustomBackButton(color = ContextCompat.getColor(binding.root.context, unifyprinciplesR.color.Unify_Static_White))
+                            navToolbar.setToolbarTitle(String.EMPTY)
+                            navToolbar.hideShadow()
+                        }
+                    }
                 }
 
                 override fun onYposChanged(yOffset: Int) { /* nothing to do */ }
-
-                override fun onSwitchToDarkToolbar() {
-                    if (isNavToolbarScrollingBehaviourEnabled) {
-                        if (binding.navToolbar.context.isDarkMode()) {
-                            switchToLightStatusBar()
-                        } else {
-                            switchToDarkStatusBar()
-                        }
-                        binding.navToolbar.setCustomBackButton(color = ContextCompat.getColor(binding.root.context, unifyprinciplesR.color.Unify_Static_White))
-                        binding.navToolbar.setToolbarTitle(String.EMPTY)
-                        binding.navToolbar.hideShadow()
-                    }
-                    binding.fbuBackToTop.hide()
-                }
             }
         )
     }
@@ -463,7 +536,7 @@ class TokoNowShoppingListFragment :
     private fun createLoadMoreCallback()  = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            val lastVisiblePosition = layoutManager?.findLastVisibleItemPosition()
+            val lastVisiblePosition = getLayoutManager()?.findLastVisibleItemPosition()
             if (lastVisiblePosition != RecyclerView.NO_POSITION) {
                 val lastVisibleViewHolder = recyclerView.findViewHolderForAdapterPosition(lastVisiblePosition.orZero())
                 viewModel.loadMoreProductRecommendation(
@@ -511,4 +584,8 @@ class TokoNowShoppingListFragment :
     internal fun switchToDarkStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToDarkToolbar()
 
     internal fun switchToLightStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToLightToolbar()
+
+    internal fun getRefreshLayout(): ParentIconSwipeRefreshLayout? = binding?.strRefreshLayout
+
+    internal fun getLayoutManager(): LinearLayoutManager? = layoutManager
 }

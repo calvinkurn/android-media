@@ -312,14 +312,12 @@ internal object MainVisitableMapper {
     }
 
     fun MutableList<Visitable<*>>.doIf(
-        isTrue: Boolean,
-        layout: () -> MutableList<Visitable<*>>
+        predicate: Boolean,
+        then: MutableList<Visitable<*>>.() -> Unit,
+        ifNot: MutableList<Visitable<*>>.() -> Unit = {}
     ): MutableList<Visitable<*>> {
-        return if (isTrue) {
-            layout.invoke()
-        } else {
-            this
-        }
+        if (predicate) then.invoke(this) else ifNot.invoke(this)
+        return this
     }
 
     fun MutableList<ShoppingListHorizontalProductCardItemUiModel>.updateProductSelections(

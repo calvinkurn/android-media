@@ -42,7 +42,7 @@ class SaveShoppingListStateUseCase @Inject constructor(
         val response = graphql.executeOnBackground().tokonowSaveShoppingListState
 
         if (response.header.errorCode.isNotBlank()) {
-            MessageErrorException(response.header.messages.joinToString(separator = ", "))
+            throw MessageErrorException(response.header.messages.joinToString(separator = ", "))
         }
     }
 }
