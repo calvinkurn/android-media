@@ -323,7 +323,7 @@ class GetBomGroupedOrderMapper @Inject constructor() {
                 orderDetailId = ""
             )
         }.orEmpty(),
-        canExpandCollapse = false
+        canExpandCollapse = true
     )
 
     private fun mapToProductBundleItemUiModel(

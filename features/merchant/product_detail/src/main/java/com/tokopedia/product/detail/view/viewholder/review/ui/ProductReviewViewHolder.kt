@@ -16,9 +16,9 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.review.UserStatistic
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.ProductDetailMapper
 import com.tokopedia.product.detail.databinding.ItemDynamicReviewBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.util.ProductDetailUtil
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.review.delegate.ReviewCallback
@@ -36,7 +36,7 @@ import com.tokopedia.reviewcommon.R as reviewcommonR
 
 class ProductReviewViewHolder(
     val view: View,
-    val listener: DynamicProductDetailListener,
+    val listener: ProductDetailListener,
     val callback: ReviewCallback
 ) : ProductDetailPageViewHolder<ProductMostHelpfulReviewUiModel>(view) {
 
@@ -301,7 +301,7 @@ class ProductReviewViewHolder(
                             item.getAttachmentID(),
                             position,
                             getComponentTrackData(it),
-                            DynamicProductDetailMapper.generateDetailedMediaResult(
+                            ProductDetailMapper.generateDetailedMediaResult(
                                 it.mediaThumbnails
                             )
                         )
@@ -315,7 +315,7 @@ class ProductReviewViewHolder(
                             item.getAttachmentID(),
                             position,
                             getComponentTrackData(it),
-                            DynamicProductDetailMapper.generateDetailedMediaResult(
+                            ProductDetailMapper.generateDetailedMediaResult(
                                 it.mediaThumbnails
                             )
                         )

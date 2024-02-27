@@ -34,12 +34,12 @@ data class ExpertReviewUiModel(
         val textReviewColor: Int,
         val textTitleColor: Int,
         val textSubTitleColor: Int,
-        val backgroundColor: Int = catalogcommonR.drawable.bg_rounded_border_light,
+        val backgroundColor: String = "#FFFFFF",
         val styleIconPlay: StyleIconPlay = StyleIconPlay()
     )
 
     data class StyleIconPlay(
         val iconColor: Int = unifyprinciplesR.color.Unify_Static_White,
-        val background: Int = catalogcommonR.drawable.bg_circle_border_dark
+        val background: Int = unifyprinciplesR.color.Unify_Static_White
     )
 }

@@ -14,6 +14,7 @@ import com.tokopedia.discovery2.R.dimen.festive_section_min_height
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.model.NotifyPayload
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.model.BmGmTierData
@@ -216,11 +217,24 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                             val isFound = notifyShopHeroComponent(viewModel, payload)
                             if (isFound) return@loop
                         }
+                        ComponentsList.FlashSaleTokoTab -> {
+                            notifyFSTTargetedComponent()
+                            return@loop
+                        }
                         else -> return@loop
                     }
                 }
             }
         }
+    }
+
+    private fun notifyFSTTargetedComponent() {
+        val carouselView = festiveContainer.children
+            .map { it as? CustomViewCreator }
+            .filterNotNull()
+            .find { it.viewModel is ProductCardCarouselViewModel }
+
+        (carouselView?.viewModel as? ProductCardCarouselViewModel)?.fetchProductCarouselData()
     }
 
     @Suppress("UNCHECKED_CAST")

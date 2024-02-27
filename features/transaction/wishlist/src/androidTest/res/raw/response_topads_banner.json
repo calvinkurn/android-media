@@ -1,0 +1,21 @@
+[
+  {
+    "data": {
+      "topadsDisplayBannerAdsV3": {
+        "data": [],
+        "header": {
+          "total_data": 0,
+          "pagination": {
+            "kind": "scroll",
+            "next_page_token": "",
+            "current_page": "1"
+          },
+          "auto_scroll": {
+            "enable": false,
+            "timer": 0
+          }
+        }
+      }
+    }
+  }
+]

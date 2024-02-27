@@ -6,7 +6,7 @@ import com.tokopedia.product.detail.common.utils.extensions.globalWidgetAddImpre
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundling
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.databinding.ItemGlobalBundlingBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product_bundle.common.data.constant.BundlingPageSource
 import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
@@ -16,7 +16,7 @@ import com.tokopedia.productbundlewidget.model.GetBundleParamBuilder
 
 class GlobalBundlingViewHolder(
     view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<GlobalBundlingDataModel>(view) {
 
     companion object {

@@ -18,6 +18,7 @@ android {
                     pathSources + 'detail/bmgm',
                     pathSources + 'detail/shipment',
                     pathSources + 'detail/review',
+                    pathSources + 'detail/promo_price',
                     pathSources + 'detail/gwp',
             ]
         }
@@ -122,6 +123,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productServiceWidget)
     implementation projectOrAar(rootProject.ext.features.storiesWidget)
     implementation projectOrAar(rootProject.ext.features.productPreview)
+    implementation projectOrAar(rootProject.ext.features.shareexperience)
 
     implementation project(rootProject.ext.libraries.sdui)
     implementation rootProject.ext.miscDependencies.viewPager2
@@ -149,7 +151,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true

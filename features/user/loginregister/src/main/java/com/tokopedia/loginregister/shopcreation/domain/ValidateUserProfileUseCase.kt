@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.shopcreation.domain
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -10,7 +11,7 @@ import com.tokopedia.loginregister.shopcreation.data.UserProfileValidatePojo
 import javax.inject.Inject
 
 class ValidateUserProfileUseCase @Inject constructor(
-    private val graphqlRepository: GraphqlRepository,
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<ValidateUserProfileParam, UserProfileValidatePojo>(dispatcher.io) {
 

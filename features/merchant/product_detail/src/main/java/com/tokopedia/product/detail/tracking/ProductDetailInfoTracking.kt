@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.tracking
 
 import com.tokopedia.product.detail.common.ProductTrackingConstant
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoAnnotationTrackData
 import com.tokopedia.product.detail.data.util.TrackingUtil
 import com.tokopedia.track.constant.TrackerConstant
@@ -15,7 +15,7 @@ object ProductDetailInfoTracking {
 
     fun onClickAnnotationGeneric(
         trackDataModel: ProductDetailInfoAnnotationTrackData,
-        productInfo: DynamicProductInfoP1?
+        productInfo: ProductInfoP1?
     ) {
         doTracking(
             component = trackDataModel,
@@ -28,7 +28,7 @@ object ProductDetailInfoTracking {
 
     fun onImpressionAnnotationGeneric(
         trackDataModel: ProductDetailInfoAnnotationTrackData,
-        productInfo: DynamicProductInfoP1?
+        productInfo: ProductInfoP1?
     ) {
         doTracking(
             component = trackDataModel,
@@ -41,7 +41,7 @@ object ProductDetailInfoTracking {
 
     private fun doTracking(
         component: ProductDetailInfoAnnotationTrackData,
-        productInfo: DynamicProductInfoP1?,
+        productInfo: ProductInfoP1?,
         event: String,
         action: String,
         trackerId: String

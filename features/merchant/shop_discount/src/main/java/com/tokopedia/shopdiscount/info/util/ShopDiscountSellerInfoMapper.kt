@@ -64,7 +64,13 @@ object ShopDiscountSellerInfoMapper {
                         Ticker.TYPE_ANNOUNCEMENT,
                         true
                     )
-                }
+                },
+                tickerUnificationConfig = ShopDiscountTickerUiModel.TickerUnificationConfig(
+                    ShopDiscountTickerUiModel.TickerUnificationConfig.Target(
+                        it.tickerUnificationConfig.target.type,
+                        it.tickerUnificationConfig.target.listValue
+                    )
+                )
             )
         }
     }

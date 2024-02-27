@@ -16,7 +16,6 @@
         android:layout_marginStart="8dp"
         android:textColor="@color/Unify_NN950"
         tools:text="Tahun Rilis"
-        android:maxLines="1"
         android:ellipsize="end"
         app:typographyType="display_2"
         app:typographyWeight="bold" />

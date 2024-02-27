@@ -1500,6 +1500,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check tipping driver appLink then should return tokopedia internal tipping driver in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/shipping/tipping?order_id=123456"
+        val appLink = UriUtil.buildUriAppendParam(ApplinkConst.TIPPING_DRIVER, mapOf("order_id" to "123456"))
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check share address appLink then should return tokopedia internal logistic manage address in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/manageaddress/"
         val appLink = UriUtil.buildUri(ApplinkConst.SHARE_ADDRESS)
@@ -2731,27 +2739,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check inbox host customerapp`() {
-        every {
-            DeeplinkMapperCommunication.isUserLoggedIn(any())
-        } returns true
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                DeeplinkMapperCommunication.UNIVERSAL_INBOX_ROLLENCE
-            )
-        } returns ""
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/inbox"
-        assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
-    }
-
-    @Test
     fun `check inbox host customerapp universal inbox`() {
         every {
             DeeplinkMapperCommunication.isUserLoggedIn(any())
         } returns true
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
-        } returns DeeplinkMapperCommunication.UNIVERSAL_INBOX_ROLLENCE
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://communication/universal-inbox"
         assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
     }

@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.CourierActionButtonAdapter.ViewHolder.Companion.CHAT_DRIVER
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.BuyerOrderDetailDiffUtilCallback
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
-import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BaseVisitableUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
@@ -101,7 +100,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         addProductBmgmListSection(productListUiModel.productBmgmList)
         addProductBundlingListSection(productListUiModel.productBundlingList)
         addProductListSection(context, productListUiModel.productList)
-        addAddonsListSection(productListUiModel.addonsListUiModel)
+        addAddonsListSection(productListUiModel.orderLevelAddOn)
         addPofHeaderSection(context, productListUiModel.productUnfulfilledHeaderLabel)
         addProductListSection(context, productListUiModel.productUnFulfilledList)
         addProductListToggleSection(productListUiModel.productListToggleUiModel)
@@ -301,10 +300,10 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addAddonsListSection(
-        addonsListUiModel: AddonsListUiModel?
+        orderLevelAddOn: ProductListUiModel.OrderLevelAddOn?
     ) {
-        if (addonsListUiModel != null && addonsListUiModel.addonsItemList.isNotEmpty()) {
-            add(addonsListUiModel)
+        if (orderLevelAddOn != null && orderLevelAddOn.shouldShow(null)) {
+            add(orderLevelAddOn)
         }
     }
 
