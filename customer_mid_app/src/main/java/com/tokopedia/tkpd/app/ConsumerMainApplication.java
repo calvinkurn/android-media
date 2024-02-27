@@ -223,7 +223,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         showDevOptNotification();
         initGotoSDK();
-        initByteIOPlatforrm();
+        initByteIOPlatform();
         if (RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)) {
             PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
             pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
@@ -231,7 +231,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         initializeAppPerformanceTrace();
     }
 
-    private void initByteIOPlatforrm() {
+    private void initByteIOPlatform() {
         if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BYTEIO_PLATFORM, true)) {
             AppLogAnalytics.init(this);
             TTNetHelper.initTTNet(this);
