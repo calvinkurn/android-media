@@ -75,8 +75,8 @@ object AppLogPdp {
             it.put("original_price", product.originalPrice)
             it.put("sale_price", product.salePrice)
             it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
-            it.put("is_sku_selected", product.isSkuSelected)
-            it.put("is_add_cart", product.isAddCartSelected)
+            it.put("is_sku_selected", if (product.isSkuSelected) 1 else 0)
+            it.put("is_add_cart", if (product.isAddCartSelected) 1 else 0)
         })
     }
 
