@@ -21,8 +21,8 @@ import org.junit.runner.RunWith
 class SearchResultFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     override fun setupEnvironment() {
         MacroDevOps.setupLoginFlow(
-            "pbs-hidayatullah+prod7@tokopedia.com",
-            "Prod1234"
+            email = "pbs-hidayatullah+prod7@tokopedia.com",
+            password = "Prod1234"
         )
         /**
          * Open search then kill to fetch rollence

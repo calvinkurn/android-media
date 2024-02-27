@@ -28,7 +28,10 @@ import org.junit.runners.Parameterized
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
-abstract class BaseStartupBenchmark(private val startupMode: StartupMode) {
+abstract class BaseStartupBenchmark(
+    private val startupMode: StartupMode,
+    private val applicationPackage: String = MacroIntent.TKPD_PACKAGE_NAME
+) {
     @get:Rule
     val benchmarkRule = MacrobenchmarkRule()
 
@@ -67,7 +70,7 @@ abstract class BaseStartupBenchmark(private val startupMode: StartupMode) {
 
     abstract fun traceName(): String
 
-    open fun packageName(): String = MacroIntent.TKPD_PACKAGE_NAME
+    open fun packageName(): String = applicationPackage
 
     companion object {
         @Parameterized.Parameters(name = "mode={0}")

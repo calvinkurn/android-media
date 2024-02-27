@@ -27,8 +27,8 @@ class SearchResultStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchm
 
     override fun setupEnvironment() {
         MacroDevOps.setupLoginFlow(
-            "pbs-hidayatullah+prod7@tokopedia.com",
-            "Prod1234"
+            email = "pbs-hidayatullah+prod7@tokopedia.com",
+            password = "Prod1234"
         )
     }
 

@@ -1,6 +1,7 @@
 package com.tkpd.macrobenchmark.util
 
 import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
@@ -38,6 +39,28 @@ object MacroDevOps {
         }
     }
 
+    fun skipOnboardingSellerApp() {
+        try {
+            val packageName = MacroIntent.TKPD_PACKAGE_SELLER_APP
+            val instrumentation = InstrumentationRegistry.getInstrumentation()
+
+            val intent = Intent("android.intent.action.VIEW")
+            intent.data = Uri.parse("sellerapp://welcome")
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.setPackage(packageName)
+
+            instrumentation.targetContext.startActivity(intent)
+            val device = UiDevice.getInstance(instrumentation)
+
+            skipOnboardingPageSellerApp()
+
+            Thread.sleep(2000L)
+            killProcess(device, packageName)
+        } catch (e: Exception) {
+            // no-op
+        }
+    }
+
     fun skipOnboardingPage() {
         try {
             val instrumentation = InstrumentationRegistry.getInstrumentation()
@@ -53,9 +76,27 @@ object MacroDevOps {
         }
     }
 
-    fun setupLoginFlow(email: String = "pbs-hidayatullah+prod7@tokopedia.com", password: String = "Prod1234") {
+    private fun skipOnboardingPageSellerApp() {
+        try {
+            val instrumentation = InstrumentationRegistry.getInstrumentation()
+            val device = UiDevice.getInstance(instrumentation)
+
+            waitUntilObject(device, By.text(LEWATI_BTN))
+            val btn = device.findObject(By.text(LEWATI_BTN))
+            btn.click()
+
+        } catch (e: Exception) {
+            // no-op
+        }
+    }
+
+    fun setupLoginFlow(
+        packageName: String = "com.tokopedia.tkpd",
+        email: String = "pbs-hidayatullah+prod7@tokopedia.com",
+        password: String = "Prod1234"
+    ) {
         setupEnvironment(
-            MacroIntent.Session.getSessionMacroSetupIntent()
+            MacroIntent.Session.getSessionMacroSetupIntent(packageName)
         )
 
         val instrumentation = InstrumentationRegistry.getInstrumentation()
@@ -66,15 +107,20 @@ object MacroDevOps {
 
         if (!result.exists()) {
             // possibly goto login flow
-            setupGotoLogin(device, email, password)
+            setupGotoLogin(device, packageName, email, password)
         } else {
             // possibly tokopedia login flow
-            setupTokopediaLogin(device, email, password)
+            setupTokopediaLogin(device, packageName, email, password)
         }
     }
 
-    fun setupGotoLogin(device: UiDevice, email: String = "pbs-hidayatullah+prod7@tokopedia.com", password: String = "Prod1234") {
-        val findObjectEmail = By.res("com.tokopedia.tkpd", "text_field_input")
+    fun setupGotoLogin(
+        device: UiDevice,
+        packageName: String,
+        email: String = "pbs-hidayatullah+prod7@tokopedia.com",
+        password: String = "Prod1234"
+    ) {
+        val findObjectEmail = By.res(packageName, "text_field_input")
         waitUntilObject(device, findObjectEmail)
         val emailField = device.findObject(findObjectEmail)
         emailField.setText(email)
@@ -84,7 +130,7 @@ object MacroDevOps {
 
         Thread.sleep(2000)
 
-        val findObjectPassword = By.res("com.tokopedia.tkpd", "text_field_input")
+        val findObjectPassword = By.res(packageName, "text_field_input")
         waitUntilObject(device, findObjectEmail)
         val textFieldPassword = device.findObject(findObjectPassword)
         textFieldPassword.setText(password)
@@ -96,8 +142,13 @@ object MacroDevOps {
         device.pressHome()
     }
 
-    fun setupTokopediaLogin(device: UiDevice, email: String = "pbs-hidayatullah+prod7@tokopedia.com", password: String = "Prod1234") {
-        val findObjectEmail = By.res("com.tokopedia.tkpd", "text_field_input")
+    fun setupTokopediaLogin(
+        device: UiDevice,
+        packageName: String,
+        email: String = "pbs-hidayatullah+prod7@tokopedia.com",
+        password: String = "Prod1234"
+    ) {
+        val findObjectEmail = By.res(packageName, "text_field_input")
         waitUntilObject(device, findObjectEmail)
         val emailField = device.findObject(findObjectEmail)
         emailField.setText(email)
@@ -106,16 +157,16 @@ object MacroDevOps {
         selanjutnyaButton.click()
 
         Thread.sleep(2000)
-        val findObjectInputView = By.res("com.tokopedia.tkpd", "login_input_view")
+        val findObjectInputView = By.res(packageName, "login_input_view")
         waitUntilObject(device, findObjectInputView)
 
         val loginInputView = device.findObject(findObjectInputView)
-        val wrapper = loginInputView.findObject(By.res("com.tokopedia.tkpd", "wrapper_password"))
-        val passwordField = wrapper.findObject(By.res("com.tokopedia.tkpd", "text_field_input"))
+        val wrapper = loginInputView.findObject(By.res(packageName, "wrapper_password"))
+        val passwordField = wrapper.findObject(By.res(packageName, "text_field_input"))
 
         passwordField.setText(password)
 
-        val masukButton = loginInputView.findObject(By.res("com.tokopedia.tkpd", "register_btn"))
+        val masukButton = loginInputView.findObject(By.res(packageName, "register_btn"))
         masukButton.click()
 
         Thread.sleep(5000)
