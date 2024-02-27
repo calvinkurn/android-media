@@ -55,7 +55,9 @@ internal fun AutoCompleteScreen(
             listener = listener
         )
 
-        LaunchedEffect(key1 = state.value.appLogData) {
+        LaunchedEffect(key1 = state.value.appLogData.imprId) {
+            if (state.value.appLogData.imprId.isBlank()) return@LaunchedEffect
+
             if (state.value.isInitialState) {
                 val enterFrom =
                     AppLogSearch.enterFrom(AppLogSearch.whitelistedEnterFromAutoComplete)
@@ -88,10 +90,9 @@ internal fun AutoCompleteScreen(
             items(
                 state.value.resultList
             ) { item ->
-                LaunchedEffect(key1 = !item.impressionHolder.impressed, block = {
-                    item.impressionHolder.impressed = true
+                LaunchedEffect(key1 = item, block = {
                     item.impress(iris)
-                    if (item.domainModel.isTrendingWord())
+                    if (viewModel.stateValue.isSuggestion)
                         AppLogSearch.eventTrendingWordsShowSuggestion(
                             trendingWordsSuggestion(viewModel, item)
                         )
@@ -103,7 +104,7 @@ internal fun AutoCompleteScreen(
                             onItemClicked = {
                                 viewModel.onAutoCompleteItemClick(it)
                                 it.click(analytics)
-                                if (item.domainModel.isTrendingWord()) {
+                                if (viewModel.stateValue.isSuggestion) {
                                     AppLogAnalytics.putPageData(
                                         AppLogSearch.ParamKey.SUG_TYPE,
                                         item.sugType,
