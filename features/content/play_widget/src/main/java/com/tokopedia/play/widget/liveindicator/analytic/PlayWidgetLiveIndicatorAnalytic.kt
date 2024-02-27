@@ -33,7 +33,7 @@ class PlayWidgetLiveIndicatorAnalytic @Inject internal constructor(
                         itemId = model.channelId,
                         itemName = LIVE_INDICATOR_ITEM_NAME,
                         creativeName = LIVE_INDICATOR_CREATIVE_NAME,
-                        creativeSlot = "0",
+                        creativeSlot = "null",
                     )
                 )
             )
@@ -55,7 +55,7 @@ class PlayWidgetLiveIndicatorAnalytic @Inject internal constructor(
                     itemId = model.channelId,
                     itemName = LIVE_INDICATOR_ITEM_NAME,
                     creativeName = LIVE_INDICATOR_CREATIVE_NAME,
-                    creativeSlot = "0",
+                    creativeSlot = "null",
                 )
             )
         )
@@ -77,7 +77,7 @@ class PlayWidgetLiveIndicatorAnalytic @Inject internal constructor(
                         itemId = model.channelId,
                         itemName = LIVE_INDICATOR_ITEM_NAME,
                         creativeName = LIVE_INDICATOR_CREATIVE_NAME,
-                        creativeSlot = "0",
+                        creativeSlot = "null",
                     )
                 )
             )
@@ -99,7 +99,7 @@ class PlayWidgetLiveIndicatorAnalytic @Inject internal constructor(
                     itemId = model.channelId,
                     itemName = LIVE_INDICATOR_ITEM_NAME,
                     creativeName = LIVE_INDICATOR_CREATIVE_NAME,
-                    creativeSlot = "0",
+                    creativeSlot = "null",
                 )
             )
         )
