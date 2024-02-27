@@ -16,5 +16,8 @@ data class SuggestionUnifyTracking(
     val trackerUrl: String = "",
     @SerializedName("tracking_option")
     @Expose
-    val trackingOption: Int = 0
+    val trackingOption: Int = 0,
+    @SerializedName("suggestion_unify_tts_tracking")
+    @Expose
+    val tts: SuggestionUnifyTTSTracking = SuggestionUnifyTTSTracking()
 )

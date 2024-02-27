@@ -7,7 +7,6 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
-import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_CLICK
@@ -67,14 +66,13 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_SOURCE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.ENTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_BAR_OUTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SUG
 import org.json.JSONObject
 
 object AppLogSearch {
 
-    private val whitelistedEnterFromForBlankPage = listOf(GOODS_SEARCH, STORE_SEARCH, HOMEPAGE)
+    private val whitelistedEnterFromAutoComplete = listOf(GOODS_SEARCH, STORE_SEARCH, HOMEPAGE)
 
     object Event {
         const val SHOW_SEARCH = "show_search"
@@ -202,10 +200,11 @@ object AppLogSearch {
         val content: String,
         val groupId: String,
         val imprId: String,
+        val wordsSource: String,
     ) {
 
         fun toMap() = mapOf(
-            WORDS_SOURCE to SEARCH_BAR_OUTER,
+            WORDS_SOURCE to wordsSource,
             WORDS_POSITION to index,
             WORDS_CONTENT to content,
             SEARCH_POSITION to HOMEPAGE,
@@ -243,8 +242,7 @@ object AppLogSearch {
         val ecomFilterType: String? = null,
     ) {
         fun json() = JSONObject(buildMap {
-            val actualEnterFrom = (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
-            val enterFrom = if (actualEnterFrom == HOMEPAGE) actualEnterFrom else ""
+            val enterFrom = enterFrom(listOf(HOMEPAGE))
 
             put(IMPR_ID, imprId)
             put(ENTER_FROM, enterFrom)
@@ -271,11 +269,8 @@ object AppLogSearch {
         AppLogAnalytics.send(SEARCH, search.json())
     }
 
-    fun eventEnterSearchBlankPage(searchEntrance: String) {
-        val actualEnterFrom = (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
-        val enterFrom =
-            if (whitelistedEnterFromForBlankPage.contains(actualEnterFrom)) actualEnterFrom
-            else ""
+    fun eventEnterSearchBlankPage() {
+        val enterFrom = enterFrom(whitelistedEnterFromAutoComplete)
 
         AppLogAnalytics.send(
             ENTER_SEARCH_BLANKPAGE,
@@ -283,31 +278,29 @@ object AppLogSearch {
                 mapOf(
                     ENTER_FROM to enterFrom,
                     ENTER_METHOD to ENTER,
-                    SEARCH_ENTRANCE to searchEntrance
+                    SEARCH_ENTRANCE to HOMEPAGE,
                 )
             )
         )
     }
 
     data class TrendingShow(
-        val searchPosition: String,
-        val searchEntrance: String,
         val imprId: String,
-        val newSugSessionId: Long,
+        val newSugSessionId: String,
         val rawQuery: String,
         val enterMethod: String,
+        val wordsSource: String,
         val wordsNum: Int,
-        val wordSource: String = SUG,
     ) {
         fun json() = JSONObject(
             mapOf(
-                SEARCH_POSITION to searchPosition,
-                SEARCH_ENTRANCE to searchEntrance,
-                IMPR_ID to imprId, // TODO:: Request ID from Suggestion GQL BE
+                SEARCH_POSITION to enterFrom(whitelistedEnterFromAutoComplete),
+                SEARCH_ENTRANCE to HOMEPAGE,
+                IMPR_ID to imprId,
                 NEW_SUG_SESSION_ID to newSugSessionId,
                 RAW_QUERY to rawQuery,
                 ENTER_METHOD to enterMethod,
-                WORDS_SOURCE to wordSource,
+                WORDS_SOURCE to wordsSource,
                 WORDS_NUM to wordsNum,
             )
         )
@@ -321,11 +314,9 @@ object AppLogSearch {
     }
 
     data class TrendingWordsSuggestion(
-        val searchPosition: String,
-        val searchEntrance: String,
         val groupId: String,
         val imprId: String,
-        val newSugSessionId: Long,
+        val newSugSessionId: String,
         val rawQuery: String,
         val enterMethod: String,
         val sugType: String,
@@ -335,8 +326,8 @@ object AppLogSearch {
     ) {
         fun json() = JSONObject(
             mapOf(
-                SEARCH_POSITION to searchPosition,
-                SEARCH_ENTRANCE to searchEntrance,
+                SEARCH_POSITION to enterFrom(whitelistedEnterFromAutoComplete),
+                SEARCH_ENTRANCE to HOMEPAGE,
                 GROUP_ID to groupId, // TODO:: Group ID
                 IMPR_ID to imprId, // TODO:: Request ID from Suggestion GQL BE
                 NEW_SUG_SESSION_ID to newSugSessionId,
@@ -383,8 +374,7 @@ object AppLogSearch {
 
         fun json() = JSONObject(
             buildMap {
-                val actualEnterFrom = (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
-                val enterFrom = if (actualEnterFrom == HOMEPAGE) HOMEPAGE else ""
+                val enterFrom = enterFrom(listOf(HOMEPAGE))
 
                 put(IMPR_ID, imprId)
                 put(SEARCH_ID, searchId)
@@ -404,6 +394,13 @@ object AppLogSearch {
                 aladdinButtonType?.let { put(ALADDIN_BUTTON_TYPE, it) }
             }
         )
+    }
+
+    private fun enterFrom(whitelistedEnterFrom: List<String>): String {
+        val actualEnterFrom =
+            (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
+
+        return if (whitelistedEnterFrom.contains(actualEnterFrom)) actualEnterFrom else ""
     }
 
     fun eventSearchResultShow(searchResult: SearchResult) {

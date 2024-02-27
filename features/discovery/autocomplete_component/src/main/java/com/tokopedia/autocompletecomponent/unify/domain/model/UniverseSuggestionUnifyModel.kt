@@ -20,4 +20,16 @@ data class UniverseSuggestionUnifyModel(
     @SerializedName("headlineAds")
     @Expose
     var cpmModel: CpmModel = CpmModel()
-)
+) {
+
+    fun requestId(): String = getFlags(REQUEST_ID)
+
+    fun wordsSource(): String = getFlags(WORDS_SOURCE)
+
+    fun getFlags(name: String) = flags.find { it.enable && it.name == name }?.value ?: ""
+
+    companion object {
+        private const val REQUEST_ID = "request_id"
+        private const val WORDS_SOURCE = "words_source"
+    }
+}

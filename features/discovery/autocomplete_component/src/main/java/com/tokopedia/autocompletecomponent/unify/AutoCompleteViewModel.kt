@@ -2,9 +2,9 @@ package com.tokopedia.autocompletecomponent.unify
 
 import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
-import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.autocompletecomponent.initialstate.DELETE_RECENT_SEARCH_USE_CASE
 import com.tokopedia.autocompletecomponent.initialstate.domain.deleterecentsearch.DeleteRecentSearchUseCase
+import com.tokopedia.autocompletecomponent.unify.byteio.SugSessionId
 import com.tokopedia.autocompletecomponent.unify.domain.AutoCompleteUnifyRequestUtil
 import com.tokopedia.autocompletecomponent.unify.domain.model.SuggestionUnify
 import com.tokopedia.autocompletecomponent.unify.domain.model.UniverseSuggestionUnifyModel
@@ -39,7 +39,8 @@ internal class AutoCompleteViewModel @Inject constructor(
     @Named(DELETE_RECENT_SEARCH_USE_CASE)
     private val deleteRecentSearchUseCase: com.tokopedia.usecase.UseCase<Boolean>,
     private val userSession: UserSessionInterface,
-    private val chooseAddressUtilsWrapper: ChooseAddressUtilsWrapper
+    private val chooseAddressUtilsWrapper: ChooseAddressUtilsWrapper,
+    private val sugSessionId: SugSessionId,
 ) : ViewModel() {
 
     private val _stateFlow = MutableStateFlow(autoCompleteState)
@@ -66,49 +67,20 @@ internal class AutoCompleteViewModel @Inject constructor(
         actOnParameter()
     }
 
-    fun initAppLogData(enterFrom: String, searchEntrance: String) {
-        val currentAppLogData = stateValue.appLogData
-        _stateFlow.value = stateValue.copy(
-            appLogData = currentAppLogData.copy(
-                enterFrom = enterFrom,
-                searchEntrance = searchEntrance
-            )
-        )
-    }
-
     private fun actOnParameter() {
         val parameter = stateValue.parameter
-        if (parameterIsMps() && !parameterStateIsSuggestions()) {
+        if (parameterIsMps() && !stateValue.isSuggestion) {
             return
         }
-        if (parameterStateIsSuggestions(parameter)) {
-            getSuggestionStateData(parameter)
-            return
-        }
-        updateAppLogData(needNewSessionId = true)
-        getInitialStateData(parameter)
-    }
 
-    private fun updateAppLogData(imprId: String? = null, needNewSessionId: Boolean = false) {
-        val currentAppLogData = stateValue.appLogData
-        val newImprId = imprId ?: currentAppLogData.imprId
-        val newSessionId = if (needNewSessionId) {
-            System.currentTimeMillis()
-        } else {
-            currentAppLogData.newSugSessionId
-        }
-        _stateFlow.value = stateValue.copy(
-            appLogData = currentAppLogData.copy(imprId = newImprId, newSugSessionId = newSessionId)
-        )
+        if (stateValue.isSuggestion) getSuggestionStateData(parameter)
+        else getInitialStateData(parameter)
     }
 
     fun parameterIsMps(parameter: Map<String, String> = stateValue.parameter) =
         parameter.containsKey(SearchApiConst.Q1) || parameter.containsKey(SearchApiConst.Q2) || parameter.containsKey(
             SearchApiConst.Q3
         )
-
-    private fun parameterStateIsSuggestions(parameter: Map<String, String> = stateValue.parameter) =
-        parameter[SearchApiConst.Q].isNullOrBlank().not()
 
     private fun getSuggestionStateData(parameter: Map<String, String>) {
         val requestParams = getParamsMainQuery(parameter, userSession)
@@ -129,68 +101,7 @@ internal class AutoCompleteViewModel @Inject constructor(
     }
 
     private fun onGetStateDataSuccessful(model: UniverseSuggestionUnifyModel) {
-        _stateFlow.value = stateValue.updateResultList(model)
-        trackTrendingShow()
-    }
-
-    fun trackTrendingShow() {
-        val appLogData = stateValue.appLogData
-        AppLogSearch.eventTrendingShow(
-            AppLogSearch.TrendingShow(
-                searchPosition = appLogData.enterFrom,
-                searchEntrance = appLogData.searchEntrance,
-                imprId = "", // TODO milhamj: wait from BE
-                newSugSessionId = appLogData.newSugSessionId,
-                rawQuery = query,
-                enterMethod = stateValue.enterMethod,
-                wordsNum = stateValue.resultList.filter {
-                    it.domainModel.isTrendingWord()
-                }.size
-            )
-        )
-    }
-
-    fun trackTrendingWordsShow(item: AutoCompleteUnifyDataView) {
-        val appLogData = stateValue.appLogData
-        AppLogSearch.eventTrendingWordsShowSuggestion(
-            AppLogSearch.TrendingWordsSuggestion(
-                searchPosition = appLogData.enterFrom,
-                searchEntrance = appLogData.searchEntrance,
-                groupId = "", // TODO milhamj: wait from BE
-                imprId = "", // TODO milhamj: wait from BE
-                newSugSessionId = appLogData.newSugSessionId,
-                rawQuery = item.searchTerm,
-                enterMethod = stateValue.enterMethod,
-                sugType = "", // TODO milhamj: wait from BE
-                wordsContent = item.domainModel.title.text,
-                wordsPosition = item.appLogIndex
-            )
-        )
-    }
-
-    fun trackTrendingWordsClick(item: AutoCompleteUnifyDataView) {
-        val appLogData = stateValue.appLogData
-        AppLogSearch.eventTrendingWordsClickSuggestion(
-            AppLogSearch.TrendingWordsSuggestion(
-                searchPosition = appLogData.enterFrom,
-                searchEntrance = appLogData.searchEntrance,
-                groupId = "", // TODO milhamj: wait from BE
-                imprId = "", // TODO milhamj: wait from BE
-                newSugSessionId = appLogData.newSugSessionId,
-                rawQuery = item.searchTerm,
-                enterMethod = stateValue.enterMethod,
-                sugType = "", // TODO wait from BE
-                wordsContent = item.domainModel.title.text,
-                wordsPosition = item.appLogIndex
-            )
-        )
-    }
-
-    fun trackSearchEnterBlankPage() {
-        val appLogData = stateValue.appLogData
-        AppLogSearch.eventEnterSearchBlankPage(
-            searchEntrance = appLogData.searchEntrance
-        )
+        _stateFlow.value = stateValue.updateResultList(model, sugSessionId.generate())
     }
 
     private fun onGetDataError(throwable: Throwable) {

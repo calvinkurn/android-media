@@ -7,6 +7,7 @@ import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
+import com.tokopedia.analytics.byteio.AppLogParam.IS_AD
 import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
@@ -17,6 +18,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
+import com.tokopedia.analytics.byteio.recommendation.CardName
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ENTER_METHOD
 import com.tokopedia.analyticsdebugger.cassava.Cassava
 import org.json.JSONObject
@@ -153,7 +155,7 @@ object AppLogAnalytics {
         params.put(EVENT_ORIGIN_FEATURE_KEY, EVENT_ORIGIN_FEATURE_VALUE)
         Cassava.save(params, event, "ByteIO")
         AppLog.onEventV3(event, params)
-        Log.d(TAG, "sending event ($event), value: ${params.toString(2)} ")
+        Timber.d("(%s) sending event ($event), value: ${params.toString(2)}", TAG)
     }
 
     @JvmStatic
@@ -161,9 +163,11 @@ object AppLogAnalytics {
         initAppLog(application.applicationContext)
         EventsSenderUtils.setEventsSenderEnable("573733", true, application)
         EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net")
-        Log.d(
-            TAG,
-            "AppLog dId: ${AppLog.getDid()} userUniqueId: ${AppLog.getUserUniqueID()} userId: ${AppLog.getUserUniqueID()}"
+        Timber.d(
+            """(%s) 
+            |AppLog dId: ${AppLog.getDid()} 
+            |userUniqueId: ${AppLog.getUserUniqueID()} 
+            |userId: ${AppLog.getUserUniqueID()}""".trimMargin(), TAG
         )
     }
 
@@ -255,5 +259,37 @@ object AppLogAnalytics {
 
     fun getPreviousEnterFrom(): Any? {
         return getLastDataBeforeCurrent(ENTER_FROM)
+    }
+
+    fun setGlobalParams(
+        entranceForm: String? = null,
+        enterMethod: String? = null,
+        sourceModule: String? = null,
+        isAd: Int? = null,
+        trackId: String? = null,
+        sourcePageType: SourcePageType? = null,
+        requestId: String? = null,
+    ) {
+        entranceForm?.let {
+            putPageData(ENTRANCE_FORM, entranceForm)
+        }
+        enterMethod?.let {
+            putPageData(ENTER_METHOD, enterMethod)
+        }
+        sourceModule?.let {
+            putPageData(SOURCE_MODULE, sourceModule)
+        }
+        isAd?.let {
+            putPageData(IS_AD, isAd)
+        }
+        trackId?.let {
+            putPageData(TRACK_ID, trackId)
+        }
+        sourcePageType?.let {
+            putPageData(SOURCE_PAGE_TYPE, sourcePageType.str)
+        }
+        requestId?.let {
+            putPageData(REQUEST_ID, requestId)
+        }
     }
 }

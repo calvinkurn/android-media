@@ -28,7 +28,18 @@ data class AutoCompleteState(
 
     fun updateParameter(parameter: Map<String, String>) = copy(parameter = parameter)
 
-    fun updateResultList(resultData: UniverseSuggestionUnifyModel): AutoCompleteState {
+    fun updateResultList(
+        resultData: UniverseSuggestionUnifyModel,
+        newSugSessionId: String,
+    ): AutoCompleteState {
+        val resultList = autoCompleteResultList(resultData)
+        return copy(
+            resultList = resultList,
+            appLogData = autoCompleteAppLogData(resultData, newSugSessionId)
+        )
+    }
+
+    private fun autoCompleteResultList(resultData: UniverseSuggestionUnifyModel): List<AutoCompleteUnifyDataView> {
         val dimension90 = Dimension90Utils.getDimension90(parameter)
         val searchTerm = parameter.getOrElse(SearchApiConst.Q) { "" }
 
@@ -87,8 +98,22 @@ data class AutoCompleteState(
                 appLogIndex = masterIndex
             )
         }
-        return copy(resultList = mappedResultList)
+        return mappedResultList
     }
+
+    private fun autoCompleteAppLogData(
+        resultData: UniverseSuggestionUnifyModel,
+        newSugSessionId: String,
+    ) = AutoCompleteAppLogData(
+            newSugSessionId = sugSessionId(newSugSessionId),
+            imprId = resultData.requestId(),
+            wordsSource = resultData.wordsSource(),
+        )
+
+    private fun sugSessionId(newSugSessionId: String) =
+        if (isInitialState) ""
+        else if (appLogData.newSugSessionId.isNotBlank()) appLogData.newSugSessionId
+        else newSugSessionId
 
     fun updateResultList(resultList: List<AutoCompleteUnifyDataView>) = copy(resultList = resultList)
 

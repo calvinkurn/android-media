@@ -20,4 +20,10 @@ data class AutoCompleteUnifyDataView(
     dimension90 = dimension90
 ) {
     val impressionHolder = ImpressionHolder()
+
+    val groupId: String
+        get() = domainModel.tracking.tts.groupId
+
+    val sugType: String
+        get() = domainModel.tracking.tts.sugType
 }
