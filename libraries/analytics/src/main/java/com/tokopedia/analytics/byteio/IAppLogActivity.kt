@@ -6,5 +6,4 @@ interface IAppLogActivity {
 
 interface IAppLogPdpActivity : IAppLogActivity {
     fun getProductTrack(): TrackStayProductDetail
-    fun isExiting(): Boolean
 }
