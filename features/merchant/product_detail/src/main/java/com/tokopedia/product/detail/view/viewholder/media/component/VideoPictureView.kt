@@ -69,7 +69,11 @@ class VideoPictureView @JvmOverloads constructor(
             setupViewPager(containerType = containerType)
         }
 
-        updateImages(listOfImage = media, previouslyPrefetch = previouslyPrefetch)
+        updateImages(
+            listOfImage = media,
+            previouslyPrefetch = previouslyPrefetch,
+            isLive = liveIndicator.isLive
+        )
         updateMediaLabel(position = pagerSelectedLastPosition)
         setupRecommendationLabel(recommendation = recommendation)
         setupRecommendationLabelListener(position = pagerSelectedLastPosition)
@@ -80,8 +84,13 @@ class VideoPictureView @JvmOverloads constructor(
         previouslyPrefetch = isPrefetch
     }
 
-    private fun updateImages(listOfImage: List<MediaDataModel>?, previouslyPrefetch: Boolean) {
+    private fun updateImages(
+        listOfImage: List<MediaDataModel>?,
+        previouslyPrefetch: Boolean,
+        isLive: Boolean
+    ) {
         val mediaList = processMedia(listOfImage)
+            .map { it.copy(isLive = isLive) }
         videoPictureAdapter?.submitList(mediaList, previouslyPrefetch)
     }
 
@@ -259,10 +268,9 @@ class VideoPictureView @JvmOverloads constructor(
     private fun shouldShowLiveIndicatorXOverlayRecomm(position: Int) = with(binding) {
         val isPictureType = videoPictureAdapter?.isPicture(position) == true
         val isLive = liveIndicator.isLive
-        val shouldShowLiveIndicator = isPictureType && isLive
 
         when {
-            shouldShowLiveIndicator -> {
+            isLive -> {
                 binding.liveBadgeView.show()
                 binding.txtAnimLabelRecommendation.hideView()
             }

@@ -123,7 +123,8 @@ data class MediaDataModel(
     val videoUrl: String = "",
     val isAutoPlay: Boolean = false,
     val variantOptionId: String = "",
-    val isPrefetch: Boolean = false
+    val isPrefetch: Boolean = false,
+    val isLive: Boolean = false
 ) {
     var prefetchResource: Drawable? = null
     fun isVideoType(): Boolean = type == ProductMediaDataModel.VIDEO_TYPE
