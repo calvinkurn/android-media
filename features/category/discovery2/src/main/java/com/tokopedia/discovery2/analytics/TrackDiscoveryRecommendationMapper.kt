@@ -41,7 +41,9 @@ object TrackDiscoveryRecommendationMapper {
             ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName,
             ComponentNames.ShopOfferHeroBrandProductItem.componentName -> EntranceForm.HORIZONTAL_GOODS_CARD
             ComponentNames.ProductCardRevampItem.componentName,
-            ComponentNames.MasterProductCardItemReimagine.componentName -> EntranceForm.PURE_GOODS_CARD
+            ComponentNames.MasterProductCardItemReimagine.componentName,
+            ComponentNames.ProductCardSprintSaleCarouselItem.componentName,
+            ComponentNames.ProductCardSprintSaleItemReimagine.componentName -> EntranceForm.PURE_GOODS_CARD
             ComponentNames.MasterProductCardItemList.componentName,
             ComponentNames.MasterProductCardItemListReimagine.componentName -> EntranceForm.DETAIL_GOODS_CARD
             else -> EntranceForm.HORIZONTAL_GOODS_CARD
