@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import static com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD;
 import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_APPLINK_PARAM;
 import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_PARAM_TRUE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
@@ -52,7 +53,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
-import com.tokopedia.analytics.byteio.AppLogParam;
+import com.tokopedia.analytics.byteio.EnterMethod;
 import com.tokopedia.analytics.byteio.IAppLogActivity;
 import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -399,6 +400,7 @@ public class MainParentActivity extends BaseActivity implements
         if (pageLoadTimePerformanceCallback != null && pageLoadTimePerformanceCallback.getCustomMetric().containsKey(MAIN_PARENT_ON_START_METRICS)) {
             pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_START_METRICS);
         }
+        handleAppLogInitialEnterMethod();
     }
 
     private void routeOnboarding() {
@@ -1354,7 +1356,23 @@ public class MainParentActivity extends BaseActivity implements
         if (fragment instanceof AppLogInterface appLogInterface) {
             AppLogAnalytics.INSTANCE.updateCurrentPageData(appLogInterface);
         }
+        handleAppLogEnterMethod(pageTitle);
         return true;
+    }
+
+    private void handleAppLogInitialEnterMethod() {
+        Object currentEnterMethod = AppLogAnalytics.INSTANCE.getLastData(ENTER_METHOD);
+        if (currentEnterMethod instanceof String && !((String) currentEnterMethod).isEmpty()) {
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
+        }
+    }
+
+    private void handleAppLogEnterMethod(String pageTitle) {
+        if (pageTitle.equals(getResources().getString(R.string.home))) {
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_HOME_ICON);
+        } else if (pageTitle.equals(getResources().getString(R.string.wishlist))) {
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICON);
+        }
     }
 
     @Override
@@ -1512,6 +1530,11 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public boolean isEnterFromWhitelisted() {
+        return false;
+    }
+
+    @Override
+    public boolean isShadow() {
         return false;
     }
 }

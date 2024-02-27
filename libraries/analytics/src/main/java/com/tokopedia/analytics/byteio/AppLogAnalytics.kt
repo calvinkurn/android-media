@@ -5,7 +5,9 @@ import android.app.Application
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM_INFO
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
+import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_INFO
 import com.tokopedia.analytics.byteio.AppLogParam.IS_AD
 import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
@@ -18,6 +20,10 @@ import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ENTER_METHOD
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.LIST_ITEM_ID
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ID
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_RESULT_ID
 import com.tokopedia.analyticsdebugger.cassava.Cassava
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -113,6 +119,24 @@ object AppLogAnalytics {
         put(ENTRANCE_FORM, getLastData(ENTRANCE_FORM))
     }
 
+    internal fun JSONObject.addEntranceInfo() {
+        val data = JSONObject().also {
+            it.put(ENTER_FROM_INFO, getLastData(ENTER_FROM))
+            it.addEntranceForm()
+            it.addSourcePageType()
+            it.addTrackId()
+            it.put(IS_AD, getLastData(IS_AD))
+            it.addRequestId()
+            it.addSourceModule()
+            it.addEnterMethod()
+            it.put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
+            it.put(SEARCH_ID, getLastData(SEARCH_ID))
+            it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
+            it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
+        }
+        put(ENTRANCE_INFO, data)
+    }
+
     internal fun JSONObject.addEnterFrom() {
         put(ENTER_FROM, getLastData(ENTER_FROM))
     }
@@ -195,29 +219,33 @@ object AppLogAnalytics {
      */
     fun popPageData() {
         if (getCurrentData(IS_SHADOW) == false) {
-            _pageDataList.removeLast()
+            _pageDataList.removeLastOrNull()
             // Remove shadow stack
             if (getCurrentData(IS_SHADOW) == true) {
-                _pageDataList.removeLast()
+                _pageDataList.removeLastOrNull()
             }
         }
         Timber.d("Pop _pageDataList: ${_pageDataList}}")
     }
 
     private fun clearCurrentPageData() {
-        _pageDataList.last().clear()
+        _pageDataList.lastOrNull()?.clear()
     }
 
     /**
      * To update current page data
      */
     fun putPageData(key: String, value: Any) {
-        _pageDataList.last()[key] = value
+        _pageDataList.lastOrNull()?.put(key, value)
         Timber.d("Put _pageDataList: ${_pageDataList}}")
     }
 
+    fun putEnterMethod(enterMethod: EnterMethod) {
+        putPageData(ENTER_METHOD, enterMethod.str)
+    }
+
     fun getCurrentData(key: String): Any? {
-        return _pageDataList.last()[key]
+        return _pageDataList.lastOrNull()?.get(key)
     }
 
     fun getLastData(key: String): Any? {
@@ -254,9 +282,11 @@ object AppLogAnalytics {
     }
 
     private fun putAppLogInterfaceData(appLogInterface: AppLogInterface) {
-        putPageData(PAGE_NAME, appLogInterface.getPageName())
-        if (appLogInterface.isEnterFromWhitelisted()) {
-            putPageData(ENTER_FROM, appLogInterface.getPageName())
+        if (appLogInterface.getPageName().isNotBlank()) {
+            putPageData(PAGE_NAME, appLogInterface.getPageName())
+            if (appLogInterface.isEnterFromWhitelisted()) {
+                putPageData(ENTER_FROM, appLogInterface.getPageName())
+            }
         }
         if (appLogInterface.isShadow()) {
             putPageData(IS_SHADOW, appLogInterface.isShadow())

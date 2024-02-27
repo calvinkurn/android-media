@@ -5,6 +5,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceInfo
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addRequestId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
@@ -38,13 +39,14 @@ object AppLogPdp {
             it.addEntranceForm()
             it.addSourcePageType()
             it.addSourceModule()
+            it.addEntranceInfo()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
-//            it.put("entrance_info", ) TODO
             it.put("product_type", product.productType.type)
             it.put("original_price", product.originalPrice)
             it.put("sale_price", product.salePrice)
             it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
+            it.addTrackId()
         })
     }
 
@@ -60,21 +62,21 @@ object AppLogPdp {
             it.addEntranceForm()
             it.addSourceModule()
             it.addTrackId()
+            it.addEntranceInfo()
             it.put("stay_time", durationInMs)
             it.put("is_load_data", if (product.isLoadData) 1 else 0)
             it.put("quit_type", quitType)
             it.put("source_module",/*TODO*/ "")
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
-//            it.put("entrance_info", ) TODO
             it.put("main_photo_view_cnt", product.mainPhotoViewCount)
             it.put("sku_photo_view_cnt", product.skuPhotoViewCount)
             it.put("product_type", product.productType.type)
             it.put("original_price", product.originalPrice)
             it.put("sale_price", product.salePrice)
             it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
-            it.put("is_sku_selected", product.isSkuSelected)
-            it.put("is_add_cart", product.isAddCartSelected)
+            it.put("is_sku_selected", if (product.isSkuSelected) 1 else 0)
+            it.put("is_add_cart", if (product.isAddCartSelected) 1 else 0)
         })
     }
 
@@ -87,9 +89,9 @@ object AppLogPdp {
             it.addSourcePageType()
             it.addEntranceForm()
             it.addSourceModule()
+            it.addEntranceInfo()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
-//            it.put("entrance_info", ) TODO
             it.put("product_type", product.productType.type)
             it.put("original_price_value", product.originalPrice)
             it.put("sale_price_value", product.salePrice)
@@ -97,7 +99,7 @@ object AppLogPdp {
             it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
             it.put("currency", product.currency)
             it.put("quantity", product.qty)
-            it.put("is_have_address", (if (product.isHaveAddress) 1 else 0))
+//            it.put("is_have_address", (if (product.isHaveAddress) 1 else 0)) // removed
         })
     }
 
@@ -110,9 +112,9 @@ object AppLogPdp {
             it.addSourceModule()
             it.addSourcePreviousPage()
             it.addRequestId()
+            it.addEntranceInfo()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
-//            it.put("entrance_info", ) TODO
             it.put("product_type", product.productType.type)
             it.put("original_price_value", product.originalPrice)
             it.put("sale_price_value", product.salePrice)
@@ -134,9 +136,9 @@ object AppLogPdp {
             it.addSourceModule()
             it.addSourcePreviousPage()
             it.addRequestId()
+            it.addEntranceInfo()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
-//            it.put("entrance_info", ) TODO
             it.put("product_type", product.productType.type)
             it.put("original_price_value", product.originalPrice)
             it.put("sale_price_value", product.salePrice)

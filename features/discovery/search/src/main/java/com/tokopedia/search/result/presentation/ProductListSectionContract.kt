@@ -9,6 +9,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
@@ -94,6 +95,7 @@ interface ProductListSectionContract {
         CustomerPresenter<View>,
         Pagination,
         BannerAdsPresenter,
+        DynamicFilterModelProvider,
         BroadMatchPresenter,
         TickerPresenter,
         SafeSearchPresenter,

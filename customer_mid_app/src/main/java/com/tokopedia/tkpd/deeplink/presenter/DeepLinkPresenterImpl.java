@@ -2,9 +2,7 @@ package com.tokopedia.tkpd.deeplink.presenter;
 
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
-import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
 import static com.tokopedia.webview.ConstantKt.KEY_TITLEBAR;
-import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,6 +12,9 @@ import android.text.TextUtils;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.analytics.byteio.AppLogAnalytics;
+import com.tokopedia.analytics.byteio.AppLogParam;
+import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -764,6 +765,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openProduct(final List<String> linkSegment, final Uri uriData, boolean isAmp) {
+        AppLogAnalytics.INSTANCE.putPageData(AppLogParam.ENTER_FROM, PageName.EXTERNAL_PROMO);
         gqlGetShopIdByDomainUseCaseRx.execute(
                 GqlGetShopIdByDomainUseCaseRx.createParams(linkSegment.get(0)),
                 getOpenProductSubscriber(linkSegment, uriData, isAmp)

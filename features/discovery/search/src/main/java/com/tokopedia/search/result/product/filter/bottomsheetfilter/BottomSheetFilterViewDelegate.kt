@@ -7,11 +7,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_PANEL
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.PRODUCT_SEARCH
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SORT_NEWEST
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SORT_PRICE_ASC
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SORT_PRICE_DESC
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SORT_RELEVANCE
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SORT_REVIEW
+import com.tokopedia.discovery.common.analytics.SearchId
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
@@ -21,17 +17,13 @@ import com.tokopedia.filter.common.data.IOption
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.data.SortModel
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
-import com.tokopedia.filter.newdynamicfilter.helper.SortHelper.Companion.HARGA_TERENDAH
-import com.tokopedia.filter.newdynamicfilter.helper.SortHelper.Companion.HARGA_TERTINGGI
-import com.tokopedia.filter.newdynamicfilter.helper.SortHelper.Companion.PALING_SESUAI
-import com.tokopedia.filter.newdynamicfilter.helper.SortHelper.Companion.TERBARU
-import com.tokopedia.filter.newdynamicfilter.helper.SortHelper.Companion.ULASAN
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.ScreenNameProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
+import com.tokopedia.search.result.product.byteio.ecomSortName
 import com.tokopedia.search.result.product.filter.analytics.SearchSortFilterTracking
 import com.tokopedia.search.result.product.lastfilter.LastFilterListener
 import com.tokopedia.search.utils.FragmentProvider
@@ -240,7 +232,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
         AppLogSearch.eventChooseSearchFilter(
             AppLogSearch.ChooseSearchFilter(
-                searchID = "", // TODO
+                searchID = SearchId.value,
                 searchType = PRODUCT_SEARCH,
                 keyword = queryKey,
                 ecomSortName = ecomSortName(applySortFilterModel.selectedSortName),
@@ -250,16 +242,6 @@ class BottomSheetFilterViewDelegate @Inject constructor(
             )
         )
     }
-
-    private fun ecomSortName(selectedSortName: String): String =
-        when (selectedSortName) {
-            PALING_SESUAI -> SORT_RELEVANCE
-            ULASAN -> SORT_REVIEW
-            TERBARU -> SORT_NEWEST
-            HARGA_TERTINGGI -> SORT_PRICE_DESC
-            HARGA_TERENDAH -> SORT_PRICE_ASC
-            else -> ""
-        }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
         callback?.getProductCount(mapParameter)

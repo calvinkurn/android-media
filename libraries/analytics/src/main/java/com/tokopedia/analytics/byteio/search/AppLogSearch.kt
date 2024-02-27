@@ -11,6 +11,8 @@ import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_CLICK
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_SHOW
+import com.tokopedia.analytics.byteio.PageName
+import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.CHOOSE_SEARCH_FILTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.ENTER_SEARCH_BLANKPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.SEARCH
@@ -63,7 +65,6 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_CONTENT
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_NUM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_POSITION
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_SOURCE
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.ENTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARCH
@@ -72,7 +73,7 @@ import org.json.JSONObject
 
 object AppLogSearch {
 
-    private val whitelistedEnterFromAutoComplete = listOf(GOODS_SEARCH, STORE_SEARCH, HOMEPAGE)
+    val whitelistedEnterFromAutoComplete = listOf(GOODS_SEARCH, STORE_SEARCH, PageName.HOME)
 
     object Event {
         const val SHOW_SEARCH = "show_search"
@@ -127,14 +128,10 @@ object AppLogSearch {
         const val ECOM_FILTER_CHOSEN = "ecom_filter_chosen"
         const val ECOM_FILTER_TYPE = "ecom_filter_type"
         const val SEARCH_CORRECT_WORD = "search_correct_word"
-
-        // Potentially can be in global constants
         const val VOLUME = "volume"
         const val RATE = "rate"
         const val IS_AD = "is_ad"
         const val PRODUCT_ID = "product_id"
-        const val TRACK_ID = "track_id"
-        const val REQUEST_ID = "request_id"
     }
 
     object ParamValue {
@@ -242,7 +239,7 @@ object AppLogSearch {
         val ecomFilterType: String? = null,
     ) {
         fun json() = JSONObject(buildMap {
-            val enterFrom = enterFrom(listOf(HOMEPAGE))
+            val enterFrom = enterFrom(listOf(PageName.HOME))
 
             put(IMPR_ID, imprId)
             put(ENTER_FROM, enterFrom)
@@ -269,15 +266,13 @@ object AppLogSearch {
         AppLogAnalytics.send(SEARCH, search.json())
     }
 
-    fun eventEnterSearchBlankPage() {
-        val enterFrom = enterFrom(whitelistedEnterFromAutoComplete)
-
+    fun eventEnterSearchBlankPage(enterFrom: String, enterMethod: String) {
         AppLogAnalytics.send(
             ENTER_SEARCH_BLANKPAGE,
             JSONObject(
                 mapOf(
                     ENTER_FROM to enterFrom,
-                    ENTER_METHOD to ENTER,
+                    ENTER_METHOD to enterMethod,
                     SEARCH_ENTRANCE to HOMEPAGE,
                 )
             )
@@ -374,11 +369,11 @@ object AppLogSearch {
 
         fun json() = JSONObject(
             buildMap {
-                val enterFrom = enterFrom(listOf(HOMEPAGE))
+                val enterFrom = enterFrom(listOf(PageName.HOME))
 
                 put(IMPR_ID, imprId)
                 put(SEARCH_ID, searchId)
-                put(SEARCH_ENTRANCE, GOODS_SEARCH)
+                put(SEARCH_ENTRANCE, HOMEPAGE)
                 put(ENTER_FROM, enterFrom)
                 put(SEARCH_RESULT_ID, searchResultId)
                 listItemId?.let { put(LIST_ITEM_ID, it) }
@@ -396,11 +391,14 @@ object AppLogSearch {
         )
     }
 
-    private fun enterFrom(whitelistedEnterFrom: List<String>): String {
+    fun enterFrom(whitelistedEnterFrom: List<String>): String {
         val actualEnterFrom =
             (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
 
-        return if (whitelistedEnterFrom.contains(actualEnterFrom)) actualEnterFrom else ""
+        return if (whitelistedEnterFrom.contains(actualEnterFrom)) {
+            if (actualEnterFrom == PageName.HOME) HOMEPAGE
+            else actualEnterFrom
+        } else ""
     }
 
     fun eventSearchResultShow(searchResult: SearchResult) {
@@ -415,7 +413,7 @@ object AppLogSearch {
         val searchID: String,
         val searchType: String,
         val keyword: String,
-        val ecomSortName: String,
+        val ecomSortName: String?,
         val ecomFilterName: String,
         val ecomFilterPosition: String,
         val buttonTypeClick: String,
@@ -425,7 +423,7 @@ object AppLogSearch {
             put(SEARCH_ENTRANCE, HOMEPAGE)
             put(SEARCH_ID, searchID)
             put(SEARCH_KEYWORD, keyword)
-            put(ECOM_SORT_NAME, ecomSortName)
+            ecomSortName?.let { put(ECOM_SORT_NAME, it) }
             put(ECOM_FILTER_NAME, ecomFilterName)
             put(ECOM_FILTER_POSITION, ecomFilterPosition)
             put(BUTTON_TYPE_CLICK, buttonTypeClick)
@@ -454,18 +452,27 @@ object AppLogSearch {
         val shopID: String?
     ) {
 
+        val trackId: String
+            get() = "${searchID}_${(itemRank ?: rank)}"
+
+        val isAdInt: Int
+            get() = isAd.intValue
+
+        val searchEntrance: String
+            get() = HOMEPAGE
+
         fun json() = JSONObject(buildMap {
             put(ENTRANCE_FORM, entranceForm.str)
             put(ITEM_ORDER, rank + 1)
             volume?.let { put(VOLUME, it) }
             put(RATE, rate)
-            put(IS_AD, isAd.intValue)
+            put(IS_AD, isAdInt)
             put(PRODUCT_ID, productID)
-            put(AppLogParam.TRACK_ID, "${searchID}_${(itemRank ?: rank)}")
+            put(AppLogParam.TRACK_ID, trackId)
             put(AppLogParam.REQUEST_ID, requestID)
             put(SEARCH_ID, searchID)
             put(SEARCH_RESULT_ID, searchResultID)
-            put(SEARCH_ENTRANCE, HOMEPAGE)
+            put(SEARCH_ENTRANCE, searchEntrance)
             put(ENTER_FROM, GOODS_SEARCH)
             listItemId?.let { put(LIST_ITEM_ID, it) }
             itemRank?.let { put(ITEM_RANK, it) }
@@ -486,6 +493,23 @@ object AppLogSearch {
 
     fun eventProductClick(product: Product) {
         AppLogAnalytics.send(EventName.PRODUCT_CLICK, product.json())
+
+        with(product) {
+            AppLogAnalytics.setGlobalParams(
+                entranceForm = entranceForm.str,
+                enterMethod = null,
+                sourceModule = null,
+                isAd = isAdInt,
+                trackId = trackId,
+                sourcePageType = SourcePageType.PRODUCT_CARD,
+                requestId = requestID,
+            )
+
+            AppLogAnalytics.putPageData(SEARCH_ENTRANCE, searchEntrance)
+            AppLogAnalytics.putPageData(SEARCH_ID, searchID)
+            AppLogAnalytics.putPageData(SEARCH_RESULT_ID, searchResultID)
+            listItemId?.let { AppLogAnalytics.putPageData(LIST_ITEM_ID, it) }
+        }
     }
 
     fun eventCartEntranceShow() {

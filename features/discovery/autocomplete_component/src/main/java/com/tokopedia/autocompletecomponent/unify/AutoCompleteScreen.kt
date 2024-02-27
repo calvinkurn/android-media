@@ -10,7 +10,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_FROM
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_METHOD
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.NEW_SUG_SESSION_ID
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.ENTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_HISTORY
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_SUG
 import com.tokopedia.applink.RouteManager
@@ -50,10 +55,18 @@ internal fun AutoCompleteScreen(
             listener = listener
         )
 
-        LaunchedEffect(key1 = state.value.appLogData) {
-            if (state.value.isInitialState)
-                AppLogSearch.eventEnterSearchBlankPage()
-            else if (state.value.isSuggestion)
+        LaunchedEffect(key1 = state.value.appLogData.imprId) {
+            if (state.value.appLogData.imprId.isBlank()) return@LaunchedEffect
+
+            if (state.value.isInitialState) {
+                val enterFrom =
+                    AppLogSearch.enterFrom(AppLogSearch.whitelistedEnterFromAutoComplete)
+                val enterMethod = ENTER
+                AppLogSearch.eventEnterSearchBlankPage(enterFrom, enterMethod)
+
+                AppLogAnalytics.putPageData(BLANKPAGE_ENTER_FROM, enterFrom)
+                AppLogAnalytics.putPageData(BLANKPAGE_ENTER_METHOD, enterMethod)
+            } else if (state.value.isSuggestion) {
                 AppLogSearch.eventTrendingShow(
                     AppLogSearch.TrendingShow(
                         imprId = state.value.appLogData.imprId,
@@ -66,6 +79,9 @@ internal fun AutoCompleteScreen(
                         }.size
                     )
                 )
+
+                AppLogAnalytics.putPageData(NEW_SUG_SESSION_ID, state.value.appLogData.newSugSessionId)
+            }
         }
 
         LazyColumn(
@@ -74,10 +90,9 @@ internal fun AutoCompleteScreen(
             items(
                 state.value.resultList
             ) { item ->
-                LaunchedEffect(key1 = !item.impressionHolder.impressed, block = {
-                    item.impressionHolder.impressed = true
+                LaunchedEffect(key1 = item, block = {
                     item.impress(iris)
-                    if (item.domainModel.isTrendingWord())
+                    if (viewModel.stateValue.isSuggestion)
                         AppLogSearch.eventTrendingWordsShowSuggestion(
                             trendingWordsSuggestion(viewModel, item)
                         )
@@ -89,10 +104,21 @@ internal fun AutoCompleteScreen(
                             onItemClicked = {
                                 viewModel.onAutoCompleteItemClick(it)
                                 it.click(analytics)
-                                if (item.domainModel.isTrendingWord())
+                                if (viewModel.stateValue.isSuggestion) {
+                                    AppLogAnalytics.putPageData(
+                                        AppLogSearch.ParamKey.SUG_TYPE,
+                                        item.sugType,
+                                    )
+
+                                    AppLogAnalytics.putPageData(
+                                        AppLogSearch.ParamKey.PRE_CLICK_ID,
+                                        viewModel.stateValue.appLogData.imprId,
+                                    )
+
                                     AppLogSearch.eventTrendingWordsClickSuggestion(
                                         trendingWordsSuggestion(viewModel, item)
                                     )
+                                }
                             },
                             onItemAction = {
                                 viewModel.onAutocompleteItemAction(it)
