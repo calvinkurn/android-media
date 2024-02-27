@@ -232,6 +232,10 @@ object AppLogAnalytics {
         Timber.d("Put _pageDataList: ${_pageDataList}}")
     }
 
+    fun putEnterMethod(enterMethod: EnterMethod) {
+        putPageData(ENTER_METHOD, enterMethod.str)
+    }
+
     fun getCurrentData(key: String): Any? {
         return _pageDataList.lastOrNull()?.get(key)
     }

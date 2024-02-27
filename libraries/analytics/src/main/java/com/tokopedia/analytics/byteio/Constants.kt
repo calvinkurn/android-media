@@ -182,6 +182,15 @@ enum class SourcePageType(val str: String) {
 }
 
 enum class EnterMethod(val str: String) {
+    CLICK_EXTERNAL_TAB("click_external_ads"),
+    CLICK_HOME_ICON("click_home_icon"),
+    CLICK_APP_ICON("click_app_icon"),
+    CLICK_RECOM_CARD_INFINITE("click_recom_card_infinite"),
+    CLICK_INBOX_HOMEPAGE("click_inbox_homepage"),
+    CLICK_CART_ICON_HOMEPAGE("click_cart_icon_homepage"),
+    CLICK_ATC_TOASTER_PDP("click_atc_toaster_pdp"),
+    CLICK_WISHLIST_ICON("click_wishlist_icon"),
+    CLICK_WISHLIST_ICONACCOUNT("click_wishlist_iconaccount"),
     CLICK_TAB("click_tab"),
     SWITCH_TAB("switch_tab"),
     CLICK_BUBBLE("click_bubble"),
