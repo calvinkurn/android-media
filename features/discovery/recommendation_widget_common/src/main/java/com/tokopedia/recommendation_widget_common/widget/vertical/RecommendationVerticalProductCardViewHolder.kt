@@ -2,8 +2,8 @@ package com.tokopedia.recommendation_widget_common.widget.vertical
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -80,8 +80,9 @@ class RecommendationVerticalProductCardViewHolder(
 
     private fun onProductCardImpressed1px(element: RecommendationVerticalProductCardModel) {
         AppLogRecommendation.sendProductShowAppLog(
-            element.recomItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+            element.recomItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
         )
+
     }
 
     private fun onProductClicked(element: RecommendationVerticalProductCardModel) {
@@ -105,7 +106,7 @@ class RecommendationVerticalProductCardViewHolder(
         )
 
         AppLogRecommendation.sendProductClickAppLog(
-            element.recomItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+            element.recomItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
         )
 
         RouteManager.route(binding.productCardView.context, productRecommendation.appUrl)

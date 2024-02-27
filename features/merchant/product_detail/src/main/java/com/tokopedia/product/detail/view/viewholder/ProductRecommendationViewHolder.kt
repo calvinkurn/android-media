@@ -7,8 +7,8 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
@@ -197,7 +197,7 @@ class ProductRecommendationViewHolder(
                     )
 
                     AppLogRecommendation.sendProductClickAppLog(
-                        productRecommendation.asProductTrackModel(type = AppLogRecommendationType.PRODUCT_CAROUSEL)
+                        productRecommendation.asProductTrackModel(entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD)
                     )
 
                     view.context?.run {
@@ -241,7 +241,7 @@ class ProductRecommendationViewHolder(
                     )
 
                     AppLogRecommendation.sendProductShowAppLog(
-                        productRecommendation.asProductTrackModel(type = AppLogRecommendationType.PRODUCT_CAROUSEL)
+                        productRecommendation.asProductTrackModel(entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD)
                     )
                 }
             },

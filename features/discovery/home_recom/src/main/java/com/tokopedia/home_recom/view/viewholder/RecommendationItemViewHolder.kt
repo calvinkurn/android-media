@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -76,7 +75,6 @@ class RecommendationItemViewHolder(
                 )
                 AppLogRecommendation.sendProductClickAppLog(
                     element.productItem.asProductTrackModel(
-                        type = AppLogRecommendationType.VERTICAL,
                         entranceForm = EntranceForm.PURE_GOODS_CARD,
                         tabName = element.chipName,
                         tabPosition = element.chipPosition,
@@ -109,7 +107,6 @@ class RecommendationItemViewHolder(
             addOnImpression1pxListener(element.productItem) {
                 AppLogRecommendation.sendProductShowAppLog(
                     element.productItem.asProductTrackModel(
-                        type = AppLogRecommendationType.VERTICAL,
                         entranceForm = EntranceForm.PURE_GOODS_CARD,
                         tabName = element.chipName,
                         tabPosition = element.chipPosition,

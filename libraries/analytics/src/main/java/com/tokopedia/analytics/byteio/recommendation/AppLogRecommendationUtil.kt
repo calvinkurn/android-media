@@ -1,5 +1,8 @@
 package com.tokopedia.analytics.byteio.recommendation
 
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationConst.SOURCE_MODULE_ADS
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationConst.SOURCE_MODULE_HORIZONTAL_FORMAT
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationConst.SOURCE_MODULE_OPS
@@ -22,18 +25,11 @@ enum class CardName(val str: String) {
     MISSION_CARD("mission_%s_card")
 }
 
-enum class AppLogRecommendationType {
-    VERTICAL,
-    PRODUCT_CAROUSEL,
-    MIXED_CAROUSEL,
-    SINGLE_PRODUCT
-}
-
 fun constructSourceModule(
     isProduct: Boolean,
     isAd: Boolean,
     moduleName: String,
-    type: AppLogRecommendationType
+    entranceForm: EntranceForm,
 ): String {
     val prefix = if (isAd) {
         SOURCE_MODULE_ADS
@@ -43,8 +39,8 @@ fun constructSourceModule(
         SOURCE_MODULE_OPS
     }
 
-    val pageName = "pagename" // TODO get from global param
-    return if (type == AppLogRecommendationType.VERTICAL) {
+    val pageName = AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME)
+    return if (entranceForm == EntranceForm.PURE_GOODS_CARD || entranceForm == EntranceForm.CONTENT_GOODS_CARD) {
         SOURCE_MODULE_VERTICAL_FORMAT.format(prefix, pageName)
     } else {
         SOURCE_MODULE_HORIZONTAL_FORMAT.format(prefix, pageName, moduleName)

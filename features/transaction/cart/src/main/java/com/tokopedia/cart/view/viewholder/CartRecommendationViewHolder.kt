@@ -1,8 +1,8 @@
 package com.tokopedia.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartRecommendationBinding
 import com.tokopedia.cart.view.ActionListener
@@ -33,7 +33,7 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
             )
             setOnClickListener {
                 AppLogRecommendation.sendProductClickAppLog(
-                    element.recommendationItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+                    element.recommendationItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
                 )
                 actionListener?.onRecommendationProductClicked(
                     element.recommendationItem
@@ -56,7 +56,7 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
 
             addOnImpression1pxListener(element.recommendationItem) {
                 AppLogRecommendation.sendProductShowAppLog(
-                    element.recommendationItem.asProductTrackModel(type = AppLogRecommendationType.VERTICAL)
+                    element.recommendationItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
                 )
             }
         }

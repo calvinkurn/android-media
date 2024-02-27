@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SlideTrackObject
 import com.tokopedia.analytics.byteio.addHorizontalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -142,7 +142,7 @@ class RecommendationCarouselWidgetView :
 
                 AppLogRecommendation.sendProductShowAppLog(
                     productRecommendation.asProductTrackModel(
-                        type = AppLogRecommendationType.PRODUCT_CAROUSEL
+                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD
                     )
                 )
             }
@@ -178,7 +178,7 @@ class RecommendationCarouselWidgetView :
 
                 AppLogRecommendation.sendProductClickAppLog(
                     productRecommendation.asProductTrackModel(
-                        type = AppLogRecommendationType.PRODUCT_CAROUSEL
+                        entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD
                     )
                 )
 
