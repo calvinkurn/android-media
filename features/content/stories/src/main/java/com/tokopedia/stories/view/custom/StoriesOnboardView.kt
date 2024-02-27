@@ -1,6 +1,5 @@
 package com.tokopedia.stories.view.custom
 
-import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
@@ -43,10 +42,6 @@ class StoriesOnboardView : ConstraintLayout {
         duration = UnifyMotion.T3
     }
 
-    private val anim = AnimatorSet().apply {
-        play(animatorX)
-    }
-
     init {
         binding.lottieSwipeProduct.setAnimationFromUrl(context.getString(R.string.stories_onboard_swipe_anim))
         binding.lottieSwipeProduct.setFailureListener { }
@@ -56,11 +51,11 @@ class StoriesOnboardView : ConstraintLayout {
     }
 
     fun checkAnim() {
-        anim.start()
+        animatorX.start()
     }
 
     override fun onDetachedFromWindow() {
-        anim.cancel()
+        animatorX.cancel()
         super.onDetachedFromWindow()
     }
 }
