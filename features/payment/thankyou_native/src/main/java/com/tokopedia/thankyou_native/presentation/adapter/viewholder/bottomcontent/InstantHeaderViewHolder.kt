@@ -17,6 +17,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 import com.tokopedia.utils.view.binding.viewBinding
 import org.json.JSONArray
+import timber.log.Timber
 
 class InstantHeaderViewHolder(
     view: View,
@@ -53,13 +54,19 @@ class InstantHeaderViewHolder(
     }
 
     private fun setUpTotalDeduction(data: InstantHeaderUiModel?) {
-        val jsonArray = JSONArray(data?.promoFlags)
         val stringList = mutableListOf<String>()
 
-        for (i in 0 until jsonArray.length()) {
-            val element = jsonArray.getString(i)
-            stringList.add(element)
+        try {
+            val jsonArray = JSONArray(data?.promoFlags)
+
+            for (i in 0 until jsonArray.length()) {
+                val element = jsonArray.getString(i)
+                stringList.add(element)
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
         }
+
 
         binding?.shimmerView?.shouldShowWithAction(stringList.isNotEmpty() && data?.totalDeduction != 0f) {
             binding?.shimmerView?.radiusClip(8.toPx().toFloat(), 8.toPx().toFloat(), 8.toPx().toFloat(), 8.toPx().toFloat())
