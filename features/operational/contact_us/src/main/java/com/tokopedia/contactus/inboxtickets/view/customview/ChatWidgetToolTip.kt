@@ -7,6 +7,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.PopupWindow
 import com.tokopedia.contactus.R
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.unifyprinciples.Typography
@@ -19,7 +20,7 @@ class ChatWidgetToolTip @JvmOverloads constructor(
     PopupWindow(context, attrs, defStyleAttr) {
 
     private var view: View
-    private var toolTipCloseButton: UnifyImageButton? = null
+    private var toolTipCloseButton: IconUnify? = null
     private var toolTipButton: UnifyButton? = null
     private var toolTipText: Typography? = null
     private var chatWidgetToolTipListener: ChatWidgetToolTipListener? = null

@@ -23,8 +23,8 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.shopwidget.R as shopwidgetR
 import com.tokopedia.gm.common.R as gmcommonR
+import com.tokopedia.shopwidget.R as shopwidgetR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopAdsSingleItemVerticalLayout : BaseCustomView {
@@ -172,14 +172,14 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
 
     private fun setImpression(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel) {
         shopAdsWithSingleProductModel.impressHolder?.let { impressHolder ->
-            productCard?.addOnImpressionListener(impressHolder){
+            productCard?.addOnImpressionListener(impressHolder) {
                 shopAdsWithSingleProductModel.impressionListener?.onImpressionProductAdsItem(Int.ZERO, shopAdsWithSingleProductModel.listItem, shopAdsWithSingleProductModel.cpmData)
                 shopAdsWithSingleProductModel.impressionListener?.onImpressionHeadlineAdsItem(Int.ZERO, shopAdsWithSingleProductModel.cpmData)
             }
         }
 
         shopAdsWithSingleProductModel.impressHolder?.let { impressHolder ->
-            shopImage?.addOnImpressionListener(impressHolder){
+            shopImage?.addOnImpressionListener(impressHolder) {
                 shopAdsWithSingleProductModel.impressionListener?.let {
                     it.onImpressionHeadlineAdsItem(Int.ZERO, shopAdsWithSingleProductModel.cpmData)
                     topAdsUrlHitter.hitImpressionUrl(
@@ -203,7 +203,7 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
         val colorCode = getBackgroundColor(shopAdsWithSingleProductModel)
         bodyContainer?.background =
             ContextCompat.getDrawable(context, colorCode)
-        merchantVoucher?.setLabelType(if (shopAdsWithSingleProductModel.isPMPro || shopAdsWithSingleProductModel.isPowerMerchant) Label.GENERAL_GREEN else Label.HIGHLIGHT_LIGHT_GREEN)
+        merchantVoucher?.setLabelType(if (shopAdsWithSingleProductModel.isPMPro || shopAdsWithSingleProductModel.isPowerMerchant) Label.GENERAL_RED else Label.HIGHLIGHT_LIGHT_RED)
     }
 
     private fun getBackgroundColor(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel): Int {
@@ -239,8 +239,8 @@ class ShopAdsSingleItemVerticalLayout : BaseCustomView {
     }
 
     private fun getIsImageShopBadgeVisible(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel): Boolean {
-        return shopAdsWithSingleProductModel.isOfficial
-            || shopAdsWithSingleProductModel.isPMPro
-            || shopAdsWithSingleProductModel.isPowerMerchant
+        return shopAdsWithSingleProductModel.isOfficial ||
+            shopAdsWithSingleProductModel.isPMPro ||
+            shopAdsWithSingleProductModel.isPowerMerchant
     }
 }

@@ -19,7 +19,7 @@
         android:layout_marginRight="8dp"
         android:layout_toStartOf="@+id/replySendButton"
         android:layout_toLeftOf="@+id/replySendButton"
-        android:background="@drawable/bg_rounded_chat_input"
+        android:background="@drawable/rounded_bg_chat_input"
         android:hint="@string/reply_editText_placeholder"
         android:inputType="textMultiLine"
         android:textColor="@color/Unify_NN950_96"
