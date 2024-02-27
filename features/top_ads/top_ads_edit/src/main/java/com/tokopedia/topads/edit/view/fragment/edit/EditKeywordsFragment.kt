@@ -634,10 +634,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
         if (adapter?.items?.isNotEmpty() == true && adapter?.items?.getOrNull(0) !is EditKeywordEmptyViewModel) {
             adapter?.items?.forEachIndexed { index, item ->
-                if (index < (adapter?.data?.size
-                        ?: Int.ZERO) && (item as EditKeywordItemViewModel).data.priceBid != (adapter?.data?.getOrNull(
-                        index
-                    ) ?: String.EMPTY)
+                if (index < (
+                            adapter?.data?.size
+                                ?: Int.ZERO
+                            ) && (item as EditKeywordItemViewModel).data.priceBid != (
+                            adapter?.data?.getOrNull(
+                                index
+                            ) ?: String.EMPTY
+                            )
                 ) {
                     if (isExistsOriginal(item.data.name))
                         editedKeywords?.add(item.data)
