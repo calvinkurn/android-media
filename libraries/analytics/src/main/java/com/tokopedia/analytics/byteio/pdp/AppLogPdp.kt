@@ -99,7 +99,7 @@ object AppLogPdp {
             it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
             it.put("currency", product.currency)
             it.put("quantity", product.qty)
-            it.put("is_have_address", (if (product.isHaveAddress) 1 else 0))
+//            it.put("is_have_address", (if (product.isHaveAddress) 1 else 0)) // removed
         })
     }
 
