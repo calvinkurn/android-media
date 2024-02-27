@@ -29,17 +29,17 @@ fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel()
     }
 }
 
-fun RecommendationEntity.AppLog.toAppLogModel(): RecommendationAppLog {
+fun RecommendationEntity.AppLog.toAppLogModel(recParam: String = ""): RecommendationAppLog {
     return RecommendationAppLog(
         sessionId = sessionId,
         requestId = requestId,
-        logId = logId
+        logId = logId,
+        recParam = recParam
     )
 }
 
 fun RecommendationEntity.RecommendationData.toRecommendationWidget(): RecommendationWidget {
     return RecommendationWidget(
-        appLog = appLog.toAppLogModel(),
         recommendationItemList = recommendation.mapIndexed { index, recommendation ->
             val badges = if (isTokonow()) {
                 emptyList()
@@ -125,10 +125,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 parentID = recommendation.parentID,
                 addToCartType = getAtcType(),
                 gridPosition = recommendation.getGridPosition(),
-                recParam = recommendation.recParam,
-                sessionId = appLog.sessionId,
-                requestId = appLog.requestId,
-                logId = appLog.logId
+                appLog = appLog.toAppLogModel(recommendation.recParam)
             )
         },
         title = title,
