@@ -14,7 +14,7 @@
       "promotions":[
         {
           "creative_name": "play indicator in product detail page",
-          "creative_slot": "\\d+",
+          "creative_slot": "null",
           "item_id": ".*",
           "item_name": "play-indicator-pdp"
         }
@@ -34,7 +34,7 @@
       "promotions":[
         {
           "creative_name": "play indicator in product detail page",
-          "creative_slot": "\\d+",
+          "creative_slot": "null",
           "item_id": ".*",
           "item_name": "play-indicator-pdp"
         }
@@ -54,7 +54,7 @@
       "promotions":[
         {
           "creative_name": "play indicator in product detail page",
-          "creative_slot": "\\d+",
+          "creative_slot": "null",
           "item_id": ".*",
           "item_name": "play-indicator-pdp"
         }
@@ -74,7 +74,7 @@
       "promotions":[
         {
           "creative_name": "play indicator in product detail page",
-          "creative_slot": "\\d+",
+          "creative_slot": "null",
           "item_id": ".*",
           "item_name": "play-indicator-pdp"
         }
