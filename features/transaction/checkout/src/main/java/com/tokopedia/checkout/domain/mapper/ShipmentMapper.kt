@@ -391,6 +391,8 @@ class ShipmentMapper @Inject constructor() {
                     isProductFinsurance = product.productFinsurance == 1
                     isProductFcancelPartial = product.productFcancelPartial == 1
                     productCatId = product.productCatId
+                    lastLevelCategory = product.lastLevelCategory
+                    categoryIdentifier = product.categoryIdentifier
                     isShowTicker = product.productTicker.isShowTicker
                     tickerMessage = product.productTicker.message
                     if (product.freeShippingExtra.eligible) {

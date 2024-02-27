@@ -15,6 +15,8 @@ data class CheckoutProductModel(
     val cartId: Long = 0,
     val productId: Long = 0,
     val productCatId: Long = 0,
+    val lastLevelCategory: String = "",
+    val categoryIdentifier: String = "",
     val name: String = "",
     val price: Double = 0.0,
     val originalPrice: Double = 0.0,

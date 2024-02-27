@@ -53,6 +53,10 @@ data class Product(
     val productCatId: Int = 0,
     @SerializedName("product_category")
     val productCategory: String = "",
+    @SerializedName("last_level_category")
+    val lastLevelCategory: String = "",
+    @SerializedName("category_identifier")
+    val categoryIdentifier: String = "",
     @SerializedName("product_alert_message")
     val productAlertMessage: String = "",
     @SerializedName("product_information")

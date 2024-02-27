@@ -197,10 +197,11 @@ class CheckoutPaymentProcessor @Inject constructor(
         val address = checkoutItems.address()!!
         val promo = checkoutItems.promo()!!
         val cost = checkoutItems.cost()!!
+        val paymentData = payment.data?.paymentWidgetData?.firstOrNull()
         return PaymentRequest(
             payment = PaymentData(
-                gatewayCode = "orderPayment.gatewayCode",
-                profileCode = payment.data?.paymentWidgetData?.firstOrNull()?.profileCode.orEmpty(),
+                gatewayCode = paymentData?.gatewayCode.orEmpty(),
+                profileCode = paymentData?.profileCode.orEmpty(),
                 paymentAmount = cost.totalPrice
             ),
             CartDetail(
@@ -254,15 +255,15 @@ class CheckoutPaymentProcessor @Inject constructor(
                                                             ),
                                                             category = CartProductCategoryData(
                                                                 id = orderProduct.productCatId.toString(),
-                                                                name = "orderProduct.lastLevelCategory",
-                                                                identifier = "orderProduct.categoryIdentifier"
+                                                                name = orderProduct.lastLevelCategory,
+                                                                identifier = orderProduct.categoryIdentifier
                                                             )
                                                         )
                                                     } else {
                                                         null
                                                     }
                                                 },
-                                                bundle = Collections.emptyList(),
+                                                bundle = emptyList(),
                                                 addonItems = generateAddonOrderLevel(it),
                                                 cartStringOrder = singleItem.cartStringOrder
                                             )

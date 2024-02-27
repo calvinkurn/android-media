@@ -404,6 +404,8 @@ class CheckoutDataConverter @Inject constructor() {
             cartId = product.cartId,
             productId = product.productId,
             productCatId = product.productCatId.toLong(),
+            lastLevelCategory = product.lastLevelCategory,
+            categoryIdentifier = product.categoryIdentifier,
             name = product.productName,
             shopId = groupShopV2.shop.shopId.toString(),
             shopName = product.shopName,

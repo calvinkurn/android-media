@@ -35,6 +35,8 @@ data class Product(
     var isProductFinsurance: Boolean = false,
     var isProductFcancelPartial: Boolean = false,
     var productCatId: Int = 0,
+    var lastLevelCategory: String = "",
+    var categoryIdentifier: String = "",
     var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData(),
     var productPreOrderInfo: String = "",
     var tradeInInfoData: TradeInInfoData = TradeInInfoData(),
