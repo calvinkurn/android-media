@@ -124,7 +124,7 @@ private fun RenderContent(
         NestTypography(
             text = product.title,
             maxLines = 1,
-            textStyle = NestTheme.typography.small.copy(
+            textStyle = NestTheme.typography.display3.copy(
                 color = colorResource(id = R.color.product_preview_dms_bottom_title)
             ),
             modifier = Modifier.constrainAs(title) {

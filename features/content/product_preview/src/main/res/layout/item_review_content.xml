@@ -103,7 +103,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/iv_review_star"
         app:layout_constraintTop_toTopOf="@id/iv_review_star"
-        app:typographyType="display_2"
+        app:typographyType="display_3"
         tools:text="5 - " />
 
     <com.tokopedia.content.common.ui.custom.ContentCaptionFadingLayout
