@@ -20,6 +20,11 @@ class SortHelper {
             return sortParameter
         }
 
+        fun getSelectedSortName(
+            searchParameter: Map<String, String>,
+            sortList: List<Sort>
+        ): String = sortList.find { searchParameter.containsKey(it.key) }?.name ?: ""
+
         const val PALING_SESUAI = "Paling Sesuai"
         const val ULASAN = "Ulasan"
         const val TERBARU = "Terbaru"

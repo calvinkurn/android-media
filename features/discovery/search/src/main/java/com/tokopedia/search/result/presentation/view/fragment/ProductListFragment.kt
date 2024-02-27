@@ -24,6 +24,12 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_FROM
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_METHOD
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ECOM_FILTER_TYPE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.NEW_SUG_SESSION_ID
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.PRE_CLICK_ID
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SUG_TYPE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_FAVORITE_BUTTON
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_MORE_BUTTON
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_MORE_FINDALIKE
@@ -51,6 +57,7 @@ import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.IOption
 import com.tokopedia.filter.common.data.Option
@@ -59,6 +66,7 @@ import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.filter.common.helper.isSortHasDefaultValue
 import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.filter.newdynamicfilter.helper.SortHelper.Companion.getSelectedSortName
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.orFalse
@@ -99,6 +107,7 @@ import com.tokopedia.search.result.product.addtocart.analytics.AddToCartTracking
 import com.tokopedia.search.result.product.banner.BannerListenerDelegate
 import com.tokopedia.search.result.product.broadmatch.BroadMatchListenerDelegate
 import com.tokopedia.search.result.product.byteio.ProductPageNameDelegate
+import com.tokopedia.search.result.product.byteio.ecomSortName
 import com.tokopedia.search.result.product.changeview.ChangeView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.product.cpm.BannerAdsListenerDelegate
@@ -1612,7 +1621,28 @@ class ProductListFragment: BaseDaggerFragment(),
                 isSuccess = true,
                 ecSearchSessionId = SearchSessionId.value,
                 preSearchId = SearchId.previousValue,
+
+                ecomSortChosen = ecomSortName(),
+                ecomFilterChosen = filterController.ecomFilterChoosen(),
+                ecomFilterType = AppLogAnalytics.getLastData(ECOM_FILTER_TYPE)?.toString()?.ifBlank { null },
+
+                sugType = AppLogAnalytics.getLastData(SUG_TYPE)?.toString(),
+                newSugSessionId = AppLogAnalytics.getLastData(NEW_SUG_SESSION_ID)?.toString()?.ifBlank { null },
+                preClickId = AppLogAnalytics.getLastData(PRE_CLICK_ID)?.toString(),
+
+                blankPageEnterFrom = AppLogAnalytics.getLastData(BLANKPAGE_ENTER_FROM)?.toString(),
+                blankPageEnterMethod = AppLogAnalytics.getLastData(BLANKPAGE_ENTER_METHOD)?.toString(),
             )
         )
+
+        AppLogAnalytics.putPageData(ECOM_FILTER_TYPE, "")
+    }
+
+    private fun ecomSortName(): String? {
+        val searchParameter = getSearchParameter()?.getSearchParameterHashMap() ?: mapOf()
+        val dynamicFilterModel = presenter?.dynamicFilterModel ?: DynamicFilterModel()
+        val selectedSortName = getSelectedSortName(searchParameter, dynamicFilterModel.data.sort)
+
+        return ecomSortName(selectedSortName)
     }
 }
