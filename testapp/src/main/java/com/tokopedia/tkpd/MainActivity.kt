@@ -154,7 +154,7 @@ class MainActivity : BaseActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia://cart"
+        return ""
     }
 
     data class Model(
