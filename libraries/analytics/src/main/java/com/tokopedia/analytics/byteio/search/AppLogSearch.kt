@@ -11,6 +11,7 @@ import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_CLICK
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_SHOW
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.CHOOSE_SEARCH_FILTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.ENTER_SEARCH_BLANKPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.SEARCH
@@ -72,7 +73,7 @@ import org.json.JSONObject
 
 object AppLogSearch {
 
-    val whitelistedEnterFromAutoComplete = listOf(GOODS_SEARCH, STORE_SEARCH, HOMEPAGE)
+    val whitelistedEnterFromAutoComplete = listOf(GOODS_SEARCH, STORE_SEARCH, PageName.HOME)
 
     object Event {
         const val SHOW_SEARCH = "show_search"
@@ -242,7 +243,7 @@ object AppLogSearch {
         val ecomFilterType: String? = null,
     ) {
         fun json() = JSONObject(buildMap {
-            val enterFrom = enterFrom(listOf(HOMEPAGE))
+            val enterFrom = enterFrom(listOf(PageName.HOME))
 
             put(IMPR_ID, imprId)
             put(ENTER_FROM, enterFrom)
@@ -372,7 +373,7 @@ object AppLogSearch {
 
         fun json() = JSONObject(
             buildMap {
-                val enterFrom = enterFrom(listOf(HOMEPAGE))
+                val enterFrom = enterFrom(listOf(PageName.HOME))
 
                 put(IMPR_ID, imprId)
                 put(SEARCH_ID, searchId)
@@ -398,7 +399,10 @@ object AppLogSearch {
         val actualEnterFrom =
             (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
 
-        return if (whitelistedEnterFrom.contains(actualEnterFrom)) actualEnterFrom else ""
+        return if (whitelistedEnterFrom.contains(actualEnterFrom)) {
+            if (actualEnterFrom == PageName.HOME) HOMEPAGE
+            else actualEnterFrom
+        } else ""
     }
 
     fun eventSearchResultShow(searchResult: SearchResult) {
