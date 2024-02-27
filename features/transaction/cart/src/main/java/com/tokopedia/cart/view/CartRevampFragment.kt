@@ -55,6 +55,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.bmsm_widget.domain.entity.MainProduct
 import com.tokopedia.bmsm_widget.domain.entity.PageSource
 import com.tokopedia.bmsm_widget.domain.entity.TierGifts
 import com.tokopedia.bmsm_widget.presentation.bottomsheet.GiftListBottomSheet
@@ -5941,7 +5942,7 @@ class CartRevampFragment :
         )
         val giftListBottomSheet = GiftListBottomSheet.newInstance(
             offerId = cartDetailInfo.bmGmData.offerId,
-            warehouseId = tierProductData.listProduct.firstOrNull()?.warehouseId ?: 0L,
+            warehouseId = item.warehouseId.toLongOrZero(),
             tierGifts = cartDetailInfo.bmGmTierProductList.map {
                 TierGifts(
                     tierId = it.tierId,
@@ -5953,8 +5954,20 @@ class CartRevampFragment :
             pageSource = PageSource.CART,
             autoSelectTierChipByTierId = tierProductData.tierId,
             shopId = item.shopHolderData.shopId,
-            mainProducts = emptyList() //TODO: Replace with real data of main products from cart
+            mainProducts = getGiftListMainProducts(item, cartDetailInfo)
         )
         giftListBottomSheet.show(parentFragmentManager, giftListBottomSheet.tag)
+    }
+
+    private fun getGiftListMainProducts(
+        item: CartItemHolderData,
+        cartDetailInfo: CartDetailInfo
+    ): List<MainProduct> {
+        return CartDataHelper.getListProductByOfferIdAndCartStringOrder(
+            viewModel.cartDataList.value,
+            cartDetailInfo.bmGmData.offerId,
+            item.cartStringOrder
+        ).filter { it.isSelected && it.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerTypeId == cartDetailInfo.bmGmData.offerTypeId }
+            .map { MainProduct(it.productId.toLongOrZero(), it.quantity) }
     }
 }
