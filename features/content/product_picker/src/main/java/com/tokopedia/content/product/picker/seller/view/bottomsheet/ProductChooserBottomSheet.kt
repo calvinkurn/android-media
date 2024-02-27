@@ -28,6 +28,7 @@ import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserE
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSaveStateUiModel
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupConfig
+import com.tokopedia.content.product.picker.seller.util.getCustomErrorMessage
 import com.tokopedia.content.product.picker.seller.view.viewcomponent.EtalaseChipsViewComponent
 import com.tokopedia.content.product.picker.seller.view.viewcomponent.ProductErrorViewComponent
 import com.tokopedia.content.product.picker.seller.view.viewcomponent.ProductListViewComponent
@@ -250,14 +251,9 @@ class ProductChooserBottomSheet @Inject constructor(
                         mListener?.onSetupSuccess(this@ProductChooserBottomSheet)
                     }
                     is ProductChooserEvent.ShowError -> {
-                        val customMessage = when {
-                            it.error.isNetworkError -> "Tidak ada koneksi internet"
-                            it.error is ParseException -> "Terjadi kesalahan. Silahkan coba lagi, ya."
-                            else -> it.error.message
-                        }
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = customMessage.ifNullOrBlank {
+                            customErrMessage = requireContext().getCustomErrorMessage(it.error).ifNullOrBlank {
                                 getString(R.string.product_chooser_error_save)
                             }
                         )
