@@ -375,7 +375,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private fun handleUIClick(view: View) {
         dataItem?.let {
             AppLogRecommendation.sendProductClickAppLog(
-                it.asProductTrackModel(bindingAdapterPosition)
+                it.asProductTrackModel(bindingAdapterPosition, productCardName)
             )
         }
         masterProductCardItemViewModel?.sendTopAdsClick()
@@ -418,7 +418,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         dataItem?.let {
             masterProductCardGridView?.addOnImpression1pxListener(it) {
                 AppLogRecommendation.sendProductShowAppLog(
-                    it.asProductTrackModel(bindingAdapterPosition)
+                    it.asProductTrackModel(bindingAdapterPosition, productCardName)
                 )
             }
         }
