@@ -323,7 +323,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             adapter?.items?.add(EditKeywordItemViewModel(it))
         }
         setCount()
-        adapter?.notifyDataSetChanged()
+        adapter?.notifyItemChanged(adapter?.items?.size?.minus(Int.ONE) ?: Int.ZERO)
     }
 
     private fun onDeleteItem(position: Int) {
@@ -379,7 +379,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun prepareBundle(pos: Int): Bundle {
         val bundle = Bundle()
         if ((adapter?.items?.getOrNull(pos) as EditKeywordItemViewModel).data.priceBid == Int.ZERO.toString())
-            (adapter?.items?.getOrNull(pos) as EditKeywordItemViewModel).data.priceBid = minSuggestKeyword
+            (adapter?.items?.getOrNull(pos) as EditKeywordItemViewModel).data.priceBid =
+                minSuggestKeyword
         bundle.putString(MAX_BID, maxSuggestKeyword)
         bundle.putString(MIN_BID, minSuggestKeyword)
         bundle.putString(
@@ -486,7 +487,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         if (adapter?.items?.isEmpty() == true) {
             setEmptyView()
         }
-        adapter?.notifyDataSetChanged()
+        adapter?.notifyItemChanged(position)
         setCount()
         adapter?.getBidData(initialBudget, isnewlyAddded)
         updateString()
@@ -563,7 +564,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         adapter?.clearList()
         adapter?.items?.add(EditKeywordEmptyViewModel())
         setVisibilityOperation(View.GONE)
-        adapter?.notifyDataSetChanged()
+        adapter?.notifyItemChanged(Int.ZERO)
     }
 
     private fun setVisibilityOperation(visibility: Int) {
