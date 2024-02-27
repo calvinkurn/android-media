@@ -18,11 +18,13 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.analytics.ProductPreviewAnalytics
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
 import com.tokopedia.content.product.preview.utils.LoginReviewContract
@@ -44,9 +46,12 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.ifNull
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
@@ -199,10 +204,32 @@ class ReviewFragment @Inject constructor(
                             }
                         }
 
+                        is ProductPreviewEvent.ShowSuccessToaster -> {
+                            if (event.type == ProductPreviewEvent.ShowSuccessToaster.Type.Report) dismissSheets()
+                        }
+
+                        is ProductPreviewEvent.ShowErrorToaster -> {
+                            val view = ReviewReportBottomSheet.get(childFragmentManager)?.view?.rootView ?: requireView().rootView
+                            Toaster.build(
+                                view ?: return@collect,
+                                text = event.message.message.ifNull { getString(event.type.textRes) },
+                                actionText = getString(R.string.bottom_atc_failed_click_toaster),
+                                duration = Toaster.LENGTH_LONG,
+                                clickListener = {
+                                    event.onClick()
+                                },
+                                type = Toaster.TYPE_ERROR
+                            ).show()
+                        }
                         else -> {}
                     }
                 }
         }
+    }
+
+    private fun dismissSheets() {
+        ReviewReportBottomSheet.get(childFragmentManager)?.dismiss()
+        MenuBottomSheet.get(childFragmentManager)?.dismiss()
     }
 
     private fun renderList(prev: ReviewUiModel?, data: ReviewUiModel) {

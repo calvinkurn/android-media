@@ -94,7 +94,7 @@ class ProductPreviewRepositoryImpl @Inject constructor(
                 SubmitReportUseCase.Param(
                     reasonCode = report.reasonCode,
                     reasonText = report.text,
-                    reviewId = reviewId.toIntOrZero()
+                    reviewId = reviewId,
                 )
             )
             response.data.success

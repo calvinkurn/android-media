@@ -19,7 +19,7 @@ import androidx.core.view.doOnLayout
 import com.tokopedia.feedcomponent.util.buildSpannedString
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.customview.FeedCaptionFadingLayout
+import com.tokopedia.content.common.ui.custom.ContentCaptionFadingLayout
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -30,7 +30,7 @@ import com.tokopedia.kotlin.extensions.view.show
 @SuppressLint("ClickableViewAccessibility")
 class FeedCaptionView(
     private val textView: TextView,
-    private val fadingLayout: FeedCaptionFadingLayout,
+    private val fadingLayout: ContentCaptionFadingLayout,
     private val listener: FeedListener,
     private val captionListener: Listener
 ) {

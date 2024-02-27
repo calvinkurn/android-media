@@ -249,26 +249,23 @@ class ProductPreviewFragment @Inject constructor(
                         requireContext(),
                         event.appLink
                     )
-                    // TODO: need to check all toaster in PDP unified media
                     is ProductPreviewEvent.ShowSuccessToaster -> {
+                        val isAtc = event.type == ProductPreviewEvent.ShowSuccessToaster.Type.ATC
                         Toaster.build(
                             requireView().rootView,
-                            text = getString(event.message.orZero()),
-                            actionText = if (event.type == ProductPreviewEvent.ShowSuccessToaster.Type.ATC) {
-                                getString(
+                            text = getString(event.type.textRes),
+                            actionText = if (isAtc) { getString(
                                     contentproductpreviewR.string.bottom_atc_success_click_toaster
-                                )
-                            } else {
-                                ""
-                            },
+                                ) } else { "" },
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
-                                viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))
+                                if (isAtc) viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))
                             }
                         ).show()
                     }
 
                     is ProductPreviewEvent.ShowErrorToaster -> {
+                        if (event.type == ProductPreviewEvent.ShowErrorToaster.Type.Report) return@collect
                         Toaster.build(
                             requireView().rootView,
                             text = event.message.message.ifNull { getString(event.type.textRes) },

@@ -123,8 +123,12 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
 
     private fun isOwner(authorId: String): Boolean = authorId == userSession.userId
 
-    fun mapMiniInfo(response: GetMiniProductInfoResponse): BottomNavUiModel =
-        BottomNavUiModel(
+    fun mapMiniInfo(response: GetMiniProductInfoResponse): BottomNavUiModel {
+        val ogPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+            price = response.data.product.price,
+            hasSpace = false
+        )
+        return BottomNavUiModel(
             title = response.data.product.name,
             price = if (response.data.campaign.isActive) {
                 BottomNavUiModel.DiscountedPrice(
@@ -132,11 +136,11 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                         price = response.data.campaign.discountedPrice,
                         hasSpace = false
                     ),
-                    ogPriceFmt = response.data.product.priceFmt,
+                    ogPriceFmt = ogPrice,
                     discountPercentage = "${response.data.campaign.discountPercentage}%"
                 )
             } else {
-                BottomNavUiModel.NormalPrice(priceFmt = response.data.product.priceFmt)
+                BottomNavUiModel.NormalPrice(priceFmt = ogPrice)
             },
             stock = response.data.product.stock,
             shop = BottomNavUiModel.Shop(
@@ -159,6 +163,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 )
             }
         )
+    }
 
     fun mapRemindMe(response: AddWishlistResponse): BottomNavUiModel.RemindMeUiModel =
         BottomNavUiModel.RemindMeUiModel(

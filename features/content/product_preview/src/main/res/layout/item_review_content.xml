@@ -54,7 +54,7 @@
         android:id="@+id/group_review_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="layout_author_review, iv_review_star, tv_review_details, tv_review_description" />
+        app:constraint_referenced_ids="layout_author_review, iv_review_star, tv_review_details, review_overlay" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_review_interaction"
@@ -87,7 +87,7 @@
         app:icon_color_night_disabled="@color/Unify_YN300"
         app:icon_color_night_enable="@color/Unify_YN300"
         app:icon_name="STAR_FILLED"
-        app:layout_constraintBottom_toTopOf="@+id/tv_review_description"
+        app:layout_constraintBottom_toTopOf="@+id/review_overlay"
         app:layout_constraintStart_toStartOf="@id/layout_author_review" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -106,22 +106,28 @@
         app:typographyType="display_2"
         tools:text="5 - " />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_review_description"
+    <com.tokopedia.content.common.ui.custom.ContentCaptionFadingLayout
+        android:id="@+id/review_overlay"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="24dp"
-        android:ellipsize="end"
-        android:textColor="@color/Unify_Static_White"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/gl_right"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/iv_review_star"
         app:layout_constraintTop_toBottomOf="@id/tv_review_details"
-        app:layout_constraintVertical_bias="1.0"
-        app:typographyType="display_2"
-        tools:text="TextView description" />
+        app:layout_constraintVertical_bias="1.0">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_review_description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="display_2"
+            tools:text="TextView description" />
+    </com.tokopedia.content.common.ui.custom.ContentCaptionFadingLayout>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_review_menu"
