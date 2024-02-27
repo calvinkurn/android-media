@@ -218,7 +218,7 @@ object AppLogAnalytics {
      * To remove last page data
      */
     fun popPageData() {
-        if (getCurrentData(IS_SHADOW) == false) {
+        if (getCurrentData(IS_SHADOW) != true) {
             _pageDataList.removeLastOrNull()
             // Remove shadow stack
             if (getCurrentData(IS_SHADOW) == true) {
