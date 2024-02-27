@@ -153,6 +153,7 @@ object PageName {
     const val CART = "cart"
     const val SHOP = "shop"
     const val SKU = "sku"
+    const val EXTERNAL_PROMO = "external_promo"
 }
 
 object QuitType {

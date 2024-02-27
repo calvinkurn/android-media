@@ -7,11 +7,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.TaskStackBuilder;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.newrelic.agent.android.NewRelic;
+import com.tokopedia.analytics.byteio.AppLogInterface;
+import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -47,7 +50,7 @@ import timber.log.Timber;
  * @author by Angga.Prasetiyo on 14/12/2015.
  * modified Alvarisi
  */
-public class DeepLinkActivity extends AppCompatActivity implements
+public class DeepLinkActivity extends AppCompatActivity implements AppLogInterface,
         DeepLinkView {
 
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
@@ -223,5 +226,21 @@ public class DeepLinkActivity extends AppCompatActivity implements
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
         SplitCompat.installActivity(this);
+    }
+
+    @NonNull
+    @Override
+    public String getPageName() {
+        return "";
+    }
+
+    @Override
+    public boolean isEnterFromWhitelisted() {
+        return false;
+    }
+
+    @Override
+    public boolean isShadow() {
+        return true;
     }
 }
