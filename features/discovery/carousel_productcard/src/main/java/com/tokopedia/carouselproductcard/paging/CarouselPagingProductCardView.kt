@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.analytics.byteio.SlideTrackObject
+import com.tokopedia.analytics.byteio.addHorizontalTrackListener
 import com.tokopedia.carouselproductcard.databinding.CarouselPagingProductCardLayoutBinding
 import com.tokopedia.carouselproductcard.helper.CarouselPagingUtil
 import com.tokopedia.carouselproductcard.helper.StartPagerSnapHelper
@@ -262,6 +264,10 @@ class CarouselPagingProductCardView: ConstraintLayout {
         val position = visitableList.indexOfItemInGroup(carouselPagingGroupModel, pageInGroup)
 
         binding?.carouselPagingProductCardRecyclerView?.scrollToPage(position)
+    }
+
+    fun addHorizontalTrackListener(model: SlideTrackObject) {
+        binding?.carouselPagingProductCardRecyclerView?.addHorizontalTrackListener(model)
     }
 
     interface CarouselPagingListener {

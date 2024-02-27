@@ -260,10 +260,5 @@ object AppLogParam {
     const val ORIGINAL_PRICE = "original_price"
     const val SALES_PRICE = "sales_price"
     const val MAIN_VIDEO_ID = "main_video_id"
-}
-
-enum class ContentType(val str: String) {
-    VIDEO("video"),
-    LIVE("live"),
-    OTHER("")
+    const val IS_SHADOW = "is_shadow"
 }

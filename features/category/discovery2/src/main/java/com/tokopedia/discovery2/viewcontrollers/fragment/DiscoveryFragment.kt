@@ -38,6 +38,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -300,6 +301,8 @@ open class DiscoveryFragment :
     private var stickyHeaderShowing = false
     private var hasColouredStatusBar: Boolean = false
     private var isLightThemeStatusBar: Boolean? = null
+
+    private var hasTrackEnterPage = false
 
     companion object {
         private const val FIRST_POSITION = 0
@@ -584,6 +587,8 @@ open class DiscoveryFragment :
                 navToolbar.setupToolbarWithStatusBar(it)
             }
         }
+
+        recyclerView.trackVerticalScroll()
     }
 
     private fun enableRefreshWhenFirstItemCompletelyVisible() {
@@ -789,6 +794,7 @@ open class DiscoveryFragment :
                     it.data.let { listComponent ->
                         if (mSwipeRefreshLayout?.isRefreshing == true) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
+                        trackEnterPage()
                         if (listComponent.isEmpty()) {
                             discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
@@ -1048,6 +1054,12 @@ open class DiscoveryFragment :
                 setupNavScrollListener()
             }
         }
+    }
+
+    private fun trackEnterPage() {
+        if(hasTrackEnterPage) return
+        AppLogRecommendation.sendEnterPageAppLog()
+        hasTrackEnterPage = true
     }
 
     private fun addMarginInRuntime(data: List<ComponentsItem>) {

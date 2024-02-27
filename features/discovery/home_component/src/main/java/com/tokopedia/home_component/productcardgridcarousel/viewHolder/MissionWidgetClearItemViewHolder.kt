@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.animation.Interpolator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asCardTrackModel
 import com.tokopedia.home_component.analytics.TrackRecommendationMapper.asProductTrackModel
@@ -81,6 +83,7 @@ class MissionWidgetClearItemViewHolder(
                     )
                 }
                 AppLogRecommendation.sendCardClickAppLog(element.asCardTrackModel(element.isCache))
+                AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, "${element.data.pageName}_${element.cardPosition + 1}")
                 missionWidgetComponentListener.onMissionClicked(element, element.cardPosition)
             }
             containerMissionWidget.addOnImpressionListener(element) {

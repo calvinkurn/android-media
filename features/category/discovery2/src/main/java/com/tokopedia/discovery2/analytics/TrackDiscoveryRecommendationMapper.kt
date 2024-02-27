@@ -2,7 +2,7 @@ package com.tokopedia.discovery2.analytics
 
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 object TrackDiscoveryRecommendationMapper {
     fun DataItem.asProductTrackModel(
         position: Int,
+        componentNames: String,
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = productId.orEmpty(),
@@ -24,18 +25,28 @@ object TrackDiscoveryRecommendationMapper {
             requestId = "", // TODO waiting for BE
             recParams = "", // TODO waiting for BE
             shopId = shopId.orEmpty(),
-            entranceForm = getEntranceForm(),
-            type = getType(),
+            entranceForm = componentNames.getEntranceForm(),
             originalPrice = price.toFloatOrZero(),
             salesPrice = discountedPrice.toFloatOrZero(),
         )
     }
 
-    private fun DataItem.getType(): AppLogRecommendationType {
-        return AppLogRecommendationType.PRODUCT_CAROUSEL
-    }
-
-    private fun DataItem.getEntranceForm(): EntranceForm {
-        return EntranceForm.HORIZONTAL_GOODS_CARD
+    private fun String.getEntranceForm(): EntranceForm {
+        return when(this) {
+            ComponentNames.ProductCardCarouselItem.componentName,
+            ComponentNames.ProductCardCarouselItemReimagine.componentName,
+            ComponentNames.ProductCardCarouselItemList.componentName,
+            ComponentNames.ProductCardCarouselItemListReimagine.componentName,
+            ComponentNames.ProductCardSprintSaleCarouselItem.componentName,
+            ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName,
+            ComponentNames.ShopOfferHeroBrandProductItem.componentName -> EntranceForm.HORIZONTAL_GOODS_CARD
+            ComponentNames.ProductCardRevampItem.componentName,
+            ComponentNames.MasterProductCardItemReimagine.componentName,
+            ComponentNames.ProductCardSprintSaleCarouselItem.componentName,
+            ComponentNames.ProductCardSprintSaleItemReimagine.componentName -> EntranceForm.PURE_GOODS_CARD
+            ComponentNames.MasterProductCardItemList.componentName,
+            ComponentNames.MasterProductCardItemListReimagine.componentName -> EntranceForm.DETAIL_GOODS_CARD
+            else -> EntranceForm.HORIZONTAL_GOODS_CARD
+        }
     }
 }

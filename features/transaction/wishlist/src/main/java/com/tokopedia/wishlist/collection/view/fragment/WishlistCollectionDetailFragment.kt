@@ -1579,6 +1579,7 @@ class WishlistCollectionDetailFragment :
     private fun trackEnterPage() {
         if(hasTrackEnterPage) return
         AppLogRecommendation.sendEnterPageAppLog()
+        hasTrackEnterPage = true
     }
 
     private fun initTrackingQueue() {

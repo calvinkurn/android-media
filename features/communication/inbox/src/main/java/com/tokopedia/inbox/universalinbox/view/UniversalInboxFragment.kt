@@ -371,6 +371,7 @@ class UniversalInboxFragment @Inject constructor(
     private fun trackEnterPage() {
         if(hasTrackEnterPage) return
         AppLogRecommendation.sendEnterPageAppLog()
+        hasTrackEnterPage = true
     }
 
     private fun toggleLoadingProductRecommendation(isLoading: Boolean) {

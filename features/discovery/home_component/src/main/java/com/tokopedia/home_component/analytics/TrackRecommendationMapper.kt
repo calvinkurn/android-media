@@ -3,7 +3,6 @@ package com.tokopedia.home_component.analytics
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationCardModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.analytics.byteio.recommendation.CardName
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
 
@@ -22,7 +21,6 @@ object TrackRecommendationMapper {
             recParams = "", // TODO need to confirm
             requestId = "", // TODO need BE deployment
             shopId = data.shopId,
-            type = AppLogRecommendationType.MIXED_CAROUSEL,
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
             enterMethod = enterMethod,
             position = cardPosition,
@@ -43,7 +41,6 @@ object TrackRecommendationMapper {
             recParams = "", // TODO need to confirm
             requestId = "", // TODO need BE deployment
             shopId = data.shopId,
-            type = AppLogRecommendationType.PRODUCT_CAROUSEL,
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
             enterMethod = enterMethod,
             position = cardPosition,

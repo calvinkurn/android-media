@@ -1,9 +1,7 @@
 package com.tokopedia.recommendation_widget_common.extension
 
-import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationType
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -332,8 +330,7 @@ fun RecommendationWidget.mapToChannelHeader(): ChannelHeader {
 
 fun RecommendationItem.asProductTrackModel(
     isCache: Boolean = false,
-    type: AppLogRecommendationType,
-    entranceForm: EntranceForm? = null,
+    entranceForm: EntranceForm,
     enterMethod: String = "",
     tabName: String = "",
     tabPosition: Int = 0,
@@ -347,12 +344,7 @@ fun RecommendationItem.asProductTrackModel(
         recParams = "", // TODO recom
         requestId = "", // TODO recom
         shopId = shopId.toString(),
-        type = type,
-        entranceForm = entranceForm ?: when (type) {
-            AppLogRecommendationType.PRODUCT_CAROUSEL -> EntranceForm.HORIZONTAL_GOODS_CARD
-            AppLogRecommendationType.SINGLE_PRODUCT -> EntranceForm.DETAIL_GOODS_CARD
-            else -> EntranceForm.PURE_GOODS_CARD
-        },
+        entranceForm = entranceForm,
         tabName = tabName,
         tabPosition = tabPosition,
         rate = ratingAverage.toFloatOrZero(),

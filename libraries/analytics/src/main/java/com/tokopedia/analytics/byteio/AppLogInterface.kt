@@ -4,5 +4,7 @@ interface AppLogInterface {
 
     fun getPageName() : String
 
-    fun isEnterFromWhitelisted() : Boolean
+    fun isEnterFromWhitelisted() : Boolean = false
+
+    fun isShadow() : Boolean = false
 }
