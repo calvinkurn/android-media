@@ -187,29 +187,29 @@ object AppLogAnalytics {
      */
     fun popPageData() {
         if (getCurrentData(IS_SHADOW) == false) {
-            _pageDataList.removeLast()
+            _pageDataList.removeLastOrNull()
             // Remove shadow stack
             if (getCurrentData(IS_SHADOW) == true) {
-                _pageDataList.removeLast()
+                _pageDataList.removeLastOrNull()
             }
         }
         Timber.d("Pop _pageDataList: ${_pageDataList}}")
     }
 
     private fun clearCurrentPageData() {
-        _pageDataList.last().clear()
+        _pageDataList.lastOrNull()?.clear()
     }
 
     /**
      * To update current page data
      */
     fun putPageData(key: String, value: Any) {
-        _pageDataList.last()[key] = value
+        _pageDataList.lastOrNull()?.put(key, value)
         Timber.d("Put _pageDataList: ${_pageDataList}}")
     }
 
     fun getCurrentData(key: String): Any? {
-        return _pageDataList.last()[key]
+        return _pageDataList.lastOrNull()?.get(key)
     }
 
     fun getLastData(key: String): Any? {
@@ -246,9 +246,11 @@ object AppLogAnalytics {
     }
 
     private fun putAppLogInterfaceData(appLogInterface: AppLogInterface) {
-        putPageData(PAGE_NAME, appLogInterface.getPageName())
-        if (appLogInterface.isEnterFromWhitelisted()) {
-            putPageData(ENTER_FROM, appLogInterface.getPageName())
+        if (appLogInterface.getPageName().isNotBlank()) {
+            putPageData(PAGE_NAME, appLogInterface.getPageName())
+            if (appLogInterface.isEnterFromWhitelisted()) {
+                putPageData(ENTER_FROM, appLogInterface.getPageName())
+            }
         }
         if (appLogInterface.isShadow()) {
             putPageData(IS_SHADOW, appLogInterface.isShadow())
