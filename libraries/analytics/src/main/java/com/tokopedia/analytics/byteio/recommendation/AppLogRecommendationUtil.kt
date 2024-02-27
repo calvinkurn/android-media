@@ -40,9 +40,12 @@ fun constructSourceModule(
     }
 
     val pageName = AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME)
-    return if (entranceForm == EntranceForm.PURE_GOODS_CARD || entranceForm == EntranceForm.CONTENT_GOODS_CARD) {
-        SOURCE_MODULE_VERTICAL_FORMAT.format(prefix, pageName)
-    } else {
-        SOURCE_MODULE_HORIZONTAL_FORMAT.format(prefix, pageName, moduleName)
+    return when (entranceForm) {
+        EntranceForm.PURE_GOODS_CARD,
+        EntranceForm.CONTENT_GOODS_CARD,
+        EntranceForm.DETAIL_GOODS_CARD -> SOURCE_MODULE_VERTICAL_FORMAT.format(prefix, pageName)
+        EntranceForm.HORIZONTAL_GOODS_CARD,
+        EntranceForm.MISSION_HORIZONTAL_GOODS_CARD -> SOURCE_MODULE_HORIZONTAL_FORMAT.format(prefix, pageName, moduleName)
+        else -> SOURCE_MODULE_HORIZONTAL_FORMAT.format(prefix, pageName, moduleName)
     }
 }
