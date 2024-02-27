@@ -135,7 +135,7 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEnterMethod() {
-        put(ENTER_METHOD, getLastData(ENTER_METHOD))
+        put(ENTER_METHOD, getLastDataBeforeCurrent(ENTER_METHOD))
     }
 
     private fun currentPageName(): String {
