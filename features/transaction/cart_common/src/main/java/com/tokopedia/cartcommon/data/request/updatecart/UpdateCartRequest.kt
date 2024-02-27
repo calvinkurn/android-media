@@ -30,7 +30,7 @@ data class UpdateCartPaymentRequest(
     @SerializedName("tenure_type")
     val tenureType: Int = 0,
     @SerializedName("option_id")
-    val optionId: Long = 0,
+    val optionId: String = "",
     @SerializedName("metadata")
     val metadata: String = ""
 )

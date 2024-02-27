@@ -1,6 +1,9 @@
 package com.tokopedia.checkout.revamp.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartPaymentRequest
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest
 import com.tokopedia.checkout.data.model.request.saf.ShipmentAddressFormRequest
@@ -20,10 +23,12 @@ import com.tokopedia.checkout.revamp.view.firstOrNullInstanceOf
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
@@ -412,11 +417,75 @@ class CheckoutCartProcessor @Inject constructor(
             }
         }
     }
+
+    suspend fun updateCart(params: List<UpdateCartRequest>, source: String, paymentRequest: UpdateCartPaymentRequest?): UpdateCartResult {
+        return withContext(dispatchers.io) {
+            try {
+                updateCartUseCase.get().setParams(params, source, paymentRequest)
+                val response = updateCartUseCase.get().executeOnBackground()
+                if (response.data.status) {
+                    return@withContext UpdateCartResult(true)
+                }
+                return@withContext UpdateCartResult(
+                    false,
+                    toasterMessage = response.data.error,
+                    toasterActionMessage = if (response.data.toasterAction.showCta) response.data.toasterAction.text else ""
+                )
+            } catch (e: Exception) {
+                Timber.d(e)
+                return@withContext UpdateCartResult(
+                    false,
+                    throwable = e
+                )
+            }
+        }
+    }
+
+    fun generateUpdateCartRequest(checkoutItems: List<CheckoutItem>): List<UpdateCartRequest> {
+        val updateCartRequestList = ArrayList<UpdateCartRequest>()
+        for (checkoutItem in checkoutItems) {
+            if (checkoutItem is CheckoutProductModel) {
+                val updateCartRequest = UpdateCartRequest().apply {
+                    productId = checkoutItem.productId.toString()
+                    cartId = checkoutItem.cartId.toString()
+                    notes = checkoutItem.noteToSeller
+                    quantity = checkoutItem.quantity
+                    bundleInfo = BundleInfo().apply {
+                        bundleId = checkoutItem.bundleId.toZeroStringIfNullOrBlank()
+                        bundleGroupId = checkoutItem.bundleGroupId.toZeroStringIfNullOrBlank()
+                        bundleQty = checkoutItem.bundleQuantity
+                    }
+                }
+                updateCartRequestList.add(updateCartRequest)
+            }
+        }
+        return updateCartRequestList
+    }
+
+    fun generateUpdateCartPaymentRequest(payment: CheckoutPaymentModel): UpdateCartPaymentRequest? {
+        val paymentData = payment.data?.paymentWidgetData?.firstOrNull()
+        if (paymentData != null) {
+            UpdateCartPaymentRequest(
+                paymentData.gatewayCode,
+                paymentData.installmentPaymentData.selectedTenure,
+                payment.installmentData?.installmentOptions?.firstOrNull()?.optionId ?: "",
+                paymentData.metadata
+            )
+        }
+        return null
+    }
 }
 
 data class ChangeAddressResult(
     val isSuccess: Boolean,
     val toasterMessage: String = "",
+    val throwable: Throwable? = null
+)
+
+data class UpdateCartResult(
+    val isSuccess: Boolean,
+    val toasterMessage: String = "",
+    val toasterActionMessage: String = "",
     val throwable: Throwable? = null
 )
 
