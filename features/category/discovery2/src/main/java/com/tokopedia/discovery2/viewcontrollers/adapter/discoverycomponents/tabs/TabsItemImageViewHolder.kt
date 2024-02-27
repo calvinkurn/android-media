@@ -28,11 +28,11 @@ class TabsItemImageViewHolder(
 
     private val tabIconView: ImageUnify = itemView.findViewById(R.id.imgIcon)
     private var tabTitleView: RTypography = itemView.findViewById(R.id.tvTitle)
-    private var viewModel: TabsItemImageViewModel? = null
+    private var viewModel: PlainTabItemViewModel? = null
     private var itemData: DataItem? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-        viewModel = discoveryBaseViewModel as TabsItemImageViewModel
+        viewModel = discoveryBaseViewModel as PlainTabItemViewModel
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {

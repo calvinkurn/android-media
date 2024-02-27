@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class TabsItemImageViewModel(
+class PlainTabItemViewModel(
     val application: Application,
     var components: ComponentsItem,
     val position: Int

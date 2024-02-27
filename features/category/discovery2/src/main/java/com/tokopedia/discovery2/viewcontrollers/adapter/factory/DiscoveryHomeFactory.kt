@@ -12,8 +12,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.auto
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.CarouselAutomateCouponViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.GridAutomateCouponItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.GridAutomateCouponViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.ListAutomateCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.ListAutomateCouponItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.ListAutomateCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.SingleAutomateCouponViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.SingleAutomateCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannedview.BannedViewViewHolder
@@ -120,10 +120,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shop
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.PlainTabItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemIconViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemIconViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemImageViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemImageViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
@@ -241,14 +241,14 @@ class DiscoveryHomeFactory {
                 ::TabsItemIconViewModel
             )
             initializeComponent(
-                ComponentsList.TabsImage,
+                ComponentsList.PlainTab,
                 ::TabsViewHolder,
                 ::TabsViewModel
             )
             initializeComponent(
-                ComponentsList.TabsImageItem,
+                ComponentsList.PlainTabItem,
                 ::TabsItemImageViewHolder,
-                ::TabsItemImageViewModel
+                ::PlainTabItemViewModel
             )
             initializeComponent(
                 ComponentsList.TimerSprintSale,

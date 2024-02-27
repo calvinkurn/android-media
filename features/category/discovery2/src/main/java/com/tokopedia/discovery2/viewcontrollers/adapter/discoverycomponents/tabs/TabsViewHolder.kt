@@ -72,49 +72,6 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             openCategoryBottomSheet()
         }
         tabsViewModel?.let { tabsViewModel ->
-            tabsViewModel.getUnifyTabLiveData().observe(fragment.viewLifecycleOwner) {
-                isParentUnifyTab = false
-                tabsHolder.hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
-                tabsHolder.tabLayout.removeAllTabs()
-                if (tabsViewModel.isFromCategory()) {
-                    tabsHolder.customTabMode = TabLayout.MODE_SCROLLABLE
-                }
-                tabsHolder.getUnifyTabLayout()
-                    .setSelectedTabIndicator(
-                        tabsHolder.getUnifyTabLayout().tabSelectedIndicator
-                    )
-                var selectedPosition = 0
-                it.forEachIndexed { index, tabItem ->
-                    if (tabItem.data?.isNotEmpty() == true) {
-                        tabItem.data?.firstOrNull()?.name?.let { tabTitle ->
-                            if (tabItem.data?.firstOrNull()?.isSelected == true) {
-                                selectedPosition = index
-                            }
-                            tabsHolder.addNewTab(
-                                tabTitle,
-                                tabItem.data?.firstOrNull()?.isSelected
-                                    ?: false
-                            )
-                        }
-                    }
-                }
-                scrollToCurrentTabPosition(
-                    selectedPosition = selectedPosition,
-                    isFromCategory = tabsViewModel.isFromCategory()
-                )
-                tabsHolder.viewTreeObserver
-                    .addOnGlobalLayoutListener {
-                        fragment.activity?.let { _ ->
-                            if (selectedPosition >= 0 && tabsViewModel.isFromCategory()) {
-                                tabsHolder.gone()
-                                tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
-                                tabsHandler.postDelayed(tabsRunnable, DELAY_400)
-                                selectedPosition = -1
-                            }
-                        }
-                    }
-            }
-
             tabsViewModel.getColorTabComponentLiveData().observe(
                 fragment.viewLifecycleOwner
             ) {
@@ -194,12 +151,20 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                     }
             }
 
-            tabsViewModel.getImageTabLiveData().observe(
+            tabsViewModel.getUnifyTabLiveData().observe(
                 fragment.viewLifecycleOwner
             ) {
                 isParentUnifyTab = false
+
+                tabsHolder.hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
+                tabsHolder.tabLayout.removeAllTabs()
+                if (tabsViewModel.isFromCategory()) {
+                    tabsHolder.customTabMode = TabLayout.MODE_SCROLLABLE
+                }
+
                 tabsHolder.getUnifyTabLayout()
                     .setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
+
                 tabsHolder.getUnifyTabLayout().apply {
                     layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                     layoutParams.height =
@@ -207,6 +172,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                     tabMode = TabLayout.MODE_SCROLLABLE
                     removeAllTabs()
                 }
+
                 var selectedPosition = 0
                 it.forEachIndexed { index, tabItem ->
                     if (tabItem.data?.isNotEmpty() == true) {
@@ -219,7 +185,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                         ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)
                         tab.customView = CustomViewCreator.getCustomViewObject(
                             itemView.context,
-                            ComponentsList.TabsImageItem,
+                            ComponentsList.PlainTabItem,
                             tabItem,
                             fragment
                         )
@@ -406,8 +372,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                 ((tab.customView as CustomViewCreator).viewModel as TabsItemIconViewModel)
                     .setSelectionTabItem(isCurrentTabSelected)
             }
-            ComponentsList.TabsImage.componentName -> {
-                ((tab.customView as CustomViewCreator).viewModel as TabsItemImageViewModel)
+            ComponentsList.PlainTab.componentName -> {
+                ((tab.customView as CustomViewCreator).viewModel as PlainTabItemViewModel)
                     .setSelectionTabItem(isCurrentTabSelected)
             }
         }
@@ -420,7 +386,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private fun TabsViewModel.switchThematicHeaderData(
         tabPosition: Int
     ) {
-        if (isPlainTab() || components.name == ComponentNames.TabsImage.componentName) {
+        if (components.name == ComponentNames.PlainTab.componentName) {
             mFragment.setTabPosition(tabPosition)
         }
     }
