@@ -1015,39 +1015,6 @@ class StoriesUnitTest {
     }
 
     @Test
-    fun `when open variant bottom sheet and close`() {
-        val mockSharingData = mockContentTaggedProductUiModel()
-
-        getStoriesRobot().use { robot ->
-            val stateEventOpen = robot.recordStateAndEvents {
-                robot.openVariantBottomSheet(mockSharingData)
-            }
-            stateEventOpen.second.last()
-                .assertEqualTo(StoriesUiEvent.ShowVariantSheet(mockSharingData))
-            robot.getBottomSheetState().mapValues {
-                if (it.key == BottomSheetType.GVBS) {
-                    it.value.assertTrue()
-                } else {
-                    it.value.assertFalse()
-                }
-            }
-            robot.getBottomSheetState().isAnyShown.assertTrue()
-
-            robot.recordState {
-                robot.closeBottomSheet(BottomSheetType.GVBS)
-            }
-            robot.getBottomSheetState().mapValues {
-                if (it.key == BottomSheetType.GVBS) {
-                    it.value.assertFalse()
-                } else {
-                    it.value.assertFalse()
-                }
-            }
-            robot.getBottomSheetState().isAnyShown.assertFalse()
-        }
-    }
-
-    @Test
     fun `when get product and success`() {
         val mockProduct = ProductBottomSheetUiState.Empty
 

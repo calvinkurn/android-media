@@ -559,9 +559,6 @@ class StoriesViewModel @AssistedInject constructor(
     private fun handleVariantSheet(product: ContentTaggedProductUiModel) {
         viewModelScope.launch {
             _storiesEvent.emit(StoriesUiEvent.ShowVariantSheet(product))
-            _bottomSheetStatusState.update { bottomSheet ->
-                bottomSheet.mapValues { it.key == BottomSheetType.GVBS }
-            }
         }
     }
 
