@@ -584,6 +584,8 @@ open class DiscoveryFragment :
                 navToolbar.setupToolbarWithStatusBar(it)
             }
         }
+
+        recyclerView.trackVerticalScroll()
     }
 
     private fun enableRefreshWhenFirstItemCompletelyVisible() {
