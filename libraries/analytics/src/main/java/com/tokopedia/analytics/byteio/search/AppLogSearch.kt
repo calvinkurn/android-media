@@ -72,7 +72,7 @@ import org.json.JSONObject
 
 object AppLogSearch {
 
-    private val whitelistedEnterFromAutoComplete = listOf(GOODS_SEARCH, STORE_SEARCH, HOMEPAGE)
+    val whitelistedEnterFromAutoComplete = listOf(GOODS_SEARCH, STORE_SEARCH, HOMEPAGE)
 
     object Event {
         const val SHOW_SEARCH = "show_search"
@@ -269,15 +269,13 @@ object AppLogSearch {
         AppLogAnalytics.send(SEARCH, search.json())
     }
 
-    fun eventEnterSearchBlankPage() {
-        val enterFrom = enterFrom(whitelistedEnterFromAutoComplete)
-
+    fun eventEnterSearchBlankPage(enterFrom: String, enterMethod: String) {
         AppLogAnalytics.send(
             ENTER_SEARCH_BLANKPAGE,
             JSONObject(
                 mapOf(
                     ENTER_FROM to enterFrom,
-                    ENTER_METHOD to ENTER,
+                    ENTER_METHOD to enterMethod,
                     SEARCH_ENTRANCE to HOMEPAGE,
                 )
             )
@@ -396,7 +394,7 @@ object AppLogSearch {
         )
     }
 
-    private fun enterFrom(whitelistedEnterFrom: List<String>): String {
+    fun enterFrom(whitelistedEnterFrom: List<String>): String {
         val actualEnterFrom =
             (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
 
@@ -415,7 +413,7 @@ object AppLogSearch {
         val searchID: String,
         val searchType: String,
         val keyword: String,
-        val ecomSortName: String,
+        val ecomSortName: String?,
         val ecomFilterName: String,
         val ecomFilterPosition: String,
         val buttonTypeClick: String,
@@ -425,7 +423,7 @@ object AppLogSearch {
             put(SEARCH_ENTRANCE, HOMEPAGE)
             put(SEARCH_ID, searchID)
             put(SEARCH_KEYWORD, keyword)
-            put(ECOM_SORT_NAME, ecomSortName)
+            ecomSortName?.let { put(ECOM_SORT_NAME, it) }
             put(ECOM_FILTER_NAME, ecomFilterName)
             put(ECOM_FILTER_POSITION, ecomFilterPosition)
             put(BUTTON_TYPE_CLICK, buttonTypeClick)

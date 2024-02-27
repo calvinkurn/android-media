@@ -431,4 +431,36 @@ open class FilterController {
             val option = OptionHelper.generateOptionFromUniqueId(it)
             SavedOption.create(option, filterList)
         }
+
+    fun ecomFilterChoosen(): Map<String, Any>? {
+        val activeFilterMap = getActiveFilterMap()
+
+        if (activeFilterMap.isEmpty()) return null
+
+        return activeFilterMap.asIterable().associate { entry ->
+            filterList
+                .flatMap(Filter::options)
+                .forEach { option ->
+                    option.levelTwoCategoryList.forEach { levelTwoOption ->
+                        val levelThreeOption = levelTwoOption
+                            .levelThreeCategoryList
+                            .find { it.key == entry.key && it.value == entry.value }
+
+                        if (levelThreeOption != null)
+                            return@associate entry.key to mapOf(
+                                option.value to mapOf(
+                                    levelTwoOption.value to levelThreeOption.value
+                                )
+                            )
+                        else if (levelTwoOption.key == entry.key && levelTwoOption.value == entry.value)
+                            return@associate entry.key to mapOf(
+                                option.value to levelTwoOption.value
+                            )
+                    }
+                }
+
+            val valueSplit = entry.value.split(OptionHelper.OPTION_SEPARATOR)
+            entry.key to if (valueSplit.size == 1) entry.value else valueSplit
+        }
+    }
 }
