@@ -140,7 +140,7 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyIconsVersion = '1.0.34'
+    unifyIconsVersion = '1.0.35'
     unifyPrinciplesVersion = '1.4.18'
     unifyComponentsVersion = '1.2.52'
     unifyCoachMarkVersion = '1.2.23'
@@ -379,7 +379,7 @@ ext {
     sduiDependencies = [
             divcore               : "com.yandex.div:div-core:$divKitVersion",
             div                   : "com.yandex.div:div:$divKitVersion",
-            divjson               : "com.yandex.div:div-json:$divKitVersion",
+            divjson               : "com.yandex.div:div-json:$divKitVersion-tkpd",
             divlottie             : "com.yandex.div:div-lottie:$divKitLottieVersion",
             divutils              : "com.yandex.div:utils:$divKitVersion",
     ]

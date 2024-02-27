@@ -19,7 +19,6 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import rx.Observable
 
 class AddToCartTest : BaseCartViewModelTest() {
 
@@ -46,7 +45,7 @@ class AddToCartTest : BaseCartViewModelTest() {
         }
         coEvery { addToCartUseCase.setParams(any()) } just Runs
         coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
-        every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
+        coEvery { updateCartCounterUseCase(Unit) } returns 0
         coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
@@ -127,7 +126,7 @@ class AddToCartTest : BaseCartViewModelTest() {
 
         coEvery { addToCartUseCase.setParams(any()) } just Runs
         coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
-        every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
+        coEvery { updateCartCounterUseCase(Unit) } returns 0
         coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 
@@ -213,7 +212,7 @@ class AddToCartTest : BaseCartViewModelTest() {
 
         coEvery { addToCartUseCase.setParams(any()) } just Runs
         coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
-        every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
+        coEvery { updateCartCounterUseCase(Unit) } returns 0
         coEvery { getCartRevampV4UseCase(any()) } returns CartData()
 
         every { userSessionInterface.userId } returns "123"
@@ -312,7 +311,7 @@ class AddToCartTest : BaseCartViewModelTest() {
         }
         coEvery { addToCartUseCase.setParams(any()) } just Runs
         coEvery { addToCartUseCase.executeOnBackground() } returns addToCartDataModel
-        every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
+        coEvery { updateCartCounterUseCase(Unit) } returns 0
         coEvery { getCartRevampV4UseCase(any()) } returns CartData()
         every { userSessionInterface.userId } returns "123"
 

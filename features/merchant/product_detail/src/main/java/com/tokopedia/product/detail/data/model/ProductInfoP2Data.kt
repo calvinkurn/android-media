@@ -34,7 +34,7 @@ import com.tokopedia.product.detail.data.model.shop_review.asUiModel
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.ProductDetailMapper
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopscore.ProductShopRatingQuery
@@ -222,7 +222,7 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     uspImageUrl = uspTokoCabangData.uspBoe.uspIcon,
     merchantVoucherSummary = merchantVoucherSummary,
     helpfulReviews = mostHelpFulReviewData.list,
-    imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage),
+    imageReview = ProductDetailMapper.generateImageReview(reviewImage),
     alternateCopy = cartRedirection.alternateCopy,
     rating = rating.asUiModel(),
     ticker = ticker,

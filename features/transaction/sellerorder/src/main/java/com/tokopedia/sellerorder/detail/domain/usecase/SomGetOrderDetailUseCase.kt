@@ -257,15 +257,9 @@ class SomGetOrderDetailUseCase @Inject constructor(
                       thumbnail
                       addon_summary {
                         addons {
-                          order_id
                           id
-                          reference_id
-                          level
                           name
-                          price
                           price_str
-                          subtotal_price
-                          subtotal_price_str
                           quantity
                           type
                           image_url
@@ -278,12 +272,8 @@ class SomGetOrderDetailUseCase @Inject constructor(
                               tips
                             }
                           }
-                          create_time
                         }
-                        total
-                        total_price
                         total_price_str
-                        total_quantity
                       }
                     }
                   }
@@ -297,15 +287,9 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     thumbnail
                     addon_summary {
                       addons {
-                        order_id
                         id
-                        reference_id
-                        level
                         name
-                        price
                         price_str
-                        subtotal_price
-                        subtotal_price_str
                         quantity
                         type
                         image_url
@@ -318,12 +302,8 @@ class SomGetOrderDetailUseCase @Inject constructor(
                             tips
                           }
                         }
-                        create_time
                       }
-                      total
-                      total_price
                       total_price_str
-                      total_quantity
                     }
                   }
                   bundle_icon
@@ -351,15 +331,9 @@ class SomGetOrderDetailUseCase @Inject constructor(
                       note
                       addon_summary {
                         addons {
-                          order_id
                           id
-                          reference_id
-                          level
                           name
-                          price
                           price_str
-                          subtotal_price
-                          subtotal_price_str
                           quantity
                           type
                           image_url
@@ -374,12 +348,8 @@ class SomGetOrderDetailUseCase @Inject constructor(
                               tips
                             }
                           }
-                          create_time
                         }
-                        total
-                        total_price
                         total_price_str
-                        total_quantity
                       }
                     }
                     product_benefit {
@@ -399,15 +369,9 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 addon_info {
                   order_level {
                     addons {
-                      order_id
                       id
-                      reference_id
-                      level
                       name
-                      price
                       price_str
-                      subtotal_price
-                      subtotal_price_str
                       quantity
                       type
                       image_url
@@ -420,15 +384,10 @@ class SomGetOrderDetailUseCase @Inject constructor(
                           tips
                         }
                       }
-                      create_time
                     }
-                    total
-                    total_price
                     total_price_str
-                    total_quantity
                   }
                   label
-                  icon_url
                 }
                 pof_data {
                   pof_status

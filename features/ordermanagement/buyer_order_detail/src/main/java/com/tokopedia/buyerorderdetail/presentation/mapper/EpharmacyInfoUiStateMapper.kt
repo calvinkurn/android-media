@@ -68,23 +68,25 @@ object EpharmacyInfoUiStateMapper {
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
     ): EpharmacyInfoUiState {
         return EpharmacyInfoUiState.HasData.Showing(
-            mapEpharmacyInfoUiModel(
-                buyerOrderDetailData.additionalData.epharmacyData
-            )
+            mapEpharmacyInfoUiModel(buyerOrderDetailData.additionalData?.epharmacyData)
         )
     }
 
     private fun mapEpharmacyInfoUiModel(
-        epharmacyData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.EpharmacyData
+        epharmacyData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BomAdditionalData.EpharmacyData?
     ): EpharmacyInfoUiModel {
-        return EpharmacyInfoUiModel(
-            consultationDate = epharmacyData.consultationDate,
-            consultationDoctorName = epharmacyData.consultationDoctorName,
-            consultationExpiryDate = epharmacyData.consultationExpiryDate,
-            consultationName = epharmacyData.consultationName,
-            consultationPatientName = epharmacyData.consultationPatientName,
-            consultationPrescriptionNumber = epharmacyData.consultationPrescriptionNumber
-        )
+        return if (epharmacyData == null) {
+            EpharmacyInfoUiModel()
+        } else {
+            EpharmacyInfoUiModel(
+                consultationDate = epharmacyData.consultationDate,
+                consultationDoctorName = epharmacyData.consultationDoctorName,
+                consultationExpiryDate = epharmacyData.consultationExpiryDate,
+                consultationName = epharmacyData.consultationName,
+                consultationPatientName = epharmacyData.consultationPatientName,
+                consultationPrescriptionNumber = epharmacyData.consultationPrescriptionNumber
+            )
+        }
     }
 
 }
