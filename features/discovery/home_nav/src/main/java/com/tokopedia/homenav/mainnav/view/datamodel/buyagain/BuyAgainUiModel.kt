@@ -5,7 +5,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.MainNavVisitable
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
 data class BuyAgainUiModel(
-    val data: List<String>
+    val data: List<Pair<String, String>>
 ) : MainNavVisitable, ImpressHolder() {
 
     override fun id(): Any = "buyAgainList"

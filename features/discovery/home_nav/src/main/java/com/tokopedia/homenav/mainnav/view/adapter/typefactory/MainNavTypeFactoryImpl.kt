@@ -20,7 +20,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ReviewViewHo
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.BuyAgainUiModel
-import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.ShimmerBuyAgainModel
+import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.ShimmerBuyAgainUiModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ErrorStateReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
@@ -91,7 +91,7 @@ class MainNavTypeFactoryImpl(
         return BuyAgainViewHolder.LAYOUT
     }
 
-    override fun type(model: ShimmerBuyAgainModel): Int {
+    override fun type(model: ShimmerBuyAgainUiModel): Int {
         return InitialShimmeringTransactionDataRevampViewHolder.LAYOUT
     }
 

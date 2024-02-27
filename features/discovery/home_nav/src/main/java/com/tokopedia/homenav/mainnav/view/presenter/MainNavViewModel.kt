@@ -7,9 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
-import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ALL_CATEGORIES
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_BUY_AGAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
@@ -46,7 +44,8 @@ import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileMembershipDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.TokopediaPlusDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.ShimmerBuyAgainModel
+import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.BuyAgainUiModel
+import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.ShimmerBuyAgainUiModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -225,7 +224,7 @@ class MainNavViewModel @Inject constructor(
                 add(it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER, showCta = isLoggedIn))
                 if (isLoggedIn) add(ShimmerReviewDataModel())
                 add(it.getMenu(menuId = ID_BUY_AGAIN, sectionId = MainNavConst.Section.ORDER, showCta = isLoggedIn))
-                if (isLoggedIn) add(ShimmerBuyAgainModel())
+                if (isLoggedIn) add(ShimmerBuyAgainUiModel())
                 add(it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER))
                 add(it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
                 add(SeparatorDataModel(sectionId = MainNavConst.Section.ORDER))
@@ -390,7 +389,19 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun getBuyAgain() {
+        delay(2000)
 
+        val mockProductList = listOf(
+            Pair("https://images.tokopedia.net/img/cache/300-square/VqbcmM/2024/1/16/1b7386ca-d0fa-49d4-ab8b-26811cab70ed.jpg", "Rp289.000"),
+            Pair("https://images.tokopedia.net/img/cache/900/VqbcmM/2024/1/16/cb22385e-b756-408f-a51b-3a83500590f5.png", "Rp62.000"),
+            Pair("https://images.tokopedia.net/img/cache/900/VqbcmM/2022/4/4/f9162208-01d9-4474-a0c1-1a905b5f40e7.jpg", "Rp102.990")
+        )
+
+        val position = findPosition<ShimmerBuyAgainUiModel>() ?: findPosition<BuyAgainUiModel>()
+        position?.let {
+            updateWidget(BuyAgainUiModel(mockProductList), it)
+            updateMenu(ID_BUY_AGAIN, showCta = true)
+        }
     }
 
     private fun buildUserMenuList(): List<Visitable<*>> {

@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.BuyAgainUiModel
-import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.ShimmerBuyAgainModel
+import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.ShimmerBuyAgainUiModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ErrorStateReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
@@ -32,7 +32,7 @@ interface MainNavTypeFactory {
 
     fun type(model: BuyAgainUiModel) : Int
 
-    fun type(model: ShimmerBuyAgainModel) : Int
+    fun type(model: ShimmerBuyAgainUiModel) : Int
 
     fun type(errorStateOngoingTransactionModel: ErrorStateOngoingTransactionModel): Int
 
