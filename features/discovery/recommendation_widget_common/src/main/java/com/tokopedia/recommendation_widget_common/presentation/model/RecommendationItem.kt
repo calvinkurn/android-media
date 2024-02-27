@@ -52,6 +52,10 @@ data class RecommendationItem(
     val specs: List<RecommendationSpecificationLabels> = listOf(),
     val addToCartType: AddToCartType = AddToCartType.None,
     val gridPosition: GridPosition = GridPosition.None,
+    val recParam: String = "",
+    val sessionId: String = "",
+    val requestId: String = "",
+    val logId: String = "",
     // for tracker field
     val dimension61: String = "",
     // for tokonow

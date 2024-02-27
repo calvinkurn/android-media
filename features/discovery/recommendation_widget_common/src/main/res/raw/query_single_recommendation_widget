@@ -25,6 +25,11 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $ref: String
                }
              }
            }
+           appLog {
+             sessionID
+             requestID
+             logID
+           }
            recommendation {
                id
                name
@@ -84,6 +89,7 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $ref: String
                                 value
               }
               parentID
+              recParam
            }
        }
      }

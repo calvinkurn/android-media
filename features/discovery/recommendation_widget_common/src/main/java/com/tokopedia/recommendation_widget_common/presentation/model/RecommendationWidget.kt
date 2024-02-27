@@ -5,6 +5,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import java.util.UUID
 
 data class RecommendationWidget(
+    var appLog: RecommendationAppLog = RecommendationAppLog(),
     var recommendationItemList: List<RecommendationItem> = listOf(),
     val title: String = "",
     val subtitle: String = "",
