@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.analytics.byteio.SlideTrackObject
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupModel
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupProductModel
@@ -113,6 +114,12 @@ class ProductCardColumnListViewHolder(
                 itemPerPage = getItemPerPage()
             ),
             listener = this@ProductCardColumnListViewHolder
+        )
+        carouselPagingProductCard.addHorizontalTrackListener(
+            SlideTrackObject(
+                moduleName = viewModel?.componentsItem?.creativeName.orEmpty(),
+                barName = viewModel?.componentsItem?.creativeName.orEmpty(),
+            )
         )
     }
 }
