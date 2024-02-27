@@ -576,7 +576,7 @@ class ShareExViewModel @Inject constructor(
                     isLoading = false,
                     error = null,
                     imageType = imageType,
-                    errorEnum = ShareExIntentErrorEnum.IMAGE_DOWNLOADER
+                    errorEnum = null
                 )
             }
         }
