@@ -11,7 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveBadgeView
+import com.tokopedia.play.widget.liveindicator.analytic.PlayWidgetLiveIndicatorAnalytic
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -253,7 +253,7 @@ class VideoPictureView @JvmOverloads constructor(
         val p1 = mListener?.getProductInfo() ?: return
 
         setAnalyticModel(
-            model = PlayWidgetLiveBadgeView.AnalyticModel(
+            model = PlayWidgetLiveIndicatorAnalytic.Model(
                 channelId = liveIndicator.channelID,
                 productId = p1.basic.productID,
                 shopId = p1.basic.shopID
