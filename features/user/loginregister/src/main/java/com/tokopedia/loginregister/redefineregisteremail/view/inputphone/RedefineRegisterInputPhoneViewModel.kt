@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckParam
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.common.utils.BasicIdlingResource
 import com.tokopedia.loginregister.common.utils.RegisterUtil
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants.EMPTY_RESOURCE
@@ -20,7 +22,6 @@ import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.data.register.Register
 import com.tokopedia.sessioncommon.data.register.RegisterV2Param
-import com.tokopedia.sessioncommon.domain.usecase.GetRegisterCheckUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetRegisterV2AndSaveSessionUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,7 +32,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RedefineRegisterInputPhoneViewModel @Inject constructor(
-    private val getRegisterCheckUseCase: GetRegisterCheckUseCase,
+    private val getRegisterCheckUseCase: RegisterCheckUseCase,
     private val getUserInfoAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
     private val getRegisterV2AndSaveSessionUseCase: GetRegisterV2AndSaveSessionUseCase,
     private val getUserProfileUpdateUseCase: GetUserProfileUpdateUseCase,
@@ -55,8 +56,8 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     private val _registerV2 = SingleLiveEvent<Result<Register>>()
     val registerV2: LiveData<Result<Register>> get() = _registerV2
 
-    private val _getUserInfo = SingleLiveEvent<Result<ProfilePojo>>()
-    val getUserInfo: LiveData<Result<ProfilePojo>> get() = _getUserInfo
+    private val _getUserInfo = SingleLiveEvent<Result<ProfilePojo>?>()
+    val getUserInfo: LiveData<Result<ProfilePojo>?> get() = _getUserInfo
 
     private val _submitRegisterLoading = MutableLiveData<Boolean>()
     val submitRegisterLoading: LiveData<Boolean> get() = _submitRegisterLoading
@@ -110,7 +111,8 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     private fun registerCheck(phone: String) {
         _submitPhoneLoading.value = true
         launchCatchError(coroutineContext, {
-            val response = getRegisterCheckUseCase(phone)
+            val params = RegisterCheckParam(phone)
+            val response = getRegisterCheckUseCase(params)
 
             _isRegisteredPhone.value = when {
                 response.data.errors.isNotEmpty() -> {

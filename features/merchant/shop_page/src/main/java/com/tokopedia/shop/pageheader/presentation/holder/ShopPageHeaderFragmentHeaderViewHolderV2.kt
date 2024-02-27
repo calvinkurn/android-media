@@ -80,6 +80,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
+import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -187,7 +188,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             shopFollowButtonUiModel,
             shopHeaderConfig,
             isOverrideTheme,
-            shopHeaderConfig?.patternColorType.orEmpty()
+            shopHeaderConfig?.getFinalPatternColorType(context.isDarkMode()).orEmpty()
         )
         setSgcPlaySection(listWidgetShopData, shopHeaderConfig)
     }
@@ -498,12 +499,11 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 ShopPageHeaderLayoutUiModel.BgObjectType.VIDEO
             )
             val backgroundColor = shopHeaderConfig?.listBackgroundColor?.firstOrNull().orEmpty()
+            setHeaderBackgroundColor(backgroundColor)
             if (null != backgroundVideo) {
                 setHeaderBackgroundVideo(backgroundVideo.url)
             } else if (null != backgroundImage) {
                 setHeaderBackgroundImage(backgroundImage.url)
-            } else {
-                setHeaderBackgroundColor(backgroundColor)
             }
         }
     }
@@ -513,19 +513,23 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     private fun setHeaderBackgroundColor(backgroundColor: String) {
-        backgroundVideoShopHeader?.hide()
-        backgroundImageShopHeader?.hide()
         backgroundColorShopHeader?.apply {
             show()
-            setBackgroundColor(ShopUtil.parseColorFromHexString(backgroundColor))
+            val finalBackgroundColor = if (backgroundColor.isEmpty()) {
+                MethodChecker.getColor(
+                    context,
+                    unifyprinciplesR.color.Unify_NN0
+                )
+            } else {
+                ShopUtil.parseColorFromHexString(backgroundColor)
+            }
+            setBackgroundColor(finalBackgroundColor)
         }
     }
 
     private fun setHeaderBackgroundImage(imageUrl: String) {
-        backgroundColorShopHeader?.hide()
         backgroundVideoShopHeader?.hide()
         backgroundImageShopHeader?.apply {
-            backgroundColorShopHeader?.hide()
             show()
             loadImage(imageUrl)
         }
@@ -895,7 +899,6 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 
     private fun setHeaderBackgroundVideo(videoUrl: String) {
         backgroundImageShopHeader?.hide()
-        backgroundColorShopHeader?.hide()
         if (playVideoWrapper == null) {
             playVideoWrapper = PlayVideoWrapper.Builder(context).build()
             playVideoWrapper?.addListener(object : PlayVideoWrapper.Listener {

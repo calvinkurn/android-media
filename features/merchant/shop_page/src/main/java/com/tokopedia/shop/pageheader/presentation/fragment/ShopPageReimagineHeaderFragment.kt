@@ -216,6 +216,7 @@ import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.webview.WebViewHelper
 import java.io.File
 import java.net.URLEncoder
@@ -1134,10 +1135,9 @@ class ShopPageReimagineHeaderFragment :
     }
 
     private fun getFollowStatus() {
-        val shopFollowButtonVariantType = ShopUtil.getShopFollowButtonAbTestVariant().orEmpty()
         if (checkIfActionButtonSectionWidgetExistsOnHeader()) {
             setFragmentTabContentWrapperFollowButtonLoading(true)
-            shopHeaderViewModel?.getFollowStatusData(shopId, shopFollowButtonVariantType)
+            shopHeaderViewModel?.getFollowStatusData(shopId)
         }
     }
 
@@ -1504,11 +1504,18 @@ class ShopPageReimagineHeaderFragment :
     }
 
     override fun getBodyPatternColorType(): String {
-        return getShopBodyConfig()?.patternColorType.orEmpty()
+        return getShopBodyConfig()?.getFinalPatternColorType(activity?.isDarkMode().orFalse()).orEmpty()
     }
 
     override fun getBodyBackgroundHexColor(): String {
-        return getShopNavBarConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
+        return context?.let {
+            getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty().takeIf {
+                it.isNotEmpty()
+            } ?: ShopUtil.getColorHexString(
+                it,
+                unifyprinciplesR.color.Unify_NN0
+            )
+        }.orEmpty()
     }
 
     private fun redirectToSearchAutoCompletePage() {
@@ -1811,8 +1818,9 @@ class ShopPageReimagineHeaderFragment :
         listShopPageTabModel = (setupTabContentWrapper() as? List<ShopPageHeaderTabModel>) ?: listOf()
         viewPagerAdapterHeader?.setPageTheme(
             shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme.orFalse(),
-            getShopNavBarConfig()?.patternColorType.orEmpty(),
-            getShopNavBarConfig()?.colorSchema ?: ShopPageColorSchema()
+            getShopNavBarConfig()?.getFinalPatternColorType(activity?.isDarkMode().orFalse()).orEmpty(),
+            getShopNavBarConfig()?.colorSchema ?: ShopPageColorSchema(),
+            getShopNavBarConfig()?.isTransparent().orFalse()
         )
         viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
         selectedPosition = getSelectedDynamicTabPosition()
@@ -2739,7 +2747,9 @@ class ShopPageReimagineHeaderFragment :
         val headerLayoutData = shopPageHeaderP1Data?.shopHeaderLayoutData
         val isOverrideTextColor = headerLayoutData?.isOverrideTheme.orFalse()
         return if (isOverrideTextColor) {
-            if (getShopHeaderConfig()?.patternColorType == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
+            if (getShopHeaderConfig()?.getFinalPatternColorType(
+                context?.isDarkMode().orFalse()
+            ) == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
                 unifyprinciplesR.color.Unify_Static_White
             } else {
                 R.color.dms_static_Unify_NN950_light

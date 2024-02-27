@@ -3,7 +3,7 @@ package com.tokopedia.product_bundle.common.util
 import androidx.fragment.app.Fragment
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product_service_widget.R
@@ -18,7 +18,7 @@ object AtcVariantNavigation {
         AtcVariantHelper.pdpToAtcVariant(
             context = fragment.requireContext(),
             productId = variantProductId,
-            productInfoP1 = DynamicProductInfoP1(),
+            productInfoP1 = ProductInfoP1(),
             warehouseId = "",
             pdpSession = "",
             isTokoNow = false,
