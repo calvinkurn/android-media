@@ -18,6 +18,7 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.Content
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.topads.sdk.domain.model.ImageShop
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import dagger.Lazy
@@ -40,6 +41,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                 TYPE_PRODUCT -> {
                     homeRecommendationTypeFactoryImplList.add(
                         mapToHomeProductFeedModel(
+                            getHomeRecommendationCard.appLog,
                             card,
                             getHomeRecommendationCard.pageName,
                             getHomeRecommendationCard.layoutName,
@@ -223,6 +225,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
     }
 
     private fun mapToHomeProductFeedModel(
+        appLog: GetHomeRecommendationCardResponse.GetHomeRecommendationCard.AppLog,
         recommendationCard: RecommendationCard,
         pageName: String,
         layoutName: String,
@@ -239,7 +242,19 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
             pageName,
             layoutName,
             (((pageNumber - Int.ONE) * cardTotal) + index + Int.ONE),
-            tabName
+            tabName,
+            appLog.toAppLogModel(recommendationCard.recParam),
+        )
+    }
+
+    private fun GetHomeRecommendationCardResponse.GetHomeRecommendationCard.AppLog.toAppLogModel(
+        recParam: String
+    ): RecommendationAppLog {
+        return RecommendationAppLog(
+            sessionId = sessionId,
+            requestId = requestId,
+            logId = logId,
+            recParam = recParam
         )
     }
 

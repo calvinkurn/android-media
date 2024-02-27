@@ -1,9 +1,6 @@
 package com.tokopedia.recommendation_widget_common.extension
 
-import com.tokopedia.analytics.byteio.EntranceForm
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.home_component_header.model.ChannelHeader
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
@@ -32,13 +29,17 @@ fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel()
     }
 }
 
+fun RecommendationEntity.AppLog.toAppLogModel(): RecommendationAppLog {
+    return RecommendationAppLog(
+        sessionId = sessionId,
+        requestId = requestId,
+        logId = logId
+    )
+}
+
 fun RecommendationEntity.RecommendationData.toRecommendationWidget(): RecommendationWidget {
     return RecommendationWidget(
-        appLog = RecommendationAppLog(
-            sessionId = appLog.sessionId,
-            requestId = appLog.requestId,
-            logId = appLog.logId
-        ),
+        appLog = appLog.toAppLogModel(),
         recommendationItemList = recommendation.mapIndexed { index, recommendation ->
             val badges = if (isTokonow()) {
                 emptyList()

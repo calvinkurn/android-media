@@ -25,8 +25,9 @@ object TrackRecommendationMapper {
             moduleName = pageName,
             isAd = productCardModel.isTopAds,
             isUseCache = isCache,
-            recParams = "", //TODO need to confirm
-            requestId = "", //TODO need BE deployment
+            recParams = appLog.recParam,
+            requestId = appLog.requestId,
+            recSessionId = appLog.sessionId,
             shopId = recommendationProductItem.shop.id,
             entranceForm = getEntranceForm(),
             originalPrice = (

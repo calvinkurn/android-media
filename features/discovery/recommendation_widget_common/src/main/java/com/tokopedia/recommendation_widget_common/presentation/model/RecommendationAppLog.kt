@@ -7,4 +7,5 @@ data class RecommendationAppLog(
     val sessionId: String = "",
     val requestId: String = "",
     val logId: String = "",
+    val recParam: String = "",
 )
