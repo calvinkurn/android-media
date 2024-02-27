@@ -61,6 +61,7 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tokochat.config.util.TokoChatConnection;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.translator.manager.TranslatorManager;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
@@ -115,6 +116,7 @@ public class MyApplication extends BaseMainApplication
         GraphqlClient.setContextData(getApplicationContext());
         
 
+        initTranslator();
         NetworkClient.init(this);
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
         registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this, true));
@@ -477,6 +479,10 @@ public class MyApplication extends BaseMainApplication
         GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
         GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir() != null ? this.getExternalCacheDir().getAbsolutePath() : "";
         GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null) != null ? this.getExternalFilesDir(null).getAbsolutePath() : "";
+    }
+
+    private void initTranslator() {
+        TranslatorManager.init(this, "");
     }
 
     @Override

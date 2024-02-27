@@ -177,6 +177,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         initRemoteConfig();
         TokopediaUrl.Companion.init(this); // generate base url
         initCacheManager();
+        initTranslator();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             new Cassava.Builder(this)
@@ -705,6 +706,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return remoteConfig.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG);
             }
         });
+    }
+
+    private void initTranslator() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            TranslatorManager.init(this, "");
+        }
     }
 
     private void initEmbraceConfig() {

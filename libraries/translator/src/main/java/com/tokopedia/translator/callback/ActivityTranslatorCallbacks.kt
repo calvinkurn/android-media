@@ -98,11 +98,13 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks {
     private fun translatorScrollChangedLayoutListener(translatorManager: TranslatorManager?) = ViewTreeObserver.OnScrollChangedListener {
         Handler(Looper.getMainLooper()).postDelayed({
             translatorManager?.startTranslate()
-        }, 200)
+        }, DELAY_SCROLLING_TO_IDLE)
     }
 
     companion object {
         private val TAG = ActivityTranslatorCallbacks::class.java.simpleName
+
+        private const val DELAY_SCROLLING_TO_IDLE = 300L
     }
 
     internal inner class FragmentTranslatorCallbacks : FragmentManager.FragmentLifecycleCallbacks() {
@@ -110,6 +112,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks {
         private val translatorManagerFragment = TranslatorManagerFragment.getInstance()
 
         override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+            super.onFragmentResumed(fm, f)
             setTranslatorBottomSheet(f)
         }
 
@@ -164,7 +167,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks {
         private fun translatorScrollChangedLayoutListener(translatorManagerFragment: TranslatorManagerFragment?) = ViewTreeObserver.OnScrollChangedListener {
             Handler(Looper.getMainLooper()).postDelayed({
                 translatorManagerFragment?.startTranslate()
-            }, 200)
+            }, DELAY_SCROLLING_TO_IDLE)
         }
     }
 }

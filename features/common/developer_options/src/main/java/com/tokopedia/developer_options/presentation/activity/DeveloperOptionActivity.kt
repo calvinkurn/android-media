@@ -247,7 +247,6 @@ class DeveloperOptionActivity :
                 setContentView(R.layout.activity_developer_option)
                 setRecyclerView()
                 setSearchBar()
-                initTranslator()
             }
         }
     }
@@ -359,10 +358,6 @@ class DeveloperOptionActivity :
             editor.apply()
         }
         finish()
-    }
-
-    private fun initTranslator() {
-        TranslatorManager.init(this.application, API_KEY_TRANSLATOR)
     }
 
     private fun clickAccessTokenBtn() = object : AccessTokenViewHolder.AccessTokenListener {
