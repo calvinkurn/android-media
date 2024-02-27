@@ -1,9 +1,11 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 
+import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -12,7 +14,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.category.navbottomsheet.view.CategoryNavBottomSheet
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.updateComponentsQueryParams
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -24,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 private const val TAB_START_PADDING = 20
 private const val DELAY_400: Long = 400
@@ -355,7 +360,27 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             if (tab.customView != null && tab.customView is CustomViewCreator) {
                 setSelectedTabItem(tabsViewModel, tab, true)
             }
+            setSelectedTabBackground(tabsViewModel.components, tab.position)
         }
+    }
+
+    private fun setSelectedTabBackground(components: ComponentsItem, selectedPosition: Int) {
+        val hexColor = components.data?.get(selectedPosition)?.boxColor
+
+        if (hexColor.isNullOrEmpty()) {
+            tabsHolder.tabLayout.setBackgroundColor(
+                ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_NN0)
+            )
+        } else {
+            renderTabBackground(hexColor)
+        }
+    }
+
+    private fun renderTabBackground(hexColor: String?) {
+        if (hexColor.isNullOrEmpty()) return
+
+        val validHexCode = Utils.getValidHexCode(itemView.context, hexColor)
+        tabsHolder.tabLayout.setBackgroundColor(Color.parseColor(validHexCode))
     }
 
     override fun onTabUnselected(tab: TabLayout.Tab) {

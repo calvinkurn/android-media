@@ -1,5 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -84,7 +86,27 @@ class TabsItemImageViewHolder(
 
         redefineImageDimension(imageUrl)
 
+        tintImage(item)
+
         tabIconView.show()
+    }
+
+    private fun tintImage(item: DataItem) {
+        val tintColor = item.getDynamicColor()
+
+        if (!tintColor.isNullOrEmpty()) {
+            tabIconView.backgroundTintList = ColorStateList.valueOf(
+                Color.parseColor(tintColor)
+            )
+        }
+    }
+
+    private fun DataItem.getDynamicColor(): String? {
+        return if (isSelected) {
+            fontColor
+        } else {
+            inactiveFontColor
+        }
     }
 
     private fun redefineImageDimension(imageUrl: String?) {
@@ -117,20 +139,23 @@ class TabsItemImageViewHolder(
 
     private fun setFontColor(item: DataItem) {
         try {
-            val colorResId = if (item.isSelected) {
-                unifyprinciplesR.color.Unify_GN500
+            val textColor = if (!item.getDynamicColor().isNullOrEmpty()) {
+                Color.parseColor(Utils.getValidHexCode(itemView.context, item.getDynamicColor()))
             } else {
-                unifyprinciplesR.color.Unify_NN950
+                ContextCompat.getColor(itemView.context, item.getDefaultFontColor())
             }
 
-            tabTitleView.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    colorResId
-                )
-            )
+            tabTitleView.setTextColor(textColor)
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().recordException(e)
+        }
+    }
+
+    private fun DataItem.getDefaultFontColor(): Int {
+        return if (isSelected) {
+            unifyprinciplesR.color.Unify_GN500
+        } else {
+            unifyprinciplesR.color.Unify_NN950
         }
     }
 
