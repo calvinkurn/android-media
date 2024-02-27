@@ -43,7 +43,7 @@
             app:layout_constraintStart_toEndOf="@id/cb_select_shop"
             app:layout_constraintTop_toTopOf="@id/cb_select_shop"
             tools:ignore="ContentDescription"
-            tools:src="@drawable/ic_badge_shop_official"
+            tools:src="@color/Unify_GN500"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography

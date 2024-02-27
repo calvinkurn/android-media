@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.loginregister.common.utils.BasicIdlingResource
 import com.tokopedia.loginregister.di.modules.AppModuleStub
 import com.tokopedia.loginregister.di.modules.FakeLoginModule
+import com.tokopedia.loginregister.di.modules.FakeShopCreationModule
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.redefineregisteremail.di.DaggerRedefineRegisterEmailComponent
@@ -13,11 +14,13 @@ import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmai
 import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailModule
 import com.tokopedia.loginregister.redefineregisteremail.stub.TestIdlingResourceProvider
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
+import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 
 class FakeActivityComponentFactory : ActivityComponentFactory() {
 
     val loginComponent: LoginComponentStub
     val registerComponent: RegisterInitialComponentStub
+    val shopCreationComponent: ShopCreationComponentStub
 
     init {
         val baseComponent = DaggerTestAppComponent.builder()
@@ -31,6 +34,11 @@ class FakeActivityComponentFactory : ActivityComponentFactory() {
         registerComponent = DaggerRegisterInitialComponentStub.builder()
             .baseAppComponent(baseComponent)
             .build()
+
+        shopCreationComponent = DaggerShopCreationComponentStub.builder()
+            .baseAppComponent(baseComponent)
+            .build()
+
     }
 
     override fun createLoginComponent(application: Application): LoginComponent {
@@ -49,5 +57,9 @@ class FakeActivityComponentFactory : ActivityComponentFactory() {
                     return TestIdlingResourceProvider.instance()
                 }
             }).build()
+    }
+
+    override fun createShopCreationComponent(application: Application): ShopCreationComponent {
+        return shopCreationComponent
     }
 }

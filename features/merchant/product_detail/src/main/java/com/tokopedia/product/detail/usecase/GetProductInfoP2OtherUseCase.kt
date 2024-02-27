@@ -24,10 +24,10 @@ class GetProductInfoP2OtherUseCase @Inject constructor(
     private val remoteConfig: RemoteConfig
 ) : UseCase<ProductInfoP2Other>() {
     companion object {
-        fun createParams(productId: String, shopId: Int): RequestParams =
+        fun createParams(productId: String, shopId: String): RequestParams =
             RequestParams.create().apply {
                 putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
-                putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
+                putString(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
             }
     }
 
@@ -50,11 +50,11 @@ class GetProductInfoP2OtherUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ProductInfoP2Other {
         val p2GeneralData = ProductInfoP2Other()
-        val shopId = requestParams.getInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, 0)
+        val shopId = requestParams.getString(ProductDetailCommonConstant.PARAM_SHOP_IDS, "")
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
 
         //region Discussion/Talk
-        val discussionMostHelpfulParams = generateDiscussionMosthelpfulParam(productId, shopId.toString())
+        val discussionMostHelpfulParams = generateDiscussionMosthelpfulParam(productId, shopId)
         val discussionMostHelpfulRequest = GraphqlRequest(
             rawQueries[RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL],
             DiscussionMostHelpfulResponseWrapper::class.java,

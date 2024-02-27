@@ -85,6 +85,8 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         val RECOMMENDATION_ACTION_FIELD_LOGIN = BASE.format("", "%s", "%s", "%s")
         val RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS =
             BASE.format("", "%s", "%s", "%s - product topads")
+
+        const val PLAY_SHORT_VIDEO_LAYOUT_ITEM = "play short video"
     }
 
     fun getRecommendationProductClickNonLogin(
@@ -480,7 +482,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                                 itemPosition,
                                 playWidgetTrackerModel.categoryId,
                                 playWidgetTrackerModel.layoutCard,
-                                playWidgetTrackerModel.layoutItem,
+                                ActionField.PLAY_SHORT_VIDEO_LAYOUT_ITEM,
                                 playVideoWidgetUiModel.title
                             )
                         )
@@ -509,7 +511,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             itemPosition,
             playWidgetTrackerModel.categoryId,
             playWidgetTrackerModel.layoutCard,
-            playWidgetTrackerModel.layoutItem,
+            ActionField.PLAY_SHORT_VIDEO_LAYOUT_ITEM,
             playVideoWidgetUiModel.title
         )
 
