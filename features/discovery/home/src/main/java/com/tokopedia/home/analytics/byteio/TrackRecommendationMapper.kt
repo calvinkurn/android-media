@@ -17,7 +17,6 @@ object TrackRecommendationMapper {
         isCache: Boolean = false,
         tabName: String,
         tabPosition: Int,
-        entranceForm: EntranceForm,
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = recommendationProductItem.id,
