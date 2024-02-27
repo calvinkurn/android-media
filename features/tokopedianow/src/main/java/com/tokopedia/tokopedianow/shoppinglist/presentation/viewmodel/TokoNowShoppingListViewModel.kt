@@ -516,18 +516,18 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
                 calculateDataForBottomBulkAtc()
 
-                val isTopCheckAllSelected = availableProducts.all { it.isSelected }
+                val areAllAvailableProductsSelected = availableProducts.all { it.isSelected }
 
                 layout
                     .modifyTopCheckAll(
-                        isSelected = isTopCheckAllSelected
+                        isSelected = areAllAvailableProductsSelected
                     )
                     .modifyProduct(
                         productId = productId,
                         isSelected = isSelected
                     )
 
-                _isTopCheckAllSelected.value = isTopCheckAllSelected
+                _isTopCheckAllSelected.value = areAllAvailableProductsSelected
 
                 _layoutState.value = Success(getUpdatedLayout())
 

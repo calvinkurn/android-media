@@ -148,6 +148,7 @@ class TokoNowShoppingListFragment :
             collectStateFlow()
 
             setupRecyclerView()
+            setupSwipeToRefreshLayout()
             setupFloatingActionButton()
             setupBottomBulkAtc()
             setupNavigationToolbar()
@@ -360,6 +361,14 @@ class TokoNowShoppingListFragment :
             addItemDecoration(ShoppingListDecoration())
             addOnScrollListener(loadMoreListener)
             itemAnimator = null
+        }
+    }
+
+    private fun FragmentTokopedianowShoppingListBinding.setupSwipeToRefreshLayout() {
+        strRefreshLayout.setOnRefreshListener {
+            viewModel.refreshLayout()
+            strRefreshLayout.isEnabled = true
+            strRefreshLayout.isRefreshing = false
         }
     }
 

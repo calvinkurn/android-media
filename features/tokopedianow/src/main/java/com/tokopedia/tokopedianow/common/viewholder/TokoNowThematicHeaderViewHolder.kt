@@ -42,7 +42,6 @@ class TokoNowThematicHeaderViewHolder(
     private val tokoNowView: TokoNowView? = null
 ): AbstractViewHolder<TokoNowThematicHeaderUiModel>(itemView) {
     companion object {
-        private const val DEFAULT_BOUND = 0
         private const val ALL_CORNER_SIZES_TITLE = 12f
         private const val ALL_CORNER_SIZES_CTA = 8f
 
