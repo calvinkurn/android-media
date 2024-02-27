@@ -154,7 +154,11 @@ data class FingerPrintNew(
 
     @SerializedName("wideVineId")
     @Expose
-    private val wideVineId: String
+    private val wideVineId: String,
+
+    @SerializedName("access_type")
+    @Expose
+    private val accessType: Int
 ) {
 
     fun hasUniqueId() = unique_id.isNotEmpty()
