@@ -63,5 +63,4 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.mediapicker)
     implementation projectOrAar(rootProject.ext.features.mediaeditor)
     implementation projectOrAar(rootProject.ext.features.universalEditor)
-    implementation projectOrAar(rootProject.ext.features.contentProductPicker)
 }
