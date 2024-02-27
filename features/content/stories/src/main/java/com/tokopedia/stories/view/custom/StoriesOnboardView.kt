@@ -1,6 +1,7 @@
 package com.tokopedia.stories.view.custom
 
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.animation.Animation
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnRepeat
+import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.ViewStoriesOnboardingBinding
 import com.tokopedia.unifyprinciples.UnifyMotion
@@ -34,6 +36,7 @@ class StoriesOnboardView : ConstraintLayout {
         ObjectAnimator.ofFloat(binding.animHand, View.TRANSLATION_X, -30f, 30f).apply {
             duration = 800L
             repeatCount = Animation.INFINITE
+            repeatMode = ValueAnimator.RESTART
             doOnRepeat {
                 rotate.start()
             }
@@ -48,6 +51,8 @@ class StoriesOnboardView : ConstraintLayout {
 
         binding.lottieTapNext.setAnimationFromUrl(context.getString(R.string.stories_onboard_tap_anim))
         binding.lottieTapNext.setFailureListener { }
+
+        binding.animHand.loadImage(context.getString(R.string.stories_onboard_swipe_left_anim))
     }
 
     fun checkAnim() {
