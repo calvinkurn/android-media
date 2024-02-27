@@ -7,10 +7,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.widget.LinearLayout
 import com.tokopedia.reputation.common.R
 import com.tokopedia.reputation.common.data.source.cloud.model.AnimModel
 import com.tokopedia.reputation.common.databinding.AnimatedReputationPickerBinding
-import com.tokopedia.unifycomponents.BaseCustomView
 
 /**
  * This animated stars using AnimatedVectorDrawable, already support API <21
@@ -18,8 +18,10 @@ import com.tokopedia.unifycomponents.BaseCustomView
  * @property renderInitialReviewWithData If you want to animating the view without any trigger
  */
 class AnimatedReputationView @JvmOverloads constructor(
-    context: Context, val attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr) {
+    context: Context,
+    val attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : LinearLayout(context, attrs, defStyleAttr) {
 
     var listOfStarsView: List<AnimModel> = listOf()
     var count = 1
@@ -38,7 +40,7 @@ class AnimatedReputationView @JvmOverloads constructor(
 
     private val binding by lazy {
         val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.animated_reputation_picker, this, false)
+        val view = inflater.inflate(R.layout.animated_reputation_picker, this)
         AnimatedReputationPickerBinding.bind(view)
     }
 
@@ -144,14 +146,13 @@ class AnimatedReputationView @JvmOverloads constructor(
         generateReviewText(reviewClickAt)
     }
 
-
     fun getReviewClickAt(): Int = clickAt
 
     fun setListener(listener: AnimatedReputationListener) {
         this.listener = listener
     }
 
-    //Reset stars
+    // Reset stars
     fun resetStars() {
         clickAt = 0
         lastReview = 0

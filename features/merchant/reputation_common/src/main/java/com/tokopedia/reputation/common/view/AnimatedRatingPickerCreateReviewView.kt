@@ -7,10 +7,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.tokopedia.reputation.common.R
 import com.tokopedia.reputation.common.data.source.cloud.model.AnimCreateReviewModel
 import com.tokopedia.reputation.common.databinding.AnimatedRatingPickerCreateReviewBinding
-import com.tokopedia.unifycomponents.BaseCustomView
 
 /**
  * This animated stars using AnimatedVectorDrawable, already support API <21
@@ -21,7 +21,7 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
     context: Context,
     val attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr) {
+) : LinearLayout(context, attrs, defStyleAttr) {
 
     companion object {
         private const val INITIAL_RATING = 0
@@ -48,7 +48,7 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
     private var starWidth = ViewGroup.LayoutParams.MATCH_PARENT
     private val binding by lazy(LazyThreadSafetyMode.NONE) {
         val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.animated_rating_picker_create_review, this, false)
+        val view = inflater.inflate(R.layout.animated_rating_picker_create_review, this)
         AnimatedRatingPickerCreateReviewBinding.bind(view)
     }
 
@@ -72,7 +72,7 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         setStarClickListener()
 
         binding.txtDescStatus.visibility = if (shouldShowDesc) {
-             View.VISIBLE
+            View.VISIBLE
         } else {
             View.GONE
         }
@@ -184,7 +184,7 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         return count <= clickAt && !reviewData.isAnimated
     }
 
-    private fun generateReviewText(index: Int) = with (binding.txtDescStatus) {
+    private fun generateReviewText(index: Int) = with(binding.txtDescStatus) {
         text = when (index) {
             RATING_ONE -> resources.getString(R.string.rating_1_star_create_review)
             RATING_TWO -> resources.getString(R.string.rating_2_star_create_review)
