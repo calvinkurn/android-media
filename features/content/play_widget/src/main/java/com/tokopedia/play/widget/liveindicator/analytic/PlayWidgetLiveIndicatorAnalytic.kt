@@ -8,7 +8,7 @@ import com.tokopedia.play.widget.di.PlayWidgetScope
 import javax.inject.Inject
 
 @PlayWidgetScope
-internal class PlayWidgetLiveIndicatorAnalytic @Inject constructor(
+class PlayWidgetLiveIndicatorAnalytic @Inject internal constructor(
     analyticManagerFactory: ContentAnalyticManager.Factory,
 ) {
 
@@ -17,25 +17,20 @@ internal class PlayWidgetLiveIndicatorAnalytic @Inject constructor(
         eventCategory = "product detail page - live indicator",
     )
 
-    fun impressLiveBadge(
-        channelId: String,
-        productId: String,
-        shopId: String,
-        tag: String = "",
-    ) {
+    fun impressLiveBadge(model: Model, tag: String = "") {
         analyticManager.impressOnlyOnce("live_badge-$tag") {
             analyticManager.sendEEPromotions(
                 event = Event.viewItem,
                 eventAction = "view - badge",
-                eventLabel = "$channelId - $productId - $shopId",
+                eventLabel = "${model.channelId} - ${model.productId} - ${model.shopId}",
                 mainAppTrackerId = "49936",
                 sellerAppTrackerId = "",
                 customFields = mapOf(
-                    Key.productId to productId,
+                    Key.productId to model.productId,
                 ),
                 promotions = listOf(
                     ContentEnhanceEcommerce.Promotion(
-                        itemId = channelId,
+                        itemId = model.channelId,
                         itemName = LIVE_INDICATOR_ITEM_NAME,
                         creativeName = LIVE_INDICATOR_CREATIVE_NAME,
                         creativeSlot = "0",
@@ -45,23 +40,19 @@ internal class PlayWidgetLiveIndicatorAnalytic @Inject constructor(
         }
     }
 
-    fun clickLiveBadge(
-        channelId: String,
-        productId: String,
-        shopId: String,
-    ) {
+    fun clickLiveBadge(model: Model) {
         analyticManager.sendEEPromotions(
             event = Event.selectContent,
             eventAction = "click - badge",
-            eventLabel = "$channelId - $productId - $shopId",
+            eventLabel = "${model.channelId} - ${model.productId} - ${model.shopId}",
             mainAppTrackerId = "49937",
             sellerAppTrackerId = "",
             customFields = mapOf(
-                Key.productId to productId,
+                Key.productId to model.productId,
             ),
             promotions = listOf(
                 ContentEnhanceEcommerce.Promotion(
-                    itemId = channelId,
+                    itemId = model.channelId,
                     itemName = LIVE_INDICATOR_ITEM_NAME,
                     creativeName = LIVE_INDICATOR_CREATIVE_NAME,
                     creativeSlot = "0",
@@ -70,25 +61,20 @@ internal class PlayWidgetLiveIndicatorAnalytic @Inject constructor(
         )
     }
 
-    fun impressLiveThumbnail(
-        channelId: String,
-        productId: String,
-        shopId: String,
-        tag: String = "",
-    ) {
+    fun impressLiveThumbnail(model: Model, tag: String = "") {
         analyticManager.impressOnlyOnce("live_thumbnail-$tag") {
             analyticManager.sendEEPromotions(
                 event = Event.viewItem,
                 eventAction = "view - thumbnail",
-                eventLabel = "$channelId - $productId - $shopId",
+                eventLabel = "${model.channelId} - ${model.productId} - ${model.shopId}",
                 mainAppTrackerId = "49986",
                 sellerAppTrackerId = "",
                 customFields = mapOf(
-                    Key.productId to productId,
+                    Key.productId to model.productId,
                 ),
                 promotions = listOf(
                     ContentEnhanceEcommerce.Promotion(
-                        itemId = channelId,
+                        itemId = model.channelId,
                         itemName = LIVE_INDICATOR_ITEM_NAME,
                         creativeName = LIVE_INDICATOR_CREATIVE_NAME,
                         creativeSlot = "0",
@@ -98,23 +84,19 @@ internal class PlayWidgetLiveIndicatorAnalytic @Inject constructor(
         }
     }
 
-    fun clickLiveThumbnail(
-        channelId: String,
-        productId: String,
-        shopId: String,
-    ) {
+    fun clickLiveThumbnail(model: Model) {
         analyticManager.sendEEPromotions(
             event = Event.selectContent,
             eventAction = "click - thumbnail",
-            eventLabel = "$channelId - $productId - $shopId",
+            eventLabel = "${model.channelId} - ${model.productId} - ${model.shopId}",
             mainAppTrackerId = "49987",
             sellerAppTrackerId = "",
             customFields = mapOf(
-                Key.productId to productId,
+                Key.productId to model.productId,
             ),
             promotions = listOf(
                 ContentEnhanceEcommerce.Promotion(
-                    itemId = channelId,
+                    itemId = model.channelId,
                     itemName = LIVE_INDICATOR_ITEM_NAME,
                     creativeName = LIVE_INDICATOR_CREATIVE_NAME,
                     creativeSlot = "0",
@@ -127,4 +109,10 @@ internal class PlayWidgetLiveIndicatorAnalytic @Inject constructor(
         private const val LIVE_INDICATOR_CREATIVE_NAME = "play indicator in product detail page"
         private const val LIVE_INDICATOR_ITEM_NAME = "play-indicator-pdp"
     }
+
+    data class Model(
+        val channelId: String,
+        val productId: String,
+        val shopId: String,
+    )
 }

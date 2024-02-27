@@ -45,6 +45,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.exoplayer2.Player
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.widget.databinding.ViewLiveThumbnailPlayerBinding
+import com.tokopedia.play.widget.liveindicator.analytic.PlayWidgetLiveIndicatorAnalytic
 import com.tokopedia.play.widget.liveindicator.di.rememberDaggerComponent
 import com.tokopedia.play.widget.player.VideoPlayer
 import kotlinx.coroutines.flow.Flow
@@ -69,7 +70,7 @@ class PlayWidgetLiveThumbnailView : AbstractComposeView {
         defStyleAttr
     )
 
-    private var mAnalyticModel: AnalyticModel? by mutableStateOf(null)
+    private var mAnalyticModel: PlayWidgetLiveIndicatorAnalytic.Model? by mutableStateOf(null)
     private var mImpressionTag by mutableStateOf("")
 
     private var mOnClicked by mutableStateOf({})
@@ -102,7 +103,7 @@ class PlayWidgetLiveThumbnailView : AbstractComposeView {
         if (visibility == View.GONE) thumbnailState.stopPlayer()
     }
 
-    fun setAnalyticModel(model: AnalyticModel) {
+    fun setAnalyticModel(model: PlayWidgetLiveIndicatorAnalytic.Model) {
         mAnalyticModel = model
     }
 
@@ -114,11 +115,9 @@ class PlayWidgetLiveThumbnailView : AbstractComposeView {
         thumbnailState.playUrl(url, playFor)
     }
 
-    data class AnalyticModel(
-        val channelId: String,
-        val productId: String,
-        val shopId: String,
-    )
+    fun stopPlayer() {
+        thumbnailState.stopPlayer()
+    }
 }
 
 @Composable
@@ -126,7 +125,7 @@ fun PlayWidgetLiveThumbnail(
     state: LiveThumbnailState,
     onClicked: () -> Unit,
     modifier: Modifier = Modifier,
-    analyticModel: PlayWidgetLiveThumbnailView.AnalyticModel? = null,
+    analyticModel: PlayWidgetLiveIndicatorAnalytic.Model? = null,
     impressionTag: String = "",
 ) {
     var isVisible by remember { mutableStateOf(false) }
@@ -158,7 +157,7 @@ private fun PlayWidgetLiveThumbnail(
     isVisible: Boolean,
     onClicked: () -> Unit,
     modifier: Modifier = Modifier,
-    analyticModel: PlayWidgetLiveThumbnailView.AnalyticModel? = null,
+    analyticModel: PlayWidgetLiveIndicatorAnalytic.Model? = null,
     impressionTag: String = "",
 ) {
     val component = rememberDaggerComponent()
@@ -172,7 +171,7 @@ private fun PlayWidgetLiveThumbnail(
 
     LaunchedEffect(analyticModel, impressionTag) {
         analyticModel?.let {
-            component.getAnalytic().impressLiveThumbnail(it.channelId, it.productId, it.shopId, impressionTag)
+            component.getAnalytic().impressLiveThumbnail(it, impressionTag)
         }
     }
 
@@ -219,9 +218,7 @@ private fun PlayWidgetLiveThumbnail(
                     indication = null
                 ) {
                     analyticModel?.let {
-                        component
-                            .getAnalytic()
-                            .clickLiveThumbnail(it.channelId, it.productId, it.shopId)
+                        component.getAnalytic().clickLiveThumbnail(it)
                     }
                     onClicked()
                 }
@@ -302,7 +299,7 @@ class LiveThumbnailState(val context: Context) {
     }
 
     @JvmInline
-    value class VideoState private constructor(val state: Int) {
+    internal value class VideoState private constructor(val state: Int) {
         companion object {
             val Unknown = VideoState(-1)
             val Started = VideoState(0)

@@ -36,6 +36,7 @@ import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.NoMinimumTouchArea
+import com.tokopedia.play.widget.liveindicator.analytic.PlayWidgetLiveIndicatorAnalytic
 import com.tokopedia.play.widget.liveindicator.di.rememberDaggerComponent
 import com.tokopedia.play.widget.R as playwidgetR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -54,7 +55,7 @@ class PlayWidgetLiveBadgeView : AbstractComposeView {
         defStyleAttr
     )
 
-    private var mAnalyticModel: AnalyticModel? by mutableStateOf(null)
+    private var mAnalyticModel: PlayWidgetLiveIndicatorAnalytic.Model? by mutableStateOf(null)
     private var mImpressionTag by mutableStateOf("")
 
     private var mOnClicked by mutableStateOf({})
@@ -70,26 +71,12 @@ class PlayWidgetLiveBadgeView : AbstractComposeView {
         mOnClicked = { l?.onClick(this) }
     }
 
-    fun setAnalyticModel(model: AnalyticModel) {
+    fun setAnalyticModel(model: PlayWidgetLiveIndicatorAnalytic.Model) {
         mAnalyticModel = model
     }
 
     fun setImpressionTag(tag: String) {
         mImpressionTag = tag
-    }
-
-    data class AnalyticModel(
-        val channelId: String,
-        val productId: String,
-        val shopId: String,
-    ) {
-        companion object {
-            val Empty = AnalyticModel(
-                channelId = "",
-                productId = "",
-                shopId = ""
-            )
-        }
     }
 }
 
@@ -97,7 +84,7 @@ class PlayWidgetLiveBadgeView : AbstractComposeView {
 fun PlayWidgetLiveBadge(
     onClicked: () -> Unit,
     modifier: Modifier = Modifier,
-    analyticModel: PlayWidgetLiveBadgeView.AnalyticModel? = null,
+    analyticModel: PlayWidgetLiveIndicatorAnalytic.Model? = null,
     impressionTag: String = "",
 ) {
 
@@ -105,7 +92,7 @@ fun PlayWidgetLiveBadge(
 
     LaunchedEffect(analyticModel, impressionTag) {
         analyticModel?.let {
-            component.getAnalytic().impressLiveBadge(it.channelId, it.productId, it.shopId, impressionTag)
+            component.getAnalytic().impressLiveBadge(it, impressionTag)
         }
     }
 
@@ -118,9 +105,7 @@ fun PlayWidgetLiveBadge(
                 .clip(RoundedCornerShape(8.dp))
                 .clickable(onClick = {
                     analyticModel?.let {
-                        component
-                            .getAnalytic()
-                            .clickLiveBadge(it.channelId, it.productId, it.shopId)
+                        component.getAnalytic().clickLiveBadge(it)
                     }
                     onClicked()
                 })

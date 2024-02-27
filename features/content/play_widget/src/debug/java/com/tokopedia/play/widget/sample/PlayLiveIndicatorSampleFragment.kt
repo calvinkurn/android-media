@@ -10,10 +10,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.widget.databinding.FragmentPlayLiveIndicatorSampleBinding
-import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveBadgeView
+import com.tokopedia.play.widget.liveindicator.analytic.PlayWidgetLiveIndicatorAnalytic
 import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveBadge
 import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveThumbnail
-import com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveThumbnailView
 import com.tokopedia.play.widget.liveindicator.ui.rememberLiveThumbnailState
 import kotlin.time.Duration.Companion.seconds
 
@@ -39,12 +38,12 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
 
     private fun setupViewBased() {
         binding.indicatorView.setAnalyticModel(
-            PlayWidgetLiveBadgeView.AnalyticModel("12345", "67890", "13579")
+            PlayWidgetLiveIndicatorAnalytic.Model("12345", "67890", "13579")
         )
         binding.indicatorView.setImpressionTag("view_based")
 
         binding.thumbnailView.setAnalyticModel(
-            PlayWidgetLiveThumbnailView.AnalyticModel("12345", "67890", "13579")
+            PlayWidgetLiveIndicatorAnalytic.Model("12345", "67890", "13579")
         )
         binding.thumbnailView.setImpressionTag("view_based")
 
@@ -72,7 +71,7 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
                                 50.seconds
                             )
                         },
-                        analyticModel = PlayWidgetLiveBadgeView.AnalyticModel("12345", "67890", "13579"),
+                        analyticModel = PlayWidgetLiveIndicatorAnalytic.Model("12345", "67890", "13579"),
                         impressionTag = "compose_based",
                         modifier = Modifier
                             .constrainAs(liveIndicator) {
@@ -83,7 +82,7 @@ class PlayLiveIndicatorSampleFragment : Fragment() {
                     PlayWidgetLiveThumbnail(
                         state = thumbnailState,
                         onClicked = {},
-                        analyticModel = PlayWidgetLiveThumbnailView.AnalyticModel("12345", "67890", "13579"),
+                        analyticModel = PlayWidgetLiveIndicatorAnalytic.Model("12345", "67890", "13579"),
                         impressionTag = "compose_based",
                         modifier = Modifier.constrainAs(liveThumbnail) {
                             centerHorizontallyTo(parent)
