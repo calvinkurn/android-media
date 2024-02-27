@@ -982,10 +982,6 @@
         android:requestLegacyExternalStorage="true"
         android:taskAffinity="@string/ompyqgcgdk"
         tools:replace="android:icon,android:label,android:hasCode,android:roundIcon,android:allowBackup,android:resizeableActivity">
-        <profileable
-            android:shell="true"
-            tools:targetApi="q" />
-
         <activity
             android:name=".SplashScreenActivity"
             android:label="@string/app_name"

@@ -97,7 +97,6 @@ android {
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles 'proguard-rules.txt'
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
-            debuggable false
         }
         release {
             if (devMode()) {
@@ -113,7 +112,6 @@ android {
             multiDexKeepProguard file('multidex-config.pro')
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
-            debuggable false
         }
     }
 
