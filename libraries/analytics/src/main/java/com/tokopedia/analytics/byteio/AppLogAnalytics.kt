@@ -1,6 +1,5 @@
 package com.tokopedia.analytics.byteio
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.util.Log
@@ -8,6 +7,7 @@ import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
+import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
@@ -180,7 +180,13 @@ object AppLogAnalytics {
      * To remove last page data
      */
     fun popPageData() {
-        _pageDataList.removeLast()
+        if (getCurrentData(IS_SHADOW) == false) {
+            _pageDataList.removeLast()
+            // Remove shadow stack
+            if (getCurrentData(IS_SHADOW) == true) {
+                _pageDataList.removeLast()
+            }
+        }
         Timber.d("Pop _pageDataList: ${_pageDataList}}")
     }
 
@@ -225,17 +231,21 @@ object AppLogAnalytics {
 
     fun pushPageData(appLogInterface: AppLogInterface) {
         pushPageData()
-        putPageData(PAGE_NAME, appLogInterface.getPageName())
-        if (appLogInterface.isEnterFromWhitelisted()) {
-            putPageData(ENTER_FROM, appLogInterface.getPageName())
-        }
+        putAppLogInterfaceData(appLogInterface)
     }
 
     fun updateCurrentPageData(appLogInterface: AppLogInterface) {
         clearCurrentPageData()
+        putAppLogInterfaceData(appLogInterface)
+    }
+
+    private fun putAppLogInterfaceData(appLogInterface: AppLogInterface) {
         putPageData(PAGE_NAME, appLogInterface.getPageName())
         if (appLogInterface.isEnterFromWhitelisted()) {
             putPageData(ENTER_FROM, appLogInterface.getPageName())
+        }
+        if (appLogInterface.isShadow()) {
+            putPageData(IS_SHADOW, appLogInterface.isShadow())
         }
     }
 
