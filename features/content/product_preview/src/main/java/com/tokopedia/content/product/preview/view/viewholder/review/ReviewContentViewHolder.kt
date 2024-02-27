@@ -43,6 +43,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImageCircle
+import timber.log.Timber
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ReviewContentViewHolder(
@@ -58,6 +59,7 @@ class ReviewContentViewHolder(
         binding.root.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(p0: View) {
                 if (reviewMediaAdapter.itemCount < 0) return
+                Timber.d("attached")
                 binding.rvReviewMedia.addOnScrollListener(mediaScrollListener)
                 binding.ivDanceLike.gone()
                 addLikeAnimationListener()
@@ -391,11 +393,13 @@ class ReviewContentViewHolder(
     }
 
     override fun pauseVideo(id: String) {
+        Timber.d("pauseVideo")
         reviewInteractionListener.onPauseResumeVideo()
         videoPlayerManager.pause(id)
     }
 
     override fun resumeVideo(id: String) {
+        Timber.d("resumeVideo")
         reviewInteractionListener.onPauseResumeVideo()
         videoPlayerManager.resume(id)
     }

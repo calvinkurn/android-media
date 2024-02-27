@@ -647,7 +647,6 @@ object ProductDetailMapper {
             productMediaRecomBasicInfo = mediaData.productMediaRecomBasicInfo,
             componentPriceType = promoPriceData.componentPriceType,
             promoPrice = promoPriceData.promoPrice,
-            productMediaRecomBasicInfo = mediaData.productMediaRecomBasicInfo,
             socialProof = data.components.find {
                 it.type == ProductDetailConstant.MINI_SOCIAL_PROOF
             }?.componentData?.firstOrNull()?.socialProof ?: emptyList()

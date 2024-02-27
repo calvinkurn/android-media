@@ -3,7 +3,7 @@ package com.tokopedia.content.product.preview.data.mapper
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.pdplayout.SocialProofData
 
@@ -12,7 +12,7 @@ class ProductPreviewSourceMapper(
 ) {
 
     fun mapProductSourceModel(
-        productData: DynamicProductInfoP1,
+        productData: ProductInfoP1,
         mediaSelectedPosition: Int,
         videoLastDuration: Long,
         videoTotalDuration: Long

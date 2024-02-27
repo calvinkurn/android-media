@@ -2153,20 +2153,17 @@ open class ProductDetailFragment :
     }
 
     override fun onVideoFullScreenClicked() {
-        val dynamicProductInfoData = viewModel.getProductInfoP1 ?: DynamicProductInfoP1()
+        val dynamicProductInfoData = viewModel.getProductInfoP1 ?: ProductInfoP1()
 
         productVideoCoordinator?.let {
-            val trackerData = viewModel.getProductInfoP1
             it.pauseVideoAndSaveLastPosition()
             sharedViewModel?.updateVideoDetailData(
                 ProductVideoDetailDataModel(
                     it.getVideoDataModel(),
-                    // Tracker Data
-                    trackerData?.shopTypeString
-                        ?: "",
-                    trackerData?.basic?.shopID.orEmpty(),
+                    dynamicProductInfoData.shopTypeString,
+                    dynamicProductInfoData.basic.shopID,
                     viewModel.userId,
-                    trackerData?.basic?.productID.orEmpty()
+                    dynamicProductInfoData.basic.productID
                 )
             )
 
@@ -2312,7 +2309,7 @@ open class ProductDetailFragment :
     }
 
     private fun openProductPreviewActivityProductSource(
-        productData: DynamicProductInfoP1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1(),
+        productData: ProductInfoP1 = viewModel.getProductInfoP1 ?: ProductInfoP1(),
         position: Int = 0,
         videoLastDuration: Long = productVideoCoordinator?.getCurrentPosition().orZero(),
         videoTotalDuration: Long = productVideoCoordinator?.getDuration().orZero()
