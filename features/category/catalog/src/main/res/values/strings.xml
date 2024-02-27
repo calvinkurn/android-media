@@ -74,4 +74,6 @@
     <string name="catalog_switching_catalong_not_found">Katalog tidak ditemukan</string>
     <string name="catalog_switching_catalong_not_found_sub_title">Coba gunakan kata kunci lain, ya.</string>
     <string name="catalog_text_lainnya">Lainnya</string>
+    <string name="catalog_text_title_seller_offering">Jaminan Produk Original</string>
+    <string name="catalog_text_subtitle_seller_offering">Dari toko pilihan</string>
 </resources>

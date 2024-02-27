@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -92,6 +93,14 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.activity.CatalogComparisonDetailActivity
 import com.tokopedia.catalog.ui.activity.CatalogImagePreviewActivity
 import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.EXTRA_CATALOG_URL
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.QUERY_BACKGROUND
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.QUERY_LIMIT
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.QUERY_MAX_PRICE
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.QUERY_MIN_PRICE
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.QUERY_PRODUCT_ID
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.QUERY_PRODUCT_TITLE
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.QUERY_PRODUCT_VARIANT
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.QUERY_SHOP_ID
 import com.tokopedia.catalog.ui.activity.CatalogSwitchingComparisonActivity
 import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_CATALOG_ID
 import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_CATEGORY_ID
@@ -101,6 +110,7 @@ import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.model.PriceCtaSellerOfferingProperties
+import com.tokopedia.catalog.ui.model.ProductListConfig
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalog.util.CatalogShareUtil
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
@@ -134,6 +144,7 @@ import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.uimodel.VideoUiModel
 import com.tokopedia.catalogcommon.util.DrawableExtension
+import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
 import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
 import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
@@ -472,7 +483,8 @@ class CatalogDetailPageFragment :
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
                 binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
-                binding?.setupPriceCtaSellerOfferingWidget(it.data.priceCtaSellerOfferingProperties)
+                binding?.setupPriceCtaSellerOfferingWidget(it.data.priceCtaSellerOfferingProperties,
+                    it.data.productListConfig)
                 widgetAdapter.addWidget(it.data.widgets)
                 binding?.stickySingleHeaderView?.stickyPosition =
                     widgetAdapter.findPositionNavigation()
@@ -692,7 +704,8 @@ class CatalogDetailPageFragment :
     }
 
     private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaSellerOfferingWidget(
-        properties: PriceCtaSellerOfferingProperties
+        properties: PriceCtaSellerOfferingProperties,
+        productListConfig: ProductListConfig
     ) {
         icCtaSellerOffering.apply {
             viewModel.atcModel = CatalogProductAtcUiModel(
@@ -715,7 +728,7 @@ class CatalogDetailPageFragment :
                 addToCart(viewModel.atcModel)
             }
             btnProductList.setOnClickListener {
-                goToProductListPage()
+                goToSellerOfferingProductListPage(viewModel.variantName.value.orEmpty(), productListConfig)
             }
 
             if (properties.isDarkTheme) {
@@ -766,6 +779,26 @@ class CatalogDetailPageFragment :
                     productSortingStatus.toString()
                 )
                 .appendPath(title).toString()
+
+        RouteManager.getIntent(context, catalogProductList).apply {
+            putExtra(EXTRA_CATALOG_URL, catalogUrl)
+            startActivity(this)
+        }
+    }
+
+    private fun goToSellerOfferingProductListPage(variant:String, productListConfig: ProductListConfig) {
+
+        val catalogProductList =
+            Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
+                .buildUpon()
+                .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
+                .appendQueryParameter(QUERY_PRODUCT_TITLE, title)
+                .appendQueryParameter(QUERY_PRODUCT_VARIANT, variant)
+                .appendQueryParameter(QUERY_BACKGROUND, "${productListConfig.headerConfig}")
+                .appendQueryParameter(QUERY_LIMIT, productListConfig.limit)
+                .appendQueryParameter(QUERY_MIN_PRICE, productListConfig.minPrice.toString())
+                .appendQueryParameter(QUERY_MAX_PRICE, productListConfig.maxPrice.toString())
+                .appendPath("so").toString()
 
         RouteManager.getIntent(context, catalogProductList).apply {
             putExtra(EXTRA_CATALOG_URL, catalogUrl)

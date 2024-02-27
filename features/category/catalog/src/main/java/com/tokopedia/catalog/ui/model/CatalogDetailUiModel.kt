@@ -10,7 +10,15 @@ data class CatalogDetailUiModel(
     val productSortingStatus: Int,
     val catalogUrl: String,
     val shareProperties: ShareProperties = ShareProperties(),
-    val priceCtaSellerOfferingProperties: PriceCtaSellerOfferingProperties = PriceCtaSellerOfferingProperties()
+    val priceCtaSellerOfferingProperties: PriceCtaSellerOfferingProperties = PriceCtaSellerOfferingProperties(),
+    val productListConfig: ProductListConfig = ProductListConfig()
+)
+
+data class ProductListConfig(
+    val limit: String = "",
+    val headerConfig: String = "",
+    val minPrice: Long = 0,
+    val maxPrice: Long = 0
 )
 
 data class PriceCtaProperties(

@@ -416,4 +416,5 @@ object TokopediaImageUrl {
     const val SRE_SELLER_HOME_BACKDROP = "https://images.tokopedia.net/img/android/sellerhome/sah_ramadhan_thematic_backdrop.png"
     const val PDP_ICON_PROMO_RED =
         "https://images.tokopedia.net/img/pdp/icons/promo/Promo%20icon%20red.png"
+    const val CATALOG_SELLER_OFFERING_PRODUCT_LIST_ICON = "https://images.tokopedia.net/img/catalog/icons/shield.png"
 }

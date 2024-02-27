@@ -12,6 +12,9 @@ data class CatalogResponseData(
 ) {
     data class CatalogGetDetailModular(
         @Expose
+        @SerializedName("productListCfg")
+        val productListCfg: ProductListConfig,
+        @Expose
         @SerializedName("basicInfo")
         val basicInfo: BasicInfo,
         @Expose
@@ -30,6 +33,15 @@ data class CatalogResponseData(
         @SerializedName("version")
         val version: Int = 0
     ) {
+        data class ProductListConfig(
+            @Expose
+            @SerializedName("limit")
+            val limit: String?,
+
+            @Expose
+            @SerializedName("headerColor")
+            val headerColor: String?,
+        )
         data class BasicInfo(
             @Expose
             @SerializedName("id")

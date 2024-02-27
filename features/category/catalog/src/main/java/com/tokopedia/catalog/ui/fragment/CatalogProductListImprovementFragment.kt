@@ -418,7 +418,9 @@ class CatalogProductListImprovementFragment :
             textView?.text = getString(R.string.catalog_filter_text)
         }
 
-        binding?.searchProductQuickSortFilter?.parentListener = { this.openBottomSheetFilter() }
+        binding?.searchProductQuickSortFilter?.parentListener = {
+            this.openBottomSheetFilter()
+        }
         setSortFilterNewNotification(items)
     }
 
