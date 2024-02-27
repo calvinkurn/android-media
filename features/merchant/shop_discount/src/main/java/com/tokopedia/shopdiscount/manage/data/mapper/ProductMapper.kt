@@ -1,8 +1,13 @@
 package com.tokopedia.shopdiscount.manage.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shopdiscount.common.entity.ProductType
 import com.tokopedia.shopdiscount.manage.data.response.GetSlashPriceProductListResponse
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
+import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountProductRuleUiModel
+import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountSubsidyInfoUiModel
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE
 import com.tokopedia.shopdiscount.utils.extension.parseTo
@@ -47,7 +52,42 @@ class ProductMapper @Inject constructor() {
                     product.price.max
                 ),
                 sku = product.sku,
-                isExpand = product.isExpand
+                isExpand = product.isExpand,
+                maxOrder = product.maxOrder.toIntOrZero(),
+                isSubsidy = product.joinSubsidy,
+                subsidyStatusText = product.subsidyStatusText,
+                productRule = ShopDiscountProductRuleUiModel(
+                    isAbleToOptOut = product.rule.isAbleToOptOut
+                ),
+                subsidyInfo = ShopDiscountSubsidyInfoUiModel(
+                    ctaProgramLink = product.subsidyInfo.ctaProgramLink,
+                    subsidyType = ShopDiscountSubsidyInfoUiModel.getSubsidyType(product.subsidyInfo.subsidyType),
+                    discountedPrice = product.subsidyInfo.discountedPrice,
+                    discountedPercentage = product.subsidyInfo.discountedPercentage,
+                    remainingQuota = product.subsidyInfo.remainingQuota,
+                    quotaSubsidy = product.subsidyInfo.quotaSubsidy,
+                    maxOrder = product.subsidyInfo.maxOrder,
+                    subsidyDateStart = product.subsidyInfo.subsidyDateStart,
+                    subsidyDateEnd = product.subsidyInfo.subsidyDateEnd,
+                    sellerDiscountPrice = product.subsidyInfo.sellerDiscountPrice,
+                    sellerDiscountPercentage = product.subsidyInfo.sellerDiscountPercentage,
+                    minOriginalPriceSubsidy = product.warehouses.getMinOriginalPriceSubsidy(),
+                    maxOriginalPriceSubsidy = product.warehouses.getMaxOriginalPriceSubsidy(),
+                    minSellerDiscountPriceSubsidy = product.warehouses.getMinSellerDiscountPriceSubsidy(),
+                    maxSellerDiscountPriceSubsidy = product.warehouses.getMaxSellerDiscountPriceSubsidy(),
+                    minSellerDiscountPercentageSubsidy = product.warehouses.getMinSellerDiscountPercentageSubsidy(),
+                    maxSellerDiscountPercentageSubsidy = product.warehouses.getMaxSellerDiscountPercentageSubsidy(),
+                    minProgramDiscountPriceSubsidy = product.warehouses.getMinProgramDiscountPriceSubsidy(),
+                    maxProgramDiscountPriceSubsidy = product.warehouses.getMaxProgramDiscountPriceSubsidy(),
+                    minProgramDiscountPercentageSubsidy = product.warehouses.getMinProgramDiscountPercentageSubsidy(),
+                    maxProgramDiscountPercentageSubsidy = product.warehouses.getMaxProgramDiscountPercentageSubsidy(),
+                    minFinalDiscountPriceSubsidy = product.warehouses.getMinFinalDiscountPriceSubsidy(),
+                    maxFinalDiscountPriceSubsidy = product.warehouses.getMaxFinalDiscountPriceSubsidy(),
+                    minFinalDiscountPercentageSubsidy = product.warehouses.getMinFinalDiscountPercentageSubsidy(),
+                    maxFinalDiscountPercentageSubsidy = product.warehouses.getMaxFinalDiscountPercentageSubsidy(),
+                ),
+                listEventId = product.warehouses.map { warehouse -> warehouse.eventId },
+                isMultiWarehouse = product.warehouses.size > Int.ONE
             )
         }
 
@@ -92,4 +132,93 @@ class ProductMapper @Inject constructor() {
     private fun hasSameOriginalPrice(originalMinPrice: Long, originalMaxPrice: Long): Boolean {
         return originalMinPrice == originalMaxPrice
     }
+
+    private fun List<GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.Warehouses>.getMinOriginalPriceSubsidy(): Int {
+        return this.filter { it.joinSubsidy }.map {
+            it.originalPrice.toInt()
+        }.toMutableList().minOrNull().orZero()
+    }
+
+    private fun List<GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.Warehouses>.getMaxOriginalPriceSubsidy(): Int {
+        return this.filter { it.joinSubsidy }.map {
+            it.originalPrice.toInt()
+        }.toMutableList().maxOrNull().orZero()
+    }
+
+    private fun List<GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.Warehouses>.getMinSellerDiscountPriceSubsidy(): Int {
+        return this.filter { it.joinSubsidy }.map {
+            it.subsidyInfo.sellerDiscountPrice.toInt()
+        }.toMutableList().minOrNull().orZero()
+    }
+
+    private fun List<GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.Warehouses>.getMaxSellerDiscountPriceSubsidy(): Int {
+        return this.filter { it.joinSubsidy }.map {
+            it.subsidyInfo.sellerDiscountPrice.toInt()
+        }.toMutableList().maxOrNull().orZero()
+    }
+
+
+    private fun List<GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.Warehouses>.getMinSellerDiscountPercentageSubsidy(): Int {
+        return this.filter { it.joinSubsidy }.map {
+            it.subsidyInfo.sellerDiscountPercentage
+        }.toMutableList().minOrNull().orZero()
+    }
+
+    private fun List<GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.Warehouses>.getMaxSellerDiscountPercentageSubsidy(): Int {
+        return this.filter { it.joinSubsidy }.map {
+            it.subsidyInfo.sellerDiscountPercentage
+        }.toMutableList().maxOrNull().orZero()
+    }
+
+
+    private fun List<GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.Warehouses>.getMinProgramDiscountPriceSubsidy(): Int {
+        return this.filter { it.joinSubsidy }.map {
+            it.subsidyInfo.discountedPrice.toInt()
+        }.toMutableList().minOrNull().orZero()
+    }
+
+    private fun List<GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.Warehouses>.getMaxProgramDiscountPriceSubsidy(): Int {
+        return this.filter { it.joinSubsidy }.map {
+            it.subsidyInfo.discountedPrice.toInt()
+        }.toMutableList().maxOrNull().orZero()
+    }
+
+    private fun List<GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.Warehouses>.getMinProgramDiscountPercentageSubsidy(): Int {
+        return this.filter { it.joinSubsidy }.map {
+            it.subsidyInfo.discountedPercentage
+        }.toMutableList().minOrNull().orZero()
+    }
+
+    private fun List<GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.Warehouses>.getMaxProgramDiscountPercentageSubsidy(): Int {
+        return this.filter { it.joinSubsidy }.map {
+            it.subsidyInfo.discountedPercentage
+        }.toMutableList().maxOrNull().orZero()
+    }
+
+
+    private fun List<GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.Warehouses>.getMinFinalDiscountPriceSubsidy(): Int {
+        return this.filter { it.joinSubsidy }.map {
+            it.discountedPrice.toInt()
+        }.toMutableList().minOrNull().orZero()
+    }
+
+    private fun List<GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.Warehouses>.getMaxFinalDiscountPriceSubsidy(): Int {
+        return this.filter { it.joinSubsidy }.map {
+            it.discountedPrice.toInt()
+        }.toMutableList().maxOrNull().orZero()
+    }
+
+
+    private fun List<GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.Warehouses>.getMinFinalDiscountPercentageSubsidy(): Int {
+        return this.filter { it.joinSubsidy }.map {
+            it.discountedPercentage
+        }.toMutableList().minOrNull().orZero()
+    }
+
+    private fun List<GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.Warehouses>.getMaxFinalDiscountPercentageSubsidy(): Int {
+        return this.filter { it.joinSubsidy }.map {
+            it.discountedPercentage
+        }.toMutableList().maxOrNull().orZero()
+    }
+
 }

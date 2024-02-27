@@ -1567,7 +1567,7 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 .last().productListUiState.data.productList
 
         productList.forEach {
-            assertEquals(it.addonsListUiModel?.isExpand == true, expectedIsExpand)
+            assertEquals(it.addOnSummaryUiModel?.isExpand == true, expectedIsExpand)
         }
 
         val bmgm =

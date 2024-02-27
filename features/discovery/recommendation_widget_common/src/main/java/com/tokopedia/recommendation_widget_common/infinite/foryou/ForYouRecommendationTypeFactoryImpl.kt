@@ -53,11 +53,6 @@ class ForYouRecommendationTypeFactoryImpl constructor(
 
     override fun type(model: EmptyStateModel) = EmptyViewHolder.LAYOUT
 
-    // deprecation area
-    override fun type(model: BannerOldTopAdsModel) = Int.MIN_VALUE
-    override fun type(model: BannerRecommendationModel) = Int.MIN_VALUE
-    override fun type(model: HeadlineTopAdsModel) = Int.MIN_VALUE
-
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             // components
