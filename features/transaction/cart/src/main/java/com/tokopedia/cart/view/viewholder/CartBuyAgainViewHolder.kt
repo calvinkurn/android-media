@@ -20,7 +20,7 @@ class CartBuyAgainViewHolder(
     private val listener: ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    var buyAgainAdapter: CartBuyAgainAdapter? = null
+    private var buyAgainAdapter: CartBuyAgainAdapter? = null
 
     companion object {
         val LAYOUT = R.layout.item_cart_buy_again
@@ -64,24 +64,27 @@ class CartBuyAgainViewHolder(
                 )
                 visible()
             }
-            binding.rvRecentView.gone()
+            binding.rvBuyAgain.gone()
         } else {
             if (buyAgainAdapter == null) {
                 buyAgainAdapter = CartBuyAgainAdapter(listener)
             }
             buyAgainAdapter?.buyAgainList = element.buyAgainList
             val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
-            binding.rvRecentView.layoutManager = layoutManager
-            binding.rvRecentView.adapter = buyAgainAdapter
-            val itemDecorationCount = binding.rvRecentView.itemDecorationCount
+            binding.rvBuyAgain.layoutManager = layoutManager
+            binding.rvBuyAgain.adapter = buyAgainAdapter
+            val itemDecorationCount = binding.rvBuyAgain.itemDecorationCount
             if (itemDecorationCount > 0) {
-                binding.rvRecentView.removeItemDecorationAt(0)
+                binding.rvBuyAgain.removeItemDecorationAt(0)
             }
-            val paddingStart = 12.dpToPx(itemView.resources.displayMetrics)
-            val padding = 16.dpToPx(itemView.resources.displayMetrics)
-            binding.rvRecentView.addItemDecoration(CartHorizontalItemDecoration(paddingStart, padding))
+            binding.rvBuyAgain.addItemDecoration(
+                CartHorizontalItemDecoration(
+                    12.dpToPx(itemView.resources.displayMetrics),
+                    16.dpToPx(itemView.resources.displayMetrics)
+                )
+            )
             binding.productCardView.gone()
-            binding.rvRecentView.visible()
+            binding.rvBuyAgain.visible()
         }
 //        if (!element.hasSentImpressionAnalytics) {
 //            listener?.onRecentViewImpression()

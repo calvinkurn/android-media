@@ -50,8 +50,7 @@ class CartSectionHeaderViewHolder(private val binding: ItemCartSectionHeaderBind
                             R.id.label_title,
                             ConstraintSet.END,
                             R.id.label_show_all,
-                            ConstraintSet.START,
-                            16.dpToPx(itemView.resources.displayMetrics)
+                            ConstraintSet.START
                         )
                         constraintSet.applyTo(clContainer)
                     }
@@ -69,8 +68,7 @@ class CartSectionHeaderViewHolder(private val binding: ItemCartSectionHeaderBind
                             R.id.label_title,
                             ConstraintSet.END,
                             R.id.fl_action,
-                            ConstraintSet.START,
-                            16.dpToPx(itemView.resources.displayMetrics)
+                            ConstraintSet.START
                         )
                         constraintSet.applyTo(clContainer)
                     }

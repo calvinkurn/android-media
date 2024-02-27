@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartBuyAgainViewAllBinding
 import com.tokopedia.cart.view.ActionListener
+import com.tokopedia.cart.view.uimodel.CartBuyAgainViewAllData
 
 class CartBuyAgainViewAllViewHolder(
     private val binding: ItemCartBuyAgainViewAllBinding,
@@ -14,24 +15,9 @@ class CartBuyAgainViewAllViewHolder(
         val LAYOUT = R.layout.item_cart_buy_again_view_all
     }
 
-    fun bind() {
+    fun bind(data: CartBuyAgainViewAllData) {
         binding.root.setOnClickListener {
-
+            listener?.onShowAllItem(data.showAllAppLink)
         }
-//            setImageProductViewHintListener(
-//                element,
-//                object : ViewHintListener {
-//                    override fun onViewHint() {
-//                        actionListener?.onRecentViewProductImpression(element)
-//                    }
-//                }
-//            )
-
-//            setOnClickListener {
-//                actionListener?.onRecentViewProductClicked(element.id)
-//            }
-//            setAddToCartOnClickListener {
-//                actionListener?.onButtonAddToCartClicked(element)
-//            }
     }
 }

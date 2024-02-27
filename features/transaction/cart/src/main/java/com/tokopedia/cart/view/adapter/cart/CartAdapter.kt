@@ -413,22 +413,6 @@ class CartAdapter(
         return cartDataList.size
     }
 
-    fun setShopSelected(position: Int, selected: Boolean) {
-        val any = cartDataList[position]
-        if (any is CartGroupHolderData) {
-            any.isAllSelected = selected
-            any.productUiModelList.let {
-                for (cartItemHolderData in it) {
-                    cartItemHolderData.isSelected = selected
-                }
-            }
-        }
-    }
-
-    fun getData(): ArrayList<Any> {
-        return cartDataList
-    }
-
     fun setCoachMark(coachMark: CoachMark2) {
         plusCoachMark = coachMark
     }

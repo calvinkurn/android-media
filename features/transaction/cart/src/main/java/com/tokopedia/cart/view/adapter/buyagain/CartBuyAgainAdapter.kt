@@ -26,14 +26,14 @@ class CartBuyAgainAdapter(val actionListener: ActionListener?) : RecyclerView.Ad
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        when (viewType) {
+        return when (viewType) {
             CartBuyAgainItemViewHolder.LAYOUT -> {
                 val binding = ItemProductBuyAgainBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return CartBuyAgainItemViewHolder(binding, actionListener)
+                CartBuyAgainItemViewHolder(binding, actionListener)
             }
             CartBuyAgainViewAllViewHolder.LAYOUT -> {
                 val binding = ItemCartBuyAgainViewAllBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return CartBuyAgainViewAllViewHolder(binding, actionListener)
+                CartBuyAgainViewAllViewHolder(binding, actionListener)
             }
             else -> throw RuntimeException("No view holder type found")
         }
@@ -44,8 +44,15 @@ class CartBuyAgainAdapter(val actionListener: ActionListener?) : RecyclerView.Ad
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (buyAgainList[position]) {
-
+        when (val data = buyAgainList[position]) {
+            is CartBuyAgainItemHolderData -> {
+                val holderView = holder as CartBuyAgainItemViewHolder
+                holderView.bind(data)
+            }
+            is CartBuyAgainViewAllData -> {
+                val holderView = holder as CartBuyAgainViewAllViewHolder
+                holderView.bind(data)
+            }
         }
     }
 }

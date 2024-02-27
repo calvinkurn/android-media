@@ -1,3 +1,5 @@
 package com.tokopedia.cart.view.uimodel
 
-object CartBuyAgainViewAllData : CartBuyAgainItem
+data class CartBuyAgainViewAllData(
+    val showAllAppLink: String = ""
+) : CartBuyAgainItem

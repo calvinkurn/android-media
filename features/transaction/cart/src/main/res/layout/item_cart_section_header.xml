@@ -18,7 +18,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:text="@string/label_empty_cart_recent_view"
         app:typographyType="body_1"
         app:typographyWeight="bold" />

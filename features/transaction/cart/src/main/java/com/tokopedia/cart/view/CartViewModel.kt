@@ -43,7 +43,9 @@ import com.tokopedia.cart.view.uimodel.CartAddOnProductData
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartBuyAgainFloatingButtonData
 import com.tokopedia.cart.view.uimodel.CartBuyAgainHolderData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainItem
 import com.tokopedia.cart.view.uimodel.CartBuyAgainItemHolderData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainViewAllData
 import com.tokopedia.cart.view.uimodel.CartCheckoutButtonState
 import com.tokopedia.cart.view.uimodel.CartDeleteItemData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
@@ -290,6 +292,8 @@ class CartViewModel @Inject constructor(
 
         const val GET_CART_STATE_DEFAULT = 0
         const val GET_CART_STATE_AFTER_CHOOSE_ADDRESS = 1
+
+        private const val BUY_AGAIN_PRODUCTS_LIMIT = 6
 
         const val RECOMMENDATION_START_PAGE = 1
         const val ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0
@@ -1014,7 +1018,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun renderBuyAgain(recommendationWidget: RecommendationWidget?) {
-        val buyAgainList = mutableListOf<CartBuyAgainItemHolderData>()
+        val buyAgainList = mutableListOf<CartBuyAgainItem>()
         if (recommendationWidget != null) {
             buyAgainList.addAll(BuyAgainMapper.convertToViewHolderModelList(recommendationWidget))
         } else {
@@ -1026,9 +1030,20 @@ class CartViewModel @Inject constructor(
         cartSectionHeaderHolderData.type = CartSectionHeaderActionType.ICON_BUTTON
 
         val cartBuyAgainHolderData = CartBuyAgainHolderData()
-        cartBuyAgainHolderData.buyAgainList = buyAgainList
+        val isSeeMoreAppLinkExist = recommendationWidget?.seeMoreAppLink?.isNotBlank() == true
+
+        val resultList = if (isSeeMoreAppLinkExist) {
+            val maxIndex = min(BUY_AGAIN_PRODUCTS_LIMIT, buyAgainList.size)
+            buyAgainList.subList(0, maxIndex).toMutableList()
+        } else {
+            buyAgainList
+        }
+        if (buyAgainList.size > BUY_AGAIN_PRODUCTS_LIMIT && isSeeMoreAppLinkExist) {
+            resultList.add(CartBuyAgainViewAllData(recommendationWidget?.seeMoreAppLink ?: ""))
+        }
+        cartBuyAgainHolderData.buyAgainList = resultList
         addCartBuyAgainData(cartSectionHeaderHolderData, cartBuyAgainHolderData)
-        cartModel.buyAgainList = buyAgainList
+        cartModel.buyAgainList = buyAgainList.filterIsInstance(CartBuyAgainItemHolderData::class.java)
         cartModel.shouldReloadBuyAgainList = false
 
         _buyAgainFloatingButtonData.value = CartBuyAgainFloatingButtonData(
