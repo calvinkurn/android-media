@@ -159,7 +159,7 @@ object AppLogAnalytics {
     }
 
     fun send(event: String, params: JSONObject) {
-        if (remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_BYTEIO_PLATFORM) == true) {
+        if (remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_BYTEIO_PLATFORM, true) == true) {
             params.put(EVENT_ORIGIN_FEATURE_KEY, EVENT_ORIGIN_FEATURE_VALUE)
             Cassava.save(params, event, "ByteIO")
             AppLog.onEventV3(event, params)

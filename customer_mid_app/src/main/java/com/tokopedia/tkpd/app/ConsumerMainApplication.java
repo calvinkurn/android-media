@@ -232,7 +232,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     private void initByteIOPlatforrm() {
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BYTEIO_PLATFORM)) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BYTEIO_PLATFORM, true)) {
             AppLogAnalytics.init(this);
             TTNetHelper.initTTNet(this);
             LibraAbTest.init(this);
