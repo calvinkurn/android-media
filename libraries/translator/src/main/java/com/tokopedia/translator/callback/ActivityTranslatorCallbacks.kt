@@ -25,7 +25,6 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
-import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -36,7 +35,6 @@ import com.tokopedia.translator.ui.SharedPrefsUtils
 import com.tokopedia.translator.ui.TranslatorSettingView
 import com.tokopedia.translator.ui.TranslatorSettingView.DELIM_LANG_CODE
 import com.tokopedia.translator.ui.TranslatorSettingView.DESTINATION_LANGUAGE
-import com.tokopedia.translator.util.ViewUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
