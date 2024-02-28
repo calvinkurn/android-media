@@ -137,7 +137,7 @@ class TranslatorManagerFragment() : CoroutineScope {
                                 val stringPoolItem = mStringPoolManager.get(view.text.toString())
 
                                 if (stringPoolItem === null || stringPoolItem.demandedText.isBlank() ||
-                                    (stringPoolItem.demandedText != destinationLang)
+                                    (stringPoolItem.requestedLocale != destinationLang)
                                 ) {
                                     //prepare for translate
                                     mStringPoolManager.add(view.text.toString(), "", "")
