@@ -51,7 +51,7 @@ fun FeedProductHighlight(
     isVisible: Boolean,
     onClose: () -> Unit,
     onAtcClick: (FeedCardProductModel) -> Unit,
-    onProductClick: (FeedCardProductModel) -> Unit,
+    onProductClick: (FeedCardProductModel) -> Unit
 ) {
     val ctx = LocalContext.current
     val density = LocalDensity.current
@@ -69,11 +69,13 @@ fun FeedProductHighlight(
             Box(
                 modifier = Modifier
                     .wrapContentSize()
-                    .padding(horizontal = 4.dp)
+                    .padding(horizontal = if (product.isDiscount) 4.dp else 0.dp)
             ) {
                 if (product.isDiscount) {
                     NestRibbon(
-                        text = product.discountFmt, top = 8.dp, modifier = Modifier.zIndex(16f)
+                        text = product.discountFmt,
+                        top = 8.dp,
+                        modifier = Modifier.zIndex(16f)
                     )
                 }
                 ConstraintLayout(
@@ -86,7 +88,7 @@ fun FeedProductHighlight(
                         }
                 ) {
                     val (image, title, ogPrice, discountedPrice, btnAtc, btnClose) = createRefs()
-                    //Product Image
+                    // Product Image
                     NestImage(
                         source = ImageSource.Remote(source = product.coverUrl),
                         type = NestImageType.Rect(12.dp),
@@ -96,9 +98,11 @@ fun FeedProductHighlight(
                                 top.linkTo(parent.top)
                                 bottom.linkTo(parent.bottom)
                                 start.linkTo(parent.start)
-                            })
-                    //Product Title
-                    NestTypography(text = product.name,
+                            }
+                    )
+                    // Product Title
+                    NestTypography(
+                        text = product.name,
                         maxLines = 2,
                         textStyle = NestTheme.typography.paragraph3.copy(
                             color = NestTheme.colors.NN._0
@@ -108,8 +112,9 @@ fun FeedProductHighlight(
                             top.linkTo(image.top)
                             start.linkTo(image.end, 12.dp)
                             end.linkTo(btnClose.start, 4.dp)
-                        })
-                    //Product Final Price
+                        }
+                    )
+                    // Product Final Price
                     val finalPrice =
                         if (product.isDiscount) product.priceDiscountFmt else product.priceFmt
                     NestTypography(
@@ -122,31 +127,37 @@ fun FeedProductHighlight(
                             top.linkTo(title.bottom, 4.dp)
                             start.linkTo(title.start)
                             end.linkTo(btnAtc.start, 4.dp)
-                        })
-
-                    //Button ATC
-                    AndroidView(factory = {
-                        UnifyButton(it).apply {
-                            text = ctx.getText(R.string.feed_product_highlight_atc)
-                            buttonVariant = UnifyButton.Variant.FILLED
-                            buttonSize = UnifyButton.Size.MICRO
-                            setDrawable(
-                                MethodChecker.getDrawable(
-                                    ctx,
-                                    unifycomponentsR.drawable.iconunify_cart
-                                ), UnifyButton.DrawablePosition.RIGHT
-                            )
-                            setOnClickListener { onAtcClick(product) }
                         }
-                    }, modifier = Modifier
-                        .width(48.dp)
-                        .constrainAs(btnAtc) {
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                        }) {}
+                    )
 
-                    //Close Button: close show label again
-                    NestIcon(iconId = IconUnify.CLOSE,
+                    // Button ATC
+                    AndroidView(
+                        factory = {
+                            UnifyButton(it).apply {
+                                text = ctx.getText(R.string.feed_product_highlight_atc)
+                                buttonVariant = UnifyButton.Variant.FILLED
+                                buttonSize = UnifyButton.Size.MICRO
+                                setDrawable(
+                                    MethodChecker.getDrawable(
+                                        ctx,
+                                        unifycomponentsR.drawable.iconunify_cart
+                                    ),
+                                    UnifyButton.DrawablePosition.RIGHT
+                                )
+                                setOnClickListener { onAtcClick(product) }
+                            }
+                        },
+                        modifier = Modifier
+                            .width(48.dp)
+                            .constrainAs(btnAtc) {
+                                end.linkTo(parent.end)
+                                bottom.linkTo(parent.bottom)
+                            }
+                    ) {}
+
+                    // Close Button: close show label again
+                    NestIcon(
+                        iconId = IconUnify.CLOSE,
                         colorLightEnable = NestTheme.colors.NN._0,
                         colorLightDisable = NestTheme.colors.NN._0,
                         colorNightEnable = NestTheme.colors.NN._0,
@@ -172,7 +183,8 @@ fun FeedProductHighlight(
                                 top.linkTo(ogPrice.bottom, 4.dp)
                                 start.linkTo(ogPrice.start)
                                 end.linkTo(btnAtc.start, 4.dp)
-                            })
+                            }
+                        )
                     }
                 }
             }
@@ -219,7 +231,8 @@ fun ProductTagItems(
                     onProductHighlightClose.invoke()
                     needToBeShown = false
                 },
-                onAtcClick = onAtcClick, onProductClick = onProductClick
+                onAtcClick = onAtcClick,
+                onProductClick = onProductClick
             )
         }
     }
