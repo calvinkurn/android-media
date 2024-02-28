@@ -144,6 +144,7 @@
 
 /features/content/affiliate_common/     				@tokopedia/android-minionlance-dev
 /features/category/affiliate_toko/     				    @tokopedia/android-minionlance-dev
+/features/category/common_sdk_affiliate_toko/     	    @tokopedia/android-minionlance-dev
 /features/content/analytic/                             @tokopedia/android-minionlance-dev
 /features/content/content_common/                       @tokopedia/android-minionlance-dev
 /features/content/content_test/                         @tokopedia/android-minionlance-dev
