@@ -45,7 +45,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play_common.util.extension.changeConstraint
-import kotlin.random.Random
 
 /**
  * Created By : Muhammad Furqan on 09/03/23
@@ -548,7 +547,7 @@ class FeedPostVideoViewHolder(
             ProductTagItems(
                 products = element.products,
                 totalProducts = element.totalProducts,
-                key = "${element.id}${Random.nextInt(0, 100)}",
+                key = element.id,
                 onAtcClick = {
                     listener.addToCartHighlight(it, element.campaign, absoluteAdapterPosition)
                 },
@@ -600,7 +599,6 @@ class FeedPostVideoViewHolder(
         binding.playerFeedVideo.player = null
         binding.playerControl.player = null
         thePlayer?.let { listener.detachPlayer(it) }
-        binding.productTagView.disposeComposition()
     }
 
     companion object {

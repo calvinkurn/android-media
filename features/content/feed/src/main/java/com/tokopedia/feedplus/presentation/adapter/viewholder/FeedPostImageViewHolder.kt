@@ -48,7 +48,6 @@ import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play_common.util.extension.changeConstraint
 import kotlinx.coroutines.*
 import kotlin.math.abs
-import kotlin.random.Random
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
@@ -234,7 +233,7 @@ class FeedPostImageViewHolder(
         }
 
         binding.scrollableHost.setTargetParent(parentToBeDisabled)
-        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
     }
 
     fun bind(item: FeedContentAdapter.Item) {
@@ -705,7 +704,7 @@ class FeedPostImageViewHolder(
             ProductTagItems(
                 products = products,
                 totalProducts = totalProducts,
-                key = "$id${Random.nextInt(0, 100)}",
+                key = id,
                 onProductLabelClick = {
                     mData?.let { element ->
                         listener.onProductTagViewClicked(
@@ -746,11 +745,6 @@ class FeedPostImageViewHolder(
         binding.productTagView.rootView.addImpressionListener {
 
         }
-    }
-
-    override fun onViewRecycled() {
-        super.onViewRecycled()
-        binding.productTagView.disposeComposition()
     }
 
     companion object {
