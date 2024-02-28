@@ -114,7 +114,7 @@ abstract class BaseTopChatBubbleMessageViewHolder<T : MessageUiModel>(
     }
 
     private fun bindLongClick(uiModel: T) {
-        if (!uiModel.isBanned() && !uiModel.isDeleted()) {
+        if (shouldShowLongClickMenu(uiModel)) {
             getFxChat()?.setOnLongClickListener {
                 val menus = LongClickMenuItemGenerator.createLongClickMenuMsgBubble()
                 commonListener.showMsgMenu(
@@ -127,6 +127,14 @@ abstract class BaseTopChatBubbleMessageViewHolder<T : MessageUiModel>(
         } else {
             getFxChat()?.setOnLongClickListener(null)
         }
+    }
+
+    private fun shouldShowLongClickMenu(uiModel: T): Boolean {
+        return !uiModel.isBanned() &&
+            !uiModel.isDeleted() &&
+            !uiModel.isVisibleToSellerOnly() &&
+            !uiModel.isVisibleToBuyerOnly()
+
     }
 
     private fun verifyReplyTime(chat: T) {
