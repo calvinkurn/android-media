@@ -59,7 +59,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger

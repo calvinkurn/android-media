@@ -25,7 +25,7 @@ class MissionWidgetClearUtil: MissionWidgetUtil() {
         for (missionWidget in data.missionWidgetList) {
             val heightText = measureTextHeight(
                 context = context,
-                text = missionWidget.subTitle,
+                text = missionWidget.title,
                 textWidth = width,
                 typographyType = Typography.DISPLAY_3,
                 typographyWeight = Typography.REGULAR,

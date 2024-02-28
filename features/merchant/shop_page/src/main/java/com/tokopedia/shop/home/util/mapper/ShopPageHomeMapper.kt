@@ -13,6 +13,8 @@ import com.tokopedia.shop.common.data.model.ShopPageHeaderDataUiModel
 import com.tokopedia.shop.common.data.model.ShopPageHeaderUiModel
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.common.data.source.cloud.model.LabelGroupStyle
+import com.tokopedia.shop.common.util.productcard.ShopProductCardColorHelper
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
@@ -49,6 +51,7 @@ import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingDetail
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoByShopIdUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.entity.Product
+import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
@@ -59,6 +62,8 @@ object ShopPageHomeMapper {
     private const val PRODUCT_RATING_DIVIDER = 20
     private const val ZERO_PRODUCT_DISCOUNT = "0"
 
+    private val productCardColorHelper = ShopProductCardColorHelper()
+    
     fun mapToHomeProductViewModelForAllProduct(
         shopProduct: ShopProduct,
         isMyOwnProduct: Boolean,
@@ -98,6 +103,12 @@ object ShopPageHomeMapper {
                 it.averageRating = stats.averageRating
                 it.isFulfillment = ShopUtil.isFulfillmentByGroupLabel(shopProduct.labelGroupList)
                 it.warehouseId = shopProduct.warehouseId
+                it.shopBadgeList = shopProduct.badge.map { badge ->
+                    ShopBadgeUiModel(
+                        title = badge.title,
+                        imageUrl = badge.imageUrl
+                    )
+                }
             }
         }
 
@@ -106,7 +117,10 @@ object ShopPageHomeMapper {
             position = labelGroup.position,
             title = labelGroup.title,
             type = labelGroup.type,
-            url = labelGroup.url
+            url = labelGroup.url,
+            styles = labelGroup.styles.map {
+                LabelGroupStyle(key = it.key, value = it.value)
+            }
         )
     }
 
@@ -205,7 +219,10 @@ object ShopPageHomeMapper {
         shopHomeProductViewModel: ShopHomeProductUiModel,
         isWideContent: Boolean,
         productRating: String,
-        forceLightModeColor: Boolean
+        forceLightModeColor: Boolean,
+        patternColorType: String,
+        backgroundColor: String,
+        isDeviceOnDarkModeTheme: Boolean
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -220,6 +237,21 @@ object ShopPageHomeMapper {
             shopHomeProductViewModel.isShowFreeOngkir,
             shopHomeProductViewModel.freeOngkirPromoIcon
                 ?: ""
+        )
+        
+        val badges = shopHomeProductViewModel.shopBadgeList.map {
+            ProductCardModel.ShopBadge(
+                isShown = true,
+                imageUrl = it.imageUrl,
+                title = it.title
+            )
+        }
+
+        val productCardColorMode = productCardColorHelper.determineProductCardColorMode(
+            isDeviceOnDarkModeTheme = isDeviceOnDarkModeTheme,
+            shouldOverrideTheme = forceLightModeColor,
+            patternColorType = patternColorType,
+            backgroundColor = backgroundColor
         )
         val baseProductCardModel = ProductCardModel(
             productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
@@ -236,7 +268,10 @@ object ShopPageHomeMapper {
             hasAddToCartButton = isHasAddToCartButton,
             addToCartButtonType = UnifyButton.Type.MAIN,
             isWideContent = isWideContent,
-            forceLightModeColor = forceLightModeColor
+            isWishlisted = shopHomeProductViewModel.isWishList,
+            forceLightModeColor = forceLightModeColor,
+            colorMode = productCardColorMode,
+            shopBadgeList = badges
         )
         return if (shopHomeProductViewModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(
                 shopHomeProductViewModel.isSoldOut
@@ -340,7 +375,14 @@ object ShopPageHomeMapper {
             addToCartButtonType = UnifyButton.Type.MAIN,
             stockBarLabel = shopHomeProductViewModel.stockLabel,
             stockBarPercentage = shopHomeProductViewModel.stockSoldPercentage,
-            forceLightModeColor = forceLightModeColor
+            forceLightModeColor = forceLightModeColor,
+            shopBadgeList = shopHomeProductViewModel.shopBadgeList.map {
+                ProductCardModel.ShopBadge(
+                    isShown = false,
+                    imageUrl = it.imageUrl,
+                    title = it.title
+                )
+            }
         )
         return if (isShopCampaignWidgetEnableDirectPurchase(
                 shopHomeProductViewModel.isEnableDirectPurchase,
@@ -395,7 +437,13 @@ object ShopPageHomeMapper {
             position = labelGroupUiModel.position,
             title = labelGroupUiModel.title,
             type = labelGroupUiModel.type,
-            imageUrl = labelGroupUiModel.url
+            imageUrl = labelGroupUiModel.url,
+            styleList = labelGroupUiModel.styles.map { style ->
+                ProductCardModel.LabelGroup.Style(
+                    key = style.key,
+                    value = style.value
+                )
+            }
         )
     }
 
@@ -425,8 +473,8 @@ object ShopPageHomeMapper {
                         mapToDisplayImageWidget(
                             widgetResponse,
                             widgetLayout,
-                            false,
-                            ShopPageColorSchema()
+                            isOverrideTheme,
+                            colorSchema
                         )
                     }
 

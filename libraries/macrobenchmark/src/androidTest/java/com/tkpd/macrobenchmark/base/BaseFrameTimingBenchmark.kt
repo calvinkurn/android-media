@@ -34,7 +34,6 @@ abstract class BaseFrameTimingBenchmark {
         if (MacroArgs.useMock(InstrumentationRegistry.getArguments())) {
             setupMock()
         }
-        setupEnvironment()
     }
 
     abstract fun setupMock()
@@ -53,7 +52,10 @@ abstract class BaseFrameTimingBenchmark {
         benchmarkRule.measureTokopediaApps(
             metrics = listOf(FrameTimingMetric()),
             packageName = packageName(),
-            startupMode = StartupMode.WARM
+            startupMode = StartupMode.COLD,
+            setupBlock = {
+                setupEnvironment()
+            }
         ) {
             val intent = getIntent()
             it.startActivityAndWait(intent)

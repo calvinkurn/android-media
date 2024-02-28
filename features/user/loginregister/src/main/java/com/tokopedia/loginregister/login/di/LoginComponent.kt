@@ -15,11 +15,13 @@ import dagger.Component
  */
 
 @ActivityScope
-@Component(modules = [
-    LoginModule::class,
-    LoginUseCaseModule::class,
-    LoginViewModelModule::class,
-], dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [
+        LoginModule::class,
+        LoginUseCaseModule::class,
+        LoginViewModelModule::class,
+    ], dependencies = [BaseAppComponent::class]
+)
 interface LoginComponent {
     fun inject(fragment: LoginEmailPhoneFragment)
     fun inject(fragment: SellerSeamlessLoginFragment)

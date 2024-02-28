@@ -5,16 +5,16 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationError
 import com.tokopedia.home.databinding.ItemHomeRecommendationErrorLayoutBinding
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 class HomeRecommendationErrorViewHolder(
     view: View,
-    private val listener: HomeRecommendationListener
+    private val listener: GlobalRecomListener
 ) : AbstractViewHolder<HomeRecommendationError>(view) {
 
     private val binding = ItemHomeRecommendationErrorLayoutBinding.bind(itemView)

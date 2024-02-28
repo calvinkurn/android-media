@@ -73,7 +73,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
-    implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
 
     implementation rootProject.ext.networkDependencies.glide
