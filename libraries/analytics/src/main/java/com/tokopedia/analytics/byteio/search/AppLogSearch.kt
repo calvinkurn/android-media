@@ -241,7 +241,7 @@ object AppLogSearch {
         val ecomFilterType: String? = null,
     ) {
         fun json() = JSONObject(buildMap {
-            val enterFrom = enterFrom(listOf(PageName.HOME))
+            val enterFrom = enterFromBeforeCurrent(listOf(PageName.HOME))
 
             put(IMPR_ID, imprId)
             put(ENTER_FROM, enterFrom)
@@ -291,7 +291,7 @@ object AppLogSearch {
     ) {
         fun json() = JSONObject(
             mapOf(
-                SEARCH_POSITION to enterFrom(whitelistedEnterFromAutoComplete),
+                SEARCH_POSITION to HOMEPAGE,
                 SEARCH_ENTRANCE to HOMEPAGE,
                 IMPR_ID to imprId,
                 NEW_SUG_SESSION_ID to newSugSessionId,
@@ -323,14 +323,14 @@ object AppLogSearch {
     ) {
         fun json() = JSONObject(
             mapOf(
-                SEARCH_POSITION to enterFrom(whitelistedEnterFromAutoComplete),
+                SEARCH_POSITION to enterFromBeforeCurrent(whitelistedEnterFromAutoComplete),
                 SEARCH_ENTRANCE to HOMEPAGE,
-                GROUP_ID to groupId, // TODO:: Group ID
-                IMPR_ID to imprId, // TODO:: Request ID from Suggestion GQL BE
+                GROUP_ID to groupId,
+                IMPR_ID to imprId,
                 NEW_SUG_SESSION_ID to newSugSessionId,
                 RAW_QUERY to rawQuery,
                 ENTER_METHOD to enterMethod,
-                SUG_TYPE to sugType, // TODO:: CAMPAIGN || PRODUCT || STORE.
+                SUG_TYPE to sugType,
                 WORDS_CONTENT to wordsContent,
                 WORDS_POSITION to wordsPosition,
                 WORDS_SOURCE to wordSource
@@ -371,12 +371,10 @@ object AppLogSearch {
 
         fun json() = JSONObject(
             buildMap {
-                val enterFrom = enterFrom(listOf(PageName.HOME))
-
                 put(IMPR_ID, imprId)
                 put(SEARCH_ID, searchId)
                 put(SEARCH_ENTRANCE, HOMEPAGE)
-                put(ENTER_FROM, enterFrom)
+                put(ENTER_FROM, GOODS_SEARCH)
                 put(SEARCH_RESULT_ID, searchResultId)
                 listItemId?.let { put(LIST_ITEM_ID, it) }
                 itemRank?.let { put(ITEM_RANK, it) }
@@ -393,7 +391,7 @@ object AppLogSearch {
         )
     }
 
-    fun enterFrom(whitelistedEnterFrom: List<String>): String {
+    fun enterFromBeforeCurrent(whitelistedEnterFrom: List<String>): String {
         val actualEnterFrom = AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM)?.toString() ?: ""
 
         return if (whitelistedEnterFrom.contains(actualEnterFrom)) {
