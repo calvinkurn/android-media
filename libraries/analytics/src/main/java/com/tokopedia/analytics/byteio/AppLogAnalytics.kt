@@ -267,10 +267,13 @@ object AppLogAnalytics {
 
     fun getLastDataBeforeCurrent(key: String): Any? {
         if (_pageDataList.isEmpty()) return null
-        _pageDataList.reversed().subList(1, _pageDataList.size).forEach { hashMap ->
-            hashMap[key]?.let {
+        var idx = _pageDataList.lastIndex - 1
+        while (idx >= 0) {
+            val map = _pageDataList[idx]
+            map[key]?.let {
                 return it
             }
+            idx--
         }
         return null
     }
