@@ -179,7 +179,8 @@ class TranslatorManagerFragment() : CoroutineScope {
             mStringPoolManager.updateLangDest(destinationLang)
         }
 
-        getCurrentFragment()?.let { prepareSelectors(it) }
+        prepareSelectors(getCurrentFragment()!!)
+
         origStrings = mStringPoolManager.getQueryString()
         Log.d(TAG, "Here is eligible string for translation in current screen $origStrings")
 

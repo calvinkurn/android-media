@@ -76,11 +76,11 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
             Log.i(TAG, "onActivityResumed() invoked of :" + activity.localClassName)
             val weakActivity = WeakReference<Activity>(activity)
             translatorManager?.clearSelectors()
-            TranslatorManager.setCurrentActivity(weakActivity)
 
             val rootView: View = activity.window.decorView.findViewById(android.R.id.content)
 
-            launch(coroutineContext) {
+            launch {
+                TranslatorManager.setCurrentActivity(weakActivity)
                 translatorManager?.prepareSelectors(activity)
                 setAddonGlobalLayoutListener(rootView)
 
@@ -91,7 +91,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                     }
 
                 onDestLanguageChangedAsFlow(activity)
-                    .collectLatest {
+                    .collect {
                         translatorManager?.startTranslate()
                     }
             }
@@ -281,12 +281,12 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                     val weakFragment = WeakReference<Fragment>(f)
 
                     translatorManagerFragment?.clearSelectors()
-                    TranslatorManagerFragment.setCurrentFragment(weakFragment)
 
                     f.view?.let {
 
-                        launch(coroutineContext) {
+                        launch {
 
+                            TranslatorManagerFragment.setCurrentFragment(weakFragment)
                             translatorManagerFragment?.prepareSelectors(f)
 
                             setAddonGlobalLayoutListener(it)
@@ -302,5 +302,5 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
     }
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + CoroutineExceptionHandler { _, _ -> }
+        get() = Dispatchers.Default + CoroutineExceptionHandler { _, _ -> }
 }

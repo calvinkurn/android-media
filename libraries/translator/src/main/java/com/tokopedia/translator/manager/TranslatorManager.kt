@@ -119,7 +119,6 @@ class TranslatorManager() : CoroutineScope {
             this.mCurrentActivity?.clear()
         }
 
-
         @JvmStatic
         fun init(application: Application, apiKey: String): TranslatorManager? {
 
