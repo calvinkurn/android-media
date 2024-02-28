@@ -2031,6 +2031,7 @@ class CheckoutViewModel @Inject constructor(
             var productErrorPrescriptionCount = 0
             var productSuccessPrescriptionCount = 0
             val checkoutEpharmacy = items.epharmacy()
+            var hasInvalidPayment = false
             items.forEachIndexed { index, checkoutItem ->
                 if (checkoutItem is CheckoutOrderModel) {
                     if (!checkoutItem.isError && checkoutItem.shipment.courierItemData == null) {
@@ -2076,13 +2077,23 @@ class CheckoutViewModel @Inject constructor(
                                     isIncompletePrescriptionError = productSuccessPrescriptionCount > 0
                                 )
                             )
+                        if (firstErrorIndex == -1) {
+                            firstErrorIndex = index
+                        }
+                    }
+                }
+                if (checkoutItem is CheckoutPaymentModel) {
+                    if (checkoutItem.enable && (!checkoutItem.widget.isValidStateToCheckout || checkoutItem.data == null)) {
+                        hasInvalidPayment = true
                     }
                 }
             }
             if (firstErrorIndex > -1 || isPrescriptionFrontEndValidationError) {
                 pageState.value = CheckoutPageState.Normal
                 listData.value = items
-                pageState.value = CheckoutPageState.ScrollTo(firstErrorIndex)
+                if (firstErrorIndex > -1) {
+                    pageState.value = CheckoutPageState.ScrollTo(firstErrorIndex)
+                }
                 if (hasUnselectedCourier) {
                     commonToaster.emit(
                         CheckoutPageToaster(
@@ -2105,6 +2116,18 @@ class CheckoutViewModel @Inject constructor(
                     )
                 )
                 pageState.value = CheckoutPageState.Normal
+                return@launch
+            }
+            if (hasInvalidPayment) {
+                pageState.value = CheckoutPageState.Normal
+                commonToaster.emit(
+                    CheckoutPageToaster(
+                        Toaster.TYPE_NORMAL,
+                        "Atur pembayaran dulu yuk sebelum lanjut bayar."
+                    )
+                )
+                pageState.value = CheckoutPageState.ScrollTo(listData.value.size - PAYMENT_INDEX_FROM_BOTTOM)
+                return@launch
             }
             val errorToaster =
                 addOnProcessor.saveAddOnsProductBeforeCheckout(listData.value, isOneClickShipment)
