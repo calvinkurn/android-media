@@ -2259,7 +2259,7 @@ class CheckoutViewModel @Inject constructor(
         hasClearPromoBeforeCheckout: Boolean
     ) {
         cartProcessor.processSaveShipmentState(listData.value, recipientAddressModel)
-        val updateCartResult = cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(listData.value), "", cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()!!))
+        val updateCartResult = cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(listData.value), "", cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
         if (!updateCartResult.isSuccess) {
             toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, updateCartResult.toasterMessage, updateCartResult.throwable))
         }
