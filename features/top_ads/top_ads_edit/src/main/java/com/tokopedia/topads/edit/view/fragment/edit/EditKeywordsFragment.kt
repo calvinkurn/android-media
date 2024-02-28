@@ -487,7 +487,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         if (adapter?.items?.isEmpty() == true) {
             setEmptyView()
         }
-        adapter?.notifyItemChanged(position)
+        if (position >= Int.ZERO)
+            adapter?.notifyItemRemoved(position)
         setCount()
         adapter?.getBidData(initialBudget, isnewlyAddded)
         updateString()
