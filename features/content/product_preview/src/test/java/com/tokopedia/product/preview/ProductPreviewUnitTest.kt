@@ -46,7 +46,10 @@ class ProductPreviewUnitTest {
 
     @Test
     fun `when checking initial source and source is product with no review`() {
-        val sourceModel = mockDataSource.mockSourceProductWithNoReview(productId)
+        val sourceModel = mockDataSource.mockSourceProduct(
+            productId = productId,
+            hasReview = false
+        )
 
         getRobot(sourceModel).use { robot ->
             val state = robot.recordState {
@@ -60,7 +63,7 @@ class ProductPreviewUnitTest {
 
     @Test
     fun `when checking initial source and source is product with review`() {
-        val sourceModel = mockDataSource.mockSourceProductWithReview(productId)
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
 
         getRobot(sourceModel).use { robot ->
             robot.recordState {
@@ -102,7 +105,7 @@ class ProductPreviewUnitTest {
 
     @Test
     fun `when fetch mini info success`() {
-        val sourceModel = mockDataSource.mockSourceProductWithReview(productId)
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
         val expectedData = mockDataSource.mockProductMiniInfo()
 
         coEvery { mockRepository.getProductMiniInfo(productId) } returns expectedData
@@ -118,7 +121,7 @@ class ProductPreviewUnitTest {
 
     @Test
     fun `when fetch mini info fail`() {
-        val sourceModel = mockDataSource.mockSourceProductWithReview(productId)
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
         val expectedThrow = Throwable("fail fetching")
 
         coEvery { mockRepository.getProductMiniInfo(productId) } throws expectedThrow
@@ -128,6 +131,20 @@ class ProductPreviewUnitTest {
                 robot.fetchMiniInfoTestCase()
             }.also { state ->
                 state.last().assertEqualTo(ProductPreviewUiEvent.FailFetchMiniInfo(expectedThrow))
+            }
+        }
+    }
+
+    @Test
+    fun `when initialize product main data`() {
+        val productMedia = mockDataSource.mockProductMediaList()
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordState {
+                robot.initializeProductMainDataTestCase()
+            }.also { state ->
+                state.productUiModel.productMedia.assertEqualTo(productMedia)
             }
         }
     }

@@ -8,22 +8,16 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class ProductPreviewMockData {
 
-    fun mockSourceProductWithReview(productId: String): ProductPreviewSourceModel {
+    fun mockSourceProduct(
+        productId: String,
+        productMedia: List<ProductMediaUiModel> = mockProductMediaList(),
+        hasReview: Boolean = true,
+        ): ProductPreviewSourceModel {
         return ProductPreviewSourceModel(
             productId = productId,
             source = ProductPreviewSourceModel.ProductSourceData(
-                productSourceList = mockProductMediaList(),
-                hasReviewMedia = true,
-            )
-        )
-    }
-
-    fun mockSourceProductWithNoReview(productId: String): ProductPreviewSourceModel {
-        return ProductPreviewSourceModel(
-            productId = productId,
-            source = ProductPreviewSourceModel.ProductSourceData(
-                productSourceList = mockProductMediaList(),
-                hasReviewMedia = false,
+                productSourceList = productMedia,
+                hasReviewMedia = hasReview,
             )
         )
     }
@@ -49,7 +43,7 @@ class ProductPreviewMockData {
         )
     }
 
-    private fun mockProductMediaList(): List<ProductMediaUiModel> {
+    fun mockProductMediaList(): List<ProductMediaUiModel> {
         return listOf(
             ProductMediaUiModel(
                 contentId = "1",
