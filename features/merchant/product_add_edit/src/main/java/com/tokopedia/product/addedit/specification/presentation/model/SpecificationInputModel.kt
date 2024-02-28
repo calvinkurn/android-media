@@ -10,6 +10,7 @@ data class SpecificationInputModel (
         var data: String = "",
         var specificationVariant: String = "",
         var required: Boolean = false,
+        var isTextInput: Boolean = false,
         @StringRes var errorMessageRes: Int = 0
 ): Parcelable {
     val requiredFieldNotFilled: Boolean get() = id.isEmpty() && required

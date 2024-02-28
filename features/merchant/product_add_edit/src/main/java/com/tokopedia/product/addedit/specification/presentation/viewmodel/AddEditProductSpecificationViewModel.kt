@@ -79,12 +79,13 @@ class AddEditProductSpecificationViewModel @Inject constructor(
                     required = required)
             } else if (annotationCategoryData.isCustomAnnotType) {
                 val specificationList = mProductInputModel.getValueOrDefault().detailInputModel.specifications.orEmpty()
-                specificationList.firstOrNull {
+                val selectedSpecification = specificationList.firstOrNull {
                     it.specificationVariant == annotationCategoryData.variant
                 } ?: SpecificationInputModel(
                     required = required,
                     specificationVariant = annotationCategoryData.variant,
                 )
+                selectedSpecification.apply { isTextInput = true }
             } else {
                 SpecificationInputModel(
                     required = required,
