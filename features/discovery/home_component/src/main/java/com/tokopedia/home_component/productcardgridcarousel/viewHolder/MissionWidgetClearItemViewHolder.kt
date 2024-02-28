@@ -81,8 +81,9 @@ class MissionWidgetClearItemViewHolder(
                             enterMethod = "${element.data.pageName}_${element.cardPosition+1}"
                         )
                     )
+                } else {
+                    AppLogRecommendation.sendCardClickAppLog(element.asCardTrackModel(element.isCache))
                 }
-                AppLogRecommendation.sendCardClickAppLog(element.asCardTrackModel(element.isCache))
                 AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, "${element.data.pageName}_${element.cardPosition + 1}")
                 missionWidgetComponentListener.onMissionClicked(element, element.cardPosition)
             }
@@ -92,8 +93,9 @@ class MissionWidgetClearItemViewHolder(
             containerMissionWidget.addOnImpression1pxListener(element) {
                 if (element.isProduct()) {
                     AppLogRecommendation.sendProductShowAppLog(element.asProductTrackModel(element.isCache))
+                } else {
+                    AppLogRecommendation.sendCardShowAppLog(element.asCardTrackModel(element.isCache))
                 }
-                AppLogRecommendation.sendCardShowAppLog(element.asCardTrackModel(element.isCache))
             }
         }
     }

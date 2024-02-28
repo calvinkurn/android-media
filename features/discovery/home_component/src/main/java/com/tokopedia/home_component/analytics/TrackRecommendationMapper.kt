@@ -25,6 +25,7 @@ object TrackRecommendationMapper {
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
             enterMethod = enterMethod,
             position = cardPosition,
+            cardName = CardName.MISSION_PRODUCT_CARD.format(data.title),
         )
     }
 
@@ -33,8 +34,7 @@ object TrackRecommendationMapper {
         enterMethod: String = "",
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
-            cardName = CardName.MISSION_CARD,
-            cardType = data.pageName,
+            cardName = CardName.MISSION_PAGE_CARD.format(data.title),
             productId = data.productID,
             moduleName = data.pageName,
             isAd = data.isTopads,

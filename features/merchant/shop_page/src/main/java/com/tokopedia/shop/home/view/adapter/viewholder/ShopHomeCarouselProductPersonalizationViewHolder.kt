@@ -321,6 +321,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
                             carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener
                         )
+                        recyclerView?.trackHorizontalScroll(element)
                     }
                 }
             }
@@ -344,6 +345,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                         carouselProductCardOnItemClickListener = productClickListener,
                         carouselProductCardOnItemImpressedListener = productImpressionListener
                     )
+                    recyclerView?.trackHorizontalScroll(element)
                 }
             }
 
@@ -370,6 +372,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                         carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
                         carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener
                     )
+                    recyclerView?.trackHorizontalScroll(element)
                 }
             }
         }

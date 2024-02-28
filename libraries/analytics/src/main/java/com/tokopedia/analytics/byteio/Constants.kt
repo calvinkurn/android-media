@@ -141,18 +141,17 @@ enum class ProductType(val type: Int) {
 }
 
 object PageName {
-    const val MAINPAGE = "mall"
-    const val HOME = "home"
+    const val HOME = "homepage"
     const val FEED = "feed"
     const val OFFICIAL_STORE = "official_store"
-    const val WHISLIST = "whishlist"
+    const val WISHLIST = "wishlist"
     const val UOH = "order_center"
     const val INBOX = "inbox"
     const val NOTIFICATION = "notification"
     const val PDP = "product_detail"
     const val SEARCH_RESULT = "search_result"
     const val CART = "cart"
-    const val SHOP = "shop"
+    const val SHOP = "shoppage"
     const val SKU = "sku"
     const val EXTERNAL_PROMO = "external_promo"
 }

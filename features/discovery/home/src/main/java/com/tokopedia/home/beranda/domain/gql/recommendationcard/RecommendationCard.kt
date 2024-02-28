@@ -78,7 +78,9 @@ data class RecommendationCard(
     @SerializedName("wishlistUrl")
     val wishlistUrl: String = "",
     @SerializedName("recParam")
-    val recParam: String = ""
+    val recParam: String = "",
+    @SerializedName("countSold")
+    val countSold: Int = 0,
 ) {
 
     fun mapToHomeRecommendationProductItem(): HomeRecommendationItemDataModel.HomeRecommendationProductItem {
@@ -145,6 +147,7 @@ data class RecommendationCard(
             clickUrl = clickUrl,
             isWishlist = isWishlist,
             wishListUrl = wishlistUrl,
+            countSold = countSold,
         )
     }
 

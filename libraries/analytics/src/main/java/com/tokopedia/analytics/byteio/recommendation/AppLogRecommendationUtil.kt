@@ -17,12 +17,13 @@ object AppLogRecommendationConst {
     const val SOURCE_MODULE_HORIZONTAL_FORMAT = "%s_%s_outer_%s_module"
 }
 
-enum class CardName(val str: String) {
-    REC_GOODS_CARD("rec_goods_card"),
-    REC_CONTENT_CARD("rec_%s_card"),
-    REC_VIDEO_CARD("rec_video_card"),
-    AD_FEED_CARD("ad_feed_card"),
-    MISSION_CARD("mission_%s_card")
+object CardName {
+    const val REC_GOODS_CARD = "rec_goods_card"
+    const val REC_CONTENT_CARD = "rec_%s_card"
+    const val REC_VIDEO_CARD = "rec_video_card"
+    const val AD_FEED_CARD = "ad_feed_card"
+    const val MISSION_PAGE_CARD = "mission_%s_page_card"
+    const val MISSION_PRODUCT_CARD = "mission_%s_product_card"
 }
 
 fun constructSourceModule(

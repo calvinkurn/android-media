@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.SlideTrackObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
@@ -321,6 +322,16 @@ class ProductRecommendationViewHolder(
                 binding.rvProductRecom.show()
                 binding.loadingRecom.gone()
             }
+        )
+        trackHorizontalScroll(element)
+    }
+
+    private fun trackHorizontalScroll(model: ProductRecommendationDataModel) {
+        binding.rvProductRecom.addHorizontalTrackListener(
+            SlideTrackObject(
+                moduleName = model.recomWidgetData?.pageName.orEmpty(),
+                barName = model.recomWidgetData?.pageName.orEmpty(),
+            )
         )
     }
 
