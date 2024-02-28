@@ -232,16 +232,21 @@ class MainNavViewModel @Inject constructor(
             shopId = shopId
         )
 
-        launch(baseDispatcher.get().io) {
-            addToCartUseCase.get().addToCartRequestParams = param
-            val result = addToCartUseCase.get().executeOnBackground()
+        launchCatchError(
+            block = {
+                addToCartUseCase.get().addToCartRequestParams = param
+                val result = addToCartUseCase.get().executeOnBackground()
 
-            withContext(baseDispatcher.get().main) {
-                _onAtcProductState.tryEmit(
-                    Pair(result.isDataError(), result.getAtcErrorMessage().orEmpty())
-                )
+                withContext(baseDispatcher.get().main) {
+                    _onAtcProductState.tryEmit(
+                        Pair(result.isDataError(), result.getAtcErrorMessage().orEmpty())
+                    )
+                }
+            },
+            onError = { throwable ->
+                _onAtcProductState.tryEmit(Pair(false, throwable.message.orEmpty()))
             }
-        }
+        )
     }
 
     private fun MutableList<Visitable<*>>.addTransactionMenu() {
