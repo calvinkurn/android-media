@@ -27,7 +27,7 @@ class StickyHeadRecyclerView : ConstraintLayout {
     private val recyclerView: RecyclerView
     private var headerItemDecoration: HeaderItemDecoration? = null
 
-    private var hasRecomScrollListener = false
+    private var hasApplogScrollListener = false
 
     init {
         val view = View.inflate(context, R.layout.sticky_header_recycler_view, this)
@@ -113,7 +113,7 @@ class StickyHeadRecyclerView : ConstraintLayout {
     }
 
     fun trackVerticalScroll() {
-        if(hasRecomScrollListener) return
+        if(hasApplogScrollListener) return
         recyclerView.addVerticalTrackListener(
             recommendationTriggerObject = RecommendationTriggerObject(
                 viewHolders = listOf(
@@ -121,6 +121,6 @@ class StickyHeadRecyclerView : ConstraintLayout {
                 ),
             ),
         )
-        hasRecomScrollListener = true
+        hasApplogScrollListener = true
     }
 }

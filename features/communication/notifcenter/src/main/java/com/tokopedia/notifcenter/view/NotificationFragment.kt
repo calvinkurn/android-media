@@ -111,7 +111,7 @@ class NotificationFragment @Inject constructor(
     private val viewHolderLoading = ArrayMap<Any, ViewHolderState>()
     private val scrollState = ScrollToBottomState()
     private var hasTrackEnterPage = false
-    private var hasRecomScrollListener = false
+    private var hasApplogScrollListener = false
 
     override fun hasInitialSwipeRefresh(): Boolean = true
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
@@ -492,13 +492,13 @@ class NotificationFragment @Inject constructor(
                 }
             }
         })
-        if(hasRecomScrollListener) return
+        if(hasApplogScrollListener) return
         rv?.addVerticalTrackListener(
             recommendationTriggerObject = RecommendationTriggerObject(
                 viewHolders = listOf(RecommendationViewHolder::class.java)
             )
         )
-        hasRecomScrollListener = true
+        hasApplogScrollListener = true
     }
 
     private fun getLastVisibleItemPosition(): Int? {

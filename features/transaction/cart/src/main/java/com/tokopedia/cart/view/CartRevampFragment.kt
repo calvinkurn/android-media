@@ -369,7 +369,7 @@ class CartRevampFragment :
 
     private var enablePromoEntryPointNewInterface: Boolean = false
 
-    private var hasRecomScrollListener: Boolean = false
+    private var hasApplogScrollListener: Boolean = false
 
     companion object {
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
@@ -1745,13 +1745,13 @@ class CartRevampFragment :
     }
 
     private fun addRecommendationScrollListener(cartRecyclerView: RecyclerView) {
-        if(hasRecomScrollListener) return
+        if(hasApplogScrollListener) return
         cartRecyclerView.addVerticalTrackListener(
             recommendationTriggerObject = RecommendationTriggerObject(
                 viewHolders = listOf(CartRecommendationViewHolder::class.java)
             )
         )
-        hasRecomScrollListener = true
+        hasApplogScrollListener = true
     }
 
     private fun addEndlessRecyclerViewScrollListener(

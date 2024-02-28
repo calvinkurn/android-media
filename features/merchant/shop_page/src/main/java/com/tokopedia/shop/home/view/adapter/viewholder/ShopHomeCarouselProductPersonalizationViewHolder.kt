@@ -58,7 +58,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
     private var recyclerView: CarouselProductCardView? = null
     private var recyclerViewCarouselSingleOrDoubleProduct: RecyclerView? = null
     private var productCarouselSingleOrDoubleAdapter: ShopHomeCarouselProductAdapter? = null
-    private var hasRecomScrollListener = false
+    private var hasApplogScrollListener = false
 
     init {
         initView()
@@ -290,7 +290,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                             carouselProductCardOnItemClickListener = productClickListener,
                             carouselProductCardOnItemImpressedListener = productImpressionListener
                         )
-                        recyclerView?.carouselProductCardRecyclerView?.trackHorizontalScroll(element)
+                        recyclerView?.trackHorizontalScroll(element)
                     }
                 }
             }
@@ -411,7 +411,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
     private fun RecyclerView.trackHorizontalScroll(
         model: ShopHomeCarousellProductUiModel,
     ) {
-        if(hasRecomScrollListener) return
+        if(hasApplogScrollListener) return
         addHorizontalTrackListener(
             slideTrackObject = SlideTrackObject(
                 moduleName = model.name,
@@ -419,7 +419,19 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                 shopId = model.shopId
             )
         )
-        hasRecomScrollListener = true
+        hasApplogScrollListener = true
+    }
+
+    private fun CarouselProductCardView.trackHorizontalScroll(
+        model: ShopHomeCarousellProductUiModel,
+    ) {
+        addHorizontalTrackListener(
+            SlideTrackObject(
+                moduleName = model.name,
+                barName = model.name,
+                shopId = model.shopId
+            )
+        )
     }
 
     private fun configColorTheme(element: ShopHomeCarousellProductUiModel) {

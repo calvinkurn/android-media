@@ -26,6 +26,8 @@ class CarouselPagingProductCardView: ConstraintLayout {
     private var groupPaginationOnScrollListener: GroupPaginationOnScrollListener? = null
     private var layoutManager: GridLayoutManager? = null
     private var itemDecoration: ItemDecoration? = null
+    
+    private var hasApplogScrollListener = false
 
     private val config = AttributesConfig()
     private val util = CarouselPagingUtil(
@@ -267,7 +269,9 @@ class CarouselPagingProductCardView: ConstraintLayout {
     }
 
     fun addHorizontalTrackListener(model: SlideTrackObject) {
+        if(hasApplogScrollListener) return
         binding?.carouselPagingProductCardRecyclerView?.addHorizontalTrackListener(model)
+        hasApplogScrollListener = true
     }
 
     interface CarouselPagingListener {
