@@ -17,6 +17,7 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
 import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailDataUseCase
 import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMapper
@@ -37,6 +38,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEvent
 import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEventUiState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.WidgetBrcCsatUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailChatCounterUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailGroupBookingUiState
@@ -51,6 +53,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.WidgetBrcCsatUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
@@ -160,6 +163,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val savingsWidgetUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapSavingsWidgetUiState
     ).toStateFlow(SavingsWidgetUiState.Hide)
+    private val brcCsatUiState = buyerOrderDetailDataRequestState.mapLatest(
+        ::mapWidgetBrcCsatUiState
+    ).toStateFlow(WidgetBrcCsatUiState.Hidden)
 
     private val _oneTimeMethod = MutableStateFlow(OrderOneTimeEventUiState())
     val oneTimeMethodState: StateFlow<OrderOneTimeEventUiState> = _oneTimeMethod
@@ -176,6 +182,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
         epharmacyInfoUiState,
         scpRewardsMedalTouchPointWidgetUiState,
         savingsWidgetUiState,
+        brcCsatUiState,
         ::mapBuyerOrderDetailUiState
     ).toStateFlow(BuyerOrderDetailUiState.FullscreenLoading)
 
@@ -508,6 +515,27 @@ class BuyerOrderDetailViewModel @Inject constructor(
         }
     }
 
+    private fun mapWidgetBrcCsatUiState(
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
+    ): WidgetBrcCsatUiState {
+        val currentState = brcCsatUiState.value
+        return if (getBuyerOrderDetailDataRequestState.getP0DataRequestState.getBuyerOrderDetailRequestState is GetBuyerOrderDetailRequestState.Requesting) {
+            if (currentState is WidgetBrcCsatUiState.HasData) {
+                WidgetBrcCsatUiState.HasData.Reloading(currentState.data)
+            } else {
+                WidgetBrcCsatUiState.Loading
+            }
+        } else if (getBuyerOrderDetailDataRequestState.getP0DataRequestState.getBuyerOrderDetailRequestState is GetBuyerOrderDetailRequestState.Complete.Success) {
+            if (currentState is WidgetBrcCsatUiState.HasData) {
+                WidgetBrcCsatUiState.HasData.Showing(currentState.data)
+            } else {
+                WidgetBrcCsatUiState.HasData.Showing(WidgetBrcCsatUiModel(expanded = true))
+            }
+        } else {
+            WidgetBrcCsatUiState.Hidden
+        }
+    }
+
     private fun mapProductListUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>,
@@ -573,7 +601,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
         orderInsuranceUiState: OrderInsuranceUiState,
         epharmacyInfoUiState: EpharmacyInfoUiState,
         scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState,
-        savingsWidgetUiState: SavingsWidgetUiState
+        savingsWidgetUiState: SavingsWidgetUiState,
+        brcCsatUiState: WidgetBrcCsatUiState
     ): BuyerOrderDetailUiState {
         return BuyerOrderDetailUiStateMapper.map(
             actionButtonsUiState,
@@ -586,7 +615,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
             orderInsuranceUiState,
             epharmacyInfoUiState,
             scpRewardsMedalTouchPointWidgetUiState,
-            savingsWidgetUiState
+            savingsWidgetUiState,
+            brcCsatUiState
         )
     }
 

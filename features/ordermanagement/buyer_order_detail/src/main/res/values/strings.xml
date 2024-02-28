@@ -108,4 +108,8 @@
     <!-- One Warehouse One Checkout (OWOC) -->
     <string name="buyer_order_detail_owoc_product_list_expand">Lihat Semua Produk</string>
 
+    <!--  BOM BRC CSAT  -->
+    <string name="bom_brc_csat_title">Gimana proses pembatalan pesananmu?</string>
+    <string name="bom_brc_csat_help">Butuh bantuan lain? &lt;b&gt;&lt;a href=\"%2$s\"&gt;Hubungi Kami&lt;/a&gt;&lt;/b&gt;</string>
+
 </resources>

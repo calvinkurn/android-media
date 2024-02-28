@@ -13,6 +13,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.WidgetBrcCsatUiState
 import org.json.JSONObject
 
 object BuyerOrderDetailUiStateMapper {
@@ -27,7 +28,8 @@ object BuyerOrderDetailUiStateMapper {
         orderInsuranceUiState: OrderInsuranceUiState,
         epharmacyInfoUiState: EpharmacyInfoUiState,
         scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState,
-        savingsWidgetUiState: SavingsWidgetUiState
+        savingsWidgetUiState: SavingsWidgetUiState,
+        brcCsatUiState: WidgetBrcCsatUiState
     ): BuyerOrderDetailUiState {
         return if (
             actionButtonsUiState is ActionButtonsUiState.HasData &&
@@ -38,7 +40,8 @@ object BuyerOrderDetailUiStateMapper {
             pgRecommendationWidgetUiState is PGRecommendationWidgetUiState.HasData &&
             epharmacyInfoUiState is EpharmacyInfoUiState.HasData &&
             orderResolutionTicketStatusUiState !is OrderResolutionTicketStatusUiState.Loading &&
-            scpRewardsMedalTouchPointWidgetUiState is ScpRewardsMedalTouchPointWidgetUiState.HasData
+            scpRewardsMedalTouchPointWidgetUiState is ScpRewardsMedalTouchPointWidgetUiState.HasData &&
+            brcCsatUiState !is WidgetBrcCsatUiState.Loading
         ) {
             if (
                 actionButtonsUiState is ActionButtonsUiState.HasData.Reloading ||
@@ -49,7 +52,8 @@ object BuyerOrderDetailUiStateMapper {
                 pgRecommendationWidgetUiState is PGRecommendationWidgetUiState.HasData.Reloading ||
                 orderResolutionTicketStatusUiState is OrderResolutionTicketStatusUiState.HasData.Reloading ||
                 orderInsuranceUiState is OrderInsuranceUiState.HasData.Reloading ||
-                epharmacyInfoUiState is EpharmacyInfoUiState.HasData.Reloading
+                epharmacyInfoUiState is EpharmacyInfoUiState.HasData.Reloading ||
+                brcCsatUiState is WidgetBrcCsatUiState.HasData.Reloading
             ) {
                 BuyerOrderDetailUiState.HasData.PullRefreshLoading(
                     actionButtonsUiState,
@@ -62,7 +66,8 @@ object BuyerOrderDetailUiStateMapper {
                     orderInsuranceUiState,
                     epharmacyInfoUiState,
                     scpRewardsMedalTouchPointWidgetUiState,
-                    savingsWidgetUiState
+                    savingsWidgetUiState,
+                    brcCsatUiState
                 )
             } else {
                 BuyerOrderDetailUiState.HasData.Showing(
@@ -76,7 +81,8 @@ object BuyerOrderDetailUiStateMapper {
                     orderInsuranceUiState,
                     epharmacyInfoUiState,
                     scpRewardsMedalTouchPointWidgetUiState,
-                    savingsWidgetUiState
+                    savingsWidgetUiState,
+                    brcCsatUiState
                 )
             }
         } else if (actionButtonsUiState is ActionButtonsUiState.Error) {

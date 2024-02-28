@@ -75,6 +75,7 @@ import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailT
 import com.tokopedia.buyerorderdetail.presentation.scroller.BuyerOrderDetailRecyclerViewScroller
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.WidgetBrcCsatUiState
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
@@ -411,6 +412,7 @@ open class BuyerOrderDetailFragment :
         setupGlobalError()
         setupSwipeRefreshLayout()
         setupStickyActionButtons()
+        setupBrcCsatWidget()
     }
 
     private fun bindViews() {
@@ -453,6 +455,10 @@ open class BuyerOrderDetailFragment :
             setStickyActionButtonClickHandler(stickyActionButtonHandler)
             setBottomSheetManager(bottomSheetManager)
         }
+    }
+
+    private fun setupBrcCsatWidget() {
+        binding?.widgetBrcBom?.setup(navigator)
     }
 
     private fun loadBuyerOrderDetail(shouldCheckCache: Boolean) {
@@ -604,6 +610,7 @@ open class BuyerOrderDetailFragment :
         updateContent(uiState)
         updateStickyButtons(uiState)
         updateSavingsWidget(uiState)
+        updateBrcCsatWidget(uiState)
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stopLoadTimeMonitoring()
         EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_SHOWING_DATA)
@@ -665,6 +672,10 @@ open class BuyerOrderDetailFragment :
                 //noop
             }
         }
+    }
+
+    private fun updateBrcCsatWidget(uiState: BuyerOrderDetailUiState.HasData) {
+        binding?.widgetBrcBom?.setup(uiState.brcCsatUiState)
     }
 
     private fun onSuccessGetSavingWidget(uiState: BuyerOrderDetailUiState.HasData) {
@@ -775,6 +786,7 @@ open class BuyerOrderDetailFragment :
         toolbarMenuAnimator?.transitionToEmpty()
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stickyActionButton?.hideSavingWidget()
+        binding?.widgetBrcBom?.setup(WidgetBrcCsatUiState.Hidden)
         stopLoadTimeMonitoring()
         EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_SHOWING_ERROR)
     }
@@ -782,6 +794,7 @@ open class BuyerOrderDetailFragment :
     private fun onFullscreenLoadingBuyerOrderDetail() {
         showLoader()
         toolbarMenuAnimator?.transitionToEmpty()
+        binding?.widgetBrcBom?.setup(WidgetBrcCsatUiState.Hidden)
         EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_FULL_SCREEN_LOADING)
     }
 
@@ -793,6 +806,7 @@ open class BuyerOrderDetailFragment :
         updateContent(uiState)
         updateStickyButtons(uiState)
         updateSavingsWidget(uiState)
+        updateBrcCsatWidget(uiState)
         EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_PULL_REFRESH_LOADING)
     }
 
