@@ -248,10 +248,8 @@ class ReviewContentViewHolder(
         tvReviewDescription.text = description
         tvReviewDescription.doOnLayout {
             val text = tvReviewDescription.layout
-            if (text.lineCount <= MAX_LINES_THRESHOLD) {
-                tvReviewDescription.show()
-                return@doOnLayout
-            }
+            if (text.lineCount <= MAX_LINES_THRESHOLD) return@doOnLayout
+
 
             tvReviewDescription.setOnClickListener {
                 descriptionUiModel.isExpanded = !descriptionUiModel.isExpanded
