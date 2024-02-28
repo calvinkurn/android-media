@@ -394,8 +394,7 @@ object AppLogSearch {
     }
 
     fun enterFrom(whitelistedEnterFrom: List<String>): String {
-        val actualEnterFrom =
-            (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
+        val actualEnterFrom = AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM)?.toString() ?: ""
 
         return if (whitelistedEnterFrom.contains(actualEnterFrom)) {
             if (actualEnterFrom == PageName.HOME) HOMEPAGE
