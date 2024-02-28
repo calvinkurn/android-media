@@ -83,6 +83,7 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity.Comp
 import com.tokopedia.people.views.activity.ProfileSettingsActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
+import com.tokopedia.people.views.compose.UserProfileHeader
 import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment.Companion.EXTRA_FOLLOWERS
 import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment.Companion.EXTRA_FOLLOWING
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileBadgeBottomSheet
@@ -220,7 +221,7 @@ class UserProfileFragment @Inject constructor(
             binding.swipeRefreshLayout.isEnabled = verticalOffset == 0
             val condition = abs(verticalOffset) > mainBinding.appBarUserProfile.totalScrollRange / HEADER_HEIGHT_OFFSET
 
-            headerStateHolder.model = if (condition) {
+            headerStateHolder.state = if (condition) {
                 HeaderUiState.ShowUserInfo(
                     name = viewModel.displayName,
                     username = getUsernameWithAddOrEmpty()
@@ -986,40 +987,11 @@ class UserProfileFragment @Inject constructor(
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
             setContent {
-                NestTheme(
-                    isOverrideStatusBarColor = false,
-                ) {
-                    NestHeader(
-                        type = when (val model = headerStateHolder.model) {
-                            is HeaderUiState.ShowUserInfo -> {
-                                if (model.username.isEmpty()) {
-                                    NestHeaderType.SingleLine(
-                                        title = model.name,
-                                        showBackButton = true,
-                                        onBackClicked = onBackClicked,
-                                        optionsButton = headerActionMenu,
-                                    )
-                                } else {
-                                    NestHeaderType.DoubleLine(
-                                        title = model.name,
-                                        subTitle = model.username,
-                                        showBackButton = true,
-                                        onBackClicked = onBackClicked,
-                                        optionsButton = headerActionMenu,
-                                    )
-                                }
-                            }
-                            is HeaderUiState.HideUserInfo -> {
-                                NestHeaderType.SingleLine(
-                                    title = "",
-                                    showBackButton = true,
-                                    onBackClicked = onBackClicked,
-                                    optionsButton = headerActionMenu,
-                                )
-                            }
-                        }
-                    )
-                }
+                UserProfileHeader(
+                    headerState = headerStateHolder.state,
+                    optionsButton = headerActionMenu,
+                    onBackClicked = onBackClicked
+                )
             }
         }
     }

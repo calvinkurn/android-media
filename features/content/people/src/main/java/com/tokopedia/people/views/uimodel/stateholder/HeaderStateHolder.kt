@@ -15,7 +15,7 @@ import com.tokopedia.people.views.uimodel.state.HeaderUiState
  */
 class HeaderStateHolder {
 
-    var model by mutableStateOf<HeaderUiState>(HeaderUiState.HideUserInfo)
+    var state by mutableStateOf<HeaderUiState>(HeaderUiState.HideUserInfo)
 
     fun getOptions(
         onShareClicked: () -> Unit,

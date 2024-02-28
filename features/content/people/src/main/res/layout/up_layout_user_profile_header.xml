@@ -13,6 +13,7 @@
         android:background="@color/Unify_Background">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="@dimen/unify_space_40"
@@ -249,8 +250,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/Unify_NN600"
-                android:elevation="@dimen/unify_space_4"
-                app:elevation="@dimen/unify_space_4"
+                android:elevation="1dp"
+                app:elevation="1dp"
                 app:layout_collapseMode="pin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
