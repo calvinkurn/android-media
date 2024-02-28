@@ -291,7 +291,7 @@ internal object MainVisitableMapper {
     fun MutableList<ShoppingListHorizontalProductCardItemUiModel>.updateProductSelections(
         productId: String = String.EMPTY,
         isSelected: Boolean
-    ) {
+    ): MutableList<ShoppingListHorizontalProductCardItemUiModel> {
         val products = if (productId.isNotBlank()) {
             map { product -> if (product.id == productId) product.copy(isSelected = isSelected) else product }.toList()
         } else {
@@ -299,6 +299,7 @@ internal object MainVisitableMapper {
         }
         clear()
         addAll(products)
+        return this
     }
 
     fun MutableList<ShoppingListProductCartItemUiModel>.addProductCartItem(
