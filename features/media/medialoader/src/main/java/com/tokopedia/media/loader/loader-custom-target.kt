@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.view.View
 import androidx.core.graphics.drawable.toDrawable
+import com.tokopedia.media.loader.data.BitmapFlowResult
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
@@ -46,21 +47,25 @@ fun String.getBitmapImageUrl(
 fun String.getBitmapImageUrlAsFlow(
     context: Context,
     properties: Properties.() -> Unit = {}
-): Flow<Bitmap> {
+): Flow<BitmapFlowResult> {
     val url = this
     return callbackFlow {
+        val propConfig = Properties().apply(properties).setSource(url)
+        propConfig.listener(
+            onError = { e ->
+                trySend(BitmapFlowResult(null, e, e?.message))
+            }
+        )
+
         MediaLoaderTarget.loadImage(
             context,
-            Properties()
-                .apply(properties)
-                .setSource(url),
+            propConfig,
             MediaBitmapEmptyTarget(
                 onReady = {
-                    trySend(it)
+                    trySend(BitmapFlowResult(it, null, null))
                 }
             )
         )
-
         awaitClose { channel.close() }
     }
 }
