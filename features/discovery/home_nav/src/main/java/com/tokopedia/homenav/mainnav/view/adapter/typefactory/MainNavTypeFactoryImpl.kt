@@ -14,6 +14,8 @@ import com.tokopedia.homenav.base.diffutil.holder.HomeNavMenuViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTickerViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.*
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.buyagain.BuyAgainShimmerViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.buyagain.BuyAgainView
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.buyagain.BuyAgainViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ErrorReviewViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ReviewViewHolder
@@ -31,7 +33,8 @@ import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 class MainNavTypeFactoryImpl(
     private val mainNavListener: MainNavListener,
     private val userSession: UserSessionInterface,
-    private val tokopediaPlusListener: TokopediaPlusListener
+    private val tokopediaPlusListener: TokopediaPlusListener,
+    private val buyAgainListener: BuyAgainView.Listener
 ) :
     HomeNavTypeFactory, MainNavTypeFactory {
 
@@ -92,7 +95,7 @@ class MainNavTypeFactoryImpl(
     }
 
     override fun type(model: ShimmerBuyAgainUiModel): Int {
-        return InitialShimmeringTransactionDataRevampViewHolder.LAYOUT
+        return BuyAgainShimmerViewHolder.LAYOUT
     }
 
     override fun type(errorStateOngoingTransactionModel: ErrorStateOngoingTransactionModel): Int {
@@ -118,7 +121,8 @@ class MainNavTypeFactoryImpl(
             InitialShimmeringTransactionDataViewHolder.LAYOUT -> InitialShimmeringTransactionDataViewHolder(view)
             ReviewViewHolder.LAYOUT -> ReviewViewHolder(view, mainNavListener)
             ErrorReviewViewHolder.LAYOUT -> ErrorReviewViewHolder(view, mainNavListener)
-            BuyAgainViewHolder.LAYOUT -> BuyAgainViewHolder(view)
+            BuyAgainShimmerViewHolder.LAYOUT -> BuyAgainShimmerViewHolder(view)
+            BuyAgainViewHolder.LAYOUT -> BuyAgainViewHolder(view, buyAgainListener)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
     }

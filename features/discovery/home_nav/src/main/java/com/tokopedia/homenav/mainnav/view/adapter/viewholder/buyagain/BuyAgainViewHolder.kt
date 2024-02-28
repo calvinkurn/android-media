@@ -11,7 +11,10 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.NavOrderS
 import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.BuyAgainUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class BuyAgainViewHolder(view: View) : AbstractViewHolder<BuyAgainUiModel>(view) {
+class BuyAgainViewHolder constructor(
+    view: View,
+    private val listener: BuyAgainView.Listener
+) : AbstractViewHolder<BuyAgainUiModel>(view) {
 
     private val binding: HolderTransactionBuyAgainBinding? by viewBinding()
     private var mAdapter: ProductBuyAgainAdapter? = null
@@ -35,7 +38,7 @@ class BuyAgainViewHolder(view: View) : AbstractViewHolder<BuyAgainUiModel>(view)
 
     private fun setupAdapter(element: BuyAgainUiModel) {
         mAdapter = if (mAdapter == null) {
-            ProductBuyAgainAdapter(element.data)
+            ProductBuyAgainAdapter(element.data, listener)
         } else {
             binding?.lstProduct?.adapter as? ProductBuyAgainAdapter
         }

@@ -28,7 +28,7 @@ class BuyAgainView @JvmOverloads constructor(
     }
 
     fun bind(data: Data) {
-        setupClickableListener()
+        setupClickableListener(data)
 
         with(data) {
             renderProductImage(bannerUrl)
@@ -37,10 +37,10 @@ class BuyAgainView @JvmOverloads constructor(
         }
     }
 
-    private fun setupClickableListener() {
-        binding.root.setOnClickListener { listener?.onProductCardClicked() }
-        binding.btnAtc.setOnClickListener { listener?.onAtcButtonClicked() }
-        binding.bgButton.setOnClickListener { listener?.onAtcButtonClicked() }
+    private fun setupClickableListener(data: Data) {
+        binding.root.setOnClickListener { listener?.onProductCardClicked(data.productId) }
+        binding.btnAtc.setOnClickListener { listener?.onAtcButtonClicked(data.productId) }
+        binding.bgButton.setOnClickListener { listener?.onAtcButtonClicked(data.productId) }
     }
 
     private fun renderProductImage(url: String) {
@@ -71,7 +71,7 @@ class BuyAgainView @JvmOverloads constructor(
     )
 
     interface Listener {
-        fun onProductCardClicked()
-        fun onAtcButtonClicked()
+        fun onProductCardClicked(id: String)
+        fun onAtcButtonClicked(id: String)
     }
 }
