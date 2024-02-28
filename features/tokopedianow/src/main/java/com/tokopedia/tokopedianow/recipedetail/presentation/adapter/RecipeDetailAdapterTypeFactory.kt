@@ -9,7 +9,7 @@ import com.tokopedia.tokopedianow.common.analytics.MediaSliderAnalytics
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
-import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.TagViewHolder.TagListener
+import com.tokopedia.tokopedianow.oldrecipebookmark.presentation.viewholder.TagViewHolder.TagListener
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeDetailLoadingUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.MediaSliderUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel

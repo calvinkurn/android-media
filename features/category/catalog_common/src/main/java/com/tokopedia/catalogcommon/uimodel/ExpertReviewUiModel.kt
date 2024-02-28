@@ -40,6 +40,6 @@ data class ExpertReviewUiModel(
 
     data class StyleIconPlay(
         val iconColor: Int = unifyprinciplesR.color.Unify_Static_White,
-        val background: Int = catalogcommonR.drawable.bg_circle_border_dark
+        val background: Int = unifyprinciplesR.color.Unify_Static_White
     )
 }

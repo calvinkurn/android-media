@@ -34,6 +34,8 @@
     <string name="product_chooser_exit_dialog_title">Yakin ingin keluar?</string>
     <string name="product_chooser_exit_dialog_desc">Semua produk yang kamu pilih akan hilang jika keluar dari halaman ini.</string>
     <string name="product_chooser_error_save">Produk gagal disimpan.</string>
+    <string name="product_chooser_error_no_connection">Tidak ada koneksi internet.</string>
+    <string name="product_chooser_error_something_went_wrong">Terjadi kesalahan. Silahkan coba lagi, ya.</string>
 
     <!-- Product Tag Summary -->
     <string name="product_summary_title">Produk terpilih</string>

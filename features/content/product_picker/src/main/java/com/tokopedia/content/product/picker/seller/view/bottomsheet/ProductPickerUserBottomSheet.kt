@@ -23,6 +23,7 @@ import com.tokopedia.content.product.picker.ugc.view.uimodel.ContentProductTagAr
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
 import com.tokopedia.content.product.picker.ugc.view.uimodel.SelectedProductUiModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.content.product.picker.seller.util.getCustomErrorMessage
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import kotlinx.coroutines.flow.collectLatest
@@ -32,8 +33,8 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 29/08/22
  */
 class ProductPickerUserBottomSheet @Inject constructor(
-        private val dialogCustomizer: ContentDialogCustomizer,
-        private val analytic: ContentProductTagAnalytic,
+    private val dialogCustomizer: ContentDialogCustomizer,
+    private val analytic: ContentProductTagAnalytic
 ) : BaseProductSetupBottomSheet() {
 
     private val offsetToaster by lazy { context?.resources?.getDimensionPixelOffset(R.dimen.content_product_picker_50_dp) ?: 0 }
@@ -62,7 +63,7 @@ class ProductPickerUserBottomSheet @Inject constructor(
                             commission = 0L,
                             extraCommission = false,
                             pinStatus = PinProductUiModel.Empty,
-                            number = "",
+                            number = ""
                         )
                     }
                 )
@@ -220,8 +221,11 @@ class ProductPickerUserBottomSheet @Inject constructor(
                     is ProductChooserEvent.ShowError -> {
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = it.error.message,
-                            bottomMargin = offsetToaster
+                            bottomMargin = offsetToaster,
+                            customErrMessage = requireContext().getCustomErrorMessage(
+                                throwable = it.error,
+                                defaultMessage = getString(R.string.product_chooser_error_save)
+                            )
                         )
                     }
                     else -> {}

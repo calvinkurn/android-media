@@ -2,7 +2,8 @@ package com.tokopedia.search.result.product.inspirationcarousel
 
 import android.content.Context
 import com.tokopedia.search.di.qualifier.SearchContext
-import com.tokopedia.search.result.presentation.view.fragment.RecyclerViewUpdater
+import com.tokopedia.search.result.domain.model.SearchCouponModel
+import com.tokopedia.search.result.presentation.model.CouponDataView
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking
@@ -12,6 +13,7 @@ import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.search.utils.decodeQueryParameter
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
 
@@ -20,7 +22,7 @@ class InspirationCarouselViewDelegate @Inject constructor(
     searchParameterProvider: SearchParameterProvider,
     @SearchContext
     context: Context,
-    private val trackingQueue: TrackingQueue,
+    private val trackingQueue: TrackingQueue
 ) : InspirationCarouselView,
     QueryKeyProvider by queryKeyProvider,
     SearchParameterProvider by searchParameterProvider,
@@ -94,10 +96,15 @@ class InspirationCarouselViewDelegate @Inject constructor(
         InspirationCarouselTracking.trackCarouselClickSeeAll(queryKey, option)
     }
 
+    override fun trackEventCtaCouponItem(dataView: CouponDataView, item: SearchCouponModel.CouponListWidget) {
+        dataView.handleClickCouponTracking(TrackApp.getInstance().gtm, item)
+    }
+
     override fun openLink(applink: String, url: String) {
-        if (applink.isNotEmpty())
+        if (applink.isNotEmpty()) {
             openApplink(context, applink.decodeQueryParameter())
-        else
+        } else {
             openApplink(context, url)
+        }
     }
 }

@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalogcommon.R
@@ -105,7 +106,8 @@ class ExpertReviewViewHolder(
         element: ExpertReviewUiModel.ItemExpertReviewUiModel,
         view: ItemExpertReviewBinding
     ) {
-        view.lnPlay.setBackgroundResource(element.styleIconPlay.background)
+        view.lnPlay.changeColorBackground(R.drawable.bg_circle_border_light,
+            MethodChecker.getColor(itemView.context,element.styleIconPlay.background))
         view.ivPlay.setImage(
             newDarkDisable = ContextCompat.getColor(
                 itemView.context,
@@ -124,10 +126,15 @@ class ExpertReviewViewHolder(
                 element.styleIconPlay.iconColor
             )
         )
-        val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_border_light)
+        view.clLayout.changeColorBackground(R.drawable.bg_rounded_border_light,
+            Color.parseColor("#${element.backgroundColor}"))
+    }
+
+    private fun View.changeColorBackground(resource:Int, color:Int){
+        val drawable = ContextCompat.getDrawable(itemView.context, resource)
         if (drawable is GradientDrawable) {
-            drawable.setColor(Color.parseColor("#${element.backgroundColor}"))
-            view.clLayout.background = drawable
+            drawable.setColor(color)
+            this.background = drawable
         }
     }
 }

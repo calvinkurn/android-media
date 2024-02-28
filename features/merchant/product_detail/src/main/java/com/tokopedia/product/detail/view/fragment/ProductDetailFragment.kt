@@ -94,6 +94,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -176,6 +177,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
@@ -314,7 +316,9 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.shareexperience.domain.util.ShareExConstants.Rollence.ROLLENCE_SHARE_EX
 import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.shop.common.constant.ShopStatusDef
+import com.tokopedia.shop.common.domain.entity.ShopPrefetchData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.prefetch.ShopPagePrefetch
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.stories.widget.NoAnimateAnimationStrategy
@@ -5096,15 +5100,44 @@ open class ProductDetailFragment :
                 shopId,
                 componentTrackDataModel
             )
+            val intent = RouteManager.getIntent(
+                it,
+                ApplinkConst.SHOP,
+                shopId
+            )
+
+            
+            val shopCredibility = pdpUiUpdater?.shopCredibility ?: return
+
+            val prefetch = ShopPagePrefetch()
+            val prefetchData = shopCredibility.toShopPrefetchData()
+            prefetch.redirectToShopPageWithPrefetch(context ?: return, prefetchData, intent)
+            
             startActivityForResult(
-                RouteManager.getIntent(
-                    it,
-                    ApplinkConst.SHOP,
-                    shopId
-                ),
+                intent,
                 ProductDetailConstant.REQUEST_CODE_SHOP_INFO
             )
         }
+    }
+    
+    private fun ProductShopCredibilityDataModel.toShopPrefetchData(): ShopPrefetchData {
+        val averageShopRatingId = context?.getString(R.string.pdp_product_average_review).orEmpty()
+        val shopRating = infoShopData.firstOrNull { it.desc == averageShopRatingId }?.value
+        val castedShopRating = try {
+            shopRating.toFloatOrZero()
+        } catch (e: Exception) {
+            Timber.e(e)
+            0f
+        }
+
+        return ShopPrefetchData(
+            shopAvatar = shopAva,
+            shopName = shopName,
+            shopBadge = shopTierBadgeUrl,
+            shopLastOnline = shopLastActive,
+            shopRating = castedShopRating,
+            isFollowed = isFavorite
+        )
     }
 
     override fun onShopTickerClicked(
