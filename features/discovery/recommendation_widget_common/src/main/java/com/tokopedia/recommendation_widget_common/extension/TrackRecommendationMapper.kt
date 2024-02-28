@@ -27,7 +27,7 @@ fun RecommendationItem.asProductTrackModel(
         tabPosition = tabPosition,
         rate = ratingAverage.toFloatOrZero(),
         enterMethod = enterMethod,
-        volume = stock,
+        volume = null, //TODO
         originalPrice = (if(slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
         salesPrice = priceInt.toFloat(),
     )

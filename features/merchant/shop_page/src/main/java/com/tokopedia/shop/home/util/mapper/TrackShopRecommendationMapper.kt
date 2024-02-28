@@ -15,15 +15,15 @@ object TrackShopRecommendationMapper {
             moduleName = widgetName,
             isAd = false,
             isUseCache = false,
-            recSessionId = "", // TODO pageName from BE
-            recParams = "", // TODO pageName from BE
-            requestId = "", // TODO pageName from BE
+            recSessionId = "", //TODO pageName from BE
+            recParams = "", //TODO pageName from BE
+            requestId = "", //TODO pageName from BE
             shopId = shopId,
             entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
             rate = rating.toFloat(),
             originalPrice = originalPrice.toFloatOrZero(),
             salesPrice = displayedPrice.toFloatOrZero(),
-            volume = stock
+            volume = null //TODO
         )
     }
 }

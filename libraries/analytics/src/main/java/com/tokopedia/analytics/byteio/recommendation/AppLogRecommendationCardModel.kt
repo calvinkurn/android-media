@@ -56,9 +56,10 @@ data class AppLogRecommendationCardModel(
         put(AppLogParam.REC_PARAMS, recParams)
         put(AppLogParam.SHOP_ID, shopId)
         put(AppLogParam.ITEM_ORDER, itemOrder)
-        put(AppLogParam.VOLUME, volume)
-        put(AppLogParam.ORIGINAL_PRICE, originalPrice)
-        put(AppLogParam.SALES_PRICE, salesPrice)
+        volume?.let { put(AppLogParam.VOLUME, it) }
+        rate?.let { put(AppLogParam.RATE, it) }
+        originalPrice?.let { put(AppLogParam.ORIGINAL_PRICE, it) }
+        salesPrice?.let { put(AppLogParam.SALES_PRICE, it) }
         //TODO P1: group_id, main_video_id
     }
 
@@ -93,10 +94,10 @@ data class AppLogRecommendationCardModel(
             shopId: String = "",
             groupId: String = "",
             entranceForm: EntranceForm,
-            volume: Int = 0,
-            rate: Float = 0f,
-            originalPrice: Float = 0f,
-            salesPrice: Float = 0f,
+            volume: Int? = null,
+            rate: Float? = null,
+            originalPrice: Float? = null,
+            salesPrice: Float? = null,
             enterMethod: String = "",
             sourcePageType: SourcePageType? = null,
             authorId: String = "",
