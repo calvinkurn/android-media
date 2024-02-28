@@ -440,7 +440,7 @@ class CheckoutCalculator @Inject constructor(
     fun calculateTotalWithPayment(
         listData: List<CheckoutItem>,
         newCost: CheckoutCostModel,
-        newPayment: CheckoutPaymentModel?,
+        newPayment: CheckoutPaymentModel,
         isTradeInByDropOff: Boolean,
         summariesAddOnUiModel: HashMap<Int, String>
     ): List<CheckoutItem> {
@@ -450,7 +450,7 @@ class CheckoutCalculator @Inject constructor(
             dynamicPaymentFees = newCost.dynamicPaymentFees,
             usePaymentFees = newCost.usePaymentFees
         )
-        var payment = newPayment ?: newList.payment()!!
+        var payment = newPayment
         var buttonPaymentModel = newList.buttonPayment()!!
         var cartItemCounter = 0
         var cartItemErrorCounter = 0
@@ -504,6 +504,15 @@ class CheckoutCalculator @Inject constructor(
                 }
             )
         )
+
+        val paymentData = payment.data?.paymentWidgetData?.firstOrNull()
+        if (paymentData != null) {
+            if (paymentData.errorDetails.message.isNotEmpty()) {
+                // error?
+            }
+
+//            if (paymentData)
+        }
 
         if ((cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) && payment.widget.isValidStateToContinue) {
             val priceTotalFormatted =

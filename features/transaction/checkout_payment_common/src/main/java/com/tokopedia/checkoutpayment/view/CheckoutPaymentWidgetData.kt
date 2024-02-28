@@ -2,6 +2,7 @@ package com.tokopedia.checkoutpayment.view
 
 data class CheckoutPaymentWidgetData(
     val state: CheckoutPaymentWidgetState = CheckoutPaymentWidgetState.None,
+    val errorMessage: String = ""
 ) {
 
     val isValidStateToContinue: Boolean
