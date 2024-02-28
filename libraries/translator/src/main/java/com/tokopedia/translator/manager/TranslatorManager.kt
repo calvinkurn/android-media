@@ -13,21 +13,13 @@
  */
 package com.tokopedia.translator.manager
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.app.Activity
 import android.app.Application
-import android.content.Context
-import android.graphics.PixelFormat
 import android.util.Log
 import android.view.*
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.TextView
 import com.google.gson.Gson
-import com.tokopedia.translator.R
 import com.tokopedia.translator.callback.ActivityTranslatorCallbacks
 import com.tokopedia.translator.repository.model.StringPoolItem
 import com.tokopedia.translator.repository.source.GetDataService
@@ -70,7 +62,6 @@ class TranslatorManager() : CoroutineScope {
 
     constructor(application: Application, apiKey: String) : this() {
         mApplication = application
-//        prepareBubbleView(application)
         API_KEY = SharedPrefsUtils.getStringPreference(application, API_KEY)
         SharedPrefsUtils.setStringPreference(application, SOURCE_LANGUAGE, "Indonesian-id")
 
@@ -113,10 +104,6 @@ class TranslatorManager() : CoroutineScope {
 
         fun setCurrentActivity(mCurrentActivity: WeakReference<Activity>) {
             this.mCurrentActivity = mCurrentActivity
-        }
-
-        fun clearCurrentActivity() {
-            this.mCurrentActivity?.clear()
         }
 
         @JvmStatic
