@@ -4,9 +4,13 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
+import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
+import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
 import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
+import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_CLICK
@@ -34,7 +38,6 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ECOM_FILTER_T
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ECOM_SORT_CHOSEN
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ECOM_SORT_NAME
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.EC_SEARCH_SESSION_ID
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ENTER_FROM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ENTER_METHOD
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.GROUP_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.IMPR_ID
@@ -89,7 +92,6 @@ object AppLogSearch {
 
     object ParamKey {
         const val SEARCH_ENTRANCE = "search_entrance"
-        const val ENTER_FROM = "enter_from"
         const val WORDS_SOURCE = "words_source"
         const val WORDS_POSITION = "words_position"
         const val WORDS_CONTENT = "words_content"
@@ -518,5 +520,19 @@ object AppLogSearch {
 
     fun eventCartEntranceClick() {
         AppLogAnalytics.send(CART_ENTRANCE_CLICK, JSONObject().apply { addPage() })
+    }
+
+    fun updateSearchPageData(appLogInterface: AppLogInterface) {
+        val updatedPageDataKeys = listOf(PAGE_NAME, ENTER_FROM, IS_SHADOW)
+
+        val currentPageData = AppLogAnalytics.pageDataList
+            .lastOrNull()
+            ?.filterNot {
+                updatedPageDataKeys.contains(it.key)
+            }
+
+        AppLogAnalytics.updateCurrentPageData(appLogInterface)
+
+        currentPageData?.forEach { (key, value) -> AppLogAnalytics.putPageData(key, value) }
     }
 }

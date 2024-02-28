@@ -183,7 +183,7 @@ private fun trendingWordsSuggestion(
     item: AutoCompleteUnifyDataView
 ) = AppLogSearch.TrendingWordsSuggestion(
     groupId = item.groupId,
-    imprId = viewModel.stateValue.appLogData.newSugSessionId,
+    imprId = viewModel.stateValue.appLogData.imprId,
     newSugSessionId = viewModel.stateValue.appLogData.newSugSessionId,
     rawQuery = item.searchTerm,
     enterMethod = viewModel.stateValue.enterMethod,

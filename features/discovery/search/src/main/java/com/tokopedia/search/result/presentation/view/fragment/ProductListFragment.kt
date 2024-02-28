@@ -643,7 +643,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         presenter?.onViewVisibilityChanged(isVisibleToUser, isAdded)
 
-        AppLogAnalytics.updateCurrentPageData(this)
+        AppLogSearch.updateSearchPageData(this)
     }
 
     override fun trackScreenAuthenticated() {

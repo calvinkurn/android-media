@@ -43,7 +43,7 @@ object AppLogAnalytics {
     /**
      * Return immutable list
      */
-    val pageDataList: List<HashMap<String, Any>>
+    val pageDataList: List<Map<String, Any>>
         get() = _pageDataList.toList()
 
     @JvmField

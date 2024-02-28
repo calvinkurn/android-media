@@ -6,7 +6,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.EC_SEARCH_SES
 object SearchSessionId {
 
     val value: String
-        get() = (AppLogAnalytics.getLastData(EC_SEARCH_SESSION_ID) ?: "").toString()
+        get() = AppLogAnalytics.getLastData(EC_SEARCH_SESSION_ID)?.toString() ?: ""
 
     fun update() {
         if (value.isBlank())
