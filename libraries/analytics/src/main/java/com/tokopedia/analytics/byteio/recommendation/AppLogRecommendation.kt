@@ -41,10 +41,6 @@ object AppLogRecommendation {
     }
 
     fun sendCardClickAppLog(model: AppLogRecommendationCardModel) {
-        AppLogAnalytics.globalTrackId = null
-        AppLogAnalytics.globalRequestId = model.requestId
-        AppLogAnalytics.sourcePageType = SourcePageType.PRODUCT_CARD
-        AppLogAnalytics.entranceForm = EntranceForm.PURE_GOODS_CARD
         AppLogAnalytics.send(EventName.CARD_CLICK, model.toShowClickJson())
         if (model.entranceForm == EntranceForm.PURE_GOODS_CARD.str) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())

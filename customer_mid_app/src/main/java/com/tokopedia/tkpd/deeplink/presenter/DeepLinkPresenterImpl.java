@@ -14,6 +14,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogParam;
+import com.tokopedia.analytics.byteio.EnterMethod;
 import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
@@ -322,6 +323,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = uriData.getPath();
                     break;
             }
+            addEnterMethodAppLog();
             if (!keepActivityOn && context != null) {
                 sendCampaignGTM(activity, uriData.toString(), screenName, isAmp);
                 context.finish();
@@ -765,11 +767,19 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openProduct(final List<String> linkSegment, final Uri uriData, boolean isAmp) {
-        AppLogAnalytics.INSTANCE.putPageData(AppLogParam.ENTER_FROM, PageName.EXTERNAL_PROMO);
+        addProductAppLog();
         gqlGetShopIdByDomainUseCaseRx.execute(
                 GqlGetShopIdByDomainUseCaseRx.createParams(linkSegment.get(0)),
                 getOpenProductSubscriber(linkSegment, uriData, isAmp)
         );
+    }
+
+    private void addProductAppLog() {
+        AppLogAnalytics.INSTANCE.putPageData(AppLogParam.ENTER_FROM, PageName.EXTERNAL_PROMO);
+    }
+
+    private void addEnterMethodAppLog() {
+        AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_EXTERNAL_ADS);
     }
 
     private Subscriber<String> getOpenProductSubscriber(final List<String> linkSegment,

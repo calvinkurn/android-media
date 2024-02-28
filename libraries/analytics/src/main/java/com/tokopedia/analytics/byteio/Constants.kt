@@ -2,6 +2,7 @@ package com.tokopedia.analytics.byteio
 
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 
 internal val TAG = "BYTEIO"
 
@@ -179,11 +180,11 @@ enum class EntranceForm(val str: String) {
 enum class SourcePageType(val str: String) {
     VIDEO("video"),
     LIVE("live"),
-    PRODUCT_CARD("")
+    PRODUCT_CARD(AppLogAnalytics.getCurrentData(PAGE_NAME)?.toString().orEmpty())
 }
 
 enum class EnterMethod(val str: String) {
-    CLICK_EXTERNAL_TAB("click_external_ads"),
+    CLICK_EXTERNAL_ADS("click_external_ads"),
     CLICK_HOME_ICON("click_home_icon"),
     CLICK_APP_ICON("click_app_icon"),
     CLICK_RECOM_CARD_INFINITE("click_recom_card_infinite"),
@@ -191,7 +192,7 @@ enum class EnterMethod(val str: String) {
     CLICK_CART_ICON_HOMEPAGE("click_cart_icon_homepage"),
     CLICK_ATC_TOASTER_PDP("click_atc_toaster_pdp"),
     CLICK_WISHLIST_ICON("click_wishlist_icon"),
-    CLICK_WISHLIST_ICONACCOUNT("click_wishlist_iconaccount"),
+    CLICK_WISHLIST_ICONACCOUNT("click_wishlist_iconaccount")
 }
 
 object EventName {
@@ -245,7 +246,7 @@ object AppLogParam {
     const val PREVIOUS_PAGE = "previous_page"
     const val PRODUCT_ID = "product_id"
     const val REQUEST_ID = "request_id"
-    const val REC_SESSION_ID = "req_session_id"
+    const val REC_SESSION_ID = "rec_session_id"
     const val SHOP_ID = "shop_id"
     const val SLIDE_TYPE = "slide_type"
     const val SOURCE_MODULE = "source_module"
@@ -261,4 +262,5 @@ object AppLogParam {
     const val MAIN_VIDEO_ID = "main_video_id"
     const val IS_SHADOW = "is_shadow"
     const val ACTIVITY_HASH_CODE = "activity_hash_code"
+    const val ENTER_METHOD_DEFAULT_FORMAT = "click_%s_button"
 }
