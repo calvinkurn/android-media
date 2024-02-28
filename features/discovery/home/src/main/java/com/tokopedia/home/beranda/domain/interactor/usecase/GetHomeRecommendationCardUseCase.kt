@@ -15,6 +15,11 @@ const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
             pageName
             layoutName
             hasNextPage
+            appLog {
+                bytedanceSessionID
+                requestID
+                logID
+            }
             cards {
               id
               categoryID
@@ -79,6 +84,7 @@ const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
                  value
                 }
               }
+              recParam
             }
       }
     }
