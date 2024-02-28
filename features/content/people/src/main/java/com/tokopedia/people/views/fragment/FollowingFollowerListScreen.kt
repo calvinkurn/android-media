@@ -14,6 +14,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalView
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -25,6 +28,7 @@ import com.tokopedia.nest.components.tabs.NestTabs
 import com.tokopedia.nest.components.tabs.NestTabsConfig
 import com.tokopedia.nest.components.tabs.TabConfig
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.people.R
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.viewmodels.FollowListViewModel
 import com.tokopedia.people.views.screen.FollowListErrorScreen
@@ -35,10 +39,13 @@ import com.tokopedia.people.views.uimodel.action.FollowListAction
 import com.tokopedia.people.views.uimodel.id
 import com.tokopedia.people.views.uimodel.isFollowed
 import com.tokopedia.people.views.uimodel.isMySelf
+import com.tokopedia.people.views.uimodel.state.FollowListEvent
 import com.tokopedia.people.views.uimodel.state.FollowListState
+import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.shop.common.util.ShopPageActivityResult
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
@@ -204,7 +211,31 @@ internal fun FollowListScreen(
         onListRefresh()
     }
 
-    val state: FollowListState by viewModel.state.collectAsStateWithLifecycle()
+    val state: FollowListState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+    val toaster = rememberPlayToaster()
+
+    LaunchedEffect(viewModel.uiEvent) {
+        viewModel.uiEvent.collect { event ->
+            if (event == null) return@collect
+            when (event) {
+                is FollowListEvent.SuccessFollow -> {
+                    toaster.showToaster(event.message)
+                }
+                is FollowListEvent.FailedFollow -> {
+                    toaster.showError(
+                        IllegalStateException(),
+                        customErrMessage = context.getString(
+                            if (event.isGoingToFollow) R.string.up_error_follow
+                            else R.string.up_error_unfollow
+                        )
+                    )
+                }
+            }
+            viewModel.onAction(FollowListAction.ConsumeEvent(event))
+        }
+    }
 
     FollowListScreen(
         state = state,
@@ -240,4 +271,13 @@ internal fun FollowListScreen(
             Modifier.fillMaxSize()
         )
     }
+}
+
+@Composable
+private fun rememberPlayToaster(): PlayToaster {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val view = LocalView.current
+    val context = LocalContext.current
+
+    return remember { PlayToaster(view, lifecycleOwner) }
 }

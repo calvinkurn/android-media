@@ -3,6 +3,7 @@ package com.tokopedia.people.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.data.UserFollowRepository
@@ -10,13 +11,13 @@ import com.tokopedia.people.views.uimodel.FollowListType
 import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.people.views.uimodel.PeopleUiModel
 import com.tokopedia.people.views.uimodel.action.FollowListAction
-import com.tokopedia.people.views.uimodel.id
 import com.tokopedia.people.views.uimodel.setIsFollowed
+import com.tokopedia.people.views.uimodel.state.FollowListEvent
 import com.tokopedia.people.views.uimodel.state.FollowListState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -35,6 +36,7 @@ internal class FollowListViewModel @AssistedInject constructor(
     @Assisted private val profileIdentifier: String,
     private val userFollowRepo: UserFollowRepository,
     private val dispatchers: CoroutineDispatchers,
+    private val uiEventManager: UiEventManager<FollowListEvent>
 ) : ViewModel() {
 
     @AssistedFactory
@@ -48,7 +50,7 @@ internal class FollowListViewModel @AssistedInject constructor(
     private val _result = MutableStateFlow<Result<Unit>?>(null)
     private val _countFmt = MutableStateFlow("")
 
-    val state = combine(
+    val uiState = combine(
         _followMap,
         _nextCursor,
         _result,
@@ -70,6 +72,9 @@ internal class FollowListViewModel @AssistedInject constructor(
         FollowListState.Empty
     )
 
+    val uiEvent: Flow<FollowListEvent?>
+        get() = uiEventManager.event
+
     fun onAction(action: FollowListAction) {
         when (action) {
             FollowListAction.Init -> onInit()
@@ -82,6 +87,7 @@ internal class FollowListViewModel @AssistedInject constructor(
             is FollowListAction.UpdateShopFollowFromResult -> {
                 onUpdateFollowFromResult(Shop(action.id), action.isFollowing)
             }
+            is FollowListAction.ConsumeEvent -> onConsumeEvent(action.event)
         }
     }
 
@@ -113,6 +119,10 @@ internal class FollowListViewModel @AssistedInject constructor(
             val people = it[identifier] ?: return@update it
             it + mapOf(identifier to people.setIsFollowed(isFollowing))
         }
+    }
+
+    private fun onConsumeEvent(event: FollowListEvent) {
+        viewModelScope.launch { uiEventManager.clearEvent(event.id) }
     }
 
     private suspend fun getFollowers(cursor: String): PerPageResult {
@@ -188,11 +198,20 @@ internal class FollowListViewModel @AssistedInject constructor(
     private fun followUser(user: PeopleUiModel.UserUiModel) {
         viewModelScope.launch {
             val shouldFollow = !user.isFollowed
-            val result = userFollowRepo.followUser(user.encryptedId, shouldFollow)
-            if (result !is MutationUiModel.Success) return@launch
 
-            _followMap.update {
-                it + mapOf(user.identifier to user.copy(isFollowed = shouldFollow))
+            runCatching {
+                when (val result = userFollowRepo.followUser(user.encryptedId, shouldFollow)) {
+                    is MutationUiModel.Error -> error(result.message)
+                    is MutationUiModel.Success -> result.message
+                }
+            }.onFailure {
+                emitEvent(FollowListEvent.FailedFollow(shouldFollow))
+            }.onSuccess { message ->
+                _followMap.update {
+                    it + mapOf(user.identifier to user.copy(isFollowed = shouldFollow))
+                }
+                if (message.isBlank()) return@onSuccess
+                emitEvent(FollowListEvent.SuccessFollow(shouldFollow, message))
             }
         }
     }
@@ -200,13 +219,29 @@ internal class FollowListViewModel @AssistedInject constructor(
     private fun followShop(shop: PeopleUiModel.ShopUiModel) {
         viewModelScope.launch {
             val shouldFollow = !shop.isFollowed
-            val result = userFollowRepo.followShop(shop.id, ShopFollowAction.getActionByState(!shouldFollow))
-            if (result !is MutationUiModel.Success) return@launch
 
-            _followMap.update {
-                it + mapOf(shop.identifier to shop.copy(isFollowed = shouldFollow))
+            runCatching {
+                when (val result = userFollowRepo.followShop(
+                    shop.id,
+                    ShopFollowAction.getActionByState(!shouldFollow)
+                )) {
+                    is MutationUiModel.Error -> error(result.message)
+                    is MutationUiModel.Success -> result.message
+                }
+            }.onFailure {
+                emitEvent(FollowListEvent.FailedFollow(shouldFollow))
+            }.onSuccess { message ->
+                _followMap.update {
+                    it + mapOf(shop.identifier to shop.copy(isFollowed = shouldFollow))
+                }
+                if (message.isBlank()) return@onSuccess
+                emitEvent(FollowListEvent.SuccessFollow(shouldFollow, message))
             }
         }
+    }
+
+    private fun emitEvent(event: FollowListEvent) {
+        viewModelScope.launch { uiEventManager.emitEvent(event) }
     }
 
     private fun List<PeopleUiModel>.transformToMap() = associateBy { it.identifier }

@@ -1,6 +1,7 @@
 package com.tokopedia.people.views.uimodel.action
 
 import com.tokopedia.people.views.uimodel.PeopleUiModel
+import com.tokopedia.people.views.uimodel.state.FollowListEvent
 
 internal sealed interface FollowListAction {
 
@@ -15,4 +16,6 @@ internal sealed interface FollowListAction {
     data class UpdateUserFollowFromResult(val id: String, val isFollowing: Boolean) : FollowListAction
 
     data class UpdateShopFollowFromResult(val id: String, val isFollowing: Boolean) : FollowListAction
+
+    data class ConsumeEvent(val event: FollowListEvent) : FollowListAction
 }

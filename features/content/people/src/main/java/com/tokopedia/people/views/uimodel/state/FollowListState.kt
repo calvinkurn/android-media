@@ -1,7 +1,9 @@
 package com.tokopedia.people.views.uimodel.state
 
 import androidx.compose.runtime.Immutable
+import com.tokopedia.content.common.util.UiEvent
 import com.tokopedia.people.views.uimodel.PeopleUiModel
+import java.util.UUID
 
 @Immutable
 data class FollowListState(
@@ -20,6 +22,15 @@ data class FollowListState(
             countFmt = "",
         )
     }
+}
+
+sealed class FollowListEvent : UiEvent {
+
+    override val id: Long = UUID.randomUUID().mostSignificantBits
+
+    data class SuccessFollow(val isGoingToFollow: Boolean, val message: String) : FollowListEvent()
+
+    data class FailedFollow(val isGoingToFollow: Boolean) : FollowListEvent()
 }
 
 internal fun Result.Companion.success() = success(Unit)

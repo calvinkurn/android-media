@@ -72,7 +72,7 @@ class FollowListFragment @Inject internal constructor(
             }
 
             setContent {
-                val state: FollowListState by viewModel.state.collectAsStateWithLifecycle()
+                val state: FollowListState by viewModel.uiState.collectAsStateWithLifecycle()
 
                 if (state.result?.isFailure == true && state.followList.isEmpty()) {
                     Box(Modifier.fillMaxSize()) {
