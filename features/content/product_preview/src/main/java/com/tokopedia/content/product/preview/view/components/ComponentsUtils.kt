@@ -18,14 +18,14 @@ internal fun Modifier.pinchToZoomModifier(
                 val offsetY = (offset.value + pan).y
 
                 scale.value *= zoom
-                scale.value = scale.value.coerceIn(0f, 3f)
+                scale.value = scale.value.coerceIn(MINIMUM, MAXIMUM_SCALE)
 
-                offset.value = if (offsetX < 0f || offsetY < 0f) {
-                    Offset(0f, 0f)
+                offset.value = if (offsetX < MINIMUM || offsetY < MINIMUM) {
+                    Offset(MINIMUM, MINIMUM)
                 } else {
                     offset.value + pan
                 }
-                scale.value = if (scale.value < 1f) 1f else scale.value
+                scale.value = if (scale.value < DEFAULT_SCALE) DEFAULT_SCALE else scale.value
             }
         }
         .graphicsLayer(
@@ -35,3 +35,7 @@ internal fun Modifier.pinchToZoomModifier(
             translationY = offset.value.y
         )
 }
+
+private const val MINIMUM = 0f
+private const val MAXIMUM_SCALE = 3f
+private const val DEFAULT_SCALE = 1f

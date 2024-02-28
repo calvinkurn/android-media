@@ -55,7 +55,7 @@ fun ReportScreen(reports: List<ReviewReportUiModel>, onSubmit: (ReviewReportUiMo
                     )
                 }
             }
-            val isOtherReason = selectedOption.reasonCode == 3 // Reason code for other reason is 3.
+            val isOtherReason = selectedOption.reasonCode == OTHER_REASON
 
             // enable when option 3 is clicked
             TextField(
@@ -86,3 +86,5 @@ fun MyApp() {
         reports = emptyList()
     )
 }
+
+private const val OTHER_REASON = 3 // Reason code for other reason is 3.

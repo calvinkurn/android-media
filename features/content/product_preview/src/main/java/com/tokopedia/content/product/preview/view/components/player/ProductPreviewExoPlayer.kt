@@ -29,14 +29,14 @@ class ProductPreviewExoPlayer(private val context: Context) {
 
     private val loadControl = DefaultLoadControl.Builder()
         .setBackBuffer(
-            TimeUnit.MINUTES.toMillis(1).toInt(),
+            TimeUnit.MINUTES.toMillis(MINIMUM_BUFFER_TIME).toInt(),
             true
         )
         .setBufferDurationsMs(
-            TimeUnit.SECONDS.toMillis(30).toInt(),
+            TimeUnit.SECONDS.toMillis(DEFAULT_BUFFER_TIME).toInt(),
             DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,
-            TimeUnit.SECONDS.toMillis(1).toInt(),
-            TimeUnit.SECONDS.toMillis(1).toInt()
+            TimeUnit.SECONDS.toMillis(MINIMUM_BUFFER_TIME).toInt(),
+            TimeUnit.SECONDS.toMillis(MINIMUM_BUFFER_TIME).toInt()
         ).createDefaultLoadControl()
 
     private val _exoPlayer = SimpleExoPlayer.Builder(context)
@@ -113,7 +113,7 @@ class ProductPreviewExoPlayer(private val context: Context) {
     }
 
     fun reset() {
-        exoPlayer.seekTo(0)
+        exoPlayer.seekTo(START_DURATION)
     }
 
     fun pause() {
@@ -127,7 +127,7 @@ class ProductPreviewExoPlayer(private val context: Context) {
 
     private fun ended() {
         exoPlayer.playWhenReady = false
-        exoPlayer.seekTo(0)
+        exoPlayer.seekTo(START_DURATION)
     }
 
     fun release() {
@@ -153,7 +153,7 @@ class ProductPreviewExoPlayer(private val context: Context) {
             TYPE_DASH -> DashMediaSource.Factory(sourceFactory)
             TYPE_HLS -> HlsMediaSource.Factory(sourceFactory).setAllowChunklessPreparation(true)
             TYPE_OTHER -> ProgressiveMediaSource.Factory(sourceFactory)
-            else -> throw IllegalStateException("Unsupported type: $type")
+            else -> error("Unsupported type: $type")
         }
         return mediaSource.createMediaSource(uri)
     }
@@ -171,6 +171,9 @@ class ProductPreviewExoPlayer(private val context: Context) {
     }
 
     companion object {
+        private const val START_DURATION = 0L
+        private const val MINIMUM_BUFFER_TIME = 1L
+        private const val DEFAULT_BUFFER_TIME = 30L
         private const val UN_MUTE_VOLUME = 1f
         private const val MUTE_VOLUME = 0F
         private const val APPLICATION_NAME = "Tokopedia Android"

@@ -18,6 +18,7 @@ import com.tokopedia.iconunify.IconUnify
  * @author by astidhiyaa on 12/01/24
  */
 
+@Suppress("MagicNumber")
 class LikeDanceAnim : FrameLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)

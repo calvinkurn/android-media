@@ -15,7 +15,6 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiSta
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState.ReviewLikeStatus.Companion.switch
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext

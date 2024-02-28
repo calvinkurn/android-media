@@ -12,24 +12,24 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class ProductPreviewFragmentModule {
+interface ProductPreviewFragmentModule {
 
     @Binds
-    abstract fun bindFragmentFactory(fragmentFactory: TkpdFragmentFactory): FragmentFactory
+    fun bindFragmentFactory(fragmentFactory: TkpdFragmentFactory): FragmentFactory
 
     @Binds
     @IntoMap
     @FragmentKey(ProductPreviewFragment::class)
-    abstract fun bindProductPreviewFragment(fragment: ProductPreviewFragment): Fragment
+    fun bindProductPreviewFragment(fragment: ProductPreviewFragment): Fragment
 
     @Binds
     @IntoMap
     @FragmentKey(ProductFragment::class)
-    abstract fun bindProductFragment(fragment: ProductFragment): Fragment
+    fun bindProductFragment(fragment: ProductFragment): Fragment
 
     @Binds
     @IntoMap
     @FragmentKey(ReviewFragment::class)
-    abstract fun bindReviewFragment(fragment: ReviewFragment): Fragment
+    fun bindReviewFragment(fragment: ReviewFragment): Fragment
 
 }

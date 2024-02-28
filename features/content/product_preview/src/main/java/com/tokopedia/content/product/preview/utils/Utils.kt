@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.content.product.preview.R
 import java.util.concurrent.TimeUnit
 
+@Suppress("MagicNumber")
 fun Long.millisToFormattedVideoDuration(context: Context): String {
     val totalSeconds = TimeUnit.MILLISECONDS.toSeconds(this)
 

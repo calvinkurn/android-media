@@ -25,6 +25,7 @@ import kotlin.math.min
 import com.tokopedia.content.product.preview.R as contentproductpreviewR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
+@Suppress("MagicNumber")
 class ProductPreviewTimeBar : View, TimeBar {
 
     constructor(context: Context?) : super(context)
@@ -112,13 +113,9 @@ class ProductPreviewTimeBar : View, TimeBar {
         mListeners.remove(listener)
     }
 
-    override fun setKeyTimeIncrement(time: Long) {
+    override fun setKeyTimeIncrement(time: Long) {}
 
-    }
-
-    override fun setKeyCountIncrement(count: Int) {
-
-    }
+    override fun setKeyCountIncrement(count: Int) {}
 
     override fun setPosition(position: Long) {
         if (mPosition == position) return
@@ -137,10 +134,8 @@ class ProductPreviewTimeBar : View, TimeBar {
         if (mDuration == duration) return;
 
         mDuration = duration;
-        if (scrubbing && duration == C.TIME_UNSET) {
-            stopScrubbing(/* canceled= */ true);
-        }
-        update();
+        if (scrubbing && duration == C.TIME_UNSET) stopScrubbing(/* canceled= */ true)
+        update()
     }
 
     override fun getPreferredUpdateDelay(): Long {

@@ -8,12 +8,12 @@ import dagger.Binds
 import dagger.Module
 
 @Module
-abstract class ProductPreviewBindModule {
+interface ProductPreviewBindModule {
     @Binds
     @ProductPreviewScope
-    abstract fun bindRepository(repository: ProductPreviewRepositoryImpl): ProductPreviewRepository
+    fun bindRepository(repository: ProductPreviewRepositoryImpl): ProductPreviewRepository
 
     @Binds
     @ProductPreviewScope
-    abstract fun bindAnalytic(analytic: ProductPreviewAnalyticsImpl.Factory): ProductPreviewAnalytics.Factory
+    fun bindAnalytic(analytic: ProductPreviewAnalyticsImpl.Factory): ProductPreviewAnalytics.Factory
 }
