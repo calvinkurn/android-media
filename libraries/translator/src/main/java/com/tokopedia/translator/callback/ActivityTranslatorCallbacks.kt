@@ -64,6 +64,8 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         if (activity is FragmentActivity) {
+            val weakActivity = WeakReference<Activity>(activity)
+            TranslatorManager.setCurrentActivity(weakActivity)
             activity.supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentTranslatorCallbacks, true)
         }
     }
@@ -74,13 +76,11 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
     override fun onActivityResumed(activity: Activity) {
         if (SharedPrefsUtils.getBooleanPreference(activity, TranslatorSettingView.IS_ENABLE, false)) {
             Log.i(TAG, "onActivityResumed() invoked of :" + activity.localClassName)
-            val weakActivity = WeakReference<Activity>(activity)
             translatorManager?.clearSelectors()
 
             val rootView: View = activity.window.decorView.findViewById(android.R.id.content)
 
             launch {
-                TranslatorManager.setCurrentActivity(weakActivity)
                 translatorManager?.prepareSelectors(activity)
                 setAddonGlobalLayoutListener(rootView)
 
@@ -256,6 +256,15 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
 
         private val translatorManagerFragment = TranslatorManagerFragment.getInstance()
 
+        override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+            super.onFragmentViewCreated(fm, f, v, savedInstanceState)
+
+            if (f is BottomSheetUnify) {
+                val weakFragment = WeakReference<Fragment>(f)
+                TranslatorManagerFragment.setCurrentFragment(weakFragment)
+            }
+        }
+
         override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
             super.onFragmentResumed(fm, f)
             setTranslatorBottomSheet(f)
@@ -273,12 +282,10 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         }
 
         private fun setTranslatorBottomSheet(f: Fragment) {
-            val mContext = f.context
             if (f is BottomSheetUnify) {
+                val mContext = f.context
                 if (mContext?.let { SharedPrefsUtils.getBooleanPreference(it, TranslatorSettingView.IS_ENABLE, false) } == true) {
                     Log.i(TAG, "onFragmentResumed() invoked of :" + f::class.java.simpleName)
-
-                    val weakFragment = WeakReference<Fragment>(f)
 
                     translatorManagerFragment?.clearSelectors()
 
@@ -286,7 +293,6 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
 
                         launch {
 
-                            TranslatorManagerFragment.setCurrentFragment(weakFragment)
                             translatorManagerFragment?.prepareSelectors(f)
 
                             setAddonGlobalLayoutListener(it)
@@ -302,5 +308,5 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
     }
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Default + CoroutineExceptionHandler { _, _ -> }
+        get() = Dispatchers.Main + CoroutineExceptionHandler { _, _ -> }
 }
