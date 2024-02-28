@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import com.bytedance.applog.AppLog
 import com.bytedance.applog.util.EventsSenderUtils
+import com.tokopedia.analytics.byteio.AppLogParam.ACTIVITY_HASH_CODE
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM_INFO
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
@@ -218,15 +219,25 @@ object AppLogAnalytics {
     /**
      * To remove last page data
      */
-    fun popPageData() {
-        if (getCurrentData(IS_SHADOW) != true) {
-            _pageDataList.removeLastOrNull()
+    fun removePageData(appLogInterface: AppLogInterface) {
+        val pageDataIndexed = _pageDataList
+            .withIndex()
+            .find { it.value[ACTIVITY_HASH_CODE] == appLogInterface.hashCode() }
+            ?: return
+
+        val index = pageDataIndexed.index
+        val pageData = pageDataIndexed.value
+
+        if (pageData[IS_SHADOW] != true) {
+            _pageDataList.removeAt(index)
+
+            val shadowPageIndex = index - 1
             // Remove shadow stack
-            if (getCurrentData(IS_SHADOW) == true) {
-                _pageDataList.removeLastOrNull()
+            if (_pageDataList.getOrNull(shadowPageIndex)?.get(IS_SHADOW) == true) {
+                _pageDataList.removeAt(shadowPageIndex)
             }
         }
-        Timber.d("Pop _pageDataList: ${_pageDataList}}")
+        Timber.d("Remove _pageDataList: ${_pageDataList}}")
     }
 
     private fun clearCurrentPageData() {
@@ -286,6 +297,8 @@ object AppLogAnalytics {
     }
 
     private fun putAppLogInterfaceData(appLogInterface: AppLogInterface) {
+        putPageData(ACTIVITY_HASH_CODE, appLogInterface.hashCode())
+
         if (appLogInterface.getPageName().isNotBlank()) {
             putPageData(PAGE_NAME, appLogInterface.getPageName())
             if (appLogInterface.isEnterFromWhitelisted()) {

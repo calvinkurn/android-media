@@ -3,9 +3,8 @@ package com.tokopedia.analytics.byteio
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import android.util.Log
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.analytics.byteio.AppLogAnalytics.popPageData
+import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.pushPageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp.sendStayProductDetail
@@ -103,7 +102,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         }
         removePageName(activity)
         if (activity is AppLogInterface) {
-            popPageData()
+            removePageData(activity)
         }
     }
 
