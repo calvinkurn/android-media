@@ -55,5 +55,7 @@ data class ProductEditParam (
         @SerializedName("cpl")
         var cpl: CPLData? = null,
         @SerializedName("annotations")
-        var annotations: List<String>? = null
+        var annotations: List<String>? = null,
+        @SerializedName("CustomAttribute")
+        var customAttributes: List<CustomAttribute>? = null
 ) : Parcelable

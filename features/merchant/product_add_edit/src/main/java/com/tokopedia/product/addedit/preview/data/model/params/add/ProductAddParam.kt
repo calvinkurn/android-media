@@ -55,7 +55,9 @@ data class ProductAddParam (
         @SerializedName("annotations")
         var annotations: List<String>? = null,
         @SerializedName("metadata")
-        var categoryMetadata: Metadata = Metadata()
+        var categoryMetadata: Metadata = Metadata(),
+        @SerializedName("CustomAttribute")
+        var customAttributes: List<CustomAttribute> = listOf()
 ) : Parcelable
 
 @Parcelize
