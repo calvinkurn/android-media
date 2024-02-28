@@ -257,19 +257,6 @@ class ProductReviewViewHolder(
             binding.txtDescReviewPdp.hide()
             return
         }
-//        binding.txtDescReviewPdp.apply {
-//            val formattingResult = ProductDetailUtil.reviewDescFormatter(context, reviewData.message)
-//            text = formattingResult.first
-//            ellipsize
-//            if (formattingResult.second) {
-//                maxLines = MAX_LINES_REVIEW_DESCRIPTION + 1
-//                setOnClickListener {
-//                    maxLines = Integer.MAX_VALUE
-//                    text = HtmlLinkHelper(context, reviewData.message).spannedString
-//                }
-//            }
-//            show()
-//        }
 
         val txtReview = binding.txtDescReviewPdp
         txtReview.show()
