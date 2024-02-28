@@ -27,6 +27,7 @@ import com.tokopedia.shareexperience.ui.util.ShareExIntentErrorEnum
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -102,7 +103,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
 
             val mockUri: Uri = mockk(relaxed = true)
             coEvery {
-                getDownloadedImageUseCase.downloadImage(any())
+                getDownloadedImageUseCase.downloadImageThumbnail(any())
             } returns flow {
                 emit(ShareExResult.Loading)
                 emit(ShareExResult.Success(mockUri))
@@ -200,7 +201,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
 
             val mockUri: Uri = mockk(relaxed = true)
             coEvery {
-                getDownloadedImageUseCase.downloadImage(any())
+                getDownloadedImageUseCase.downloadImageThumbnail(any())
             } returns flow {
                 emit(ShareExResult.Loading)
                 emit(ShareExResult.Success(mockUri))
@@ -276,6 +277,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 getGeneratedImageUseCase.getData(any())
             } returns flow {
                 emit(ShareExResult.Loading)
+                delay(10)
                 emit(
                     ShareExResult.Success(
                         ShareExImageGeneratorModel(
@@ -290,12 +292,13 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 getShortLinkUseCase.getShortLink(any())
             } returns flow {
                 emit(Pair(ShareExShortLinkFallbackPriorityEnum.AFFILIATE, ShareExResult.Loading))
+                delay(10)
                 emit(Pair(ShareExShortLinkFallbackPriorityEnum.AFFILIATE, ShareExResult.Success(dummyShortLink)))
             }
 
             val mockUri: Uri = mockk(relaxed = true)
             coEvery {
-                getDownloadedImageUseCase.downloadImage(any())
+                getDownloadedImageUseCase.downloadImageThumbnail(any())
             } returns flow {
                 emit(ShareExResult.Loading)
                 emit(ShareExResult.Success(mockUri))
@@ -362,6 +365,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 getGeneratedImageUseCase.getData(any())
             } returns flow {
                 emit(ShareExResult.Loading)
+                delay(10)
                 emit(
                     ShareExResult.Success(
                         ShareExImageGeneratorModel(
@@ -377,12 +381,13 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
             } returns flow {
                 // Not affiliate
                 emit(Pair(ShareExShortLinkFallbackPriorityEnum.BRANCH, ShareExResult.Loading))
+                delay(10)
                 emit(Pair(ShareExShortLinkFallbackPriorityEnum.BRANCH, ShareExResult.Success(dummyShortLink)))
             }
 
             val mockUri: Uri = mockk(relaxed = true)
             coEvery {
-                getDownloadedImageUseCase.downloadImage(any())
+                getDownloadedImageUseCase.downloadImageThumbnail(any())
             } returns flow {
                 emit(ShareExResult.Loading)
                 emit(ShareExResult.Success(mockUri))
@@ -493,6 +498,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals("", initialValue.shortLink)
                 assertEquals(null, initialValue.channelEnum)
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, initialValue.imageType)
+                assertEquals(false, initialValue.isLoading)
                 assertEquals(null, initialValue.errorEnum)
 
                 val updatedValue = awaitItem()
