@@ -13,8 +13,7 @@ import org.json.JSONObject
  * Byte.io tracking model
  */
 data class AppLogRecommendationCardModel(
-    val cardName: CardName,
-    val cardType: String,
+    val cardName: String,
     val productId: String,
     val listName: String,
     val listNum: Int,
@@ -41,7 +40,7 @@ data class AppLogRecommendationCardModel(
 
     fun toShowClickJson() = JSONObject().apply {
         addPage()
-        put(AppLogParam.CARD_NAME, cardName.str.format(cardType))
+        put(AppLogParam.CARD_NAME, cardName)
         put(AppLogParam.LIST_NAME, listName)
         put(AppLogParam.LIST_NUM, listNum)
         addEnterFrom()
@@ -80,8 +79,7 @@ data class AppLogRecommendationCardModel(
         fun create(
             cardId: String = "",
             productId: String = "",
-            cardName: CardName,
-            cardType: String = "",
+            cardName: String = "",
             position: Int = 0,
             tabName: String = "",
             tabPosition: Int = 0,
@@ -104,7 +102,6 @@ data class AppLogRecommendationCardModel(
         ): AppLogRecommendationCardModel {
             return AppLogRecommendationCardModel(
                 cardName = cardName,
-                cardType = cardType,
                 productId = productId,
                 listName = tabName,
                 listNum = tabPosition.inc(),

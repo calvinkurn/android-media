@@ -74,8 +74,7 @@ object TrackRecommendationMapper {
         tabPosition: Int,
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
-            cardName = CardName.REC_CONTENT_CARD,
-            cardType = layoutItem,
+            cardName = CardName.REC_CONTENT_CARD.format(layoutItem),
             tabName = tabName,
             tabPosition = tabPosition,
             moduleName = pageName,

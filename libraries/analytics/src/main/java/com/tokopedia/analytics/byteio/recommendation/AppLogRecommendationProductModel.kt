@@ -35,6 +35,7 @@ data class AppLogRecommendationProductModel(
     val enterMethod: String,
     val authorId: String,
     val groupId: String,
+    val cardName: String,
 ) {
 
     fun asCardModel() = AppLogRecommendationCardModel(
@@ -50,8 +51,7 @@ data class AppLogRecommendationProductModel(
         recParams = recParams,
         requestId = requestId,
         shopId = shopId,
-        cardName = CardName.REC_GOODS_CARD,
-        cardType = "",
+        cardName = cardName,
         groupId = groupId,
         itemOrder = itemOrder,
         entranceForm = entranceForm,
@@ -123,6 +123,7 @@ data class AppLogRecommendationProductModel(
             enterMethod: String = "",
             authorId: String = "",
             groupId: String = "",
+            cardName: String = CardName.REC_GOODS_CARD,
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
                 productId = productId,
@@ -145,7 +146,8 @@ data class AppLogRecommendationProductModel(
                 salesPrice = salesPrice,
                 enterMethod = enterMethod,
                 authorId = authorId,
-                groupId = groupId
+                groupId = groupId,
+                cardName = cardName
             )
         }
     }
