@@ -5,7 +5,9 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentAdditionalInfo
+import com.tokopedia.discovery2.data.ComponentTracker
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT_QUERY_NAME
@@ -35,11 +37,14 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
             ) as DataResponse
             )
 
-        val componentData = response.data.component?.data
         val componentProperties = response.data.component?.properties
         val creativeName = response.data.component?.creativeName ?: ""
         val additionalInfo = response.data.component?.compAdditionalInfo
         val componentItem = getComponent(componentId, pageEndPoint)
+
+        val componentData = response.data.component?.data
+        componentData?.setAppLog(additionalInfo?.tracker)
+
         val componentsListSize = componentItem?.getComponentsItem()?.size ?: 0
         val list = withContext(Dispatchers.Default) {
             when (productComponentName) {
@@ -232,5 +237,13 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
             }
         }
         return Pair(list, additionalInfo)
+    }
+
+    private fun List<DataItem>?.setAppLog(tracker: ComponentTracker?) {
+        tracker?.let { componentTracker ->
+            this?.forEach { dataItem ->
+                dataItem.setAppLog(componentTracker)
+            }
+        }
     }
 }
