@@ -244,24 +244,18 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.tokopedia.header.HeaderUnify
+            <androidx.compose.ui.platform.ComposeView
                 android:id="@+id/header_profile"
                 android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                android:visibility="gone"
+                android:layout_height="wrap_content"
                 android:background="@color/Unify_NN600"
                 android:elevation="@dimen/unify_space_4"
-                app:contentInsetLeft="0dp"
-                app:contentInsetStart="0dp"
-                app:contentInsetStartWithNavigation="0dp"
                 app:elevation="@dimen/unify_space_4"
                 app:layout_collapseMode="pin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:unify_header_is_show_back_button="true"
-                app:unify_header_is_show_shadow="true"
-                app:unify_header_transparent_mode="false" />
+                />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
