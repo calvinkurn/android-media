@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.specification.domain.model.Values
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.SIGNAL_STATUS_VARIANT
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
+import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -61,21 +62,29 @@ class AddEditProductSpecificationViewModel @Inject constructor(
         annotationCategoryList.map { annotationCategoryData ->
             val productInputModel = mProductInputModel.value
             var valueResult: Values? = null
-            val required = isFieldRequired(annotationCategoryData)
+            val required = isFieldRequired(annotationCategoryData) || annotationCategoryData.isMandatory
 
             if (productInputModel != null) {
                 val specificationList = productInputModel.detailInputModel.specifications.orEmpty()
                 valueResult = annotationCategoryData.data.firstOrNull { value ->
-                    specificationList.any { it.id == value.id.toString() }
+                    specificationList.any { it.id == value.id }
                 }
             }
 
             return@map if (valueResult != null) {
                 SpecificationInputModel(
-                    id = valueResult.id.toString(),
+                    id = valueResult.id,
                     data = valueResult.name,
                     specificationVariant = annotationCategoryData.variant,
                     required = required)
+            } else if (annotationCategoryData.isCustomAnnotType) {
+                val specificationList = mProductInputModel.getValueOrDefault().detailInputModel.specifications.orEmpty()
+                specificationList.firstOrNull {
+                    it.specificationVariant == annotationCategoryData.variant
+                } ?: SpecificationInputModel(
+                    required = required,
+                    specificationVariant = annotationCategoryData.variant,
+                )
             } else {
                 SpecificationInputModel(
                     required = required,
