@@ -261,11 +261,7 @@ object AppLogAnalytics {
     }
 
     fun getLastData(key: String): Any? {
-        _pageDataList.reversed().forEach { hashMap ->
-            hashMap[key]?.let {
-                return it
-            }
-        }
+        _pageDataList.findLast { it.containsKey(key) }?.get(key)
         return null
     }
 
