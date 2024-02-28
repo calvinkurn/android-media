@@ -47,7 +47,7 @@ class MissionWidgetViewHolder(
         )
     }
 
-    private var hasRecomScrollListener = false
+    private var hasApplogScrollListener = false
 
     init {
         setupRecyclerView()
@@ -94,14 +94,14 @@ class MissionWidgetViewHolder(
     }
 
     private fun addHorizontalTrackListener() {
-        if(hasRecomScrollListener) return
+        if(hasApplogScrollListener) return
         binding?.homeComponentMissionWidgetRcv?.addHorizontalTrackListener(
             SlideTrackObject(
                 moduleName = MISSION_MODULE_NAME,
                 barName = MISSION_MODULE_NAME,
             )
         )
-        hasRecomScrollListener = true
+        hasApplogScrollListener = true
     }
 
     private fun MissionWidgetListDataModel.convertToVisitables(): List<Visitable<MissionWidgetTypeFactory>> {

@@ -40,7 +40,7 @@ class RecommendationVerticalView :
         RecommendationVerticalAdapter(RecommendationVerticalTypeFactoryImpl(trackingQueue))
     }
 
-    private var hasRecomScrollListener: Boolean = false
+    private var hasApplogScrollListener: Boolean = false
 
     override val layoutId: Int
         get() = LAYOUT
@@ -75,7 +75,7 @@ class RecommendationVerticalView :
     }
 
     private fun trackEnterPage() {
-        if(hasRecomScrollListener) return
+        if(hasApplogScrollListener) return
         binding.rvRecommendationVertical.addVerticalTrackListener(
             recommendationTriggerObject = RecommendationTriggerObject(
                 viewHolders = listOf(
@@ -84,7 +84,7 @@ class RecommendationVerticalView :
                 )
             )
         )
-        hasRecomScrollListener = true
+        hasApplogScrollListener = true
     }
 
     override fun onSeeAllClick(link: String) {}

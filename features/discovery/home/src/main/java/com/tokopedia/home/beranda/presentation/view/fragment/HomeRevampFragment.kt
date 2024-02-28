@@ -440,7 +440,7 @@ open class HomeRevampFragment :
     lateinit var homeThematicUtil: HomeThematicUtil
 
     private var hasTrackEnterPage = false
-    private var hasRecomScrollListener = false
+    private var hasApplogScrollListener = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -848,11 +848,11 @@ open class HomeRevampFragment :
     }
 
     private fun trackVerticalScroll() {
-        if(hasRecomScrollListener) return
+        if(hasApplogScrollListener) return
         homeRecyclerView?.addVerticalTrackListener(
             glidePageTrackObject = GlidePageTrackObject(),
         )
-        hasRecomScrollListener = true
+        hasApplogScrollListener = true
     }
 
     private fun setupEmbraceBreadcrumbListener() {

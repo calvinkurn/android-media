@@ -50,7 +50,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private var shimmerSaleTimer: LoaderUnify = itemView.findViewById(R.id.shimmer_timer_shop_flash_sale)
     private var saleTimer: TimerUnifySingle = itemView.findViewById(R.id.timer_shop_flash_sale)
 
-    private var hasRecomScrollListener = false
+    private var hasApplogScrollListener = false
 
     init {
         linearLayoutManager.initialPrefetchItemCount = PREFETCH_ITEM_COUNT
@@ -99,14 +99,14 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     }
 
     private fun RecyclerView.trackHorizontalScroll() {
-        if(hasRecomScrollListener) return
+        if(hasApplogScrollListener) return
         addHorizontalTrackListener(
             slideTrackObject = SlideTrackObject(
                 moduleName = mixLeftData?.creativeName.orEmpty(),
                 barName = mixLeftData?.creativeName.orEmpty(),
             )
         )
-        hasRecomScrollListener = true
+        hasApplogScrollListener = true
     }
 
     private fun getParallaxEffect(): RecyclerView.OnScrollListener {

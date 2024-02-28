@@ -52,8 +52,6 @@ class RecommendationCarouselWidgetView :
     private val trackingQueue: TrackingQueue = TrackingQueue(context)
     private val recommendationWidgetViewModel by recommendationWidgetViewModel()
 
-    private var hasRecomScrollListener: Boolean = false
-
     init {
         context.asLifecycleOwner()?.lifecycle?.addObserver(this)
     }
@@ -95,14 +93,12 @@ class RecommendationCarouselWidgetView :
     }
 
     private fun trackHorizontalScroll(model: RecommendationCarouselModel) {
-        if (hasRecomScrollListener) return
-        binding.recommendationCarouselProduct.carouselProductCardRecyclerView.addHorizontalTrackListener(
-            slideTrackObject = SlideTrackObject(
+        binding.recommendationCarouselProduct.addHorizontalTrackListener(
+            SlideTrackObject(
                 moduleName = model.widget.pageName,
                 barName = model.widget.pageName
             )
         )
-        hasRecomScrollListener = true
     }
 
     private fun itemImpressionListener(model: RecommendationCarouselModel) =
