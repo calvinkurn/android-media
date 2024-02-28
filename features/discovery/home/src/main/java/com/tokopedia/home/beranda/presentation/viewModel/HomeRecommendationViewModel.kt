@@ -79,16 +79,20 @@ class HomeRecommendationViewModel @Inject constructor(
 
     var topAdsBannerNextPage = TOPADS_PAGE_DEFAULT
 
+    private var recSessionId: String = ""
+
     fun fetchHomeRecommendation(
         tabName: String,
         recommendationId: Int,
         count: Int,
         locationParam: String = "",
         tabIndex: Int = 0,
-        sourceType: String
+        sourceType: String,
+        refreshType: Int,
     ) {
+        recSessionId = ""
         if (HomeRecommendationController.isUsingRecommendationCard()) {
-            fetchHomeRecommendationCard(tabName, locationParam, sourceType)
+            fetchHomeRecommendationCard(tabName, locationParam, sourceType, refreshType)
         } else {
             loadInitialPage(tabName, recommendationId, count, locationParam, tabIndex, sourceType)
         }
@@ -113,15 +117,21 @@ class HomeRecommendationViewModel @Inject constructor(
     private fun fetchHomeRecommendationCard(
         tabName: String,
         locationParam: String,
-        sourceType: String
+        sourceType: String,
+        refreshType: Int,
     ) {
         launchCatchError(coroutineContext, block = {
             val result = getHomeRecommendationCardUseCase.get().execute(
                 Int.ONE,
                 tabName,
                 sourceType,
-                locationParam
+                locationParam,
+                refreshType = refreshType,
+                bytedanceSessionId = recSessionId,
             )
+
+            recSessionId = result.appLog.sessionId
+
             if (result.homeRecommendations.isEmpty()) {
                 _homeRecommendationCardState.emit(
                     HomeRecommendationCardState.EmptyData(
@@ -169,8 +179,12 @@ class HomeRecommendationViewModel @Inject constructor(
                 page,
                 tabName,
                 sourceType,
-                locationParam
+                locationParam,
+                refreshType = GetHomeRecommendationCardUseCase.REFRESH_TYPE_LOAD_MORE,
+                bytedanceSessionId = recSessionId,
             )
+
+            recSessionId = result.appLog.sessionId
 
             existingRecommendationDataMutableList.removeAll { it is HomeRecommendationLoadMore }
 
