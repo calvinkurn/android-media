@@ -4,6 +4,8 @@ import android.os.Bundle
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.analytics.byteio.SubmitOrderResult
+import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_CREATIVE_NAME
@@ -73,6 +75,36 @@ class ThankYouPageAnalytics @Inject constructor(
         } else {
             sendPushGtmFalseEvent(thanksPageData.profileCode, thanksPageData.paymentID)
         }
+    }
+
+    fun sendSubmitOrderByteIoTracker(data: ThanksPageData) {
+        AppLogPdp.sendSubmitOrderResult(
+            SubmitOrderResult(
+                shippingPrice = data.shopOrder.sumOf { it.shippingAmount.toDouble() },
+                discountedShippingPrice = data.shopOrder.sumOf { it.discountShippingAmount.toDouble() },
+                totalPayment = data.amount.toDouble(),
+                discountedAmount = data.shopOrder.sumOf { it.discountAmount.toDouble() },
+                totalTax = data.shopOrder.sumOf { it.tax }.toDouble(),
+                payType = data.gatewayName,
+                cartItemId = data.shopOrder.joinToString(",") { shop ->
+                    shop.purchaseItemList.joinToString(",") { it.cartId }
+                },
+                skuId = data.shopOrder.joinToString(",") { shopLevel ->
+                    shopLevel.purchaseItemList.joinToString(",") { orderLevel ->
+                        orderLevel.productId
+                    } },
+                orderId = data.shopOrder.joinToString(",") { it.orderId },
+                comboId = data.paymentID,
+                summaryInfo = data.customDataOther?.summaryInfo.orEmpty(),
+                deliveryInfo = SubmitOrderResult.DeliveryInfo(
+                    shippingType = data.shopOrder.joinToString(",") { it.shippingDesc },
+                    eta = data.shopOrder.joinToString(",") { it.logisticETA.toString() }
+                ).toJsonString(),
+                productId = data.shopOrder.joinToString(",") { shop ->
+                    shop.purchaseItemList.joinToString(",") { it.parentProductId }
+                },
+            )
+        )
     }
 
     fun sendThankYouPageDataLoadEvent(thanksPageData: ThanksPageData) {

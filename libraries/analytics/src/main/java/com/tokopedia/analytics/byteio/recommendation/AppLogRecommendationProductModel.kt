@@ -83,10 +83,10 @@ data class AppLogRecommendationProductModel(
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.SHOP_ID, shopId)
         put(AppLogParam.ITEM_ORDER, itemOrder)
-        put(AppLogParam.VOLUME, volume)
-        put(AppLogParam.RATE, rate)
-        put(AppLogParam.ORIGINAL_PRICE, rate)
-        put(AppLogParam.SALES_PRICE, rate)
+        volume?.let { put(AppLogParam.VOLUME, it) }
+        rate?.let { put(AppLogParam.RATE, it) }
+        originalPrice?.let { put(AppLogParam.ORIGINAL_PRICE, it) }
+        salesPrice?.let { put(AppLogParam.SALES_PRICE, it) }
         //TODO P1: group_id, main_video_id
     }
 
@@ -107,7 +107,7 @@ data class AppLogRecommendationProductModel(
             productId: String = "",
             position: Int = 0,
             tabName: String = "",
-            tabPosition: Int = 0,
+            tabPosition: Int = -1,
             moduleName: String = "",
             isAd: Boolean = false,
             isUseCache: Boolean = false,
@@ -116,10 +116,10 @@ data class AppLogRecommendationProductModel(
             requestId: String = "",
             shopId: String = "",
             entranceForm: EntranceForm,
-            volume: Int = 0,
-            rate: Float = 0f,
-            originalPrice: Float = 0f,
-            salesPrice: Float = 0f,
+            volume: Int? = null,
+            rate: Float? = null,
+            originalPrice: Float? = null,
+            salesPrice: Float? = null,
             enterMethod: String = "",
             authorId: String = "",
             groupId: String = "",

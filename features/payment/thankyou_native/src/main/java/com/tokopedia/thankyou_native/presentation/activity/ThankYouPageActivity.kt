@@ -156,6 +156,7 @@ class ThankYouPageActivity :
             showAppFeedbackBottomSheet(thanksPageData)
         } ?: run { gotoHomePage() }
         postEventOnThankPageDataLoaded(thanksPageData)
+        thankYouPageAnalytics.get().sendSubmitOrderByteIoTracker(thanksPageData)
         if (!isV2Enabled()) {
             findViewById<FrameLayout>(R.id.thank_parent_view).layoutParams.height = 0
             findViewById<FrameLayout>(R.id.thank_parent_view).updateLayoutParams<ConstraintLayout.LayoutParams> {

@@ -2873,6 +2873,7 @@ open class DynamicProductDetailFragment :
                         ctaText = getString(productdetailcommonR.string.pdp_common_oke)
                     )
                 } else {
+                    success = true
                     onSuccessAtc(it.data)
                     ProductDetailServerLogger.logBreadCrumbAtc(
                         isSuccess = true,
@@ -2881,7 +2882,6 @@ open class DynamicProductDetailFragment :
                     )
                 }
                 cartId = it.data.data.cartId
-                success = true
             }, {
                 DynamicProductDetailTracking.Impression.eventViewErrorWhenAddToCart(
                     it.message.orEmpty(),
@@ -2890,7 +2890,6 @@ open class DynamicProductDetailFragment :
                 )
                 handleAtcError(it)
                 reason = it.message.orEmpty()
-                success = true
             })
             val model = viewModel.getConfirmCartResultData().apply {
                 isSuccess = success
