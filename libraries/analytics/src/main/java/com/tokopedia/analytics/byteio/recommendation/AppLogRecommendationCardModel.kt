@@ -99,7 +99,7 @@ data class AppLogRecommendationCardModel(
             originalPrice: Float? = null,
             salesPrice: Float? = null,
             enterMethod: String = "",
-            sourcePageType: SourcePageType? = null,
+            sourcePageType: SourcePageType = SourcePageType.PRODUCT_CARD,
             authorId: String = "",
         ): AppLogRecommendationCardModel {
             return AppLogRecommendationCardModel(
@@ -125,7 +125,7 @@ data class AppLogRecommendationCardModel(
                 originalPrice = originalPrice,
                 salesPrice = salesPrice,
                 enterMethod = enterMethod,
-                sourcePageType = sourcePageType?.str ?: AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME).toString(),
+                sourcePageType = sourcePageType.str,
                 authorId = authorId,
             )
         }
