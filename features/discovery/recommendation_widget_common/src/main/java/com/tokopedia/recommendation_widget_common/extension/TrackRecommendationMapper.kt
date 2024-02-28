@@ -2,7 +2,6 @@ package com.tokopedia.recommendation_widget_common.extension
 
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 fun RecommendationItem.asProductTrackModel(
@@ -10,7 +9,7 @@ fun RecommendationItem.asProductTrackModel(
     entranceForm: EntranceForm,
     enterMethod: String = "",
     tabName: String = "",
-    tabPosition: Int = 0,
+    tabPosition: Int = -1,
 ): AppLogRecommendationProductModel {
     return AppLogRecommendationProductModel.create(
         productId = productId.toString(),
@@ -25,7 +24,7 @@ fun RecommendationItem.asProductTrackModel(
         entranceForm = entranceForm,
         tabName = tabName,
         tabPosition = tabPosition,
-        rate = ratingAverage.toFloatOrZero(),
+        rate = ratingAverage.toFloatOrNull(),
         enterMethod = enterMethod,
         volume = null, //TODO
         originalPrice = (if(slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
