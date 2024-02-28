@@ -3,8 +3,8 @@ package com.tokopedia.content.product.preview.view.components.player
 import android.content.Context
 import android.util.AttributeSet
 import com.google.android.exoplayer2.ui.PlayerControlView
-import com.google.android.exoplayer2.ui.R
 import com.google.android.exoplayer2.ui.TimeBar
+import com.google.android.exoplayer2.ui.R as exoplayerui2
 
 class ProductPreviewPlayerControl : PlayerControlView {
 
@@ -16,7 +16,7 @@ class ProductPreviewPlayerControl : PlayerControlView {
         defStyleAttr
     )
 
-    private val timeBar: ProductPreviewTimeBar = findViewById(R.id.exo_progress)
+    private val timeBar: ProductPreviewTimeBar = findViewById(exoplayerui2.id.exo_progress)
 
     private var mListener: Listener? = null
 

@@ -53,9 +53,12 @@ class ReviewMediaVideoViewHolder(
                 }
             }
         )
-        binding.root.setOnTouchListener { _, motionEvent ->
-            gesture.onTouchEvent(motionEvent)
-            true
+        binding.root.apply {
+            setOnTouchListener { _, motionEvent ->
+                performClick()
+                gesture.onTouchEvent(motionEvent)
+                true
+            }
         }
     }
 

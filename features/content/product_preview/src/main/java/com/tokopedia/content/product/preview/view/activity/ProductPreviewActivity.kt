@@ -16,7 +16,8 @@ import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourc
 import javax.inject.Inject
 import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
-class ProductPreviewActivity : BaseActivity() {
+@Suppress("LateinitUsage")
+class ProductPreviewActivity @Inject constructor() : BaseActivity() {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
