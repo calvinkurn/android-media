@@ -37,7 +37,6 @@ import com.tokopedia.content.product.picker.seller.view.viewcomponent.SearchBarV
 import com.tokopedia.content.product.picker.seller.view.viewcomponent.SortChipsViewComponent
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
@@ -46,7 +45,6 @@ import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.text.ParseException
 import javax.inject.Inject
 
 /**
@@ -253,9 +251,10 @@ class ProductChooserBottomSheet @Inject constructor(
                     is ProductChooserEvent.ShowError -> {
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = requireContext().getCustomErrorMessage(it.error).ifNullOrBlank {
-                                getString(R.string.product_chooser_error_save)
-                            }
+                            customErrMessage = requireContext().getCustomErrorMessage(
+                                throwable = it.error,
+                                defaultMessage = getString(R.string.product_chooser_error_save)
+                            )
                         )
                     }
                     else -> {}

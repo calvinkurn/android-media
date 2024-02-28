@@ -223,8 +223,11 @@ class ProductPickerUserBottomSheet @Inject constructor(
                     is ProductChooserEvent.ShowError -> {
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = requireContext().getCustomErrorMessage(it.error),
-                            bottomMargin = offsetToaster
+                            bottomMargin = offsetToaster,
+                            customErrMessage = requireContext().getCustomErrorMessage(
+                                throwable = it.error,
+                                defaultMessage = getString(R.string.product_chooser_error_save)
+                            )
                         )
                     }
                     else -> {}
