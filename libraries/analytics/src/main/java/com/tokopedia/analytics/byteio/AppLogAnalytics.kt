@@ -250,13 +250,7 @@ object AppLogAnalytics {
     }
 
     fun getLastDataBeforeCurrent(key: String): Any? {
-        if (_pageDataList.isEmpty()) return null
-        _pageDataList.reversed().subList(1, _pageDataList.size).forEach { hashMap ->
-            hashMap[key]?.let {
-                return it
-            }
-        }
-        return null
+        return _pageDataList.findLast { it.containsKey(key) }?.get(key)
     }
 
     fun clearAllPageData() {
