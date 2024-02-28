@@ -28,13 +28,13 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.Shopp
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListEmptyUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListRetryUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListEmptyViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListExpandCollapseViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListRetryViewHolder
-import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListProductInCartViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListProductCartViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListTopCheckAllViewHolder
 
 class ShoppingListAdapterTypeFactory(
@@ -64,7 +64,7 @@ class ShoppingListAdapterTypeFactory(
     override fun type(uiModel: TokoNowErrorUiModel): Int = TokoNowErrorViewHolder.LAYOUT
 
     override fun type(uiModel: ShoppingListHorizontalProductCardItemUiModel): Int = ShoppingListHorizontalProductCardItemViewHolder.LAYOUT
-    override fun type(uiModel: ShoppingListProductInCartUiModel): Int = ShoppingListProductInCartViewHolder.LAYOUT
+    override fun type(uiModel: ShoppingListProductCartUiModel): Int = ShoppingListProductCartViewHolder.LAYOUT
     override fun type(uiModel: ShoppingListTopCheckAllUiModel): Int = ShoppingListTopCheckAllViewHolder.LAYOUT
     override fun type(uiModel: ShoppingListRetryUiModel): Int = ShoppingListRetryViewHolder.LAYOUT
     override fun type(uiModel: ShoppingListEmptyUiModel): Int = ShoppingListEmptyViewHolder.LAYOUT
@@ -99,7 +99,7 @@ class ShoppingListAdapterTypeFactory(
                 itemView = parent,
                 listener = productCardItemListener
             )
-            ShoppingListProductInCartViewHolder.LAYOUT -> ShoppingListProductInCartViewHolder(
+            ShoppingListProductCartViewHolder.LAYOUT -> ShoppingListProductCartViewHolder(
                 itemView = parent
             )
             ShoppingListTopCheckAllViewHolder.LAYOUT -> ShoppingListTopCheckAllViewHolder(

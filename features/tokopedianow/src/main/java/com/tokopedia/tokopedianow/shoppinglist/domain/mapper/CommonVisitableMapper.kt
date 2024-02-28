@@ -21,6 +21,7 @@ internal object CommonVisitableMapper {
                 weight = it.labelGroupList.firstOrNull { label -> label.isWeightPosition() }?.title.orEmpty(),
                 percentage = it.discountPercentage,
                 slashPrice = it.slashedPrice,
+                appLink = it.appUrl,
                 productLayoutType = PRODUCT_RECOMMENDATION,
                 state = SHOW
             )

@@ -5,9 +5,9 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListTypeFactory
 
-data class ShoppingListProductInCartUiModel(
+data class ShoppingListProductCartUiModel(
     val id: String = String.EMPTY,
-    val productList: List<ShoppingListProductInCartItemUiModel>
+    val productList: List<ShoppingListProductCartItemUiModel>
 ) : Visitable<ShoppingListTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: ShoppingListTypeFactory): Int = typeFactory.type(this)
 }

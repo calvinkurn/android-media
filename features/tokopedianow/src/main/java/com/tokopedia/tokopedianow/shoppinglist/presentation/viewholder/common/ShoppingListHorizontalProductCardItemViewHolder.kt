@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
@@ -62,6 +63,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
                     setupOtherOption(data)
                     setupRightButton(data)
                     setupCheckbox(data)
+                    setupAppLink(data)
                 }
                 else -> { /* nothing to do */ }
             }
@@ -267,6 +269,16 @@ class ShoppingListHorizontalProductCardItemViewHolder(
                 root.getDimens(unifyprinciplesR.dimen.unify_space_0),
                 root.getDimens(unifyprinciplesR.dimen.unify_space_0))
             loadingLayout.luCheckbox.hide()
+        }
+    }
+
+    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.setupAppLink(
+        data: ShoppingListHorizontalProductCardItemUiModel
+    ) {
+        root.setOnClickListener {
+            if (data.appLink.isNotBlank()) {
+                RouteManager.route(root.context, data.appLink)
+            }
         }
     }
 

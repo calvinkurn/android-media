@@ -8,22 +8,22 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.TypographyUtil.setRightImageDrawable
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListProductInCartBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListProductCartBinding
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListProductInCartAdapter
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductCartUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class ShoppingListProductInCartViewHolder (
+class ShoppingListProductCartViewHolder (
     itemView: View
-): AbstractViewHolder<ShoppingListProductInCartUiModel>(itemView) {
+): AbstractViewHolder<ShoppingListProductCartUiModel>(itemView) {
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_shopping_list_product_in_cart
+        val LAYOUT = R.layout.item_tokopedianow_shopping_list_product_cart
     }
 
-    private var binding: ItemTokopedianowShoppingListProductInCartBinding? by viewBinding()
+    private var binding: ItemTokopedianowShoppingListProductCartBinding? by viewBinding()
 
     init {
         binding?.apply {
@@ -36,7 +36,7 @@ class ShoppingListProductInCartViewHolder (
         }
     }
 
-    override fun bind(element: ShoppingListProductInCartUiModel) {
+    override fun bind(element: ShoppingListProductCartUiModel) {
         binding?.apply {
             rvProductInCart.layoutManager = LinearLayoutManager(
                 root.context,

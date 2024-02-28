@@ -10,6 +10,5 @@ data class HeaderModel(
     val ctaTextColor: Int? = null,
     val ctaChevronIsShown: Boolean = true,
     val ctaChevronColor: Int? = null,
-    val backgroundGradientColor: GradientColor? = null,
-    val emptyStockTitle: String = String.EMPTY
+    val backgroundGradientColor: GradientColor? = null
 )

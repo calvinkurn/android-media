@@ -4,16 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListProductInCartItemBinding
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListProductInCartItemViewHolder
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductCartItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListProductCartItemViewHolder
 
 class ShoppingListProductInCartAdapter(
-    private var itemList: List<ShoppingListProductInCartItemUiModel>
-) : RecyclerView.Adapter<ShoppingListProductInCartItemViewHolder>() {
+    private var itemList: List<ShoppingListProductCartItemUiModel>
+) : RecyclerView.Adapter<ShoppingListProductCartItemViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ShoppingListProductInCartItemViewHolder = ShoppingListProductInCartItemViewHolder(
+    ): ShoppingListProductCartItemViewHolder = ShoppingListProductCartItemViewHolder(
         ItemTokopedianowShoppingListProductInCartItemBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
@@ -22,7 +22,7 @@ class ShoppingListProductInCartAdapter(
     )
 
     override fun onBindViewHolder(
-        holder: ShoppingListProductInCartItemViewHolder,
+        holder: ShoppingListProductCartItemViewHolder,
         position: Int
     ) {
         val item = itemList[position]

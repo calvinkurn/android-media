@@ -31,6 +31,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
@@ -125,6 +126,7 @@ class TokoNowShoppingListFragment :
 
     private var isNavToolbarScrollingBehaviourEnabled: Boolean = true
     private var isStickyTopCheckAllScrollingBehaviorEnabled: Boolean = false
+    private var loader: LoaderDialog? = null
 
     /**
      * -- override function section --
@@ -151,6 +153,7 @@ class TokoNowShoppingListFragment :
             setupSwipeToRefreshLayout()
             setupFloatingActionButton()
             setupBottomBulkAtc()
+            setupMiniCart()
             setupNavigationToolbar()
             setupOnScrollListener()
 
@@ -160,7 +163,7 @@ class TokoNowShoppingListFragment :
 
     override fun onResume() {
         super.onResume()
-        viewModel.getMiniCart()
+        viewModel.onResume()
     }
 
     override fun getFragmentPage(): Fragment = this@TokoNowShoppingListFragment
@@ -235,7 +238,7 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private suspend fun collectStickyTopCheckAllStatus(
+    private suspend fun collectStickyTopCheckAll(
         binding: FragmentTokopedianowShoppingListBinding
     ) {
         viewModel.isTopCheckAllSelected.collect { isSelected ->
@@ -254,7 +257,6 @@ class TokoNowShoppingListFragment :
             binding.apply {
                 isStickyTopCheckAllScrollingBehaviorEnabled = isAvailable
                 bottomBulkAtcView.showWithCondition(isAvailable)
-                miniCartWidget.showWithCondition(!isAvailable)
                 adjustRecyclerViewBottomPadding()
             }
         }
@@ -298,6 +300,21 @@ class TokoNowShoppingListFragment :
         }
     }
 
+    private suspend fun collectLoaderDialog() {
+        viewModel.isLoaderDialogShown.collect { isShown ->
+            if (isShown) {
+                loader = context?.let {
+                    val loader = LoaderDialog(it)
+                    loader.setLoadingText(String.EMPTY)
+                    loader.show()
+                    loader
+                }
+            } else {
+                loader?.dismiss()
+            }
+        }
+    }
+
     /**
      * -- private function section --
      */
@@ -321,8 +338,7 @@ class TokoNowShoppingListFragment :
             backgroundGradientColor = TokoNowThematicHeaderUiModel.GradientColor(
                 startColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN500),
                 endColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN400)
-            ),
-            emptyStockTitle = getString(R.string.tokopedianow_shopping_list_empty_stock)
+            )
         )
     }
 
@@ -341,9 +357,10 @@ class TokoNowShoppingListFragment :
                 launch { collectMiniCartState(this@collectStateFlow) }
                 launch { collectScrollBehavior(this@collectStateFlow) }
                 launch { collectErrorNavToolbar(this@collectStateFlow) }
-                launch { collectStickyTopCheckAllStatus(this@collectStateFlow) }
+                launch { collectStickyTopCheckAll(this@collectStateFlow) }
                 launch { collectProductAvailability(this@collectStateFlow) }
                 launch { collectBottomBulkAtc(this@collectStateFlow) }
+                launch { collectLoaderDialog() }
             }
         }
     }
@@ -383,6 +400,19 @@ class TokoNowShoppingListFragment :
         bottomBulkAtcView.onAtcClickListener {}
     }
 
+    private fun FragmentTokopedianowShoppingListBinding.setupMiniCart() {
+        val shopIds = listOf(viewModel.getShopId().toString())
+        val pageName = MiniCartAnalytics.Page.HOME_PAGE
+        val source = MiniCartSource.TokonowShoppingList
+        miniCartWidget.initialize(
+            shopIds = shopIds,
+            fragment = this@TokoNowShoppingListFragment,
+            listener = this@TokoNowShoppingListFragment,
+            pageName = pageName,
+            source = source
+        )
+    }
+
     private fun FragmentTokopedianowShoppingListBinding.setupNavigationToolbar() {
         navToolbar.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
@@ -420,23 +450,12 @@ class TokoNowShoppingListFragment :
     private fun FragmentTokopedianowShoppingListBinding.showMiniCart(
         data: MiniCartSimplifiedData
     ) {
-        val isMiniCartWidgetShown = data.isShowMiniCartWidget
-        if(isMiniCartWidgetShown && !bottomBulkAtcView.isVisible) {
-            val shopIds = listOf(viewModel.getShopId().toString())
-            val pageName = MiniCartAnalytics.Page.HOME_PAGE
-            val source = MiniCartSource.TokonowShoppingList
-            miniCartWidget.initialize(
-                shopIds = shopIds,
-                fragment = this@TokoNowShoppingListFragment,
-                listener = this@TokoNowShoppingListFragment,
-                pageName = pageName,
-                source = source
-            )
+        if(data.isShowMiniCartWidget && !bottomBulkAtcView.isVisible) {
             miniCartWidget.show()
+            adjustRecyclerViewBottomPadding()
         } else {
-            miniCartWidget.hide()
+            hideMiniCart()
         }
-        adjustRecyclerViewBottomPadding()
     }
 
     private fun IconBuilder.addNavGlobal(): IconBuilder = addIcon(

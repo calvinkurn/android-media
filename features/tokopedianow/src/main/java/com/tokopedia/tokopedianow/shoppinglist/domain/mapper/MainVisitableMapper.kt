@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
 import com.tokopedia.tokopedianow.common.model.TokoNowDividerUiModel
@@ -15,8 +16,8 @@ import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState.EXP
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.GetShoppingListDataResponse
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductInCartUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductCartItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListEmptyUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel
@@ -41,6 +42,7 @@ internal object MainVisitableMapper {
             percentage = it.discountPercentage.toString(),
             slashPrice = it.originalPrice,
             isSelected = it.isSelected,
+            appLink = it.applink,
             productLayoutType = AVAILABLE_SHOPPING_LIST
         )
     }
@@ -56,6 +58,7 @@ internal object MainVisitableMapper {
             weight = it.getWeight(),
             percentage = it.discountPercentage.toString(),
             slashPrice = it.originalPrice,
+            appLink = it.applink,
             productLayoutType = UNAVAILABLE_SHOPPING_LIST
         )
     }
@@ -141,47 +144,12 @@ internal object MainVisitableMapper {
         return this
     }
 
-    fun MutableList<Visitable<*>>.addProductInCartWidget() {
+    fun MutableList<Visitable<*>>.addProductCartWidget(
+        productList: List<ShoppingListProductCartItemUiModel>
+    ) {
         add(
-            ShoppingListProductInCartUiModel(
-                productList = listOf(
-                    ShoppingListProductInCartItemUiModel(
-                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
-                    ),
-                    ShoppingListProductInCartItemUiModel(
-                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
-                    ),
-                    ShoppingListProductInCartItemUiModel(
-                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
-                    ),
-                    ShoppingListProductInCartItemUiModel(
-                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
-                    ),
-                    ShoppingListProductInCartItemUiModel(
-                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
-                    ),
-                    ShoppingListProductInCartItemUiModel(
-                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
-                    ),
-                    ShoppingListProductInCartItemUiModel(
-                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
-                    ),
-                    ShoppingListProductInCartItemUiModel(
-                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
-                    ),
-                    ShoppingListProductInCartItemUiModel(
-                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
-                    ),
-                    ShoppingListProductInCartItemUiModel(
-                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
-                    ),
-                    ShoppingListProductInCartItemUiModel(
-                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
-                    ),
-                    ShoppingListProductInCartItemUiModel(
-                        imageUrl = "https://images.tokopedia.net/img/cache/1200/ynqObV/2024/1/23/3b40956f-18a9-4881-b462-54a28bbf75f9.jpg.webp"
-                    )
-                )
+            ShoppingListProductCartUiModel(
+                productList = productList
             )
         )
     }
@@ -331,5 +299,23 @@ internal object MainVisitableMapper {
         }
         clear()
         addAll(products)
+    }
+
+    fun MutableList<ShoppingListProductCartItemUiModel>.addProductCartItem(
+        productList: MutableList<ShoppingListHorizontalProductCardItemUiModel>,
+        miniCartItems: List<MiniCartItem.MiniCartItemProduct>
+    ): MutableList<ShoppingListHorizontalProductCardItemUiModel> {
+        val iterator = productList.iterator()
+        while (iterator.hasNext()) {
+            val nextProduct = iterator.next()
+            for (miniCartItem in miniCartItems) {
+                if (nextProduct.id == miniCartItem.productId) {
+                    add(ShoppingListProductCartItemUiModel(nextProduct.image, nextProduct.appLink))
+                    iterator.remove()
+                    break
+                }
+            }
+        }
+        return productList
     }
 }

@@ -18,6 +18,7 @@ data class ShoppingListHorizontalProductCardItemUiModel(
     val percentage: String = String.EMPTY,
     val slashPrice: String = String.EMPTY,
     val isSelected: Boolean = false,
+    val appLink: String = String.EMPTY,
     @TokoNowLayoutState val state: Int = TokoNowLayoutState.SHOW,
     val productLayoutType: ShoppingListProductLayoutType
 ): Visitable<ShoppingListHorizontalProductCardItemTypeFactory>, ImpressHolder() {
