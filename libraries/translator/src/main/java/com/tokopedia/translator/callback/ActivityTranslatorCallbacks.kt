@@ -13,7 +13,6 @@
  */
 package com.tokopedia.translator.callback
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.SharedPreferences
@@ -21,8 +20,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
 import android.util.Log
-import android.view.GestureDetector
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
@@ -139,56 +136,35 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         })
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setGestureDetector(rootView: View, activity: Activity) {
-        val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
-
-            private var initialScrollY = 0
-
-            override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-                if (Math.abs(distanceY) > 0) {
-                    val currentScrollY = rootView.scrollY
-
-                    if (currentScrollY != initialScrollY) {
-                        startTranslate(rootView)
-
-                        // Update the initial scroll position
-                        initialScrollY = currentScrollY
-                    }
-                }
-
-                return super.onScroll(e1, e2, distanceX, distanceY)
-            }
-        })
-
-        rootView.setOnTouchListener { _, event ->
-            gestureDetector.onTouchEvent(event)
-            true
-        }
-    }
-
-    private fun setScrollChangedLayoutListener(rootView: View) {
-        rootView.viewTreeObserver.addOnScrollChangedListener(translatorScrollChangedLayoutListener(rootView))
-    }
-
     private fun translatorManagerOnGlobalLayoutListener(rootView: View) = ViewTreeObserver.OnGlobalLayoutListener {
         startTranslate(rootView)
     }
 
     fun ViewTreeObserver.onScrollChangedAsFlow() = callbackFlow<Unit> {
         var job: Job? = null
+        var isIdle = true
+
+        val preDrawListener = ViewTreeObserver.OnPreDrawListener {
+            isIdle = false
+            true
+        }
 
         val listener = ViewTreeObserver.OnScrollChangedListener {
             job?.cancel()
             job = launch(coroutineContext) {
-                delay(DELAYING_SCROLL_TO_IDLE)
-                trySend(Unit)
+                if (!isIdle) {
+                    delay(DELAYING_SCROLL_TO_IDLE)
+                    isIdle = true
+                    trySend(Unit)
+                }
             }
         }
 
+        addOnPreDrawListener(preDrawListener)
         addOnScrollChangedListener(listener)
 
         awaitClose {
+            removeOnPreDrawListener(preDrawListener)
             removeOnScrollChangedListener(listener)
             job?.cancel()
         }
@@ -217,18 +193,6 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
             ?.toTypedArray()?.getOrNull(1) ?: ""
     }
 
-    private fun translatorScrollChangedLayoutListener(rootView: View): ViewTreeObserver.OnScrollChangedListener {
-        return object : ViewTreeObserver.OnScrollChangedListener {
-
-            override fun onScrollChanged() {
-
-                launch(coroutineContext) {
-
-                }
-            }
-        }
-    }
-
     private fun startTranslate(rootView: View) {
         rootView.postDelayed({
 //            translatorManager?.startTranslate()
@@ -238,7 +202,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
     companion object {
         private val TAG = ActivityTranslatorCallbacks::class.java.simpleName
 
-        private const val DELAYING_SCROLL_TO_IDLE = 300L
+        private const val DELAYING_SCROLL_TO_IDLE = 500L
     }
 
     internal inner class FragmentTranslatorCallbacks : FragmentManager.FragmentLifecycleCallbacks() {
