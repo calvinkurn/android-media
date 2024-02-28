@@ -13,6 +13,8 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePreviousPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
 import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
+import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.PageName
@@ -56,8 +58,8 @@ object AppLogPdp {
         quitType: String
     ) {
         AppLogAnalytics.send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
-            it.put(AppLogParam.PREVIOUS_PAGE, AppLogAnalytics.previousPageName(2))
-            it.put(AppLogParam.PAGE_NAME, PageName.PDP)
+            it.put(PREVIOUS_PAGE, AppLogAnalytics.getLastDataBeforeCurrent(PAGE_NAME))
+            it.put(PAGE_NAME, PageName.PDP)
             it.addSourcePageType()
             it.addEntranceForm()
             it.addSourceModule()
