@@ -61,7 +61,7 @@ class PaymentProcessor @Inject constructor(
             }
         }
     }
-    
+
     suspend fun getPaymentWidget(param: GetPaymentWidgetRequest): PaymentWidgetListData? {
         return withContext(dispatchers.io) {
             try {
@@ -72,4 +72,77 @@ class PaymentProcessor @Inject constructor(
             }
         }
     }
+
+    fun validatePayment(
+        payment: PaymentWidgetListData,
+        tenorList: List<TenorListData>?,
+        installmentData: GoCicilInstallmentData?,
+        total: Double
+    ): PaymentValidationReport {
+        val paymentData = payment.paymentWidgetData.firstOrNull()
+        if (paymentData != null) {
+            if (paymentData.errorDetails.message.isNotEmpty()) {
+                // error?
+                return PaymentValidationReport.ServerError
+            }
+
+            if (paymentData.walletData.phoneNumberRegistration.isRequired) {
+                return PaymentValidationReport.MissingPhoneNumberError
+            }
+
+            if (paymentData.walletData.activation.isRequired) {
+                return PaymentValidationReport.WalletActivationError
+            }
+
+            if (total < paymentData.amountValidation.minimumAmount) {
+                return PaymentValidationReport.MinimumAmountError
+            }
+
+            if (total > paymentData.amountValidation.maximumAmount) {
+                return PaymentValidationReport.MaximumAmountError
+            }
+
+            if (paymentData.walletData.walletType > 0) {
+                if (total > paymentData.walletData.walletAmount) {
+                    return PaymentValidationReport.WalletAmountError
+                }
+            }
+
+            if (paymentData.mandatoryHit.contains("gocicil")) {
+                if (installmentData?.installmentOptions?.find { it.isActive } == null) {
+                    return PaymentValidationReport.UnavailableTenureError
+                }
+            }
+
+            if (paymentData.mandatoryHit.contains("tenor_list")) {
+                if (tenorList?.find { !it.disable } == null) {
+                    return PaymentValidationReport.UnavailableTenureError
+                }
+            }
+
+            return PaymentValidationReport.Valid
+        }
+        // error
+        return PaymentValidationReport.NullPaymentError
+    }
+}
+
+sealed interface PaymentValidationReport {
+
+    object NullPaymentError : PaymentValidationReport
+
+    object ServerError : PaymentValidationReport
+
+    object MinimumAmountError : PaymentValidationReport
+    object MaximumAmountError : PaymentValidationReport
+
+    object UnavailableTenureError : PaymentValidationReport
+
+    object MissingPhoneNumberError : PaymentValidationReport
+
+    object WalletActivationError : PaymentValidationReport
+
+    object WalletAmountError : PaymentValidationReport
+
+    object Valid : PaymentValidationReport
 }

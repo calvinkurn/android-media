@@ -48,4 +48,16 @@ data class CheckoutCostModel(
     val dynamicPaymentFees: List<OrderPaymentFee>? = emptyList(),
     val originalPaymentFees: List<PaymentFeeDetail> = emptyList(),
     val usePaymentFees: Boolean = false
-) : CheckoutItem
+) : CheckoutItem {
+
+    val finalPaymentFee: Double
+        get() {
+            return if (usePaymentFees) {
+                (dynamicPaymentFees?.sumOf { it.fee } ?: 0.0) + originalPaymentFees.sumOf { it.amount }
+            } else if (dynamicPlatformFee.fee <= 0) {
+                0.0
+            } else {
+                dynamicPlatformFee.fee
+            }
+        }
+}

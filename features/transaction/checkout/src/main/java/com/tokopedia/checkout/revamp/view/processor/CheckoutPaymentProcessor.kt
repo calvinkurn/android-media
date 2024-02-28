@@ -7,8 +7,11 @@ import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeResponse
 import com.tokopedia.checkout.domain.usecase.GetPaymentFeeCheckoutUseCase
 import com.tokopedia.checkout.revamp.view.CheckoutViewModel
+import com.tokopedia.checkout.revamp.view.PAYMENT_INDEX_FROM_BOTTOM
 import com.tokopedia.checkout.revamp.view.address
+import com.tokopedia.checkout.revamp.view.buttonPayment
 import com.tokopedia.checkout.revamp.view.cost
+import com.tokopedia.checkout.revamp.view.payment
 import com.tokopedia.checkout.revamp.view.promo
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
@@ -42,6 +45,7 @@ import com.tokopedia.checkoutpayment.data.UsageSummariesData
 import com.tokopedia.checkoutpayment.data.VoucherOrderItemData
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData
 import com.tokopedia.checkoutpayment.processor.PaymentProcessor
+import com.tokopedia.checkoutpayment.processor.PaymentValidationReport
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -413,5 +417,80 @@ class CheckoutPaymentProcessor @Inject constructor(
     suspend fun getInstallmentList(payment: CheckoutPaymentModel, paymentData: PaymentWidgetData, paymentRequest: PaymentRequest): CheckoutPaymentModel {
         val installmentData = processor.getGocicilInstallmentOption(generateInstallmentRequest(payment, paymentData, paymentRequest))
         return payment.copy(installmentData = installmentData)
+    }
+
+    fun validatePayment(
+        listData: List<CheckoutItem>
+    ): List<CheckoutItem> {
+        val checkoutItems = listData.toMutableList()
+        val latestPayment = checkoutItems.payment()!!
+        val latestPaymentData = latestPayment.data
+        val latestCost = checkoutItems.cost()!!
+        val latestButtonPayment = checkoutItems.buttonPayment()!!
+        if (latestPaymentData != null) {
+            val result = processor.validatePayment(latestPaymentData, latestPayment.tenorList, latestPayment.installmentData, latestCost.totalPrice)
+            if (result == PaymentValidationReport.NullPaymentError) {
+                /* no-op */
+                return checkoutItems
+            }
+            val paymentWidgetData = latestPaymentData.paymentWidgetData.first()
+            when (result) {
+                PaymentValidationReport.MaximumAmountError -> {
+                    checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
+                        widget = latestPayment.widget.copy(
+                            errorMessage = paymentWidgetData.amountValidation.maximumAmountErrorMessage
+                        )
+                    )
+                }
+
+                PaymentValidationReport.MinimumAmountError -> {
+                    checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
+                        widget = latestPayment.widget.copy(
+                            errorMessage = paymentWidgetData.amountValidation.minimumAmountErrorMessage
+                        )
+                    )
+                }
+
+                PaymentValidationReport.MissingPhoneNumberError -> {
+                    checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
+                        widget = latestPayment.widget.copy(
+                            errorMessage = paymentWidgetData.walletData.phoneNumberRegistration.errorMessage
+                        )
+                    )
+                }
+                PaymentValidationReport.ServerError -> {
+                    checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
+                        widget = latestPayment.widget.copy(
+                            errorMessage = paymentWidgetData.errorDetails.message
+                        )
+                    )
+                }
+                PaymentValidationReport.UnavailableTenureError -> {
+                    checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
+                        widget = latestPayment.widget.copy(
+                            errorMessage = paymentWidgetData.installmentPaymentData.errorMessageUnavailableTenure
+                        )
+                    )
+                }
+                PaymentValidationReport.WalletActivationError -> {
+                    checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
+                        widget = latestPayment.widget.copy(
+                            errorMessage = paymentWidgetData.walletData.activation.errorMessage
+                        )
+                    )
+                }
+                PaymentValidationReport.WalletAmountError -> {
+                    checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
+                        widget = latestPayment.widget.copy(
+                            errorMessage = paymentWidgetData.walletData.topUp.errorMessage
+                        )
+                    )
+                }
+                else -> {
+                    /* no-op */
+                }
+            }
+        }
+        return checkoutItems
     }
 }

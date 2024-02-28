@@ -163,15 +163,27 @@ fun CheckoutPaymentWidget(
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
                                     )
-                                    NestTypography(
-                                        text = "(asdfasdf, kode ***2, saldo Rp1.000.000)",
-                                        textStyle = NestTheme.typography.display3.copy(
-                                            color = NestTheme.colors.NN._600
-                                        ),
-                                        modifier = Modifier
-                                            .padding(start = 4.dp),
-                                        maxLines = 1
-                                    )
+                                    if (data.errorMessage.isNotEmpty()) {
+                                        NestTypography(
+                                            text = data.errorMessage,
+                                            textStyle = NestTheme.typography.display3.copy(
+                                                color = NestTheme.colors.RN._500
+                                            ),
+                                            modifier = Modifier
+                                                .padding(start = 4.dp),
+                                            maxLines = 1
+                                        )
+                                    } else {
+                                        NestTypography(
+                                            text = "(asdfasdf, kode ***2, saldo Rp1.000.000)",
+                                            textStyle = NestTheme.typography.display3.copy(
+                                                color = NestTheme.colors.NN._600
+                                            ),
+                                            modifier = Modifier
+                                                .padding(start = 4.dp),
+                                            maxLines = 1
+                                        )
+                                    }
                                 }
                                 NestTypography(
                                     text = "Cicil 3x Rp234.123.566 * Cicil 3x Rp234.123.566 * Cicil 3x Rp234.123.566",
@@ -216,6 +228,12 @@ fun CheckoutPaymentWidgetPreview() {
         )
         CheckoutPaymentWidget(
             CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal)
+        )
+        CheckoutPaymentWidget(
+            CheckoutPaymentWidgetData(
+                state = CheckoutPaymentWidgetState.Normal,
+                errorMessage = "something went wrong"
+            )
         )
     }
 }

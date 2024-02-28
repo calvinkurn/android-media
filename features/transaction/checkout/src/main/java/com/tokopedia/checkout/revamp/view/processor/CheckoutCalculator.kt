@@ -105,9 +105,23 @@ class CheckoutCalculator @Inject constructor(
         return cost
     }
 
-    fun calculateWithoutPayment(
+    fun calculateTotalAndUpdateButtonPaymentWithoutPaymentData(
         listData: List<CheckoutItem>,
         isTradeInByDropOff: Boolean,
+        summariesAddOnUiModel: HashMap<Int, String>
+    ): List<CheckoutItem> {
+        val newList = calculateTotalWithoutPayment(listData, summariesAddOnUiModel)
+        val shipmentCost = newList.cost()!!
+
+        val buttonPaymentModel = updateCheckoutButtonData(newList, shipmentCost, isTradeInByDropOff)
+
+        return newList.toMutableList().apply {
+            set(size - BUTTON_PAYMENT_INDEX_FROM_BOTTOM, buttonPaymentModel)
+        }
+    }
+
+    private fun calculateTotalWithoutPayment(
+        listData: List<CheckoutItem>,
         summariesAddOnUiModel: HashMap<Int, String>
     ): List<CheckoutItem> {
         var totalWeight = 0.0
@@ -353,23 +367,19 @@ class CheckoutCalculator @Inject constructor(
         shipmentCost =
             shipmentCost.copy(dynamicPlatformFee = shipmentCost.dynamicPlatformFee.copy(isLoading = true))
 
-        val buttonPaymentModel =
-            updateCheckoutButtonData(listData, shipmentCost, isTradeInByDropOff)
-
         return listData.toMutableList().apply {
             set(size - COST_INDEX_FROM_BOTTOM, shipmentCost)
             set(size - CROSS_SELL_INDEX_FROM_BOTTOM, crossSellGroup.copy(crossSellList = listCrossSellItem))
-            set(size - BUTTON_PAYMENT_INDEX_FROM_BOTTOM, buttonPaymentModel)
         }
     }
 
-    fun updateShipmentCostModel(
+    fun updateButtonPaymentWithoutPaymentData(
         listData: List<CheckoutItem>,
         newCost: CheckoutCostModel,
         isTradeInByDropOff: Boolean,
         summariesAddOnUiModel: HashMap<Int, String>
     ): List<CheckoutItem> {
-        val newList = calculateWithoutPayment(listData, isTradeInByDropOff, summariesAddOnUiModel)
+        val newList = calculateTotalWithoutPayment(listData, summariesAddOnUiModel)
         var shipmentCost = newList.cost()!!.copy(dynamicPlatformFee = newCost.dynamicPlatformFee)
         var buttonPaymentModel = newList.buttonPayment()!!
         var cartItemCounter = 0
@@ -437,26 +447,18 @@ class CheckoutCalculator @Inject constructor(
         }
     }
 
-    fun calculateTotalWithPayment(
+    fun updateButtonPaymentWithPaymentData(
         listData: List<CheckoutItem>,
-        newCost: CheckoutCostModel,
-        newPayment: CheckoutPaymentModel,
-        isTradeInByDropOff: Boolean,
-        summariesAddOnUiModel: HashMap<Int, String>
+        isTradeInByDropOff: Boolean
     ): List<CheckoutItem> {
-        val newList = calculateWithoutPayment(listData, isTradeInByDropOff, summariesAddOnUiModel)
-        var shipmentCost = newList.cost()!!.copy(
-            dynamicPlatformFee = newCost.dynamicPlatformFee,
-            dynamicPaymentFees = newCost.dynamicPaymentFees,
-            usePaymentFees = newCost.usePaymentFees
-        )
-        var payment = newPayment
-        var buttonPaymentModel = newList.buttonPayment()!!
+        var shipmentCost = listData.cost()!!
+        var payment = listData.payment()!!
+        var buttonPaymentModel = listData.buttonPayment()!!
         var cartItemCounter = 0
         var cartItemErrorCounter = 0
         var hasLoadingItem = false
         var shouldShowInsuranceTnc = false
-        for (shipmentCartItemModel in newList) {
+        for (shipmentCartItemModel in listData) {
             if (shipmentCartItemModel is CheckoutOrderModel) {
                 if ((shipmentCartItemModel.shipment.courierItemData != null && !isTradeInByDropOff) /*|| (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && isTradeInByDropOff)*/) {
                     if (!hasLoadingItem) {
@@ -480,19 +482,11 @@ class CheckoutCalculator @Inject constructor(
                 }
             }
         }
-        val checkoutOrderModels = newList.filterIsInstance(CheckoutOrderModel::class.java)
-        val priceTotal: Double =
-            if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
+        val checkoutOrderModels = listData.filterIsInstance(CheckoutOrderModel::class.java)
+        val priceTotal: Double = if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
 
-        shipmentCost = shipmentCost.copy(originalPaymentFees = payment.data?.paymentFeeDetails ?: emptyList())
-        val paymentFee: Double =
-            if (shipmentCost.usePaymentFees) {
-                (shipmentCost.dynamicPaymentFees?.sumOf { it.fee } ?: 0.0) + shipmentCost.originalPaymentFees.sumOf { it.amount }
-            } else if (shipmentCost.dynamicPlatformFee.fee <= 0) {
-                0.0
-            } else {
-                shipmentCost.dynamicPlatformFee.fee
-            }
+        val paymentFee: Double = shipmentCost.finalPaymentFee
+
         val finalPrice = priceTotal + paymentFee
 
         payment = payment.copy(
@@ -504,15 +498,6 @@ class CheckoutCalculator @Inject constructor(
                 }
             )
         )
-
-        val paymentData = payment.data?.paymentWidgetData?.firstOrNull()
-        if (paymentData != null) {
-            if (paymentData.errorDetails.message.isNotEmpty()) {
-                // error?
-            }
-
-//            if (paymentData)
-        }
 
         if ((cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) && payment.widget.isValidStateToContinue) {
             val priceTotalFormatted =
@@ -539,8 +524,38 @@ class CheckoutCalculator @Inject constructor(
             totalPriceNum = finalPrice
         )
 
-        return newList.toMutableList().apply {
+        return listData.toMutableList().apply {
             set(size - PAYMENT_INDEX_FROM_BOTTOM, payment)
+            set(size - COST_INDEX_FROM_BOTTOM, shipmentCost)
+            set(size - BUTTON_PAYMENT_INDEX_FROM_BOTTOM, buttonPaymentModel)
+        }
+    }
+
+    fun calculateTotalWithPayment(
+        listData: List<CheckoutItem>,
+        newCost: CheckoutCostModel,
+        newPayment: CheckoutPaymentModel,
+        summariesAddOnUiModel: HashMap<Int, String>
+    ): List<CheckoutItem> {
+        val newList = calculateTotalWithoutPayment(listData, summariesAddOnUiModel)
+        var shipmentCost = newList.cost()!!.copy(
+            dynamicPlatformFee = newCost.dynamicPlatformFee,
+            dynamicPaymentFees = newCost.dynamicPaymentFees,
+            usePaymentFees = newCost.usePaymentFees
+        )
+        var buttonPaymentModel = newList.buttonPayment()!!
+        val priceTotal: Double = if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
+
+        shipmentCost = shipmentCost.copy(originalPaymentFees = newPayment.data?.paymentFeeDetails ?: emptyList())
+        val paymentFee = shipmentCost.finalPaymentFee
+        val finalPrice = priceTotal + paymentFee
+
+        buttonPaymentModel = buttonPaymentModel.copy(
+            totalPriceNum = finalPrice
+        )
+
+        return newList.toMutableList().apply {
+            set(size - PAYMENT_INDEX_FROM_BOTTOM, newPayment)
             set(size - COST_INDEX_FROM_BOTTOM, shipmentCost)
             set(size - BUTTON_PAYMENT_INDEX_FROM_BOTTOM, buttonPaymentModel)
         }
