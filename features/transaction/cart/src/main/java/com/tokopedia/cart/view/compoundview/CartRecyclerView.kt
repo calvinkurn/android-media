@@ -3,6 +3,7 @@ package com.tokopedia.cart.view.compoundview
 import android.content.Context
 import android.graphics.Region
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -34,6 +35,10 @@ class CartRecyclerView : RecyclerView {
     }
 
     override fun onInterceptTouchEvent(e: MotionEvent?): Boolean {
+        if (this.focusedChild != null) {
+            clearFocus()
+        }
+
         if (shouldInterceptTouchEvent()) {
             val layouts = viewBinderHelper.getOpenedLayout()
             for (layout in layouts) {
