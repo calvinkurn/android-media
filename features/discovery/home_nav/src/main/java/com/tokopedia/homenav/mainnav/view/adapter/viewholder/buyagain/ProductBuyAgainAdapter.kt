@@ -13,20 +13,20 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ProductBuyAgainAdapter constructor(
     private val data: List<Pair<String, String>> = emptyList(),
     private val listener: BuyAgainView.Listener? = null
-) : RecyclerView.Adapter<ProductBuyAgainAdapter.Holder>() {
+) : RecyclerView.Adapter<ProductBuyAgainAdapter.BuyAgainItemViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder.create(parent, listener)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BuyAgainItemViewHolder {
+        return BuyAgainItemViewHolder.create(parent, listener)
     }
 
-    override fun onBindViewHolder(holder: Holder, position: Int) {
+    override fun onBindViewHolder(holder: BuyAgainItemViewHolder, position: Int) {
         val (name, price) = data[position]
         holder.bind(name, price)
     }
 
     override fun getItemCount() = data.size
 
-    class Holder constructor(
+    class BuyAgainItemViewHolder constructor(
         view: View,
         private val listener: BuyAgainView.Listener?
     ) : ViewHolder(view) {
@@ -65,11 +65,11 @@ class ProductBuyAgainAdapter constructor(
             @LayoutRes
             val LAYOUT = R.layout.holder_transaction_buy_again_item
 
-            fun create(parent: ViewGroup, listener: BuyAgainView.Listener?): Holder {
+            fun create(parent: ViewGroup, listener: BuyAgainView.Listener?): BuyAgainItemViewHolder {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(LAYOUT, parent, false)
 
-                return Holder(view, listener)
+                return BuyAgainItemViewHolder(view, listener)
             }
         }
     }
