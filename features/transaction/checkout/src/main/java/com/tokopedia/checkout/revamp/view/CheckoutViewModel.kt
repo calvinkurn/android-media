@@ -918,7 +918,6 @@ class CheckoutViewModel @Inject constructor(
             calculator.updateShipmentCostModel(
                 listData.value,
                 cost,
-                null,
                 isTradeInByDropOff,
                 summariesAddOnUiModel
             )
@@ -3096,7 +3095,7 @@ class CheckoutViewModel @Inject constructor(
                     usePaymentFees = true
                 )
                 listData.value =
-                    calculator.updateShipmentCostModel(
+                    calculator.calculateTotalWithPayment(
                         newItems,
                         cost,
                         payment,
@@ -3135,7 +3134,7 @@ class CheckoutViewModel @Inject constructor(
                 usePaymentFees = true
             )
             listData.value =
-                calculator.updateShipmentCostModel(
+                calculator.calculateTotalWithPayment(
                     newItems,
                     cost,
                     payment,
@@ -3160,7 +3159,7 @@ class CheckoutViewModel @Inject constructor(
                     usePaymentFees = true
                 )
                 listData.value =
-                    calculator.updateShipmentCostModel(
+                    calculator.calculateTotalWithPayment(
                         newItems,
                         cost,
                         payment,
@@ -3185,7 +3184,7 @@ class CheckoutViewModel @Inject constructor(
                     usePaymentFees = true
                 )
                 listData.value =
-                    calculator.updateShipmentCostModel(
+                    calculator.calculateTotalWithPayment(
                         newItems,
                         cost,
                         payment,
@@ -3201,7 +3200,7 @@ class CheckoutViewModel @Inject constructor(
             usePaymentFees = true
         )
         listData.value =
-            calculator.updateShipmentCostModel(
+            calculator.calculateTotalWithPayment(
                 listData.value,
                 cost,
                 payment,

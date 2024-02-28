@@ -366,6 +366,80 @@ class CheckoutCalculator @Inject constructor(
     fun updateShipmentCostModel(
         listData: List<CheckoutItem>,
         newCost: CheckoutCostModel,
+        isTradeInByDropOff: Boolean,
+        summariesAddOnUiModel: HashMap<Int, String>
+    ): List<CheckoutItem> {
+        val newList = calculateWithoutPayment(listData, isTradeInByDropOff, summariesAddOnUiModel)
+        var shipmentCost = newList.cost()!!.copy(dynamicPlatformFee = newCost.dynamicPlatformFee)
+        var buttonPaymentModel = newList.buttonPayment()!!
+        var cartItemCounter = 0
+        var cartItemErrorCounter = 0
+        var hasLoadingItem = false
+        var shouldShowInsuranceTnc = false
+        for (shipmentCartItemModel in newList) {
+            if (shipmentCartItemModel is CheckoutOrderModel) {
+                if ((shipmentCartItemModel.shipment.courierItemData != null && !isTradeInByDropOff) /*|| (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && isTradeInByDropOff)*/) {
+                    if (!hasLoadingItem) {
+                        hasLoadingItem = validateLoadingItem(shipmentCartItemModel)
+                    }
+                    cartItemCounter++
+                }
+                if (shipmentCartItemModel.isError) {
+                    cartItemErrorCounter++
+                } else if (!shouldShowInsuranceTnc) {
+                    val orderProducts =
+                        helper.getOrderProducts(listData, shipmentCartItemModel.cartStringGroup)
+                    for (cartItemModel in orderProducts) {
+                        if (cartItemModel is CheckoutProductModel && cartItemModel.addOnProduct.listAddOnProductData.any { it.type == AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE && it.isChecked }) {
+                            shouldShowInsuranceTnc = true
+                        }
+                    }
+                    if (shipmentCartItemModel.shipment.insurance.isCheckInsurance) {
+                        shouldShowInsuranceTnc = true
+                    }
+                }
+            }
+        }
+        val checkoutOrderModels = newList.filterIsInstance(CheckoutOrderModel::class.java)
+        val priceTotal: Double =
+            if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
+        val platformFee: Double =
+            if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
+        val finalPrice = priceTotal + platformFee
+        if (cartItemCounter > 0 && cartItemCounter <= checkoutOrderModels.size) {
+            val priceTotalFormatted =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    finalPrice,
+                    false
+                ).removeDecimalSuffix()
+            shipmentCost = shipmentCost.copy(totalPriceString = priceTotalFormatted)
+            buttonPaymentModel = buttonPaymentModel.copy(
+                useInsurance = shouldShowInsuranceTnc,
+                enable = !hasLoadingItem,
+                totalPrice = priceTotalFormatted
+            )
+        } else {
+            shipmentCost = shipmentCost.copy(totalPriceString = "-")
+            buttonPaymentModel = buttonPaymentModel.copy(
+                useInsurance = shouldShowInsuranceTnc,
+                enable = cartItemErrorCounter < checkoutOrderModels.size,
+                totalPrice = "-"
+            )
+        }
+
+        buttonPaymentModel = buttonPaymentModel.copy(
+            totalPriceNum = finalPrice
+        )
+
+        return newList.toMutableList().apply {
+            set(size - 3, shipmentCost)
+            set(size - 1, buttonPaymentModel)
+        }
+    }
+
+    fun calculateTotalWithPayment(
+        listData: List<CheckoutItem>,
+        newCost: CheckoutCostModel,
         newPayment: CheckoutPaymentModel?,
         isTradeInByDropOff: Boolean,
         summariesAddOnUiModel: HashMap<Int, String>
