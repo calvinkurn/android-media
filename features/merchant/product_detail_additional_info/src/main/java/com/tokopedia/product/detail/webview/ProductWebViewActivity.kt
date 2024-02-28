@@ -9,6 +9,11 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.showImmediately
 
 class ProductWebViewActivity : BaseSimpleActivity() {
+
+    companion object {
+        private const val EXTRAS_URL = "url"
+    }
+
     override fun getNewFragment(): Fragment? = null
 
     override fun getLayoutRes(): Int {
@@ -18,11 +23,12 @@ class ProductWebViewActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adjustOrientation()
-        val uri = intent.data ?: return
-        val url = ""
+
+        val extras = intent.extras ?: return
+        val url = extras.getString(EXTRAS_URL) ?: ""
         showImmediately(supportFragmentManager, ProductWebViewBottomSheet.TAG) {
             ProductWebViewBottomSheet.instance(
-                url = "https://www.tokopedia.com/help/article/faq-seputar-jaminan-pasti-ori"
+                url = url
             )
         }
     }
