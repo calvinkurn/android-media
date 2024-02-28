@@ -16,6 +16,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
@@ -27,6 +28,7 @@ import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGrou
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.dpToPx
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
@@ -40,6 +42,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_banner_product_group_viewpager
+        private val CONST_EXTRA_WIDTH_TAB_TITLE = 4.toPx()
         private const val ONE_TAB = 1
         private const val MARGIN_16_DP = 16f
         private const val THREE_TAB = 3
@@ -100,7 +103,8 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
                     tabTitle.context.resources.getDimension(R.dimen.tab_name_font_size)
                 )
                 tabTitle?.text = fragments[currentPosition].first
-
+                tabTitle?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                tabTitle?.layoutParams?.width = tabTitle?.measuredWidth.orZero() + CONST_EXTRA_WIDTH_TAB_TITLE
                 if (currentPosition == 0) tab.select(model) else tab.unselect(model)
 
                 tab.view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
@@ -169,7 +173,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
 
                     val screenWidth = getScreenWidth()
 
-                    if (tabTotalWidth < screenWidth || tabs.size <= THREE_TAB) {
+                    if (tabTotalWidth < screenWidth && tabs.size <= THREE_TAB) {
                         tabsUnify.customTabMode = TabLayout.MODE_AUTO
                         tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
                     } else {
