@@ -36,13 +36,18 @@ import com.tokopedia.translator.ui.SharedPrefsUtils
 import com.tokopedia.translator.ui.TranslatorSettingView.*
 import com.tokopedia.translator.util.ViewUtil
 import com.tokopedia.translator.viewtree.ViewTreeManager
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.ref.WeakReference
+import kotlin.coroutines.CoroutineContext
 
 
-class TranslatorManager() {
+class TranslatorManager() : CoroutineScope {
 
     private val gson = Gson()
 
@@ -74,24 +79,14 @@ class TranslatorManager() {
         }
 
         try {
-            mLangsGroup =
-                "${SharedPrefsUtils.getStringPreference(
-                    application,
-                    SOURCE_LANGUAGE
-                )!!.split(
-                    DELIM_LANG_CODE
-                )[1]}-${SharedPrefsUtils.getStringPreference(
-                    application,
-                    DESTINATION_LANGUAGE
-                )!!.split(
-                    DELIM_LANG_CODE
-                )[1]}"
+            mLangsGroup = "${
+                SharedPrefsUtils.getStringPreference(application, SOURCE_LANGUAGE)!!.split(DELIM_LANG_CODE)[1]
+            }-${
+                SharedPrefsUtils.getStringPreference(application, DESTINATION_LANGUAGE)!!.split(DELIM_LANG_CODE)[1]
+            }"
 
             destinationLang = mApplication?.let { application ->
-                SharedPrefsUtils.getStringPreference(application.applicationContext, DESTINATION_LANGUAGE)
-                    ?.split(DELIM_LANG_CODE.toRegex())
-                    ?.dropLastWhile { it.isEmpty() }
-                    ?.toTypedArray()?.getOrNull(1)
+                SharedPrefsUtils.getStringPreference(application.applicationContext, DESTINATION_LANGUAGE)?.split(DELIM_LANG_CODE.toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()?.getOrNull(1)
             } ?: "en"
         } catch (e: Exception) {
             e.printStackTrace()
@@ -142,12 +137,7 @@ class TranslatorManager() {
         internal fun getInstance(): TranslatorManager? {
             synchronized(LOCK) {
                 if (sInstance == null) {
-                    throw IllegalStateException(
-                        "Default TranslatorManager is not initialized in this "
-                                + "process "
-                                + ". make sure to call "
-                                + "TranslatorManager.initTranslatorManager(Context) first."
-                    )
+                    throw IllegalStateException("Default TranslatorManager is not initialized in this " + "process " + ". make sure to call " + "TranslatorManager.initTranslatorManager(Context) first.")
                 }
                 return sInstance
             }
@@ -155,56 +145,53 @@ class TranslatorManager() {
     }
 
 
-    fun prepareSelectors(activity: Activity) {
+    suspend fun prepareSelectors(activity: Activity) {
         val views: List<View?> = ViewUtil.getChildren(ViewUtil.getContentView(activity))
 
+        if (views.isEmpty()) return
+
         for (view in views) {
-            view?.apply {
-                if (view is TextView && view !is EditText) {
-                    if (view.tag == null || (view.tag is Boolean && !view.tag.toString().toBoolean())) {
-                        val selector = ViewTreeManager.createDOMIdentifier(view, activity)
-                        mSelectors[selector] = selector
+            if (view is TextView && view !is EditText) {
+                if (view.tag == null || (view.tag is Boolean && !view.tag.toString().toBoolean())) {
+                    val selector = ViewTreeManager.createDOMIdentifier(view, activity)
+                    mSelectors[selector] = selector
 
-                        view.text?.apply {
-                            if (view.text.isNotBlank()) {
-                                val stringPoolItem = mStringPoolManager.get(view.text.toString())
+                    if (view.text.isNotBlank()) {
+                        val stringPoolItem = mStringPoolManager.get(view.text.toString())
 
-                                if (stringPoolItem === null || stringPoolItem.demandedText === null || stringPoolItem.demandedText.isBlank()) {
-                                    //prepare for translate
-                                    mStringPoolManager.add(view.text.toString(), "", "")
-                                } else {
-                                    //translate
-                                    if (view.text != stringPoolItem.demandedText) {
-                                        view.text = stringPoolItem.demandedText
-                                        view.tag = true
-                                    }
+                        if (stringPoolItem === null || stringPoolItem.demandedText === null || stringPoolItem.demandedText.isBlank()) {
+                            //prepare for translate
+                            mStringPoolManager.add(view.text.toString(), "", "")
+                        } else {
+                            //translate
+                            if (view.text != stringPoolItem.demandedText) {
+                                launch(Dispatchers.Main) {
+                                    view.text = stringPoolItem.demandedText
+                                    view.tag = true
                                 }
                             }
                         }
                     }
                 }
             }
-        }
 
-        Log.d(TAG, "Created selectors for current screen $mSelectors")
-        Log.d(TAG, "current string pool $mStringPoolManager")
+            Log.d(TAG, "Created selectors for current screen $mSelectors")
+            Log.d(TAG, "current string pool $mStringPoolManager")
+        }
     }
 
-    public fun clearSelectors() {
+    fun clearSelectors() {
         mSelectors.clear()
     }
 
-    fun startTranslate() {
+    suspend fun startTranslate() {
         Log.d(TAG, "Starting translation of ${getCurrentActivity()}")
         if (getCurrentActivity() == null || mApplication == null) {
             return
         }
 
         val currentDestLang = mApplication?.let { application ->
-            SharedPrefsUtils.getStringPreference(application.applicationContext, DESTINATION_LANGUAGE)
-                ?.split(DELIM_LANG_CODE.toRegex())
-                ?.dropLastWhile { it.isEmpty() }
-                ?.toTypedArray()?.getOrNull(1)
+            SharedPrefsUtils.getStringPreference(application.applicationContext, DESTINATION_LANGUAGE)?.split(DELIM_LANG_CODE.toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()?.getOrNull(1)
         } ?: "en"
 
         if (destinationLang != currentDestLang) {
@@ -213,14 +200,13 @@ class TranslatorManager() {
         }
 
         prepareSelectors(getCurrentActivity()!!)
+
         origStrings = mStringPoolManager.getQueryString()
+
         Log.d(TAG, "Here is eligible string for translation in current screen $origStrings")
 
         if (origStrings.isNullOrBlank()) {
-            Log.d(
-                TAG,
-                "Stopping translation as no new untranslated string found in this screen, ${getCurrentActivity()}"
-            )
+            Log.d(TAG, "Stopping translation as no new untranslated string found in this screen, ${getCurrentActivity()}")
             return
         }
 
@@ -229,71 +215,64 @@ class TranslatorManager() {
     }
 
     private fun fetchTranslationService(originStrList: Array<String>) {
-        val call = service.getTranslatedString("dict-chrome-ex", "id", destinationLang, "t", originStrList)
+        launch(coroutineContext) {
+            val call = service.getTranslatedString("dict-chrome-ex", "id", destinationLang, "t", originStrList)
 
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (response.isSuccessful) {
-                    try {
-                        val strJson = response.body()
-                        Log.d(
-                            TranslatorManagerFragment.TAG,
-                            "Received response from server: $strJson --> ${TranslatorManagerFragment.getCurrentFragment()}"
-                        )
+            call.enqueue(object : Callback<String> {
 
-                        val arrayStr = jsonStringToArray(strJson)
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        try {
+                            val strJson = response.body()
+                            Log.d(TranslatorManagerFragment.TAG, "Received response from server: $strJson --> ${TranslatorManagerFragment.getCurrentFragment()}")
 
-                        if (arrayStr.isNotEmpty()) {
+                            val arrayStr = jsonStringToArray(strJson)
 
-                            mStringPoolManager.updateCache(
-                                originStrList,
-                                arrayStr,
-                                destinationLang
-                            )
+                            if (arrayStr.isNotEmpty()) {
 
-                            val charCountOld =
-                                SharedPrefsUtils.getIntegerPreference(
-                                    mApplication!!.applicationContext,
-                                    CHARS_COUNT,
-                                    0
-                                )
+                                mStringPoolManager.updateCache(originStrList, arrayStr, destinationLang)
 
-                            updateScreenWithTranslatedString()
-                            SharedPrefsUtils.setIntegerPreference(
-                                mApplication!!.applicationContext,
-                                CHARS_COUNT,
-                                origStrings!!.length + charCountOld
-                            )
+                                val charCountOld = SharedPrefsUtils.getIntegerPreference(mApplication!!.applicationContext, CHARS_COUNT, 0)
+
+                                launch {
+                                    updateScreenWithTranslatedString()
+                                    SharedPrefsUtils.setIntegerPreference(mApplication!!.applicationContext, CHARS_COUNT, origStrings!!.length + charCountOld)
+                                }
+
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
                     }
+
                 }
 
-            }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.e(TranslatorManagerFragment.TAG, t.localizedMessage.orEmpty())
-                t.printStackTrace()
-            }
-        })
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.e(TranslatorManagerFragment.TAG, t.localizedMessage.orEmpty())
+                    t.printStackTrace()
+                }
+            })
+        }
     }
 
     fun jsonStringToArray(jsonString: String?): Array<String> {
         if (jsonString?.isBlank() == true) return emptyArray()
-        return gson.fromJson(jsonString, Array<String>::class.java)
+        return try {
+            gson.fromJson(jsonString, Array<String>::class.java)
+        } catch (e: Exception) {
+            emptyArray()
+        }
     }
 
-    public fun updateScreenWithTranslatedString() {
+    suspend fun updateScreenWithTranslatedString() {
         Log.d(TAG, "Starting screen update with translated string ${getCurrentActivity()}")
         var stringPoolItem: StringPoolItem?
         var tv: View?
         for (selector in mSelectors) {
             try {
-                tv = ViewTreeManager.findViewByDOMIdentifier(
-                        selector.value,
-                        getCurrentActivity()!!
-                )
+                tv = ViewTreeManager.findViewByDOMIdentifier(selector.value, getCurrentActivity()!!)
+
+                if (tv == null) continue
 
                 if (tv is TextView && tv !is EditText) {
 
@@ -304,101 +283,18 @@ class TranslatorManager() {
                     }
 
                     if (tv.text != stringPoolItem.demandedText) {
-                        tv.text = stringPoolItem.demandedText
-                        tv.tag = true
+                        launch(Dispatchers.Main) {
+                            tv.text = stringPoolItem.demandedText
+                            tv.tag = true
+                        }
                     }
                 }
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    fun prepareBubbleView(context: Context) {
-        mLayoutFloatingButton =
-            LayoutInflater.from(context).inflate(R.layout.layout_floating_button, null)
-        //Add the view to the window.
-        val layoutParams = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            PixelFormat.TRANSLUCENT
-        )
-        layoutParams.gravity = Gravity.TOP or Gravity.END
-        mLayoutFloatingButton!!.x = mStartX.toFloat()
-        mLayoutFloatingButton!!.y = mStartY.toFloat()
-        mLayoutFloatingButton!!.findViewById<View>(R.id.container)
-            .setOnTouchListener(object : View.OnTouchListener {
-                private var initialX: Int = 0
-                private var initialY: Int = 0
-                private var initialTouchX: Float = 0.toFloat()
-                private var initialTouchY: Float = 0.toFloat()
-
-                override fun onTouch(v: View, event: MotionEvent): Boolean {
-                    when (event.action) {
-                        MotionEvent.ACTION_DOWN -> {
-                            initialX = mLayoutFloatingButton!!.x.toInt()
-                            initialY = mLayoutFloatingButton!!.y.toInt()
-                            initialTouchX = event.rawX
-                            initialTouchY = event.rawY
-                            return true
-                        }
-                        MotionEvent.ACTION_UP -> {
-                            val xDiff = (event.rawX - initialTouchX).toInt()
-                            val yDiff = (event.rawY - initialTouchY).toInt()
-                            if (xDiff < 10 && yDiff < 10) {
-                                startTranslate()
-
-                            } else {
-                                mStartX = event.rawX.toInt()
-                                mStartY = event.rawY.toInt()
-                            }
-
-                            return true
-                        }
-                        MotionEvent.ACTION_MOVE -> {
-                            mLayoutFloatingButton!!.x =
-                                (initialX + (event.rawX - initialTouchX).toInt()).toFloat()
-                            mLayoutFloatingButton!!.y =
-                                (initialY + (event.rawY - initialTouchY).toInt()).toFloat()
-                            return true
-                        }
-                    }
-                    return false
-                }
-            })
-    }
-
-
-    fun attachBubbleViewInstanceHandler(
-        next: Activity
-    ) {
-        if (mCurrentActivity != null) {
-            (mCurrentActivity?.get()?.window?.decorView as? ViewGroup)?.removeView(
-                mLayoutFloatingButton
-            )
-        }
-
-        (next.window.decorView as? ViewGroup)?.addView(mLayoutFloatingButton)
-        applyAnimation(mLayoutFloatingButton)
-    }
-
-    private fun applyAnimation(view: View?) {
-        val fadeOut = ObjectAnimator.ofFloat(view, "alpha", .5f, .1f)
-        fadeOut.duration = 1000
-        val fadeIn = ObjectAnimator.ofFloat(view, "alpha", .1f, .5f)
-        fadeIn.duration = 1000
-
-        val mAnimationSet = AnimatorSet()
-
-        mAnimationSet.play(fadeIn).after(fadeOut)
-
-        mAnimationSet.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                mAnimationSet.start()
-            }
-        })
-
-        mAnimationSet.start()
-    }
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Default + CoroutineExceptionHandler { _, _ -> }
 }

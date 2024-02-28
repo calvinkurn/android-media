@@ -18,6 +18,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import com.tokopedia.translator.util.ViewUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 
 internal object ViewTreeManager {
@@ -82,23 +84,25 @@ internal object ViewTreeManager {
         return domIdentifier
     }
 
-    fun findViewByDOMIdentifier(domIdentifier: String, activity: Activity): View? {
-        val activitySplitting =
-            domIdentifier.split(ACTIVITY_NAME_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+    suspend fun findViewByDOMIdentifier(domIdentifier: String, activity: Activity): View? {
+        return withContext(Dispatchers.Default) {
+            val activitySplitting =
+                domIdentifier.split(ACTIVITY_NAME_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-        if (!activitySplitting[0].equals(activity.localClassName, ignoreCase = true)) {
-            return null
+            if (!activitySplitting[0].equals(activity.localClassName, ignoreCase = true)) {
+                return@withContext null
+            }
+
+            val viewSplitting =
+                activitySplitting[1].split(CHILD_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            var viewLooker: View? = null
+
+            if (viewSplitting[0].equals(MAIN_CONTENT_LAYOUT_NAME, ignoreCase = true)) {
+                viewLooker = ViewUtil.getContentView(activity)
+            }
+
+            return@withContext lookupForView(viewLooker, Arrays.copyOfRange(viewSplitting, 1, viewSplitting.size))
         }
-
-        val viewSplitting =
-            activitySplitting[1].split(CHILD_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        var viewLooker: View? = null
-
-        if (viewSplitting[0].equals(MAIN_CONTENT_LAYOUT_NAME, ignoreCase = true)) {
-            viewLooker = ViewUtil.getContentView(activity)
-        }
-
-        return lookupForView(viewLooker, Arrays.copyOfRange(viewSplitting, 1, viewSplitting.size))
     }
 
 

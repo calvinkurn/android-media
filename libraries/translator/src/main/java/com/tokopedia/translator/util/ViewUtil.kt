@@ -14,30 +14,48 @@
 package com.tokopedia.translator.util
 
 import android.app.Activity
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import java.util.ArrayList
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
 
 internal object ViewUtil {
-    fun getChildren(viewGroup: View?): List<View> {
-        val unTraversedViews = ArrayList<View>()
-        val traversedViews = ArrayList<View>()
-        unTraversedViews.add(viewGroup!!)
+    suspend fun getChildren(viewGroup: View?): List<View> {
+        return withContext(Dispatchers.Default) {
+            val unTraversedViews = ArrayList<View>()
+            val traversedViews = ArrayList<View>()
+            unTraversedViews.add(viewGroup!!)
 
-        while (unTraversedViews.isNotEmpty()) {
-            val child = unTraversedViews.removeAt(0)
-            traversedViews.add(child)
-            if (child !is ViewGroup) {
-                continue
+            while (unTraversedViews.isNotEmpty()) {
+                val child = unTraversedViews.removeAt(0)
+                traversedViews.add(child)
+                if (child !is ViewGroup) {
+                    continue
+                }
+
+                for (counter in 0 until child.childCount) {
+                    unTraversedViews.add(child.getChildAt(counter))
+                }
             }
+            traversedViews
+        }
+    }
 
-            for (counter in 0 until child.childCount) {
-                unTraversedViews.add(child.getChildAt(counter))
+    suspend fun getRecyclerView(viewGroup: View): RecyclerView? {
+
+        val children = getChildren(viewGroup)
+
+        for (child in children) {
+            if (child is RecyclerView) {
+                return child
             }
         }
 
-        return traversedViews
+        return null
     }
 
     fun getContentView(activity: Activity?): View? {

@@ -52,8 +52,7 @@ class StringPoolManager {
         for ((key, data) in mPools) {
 
             if (data.demandedText.isEmpty() || data.requestedLocale != destinationLang) {
-                builder.append(data.originalText)
-                    .append(TranslatorManager.DELIM)
+                builder.append(data.originalText).append(TranslatorManager.DELIM)
             }
         }
 

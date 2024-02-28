@@ -39,7 +39,7 @@ import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
 
 
-class TranslatorManagerFragment() {
+class TranslatorManagerFragment() : CoroutineScope {
 
     private val gson = Gson()
 
@@ -111,9 +111,9 @@ class TranslatorManagerFragment() {
                 if (sInstance == null) {
                     throw IllegalStateException(
                         "Default TranslatorManagerFragment is not initialized in this "
-                                + "process "
-                                + ". make sure to call "
-                                + "TranslatorManagerFragment.initTranslatorManager(Context) first."
+                            + "process "
+                            + ". make sure to call "
+                            + "TranslatorManagerFragment.initTranslatorManager(Context) first."
                     )
                 }
                 return sInstance
@@ -122,7 +122,7 @@ class TranslatorManagerFragment() {
     }
 
 
-    fun prepareSelectors(fragment: Fragment) {
+    suspend fun prepareSelectors(fragment: Fragment) {
         val views: List<View?> = ViewUtil.getChildren(ViewUtil.getContentView(fragment))
 
         for (view in views) {
@@ -161,7 +161,7 @@ class TranslatorManagerFragment() {
         mSelectors.clear()
     }
 
-    fun startTranslate() {
+    suspend fun startTranslate() {
         Log.d(TAG, "Starting translation of ${getCurrentFragment()}")
         if (getCurrentFragment() == null || mApplication == null) {
             return
@@ -197,54 +197,59 @@ class TranslatorManagerFragment() {
     }
 
     private fun fetchTranslationService(originStrList: Array<String>) {
-        val call = service.getTranslatedString("dict-chrome-ex", "id", destinationLang, "t", originStrList)
+        launch(coroutineContext) {
+            val call = service.getTranslatedString("dict-chrome-ex", "id", destinationLang, "t", originStrList)
 
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (response.isSuccessful) {
-                    try {
-                        val strJson = response.body()
-                        Log.d(
-                            TAG,
-                            "Received response from server: $strJson --> ${getCurrentFragment()}"
-                        )
-
-                        val arrayStr = jsonStringToArray(strJson)
-
-                        if (arrayStr.isNotEmpty()) {
-
-                            mStringPoolManager.updateCache(
-                                originStrList,
-                                arrayStr,
-                                destinationLang
+            call.enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        try {
+                            val strJson = response.body()
+                            Log.d(
+                                TAG,
+                                "Received response from server: $strJson --> ${getCurrentFragment()}"
                             )
 
-                            val charCountOld =
-                                SharedPrefsUtils.getIntegerPreference(
-                                    mApplication!!.applicationContext,
-                                    CHARS_COUNT,
-                                    0
+                            val arrayStr = jsonStringToArray(strJson)
+
+                            if (arrayStr.isNotEmpty()) {
+
+                                mStringPoolManager.updateCache(
+                                    originStrList,
+                                    arrayStr,
+                                    destinationLang
                                 )
 
-                            updateScreenWithTranslatedString()
-                            SharedPrefsUtils.setIntegerPreference(
-                                mApplication!!.applicationContext,
-                                CHARS_COUNT,
-                                origStrings!!.length + charCountOld
-                            )
+                                val charCountOld =
+                                    SharedPrefsUtils.getIntegerPreference(
+                                        mApplication!!.applicationContext,
+                                        CHARS_COUNT,
+                                        0
+                                    )
+
+
+                                launch {
+                                    updateScreenWithTranslatedString()
+                                    SharedPrefsUtils.setIntegerPreference(
+                                        mApplication!!.applicationContext,
+                                        CHARS_COUNT,
+                                        (origStrings?.length ?: 0) + charCountOld
+                                    )
+                                }
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
                     }
+
                 }
 
-            }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.e(TAG, t.localizedMessage.orEmpty())
-                t.printStackTrace()
-            }
-        })
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.e(TAG, t.localizedMessage.orEmpty())
+                    t.printStackTrace()
+                }
+            })
+        }
     }
 
     fun jsonStringToArray(jsonString: String?): Array<String> {
@@ -252,15 +257,15 @@ class TranslatorManagerFragment() {
         return gson.fromJson(jsonString, Array<String>::class.java)
     }
 
-    fun updateScreenWithTranslatedString() {
+    suspend fun updateScreenWithTranslatedString() {
         Log.d(TAG, "Starting screen update with translated string ${getCurrentFragment()}")
         var stringPoolItem: StringPoolItem?
         var tv: View?
         for (selector in mSelectors) {
             try {
                 tv = ViewTreeManagerFragment.findViewByDOMIdentifier(
-                        selector.value,
-                        getCurrentFragment()!!
+                    selector.value,
+                    getCurrentFragment()!!
                 )
 
                 if (tv is TextView && tv !is EditText) {
@@ -276,9 +281,12 @@ class TranslatorManagerFragment() {
                         tv.tag = true
                     }
                 }
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Default + CoroutineExceptionHandler { _, _ -> }
 }

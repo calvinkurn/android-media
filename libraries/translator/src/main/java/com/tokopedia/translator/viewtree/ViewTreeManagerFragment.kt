@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.Fragment
 import com.tokopedia.translator.util.ViewUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 
 internal object ViewTreeManagerFragment {
@@ -68,23 +70,26 @@ internal object ViewTreeManagerFragment {
         return domIdentifier
     }
 
-    fun findViewByDOMIdentifier(domIdentifier: String, fragment: Fragment): View? {
-        val activitySplitting =
-            domIdentifier.split(FRAGMENT_NAME_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+    suspend fun findViewByDOMIdentifier(domIdentifier: String, fragment: Fragment): View? {
+        return withContext(Dispatchers.Default) {
 
-        if (!activitySplitting[0].equals(fragment::class.java.name, ignoreCase = true)) {
-            return null
+            val activitySplitting =
+                domIdentifier.split(FRAGMENT_NAME_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+            if (!activitySplitting[0].equals(fragment::class.java.name, ignoreCase = true)) {
+                return@withContext null
+            }
+
+            val viewSplitting =
+                activitySplitting[1].split(CHILD_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            var viewLooker: View? = null
+
+            if (viewSplitting[0].equals(MAIN_CONTENT_LAYOUT_NAME, ignoreCase = true)) {
+                viewLooker = ViewUtil.getContentView(fragment)
+            }
+
+            return@withContext lookupForView(viewLooker, Arrays.copyOfRange(viewSplitting, 1, viewSplitting.size))
         }
-
-        val viewSplitting =
-            activitySplitting[1].split(CHILD_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        var viewLooker: View? = null
-
-        if (viewSplitting[0].equals(MAIN_CONTENT_LAYOUT_NAME, ignoreCase = true)) {
-            viewLooker = ViewUtil.getContentView(fragment)
-        }
-
-        return lookupForView(viewLooker, Arrays.copyOfRange(viewSplitting, 1, viewSplitting.size))
     }
 
 

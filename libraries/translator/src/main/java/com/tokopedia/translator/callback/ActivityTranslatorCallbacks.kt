@@ -13,27 +13,50 @@
  */
 package com.tokopedia.translator.callback
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
+import android.preference.PreferenceManager
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.translator.manager.TranslatorManager
 import com.tokopedia.translator.manager.TranslatorManagerFragment
 import com.tokopedia.translator.ui.SharedPrefsUtils
 import com.tokopedia.translator.ui.TranslatorSettingView
+import com.tokopedia.translator.ui.TranslatorSettingView.DELIM_LANG_CODE
+import com.tokopedia.translator.ui.TranslatorSettingView.DESTINATION_LANGUAGE
+import com.tokopedia.translator.util.ViewUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
+import kotlin.coroutines.CoroutineContext
 
 
-class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks {
+class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, CoroutineScope {
 
     private val translatorManager = TranslatorManager.getInstance()
 
@@ -53,12 +76,25 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks {
             Log.i(TAG, "onActivityResumed() invoked of :" + activity.localClassName)
             val weakActivity = WeakReference<Activity>(activity)
             translatorManager?.clearSelectors()
-            translatorManager?.prepareSelectors(activity)
             TranslatorManager.setCurrentActivity(weakActivity)
 
-            val rootView = activity.window.decorView
-            setAddonGlobalLayoutListener(rootView, translatorManager)
-            setScrollChangedLayoutListener(rootView, translatorManager)
+            val rootView: View = activity.window.decorView.findViewById(android.R.id.content)
+
+            launch(coroutineContext) {
+                translatorManager?.prepareSelectors(activity)
+                setAddonGlobalLayoutListener(rootView)
+
+                rootView.viewTreeObserver
+                    .onScrollChangedAsFlow()
+                    .collect {
+                        translatorManager?.startTranslate()
+                    }
+
+                onDestLanguageChangedAsFlow(activity)
+                    .collectLatest {
+                        translatorManager?.startTranslate()
+                    }
+            }
         }
     }
 
@@ -73,38 +109,147 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        val rootView = activity.window.decorView
         TranslatorManager.clearCurrentActivity()
-        rootView.viewTreeObserver.removeOnGlobalLayoutListener(translatorManagerOnGlobalLayoutListener(translatorManager))
-        rootView.viewTreeObserver.removeOnScrollChangedListener(translatorScrollChangedLayoutListener(translatorManager))
 
         if (activity is FragmentActivity) {
             activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentTranslatorCallbacks)
         }
     }
 
-    private fun setAddonGlobalLayoutListener(rootView: View, translatorManager: TranslatorManager?) {
-        rootView.viewTreeObserver.addOnGlobalLayoutListener(translatorManagerOnGlobalLayoutListener(translatorManager))
+    private fun setRecyclerViewScrollListener(currentRecyclerView: RecyclerView): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            var lastScrollY = -1
+
+            private val handler = Handler()
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                handler.removeCallbacksAndMessages(null)
+
+                handler.postDelayed({
+                    val currentScrollY = currentRecyclerView.computeVerticalScrollOffset()
+
+                    if (currentScrollY != lastScrollY) {
+                        startTranslate(currentRecyclerView)
+                        lastScrollY = currentScrollY
+                    }
+                }, DELAYING_SCROLL_TO_IDLE)
+            }
+        }
     }
 
-    private fun setScrollChangedLayoutListener(rootView: View, translatorManager: TranslatorManager?) {
-        rootView.viewTreeObserver.addOnScrollChangedListener(translatorScrollChangedLayoutListener(translatorManager))
+    private fun setAddonGlobalLayoutListener(rootView: View) {
+        rootView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+
+                launch {
+                    translatorManager?.startTranslate()
+                }
+
+                rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
-    private fun translatorManagerOnGlobalLayoutListener(translatorManager: TranslatorManager?) = ViewTreeObserver.OnGlobalLayoutListener {
-        translatorManager?.startTranslate()
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setGestureDetector(rootView: View, activity: Activity) {
+        val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
+
+            private var initialScrollY = 0
+
+            override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+                if (Math.abs(distanceY) > 0) {
+                    val currentScrollY = rootView.scrollY
+
+                    if (currentScrollY != initialScrollY) {
+                        startTranslate(rootView)
+
+                        // Update the initial scroll position
+                        initialScrollY = currentScrollY
+                    }
+                }
+
+                return super.onScroll(e1, e2, distanceX, distanceY)
+            }
+        })
+
+        rootView.setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            true
+        }
     }
 
-    private fun translatorScrollChangedLayoutListener(translatorManager: TranslatorManager?) = ViewTreeObserver.OnScrollChangedListener {
-        Handler(Looper.getMainLooper()).postDelayed({
-            translatorManager?.startTranslate()
-        }, DELAY_SCROLLING_TO_IDLE)
+    private fun setScrollChangedLayoutListener(rootView: View) {
+        rootView.viewTreeObserver.addOnScrollChangedListener(translatorScrollChangedLayoutListener(rootView))
+    }
+
+    private fun translatorManagerOnGlobalLayoutListener(rootView: View) = ViewTreeObserver.OnGlobalLayoutListener {
+        startTranslate(rootView)
+    }
+
+    fun ViewTreeObserver.onScrollChangedAsFlow() = callbackFlow<Unit> {
+        var job: Job? = null
+
+        val listener = ViewTreeObserver.OnScrollChangedListener {
+            job?.cancel()
+            job = launch(coroutineContext) {
+                delay(DELAYING_SCROLL_TO_IDLE)
+                trySend(Unit)
+            }
+        }
+
+        addOnScrollChangedListener(listener)
+
+        awaitClose {
+            removeOnScrollChangedListener(listener)
+            job?.cancel()
+        }
+    }
+
+    private fun onDestLanguageChangedAsFlow(activity: Activity) = callbackFlow<String> {
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
+
+        val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (key == DESTINATION_LANGUAGE) {
+                trySend(getDestinationLang(sharedPreferences))
+            }
+        }
+
+        sharedPref.registerOnSharedPreferenceChangeListener(listener)
+
+        awaitClose {
+            sharedPref.unregisterOnSharedPreferenceChangeListener(listener)
+        }
+    }
+
+    private fun getDestinationLang(sharedPreferences: SharedPreferences): String {
+        return sharedPreferences.getString(DESTINATION_LANGUAGE, "")
+            ?.split(DELIM_LANG_CODE.toRegex())
+            ?.dropLastWhile { it.isEmpty() }
+            ?.toTypedArray()?.getOrNull(1) ?: ""
+    }
+
+    private fun translatorScrollChangedLayoutListener(rootView: View): ViewTreeObserver.OnScrollChangedListener {
+        return object : ViewTreeObserver.OnScrollChangedListener {
+
+            override fun onScrollChanged() {
+
+                launch(coroutineContext) {
+
+                }
+            }
+        }
+    }
+
+    private fun startTranslate(rootView: View) {
+        rootView.postDelayed({
+//            translatorManager?.startTranslate()
+        }, DELAYING_SCROLL_TO_IDLE)
     }
 
     companion object {
         private val TAG = ActivityTranslatorCallbacks::class.java.simpleName
 
-        private const val DELAY_SCROLLING_TO_IDLE = 300L
+        private const val DELAYING_SCROLL_TO_IDLE = 300L
     }
 
     internal inner class FragmentTranslatorCallbacks : FragmentManager.FragmentLifecycleCallbacks() {
@@ -120,8 +265,8 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks {
             super.onFragmentDetached(fm, f)
             if (f is BottomSheetUnify) {
                 val rootView = f.view
-                rootView?.viewTreeObserver?.removeOnGlobalLayoutListener(translatorManagerOnGlobalLayoutListener(rootView, translatorManagerFragment))
-                rootView?.viewTreeObserver?.removeOnScrollChangedListener(translatorScrollChangedLayoutListener(translatorManagerFragment))
+                rootView?.viewTreeObserver?.removeOnGlobalLayoutListener(translatorManagerOnGlobalLayoutListener(rootView))
+                rootView?.viewTreeObserver?.removeOnScrollChangedListener(translatorScrollChangedLayoutListener(rootView))
 
                 TranslatorManagerFragment.clearCurrentFragment()
             }
@@ -136,38 +281,26 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks {
                     val weakFragment = WeakReference<Fragment>(f)
 
                     translatorManagerFragment?.clearSelectors()
-                    translatorManagerFragment?.prepareSelectors(f)
                     TranslatorManagerFragment.setCurrentFragment(weakFragment)
 
-                    val rootView = f.view
-                    if (rootView != null) {
-                        setAddonGlobalLayoutListener(rootView, translatorManagerFragment)
-                        setScrollChangedLayoutListener(rootView, translatorManagerFragment)
+                    f.view?.let {
+
+                        launch(coroutineContext) {
+
+                            translatorManagerFragment?.prepareSelectors(f)
+
+                            setAddonGlobalLayoutListener(it)
+
+                            it.viewTreeObserver.onScrollChangedAsFlow().collect {
+                                translatorManagerFragment?.startTranslate()
+                            }
+                        }
                     }
                 }
             }
         }
-
-        private fun setAddonGlobalLayoutListener(rootView: View, translatorManagerFragment: TranslatorManagerFragment?) {
-            rootView.viewTreeObserver.addOnGlobalLayoutListener(translatorManagerOnGlobalLayoutListener(rootView, translatorManagerFragment))
-        }
-
-        private fun setScrollChangedLayoutListener(rootView: View, translatorManagerFragment: TranslatorManagerFragment?) {
-            rootView.viewTreeObserver.addOnScrollChangedListener(translatorScrollChangedLayoutListener(translatorManagerFragment))
-        }
-
-        private fun translatorManagerOnGlobalLayoutListener(rootView: View, translatorManagerFragment: TranslatorManagerFragment?): ViewTreeObserver.OnGlobalLayoutListener {
-            return object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    translatorManagerFragment?.startTranslate()
-                }
-            }
-        }
-
-        private fun translatorScrollChangedLayoutListener(translatorManagerFragment: TranslatorManagerFragment?) = ViewTreeObserver.OnScrollChangedListener {
-            Handler(Looper.getMainLooper()).postDelayed({
-                translatorManagerFragment?.startTranslate()
-            }, DELAY_SCROLLING_TO_IDLE)
-        }
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + CoroutineExceptionHandler { _, _ -> }
 }

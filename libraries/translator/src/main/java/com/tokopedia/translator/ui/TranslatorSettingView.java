@@ -204,18 +204,13 @@ public class TranslatorSettingView extends FrameLayout {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 SharedPrefsUtils.setStringPreference(getContext(), DESTINATION_LANGUAGE, arrSupportedLanguages[i]);
 
-                if (mIsSelectedDestination) {
-
-                    CommonUtil.showToastWithUIUpdate(getContext()
-                            , arrSupportedLanguages[i].split("-")[0] + " set as a Destination language."
-                            , (TextView) findViewById(R.id.text_val)
-                            , "Currently selected languages is from <b><i>"
-                                    + SharedPrefsUtils.getStringPreference(getContext(), SOURCE_LANGUAGE).split(DELIM_LANG_CODE)[0]
-                                    + "</i></b> to <b><i>"
-                                    + arrSupportedLanguages[i].split(DELIM_LANG_CODE)[0] + "</i></b>");
-                } else {
-                    mIsSelectedDestination = true;
-                }
+                CommonUtil.showToastWithUIUpdate(getContext()
+                        , arrSupportedLanguages[i].split("-")[0] + " set as a Destination language."
+                        , (TextView) findViewById(R.id.text_val)
+                        , "Currently selected languages is from <b><i>"
+                                + SharedPrefsUtils.getStringPreference(getContext(), SOURCE_LANGUAGE).split(DELIM_LANG_CODE)[0]
+                                + "</i></b> to <b><i>"
+                                + arrSupportedLanguages[i].split(DELIM_LANG_CODE)[0] + "</i></b>" + " Please Restart the App");
             }
 
             @Override
