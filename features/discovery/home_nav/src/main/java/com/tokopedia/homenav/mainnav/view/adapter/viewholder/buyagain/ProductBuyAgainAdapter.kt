@@ -34,13 +34,27 @@ class ProductBuyAgainAdapter constructor(
         private val binding: HolderTransactionBuyAgainItemBinding? by viewBinding()
 
         fun bind(bannerUrl: String, price: String) {
-            binding?.productCard?.bind(BuyAgainView.Data(
-                productId = "",
-                bannerUrl = bannerUrl,
-                price = price,
-                slashPrice = "",
-                discount = ""
-            ))
+            val data: BuyAgainView.Data
+
+            if (bindingAdapterPosition == 0) {
+                data = BuyAgainView.Data(
+                    productId = "",
+                    bannerUrl = bannerUrl,
+                    price = price,
+                    slashPrice = "Rp.123..",
+                    discount = "40%"
+                )
+            } else {
+                data = BuyAgainView.Data(
+                    productId = "",
+                    bannerUrl = bannerUrl,
+                    price = price,
+                    slashPrice = "",
+                    discount = ""
+                )
+            }
+
+            binding?.productCard?.bind(data)
 
             listener?.let {
                 binding?.productCard?.setListener(it)

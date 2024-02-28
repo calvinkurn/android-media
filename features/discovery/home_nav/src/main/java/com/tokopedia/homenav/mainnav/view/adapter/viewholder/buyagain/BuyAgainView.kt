@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import com.tokopedia.homenav.databinding.LayoutLightProductCardAtcBinding
 import com.tokopedia.homenav.R
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
 
 class BuyAgainView @JvmOverloads constructor(
@@ -39,6 +40,7 @@ class BuyAgainView @JvmOverloads constructor(
     private fun setupClickableListener() {
         binding.root.setOnClickListener { listener?.onProductCardClicked() }
         binding.btnAtc.setOnClickListener { listener?.onAtcButtonClicked() }
+        binding.bgButton.setOnClickListener { listener?.onAtcButtonClicked() }
     }
 
     private fun renderProductImage(url: String) {
@@ -55,6 +57,9 @@ class BuyAgainView @JvmOverloads constructor(
 
         binding.txtSlashPrice.text = slashPrice
         binding.txtDiscount.text = discount
+
+        binding.txtSlashPrice.show()
+        binding.txtDiscount.show()
     }
 
     data class Data(
