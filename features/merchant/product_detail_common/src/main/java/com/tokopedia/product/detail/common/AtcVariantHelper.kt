@@ -208,6 +208,7 @@ enum class VariantPageSource(val source: String) {
     NOTIFCENTER_PAGESOURCE("notifcenter"),
     PLAY_PAGESOURCE("play"),
     HOMEPAGE_PAGESOURCE("homepage"),
+    ME_PAGE_PAGESOURCE("me-page"),
     DISCOVERY_PAGESOURCE("discovery page"),
     SHOP_PAGE_PAGESOURCE("shop-direct-purchase"),
     SHOP_PAGE_REIMAGINED_DIRECT_PURCHASE_WIDGET_PAGESOURCE("/shoppage reimagined"),

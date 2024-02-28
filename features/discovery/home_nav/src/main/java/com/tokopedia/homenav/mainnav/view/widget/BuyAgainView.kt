@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.mainnav.view.adapter.viewholder.buyagain
+package com.tokopedia.homenav.mainnav.view.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -38,9 +38,17 @@ class BuyAgainView @JvmOverloads constructor(
     }
 
     private fun setupClickableListener(data: Data) {
-        binding.root.setOnClickListener { listener?.onProductCardClicked(data.productId) }
-        binding.btnAtc.setOnClickListener { listener?.onAtcButtonClicked(data.productId) }
-        binding.bgButton.setOnClickListener { listener?.onAtcButtonClicked(data.productId) }
+        binding.root.setOnClickListener {
+            listener?.onProductCardClicked(data.productId)
+        }
+
+        binding.btnAtc.setOnClickListener {
+            listener?.onAtcButtonClicked(data.productId, data.shopId, data.hasVariant)
+        }
+
+        binding.bgButton.setOnClickListener {
+            listener?.onAtcButtonClicked(data.productId, data.shopId, data.hasVariant)
+        }
     }
 
     private fun renderProductImage(url: String) {
@@ -64,6 +72,8 @@ class BuyAgainView @JvmOverloads constructor(
 
     data class Data(
         val productId: String,
+        val shopId: String,
+        val hasVariant: Boolean,
         val bannerUrl: String,
         val price: String,
         val slashPrice: String,
@@ -71,7 +81,7 @@ class BuyAgainView @JvmOverloads constructor(
     )
 
     interface Listener {
-        fun onProductCardClicked(id: String)
-        fun onAtcButtonClicked(id: String)
+        fun onProductCardClicked(productId: String)
+        fun onAtcButtonClicked(productId: String, shopId: String, hasVariant: Boolean)
     }
 }

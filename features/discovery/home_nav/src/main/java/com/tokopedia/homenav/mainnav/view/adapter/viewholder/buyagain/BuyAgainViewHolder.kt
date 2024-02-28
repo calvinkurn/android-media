@@ -9,6 +9,7 @@ import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderTransactionBuyAgainBinding
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.NavOrderSpacingDecoration
 import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.BuyAgainUiModel
+import com.tokopedia.homenav.mainnav.view.widget.BuyAgainView
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BuyAgainViewHolder constructor(

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.homenav.databinding.HolderTransactionBuyAgainItemBinding
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.mainnav.view.widget.BuyAgainView
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductBuyAgainAdapter constructor(
@@ -38,19 +39,23 @@ class ProductBuyAgainAdapter constructor(
 
             if (bindingAdapterPosition == 0) {
                 data = BuyAgainView.Data(
-                    productId = "",
+                    productId = "9717214311",
                     bannerUrl = bannerUrl,
                     price = price,
                     slashPrice = "Rp.123..",
-                    discount = "40%"
+                    discount = "40%",
+                    shopId = "",
+                    hasVariant = false
                 )
             } else {
                 data = BuyAgainView.Data(
-                    productId = "",
+                    productId = "9717214311",
                     bannerUrl = bannerUrl,
                     price = price,
                     slashPrice = "",
-                    discount = ""
+                    discount = "",
+                    shopId = "",
+                    hasVariant = true
                 )
             }
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
@@ -63,11 +64,14 @@ import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
 import dagger.Lazy
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 class MainNavViewModel @Inject constructor(
     private val userSession: Lazy<UserSessionInterface>,
     private val baseDispatcher: Lazy<CoroutineDispatchers>,
+    private val addToCartUseCase: Lazy<AddToCartUseCase>,
     private val clientMenuGenerator: Lazy<ClientMenuGenerator>,
     private val getNavNotification: Lazy<GetNavNotification>,
     private val getUohOrdersNavUseCase: Lazy<GetUohOrdersNavUseCase>,
@@ -112,6 +116,8 @@ class MainNavViewModel @Inject constructor(
         get() = _profileDataLiveData
     private val _profileDataLiveData: MutableLiveData<AccountHeaderDataModel> = MutableLiveData()
 
+    private val _onAtcProductState = MutableStateFlow<Pair<Boolean?, String>>(Pair(null, ""))
+    val onAtcProductState get() = _onAtcProductState.asStateFlow()
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
@@ -212,6 +218,24 @@ class MainNavViewModel @Inject constructor(
             onlyForLoggedInUser { getReview() }
             onlyForLoggedInUser { getBuyAgain() }
             onlyForLoggedInUser { getOnGoingTransaction() }
+        }
+    }
+
+    fun addToCartProduct(productId: String, shopId: String) {
+        val param = AddToCartUseCase.getMinimumParams(
+            productId = productId,
+            shopId = shopId
+        )
+
+        launch(baseDispatcher.get().io) {
+            addToCartUseCase.get().addToCartRequestParams = param
+            val result = addToCartUseCase.get().executeOnBackground()
+
+            withContext(baseDispatcher.get().main) {
+                _onAtcProductState.tryEmit(
+                    Pair(result.isDataError(), result.getAtcErrorMessage().orEmpty())
+                )
+            }
         }
     }
 

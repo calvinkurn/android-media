@@ -1,6 +1,8 @@
 package com.tokopedia.homenav.mainnav.di
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
@@ -13,6 +15,7 @@ import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.data.pojo.wishlist.GetWishlistCollection
 import com.tokopedia.homenav.mainnav.domain.usecases.*
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -153,4 +156,16 @@ class MainNavUseCaseModule {
                 getAffiliateUserUseCase = getAffiliateUserUseCase
         )
     }
+
+    @MainNavScope
+    @Provides
+    fun provideAddToCartUseCase(
+        graphqlRepository: GraphqlRepository,
+        addToCartDataMapper: AddToCartDataMapper,
+        helper: ChosenAddressRequestHelper
+    ) = AddToCartUseCase(
+        graphqlRepository,
+        addToCartDataMapper,
+        helper
+    )
 }

@@ -9,8 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -52,6 +54,7 @@ import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.asNavSource
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -174,6 +177,24 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 }
             }
         )
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.onAtcProductState.collect {
+                val (isError, message) = it
+                if (isError == null) return@collect
+
+                if (isError) {
+                    onShowToast(message, Toaster.TYPE_ERROR)
+                } else {
+                    val succeedMessage = getString(R.string.transaction_buy_again_atc_message)
+                    val ctaTitle = getString(R.string.transaction_buy_again_atc_cta)
+
+                    onShowToast(succeedMessage, Toaster.TYPE_NORMAL, ctaTitle) {
+                        startActivity(RouteManager.getIntent(requireContext(), ApplinkConst.CART))
+                    }
+                }
+            }
+        }
     }
 
     override fun onPause() {
@@ -414,7 +435,12 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                     viewModel.refreshTokopediaPlusData()
                 }
             ),
-            BuyAgainCallback(requireContext())
+            BuyAgainCallback(
+                context = requireContext(),
+                addToCart = { productId, shopId ->
+                    viewModel.addToCartProduct(productId, shopId)
+                }
+            )
         )
 
         adapter = MainNavListAdapter(mainNavFactory)
@@ -456,6 +482,26 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             }
         }
         return userSession
+    }
+
+    private fun onShowToast(
+        message: String,
+        type: Int,
+        actionText: String = "",
+        clickListener: () -> Unit = {}
+    ) {
+        val view = view?.rootView ?: return
+
+        Toaster.build(
+            view,
+            message,
+            Snackbar.LENGTH_SHORT,
+            type,
+            actionText = actionText,
+            clickListener = {
+                clickListener()
+            }
+        ).show()
     }
 
     override fun getScreenName() = ""

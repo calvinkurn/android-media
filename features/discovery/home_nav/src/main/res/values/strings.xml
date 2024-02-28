@@ -83,4 +83,7 @@
     <string name="transaction_view_all_desc">Transaksi lainnya</string>
     <string name="review_view_all_desc">Ulasan lainnya</string>
     <string name="wishlist_view_all_desc">Wishlist lainnya</string>
+
+    <string name="transaction_buy_again_atc_message">1 barang berhasil ditambahkan ke keranjang.</string>
+    <string name="transaction_buy_again_atc_cta">Lihat</string>
 </resources>

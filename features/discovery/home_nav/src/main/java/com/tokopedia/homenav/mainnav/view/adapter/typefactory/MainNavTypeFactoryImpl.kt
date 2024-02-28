@@ -15,7 +15,7 @@ import com.tokopedia.homenav.base.diffutil.holder.HomeNavTickerViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.*
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.buyagain.BuyAgainShimmerViewHolder
-import com.tokopedia.homenav.mainnav.view.adapter.viewholder.buyagain.BuyAgainView
+import com.tokopedia.homenav.mainnav.view.widget.BuyAgainView
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.buyagain.BuyAgainViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ErrorReviewViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ReviewViewHolder
