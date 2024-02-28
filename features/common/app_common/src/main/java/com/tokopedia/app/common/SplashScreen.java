@@ -1,16 +1,19 @@
 package com.tokopedia.app.common;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.tokopedia.analytics.byteio.AppLogAnalytics;
+import com.tokopedia.analytics.byteio.AppLogInterface;
+import com.tokopedia.analytics.byteio.AppLogParam;
+import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.applink.AppUtil;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -26,18 +29,14 @@ import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkData;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
-import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +48,7 @@ import java.util.Map;
  * <p>
  * fetch some data from server in order to worked around.
  */
-abstract public class SplashScreen extends AppCompatActivity {
+abstract public class SplashScreen extends AppCompatActivity implements AppLogInterface {
 
     @Override
     protected void onResume() {
@@ -158,11 +157,21 @@ abstract public class SplashScreen extends AppCompatActivity {
         intent.setData(Uri.parse(tokopediaDeeplink));
         // destroyed activity (SplashScreen) might not launch activity,
         // so better to use currentActivity instead.
+        checkAppLogPDPExternalPromo(tokopediaDeeplink);
         boolean startFromCurrent = AppUtil.startActivityFromCurrentActivity(intent);
         if (!startFromCurrent) {
             startActivity(intent);
         }
         finish();
+    }
+
+    private void checkAppLogPDPExternalPromo(String tokopediaDeeplink) {
+        try {
+            Uri uri = Uri.parse(tokopediaDeeplink);
+            if (uri.getHost().equals("product") && uri.getPathSegments().size() == 1) {
+                AppLogAnalytics.INSTANCE.putPageData(AppLogParam.ENTER_FROM, PageName.EXTERNAL_PROMO);
+            }
+        } catch (Exception e) {}
     }
 
     private void logLinker(String deeplink, String reason) {
@@ -196,5 +205,21 @@ abstract public class SplashScreen extends AppCompatActivity {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @NonNull
+    @Override
+    public String getPageName() {
+        return "";
+    }
+
+    @Override
+    public boolean isEnterFromWhitelisted() {
+        return false;
+    }
+
+    @Override
+    public boolean isShadow() {
+        return true;
     }
 }
