@@ -589,6 +589,7 @@ class FeedPostVideoViewHolder(
         campaignView.resetView()
         hideClearView()
         productButtonView.pauseProductIconAnimation()
+        binding.productTagView.disposeComposition()
     }
 
     override fun onViewRecycled() {

@@ -63,7 +63,7 @@ fun FeedProductHighlight(
                 with(density) { 60.dp.roundToPx() }
             },
             exit = slideOutVertically {
-                with(density) { 60.dp.roundToPx()}
+                with(density) { 60.dp.roundToPx() }
             }
         ) {
             Box(
@@ -190,17 +190,18 @@ fun ProductTagItems(
     onProductLabelClick: () -> Unit,
     onProductHighlightClose: () -> Unit,
     impressHighlight: (FeedCardProductModel) -> Unit,
+    isFocused: Boolean = true
 ) {
     var needToBeShown by remember { mutableStateOf(false) }
-    val highlightedProduct = products.firstOrNull { it.isHighlight }
+    val highlightedProduct by remember { mutableStateOf(products.firstOrNull()) }
 
-    LaunchedEffect(key1 = key, key2 = highlightedProduct, block = {
-        delay(5000L)
-        needToBeShown = true
-        if (highlightedProduct != null) {
-            impressHighlight(highlightedProduct)
+    if (isFocused) {
+        LaunchedEffect(key1 = key) {
+            delay(5000L)
+            needToBeShown = true
+            highlightedProduct?.let { impressHighlight.invoke(it) }
         }
-    })
+    }
 
     Column {
         FeedProductLabel(
@@ -212,7 +213,7 @@ fun ProductTagItems(
 
         if (highlightedProduct != null) {
             FeedProductHighlight(
-                product = highlightedProduct,
+                product = highlightedProduct ?: return@Column,
                 isVisible = needToBeShown,
                 onClose = {
                     onProductHighlightClose.invoke()

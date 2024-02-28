@@ -44,7 +44,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play_common.util.extension.changeConstraint
 import kotlinx.coroutines.*
 import kotlin.math.abs
@@ -156,7 +155,7 @@ class FeedPostImageViewHolder(
 
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         mData?.let {
-                            updateProductTagText(it)
+                            updateProductTagText(it, false)
                             updateCampaignAvailability(it)
                         }
                     }
@@ -383,7 +382,7 @@ class FeedPostImageViewHolder(
         campaignView.resetView()
         campaignView.startAnimation()
         sendImpressionTracker(data)
-        updateProductTagText(data)
+        updateProductTagText(data, true)
         onScrolling(false)
 
         isAutoSwipeOn = true
@@ -397,9 +396,10 @@ class FeedPostImageViewHolder(
         onScrolling(false)
 
         isAutoSwipeOn = false
+        binding.productTagView.disposeComposition()
     }
 
-    private fun updateProductTagText(element: FeedCardImageContentModel) {
+    private fun updateProductTagText(element: FeedCardImageContentModel, isFocused: Boolean) {
         val index = layoutManager.findFirstVisibleItemPosition()
 
         /**
@@ -416,10 +416,10 @@ class FeedPostImageViewHolder(
                         setupProductLabel(
                             listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]),
                             element.totalProducts,
-                            element.id
+                            element.id, isFocused
                         )
                     } else {
-                        setupProductLabel(element.products, element.totalProducts, element.id)
+                        setupProductLabel(element.products, element.totalProducts, element.id, isFocused)
                     }
                 } else {
                     binding.productTagView.gone()
@@ -511,7 +511,7 @@ class FeedPostImageViewHolder(
             } else {
                 model.products
             }
-        setupProductLabel(products, model.totalProducts, model.id)
+        setupProductLabel(products, model.totalProducts, model.id, false)
         productButtonView.bindData(
             postId = model.id,
             author = model.author,
@@ -526,7 +526,7 @@ class FeedPostImageViewHolder(
             topAdsTrackerData = topAdsTrackerDataModel,
             contentType = model.contentType
         )
-        updateProductTagText(model)
+        updateProductTagText(model, false)
     }
 
     private fun bindIndicators(imageSize: Int) {
@@ -697,7 +697,8 @@ class FeedPostImageViewHolder(
     private fun setupProductLabel(
         products: List<FeedCardProductModel>,
         totalProducts: Int,
-        id: String
+        id: String,
+        isFocused: Boolean,
     ) {
         if (mData == null) return
         binding.productTagView.setContent {
@@ -705,6 +706,7 @@ class FeedPostImageViewHolder(
                 products = products,
                 totalProducts = totalProducts,
                 key = id,
+                isFocused = isFocused,
                 onProductLabelClick = {
                     mData?.let { element ->
                         listener.onProductTagViewClicked(
@@ -741,9 +743,6 @@ class FeedPostImageViewHolder(
                         absoluteAdapterPosition
                     )
                 })
-        }
-        binding.productTagView.rootView.addImpressionListener {
-
         }
     }
 
