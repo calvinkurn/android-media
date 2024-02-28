@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -19,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.experiments.ProductCardColor
 import com.tokopedia.productcard.reimagine.LabelGroupStyle.TEXT_COLOR
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup.Style
@@ -31,6 +31,7 @@ import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.T
 import com.tokopedia.productcard.utils.imageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -43,9 +44,8 @@ internal class ProductCardRenderer(
 
     private val outlineView by view.lazyView<View?>(R.id.productCardOutline)
     private val cardContainer by view.lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
-    private val cardConstraintLayout by view.lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by view.lazyView<ImageView?>(R.id.productCardImage)
-    private val labelOverlay = LabelOverlay(view, type)
+    private val labelOverlay = LabelOverlay(view)
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
     private val labelPreventiveOverlay by view.lazyView<Typography?>(R.id.productCardLabelPreventiveOverlay)
     private val labelPreventiveBlock by view.lazyView<Typography?>(R.id.productCardLabelPreventiveBlock)
@@ -60,9 +60,14 @@ internal class ProductCardRenderer(
     private val offerLabel by view.lazyView<Typography?>(R.id.productCardLabelOffer)
     private val credibilitySection by view.lazyView<LinearLayout?>(R.id.productCardCredibility)
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
+    private val shopNameBadgeText by view.lazyView<Typography?>(R.id.productCardShopNameLocation)
+    private val buttonAddToCart by view.lazyView<UnifyButton?>(R.id.productCardAddToCart)
+    private val labelBenefitView by view.lazyView<LabelBenefitView?>(R.id.productCardLabelBenefit)
     private val ribbon by view.lazyView<RibbonView?>(R.id.productCardRibbon)
     private val safeGroup by view.lazyView<Group?>(R.id.productCardSafeGroup)
-
+    private val credibilityText by view.lazyView<Typography?>(R.id.productCardLabelCredibility)
+    private val ratingText by view.lazyView<Typography?>(R.id.productCardRating)
+    
     fun setProductModel(productCardModel: ProductCardModel) {
         renderOutline(productCardModel)
         renderCardContainer(productCardModel)
@@ -83,7 +88,7 @@ internal class ProductCardRenderer(
         renderShopSection(productCardModel)
         renderRibbon(productCardModel)
         renderSafeContent(productCardModel)
-        renderAddToCart(productCardModel)
+        handleColorMode(productCardModel.colorMode)
     }
 
     private fun renderOutline(productCardModel: ProductCardModel) {
@@ -341,12 +346,39 @@ internal class ProductCardRenderer(
     private fun renderSafeContent(productCardModel: ProductCardModel) {
         safeGroup?.showWithCondition(productCardModel.isSafeProduct)
     }
+    
 
-    private fun renderAddToCart(productCardModel: ProductCardModel) {
-        val cardConstraintLayout = cardConstraintLayout ?: return
+    private fun handleColorMode(colorMode: ProductCardColor?) {
+        if (colorMode == null) return
+        overrideColor(colorMode)
+    }
 
-        view.showView(R.id.productCardAddToCart, productCardModel.hasAddToCart) {
-            AddToCartButton(cardConstraintLayout, type.addToCartConstraints())
+    private fun overrideColor(colorMode: ProductCardColor) {
+        val productNameColor = ContextCompat.getColor(context, colorMode.productNameTextColor)
+        val productPriceTextColor = ContextCompat.getColor(context, colorMode.priceTextColor)
+        val slashedPriceTextColor = ContextCompat.getColor(context, colorMode.slashPriceTextColor)
+        val credibilityTextColor = ContextCompat.getColor(context, colorMode.soldCountTextColor)
+        val discountTextColor = ContextCompat.getColor(context, colorMode.discountTextColor)
+        val ratingTextColor = ContextCompat.getColor(context, colorMode.ratingTextColor)
+        val shopBadgeTextColor = ContextCompat.getColor(context, colorMode.shopBadgeTextColor)
+        
+        cardContainer?.setCardUnifyBackgroundColor(MethodChecker.getColor(context, colorMode.cardBackgroundColor))
+
+        nameText?.setTextColor(productNameColor)
+        priceText?.setTextColor(productPriceTextColor)
+        slashedPriceText?.setTextColor(slashedPriceTextColor)
+        discountText?.setTextColor(discountTextColor)
+        credibilityText?.setTextColor(credibilityTextColor)
+        ratingText?.setTextColor(ratingTextColor)
+        shopNameBadgeText?.setTextColor(shopBadgeTextColor)
+        
+        buttonAddToCart?.applyColorMode(colorMode.buttonColorMode)
+        
+        val hasCustomCutoutFillColor = colorMode.labelBenefitViewColor.cutoutFillColor.isNotEmpty()
+        if (hasCustomCutoutFillColor) {
+            labelBenefitView?.setCutoutFillColor(colorMode.labelBenefitViewColor.cutoutFillColor)
+        } else {
+            labelBenefitView?.setCutoutFillColor(unifyprinciplesR.color.Unify_NN0)
         }
     }
 }

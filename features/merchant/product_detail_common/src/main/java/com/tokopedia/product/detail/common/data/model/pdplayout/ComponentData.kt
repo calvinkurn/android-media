@@ -66,6 +66,9 @@ data class ComponentData(
     val name: String = "",
     @SerializedName("parentName")
     val parentName: String = "",
+    @SerializedName("labelIcons")
+    @Expose
+    val labelIcons: List<LabelIcons> = emptyList(),
     @SuppressLint("Invalid Data Type")
     @SerializedName("price")
     val price: Price = Price(),
@@ -81,6 +84,9 @@ data class ComponentData(
     val preOrder: PreOrder = PreOrder(),
     @SerializedName("isCOD")
     val isCod: Boolean = false,
+    //to show hide price in product content
+    @SerializedName("isShowPrice")
+    val isShowPrice: Boolean = true,
     //endregion
     //region Variant data
     @SerializedName("parentID")
@@ -188,7 +194,14 @@ data class ComponentData(
     //region SDUI Data
     @SerializedName("template")
     @Expose
-    val sduiData: String = ""
+    val sduiData: String = "",
+    // endregion
+
+    // region promo price
+    @SerializedName("componentPriceType")
+    val componentPriceType: Int = 0,
+    @SerializedName("promo")
+    val promoPrice: PromoPriceResponse = PromoPriceResponse(),
     // endregion
 ) {
     companion object {

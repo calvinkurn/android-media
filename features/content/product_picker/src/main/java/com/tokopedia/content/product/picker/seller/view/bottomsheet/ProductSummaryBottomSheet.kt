@@ -140,7 +140,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                         showLoading(true)
                         binding.globalError.visibility = View.GONE
                     }
-                    ProductTagSummaryUiModel.Success -> {
+                    else -> {
                         mListener?.onProductChanged(state.productTagSectionList)
 
                         setTitle(state.productCount)
@@ -157,7 +157,6 @@ class ProductSummaryBottomSheet @Inject constructor(
                             binding.flBtnDoneContainer.visibility = View.GONE
                         }
                     }
-                    else -> return@collectLatest
                 }
             }
         }

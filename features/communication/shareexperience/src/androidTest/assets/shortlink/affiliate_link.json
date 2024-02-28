@@ -1,0 +1,20 @@
+{
+  "data": {
+    "generateAffiliateLink": {
+      "Data": [
+        {
+          "Status": 1,
+          "Type": "pdp",
+          "Error": "",
+          "Identifier": "2151123756",
+          "IdentifierType": 0,
+          "LinkID": "20511",
+          "URL": {
+            "ShortURL": "https://tokopedia.test-app.link/UUbrgeQKNGb",
+            "RegularURL": "https://staging.tokopedia.com/pacmanshop/full-update-product-kvi?aff_unique_id\u003dsSEBch62G-nndy7kR84TZxV7Rl3e13o2vPRhJPlnv5bvpxNxXTY9qQwAw2Xt8Zq_u28yTw%3D%3D\u0026channel\u003dsalinlink\u0026utm_source\u003dsalinlink\u0026utm_medium\u003daffiliate-share\u0026utm_campaign\u003daffiliateshare-pdp-sSEBch62G-nndy7kR84TZxV7Rl3e13o2vPRhJPlnv5bvpxNxXTY9qQwAw2Xt8Zq_u28yTw%3D%3D-2151123756-0-310124"
+          }
+        }
+      ]
+    }
+  }
+}

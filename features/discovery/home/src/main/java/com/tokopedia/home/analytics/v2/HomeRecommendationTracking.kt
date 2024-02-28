@@ -17,13 +17,15 @@ import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.T
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_47716
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_48661
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.TRACKER_ID_48662
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
+import com.tokopedia.recommendation_widget_common.infinite.foryou.banner.BannerRecommendationModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -83,11 +85,13 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         val RECOMMENDATION_ACTION_FIELD_LOGIN = BASE.format("", "%s", "%s", "%s")
         val RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS =
             BASE.format("", "%s", "%s", "%s - product topads")
+
+        const val PLAY_SHORT_VIDEO_LAYOUT_ITEM = "play short video"
     }
 
     fun getRecommendationProductClickNonLogin(
         tabName: String,
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel
+        homeRecommendationItemDataModel: RecommendationCardModel
     ) = BaseTrackerBuilder().constructBasicProductClick(
         event = Event.PRODUCT_CLICK,
         eventCategory = Category.HOMEPAGE,
@@ -103,7 +107,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     fun getRecommendationProductClickLogin(
         tabName: String,
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel
+        homeRecommendationItemDataModel: RecommendationCardModel
     ) = BaseTrackerBuilder().constructBasicProductClick(
         event = Event.PRODUCT_CLICK,
         eventCategory = Category.HOMEPAGE,
@@ -119,7 +123,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     fun getRecommendationProductClickLoginTopAds(
         tabName: String,
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel
+        homeRecommendationItemDataModel: RecommendationCardModel
     ) = BaseTrackerBuilder().constructBasicProductClick(
         event = Event.PRODUCT_CLICK,
         eventCategory = Category.HOMEPAGE,
@@ -135,13 +139,30 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     fun getRecommendationProductClickNonLoginTopAds(
         tabName: String,
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel
+        homeRecommendationItemDataModel: RecommendationCardModel
     ) = BaseTrackerBuilder().constructBasicProductClick(
         event = Event.PRODUCT_CLICK,
         eventCategory = Category.HOMEPAGE,
         eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
         eventLabel = tabName,
         list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(
+            tabName,
+            homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
+            homeRecommendationItemDataModel.pageName
+        ),
+        products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
+    ).build()
+
+    @RecomTemporary
+    fun getRecommendationProductViewLogin(
+        tabName: String,
+        homeRecommendationItemDataModel: RecommendationCardModel
+    ) = BaseTrackerBuilder().constructBasicProductView(
+        event = Event.PRODUCT_VIEW,
+        eventCategory = Category.HOMEPAGE,
+        eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
+        eventLabel = tabName,
+        list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(
             tabName,
             homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
             homeRecommendationItemDataModel.pageName
@@ -165,6 +186,23 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     ).build()
 
+    @RecomTemporary
+    fun getRecommendationProductViewLoginTopAds(
+        tabName: String,
+        homeRecommendationItemDataModel: RecommendationCardModel
+    ) = BaseTrackerBuilder().constructBasicProductView(
+        event = Event.PRODUCT_VIEW,
+        eventCategory = Category.HOMEPAGE,
+        eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
+        eventLabel = tabName,
+        list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(
+            tabName,
+            homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
+            homeRecommendationItemDataModel.pageName
+        ),
+        products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
+    ).build()
+
     fun getRecommendationProductViewLoginTopAds(
         tabName: String,
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel
@@ -181,6 +219,23 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     ).build()
 
+    @RecomTemporary
+    fun getRecommendationProductViewNonLogin(
+        tabName: String,
+        homeRecommendationItemDataModel: RecommendationCardModel
+    ) = BaseTrackerBuilder().constructBasicProductView(
+        event = Event.PRODUCT_VIEW,
+        eventCategory = Category.HOMEPAGE,
+        eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
+        eventLabel = tabName,
+        list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(
+            tabName,
+            homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
+            homeRecommendationItemDataModel.pageName
+        ),
+        products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
+    ).build()
+
     fun getRecommendationProductViewNonLogin(
         tabName: String,
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel
@@ -190,6 +245,23 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
         eventLabel = tabName,
         list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(
+            tabName,
+            homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
+            homeRecommendationItemDataModel.pageName
+        ),
+        products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
+    ).build()
+
+    @RecomTemporary
+    fun getRecommendationProductViewNonLoginTopAds(
+        tabName: String,
+        homeRecommendationItemDataModel: RecommendationCardModel
+    ) = BaseTrackerBuilder().constructBasicProductView(
+        event = Event.PRODUCT_VIEW,
+        eventCategory = Category.HOMEPAGE,
+        eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
+        eventLabel = tabName,
+        list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(
             tabName,
             homeRecommendationItemDataModel.recommendationProductItem.recommendationType,
             homeRecommendationItemDataModel.pageName
@@ -249,7 +321,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             "$productId - $tabName"
         )
 
-    fun getBannerRecommendation(bannerRecommendationDataModel: BannerRecommendationDataModel): Map<String, Any> {
+    fun getBannerRecommendation(bannerRecommendationDataModel: BannerRecommendationModel): Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicPromotionView(
             event = Event.PROMO_VIEW,
@@ -302,7 +374,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     // https://mynakama.tokopedia.com/datatracker/requestdetail/view/4265
     fun sendClickEntityCardTracking(
-        recomEntityCardUiModel: RecomEntityCardUiModel,
+        model: ContentCardModel,
         position: Int,
         userId: String
     ) {
@@ -312,7 +384,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             putString(Category.KEY, Category.HOMEPAGE)
             putString(
                 Label.KEY,
-                "${recomEntityCardUiModel.layoutCard} - ${recomEntityCardUiModel.layoutItem} - ${recomEntityCardUiModel.title}"
+                "${model.layoutCard} - ${model.layoutItem} - ${model.title}"
             )
             putString(
                 TrackerId.KEY,
@@ -333,16 +405,16 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                     Bundle().also {
                         it.putString(Promotion.CREATIVE_NAME, CustomAction.FOR_YOU_CREATIVE_NAME)
                         it.putString(Promotion.CREATIVE_SLOT, creativeSlot)
-                        it.putString(Promotion.ITEM_ID, recomEntityCardUiModel.id)
+                        it.putString(Promotion.ITEM_ID, model.id)
                         it.putString(
                             Promotion.ITEM_NAME,
                             ITEM_NAME_NEW_FOR_YOU_FORMAT.format(
                                 creativeSlot,
                                 RECOMMENDATION_CARD_FOR_YOU,
-                                recomEntityCardUiModel.categoryId,
-                                recomEntityCardUiModel.layoutCard,
-                                recomEntityCardUiModel.layoutItem,
-                                recomEntityCardUiModel.title
+                                model.categoryId,
+                                model.layoutCard,
+                                model.layoutItem,
+                                model.title
                             )
                         )
                     }
@@ -355,7 +427,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
     }
 
     fun sendClickVideoRecommendationCardTracking(
-        homeRecomPlayWidgetUiModel: HomeRecommendationPlayWidgetUiModel,
+        homeRecomPlayWidgetUiModel: PlayCardModel,
         position: Int,
         userId: String
     ) {
@@ -410,7 +482,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                                 itemPosition,
                                 playWidgetTrackerModel.categoryId,
                                 playWidgetTrackerModel.layoutCard,
-                                playWidgetTrackerModel.layoutItem,
+                                ActionField.PLAY_SHORT_VIDEO_LAYOUT_ITEM,
                                 playVideoWidgetUiModel.title
                             )
                         )
@@ -424,7 +496,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
     }
 
     fun getImpressPlayVideoWidgetTracking(
-        homeRecomPlayWidgetUiModel: HomeRecommendationPlayWidgetUiModel,
+        homeRecomPlayWidgetUiModel: PlayCardModel,
         position: Int,
         userId: String
     ): HashMap<String, Any> {
@@ -439,7 +511,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             itemPosition,
             playWidgetTrackerModel.categoryId,
             playWidgetTrackerModel.layoutCard,
-            playWidgetTrackerModel.layoutItem,
+            ActionField.PLAY_SHORT_VIDEO_LAYOUT_ITEM,
             playVideoWidgetUiModel.title
         )
 
@@ -485,7 +557,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     // https://mynakama.tokopedia.com/datatracker/requestdetail/view/4265
     fun getImpressEntityCardTracking(
-        recomEntityCardUiModel: RecomEntityCardUiModel,
+        model: ContentCardModel,
         position: Int,
         userId: String
     ): HashMap<String, Any> {
@@ -493,10 +565,10 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         val itemName = ITEM_NAME_NEW_FOR_YOU_FORMAT.format(
             creativeSlot,
             RECOMMENDATION_CARD_FOR_YOU,
-            recomEntityCardUiModel.categoryId,
-            recomEntityCardUiModel.layoutCard,
-            recomEntityCardUiModel.layoutItem,
-            recomEntityCardUiModel.title
+            model.categoryId,
+            model.layoutCard,
+            model.layoutItem,
+            model.title
         )
 
         return DataLayer.mapOf(
@@ -507,7 +579,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             Category.KEY,
             Category.HOMEPAGE,
             Label.KEY,
-            "${recomEntityCardUiModel.layoutCard} - ${recomEntityCardUiModel.layoutItem} - ${recomEntityCardUiModel.title}",
+            "${model.layoutCard} - ${model.layoutItem} - ${model.title}",
             BusinessUnit.KEY,
             BusinessUnit.DEFAULT,
             CurrentSite.KEY,
@@ -521,7 +593,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                         mapOf(
                             Promotion.CREATIVE_NAME to CustomAction.FOR_YOU_CREATIVE_NAME,
                             Promotion.CREATIVE_SLOT to creativeSlot,
-                            Items.ITEM_ID to recomEntityCardUiModel.id,
+                            Items.ITEM_ID to model.id,
                             Items.ITEM_NAME to itemName
                         )
                     )
@@ -536,7 +608,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     // https://mynakama.tokopedia.com/datatracker/requestdetail/view/4265
     fun getImpressBannerTopAdsTracking(
-        homeTopAdsRecommendationBannerTopAdsUiModel: HomeRecommendationBannerTopAdsUiModel,
+        homeTopAdsRecommendationBannerTopAdsUiModel: BannerTopAdsModel,
         position: Int,
         userId: String
     ): Map<String, Any> {
@@ -575,7 +647,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
 
     // https://mynakama.tokopedia.com/datatracker/requestdetail/view/4265
     fun sendClickBannerTopAdsTracking(
-        bannerTopAdsUiModel: HomeRecommendationBannerTopAdsUiModel,
+        bannerTopAdsUiModel: BannerTopAdsModel,
         position: Int,
         userId: String
     ) {
@@ -627,6 +699,22 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
+    @RecomTemporary
+    private fun mapToProductTracking(homeRecommendationItemDataModel: RecommendationCardModel) =
+        Product(
+            id = homeRecommendationItemDataModel.recommendationProductItem.id,
+            name = homeRecommendationItemDataModel.recommendationProductItem.name,
+            variant = "",
+            productPrice = homeRecommendationItemDataModel.recommendationProductItem.priceInt.toString(),
+            productPosition = homeRecommendationItemDataModel.position.toString(),
+            isFreeOngkir = homeRecommendationItemDataModel.recommendationProductItem.freeOngkirIsActive && !homeRecommendationItemDataModel.recommendationProductItem.labelGroup.any { it.position == LABEL_FULFILLMENT },
+            isFreeOngkirExtra = homeRecommendationItemDataModel.recommendationProductItem.freeOngkirIsActive && homeRecommendationItemDataModel.recommendationProductItem.labelGroup.any { it.position == LABEL_FULFILLMENT },
+            category = homeRecommendationItemDataModel.recommendationProductItem.categoryBreadcrumbs,
+            brand = "",
+            clusterId = homeRecommendationItemDataModel.recommendationProductItem.clusterID,
+            isTopAds = null
+        )
+
     private fun mapToProductTracking(homeRecommendationItemDataModel: HomeRecommendationItemDataModel) =
         Product(
             id = homeRecommendationItemDataModel.recommendationProductItem.id,
@@ -642,7 +730,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             isTopAds = null
         )
 
-    private fun mapToPromoTracking(bannerRecommendationDataModel: BannerRecommendationDataModel) =
+    private fun mapToPromoTracking(bannerRecommendationDataModel: BannerRecommendationModel) =
         Promotion(
             id = bannerRecommendationDataModel.id.toString(),
             name = CustomAction.BANNER_FIELD.format(bannerRecommendationDataModel.tabName),

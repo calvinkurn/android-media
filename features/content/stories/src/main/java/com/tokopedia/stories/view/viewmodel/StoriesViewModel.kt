@@ -16,6 +16,7 @@ import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.domain.model.StoriesTrackActivityActionType
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
 import com.tokopedia.stories.uimodel.AuthorType
+import com.tokopedia.stories.utils.StoriesPreference
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
@@ -59,7 +60,8 @@ import kotlinx.coroutines.launch
 class StoriesViewModel @AssistedInject constructor(
     @Assisted private val args: StoriesArgsModel,
     private val repository: StoriesRepository,
-    val userSession: UserSessionInterface
+    val userSession: UserSessionInterface,
+    private val sharedPref: StoriesPreference,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -369,6 +371,7 @@ class StoriesViewModel @AssistedInject constructor(
     private fun handleContentIsLoaded() {
         updateDetailData(event = if (mIsPageSelected) RESUME else PAUSE, isSameContent = true)
         checkAndHitTrackActivity()
+        setupOnboard()
 
         run {
             if (mDetailPos == mDetailSize - 1) {
@@ -577,9 +580,6 @@ class StoriesViewModel @AssistedInject constructor(
     private fun handleVariantSheet(product: ContentTaggedProductUiModel) {
         viewModelScope.launch {
             _storiesEvent.emit(StoriesUiEvent.ShowVariantSheet(product))
-            _bottomSheetStatusState.update { bottomSheet ->
-                bottomSheet.mapValues { it.key == BottomSheetType.GVBS }
-            }
         }
     }
 
@@ -812,6 +812,16 @@ class StoriesViewModel @AssistedInject constructor(
     private fun handleHasSeenDurationCoachMark() {
         viewModelScope.launch {
             repository.setHasSeenManualStoriesDurationCoachmark()
+        }
+    }
+
+    private fun setupOnboard() {
+        if (!sharedPref.hasVisit()) {
+            viewModelScope.launch {
+                handleOnPauseStories()
+                _storiesEvent.emit(StoriesUiEvent.OnboardShown)
+            }
+            sharedPref.setHasVisit(true)
         }
     }
 }

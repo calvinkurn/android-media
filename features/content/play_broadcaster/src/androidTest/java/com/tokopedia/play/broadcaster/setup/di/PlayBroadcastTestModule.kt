@@ -35,6 +35,7 @@ import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl
 import com.tokopedia.play.broadcaster.util.cover.PlayMinimumCoverImageTransformer
 import com.tokopedia.play.broadcaster.util.helper.DefaultUriParser
 import com.tokopedia.play.broadcaster.util.helper.UriParser
+import com.tokopedia.play.broadcaster.util.logger.error.BroadcasterErrorLogger
 import com.tokopedia.play.broadcaster.util.wrapper.PlayBroadcastValueWrapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
@@ -62,7 +63,8 @@ class PlayBroadcastTestModule(
     private val mockBroadcastTimer: PlayBroadcastTimer,
     private val mockGetChannelUseCase: GetChannelUseCase,
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase,
-    private val mockValueWrapper: PlayBroadcastValueWrapper
+    private val mockValueWrapper: PlayBroadcastValueWrapper,
+    private val mockBroadcasterErrorLogger: BroadcasterErrorLogger,
 ) {
 
     @Provides
@@ -96,6 +98,10 @@ class PlayBroadcastTestModule(
     @ActivityRetainedScope
     @Provides
     fun provideValueWrapper(): PlayBroadcastValueWrapper = mockValueWrapper
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideBroadcasterErrorLogger(): BroadcasterErrorLogger = mockBroadcasterErrorLogger
 
     @Provides
     fun provideGraphQLRepository(): GraphqlRepository {

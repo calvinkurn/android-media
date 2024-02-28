@@ -34,6 +34,7 @@ object ProductDetailConstant {
     const val PAYLOAD_NOTIFY_ME = 1
     const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
     const val PAYLOAD_UPDATE_QTY_RECOM_TOKONOW = 1234
+    const val PAYLOAD_DO_NOTHING = 82829
     const val DIFFUTIL_PAYLOAD = "payload"
 
     // Request Code
@@ -76,6 +77,7 @@ object ProductDetailConstant {
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
     const val PRODUCT_CUSTOM_INFO = "custom_info"
     const val PRODUCT_DYNAMIC_ONELINER = "dynamic_oneliner"
+    const val PRODUCT_DYNAMIC_ONELINER_PROMO = "oneliner_promo"
     const val PRODUCT_SHOP_ADDITIONAL = "shop_additional"
     const val PRODUCT_INSTALLMENT_INFO = "installment"
     const val PRODUCT_INSTALLMENT_PAYLATER_INFO = "installment_paylater"
@@ -88,6 +90,7 @@ object ProductDetailConstant {
     const val PRODUCT_CONTENT = "product_content"
     const val ONGOING_CAMPAIGN = "ongoing_campaign"
     const val MEDIA = "product_media"
+    const val PRICE = "promo_price"
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"
     const val MVC = "mvc"

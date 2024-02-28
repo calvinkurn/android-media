@@ -37,7 +37,6 @@ abstract class BaseStartupBenchmark(private val startupMode: StartupMode) {
         if (MacroArgs.useMock(InstrumentationRegistry.getArguments())) {
             setupMock()
         }
-        setupEnvironment()
     }
 
     @OptIn(ExperimentalMetricApi::class)
@@ -46,6 +45,9 @@ abstract class BaseStartupBenchmark(private val startupMode: StartupMode) {
         benchmarkRule.measureTokopediaApps(
             startupMode = startupMode,
             packageName = packageName(),
+            setupBlock = {
+                setupEnvironment()
+            },
             metrics = listOf(
                 StartupTimingMetric()
             ).plus(MacroMetrics.getPltMetrics(traceName()))

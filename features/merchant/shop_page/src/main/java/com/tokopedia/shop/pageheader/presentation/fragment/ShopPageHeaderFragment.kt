@@ -1161,10 +1161,9 @@ class ShopPageHeaderFragment :
     }
 
     private fun getFollowStatus() {
-        val shopFollowButtonVariantType = ShopUtil.getShopFollowButtonAbTestVariant().orEmpty()
         if (shopPageHeaderFragmentHeaderViewHolder?.isFollowButtonPlaceHolderAvailable() == true) {
             shopPageHeaderFragmentHeaderViewHolder?.setLoadingFollowButton(true)
-            shopHeaderViewModel?.getFollowStatusData(shopId, shopFollowButtonVariantType)
+            shopHeaderViewModel?.getFollowStatusData(shopId)
         }
     }
 

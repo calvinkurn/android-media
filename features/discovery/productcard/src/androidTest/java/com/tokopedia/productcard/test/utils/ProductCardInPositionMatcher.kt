@@ -76,6 +76,7 @@ private class ProductCardInPositionMatcher(
         R.id.productCardCardUnifyContainer,
         R.id.productCardConstraintLayout,
         R.id.productCardPriceContainer,
+        R.id.productCardOverlayContainer,
         productcardtestR.id.productCardReimagineTestDescription,
         productcardtestR.id.productCardReimagineGridCarouselView,
         productcardtestR.id.productCardReimagineGridView,

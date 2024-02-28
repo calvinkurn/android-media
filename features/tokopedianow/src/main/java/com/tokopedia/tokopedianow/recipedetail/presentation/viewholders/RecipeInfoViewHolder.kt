@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeInfoBinding
-import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.TagAdapter
-import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.TagViewHolder.TagListener
+import com.tokopedia.tokopedianow.oldrecipebookmark.presentation.adapter.TagAdapter
+import com.tokopedia.tokopedianow.oldrecipebookmark.presentation.viewholder.TagViewHolder.TagListener
 import com.tokopedia.tokopedianow.recipedetail.presentation.decoration.RecipeInfoTagDecoration
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
 import com.tokopedia.unifycomponents.toPx

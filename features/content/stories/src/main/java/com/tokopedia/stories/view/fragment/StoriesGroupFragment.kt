@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -40,6 +41,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.stories.R
 
 class StoriesGroupFragment @Inject constructor(
     private val viewModelFactory: StoriesViewModelFactory.Creator,
@@ -123,6 +125,18 @@ class StoriesGroupFragment @Inject constructor(
         layoutGroupLoading.icCloseLoading.setOnClickListener { activity?.finish() }
         storiesGroupViewPager.setPageTransformer(StoriesPageAnimation())
         storiesGroupViewPager.registerOnPageChangeCallback(pagerListener)
+
+        binding.vStoriesOnboarding.setOnClickListener {
+            dismissOnboard()
+        }
+        binding.vStoriesOnboarding.findViewById<IconUnify>(R.id.iv_onboard_close).setOnClickListener {
+            dismissOnboard()
+        }
+    }
+
+    private fun dismissOnboard() {
+        viewModelAction(StoriesUiAction.ResumeStories)
+        binding.vStoriesOnboarding.gone()
     }
 
     private fun setupTopInsets() = with(binding) {
@@ -185,6 +199,10 @@ class StoriesGroupFragment @Inject constructor(
                     }
 
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
+                    is StoriesUiEvent.OnboardShown -> {
+                        binding.vStoriesOnboarding.show()
+                        binding.vStoriesOnboarding.checkAnim()
+                    }
                     else -> return@collect
                 }
             }

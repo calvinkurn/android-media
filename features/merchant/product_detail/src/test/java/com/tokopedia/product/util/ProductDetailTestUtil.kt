@@ -12,7 +12,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.asUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.ProductDetailMapper
 import com.tokopedia.product.usecase.GetPdpLayoutUseCaseTest
 import java.io.File
 import java.lang.reflect.Type
@@ -66,9 +66,10 @@ object ProductDetailTestUtil {
     }
 
     private fun mapIntoModel(data: PdpGetLayout): ProductDetailDataModel {
-        val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data)
-        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.components, getDynamicProductInfoP1)
-        val p1VariantData = DynamicProductDetailMapper.mapVariantIntoOldDataClass(data)
+        val getDynamicProductInfoP1 = ProductDetailMapper.mapToDynamicProductDetailP1(data)
+        val initialLayoutData =
+            ProductDetailMapper.mapIntoVisitable(data.components, getDynamicProductInfoP1)
+        val p1VariantData = ProductDetailMapper.mapVariantIntoOldDataClass(data)
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData, p1VariantData)
     }
 
