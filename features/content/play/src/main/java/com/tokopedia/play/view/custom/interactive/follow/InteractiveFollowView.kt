@@ -43,12 +43,12 @@ class InteractiveFollowView : ConstraintLayout {
     }
 
     fun setAvatarUrl(imageUrl: String) {
-        binding.ivPartner.loadImageCircle(imageUrl) //TODO: check placeholder, error state, etc from ImageUnify
+        binding.ivPartner.loadImageCircle(imageUrl)
     }
 
     fun setBadgeUrl(badgeUrl: String) {
         binding.ivBadge.showWithCondition(badgeUrl.isNotEmpty())
-        if(badgeUrl.isNotEmpty()) binding.ivBadge.loadImage(badgeUrl) //TODO: check placeholder, error state, etc from ImageUnify
+        if(badgeUrl.isNotEmpty()) binding.ivBadge.loadImage(badgeUrl)
     }
 
     fun setPartnerName(name: String) {

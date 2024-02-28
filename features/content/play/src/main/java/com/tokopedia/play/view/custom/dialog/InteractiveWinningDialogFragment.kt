@@ -104,7 +104,7 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
     private fun setupView() {
         if (::tvTitle.isInitialized) tvTitle.text = mTitle
         if (::tvDetail.isInitialized) tvDetail.text = mSubtitle
-        if (::imgUser.isInitialized) imgUser.loadImageCircle(mImageUrl) //TODO: check placeholder, error state, etc from ImageUnify
+        if (::imgUser.isInitialized) imgUser.loadImageCircle(mImageUrl)
         if(::vRoot.isInitialized) vRoot.background = MethodChecker.getDrawable(context, getInteractive(mGameUiModel ?: GameUiModel.Unknown))
     }
 

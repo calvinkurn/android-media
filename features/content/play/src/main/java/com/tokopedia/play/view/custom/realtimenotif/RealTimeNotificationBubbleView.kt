@@ -32,7 +32,7 @@ class RealTimeNotificationBubbleView : RoundedConstraintLayout {
     }
 
     fun setIconUrl(url: String) {
-        imageNotif.loadImage(url) //TODO: check placeholder, error state, etc from ImageUnify
+        imageNotif.loadImage(url)
     }
 
     fun setText(text: Spanned) {

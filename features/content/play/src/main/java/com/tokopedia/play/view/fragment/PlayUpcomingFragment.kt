@@ -349,7 +349,7 @@ class PlayUpcomingFragment @Inject constructor(
                         })
                         .skipMemoryCache(false)
                         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                        .into(binding.ivUpcomingCover) //TODO: check placeholder, error state, etc from ImageUnify
+                        .into(binding.ivUpcomingCover)
                 }
                 description.setupText(it.description)
                 upcomingTimer.setupTimer(it.startTime)

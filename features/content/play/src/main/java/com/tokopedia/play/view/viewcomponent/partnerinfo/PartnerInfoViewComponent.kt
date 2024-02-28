@@ -35,9 +35,9 @@ class PartnerInfoViewComponent(
     }
 
     fun setInfo(info: PlayPartnerInfo) {
-        ivIcon.loadImage(info.iconUrl) //TODO: check placeholder, error state, etc from ImageUnify
+        ivIcon.loadImage(info.iconUrl)
         if (info.badgeUrl.isNotBlank()) {
-            ivBadge.loadImage(info.badgeUrl) //TODO: check placeholder, error state, etc from ImageUnify
+            ivBadge.loadImage(info.badgeUrl)
             ivBadge.show()
         } else {
             ivBadge.hide()
