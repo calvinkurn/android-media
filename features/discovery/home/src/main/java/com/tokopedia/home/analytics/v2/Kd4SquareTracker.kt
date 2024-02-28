@@ -24,8 +24,8 @@ object Kd4SquareTracker : BaseTrackerConst() {
             promotions = model.channelGrids.mapIndexed { index, channelGrid ->
                 Promotion(
                     id = "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}",
-                    name = "/ - p${index} - dynamic channel 4 square - banner - ${attribute.headerName}",
-                    position = (position + 1).toString(),
+                    name = "/ - p${position + 1} - dynamic channel 4 square - banner - ${attribute.headerName}",
+                    position = (index + 1).toString(),
                     creative = channelGrid.attribution
                 )
             }
