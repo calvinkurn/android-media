@@ -151,7 +151,7 @@ class InboxDetailViewModel @Inject constructor(
                 val requestParams = submitRatingUseCase.createRequestParams(
                     getFirstCommentId(),
                     rating,
-                    reason, // failed if empty string, todo : FU to BE
+                    reason,
                     otherReason,
                     service,
                     dynamicReasons
