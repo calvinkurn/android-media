@@ -99,6 +99,10 @@ internal class ProductPreviewViewModelRobot(
         viewModel.onAction(ProductPreviewAction.CheckInitialSource)
     }
 
+    fun fetchMiniInfoTestCase() {
+        viewModel.onAction(ProductPreviewAction.FetchMiniInfo)
+    }
+
     fun cancelRemainingTasks() {
         viewModel.viewModelScope.coroutineContext.cancelChildren()
     }
