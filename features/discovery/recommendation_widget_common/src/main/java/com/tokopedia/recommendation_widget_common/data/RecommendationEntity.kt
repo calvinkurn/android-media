@@ -28,6 +28,15 @@ data class RecommendationEntity(
         val hasNext: Boolean = false
     )
 
+    data class AppLog(
+        @SerializedName("sessionID")
+        val sessionId: String = "",
+        @SerializedName("requestID")
+        val requestId: String = "",
+        @SerializedName("logID")
+        val logId: String = "",
+    )
+
     class Recommendation {
         @SuppressLint("Invalid Data Type")
         @SerializedName("id")
@@ -128,6 +137,9 @@ data class RecommendationEntity(
 
         @SerializedName("gridPosition")
         val gridPosition: String = ""
+
+        @SerializedName("recParam")
+        val recParam: String = ""
 
         class SpecificationsLabels {
             @SerializedName("key")
@@ -235,6 +247,8 @@ data class RecommendationEntity(
         val seeMoreAppLink: String = "",
         @SerializedName("pagination")
         val pagination: Pagination = Pagination(),
+        @SerializedName("appLog")
+        val appLog: AppLog = AppLog(),
         @SerializedName("recommendation")
         val recommendation: List<Recommendation> = listOf(),
         @SerializedName("campaign")

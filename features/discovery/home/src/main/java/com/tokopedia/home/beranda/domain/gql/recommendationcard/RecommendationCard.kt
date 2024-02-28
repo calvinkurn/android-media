@@ -76,7 +76,9 @@ data class RecommendationCard(
     @SerializedName("url")
     val url: String = "",
     @SerializedName("wishlistUrl")
-    val wishlistUrl: String = ""
+    val wishlistUrl: String = "",
+    @SerializedName("recParam")
+    val recParam: String = ""
 ) {
 
     fun mapToHomeRecommendationProductItem(): HomeRecommendationItemDataModel.HomeRecommendationProductItem {
@@ -115,6 +117,7 @@ data class RecommendationCard(
                     url = it.url,
                 )
             },
+            recParam = recParam
         )
     }
 
@@ -141,7 +144,7 @@ data class RecommendationCard(
             trackerImageUrl = trackerImageUrl,
             clickUrl = clickUrl,
             isWishlist = isWishlist,
-            wishListUrl = wishlistUrl
+            wishListUrl = wishlistUrl,
         )
     }
 
