@@ -28,10 +28,10 @@ data class AppLogRecommendationProductModel(
     val shopId: String,
     val itemOrder: Int,
     val entranceForm: String,
-    val volume: Int?,
-    val rate: Float?,
-    val originalPrice: Float?,
-    val salesPrice: Float?,
+    val volume: Int,
+    val rate: Float,
+    val originalPrice: Float,
+    val salesPrice: Float,
     val enterMethod: String,
     val authorId: String,
     val groupId: String,
@@ -83,10 +83,10 @@ data class AppLogRecommendationProductModel(
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.SHOP_ID, shopId)
         put(AppLogParam.ITEM_ORDER, itemOrder)
-        volume?.let { put(AppLogParam.VOLUME, it) }
-        rate?.let { put(AppLogParam.RATE, it) }
-        originalPrice?.let { put(AppLogParam.ORIGINAL_PRICE, it) }
-        salesPrice?.let { put(AppLogParam.SALES_PRICE, it) }
+        if(volume > 0) put(AppLogParam.VOLUME, volume)
+        if(rate > 0) put(AppLogParam.RATE, rate)
+        if(originalPrice > 0) put(AppLogParam.ORIGINAL_PRICE, originalPrice)
+        if(salesPrice > 0) put(AppLogParam.SALES_PRICE, salesPrice)
         //TODO P1: group_id, main_video_id
     }
 
@@ -116,10 +116,10 @@ data class AppLogRecommendationProductModel(
             requestId: String = "",
             shopId: String = "",
             entranceForm: EntranceForm,
-            volume: Int? = null,
-            rate: Float? = null,
-            originalPrice: Float? = null,
-            salesPrice: Float? = null,
+            volume: Int = 0,
+            rate: Float = 0f,
+            originalPrice: Float = 0f,
+            salesPrice: Float = 0f,
             enterMethod: String = "",
             authorId: String = "",
             groupId: String = "",

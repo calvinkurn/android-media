@@ -60,6 +60,7 @@ data class RecommendationCardModel(
         val isWishlist: Boolean = false,
         val wishListUrl: String = "",
         val shop: Shop = Shop(),
+        val countSold: Int = 0,
     ) {
         data class LabelGroup(
             val position: String = "",

@@ -5,6 +5,8 @@ import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationCardModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.analytics.byteio.recommendation.CardName
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.HomeRecommendationUtil.isFullSpan
@@ -36,8 +38,8 @@ object TrackRecommendationMapper {
             ).toFloat(),
             salesPrice = recommendationProductItem.priceInt.toFloat(),
             position = position,
-            volume = productCardModel.countSoldRating.toIntOrNull(),
-            rate = productCardModel.countSoldRating.toFloatOrNull(),
+            volume = recommendationProductItem.countSold,
+            rate = productCardModel.countSoldRating.toFloatOrZero(),
         )
     }
 

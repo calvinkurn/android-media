@@ -141,6 +141,9 @@ data class RecommendationEntity(
         @SerializedName("recParam")
         val recParam: String = ""
 
+        @SerializedName("countSold")
+        val countSold: Int = 0
+
         class SpecificationsLabels {
             @SerializedName("key")
             val key: String = ""
