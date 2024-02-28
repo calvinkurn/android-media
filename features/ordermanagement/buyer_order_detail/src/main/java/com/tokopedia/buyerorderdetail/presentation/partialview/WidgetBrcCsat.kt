@@ -18,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.Toaster
 
 class WidgetBrcCsat(
     context: Context,
@@ -84,30 +83,20 @@ class WidgetBrcCsat(
     }
 
     private fun WidgetBrcCsatContentBinding.setupSmileys() {
-        ivBomBrcCsatSmiley1.setOnClickListener {
-            onSmileyClicked(1)
-        }
-        ivBomBrcCsatSmiley2.setOnClickListener {
-            onSmileyClicked(2)
-        }
-        ivBomBrcCsatSmiley3.setOnClickListener {
-            onSmileyClicked(3)
-        }
-        ivBomBrcCsatSmiley4.setOnClickListener {
-            onSmileyClicked(4)
-        }
-        ivBomBrcCsatSmiley5.setOnClickListener {
-            onSmileyClicked(5)
-        }
+        ivBomBrcCsatSmiley1.setOnClickListener { onSmileyClicked(1) }
+        ivBomBrcCsatSmiley2.setOnClickListener { onSmileyClicked(2) }
+        ivBomBrcCsatSmiley3.setOnClickListener { onSmileyClicked(3) }
+        ivBomBrcCsatSmiley4.setOnClickListener { onSmileyClicked(4) }
+        ivBomBrcCsatSmiley5.setOnClickListener { onSmileyClicked(5) }
     }
 
-    private fun WidgetBrcCsatContentBinding.onSmileyClicked(smileyPosition: Int) {
-        Toaster.build(this@WidgetBrcCsat, "Clicked on smiley $smileyPosition").show()
+    private fun WidgetBrcCsatContentBinding.onSmileyClicked(score: Int) {
         ivBomBrcCsatSmiley1.isEnabled = false
         ivBomBrcCsatSmiley2.isEnabled = false
         ivBomBrcCsatSmiley3.isEnabled = false
         ivBomBrcCsatSmiley4.isEnabled = false
         ivBomBrcCsatSmiley5.isEnabled = false
+        _navigator?.goToBrcCsatForm(score)
     }
 
     private fun WidgetBrcCsatContentBinding.setupHelpText() {

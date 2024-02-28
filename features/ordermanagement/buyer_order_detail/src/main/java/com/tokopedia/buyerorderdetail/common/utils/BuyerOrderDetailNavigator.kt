@@ -35,6 +35,8 @@ class BuyerOrderDetailNavigator(
         private const val INVOICE_REF_NUM = "invoice_ref_num"
         private const val KEY_ORDER_CATEGORY = "KEY_ORDER_CATEGORY"
         private const val BUYER_MODE = 1
+
+        private const val BRC_CSAT_FORM_URL = "https://www.tokopedia.com/form?selectedScore="
     }
 
     private fun applyTransition() {
@@ -233,6 +235,12 @@ class BuyerOrderDetailNavigator(
                 BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
             }
         fragment.startActivityForResult(intent, requestCode)
+        applyTransition()
+    }
+
+    fun goToBrcCsatForm(score: Int) {
+        val intent = RouteManager.getIntent(activity, "$BRC_CSAT_FORM_URL$score")
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_BRC_CSAT_FORM)
         applyTransition()
     }
 }
