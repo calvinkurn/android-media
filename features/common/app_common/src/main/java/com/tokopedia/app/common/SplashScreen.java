@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.tokopedia.analytics.byteio.AppLogAnalytics;
 import com.tokopedia.analytics.byteio.AppLogInterface;
 import com.tokopedia.analytics.byteio.AppLogParam;
+import com.tokopedia.analytics.byteio.EnterMethod;
 import com.tokopedia.analytics.byteio.PageName;
 import com.tokopedia.applink.AppUtil;
 import com.tokopedia.applink.ApplinkConst;
@@ -168,7 +169,10 @@ abstract public class SplashScreen extends AppCompatActivity implements AppLogIn
     private void checkAppLogPDPExternalPromo(String tokopediaDeeplink) {
         try {
             Uri uri = Uri.parse(tokopediaDeeplink);
-            if (uri.getHost().equals("product") && uri.getPathSegments().size() == 1) {
+            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_EXTERNAL_ADS);
+            if (uri.getHost() != null
+                    && uri.getHost().equals("product")
+                    && uri.getPathSegments().size() == 1) {
                 AppLogAnalytics.INSTANCE.putPageData(AppLogParam.ENTER_FROM, PageName.EXTERNAL_PROMO);
             }
         } catch (Exception e) {}

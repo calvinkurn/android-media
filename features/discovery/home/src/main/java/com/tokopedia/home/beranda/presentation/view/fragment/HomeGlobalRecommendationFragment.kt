@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
@@ -637,6 +639,7 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onContentCardClicked(item: ContentCardModel, position: Int) {
+        setAppLogEnterMethod(EnterMethod.CLICK_RECOM_CARD_INFINITE)
         sendCardClickAppLog(
             item.asCardTrackModel(
                 tabName = tabName,
@@ -996,6 +999,10 @@ class HomeGlobalRecommendationFragment :
     private fun getLocationParamString(): String {
         return ChooseAddressUtils.getLocalizingAddressData(requireContext())
             ?.convertToLocationParams() ?: ""
+    }
+
+    private fun setAppLogEnterMethod(enterMethod: EnterMethod) {
+        AppLogAnalytics.putEnterMethod(enterMethod)
     }
 
     override fun onDestroyView() {
