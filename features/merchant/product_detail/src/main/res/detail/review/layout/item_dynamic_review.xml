@@ -126,6 +126,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
+        android:ellipsize="end"
         android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_NN950_96"
         android:visibility="gone"
@@ -133,6 +134,18 @@
         app:layout_goneMarginTop="8dp"
         app:typographyType="paragraph_2"
         tools:text="Saya sangat puas sekali!! Awalnya saya gak percaya. Dengan memakai headphone ini, saya dapat mendengarkan percakapan tetangga sebelah rumah.. Selengkapnya"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_desc_review_expand"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/review_expand_normal"
+        android:textColor="@color/Unify_GN500"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/txt_desc_review_pdp"
+        app:typographyType="paragraph_2"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
