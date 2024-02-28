@@ -13,6 +13,7 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.chatbot2.view.listener.ChatbotSendButtonListener
 import com.tokopedia.chatbot.databinding.BottomsheetChatbotBigReplyBoxBinding
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -83,6 +84,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
                 )
             )
             setCounter(MAX_CHARACTER)
+            counterView?.gone()
             val message = String.format(
                 context?.resources?.getString(R.string.chatbot_remaining_words)
                     .toBlankOrString(),
