@@ -11,22 +11,25 @@ import com.tkpd.macrobenchmark.util.MacroInteration
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
+/**
+ * Created by @ilhamsuaib
+ */
+
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
 class SellerHomeStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(startupMode) {
 
     companion object {
-        private const val PACKAGE_NAME = MacroIntent.TKPD_PACKAGE_SELLER_APP
-        private const val TRACE_NAME = "seller_home"
-        private const val EMAIL = "homeanalytics.prod.seller+frontendtest@tokopedia.com"
-        private const val PASSWORD = "tokopedia"
+        const val TRACE_NAME = "seller_home"
+        const val EMAIL = "homeanalytics.prod.seller+frontendtest@tokopedia.com"
+        const val PASSWORD = "tokopedia"
     }
 
     override fun setupEnvironment() {
         MacroDevOps.skipOnboardingSellerApp()
         MacroDevOps.setupLoginFlow(
-            packageName = PACKAGE_NAME,
+            packageName = packageName(),
             email = EMAIL,
             password = PASSWORD
         )
@@ -39,7 +42,7 @@ class SellerHomeStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmar
 
     override fun waitUntil() {
         MacroInteration.waitForRecyclerViewContent(
-            PACKAGE_NAME,
+            packageName(),
             MacroIntent.SellerHome.RV_RESOURCE_ID
         )
         Thread.sleep(5000)
@@ -47,5 +50,5 @@ class SellerHomeStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmar
 
     override fun traceName(): String = TRACE_NAME
 
-    override fun packageName(): String = PACKAGE_NAME
+    override fun packageName(): String = MacroIntent.TKPD_PACKAGE_SELLER_APP
 }
