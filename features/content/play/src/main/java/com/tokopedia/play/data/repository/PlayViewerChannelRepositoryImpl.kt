@@ -1,10 +1,10 @@
 package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.usecase.coroutine.UpdateCartCounterUseCase
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.play.domain.GetCartCountUseCase
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.domain.GetChannelStatusUseCase
 import com.tokopedia.play.domain.GetChatHistoryUseCase
@@ -27,7 +27,7 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
     private val getChannelStatusUseCase: GetChannelStatusUseCase,
     private val getChannelDetailsUseCase: GetChannelDetailsWithRecomUseCase,
     private val getChatHistory: GetChatHistoryUseCase,
-    private val getCartCountUseCase: GetCartCountUseCase,
+    private val getCartCountUseCase: UpdateCartCounterUseCase,
     private val getCountComment: GetCountCommentsUseCase,
     private val uiMapper: PlayUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
@@ -83,7 +83,7 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCartCount(): Int = withContext(dispatchers.io) {
-        return@withContext getCartCountUseCase.executeOnBackground()
+        return@withContext getCartCountUseCase(Unit)
     }
 
     override suspend fun getCountComment(channelId: String): PlayCommentUiModel {
