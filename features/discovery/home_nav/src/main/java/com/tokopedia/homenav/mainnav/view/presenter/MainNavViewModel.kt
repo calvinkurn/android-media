@@ -19,6 +19,7 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TOKOPEDIA_CARE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.mainnav.MainNavConst
+import com.tokopedia.homenav.mainnav.data.mapper.BuyAgainMapper
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.domain.model.MainNavProfileCache
@@ -51,6 +52,8 @@ import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
@@ -71,6 +74,7 @@ import javax.inject.Inject
 class MainNavViewModel @Inject constructor(
     private val userSession: Lazy<UserSessionInterface>,
     private val baseDispatcher: Lazy<CoroutineDispatchers>,
+    private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
     private val addToCartUseCase: Lazy<AddToCartUseCase>,
     private val clientMenuGenerator: Lazy<ClientMenuGenerator>,
     private val getNavNotification: Lazy<GetNavNotification>,
@@ -90,6 +94,7 @@ class MainNavViewModel @Inject constructor(
         private const val MAX_CARD_SHOWN_REVAMP = 5
 
         private const val SOURCE = "dave_home_nav"
+        private const val PAGE_NAME_BUY_AGAIN = "buy_it_again_me"
     }
 
     // network process live data, false if it is processing and true if it is finished
@@ -413,18 +418,22 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun getBuyAgain() {
-        delay(2000)
+        val param = GetRecommendationRequestParam(pageName = PAGE_NAME_BUY_AGAIN)
 
-        val mockProductList = listOf(
-            Pair("https://images.tokopedia.net/img/cache/300-square/VqbcmM/2024/1/16/1b7386ca-d0fa-49d4-ab8b-26811cab70ed.jpg", "Rp289.000"),
-            Pair("https://images.tokopedia.net/img/cache/900/VqbcmM/2024/1/16/cb22385e-b756-408f-a51b-3a83500590f5.png", "Rp62.000"),
-            Pair("https://images.tokopedia.net/img/cache/900/VqbcmM/2022/4/4/f9162208-01d9-4474-a0c1-1a905b5f40e7.jpg", "Rp102.990")
-        )
+        val recommendation = getRecommendationUseCase.get().getData(param)
+        val recommendationItem = recommendation.firstOrNull()?.recommendationItemList
 
-        val position = findPosition<ShimmerBuyAgainUiModel>() ?: findPosition<BuyAgainUiModel>()
-        position?.let {
-            updateWidget(BuyAgainUiModel(mockProductList), it)
-            updateMenu(ID_BUY_AGAIN, showCta = true)
+        if (recommendation.isNotEmpty() && recommendationItem?.isNotEmpty() == true) {
+            val position = findPosition<ShimmerBuyAgainUiModel>() ?: findPosition<BuyAgainUiModel>()
+            val result = BuyAgainMapper.map(recommendationItem)
+
+            position?.let {
+                updateWidget(BuyAgainUiModel(result), it)
+                updateMenu(ID_BUY_AGAIN, showCta = true)
+            }
+        } else {
+            deleteWidget<ShimmerBuyAgainUiModel>()
+            updateMenu(ID_BUY_AGAIN, showCta = false)
         }
     }
 

@@ -32,6 +32,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         const val APPLINK_MY_BILLS = "tokopedia://webview?url=https://www.tokopedia.com/mybills/"
         const val APPLINK_COMPLAIN = "https://m.tokopedia.com/resolution-center/inbox/buyer/mobile"
         const val APPLINK_TICKET = "tokopedia-android-internal://order/unified?filter=etiket"
+        const val APPLINK_BUY_AGAIN = "https://www.tokopedia.com/discovery/beli-lagi-landing-page-me"
 
         const val IDENTIFIER_TITLE_MY_ACTIVITY = 100
         const val IDENTIFIER_TITLE_ALL_CATEGORIES = 101
@@ -182,7 +183,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             id = ID_BUY_AGAIN,
             srcIconId = IconUnify.CART,
             itemTitle = context.getString(R.string.menu_transaction_menu_buy_again),
-            applink = "", // TODO: Applink ?
+            applink = APPLINK_BUY_AGAIN,
             notifCount = notifCount,
             sectionId = sectionId,
             showCta = showCta

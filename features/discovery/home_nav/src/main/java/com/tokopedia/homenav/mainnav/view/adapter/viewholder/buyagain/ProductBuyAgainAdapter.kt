@@ -6,13 +6,14 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.tokopedia.homenav.databinding.HolderTransactionBuyAgainItemBinding
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.databinding.HolderTransactionBuyAgainItemBinding
+import com.tokopedia.homenav.mainnav.view.widget.BuyAgainModel
 import com.tokopedia.homenav.mainnav.view.widget.BuyAgainView
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductBuyAgainAdapter constructor(
-    private val data: List<Pair<String, String>> = emptyList(),
+    private val data: List<BuyAgainModel> = emptyList(),
     private val listener: BuyAgainView.Listener? = null
 ) : RecyclerView.Adapter<ProductBuyAgainAdapter.BuyAgainItemViewHolder>() {
 
@@ -21,8 +22,7 @@ class ProductBuyAgainAdapter constructor(
     }
 
     override fun onBindViewHolder(holder: BuyAgainItemViewHolder, position: Int) {
-        val (name, price) = data[position]
-        holder.bind(name, price)
+        holder.bind(data[position])
     }
 
     override fun getItemCount() = data.size
@@ -34,31 +34,7 @@ class ProductBuyAgainAdapter constructor(
 
         private val binding: HolderTransactionBuyAgainItemBinding? by viewBinding()
 
-        fun bind(bannerUrl: String, price: String) {
-            val data: BuyAgainView.Data
-
-            if (bindingAdapterPosition == 0) {
-                data = BuyAgainView.Data(
-                    productId = "9717214311",
-                    bannerUrl = bannerUrl,
-                    price = price,
-                    slashPrice = "Rp.123..",
-                    discount = "40%",
-                    shopId = "",
-                    hasVariant = false
-                )
-            } else {
-                data = BuyAgainView.Data(
-                    productId = "9717214311",
-                    bannerUrl = bannerUrl,
-                    price = price,
-                    slashPrice = "",
-                    discount = "",
-                    shopId = "",
-                    hasVariant = true
-                )
-            }
-
+        fun bind(data: BuyAgainModel) {
             binding?.productCard?.bind(data)
 
             listener?.let {

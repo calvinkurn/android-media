@@ -10,6 +10,7 @@
         android:id="@+id/img_product"
         android:layout_width="77dp"
         android:layout_height="77dp"
+        android:scaleType="centerCrop"
         android:contentDescription="@string/content_desc_product_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

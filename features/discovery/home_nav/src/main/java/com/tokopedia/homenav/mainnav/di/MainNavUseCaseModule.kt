@@ -1,5 +1,7 @@
 package com.tokopedia.homenav.mainnav.di
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
@@ -18,6 +20,7 @@ import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
 import dagger.Module
@@ -163,9 +166,12 @@ class MainNavUseCaseModule {
         graphqlRepository: GraphqlRepository,
         addToCartDataMapper: AddToCartDataMapper,
         helper: ChosenAddressRequestHelper
-    ) = AddToCartUseCase(
-        graphqlRepository,
-        addToCartDataMapper,
-        helper
-    )
+    ) = AddToCartUseCase(graphqlRepository, addToCartDataMapper, helper)
+
+    @MainNavScope
+    @Provides
+    fun provideGetCoroutineRecommendationUseCase(
+        @ApplicationContext context: Context,
+        coroutineGqlRepository: GraphqlRepository
+    ) = GetRecommendationUseCase(context, coroutineGqlRepository)
 }

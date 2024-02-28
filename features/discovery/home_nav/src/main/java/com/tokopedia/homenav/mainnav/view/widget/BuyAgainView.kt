@@ -9,6 +9,8 @@ import com.tokopedia.homenav.R
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
 
+typealias BuyAgainModel = BuyAgainView.Data
+
 class BuyAgainView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null
