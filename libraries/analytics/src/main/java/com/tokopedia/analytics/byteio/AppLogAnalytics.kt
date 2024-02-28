@@ -267,7 +267,7 @@ object AppLogAnalytics {
 
     fun getLastDataBeforeCurrent(key: String): Any? {
         if (_pageDataList.isEmpty()) return null
-        var idx = _pageDataList.size - 2
+        var idx = _pageDataList.lastIndex - 1
         while (idx >= 0) {
             val map = _pageDataList[idx]
             map[key]?.let {
