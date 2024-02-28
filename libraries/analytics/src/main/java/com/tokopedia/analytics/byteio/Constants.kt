@@ -260,4 +260,5 @@ object AppLogParam {
     const val SALES_PRICE = "sales_price"
     const val MAIN_VIDEO_ID = "main_video_id"
     const val IS_SHADOW = "is_shadow"
+    const val ACTIVITY_HASH_CODE = "activity_hash_code"
 }

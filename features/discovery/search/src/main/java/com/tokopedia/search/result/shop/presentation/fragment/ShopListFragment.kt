@@ -17,10 +17,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
-import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARCH
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.EventObserver
@@ -40,7 +38,6 @@ import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.databinding.SearchResultShopFragmentLayoutBinding
 import com.tokopedia.search.result.SearchViewModel
-import com.tokopedia.search.result.presentation.view.activity.SearchComponent
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
@@ -62,6 +59,7 @@ import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ShopListFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
@@ -175,10 +173,10 @@ internal class ShopListFragment @Inject constructor(
 
     private fun createShopItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
         return ShopListItemDecoration(
-            activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-            activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-            activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-            activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+            activity.resources.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_16),
+            activity.resources.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_16),
+            activity.resources.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_16),
+            activity.resources.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_16)
         )
     }
 
@@ -538,7 +536,7 @@ internal class ShopListFragment @Inject constructor(
 
         searchShopViewModel?.onViewVisibilityChanged(isVisibleToUser, isAdded)
 
-        AppLogAnalytics.updateCurrentPageData(this)
+        AppLogSearch.updateSearchPageData(this)
     }
 
     private fun trackScreen() {
@@ -604,7 +602,7 @@ internal class ShopListFragment @Inject constructor(
 
         return OptionHelper.combinePriceFilterIfExists(
                     activeFilterOptionList,
-                    resources.getString(R.string.empty_state_selected_filter_price_name)
+                    context?.resources?.getString(R.string.empty_state_selected_filter_price_name) ?: ""
             )
     }
 

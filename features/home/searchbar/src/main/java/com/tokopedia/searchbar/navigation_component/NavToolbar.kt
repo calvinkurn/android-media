@@ -29,11 +29,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.analytics.byteio.search.AppLogSearch
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ENTER_FROM
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.discovery.common.microinteraction.navtoolbar.NavToolbarMicroInteraction
 import com.tokopedia.iconnotification.IconNotification
 import com.tokopedia.iconunify.IconUnify
