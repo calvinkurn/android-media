@@ -205,12 +205,12 @@ public class TranslatorSettingView extends FrameLayout {
                 SharedPrefsUtils.setStringPreference(getContext(), DESTINATION_LANGUAGE, arrSupportedLanguages[i]);
 
                 CommonUtil.showToastWithUIUpdate(getContext()
-                        , arrSupportedLanguages[i].split("-")[0] + " set as a Destination language."
+                        ,  "Translate to " +  arrSupportedLanguages[i].split("-")[0] + ". Please Restart the App"
                         , (TextView) findViewById(R.id.text_val)
                         , "Currently selected languages is from <b><i>"
                                 + SharedPrefsUtils.getStringPreference(getContext(), SOURCE_LANGUAGE).split(DELIM_LANG_CODE)[0]
                                 + "</i></b> to <b><i>"
-                                + arrSupportedLanguages[i].split(DELIM_LANG_CODE)[0] + "</i></b>" + " Please Restart the App");
+                                + arrSupportedLanguages[i].split(DELIM_LANG_CODE)[0] + "</i></b>");
             }
 
             @Override

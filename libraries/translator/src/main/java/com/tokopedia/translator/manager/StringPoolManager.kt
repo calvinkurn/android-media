@@ -18,11 +18,6 @@ import com.tokopedia.translator.repository.model.StringPoolItem
 class StringPoolManager {
 
     private val mPools: HashMap<String, StringPoolItem> = HashMap()
-    private var destinationLang = ""
-
-    fun updateLangDest(newDestLang: String) {
-        this.destinationLang = newDestLang
-    }
 
     fun add(current: String, newStr: String, destinationLang: String) {
         mPools.put(current.trim(), StringPoolItem(current, newStr, destinationLang))
@@ -51,7 +46,7 @@ class StringPoolManager {
 
         for ((key, data) in mPools) {
 
-            if (data.demandedText.isEmpty() || data.requestedLocale != destinationLang) {
+            if (data.demandedText.isEmpty()) {
                 builder.append(data.originalText).append(TranslatorManager.DELIM)
             }
         }

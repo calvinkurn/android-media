@@ -158,7 +158,7 @@ class TranslatorManager() : CoroutineScope {
                     if (view.text.isNotBlank()) {
                         val stringPoolItem = mStringPoolManager.get(view.text.toString())
 
-                        if (stringPoolItem === null || stringPoolItem.demandedText === null || stringPoolItem.demandedText.isBlank()) {
+                        if (stringPoolItem === null || stringPoolItem.demandedText.isBlank() || (stringPoolItem.requestedLocale != destinationLang)) {
                             //prepare for translate
                             mStringPoolManager.add(view.text.toString(), "", "")
                         } else {
@@ -195,7 +195,6 @@ class TranslatorManager() : CoroutineScope {
 
         if (destinationLang != currentDestLang) {
             destinationLang = currentDestLang
-            mStringPoolManager.updateLangDest(destinationLang)
         }
 
         prepareSelectors(getCurrentActivity()!!)
