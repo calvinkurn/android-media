@@ -1,5 +1,7 @@
 package com.tokopedia.catalog.ui.activity.sellerOfferingList
 
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,8 +24,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog.domain.model.CatalogProductListResponse
+import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
+import com.tokopedia.globalerror.compose.NestGlobalError
+import com.tokopedia.globalerror.compose.NestGlobalErrorType
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.nest.components.loader.NestLoader
 import com.tokopedia.nest.components.loader.NestLoaderSize
@@ -33,6 +41,9 @@ import com.tokopedia.sortfilter.compose.NestSortFilterAdvanced
 import com.tokopedia.sortfilter.compose.Size
 import com.tokopedia.sortfilter.compose.SortFilter
 import kotlinx.coroutines.delay
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 @Composable
 fun CatalogSellerOfferingScreen(
@@ -43,6 +54,7 @@ fun CatalogSellerOfferingScreen(
     sortFilter: List<SortFilter> = mutableListOf(),
     productList: MutableList<CatalogProductListResponse.CatalogGetProductList.CatalogProduct>,
     countFilter: Int,
+    throwable: Throwable?,
     listener: ChooseAddressWidget.ChooseAddressWidgetListener? = null,
     lcaListener: (ChooseAddressWidget) -> Unit = {},
     onClickVariant: () -> Unit,
@@ -51,6 +63,7 @@ fun CatalogSellerOfferingScreen(
     onClickActionButtonMenu: () -> Unit,
     onClickMoreFilter: () -> Unit,
     onLoadMore: () -> Unit,
+    onErrorRefresh: () -> Unit,
     onClickAtc: (CatalogProductListResponse.CatalogGetProductList.CatalogProduct, Int) -> Unit,
     onClickItemProduct: (CatalogProductListResponse.CatalogGetProductList.CatalogProduct, Int) -> Unit
 ) {
@@ -97,10 +110,34 @@ fun CatalogSellerOfferingScreen(
                         thickness = 1.dp
                     )
                 }
-                CatalogSellerOfferingBody(
-                    listState, listener, background, lcaListener, sortFilter.toMutableList(),
-                    onClickMoreFilter, onClickAtc, onClickItemProduct, productList, countFilter
-                )
+                if (throwable != null) {
+                    val errorType = when (throwable) {
+                        is SocketTimeoutException, is UnknownHostException, is ConnectException -> NestGlobalErrorType.NoConnection
+                        else -> NestGlobalErrorType.ServerError
+                    }
+                    val currentContext = LocalContext.current
+                    Spacer(modifier = Modifier.height(48.dp))
+                    NestGlobalError(
+                        type = errorType,
+                        onClickAction = {
+                            //TODO
+                            onErrorRefresh.invoke()
+                        },
+                        onClickSecondaryAction =
+                        if (errorType == NestGlobalErrorType.NoConnection) {
+                            {
+                                val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+                                currentContext.startActivity(intent)
+                            }
+                        } else null,
+                        secondaryActionText = "Ke Pengaturan"
+                    )
+                } else {
+                    CatalogSellerOfferingBody(
+                        listState, listener, background, lcaListener, sortFilter.toMutableList(),
+                        onClickMoreFilter, onClickAtc, onClickItemProduct, productList, countFilter
+                    )
+                }
             }
         }
     }

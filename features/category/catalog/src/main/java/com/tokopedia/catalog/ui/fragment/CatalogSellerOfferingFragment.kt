@@ -70,6 +70,7 @@ class CatalogSellerOfferingFragment :
     private var catalogUrl: String = ""
     private var page = 0
     private var selectedMoreFilterCount = mutableStateOf(0)
+    private var throwableError = mutableStateOf<Throwable?>(null)
 
     private var productListState = mutableStateListOf<CatalogProductListResponse.CatalogGetProductList.CatalogProduct>()
     private var chooseAddressWidget: ChooseAddressWidget? = null
@@ -136,6 +137,7 @@ class CatalogSellerOfferingFragment :
                         sortFilter.value.toMutableList(),
                         productListState,
                         selectedMoreFilterCount.value,
+                        throwableError.value,
                         this@CatalogSellerOfferingFragment,
                         lcaListener = {
                             this@CatalogSellerOfferingFragment.chooseAddressWidget = it
@@ -148,6 +150,7 @@ class CatalogSellerOfferingFragment :
                         onClickMoreFilter = ::openBottomSheetFilter,
                         onLoadMore = ::loadMoreData,
                         onClickItemProduct = ::onClickItemProduct,
+                        onErrorRefresh = ::onRefresh,
                         onClickAtc = ::onClickAtc
                     )
                 }
@@ -262,6 +265,7 @@ class CatalogSellerOfferingFragment :
                 }
 
                 is Fail -> {
+                    throwableError.value = it.throwable
                 }
             }
         }
@@ -292,6 +296,7 @@ class CatalogSellerOfferingFragment :
 
                 is Fail -> {
 //                    showGetListError(it.throwable)
+                    throwableError.value = it.throwable
                 }
             }
         }
@@ -630,6 +635,13 @@ class CatalogSellerOfferingFragment :
             createParametersForQuery(searchProductRequestParams.parameters)
         )
         return param
+    }
+
+    private fun onRefresh() {
+        throwableError.value = null
+        viewModel.fetchQuickFilters(getQuickFilterParams())
+        viewModel.fetchDynamicAttribute(getDynamicFilterParams())
+        initLoadData()
     }
 
     private fun onClickItemProduct(catalogProduct: CatalogProductListResponse.CatalogGetProductList.CatalogProduct, position: Int) {
