@@ -39,9 +39,9 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.SubmitReport
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.TabSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ToggleReviewWatchMode
-import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
-import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent.UnknownSourceData
-import com.tokopedia.content.product.preview.viewmodel.state.ProductReviewUiState
+import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewUiEvent
+import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewUiEvent.UnknownSourceData
+import com.tokopedia.content.product.preview.viewmodel.state.ProductPreviewUiState
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel.ProductSourceData
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel.ReviewSourceData
@@ -102,17 +102,17 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private val _bottomNavContentState = MutableStateFlow(BottomNavUiModel.Empty)
     private val _reviewPosition = MutableStateFlow(0)
 
-    private val _uiEvent = MutableSharedFlow<ProductPreviewEvent>(0)
+    private val _uiEvent = MutableSharedFlow<ProductPreviewUiEvent>(0)
     val uiEvent get() = _uiEvent
 
-    val uiState: Flow<ProductReviewUiState>
+    val uiState: Flow<ProductPreviewUiState>
         get() = combine(
             _tabContentState,
             _productMediaState,
             _reviewContentState,
             _bottomNavContentState
         ) { tabContentState, productMedia, reviewContent, bottomNavContent ->
-            ProductReviewUiState(
+            ProductPreviewUiState(
                 tabsUiModel = tabContentState,
                 productUiModel = productMedia,
                 reviewUiModel = reviewContent,
@@ -207,7 +207,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             _bottomNavContentState.value = repo.getProductMiniInfo(productPreviewSource.productId)
         }) {
-            _uiEvent.emit(ProductPreviewEvent.FailFetchMiniInfo(it))
+            _uiEvent.emit(ProductPreviewUiEvent.FailFetchMiniInfo(it))
         }
     }
 
@@ -418,9 +418,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
                     if (result) {
                         _uiEvent.emit(
-                            ProductPreviewEvent.ShowSuccessToaster(
-                                type = ProductPreviewEvent.ShowSuccessToaster.Type.ATC,
-                                message = ProductPreviewEvent.ShowSuccessToaster.Type.ATC.textRes
+                            ProductPreviewUiEvent.ShowSuccessToaster(
+                                type = ProductPreviewUiEvent.ShowSuccessToaster.Type.ATC,
+                                message = ProductPreviewUiEvent.ShowSuccessToaster.Type.ATC.textRes
                             )
                         )
                     } else {
@@ -429,9 +429,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 }
             ) {
                 _uiEvent.emit(
-                    ProductPreviewEvent.ShowErrorToaster(
+                    ProductPreviewUiEvent.ShowErrorToaster(
                         it,
-                        ProductPreviewEvent.ShowErrorToaster.Type.ATC
+                        ProductPreviewUiEvent.ShowErrorToaster.Type.ATC
                     ) { addToChart(model) }
                 )
             }
@@ -446,9 +446,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
                     if (result.isSuccess) {
                         _uiEvent.emit(
-                            ProductPreviewEvent.ShowSuccessToaster(
-                                type = ProductPreviewEvent.ShowSuccessToaster.Type.Remind,
-                                message = ProductPreviewEvent.ShowSuccessToaster.Type.Remind.textRes
+                            ProductPreviewUiEvent.ShowSuccessToaster(
+                                type = ProductPreviewUiEvent.ShowSuccessToaster.Type.Remind,
+                                message = ProductPreviewUiEvent.ShowSuccessToaster.Type.Remind.textRes
                             )
                         )
                     } else {
@@ -457,7 +457,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 }
             ) {
                 _uiEvent.emit(
-                    ProductPreviewEvent.ShowErrorToaster(it) { remindMe(model) }
+                    ProductPreviewUiEvent.ShowErrorToaster(it) { remindMe(model) }
                 )
             }
         }
@@ -473,7 +473,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun handleNavigate(appLink: String) {
         viewModelScope.launch {
-            _uiEvent.emit(ProductPreviewEvent.NavigateEvent(appLink))
+            _uiEvent.emit(ProductPreviewUiEvent.NavigateUiEvent(appLink))
         }
     }
 
@@ -482,7 +482,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             fn()
         } else {
             viewModelScope.launch {
-                _uiEvent.emit(ProductPreviewEvent.LoginEvent(data))
+                _uiEvent.emit(ProductPreviewUiEvent.LoginUiEvent(data))
             }
         }
     }
@@ -492,8 +492,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
             val result = repo.submitReport(model, currentReview.reviewId)
             if (result) {
                 _uiEvent.emit(
-                    ProductPreviewEvent.ShowSuccessToaster(
-                        type = ProductPreviewEvent.ShowSuccessToaster.Type.Report
+                    ProductPreviewUiEvent.ShowSuccessToaster(
+                        type = ProductPreviewUiEvent.ShowSuccessToaster.Type.Report
                     )
                 )
             } else {
@@ -501,9 +501,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
             }
         }) {
             _uiEvent.emit(
-                ProductPreviewEvent.ShowErrorToaster(
+                ProductPreviewUiEvent.ShowErrorToaster(
                     it,
-                    ProductPreviewEvent.ShowErrorToaster.Type.Report
+                    ProductPreviewUiEvent.ShowErrorToaster.Type.Report
                 ) {
                     handleSubmitReport(model)
                 }
@@ -531,7 +531,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
         requiredLogin(status) {
             viewModelScope.launch {
-                _uiEvent.emit(ProductPreviewEvent.ShowMenuSheet(status))
+                _uiEvent.emit(ProductPreviewUiEvent.ShowMenuSheet(status))
             }
         }
     }
@@ -559,7 +559,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     )
                 }
             }) {
-                _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) {})
+                _uiEvent.emit(ProductPreviewUiEvent.ShowErrorToaster(it) {})
             }
         }
     }
