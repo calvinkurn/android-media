@@ -851,12 +851,12 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
                         AddressUiState.AddAddress -> {
                             if (viewModel.isPositiveFlow) {
+                                LogisticAddAddressAnalytics.onClickPilihLokasiPositive(userSession.userId)
+                            } else {
                                 LogisticAddAddressAnalytics.onClickPilihLokasiNegative(
                                     userSession.userId,
                                     if (state.buttonPrimary.success) SUCCESS else NOT_SUCCESS
                                 )
-                            } else {
-                                LogisticAddAddressAnalytics.onClickPilihLokasiPositive(userSession.userId)
                             }
                         }
 
