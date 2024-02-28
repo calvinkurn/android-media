@@ -183,7 +183,7 @@ enum class SourcePageType(val str: String) {
 }
 
 enum class EnterMethod(val str: String) {
-    CLICK_EXTERNAL_TAB("click_external_ads"),
+    CLICK_EXTERNAL_ADS("click_external_ads"),
     CLICK_HOME_ICON("click_home_icon"),
     CLICK_APP_ICON("click_app_icon"),
     CLICK_RECOM_CARD_INFINITE("click_recom_card_infinite"),
@@ -191,7 +191,7 @@ enum class EnterMethod(val str: String) {
     CLICK_CART_ICON_HOMEPAGE("click_cart_icon_homepage"),
     CLICK_ATC_TOASTER_PDP("click_atc_toaster_pdp"),
     CLICK_WISHLIST_ICON("click_wishlist_icon"),
-    CLICK_WISHLIST_ICONACCOUNT("click_wishlist_iconaccount"),
+    CLICK_WISHLIST_ICONACCOUNT("click_wishlist_iconaccount")
 }
 
 object EventName {
@@ -261,4 +261,5 @@ object AppLogParam {
     const val MAIN_VIDEO_ID = "main_video_id"
     const val IS_SHADOW = "is_shadow"
     const val ACTIVITY_HASH_CODE = "activity_hash_code"
+    const val ENTER_METHOD_DEFAULT_FORMAT = "click_%s_button"
 }
