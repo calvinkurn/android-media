@@ -5,7 +5,6 @@ import android.util.Base64
 import android.util.Log
 import androidx.collection.ArrayMap
 import com.bytedance.applog.AppLog
-import com.bytedance.common.utility.NetworkUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -50,6 +49,7 @@ class AuthHelper {
 
             val authString = "${method}\n${contentMD5}\n${newContentType}\n${date}\n${path}"
             val signature = calculateRFC2104HMAC(authString, authKey)
+            val bdDeviceId = runCatching { AppLog.getDid().orEmpty() }.getOrDefault("")
 
             val headerMap = ArrayMap<String, String>()
             headerMap[HEADER_CONTENT_TYPE] = newContentType
@@ -74,7 +74,7 @@ class AuthHelper {
             headerMap[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
             headerMap[HEADER_X_MSISDN] = "android-${GlobalConfig.VERSION_NAME}"
             headerMap[HEADER_X_THEME] = theme
-            headerMap[HEADER_BD_DEVICE_ID] = AppLog.getDid() ?: ""
+            headerMap[HEADER_BD_DEVICE_ID] = bdDeviceId
             return headerMap
         }
 

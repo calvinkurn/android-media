@@ -25,6 +25,9 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRAN
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_RESULT_ID
 import com.tokopedia.analyticsdebugger.cassava.Cassava
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import org.json.JSONObject
 import timber.log.Timber
 import java.lang.ref.WeakReference
@@ -78,6 +81,8 @@ object AppLogAnalytics {
     var entranceForm: EntranceForm? = null
 
     private val lock = Any()
+
+    private var remoteConfig: RemoteConfig? = null
 
     internal fun addPageName(activity: Activity) {
         val actName = activity.javaClass.simpleName
@@ -141,6 +146,7 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addSourcePreviousPage() {
+        // todo need to know what data its expected to be
         put(SOURCE_PREVIOUS_PAGE, getLastData(SOURCE_PREVIOUS_PAGE))
     }
 
@@ -178,15 +184,18 @@ object AppLogAnalytics {
     }
 
     fun send(event: String, params: JSONObject) {
-        params.put(EVENT_ORIGIN_FEATURE_KEY, EVENT_ORIGIN_FEATURE_VALUE)
-        Cassava.save(params, event, "ByteIO")
-        AppLog.onEventV3(event, params)
-        Timber.d("(%s) sending event ($event), value: ${params.toString(2)}", TAG)
+        if (remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_BYTEIO_PLATFORM, true) == true) {
+            params.put(EVENT_ORIGIN_FEATURE_KEY, EVENT_ORIGIN_FEATURE_VALUE)
+            Cassava.save(params, event, "ByteIO")
+            AppLog.onEventV3(event, params)
+            Timber.d("(%s) sending event ($event), value: ${params.toString(2)}", TAG)
+        }
     }
 
     @JvmStatic
     fun init(application: Application) {
         initAppLog(application.applicationContext)
+        remoteConfig = FirebaseRemoteConfigImpl(application.applicationContext)
         EventsSenderUtils.setEventsSenderEnable("573733", true, application)
         EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net")
         Timber.d(
@@ -210,7 +219,7 @@ object AppLogAnalytics {
      * To remove last page data
      */
     fun popPageData() {
-        if (getCurrentData(IS_SHADOW) == false) {
+        if (getCurrentData(IS_SHADOW) != true) {
             _pageDataList.removeLastOrNull()
             // Remove shadow stack
             if (getCurrentData(IS_SHADOW) == true) {
