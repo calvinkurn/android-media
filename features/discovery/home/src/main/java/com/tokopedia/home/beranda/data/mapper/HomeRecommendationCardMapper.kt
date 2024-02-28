@@ -107,7 +107,8 @@ class HomeRecommendationCardMapper @Inject constructor(
 
         return HomeRecommendationDataModel(
             homeRecommendationTypeFactoryImplList.toList(),
-            getHomeRecommendationCard.hasNextPage
+            getHomeRecommendationCard.hasNextPage,
+            getHomeRecommendationCard.appLog.toAppLogModel(),
         )
     }
 
@@ -248,7 +249,7 @@ class HomeRecommendationCardMapper @Inject constructor(
     }
 
     private fun GetHomeRecommendationCardResponse.GetHomeRecommendationCard.AppLog.toAppLogModel(
-        recParam: String
+        recParam: String = ""
     ): RecommendationAppLog {
         return RecommendationAppLog(
             sessionId = sessionId,

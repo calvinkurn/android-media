@@ -20,6 +20,7 @@ object TrackRecommendationMapper {
             isUseCache = isCache,
             recParams = "", // TODO need to confirm
             requestId = "", // TODO need BE deployment
+            recSessionId = "", // TODO need BE deployment
             shopId = data.shopId,
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
             enterMethod = enterMethod,
@@ -38,8 +39,9 @@ object TrackRecommendationMapper {
             moduleName = data.pageName,
             isAd = data.isTopads,
             isUseCache = isCache,
-            recParams = "", // TODO need to confirm
-            requestId = "", // TODO need BE deployment
+            recParams = "", //TODO need to confirm
+            requestId = "", //TODO need BE deployment
+            recSessionId = "", //TODO need BE deployment
             shopId = data.shopId,
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
             enterMethod = enterMethod,
