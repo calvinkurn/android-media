@@ -50,22 +50,24 @@ fun String.getBitmapImageUrlAsFlow(
 ): Flow<BitmapFlowResult> {
     val url = this
     return callbackFlow {
-        val propConfig = Properties().apply(properties).setSource(url)
-        propConfig.listener(
-            onError = { e ->
-                trySend(BitmapFlowResult(null, e, e?.message))
-            }
-        )
-
-        MediaLoaderTarget.loadImage(
-            context,
-            propConfig,
-            MediaBitmapEmptyTarget(
-                onReady = {
-                    trySend(BitmapFlowResult(it, null, null))
+        Properties().apply(properties).setSource(url).let {
+            it.listener(
+                onError = { e ->
+                    trySend(BitmapFlowResult(null, e, e?.message))
                 }
             )
-        )
+
+            MediaLoaderTarget.loadImage(
+                context,
+                it,
+                MediaBitmapEmptyTarget(
+                    onReady = {
+                        trySend(BitmapFlowResult(it, null, null))
+                    }
+                )
+            )
+        }
+
         awaitClose { channel.close() }
     }
 }
