@@ -82,7 +82,7 @@ data class AppLogRecommendationCardModel(
             cardName: String = "",
             position: Int = 0,
             tabName: String = "",
-            tabPosition: Int = 0,
+            tabPosition: Int = -1,
             moduleName: String = "",
             isAd: Boolean = false,
             isUseCache: Boolean = false,
