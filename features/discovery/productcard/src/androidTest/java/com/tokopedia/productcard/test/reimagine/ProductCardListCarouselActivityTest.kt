@@ -100,6 +100,13 @@ class ProductCardListCarouselActivityTest: AppCompatActivity() {
                         toast("Quantity editor $quantity")
                     }
                 })
+
+                setGenericCtaButtonOnClickListener {
+                    toast("Generic CTA Main button click position $bindingAdapterPosition")
+                }
+                setGenericCtaSecondaryButtonOnClickListener {
+                    toast("Generic CTA Secondary button click position $bindingAdapterPosition")
+                }
             }
         }
 

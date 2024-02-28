@@ -54,4 +54,6 @@ internal interface ProductCardStrategy:
     fun setThreeDotsOnClickListener(l: View.OnClickListener?) { }
     fun getVideoPlayerController(): VideoPlayerController = VideoPlayerController.empty()
     fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener)
+    fun setGenericCtaButtonOnClickListener(l: View.OnClickListener?){}
+    fun setGenericCtaSecondaryButtonOnClickListener(l: View.OnClickListener?){}
 }

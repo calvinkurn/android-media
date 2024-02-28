@@ -62,6 +62,14 @@ class ProductCardListView: ConstraintLayout {
         strategy.setAddToCartNonVariantClickListener(addToCartNonVariantClickListener)
     }
 
+    fun  setGenericCtaButtonOnClickListener(onClickListener: OnClickListener) {
+        strategy.setGenericCtaButtonOnClickListener(onClickListener)
+    }
+
+    fun setGenericCtaSecondaryButtonOnClickListener(onClickListener: OnClickListener) {
+        strategy.setGenericCtaSecondaryButtonOnClickListener(onClickListener)
+    }
+
     fun recycle() {
         strategy.recycle()
     }

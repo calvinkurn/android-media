@@ -22,8 +22,10 @@ import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.CompatPaddingUtils
 import com.tokopedia.productcard.reimagine.ProductCardRenderer
 import com.tokopedia.productcard.reimagine.ProductCardStockInfo
+import com.tokopedia.productcard.reimagine.ProductCardType
 import com.tokopedia.productcard.reimagine.ProductCardType.GridCarousel
 import com.tokopedia.productcard.reimagine.cart.ProductCardCartExtension
+import com.tokopedia.productcard.reimagine.cta.ProductCardGenericCtaExtension
 import com.tokopedia.productcard.reimagine.lazyView
 import com.tokopedia.productcard.utils.getPixel
 import com.tokopedia.unifycomponents.CardUnify2
@@ -44,6 +46,7 @@ internal class ReimagineGridCarouselViewStrategy(
     private val renderer = ProductCardRenderer(productCardView, GridCarousel)
     private val stockInfo = ProductCardStockInfo(productCardView)
     private val cartExtension = ProductCardCartExtension(productCardView, GridCarousel)
+    private val genericCtaExtension = ProductCardGenericCtaExtension(productCardView, ProductCardType.Grid)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
@@ -102,6 +105,7 @@ internal class ReimagineGridCarouselViewStrategy(
 
         stockInfo.render(productCardModel)
 
+        genericCtaExtension.render(productCardModel)
         cartExtension.render(productCardModel)
 
         renderContentPadding(productCardModel)
@@ -168,5 +172,13 @@ internal class ReimagineGridCarouselViewStrategy(
 
     override fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
         cartExtension.addToCartNonVariantClickListener = addToCartNonVariantClickListener
+    }
+
+    override fun setGenericCtaButtonOnClickListener(l: View.OnClickListener?) {
+        genericCtaExtension.ctaClickListener = { l?.onClick(it) }
+    }
+
+    override fun setGenericCtaSecondaryButtonOnClickListener(l: View.OnClickListener?) {
+        genericCtaExtension.ctaSecondaryClickListener = { l?.onClick(it) }
     }
 }
