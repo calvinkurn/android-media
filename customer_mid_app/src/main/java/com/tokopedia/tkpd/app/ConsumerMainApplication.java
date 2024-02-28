@@ -180,6 +180,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         initCacheManager();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
+            Timber.plant(new Timber.DebugTree());
             new Cassava.Builder(this)
                     .setRemoteValidator(new RemoteSpec() {
                         @NonNull
@@ -223,9 +224,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         showDevOptNotification();
         initGotoSDK();
-        initAppLogSdk();
-        TTNetHelper.initTTNet(this);
-        LibraAbTest.init(this);
+        initByteIOPlatform();
         if (RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)) {
             PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
             pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
@@ -233,8 +232,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         initializeAppPerformanceTrace();
     }
 
-    private void initAppLogSdk() {
-        AppLogAnalytics.init(this);
+    private void initByteIOPlatform() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BYTEIO_PLATFORM, true)) {
+            AppLogAnalytics.init(this);
+            TTNetHelper.initTTNet(this);
+            LibraAbTest.init(this);
+        }
     }
 
     private void initGotoSDK() {
