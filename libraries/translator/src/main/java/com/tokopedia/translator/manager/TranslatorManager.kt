@@ -31,7 +31,10 @@ import com.tokopedia.translator.viewtree.ViewTreeManager
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -131,8 +134,7 @@ class TranslatorManager() : CoroutineScope {
     }
 
 
-    suspend fun prepareSelectors(activity: Activity) {
-        val views: List<View?> = ViewUtil.getChildren(ViewUtil.getContentView(activity))
+    fun prepareSelectors(views: List<View?>, activity: Activity) {
 
         if (views.isEmpty()) return
 
@@ -184,7 +186,13 @@ class TranslatorManager() : CoroutineScope {
             destinationLang = currentDestLang
         }
 
-        prepareSelectors(getCurrentActivity()!!)
+        val views = coroutineScope {
+            async {
+                ViewUtil.getChildren(ViewUtil.getContentView(getCurrentActivity()))
+            }.await()
+        }
+
+        prepareSelectors(views, getCurrentActivity()!!)
 
         origStrings = mStringPoolManager.getQueryString()
 
@@ -255,7 +263,12 @@ class TranslatorManager() : CoroutineScope {
         var tv: View?
         for (selector in mSelectors) {
             try {
-                tv = ViewTreeManager.findViewByDOMIdentifier(selector.value, getCurrentActivity()!!)
+
+                tv = coroutineScope {
+                    async {
+                        ViewTreeManager.findViewByDOMIdentifier(selector.value, getCurrentActivity()!!)
+                    }.await()
+                }
 
                 if (tv == null) continue
 
@@ -268,9 +281,11 @@ class TranslatorManager() : CoroutineScope {
                     }
 
                     if (tv.text != stringPoolItem.demandedText) {
-                        launch(Dispatchers.Main) {
-                            tv.text = stringPoolItem.demandedText
-                            tv.tag = true
+                        coroutineScope {
+                            launch (Dispatchers.Main) {
+                                tv.text = stringPoolItem.demandedText
+                                tv.tag = true
+                            }
                         }
                     }
                 }

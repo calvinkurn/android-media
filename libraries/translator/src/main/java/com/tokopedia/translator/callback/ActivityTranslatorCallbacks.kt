@@ -73,7 +73,6 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
             val rootView: View = activity.window.decorView.findViewById(android.R.id.content)
 
             launch {
-                translatorManager?.prepareSelectors(activity)
                 setAddonGlobalLayoutListener(rootView)
 
                 rootView.viewTreeObserver
@@ -272,9 +271,6 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                     f.view?.let {
 
                         launch {
-
-                            translatorManagerFragment?.prepareSelectors(f)
-
                             setAddonGlobalLayoutListener(it)
 
                             it.viewTreeObserver.onScrollChangedAsFlow().collect {

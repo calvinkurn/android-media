@@ -31,6 +31,8 @@ import com.tokopedia.translator.viewtree.ViewTreeManagerFragment
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -122,8 +124,9 @@ class TranslatorManagerFragment() : CoroutineScope {
     }
 
 
-    suspend fun prepareSelectors(fragment: Fragment) {
-        val views: List<View?> = ViewUtil.getChildren(ViewUtil.getContentView(fragment))
+    fun prepareSelectors(views: List<View?>, fragment: Fragment) {
+
+        if (views.isEmpty()) return
 
         for (view in views) {
             view?.run {
@@ -144,8 +147,10 @@ class TranslatorManagerFragment() : CoroutineScope {
                                 } else {
                                     //translate
                                     if (view.text != stringPoolItem.demandedText) {
-                                        view.text = stringPoolItem.demandedText
-                                        view.tag = true
+                                        launch(Dispatchers.Main) {
+                                            view.text = stringPoolItem.demandedText
+                                            view.tag = true
+                                        }
                                     }
                                 }
                             }
@@ -180,7 +185,13 @@ class TranslatorManagerFragment() : CoroutineScope {
             destinationLang = currentDestLang
         }
 
-        prepareSelectors(getCurrentFragment()!!)
+        val views = coroutineScope {
+            async {
+                ViewUtil.getChildren(ViewUtil.getContentView(getCurrentFragment()))
+            }.await()
+        }
+
+        prepareSelectors(views, getCurrentFragment()!!)
 
         origStrings = mStringPoolManager.getQueryString()
         Log.d(TAG, "Here is eligible string for translation in current screen $origStrings")
