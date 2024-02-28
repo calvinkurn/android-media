@@ -246,7 +246,7 @@ object AppLogParam {
     const val PREVIOUS_PAGE = "previous_page"
     const val PRODUCT_ID = "product_id"
     const val REQUEST_ID = "request_id"
-    const val REC_SESSION_ID = "req_session_id"
+    const val REC_SESSION_ID = "rec_session_id"
     const val SHOP_ID = "shop_id"
     const val SLIDE_TYPE = "slide_type"
     const val SOURCE_MODULE = "source_module"
