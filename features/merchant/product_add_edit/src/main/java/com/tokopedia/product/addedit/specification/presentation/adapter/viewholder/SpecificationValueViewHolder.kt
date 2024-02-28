@@ -42,13 +42,13 @@ class SpecificationValueViewHolder(
         val iconDrawable = getIconUnifyDrawable(itemView.context, IconUnify.CHEVRON_DOWN, iconColor)
         tfSpecification?.icon2?.setImageDrawable(iconDrawable)
         tfSpecification?.icon2?.setOnClickListener {
-
             onSpecificationClickListener.onSpecificationValueTextClicked(bindingAdapterPosition)
         }
         tfSpecification?.editText?.setOnClickListener {
             onSpecificationClickListener.onSpecificationValueTextClicked(bindingAdapterPosition)
         }
         tfSpecification?.editText?.doOnTextChanged { text, _, count, _ ->
+            selectedSpecification.data = text.toString()
             if (count > Int.ZERO && text?.isBlank() == true)
                 onSpecificationClickListener.onSpecificationValueTextCleared(bindingAdapterPosition)
         }
@@ -75,5 +75,6 @@ class SpecificationValueViewHolder(
             setText(selectedSpecification.data)
             tooltipRequired?.isVisible = selectedSpecification.required
         }
+        this.selectedSpecification = selectedSpecification
     }
 }

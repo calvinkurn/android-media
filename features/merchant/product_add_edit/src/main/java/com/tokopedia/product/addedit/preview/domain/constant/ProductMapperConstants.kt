@@ -22,6 +22,7 @@ object ProductMapperConstants {
     const val YOUTUBE_URL_SHORTEN = "youtu.be"
     const val YOUTUBE_SOURCE = "youtube"
     const val PRICE_CURRENCY = "IDR"
+    const val CUSTOM_ANNOTATION_VALUE = "customannotation"
 
     fun getActiveStatus(status: Int) = when (status) {
             IS_INACTIVE -> IS_INACTIVE_STRING

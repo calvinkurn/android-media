@@ -85,7 +85,10 @@ class AddEditProductSpecificationViewModel @Inject constructor(
                     required = required,
                     specificationVariant = annotationCategoryData.variant,
                 )
-                selectedSpecification.apply { isTextInput = true }
+                selectedSpecification.apply {
+                    isTextInput = true
+                    variantId = annotationCategoryData.variantId.toString()
+                }
             } else {
                 SpecificationInputModel(
                     required = required,
@@ -95,7 +98,7 @@ class AddEditProductSpecificationViewModel @Inject constructor(
         }
 
     fun getHasSpecification(specificationList: List<SpecificationInputModel>) = specificationList.any {
-        it.id.isNotBlank()
+        it.id.isNotBlank() || it.data.isNotEmpty()
     }
 
     fun validateSpecificationInputModel(specificationList: List<SpecificationInputModel>) {
@@ -111,7 +114,7 @@ class AddEditProductSpecificationViewModel @Inject constructor(
     fun updateProductInputModelSpecifications(specificationList: List<SpecificationInputModel>) {
         mProductInputModel.value?.apply {
             detailInputModel.specifications = specificationList.filter {
-                it.id.isNotBlank()
+                it.id.isNotBlank() || it.data.isNotEmpty()
             }
         }
     }
