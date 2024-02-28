@@ -421,6 +421,7 @@ object AppLogSearch {
         fun json() = JSONObject(buildMap {
             put(SEARCH_ENTRANCE, HOMEPAGE)
             put(SEARCH_ID, searchID)
+            put(SEARCH_TYPE, searchType)
             put(SEARCH_KEYWORD, keyword)
             ecomSortName?.let { put(ECOM_SORT_NAME, it) }
             put(ECOM_FILTER_NAME, ecomFilterName)
@@ -430,6 +431,8 @@ object AppLogSearch {
     }
 
     fun eventChooseSearchFilter(chooseSearchFilter: ChooseSearchFilter) {
+        AppLogAnalytics.putPageData(ECOM_FILTER_TYPE, chooseSearchFilter.buttonTypeClick)
+
         AppLogAnalytics.send(CHOOSE_SEARCH_FILTER, chooseSearchFilter.json())
     }
 
