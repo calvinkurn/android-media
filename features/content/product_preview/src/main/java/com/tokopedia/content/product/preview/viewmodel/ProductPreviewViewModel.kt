@@ -221,7 +221,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             when (productPreviewSource.source) {
                 is ProductSourceData -> handleFetchReview(isRefresh = true, page = 1)
                 is ReviewSourceData -> handleFetchReviewByIds()
-                UnknownSource -> _uiEvent.emit(UnknownSourceData)
+                UnknownSource -> error("Unknown Source Data")
             }
         }) { _uiEvent.emit(UnknownSourceData) }
     }

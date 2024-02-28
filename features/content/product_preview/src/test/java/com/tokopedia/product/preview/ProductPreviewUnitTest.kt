@@ -5,9 +5,11 @@ import com.tokopedia.content.product.preview.data.mock.ProductPreviewMockData
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreference
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewUiEvent
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.content.test.util.assertEqualTo
+import com.tokopedia.content.test.util.assertType
 import com.tokopedia.product.preview.robot.ProductPreviewViewModelRobot
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
@@ -145,6 +147,97 @@ class ProductPreviewUnitTest {
                 robot.initializeProductMainDataTestCase()
             }.also { state ->
                 state.productUiModel.productMedia.assertEqualTo(productMedia)
+            }
+        }
+    }
+
+    @Test
+    fun `when initialize review main data source product and success fetch review data`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val expectedDataReview = mockDataSource.mockReviewData()
+
+        coEvery { mockRepository.getReview(productId, 1) } returns expectedDataReview
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordState {
+                robot.initializeReviewMainData()
+            }.also { state ->
+                state.reviewUiModel.reviewContent.assertEqualTo(expectedDataReview.reviewContent)
+                state.reviewUiModel.reviewContent.size.assertEqualTo(expectedDataReview.reviewContent.size)
+                state.reviewUiModel.reviewPaging.assertEqualTo(expectedDataReview.reviewPaging)
+            }
+        }
+    }
+
+    @Test
+    fun `when initialize review main data source product and fails fetch review data`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val expectedThrow = Throwable("fail fetching")
+
+        coEvery { mockRepository.getReview(productId, 1) } throws expectedThrow
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordState {
+                robot.initializeReviewMainData()
+            }.also { state ->
+                state.reviewUiModel.reviewPaging.assertType<ReviewPaging.Error>()
+                (state.reviewUiModel.reviewPaging as ReviewPaging.Error).onRetry()
+            }
+        }
+    }
+
+    @Test
+    fun `when initialize review main data source review and success fetch review data by ids`() {
+        val sourceModel = mockDataSource.mockSourceReview(productId, reviewSourceId, attachmentId)
+        val expectedDataReviewByIds = mockDataSource.mockReviewDataByIds()
+        val expectedDataReview = mockDataSource.mockReviewData()
+
+        coEvery { mockRepository.getReviewByIds(listOf(reviewSourceId)) } returns expectedDataReviewByIds
+        coEvery { mockRepository.getReview(productId, 1) } returns expectedDataReview
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordState {
+                robot.initializeReviewMainData()
+            }.also { state ->
+                state.reviewUiModel.reviewContent.assertEqualTo(
+                    expectedDataReviewByIds.reviewContent
+                        .plus(expectedDataReview.reviewContent)
+                )
+                state.reviewUiModel.reviewContent.size.assertEqualTo(
+                    expectedDataReviewByIds.reviewContent.size
+                        .plus(expectedDataReview.reviewContent.size)
+                )
+                state.reviewUiModel.reviewPaging.assertEqualTo(expectedDataReview.reviewPaging)
+            }
+        }
+    }
+
+    @Test
+    fun `when initialize review main data source review and fails fetch review data by ids`() {
+        val sourceModel = mockDataSource.mockSourceReview(productId, reviewSourceId, attachmentId)
+        val expectedThrow = Throwable("fail fetching")
+
+        coEvery { mockRepository.getReviewByIds(listOf(reviewSourceId)) } throws expectedThrow
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordState {
+                robot.initializeReviewMainData()
+            }.also { state ->
+                state.reviewUiModel.reviewPaging.assertType<ReviewPaging.Error>()
+                (state.reviewUiModel.reviewPaging as ReviewPaging.Error).onRetry()
+            }
+        }
+    }
+
+    @Test
+    fun `when initialize review main data source unknown and emit error`() {
+        val sourceModel = mockDataSource.mockSourceUnknown(productId)
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordEvent {
+                robot.initializeReviewMainData()
+            }.also { event ->
+                event.last().assertEqualTo(ProductPreviewUiEvent.UnknownSourceData)
             }
         }
     }

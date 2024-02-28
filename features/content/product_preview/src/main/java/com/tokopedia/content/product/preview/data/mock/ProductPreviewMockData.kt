@@ -3,6 +3,14 @@ package com.tokopedia.content.product.preview.data.mock
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewDescriptionUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -12,7 +20,7 @@ class ProductPreviewMockData {
         productId: String,
         productMedia: List<ProductMediaUiModel> = mockProductMediaList(),
         hasReview: Boolean = true,
-        ): ProductPreviewSourceModel {
+    ): ProductPreviewSourceModel {
         return ProductPreviewSourceModel(
             productId = productId,
             source = ProductPreviewSourceModel.ProductSourceData(
@@ -71,6 +79,108 @@ class ProductPreviewMockData {
                 thumbnailUrl = "thumbnail3.url",
                 url = "image3.source.url",
             ),
+        )
+    }
+
+    fun mockReviewDataByIds(): ReviewUiModel {
+        val reviewContent = listOf(
+            ReviewContentUiModel(
+                reviewId = "reviewId_123",
+                medias = listOf(
+                    ReviewMediaUiModel(
+                        mediaId = "mediaId_1",
+                        type = MediaType.Video,
+                        selected = true,
+                    ),
+                    ReviewMediaUiModel(
+                        mediaId = "mediaId_2",
+                        type = MediaType.Image,
+                        selected = false,
+                    ),
+                    ReviewMediaUiModel(
+                        mediaId = "mediaId_3",
+                        type = MediaType.Image,
+                        selected = false,
+                    ),
+                ),
+                menus = ReviewMenuStatus(isReportable = true),
+                likeState = ReviewLikeUiState(
+                    count = 5,
+                    state = ReviewLikeUiState.ReviewLikeStatus.getByValue(1),
+                    withAnimation = false
+                ),
+                author = ReviewAuthorUiModel(
+                    name = "Author Name",
+                    type = "Shop",
+                    id = "userId_12345",
+                    avatarUrl = "avatar.url",
+                    appLink = "user.applink"
+                ),
+                description = ReviewDescriptionUiModel(
+                    stars = 5,
+                    productType = "product type",
+                    timestamp = "12345",
+                    description = "description"
+                ),
+                mediaSelectedPosition = 0,
+                isWatchMode = false,
+                isScrolling = false,
+            )
+        )
+        return ReviewUiModel(
+            reviewPaging = ReviewPaging.Success(0, true),
+            reviewContent = reviewContent
+        )
+    }
+
+    fun mockReviewData(): ReviewUiModel {
+        val reviewContent = listOf(
+            ReviewContentUiModel(
+                reviewId = "reviewId_123",
+                medias = listOf(
+                    ReviewMediaUiModel(
+                        mediaId = "mediaId_1",
+                        type = MediaType.Video,
+                        selected = true,
+                    ),
+                    ReviewMediaUiModel(
+                        mediaId = "mediaId_2",
+                        type = MediaType.Image,
+                        selected = false,
+                    ),
+                    ReviewMediaUiModel(
+                        mediaId = "mediaId_3",
+                        type = MediaType.Image,
+                        selected = false,
+                    ),
+                ),
+                menus = ReviewMenuStatus(isReportable = true),
+                likeState = ReviewLikeUiState(
+                    count = 5,
+                    state = ReviewLikeUiState.ReviewLikeStatus.getByValue(1),
+                    withAnimation = false
+                ),
+                author = ReviewAuthorUiModel(
+                    name = "Author Name",
+                    type = "Shop",
+                    id = "userId_12345",
+                    avatarUrl = "avatar.url",
+                    appLink = "user.applink"
+                ),
+                description = ReviewDescriptionUiModel(
+                    stars = 5,
+                    productType = "product type",
+                    timestamp = "12345",
+                    description = "description"
+                ),
+                mediaSelectedPosition = 0,
+                isWatchMode = false,
+                isScrolling = false,
+            )
+        )
+        return ReviewUiModel(
+            reviewPaging = ReviewPaging.Success(1, true),
+            reviewContent = reviewContent
         )
     }
 

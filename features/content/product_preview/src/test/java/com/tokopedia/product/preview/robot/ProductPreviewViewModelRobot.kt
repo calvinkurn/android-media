@@ -107,6 +107,10 @@ internal class ProductPreviewViewModelRobot(
         viewModel.onAction(ProductPreviewAction.InitializeProductMainData)
     }
 
+    fun initializeReviewMainData() {
+        viewModel.onAction(ProductPreviewAction.InitializeReviewMainData)
+    }
+
     fun cancelRemainingTasks() {
         viewModel.viewModelScope.coroutineContext.cancelChildren()
     }
