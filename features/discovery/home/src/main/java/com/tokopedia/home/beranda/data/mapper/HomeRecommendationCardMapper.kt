@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.play.widget.ui.model.PlayVideoWidgetUiModel
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.topads.sdk.domain.model.ImageShop
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import dagger.Lazy
@@ -40,13 +41,14 @@ class HomeRecommendationCardMapper @Inject constructor(
                 TYPE_PRODUCT -> {
                     homeRecommendationTypeFactoryImplList.add(
                         mapToHomeProductFeedModel(
+                            getHomeRecommendationCard.appLog,
                             card,
                             getHomeRecommendationCard.pageName,
                             getHomeRecommendationCard.layoutName,
                             pageNumber,
                             index,
                             getHomeRecommendationCard.recommendationCards.size,
-                            tabName
+                            tabName,
                         )
                     )
                 }
@@ -223,6 +225,7 @@ class HomeRecommendationCardMapper @Inject constructor(
     }
 
     private fun mapToHomeProductFeedModel(
+        appLog: GetHomeRecommendationCardResponse.GetHomeRecommendationCard.AppLog,
         recommendationCard: RecommendationCard,
         pageName: String,
         layoutName: String,
@@ -239,7 +242,19 @@ class HomeRecommendationCardMapper @Inject constructor(
             pageName,
             layoutName,
             (((pageNumber - Int.ONE) * cardTotal) + index + Int.ONE),
-            tabName
+            tabName,
+            appLog.toAppLogModel(recommendationCard.recParam),
+        )
+    }
+
+    private fun GetHomeRecommendationCardResponse.GetHomeRecommendationCard.AppLog.toAppLogModel(
+        recParam: String
+    ): RecommendationAppLog {
+        return RecommendationAppLog(
+            sessionId = sessionId,
+            requestId = requestId,
+            logId = logId,
+            recParam = recParam
         )
     }
 

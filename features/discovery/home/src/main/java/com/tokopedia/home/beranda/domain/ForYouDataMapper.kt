@@ -98,7 +98,8 @@ object ForYouDataMapper {
             pageName = pageName,
             layoutName = layoutName,
             position = position,
-            tabName = tabName
+            tabName = tabName,
+            appLog = appLog,
         )
     }
 

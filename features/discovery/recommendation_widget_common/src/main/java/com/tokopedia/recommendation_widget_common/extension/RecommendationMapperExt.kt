@@ -1,9 +1,6 @@
 package com.tokopedia.recommendation_widget_common.extension
 
-import com.tokopedia.analytics.byteio.EntranceForm
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.home_component_header.model.ChannelHeader
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
@@ -11,6 +8,7 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.ProductListType
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationBanner
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
@@ -29,6 +27,15 @@ fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel()
     return map { recommendationData ->
         recommendationData.toRecommendationWidget()
     }
+}
+
+fun RecommendationEntity.AppLog.toAppLogModel(recParam: String = ""): RecommendationAppLog {
+    return RecommendationAppLog(
+        sessionId = sessionId,
+        requestId = requestId,
+        logId = logId,
+        recParam = recParam
+    )
 }
 
 fun RecommendationEntity.RecommendationData.toRecommendationWidget(): RecommendationWidget {
@@ -117,7 +124,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 },
                 parentID = recommendation.parentID,
                 addToCartType = getAtcType(),
-                gridPosition = recommendation.getGridPosition()
+                gridPosition = recommendation.getGridPosition(),
+                appLog = appLog.toAppLogModel(recommendation.recParam)
             )
         },
         title = title,
@@ -325,32 +333,5 @@ fun RecommendationWidget.mapToChannelHeader(): ChannelHeader {
         backImage = headerBackImage,
         textColor = titleColor,
         channelId = channelId
-    )
-}
-
-fun RecommendationItem.asProductTrackModel(
-    isCache: Boolean = false,
-    entranceForm: EntranceForm,
-    enterMethod: String = "",
-    tabName: String = "",
-    tabPosition: Int = 0,
-): AppLogRecommendationProductModel {
-    return AppLogRecommendationProductModel.create(
-        productId = productId.toString(),
-        position = position,
-        moduleName = pageName,
-        isAd = isTopAds,
-        isUseCache = isCache,
-        recParams = "", // TODO recom
-        requestId = "", // TODO recom
-        shopId = shopId.toString(),
-        entranceForm = entranceForm,
-        tabName = tabName,
-        tabPosition = tabPosition,
-        rate = ratingAverage.toFloatOrZero(),
-        enterMethod = enterMethod,
-        volume = stock,
-        originalPrice = (if(slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
-        salesPrice = priceInt.toFloat(),
     )
 }
