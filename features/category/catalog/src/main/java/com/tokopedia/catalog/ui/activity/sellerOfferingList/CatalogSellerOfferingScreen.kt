@@ -18,9 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,8 +34,6 @@ import com.tokopedia.sortfilter.compose.Size
 import com.tokopedia.sortfilter.compose.SortFilter
 import kotlinx.coroutines.delay
 
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CatalogSellerOfferingScreen(
     productTitle: String,
@@ -46,6 +42,7 @@ fun CatalogSellerOfferingScreen(
     totalItemCart: Int,
     sortFilter: List<SortFilter> = mutableListOf(),
     productList: MutableList<CatalogProductListResponse.CatalogGetProductList.CatalogProduct>,
+    countFilter: Int,
     listener: ChooseAddressWidget.ChooseAddressWidgetListener? = null,
     lcaListener: (ChooseAddressWidget) -> Unit = {},
     onClickVariant: () -> Unit,
@@ -53,15 +50,10 @@ fun CatalogSellerOfferingScreen(
     onClickActionButtonCart: () -> Unit,
     onClickActionButtonMenu: () -> Unit,
     onClickMoreFilter: () -> Unit,
-    onClickFilter: (SortFilter) -> Unit,
-    onLoadMore: (Int) -> Unit,
-    onClickAtc: () -> Unit
+    onLoadMore: () -> Unit,
+    onClickAtc: (CatalogProductListResponse.CatalogGetProductList.CatalogProduct, Int) -> Unit,
+    onClickItemProduct: (CatalogProductListResponse.CatalogGetProductList.CatalogProduct, Int) -> Unit
 ) {
-
-
-
-    var page = 0
-
     val listState = rememberLazyListState()
 
     val reachedBottom: Boolean by remember {
@@ -73,8 +65,7 @@ fun CatalogSellerOfferingScreen(
     LaunchedEffect(reachedBottom) {
         delay(700)
         if (reachedBottom) {
-            page+=1
-            onLoadMore.invoke(page)
+            onLoadMore.invoke()
         }
     }
 
@@ -102,17 +93,17 @@ fun CatalogSellerOfferingScreen(
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     Divider(
-                        Modifier.background(NestNN.light._0.copy(alpha = 0.2f)), thickness = 1.dp
+                        Modifier.background(NestNN.light._0.copy(alpha = 0.2f)),
+                        thickness = 1.dp
                     )
                 }
-                CatalogSellerOfferingBody(listState, listener, background, lcaListener, sortFilter.toMutableList(),
-                    onClickFilter, onClickMoreFilter, onClickAtc,productList)
-
+                CatalogSellerOfferingBody(
+                    listState, listener, background, lcaListener, sortFilter.toMutableList(),
+                    onClickMoreFilter, onClickAtc, onClickItemProduct, productList, countFilter
+                )
             }
         }
-
     }
-
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -123,16 +114,12 @@ fun CatalogSellerOfferingBody(
     background: Int,
     lcaListener: (ChooseAddressWidget) -> Unit,
     sortFilter: MutableList<SortFilter>,
-    onClickFilter: (SortFilter) -> Unit,
     onClickMoreFilter: () -> Unit,
-    onClickAtc: () -> Unit,
-    productList: MutableList<CatalogProductListResponse.CatalogGetProductList.CatalogProduct>
+    onClickAtc: (CatalogProductListResponse.CatalogGetProductList.CatalogProduct, Int) -> Unit,
+    onClickItemProduct: (CatalogProductListResponse.CatalogGetProductList.CatalogProduct, Int) -> Unit,
+    productList: MutableList<CatalogProductListResponse.CatalogGetProductList.CatalogProduct>,
+    countFilter: Int
 ) {
-    var filterItems by remember {
-        mutableStateOf(mutableListOf<SortFilter>())
-    }
-    filterItems = sortFilter
-
     LazyColumn(state = listState, modifier = Modifier.fillMaxWidth(), content = {
         item {
             Box(Modifier.background(Color.Transparent)) {
@@ -149,22 +136,17 @@ fun CatalogSellerOfferingBody(
                     .fillMaxWidth()
                     .background(Color.White)
             ) {
-                Filter(filterItems, Size.DEFAULT, onClick = { sortFilterSelected ->
-                    onClickFilter.invoke(sortFilterSelected)
-                    filterItems = filterItems.map {
-                        if (it == sortFilterSelected) {
-                            it.copy(isSelected = it.isSelected.not())
-                        } else {
-                            it
-                        }
-                    }.toMutableList()
-                }, onPrefixClicked = onClickMoreFilter)
+                Filter(sortFilter, Size.DEFAULT, onPrefixClicked = onClickMoreFilter, countFilter = countFilter)
             }
         }
 
         items(productList.size) { index ->
-            ItemProduct(onClickAtc,productList[index])
-            if (index == productList.size -1){
+            ItemProduct(onClickItem = {
+                onClickItemProduct.invoke(it, index)
+            }, onClickAtc = {
+                    onClickAtc.invoke(it, index)
+                }, productList[index])
+            if (index == productList.size - 1) {
                 Box(Modifier.fillMaxWidth()) {
                     NestLoader(
                         variant = NestLoaderType.Decorative(size = NestLoaderSize.Large),
@@ -180,28 +162,20 @@ fun CatalogSellerOfferingBody(
 fun Filter(
     advItems: List<SortFilter>,
     size: Size,
-    onClick: (SortFilter) -> Unit,
-    onPrefixClicked: () -> Unit
+    onPrefixClicked: () -> Unit,
+    countFilter: Int
 ) {
     NestSortFilterAdvanced(
         items = advItems,
         size = size,
-        onItemClicked = { sf ->
-            onClick.invoke(sf)
-
-        },
         modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp),
-        onPrefixClicked = onPrefixClicked
+        onPrefixClicked = onPrefixClicked,
+        countSelected = countFilter,
+        onItemClicked = {}
     )
 }
-
-
 
 private fun LazyListState.reachedBottom(): Boolean {
     val lastVisibleItem = this.layoutInfo.visibleItemsInfo.lastOrNull()
     return lastVisibleItem?.index != 0 && lastVisibleItem?.index == this.layoutInfo.totalItemsCount - 1
 }
-
-
-
-

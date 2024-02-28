@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.ui.mapper
 
 import com.tokopedia.catalog.domain.model.CatalogProductItem
+import com.tokopedia.catalog.domain.model.CatalogProductListResponse
 import com.tokopedia.catalog.domain.model.ProductLabelGroup
 import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.common_category.model.productModel.BadgesItem
@@ -35,7 +36,17 @@ class ProductListMapper {
                 isWishlisted = item?.wishlist.orFalse(),
                 shopName = item?.shop?.name.orEmpty(),
                 shopImageUrl = item?.shop?.url.orEmpty(),
-                hasAddToCartButton = true,
+                hasAddToCartButton = true
+            )
+        }
+
+        fun mapperToCatalogProductAtcUiModel(item: CatalogProductListResponse.CatalogGetProductList.CatalogProduct): CatalogProductAtcUiModel {
+            return CatalogProductAtcUiModel(
+                productId = item.productID,
+                shopId = item.shop.id,
+                quantity = 1,
+                isVariant = item.isVariant,
+                warehouseId = item.warehouseID
             )
         }
 
@@ -45,7 +56,7 @@ class ProductListMapper {
                 shopId = item.shop.id,
                 quantity = item.minOrder,
                 isVariant = item.childs.isNotEmpty(),
-                warehouseId = item.warehouseIdDefault,
+                warehouseId = item.warehouseIdDefault
             )
         }
 
@@ -62,8 +73,10 @@ class ProductListMapper {
                 labelGroupList.forEach {
                     add(
                         ProductCardModel.LabelGroup(
-                            title = it.title, position = it.position,
-                            type = it.type, imageUrl = it.url
+                            title = it.title,
+                            position = it.position,
+                            type = it.type,
+                            imageUrl = it.url
                         )
                     )
                 }
