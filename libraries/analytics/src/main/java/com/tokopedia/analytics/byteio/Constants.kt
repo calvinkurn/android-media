@@ -2,6 +2,7 @@ package com.tokopedia.analytics.byteio
 
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 
 internal val TAG = "BYTEIO"
 
@@ -178,7 +179,7 @@ enum class EntranceForm(val str: String) {
 enum class SourcePageType(val str: String) {
     VIDEO("video"),
     LIVE("live"),
-    PRODUCT_CARD("")
+    PRODUCT_CARD(AppLogAnalytics.getCurrentData(PAGE_NAME)?.toString().orEmpty())
 }
 
 enum class EnterMethod(val str: String) {
