@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -24,6 +25,7 @@ import com.scp.auth.GotoSdk;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -363,9 +365,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     public void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
             @Override
-            public void onShakeDetected(boolean isLongShake) {
+            public void onShakeDetected(boolean isLongShake, Activity activity) {
                 if (GlobalConfig.isAllowDebuggingTools()) {
-                    openDeveloperOptions();
+                    openDeveloperOptionsViaShake(activity);
                 } else {
                     openShakeDetectCampaignPage(isLongShake);
                 }
@@ -407,10 +409,42 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new MonitoringActivityLifecycle(getApplicationContext()));
     }
 
-    private void openDeveloperOptions() {
-        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.DEVELOPER_OPTIONS);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getApplicationContext().startActivity(intent);
+    private void openDeveloperOptionsViaShake(Activity activity) {
+        // Create AlertDialog Builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        // Set Title and Message
+        builder.setTitle("Developer Options");
+        builder.setMessage("Enter developer options?");
+
+        // Set Positive Button and its Listener
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.DEVELOPER_OPTIONS);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
+
+                dialogInterface.dismiss(); // Dismiss the dialog
+            }
+        });
+
+        // Set Negative Button and its Listener
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss(); // Dismiss the dialog
+            }
+        });
+
+        activity.findViewById(android.R.id.content).getRootView().post(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        builder.show();
+                    }
+                }
+        );
     }
 
     private void onCheckAppUpdateRemoteConfig(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {

@@ -132,7 +132,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     public void startShake(boolean isLongShake) {
-        callback.onShakeDetected(isLongShake);
+        callback.onShakeDetected(isLongShake, activityRef.get());
     }
 
     Handler mShakeEnabler = new Handler() {
@@ -165,6 +165,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     public interface Callback {
-        void onShakeDetected(boolean isLongShake);
+        void onShakeDetected(boolean isLongShake, Activity activity);
     }
 }
