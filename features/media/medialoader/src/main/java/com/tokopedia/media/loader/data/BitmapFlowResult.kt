@@ -4,6 +4,5 @@ import android.graphics.Bitmap
 
 data class BitmapFlowResult (
     val bitmap: Bitmap?,
-    val errorException: Exception?,
-    val errorMessage: String?
+    val errorException: Exception?
 )
