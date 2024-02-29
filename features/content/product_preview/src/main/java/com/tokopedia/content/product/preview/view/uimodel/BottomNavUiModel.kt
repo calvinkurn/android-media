@@ -20,7 +20,7 @@ data class BottomNavUiModel(
             get() =
                 BottomNavUiModel(
                     title = "",
-                    price = NormalPrice(priceFmt = ""),
+                    price = Price.NormalPrice(ogPriceFmt = ""),
                     stock = 0,
                     buttonState = ButtonState.Unknown,
                     hasVariant = false,
@@ -29,22 +29,33 @@ data class BottomNavUiModel(
                 )
     }
 
-    sealed interface Price
+    sealed interface Price {
+        val ogPriceFmt: String
+        data class NormalPrice(
+            override val ogPriceFmt: String,
+        ) : Price
 
-    data class NormalPrice(
-        val priceFmt: String
-    ) : Price
+        data class DiscountedPrice(
+            override val ogPriceFmt: String,
+            val discountedPrice: String,
+            val discountPercentage: String
+        ) : Price
 
-    data class DiscountedPrice(
-        val ogPriceFmt: String,
-        val discountedPrice: String,
-        val discountPercentage: String
-    ) : Price
+        data class NettPrice(
+            override val ogPriceFmt: String,
+            val nettPriceFmt: String,
+        ) : Price
 
+        data class MaskPrice(
+            override val ogPriceFmt: String,
+            val maskPrice: String
+        ) : Price
+    }
     enum class ButtonState(val value: String, val text: String) {
         Active("ACTIVE", "+ Keranjang"),
         Inactive("INACTIVE", "Stok Habis"),
         OOS("OOS", "Ingatkan Saya"),
+        ComingSoon("ACTIVE", "Segera Hadir"),
         Unknown("", "");
 
         companion object {
@@ -84,6 +95,8 @@ data class BottomNavUiModel(
 
 val BottomNavUiModel.Price.finalPrice: String
     get() = when (this) {
-        is BottomNavUiModel.DiscountedPrice -> this.discountedPrice
-        is BottomNavUiModel.NormalPrice -> this.priceFmt
+        is BottomNavUiModel.Price.DiscountedPrice -> this.discountedPrice
+        is BottomNavUiModel.Price.NormalPrice -> this.ogPriceFmt
+        is BottomNavUiModel.Price.NettPrice -> this.nettPriceFmt
+        is BottomNavUiModel.Price.MaskPrice -> this.maskPrice
     }

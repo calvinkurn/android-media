@@ -53,6 +53,13 @@ class ProductMiniInfoUseCase @Inject constructor(
                       discountPercentage
                       discountedPrice
                     }
+                    promo {
+                      isActive
+                      nettPrice
+                      nettPriceFmt
+                      iconURL
+                      color
+                    }
                     shop {
                       id
                       name
