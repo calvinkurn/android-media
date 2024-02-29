@@ -2,6 +2,7 @@ package com.tokopedia.cart.view.viewmodel
 
 import androidx.lifecycle.Observer
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
 import com.tokopedia.cart.view.CartViewModel
@@ -654,7 +655,8 @@ class CartViewModelTest : BaseCartViewModelTest() {
             recommendationWidgetMetadata = RecommendationWidgetMetadata(
                 pageNumber = 1,
                 pageName = CartViewModel.PAGE_NAME_RECENT_VIEW_TEST,
-                xSource = CartViewModel.RECENT_VIEW_XSOURCE
+                xSource = CartViewModel.RECENT_VIEW_XSOURCE,
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECENT_VIEW
             )
         )
 
