@@ -428,11 +428,8 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     override fun onClicked(item: CommentUiModel.Expandable, position: Int) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            delay(DELAY_EXPAND)
-            viewModel.submitAction(CommentAction.ExpandComment(item))
-            if (!item.isExpanded) analytics?.clickLihatBalasan() else analytics?.clickSembunyikan()
-        }
+        viewModel.submitAction(CommentAction.ExpandComment(item))
+        if (!item.isExpanded) analytics?.clickLihatBalasan() else analytics?.clickSembunyikan()
     }
 
     override fun onImpressedExpandable() {
@@ -635,7 +632,6 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val SHIMMER_VALUE = 6
 
         private const val MAX_CHAR = 140
-        private const val DELAY_EXPAND = 500L
 
         fun getOrCreate(
             fragmentManager: FragmentManager,

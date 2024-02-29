@@ -13,6 +13,7 @@ import com.tokopedia.content.common.databinding.ItemCommentEmptyBinding
 import com.tokopedia.content.common.databinding.ItemCommentExpandableBinding
 import com.tokopedia.content.common.databinding.ItemCommentShimmeringBinding
 import com.tokopedia.content.common.databinding.ItemContentCommentBinding
+import com.tokopedia.content.common.util.setSafeOnClickListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -139,7 +140,7 @@ class CommentViewHolder {
                     getString(contentR.string.content_comment_expand_visible, item.repliesCount)
             }
 
-            binding.root.setOnClickListener {
+            binding.root.setSafeOnClickListener {
                 listener.onClicked(item, absoluteAdapterPosition)
             }
 
