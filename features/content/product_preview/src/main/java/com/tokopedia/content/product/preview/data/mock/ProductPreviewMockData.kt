@@ -311,7 +311,7 @@ class ProductPreviewMockData {
         return BottomNavUiModel(
             title = "Product Name",
             price = if (isCampaignActive) {
-                BottomNavUiModel.DiscountedPrice(
+                BottomNavUiModel.Price.DiscountedPrice(
                     discountedPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         price = 5000,
                         hasSpace = false
@@ -320,7 +320,7 @@ class ProductPreviewMockData {
                     discountPercentage = "50%"
                 )
             } else {
-                BottomNavUiModel.NormalPrice(priceFmt = ogPrice)
+                BottomNavUiModel.Price.NormalPrice(ogPriceFmt = ogPrice)
             },
             stock = 10,
             shop = BottomNavUiModel.Shop(

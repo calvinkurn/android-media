@@ -199,7 +199,6 @@ class ProductPreviewUnitTest {
 
         getRobot(sourceModel).use { robot ->
             robot.recordState {
-
                 robot.initializeReviewMainDataTestCase()
             }.also { state ->
                 state.reviewUiModel.reviewContent.assertEqualTo(

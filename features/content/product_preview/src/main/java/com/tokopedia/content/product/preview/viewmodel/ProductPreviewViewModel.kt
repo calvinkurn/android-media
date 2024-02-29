@@ -428,7 +428,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     ProductPreviewUiEvent.ShowErrorToaster(
                         it,
                         ProductPreviewUiEvent.ShowErrorToaster.Type.ATC
-                    ) { addToChart(model) }
+                    ) { addToCart(model) }
                 )
             }
         }
