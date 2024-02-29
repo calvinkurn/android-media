@@ -41,6 +41,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         private const val TWO = 2
         private const val CONST_MAIN_IMAGE_AREA_MULTIPLIER = 0.52
         private const val CONST_SMALL_IMAGE_AREA_MULTIPLIER = 0.48
+        private const val CONST_TOTAL_RV_PADDING_HORIZONTAL_DP = 24
         private const val MARGIN_8_IN_DP = 8
         private const val MARGIN_4_IN_DP = 4
         private const val TEXT_SIZE_HEIGHT_IN_DP = 12
@@ -119,7 +120,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         val thirdShowcase = showcases.getOrNull(FOURTH_SHOWCASE_INDEX)
         val fourthShowcase = showcases.getOrNull(FIFTH_SHOWCASE_INDEX)
 
-        val showcaseNavigationWidgetMaxWidth = getScreenWidth() - 24.toPx()
+        val showcaseNavigationWidgetMaxWidth = getScreenWidth() - CONST_TOTAL_RV_PADDING_HORIZONTAL_DP.toPx()
 
         //Main showcase
         val mainImageMaxSize = (showcaseNavigationWidgetMaxWidth * CONST_MAIN_IMAGE_AREA_MULTIPLIER).toInt()
