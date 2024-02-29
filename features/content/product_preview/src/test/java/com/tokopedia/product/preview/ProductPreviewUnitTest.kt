@@ -162,7 +162,7 @@ class ProductPreviewUnitTest {
 
         getRobot(sourceModel).use { robot ->
             robot.recordState {
-                robot.initializeReviewMainData()
+                robot.initializeReviewMainDataTestCase()
             }.also { state ->
                 state.reviewUiModel.reviewContent.assertEqualTo(expectedDataReview.reviewContent)
                 state.reviewUiModel.reviewContent.size.assertEqualTo(expectedDataReview.reviewContent.size)
@@ -180,7 +180,7 @@ class ProductPreviewUnitTest {
 
         getRobot(sourceModel).use { robot ->
             robot.recordState {
-                robot.initializeReviewMainData()
+                robot.initializeReviewMainDataTestCase()
             }.also { state ->
                 state.reviewUiModel.reviewPaging.assertType<ReviewPaging.Error>()
                 (state.reviewUiModel.reviewPaging as ReviewPaging.Error).onRetry()
@@ -199,7 +199,7 @@ class ProductPreviewUnitTest {
 
         getRobot(sourceModel).use { robot ->
             robot.recordState {
-                robot.initializeReviewMainData()
+                robot.initializeReviewMainDataTestCase()
             }.also { state ->
                 state.reviewUiModel.reviewContent.assertEqualTo(
                     expectedDataReviewByIds.reviewContent
@@ -223,7 +223,7 @@ class ProductPreviewUnitTest {
 
         getRobot(sourceModel).use { robot ->
             robot.recordState {
-                robot.initializeReviewMainData()
+                robot.initializeReviewMainDataTestCase()
             }.also { state ->
                 state.reviewUiModel.reviewPaging.assertType<ReviewPaging.Error>()
                 (state.reviewUiModel.reviewPaging as ReviewPaging.Error).onRetry()
@@ -237,7 +237,7 @@ class ProductPreviewUnitTest {
 
         getRobot(sourceModel).use { robot ->
             robot.recordEvent {
-                robot.initializeReviewMainData()
+                robot.initializeReviewMainDataTestCase()
             }.also { event ->
                 event.last().assertEqualTo(ProductPreviewUiEvent.UnknownSourceData)
             }
@@ -257,7 +257,6 @@ class ProductPreviewUnitTest {
 
         getRobot(sourceModel).use { robot ->
             robot.recordState {
-                robot.initializeProductMainDataTestCase()
                 robot.productMediaVideoEndedTestCase()
             }.also { state ->
                 val selected = state.productUiModel.productMedia.indexOfFirst { it.selected }
@@ -271,13 +270,15 @@ class ProductPreviewUnitTest {
         val sourceModel = mockDataSource.mockSourceReview(productId, reviewSourceId, attachmentId)
         var currentSelected: Int
         var lastSelected: Int
+        val mockReviewData = mockDataSource.mockReviewDataByIds()
+
+        coEvery { mockRepository.getReviewByIds(listOf(reviewSourceId)) } returns mockReviewData
 
         getRobot(sourceModel).use { robot ->
             currentSelected = robot._reviewPosition.value
             currentSelected.assertEqualTo(0)
 
-            robot.initializeReviewMainData()
-            robot.reviewContentSelected(2)
+            robot.reviewContentSelectedTestCase(2)
 
             lastSelected = robot._reviewPosition.value
             lastSelected.assertEqualTo(2)
@@ -287,20 +288,45 @@ class ProductPreviewUnitTest {
     }
 
     @Test
-    fun `review content scrolling`() {
+    fun `when review content scrolling and scrolling state should be changed`() {
         val sourceModel = mockDataSource.mockSourceReview(productId, reviewSourceId, attachmentId)
         val scrolledPosition = 2
         val isScrolling = true
+        val mockReviewData = mockDataSource.mockReviewDataByIds()
+
+        coEvery { mockRepository.getReviewByIds(listOf(reviewSourceId)) } returns mockReviewData
 
         getRobot(sourceModel).use { robot ->
             robot.recordState {
-                robot.initializeReviewMainData()
                 robot.reviewContentScrollingState(scrolledPosition, true)
             }.also { state ->
                 state.reviewUiModel.reviewContent.mapIndexed { index, reviewContentUiModel ->
                     if (index == scrolledPosition) reviewContentUiModel.isScrolling.assertEqualTo(isScrolling)
                     else reviewContentUiModel.isScrolling.assertFalse()
                 }
+            }
+        }
+    }
+
+    @Test
+    fun `when review media selected and selected media should changed`() {
+        val sourceModel = mockDataSource.mockSourceReview(productId, reviewSourceId, attachmentId)
+        var reviewPosition: Int
+        val mediaSelectedPosition = 1
+        val mockReviewData = mockDataSource.mockReviewDataByIds()
+
+        coEvery { mockRepository.getReviewByIds(listOf(reviewSourceId)) } returns mockReviewData
+
+        getRobot(sourceModel).use { robot ->
+            reviewPosition = robot._reviewPosition.value
+            robot.recordState {
+                robot.reviewMediaSelectedTestCase(mediaSelectedPosition)
+            }.also { state ->
+                state.reviewUiModel.reviewContent[reviewPosition]
+                    .mediaSelectedPosition.assertEqualTo(mediaSelectedPosition)
+                val selectedMedia = state.reviewUiModel.reviewContent[reviewPosition]
+                    .medias.indexOfFirst { it.selected }
+                selectedMedia.assertEqualTo(mediaSelectedPosition)
             }
         }
     }

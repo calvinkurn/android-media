@@ -108,20 +108,28 @@ internal class ProductPreviewViewModelRobot(
         viewModel.onAction(ProductPreviewAction.InitializeProductMainData)
     }
 
-    fun initializeReviewMainData() {
+    fun initializeReviewMainDataTestCase() {
         viewModel.onAction(ProductPreviewAction.InitializeReviewMainData)
     }
 
     fun productMediaVideoEndedTestCase() {
+        initializeProductMainDataTestCase()
         viewModel.onAction(ProductPreviewAction.ProductMediaVideoEnded)
     }
 
-    fun reviewContentSelected(position: Int) {
+    fun reviewContentSelectedTestCase(position: Int) {
+        initializeReviewMainDataTestCase()
         viewModel.onAction(ProductPreviewAction.ReviewContentSelected(position))
     }
 
     fun reviewContentScrollingState(position: Int, isScrolling: Boolean) {
+        initializeReviewMainDataTestCase()
         viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(position, isScrolling))
+    }
+
+    fun reviewMediaSelectedTestCase(mediaPosition: Int) {
+        initializeReviewMainDataTestCase()
+        viewModel.onAction(ProductPreviewAction.ReviewMediaSelected(mediaPosition))
     }
 
     fun cancelRemainingTasks() {
