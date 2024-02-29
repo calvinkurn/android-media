@@ -92,7 +92,8 @@ data class VoucherDetailData(
         data class LabelBudgetVoucher(
             val labelBudgetVoucher: Int = 0,
             val labelBudgetVoucherFormatted: String = "",
-            val labelBudgetVoucherValue: Int = 0
+            val labelBudgetVoucherValue: Int = 0,
+            val labelBudgetVoucherValueDecimal: Float = 0f
         )
     }
 

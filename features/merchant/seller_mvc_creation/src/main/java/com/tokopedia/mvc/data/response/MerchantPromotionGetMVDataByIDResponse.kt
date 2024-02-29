@@ -170,7 +170,9 @@ data class MerchantPromotionGetMVDataByIDResponse(
                 @SerializedName("label_budget_voucher_formatted")
                 val labelBudgetVoucherFormatted: String = "",
                 @SerializedName("label_budget_voucher_value")
-                val labelBudgetVoucherValue: Int = 0
+                val labelBudgetVoucherValue: Int = 0,
+                @SerializedName("label_budget_voucher_value_decimal")
+                val labelBudgetVoucherDecimalValue: Float = 0f
             )
         }
 

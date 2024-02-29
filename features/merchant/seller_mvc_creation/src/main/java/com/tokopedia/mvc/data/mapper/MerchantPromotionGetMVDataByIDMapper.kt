@@ -119,7 +119,8 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 VoucherDetailData.LabelVoucher.LabelBudgetVoucher(
                     labelBudgetVoucherFormatted = it.labelBudgetVoucherFormatted,
                     labelBudgetVoucher = it.labelBudgetVoucher,
-                    labelBudgetVoucherValue = it.labelBudgetVoucherValue
+                    labelBudgetVoucherValue = it.labelBudgetVoucherValue,
+                    labelBudgetVoucherValueDecimal = it.labelBudgetVoucherDecimalValue
                 )
             }
         )

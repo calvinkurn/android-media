@@ -111,6 +111,7 @@ class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
                           label_budget_voucher_formatted
                           label_budget_voucher
                           label_budget_voucher_value
+                          label_budget_voucher_value_decimal
                         }
                       }
                       is_editable
