@@ -13,6 +13,7 @@ import com.tokopedia.carouselproductcard.paging.CarouselPagingProductCardView
 import com.tokopedia.carouselproductcard.paging.CarouselPagingSelectedGroupModel
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -104,12 +105,14 @@ class ProductCardColumnListViewHolder(
     override fun onItemClick(groupModel: CarouselPagingGroupModel, itemPosition: Int) {
         viewModel?.apply {
             val product = getProduct(itemPosition)?.also {
-                AppLogRecommendation.sendProductClickAppLog(
-                    it.asProductTrackModel(
-                        itemPosition,
-                        it.parentComponentName.orEmpty()
+                if(it.isEligibleToTrack()) {
+                    AppLogRecommendation.sendProductClickAppLog(
+                        it.asProductTrackModel(
+                            itemPosition,
+                            it.parentComponentName.orEmpty()
+                        )
                     )
-                )
+                }
             }
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .trackProductCardClick(

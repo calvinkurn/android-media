@@ -3,6 +3,8 @@ package com.tokopedia.discovery2.analytics
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.data.ComponentSourceData
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -50,5 +52,15 @@ object TrackDiscoveryRecommendationMapper {
             ComponentNames.ProductCardSingleItemReimagine.componentName -> EntranceForm.DETAIL_GOODS_CARD
             else -> EntranceForm.HORIZONTAL_GOODS_CARD
         }
+    }
+
+    fun DataItem.isEligibleToTrack(): Boolean {
+        return source == ComponentSourceData.Recommendation
+//            && !(getAppLog()?.pageName?.contains("injection").orFalse())
+    }
+
+    fun ComponentsItem.isEligibleToTrack(): Boolean {
+        return getSource() == ComponentSourceData.Recommendation
+//            && !(getComponentAdditionalInfo()?.tracker?.recommendationPageName?.contains("injection").orFalse())
     }
 }

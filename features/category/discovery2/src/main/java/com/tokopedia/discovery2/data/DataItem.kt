@@ -639,7 +639,7 @@ data class DataItem(
 
     @SerializedName("warehouse_id")
     var warehouseId: Long? = null
-) : ImpressHolder() {
+) {
     val leftMargin: Int
         get() {
             return leftMarginMobile?.toIntOrNull() ?: 0
@@ -650,6 +650,7 @@ data class DataItem(
             return rightMarginMobile?.toIntOrNull() ?: 0
         }
 
+    val appLogImpressHolder: ImpressHolder = ImpressHolder()
     private var appLog: RecommendationAppLog? = null
     var source: ComponentSourceData = ComponentSourceData.Unknown
 
