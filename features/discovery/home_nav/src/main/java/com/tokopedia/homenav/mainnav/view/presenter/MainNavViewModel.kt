@@ -233,6 +233,7 @@ class MainNavViewModel @Inject constructor(
         )
 
         launchCatchError(
+            context = coroutineContext,
             block = {
                 addToCartUseCase.get().addToCartRequestParams = param
                 val result = addToCartUseCase.get().executeOnBackground()
@@ -434,7 +435,7 @@ class MainNavViewModel @Inject constructor(
 
             position?.let {
                 updateWidget(BuyAgainUiModel(result), it)
-                updateMenu(ID_BUY_AGAIN, showCta = true)
+                updateMenu(ID_BUY_AGAIN, counter = "1", showCta = true)
             }
         } else {
             deleteWidget<ShimmerBuyAgainUiModel>()

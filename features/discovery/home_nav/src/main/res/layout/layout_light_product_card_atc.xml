@@ -30,6 +30,8 @@
         android:layout_width="14dp"
         android:layout_height="14dp"
         app:icon_name="ADD"
+        app:icon_color_light_enable="@color/Unify_Static_Black"
+        app:icon_color_night_enable="@color/Unify_Static_Black"
         app:layout_constraintBottom_toBottomOf="@+id/bg_button"
         app:layout_constraintEnd_toEndOf="@+id/bg_button"
         app:layout_constraintStart_toStartOf="@+id/bg_button"
