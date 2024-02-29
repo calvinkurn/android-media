@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT_QUERY_NAME
+import com.tokopedia.discovery2.data.productcarditem.ProductCardRequest
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import kotlinx.coroutines.Dispatchers
@@ -19,19 +20,18 @@ import javax.inject.Inject
 
 class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), ProductCardsRepository {
     override suspend fun getProducts(
-        componentId: String,
-        queryParamterMap: MutableMap<String, Any>,
-        pageEndPoint: String,
-        productComponentName: String?
+        requestParams: ProductCardRequest,
+        queryParameterMap: MutableMap<String, Any>
     ): Pair<ArrayList<ComponentsItem>, ComponentAdditionalInfo?> {
         val response = (
             getGQLData(
                 GQL_COMPONENT,
                 DataResponse::class.java,
                 Utils.getComponentsGQLParams(
-                    componentId,
-                    pageEndPoint,
-                    Utils.getQueryString(queryParamterMap)
+                    requestParams.componentId,
+                    requestParams.pageEndpoint,
+                    Utils.getQueryString(queryParameterMap),
+                    requestParams.sessionId
                 ),
                 GQL_COMPONENT_QUERY_NAME
             ) as DataResponse
@@ -40,14 +40,14 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
         val componentProperties = response.data.component?.properties
         val creativeName = response.data.component?.creativeName ?: ""
         val additionalInfo = response.data.component?.compAdditionalInfo
-        val componentItem = getComponent(componentId, pageEndPoint)
+        val componentItem = getComponent(requestParams.componentId, requestParams.pageEndpoint)
 
         val componentData = response.data.component?.data
         componentData?.setAppLog(additionalInfo?.tracker)
 
         val componentsListSize = componentItem?.getComponentsItem()?.size ?: 0
         val list = withContext(Dispatchers.Default) {
-            when (productComponentName) {
+            when (requestParams.componentName) {
                 ComponentNames.ProductCardColumnList.componentName -> {
                     DiscoveryDataMapper().mapListToComponentList(
                         componentData,
