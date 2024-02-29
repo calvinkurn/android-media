@@ -450,7 +450,8 @@ class RechargeOrderDetailFragment :
                 is Success -> {
                     val isSuccess = it.data.rechargeSetOrderToFail.attributes.isSuccess
                     if (isSuccess) {
-                        activity?.finish()
+                        rechargeViewModel.resetOrderDetailData()
+                        activity?.recreate()
                     } else {
                         Toaster.build(
                             binding.root,
