@@ -128,10 +128,16 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
             price = response.data.product.price,
             hasSpace = false
         )
+        val hasMasking = response.data.product.priceFmt.any { it == '?' }
         return BottomNavUiModel(
             title = response.data.product.name,
-            price = if (response.data.campaign.isActive) {
-                BottomNavUiModel.DiscountedPrice(
+            price = if (response.data.promo.isActive) {
+                BottomNavUiModel.Price.NettPrice(
+                    ogPriceFmt = ogPrice,
+                    nettPriceFmt = response.data.promo.nettPriceFmt,
+                )
+            } else if (response.data.campaign.isActive) {
+                BottomNavUiModel.Price.DiscountedPrice(
                     discountedPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         price = response.data.campaign.discountedPrice,
                         hasSpace = false
@@ -139,8 +145,13 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                     ogPriceFmt = ogPrice,
                     discountPercentage = "${response.data.campaign.discountPercentage}%"
                 )
+            } else if (hasMasking){
+                BottomNavUiModel.Price.MaskPrice(
+                    ogPriceFmt = ogPrice,
+                    maskPrice = response.data.product.priceFmt
+                )
             } else {
-                BottomNavUiModel.NormalPrice(priceFmt = ogPrice)
+                BottomNavUiModel.Price.NormalPrice(ogPriceFmt = ogPrice)
             },
             stock = response.data.product.stock,
             shop = BottomNavUiModel.Shop(
@@ -150,6 +161,8 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
             hasVariant = response.data.hasVariant,
             buttonState = if (response.data.hasVariant) {
                 BottomNavUiModel.ButtonState.Active
+            } else if (hasMasking){
+                BottomNavUiModel.ButtonState.ComingSoon
             } else {
                 BottomNavUiModel.ButtonState.getByValue(
                     response.data.buttonState
