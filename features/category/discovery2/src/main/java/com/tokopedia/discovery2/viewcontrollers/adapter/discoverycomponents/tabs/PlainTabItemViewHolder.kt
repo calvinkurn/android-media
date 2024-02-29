@@ -21,7 +21,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifyprinciples.Typography as RTypography
 
-class TabsItemImageViewHolder(
+class PlainTabItemViewHolder(
     itemView: View,
     fragment: Fragment
 ) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
