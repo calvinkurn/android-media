@@ -327,7 +327,8 @@ class NotificationViewModel @Inject constructor(
                     pageNumber = page,
                     xSource = RECOM_WIDGET,
                     pageName = RECOM_SOURCE_INBOX_PAGE,
-                    productIds = emptyList()
+                    productIds = emptyList(),
+                    hasNewProductCardEnabled = true
                 )
                 val recommendationWidget = getRecommendationUseCase.getData(params).firstOrNull()
                 recommendationWidget?.let {

@@ -440,7 +440,8 @@ class UniversalInboxViewModel @Inject constructor(
             xSource = DEFAULT_VALUE_X_SOURCE,
             pageName = PAGE_NAME,
             productIds = emptyList(),
-            xDevice = DEFAULT_VALUE_X_DEVICE
+            xDevice = DEFAULT_VALUE_X_DEVICE,
+            hasNewProductCardEnabled = true
         )
     }
 
