@@ -9,6 +9,7 @@ import com.tokopedia.discovery2.data.LihatSemua
 import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
+import com.tokopedia.discovery2.data.productcarditem.ProductCardRequest
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.datamapper.getPageInfo
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
@@ -27,23 +28,25 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
         private const val RPC_PAGE_NUMBER = "rpc_page_number"
     }
 
-    override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): Pair<ArrayList<ComponentsItem>, ComponentAdditionalInfo?> {
-        val page = queryParamterMap[RPC_PAGE_NUMBER] as String
-        val list = when (productComponentName) {
+    override suspend fun getProducts(requestParams: ProductCardRequest,
+                                     queryParameterMap: MutableMap<String, Any>
+    ): Pair<ArrayList<ComponentsItem>, ComponentAdditionalInfo?> {
+        val page = queryParameterMap[RPC_PAGE_NUMBER] as String
+        val list = when (requestParams.componentName) {
             ComponentNames.CategoryBestSeller.componentName -> {
                 val recommendationData =
-                    recommendationUseCase.getData(getRecommendationRequestParam(page, getPageInfo(pageEndPoint).id.toString(), pageName = "category_best_seller"))
-                mapRecommendationToDiscoveryResponse(componentId, recommendationData, productComponentName)
+                    recommendationUseCase.getData(getRecommendationRequestParam(page, getPageInfo(requestParams.pageEndpoint).id.toString(), pageName = "category_best_seller"))
+                mapRecommendationToDiscoveryResponse(requestParams.componentId, recommendationData, requestParams.componentName)
             }
             ComponentNames.CLPFeaturedProducts.componentName -> {
                 val recommendationData =
-                    recommendationUseCase.getData(getRecommendationRequestParam(page, getPageInfo(pageEndPoint).id.toString(), pageName = "promo_clp"))
-                mapRecommendationToDiscoveryResponse(componentId, recommendationData, productComponentName)
+                    recommendationUseCase.getData(getRecommendationRequestParam(page, getPageInfo(requestParams.pageEndpoint).id.toString(), pageName = "promo_clp"))
+                mapRecommendationToDiscoveryResponse(requestParams.componentId, recommendationData, requestParams.componentName)
             }
             else -> {
                 val recommendationData =
-                    recommendationUseCase.getData(createRequestParams(page, getPageInfo(pageEndPoint).id.toString(), getComponent(componentId, pageEndPoint)))
-                mapRecommendationToDiscoveryResponse(componentId, recommendationData, productComponentName)
+                    recommendationUseCase.getData(createRequestParams(page, getPageInfo(requestParams.pageEndpoint).id.toString(), getComponent(requestParams.componentId, requestParams.pageEndpoint)))
+                mapRecommendationToDiscoveryResponse(requestParams.componentId, recommendationData, requestParams.componentName)
             }
         }
         return Pair(list,null)

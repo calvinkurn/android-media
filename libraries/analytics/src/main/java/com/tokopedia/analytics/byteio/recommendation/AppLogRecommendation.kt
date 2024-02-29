@@ -3,6 +3,8 @@ package com.tokopedia.analytics.byteio.recommendation
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogParam
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.SourcePageType
@@ -52,8 +54,8 @@ object AppLogRecommendation {
         AppLogAnalytics.send(
             EventName.ENTER_PAGE,
             JSONObject().apply {
-                AppLogAnalytics.getLastData(AppLogParam.ENTER_FROM)
-                AppLogAnalytics.getLastData(AppLogParam.ENTER_METHOD)
+                put(ENTER_FROM, AppLogAnalytics.getLastData(AppLogParam.ENTER_FROM))
+                put(ENTER_METHOD, AppLogAnalytics.getLastData(AppLogParam.ENTER_METHOD))
                 addPage()
             }
         )

@@ -122,9 +122,5 @@ interface ProductListSectionContract {
         fun onViewResumed()
         fun onLocalizingAddressSelected()
         fun onApplyDropdownQuickFilter(optionList: List<Option>?)
-
-        val requestId: String
-
-        val searchId: String
     }
 }

@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
 import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
@@ -1488,6 +1489,10 @@ open class HomeRevampFragment :
 
     private fun trackEnterPage() {
         if(hasTrackEnterPage) return
+        val currentEnterMethod = AppLogAnalytics.getLastData(ENTER_METHOD)?.toString()
+        if (currentEnterMethod.isNullOrEmpty()) {
+            AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_APP_ICON)
+        }
         AppLogRecommendation.sendEnterPageAppLog()
         hasTrackEnterPage = true
     }
@@ -2117,7 +2122,7 @@ open class HomeRevampFragment :
         return if (placeholders.isNotEmpty())
             placeholders.map { hintData(it, data.wordsSource, data.imprId) }
         else
-            listOf(hintData(data, "", ""))
+            listOf(hintData(data, data.wordsSource, data.imprId))
     }
 
     private fun hintData(

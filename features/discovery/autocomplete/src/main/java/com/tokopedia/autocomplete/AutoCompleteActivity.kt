@@ -12,8 +12,4 @@ open class AutoCompleteActivity:
     override fun getTelemetrySectionName() = "autocomplete"
 
     override fun getPageName(): String = ""
-
-    override fun isEnterFromWhitelisted(): Boolean = false
-
-    override fun isShadow(): Boolean = true
 }

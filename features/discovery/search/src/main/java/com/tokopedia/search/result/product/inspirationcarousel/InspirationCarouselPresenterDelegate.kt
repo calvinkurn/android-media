@@ -6,9 +6,7 @@ import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
-import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.ClassNameProvider
-import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.byteio.ByteIOTrackingDataFactory
@@ -298,18 +296,15 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         )
     }
 
-    override fun onInspirationCarouselProductClick(
-        product: InspirationCarouselDataView.Option.Product,
-        optionAdapterPosition: Int,
-    ) {
+    override fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product) {
         view.openLink(product.applink, product.url)
 
         when (product.layout) {
             LAYOUT_INSPIRATION_CAROUSEL_GRID ->
-                view.trackEventClickInspirationCarouselGridItem(product, optionAdapterPosition)
+                view.trackEventClickInspirationCarouselGridItem(product)
 
             LAYOUT_INSPIRATION_CAROUSEL_CHIPS ->
-                view.trackEventClickInspirationCarouselChipsItem(product, optionAdapterPosition)
+                view.trackEventClickInspirationCarouselChipsItem(product)
 
             else -> view.trackEventClickInspirationCarouselListItem(product)
         }

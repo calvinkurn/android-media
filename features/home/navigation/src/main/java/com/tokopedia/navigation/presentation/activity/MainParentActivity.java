@@ -400,7 +400,6 @@ public class MainParentActivity extends BaseActivity implements
         if (pageLoadTimePerformanceCallback != null && pageLoadTimePerformanceCallback.getCustomMetric().containsKey(MAIN_PARENT_ON_START_METRICS)) {
             pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_START_METRICS);
         }
-        handleAppLogInitialEnterMethod();
     }
 
     private void routeOnboarding() {
@@ -1358,13 +1357,6 @@ public class MainParentActivity extends BaseActivity implements
         }
         handleAppLogEnterMethod(pageTitle);
         return true;
-    }
-
-    private void handleAppLogInitialEnterMethod() {
-        Object currentEnterMethod = AppLogAnalytics.INSTANCE.getLastData(ENTER_METHOD);
-        if (currentEnterMethod instanceof String && !((String) currentEnterMethod).isEmpty()) {
-            AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
-        }
     }
 
     private void handleAppLogEnterMethod(String pageTitle) {

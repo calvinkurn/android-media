@@ -1135,33 +1135,7 @@ open class ThankYouBaseFragment :
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
         getLoadingView()?.gone()
         thanksPageData = data
-        AppLogPdp.sendSubmitOrderResult(
-            SubmitOrderResult(
-                shippingPrice = data.shopOrder.sumOf { it.shippingAmount.toDouble() },
-                discountedShippingPrice = data.shopOrder.sumOf { it.discountShippingAmount.toDouble() },
-                totalPayment = data.amount.toDouble(),
-                discountedAmount = data.shopOrder.sumOf { it.discountAmount.toDouble() },
-                totalTax = data.shopOrder.sumOf { it.tax }.toDouble(),
-                payType = data.gatewayName,
-                cartItemId = data.shopOrder.joinToString(",") { shop ->
-                    shop.purchaseItemList.joinToString(",") { it.cartId }
-                },
-                skuId = data.shopOrder.joinToString(",") { shopLevel ->
-                    shopLevel.purchaseItemList.joinToString(",") { orderLevel ->
-                        orderLevel.productId
-                } },
-                orderId = data.shopOrder.joinToString(",") { it.orderId },
-                comboId = data.paymentID,
-                summaryInfo = data.customDataOther?.summaryInfo.orEmpty(),
-                deliveryInfo = SubmitOrderResult.DeliveryInfo(
-                    shippingType = data.shopOrder.joinToString(",") { it.shippingDesc },
-                    eta = data.shopOrder.joinToString(",") { it.logisticETA.toString() }
-                ).toJsonString(),
-                productId = data.shopOrder.joinToString(",") { shop ->
-                    shop.purchaseItemList.joinToString(",") { it.parentProductId }
-                },
-            )
-        )
+        thankYouPageAnalytics.get().sendSubmitOrderByteIoTracker(data)
         showPaymentStatusDialog(isTimerExpired(data), thanksPageData)
     }
 

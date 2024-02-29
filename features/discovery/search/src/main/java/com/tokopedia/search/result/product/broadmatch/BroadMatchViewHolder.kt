@@ -96,7 +96,7 @@ class BroadMatchViewHolder(
             maxLines = SEARCH_PAGE_RESULT_MAX_LINE
         )
         headerView.addOnImpressionListener(broadMatchDataView) {
-            broadMatchListener.onBroadMatchImpressed(broadMatchDataView, bindingAdapterPosition)
+            broadMatchListener.onBroadMatchImpressed(broadMatchDataView)
         }
     }
 
@@ -153,8 +153,8 @@ class BroadMatchViewHolder(
                     ),
                 ),
                 impressHolder = { item },
-                onImpressed = { broadMatchListener.onBroadMatchItemImpressed(item, bindingAdapterPosition) },
-                onClick = { broadMatchListener.onBroadMatchItemClicked(item, bindingAdapterPosition) },
+                onImpressed = { broadMatchListener.onBroadMatchItemImpressed(item) },
+                onClick = { broadMatchListener.onBroadMatchItemClicked(item) },
             )
         }
 
@@ -183,7 +183,7 @@ class BroadMatchViewHolder(
 
         searchBroadMatchTitle.text = getTitle(broadMatchDataView)
         searchBroadMatchTitle.addOnImpressionListener(broadMatchDataView) {
-            broadMatchListener.onBroadMatchImpressed(broadMatchDataView, bindingAdapterPosition)
+            broadMatchListener.onBroadMatchImpressed(broadMatchDataView)
         }
     }
 
@@ -256,7 +256,7 @@ class BroadMatchViewHolder(
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                 override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                     val product = products.getOrNull(carouselProductCardPosition) ?: return
-                    broadMatchListener.onBroadMatchItemClicked(product, bindingAdapterPosition)
+                    broadMatchListener.onBroadMatchItemClicked(product)
                 }
             },
             carouselProductCardOnItemThreeDotsClickListener = object: CarouselProductCardListener.OnItemThreeDotsClickListener {
@@ -268,7 +268,7 @@ class BroadMatchViewHolder(
             carouselProductCardOnItemImpressedListener = object: CarouselProductCardListener.OnItemImpressedListener {
                 override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                     val product = products.getOrNull(carouselProductCardPosition) ?: return
-                    broadMatchListener.onBroadMatchItemImpressed(product, bindingAdapterPosition)
+                    broadMatchListener.onBroadMatchItemImpressed(product)
                 }
 
                 override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {

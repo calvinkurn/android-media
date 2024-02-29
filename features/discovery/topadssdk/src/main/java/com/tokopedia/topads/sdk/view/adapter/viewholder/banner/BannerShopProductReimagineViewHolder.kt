@@ -35,7 +35,7 @@ class BannerShopProductReimagineViewHolder(
                 addOnImpressionListener(element) {
                     impressionListener?.onImpressionProductAdsItem(
                         adapterPosition,
-                        model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition - 1),
+                        model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition),
                         model.cpmData
                     )
                     impressionListener?.onImpressionHeadlineAdsItem(adapterPosition, model.cpmData)

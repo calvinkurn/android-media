@@ -2,6 +2,7 @@ package com.tokopedia.search.result.product.inspirationlistatc
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.byteio.ByteIORanking
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
@@ -10,7 +11,9 @@ data class InspirationListAtcDataView(
     val option: Option = Option(),
     val type: String = "",
 ) : Visitable<ProductListTypeFactory>,
-    VerticalSeparable {
+    VerticalSeparable,
+    ByteIORanking by option {
+
     override fun type(typeFactory: ProductListTypeFactory): Int {
         return typeFactory.type(this)
     }
