@@ -269,7 +269,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
             recommendationCard.mapToHomeGlobalRecommendationProductItem(),
             pageName,
             layoutName,
-            (((pageNumber - Int.ONE) * cardTotal) + index + Int.ONE),
+            index,
             tabIndex,
             tabName,
             appLog.toAppLogModel(recommendationCard.recParam),
