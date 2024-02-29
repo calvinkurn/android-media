@@ -13,7 +13,7 @@ import com.tokopedia.analytics.byteio.SlideTrackObject
 import com.tokopedia.analytics.byteio.addHorizontalTrackListener
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.data.ComponentSourceData
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.MixLeft
 import com.tokopedia.discovery2.di.getSubComponent
@@ -23,6 +23,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -101,8 +102,8 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
 
     private fun RecyclerView.trackHorizontalScroll() {
         val component = mProductCarouselComponentViewModel?.components
-        if(hasApplogScrollListener || component?.getSource() != ComponentSourceData.Recommendation) return
-        val pageName = component.compAdditionalInfo?.tracker?.recommendationPageName.orEmpty()
+        if(hasApplogScrollListener || component?.isEligibleToTrack().orFalse()) return
+        val pageName = component?.compAdditionalInfo?.tracker?.recommendationPageName.orEmpty()
         addHorizontalTrackListener(
             slideTrackObject = SlideTrackObject(
                 moduleName = pageName,
