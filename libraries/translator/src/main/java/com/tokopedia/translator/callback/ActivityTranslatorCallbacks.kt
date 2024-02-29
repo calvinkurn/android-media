@@ -36,10 +36,12 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
@@ -140,8 +142,8 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         startTranslate(rootView)
     }
 
+    @OptIn(FlowPreview::class)
     fun ViewTreeObserver.onScrollChangedAsFlow() = callbackFlow<Unit> {
-        var job: Job? = null
         var isIdle = true
 
         val preDrawListener = ViewTreeObserver.OnPreDrawListener {
@@ -149,26 +151,21 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
             true
         }
 
-        val listener = ViewTreeObserver.OnScrollChangedListener {
-            job?.cancel()
-            job = launch(coroutineContext) {
-                if (!isIdle) {
-                    delay(DELAYING_SCROLL_TO_IDLE)
-                    isIdle = true
-                    trySend(Unit)
-                }
+        val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
+            if (!isIdle) {
+                isIdle = true
+                trySend(Unit)
             }
         }
 
         addOnPreDrawListener(preDrawListener)
-        addOnScrollChangedListener(listener)
+        addOnScrollChangedListener(onScrollChangedListener)
 
         awaitClose {
             removeOnPreDrawListener(preDrawListener)
-            removeOnScrollChangedListener(listener)
-            job?.cancel()
+            removeOnScrollChangedListener(onScrollChangedListener)
         }
-    }
+    }.debounce(DELAYING_SCROLL_TO_IDLE)
 
     private fun onDestLanguageChangedAsFlow(activity: Activity) = callbackFlow<String> {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
@@ -202,7 +199,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
     companion object {
         private val TAG = ActivityTranslatorCallbacks::class.java.simpleName
 
-        private const val DELAYING_SCROLL_TO_IDLE = 500L
+        private const val DELAYING_SCROLL_TO_IDLE = 400L
     }
 
     internal inner class FragmentTranslatorCallbacks : FragmentManager.FragmentLifecycleCallbacks() {
@@ -223,6 +220,10 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         }
 
         private fun setTranslatorBottomSheet(f: Fragment) {
+            if (f.activity != null) {
+                val weakActivity = WeakReference<Activity>(f.activity)
+                TranslatorManager.setCurrentActivity(weakActivity)
+            }
             if (f is BottomSheetUnify) {
                 val mContext = f.context
                 if (mContext?.let { SharedPrefsUtils.getBooleanPreference(it, TranslatorSettingView.IS_ENABLE, false) } == true) {

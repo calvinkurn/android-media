@@ -31,13 +31,8 @@ import com.tokopedia.translator.viewtree.ViewTreeManager
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
 
@@ -134,7 +129,7 @@ class TranslatorManager() : CoroutineScope {
     }
 
 
-    fun prepareSelectors(views: List<View?>, activity: Activity) {
+    private suspend fun prepareSelectors(views: List<View?>, activity: Activity) {
 
         if (views.isEmpty()) return
 
@@ -153,7 +148,7 @@ class TranslatorManager() : CoroutineScope {
                         } else {
                             //translate
                             if (view.text != stringPoolItem.demandedText) {
-                                launch(Dispatchers.Main) {
+                                withContext(Dispatchers.Main) {
                                     view.text = stringPoolItem.demandedText
                                     view.tag = true
                                 }
@@ -186,10 +181,8 @@ class TranslatorManager() : CoroutineScope {
             destinationLang = currentDestLang
         }
 
-        val views = coroutineScope {
-            async {
-                ViewUtil.getChildren(ViewUtil.getContentView(getCurrentActivity()))
-            }.await()
+        val views = withContext(coroutineContext) {
+            ViewUtil.getChildren(ViewUtil.getContentView(getCurrentActivity()), mStringPoolManager)
         }
 
         prepareSelectors(views, getCurrentActivity()!!)
@@ -207,48 +200,43 @@ class TranslatorManager() : CoroutineScope {
         fetchTranslationService(originStrList)
     }
 
-    private fun fetchTranslationService(originStrList: Array<String>) {
-        launch(coroutineContext) {
-            val call = service.getTranslatedString("dict-chrome-ex", "id", destinationLang, "t", originStrList)
+    private suspend fun fetchTranslationService(originStrList: Array<String>) {
+        val call = service.getTranslatedString("dict-chrome-ex", "id", destinationLang, "t", originStrList)
 
-            call.enqueue(object : Callback<String> {
+        try {
+            val response = withContext(Dispatchers.IO) {
+                call.execute()
+            }
 
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    if (response.isSuccessful) {
-                        try {
-                            val strJson = response.body()
-                            Log.d(TranslatorManagerFragment.TAG, "Received response from server: $strJson --> ${TranslatorManagerFragment.getCurrentFragment()}")
+            if (response.isSuccessful) {
+                try {
+                    val strJson = response.body()
+                    Log.d(TranslatorManagerFragment.TAG, "Received response from server: $strJson --> ${TranslatorManagerFragment.getCurrentFragment()}")
 
-                            val arrayStr = jsonStringToArray(strJson)
+                    val arrayStr = jsonStringToArray(strJson)
 
-                            if (arrayStr.isNotEmpty()) {
+                    if (arrayStr.isNotEmpty()) {
 
-                                mStringPoolManager.updateCache(originStrList, arrayStr, destinationLang)
+                        mStringPoolManager.updateCache(originStrList, arrayStr, destinationLang)
 
-                                val charCountOld = SharedPrefsUtils.getIntegerPreference(mApplication!!.applicationContext, CHARS_COUNT, 0)
+                        val charCountOld = SharedPrefsUtils.getIntegerPreference(mApplication!!.applicationContext, CHARS_COUNT, 0)
 
-                                launch {
-                                    updateScreenWithTranslatedString()
-                                    SharedPrefsUtils.setIntegerPreference(mApplication!!.applicationContext, CHARS_COUNT, origStrings!!.length + charCountOld)
-                                }
-
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
+                        withContext(coroutineContext) {
+                            updateScreenWithTranslatedString()
                         }
+
+                        SharedPrefsUtils.setIntegerPreference(mApplication!!.applicationContext, CHARS_COUNT, origStrings!!.length + charCountOld)
                     }
-
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    Log.e(TranslatorManagerFragment.TAG, t.localizedMessage.orEmpty())
-                    t.printStackTrace()
-                }
-            })
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 
-    fun jsonStringToArray(jsonString: String?): Array<String> {
+    private fun jsonStringToArray(jsonString: String?): Array<String> {
         if (jsonString?.isBlank() == true) return emptyArray()
         return try {
             gson.fromJson(jsonString, Array<String>::class.java)
@@ -259,15 +247,14 @@ class TranslatorManager() : CoroutineScope {
 
     suspend fun updateScreenWithTranslatedString() {
         Log.d(TAG, "Starting screen update with translated string ${getCurrentActivity()}")
+
         var stringPoolItem: StringPoolItem?
         var tv: View?
         for (selector in mSelectors) {
             try {
 
-                tv = coroutineScope {
-                    async {
-                        ViewTreeManager.findViewByDOMIdentifier(selector.value, getCurrentActivity()!!)
-                    }.await()
+                tv = withContext(coroutineContext) {
+                    ViewTreeManager.findViewByDOMIdentifier(selector.value, getCurrentActivity()!!)
                 }
 
                 if (tv == null) continue
@@ -281,11 +268,9 @@ class TranslatorManager() : CoroutineScope {
                     }
 
                     if (tv.text != stringPoolItem.demandedText) {
-                        coroutineScope {
-                            launch (Dispatchers.Main) {
-                                tv.text = stringPoolItem.demandedText
-                                tv.tag = true
-                            }
+                        withContext(Dispatchers.Main) {
+                            tv.text = stringPoolItem.demandedText
+                            tv.tag = true
                         }
                     }
                 }

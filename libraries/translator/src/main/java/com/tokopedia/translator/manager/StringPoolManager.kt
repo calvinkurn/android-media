@@ -31,6 +31,10 @@ class StringPoolManager {
         return mPools.get(current.trim())
     }
 
+    fun getPools(): HashMap<String, StringPoolItem> {
+        return mPools
+    }
+
     fun updateCache(old: Array<String>, new: Array<String>, destinationLang: String) {
         if (old.size != new.size)
             return

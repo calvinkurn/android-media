@@ -14,17 +14,19 @@
 package com.tokopedia.translator.util
 
 import android.app.Activity
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.translator.manager.StringPoolManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 
 internal object ViewUtil {
-    suspend fun getChildren(viewGroup: View?): List<View> {
+
+    suspend fun getChildren(viewGroup: View?, stringPoolManager: StringPoolManager?): List<View> {
         return withContext(Dispatchers.Default) {
             val unTraversedViews = ArrayList<View>()
             val traversedViews = ArrayList<View>()
@@ -32,7 +34,14 @@ internal object ViewUtil {
 
             while (unTraversedViews.isNotEmpty()) {
                 val child = unTraversedViews.removeAt(0)
-                traversedViews.add(child)
+
+                if (child is TextView && child !is EditText) {
+                    val stringPollItem = stringPoolManager?.get(child.text?.toString())
+                    if (stringPollItem?.demandedText != child.text) {
+                        traversedViews.add(child)
+                    }
+                }
+
                 if (child !is ViewGroup) {
                     continue
                 }
@@ -45,17 +54,15 @@ internal object ViewUtil {
         }
     }
 
-    suspend fun getRecyclerView(viewGroup: View): RecyclerView? {
-
-        val children = getChildren(viewGroup)
-
-        for (child in children) {
-            if (child is RecyclerView) {
-                return child
-            }
+    private fun getViewGroupId(viewGroup: View, activity: Activity): String {
+        return try {
+            val className = activity.javaClass.simpleName
+            val layoutResourceId = viewGroup.id
+            val fileName = activity.resources.getResourceEntryName(layoutResourceId)
+            "$className@$fileName@$layoutResourceId"
+        } catch (e: Exception) {
+            ""
         }
-
-        return null
     }
 
     fun getContentView(activity: Activity?): View? {

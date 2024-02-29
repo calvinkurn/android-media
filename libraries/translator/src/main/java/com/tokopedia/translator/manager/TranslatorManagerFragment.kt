@@ -31,12 +31,7 @@ import com.tokopedia.translator.viewtree.ViewTreeManagerFragment
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
 
@@ -124,7 +119,7 @@ class TranslatorManagerFragment() : CoroutineScope {
     }
 
 
-    fun prepareSelectors(views: List<View?>, fragment: Fragment) {
+    suspend fun prepareSelectors(views: List<View?>, fragment: Fragment) {
 
         if (views.isEmpty()) return
 
@@ -147,7 +142,7 @@ class TranslatorManagerFragment() : CoroutineScope {
                                 } else {
                                     //translate
                                     if (view.text != stringPoolItem.demandedText) {
-                                        launch(Dispatchers.Main) {
+                                        withContext(Dispatchers.Main) {
                                             view.text = stringPoolItem.demandedText
                                             view.tag = true
                                         }
@@ -185,10 +180,8 @@ class TranslatorManagerFragment() : CoroutineScope {
             destinationLang = currentDestLang
         }
 
-        val views = coroutineScope {
-            async {
-                ViewUtil.getChildren(ViewUtil.getContentView(getCurrentFragment()))
-            }.await()
+        val views = withContext(coroutineContext) {
+            ViewUtil.getChildren(ViewUtil.getContentView(getCurrentFragment()), mStringPoolManager)
         }
 
         prepareSelectors(views, getCurrentFragment()!!)
@@ -209,59 +202,53 @@ class TranslatorManagerFragment() : CoroutineScope {
         fetchTranslationService(originStrList)
     }
 
-    private fun fetchTranslationService(originStrList: Array<String>) {
-        launch(coroutineContext) {
-            val call = service.getTranslatedString("dict-chrome-ex", "id", destinationLang, "t", originStrList)
+    private suspend fun fetchTranslationService(originStrList: Array<String>) {
+        val call = service.getTranslatedString("dict-chrome-ex", "id", destinationLang, "t", originStrList)
 
-            call.enqueue(object : Callback<String> {
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    if (response.isSuccessful) {
-                        try {
-                            val strJson = response.body()
-                            Log.d(
-                                TAG,
-                                "Received response from server: $strJson --> ${getCurrentFragment()}"
+        try {
+
+            val response = withContext(Dispatchers.IO) {
+                call.execute()
+            }
+
+            if (response.isSuccessful) {
+                try {
+                    val strJson = response.body()
+                    Log.d(
+                        TAG,
+                        "Received response from server: $strJson --> ${getCurrentFragment()}"
+                    )
+
+                    val arrayStr = jsonStringToArray(strJson)
+
+                    if (arrayStr.isNotEmpty()) {
+
+                        mStringPoolManager.updateCache(
+                            originStrList,
+                            arrayStr,
+                            destinationLang
+                        )
+
+                        val charCountOld =
+                            SharedPrefsUtils.getIntegerPreference(
+                                mApplication!!.applicationContext,
+                                CHARS_COUNT,
+                                0
                             )
 
-                            val arrayStr = jsonStringToArray(strJson)
-
-                            if (arrayStr.isNotEmpty()) {
-
-                                mStringPoolManager.updateCache(
-                                    originStrList,
-                                    arrayStr,
-                                    destinationLang
-                                )
-
-                                val charCountOld =
-                                    SharedPrefsUtils.getIntegerPreference(
-                                        mApplication!!.applicationContext,
-                                        CHARS_COUNT,
-                                        0
-                                    )
-
-
-                                launch {
-                                    updateScreenWithTranslatedString()
-                                    SharedPrefsUtils.setIntegerPreference(
-                                        mApplication!!.applicationContext,
-                                        CHARS_COUNT,
-                                        (origStrings?.length ?: 0) + charCountOld
-                                    )
-                                }
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
+                        updateScreenWithTranslatedString()
+                        SharedPrefsUtils.setIntegerPreference(
+                            mApplication!!.applicationContext,
+                            CHARS_COUNT,
+                            (origStrings?.length ?: 0) + charCountOld
+                        )
                     }
-
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    Log.e(TAG, t.localizedMessage.orEmpty())
-                    t.printStackTrace()
-                }
-            })
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -290,8 +277,10 @@ class TranslatorManagerFragment() : CoroutineScope {
                     }
 
                     if (tv.text != stringPoolItem.demandedText) {
-                        tv.text = stringPoolItem.demandedText
-                        tv.tag = true
+                        withContext(Dispatchers.Main) {
+                            tv.text = stringPoolItem.demandedText
+                            tv.tag = true
+                        }
                     }
                 }
             } catch (e: Exception) {
