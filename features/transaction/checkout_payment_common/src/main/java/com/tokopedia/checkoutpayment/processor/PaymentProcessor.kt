@@ -12,6 +12,8 @@ import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentData
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOptionUseCase
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetListData
 import com.tokopedia.checkoutpayment.domain.TenorListData
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
+import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
 import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -124,6 +126,92 @@ class PaymentProcessor @Inject constructor(
         }
         // error
         return PaymentValidationReport.NullPaymentError
+    }
+
+    fun generateCheckoutPaymentWidgetData(
+        payment: PaymentWidgetListData,
+        tenorList: List<TenorListData>?,
+        installmentData: GoCicilInstallmentData?,
+        currentWidget: CheckoutPaymentWidgetData,
+        validationReport: PaymentValidationReport,
+        defaultErrorMessage: String
+    ): CheckoutPaymentWidgetData {
+        if (currentWidget.state == CheckoutPaymentWidgetState.Error) {
+            return currentWidget.copy(errorMessage = defaultErrorMessage)
+        }
+        if (validationReport is PaymentValidationReport.NullPaymentError) {
+            return currentWidget.copy(
+                state = CheckoutPaymentWidgetState.Error,
+                errorMessage = defaultErrorMessage
+            )
+        }
+        val latestWidget = generateBaseCheckoutPaymentWidgetData(payment, tenorList, installmentData, currentWidget)
+        val currentData = payment.paymentWidgetData.first()
+        return when (validationReport) {
+            PaymentValidationReport.MaximumAmountError -> {
+                latestWidget.copy(
+                    errorMessage = currentData.amountValidation.maximumAmountErrorMessage
+                )
+            }
+
+            PaymentValidationReport.MinimumAmountError -> {
+                latestWidget.copy(
+                    errorMessage = currentData.amountValidation.minimumAmountErrorMessage
+                )
+            }
+
+            PaymentValidationReport.MissingPhoneNumberError -> {
+                latestWidget.copy(
+                    errorMessage = currentData.walletData.phoneNumberRegistration.errorMessage
+                )
+            }
+
+            PaymentValidationReport.NullPaymentError -> {
+                // already handled above
+                latestWidget
+            }
+
+            PaymentValidationReport.ServerError -> {
+                latestWidget.copy(
+                    errorMessage = currentData.errorDetails.message
+                )
+            }
+
+            PaymentValidationReport.UnavailableTenureError -> {
+                latestWidget.copy(
+                    errorMessage = currentData.installmentPaymentData.errorMessageUnavailableTenure
+                )
+            }
+
+            PaymentValidationReport.Valid -> {
+                latestWidget
+            }
+
+            PaymentValidationReport.WalletActivationError -> {
+                latestWidget.copy(
+                    errorMessage = currentData.walletData.activation.errorMessage
+                )
+            }
+
+            PaymentValidationReport.WalletAmountError -> {
+                latestWidget.copy(
+                    errorMessage = currentData.walletData.topUp.errorMessage
+                )
+            }
+        }
+    }
+
+    private fun generateBaseCheckoutPaymentWidgetData(
+        payment: PaymentWidgetListData,
+        tenorList: List<TenorListData>?,
+        installmentData: GoCicilInstallmentData?,
+        currentWidget: CheckoutPaymentWidgetData
+    ): CheckoutPaymentWidgetData {
+        val currentData = payment.paymentWidgetData.firstOrNull() ?: return currentWidget
+        return currentWidget.copy(
+            logoUrl = currentData.imageUrl,
+            title = currentData.gatewayName
+        )
     }
 }
 

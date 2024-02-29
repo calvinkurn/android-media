@@ -87,7 +87,7 @@ fun CheckoutPaymentWidget(
                                 }
                         ) {
                             NestTypography(
-                                text = "Pembayaran gagal ditampilkan. Coba lagi, yuk! Pembayaran gagal ditampilkan. Coba lagi, yuk!",
+                                text = data.errorMessage,
                                 textStyle = NestTheme.typography.display3.copy(
                                     color = NestTheme.colors.NN._950
                                 ),
@@ -106,29 +106,6 @@ fun CheckoutPaymentWidget(
                     }
 
                     CheckoutPaymentWidgetState.Normal -> {
-//                        Row(
-//                            modifier = Modifier
-//                                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 12.dp)
-//                        ) {
-//                            NestTypography(
-//                                text = stringResource(id = R.string.checkout_payment_method_label),
-//                                textStyle = NestTheme.typography.display3.copy(
-//                                    color = NestTheme.colors.NN._950,
-//                                    fontWeight = FontWeight.W800
-//                                )
-//                            )
-//                            NestTypography(
-//                                text = "Ganti",
-//                                modifier = Modifier
-//                                    .padding(start = 12.dp)
-//                                    .fillMaxWidth(),
-//                                textStyle = NestTheme.typography.display3.copy(
-//                                    color = NestTheme.colors.GN._500,
-//                                    fontWeight = FontWeight.W800,
-//                                    textAlign = TextAlign.End
-//                                )
-//                            )
-//                        }
                         NestTypography(
                             text = stringResource(id = R.string.checkout_payment_method_label),
                             textStyle = NestTheme.typography.display3.copy(
@@ -143,7 +120,7 @@ fun CheckoutPaymentWidget(
                                 .padding(start = 16.dp, end = 28.dp, bottom = 12.dp)
                         ) {
                             NestImage(
-                                ImageSource.Remote(""),
+                                ImageSource.Remote(data.logoUrl),
                                 modifier = Modifier
                                     .size(28.dp)
                                     .align(Alignment.CenterVertically)
@@ -155,41 +132,29 @@ fun CheckoutPaymentWidget(
                             ) {
                                 Row {
                                     NestTypography(
-                                        text = "BCA gopay cicilan tiap bulan gratis",
+                                        text = data.title,
                                         textStyle = NestTheme.typography.display3.copy(
-                                            color = NestTheme.colors.NN._950
+                                            color = if (data.isTitleRed) NestTheme.colors.RN._500 else NestTheme.colors.NN._950
                                         ),
                                         modifier = Modifier.weight(1f),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
                                     )
-                                    if (data.errorMessage.isNotEmpty()) {
-                                        NestTypography(
-                                            text = data.errorMessage,
-                                            textStyle = NestTheme.typography.display3.copy(
-                                                color = NestTheme.colors.RN._500
-                                            ),
-                                            modifier = Modifier
-                                                .padding(start = 4.dp),
-                                            maxLines = 1
-                                        )
-                                    } else {
-                                        NestTypography(
-                                            text = "(asdfasdf, kode ***2, saldo Rp1.000.000)",
-                                            textStyle = NestTheme.typography.display3.copy(
-                                                color = NestTheme.colors.NN._600
-                                            ),
-                                            modifier = Modifier
-                                                .padding(start = 4.dp),
-                                            maxLines = 1
-                                        )
-                                    }
+                                    NestTypography(
+                                        text = data.subtitle,
+                                        textStyle = NestTheme.typography.display3.copy(
+                                            color = NestTheme.colors.NN._600
+                                        ),
+                                        modifier = Modifier
+                                            .padding(start = 4.dp),
+                                        maxLines = 1
+                                    )
                                 }
                                 NestTypography(
-                                    text = "Cicil 3x Rp234.123.566 * Cicil 3x Rp234.123.566 * Cicil 3x Rp234.123.566",
+                                    text = data.description,
                                     modifier = Modifier.padding(top = 2.dp),
                                     textStyle = NestTheme.typography.display3.copy(
-                                        color = NestTheme.colors.NN._600
+                                        color = if (data.isDescriptionRed) NestTheme.colors.RN._500 else NestTheme.colors.NN._600
                                     )
                                 )
                             }
@@ -221,18 +186,30 @@ fun CheckoutPaymentWidgetPreview() {
             CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Loading)
         )
         CheckoutPaymentWidget(
-            CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Error)
+            CheckoutPaymentWidgetData(
+                state = CheckoutPaymentWidgetState.Error,
+                errorMessage = "Pembayaran gagal dimuat, silahkan coba lagi."
+            )
         )
         CheckoutPaymentWidget(
             CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.None)
         )
         CheckoutPaymentWidget(
-            CheckoutPaymentWidgetData(state = CheckoutPaymentWidgetState.Normal)
+            CheckoutPaymentWidgetData(
+                state = CheckoutPaymentWidgetState.Normal,
+                title = "Bank nama panjang sekali",
+                subtitle = "(isi saldo rekening panjang sekali)",
+                description = "cicilan sangat panjang hingga butuh 2 baris utk menuliskannya semua"
+            )
         )
         CheckoutPaymentWidget(
             CheckoutPaymentWidgetData(
                 state = CheckoutPaymentWidgetState.Normal,
-                errorMessage = "something went wrong"
+                title = "Bank nama panjang sekali",
+                isTitleRed = true,
+                subtitle = "(isi saldo rekening panjang sekali)",
+                description = "cicilan sangat panjang hingga butuh 2 baris utk menuliskannya semua",
+                isDescriptionRed = true
             )
         )
     }

@@ -45,7 +45,6 @@ import com.tokopedia.checkoutpayment.data.UsageSummariesData
 import com.tokopedia.checkoutpayment.data.VoucherOrderItemData
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData
 import com.tokopedia.checkoutpayment.processor.PaymentProcessor
-import com.tokopedia.checkoutpayment.processor.PaymentValidationReport
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -236,7 +235,10 @@ class CheckoutPaymentProcessor @Inject constructor(
                                             eta = selectedShipper?.etaText.orEmpty(),
                                             insurancePrice = selectedShipper?.insurancePrice.toZeroIfNull().toDouble()
                                         ),
-                                        shopOrders = helper.getOrderProducts(checkoutItems, it.cartStringGroup).groupBy { item ->
+                                        shopOrders = helper.getOrderProducts(
+                                            checkoutItems,
+                                            it.cartStringGroup
+                                        ).groupBy { item ->
                                             (item as CheckoutProductModel).cartStringOrder
                                         }.values.map { order ->
                                             val singleItem = order.first() as CheckoutProductModel
@@ -374,10 +376,19 @@ class CheckoutPaymentProcessor @Inject constructor(
     suspend fun getPaymentWidget(param: GetPaymentWidgetRequest, payment: CheckoutPaymentModel): CheckoutPaymentModel {
         delay(5_000)
         val data = processor.getPaymentWidget(param)
-        return payment.copy(data = data, widget = payment.widget.copy(state = if (data == null) CheckoutPaymentWidgetState.Error else CheckoutPaymentWidgetState.Normal))
+        return payment.copy(
+            data = data,
+            widget = payment.widget.copy(
+                state = if (data == null) CheckoutPaymentWidgetState.Error else CheckoutPaymentWidgetState.Normal
+            )
+        )
     }
 
-    private fun generateCreditCardTenorRequest(payment: CheckoutPaymentModel, paymentData: PaymentWidgetData, paymentRequest: PaymentRequest): CreditCardTenorListRequest {
+    private fun generateCreditCardTenorRequest(
+        payment: CheckoutPaymentModel,
+        paymentData: PaymentWidgetData,
+        paymentRequest: PaymentRequest
+    ): CreditCardTenorListRequest {
         return CreditCardTenorListRequest(
             tokenId = paymentData.installmentPaymentData.creditCardAttribute.tokenId,
             userId = userSessionInterface.userId.toLongOrZero(),
@@ -393,12 +404,22 @@ class CheckoutPaymentProcessor @Inject constructor(
         )
     }
 
-    suspend fun getTenorList(payment: CheckoutPaymentModel, paymentData: PaymentWidgetData, paymentRequest: PaymentRequest): CheckoutPaymentModel {
-        val tenorList = processor.getCreditCardTenorList(generateCreditCardTenorRequest(payment, paymentData, paymentRequest))
+    suspend fun getTenorList(
+        payment: CheckoutPaymentModel,
+        paymentData: PaymentWidgetData,
+        paymentRequest: PaymentRequest
+    ): CheckoutPaymentModel {
+        val tenorList = processor.getCreditCardTenorList(
+            generateCreditCardTenorRequest(payment, paymentData, paymentRequest)
+        )
         return payment.copy(tenorList = tenorList)
     }
 
-    private fun generateInstallmentRequest(payment: CheckoutPaymentModel, paymentData: PaymentWidgetData, paymentRequest: PaymentRequest): GoCicilInstallmentRequest {
+    private fun generateInstallmentRequest(
+        payment: CheckoutPaymentModel,
+        paymentData: PaymentWidgetData,
+        paymentRequest: PaymentRequest
+    ): GoCicilInstallmentRequest {
         return GoCicilInstallmentRequest(
             gatewayCode = paymentData.gatewayCode,
             merchantCode = paymentData.merchantCode,
@@ -414,8 +435,14 @@ class CheckoutPaymentProcessor @Inject constructor(
         )
     }
 
-    suspend fun getInstallmentList(payment: CheckoutPaymentModel, paymentData: PaymentWidgetData, paymentRequest: PaymentRequest): CheckoutPaymentModel {
-        val installmentData = processor.getGocicilInstallmentOption(generateInstallmentRequest(payment, paymentData, paymentRequest))
+    suspend fun getInstallmentList(
+        payment: CheckoutPaymentModel,
+        paymentData: PaymentWidgetData,
+        paymentRequest: PaymentRequest
+    ): CheckoutPaymentModel {
+        val installmentData = processor.getGocicilInstallmentOption(
+            generateInstallmentRequest(payment, paymentData, paymentRequest)
+        )
         return payment.copy(installmentData = installmentData)
     }
 
@@ -427,69 +454,30 @@ class CheckoutPaymentProcessor @Inject constructor(
         val latestPaymentData = latestPayment.data
         val latestCost = checkoutItems.cost()!!
         val latestButtonPayment = checkoutItems.buttonPayment()!!
-        if (latestPaymentData != null) {
-            val result = processor.validatePayment(latestPaymentData, latestPayment.tenorList, latestPayment.installmentData, latestCost.totalPrice)
-            if (result == PaymentValidationReport.NullPaymentError) {
-                /* no-op */
-                return checkoutItems
-            }
-            val paymentWidgetData = latestPaymentData.paymentWidgetData.first()
-            when (result) {
-                PaymentValidationReport.MaximumAmountError -> {
-                    checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
-                        widget = latestPayment.widget.copy(
-                            errorMessage = paymentWidgetData.amountValidation.maximumAmountErrorMessage
-                        )
-                    )
-                }
-
-                PaymentValidationReport.MinimumAmountError -> {
-                    checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
-                        widget = latestPayment.widget.copy(
-                            errorMessage = paymentWidgetData.amountValidation.minimumAmountErrorMessage
-                        )
-                    )
-                }
-
-                PaymentValidationReport.MissingPhoneNumberError -> {
-                    checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
-                        widget = latestPayment.widget.copy(
-                            errorMessage = paymentWidgetData.walletData.phoneNumberRegistration.errorMessage
-                        )
-                    )
-                }
-                PaymentValidationReport.ServerError -> {
-                    checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
-                        widget = latestPayment.widget.copy(
-                            errorMessage = paymentWidgetData.errorDetails.message
-                        )
-                    )
-                }
-                PaymentValidationReport.UnavailableTenureError -> {
-                    checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
-                        widget = latestPayment.widget.copy(
-                            errorMessage = paymentWidgetData.installmentPaymentData.errorMessageUnavailableTenure
-                        )
-                    )
-                }
-                PaymentValidationReport.WalletActivationError -> {
-                    checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
-                        widget = latestPayment.widget.copy(
-                            errorMessage = paymentWidgetData.walletData.activation.errorMessage
-                        )
-                    )
-                }
-                PaymentValidationReport.WalletAmountError -> {
-                    checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
-                        widget = latestPayment.widget.copy(
-                            errorMessage = paymentWidgetData.walletData.topUp.errorMessage
-                        )
-                    )
-                }
-                else -> {
-                    /* no-op */
-                }
-            }
+        if (latestPayment.widget.state == CheckoutPaymentWidgetState.Error) {
+            checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
+                widget = latestPayment.widget.copy(
+                    errorMessage = latestPayment.defaultErrorMessage
+                )
+            )
+        } else if (latestPaymentData != null) {
+            val result = processor.validatePayment(
+                latestPaymentData,
+                latestPayment.tenorList,
+                latestPayment.installmentData,
+                latestCost.totalPrice
+            )
+            val newPaymentWidgetData = processor.generateCheckoutPaymentWidgetData(
+                latestPaymentData,
+                latestPayment.tenorList,
+                latestPayment.installmentData,
+                latestPayment.widget,
+                result,
+                latestPayment.defaultErrorMessage
+            )
+            checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = latestPayment.copy(
+                widget = newPaymentWidgetData
+            )
         }
         return checkoutItems
     }

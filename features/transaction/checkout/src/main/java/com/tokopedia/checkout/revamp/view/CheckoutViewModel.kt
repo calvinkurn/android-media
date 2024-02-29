@@ -3089,19 +3089,11 @@ class CheckoutViewModel @Inject constructor(
 
             if (payment.widget.state == CheckoutPaymentWidgetState.Error) {
                 // show error
-                val newItems = listData.value.toMutableList()
                 cost = cost.copy(
                     dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
                     usePaymentFees = true
                 )
-                listData.value = calculator.calculateTotalWithPayment(
-                    listData.value,
-                    cost,
-                    payment,
-                    summariesAddOnUiModel
-                )
-                listData.value = paymentProcessor.validatePayment(listData.value)
-                listData.value = calculator.updateButtonPaymentWithPaymentData(listData.value, isTradeInByDropOff)
+                updateTotalAndPayment(cost, payment)
                 return
             }
         } else {
@@ -3133,14 +3125,7 @@ class CheckoutViewModel @Inject constructor(
                 dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
                 usePaymentFees = true
             )
-            listData.value = calculator.calculateTotalWithPayment(
-                listData.value,
-                cost,
-                payment,
-                summariesAddOnUiModel
-            )
-            listData.value = paymentProcessor.validatePayment(listData.value)
-            listData.value = calculator.updateButtonPaymentWithPaymentData(listData.value, isTradeInByDropOff)
+            updateTotalAndPayment(cost, payment)
             return
         }
 
@@ -3158,14 +3143,7 @@ class CheckoutViewModel @Inject constructor(
                     dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
                     usePaymentFees = true
                 )
-                listData.value = calculator.calculateTotalWithPayment(
-                    listData.value,
-                    cost,
-                    payment,
-                    summariesAddOnUiModel
-                )
-                listData.value = paymentProcessor.validatePayment(listData.value)
-                listData.value = calculator.updateButtonPaymentWithPaymentData(listData.value, isTradeInByDropOff)
+                updateTotalAndPayment(cost, payment)
                 return
             }
         }
@@ -3183,28 +3161,24 @@ class CheckoutViewModel @Inject constructor(
                     dynamicPlatformFee = ShipmentPaymentFeeModel(isLoading = false),
                     usePaymentFees = true
                 )
-                listData.value = calculator.calculateTotalWithPayment(
-                    listData.value,
-                    cost,
-                    payment,
-                    summariesAddOnUiModel
-                )
-                listData.value = paymentProcessor.validatePayment(listData.value)
-                listData.value = calculator.updateButtonPaymentWithPaymentData(listData.value, isTradeInByDropOff)
+                updateTotalAndPayment(cost, payment)
                 return
             }
         }
 
-        // TODO: change to calculate with payment fees -> new fun
         cost = cost.copy(
             usePaymentFees = true
         )
+        updateTotalAndPayment(cost, payment)
+    }
+
+    private fun updateTotalAndPayment(cost: CheckoutCostModel, payment: CheckoutPaymentModel) {
         listData.value = calculator.calculateTotalWithPayment(
-                listData.value,
-                cost,
-                payment,
-                summariesAddOnUiModel
-            )
+            listData.value,
+            cost,
+            payment,
+            summariesAddOnUiModel
+        )
         listData.value = paymentProcessor.validatePayment(listData.value)
         listData.value = calculator.updateButtonPaymentWithPaymentData(listData.value, isTradeInByDropOff)
     }

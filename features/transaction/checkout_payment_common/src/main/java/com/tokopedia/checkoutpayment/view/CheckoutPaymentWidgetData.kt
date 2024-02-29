@@ -2,7 +2,13 @@ package com.tokopedia.checkoutpayment.view
 
 data class CheckoutPaymentWidgetData(
     val state: CheckoutPaymentWidgetState = CheckoutPaymentWidgetState.None,
-    val errorMessage: String = ""
+    val errorMessage: String = "",
+    val logoUrl: String = "",
+    val title: String = "",
+    val isTitleRed: Boolean = false,
+    val subtitle: String = "",
+    val description: String = "",
+    val isDescriptionRed: Boolean = false
 ) {
 
     val isValidStateToContinue: Boolean
