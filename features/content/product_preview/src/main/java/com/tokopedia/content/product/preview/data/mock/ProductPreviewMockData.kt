@@ -205,7 +205,91 @@ class ProductPreviewMockData {
                 mediaSelectedPosition = 0,
                 isWatchMode = false,
                 isScrolling = false,
-            )
+            ),
+            ReviewContentUiModel(
+                reviewId = "reviewId_1234",
+                medias = listOf(
+                    ReviewMediaUiModel(
+                        mediaId = "mediaId_1",
+                        type = MediaType.Video,
+                        selected = true,
+                    ),
+                    ReviewMediaUiModel(
+                        mediaId = "mediaId_2",
+                        type = MediaType.Image,
+                        selected = false,
+                    ),
+                    ReviewMediaUiModel(
+                        mediaId = "mediaId_3",
+                        type = MediaType.Image,
+                        selected = false,
+                    ),
+                ),
+                menus = ReviewMenuStatus(isReportable = true),
+                likeState = ReviewLikeUiState(
+                    count = 5,
+                    state = ReviewLikeUiState.ReviewLikeStatus.getByValue(1),
+                    withAnimation = false
+                ),
+                author = ReviewAuthorUiModel(
+                    name = "Author Name",
+                    type = "Shop",
+                    id = "userId_12345",
+                    avatarUrl = "avatar.url",
+                    appLink = "user.applink"
+                ),
+                description = ReviewDescriptionUiModel(
+                    stars = 5,
+                    productType = "product type",
+                    timestamp = "12345",
+                    description = "description"
+                ),
+                mediaSelectedPosition = 0,
+                isWatchMode = false,
+                isScrolling = false,
+            ),
+            ReviewContentUiModel(
+                reviewId = "reviewId_1235",
+                medias = listOf(
+                    ReviewMediaUiModel(
+                        mediaId = "mediaId_1",
+                        type = MediaType.Video,
+                        selected = true,
+                    ),
+                    ReviewMediaUiModel(
+                        mediaId = "mediaId_2",
+                        type = MediaType.Image,
+                        selected = false,
+                    ),
+                    ReviewMediaUiModel(
+                        mediaId = "mediaId_3",
+                        type = MediaType.Image,
+                        selected = false,
+                    ),
+                ),
+                menus = ReviewMenuStatus(isReportable = true),
+                likeState = ReviewLikeUiState(
+                    count = 5,
+                    state = ReviewLikeUiState.ReviewLikeStatus.getByValue(1),
+                    withAnimation = false
+                ),
+                author = ReviewAuthorUiModel(
+                    name = "Author Name",
+                    type = "Shop",
+                    id = "userId_12345",
+                    avatarUrl = "avatar.url",
+                    appLink = "user.applink"
+                ),
+                description = ReviewDescriptionUiModel(
+                    stars = 5,
+                    productType = "product type",
+                    timestamp = "12345",
+                    description = "description"
+                ),
+                mediaSelectedPosition = 0,
+                isWatchMode = false,
+                isScrolling = false,
+            ),
         )
         return ReviewUiModel(
             reviewPaging = ReviewPaging.Success(1, true),

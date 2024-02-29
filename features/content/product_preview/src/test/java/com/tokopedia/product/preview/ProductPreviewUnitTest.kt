@@ -307,12 +307,12 @@ class ProductPreviewUnitTest {
 
     @Test
     fun `when review content scrolling and scrolling state should be changed`() {
-        val sourceModel = mockDataSource.mockSourceReview(productId, reviewSourceId, attachmentId)
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
         val scrolledPosition = 2
         val isScrolling = true
-        val mockReviewData = mockDataSource.mockReviewDataByIds()
+        val mockReviewData = mockDataSource.mockReviewData()
 
-        coEvery { mockRepository.getReviewByIds(listOf(reviewSourceId)) } returns mockReviewData
+        coEvery { mockRepository.getReview(productId, 1) } returns mockReviewData
 
         getRobot(sourceModel).use { robot ->
             robot.recordState {
@@ -328,23 +328,25 @@ class ProductPreviewUnitTest {
 
     @Test
     fun `when review media selected and selected media should changed`() {
-        val sourceModel = mockDataSource.mockSourceReview(productId, reviewSourceId, attachmentId)
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
         var reviewPosition: Int
         val mediaSelectedPosition = 1
-        val mockReviewData = mockDataSource.mockReviewDataByIds()
+        val mockReviewData = mockDataSource.mockReviewData()
 
-        coEvery { mockRepository.getReviewByIds(listOf(reviewSourceId)) } returns mockReviewData
+        coEvery { mockRepository.getReview(productId, 1) } returns mockReviewData
 
         getRobot(sourceModel).use { robot ->
             reviewPosition = robot._reviewPosition.value
             robot.recordState {
                 robot.reviewMediaSelectedTestCase(mediaSelectedPosition)
             }.also { state ->
-                state.reviewUiModel.reviewContent[reviewPosition]
-                    .mediaSelectedPosition.assertEqualTo(mediaSelectedPosition)
                 val selectedMedia = state.reviewUiModel.reviewContent[reviewPosition]
                     .medias.indexOfFirst { it.selected }
                 selectedMedia.assertEqualTo(mediaSelectedPosition)
+                state.reviewUiModel.reviewContent.mapIndexed { index, reviewContentUiModel ->
+                    if (index == reviewPosition) reviewContentUiModel.mediaSelectedPosition.assertEqualTo(mediaSelectedPosition)
+                    else reviewContentUiModel.mediaSelectedPosition.assertNotEqualTo(mediaSelectedPosition)
+                }
             }
         }
     }
