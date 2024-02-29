@@ -506,7 +506,7 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     fun getProductDetailTrack(): TrackProductDetail? {
-        val p1 = getDynamicProductInfoP1 ?: return null
+        val p1 = getProductInfoP1 ?: return null
         val p2 = p2Data.value ?: return null
 
         return TrackProductDetail(
@@ -520,7 +520,7 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     fun getStayAnalyticsData(): TrackStayProductDetail {
-        val p1 = getDynamicProductInfoP1
+        val p1 = getProductInfoP1
         val mainCount = mainPhotoViewed.count()
         mainPhotoViewed.clear()
         val skuCount = skuPhotoViewed.count()
@@ -540,7 +540,7 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     fun getConfirmCartResultData(): TrackConfirmCartResult {
-        val data = getDynamicProductInfoP1
+        val data = getProductInfoP1
         return TrackConfirmCartResult(
             productId = data?.parentProductId.orEmpty(),
             productCategory = data?.basic?.category?.detail?.firstOrNull()?.name.orEmpty(),
@@ -707,7 +707,7 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     private fun sendConfirmCartBytIoTracker() {
-        val data = getDynamicProductInfoP1 ?: throw Exception()
+        val data = getProductInfoP1 ?: throw Exception()
         AppLogPdp.sendConfirmCart(
             TrackConfirmCart(
                 productId = data.parentProductId,
@@ -778,7 +778,7 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     private suspend fun getAddToCartOccUseCase(atcParams: AddToCartOccMultiRequestParams) {
-        val data = getDynamicProductInfoP1 ?: throw Exception()
+        val data = getProductInfoP1 ?: throw Exception()
         AppLogPdp.sendConfirmSku(
             TrackConfirmSku(
                 productId = data.parentProductId,
