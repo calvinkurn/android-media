@@ -5,20 +5,19 @@ import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationConst.SOURCE_MODULE_ADS
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationConst.SOURCE_MODULE_HORIZONTAL_FORMAT
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationConst.SOURCE_MODULE_OPS
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationConst.SOURCE_MODULE_REC
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationConst.SOURCE_MODULE_VERTICAL_FORMAT
 
 object AppLogRecommendationConst {
     const val SOURCE_MODULE_REC = "rec"
     const val SOURCE_MODULE_ADS = "ads"
-    const val SOURCE_MODULE_OPS = "ops"
     const val SOURCE_MODULE_VERTICAL_FORMAT = "%s_%s_outer_flow"
     const val SOURCE_MODULE_HORIZONTAL_FORMAT = "%s_%s_outer_%s_module"
 }
 
 object CardName {
     const val REC_GOODS_CARD = "rec_goods_card"
+    const val AD_GOODS_CARD = "ad_goods_card"
     const val REC_CONTENT_CARD = "rec_%s_card"
     const val REC_VIDEO_CARD = "rec_video_card"
     const val AD_FEED_CARD = "ad_feed_card"
@@ -27,17 +26,14 @@ object CardName {
 }
 
 fun constructSourceModule(
-    isProduct: Boolean,
     isAd: Boolean,
     moduleName: String,
     entranceForm: EntranceForm,
 ): String {
     val prefix = if (isAd) {
         SOURCE_MODULE_ADS
-    } else if (isProduct) {
-        SOURCE_MODULE_REC
     } else {
-        SOURCE_MODULE_OPS
+        SOURCE_MODULE_REC
     }
 
     val pageName = AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME)

@@ -89,13 +89,14 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
         sourceType: String
     ) {
         if (HomeRecommendationController.isUsingRecommendationCard()) {
-            fetchHomeRecommendationCard(tabName, locationParam, sourceType)
+            fetchHomeRecommendationCard(tabIndex, tabName, locationParam, sourceType)
         } else {
             loadInitialPage(tabName, recommendationId, count, locationParam, tabIndex, sourceType)
         }
     }
 
     fun fetchNextHomeRecommendation(
+        tabIndex: Int,
         tabName: String,
         recommendationId: Int,
         count: Int,
@@ -105,13 +106,14 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
         existingRecommendationData: List<ForYouRecommendationVisitable>
     ) {
         if (HomeRecommendationController.isUsingRecommendationCard()) {
-            fetchNextHomeRecommendationCard(tabName, page, locationParam, sourceType, existingRecommendationData)
+            fetchNextHomeRecommendationCard(tabIndex, tabName, page, locationParam, sourceType, existingRecommendationData)
         } else {
             loadNextData(tabName, recommendationId, count, page, locationParam, sourceType)
         }
     }
 
     private fun fetchHomeRecommendationCard(
+        tabIndex: Int,
         tabName: String,
         locationParam: String,
         sourceType: String
@@ -119,6 +121,7 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             val result = getHomeRecommendationCardUseCase.get().execute(
                 Int.ONE,
+                tabIndex,
                 tabName,
                 sourceType,
                 locationParam
@@ -145,6 +148,7 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
     }
 
     private fun fetchNextHomeRecommendationCard(
+        tabIndex: Int,
         tabName: String,
         page: Int,
         locationParam: String,
@@ -168,6 +172,7 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
 
             val result = getHomeRecommendationCardUseCase.get().execute(
                 page,
+                tabIndex,
                 tabName,
                 sourceType,
                 locationParam

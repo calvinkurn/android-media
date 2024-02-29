@@ -36,7 +36,6 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
 import com.tokopedia.analytics.byteio.EnterMethod
-import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
@@ -849,9 +848,7 @@ open class HomeRevampFragment :
 
     private fun trackVerticalScroll() {
         if(hasApplogScrollListener) return
-        homeRecyclerView?.addVerticalTrackListener(
-            glidePageTrackObject = GlidePageTrackObject(),
-        )
+        homeRecyclerView?.addVerticalTrackListener(trackGlidePage = true)
         hasApplogScrollListener = true
     }
 

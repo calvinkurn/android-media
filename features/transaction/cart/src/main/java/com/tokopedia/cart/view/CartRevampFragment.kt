@@ -44,12 +44,8 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
-import com.tokopedia.analytics.byteio.AppLogAnalytics
-import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
-import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
@@ -1746,11 +1742,7 @@ class CartRevampFragment :
 
     private fun addRecommendationScrollListener(cartRecyclerView: RecyclerView) {
         if(hasApplogScrollListener) return
-        cartRecyclerView.addVerticalTrackListener(
-            recommendationTriggerObject = RecommendationTriggerObject(
-                viewHolders = listOf(CartRecommendationViewHolder::class.java)
-            )
-        )
+        cartRecyclerView.addVerticalTrackListener()
         hasApplogScrollListener = true
     }
 

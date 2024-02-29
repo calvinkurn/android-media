@@ -130,7 +130,7 @@ data class AppLogRecommendationProductModel(
                 listName = tabName,
                 listNum = tabPosition.inc(),
                 moduleName = moduleName,
-                sourceModule = constructSourceModule(true, isAd, moduleName, entranceForm),
+                sourceModule = constructSourceModule(isAd, moduleName, entranceForm),
                 trackId = "${requestId}_${productId}_${position.inc()}",
                 isAd = if (isAd) 1 else 0,
                 isUseCache = if (isUseCache) 1 else 0,
@@ -147,7 +147,9 @@ data class AppLogRecommendationProductModel(
                 enterMethod = enterMethod,
                 authorId = authorId,
                 groupId = groupId,
-                cardName = cardName
+                cardName = if(isAd && cardName == CardName.REC_GOODS_CARD) {
+                    CardName.AD_GOODS_CARD
+                } else CardName.REC_GOODS_CARD
             )
         }
     }

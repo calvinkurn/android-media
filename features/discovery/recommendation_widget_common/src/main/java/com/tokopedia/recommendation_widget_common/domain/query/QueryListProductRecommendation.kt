@@ -118,6 +118,7 @@ object QueryListProductRecommendation {
         "                        parentID\n" +
         "                        gridPosition\n" +
         "                        recParam\n" +
+        "                        countSold\n" +
         "                      }\n" +
         "                    }\n" +
         "                  }\n" +

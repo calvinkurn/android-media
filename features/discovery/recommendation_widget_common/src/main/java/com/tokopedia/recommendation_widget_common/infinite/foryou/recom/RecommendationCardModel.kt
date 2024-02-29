@@ -12,6 +12,7 @@ data class RecommendationCardModel(
     val pageName: String = "",
     val layoutName: String = "",
     val position: Int = -1,
+    val tabIndex: Int = -1,
     val tabName: String = "",
     val appLog: RecommendationAppLog = RecommendationAppLog(),
 ) : ForYouRecommendationVisitable, ImpressHolder() {

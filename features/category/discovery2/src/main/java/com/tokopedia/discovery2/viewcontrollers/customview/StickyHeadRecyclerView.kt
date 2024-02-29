@@ -8,11 +8,9 @@ import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.decorator.HeaderItemDecoration
 
 class StickyHeadRecyclerView : ConstraintLayout {
@@ -114,13 +112,7 @@ class StickyHeadRecyclerView : ConstraintLayout {
 
     fun trackVerticalScroll() {
         if(hasApplogScrollListener) return
-        recyclerView.addVerticalTrackListener(
-            recommendationTriggerObject = RecommendationTriggerObject(
-                viewHolders = listOf(
-                    MasterProductCardItemViewHolder::class.java
-                ),
-            ),
-        )
+        recyclerView.addVerticalTrackListener()
         hasApplogScrollListener = true
     }
 }

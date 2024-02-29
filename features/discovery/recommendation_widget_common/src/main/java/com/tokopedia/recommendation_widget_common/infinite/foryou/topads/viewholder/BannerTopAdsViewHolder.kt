@@ -2,6 +2,8 @@ package com.tokopedia.recommendation_widget_common.infinite.foryou.topads.viewho
 
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -23,11 +25,14 @@ class BannerTopAdsViewHolder constructor(
 ) : BaseRecommendationViewHolder<BannerTopAdsModel>(
     view,
     BannerTopAdsModel::class.java
-) {
+), AppLogRecTriggerInterface {
 
     private val binding: WidgetBannerTopadsBinding? by viewBinding()
 
+    private var recTriggerObject = RecommendationTriggerObject()
+
     override fun bind(element: BannerTopAdsModel) {
+        setRecTriggerObject(element)
         setImageTopAdsNewQuery(element)
         setBannerTopAdsClickListener(element)
     }
@@ -114,10 +119,24 @@ class BannerTopAdsViewHolder constructor(
         }
     }
 
+    private fun setRecTriggerObject(model: BannerTopAdsModel) {
+        recTriggerObject = RecommendationTriggerObject(
+            sessionId = model.appLog.sessionId,
+            requestId = model.appLog.requestId,
+            moduleName = model.pageName,
+            listName = model.tabName,
+            listNum = model.tabIndex,
+        )
+    }
+
     companion object {
         val LAYOUT = R.layout.widget_banner_topads
 
         private const val HOME_RECOM_TAB_BANNER = "home_recom_tab_banner"
         private const val TDN_BANNER_ROUNDED = 8F
+    }
+
+    override fun getRecommendationTriggerObject(): RecommendationTriggerObject {
+        return recTriggerObject
     }
 }

@@ -40,15 +40,11 @@ data class RecommendationTriggerObject(
     val moduleName: String = "",
     val isUnderGuide: Boolean = false,
     val listName: String = "",
-    val listNum: Int = 0,
-    val viewHolders: List<Class<*>> = emptyList(),
-) {
-    val viewHolderMap: Map<Class<*>, Boolean> = viewHolders.associateWith { true }
-}
+    val listNum: Int = -1,
+)
 
 class VerticalTrackScrollListener(
-    private val glidePageTrackObject: GlidePageTrackObject?,
-    private val recommendationTriggerObject: RecommendationTriggerObject?
+    private val trackGlidePage: Boolean = false
 ) : RecyclerView.OnScrollListener() {
     // total scroll is total offset for multiple glide.
     // for ex. User glide 3 times repeatly, means total scroll = total 3 glides.
@@ -59,6 +55,9 @@ class VerticalTrackScrollListener(
 
     // drag is started from recom section or not, to determine should send rec_trigger or not
     private var dragFromRecom = false
+
+    private var glidePageTrackObject = GlidePageTrackObject()
+    private var recommendationTriggerObject = RecommendationTriggerObject()
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         dragScroll += dy
@@ -107,15 +106,15 @@ class VerticalTrackScrollListener(
     }
 
     private fun RecyclerView.shouldTriggerGlideRecommendation(): Boolean {
-        recommendationTriggerObject ?: return false
-        if(recommendationTriggerObject.viewHolders.isEmpty()) return true
-
         val visibleItemPositionRange = layoutManager?.getVisibleItemPositionRange() ?: return false
 
         loop@ for(i in visibleItemPositionRange.first .. visibleItemPositionRange.second) {
             val viewHolder = findViewHolderForAdapterPosition(i) ?: break@loop
-            if(recommendationTriggerObject.viewHolderMap[viewHolder.javaClass] == true) {
-                return true
+            (viewHolder as? AppLogRecTriggerInterface)?.let {
+                if(it.isEligibleToTrack()) {
+                    recommendationTriggerObject = it.getRecommendationTriggerObject() ?: return true
+                    return true
+                }
             }
         }
         return false
@@ -148,12 +147,11 @@ class VerticalTrackScrollListener(
     }
 
     private fun sendGlideRecommendation(totalScroll: Float) {
-        recommendationTriggerObject ?: return
         sendGlideRecommendationTrack(totalScroll, recommendationTriggerObject)
     }
 
     private fun sendGlidePage(scrollOffset: Float) {
-        glidePageTrackObject ?: return
+        if(!trackGlidePage) return
         sendGlidePageTrack(scrollOffset, glidePageTrackObject)
     }
 }
@@ -233,10 +231,9 @@ fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
  * If no recommendation on the page, leave recommendedTriggerObject as null
  */
 fun RecyclerView.addVerticalTrackListener(
-    glidePageTrackObject: GlidePageTrackObject? = null,
-    recommendationTriggerObject: RecommendationTriggerObject? = null
+    trackGlidePage: Boolean = false
 ) {
-    this.addOnScrollListener(VerticalTrackScrollListener(glidePageTrackObject, recommendationTriggerObject))
+    this.addOnScrollListener(VerticalTrackScrollListener(trackGlidePage))
 }
 
 /**
