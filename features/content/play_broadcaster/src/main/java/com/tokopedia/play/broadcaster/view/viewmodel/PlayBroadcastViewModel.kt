@@ -57,6 +57,7 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiMode
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.log.BroadcasterErrorLog
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
+import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.removeUnusedField
@@ -229,6 +230,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
 
     private val _accountStateInfo = MutableStateFlow(AccountStateInfo())
+
+    private val _liveStatsList = MutableStateFlow(emptyList<LiveStatsUiModel>())
 
     /** Preparation */
     private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
@@ -413,7 +416,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _title,
         _cover,
         _beautificationConfig,
-        _tickerBottomSheetConfig
+        _tickerBottomSheetConfig,
+        _liveStatsList,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -433,7 +437,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         title,
         cover,
         beautificationConfig,
-        tickerBottomSheetConfig, ->
+        tickerBottomSheetConfig,
+        liveStatsList ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -455,6 +460,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             cover = cover,
             beautificationConfig = beautificationConfig,
             tickerBottomSheetConfig = tickerBottomSheetConfig,
+            liveStatsList = liveStatsList,
         )
     }.stateIn(
         viewModelScope,
@@ -495,6 +501,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _observableChatList.value = mutableListOf()
 
         setupPreparationMenu()
+        setupLiveStats()
     }
 
     fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
@@ -962,8 +969,26 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
         when (result) {
             is NewMetricList -> queueNewMetrics(playBroadcastMapper.mapNewMetricList(result))
-            is TotalView -> _observableTotalView.value = playBroadcastMapper.mapTotalView(result)
-            is TotalLike -> _observableTotalLike.value = playBroadcastMapper.mapTotalLike(result)
+            is TotalView -> {
+                val totalView = playBroadcastMapper.mapTotalView(result)
+                _liveStatsList.update {
+                    it.map { liveStats ->
+                        if (liveStats is LiveStatsUiModel.TotalViewer) {
+                            liveStats.copy(text = totalView.totalView)
+                        } else liveStats
+                    }
+                }
+            }
+            is TotalLike -> {
+                val totalLike = playBroadcastMapper.mapTotalLike(result)
+                _liveStatsList.update {
+                    it.map { liveStats ->
+                        if (liveStats is LiveStatsUiModel.TotalViewer) {
+                            liveStats.copy(text = totalLike.totalLike)
+                        } else liveStats
+                    }
+                }
+            }
             is LiveDuration -> {
                 restartLiveDuration(result)
                 if (result.duration >= result.maxDuration) logSocket(result)
@@ -2355,6 +2380,22 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 DynamicPreparationMenu.createSchedule(isMandatory = false),
             )
         }) { }
+    }
+
+    private fun setupLiveStats() {
+        viewModelScope.launch {
+            _liveStatsList.update {
+                mutableListOf<LiveStatsUiModel>().apply {
+                    /** JOE TODO: don't expose EstimatedIncome if UGC */
+                    /** JOE TODO: handle default value properly */
+                    add(LiveStatsUiModel.Viewer("0"))
+                    add(LiveStatsUiModel.TotalViewer("0"))
+                    add(LiveStatsUiModel.EstimatedIncome("Rp0"))
+                    add(LiveStatsUiModel.Like("0"))
+                    add(LiveStatsUiModel.Duration("0"))
+                }
+            }
+        }
     }
 
     private fun addPreparationMenu(vararg newMenuList: DynamicPreparationMenu) {

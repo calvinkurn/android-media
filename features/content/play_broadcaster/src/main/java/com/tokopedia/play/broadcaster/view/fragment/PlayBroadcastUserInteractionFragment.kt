@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
@@ -43,6 +46,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiMod
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
@@ -51,6 +55,7 @@ import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
+import com.tokopedia.play.broadcaster.view.compose.LiveStatsView
 import com.tokopedia.play.broadcaster.view.custom.PlayBroIconWithGreenDotView
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
@@ -84,6 +89,7 @@ import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -103,7 +109,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private val clInteraction: ConstraintLayout by detachableView(R.id.cl_interaction)
-    private val viewStatInfo: PlayStatInfoView by detachableView(R.id.view_stat_info)
+    private val viewStatInfo: ComposeView by detachableView(R.id.view_stat_info)
     private val ivShareLink: AppCompatImageView by detachableView(R.id.iv_share_link)
     private val iconProduct: PlayBroIconWithGreenDotView by detachableView(R.id.icon_product)
     private val icFaceFilter: PlayBroIconWithGreenDotView by detachableView(R.id.ic_face_filter)
@@ -333,6 +339,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupView() {
+        setupLiveStats()
+
         actionBarLiveView.setAuthorImage(parentViewModel.getAuthorImage())
 
         ivShareLink.setOnClickListener {
@@ -401,6 +409,22 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         else -> PlayBroadcastAction.Ignore
                     }
                 )
+            }
+        }
+    }
+
+    private fun setupLiveStats() {
+        viewStatInfo.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+
+            setContent {
+                val uiState by parentViewModel.uiState.collectAsStateWithLifecycle()
+
+                NestTheme(isOverrideStatusBarColor = false) {
+                    LiveStatsView(
+                        liveStatsList = uiState.liveStatsList
+                    )
+                }
             }
         }
     }
@@ -524,17 +548,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /**
      * render to ui
      */
-    private fun showCounterDuration(remainingInMs: Long) {
-        viewStatInfo.setTimerCounter(remainingInMs)
-    }
-
-    private fun setTotalView(totalView: TotalViewUiModel) {
-        viewStatInfo.setTotalView(totalView)
-    }
-
-    private fun setTotalLike(totalLike: TotalLikeUiModel) {
-        viewStatInfo.setTotalLike(totalLike)
-    }
+//    private fun showCounterDuration(remainingInMs: Long) {
+//        viewStatInfo.setTimerCounter(remainingInMs)
+//    }
+//
+//    private fun setTotalView(totalView: TotalViewUiModel) {
+//        viewStatInfo.setTotalView(totalView)
+//    }
+//
+//    private fun setTotalLike(totalLike: TotalLikeUiModel) {
+//        viewStatInfo.setTotalLike(totalLike)
+//    }
 
     private fun setChatList(chatList: List<PlayChatUiModel>) {
         chatListView.setChatList(chatList)
@@ -759,11 +783,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      */
 
     private fun observeTotalViews() {
-        parentViewModel.observableTotalView.observe(viewLifecycleOwner, Observer(::setTotalView))
+//        parentViewModel.observableTotalView.observe(viewLifecycleOwner, Observer(::setTotalView))
     }
 
     private fun observeTotalLikes() {
-        parentViewModel.observableTotalLike.observe(viewLifecycleOwner, Observer(::setTotalLike))
+//        parentViewModel.observableTotalLike.observe(viewLifecycleOwner, Observer(::setTotalLike))
     }
 
     private fun observeChatList() {
@@ -916,7 +940,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             parentViewModel.broadcastTimerStateChanged.collectLatest { state ->
                 when (state) {
-                    is PlayBroadcastTimerState.Active -> showCounterDuration(state.duration)
+                    is PlayBroadcastTimerState.Active -> {
+//                        showCounterDuration(state.duration)
+                    }
                     PlayBroadcastTimerState.Finish -> {
                         stopBroadcast()
                         showForceStopDialog()
