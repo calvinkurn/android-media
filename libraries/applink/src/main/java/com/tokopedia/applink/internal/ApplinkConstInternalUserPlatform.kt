@@ -97,6 +97,12 @@ object ApplinkConstInternalUserPlatform {
     const val EXPLICIT_PROFILE = "$NEW_INTERNAL_USER/explicit-profile"
 
     /**
+     * ExplicitPersonalizeActivity
+     * @Applink : tokopedia-android-internal://user/explicit-personalize
+     **/
+    const val EXPLICIT_PERSONALIZE = "$NEW_INTERNAL_USER/explicit-personalize"
+
+    /**
      * GotoSeamlessLandingActivity
      * @Applink : tokopedia-android-internal://user/goto-seamless-login
      **/

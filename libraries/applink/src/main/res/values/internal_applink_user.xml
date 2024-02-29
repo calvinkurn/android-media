@@ -9,6 +9,7 @@
     <string name="path_image_quality_setting" translatable="false">/media-quality-setting</string>
     <string name="path_new_home_account">/new-home-account</string>
     <string name="path_explicit_profile">/explicit-profile</string>
+    <string name="path_explicit_personalize">/explicit-personalize</string>
     <string name="path_dsar">/dsar</string>
     <string name="path_dsar_add_email">/dsar/add-email</string>
 
