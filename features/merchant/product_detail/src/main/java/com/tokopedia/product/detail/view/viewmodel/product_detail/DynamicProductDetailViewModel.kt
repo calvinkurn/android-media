@@ -706,7 +706,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
+    private fun sendConfirmCartBytIoTracker() {
         val data = getDynamicProductInfoP1 ?: throw Exception()
         AppLogPdp.sendConfirmCart(
             TrackConfirmCart(
@@ -719,6 +719,10 @@ class DynamicProductDetailViewModel @Inject constructor(
                 addSkuNum = data.basic.minOrder,
             )
         )
+    }
+
+    private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
+        sendConfirmCartBytIoTracker()
         val result = withContext(dispatcher.io) {
             addToCartUseCase.get().createObservable(requestParams).toBlocking().single()
         }
@@ -752,6 +756,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     private suspend fun getAddToCartOcsUseCase(requestParams: RequestParams) {
+        sendConfirmCartBytIoTracker()
         val result = withContext(dispatcher.io) {
             addToCartOcsUseCase.get().createObservable(requestParams).toBlocking().single()
         }

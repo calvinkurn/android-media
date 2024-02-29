@@ -20,7 +20,7 @@ data class DynamicProductInfoP1(
     fun isProductVariant(): Boolean = data.variant.isVariant
 
     val isSingleSku: Boolean
-        get() = if (isProductVariant()) true else data.variants.size == 1
+        get() = if (isProductVariant()) false else data.variants.size == 1
 
     fun isProductActive(): Boolean = getFinalStock().toIntOrNull() ?: 0 > 0 && basic.isActive()
 

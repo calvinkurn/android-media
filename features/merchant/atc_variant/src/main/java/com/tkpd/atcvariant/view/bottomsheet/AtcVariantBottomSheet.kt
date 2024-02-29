@@ -501,7 +501,10 @@ class AtcVariantBottomSheet :
                 failReason = reason
                 cartItemId = cartId
             }
-            AppLogPdp.sendConfirmCartResult(model)
+            if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
+                || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON) {
+                AppLogPdp.sendConfirmCartResult(model)
+            }
             if (it is Success) {
                 onSuccessTransaction(it.data)
                 dismissAfterAtc()

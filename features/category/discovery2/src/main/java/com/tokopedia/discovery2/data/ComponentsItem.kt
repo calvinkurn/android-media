@@ -52,6 +52,9 @@ data class ComponentsItem(
     @SerializedName("creative_name")
     var creativeName: String? = "",
 
+    @SerializedName("source")
+    private var sourceData: String? = "",
+
     var isApplicable: Boolean = true,
 
     var topAdsTrackingStatus: Boolean = false,
@@ -155,4 +158,11 @@ data class ComponentsItem(
     fun getWarehouseId(dataItem: DataItem?): Long = dataItem?.warehouseId.orZero()
 
     fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = getComponentsItem()?.firstOrNull()?.compAdditionalInfo
+
+    // TODO: Will be used to decide whether fire the ByteIO tracker or not
+    fun getSource(): ComponentSourceData {
+        return sourceData?.let {
+            ComponentSourceData.getByValue(it)
+        } ?: ComponentSourceData.Unknown
+    }
 }
