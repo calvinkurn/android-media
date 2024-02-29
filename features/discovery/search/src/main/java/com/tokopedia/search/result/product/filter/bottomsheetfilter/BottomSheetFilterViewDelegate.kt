@@ -225,7 +225,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         val selectedOptionWithIndex = applySortFilterModel.selectedOptionWithIndex
 
         val ecomFilterName =
-            selectedOptionWithIndex.joinToString(separator = ",") { it.second.name }
+            selectedOptionWithIndex.joinToString(separator = ",") { it.second.key }
 
         val ecomFilterPosition =
             selectedOptionWithIndex.joinToString(separator = ",") { it.first.toString() }
