@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -201,7 +202,7 @@ fun ProductTagItems(
     onProductLabelClick: () -> Unit,
     onProductHighlightClose: () -> Unit,
     impressHighlight: (FeedCardProductModel) -> Unit,
-    isFocused: Boolean = true
+    isFocused: Boolean = true,
 ) {
     var needToBeShown by remember { mutableStateOf(false) }
     val highlightedProduct by remember { mutableStateOf(products.firstOrNull{ it.isHighlight}) }
@@ -211,6 +212,12 @@ fun ProductTagItems(
             delay(5000L)
             needToBeShown = true
             highlightedProduct?.let { impressHighlight.invoke(it) }
+        }
+    }
+
+    DisposableEffect(key1 = key){
+        onDispose {
+            needToBeShown = false
         }
     }
 
