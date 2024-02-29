@@ -87,6 +87,12 @@
             android:exported="false"/>
 
         <activity
+            android:name="com.tokopedia.home_account.explicitprofile.personalize.ExplicitPersonalizeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:exported="false"/>
+
+        <activity
             android:name=".explicitprofile.features.ExplicitProfileActivity"
             android:label="Preferensi Belanja"
             android:theme="@style/Theme.White"

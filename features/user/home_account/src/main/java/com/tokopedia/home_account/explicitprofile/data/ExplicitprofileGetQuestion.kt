@@ -89,7 +89,9 @@ data class QuestionDataModel(
     @SerializedName("answerId")
     var answerId: Int = 0,
     @SerializedName("answerValue")
-    var answerValue: String = ""
+    var answerValue: String = "",
+    @SerializedName("answerValueList")
+    var answerValueList: List<String> = emptyList(),
 ) : Parcelable {
 
     @Parcelize
@@ -115,7 +117,13 @@ data class QuestionDataModel(
             @SerializedName("caption")
             var caption: String = "",
             @SerializedName("message")
-            var message: String = ""
+            var message: String = "",
+            @SerializedName("applink")
+            val applink: String = "",
+            @SerializedName("textApplink")
+            val textApplink: String = "",
+
+            var isSelected: Boolean = false,
         ): Parcelable
     }
 }

@@ -232,6 +232,11 @@
     <string name="explicit_profile_back_dialog_exit">Tetap keluar</string>
     <string name="explicit_profile_max_selection_answer_no_limit">Bisa pilih lebih dari 1 jawaban</string>
     <string name="explicit_profile_max_selection_answer_limit">Hanya pilih %s jawaban</string>
+    <string name="explicit_personalize_title">Pilih kategori kesukaanmu, yuk! 🫶</string>
+    <string name="explicit_personalize_subtitle">Supaya kamu bisa mendapatkan rekomendasi yang lebih baik.</string>
+    <string name="explicit_personalize_counter">%s/%s terpilih</string>
+    <string name="explicit_personalize_skip">Nanti Aja</string>
+    <string name="explicit_personalize_save">Simpan</string>
 
     <!-- ADD/VERIFY PHONE -->
     <string name="add_phone_success_message">Yay! Nomor HP berhasil ditambah.</string>
