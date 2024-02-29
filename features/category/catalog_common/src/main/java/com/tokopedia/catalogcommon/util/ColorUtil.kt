@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-fun Int?.orDefaultColor(context: Context,default: Int = unifyprinciplesR.color.Unify_N150_20): Int {
+fun Int?.orDefaultColor(context: Context,default: Int = unifyprinciplesR.color.Unify_Static_White): Int {
     return this ?: default.colorResToInt(context)
 }
 

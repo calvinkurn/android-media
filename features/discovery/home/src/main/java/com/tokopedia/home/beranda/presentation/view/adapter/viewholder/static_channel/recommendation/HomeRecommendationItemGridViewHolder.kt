@@ -3,10 +3,13 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
+import com.tokopedia.home.beranda.domain.ForYouDataMapper.toModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.listener.ImpressionRecommendationItemListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 
 /**
  * Created by Lukas on 2019-07-15
@@ -14,8 +17,9 @@ import com.tokopedia.productcard.ProductCardGridView
 
 class HomeRecommendationItemGridViewHolder(
     view: View,
-    private val listener: HomeRecommendationListener
-) : BaseRecommendationForYouViewHolder<HomeRecommendationItemDataModel>(
+    private val listener: ImpressionRecommendationItemListener,
+    private val globalListener: GlobalRecomListener
+) : BaseRecommendationViewHolder<HomeRecommendationItemDataModel>(
     view,
     HomeRecommendationItemDataModel::class.java
 ) {
@@ -29,6 +33,7 @@ class HomeRecommendationItemGridViewHolder(
 
     override fun bind(element: HomeRecommendationItemDataModel) {
         setLayout(element)
+
         productCardImpressionListener(element)
         setItemProductCardClickListener(element)
         setItemThreeDotsClickListener(element)
@@ -51,7 +56,7 @@ class HomeRecommendationItemGridViewHolder(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    listener.onProductImpression(
+                    listener.onProductCardImpressed(
                         element,
                         bindingAdapterPosition
                     )
@@ -62,8 +67,8 @@ class HomeRecommendationItemGridViewHolder(
 
     private fun setItemProductCardClickListener(element: HomeRecommendationItemDataModel) {
         productCardView.setOnClickListener {
-            listener.onProductClick(
-                element,
+            globalListener.onProductCardClicked(
+                element.toModel(),
                 bindingAdapterPosition
             )
         }
@@ -71,8 +76,8 @@ class HomeRecommendationItemGridViewHolder(
 
     private fun setItemThreeDotsClickListener(productCardItem: HomeRecommendationItemDataModel) {
         productCardView.setThreeDotsOnClickListener {
-            listener.onProductThreeDotsClick(
-                productCardItem,
+            globalListener.onProductCardThreeDotsClicked(
+                productCardItem.toModel(),
                 bindingAdapterPosition
             )
         }

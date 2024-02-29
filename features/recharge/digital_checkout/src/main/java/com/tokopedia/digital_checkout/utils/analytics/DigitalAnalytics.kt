@@ -58,7 +58,13 @@ class DigitalAnalytics {
         )
     }
 
-    fun eventClickSubscription(tick: Boolean, categoryName: String?, operatorName: String?, userId: String?) {
+    fun eventClickSubscription(
+        tick: Boolean,
+        categoryName: String?,
+        operatorName: String?,
+        subscriptionProductId: String?,
+        userId: String?
+    ) {
         val actionValue: String = if (tick) {
             DigitalCheckoutTrackingConst.Action.TICK_AUTODEBIT
         } else {
@@ -68,7 +74,7 @@ class DigitalAnalytics {
             TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.CLICK_CHECKOUT,
             TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
             TrackAppUtils.EVENT_ACTION, actionValue,
-            TrackAppUtils.EVENT_LABEL, String.format(Locale.getDefault(), "%s - %s", categoryName, operatorName),
+            TrackAppUtils.EVENT_LABEL, String.format(Locale.getDefault(), "%s - %s - %s", categoryName, operatorName, subscriptionProductId),
             DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
             DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE
         )
@@ -77,14 +83,20 @@ class DigitalAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
     }
 
-    fun eventImpressionSubscription(userId: String, isChecked: Boolean, categoryName: String, operatorName: String) {
+    fun eventImpressionSubscription(
+        userId: String,
+        isChecked: Boolean,
+        categoryName: String,
+        operatorName: String,
+        subscriptionProductId: String
+    ) {
         val autoDebitStatus = if (isChecked) "disabled" else "enabled"
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
                 TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.VIEW_CHECKOUT_IRIS,
                 TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
                 TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.IMPRESSION_AUTODEBIT,
-                TrackAppUtils.EVENT_LABEL, "$autoDebitStatus - $categoryName - $operatorName",
+                TrackAppUtils.EVENT_LABEL, "$autoDebitStatus - $categoryName - $operatorName - $subscriptionProductId",
                 DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
                 DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId

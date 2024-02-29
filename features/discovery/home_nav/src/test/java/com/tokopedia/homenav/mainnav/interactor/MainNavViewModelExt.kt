@@ -1,7 +1,6 @@
 package com.tokopedia.homenav.mainnav.interactor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.homenav.MePageRollenceController
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
@@ -14,7 +13,6 @@ import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.domain.usecases.GetAffiliateUserUseCase
-import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetNavNotification
 import com.tokopedia.homenav.mainnav.domain.usecases.GetPaymentOrdersNavUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetProfileDataUseCase
@@ -25,7 +23,6 @@ import com.tokopedia.homenav.mainnav.domain.usecases.GetTokopointStatusFiltered
 import com.tokopedia.homenav.mainnav.domain.usecases.GetUohOrdersNavUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetUserInfoUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetUserMembershipUseCase
-import com.tokopedia.homenav.mainnav.domain.usecases.GetWishlistNavUseCase
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.navigation_common.model.wallet.WalletStatus
@@ -45,12 +42,10 @@ import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkObject
 import io.mockk.spyk
 
 fun createViewModel(
     getProfileDataUseCase: GetProfileDataUseCase? = null,
-    getBuListUseCase: GetCategoryGroupUseCase? = null,
     dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
     userSession: UserSessionInterface? = null,
     clientMenuGenerator: ClientMenuGenerator? = null,
@@ -60,7 +55,6 @@ fun createViewModel(
     getShopInfoUseCase: GetShopInfoUseCase? = null,
     accountAdminInfoUseCase: AccountAdminInfoUseCase? = null,
     getAffiliateUserUseCase: GetAffiliateUserUseCase? = null,
-    getWishlistNavUseCase: GetWishlistNavUseCase? = null,
     getReviewProductUseCase: GetReviewProductUseCase? = null,
     getTokopediaPlusUseCase: TokopediaPlusUseCase? = null
 ): MainNavViewModel {
@@ -87,9 +81,6 @@ fun createViewModel(
     }
     val getProfileDataUseCaseMock = getOrUseDefault(getProfileDataUseCase) {
         coEvery { it.executeOnBackground() }.answers { AccountHeaderDataModel() }
-    }
-    val getBuListDataUseCaseMock = getOrUseDefault(getBuListUseCase) {
-        coEvery { it.executeOnBackground() }.answers { listOf() }
     }
     val getShopInfoUseCaseMock = getOrUseDefault(getShopInfoUseCase) {
         coEvery { it.executeOnBackground() }.answers { Success(com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData()) }
@@ -119,7 +110,6 @@ fun createViewModel(
             getUohOrdersNavUseCase = getUohOrdersNavUseCaseMock,
             getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCaseMock,
             getProfileDataUseCase = getProfileDataUseCaseMock,
-            getCategoryGroupUseCase = getBuListDataUseCaseMock,
             getShopInfoUseCase = getShopInfoUseCaseMock,
             accountAdminInfoUseCase = accountAdminInfoUseCaseMock,
             getAffiliateUserUseCase = getAffiliateUserUseCaseMock,
@@ -207,11 +197,6 @@ fun getDefaultClientGeneratorMockValue(clientMenuGenerator: ClientMenuGenerator)
         .answers { HomeNavTickerDataModel() }
     every { clientMenuGenerator.getSectionTitle(identifier = any()) }
         .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
-}
-
-internal fun setIsMePageRollence(isMePage: Boolean) {
-    mockkObject(MePageRollenceController)
-    every { MePageRollenceController.isUsingMePageRollenceVariant() } returns isMePage
 }
 
 internal fun getUserSession(login: Boolean): UserSessionInterface = mockk<UserSessionInterface>().apply {

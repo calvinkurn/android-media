@@ -20,6 +20,16 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class SearchResultFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     override fun setupEnvironment() {
+        MacroDevOps.setupLoginFlow(
+            "pbs-hidayatullah+prod7@tokopedia.com",
+            "Prod1234"
+        )
+        /**
+         * Open search then kill to fetch rollence
+         */
+        MacroDevOps.openTargetThenKill(
+            MacroIntent.SearchResult.getSearchResultIntent()
+        )
     }
 
     override fun setupMock() {

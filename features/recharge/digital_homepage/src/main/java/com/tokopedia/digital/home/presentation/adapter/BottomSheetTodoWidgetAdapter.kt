@@ -46,12 +46,12 @@ class BottomSheetTodoWidgetAdapter :
         fun bind(optionButton: RechargeHomepageSections.OptionButton) {
             binding.tgTodoWidgetAction.text = optionButton.button
             binding.root.setOnClickListener {
-                listener?.onClickBottomSheetTodoWidget(optionButton.applink)
+                listener?.onClickBottomSheetTodoWidget(optionButton)
             }
         }
     }
 
     interface BottomSheetAdapterTodoWidgetListener {
-        fun onClickBottomSheetTodoWidget(applink: String)
+        fun onClickBottomSheetTodoWidget(optionButton: RechargeHomepageSections.OptionButton)
     }
 }

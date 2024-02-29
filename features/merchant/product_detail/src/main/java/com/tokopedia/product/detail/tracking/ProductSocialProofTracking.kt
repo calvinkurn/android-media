@@ -1,10 +1,10 @@
 package com.tokopedia.product.detail.tracking
 
 import com.tokopedia.product.detail.common.ProductTrackingConstant
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
-import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
+import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.TrackingUtil
 import com.tokopedia.track.constant.TrackerConstant
 
@@ -15,11 +15,11 @@ import com.tokopedia.track.constant.TrackerConstant
 object ProductSocialProofTracking {
 
     fun onTalkClicked(
-        productInfo: DynamicProductInfoP1,
+        productInfo: ProductInfoP1,
         trackDataModel: ComponentTrackDataModel?,
         deepLink: String
     ) {
-        DynamicProductDetailTracking.Iris.eventDiscussionClickedIris(
+        ProductDetailTracking.Iris.eventDiscussionClickedIris(
             productInfo = productInfo,
             deeplinkUrl = deepLink,
             shopName = productInfo.basic.shopName,
@@ -29,10 +29,10 @@ object ProductSocialProofTracking {
 
     fun onMediaClicked(
         userId: String,
-        productInfo: DynamicProductInfoP1,
+        productInfo: ProductInfoP1,
         trackDataModel: ComponentTrackDataModel?
     ) {
-        DynamicProductDetailTracking.Click.eventClickBuyerPhotosClicked(
+        ProductDetailTracking.Click.eventClickBuyerPhotosClicked(
             productInfo = productInfo,
             userId = userId,
             componentTrackDataModel = trackDataModel ?: ComponentTrackDataModel()
@@ -41,9 +41,9 @@ object ProductSocialProofTracking {
 
     fun onRatingClicked(
         deepLink: String,
-        productInfo: DynamicProductInfoP1
+        productInfo: ProductInfoP1
     ) {
-        DynamicProductDetailTracking.Iris.eventReviewClickedIris(
+        ProductDetailTracking.Iris.eventReviewClickedIris(
             productInfo = productInfo,
             deeplinkUrl = deepLink,
             shopName = productInfo.basic.shopName
@@ -51,7 +51,7 @@ object ProductSocialProofTracking {
     }
 
     fun onNewProductClicked(
-        productInfo: DynamicProductInfoP1?,
+        productInfo: ProductInfoP1?,
         trackDataModel: ComponentTrackDataModel?
     ) {
         val action = "click - product terbaru"
@@ -66,7 +66,7 @@ object ProductSocialProofTracking {
     }
 
     fun onShopRatingClicked(
-        productInfo: DynamicProductInfoP1?,
+        productInfo: ProductInfoP1?,
         trackDataModel: ComponentTrackDataModel?
     ) {
         val action = "click - rating toko"
@@ -82,7 +82,7 @@ object ProductSocialProofTracking {
 
     fun onImpression(
         uiModel: SocialProofUiModel,
-        productInfo: DynamicProductInfoP1?
+        productInfo: ProductInfoP1?
     ) {
         when (uiModel.identifier) {
             SocialProofUiModel.Identifier.NewProduct -> onNewProductImpression(productInfo)
@@ -94,7 +94,7 @@ object ProductSocialProofTracking {
     }
 
     private fun onNewProductImpression(
-        productInfo: DynamicProductInfoP1?
+        productInfo: ProductInfoP1?
     ) {
         val action = "view - product terbaru - social proof"
         val trackerId = "41544"
@@ -111,7 +111,7 @@ object ProductSocialProofTracking {
     }
 
     private fun oShopRatingImpression(
-        productInfo: DynamicProductInfoP1?
+        productInfo: ProductInfoP1?
     ) {
         val action = "view - rating toko"
         val trackerId = "41547"

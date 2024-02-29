@@ -51,6 +51,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.playServicesDependencies.phone
+    implementation rootProject.ext.playServicesDependencies.auth
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
