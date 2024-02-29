@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
@@ -19,6 +20,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.multishopmvc.data.ProductsItem
 import com.tokopedia.mvcwidget.multishopmvc.data.ShopInfo
 
+@SuppressLint("Invalid Data Type")
 data class DataItem(
 
     @SerializedName("chipSelectionType")
@@ -521,7 +523,7 @@ data class DataItem(
     @SerializedName("backgroud_image_url", alternate = ["background_image_url"])
     var backgroundImageUrl: String? = "",
 
-    @SerializedName("catalog_slugs")
+    @SerializedName("catalog_slugs", alternate = ["catalog_slug"])
     var catalogSlug: List<String?>? = null,
 
     @SerializedName("pinned_slugs")
@@ -598,6 +600,18 @@ data class DataItem(
 
     @SerializedName("rec_param")
     private val recommendationParam: String? = null,
+
+    @SerializedName("layout")
+    val couponLayout: String? = null,
+
+    @SerializedName("catalog_id")
+    var catalogIds: List<String>? = null,
+
+    @SerializedName("catalog_category_id")
+    var catalogCategoryIds: List<String>? = null,
+
+    @SerializedName("catalog_subcategory_id")
+    var catalogSubCategoryIds: List<String>? = null,
 
     var shopAdsClickURL: String? = "",
 

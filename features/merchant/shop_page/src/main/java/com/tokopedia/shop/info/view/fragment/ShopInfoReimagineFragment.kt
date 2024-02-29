@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -147,7 +146,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         setupView()
         observeUiState()
         observeUiEffect()
-
+        
         viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
     }
 
@@ -297,7 +296,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             tpgShopUsp.text = MethodChecker.fromHtml(shopDynamicUsp)
             tpgShopUsp.isVisible = uiState.info.shopUsp.isNotEmpty()
         }
-        
     }
 
     private fun renderShopInfo(uiState: ShopInfoUiState) {
@@ -362,16 +360,16 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             labelShopPharmacyPharmacistName.isVisible = isPharmacy && expandPharmacyInfo
             labelShopPharmacySiaNumber.isVisible = isPharmacy && expandPharmacyInfo
             labelShopPharmacySipaNumber.isVisible = isPharmacy && expandPharmacyInfo
-            
+
             if (isPharmacy) {
                 if (expandPharmacyInfo) {
-                    //If pharmacy info expanded, then hide CTA "Selengkapnya"
+                    // If pharmacy info expanded, then hide CTA "Selengkapnya"
                     tpgCtaExpandPharmacyInfo.invisible()
                 } else {
-                    //By default, show CTA "Selengkapnya"
+                    // By default, show CTA "Selengkapnya"
                     tpgCtaExpandPharmacyInfo.visible()
                 }
-            }  else {
+            } else {
                 tpgCtaExpandPharmacyInfo.gone()
             }
 
@@ -638,7 +636,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
             binding?.loaderReportShop?.gone()
         }
     }
-    
+
     private fun redirectToGmaps(gmapsUrl: String) {
         if (!isAdded) return
         if (gmapsUrl.isEmpty()) return

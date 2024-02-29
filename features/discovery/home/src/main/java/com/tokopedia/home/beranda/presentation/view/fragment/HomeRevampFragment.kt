@@ -120,12 +120,14 @@ import com.tokopedia.home.beranda.presentation.view.listener.CampaignWidgetCompo
 import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CategoryWidgetV2Callback
 import com.tokopedia.home.beranda.presentation.view.listener.ChooseAddressWidgetCallback
+import com.tokopedia.home.beranda.presentation.view.listener.CouponWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CueWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.DynamicIconComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.FeaturedShopComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.FlashSaleWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.HomeOrigamiListenerDelegate
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.listener.HomeReminderWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.Lego6AutoBannerComponentCallback
@@ -161,6 +163,7 @@ import com.tokopedia.home_component.usecase.thematic.ThematicModel
 import com.tokopedia.home_component.util.ImageLoaderStateListener
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -1653,7 +1656,9 @@ open class HomeRevampFragment :
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
             ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
+            CouponWidgetCallback(this),
             getThematicUtil(),
+            HomeOrigamiListenerDelegate(context, this),
             getRemoteConfig()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
@@ -1955,6 +1960,10 @@ open class HomeRevampFragment :
                 }
             }
         }
+    }
+
+    override fun onCouponWidgetClaim(data: CouponWidgetDataModel, catalogId: String, couponPosition: Int) {
+        getHomeViewModel().onCouponClaim(data, catalogId, couponPosition)
     }
 
     override fun onChooseAddressServerDown() {

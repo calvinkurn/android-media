@@ -1,5 +1,8 @@
 package com.tokopedia.search.result.product.inspirationcarousel
 
+import com.tokopedia.search.result.domain.model.SearchCouponModel
+import com.tokopedia.search.result.presentation.model.CouponDataView
+
 interface InspirationCarouselView {
     val queryKey: String
 
@@ -22,6 +25,8 @@ interface InspirationCarouselView {
         product: InspirationCarouselDataView.Option.Product,
         optionAdapterPosition: Int,
     )
+
+    fun trackEventCtaCouponItem(dataView: CouponDataView, item: SearchCouponModel.CouponListWidget)
 
     fun openLink(applink: String, url: String)
 }

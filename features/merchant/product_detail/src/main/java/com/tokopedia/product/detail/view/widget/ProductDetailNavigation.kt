@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.WidgetProductDetailNavigationBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 
@@ -91,7 +91,7 @@ class ProductDetailNavigation : FrameLayout, NavigationListener {
     private val remoteConfig = FirebaseRemoteConfigImpl(context)
     private val enableBlockingTouch = getEnableBlockingTouch(remoteConfig)
 
-    private var listener: DynamicProductDetailListener? = null
+    private var listener: ProductDetailListener? = null
 
     private fun init() {
         WidgetProductDetailNavigationBinding.inflate(LayoutInflater.from(context)).also {
@@ -105,7 +105,7 @@ class ProductDetailNavigation : FrameLayout, NavigationListener {
     fun start(
         recyclerView: RecyclerView,
         items: List<NavigationTab.Item>,
-        listener: DynamicProductDetailListener,
+        listener: ProductDetailListener,
         offsetY: Int = 0,
     ) {
         this.listener = listener

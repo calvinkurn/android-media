@@ -36,9 +36,12 @@
     <color name="dms_static_white">#ffffff</color>
     <color name="dms_static_black">#000000</color>
 
-    
+
     <color name="dms_static_light_NN0_dark">#121212</color>
     <color name="dms_static_light_NN100">#E4EBF5</color>
+    <color name="dms_static_light_NN600">#6D7588</color>
+    <color name="dms_static_light_NN900">#2E3137</color>
+    <color name="dms_static_light_NN950">#212121</color>
     <color name="dms_static_light_NN950_44">#70212121</color>
     <color name="dms_static_light_NN950_68">#AD212121</color>
     <color name="dms_static_light_YN400">#FFA617</color>
@@ -51,11 +54,19 @@
     <color name="dms_static_light_GN500">#00AA5B</color>
     <color name="dms_static_light_GN100">#C9FDE0</color>
 
+    <color name="dms_static_dark_NN600">#AEB2BF</color>
+    <color name="dms_static_dark_NN900">#E9EBF5</color>
+    <color name="dms_static_dark_NN950">#F5F6FF</color>
     <color name="dms_static_dark_NN950_96">#F5F5F6FF</color>
     <color name="dms_static_dark_NN950_44">#70F5F6FF</color>
     <color name="dms_static_dark_NN950_68">#ADF5F6FF</color>
     <color name="dms_static_dark_RN500">#FF425D</color>
-    
+
+    <color name="dms_static_black_80000000">#80000000</color>
+    <color name="dms_labelunify_dark_green_background">@color/Unify_GN500</color>
+    <color name="dms_labelunify_dark_time_general_text">@color/Unify_NN0</color>
+    <color name="dms_labelunify_light_grey_text">@color/Unify_NN600</color>
+    <color name="dms_color_00FFFFFF">#00FFFFFF</color>
     <!--Shop Info Reimagine-->
     <color name="dms_clr_Unify_NN0_70_light">#B3121212</color>
 </resources>

@@ -2,5 +2,5 @@
 <com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/topAdsProductItem"
-    android:layout_width="@dimen/topads_sdk_headline_ad_width"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent" />

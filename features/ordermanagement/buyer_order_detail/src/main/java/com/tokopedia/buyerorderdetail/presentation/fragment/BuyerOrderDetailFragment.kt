@@ -95,7 +95,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -444,7 +444,7 @@ open class BuyerOrderDetailFragment :
         if (rvBuyerOrderDetail?.adapter != adapter) {
             rvBuyerOrderDetail?.adapter = adapter
         }
-        recyclerViewSharedPool.setMaxRecycledViews(BmgmAddOnViewHolder.RES_LAYOUT, BmgmAddOnViewHolder.MAX_RECYCLED_VIEWS)
+        recyclerViewSharedPool.setMaxRecycledViews(AddOnViewHolder.RES_LAYOUT, AddOnViewHolder.MAX_RECYCLED_VIEWS)
     }
 
     private fun setupStickyActionButtons() {
@@ -1177,30 +1177,6 @@ open class BuyerOrderDetailFragment :
         viewModel.impressBmgmProduct(uiModel)
     }
 
-    override fun onCopyAddOnDescription(label: String, description: CharSequence) {
-        // no op for bmgm add on because there is no function copy
-    }
-
-    override fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String) {
-        viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
-    }
-
-    override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
-        BuyerOrderDetailTracker.AddOnsInformation.clickAddOnsInfo(
-            orderId = viewModel.getOrderId(),
-            addOnsType = type
-        )
-        navigator.openAppLink(infoLink, false)
-    }
-
-    override fun onAddOnsInfoClickedNonBundle(infoLink: String, type: String) {
-        onAddOnsInfoLinkClicked(infoLink, type)
-    }
-
-    override fun onAddOnsExpand(addOnsIdentifier: String, isExpand: Boolean) {
-        viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
-    }
-
     private fun showToaster(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
@@ -1254,12 +1230,12 @@ open class BuyerOrderDetailFragment :
         }
     }
 
-    inner class AddOnListener : BmgmAddOnViewHolder.Listener {
+    inner class AddOnListener : AddOnViewHolder.Listener {
         override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
             // noop, buyer add on doesn't have copy function
         }
 
-        override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
+        override fun onAddOnsExpand(isExpand: Boolean, addOnsIdentifier: String) {
             viewModel.expandCollapseAddOn(addOnsIdentifier, isExpand)
         }
 
@@ -1276,12 +1252,12 @@ open class BuyerOrderDetailFragment :
         }
     }
 
-    inner class ProductBenefitListener : BmgmAddOnViewHolder.Listener {
+    inner class ProductBenefitListener : AddOnViewHolder.Listener {
         override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
             // noop, product benefit doesn't have copyable description
         }
 
-        override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
+        override fun onAddOnsExpand(isExpand: Boolean, addOnsIdentifier: String) {
             viewModel.expandCollapseBmgmProductBenefit(addOnsIdentifier, isExpand)
         }
 
