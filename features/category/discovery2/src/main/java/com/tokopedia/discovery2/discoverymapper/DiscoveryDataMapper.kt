@@ -16,6 +16,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.data.productcarditem.Badges
+import com.tokopedia.discovery2.data.productcarditem.StylesGroup
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TAB_DEFAULT_BACKGROUND
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -67,7 +68,10 @@ class DiscoveryDataMapper {
             return list
         }
 
-        fun mapTabsListToComponentList(component: ComponentsItem, subComponentName: String = ""): ArrayList<ComponentsItem> {
+        fun mapTabsListToComponentList(
+            component: ComponentsItem,
+            subComponentName: String = ""
+        ): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             component.data?.forEachIndexed { index, it ->
                 val id = "${TABS_ITEM}_$index"
@@ -105,8 +109,9 @@ class DiscoveryDataMapper {
             val isTabIcon = name == ComponentNames.TabsIcon.componentName
             val isPlainTab = name == ComponentNames.Tabs.componentName &&
                 properties?.background == TAB_DEFAULT_BACKGROUND
+            val isTabImage = name == ComponentNames.TabsImage.componentName
 
-            return isTabIcon || isPlainTab
+            return isTabIcon || isPlainTab || isTabImage
         }
 
         private fun pinnedActiveTab(tabId: String?, item: DataItem, currentIndex: Int) {
@@ -157,7 +162,8 @@ class DiscoveryDataMapper {
             val dataItem = mutableListOf<DataItem>()
             dataItem.add(it)
             componentsItem.data = dataItem
-            componentsItem.design = if (itemList.size > 1) CAROUSEL_ITEM_DESIGN else SINGLE_ITEM_DESIGN
+            componentsItem.design =
+                if (itemList.size > 1) CAROUSEL_ITEM_DESIGN else SINGLE_ITEM_DESIGN
             list.add(componentsItem)
         }
         return list
@@ -283,7 +289,11 @@ class DiscoveryDataMapper {
         )
     }
 
-    fun mapDataItemToProductCardModel(dataItem: DataItem, componentName: String?): ProductCardModel {
+    fun mapDataItemToProductCardModel(
+        dataItem: DataItem,
+        componentName: String?,
+        cardType: String?
+    ): ProductCardModel {
         val productName: String
         val slashedPrice: String
         val formattedPrice: String
@@ -292,7 +302,10 @@ class DiscoveryDataMapper {
         if (componentName == ComponentNames.ProductCardSprintSaleItem.componentName ||
             componentName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName ||
             componentName == ComponentNames.ProductCardSprintSaleCarousel.componentName ||
-            componentName == ComponentNames.ProductCardSprintSale.componentName
+            componentName == ComponentNames.ProductCardSprintSale.componentName ||
+            componentName == ComponentNames.ProductCardSprintSaleItemReimagine.componentName ||
+            componentName == ComponentNames.ProductCardSprintSaleCarouselItemReimagine.componentName
+
         ) {
             productName = dataItem.title ?: ""
             slashedPrice = setSlashPrice(dataItem.discountedPrice, dataItem.price)
@@ -312,6 +325,7 @@ class DiscoveryDataMapper {
             } else {
                 ""
             },
+            isInBackground = cardType.equals("v2_with_background", true),
             countSoldRating = dataItem.averageRating,
             isTopAds = dataItem.isTopads ?: false,
             freeOngkir = ProductCardModel.FreeOngkir(
@@ -327,7 +341,8 @@ class DiscoveryDataMapper {
                             it.position,
                             it.title,
                             it.type,
-                            it.url
+                            it.url,
+                            it.styles?.mapToProductCardModelStyle().orEmpty()
                         )
                     )
                 }
@@ -338,11 +353,10 @@ class DiscoveryDataMapper {
             stockBarLabel = dataItem.stockWording?.title ?: "",
             stockBarLabelColor = dataItem.stockWording?.color ?: "",
             isOutOfStock = (dataItem.isActiveProductCard == false),
-            hasNotifyMeButton = if (dataItem.stockWording?.title?.isNotEmpty() == true)false else dataItem.hasNotifyMe,
+            hasNotifyMeButton = if (dataItem.stockWording?.title?.isNotEmpty() == true) false else dataItem.hasNotifyMe,
             hasThreeDots = dataItem.hasThreeDots,
             hasButtonThreeDotsWishlist = dataItem.hasThreeDotsWishlist,
-            hasAddToCartWishlist = dataItem.hasATCWishlist,
-            hasAddToCartButton = !dataItem.hasATCWishlist && dataItem.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART && dataItem.isActiveProductCard == true,
+            hasAddToCartButton = dataItem.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART && dataItem.isActiveProductCard == true,
             hasSimilarProductWishlist = dataItem.hasSimilarProductWishlist == true,
             variant = variantProductCard(dataItem),
             nonVariant = nonVariantProductCard(dataItem),
@@ -411,7 +425,10 @@ class DiscoveryDataMapper {
     }
 
     private fun nonVariantProductCard(dataItem: DataItem): ProductCardModel.NonVariant? {
-        return if (dataItem.atcButtonCTA != Constant.ATCButtonCTATypes.MINI_CART || checkForVariantProductCard(dataItem.parentProductId)) {
+        return if (dataItem.atcButtonCTA != Constant.ATCButtonCTATypes.MINI_CART || checkForVariantProductCard(
+                dataItem.parentProductId
+            )
+        ) {
             null
         } else {
             ProductCardModel.NonVariant(
@@ -423,7 +440,10 @@ class DiscoveryDataMapper {
     }
 
     private fun variantProductCard(dataItem: DataItem): ProductCardModel.Variant? {
-        return if (dataItem.atcButtonCTA == Constant.ATCButtonCTATypes.MINI_CART && checkForVariantProductCard(dataItem.parentProductId)) {
+        return if (dataItem.atcButtonCTA == Constant.ATCButtonCTATypes.MINI_CART && checkForVariantProductCard(
+                dataItem.parentProductId
+            )
+        ) {
             ProductCardModel.Variant(
                 dataItem.quantity
             )
@@ -476,7 +496,13 @@ class DiscoveryDataMapper {
     private fun getShopBadgeList(showBadges: List<Badges?>?): List<ProductCardModel.ShopBadge> {
         return ArrayList<ProductCardModel.ShopBadge>().apply {
             showBadges?.firstOrNull()?.let {
-                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = it.image_url))
+                add(
+                    ProductCardModel.ShopBadge(
+                        isShown = true,
+                        imageUrl = it.image_url,
+                        title = it.title
+                    )
+                )
             }
         }
     }
@@ -489,5 +515,12 @@ class DiscoveryDataMapper {
         } else {
             ""
         }
+    }
+
+    private fun List<StylesGroup>.mapToProductCardModelStyle(): List<ProductCardModel.LabelGroup.Style> {
+        val result = this.map { style ->
+            ProductCardModel.LabelGroup.Style(style.key, style.value)
+        }
+        return result
     }
 }

@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.ItemDynamicProductBmgmBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.widget.BMGMWidgetRouter
@@ -18,7 +18,7 @@ import com.tokopedia.product.detail.view.viewholder.bmgm.widget.BMGMWidgetTracke
 
 class BMGMViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<BMGMUiModel>(view) {
 
     companion object {

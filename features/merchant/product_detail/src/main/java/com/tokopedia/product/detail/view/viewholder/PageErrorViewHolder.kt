@@ -1,10 +1,9 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -13,11 +12,13 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TobacoErrorData
 import com.tokopedia.product.detail.databinding.ItemDynamicGlobalErrorBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
 
-class PageErrorViewHolder(val view: View,
-                          val listener: DynamicProductDetailListener) : AbstractViewHolder<PageErrorDataModel>(view) {
+class PageErrorViewHolder(
+    val view: View,
+    val listener: ProductDetailListener
+) : AbstractViewHolder<PageErrorDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_global_error

@@ -13,7 +13,10 @@ import com.tokopedia.digital_checkout.presentation.adapter.vh.MyBillsActionListe
  * @author by jessica on 10/03/21
  */
 
-class DigitalMyBillsAdapter(private val listener: MyBillsActionListener) : RecyclerView.Adapter<DigitalMyBillsViewHolder>() {
+class DigitalMyBillsAdapter(
+    private val listener: MyBillsActionListener,
+    private val isGotoPlus: Boolean
+) : RecyclerView.Adapter<DigitalMyBillsViewHolder>() {
     private var subscriptions = listOf<FintechProduct>()
     private var fintechProducts = listOf<FintechProduct>()
 
@@ -52,7 +55,7 @@ class DigitalMyBillsAdapter(private val listener: MyBillsActionListener) : Recyc
 
     override fun onBindViewHolder(holder: DigitalMyBillsViewHolder, position: Int) {
         if (holder.itemViewType == SUBSCRIPTION_VIEWTYPE) {
-            holder.bindSubscription(subscriptions[position])
+            holder.bindSubscription(subscriptions[position], isGotoPlus)
         } else {
             holder.bindFintechProduct(fintechProducts[position - subscriptions.size], position + 1)
         }

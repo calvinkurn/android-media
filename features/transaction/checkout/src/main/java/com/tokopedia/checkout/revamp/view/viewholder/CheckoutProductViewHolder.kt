@@ -270,8 +270,8 @@ class CheckoutProductViewHolder(
     private fun renderBMGMItem(product: CheckoutProductModel) {
         fun renderAdjustableFirstItemMarginBmgm() {
             with(bmgmBinding) {
-                if (bindingAdapterPosition == Int.ZERO) {
-                    (ivProductImageFrameBmgm.layoutParams as? MarginLayoutParams)?.topMargin = Int.ZERO.dpToPx(itemView.resources.displayMetrics)
+                if (product.shouldShowBmgmInfo) {
+                    (ivProductImageFrameBmgm.layoutParams as? MarginLayoutParams)?.topMargin = MARGIN_TOP_BMGM_WITH_HEADER_CARD.dpToPx(itemView.resources.displayMetrics)
                 } else {
                     (ivProductImageFrameBmgm.layoutParams as? MarginLayoutParams)?.topMargin = MARGIN_TOP_BMGM_CARD.dpToPx(itemView.resources.displayMetrics)
                 }
@@ -335,8 +335,7 @@ class CheckoutProductViewHolder(
         fun renderAdjustableSeparatorMarginBmgm() {
             with(bmgmBinding) {
                 if (product.shouldShowBmgmInfo) {
-                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = MARGIN_TOP_BMGM_CARD.dpToPx(itemView.resources.displayMetrics)
-                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = MARGIN_TOP_BMGM_CARD.dpToPx(itemView.resources.displayMetrics)
+                    (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = MARGIN_TOP_BMGM_WITH_HEADER_CARD.dpToPx(itemView.resources.displayMetrics)
                 } else {
                     (vProductSeparatorBmgm.layoutParams as? MarginLayoutParams)?.topMargin = Int.ZERO
                 }
@@ -477,7 +476,7 @@ class CheckoutProductViewHolder(
         }
 
         fun renderBmgmGroupDetail() {
-            binding.ivCheckoutBmgmDetail.shouldShowWithAction(product.shouldShowBmgmInfo) {
+            binding.ivCheckoutBmgmDetail.shouldShowWithAction(product.shouldShowBmgmInfoIcon) {
                 binding.ivCheckoutBmgmDetail.setOnClickListener {
                     val bmgmCommonData = CheckoutBmgmMapper.mapBmgmCommonDataModel(
                         product,
@@ -1112,5 +1111,6 @@ class CheckoutProductViewHolder(
 
         private const val EPHARMACY_ICON_SIZE = 12
         private const val MARGIN_TOP_BMGM_CARD = 24
+        private const val MARGIN_TOP_BMGM_WITH_HEADER_CARD = 12
     }
 }

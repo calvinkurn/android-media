@@ -104,6 +104,8 @@ class SearchApiConst {
         const val MINUS_IDS = "minus_ids"
         const val CAROUSEL_TYPE = "carousel_type"
         const val POST_ATC_CAROUSEL_TYPE = "post_atc"
+        const val L_NAME = "l_name"
+        const val SRE = "sre"
 
         const val DEFAULT_VALUE_OF_SHOW_ADULT = "false"
         const val MPS = "mps"

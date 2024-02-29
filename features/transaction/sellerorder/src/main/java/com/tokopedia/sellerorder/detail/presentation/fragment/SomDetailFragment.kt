@@ -52,7 +52,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -123,7 +125,6 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCo
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailAddOnViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailIncomeViewHolder
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.BottomSheetManager
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBaseRejectOrderBottomSheet
@@ -138,8 +139,8 @@ import com.tokopedia.sellerorder.detail.presentation.model.SomDetailIncomeUiMode
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
-import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_INITIAL
+import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -216,6 +217,9 @@ open class SomDetailFragment :
     protected val bottomSheetManager by lazy {
         view?.let { if (it is ViewGroup) BottomSheetManager(it, childFragmentManager) else null }
     }
+
+    private val addOnsExpandableState = mutableListOf<String>()
+    private val bmgmProductBenefitExpandableState = mutableListOf<String>()
 
     private fun createChatIcon(context: Context): IconUnify {
         return IconUnify(requireContext(), IconUnify.CHAT).apply {
@@ -434,10 +438,6 @@ open class SomDetailFragment :
                 checkUserRole()
             }
         }
-        recyclerViewSharedPool.setMaxRecycledViews(
-            SomDetailAddOnViewHolder.RES_LAYOUT,
-            SomDetailAddOnViewHolder.MAX_RECYCLED_VIEWS
-        )
     }
 
     protected open fun loadDetail() {
@@ -658,7 +658,9 @@ open class SomDetailFragment :
             SomDetailMapper.mapSomGetOrderDetailResponseToVisitableList(
                 somDetail,
                 somDynamicPriceResponse,
-                resolutionTicketStatusResponse
+                resolutionTicketStatusResponse,
+                addOnsExpandableState,
+                bmgmProductBenefitExpandableState
             )
         )
         transparencyFeeCoachMarkHandler.attach()
@@ -1180,13 +1182,6 @@ open class SomDetailFragment :
         showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
     }
 
-    override fun onCopyAddOnDescription(label: String, description: CharSequence) {
-        val clipboardManager =
-            context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, description))
-        showCommonToaster(getString(R.string.som_detail_add_on_description_copied_message))
-    }
-
     override fun onResoClicked(redirectPath: String) {
         SomNavigator.openAppLink(context, redirectPath)
         SomAnalytics.sendClickOnResolutionWidgetEvent(userSession.userId)
@@ -1217,6 +1212,7 @@ open class SomDetailFragment :
     }
 
     override fun onDetailIncomeClicked() {
+        SomAnalytics.eventDetailIncomeClicked()
         val somDetailTransparencyFeeBottomSheet =
             SomDetailTransparencyFeeBottomSheet.newInstance(orderId)
         somDetailTransparencyFeeBottomSheet.show(childFragmentManager)
@@ -1709,7 +1705,28 @@ open class SomDetailFragment :
     }
 
     protected fun getAdapterTypeFactory(): SomDetailAdapterFactoryImpl {
-        return SomDetailAdapterFactoryImpl(this, recyclerViewSharedPool)
+        return SomDetailAdapterFactoryImpl(
+            actionListener = this,
+            addOnListener = AddOnListener(),
+            productBenefitListener = ProductBenefitListener(),
+            recyclerViewSharedPool = recyclerViewSharedPool
+        )
+    }
+
+    private fun expandCollapseAddOn(addOnIdentifier: String, isExpand: Boolean) {
+        if (isExpand) {
+            addOnsExpandableState.remove(addOnIdentifier)
+        } else {
+            addOnsExpandableState.add(addOnIdentifier)
+        }
+    }
+
+    private fun expandCollapseBmgmProductBenefit(identifier: String, isExpand: Boolean) {
+        if (isExpand) {
+            bmgmProductBenefitExpandableState.remove(identifier)
+        } else {
+            bmgmProductBenefitExpandableState.add(identifier)
+        }
     }
 
     inner class TransparencyFeeCoachMarkHandler : RecyclerView.OnScrollListener() {
@@ -1800,6 +1817,44 @@ open class SomDetailFragment :
                 onDismissListener = {}
                 dismissCoachMark()
             }
+        }
+    }
+
+    private inner class AddOnListener : AddOnViewHolder.Listener {
+        override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
+            val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            clipboardManager.setPrimaryClip(ClipData.newPlainText(label, description))
+            showCommonToaster(getString(R.string.som_detail_add_on_description_copied_message))
+        }
+
+        override fun onAddOnsExpand(isExpand: Boolean, addOnsIdentifier: String) {
+            expandCollapseAddOn(addOnsIdentifier, isExpand)
+        }
+
+        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+            SomNavigator.openAppLink(context, infoLink)
+        }
+
+        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+            // noop, add on is not clickable
+        }
+    }
+
+    private inner class ProductBenefitListener : AddOnViewHolder.Listener {
+        override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
+            // noop, product benefit doesn't have copyable description
+        }
+
+        override fun onAddOnsExpand(isExpand: Boolean, addOnsIdentifier: String) {
+            expandCollapseBmgmProductBenefit(addOnsIdentifier, isExpand)
+        }
+
+        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+            // noop, product benefit doesn't have info link
+        }
+
+        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+            onClickProduct(addOn.orderDetailId.toLongOrZero())
         }
     }
 }

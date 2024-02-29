@@ -21,6 +21,7 @@ class FlashSaleTokoTabViewModel(
 ) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val tabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private val notifyTargetedComponent: MutableLiveData<Pair<String, String>> = MutableLiveData()
 
     @JvmField
     @Inject
@@ -48,6 +49,7 @@ class FlashSaleTokoTabViewModel(
         get() = Dispatchers.Main + SupervisorJob()
 
     fun getTabLiveData(): LiveData<ArrayList<ComponentsItem>> = tabs
+    fun notifyTargetInFestiveSection(): LiveData<Pair<String, String>> = notifyTargetedComponent
 
     fun onTabClick(selectedFilterValue: String) {
         this.syncData.value = true
@@ -57,5 +59,15 @@ class FlashSaleTokoTabViewModel(
         }
 
         component.reInitComponentItems()
+
+        notifyFestiveSection(selectedFilterValue)
+    }
+
+    private fun notifyFestiveSection(selectedFilterValue: String) {
+        component.parentSectionId?.let {
+            if (!component.isBackgroundPresent) return@let
+
+            notifyTargetedComponent.value = it to selectedFilterValue
+        }
     }
 }

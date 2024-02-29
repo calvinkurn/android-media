@@ -3,15 +3,9 @@ package com.tokopedia.chatbot.di
 import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.chatbot.data.cache.ChatbotCacheManager
 import com.tokopedia.chatbot.data.cache.ChatbotCacheManagerImpl
-import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
-import com.tokopedia.chatbot.websocket.ChatbotDefaultWebSocketStateHandler
-import com.tokopedia.chatbot.websocket.ChatbotWebSocket
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketImpl
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
@@ -87,32 +81,5 @@ class ChatbotModule {
     @Provides
     fun provideGraphqlRepositoryModule(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
-    }
-
-    @ChatbotScope
-    @Provides
-    fun provideGetUserNameForReplyBubble(userSession: UserSessionInterface): GetUserNameForReplyBubble {
-        return GetUserNameForReplyBubble(userSession)
-    }
-
-    @ChatbotScope
-    @Provides
-    fun provideChatbotWebSocket(
-        tkpdOldAuthInterceptor: TkpdOldAuthInterceptor,
-        fingerprintInterceptor: FingerprintInterceptor,
-        userSession: UserSessionInterface,
-        dispatcher: CoroutineDispatchers
-    ): ChatbotWebSocket {
-        return ChatbotWebSocketImpl(
-            arrayListOf(tkpdOldAuthInterceptor, fingerprintInterceptor),
-            userSession.accessToken,
-            dispatcher
-        )
-    }
-
-    @ChatbotScope
-    @Provides
-    fun provideChatbotWebSocketStateHandler(): ChatbotWebSocketStateHandler {
-        return ChatbotDefaultWebSocketStateHandler()
     }
 }

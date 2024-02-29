@@ -1,10 +1,14 @@
 package com.tokopedia.kyc_centralized.ui.tokoKyc.form
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.provider.Settings
 import android.view.Gravity
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -27,8 +31,8 @@ import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.UserIdentificationS
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import com.tokopedia.utils.permission.request
 import javax.inject.Inject
 
 /**
@@ -38,14 +42,16 @@ class UserIdentificationFormKtpFragment :
     BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>(),
     UserIdentificationFormActivity.Listener {
 
-    private var permissionCheckerHelper = PermissionCheckerHelper()
-
     @Inject
     lateinit var kycSharedPreference: KycSharedPreference
 
     @Inject
     override lateinit var remoteConfig: RemoteConfig
     private var analytics: UserIdentificationCommonAnalytics? = null
+
+    private val requestPermissionCamera = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { listGrantedResult ->
+        checkPermissionResult(listGrantedResult)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -119,23 +125,25 @@ class UserIdentificationFormKtpFragment :
     private fun setButtonView() {
         viewBinding?.button?.setText(R.string.ktp_button)
         viewBinding?.button?.setOnClickListener { v: View? ->
-            checkPermission {
-                analytics?.eventClickNextKtpPage()
-                val intent = context?.let {
-                    createIntent(
-                        it,
-                        UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP,
-                        projectId,
-                        useCropping = true,
-                        useCompression = true
-                    )
-                }
-                startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_KTP)
-            }
+            checkPermission()
         }
     }
 
-    private fun checkPermission(isGranted: () -> Unit) {
+    private fun goToKtpCamera() {
+        analytics?.eventClickNextKtpPage()
+        val intent = context?.let {
+            createIntent(
+                it,
+                UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP,
+                projectId,
+                useCropping = true,
+                useCompression = true
+            )
+        }
+        startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_KTP)
+    }
+
+    private fun checkPermission() {
         val listPermission = if (SDK_INT <= VERSION_CODES.P) {
             arrayOf(
                 PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
@@ -146,17 +154,42 @@ class UserIdentificationFormKtpFragment :
         }
 
         activity?.let {
-            permissionCheckerHelper.request(
-                it,
-                listPermission,
-                granted = {
-                    isGranted.invoke()
-                },
-                denied = {
-                    it.finish()
-                }
-            )
+            requestPermissionCamera.launch(listPermission)
         }
+    }
+
+    private fun checkPermissionResult(listPermission: Map<String, Boolean>) {
+        var isGranted = true
+
+        listPermission.forEach {
+            if (isGranted && !it.value) {
+                isGranted = false
+            }
+        }
+
+        if (isGranted) {
+            goToKtpCamera()
+        } else {
+            showPermissionRejected()
+        }
+    }
+
+    private fun showPermissionRejected() {
+        Toaster.build(
+            requireView().rootView,
+            getString(R.string.goto_kyc_permission_camera_denied),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_ERROR,
+            getString(R.string.goto_kyc_permission_action_active)
+        ) { goToApplicationDetailActivity() }.show()
+    }
+
+    private fun goToApplicationDetailActivity() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri = Uri.fromParts(PACKAGE, requireActivity().packageName, null)
+        intent.data = uri
+        requireActivity().startActivity(intent)
     }
 
     override fun trackOnBackPressed() {
@@ -164,6 +197,7 @@ class UserIdentificationFormKtpFragment :
     }
 
     companion object {
+        private const val PACKAGE = "package"
         fun createInstance(kycType: String): Fragment {
             return UserIdentificationFormKtpFragment().apply {
                 arguments = Bundle().apply {

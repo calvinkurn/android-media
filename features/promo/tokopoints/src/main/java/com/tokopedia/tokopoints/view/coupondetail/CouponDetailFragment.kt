@@ -22,7 +22,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -386,7 +387,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             val progressBar = tpContentCouponDetail.llBottomButton.progressRefetchCode
 
             description.text = data.title
-            ImageHandler.loadImageFitCenter(imgBanner.context, imgBanner, data.imageUrlMobile)
+            imgBanner?.loadImageFitCenter(data.imageUrlMobile)
 
             if (data.isIs_show_button) {
                 btnAction2.show()
