@@ -451,8 +451,9 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     }
 
     private fun getSource() = intent.data?.query ?: ""
+
     override fun getProductTrack(): TrackStayProductDetail {
-        val pdpFragment = supportFragmentManager.findFragmentByTag(tagFragment) as? DynamicProductDetailFragment
+        val pdpFragment = supportFragmentManager.findFragmentByTag(tagFragment) as? ProductDetailFragment
         return pdpFragment?.getStayAnalyticsData() ?: throw Exception()
     }
 
