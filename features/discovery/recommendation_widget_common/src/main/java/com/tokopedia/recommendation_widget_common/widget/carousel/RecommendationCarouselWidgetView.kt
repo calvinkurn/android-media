@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.analytics.byteio.SlideTrackObject
+import com.tokopedia.analytics.byteio.addHorizontalTrackListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -58,6 +60,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.productcard.R as productcardR
 
 /**
  * Created by yfsx on 5/3/21.
@@ -402,7 +405,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.carousel_product_card_grid_width)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(productcardR.dimen.carousel_product_card_grid_width)
         return productCardModelList.getMaxHeightForGridView(
             context = itemView.context,
             coroutineDispatcher = Dispatchers.Default,
@@ -479,6 +482,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private fun bindWidgetWithData(carouselData: RecommendationCarouselData) {
         this.carouselData = carouselData
         initVar()
+        trackHorizontalScroll(carouselData.recommendationData)
         initChips()
         doActionBasedOnRecomState(carouselData.state,
             onLoad = {
@@ -600,6 +604,15 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     private fun destroyEvent() {
 
+    }
+
+    private fun trackHorizontalScroll(model: RecommendationWidget) {
+        recyclerView.addHorizontalTrackListener(
+            SlideTrackObject(
+                moduleName = model.pageName,
+                barName = model.pageName,
+            )
+        )
     }
 
     private fun observeLiveData() {

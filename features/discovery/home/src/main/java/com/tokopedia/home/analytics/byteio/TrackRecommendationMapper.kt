@@ -5,6 +5,7 @@ import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationCardModel
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationProductModel
 import com.tokopedia.analytics.byteio.recommendation.CardName
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
@@ -37,7 +38,8 @@ object TrackRecommendationMapper {
             ).toFloat(),
             salesPrice = recommendationProductItem.priceInt.toFloat(),
             position = position,
-            volume = productCardModel.countSoldRating.toIntOrZero(),
+            volume = recommendationProductItem.countSold,
+            rate = productCardModel.countSoldRating.toFloatOrZero(),
         )
     }
 
@@ -72,8 +74,7 @@ object TrackRecommendationMapper {
         tabPosition: Int,
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
-            cardName = CardName.REC_CONTENT_CARD,
-            cardType = layoutItem,
+            cardName = CardName.REC_CONTENT_CARD.format(layoutItem),
             tabName = tabName,
             tabPosition = tabPosition,
             moduleName = pageName,

@@ -2,6 +2,7 @@ package com.tokopedia.analytics.byteio
 
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 
 internal val TAG = "BYTEIO"
 
@@ -140,18 +141,17 @@ enum class ProductType(val type: Int) {
 }
 
 object PageName {
-    const val MAINPAGE = "mall"
-    const val HOME = "home"
+    const val HOME = "homepage"
     const val FEED = "feed"
     const val OFFICIAL_STORE = "official_store"
-    const val WHISLIST = "whishlist"
+    const val WISHLIST = "wishlist"
     const val UOH = "order_center"
     const val INBOX = "inbox"
     const val NOTIFICATION = "notification"
     const val PDP = "product_detail"
     const val SEARCH_RESULT = "search_result"
     const val CART = "cart"
-    const val SHOP = "shop"
+    const val SHOP = "shoppage"
     const val SKU = "sku"
     const val EXTERNAL_PROMO = "external_promo"
 }
@@ -179,7 +179,7 @@ enum class EntranceForm(val str: String) {
 enum class SourcePageType(val str: String) {
     VIDEO("video"),
     LIVE("live"),
-    PRODUCT_CARD("")
+    PRODUCT_CARD(AppLogAnalytics.getCurrentData(PAGE_NAME)?.toString().orEmpty())
 }
 
 enum class EnterMethod(val str: String) {
@@ -245,7 +245,7 @@ object AppLogParam {
     const val PREVIOUS_PAGE = "previous_page"
     const val PRODUCT_ID = "product_id"
     const val REQUEST_ID = "request_id"
-    const val REC_SESSION_ID = "req_session_id"
+    const val REC_SESSION_ID = "rec_session_id"
     const val SHOP_ID = "shop_id"
     const val SLIDE_TYPE = "slide_type"
     const val SOURCE_MODULE = "source_module"

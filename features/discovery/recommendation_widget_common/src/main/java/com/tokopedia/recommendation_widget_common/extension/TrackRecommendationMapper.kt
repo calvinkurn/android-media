@@ -10,7 +10,7 @@ fun RecommendationItem.asProductTrackModel(
     entranceForm: EntranceForm,
     enterMethod: String = "",
     tabName: String = "",
-    tabPosition: Int = 0,
+    tabPosition: Int = -1,
 ): AppLogRecommendationProductModel {
     return AppLogRecommendationProductModel.create(
         productId = productId.toString(),
@@ -27,7 +27,7 @@ fun RecommendationItem.asProductTrackModel(
         tabPosition = tabPosition,
         rate = ratingAverage.toFloatOrZero(),
         enterMethod = enterMethod,
-        volume = stock,
+        volume = countSold,
         originalPrice = (if(slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
         salesPrice = priceInt.toFloat(),
     )

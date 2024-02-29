@@ -51,6 +51,7 @@ import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendat
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationRemoveWishlistLogin
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
+import com.tokopedia.home.beranda.domain.interactor.usecase.GetHomeRecommendationCardUseCase
 import com.tokopedia.home.beranda.helper.HomeFeedEndlessScrollListener
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeEggListener
@@ -704,7 +705,8 @@ class HomeRecommendationFragment :
             recomId,
             DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
             getLocationParamString(),
-            sourceType = sourceType
+            sourceType = sourceType,
+            refreshType = GetHomeRecommendationCardUseCase.REFRESH_TYPE_REFRESH
         )
     }
 
@@ -792,7 +794,8 @@ class HomeRecommendationFragment :
                 recomId,
                 DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
                 getLocationParamString(),
-                sourceType = sourceType
+                sourceType = sourceType,
+                refreshType = GetHomeRecommendationCardUseCase.REFRESH_TYPE_OPEN,
             )
         }
     }

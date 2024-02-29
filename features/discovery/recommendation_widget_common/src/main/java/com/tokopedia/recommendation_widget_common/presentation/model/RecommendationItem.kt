@@ -53,6 +53,7 @@ data class RecommendationItem(
     val addToCartType: AddToCartType = AddToCartType.None,
     val gridPosition: GridPosition = GridPosition.None,
     val appLog: RecommendationAppLog = RecommendationAppLog(),
+    val countSold: Int = 0,
     // for tracker field
     val dimension61: String = "",
     // for tokonow

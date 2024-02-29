@@ -28,13 +28,14 @@ data class AppLogRecommendationProductModel(
     val shopId: String,
     val itemOrder: Int,
     val entranceForm: String,
-    val volume: Int?,
-    val rate: Float?,
-    val originalPrice: Float?,
-    val salesPrice: Float?,
+    val volume: Int,
+    val rate: Float,
+    val originalPrice: Float,
+    val salesPrice: Float,
     val enterMethod: String,
     val authorId: String,
     val groupId: String,
+    val cardName: String,
 ) {
 
     fun asCardModel() = AppLogRecommendationCardModel(
@@ -50,8 +51,7 @@ data class AppLogRecommendationProductModel(
         recParams = recParams,
         requestId = requestId,
         shopId = shopId,
-        cardName = CardName.REC_GOODS_CARD,
-        cardType = "",
+        cardName = cardName,
         groupId = groupId,
         itemOrder = itemOrder,
         entranceForm = entranceForm,
@@ -83,10 +83,10 @@ data class AppLogRecommendationProductModel(
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.SHOP_ID, shopId)
         put(AppLogParam.ITEM_ORDER, itemOrder)
-        put(AppLogParam.VOLUME, volume)
-        put(AppLogParam.RATE, rate)
-        put(AppLogParam.ORIGINAL_PRICE, rate)
-        put(AppLogParam.SALES_PRICE, rate)
+        if(volume > 0) put(AppLogParam.VOLUME, volume)
+        if(rate > 0) put(AppLogParam.RATE, rate)
+        if(originalPrice > 0) put(AppLogParam.ORIGINAL_PRICE, originalPrice)
+        if(salesPrice > 0) put(AppLogParam.SALES_PRICE, salesPrice)
         //TODO P1: group_id, main_video_id
     }
 
@@ -107,7 +107,7 @@ data class AppLogRecommendationProductModel(
             productId: String = "",
             position: Int = 0,
             tabName: String = "",
-            tabPosition: Int = 0,
+            tabPosition: Int = -1,
             moduleName: String = "",
             isAd: Boolean = false,
             isUseCache: Boolean = false,
@@ -123,6 +123,7 @@ data class AppLogRecommendationProductModel(
             enterMethod: String = "",
             authorId: String = "",
             groupId: String = "",
+            cardName: String = CardName.REC_GOODS_CARD,
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
                 productId = productId,
@@ -145,7 +146,8 @@ data class AppLogRecommendationProductModel(
                 salesPrice = salesPrice,
                 enterMethod = enterMethod,
                 authorId = authorId,
-                groupId = groupId
+                groupId = groupId,
+                cardName = cardName
             )
         }
     }

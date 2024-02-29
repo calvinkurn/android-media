@@ -13,8 +13,7 @@ import org.json.JSONObject
  * Byte.io tracking model
  */
 data class AppLogRecommendationCardModel(
-    val cardName: CardName,
-    val cardType: String,
+    val cardName: String,
     val productId: String,
     val listName: String,
     val listNum: Int,
@@ -30,10 +29,10 @@ data class AppLogRecommendationCardModel(
     val groupId: String,
     val itemOrder: Int,
     val entranceForm: String,
-    val volume: Int?,
-    val rate: Float?,
-    val originalPrice: Float?,
-    val salesPrice: Float?,
+    val volume: Int,
+    val rate: Float,
+    val originalPrice: Float,
+    val salesPrice: Float,
     val sourcePageType: String,
     val enterMethod: String,
     val authorId: String,
@@ -41,7 +40,7 @@ data class AppLogRecommendationCardModel(
 
     fun toShowClickJson() = JSONObject().apply {
         addPage()
-        put(AppLogParam.CARD_NAME, cardName.str.format(cardType))
+        put(AppLogParam.CARD_NAME, cardName)
         put(AppLogParam.LIST_NAME, listName)
         put(AppLogParam.LIST_NUM, listNum)
         addEnterFrom()
@@ -56,9 +55,10 @@ data class AppLogRecommendationCardModel(
         put(AppLogParam.REC_PARAMS, recParams)
         put(AppLogParam.SHOP_ID, shopId)
         put(AppLogParam.ITEM_ORDER, itemOrder)
-        put(AppLogParam.VOLUME, volume)
-        put(AppLogParam.ORIGINAL_PRICE, originalPrice)
-        put(AppLogParam.SALES_PRICE, salesPrice)
+        if(volume > 0) put(AppLogParam.VOLUME, volume)
+        if(rate > 0) put(AppLogParam.RATE, rate)
+        if(originalPrice > 0) put(AppLogParam.ORIGINAL_PRICE, originalPrice)
+        if(salesPrice > 0) put(AppLogParam.SALES_PRICE, salesPrice)
         //TODO P1: group_id, main_video_id
     }
 
@@ -79,11 +79,10 @@ data class AppLogRecommendationCardModel(
         fun create(
             cardId: String = "",
             productId: String = "",
-            cardName: CardName,
-            cardType: String = "",
+            cardName: String = "",
             position: Int = 0,
             tabName: String = "",
-            tabPosition: Int = 0,
+            tabPosition: Int = -1,
             moduleName: String = "",
             isAd: Boolean = false,
             isUseCache: Boolean = false,
@@ -98,12 +97,11 @@ data class AppLogRecommendationCardModel(
             originalPrice: Float = 0f,
             salesPrice: Float = 0f,
             enterMethod: String = "",
-            sourcePageType: SourcePageType? = null,
+            sourcePageType: SourcePageType = SourcePageType.PRODUCT_CARD,
             authorId: String = "",
         ): AppLogRecommendationCardModel {
             return AppLogRecommendationCardModel(
                 cardName = cardName,
-                cardType = cardType,
                 productId = productId,
                 listName = tabName,
                 listNum = tabPosition.inc(),
@@ -124,7 +122,7 @@ data class AppLogRecommendationCardModel(
                 originalPrice = originalPrice,
                 salesPrice = salesPrice,
                 enterMethod = enterMethod,
-                sourcePageType = sourcePageType?.str ?: AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME).toString(),
+                sourcePageType = sourcePageType.str,
                 authorId = authorId,
             )
         }

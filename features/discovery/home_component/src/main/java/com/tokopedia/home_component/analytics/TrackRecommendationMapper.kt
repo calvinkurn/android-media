@@ -20,10 +20,12 @@ object TrackRecommendationMapper {
             isUseCache = isCache,
             recParams = "", // TODO need to confirm
             requestId = "", // TODO need BE deployment
+            recSessionId = "", // TODO need BE deployment
             shopId = data.shopId,
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
             enterMethod = enterMethod,
             position = cardPosition,
+            cardName = CardName.MISSION_PRODUCT_CARD.format(data.title),
         )
     }
 
@@ -32,14 +34,14 @@ object TrackRecommendationMapper {
         enterMethod: String = "",
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
-            cardName = CardName.MISSION_CARD,
-            cardType = data.pageName,
+            cardName = CardName.MISSION_PAGE_CARD.format(data.title),
             productId = data.productID,
             moduleName = data.pageName,
             isAd = data.isTopads,
             isUseCache = isCache,
-            recParams = "", // TODO need to confirm
-            requestId = "", // TODO need BE deployment
+            recParams = "", //TODO need to confirm
+            requestId = "", //TODO need BE deployment
+            recSessionId = "", //TODO need BE deployment
             shopId = data.shopId,
             entranceForm = EntranceForm.MISSION_HORIZONTAL_GOODS_CARD,
             enterMethod = enterMethod,
