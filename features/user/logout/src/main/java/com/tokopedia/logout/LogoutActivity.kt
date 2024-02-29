@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.lifecycleScope
 import com.gojek.kyc.plus.OneKycConstants
 import com.gojek.kyc.plus.getKycSdkDocumentDirectoryPath
 import com.gojek.kyc.plus.getKycSdkFrameDirectoryPath
@@ -51,7 +50,6 @@ import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.user.session.util.EncoderDecoder
 import com.tokopedia.utils.file.FileUtil
-import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
