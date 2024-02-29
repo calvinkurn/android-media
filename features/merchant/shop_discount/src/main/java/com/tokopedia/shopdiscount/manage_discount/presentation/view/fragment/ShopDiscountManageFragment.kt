@@ -64,6 +64,7 @@ class ShopDiscountManageFragment :
         private const val SELECTED_SLASH_PRICE_STATUS_ARG = "selected_slash_price_status_arg"
         private const val MODE_ARG = "mode_arg"
         private const val SELECTED_PRODUCT_VARIANT_ID = "selected_product_variant_id"
+        private const val OPT_OUT_SUCCESS_MESSAGE_PARAM = "opt_out_success_message_param"
         private const val URL_EDU_ABUSIVE_PRODUCT =
             "https://seller.tokopedia.com/edu/ketentuan-baru-diskon-toko/"
         private const val MAX_SUBMITTED_PRODUCT_ERROR_MESSAGES = 5
@@ -72,7 +73,8 @@ class ShopDiscountManageFragment :
             requestId: String,
             status: Int,
             mode: String,
-            selectedProductVariantId: String
+            selectedProductVariantId: String,
+            optOutSuccessMessage: String
         ) =
             ShopDiscountManageFragment().apply {
                 arguments = Bundle().apply {
@@ -80,6 +82,7 @@ class ShopDiscountManageFragment :
                     putInt(SELECTED_SLASH_PRICE_STATUS_ARG, status)
                     putString(MODE_ARG, mode)
                     putString(SELECTED_PRODUCT_VARIANT_ID, selectedProductVariantId)
+                    putString(OPT_OUT_SUCCESS_MESSAGE_PARAM, optOutSuccessMessage)
                 }
             }
     }
@@ -107,6 +110,7 @@ class ShopDiscountManageFragment :
     private var selectedSlashPriceStatusId: Int = -1
     private var mode: String = ""
     private var selectedProductVariantId: String = ""
+    private var optOutSuccessMessage: String = ""
 
     private val adapter by lazy {
         ShopDiscountManageDiscountAdapter(
@@ -142,6 +146,13 @@ class ShopDiscountManageFragment :
         setupRecyclerView()
         observeLiveData()
         getSetupProductListData()
+        configToasterOptOutSuccess()
+    }
+
+    private fun configToasterOptOutSuccess() {
+        if (optOutSuccessMessage.isNotEmpty()) {
+            showToasterSuccess(optOutSuccessMessage)
+        }
     }
 
     private fun configToolbar() {
@@ -216,6 +227,7 @@ class ShopDiscountManageFragment :
             selectedSlashPriceStatusId = getInt(SELECTED_SLASH_PRICE_STATUS_ARG).orZero()
             mode = getString(MODE_ARG).orEmpty()
             selectedProductVariantId = getString(SELECTED_PRODUCT_VARIANT_ID).orEmpty()
+            optOutSuccessMessage = getString(OPT_OUT_SUCCESS_MESSAGE_PARAM).orEmpty()
         }
     }
 

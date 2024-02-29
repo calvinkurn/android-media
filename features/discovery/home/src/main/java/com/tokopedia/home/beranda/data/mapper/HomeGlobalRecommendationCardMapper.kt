@@ -238,7 +238,10 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                 position = it.position,
                 type = it.type,
                 title = it.title,
-                imageUrl = it.url
+                imageUrl = it.url,
+                styleList = it.styles.map {
+                    ProductCardModel.LabelGroup.Style(it.key, it.value)
+                }
             )
         }
     }
@@ -260,7 +263,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
             isWishlistVisible = true,
             isWishlisted = recommendationCard.isWishlist,
             shopBadgeList = recommendationCard.badges.map {
-                ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+                ProductCardModel.ShopBadge(title = it.title, imageUrl = it.imageUrl)
             },
             freeOngkir = ProductCardModel.FreeOngkir(
                 isActive = recommendationCard.freeOngkir.isActive,

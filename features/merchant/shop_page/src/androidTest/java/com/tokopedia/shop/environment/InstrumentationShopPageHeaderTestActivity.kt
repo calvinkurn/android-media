@@ -72,4 +72,15 @@ class InstrumentationShopPageHeaderTestActivity : AppCompatActivity(), ShopPageH
     override fun stopCustomMetric(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface, tag: String) {
         pageLoadTimePerformanceInterface.stopCustomMetric(tag)
     }
+
+    override fun startTraceMonitoring(
+        pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface,
+        traceName: String
+    ) {
+        pageLoadTimePerformanceInterface.startMonitoring(traceName)
+    }
+
+    override fun stopTraceMonitoring(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
+        pageLoadTimePerformanceInterface.stopMonitoring()
+    }
 }

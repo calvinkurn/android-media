@@ -532,11 +532,7 @@ class CatalogDetailUiMapper @Inject constructor(
                             unifyprinciplesR.color.Unify_Static_White,
                             unifyprinciplesR.color.Unify_Static_Black
                         ),
-                        background = colorMapping(
-                            isDarkMode,
-                            catalogcommonR.drawable.bg_circle_border_dark,
-                            catalogcommonR.drawable.bg_circle_border_light
-                        )
+                        background = if (isDarkMode) catalogcommonR.color.dms_static_color_ocean_blue else unifyprinciplesR.color.Unify_Static_White
                     )
                 )
             }
