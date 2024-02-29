@@ -89,6 +89,7 @@ internal class ProductPreviewViewModelRobot(
     }
 
     val _reviewPosition = getPrivateField<MutableStateFlow<Int>>("_reviewPosition")
+    val _currentTabPosition = getPrivateField<MutableStateFlow<Int>>("_currentTabPosition")
 
     private fun <T> getPrivateField(name: String): T {
         val field = viewModel.javaClass.getDeclaredField(name)
@@ -130,6 +131,11 @@ internal class ProductPreviewViewModelRobot(
     fun reviewMediaSelectedTestCase(mediaPosition: Int) {
         initializeReviewMainDataTestCase()
         viewModel.onAction(ProductPreviewAction.ReviewMediaSelected(mediaPosition))
+    }
+
+    fun tabSelectedTestCase(position: Int) {
+        checkInitialSourceTestCase()
+        viewModel.onAction(ProductPreviewAction.TabSelected(position))
     }
 
     fun cancelRemainingTasks() {

@@ -331,4 +331,16 @@ class ProductPreviewUnitTest {
         }
     }
 
+    @Test
+    fun `when handling tab selected and update tab current position`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val selectedTab = 1
+
+        getRobot(sourceModel).use { robot ->
+            robot._currentTabPosition.value.assertNotEqualTo(selectedTab)
+            robot.tabSelectedTestCase(selectedTab)
+            robot._currentTabPosition.value.assertEqualTo(selectedTab)
+        }
+    }
+
 }

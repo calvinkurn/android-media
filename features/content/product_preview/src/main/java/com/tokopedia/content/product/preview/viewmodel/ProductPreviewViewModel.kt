@@ -101,6 +101,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private val _reviewContentState = MutableStateFlow(ReviewUiModel.Empty)
     private val _bottomNavContentState = MutableStateFlow(BottomNavUiModel.Empty)
     private val _reviewPosition = MutableStateFlow(0)
+    private val _currentTabPosition = MutableStateFlow(-1)
 
     private val _uiEvent = MutableSharedFlow<ProductPreviewUiEvent>(0)
     val uiEvent get() = _uiEvent
@@ -130,7 +131,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 _reviewContentState.value.reviewContent[_reviewPosition.value]
             }
         }
-    private val currentTabPosition = MutableStateFlow(-1)
     private val currentProductMediaPosition: Int
         get() {
             val position = _productMediaState.value.productMedia.indexOfFirst { it.selected }
@@ -142,7 +142,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     private val currentTabKey: String
         get() {
-            val tabPosition = currentTabPosition.value.coerceAtLeast(0)
+            val tabPosition = _currentTabPosition.value.coerceAtLeast(0)
             val tabSize = _tabContentState.value.tabs.size
             return _tabContentState.value.tabs[tabPosition.coerceAtMost(tabSize.minus(1))].key
         }
@@ -280,7 +280,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     }
 
     private fun handleTabSelected(position: Int) {
-        currentTabPosition.value = position
+        _currentTabPosition.value = position
         if (currentTabKey == TAB_PRODUCT_KEY) {
             when (_productMediaState.value.productMedia[position].type) {
                 MediaType.Image -> scheduleAutoScrollProductMedia()
