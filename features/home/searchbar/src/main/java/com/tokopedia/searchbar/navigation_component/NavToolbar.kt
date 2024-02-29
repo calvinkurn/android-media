@@ -141,9 +141,6 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     private val divider: View by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.divider)
     }
-    private val navToolbar: Toolbar by lazy(LazyThreadSafetyMode.NONE) {
-        findViewById(R.id.navToolbar)
-    }
     private val tvToolbarTitle: Typography by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.toolbar_title)
     }
@@ -218,7 +215,9 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { init(context, attrs) }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        inflate(context, R.layout.nav_main_toolbar, this)
+        val inflater = LayoutInflater.from(context)
+        inflater.inflate(R.layout.nav_main_toolbar, this, true)
+        contentInsetStartWithNavigation = 0
 
         if (attrs != null) {
             val ta = context.obtainStyledAttributes(attrs, R.styleable.NavToolbar, 0, 0)
@@ -299,13 +298,13 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
             shadowApplied = false
             if (lineShadow) {
                 divider.visibility = View.INVISIBLE
-                navToolbar.background = ColorDrawable(getLightBackgroundColor())
+                background = ColorDrawable(getLightBackgroundColor())
                 setBackgroundAlpha(0f)
-                navToolbar.updatePadding(bottom = 0)
+                updatePadding(bottom = 0)
             } else {
                 val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
-                navToolbar.background = ColorDrawable(getLightBackgroundColor())
-                navToolbar.updatePadding(bottom = pB)
+                background = ColorDrawable(getLightBackgroundColor())
+                updatePadding(bottom = pB)
             }
         }
     }
@@ -319,6 +318,16 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     /**
+     * Call this method first before another method
+     */
+    fun setIconAndNavRecyclerCustomColor(darkColor: Int?, lightColor: Int?) {
+        darkIconColor = darkColor
+        lightIconColor = lightColor
+        navToolbarIconCustomDarkColor = lightColor
+        navToolbarIconCustomLightColor = darkColor
+    }
+
+    /**
      * Show shadow and adjust padding
      */
     fun showShadow(lineShadow: Boolean = true) {
@@ -328,11 +337,11 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
             if (lineShadow) {
                 setBackgroundAlpha(MAX_BACKGROUND_ALPHA)
                 divider.visibility = View.VISIBLE
-                navToolbar.updatePadding(bottom = 0)
+                updatePadding(bottom = 0)
             } else {
                 val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
-                navToolbar.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
-                navToolbar.updatePadding(bottom = pB)
+                background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
+                updatePadding(bottom = pB)
             }
         }
     }
@@ -342,8 +351,8 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
      * @see
      * NavRecyclerViewScrollListener
      */
-    fun switchToDarkToolbar() {
-        if (toolbarThemeType != TOOLBAR_DARK_TYPE) {
+    fun switchToDarkToolbar(force: Boolean = false) {
+        if (toolbarThemeType != TOOLBAR_DARK_TYPE || force) {
             navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK)
             toolbarThemeType = TOOLBAR_DARK_TYPE
             setBackButtonColorBasedOnTheme()
@@ -364,8 +373,8 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
      * @see
      * NavRecyclerViewScrollListener
      */
-    fun switchToLightToolbar() {
-        if (toolbarThemeType != TOOLBAR_LIGHT_TYPE) {
+    fun switchToLightToolbar(force: Boolean = false) {
+        if (toolbarThemeType != TOOLBAR_LIGHT_TYPE || force) {
             navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
             toolbarThemeType = TOOLBAR_LIGHT_TYPE
             tvToolbarTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
@@ -579,12 +588,10 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
-    internal fun setBackgroundAlpha(alpha: Float) {
-        navToolbar.apply {
-            val drawable = background
-            drawable.alpha = alpha.toInt()
-            background = drawable
-        }
+    fun setBackgroundAlpha(alpha: Float) {
+        val drawable = background
+        drawable.alpha = alpha.toInt()
+        background = drawable
     }
 
     fun setCentralizedBadgeCounter(iconId: Int, counter: Int) {
@@ -630,12 +637,12 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun applyStatusBarPadding() {
         var pT = 0
         pT = ViewHelper.getStatusBarHeight(context)
-        navToolbar.updatePadding(top = pT)
+        updatePadding(top = pT)
     }
 
     private fun resetPadding() {
         var pT = 0
-        navToolbar.updatePadding(top = pT)
+        updatePadding(top = pT)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -735,10 +742,10 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         if (toolbarInitialFillColor == TOOLBAR_TRANSPARENT) {
             toolbarFillColor = getLightBackgroundColor()
             divider.visibility = View.INVISIBLE
-            navToolbar.background = ColorDrawable(toolbarFillColor)
+            background = ColorDrawable(toolbarFillColor)
             setBackgroundAlpha(0f)
         } else {
-            navToolbar.background = ColorDrawable(toolbarFillColor)
+            background = ColorDrawable(toolbarFillColor)
         }
     }
 

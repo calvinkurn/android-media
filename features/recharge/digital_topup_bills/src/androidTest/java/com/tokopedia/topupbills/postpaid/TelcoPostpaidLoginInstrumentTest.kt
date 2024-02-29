@@ -87,7 +87,7 @@ class TelcoPostpaidLoginInstrumentTest {
         }
 
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val intent = Intent(targetContext, TelcoPostpaidActivity::class.java).apply {
+        val intent = Intent(targetContext, TelcoPostpaidActivityStub::class.java).apply {
             putExtra(BaseTelcoActivity.PARAM_MENU_ID, TelcoComponentType.TELCO_POSTPAID.toString())
             putExtra(BaseTelcoActivity.PARAM_CATEGORY_ID, TelcoCategoryType.CATEGORY_PASCABAYAR.toString())
             putExtra(BaseTelcoActivity.PARAM_PRODUCT_ID, "")
@@ -129,9 +129,9 @@ class TelcoPostpaidLoginInstrumentTest {
             .perform(click())
 
         clientNumberWidget_clickClearBtn()
-        clientNumberWidget_typeNumber(PREFIX_PHONE_NUMBER)
+        clientNumberWidget_typeNumber(FAVORITE_CONTACT_NAME)
         Thread.sleep(2000)
-        onView(withText("081208120812"))
+        onView(withText(FAVORITE_CONTACT_NAME))
             .inRoot(RootMatchers.isPlatformPopup())
             .check(matches(isDisplayed()))
             .perform(click())
@@ -253,6 +253,7 @@ class TelcoPostpaidLoginInstrumentTest {
         private const val VALID_PHONE_NUMBER_2 = "085252525252"
         private const val VALID_PHONE_NUMBER_3 = "081234567890"
         private const val PREFIX_PHONE_NUMBER = "0812"
+        private const val FAVORITE_CONTACT_NAME = "Jessica"
         private const val ANALYTIC_VALIDATOR_QUERY_LOGIN = "tracker/recharge/recharge_telco_postpaid_login.json"
     }
 }

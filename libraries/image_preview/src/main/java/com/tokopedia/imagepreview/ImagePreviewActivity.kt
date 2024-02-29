@@ -25,13 +25,15 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.imagepreview.touch_view_pager_lib.ImagePreviewTouchImageAdapter
 import com.tokopedia.imagepreview.touch_view_pager_lib.ImagePreviewTouchViewPager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.file.PublicFolderUtil
@@ -165,75 +167,76 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                 .setAutoCancel(true)
         notificationBuilder.setProgress(0, 0, true);
         notificationManager.notify(notificationId, notificationBuilder.build())
-        val targetListener: CustomTarget<Bitmap> = object : CustomTarget<Bitmap>() {
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                val fileAndUri: Pair<File?, Uri?>
-                try {
-                    fileAndUri = PublicFolderUtil.putImageToPublicFolder(
+
+        fileLocations?.getOrNull(viewPager.currentItem)?.let {
+            it.getBitmapImageUrl(this@ImagePreviewActivity, target = MediaBitmapEmptyTarget(
+                onFailed = {
+                    showFailedDownload(notificationId, notificationBuilder)
+                },
+                onReady = { resource ->
+                    val fileAndUri: Pair<File?, Uri?>
+                    try {
+                        fileAndUri = PublicFolderUtil.putImageToPublicFolder(
                             this@ImagePreviewActivity,
                             bitmap = resource,
                             fileName = filenameParam)
-                } catch (e: Throwable) {
-                    showFailedDownload(notificationId, notificationBuilder)
-                    return
-                }
-                val resultUri = fileAndUri.second
-                if (resultUri == null) {
-                    showFailedDownload(notificationId, notificationBuilder)
-                } else {
-                    val intent = Intent().apply {
-                        action = Intent.ACTION_VIEW
+                    } catch (e: Throwable) {
+                        showFailedDownload(notificationId, notificationBuilder)
+                        return@MediaBitmapEmptyTarget
                     }
-                    intent.setDataAndType(resultUri, "image/*")
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-                    val pIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, PendingIntent.FLAG_MUTABLE)
+                    val resultUri = fileAndUri.second
+                    if (resultUri == null) {
+                        showFailedDownload(notificationId, notificationBuilder)
                     } else {
-                        PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, 0)
-                    }
+                        val intent = Intent().apply {
+                            action = Intent.ACTION_VIEW
+                        }
+                        intent.setDataAndType(resultUri, "image/*")
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-                    notificationBuilder.setContentText(getString(R.string.download_success))
+                        val pIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, PendingIntent.FLAG_MUTABLE)
+                        } else {
+                            PendingIntent.getActivity(
+                                this@ImagePreviewActivity,
+                                0,
+                                intent,
+                                PendingIntent.FLAG_IMMUTABLE
+                            )
+                        }
+
+                        notificationBuilder.setContentText(getString(R.string.download_success))
                             .setProgress(0, 0, false)
                             .setContentIntent(pIntent);
 
-                    notificationBuilder.build().flags =
+                        notificationBuilder.build().flags =
                             notificationBuilder.build().flags or Notification.FLAG_AUTO_CANCEL;
-                    notificationManager.notify(notificationId, notificationBuilder.build());
-                    this@ImagePreviewActivity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                        notificationManager.notify(notificationId, notificationBuilder.build());
+                        this@ImagePreviewActivity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                             WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-                    val snackbar = SnackbarManager.make(
+                        val snackbar = SnackbarManager.make(
                             findViewById<View>(android.R.id.content),
                             getString(R.string.download_success),
                             Snackbar.LENGTH_SHORT)
-                    snackbar.setAction(getString(R.string.image_preview_label_open)) {
-                        openImageDownloaded(resultUri)
-                    }
-                    snackbar.addCallback(object : Snackbar.Callback() {
-                        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                            this@ImagePreviewActivity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                                    WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                        snackbar.setAction(getString(R.string.image_preview_label_open)) {
+                            openImageDownloaded(resultUri)
                         }
-                    })
-                    snackbar.show()
-                }
-            }
-
-            override fun onLoadFailed(errorDrawable: Drawable?) {
-                super.onLoadFailed(errorDrawable)
-                showFailedDownload(notificationId, notificationBuilder)
-            }
-
-            override fun onLoadCleared(placeholder: Drawable?) {
-
-            }
-        }
-        fileLocations?.getOrNull(viewPager.currentItem)?.let {
-            ImageHandler.loadImageBitmap2(
-                    this@ImagePreviewActivity,
-                    it,
-                    targetListener)
+                        snackbar.addCallback(object : Snackbar.Callback() {
+                            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                                this@ImagePreviewActivity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                                    WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                            }
+                        })
+                        snackbar.show()
+                    }
+                },
+                onCleared = {}
+            ), properties = {
+                isAnimate(false)
+                setCacheStrategy(MediaCacheStrategy.DATA)
+                centerCrop()
+            })
         }
     }
 

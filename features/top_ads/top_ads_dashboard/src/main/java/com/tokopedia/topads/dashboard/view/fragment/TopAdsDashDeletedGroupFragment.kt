@@ -29,7 +29,7 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
 
     private var adapter: DeletedGroupItemsListAdapter? = null
     private var recyclerviewScrollListener: EndlessRecyclerViewScrollListener? = null
-    private var layoutManager: LinearLayoutManager?= null
+    private var layoutManager: LinearLayoutManager? = null
     private var recyclerView: RecyclerView? = null
     private var totalCount = 0
     private var totalPage = 0
@@ -103,11 +103,12 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
         val startDate =
             Utils.format.format((parentFragment as TopAdsBaseTabFragment).startDate.orDefaultStart())
         val endDate = Utils.format.format((parentFragment as TopAdsBaseTabFragment).endDate.orDefaultEnd())
-        topAdsDashboardPresenter.getDeletedAds(
-            page, adType,
-            startDate, endDate, ::onSuccessResult, ::onEmptyResult
-        )
-
+        if (::topAdsDashboardPresenter.isInitialized) {
+            topAdsDashboardPresenter.getDeletedAds(
+                page, adType,
+                startDate, endDate, ::onSuccessResult, ::onEmptyResult
+            )
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -129,10 +130,12 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
         val startDate =
             Utils.format.format((parentFragment as? TopAdsBaseTabFragment)?.startDate.orDefaultStart())
         val endDate = Utils.format.format((parentFragment as? TopAdsBaseTabFragment)?.endDate.orDefaultEnd())
-        topAdsDashboardPresenter.getDeletedAds(
-            currentPageNum, adType,
-            startDate, endDate, ::onSuccessResult, ::onEmptyResult
-        )
+        if (::topAdsDashboardPresenter.isInitialized) {
+            topAdsDashboardPresenter.getDeletedAds(
+                currentPageNum, adType,
+                startDate, endDate, ::onSuccessResult, ::onEmptyResult
+            )
+        }
     }
 
     private fun onSuccessResult(topAdsDeletedAdsResponse: TopAdsDeletedAdsResponse) {

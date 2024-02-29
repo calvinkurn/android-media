@@ -2,21 +2,21 @@ package com.tokopedia.cart.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
-import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.UpdateCartCounterUseCase
 import com.tokopedia.cart.domain.usecase.CartShopGroupTickerAggregatorUseCase
 import com.tokopedia.cart.domain.usecase.FollowShopUseCase
 import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
 import com.tokopedia.cart.domain.usecase.UpdateAndReloadCartUseCase
 import com.tokopedia.cart.domain.usecase.UpdateCartAndGetLastApplyUseCase
+import com.tokopedia.cart.view.CartViewModel
+import com.tokopedia.cart.view.helper.CartDataHelper
+import com.tokopedia.cart.view.processor.CartPromoEntryPointProcessor
+import com.tokopedia.cartcommon.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.cartrevamp.domain.usecase.BmGmGetGroupProductTickerUseCase
-import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
-import com.tokopedia.cartrevamp.view.CartViewModel
-import com.tokopedia.cartrevamp.view.helper.CartDataHelper
-import com.tokopedia.cartrevamp.view.processor.CartPromoEntryPointProcessor
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationEntryPointUseCase
 import com.tokopedia.promousage.view.mapper.PromoUsageGetPromoListRecommendationMapper

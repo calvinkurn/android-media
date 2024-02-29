@@ -430,6 +430,9 @@ object ConstantTransactionAnalytics {
         const val CLICK_SNK_BMGM = "click snk bmgm"
         const val CLICK_BMGM_RECOMMENDATION = "click bmgm recommendation"
         const val IMPRESSION_BMGM_RECOMMENDATION = "impression bmgm recommendation"
+        const val IMPRESSION_GWP_RECOMMENDATION = "impression gwp recommendation"
+        const val CLICK_GWP_RECOMMENDATION = "click gwp recommendation"
+        const val IMPRESSION_GWP_BENEFIT = "impression gwp"
 
         // dropship
         const val IMPRESSION_DROPSHIP_WIDGET = "impression dropship widget"
@@ -440,6 +443,9 @@ object ConstantTransactionAnalytics {
         // OFOC
         const val VIEW_SPLIT_OFOC_POP_UP_BOX = "view split ofoc pop up box"
         const val CLICK_OK_TO_SPLIT_ORDER_OFOC = "click ok to split order ofoc"
+
+        // BELI PAKAI PROMO
+        const val VIEW_OCC_BELI_PAKAI_PROMO = "view occ beli pakai promo"
     }
 
     object EventLabel {
@@ -507,6 +513,7 @@ object ConstantTransactionAnalytics {
         const val EVENT_ACTION = "eventAction"
         const val EVENT_CATEGORY = "eventCategory"
         const val EVENT_LABEL = "eventLabel"
+        const val SHOP_ID = "shopId"
         const val USER_ID = "userId"
         const val CART_ID = "cartId"
         const val PROMO_CODE = "promoCode"
@@ -520,6 +527,7 @@ object ConstantTransactionAnalytics {
         const val PROMOTIONS = "promotions"
         const val PLATFORM_FEE = "platformFee"
         const val ITEMS = "items"
+        const val SESSION_IRIS = "sessionIris"
     }
 
     object ScreenName {
@@ -543,7 +551,7 @@ object ConstantTransactionAnalytics {
         const val DIMENSION_BUSINESS_UNIT_HOME_BROWSE = "home & browse"
         const val DIMENSION_BUSINESS_UNIT_FINTECH = "fintech"
         const val DIMENSION_BUSINESS_UNIT_PROMO = "promo"
-        const val DIMENSION_SESSION_IRIS = "sessionIris"
+        const val DIMENSION_SESSION_IRIS = "session_iris"
     }
 
     object TrackerId {
@@ -610,6 +618,9 @@ object ConstantTransactionAnalytics {
         const val CLICK_SNK_BMGM = "46781"
         const val CLICK_BMGM_RECOMMENDATION = "47209"
         const val VIEW_BMGM_RECOMMENDATION = "47208"
+        const val VIEW_GWP_RECOMMENDATION = "49758"
+        const val CLICK_GWP_RECOMMENDATION = "49759"
+        const val VIEW_GWP_BENEFIT = "49760"
 
         // dropship
         const val IMPRESSION_DROPSHIP_WIDGET = "48774"
@@ -620,5 +631,8 @@ object ConstantTransactionAnalytics {
         // OFOC
         const val VIEW_SPLIT_OFOC_POP_UP_BOX = "48544"
         const val CLICK_OK_TO_SPLIT_ORDER_OFOC = "48547"
+
+        // beli pakai promo
+        const val VIEW_BELI_OCC_PAKAI_PROMO = "49899"
     }
 }

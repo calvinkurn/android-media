@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.productThousandFormatted
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 
 data class ProductMiniSocialProofStockDataModel(
         val type: String = "",
@@ -31,13 +31,16 @@ data class ProductMiniSocialProofStockDataModel(
         private const val MAX_SOCIAL_PROOF_ITEM = 4
     }
 
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name
 
     override fun type(): String = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
 

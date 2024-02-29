@@ -17,8 +17,10 @@ import com.tokopedia.product.detail.data.model.dynamiconeliner.DynamicOneLiner
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
+import com.tokopedia.product.detail.data.model.gwp.GWPData
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.navbar.NavBar
+import com.tokopedia.product.detail.data.model.promoprice.PromoPriceStyle
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
@@ -32,7 +34,7 @@ import com.tokopedia.product.detail.data.model.shop_review.asUiModel
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.ProductDetailMapper
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopscore.ProductShopRatingQuery
@@ -181,7 +183,15 @@ data class ProductInfoP2Data(
 
     @SerializedName("bmgm")
     @Expose
-    val bmgm: BMGMData = BMGMData()
+    val bmgm: BMGMData = BMGMData(),
+
+    @SerializedName("gwp")
+    @Expose
+    val gwp: GWPData = GWPData(),
+
+    @SerializedName("promoPriceStyle")
+    @Expose
+    val promoPriceStyle: List<PromoPriceStyle> = listOf()
 ) {
     data class Response(
         @SerializedName("pdpGetData")
@@ -212,7 +222,7 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     uspImageUrl = uspTokoCabangData.uspBoe.uspIcon,
     merchantVoucherSummary = merchantVoucherSummary,
     helpfulReviews = mostHelpFulReviewData.list,
-    imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage),
+    imageReview = ProductDetailMapper.generateImageReview(reviewImage),
     alternateCopy = cartRedirection.alternateCopy,
     rating = rating.asUiModel(),
     ticker = ticker,
@@ -225,5 +235,7 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     shopReview = shopReview.asUiModel(),
     bottomSheetEdu = bottomSheetEdu.asUiModel(),
     dynamicOneLiner = dynamicOneLiner,
-    bmgm = bmgm
+    bmgm = bmgm,
+    gwp = gwp,
+    promoPriceStyle = promoPriceStyle
 )

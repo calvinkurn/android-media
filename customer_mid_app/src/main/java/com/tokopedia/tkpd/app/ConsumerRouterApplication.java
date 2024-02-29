@@ -619,6 +619,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 userSession,
                 provideCMHandler()
         );
+        setFCMBigQueryExport();
+    }
+
+    private void setFCMBigQueryExport(){
+        String fcmBigQueryExportFlag = "android_enable_fcm_bq_export";
+        if(remoteConfig != null && remoteConfig.getBoolean(fcmBigQueryExportFlag)) {
+            FirebaseMessaging.getInstance().setDeliveryMetricsExportToBigQuery(true);
+        }
     }
 
     private SendTokenToCMHandler provideCMHandler() {

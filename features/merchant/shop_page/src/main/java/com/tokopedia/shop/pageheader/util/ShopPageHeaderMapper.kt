@@ -126,12 +126,22 @@ object ShopPageHeaderMapper {
         shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>
     ): ShopPageColorSchema {
         return ShopPageColorSchema(
-            listColorSchema = listColorSchema.map {
-                ShopPageColorSchema.ColorSchema(
-                    it.name,
-                    it.type,
-                    getHexColor(it.name, it.value, shopPageColorSchemaDefaultConfigColor)
-                )
+            listColorSchema = if (listColorSchema.isEmpty()) {
+                shopPageColorSchemaDefaultConfigColor.map {
+                    ShopPageColorSchema.ColorSchema(
+                        it.key.value,
+                        "",
+                        it.value
+                    )
+                }
+            } else {
+                listColorSchema.map {
+                    ShopPageColorSchema.ColorSchema(
+                        it.name,
+                        it.type,
+                        getHexColor(it.name, it.value, shopPageColorSchemaDefaultConfigColor)
+                    )
+                }
             }
         )
     }
@@ -142,7 +152,7 @@ object ShopPageHeaderMapper {
         shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>
     ): String {
         return if (hexStringValue.isEmpty()) {
-            shopPageColorSchemaDefaultConfigColor[ShopPageColorSchema.ColorSchemaName.valueOf(name)].orEmpty()
+            shopPageColorSchemaDefaultConfigColor.get(ShopPageColorSchema.ColorSchemaName.fromValue(name)).orEmpty()
         } else {
             parseFormattedHexString(hexStringValue)
         }

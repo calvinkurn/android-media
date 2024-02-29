@@ -110,7 +110,17 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     private var remoteConfig: RemoteConfig? = null
 
     private lateinit var viewModelProvider: ViewModelProvider
-    private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl(this, this, this, this) }
+
+    private val adapterFactory by lazy {
+        HomeRecommendationTypeFactoryImpl(
+            recommendationListener = this,
+            titleListener = this,
+            recommendationErrorListener = this,
+            productInfoListener = this,
+            isReimagine = true
+        )
+    }
+
     private val adapter by lazy { HomeRecommendationAdapter(adapterTypeFactory) }
     private lateinit var recommendationWidgetViewModel: RecommendationPageViewModel
 

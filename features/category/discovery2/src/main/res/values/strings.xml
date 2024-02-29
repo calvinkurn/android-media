@@ -96,4 +96,8 @@
     <string name="terjual_habis_camel">Terjual Habis</string>
     <string name="discovery_push_notification_banner_subscription_error_toaster_message">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu.</string>
     <string name="discovery_product_highlight_ocs_error_act">Oke</string>
+    <string name="discovery_atc_success_text">1 barang berhasil ditambahkan ke keranjang belanja</string>
+    <string name="discovery_unauthorized_claim_cta_toaster">Oke</string>
+    <string name="discovery_unauthorized_claim_message_toaster">Masuk ke akunmu dulu untuk klaim kupon ini.</string>
+    <string name="discovery_default_claim_message_toaster">Terjadi kesalahan, coba lagi nanti.</string>
 </resources>

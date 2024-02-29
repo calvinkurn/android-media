@@ -14,15 +14,16 @@
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:padding="16dp">
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/pdp_installment_btn_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             android:background="@null"
-            app:srcCompat="@drawable/ic_close_default" />
+            app:icon_name="CLOSE" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/pdp_installment_tv_title"

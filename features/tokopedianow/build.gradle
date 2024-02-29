@@ -8,6 +8,7 @@ android {
     testNamespace 'com.tokopedia.tokopedianow.test'
     buildFeatures {
         viewBinding true
+        compose true
     }
 
     defaultConfig {
@@ -21,6 +22,10 @@ android {
 
     testOptions {
         animationsDisabled = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
 }
 
@@ -90,6 +95,10 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.imageGallery
+    implementation rootProject.ext.unifyDependencies.nestComponents
+
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.composeDependencies.composeActivity
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -147,3 +156,4 @@ project.ext {
 apply from: '../../publish_local.gradle'
 apply from: '../../jacoco_task.gradle'
 apply from: '../../sonar_config.gradle'
+apply plugin: 'org.jetbrains.kotlin.android'

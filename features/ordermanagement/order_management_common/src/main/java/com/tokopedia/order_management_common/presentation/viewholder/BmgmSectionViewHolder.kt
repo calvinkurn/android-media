@@ -1,27 +1,35 @@
 package com.tokopedia.order_management_common.presentation.viewholder
 
 import android.view.View
+import android.view.ViewStub
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
 import com.tokopedia.order_management_common.constants.OrderManagementConstants
 import com.tokopedia.order_management_common.databinding.ItemOrderProductBmgmSectionBinding
+import com.tokopedia.order_management_common.databinding.PartialAddOnSummaryBinding
 import com.tokopedia.order_management_common.presentation.adapter.ProductBmgmItemAdapter
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.order_management_common.util.RecyclerViewItemDivider
+import com.tokopedia.order_management_common.util.runSafely
+import com.tokopedia.order_management_common.util.setupCardDarkMode
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.order_management_common.R as order_management_commonR
 
 class BmgmSectionViewHolder(
     view: View?,
+    recyclerViewSharedPool: RecyclerView.RecycledViewPool,
+    addOnListener: AddOnViewHolder.Listener,
     private val listener: Listener,
-    recyclerViewSharedPool: RecyclerView.RecycledViewPool
+    private val productBenefitListener: AddOnViewHolder.Listener
 ) : AbstractViewHolder<ProductBmgmSectionUiModel>(view),
     ProductBmgmItemAdapter.ViewHolder.Listener {
 
@@ -32,9 +40,17 @@ class BmgmSectionViewHolder(
         private const val ITEM_DECORATION_HORIZONTAL_MARGIN = 16
     }
 
-    private val bmgmItemAdapter = ProductBmgmItemAdapter(this, recyclerViewSharedPool)
+    private val bmgmItemAdapter = ProductBmgmItemAdapter(
+        productListener = this,
+        addOnListener = addOnListener,
+        recyclerViewSharedPool = recyclerViewSharedPool
+    )
 
     private val binding = ItemOrderProductBmgmSectionBinding.bind(itemView)
+
+    private var productBenefitViewHolder: AddOnSummaryViewHolder? = null
+
+    private var productBenefitBinding: PartialAddOnSummaryBinding? = null
 
     init {
         setupBundleAdapter()
@@ -45,6 +61,33 @@ class BmgmSectionViewHolder(
         setupBmgmItems(element.bmgmItemList)
         setupBmgmTotalPrice(element.totalPriceText)
         setupBmgmTotalPriceReductionInfo(element.totalPriceReductionInfoText)
+        binding.containerParentBmgm.setupCardDarkMode()
+        setupProductBenefit(element.productBenefits)
+    }
+
+    private fun setupProductBenefit(productBenefits: AddOnSummaryUiModel?) {
+        val addonsViewStub: View = itemView.findViewById(R.id.itemBmgmProductBenefitViewStub)
+        if (productBenefits != null) {
+            if (addonsViewStub is ViewStub) {
+                productBenefitBinding = PartialAddOnSummaryBinding.bind(addonsViewStub.inflate())
+            }
+            productBenefitViewHolder =
+                productBenefitBinding?.let {
+                    AddOnSummaryViewHolder(
+                        addOnListener = productBenefitListener,
+                        binding = it,
+                        // don't pass recyclerViewSharedPool here for now because current
+                        // recyclerViewSharedPool might contain AddOnViewHolder for AddOn so we
+                        // can't share it with AddOnViewHolder for GWP
+                        recyclerViewSharedPool = null
+                    )
+                }
+            productBenefitViewHolder?.bind(productBenefits)
+            binding.dividerProductBenefit.show()
+        } else {
+            if (addonsViewStub !is ViewStub) addonsViewStub.gone()
+            binding.dividerProductBenefit.gone()
+        }
     }
 
     override fun bind(
@@ -67,14 +110,13 @@ class BmgmSectionViewHolder(
                     if (oldItem.totalPriceReductionInfoText != newItem.totalPriceReductionInfoText) {
                         setupBmgmTotalPriceReductionInfo(newItem.totalPriceReductionInfoText)
                     }
+                    if (oldItem.productBenefits != newItem.productBenefits) {
+                        setupProductBenefit(newItem.productBenefits)
+                    }
                     return
                 }
             }
         }
-    }
-
-    override fun onCopyAddOnDescription(label: String, description: CharSequence) {
-        listener.onCopyAddOnDescription(label, description)
     }
 
     override fun onBmgmItemClicked(item: ProductBmgmSectionUiModel.ProductUiModel) {
@@ -98,7 +140,7 @@ class BmgmSectionViewHolder(
     }
 
     override fun onBmgmItemImpressed(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
-        listener.onBmgmItemWarrantyClaim(uiModel)
+        listener.onBmgmItemImpressed(uiModel)
     }
 
     private fun showToaster(message: String) {
@@ -121,14 +163,8 @@ class BmgmSectionViewHolder(
     private fun setupRecyclerViewItemDecoration() {
         binding.rvOrderBmgm.run {
             if (itemDecorationCount.isZero()) {
-                val dividerDrawable = try {
-                    MethodChecker.getDrawable(
-                        context,
-                        R.drawable.om_detail_add_on_solid_divider
-                    )
-                } catch (t: Throwable) {
-                    FirebaseCrashlytics.getInstance().recordException(t)
-                    null
+                val dividerDrawable = runSafely {
+                    MethodChecker.getDrawable(context, R.drawable.om_detail_add_on_dash_divider)
                 }
                 addItemDecoration(
                     RecyclerViewItemDivider(
@@ -160,7 +196,6 @@ class BmgmSectionViewHolder(
     }
 
     interface Listener {
-        fun onCopyAddOnDescription(label: String, description: CharSequence)
         fun onBmgmItemClicked(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
         fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
         fun onBmgmItemSeeSimilarProducts(uiModel: ProductBmgmSectionUiModel.ProductUiModel)

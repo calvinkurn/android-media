@@ -277,7 +277,7 @@ class OrderSummaryPageRobot {
                     override fun getDescription(): String = "click apply shipment promo from ticker"
 
                     override fun perform(uiController: UiController?, view: View) {
-                        view.findViewById<View>(com.tokopedia.cart.R.id.ticker_action).performClick()
+                        view.findViewById<View>(com.tokopedia.logisticcart.R.id.ticker_action).performClick()
                     }
                 }
             )

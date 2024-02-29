@@ -72,7 +72,7 @@ class TelemetryWorker : CoroutineScope {
                                     telemetryResponse.subDvcTl.data.errorMessage
                                 )
                             } else {
-                                telemetrySectionList.removeAt(i)
+                                Telemetry.removeTelemetry(telemetrySection)
                             }
                         }
                     }

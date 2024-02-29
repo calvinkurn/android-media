@@ -18,7 +18,9 @@ import com.tokopedia.play.ui.promosheet.adapter.MerchantVoucherAdapter
 import com.tokopedia.play.ui.promosheet.itemdecoration.MerchantVoucherItemDecoration
 import com.tokopedia.play.ui.promosheet.viewholder.MerchantVoucherNewViewHolder
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.BottomSheetViewComponent
+import com.tokopedia.play_common.R as play_commonR
 
 /**
  * @author by astidhiyaa on 25/11/21
@@ -29,7 +31,7 @@ class ShopCouponSheetViewComponent(
 ) : BottomSheetViewComponent(container, R.id.cl_shop_coupon_sheet) {
 
     private val rvVoucherList: RecyclerView = findViewById(R.id.rv_voucher_list)
-    private val tvSheetTitle: TextView = findViewById(com.tokopedia.play_common.R.id.tv_sheet_title)
+    private val tvSheetTitle: TextView = findViewById(play_commonR.id.tv_sheet_title)
     private val clVoucherEmpty: ConstraintLayout = findViewById(R.id.cl_product_empty)
     private val clContent: ConstraintLayout = findViewById(R.id.cl_coupon_content)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
@@ -117,6 +119,11 @@ class ShopCouponSheetViewComponent(
             rootView.layoutParams = layoutParams
         }
         show()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        rootView.requestApplyInsetsWhenAttached()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
