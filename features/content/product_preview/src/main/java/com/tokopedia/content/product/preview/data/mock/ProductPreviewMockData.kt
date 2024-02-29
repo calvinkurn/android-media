@@ -82,19 +82,19 @@ class ProductPreviewMockData {
         )
     }
 
-    fun mockProductMediaListNoVideo(): List<ProductMediaUiModel> {
+    fun mockProductMediaListSelectedNotFirstIndex(): List<ProductMediaUiModel> {
         return listOf(
             ProductMediaUiModel(
                 contentId = "1",
-                selected = true,
+                selected = false,
                 variantName = "Content 1",
-                type = MediaType.Image,
+                type = MediaType.Video,
                 thumbnailUrl = "thumbnail1.url",
                 url = "image1.source.url",
             ),
             ProductMediaUiModel(
                 contentId = "2",
-                selected = false,
+                selected = true,
                 variantName = "Content 2",
                 type = MediaType.Image,
                 thumbnailUrl = "thumbnail2.url",

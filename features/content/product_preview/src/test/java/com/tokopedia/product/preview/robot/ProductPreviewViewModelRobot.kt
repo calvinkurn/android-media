@@ -118,6 +118,11 @@ internal class ProductPreviewViewModelRobot(
         viewModel.onAction(ProductPreviewAction.ProductMediaVideoEnded)
     }
 
+    fun productMediaSelectedTestCase(position: Int) {
+        initializeProductMainDataTestCase()
+        viewModel.onAction(ProductPreviewAction.ProductMediaSelected(position))
+    }
+
     fun reviewContentSelectedTestCase(position: Int) {
         initializeReviewMainDataTestCase()
         viewModel.onAction(ProductPreviewAction.ReviewContentSelected(position))

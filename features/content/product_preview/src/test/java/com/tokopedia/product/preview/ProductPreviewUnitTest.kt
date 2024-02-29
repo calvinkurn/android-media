@@ -266,6 +266,24 @@ class ProductPreviewUnitTest {
     }
 
     @Test
+    fun `when product media selected media when preselected not first index then selected media should be changed`() {
+        val sourceModel = mockDataSource.mockSourceProduct(
+            productId = productId,
+            productMedia = mockDataSource.mockProductMediaListSelectedNotFirstIndex()
+        )
+        val selectedMedia = 0
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordState {
+                robot.productMediaSelectedTestCase(selectedMedia)
+            }.also { state ->
+                val selected = state.productUiModel.productMedia.indexOfFirst { it.selected }
+                selected.assertEqualTo(selectedMedia)
+            }
+        }
+    }
+
+    @Test
     fun `when review content selected and selected position should not same with previous`() {
         val sourceModel = mockDataSource.mockSourceReview(productId, reviewSourceId, attachmentId)
         var currentSelected: Int
