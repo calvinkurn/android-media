@@ -3689,7 +3689,8 @@ open class TopChatRoomFragment :
             invoiceId = uiModel.invoiceId
         )
         context?.let {
-            val intent = RouteManager.getIntent(it, uiModel.appLink)
+            val appLink = uiModel.appLink.replace("#", "") // Remove all # for app link because app link cannot read #
+            val intent = RouteManager.getIntent(it, appLink)
             startActivityForResult(intent, REQUEST_CODE_ORDER_CANCELLATION)
         }
     }
