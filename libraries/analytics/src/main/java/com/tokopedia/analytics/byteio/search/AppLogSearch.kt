@@ -11,6 +11,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
 import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_CLICK
@@ -451,8 +452,10 @@ object AppLogSearch {
         val searchKeyword: String,
         val tokenType: String,
         val rank: Int,
-        val shopID: String?
+        val shopID: String?,
     ) {
+        val sourcePageType: SourcePageType
+            get() = SourcePageType.PRODUCT_CARD
 
         val trackId: String
             get() = "${searchID}_${(itemRank ?: rank)}"
@@ -465,6 +468,7 @@ object AppLogSearch {
 
         fun json() = JSONObject(buildMap {
             put(ENTRANCE_FORM, entranceForm.str)
+            put(SOURCE_PAGE_TYPE, sourcePageType.str)
             put(ITEM_ORDER, rank + 1)
             volume?.let { put(VOLUME, it) }
             put(RATE, rate)
@@ -485,7 +489,6 @@ object AppLogSearch {
             shopID?.let { put(SHOP_ID, it) }
         }).apply {
             addPage()
-            addSourcePageType()
         }
     }
 
@@ -503,7 +506,7 @@ object AppLogSearch {
                 sourceModule = null,
                 isAd = isAdInt,
                 trackId = trackId,
-                sourcePageType = SourcePageType.PRODUCT_CARD,
+                sourcePageType = sourcePageType,
                 requestId = requestID,
             )
 
