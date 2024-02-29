@@ -177,6 +177,7 @@ class RecommendationWidgetViewModel @Inject constructor(
             productId,
             productRecommendation.shopId.toString(),
             minOrder,
+            model.metadata.atcFromExternalSource,
             onSuccessDirectAddToCart(productRecommendation, model),
             onErrorAddToCart(model)
         )

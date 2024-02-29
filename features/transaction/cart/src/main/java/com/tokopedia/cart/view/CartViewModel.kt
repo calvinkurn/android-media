@@ -966,7 +966,8 @@ class CartViewModel @Inject constructor(
                     pageNumber = 1,
                     pageName = PAGE_NAME_RECENT_VIEW_TEST, // TODO: REVERT THIS BEFORE MERGE!!!
                     xSource = RECENT_VIEW_XSOURCE,
-                    productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value)
+                    productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
+                    atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECENT_VIEW
                 )
             )
             cartDataList.value.add(++recentViewIndex, cartRecentViewHolderData)

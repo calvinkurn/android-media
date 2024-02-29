@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.global
 
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam.Companion.X_SOURCE_DEFAULT_VALUE
 
 data class RecommendationWidgetMetadata(
@@ -15,5 +16,6 @@ data class RecommendationWidgetMetadata(
     val device: String = "",
     val isTokonow: Boolean = false,
     val criteriaThematicIDs: List<String> = listOf(),
+    val atcFromExternalSource: String = AtcFromExternalSource.ATC_FROM_OTHERS,
     val xSource: String = X_SOURCE_DEFAULT_VALUE
 )
