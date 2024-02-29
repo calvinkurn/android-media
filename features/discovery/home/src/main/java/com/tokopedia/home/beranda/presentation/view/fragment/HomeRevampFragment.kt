@@ -2121,7 +2121,7 @@ open class HomeRevampFragment :
         return if (placeholders.isNotEmpty())
             placeholders.map { hintData(it, data.wordsSource, data.imprId) }
         else
-            listOf(hintData(data, "", ""))
+            listOf(hintData(data, data.wordsSource, data.imprId))
     }
 
     private fun hintData(

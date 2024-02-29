@@ -171,6 +171,9 @@ class NavSearchbarController(val view: View,
                         keyword = hint.keyword
                 )
             }
+
+            hintClickCallback?.invoke(hint, index)
+
             if (searchbarClickCallback == null && editorActionCallback == null) {
                 onClickHint()
             } else {
