@@ -30,7 +30,6 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
     private final HomeEggListener homeEggListener;
     private final HomeTabFeedListener homeTabFeedListener;
     private final List<RecommendationTabDataModel> recommendationTabDataModelList = new ArrayList<>();
-    private boolean shouldUseGlobalForYouComponent = false;
 
     public HomeFeedPagerAdapter(HomeCategoryListener homeCategoryListener,
                                 HomeEggListener homeEggListener,
@@ -44,7 +43,6 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
         this.homeTabFeedListener = homeTabFeedListener;
         this.parentPool = parentPool;
         this.homeCategoryListener = homeCategoryListener;
-        fetchRemoteConfig(remoteConfig);
         updateData(recommendationTabDataModelList);
     }
 
@@ -55,50 +53,26 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-    private void fetchRemoteConfig(RemoteConfig remoteConfig) {
-        shouldUseGlobalForYouComponent = remoteConfig
-                .getBoolean(RemoteConfigKey.HOME_GLOBAL_COMPONENT_FALLBACK, false);
-    }
-
     @Override
     public Fragment getItem(int position) {
-        if (shouldUseGlobalForYouComponent && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
-            HomeGlobalRecommendationFragment homeFeedFragment = HomeGlobalRecommendationFragment.Companion.newInstance(
-                    position,
-                    Integer.parseInt(recommendationTabDataModelList.get(position).getId()),
-                    recommendationTabDataModelList.get(position).getName(),
-                    recommendationTabDataModelList.get(position).getSourceType()
-            );
-            homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
-            homeFeedFragment.setParentPool(parentPool);
-            return homeFeedFragment;
-        } else {
-            HomeRecommendationFragment homeFeedFragment = HomeRecommendationFragment.Companion.newInstance(
-                    position,
-                    Integer.parseInt(recommendationTabDataModelList.get(position).getId()),
-                    recommendationTabDataModelList.get(position).getName(),
-                    recommendationTabDataModelList.get(position).getSourceType()
-            );
-            homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
-            homeFeedFragment.setParentPool(parentPool);
-            return homeFeedFragment;
-        }
+        HomeGlobalRecommendationFragment homeFeedFragment = HomeGlobalRecommendationFragment.Companion.newInstance(
+                position,
+                Integer.parseInt(recommendationTabDataModelList.get(position).getId()),
+                recommendationTabDataModelList.get(position).getName(),
+                recommendationTabDataModelList.get(position).getSourceType()
+        );
+        homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
+        homeFeedFragment.setParentPool(parentPool);
+        return homeFeedFragment;
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Object o = super.instantiateItem(container, position);
-        if (shouldUseGlobalForYouComponent && HomeRecommendationController.INSTANCE.isUsingRecommendationCard()) {
-            HomeGlobalRecommendationFragment homeFeedFragment = (HomeGlobalRecommendationFragment) o;
-            homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
-            homeFeedFragment.setParentPool(parentPool);
-            registeredFragments.put(position, homeFeedFragment);
-        } else {
-            HomeRecommendationFragment homeFeedFragment = (HomeRecommendationFragment) o;
-            homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
-            homeFeedFragment.setParentPool(parentPool);
-            registeredFragments.put(position, homeFeedFragment);
-        }
+        HomeGlobalRecommendationFragment homeFeedFragment = (HomeGlobalRecommendationFragment) o;
+        homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
+        homeFeedFragment.setParentPool(parentPool);
+        registeredFragments.put(position, homeFeedFragment);
         return o;
     }
 
