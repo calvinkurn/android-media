@@ -6,6 +6,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.view.viewmodel.product_detail.IProductRecommSubViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
+import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ViewState
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
 import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -14,6 +16,8 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -27,7 +31,18 @@ import io.mockk.mockkStatic
 import io.mockk.slot
 import io.mockk.unmockkAll
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -36,6 +51,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestWatcher
+import org.junit.runner.Description
 import java.util.concurrent.TimeoutException
 
 /**
@@ -52,8 +69,14 @@ class ProductRecommSubViewModelTest {
     @RelaxedMockK
     lateinit var getRecommendationUseCase: GetRecommendationUseCase
 
+    @RelaxedMockK
+    lateinit var remoteConfig: RemoteConfig
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = MainCoroutineRule()
 
     private lateinit var viewModel: IProductRecommSubViewModel
 
@@ -63,11 +86,29 @@ class ProductRecommSubViewModelTest {
         mockkStatic(GlobalConfig::class)
 
         viewModel = ProductRecommSubViewModel(
+            dispatcher = CoroutineTestDispatchersProvider,
             getRecommendationUseCase = { getRecommendationUseCase },
+            remoteConfig = remoteConfig,
             getProductRecommendationUseCase = { getProductRecommendationUseCase }
         ).apply {
-            registerScope(viewModelScope = CoroutineScope(CoroutineTestDispatchersProvider.main))
+            registerScope(viewModelScope = CoroutineScope(UnconfinedTestDispatcher()))
         }
+
+        every {
+            remoteConfig.getBoolean(
+                RemoteConfigKey.ANDROID_ENABLE_PDP_RECOMMENDATION_FLOW,
+                true
+            )
+        } returns true
+
+        every { GlobalConfig.isSellerApp() } returns false
+
+        every {
+            remoteConfig.getLong(
+                RemoteConfigKey.ANDROID_PDP_DEBOUNCE_TIME,
+                150L
+            )
+        } returns 150L
     }
 
     @After
@@ -77,54 +118,148 @@ class ProductRecommSubViewModelTest {
 
     // region view to view recommendation
     @Test
-    fun `success load view to view recommendation`() {
-        val recomWidget = RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
-        val response = listOf(recomWidget)
+    fun `success recommendation FLOW`() {
+        runTest {
+            val recomWidget =
+                RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
+            val response = listOf(recomWidget)
 
-        viewModel.onResetAlreadyRecomHit()
-        every { GlobalConfig.isSellerApp() } returns false
-        coEvery { getRecommendationUseCase.getData(any()) } returns response
+            val productListData = { viewModel.productListData.value }
+            val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.productListData.collect()
+            }
 
-        viewModel.loadViewToView("view_to_view", "", false, "", "")
+            advanceTimeBy(160L)
 
-        coVerify { getRecommendationUseCase.getData(any()) }
-        assertTrue(viewModel.loadViewToView.value is Success)
-    }
+            coEvery { getProductRecommendationUseCase.executeOnBackground(any()) } returns response.first()
 
-    @Test
-    fun `load view to view sellerapp`() {
-        val recomWidget = RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
-        val response = listOf(recomWidget)
+            viewModel.onRecommendationEvent(
+                ProductRecommendationEvent.LoadRecommendation(
+                    "view_to_view",
+                    "",
+                    false,
+                    null,
+                    "",
+                    ""
+                )
+            )
 
-        viewModel.onResetAlreadyRecomHit()
-        every { GlobalConfig.isSellerApp() } returns true
-        coEvery { getRecommendationUseCase.getData(any()) } returns response
+            advanceTimeBy(200L)
 
-        viewModel.loadViewToView("view_to_view", "", false, "", "")
+            job.cancel()
 
-        runCatching {
-            viewModel.loadViewToView.getOrAwaitValue()
-        }.onFailure {
-            assertTrue(it is TimeoutException)
+            coVerify { getProductRecommendationUseCase.executeOnBackground(any()) }
+            assertTrue(productListData().size == 1)
+            assertTrue(productListData().first().data is ViewState.RenderSuccess)
         }
+
     }
 
     @Test
-    fun `already hit recomm view to view when pdp on reload page`() {
-        val recomWidget = RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
+    fun `load recommendation FLOW sellerapp`() = runTest {
+        val recomWidget =
+            RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
         val response = listOf(recomWidget)
 
-        viewModel.onResetAlreadyRecomHit()
-        every { GlobalConfig.isSellerApp() } returns false
-        coEvery { getRecommendationUseCase.getData(any()) } returns response
+        every { GlobalConfig.isSellerApp() } returns true
 
-        viewModel.loadViewToView("view_to_view", "", false, "", "")
+        coEvery { getProductRecommendationUseCase.executeOnBackground(any()) } returns response.first()
 
-        viewModel.loadViewToView("view_to_view", "", false, "", "")
+        viewModel.onRecommendationEvent(
+            ProductRecommendationEvent.LoadRecommendation(
+                "view_to_view",
+                "",
+                false,
+                null,
+                "",
+                ""
+            )
+        )
 
-        coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
+        coVerify(inverse = true) { getProductRecommendationUseCase.executeOnBackground(any()) }
     }
-    // endregion
+
+    @Test
+    fun `load multiple recommendation FLOW within 150 ms`() = runTest() {
+        val recomWidget =
+            RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
+        val response = listOf(recomWidget)
+
+        coEvery { getProductRecommendationUseCase.executeOnBackground(any()) } returns response.first()
+
+        val productListData = { viewModel.productListData.value }
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
+            viewModel.productListData.collect()
+        }
+
+        viewModel.onRecommendationEvent(
+            ProductRecommendationEvent.LoadRecommendation(
+                1.toString(),
+                "",
+                false,
+                null,
+                "",
+                ""
+            )
+        )
+
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { getProductRecommendationUseCase.executeOnBackground(any()) }
+        assertTrue(productListData().size == 3)
+    }
+
+    @Test
+    fun `fail load recommendation FLOW when recommendation widget is empty`() = runTest {
+        val response = listOf<RecommendationWidget>()
+
+        val productListData = { viewModel.productListData.value }
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
+            viewModel.productListData.collect()
+        }
+
+        coEvery { getProductRecommendationUseCase.executeOnBackground(any()) } returns response.first()
+
+        viewModel.onRecommendationEvent(
+            ProductRecommendationEvent.LoadRecommendation(
+                "view_to_view",
+                "",
+                false,
+                null,
+                "",
+                ""
+            )
+        )
+
+        coVerify { getProductRecommendationUseCase.executeOnBackground(any()) }
+
+        assertTrue(productListData().first().data is ViewState.RenderFailure)
+    }
+
+    @Test
+    fun `fail load recommendation FLOW on exception`() = runTest {
+        val productListData = { viewModel.productListData.value }
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
+            viewModel.productListData.collect()
+        }
+
+        coEvery { getProductRecommendationUseCase.executeOnBackground(any()) } throws Exception()
+
+        viewModel.onRecommendationEvent(
+            ProductRecommendationEvent.LoadRecommendation(
+                "view_to_view",
+                "",
+                false,
+                null,
+                "",
+                ""
+            )
+        )
+
+        coVerify { getProductRecommendationUseCase.executeOnBackground(any()) }
+        assertTrue(productListData().first().data is ViewState.RenderFailure)
+    }
+    //endregion
 
     // region recommendationChipClicked
     @Test
@@ -290,68 +425,6 @@ class ProductRecommSubViewModelTest {
 
         coVerify(inverse = true) {
             getProductRecommendationUseCase.executeOnBackground(any())
-        }
-    }
-
-    @Test
-    fun `fail load view to view recommendation when recommendation widget is empty`() {
-        val response = listOf<RecommendationWidget>()
-
-        coEvery {
-            getRecommendationUseCase.getData(any())
-        } returns response
-
-        viewModel.loadViewToView("view_to_view", "", false, "", "")
-
-        coVerify { getRecommendationUseCase.getData(any()) }
-        assertTrue(viewModel.loadViewToView.value is Fail)
-    }
-
-    @Test
-    fun `fail load view to view recommendation when recommendation item list is empty`() {
-        val response = RecommendationWidget(
-            pageName = "view_to_view",
-            recommendationItemList = emptyList()
-        )
-
-        coEvery {
-            getRecommendationUseCase.getData(any())
-        } returns listOf(response)
-
-        viewModel.loadViewToView("view_to_view", "", false, "", "")
-
-        coVerify { getRecommendationUseCase.getData(any()) }
-        assertTrue(viewModel.loadViewToView.value is Fail)
-    }
-
-    @Test
-    fun `fail load view to view recommendation on exception`() {
-        coEvery {
-            getRecommendationUseCase.getData(any())
-        } throws Exception()
-
-        viewModel.loadViewToView("view_to_view", "", false, "", "")
-
-        coVerify { getRecommendationUseCase.getData(any()) }
-        assertTrue(viewModel.loadViewToView.value is Fail)
-    }
-
-    @Test
-    fun `load view to view recommendation already hitted`() {
-        val recomWidget = listOf(RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem())))
-
-        coEvery {
-            getRecommendationUseCase.getData(any())
-        } returns recomWidget
-
-        viewModel.loadViewToView("view_to_view", "", false, "", "")
-        Thread.sleep(500)
-        // hit again with same page name
-        viewModel.loadViewToView("view_to_view", "", false, "", "")
-
-        // make sure it will only called once
-        coVerify(exactly = 1) {
-            getRecommendationUseCase.getData(any())
         }
     }
 
@@ -554,37 +627,53 @@ class ProductRecommSubViewModelTest {
     }
 
     @Test
-    fun `verify success get vertical recommendation data with null productId and pageNumber`() {
-        val mockResponse = RecommendationWidget(
-            tid = "1",
-            recommendationItemList = listOf(RecommendationItem())
-        )
+    fun `verify success get vertical recommendation data with null productId and pageNumber`() =
+        runTest {
+            val mockResponse = RecommendationWidget(
+                tid = "1",
+                recommendationItemList = listOf(RecommendationItem())
+            )
 
-        val pageName = "pdp_8_vertical"
+            val pageName = "pdp_8_vertical"
 
-        coEvery {
-            getRecommendationUseCase.getData(any())
-        } returns arrayListOf(mockResponse)
+            coEvery {
+                getRecommendationUseCase.getData(any())
+            } returns arrayListOf(mockResponse)
 
-        viewModel.getVerticalRecommendationData(
-            pageName = pageName,
-            productId = null,
-            page = null,
-            queryParam = "",
-            thematicId = ""
-        )
+            viewModel.getVerticalRecommendationData(
+                pageName = pageName,
+                productId = null,
+                page = null,
+                queryParam = "",
+                thematicId = ""
+            )
 
-        val slotRequestParams = slot<GetRecommendationRequestParam>()
-        coVerify {
-            getRecommendationUseCase.getData(capture(slotRequestParams))
+            val slotRequestParams = slot<GetRecommendationRequestParam>()
+            coVerify {
+                getRecommendationUseCase.getData(capture(slotRequestParams))
+            }
+
+            val captured = slotRequestParams.captured
+            assertEquals(pageName, captured.pageName)
+            assertEquals(1, captured.pageNumber)
+            assertEquals(listOf(""), captured.productIds)
+
+            assertTrue(viewModel.verticalRecommendation.value is Success)
         }
-
-        val captured = slotRequestParams.captured
-        assertEquals(pageName, captured.pageName)
-        assertEquals(1, captured.pageNumber)
-        assertEquals(listOf(""), captured.productIds)
-
-        assertTrue(viewModel.verticalRecommendation.value is Success)
-    }
     // endregion
+}
+
+@ExperimentalCoroutinesApi
+class MainCoroutineRule(val dispatcher: TestDispatcher = StandardTestDispatcher()) :
+    TestWatcher() {
+
+    override fun starting(description: Description) {
+        super.starting(description)
+        Dispatchers.setMain(dispatcher)
+    }
+
+    override fun finished(description: Description) {
+        super.finished(description)
+        Dispatchers.resetMain()
+    }
 }

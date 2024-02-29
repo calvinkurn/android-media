@@ -131,7 +131,7 @@ class ProductRecommSubViewModel @Inject constructor(
         when (event) {
             is ProductRecommendationEvent.LoadRecommendation -> {
                 if (enableRecomFlowRemoteConfig) {
-                    viewModelScope.launch {
+                    viewModelScope.launch(dispatcher.main) {
                         _recomPageName.emit(event)
                     }
                 } else {
