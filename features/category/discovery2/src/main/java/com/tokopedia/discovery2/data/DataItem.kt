@@ -596,6 +596,9 @@ data class DataItem(
     @SerializedName("active_image_url")
     val tabActiveImageUrl: String? = null,
 
+    @SerializedName("rec_param")
+    private val recommendationParam: String? = null,
+
     var shopAdsClickURL: String? = "",
 
     var shopAdsViewURL: String? = "",
@@ -636,7 +639,7 @@ data class DataItem(
 
     @SerializedName("warehouse_id")
     var warehouseId: Long? = null
-): ImpressHolder() {
+) : ImpressHolder() {
     val leftMargin: Int
         get() {
             return leftMarginMobile?.toIntOrNull() ?: 0
@@ -647,12 +650,30 @@ data class DataItem(
             return rightMarginMobile?.toIntOrNull() ?: 0
         }
 
+    private var appLog: RecommendationAppLog? = null
+
     fun getLabelPrice(): LabelsGroup? {
         return findLabelGroup(LABEL_PRICE)
     }
 
     fun getLabelProductStatus(): LabelsGroup? {
         return findLabelGroup(LABEL_PRODUCT_STATUS)
+    }
+
+    fun setAppLog(tracker: ComponentTracker) {
+        appLog = with(tracker) {
+            RecommendationAppLog(
+                logId.orEmpty(),
+                requestId.orEmpty(),
+                sessionId.orEmpty(),
+                recommendationParam.orEmpty(),
+                recommendationPageName.orEmpty()
+            )
+        }
+    }
+
+    fun getAppLog(): RecommendationAppLog? {
+        return appLog
     }
 
     private fun findLabelGroup(position: String): LabelsGroup? {

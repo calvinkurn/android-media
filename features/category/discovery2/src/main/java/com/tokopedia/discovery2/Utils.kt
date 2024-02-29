@@ -31,6 +31,7 @@ import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -51,7 +52,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.floor
-
 
 const val LABEL_PRODUCT_STATUS = "status"
 const val LABEL_PRICE = "price"
@@ -89,6 +89,9 @@ class Utils {
         const val DEVICE = "device"
         const val DEVICE_VALUE = "Android"
         const val FILTERS = "filters"
+        const val REFRESH_TYPE = "refresh_type"
+        const val REFRESH_TYPE_VALUE = "-1"
+        const val SESSION_ID = "current_session_id"
         const val VERSION = "version"
         const val SRE_IDENTIFIER = "l_name"
         const val SRE_VALUE = "sre"
@@ -215,13 +218,16 @@ class Utils {
         fun getComponentsGQLParams(
             componentId: String,
             pageIdentifier: String,
-            queryString: String
+            queryString: String,
+            sessionId: String = String.EMPTY
         ): MutableMap<String, Any> {
             val queryParameterMap = mutableMapOf<String, Any>()
             queryParameterMap[IDENTIFIER] = pageIdentifier
             queryParameterMap[DEVICE] = DEVICE_VALUE
             queryParameterMap[COMPONENT_ID] = componentId
             if (queryString.isNotEmpty()) queryParameterMap[FILTERS] = queryString
+            queryParameterMap[SESSION_ID] = sessionId
+            queryParameterMap[REFRESH_TYPE] = REFRESH_TYPE_VALUE
             return queryParameterMap
         }
 
@@ -530,9 +536,9 @@ class Utils {
                 componentsItem.data?.firstOrNull()?.let { dataItem ->
                     if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(
                             MiniCartItemKey(
-                                dataItem.parentProductId ?: "",
-                                type = MiniCartItemType.PARENT
-                            )
+                                    dataItem.parentProductId ?: "",
+                                    type = MiniCartItemType.PARENT
+                                )
                         )
                     ) {
                         map.getMiniCartItemParentProduct(
@@ -801,7 +807,7 @@ class Utils {
 
         internal fun ShapeableImageView.verticalScrollAnimation(
             duration: Long,
-            isReverse: Boolean,
+            isReverse: Boolean
         ): ValueAnimator {
             val animator = if (isReverse) {
                 ValueAnimator.ofInt(height, 0)
