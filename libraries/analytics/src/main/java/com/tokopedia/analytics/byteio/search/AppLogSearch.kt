@@ -11,6 +11,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
 import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
+import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
@@ -71,6 +72,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_POSITIO
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_SOURCE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.HOMEPAGE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_RESULT
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.STORE_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SUG
 import org.json.JSONObject
@@ -518,12 +520,18 @@ object AppLogSearch {
     }
 
     fun eventCartEntranceShow() {
-        AppLogAnalytics.send(CART_ENTRANCE_SHOW, JSONObject().apply { addPage() })
+        AppLogAnalytics.send(CART_ENTRANCE_SHOW, cartEntranceJSON())
     }
 
     fun eventCartEntranceClick() {
-        AppLogAnalytics.send(CART_ENTRANCE_CLICK, JSONObject().apply { addPage() })
+        AppLogAnalytics.send(CART_ENTRANCE_CLICK, cartEntranceJSON())
     }
+
+    private fun cartEntranceJSON() =
+        JSONObject().apply {
+            put(PREVIOUS_PAGE, AppLogAnalytics.getLastDataBeforeCurrent(PAGE_NAME))
+            put(PAGE_NAME, SEARCH_RESULT)
+        }
 
     fun updateSearchPageData(appLogInterface: AppLogInterface) {
         val updatedPageDataKeys = listOf(PAGE_NAME, ENTER_FROM, IS_SHADOW)
