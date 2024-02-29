@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.setText
+import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.MAX_TEXT_INPUT_LENGTH
 import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.SIGNAL_STATUS_VARIANT
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.unifycomponents.TextAreaUnify2
@@ -65,6 +66,8 @@ class SpecificationValueViewHolder(
             icon2.isVisible = !isTextInput && selectedSpecification.data.isEmpty()
             setLabel(title + suffix)
             setMessage(errorMessage)
+            setCounter(MAX_TEXT_INPUT_LENGTH)
+            textInputLayout.isCounterEnabled = isTextInput
             isInputError = errorMessage.isNotEmpty()
             setText(selectedSpecification.data)
             tooltipRequired?.isVisible = selectedSpecification.specificationVariant == SIGNAL_STATUS_VARIANT
