@@ -25,5 +25,15 @@
             app:text_field_label="@string/recharge_pdp_emoney_input_card_no_label"
             tools:layout_height="@dimen/spacing_lvl4" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rv_emoney_list"
+            app:layout_constraintTop_toBottomOf="@id/emoneyPdpCardInputNumber"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:visibility="gone"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

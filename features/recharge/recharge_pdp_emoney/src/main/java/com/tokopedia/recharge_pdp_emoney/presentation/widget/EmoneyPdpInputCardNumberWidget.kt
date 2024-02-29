@@ -8,10 +8,12 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.databinding.WidgetEmoneyInputCardNumberBinding
+import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpImagesListAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
 
@@ -55,6 +57,22 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         })
+    }
+
+    fun renderEmoneyListImages(listImages: List<String>) {
+        if (listImages.isNotEmpty()) {
+            binding.rvEmoneyList.show()
+            val counter = if (listImages.size < 5) {
+                 listImages.size
+            } else 5
+            val adapter = EmoneyPdpImagesListAdapter()
+            val layoutManager = GridLayoutManager(context, counter)
+            binding.rvEmoneyList.adapter = adapter
+            binding.rvEmoneyList.layoutManager = layoutManager
+            adapter.renderList(listImages)
+        } else {
+            binding.rvEmoneyList.hide()
+        }
     }
 
     fun renderError(errorMsg: String) {

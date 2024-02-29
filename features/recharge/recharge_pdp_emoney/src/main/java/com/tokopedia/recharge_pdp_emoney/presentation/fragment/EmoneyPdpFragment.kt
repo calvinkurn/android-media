@@ -33,6 +33,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
@@ -286,6 +287,8 @@ open class EmoneyPdpFragment :
                                 }
                             }
                         }
+
+                        renderImages(it.data)
                     }
                 }
             }
@@ -389,6 +392,16 @@ open class EmoneyPdpFragment :
                     renderTickerGenerationCheckError()
                 }
             }
+        }
+    }
+
+    private fun renderImages(data: TelcoCatalogPrefixSelect) {
+        binding.emoneyPdpInputCardWidget.renderEmoneyListImages(mapImage(data))
+    }
+
+    private fun mapImage(data: TelcoCatalogPrefixSelect): List<String> {
+        return data.rechargeCatalogPrefixSelect.prefixes.map {
+            it.operator.attributes.imageUrl
         }
     }
 
