@@ -97,8 +97,8 @@ class SortFilter: ConstraintLayout {
         container ?: return
 
         val layoutParams = container.layoutParams
-        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+        layoutParams.width = 24.toPx()
+        layoutParams.height = 24.toPx()
         container.layoutParams = layoutParams
     }
 
