@@ -1542,17 +1542,6 @@ class CartViewModel @Inject constructor(
             productPrice = productModel.price
             quantity = productModel.minOrder
             externalSource = AtcFromExternalSource.ATC_FROM_WISHLIST
-        } else if (productModel is RecommendationItem) {
-            productId = productModel.productId.toString().toLongOrZero()
-            shopId = productModel.shopId.toString().toIntOrZero()
-            productName = productModel.name
-            productPrice = productModel.price
-            quantity = productModel.minOrder
-            externalSource = AtcFromExternalSource.ATC_FROM_RECENT_VIEW
-            val clickUrl = productModel.clickUrl
-            if (clickUrl.isNotEmpty() && productModel.isTopAds) {
-                _cartTrackerEvent.value = CartTrackerEvent.ATCTrackingURLRecent(productModel)
-            }
         } else if (productModel is CartRecommendationItemHolderData) {
             val recommendationItem = productModel.recommendationItem
             productId = recommendationItem.productId
