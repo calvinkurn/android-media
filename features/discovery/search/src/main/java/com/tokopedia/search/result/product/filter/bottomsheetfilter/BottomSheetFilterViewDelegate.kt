@@ -157,7 +157,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
         AppLogSearch.eventChooseSearchFilter(
             AppLogSearch.ChooseSearchFilter(
-                searchID = "", // TODO
+                searchID = SearchId.value,
                 searchType = PRODUCT_SEARCH,
                 keyword = queryKey,
                 ecomSortName = ecomSortName(selectedSort.name),

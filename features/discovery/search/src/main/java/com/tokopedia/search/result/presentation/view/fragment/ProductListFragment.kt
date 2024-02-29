@@ -1192,13 +1192,13 @@ class ProductListFragment: BaseDaggerFragment(),
         if (!isSelected) return
 
         AppLogSearch.eventChooseSearchFilter(AppLogSearch.ChooseSearchFilter(
-            searchID = presenter?.searchId ?: "",
+            searchID = SearchId.value,
             searchType = GOODS_SEARCH,
             keyword = queryKey,
-            ecomSortName = "",
+            ecomSortName = ecomSortName(),
             ecomFilterName = filterValue,
             ecomFilterPosition = position.toString(),
-            buttonTypeClick = FILTER_QUICK
+            buttonTypeClick = FILTER_QUICK,
         ))
     }
 

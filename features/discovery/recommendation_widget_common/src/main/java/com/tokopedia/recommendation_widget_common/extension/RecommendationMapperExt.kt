@@ -125,7 +125,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 parentID = recommendation.parentID,
                 addToCartType = getAtcType(),
                 gridPosition = recommendation.getGridPosition(),
-                appLog = appLog.toAppLogModel(recommendation.recParam)
+                appLog = appLog.toAppLogModel(recommendation.recParam),
+                countSold = recommendation.countSold,
             )
         },
         title = title,

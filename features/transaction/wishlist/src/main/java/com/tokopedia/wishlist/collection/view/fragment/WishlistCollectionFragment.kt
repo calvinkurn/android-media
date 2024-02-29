@@ -162,7 +162,7 @@ class WishlistCollectionFragment :
     override fun getScreenName(): String = ""
 
     override fun getPageName(): String {
-        return PageName.WHISLIST
+        return PageName.WISHLIST
     }
 
     override fun isEnterFromWhitelisted(): Boolean {
