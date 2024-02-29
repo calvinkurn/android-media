@@ -5,6 +5,8 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailLogisticSectionInfoID
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.order_management_common.domain.data.AddOnSummary
+import com.tokopedia.order_management_common.domain.data.ProductBenefit
 
 data class GetBuyerOrderDetailResponse(
     @Expose
@@ -88,7 +90,7 @@ data class GetBuyerOrderDetailResponse(
             val hasInsurance: Boolean? = false,
             @SerializedName("additional_data")
             @Expose
-            val additionalData: BomAdditionalData = BomAdditionalData(),
+            val additionalData: BomAdditionalData? = null,
             @SerializedName("is_pof")
             @Expose
             val isPof: Boolean? = false,
@@ -107,12 +109,12 @@ data class GetBuyerOrderDetailResponse(
             data class BomAdditionalData(
                 @SerializedName("epharmacy_data")
                 @Expose
-                val epharmacyData: EpharmacyData = EpharmacyData(),
+                val epharmacyData: EpharmacyData? = null,
                 @SerializedName("plus_savings")
                 @Expose
-                val plusSavings: PlusSavings = PlusSavings(),
+                val plusSavings: PlusSavings? = null,
                 @SerializedName("group_order_data")
-                val groupOrderData: GroupOrderData? = GroupOrderData()
+                val groupOrderData: GroupOrderData? = null
             ) {
                 data class GroupOrderData(
                     @SerializedName("tx_id")
@@ -515,81 +517,8 @@ data class GetBuyerOrderDetailResponse(
                 val label: String = "",
                 @SerializedName("order_level")
                 @Expose
-                val orderLevel: OrderLevel? = OrderLevel()
-            ) {
-
-                data class OrderLevel(
-                    @SerializedName("addons")
-                    @Expose
-                    val addons: List<Addon>? = listOf(),
-                    @SerializedName("total")
-                    @Expose
-                    val total: Long = 0,
-                    @SerializedName("total_price")
-                    @Expose
-                    val totalPrice: Double = 0.0,
-                    @SerializedName("total_price_str")
-                    @Expose
-                    val totalPriceStr: String = "",
-                    @SerializedName("total_quantity")
-                    @Expose
-                    val totalQuantity: Int = 0
-                ) {
-                    data class Addon(
-                        @SerializedName("id")
-                        @Expose
-                        val id: String = "0",
-                        @SerializedName("image_url")
-                        @Expose
-                        val imageUrl: String = "",
-                        @SerializedName("metadata")
-                        @Expose
-                        val metadata: Metadata? = Metadata(),
-                        @SerializedName("name")
-                        @Expose
-                        val name: String = "",
-                        @SerializedName("order_id")
-                        @Expose
-                        val orderId: String = "0",
-                        @SerializedName("price_str")
-                        @Expose
-                        val priceStr: String = "",
-                        @SerializedName("price")
-                        @Expose
-                        val price: Double = 0.0,
-                        @SerializedName("quantity")
-                        @Expose
-                        val quantity: Int = 0,
-                        @SerializedName("subtotal_price_str")
-                        @Expose
-                        val subtotalPriceStr: String = "",
-                        @SerializedName("type")
-                        @Expose
-                        val type: String = ""
-                    ) {
-                        data class Metadata(
-                            @SerializedName("add_on_note")
-                            @Expose
-                            val addonNote: AddonNote = AddonNote()
-                        ) {
-                            data class AddonNote(
-                                @SerializedName("notes")
-                                @Expose
-                                val notes: String = "",
-                                @SerializedName("short_notes")
-                                @Expose
-                                val shortNotes: String = "",
-                                @SerializedName("to")
-                                @Expose
-                                val to: String = "",
-                                @SerializedName("from")
-                                @Expose
-                                val from: String = ""
-                            )
-                        }
-                    }
-                }
-            }
+                val addonSummary: AddOnSummary? = null
+            )
 
             data class Details(
                 @SerializedName("bundle_icon")
@@ -640,7 +569,9 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("tier_discount_amount")
                     val tierDiscountAmount: Int = 0,
                     @SerializedName("tier_discount_amount_formatted")
-                    val tierDiscountAmountFormatted: String = ""
+                    val tierDiscountAmountFormatted: String = "",
+                    @SerializedName("product_benefit")
+                    val productBenefit: ProductBenefit? = null
                 ) {
                     data class OrderDetail(
                         @SerializedName("order_detail_id")
@@ -670,7 +601,7 @@ data class GetBuyerOrderDetailResponse(
                         @SerializedName("category_id")
                         val categoryId: String = "0",
                         @SerializedName("addon_summary")
-                        val addonSummary: AddonSummary? = AddonSummary()
+                        val addonSummary: AddOnSummary? = null
                     )
                 }
 
@@ -776,14 +707,18 @@ data class GetBuyerOrderDetailResponse(
 
                         @Expose
                         @SerializedName("price_text")
-                        val priceText: String = ""
+                        val priceText: String = "",
+
+                        @SerializedName("addon_summary")
+                        @Expose
+                        val addonSummary: AddOnSummary? = null
                     )
                 }
 
                 data class NonBundle(
                     @SerializedName("addon_summary")
                     @Expose
-                    val addonSummary: AddonSummary? = AddonSummary(),
+                    val addonSummary: AddOnSummary? = null,
 
                     @SerializedName("button")
                     @Expose

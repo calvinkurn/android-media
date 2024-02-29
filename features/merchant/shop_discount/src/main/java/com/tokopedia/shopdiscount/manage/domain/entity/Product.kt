@@ -1,6 +1,8 @@
 package com.tokopedia.shopdiscount.manage.domain.entity
 
 import com.tokopedia.shopdiscount.common.entity.ProductType
+import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountProductRuleUiModel
+import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountSubsidyInfoUiModel
 
 data class Product(
     val id : String,
@@ -25,5 +27,12 @@ data class Product(
     val shouldDisplayCheckbox : Boolean = false,
     val disableClick: Boolean = false,
     val sku: String,
-    val isExpand : Boolean
+    val isExpand : Boolean,
+    val maxOrder: Int = 0,
+    val isSubsidy: Boolean = false,
+    val subsidyStatusText: String = "",
+    val productRule: ShopDiscountProductRuleUiModel = ShopDiscountProductRuleUiModel(),
+    val subsidyInfo: ShopDiscountSubsidyInfoUiModel = ShopDiscountSubsidyInfoUiModel(),
+    val listEventId: List<String> = listOf(),
+    val isMultiWarehouse: Boolean = false
 )

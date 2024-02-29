@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:id="@+id/radio_button_reason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        tools:text="Harga yang diberikan tidak sesuai dengan standar harga produk dari perusahaan/distributor/principal" />
+
+    <com.tokopedia.unifycomponents.TextAreaUnify2
+        android:id="@+id/textarea_reason_custom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        app:unify_text_field_maxline="3"
+        app:unify_text_field_label="Tulis alasan" />
+</LinearLayout>

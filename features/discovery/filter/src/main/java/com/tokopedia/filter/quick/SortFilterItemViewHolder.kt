@@ -1,8 +1,11 @@
 package com.tokopedia.filter.quick
 
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.bumptech.glide.Glide
 import com.tokopedia.filter.R
 import com.tokopedia.filter.databinding.SortFilterQuickItemBinding
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -11,8 +14,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 internal class SortFilterItemViewHolder(
     itemView: View,
-    private val listener: Listener,
-): ViewHolder(itemView) {
+    private val listener: Listener
+) : ViewHolder(itemView) {
 
     private var binding: SortFilterQuickItemBinding? by viewBinding()
 
@@ -24,29 +27,56 @@ internal class SortFilterItemViewHolder(
                 chip_image_icon.setImageUrl(sortFilterItem.iconUrl)
             }
 
+            chipSize = ChipsUnify.SIZE_MEDIUM
+
+            val imageUrl: String = if (sortFilterItem.isSelected) {
+                sortFilterItem.imageUrlActive
+            } else {
+                sortFilterItem.imageUrlInactive
+            }
+
+            if (sortFilterItem.shouldShowImage && imageUrl.isNotBlank()) {
+                setupShowImageFilter(imageUrl)
+            }
+
             configureChevron(sortFilterItem)
 
             setOnClickListener {
-                if (sortFilterItem.hasChevron)
+                if (sortFilterItem.hasChevron) {
                     listener.onItemChevronClicked(sortFilterItem, bindingAdapterPosition)
-                else
+                } else {
                     listener.onItemClicked(sortFilterItem, bindingAdapterPosition)
+                }
             }
         }
     }
 
     private fun ChipsUnify.configureChevron(sortFilterItem: SortFilterItem) {
-        if (sortFilterItem.hasChevron)
+        if (sortFilterItem.hasChevron) {
             setChevronClickListener {
                 listener.onItemChevronClicked(sortFilterItem, bindingAdapterPosition)
             }
-        else
+        } else {
             clearRightIcon()
+        }
     }
 
     private fun getChipType(sortFilterItem: SortFilterItem) =
-        if (sortFilterItem.isSelected) ChipsUnify.TYPE_SELECTED
-        else ChipsUnify.TYPE_NORMAL
+        if (sortFilterItem.isSelected) {
+            ChipsUnify.TYPE_SELECTED
+        } else {
+            ChipsUnify.TYPE_NORMAL
+        }
+
+    private fun ChipsUnify.setupShowImageFilter(imageUrl: String) {
+        val imageView = ImageView(context)
+        imageView.adjustViewBounds = true
+        Glide.with(context)
+            .load(imageUrl)
+            .into(imageView)
+        addCustomView(imageView)
+        chip_sub_container.setPadding(0)
+    }
 
     companion object {
         @LayoutRes

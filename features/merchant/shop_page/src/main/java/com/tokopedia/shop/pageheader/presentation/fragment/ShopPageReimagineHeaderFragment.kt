@@ -46,6 +46,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
@@ -114,17 +115,22 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.SHOP_PAGE_SHARED_PREF
 import com.tokopedia.shop.common.constant.ShopPageConstant.ShopLayoutFeatures.DIRECT_PURCHASE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_ACTIVITY_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_P1_MIDDLE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_PREFETCH_V1
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopAffiliateData
+import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
+import com.tokopedia.shop.common.domain.entity.ShopPrefetchData
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
+import com.tokopedia.shop.common.prefetch.ShopPagePrefetch
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
 import com.tokopedia.shop.common.util.ShopUtilExt.clearHtmlTag
@@ -144,6 +150,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.databinding.ShopHeaderFragmentBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
+import com.tokopedia.shop.home.util.mapper.ShopPagePrefetchMapper
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
@@ -216,6 +223,7 @@ import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.webview.WebViewHelper
 import java.io.File
 import java.net.URLEncoder
@@ -332,6 +340,9 @@ class ShopPageReimagineHeaderFragment :
 
     @Inject
     lateinit var entryPointSharedPref: ContentCreationEntryPointSharedPref
+
+    @Inject
+    lateinit var shopPrefetchMapper: ShopPagePrefetchMapper
 
     var shopHeaderViewModel: ShopPageHeaderViewModel? = null
     private var remoteConfig: RemoteConfig? = null
@@ -503,7 +514,6 @@ class ShopPageReimagineHeaderFragment :
 
             override fun onCreationNextClicked(data: ContentCreationItemModel) {
                 when (data.type) {
-
                     ContentCreationTypeEnum.LIVE -> {
                         goToBroadcaster()
                     }
@@ -927,7 +937,7 @@ class ShopPageReimagineHeaderFragment :
         }
     }
 
-    private fun refreshCartCounterData() {
+    fun refreshCartCounterData() {
         if (isLogin && !MvcLockedToProductUtil.isSellerApp()) {
             updateFragmentTabContentWrapperNavToolbarNotification()
         }
@@ -1134,10 +1144,9 @@ class ShopPageReimagineHeaderFragment :
     }
 
     private fun getFollowStatus() {
-        val shopFollowButtonVariantType = ShopUtil.getShopFollowButtonAbTestVariant().orEmpty()
         if (checkIfActionButtonSectionWidgetExistsOnHeader()) {
             setFragmentTabContentWrapperFollowButtonLoading(true)
-            shopHeaderViewModel?.getFollowStatusData(shopId, shopFollowButtonVariantType)
+            shopHeaderViewModel?.getFollowStatusData(shopId)
         }
     }
 
@@ -1227,8 +1236,12 @@ class ShopPageReimagineHeaderFragment :
             observeShopPageMiniCartSharedViewModel()
             getInitialData()
             initViews(view)
-            setViewState(VIEW_LOADING)
+
+            // Handle Shop Page Prefetch Data
+            startTraceMonitoring(ShopPagePerformanceConstant.SHOP_HOME_PREFETCH_V1)
+            handlePrefetchData()
         }
+
         context?.let {
             screenShotDetector = SharingUtil.createAndStartScreenShotDetector(
                 it,
@@ -1239,6 +1252,60 @@ class ShopPageReimagineHeaderFragment :
         }
         shopLandingPageInitAffiliateCookie()
         storiesManager.updateStories(listOf(shopId))
+    }
+
+    private fun handlePrefetchData() {
+        val prefetchData = getPrefetchData()
+        val hasPrefetchData = prefetchData != null
+
+        if (hasPrefetchData) {
+            renderPrefetchData(prefetchData)
+            setViewState(VIEW_CONTENT)
+            scrollToTopButton?.gone()
+        } else {
+            setViewState(VIEW_LOADING)
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun renderPrefetchData(prefetchData: ShopPrefetchData?) {
+        if (prefetchData == null) return
+
+        val shopPrefetchTabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance()
+
+        val tabData = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData(name = ShopPageHeaderTabName.PRE_FETCH_DATA)
+        shopPrefetchTabContentWrapper.setTabData(tabData)
+
+        val prefetchHeaderData = shopPrefetchMapper.createHeaderData(context, prefetchData)
+        shopPrefetchTabContentWrapper.setShopPageHeaderP1Data(
+            shopPageHeaderP1Data = prefetchHeaderData,
+            isEnableDirectPurchase = getIsEnableDirectPurchase(prefetchHeaderData),
+            isShouldShowFeed = isShowFeed
+        )
+
+        val listShopPageTabModel = mutableListOf<ShopPageHeaderTabModel>()
+        listShopPageTabModel.add(
+            ShopPageHeaderTabModel(
+                tabName = tabData.name,
+                tabFragment = shopPrefetchTabContentWrapper
+            )
+        )
+
+        viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
+        tabLayout?.removeAllTabs()
+        viewPagerAdapterHeader?.notifyDataSetChanged()
+    }
+
+    private fun getPrefetchData(): ShopPrefetchData? {
+        val context = context ?: return null
+
+        val prefetchCacheId = activity?.intent?.getStringExtra(ShopPagePrefetch.BUNDLE_KEY_PREFETCH_CACHE_ID).orEmpty()
+
+        val cacheManager = SaveInstanceCacheManager(context, prefetchCacheId)
+        return cacheManager.get<ShopPrefetchData>(
+            customId = ShopPrefetchData::class.java.simpleName,
+            type = ShopPrefetchData::class.java
+        )
     }
 
     private fun checkAffiliateAppLink(uri: Uri) {
@@ -1367,6 +1434,14 @@ class ShopPageReimagineHeaderFragment :
 
     private fun stopMonitoringPerformance() {
         (activity as? ShopPageHeaderActivity)?.stopShopHeaderPerformanceMonitoring()
+    }
+
+    private fun startTraceMonitoring(traceName: String) {
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startTraceMonitoring(it, traceName)
+            }
+        }
     }
 
     private fun initStickyLogin() {
@@ -1504,11 +1579,18 @@ class ShopPageReimagineHeaderFragment :
     }
 
     override fun getBodyPatternColorType(): String {
-        return getShopBodyConfig()?.patternColorType.orEmpty()
+        return getShopBodyConfig()?.getFinalPatternColorType(activity?.isDarkMode().orFalse()).orEmpty()
     }
 
     override fun getBodyBackgroundHexColor(): String {
-        return getShopNavBarConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
+        return context?.let {
+            getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty().takeIf {
+                it.isNotEmpty()
+            } ?: ShopUtil.getColorHexString(
+                it,
+                unifyprinciplesR.color.Unify_NN0
+            )
+        }.orEmpty()
     }
 
     private fun redirectToSearchAutoCompletePage() {
@@ -1811,8 +1893,9 @@ class ShopPageReimagineHeaderFragment :
         listShopPageTabModel = (setupTabContentWrapper() as? List<ShopPageHeaderTabModel>) ?: listOf()
         viewPagerAdapterHeader?.setPageTheme(
             shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme.orFalse(),
-            getShopNavBarConfig()?.patternColorType.orEmpty(),
-            getShopNavBarConfig()?.colorSchema ?: ShopPageColorSchema()
+            getShopNavBarConfig()?.getFinalPatternColorType(activity?.isDarkMode().orFalse()).orEmpty(),
+            getShopNavBarConfig()?.colorSchema ?: ShopPageColorSchema(),
+            getShopNavBarConfig()?.isTransparent().orFalse()
         )
         viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
         selectedPosition = getSelectedDynamicTabPosition()
@@ -1904,9 +1987,22 @@ class ShopPageReimagineHeaderFragment :
     }
 
     private fun setTabLayoutBackgroundColor() {
-        if (shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme == true) {
-            val fragmentBackgroundColor = getShopNavBarConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
-            tabLayout?.background = ColorDrawable(ShopUtil.parseColorFromHexString(fragmentBackgroundColor))
+        context?.let {
+            if (shopPageHeaderP1Data?.shopHeaderLayoutData?.isOverrideTheme == true) {
+                val tabNavColor =
+                    getShopNavBarConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
+                val tabBackgroundColor = tabNavColor.ifEmpty {
+                    ShopUtil.getColorHexString(
+                        it,
+                        unifyprinciplesR.color.Unify_NN0
+                    )
+                }
+                tabLayout?.background = ColorDrawable(
+                    ShopUtil.parseColorFromHexString(
+                        tabBackgroundColor
+                    )
+                )
+            }
         }
     }
 
@@ -2726,7 +2822,9 @@ class ShopPageReimagineHeaderFragment :
         val headerLayoutData = shopPageHeaderP1Data?.shopHeaderLayoutData
         val isOverrideTextColor = headerLayoutData?.isOverrideTheme.orFalse()
         return if (isOverrideTextColor) {
-            if (getShopHeaderConfig()?.patternColorType == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
+            if (getShopHeaderConfig()?.getFinalPatternColorType(
+                context?.isDarkMode().orFalse()
+            ) == ShopPageHeaderLayoutUiModel.ColorType.DARK.value) {
                 unifyprinciplesR.color.Unify_Static_White
             } else {
                 R.color.dms_static_Unify_NN950_light
@@ -2739,8 +2837,6 @@ class ShopPageReimagineHeaderFragment :
     private fun getShopHeaderConfig(): ShopPageHeaderLayoutUiModel.Config? {
         return shopPageHeaderP1Data?.shopHeaderLayoutData?.getShopConfigListByName(ShopPageHeaderLayoutUiModel.ConfigName.SHOP_HEADER)
     }
-
-
 
     fun expandHeader() {
         getSelectedFragmentWrapperInstance()?.let {
@@ -3341,7 +3437,7 @@ class ShopPageReimagineHeaderFragment :
             ShopPageActivityResult.createResult(
                 shopId = shopId,
                 isFollow = isFollowing,
-                existingIntentBundle = intentData,
+                existingIntentBundle = intentData
             )
         )
     }

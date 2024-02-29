@@ -21,6 +21,7 @@ import kotlin.math.roundToLong
  * Created by Irfan Khoirul on 2019-07-10.
  */
 
+@Deprecated("Use coroutine version", replaceWith = ReplaceWith("AddToCartOcsUseCase", imports = ["com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOcsUseCase"]))
 open class AddToCartOcsUseCase @Inject constructor(
     @Named("atcOcsMutation") private val queryString: String,
     private val gson: Gson,
@@ -85,7 +86,8 @@ open class AddToCartOcsUseCase @Inject constructor(
                     addToCartRequest.productId, addToCartRequest.productName, addToCartRequest.price,
                     addToCartRequest.quantity.toString(), addToCartRequest.category, addToCartRequest.categoryLevel1Id,
                     addToCartRequest.categoryLevel1Name, addToCartRequest.categoryLevel2Id, addToCartRequest.categoryLevel2Name,
-                    addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.userId
+                    addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.userId,
+                    addToCartRequest.shopName
                 )
             }
             result

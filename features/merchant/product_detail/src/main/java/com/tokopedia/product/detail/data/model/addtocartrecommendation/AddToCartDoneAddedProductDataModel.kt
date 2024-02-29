@@ -6,13 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneTypeFactory
 
 data class AddToCartDoneAddedProductDataModel(
-        val productId: String?,
-        val productName: String?,
-        val productImageUr: String?,
-        val isVariant: Boolean?,
-        val shopId: Int,
-        val bebasOngkirUrl: String?,
-        val cartId:String?
+    val productId: String?,
+    val productName: String?,
+    val productImageUr: String?,
+    val isVariant: Boolean?,
+    val shopId: String,
+    val bebasOngkirUrl: String?,
+    val cartId: String?
 ) : Visitable<AddToCartDoneTypeFactory>, Parcelable {
 
     override fun type(typeFactory: AddToCartDoneTypeFactory): Int {
@@ -20,13 +20,13 @@ data class AddToCartDoneAddedProductDataModel(
     }
 
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readString()
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+        parcel.readString().orEmpty(),
+        parcel.readString(),
+        parcel.readString()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -34,7 +34,7 @@ data class AddToCartDoneAddedProductDataModel(
         parcel.writeString(productName)
         parcel.writeString(productImageUr)
         parcel.writeValue(isVariant)
-        parcel.writeInt(shopId)
+        parcel.writeString(shopId)
         parcel.writeString(bebasOngkirUrl)
         parcel.writeString(cartId)
     }

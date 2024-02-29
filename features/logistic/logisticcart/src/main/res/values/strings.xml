@@ -79,4 +79,5 @@
     <string name="shipping_insurance_tnc_label">Asuransi Pengiriman</string>
     <string name="shipping_insurance_title_mandatory">Dilindungi %1$s (%2$s)</string>
     <string name="shipping_insurance_title_optional">Pakai %1$s (%2$s)</string>
+    <string name="service_error_pinpoint_action">Atur Pinpoint</string>
 </resources>

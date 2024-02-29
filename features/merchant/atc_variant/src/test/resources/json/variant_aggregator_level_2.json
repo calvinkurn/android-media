@@ -451,9 +451,9 @@
             "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg"
           },
           "price": 1000,
-          "priceFmt": "",
-          "slashPriceFmt": "",
-          "discPercentage": "",
+          "priceFmt": "Rp1.000",
+          "slashPriceFmt": "Rp1.000",
+          "discPercentage": "0%",
           "productID": "2147818570",
           "productName": "var lv2 variation oos - Biru, S",
           "optionName": [
@@ -746,9 +746,9 @@
             "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg"
           },
           "price": 1000,
-          "priceFmt": "",
-          "slashPriceFmt": "",
-          "discPercentage": "",
+          "priceFmt": "Rp1.000",
+          "slashPriceFmt": "Rp1.000",
+          "discPercentage": "0%",
           "productID": "2147818575",
           "productName": "var lv2 variation oos - Merah, S",
           "optionName": [
@@ -802,10 +802,22 @@
             "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg"
           },
           "price": 1000,
-          "priceFmt": "",
-          "slashPriceFmt": "",
-          "discPercentage": "",
+          "priceFmt": "Rp208.000",
+          "slashPriceFmt": "Rp1.000",
+          "discPercentage": "0%",
           "productID": "2147818576",
+          "promo": {
+            "iconURL": "iconURL",
+            "promoPriceFmt": "Rp9.000.000",
+            "subtitle": "Diskon 200rb & cashback 300rb",
+            "applink": "applink",
+            "color": "#mainTextColor",
+            "background": "#backgroundColor",
+            "superGraphicURL": "image.png",
+            "separatorColor": "#separatorColor",
+            "priceAdditionalFmt": "Harga tanpa kupon: <b>Rp9.000.000</b>"
+          },
+          "componentPriceType" : 2,
           "productName": "var lv2 variation oos - Merah, M",
           "optionName": [
             "Merah",
@@ -1094,9 +1106,9 @@
             "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg"
           },
           "price": 1000,
-          "priceFmt": "",
-          "slashPriceFmt": "",
-          "discPercentage": "",
+          "priceFmt": "Rp1.000",
+          "slashPriceFmt": "Rp1.000",
+          "discPercentage": "0%",
           "productID": "2147818581",
           "productName": "var lv2 variation oos - Kuning, M",
           "optionName": [
@@ -1389,9 +1401,9 @@
             "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg"
           },
           "price": 7000,
-          "priceFmt": "",
-          "slashPriceFmt": "",
-          "discPercentage": "",
+          "priceFmt": "Rp7.000",
+          "slashPriceFmt": "Rp7.000",
+          "discPercentage": "0%",
           "productID": "2147818586",
           "productName": "var lv2 variation oos - Hijau, M",
           "optionName": [
@@ -1799,9 +1811,9 @@
             "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg"
           },
           "price": 3000,
-          "priceFmt": "",
-          "slashPriceFmt": "",
-          "discPercentage": "",
+          "priceFmt": "Rp2.000",
+          "slashPriceFmt": "Rp3.000",
+          "discPercentage": "0%",
           "productID": "2147818593",
           "productName": "var lv2 variation oos - Ungu, XL",
           "optionName": [

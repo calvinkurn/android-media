@@ -13,14 +13,14 @@ import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailMapper
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.di.ComponentFilter
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_LAYOUT_ID_DAGGER
@@ -47,6 +47,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
 ) {
 
     companion object {
+
         const val QUERY = """
             query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String, ${'$'}layoutID : String, ${'$'}userLocation: pdpUserLocation, ${'$'}extParam: String, ${'$'}tokonow: pdpTokoNow) {
               pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID, layoutID:${'$'}layoutID, userLocation:${'$'}userLocation, extParam:${'$'}extParam, tokonow:${'$'}tokonow) {
@@ -148,6 +149,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         campaignID
                         campaignType
                         campaignTypeName
+                        campaignLogo
                         percentageAmount
                         originalPrice
                         discountedPrice
@@ -172,12 +174,22 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         icon
                         background
                         additionalInfo
+                        productID
+                        campaignLogo
+                        applink
+                        superGraphicURL
                       }
                     }
             		... on pdpDataProductContent {
                       name
                       parentName
+                      labelIcons {
+                        label
+                        iconURL
+                        type
+                      }
                       isCOD
+                      isShowPrice
                       price {
                         value
                         priceFmt
@@ -189,6 +201,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         campaignID
                         campaignType
                         campaignTypeName
+                        campaignLogo
                         percentageAmount
                         originalPrice
                         discountedPrice
@@ -213,6 +226,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         icon
                         background
                         additionalInfo
+                        productID
+                        campaignLogo
+                        applink
+                        superGraphicURL
                       }
                       stock {
                         useStock
@@ -298,6 +315,26 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         text
                       }
                     }
+                    ... on pdpDataComponentPromoPrice {
+                      promo {
+                        iconURL
+                        promoPriceFmt
+                        subtitle
+                        applink
+                        color
+                        background
+                        superGraphicURL
+                        priceAdditionalFmt
+                        separatorColor
+                        bottomsheetParam
+                        promoCodes{
+                          promoID
+                          promoCode
+                          promoCodeType
+                        }
+                      }
+                      componentPriceType
+                    }
                     ... on pdpDataCategoryCarousel {
                         titleCarousel
                         linkText
@@ -359,9 +396,32 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         optionID
                         optionName
                         productName
+                        labelIcons {
+                          label
+                          iconURL
+                          type
+                        }
                         productURL
                         isCOD
                         isWishlist
+                        promo {
+                          iconURL
+                          promoPriceFmt
+                          subtitle
+                          applink
+                          color
+                          background
+                          superGraphicURL
+                          priceAdditionalFmt
+                          separatorColor
+                          bottomsheetParam
+                          promoCodes {
+                              promoID
+                              promoCode
+                              promoCodeType
+                          }
+                        }
+                        componentPriceType
                         picture {
                           url
                           url200
@@ -380,6 +440,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         campaignInfo {
                           campaignID
                           campaignType
+                          campaignLogo
                           campaignTypeName
                           campaignIdentifier
                           background
@@ -399,10 +460,14 @@ open class GetPdpLayoutUseCase @Inject constructor(
                           minOrder
                         }
                         thematicCampaign{
-                          campaignName
-                          icon
-                          background
-                          additionalInfo
+                            campaignName
+                            icon
+                            background
+                            additionalInfo
+                            productID
+                            campaignLogo
+                            applink
+                            superGraphicURL
                         }
                       }
                       componentType
@@ -474,7 +539,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
               }
             }
         """
-
         fun createParams(
             productId: String,
             shopDomain: String,
@@ -610,7 +674,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
             )
         } else {
             // expected cache state is fromCache is false and cacheFirstThenCloud is false
-            ProductDetailDataModel(layoutData = DynamicProductInfoP1(cacheState = cacheState))
+            ProductDetailDataModel(layoutData = ProductInfoP1(cacheState = cacheState))
         }
     }.onSuccess {
         Result.success(it)
@@ -682,18 +746,19 @@ open class GetPdpLayoutUseCase @Inject constructor(
         cacheState: CacheState,
         isCampaign: Boolean
     ): ProductDetailDataModel {
-        val getDynamicProductInfoP1 = DynamicProductDetailMapper
+        val getDynamicProductInfoP1 = ProductDetailMapper
             .mapToDynamicProductDetailP1(this)
             .copy(cacheState = cacheState, isCampaign = isCampaign)
-        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(components, getDynamicProductInfoP1)
-            .filterNot {
-                if (cacheState.isFromCache) {
-                    getIgnoreComponentTypeInCache().contains(it.type())
-                } else {
-                    false
-                }
-            }.componentDevFilter(componentFilterSharedPref).toMutableList()
-        val p1VariantData = DynamicProductDetailMapper
+        val initialLayoutData =
+            ProductDetailMapper.mapIntoVisitable(components, getDynamicProductInfoP1)
+                .filterNot {
+                    if (cacheState.isFromCache) {
+                        getIgnoreComponentTypeInCache().contains(it.type())
+                    } else {
+                        false
+                    }
+                }.componentDevFilter(componentFilterSharedPref).toMutableList()
+        val p1VariantData = ProductDetailMapper
             .mapVariantIntoOldDataClass(this)
         return ProductDetailDataModel(
             layoutData = getDynamicProductInfoP1,

@@ -61,7 +61,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_chainStyle="spread"
-        app:srcCompat="@drawable/ic_three_dots_more_menu"
+        app:srcCompat="@drawable/shop_ic_three_dots_more_menu"
         android:contentDescription="@string/shop_page_showcase_setting_text"
         android:visibility="gone"
         tools:visibility="visible"

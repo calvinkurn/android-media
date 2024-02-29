@@ -42,7 +42,7 @@ import com.tokopedia.common.payment.utils.LinkStatusMatcher
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.model.AdditionalDeviceInfo
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
-import com.tokopedia.fingerprint.util.FingerprintConstant
+import com.tokopedia.fingerprint.FingerprintUtil
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.authentication.*
@@ -81,6 +81,8 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.abstraction.R as abstractionR
 
 /**
  * Created by kris on 3/9/17. Tokopedia
@@ -143,9 +145,9 @@ class TopPayActivity :
             window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500, null)
+                window?.statusBarColor = resources.getColor(unifyprinciplesR.color.Unify_GN500, null)
             } else {
-                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                window?.statusBarColor = resources.getColor(unifyprinciplesR.color.Unify_GN500)
             }
         }
         initInjector()
@@ -181,7 +183,7 @@ class TopPayActivity :
             scroogeWebView = findViewById(R.id.scrooge_webview)
             progressBar = findViewById(R.id.progressbar)
             progressDialog = ProgressDialog(this)
-            progressDialog?.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
+            progressDialog?.setMessage(getString(abstractionR.string.title_loading))
             tvTitle?.text = getString(R.string.toppay_title)
             val currentTransactionId = paymentPassData?.transactionId ?: ""
             tvTitle?.contentDescription = getString(R.string.toppay_title_content_desc, currentTransactionId)
@@ -957,7 +959,7 @@ class TopPayActivity :
     }
 
     fun getEnableFingerprintPayment(): Boolean {
-        return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_MAINAPP)
+        return remoteConfig.getBoolean(FingerprintUtil.ENABLE_FINGERPRINT_MAINAPP)
     }
 
     private fun isLinkAjaAppLink(url: String): Boolean {

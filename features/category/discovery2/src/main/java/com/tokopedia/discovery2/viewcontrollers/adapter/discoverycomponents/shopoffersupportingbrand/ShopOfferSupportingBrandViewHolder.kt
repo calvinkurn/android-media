@@ -6,8 +6,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.databinding.DiscoverySupportingBrandLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -20,15 +20,13 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopOfferSupportingBrandViewHolder(
     itemView: View,
     val fragment: Fragment
 ) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    private val binding: DiscoverySupportingBrandLayoutBinding?
-        by viewBinding()
+    private val supportingBrandRV = itemView.findViewById<RecyclerView>(R.id.supportingBrandRV)
 
     private val supportingBrandAdapter: DiscoveryRecycleAdapter
         by lazy {
@@ -47,7 +45,7 @@ class ShopOfferSupportingBrandViewHolder(
     private var viewModel: ShopOfferSupportingBrandViewModel? = null
 
     init {
-        binding?.setupRecyclerView()
+        setupRecyclerView()
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -78,16 +76,14 @@ class ShopOfferSupportingBrandViewHolder(
     private fun ShopOfferSupportingBrandViewModel.observeBrandList(
         lifecycleOwner: LifecycleOwner
     ) {
-        binding?.apply {
-            brands.observe(lifecycleOwner) { result ->
-                when (result) {
-                    is Success -> {
-                        trackImpression(result.data)
-                        showWidget(result.data)
-                    }
-
-                    is Fail -> hideWidget()
+        brands.observe(lifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    trackImpression(result.data)
+                    showWidget(result.data)
                 }
+
+                is Fail -> hideWidget()
             }
         }
     }
@@ -99,16 +95,16 @@ class ShopOfferSupportingBrandViewHolder(
             ?.trackSupportingBrandImpression(components)
     }
 
-    private fun DiscoverySupportingBrandLayoutBinding.showWidget(items: ArrayList<ComponentsItem>) {
+    private fun showWidget(items: ArrayList<ComponentsItem>) {
         supportingBrandRV.show()
         supportingBrandAdapter.setDataList(items)
     }
 
-    private fun DiscoverySupportingBrandLayoutBinding.hideWidget() {
+    private fun hideWidget() {
         supportingBrandRV.hide()
     }
 
-    private fun DiscoverySupportingBrandLayoutBinding.setupRecyclerView() {
+    private fun setupRecyclerView() {
         supportingBrandAdapter.setHasStableIds(true)
         supportingBrandRV.apply {
             adapter = supportingBrandAdapter
@@ -118,7 +114,7 @@ class ShopOfferSupportingBrandViewHolder(
         addScrollListener()
     }
 
-    private fun DiscoverySupportingBrandLayoutBinding.addItemDecorator() {
+    private fun addItemDecorator() {
         if (supportingBrandRV.itemDecorationCount.isMoreThanZero()) {
             supportingBrandRV.removeAllItemDecoration()
         }
@@ -126,7 +122,7 @@ class ShopOfferSupportingBrandViewHolder(
         supportingBrandRV.addItemDecoration(CarouselProductCardItemDecorator())
     }
 
-    private fun DiscoverySupportingBrandLayoutBinding.addScrollListener() {
+    private fun addScrollListener() {
         if (viewModel?.hasHeader() == false) return
         supportingBrandRV.addOnScrollListener(
             object : RecyclerView.OnScrollListener() {

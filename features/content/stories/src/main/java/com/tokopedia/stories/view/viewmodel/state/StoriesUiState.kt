@@ -26,7 +26,7 @@ data class StoriesUiState(
 }
 
 enum class BottomSheetType {
-    Kebab, Product, Sharing, GVBS, Report, SubmitReport, Unknown;
+    Kebab, Product, Sharing, Report, SubmitReport, Unknown;
 }
 
 data class ProductBottomSheetUiState(
@@ -51,7 +51,6 @@ val BottomSheetStatusDefault: Map<BottomSheetType, Boolean>
         BottomSheetType.Sharing to false,
         BottomSheetType.Product to false,
         BottomSheetType.Kebab to false,
-        BottomSheetType.GVBS to false,
         BottomSheetType.Report to false,
         BottomSheetType.SubmitReport to false,
     )

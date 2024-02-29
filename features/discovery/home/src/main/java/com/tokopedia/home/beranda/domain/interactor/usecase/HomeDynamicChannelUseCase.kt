@@ -110,7 +110,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
     companion object {
         private const val TYPE_ATF_1 = "atf-1"
         private const val MINIMUM_BANNER_TO_SHOW = 1
-        private const val MINIMUM_DC_TO_SHOW_RECOM = 3
         private const val DEFAULT_TOPADS_TDN_PAGE = "0"
     }
 
@@ -536,7 +535,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
                 val needToGetRecom =
                     dynamicChannelPlainResponse.evaluateRecommendationSection(currentHomeRecom = localHomeRecommendationFeedDataModel)
-                if (needToGetRecom && dynamicChannelPlainResponse.list.size > MINIMUM_DC_TO_SHOW_RECOM) {
+                if (needToGetRecom) {
                     getFeedTabData(dynamicChannelPlainResponse)
                 }
             }

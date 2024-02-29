@@ -43,7 +43,7 @@ import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCart
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationWidgetDataModel
-import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
+import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneAdapter
@@ -288,8 +288,7 @@ open class AddToCartDoneBottomSheet :
                             atcDoneAdapter.addElement(
                                 AddToCartDoneRecommendationCarouselDataModel(
                                     mapRecommendationWidgetToAddToCartRecommendationDataModel(it.data.first()),
-                                    addedProductDataModel?.shopId
-                                        ?: -1
+                                    addedProductDataModel?.shopId.orEmpty()
                                 )
                             )
                         } else {
@@ -410,7 +409,7 @@ open class AddToCartDoneBottomSheet :
             }
         }
         addedProductDataModel?.productId?.let {
-            DynamicProductDetailTracking.Click.eventAddToCartRecommendationClick(
+            ProductDetailTracking.Click.eventAddToCartRecommendationClick(
                 item,
                 item.position,
                 addToCartDoneViewModel.isLoggedIn(),
@@ -440,7 +439,7 @@ open class AddToCartDoneBottomSheet :
             }
         }
         addedProductDataModel?.productId?.let {
-            DynamicProductDetailTracking.Recommendation.eventAddToCartRecommendationImpression(
+            ProductDetailTracking.Recommendation.eventAddToCartRecommendationImpression(
                 item.position,
                 item,
                 addToCartDoneViewModel.isLoggedIn(),
@@ -533,7 +532,7 @@ open class AddToCartDoneBottomSheet :
                 addToCartButton.isLoading = true
                 addToCartDoneViewModel.addToCart(dataModel)
                 addedProductDataModel?.productId?.let {
-                    DynamicProductDetailTracking.Click.eventAddToCartRecommendationATCClick(
+                    ProductDetailTracking.Click.eventAddToCartRecommendationATCClick(
                         item,
                         item.position,
                         addToCartDoneViewModel.isLoggedIn(),
@@ -547,7 +546,7 @@ open class AddToCartDoneBottomSheet :
     }
 
     override fun onButtonGoToCartClicked() {
-        DynamicProductDetailTracking.Click.eventAtcClickLihat(
+        ProductDetailTracking.Click.eventAtcClickLihat(
             addedProductDataModel?.productId
                 ?: ""
         )
@@ -561,7 +560,13 @@ open class AddToCartDoneBottomSheet :
         if (wishlistResult.isUserLoggedIn) {
             if (wishlistResult.isSuccess) {
                 recomWishlistItem?.isWishlist = !(recomWishlistItem?.isWishlist ?: false)
-                recomWishlistItem?.let { DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(it, addToCartDoneViewModel.isLoggedIn(), wishlistResult.isAddWishlist) }
+                recomWishlistItem?.let {
+                    ProductDetailTracking.Click.eventAddToCartRecommendationWishlist(
+                        it,
+                        addToCartDoneViewModel.isLoggedIn(),
+                        wishlistResult.isAddWishlist
+                    )
+                }
                 showToasterWishlistV2(wishlistResult)
             } else {
                 showToasterErrorWishlistV2(wishlistResult)

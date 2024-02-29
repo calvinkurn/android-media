@@ -21,7 +21,6 @@ import com.google.android.exoplayer2.video.VideoListener
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler.ImageLoaderStateListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -40,6 +39,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play_common.view.ImageLoaderStateListener
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
@@ -137,8 +137,6 @@ class StoriesDetailFragment @Inject constructor(
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
-    private var variantSheet: AtcVariantBottomSheet? = null
-
     private val atcVariantViewModel by lazyThreadSafetyNone {
         ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
     }
@@ -193,6 +191,12 @@ class StoriesDetailFragment @Inject constructor(
                 is ContentReportBottomSheet -> fragment.setListener(this)
 
                 is ContentSubmitReportBottomSheet -> fragment.setListener(this)
+
+                is AtcVariantBottomSheet -> {
+                    fragment.setCloseClickListener {
+                        fragment.dismiss()
+                    }
+                }
             }
         }
         super.onCreate(savedInstanceState)
@@ -768,18 +772,7 @@ class StoriesDetailFragment @Inject constructor(
             )
         )
         showImmediately(childFragmentManager, VARIANT_BOTTOM_SHEET_TAG) {
-            variantSheet = AtcVariantBottomSheet()
-            variantSheet?.setOnDismissListener { }
-            variantSheet?.setShowListener {
-                variantSheet?.bottomSheetClose?.setOnClickListener {
-                    variantSheet?.dismiss()
-                    viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
-                }
-                variantSheet?.setOnDismissListener {
-                    viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.GVBS))
-                }
-            }
-            variantSheet ?: AtcVariantBottomSheet()
+            AtcVariantBottomSheet()
         }
     }
 

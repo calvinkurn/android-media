@@ -4,7 +4,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 
 sealed interface MiniCartV2GlobalEvent {
 
-    data class FailToLoadMiniCart(val exception: Exception) : MiniCartV2GlobalEvent
+    data class FailToLoadMiniCart(val throwable: Throwable) : MiniCartV2GlobalEvent
 
     object SuccessGoToCheckout : MiniCartV2GlobalEvent
 

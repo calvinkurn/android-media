@@ -121,6 +121,8 @@ ext {
     testCore = '1.4.0'
     fragmentTest = "1.4.1"
     androidxFragment = '1.5.7'
+    divKitVersion = '28.4.0'
+    divKitLottieVersion = '3.0.1'
     debugToolsEnabled = true
 
     // Sort and categorize alphabetically by folder name
@@ -138,9 +140,9 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyIconsVersion = '1.0.34'
-    unifyPrinciplesVersion = '1.4.17'
-    unifyComponentsVersion = '1.2.51'
+    unifyIconsVersion = '1.0.35'
+    unifyPrinciplesVersion = '1.4.18'
+    unifyComponentsVersion = '1.2.52'
     unifyCoachMarkVersion = '1.2.23'
     unifyCalendarVersion = '1.2.3'
     unifyBannerVersion = '1.0.9'
@@ -161,8 +163,8 @@ ext {
     unifyExplorePromoVersion = '1.0.3.2'
     unifyImageGalleryVersion = '1.0.8'
     unifyViewAllCardVersion = '1.0.13'
-    nestPrinciplesVersion = '1.0.6'
-    nestComponentsVersion = '1.0.11'
+    nestPrinciplesVersion = '1.0.7'
+    nestComponentsVersion = '1.0.13'
 
     gradlePlugin = [
             crashlytics                     : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -261,8 +263,8 @@ ext {
     ]
 
     gotoOneKyc = [
-            resource : "com.gojek.android:OneKycResources:2.2.2@aar",
-            oneKycSdk : "com.gojek.android:OneKycSdk:2.2.2@aar",
+            resource : "com.gojek.android:OneKycResources:2.4.3@aar",
+            oneKycSdk : "com.gojek.android:OneKycSdk:2.4.3@aar",
             clickStream : "com.gojek.android:clickstream:4.0.3-alpha",
             protoToko : "com.gojek.clickstream:proto-toko:4.273.5",
             protoSdk : "com.gojek.clickstream:proto-sdk:1.18.2"
@@ -372,6 +374,14 @@ ext {
             ffmpeg                : "com.arthenica:mobileffmpeg:4.4@aar",
             influxInteractor      : "com.tokopedia.skynet:db-interactor:1.0-alpha-05",
             rechargePcidss        : "com.tokopedia.recharge_credit_card.widget:recharge-pcidss:${rechargePcidssVersion}@aar"
+    ]
+
+    sduiDependencies = [
+            divcore               : "com.yandex.div:div-core:$divKitVersion",
+            div                   : "com.yandex.div:div:$divKitVersion",
+            divjson               : "com.yandex.div:div-json:$divKitVersion-tkpd",
+            divlottie             : "com.yandex.div:div-lottie:$divKitLottieVersion",
+            divutils              : "com.yandex.div:utils:$divKitVersion",
     ]
 
     testDependencies = [

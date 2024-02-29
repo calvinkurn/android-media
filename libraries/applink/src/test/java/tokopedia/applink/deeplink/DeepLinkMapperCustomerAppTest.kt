@@ -34,7 +34,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 161
-        const val SIZE_PATH = 270
+        const val SIZE_PATH = 271
     }
 
     override fun setup() {
@@ -1500,6 +1500,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check tipping driver appLink then should return tokopedia internal tipping driver in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/shipping/tipping?order_id=123456"
+        val appLink = UriUtil.buildUriAppendParam(ApplinkConst.TIPPING_DRIVER, mapOf("order_id" to "123456"))
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check share address appLink then should return tokopedia internal logistic manage address in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/manageaddress/"
         val appLink = UriUtil.buildUri(ApplinkConst.SHARE_ADDRESS)
@@ -1608,22 +1616,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val settingProfileApplink = ApplinkConstInternalUserPlatform.SETTING_PROFILE
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/setting-profile"
 
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.KEY_ROLLENCE_PROFILE_MANAGEMENT_M2)
-        } returns ""
-
-        assertEqualsDeepLinkMapper(settingProfileApplink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check setting profile internal appLink then should return tokopedia internal setting profile management in customerapp`() {
-        val settingProfileApplink = ApplinkConstInternalUserPlatform.SETTING_PROFILE
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/profile-management"
-
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.KEY_ROLLENCE_PROFILE_MANAGEMENT_M2)
-        } returns DeeplinkMapperUser.KEY_ROLLENCE_PROFILE_MANAGEMENT_M2
-
         assertEqualsDeepLinkMapper(settingProfileApplink, expectedDeepLink)
     }
 
@@ -1631,22 +1623,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check setting profile global appLink then should return tokopedia internal setting profile in customerapp`() {
         val settingProfileApplink = ApplinkConst.SETTING_PROFILE
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/setting-profile"
-
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.KEY_ROLLENCE_PROFILE_MANAGEMENT_M2)
-        } returns ""
-
-        assertEqualsDeepLinkMapper(settingProfileApplink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check setting profile global appLink then should return tokopedia internal setting profile management in customerapp`() {
-        val settingProfileApplink = ApplinkConst.SETTING_PROFILE
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/profile-management"
-
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.KEY_ROLLENCE_PROFILE_MANAGEMENT_M2)
-        } returns DeeplinkMapperUser.KEY_ROLLENCE_PROFILE_MANAGEMENT_M2
 
         assertEqualsDeepLinkMapper(settingProfileApplink, expectedDeepLink)
     }
@@ -1922,6 +1898,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check play broadcaster appLink then should return tokopedia internal play detail in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://play-broadcaster"
         assertEqualsDeepLinkMapper(ApplinkConst.PLAY_BROADCASTER, expectedDeepLink)
+    }
+
+    @Test
+    fun `check play shorts appLink then should return tokopedia internal play shorts in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://play-shorts"
+        assertEqualsDeepLinkMapper(ApplinkConst.PLAY_SHORTS, expectedDeepLink)
     }
 
     @Test
@@ -2725,27 +2707,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check inbox host customerapp`() {
-        every {
-            DeeplinkMapperCommunication.isUserLoggedIn(any())
-        } returns true
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                DeeplinkMapperCommunication.UNIVERSAL_INBOX_ROLLENCE
-            )
-        } returns ""
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/inbox"
-        assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
-    }
-
-    @Test
     fun `check inbox host customerapp universal inbox`() {
         every {
             DeeplinkMapperCommunication.isUserLoggedIn(any())
         } returns true
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
-        } returns DeeplinkMapperCommunication.UNIVERSAL_INBOX_ROLLENCE
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://communication/universal-inbox"
         assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
     }
@@ -3229,7 +3194,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check appLink for feed relevant post in customerapp`() {
+    fun `check appLink for feed relevant post in customerapp with content as host`() {
         val postId = "12345"
         val source = "detail-play"
 
@@ -3245,7 +3210,28 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         }
 
         assertEqualsDeepLinkMapper("tokopedia://content/$postId?source=$source", expectedDeepLink)
-        assertEqualsDeepLinkMapper("tokopedia://feed/$postId?source=$source", expectedDeepLink)
+    }
+
+    @Test
+    fun `check appLink for feed relevant post in customerapp with feed as host`() {
+        val postId = "12345"
+        val source = "detail-play"
+
+        val expectedDeepLink = buildString {
+            append(ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION)
+            append("?")
+            append("${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1")
+            append("&")
+            append("${ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME}=$source")
+            append("&")
+            append("${ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID}=$postId")
+            append("&")
+            append("${ApplinkConstInternalContent.UF_EXTRA_REFRESH_FOR_RELEVANT_POST}=true")
+            append("&source=$source") // automatically added
+        }
+
+        val feedRelevantPostApplink = UriUtil.buildUri(ApplinkConst.FEED_RELEVANT_POST, postId)
+        assertEqualsDeepLinkMapper("$feedRelevantPostApplink&source=$source", expectedDeepLink)
     }
 
     @Test

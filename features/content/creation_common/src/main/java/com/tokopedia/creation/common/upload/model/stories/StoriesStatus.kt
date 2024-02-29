@@ -12,4 +12,5 @@ enum class StoriesStatus(val value: Int) {
     Expired(4),
     Transcoding(5),
     TranscodingFailed(6),
+    Queue(7),
 }
