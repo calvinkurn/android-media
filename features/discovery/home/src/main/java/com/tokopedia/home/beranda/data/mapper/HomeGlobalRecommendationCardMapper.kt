@@ -56,7 +56,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                 TYPE_RECOM_CARD -> {
                     if (getHomeRecommendationCard.layoutName != HomeRecommendationUtil.LAYOUT_NAME_LIST) {
                         homeRecommendationTypeFactoryImplList.add(
-                            mapToEntityCardRecommendationCard(card, index, getHomeRecommendationCard.pageName)
+                            mapToEntityCardRecommendationCard(card, index, getHomeRecommendationCard.pageName, getHomeRecommendationCard.appLog)
                         )
                     }
                 }
@@ -96,7 +96,8 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                                     card = card,
                                     playVideoWidgetResponse = it,
                                     pageName = getHomeRecommendationCard.pageName,
-                                    position = index
+                                    position = index,
+                                    appLog = getHomeRecommendationCard.appLog
                                 )
                             )
                         }
@@ -116,6 +117,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
         playVideoWidgetResponse: PlayVideoWidgetResponse,
         pageName: String,
         position: Int,
+        appLog: GetHomeRecommendationCardResponse.GetHomeRecommendationCard.AppLog,
     ): PlayCardModel {
         return PlayCardModel(
             cardId = card.id,
@@ -148,14 +150,16 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
             isAds = card.isTopads,
             shopId = card.shop.id,
             pageName = pageName,
-            position = position
+            position = position,
+            appLog = appLog.toAppLogModel(card.recParam)
         )
     }
 
     private fun mapToEntityCardRecommendationCard(
         recommendationCard: RecommendationCard,
         index: Int,
-        pageName: String
+        pageName: String,
+        appLog: GetHomeRecommendationCardResponse.GetHomeRecommendationCard.AppLog,
     ): ContentCardModel {
         return ContentCardModel(
             id = recommendationCard.id,
@@ -175,7 +179,8 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
             position = index,
             isAds = recommendationCard.isTopads,
             shopId = recommendationCard.shop.id,
-            pageName = pageName
+            pageName = pageName,
+            appLog = appLog.toAppLogModel(recommendationCard.recParam)
         )
     }
 

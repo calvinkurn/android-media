@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
@@ -36,7 +38,7 @@ import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
-    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener {
+    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener, AppLogRecTriggerInterface {
 
     private var masterProductCardItemViewModel: MasterProductCardItemViewModel? = null
     private var masterProductCardGridView: ProductCardGridView? = null
@@ -494,5 +496,17 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     companion object {
         const val IS_FULFILLMENT = "fulfillment"
+    }
+
+    override fun getRecommendationTriggerObject(): RecommendationTriggerObject {
+        return RecommendationTriggerObject(
+            listName = dataItem?.tabName.orEmpty(),
+            listNum = dataItem?.tabIndex?.firstOrNull() ?: -1,
+        )
+    }
+
+    override fun isEligibleToTrack(): Boolean {
+        //TODO use source
+        return super.isEligibleToTrack()
     }
 }

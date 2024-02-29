@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
@@ -112,8 +111,6 @@ import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.TYPE_COLL
 import com.tokopedia.wishlist.collection.util.WishlistCollectionSharingUtils
 import com.tokopedia.wishlist.collection.util.WishlistCollectionUtils.getStringCollectionType
 import com.tokopedia.wishlist.collection.view.adapter.BottomSheetWishlistCollectionAdapter
-import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollectionRecommendationItemViewHolder
-import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollectionRecommendationTitleViewHolder
 import com.tokopedia.wishlist.collection.view.bottomsheet.BottomSheetAddCollectionWishlist
 import com.tokopedia.wishlist.collection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlist.collection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
@@ -1558,16 +1555,7 @@ class WishlistCollectionDetailFragment :
 
     private fun addRecommendationScrollListener() {
         if(hasApplogScrollListener) return
-        binding?.rvWishlistCollectionDetail?.addVerticalTrackListener(
-            recommendationTriggerObject = RecommendationTriggerObject(
-                viewHolders = listOf(
-                    WishlistRecommendationTitleViewHolder::class.java,
-                    WishlistRecommendationItemViewHolder::class.java,
-                    WishlistCollectionRecommendationTitleViewHolder::class.java,
-                    WishlistCollectionRecommendationItemViewHolder::class.java,
-                )
-            )
-        )
+        binding?.rvWishlistCollectionDetail?.addVerticalTrackListener()
         hasApplogScrollListener = true
     }
 

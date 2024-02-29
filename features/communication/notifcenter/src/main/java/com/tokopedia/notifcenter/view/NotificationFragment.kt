@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
@@ -58,7 +57,6 @@ import com.tokopedia.notifcenter.view.adapter.typefactory.NotificationTypeFactor
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotificationTypeFactoryImpl
 import com.tokopedia.notifcenter.view.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.LoadMoreViewHolder
-import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.RecommendationViewHolder
 import com.tokopedia.notifcenter.view.customview.NotificationTopAdsHeadlineHelper
 import com.tokopedia.notifcenter.view.customview.bottomsheet.BottomSheetFactory
 import com.tokopedia.notifcenter.view.customview.bottomsheet.NotificationLongerContentBottomSheet
@@ -493,11 +491,7 @@ class NotificationFragment @Inject constructor(
             }
         })
         if(hasApplogScrollListener) return
-        rv?.addVerticalTrackListener(
-            recommendationTriggerObject = RecommendationTriggerObject(
-                viewHolders = listOf(RecommendationViewHolder::class.java)
-            )
-        )
+        rv?.addVerticalTrackListener()
         hasApplogScrollListener = true
     }
 

@@ -2,9 +2,12 @@ package com.tokopedia.recommendation_widget_common.infinite.foryou.entity
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.WidgetForYouContentCardBinding
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ContentCardViewHolder constructor(
@@ -13,11 +16,14 @@ class ContentCardViewHolder constructor(
 ) : BaseRecommendationViewHolder<ContentCardModel>(
     view,
     ContentCardModel::class.java
-) {
+), AppLogRecTriggerInterface {
 
     private val binding: WidgetForYouContentCardBinding? by viewBinding()
 
+    private var recTriggerObject = RecommendationTriggerObject()
+
     override fun bind(element: ContentCardModel) {
+        setRecTriggerObject(element)
         binding?.view?.setListener(object : ContentCardView.Listener {
             override fun onContentCardClicked(item: ContentCardModel) {
                 listener.onContentCardClicked(item, bindingAdapterPosition)
@@ -31,6 +37,14 @@ class ContentCardViewHolder constructor(
         binding?.view?.setupView(element)
     }
 
+    private fun setRecTriggerObject(model: ContentCardModel) {
+        recTriggerObject = RecommendationTriggerObject(
+            sessionId = model.appLog.sessionId,
+            requestId = model.appLog.requestId,
+            moduleName = model.pageName,
+        )
+    }
+
     interface Listener {
         fun onContentCardImpressed(item: ContentCardModel, position: Int)
         fun onContentCardClicked(item: ContentCardModel, position: Int)
@@ -39,5 +53,9 @@ class ContentCardViewHolder constructor(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.widget_for_you_content_card
+    }
+
+    override fun getRecommendationTriggerObject(): RecommendationTriggerObject {
+        return recTriggerObject
     }
 }
