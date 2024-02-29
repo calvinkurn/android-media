@@ -17,7 +17,6 @@ import android.app.Activity
 import android.app.Application
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
@@ -25,7 +24,6 @@ import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.translator.manager.TranslatorManager
 import com.tokopedia.translator.manager.TranslatorManagerFragment
 import com.tokopedia.translator.ui.SharedPrefsUtils
@@ -37,9 +35,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
@@ -104,27 +100,6 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         }
     }
 
-    private fun setRecyclerViewScrollListener(currentRecyclerView: RecyclerView): RecyclerView.OnScrollListener {
-        return object : RecyclerView.OnScrollListener() {
-            var lastScrollY = -1
-
-            private val handler = Handler()
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                handler.removeCallbacksAndMessages(null)
-
-                handler.postDelayed({
-                    val currentScrollY = currentRecyclerView.computeVerticalScrollOffset()
-
-                    if (currentScrollY != lastScrollY) {
-                        startTranslate(currentRecyclerView)
-                        lastScrollY = currentScrollY
-                    }
-                }, DELAYING_SCROLL_TO_IDLE)
-            }
-        }
-    }
-
     private fun setAddonGlobalLayoutListener(rootView: View) {
         rootView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -136,10 +111,6 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                 rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
-    }
-
-    private fun translatorManagerOnGlobalLayoutListener(rootView: View) = ViewTreeObserver.OnGlobalLayoutListener {
-        startTranslate(rootView)
     }
 
     @OptIn(FlowPreview::class)
@@ -190,12 +161,6 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
             ?.toTypedArray()?.getOrNull(1) ?: ""
     }
 
-    private fun startTranslate(rootView: View) {
-        rootView.postDelayed({
-//            translatorManager?.startTranslate()
-        }, DELAYING_SCROLL_TO_IDLE)
-    }
-
     companion object {
         private val TAG = ActivityTranslatorCallbacks::class.java.simpleName
 
@@ -209,14 +174,6 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
             super.onFragmentResumed(fm, f)
             setTranslatorBottomSheet(f)
-        }
-
-        override fun onFragmentDetached(fm: FragmentManager, f: Fragment) {
-            super.onFragmentDetached(fm, f)
-            if (f is BottomSheetUnify) {
-                val rootView = f.view
-                rootView?.viewTreeObserver?.removeOnGlobalLayoutListener(translatorManagerOnGlobalLayoutListener(rootView))
-            }
         }
 
         private fun setTranslatorBottomSheet(f: Fragment) {

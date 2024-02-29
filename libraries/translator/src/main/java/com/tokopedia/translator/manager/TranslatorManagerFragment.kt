@@ -124,29 +124,25 @@ class TranslatorManagerFragment() : CoroutineScope {
         if (views.isEmpty()) return
 
         for (view in views) {
-            view?.run {
-                if (view is TextView && view !is EditText) {
-                    if (view.tag == null || (view.tag is Boolean && !view.tag.toString().toBoolean())) {
-                        val selector = ViewTreeManagerFragment.createDOMIdentifier(view, fragment)
-                        mSelectors[selector] = selector
+            if (view is TextView && view !is EditText) {
+                if (view.tag == null || (view.tag is Boolean && !view.tag.toString().toBoolean())) {
+                    val selector = ViewTreeManagerFragment.createDOMIdentifier(view, fragment)
+                    mSelectors[selector] = selector
 
-                        view.text?.apply {
-                            if (view.text.isNotBlank()) {
-                                val stringPoolItem = mStringPoolManager.get(view.text.toString())
+                    if (view.text?.isNotBlank() == true) {
+                        val stringPoolItem = mStringPoolManager.get(view.text.toString())
 
-                                if (stringPoolItem === null || stringPoolItem.demandedText.isBlank() ||
-                                    (stringPoolItem.requestedLocale != destinationLang)
-                                ) {
-                                    //prepare for translate
-                                    mStringPoolManager.add(view.text.toString(), "", "")
-                                } else {
-                                    //translate
-                                    if (view.text != stringPoolItem.demandedText) {
-                                        withContext(Dispatchers.Main) {
-                                            view.text = stringPoolItem.demandedText
-                                            view.tag = true
-                                        }
-                                    }
+                        if (stringPoolItem === null || stringPoolItem.demandedText.isBlank() ||
+                            (stringPoolItem.requestedLocale != destinationLang)
+                        ) {
+                            //prepare for translate
+                            mStringPoolManager.add(view.text.toString(), "", "")
+                        } else {
+                            //translate
+                            if (view.text != stringPoolItem.demandedText) {
+                                withContext(Dispatchers.Main) {
+                                    view.text = stringPoolItem.demandedText
+                                    view.tag = true
                                 }
                             }
                         }
