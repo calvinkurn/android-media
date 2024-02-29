@@ -298,14 +298,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
             val ids = listOf(reviewSourceId)
             val response = repo.getReviewByIds(ids = ids)
             _reviewContentState.update { review ->
-                val reviewList = response.reviewContent.mapIndexed { index, reviewContent ->
-                    if (index == 0 && reviewContent.reviewId == reviewSourceId) {
-                        reviewContent.copy(
-                            mediaSelectedPosition = getMediaSourcePosition(response.reviewContent)
-                        )
-                    } else {
-                        reviewContent
-                    }
+                val reviewList = response.reviewContent.map { reviewContent ->
+                    reviewContent.copy(
+                        mediaSelectedPosition = getMediaSourcePosition(response.reviewContent)
+                    )
                 }
                 review.copy(
                     reviewContent = reviewList,

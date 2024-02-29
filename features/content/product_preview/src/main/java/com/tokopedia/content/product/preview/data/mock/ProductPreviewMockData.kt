@@ -111,10 +111,12 @@ class ProductPreviewMockData {
         )
     }
 
-    fun mockReviewDataByIds(): ReviewUiModel {
+    fun mockReviewDataByIds(
+        reviewId: String,
+    ): ReviewUiModel {
         val reviewContent = listOf(
             ReviewContentUiModel(
-                reviewId = "reviewId_123",
+                reviewId = reviewId,
                 medias = listOf(
                     ReviewMediaUiModel(
                         mediaId = "mediaId_1",

@@ -191,7 +191,7 @@ class ProductPreviewUnitTest {
     @Test
     fun `when initialize review main data source review and success fetch review data by ids`() {
         val sourceModel = mockDataSource.mockSourceReview(productId, reviewSourceId, attachmentId)
-        val expectedDataReviewByIds = mockDataSource.mockReviewDataByIds()
+        val expectedDataReviewByIds = mockDataSource.mockReviewDataByIds(reviewSourceId)
         val expectedDataReview = mockDataSource.mockReviewData()
 
         coEvery { mockRepository.getReviewByIds(listOf(reviewSourceId)) } returns expectedDataReviewByIds
@@ -199,6 +199,7 @@ class ProductPreviewUnitTest {
 
         getRobot(sourceModel).use { robot ->
             robot.recordState {
+
                 robot.initializeReviewMainDataTestCase()
             }.also { state ->
                 state.reviewUiModel.reviewContent.assertEqualTo(
@@ -288,7 +289,7 @@ class ProductPreviewUnitTest {
         val sourceModel = mockDataSource.mockSourceReview(productId, reviewSourceId, attachmentId)
         var currentSelected: Int
         var lastSelected: Int
-        val mockReviewData = mockDataSource.mockReviewDataByIds()
+        val mockReviewData = mockDataSource.mockReviewDataByIds(reviewSourceId)
 
         coEvery { mockRepository.getReviewByIds(listOf(reviewSourceId)) } returns mockReviewData
 
