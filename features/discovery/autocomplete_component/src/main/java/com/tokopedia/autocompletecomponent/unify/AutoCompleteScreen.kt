@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_FROM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_METHOD
@@ -34,7 +35,7 @@ import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 internal fun AutoCompleteScreen(
     viewModel: AutoCompleteViewModel,
     iris: Iris,
-    listener: AutoCompleteListener?
+    listener: AutoCompleteListener?,
 ) {
     val analytics = TrackApp.getInstance().gtm
 
@@ -47,7 +48,8 @@ internal fun AutoCompleteScreen(
 
         EvaluateNavigation(
             viewModel = viewModel,
-            navigate = state.value.navigate
+            navigate = state.value.navigate,
+            listener = listener,
         )
         EvaluateActionReplace(
             viewModel = viewModel,
@@ -60,7 +62,7 @@ internal fun AutoCompleteScreen(
 
             if (state.value.isInitialState) {
                 val enterFrom =
-                    AppLogSearch.enterFrom(AppLogSearch.whitelistedEnterFromAutoComplete)
+                    AppLogSearch.enterFromBeforeCurrent(AppLogSearch.whitelistedEnterFromAutoComplete)
                 val enterMethod = ENTER
                 AppLogSearch.eventEnterSearchBlankPage(enterFrom, enterMethod)
 
@@ -146,7 +148,8 @@ internal fun AutoCompleteScreen(
 @Composable
 private fun EvaluateNavigation(
     viewModel: AutoCompleteViewModel,
-    navigate: AutoCompleteNavigate?
+    navigate: AutoCompleteNavigate?,
+    listener: AutoCompleteListener?,
 ) {
     if (navigate != null) {
         LocalContext.current.apply {
@@ -155,6 +158,10 @@ private fun EvaluateNavigation(
                 viewModel.stateValue.parameter,
                 enterMethod(viewModel),
             )
+
+            AppLogAnalytics.putPageData(AppLogParam.IS_SHADOW, true)
+
+            listener?.finish()
             RouteManager.route(this, modifiedApplink)
         }
         viewModel.onNavigated()
