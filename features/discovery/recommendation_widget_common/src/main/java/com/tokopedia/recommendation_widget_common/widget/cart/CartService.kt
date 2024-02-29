@@ -150,10 +150,17 @@ class CartService @Inject constructor(
         productId: String,
         shopId: String,
         minOrder: Int,
+        atcFromExternalSource: String,
         onSuccessAddToCart: (AddToCartDataModel) -> Unit,
         onErrorAddToCart: (Throwable) -> Unit
     ) {
-        addToCartUseCase.setParams(AddToCartRequestParams(productId, shopId, minOrder))
+        val params = AddToCartRequestParams(
+            productId = productId,
+            shopId = shopId,
+            quantity = minOrder,
+            atcFromExternalSource = atcFromExternalSource
+        )
+        addToCartUseCase.setParams(params)
         addToCartUseCase.execute(
             onSuccess = { atcResponse ->
                     onSuccessAddToCart(atcResponse)
