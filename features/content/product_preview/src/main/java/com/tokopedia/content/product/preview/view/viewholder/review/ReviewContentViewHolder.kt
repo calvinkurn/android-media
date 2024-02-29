@@ -140,7 +140,6 @@ class ReviewContentViewHolder(
             }
 
             override fun onClick(widget: View) {
-                descriptionUiModel.isExpanded = !descriptionUiModel.isExpanded
                 setupExpanded()
             }
         }
@@ -251,6 +250,7 @@ class ReviewContentViewHolder(
             val text = tvReviewDescription.layout
             if (text.lineCount <= MAX_LINES_THRESHOLD) return@doOnLayout
 
+
             tvReviewDescription.setOnClickListener {
                 descriptionUiModel.isExpanded = !descriptionUiModel.isExpanded
                 setupExpanded()
@@ -291,6 +291,7 @@ class ReviewContentViewHolder(
         } else {
             Pair(MAX_LINES_THRESHOLD, descriptionUiModel.truncatedText)
         }
+
         binding.tvReviewDescription.maxLines = lines
         binding.tvReviewDescription.text = text
     }
@@ -421,7 +422,7 @@ class ReviewContentViewHolder(
     companion object {
         private const val MAX_LINES_VALUE = 25
         private const val MAX_LINES_THRESHOLD = 2
-        private const val READ_MORE_COUNT = 16
+        private const val READ_MORE_COUNT = 24
         private const val FADING_EDGE_HEIGHT = 20
         private const val VERTICAL_POSITIVE_DIRECTION = 1
         private const val VERTICAL_NEGATIVE_DIRECTION = -1
