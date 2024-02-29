@@ -141,13 +141,9 @@ object AppLogSearch {
 
     object ParamValue {
         const val HOMEPAGE = "homepage"
-        const val SEARCH_BAR_OUTER = "search_bar_outer"
         const val GOODS_SEARCH = "goods_search"
         const val STORE_SEARCH = "store_search"
-        const val DEFAULT_SEARCH_KEYWORD = "default_search_keyword"
-        const val DEFAULT_SEARCH_KEYWORD_OUTER = "default_search_keyword_outer"
         const val ENTER = "enter"
-        const val CANCEL = "cancel"
         const val RECOM_SEARCH = "recom_search"
         const val SEARCH_HISTORY = "search_history"
         const val SUG = "sug"
@@ -163,16 +159,10 @@ object AppLogSearch {
         const val SHOP_SMALL = "shop_small"
         const val SHOP_BIG = "shop_big"
         const val GOODS_COLLECT = "goods_collect"
-        const val CLICK_MORE_BUTTON = "click_more_button" //"Click three dots on the product card"
-        const val CLICK_FAVORITE_BUTTON =
-            "click_favourite_button" // "Click on the three dots of the product card to add to favorites"
-        const val CLICK_MORE_FINDALIKE =
-            "click_more_findalike" //"Click on the three points of the product card to find similarities"
-        const val CLICK_BACK = "click_back" //"Top back button"
-        const val CLICK_SHOPPING_CART = "click_shopping_cart" // "Click on shopping cart"
-        const val CLICK_SETTING = "click_setting" // "Click Settings"
-        const val CLICK_SHOP_NAME =
-            "click_shop_name" // "Click on the name of the shop to go to the shop homepage" (Shop Ads)
+        const val CLICK_MORE_BUTTON = "click_more_button"
+        const val CLICK_FAVORITE_BUTTON = "click_favourite_button"
+        const val CLICK_MORE_FINDALIKE = "click_more_findalike"
+        const val CLICK_SHOP_NAME = "click_shop_name"
         const val SORT_RELEVANCE = "sort_relevance"
         const val SORT_REVIEW = "sort_review"
         const val SORT_PRICE_ASC = "sort_price_asc"
@@ -181,8 +171,6 @@ object AppLogSearch {
         const val FILTER_PANEL = "filter_panel"
         const val FILTER_QUICK = "filter_quick"
         const val CORRECT_WORD = "correct_word"
-        const val PRODUCT_SEARCH = "product_search"
-        const val SHOP_SEARCH = "shop_search"
         const val SEARCH_RESULT = "search_result"
     }
 
