@@ -43,7 +43,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_left_main_banner
-        private val CONST_EXTRA_WIDTH_TAB_TITLE = 4.toPx()
+        private const val CONST_EXTRA_WIDTH_TAB_TITLE_DP = 4
         private const val ONE_TAB = 1
         private const val MARGIN_16_DP = 16f
         private const val MINIMAL_SHOWCASE_COUNT_ON_A_TAB = 5
@@ -148,7 +148,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                 )
                 tabTitle?.text = tabs[currentPosition].text
                 tabTitle?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                tabTitle?.layoutParams?.width = tabTitle?.measuredWidth.orZero() + CONST_EXTRA_WIDTH_TAB_TITLE
+                tabTitle?.layoutParams?.width = tabTitle?.measuredWidth.orZero() + CONST_EXTRA_WIDTH_TAB_TITLE_DP.toPx()
                 if (currentPosition == 0) tab.select(uiModel) else tab.unselect(uiModel)
 
                 tab.view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
