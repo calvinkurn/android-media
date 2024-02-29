@@ -5014,6 +5014,7 @@ open class DynamicProductDetailFragment :
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
                         userId = viewModel.userId
+                        trackerData = AppLogAnalytics.getEntranceInfo("none")
                     }
                     viewModel.addToCart(addToCartRequestParams)
                 }

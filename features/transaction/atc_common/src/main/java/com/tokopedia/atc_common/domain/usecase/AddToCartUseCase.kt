@@ -42,6 +42,7 @@ class AddToCartUseCase @Inject constructor(
         private const val PARAM_WAREHOUSE_ID = "warehouseID"
         private const val PARAM_ATC_FROM_EXTERNAL_SOURCE = "atcFromExternalSource"
         private const val PARAM_IS_SCP = "isSCP"
+        private const val PARAM_TRACKER_DATA = "tracker_data"
 
         @JvmStatic
         @JvmOverloads
@@ -91,6 +92,7 @@ class AddToCartUseCase @Inject constructor(
                 PARAM_WAREHOUSE_ID to addToCartRequestParams.warehouseId,
                 PARAM_ATC_FROM_EXTERNAL_SOURCE to addToCartRequestParams.atcFromExternalSource,
                 PARAM_IS_SCP to addToCartRequestParams.isSCP,
+                PARAM_TRACKER_DATA to addToCartRequestParams.trackerData,
                 KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
             )
         )

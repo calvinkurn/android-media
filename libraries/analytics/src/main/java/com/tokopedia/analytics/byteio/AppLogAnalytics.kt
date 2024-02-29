@@ -354,4 +354,11 @@ object AppLogAnalytics {
         return takeLast(5).joinToString("\n")
     }
 
+    fun getEntranceInfo(buyType: String): String {
+        return JSONObject().also {
+            it.addEntranceInfo()
+            it.put("buy_type", buyType) // todo
+        }.toString()
+    }
+
 }
