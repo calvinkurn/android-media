@@ -147,7 +147,9 @@ data class AppLogRecommendationProductModel(
                 enterMethod = enterMethod,
                 authorId = authorId,
                 groupId = groupId,
-                cardName = cardName
+                cardName = if(isAd && cardName == CardName.REC_GOODS_CARD) {
+                    CardName.AD_GOODS_CARD
+                } else CardName.REC_GOODS_CARD
             )
         }
     }

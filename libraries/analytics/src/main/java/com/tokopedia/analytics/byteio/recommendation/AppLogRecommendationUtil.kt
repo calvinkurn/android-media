@@ -17,6 +17,7 @@ object AppLogRecommendationConst {
 
 object CardName {
     const val REC_GOODS_CARD = "rec_goods_card"
+    const val AD_GOODS_CARD = "ad_goods_card"
     const val REC_CONTENT_CARD = "rec_%s_card"
     const val REC_VIDEO_CARD = "rec_video_card"
     const val AD_FEED_CARD = "ad_feed_card"
