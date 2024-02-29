@@ -1,5 +1,6 @@
 package com.tokopedia.productcard.compact.productcard.presentation.uimodel
 
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 data class ProductCardCompactUiModel(
@@ -40,14 +41,14 @@ data class ProductCardCompactUiModel(
     private fun getBestSellerLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isBestSellerPosition() }
     private fun isBestSellerLabelAvailable(): Boolean = getBestSellerLabelGroup() != null
 
-    fun getOosLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { availableStock < minOrder && it.isStatusPosition() && it.isTransparentBlackColor() }
+    fun getOosLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isStatusPosition() && it.isTransparentBlackColor() }
     fun getAssignedValueLabelGroup(): LabelGroup? = if (isBestSellerLabelAvailable()) getBestSellerLabelGroup() else getNewProductLabelGroup()
     fun getPriceLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isPricePosition() && it.isLightGreenColor() }
     fun getWeightLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isWeightPosition() }
     fun getImageBrightness(): Float = if (isOos()) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS
     fun getNowUSPLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isNowUSPPosition() && it.isTextDarkGreyColor() }
 
-    fun isOos() = getOosLabelGroup() != null
+    fun isOos() = getOosLabelGroup() != null || availableStock < minOrder || availableStock == Int.ZERO
     fun isFlashSale() = progressBarLabel.isNotBlank() && !isOos()
     fun isNormal() = !isOos() && !isFlashSale()
 
