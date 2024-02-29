@@ -332,7 +332,20 @@ class ProductPreviewUnitTest {
     }
 
     @Test
-    fun `when handling tab selected and update tab current position`() {
+    fun `when handling tab selected and selected is product then update tab current position`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val selectedTab = 0
+
+        getRobot(sourceModel).use { robot ->
+            robot._currentTabPosition.value.assertNotEqualTo(selectedTab)
+            robot.initializeProductMainDataTestCase()
+            robot.tabSelectedTestCase(selectedTab)
+            robot._currentTabPosition.value.assertEqualTo(selectedTab)
+        }
+    }
+
+    @Test
+    fun `when handling tab selected and selected is review then update tab current position`() {
         val sourceModel = mockDataSource.mockSourceProduct(productId)
         val selectedTab = 1
 
