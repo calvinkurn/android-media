@@ -7,5 +7,6 @@ data class MvcTrackingProperties(
     val position: Int,
     val action: String,
     val gtmItem: String,
-    val tabName: String
+    val tabName: String,
+    val compId: String
 )

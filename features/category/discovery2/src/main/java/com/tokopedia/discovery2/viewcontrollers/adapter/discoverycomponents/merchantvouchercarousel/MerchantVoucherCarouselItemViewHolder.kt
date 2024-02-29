@@ -19,6 +19,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponListView
 import com.tokopedia.discovery_component.widgets.automatecoupon.ButtonState
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -123,7 +124,9 @@ class MerchantVoucherCarouselItemViewHolder(itemView: View, val fragment: Fragme
             val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
             val properties = data?.dataToMvcTrackingProperties(
                 ctaText = ctaText,
-                creativeName = merchantVoucherCarouselItemViewModel?.components?.creativeName.orEmpty()
+                creativeName = merchantVoucherCarouselItemViewModel?.components?.creativeName.orEmpty(),
+                compId = merchantVoucherCarouselItemViewModel?.components?.parentComponentId.orEmpty(),
+                position = merchantVoucherCarouselItemViewModel?.components?.position.orZero()
             )
             properties?.let { analytics?.trackMvcCtaClickEvent(it) }
         }
@@ -141,7 +144,9 @@ class MerchantVoucherCarouselItemViewHolder(itemView: View, val fragment: Fragme
         merchantVoucherCarouselItemViewModel?.components?.data?.firstOrNull().let { data ->
             val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
             val properties = data?.dataToMvcTrackingProperties(
-                creativeName = merchantVoucherCarouselItemViewModel?.components?.creativeName.orEmpty()
+                creativeName = merchantVoucherCarouselItemViewModel?.components?.creativeName.orEmpty(),
+                compId = merchantVoucherCarouselItemViewModel?.components?.parentComponentId.orEmpty(),
+                position = merchantVoucherCarouselItemViewModel?.components?.position.orZero()
             )
             properties?.let { analytics?.trackMvcClickEvent(it) }
         }
@@ -151,7 +156,9 @@ class MerchantVoucherCarouselItemViewHolder(itemView: View, val fragment: Fragme
         val properties = mutableListOf<MvcTrackingProperties>()
         merchantVoucherCarouselItemViewModel?.components?.data?.firstOrNull()
             ?.dataToMvcTrackingProperties(
-                creativeName = merchantVoucherCarouselItemViewModel?.components?.creativeName.orEmpty()
+                creativeName = merchantVoucherCarouselItemViewModel?.components?.creativeName.orEmpty(),
+                compId = merchantVoucherCarouselItemViewModel?.components?.parentComponentId.orEmpty(),
+                position = merchantVoucherCarouselItemViewModel?.components?.position.orZero()
             )
             ?.let { properties.add(it) }
         val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()

@@ -3115,7 +3115,7 @@ open class DiscoveryAnalytics(
 
     override fun trackMvcCtaClickEvent(properties: MvcTrackingProperties) {
         val generalProps = createGeneralCouponEvent(
-            EVENT_PROMO_CLICK,
+            EVENT_CLICK_COUPON,
             CLICK_MVC_CTA
         )
 
@@ -3131,7 +3131,7 @@ open class DiscoveryAnalytics(
         )
 
         ctaClickProperties.putAll(generalProps)
-        getTracker().sendGeneralEvent(ctaClickProperties)
+        getTracker().sendEnhanceEcommerceEvent(ctaClickProperties)
     }
 
     //region private methods
@@ -3234,7 +3234,8 @@ open class DiscoveryAnalytics(
                 mapOf(
                     KEY_CREATIVE to dataItem.creativeName,
                     KEY_POSITION to (dataItem.position + 1).toString(),
-                    KEY_ID to dataItem.shopId,
+                    KEY_CREATIVE_SLOT to (dataItem.position + 1).toString(),
+                    KEY_ID to "${dataItem.compId} - ${dataItem.shopId}",
                     KEY_NAME to itemName
                 )
             )

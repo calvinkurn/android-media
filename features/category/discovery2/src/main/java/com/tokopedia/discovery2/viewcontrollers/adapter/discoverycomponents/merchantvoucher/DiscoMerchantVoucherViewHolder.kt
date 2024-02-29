@@ -102,7 +102,11 @@ class DiscoMerchantVoucherViewHolder(itemView: View, val fragment: Fragment) :
         discoMerchantVoucherViewModel?.components?.let { component ->
             val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
             val properties = component.getComponentsItem()?.firstOrNull()
-                ?.componentToMvcTrackingProperties(ctaText)
+                ?.componentToMvcTrackingProperties(
+                    ctaText = ctaText,
+                    compId = discoMerchantVoucherViewModel?.components?.id.orEmpty(),
+                    creativeName = discoMerchantVoucherViewModel?.components?.creativeName.orEmpty()
+                )
             properties?.let { analytics?.trackMvcCtaClickEvent(it) }
         }
     }
@@ -119,7 +123,10 @@ class DiscoMerchantVoucherViewHolder(itemView: View, val fragment: Fragment) :
         discoMerchantVoucherViewModel?.components?.let { component ->
             val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
             val properties =
-                component.getComponentsItem()?.firstOrNull()?.componentToMvcTrackingProperties()
+                component.getComponentsItem()?.firstOrNull()?.componentToMvcTrackingProperties(
+                    compId = discoMerchantVoucherViewModel?.components?.id.orEmpty(),
+                    creativeName = discoMerchantVoucherViewModel?.components?.creativeName.orEmpty()
+                )
             properties?.let { analytics?.trackMvcClickEvent(it) }
         }
     }
@@ -127,7 +134,10 @@ class DiscoMerchantVoucherViewHolder(itemView: View, val fragment: Fragment) :
     private fun trackImpression() {
         val properties = mutableListOf<MvcTrackingProperties>()
         discoMerchantVoucherViewModel?.components?.getComponentsItem()?.firstOrNull()
-            ?.componentToMvcTrackingProperties()
+            ?.componentToMvcTrackingProperties(
+                compId = discoMerchantVoucherViewModel?.components?.id.orEmpty(),
+                creativeName = discoMerchantVoucherViewModel?.components?.creativeName.orEmpty()
+            )
             ?.let { properties.add(it) }
         val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
         if (properties.isNotEmpty()) analytics?.trackMvcImpression(properties)
