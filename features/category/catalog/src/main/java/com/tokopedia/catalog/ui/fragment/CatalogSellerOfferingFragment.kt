@@ -239,6 +239,7 @@ class CatalogSellerOfferingFragment :
     private fun initLoadData(isFilter: Boolean = false) {
         page = 0
         productListState.value = CatalogProductListState.Loading
+        productList.clear()
         if (isFilter) {
             viewModel.quickFilterClicked.value = true
             setSortFilterIndicatorCounter()
