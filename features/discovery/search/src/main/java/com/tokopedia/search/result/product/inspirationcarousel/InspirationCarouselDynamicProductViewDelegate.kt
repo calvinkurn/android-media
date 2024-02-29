@@ -20,12 +20,9 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
     SearchParameterProvider by searchParameterProvider,
     QueryKeyProvider by queryKeyProvider {
 
-    override fun trackDynamicCarouselImpression(
-        dynamicProductCarousel: BroadMatchDataView,
-        adapterPosition: Int
-    ) {
+    override fun trackDynamicCarouselImpression(dynamicProductCarousel: BroadMatchDataView) {
         AppLogSearch.eventSearchResultShow(
-            dynamicProductCarousel.asByteIOSearchResult(adapterPosition),
+            dynamicProductCarousel.asByteIOSearchResult(),
         )
     }
 
@@ -33,7 +30,6 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
         dynamicProductCarousel: BroadMatchItemDataView,
         type: String,
         inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
-        adapterPosition: Int,
     ) {
         val trackingQueue = trackingQueue
         val data = createCarouselTrackingUnificationData(
@@ -44,10 +40,10 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
 
         AppLogSearch.eventSearchResultShow(
-            dynamicProductCarousel.asByteIOSearchResult(adapterPosition, null),
+            dynamicProductCarousel.asByteIOSearchResult(null),
         )
         AppLogSearch.eventProductShow(
-            dynamicProductCarousel.asByteIOProduct(adapterPosition)
+            dynamicProductCarousel.asByteIOProduct()
         )
     }
 
@@ -55,7 +51,6 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
         dynamicProductCarousel: BroadMatchItemDataView,
         type: String,
         inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
-        adapterPosition: Int
     ) {
         val data = createCarouselTrackingUnificationData(
             inspirationCarouselProduct,
@@ -65,10 +60,10 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
         InspirationCarouselTracking.trackCarouselClick(data)
 
         AppLogSearch.eventSearchResultShow(
-            dynamicProductCarousel.asByteIOSearchResult(adapterPosition, ""),
+            dynamicProductCarousel.asByteIOSearchResult(""),
         )
         AppLogSearch.eventProductShow(
-            dynamicProductCarousel.asByteIOProduct(adapterPosition)
+            dynamicProductCarousel.asByteIOProduct()
         )
     }
 

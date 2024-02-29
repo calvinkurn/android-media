@@ -18,6 +18,8 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.model.StockBarDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.byteio.ByteIORanking
+import com.tokopedia.search.result.product.byteio.ByteIORankingImpl
 import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking.getInspirationCarouselUnificationListName
 import com.tokopedia.search.utils.getFormattedPositionName
@@ -30,7 +32,8 @@ data class InspirationCarouselDataView(
     val layout: String = "",
     val trackingOption: Int = 0,
     val options: List<Option> = listOf(),
-) : Visitable<ProductListTypeFactory> {
+    val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
+) : Visitable<ProductListTypeFactory>, ByteIORanking by byteIORanking {
 
     override fun type(typeFactory: ProductListTypeFactory): Int {
         return typeFactory.type(this)
@@ -49,6 +52,13 @@ data class InspirationCarouselDataView(
     fun isCarouselSeamlessLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
 
     fun isSeamlessProductLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
+
+    override fun setRank(value: Int) {
+        byteIORanking.setRank(value)
+        options.forEach {
+            it.setRank(value)
+        }
+    }
 
     @Suppress("LongParameterList")
     data class Option(
@@ -78,7 +88,8 @@ data class InspirationCarouselDataView(
         val keyword: String = "",
         val externalReference: String = "",
         val byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData(),
-    ): Visitable<InspirationCarouselOptionTypeFactory> {
+        val byteIORanking: ByteIORankingImpl = ByteIORankingImpl()
+    ): Visitable<InspirationCarouselOptionTypeFactory>, ByteIORanking by byteIORanking {
 
         val byteIOImpressHolder = ImpressHolder()
 
@@ -103,23 +114,32 @@ data class InspirationCarouselDataView(
 
         fun isShowChipsIcon() = hexColor.isNotEmpty() || chipImageUrl.isNotEmpty()
 
-        fun asByteIOSearchResult(adapterPosition: Int) =
+        fun asByteIOSearchResult() =
             AppLogSearch.SearchResult(
                 imprId = byteIOTrackingData.imprId,
                 searchId = byteIOTrackingData.searchId,
-                searchResultId = adapterPosition.toString(),
+                searchResultId = getRank().toString(),
                 listItemId = null,
                 itemRank = null,
                 listResultType = null,
                 productID = null,
                 searchKeyword = byteIOTrackingData.keyword,
                 tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
-                rank = adapterPosition,
+                rank = getRank(),
                 isAd = false,
                 isFirstPage = byteIOTrackingData.isFirstPage,
                 shopId = null,
                 aladdinButtonType = null,
             )
+
+        override fun setRank(value: Int) {
+            byteIORanking.setRank(value)
+
+            product.forEachIndexed { index, product ->
+                product.setRank(value)
+                product.setItemRank(index)
+            }
+        }
 
         @Suppress("LongParameterList")
         data class Product(
@@ -166,8 +186,10 @@ data class InspirationCarouselDataView(
             val warehouseID: String = "",
             val categoryID: String = "",
             val byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData(),
+            val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
         ): ImpressHolder(),
-            Visitable<InspirationCarouselOptionTypeFactory> {
+            Visitable<InspirationCarouselOptionTypeFactory>,
+            ByteIORanking by byteIORanking {
 
             companion object {
                 private const val ZERO_PARENT_ID = "0"
@@ -274,20 +296,17 @@ data class InspirationCarouselDataView(
                     dimension90 = dimension90
                 )
 
-            fun asByteIOSearchResult(
-                optionAdapterPosition: Int,
-                aladdinButtonType: String?,
-            ) = AppLogSearch.SearchResult(
+            fun asByteIOSearchResult(aladdinButtonType: String?) = AppLogSearch.SearchResult(
                 imprId = byteIOTrackingData.imprId,
                 searchId = byteIOTrackingData.searchId,
                 searchResultId = getSearchResultId(),
                 listItemId = id,
-                itemRank = position,
+                itemRank = getItemRank(),
                 listResultType = AppLogSearch.ParamValue.GOODS,
                 productID = id,
                 searchKeyword = byteIOTrackingData.keyword,
                 tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
-                rank = optionAdapterPosition,
+                rank = getRank(),
                 isAd = isOrganicAds,
                 isFirstPage = byteIOTrackingData.isFirstPage,
                 shopId = shopId,
@@ -300,7 +319,7 @@ data class InspirationCarouselDataView(
                     else id
                 else ""
 
-            fun asByteIOProduct(optionAdapterPosition: Int) = AppLogSearch.Product(
+            fun asByteIOProduct() = AppLogSearch.Product(
                 entranceForm = EntranceForm.SEARCH_HORIZONTAL_GOODS_CARD,
                 volume = null,
                 rate = ratingAverage.toFloatOrZero(),
@@ -310,11 +329,11 @@ data class InspirationCarouselDataView(
                 requestID = byteIOTrackingData.imprId,
                 searchResultID = getSearchResultId(),
                 listItemId = id,
-                itemRank = position,
+                itemRank = getItemRank(),
                 listResultType = AppLogSearch.ParamValue.GOODS,
                 searchKeyword = byteIOTrackingData.keyword,
                 tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
-                rank = optionAdapterPosition,
+                rank = getRank(),
                 shopID = null,
             )
         }

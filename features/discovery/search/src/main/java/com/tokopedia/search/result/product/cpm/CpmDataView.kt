@@ -9,12 +9,13 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SHOP_SMALL
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.byteio.ByteIORanking
+import com.tokopedia.search.result.product.byteio.ByteIORankingImpl
 import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.topads.sdk.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Product as CPMProduct
 
 data class CpmDataView(
@@ -22,7 +23,8 @@ data class CpmDataView(
     override val verticalSeparator: VerticalSeparator = VerticalSeparator.None,
     val byteIOTrackingData: ByteIOTrackingData,
 ) : Visitable<ProductListTypeFactory>,
-    VerticalSeparable {
+    VerticalSeparable,
+    ByteIORanking by ByteIORankingImpl() {
 
     val byteIOImpressHolder = ImpressHolder()
 
@@ -37,10 +39,7 @@ data class CpmDataView(
 
     fun isTrackByteIO() = byteIOTrackingLayout.contains(layout())
 
-    fun asByteIOSearchResult(
-        adapterPosition: Int,
-        aladdinButtonType: String?,
-    ): AppLogSearch.SearchResult {
+    fun asByteIOSearchResult(aladdinButtonType: String?): AppLogSearch.SearchResult {
         val shopId = cpmModel.data.getOrNull(0)?.cpm?.cpmShop?.id ?: ""
         return AppLogSearch.SearchResult(
             imprId = byteIOTrackingData.imprId,
@@ -51,7 +50,7 @@ data class CpmDataView(
             listResultType = AppLogSearch.ParamValue.SHOP,
             productID = null,
             searchKeyword = byteIOTrackingData.keyword,
-            rank = adapterPosition,
+            rank = getRank(),
             isAd = true,
             tokenType = byteIOTokenType(),
             isFirstPage = byteIOTrackingData.isFirstPage,
@@ -60,11 +59,7 @@ data class CpmDataView(
         )
     }
 
-    fun shopItemAsByteIOSearchResult(
-        adapterPosition: Int,
-        shopPosition: Int,
-        aladdinButtonType: String?,
-    ): AppLogSearch.SearchResult {
+    fun shopItemAsByteIOSearchResult(aladdinButtonType: String?): AppLogSearch.SearchResult {
         val cpmShop = cpmModel.data.getOrNull(0)?.cpm?.cpmShop
         val shopId = cpmShop?.id ?: ""
         return AppLogSearch.SearchResult(
@@ -72,11 +67,11 @@ data class CpmDataView(
             searchId = byteIOTrackingData.searchId,
             searchResultId = shopId,
             listItemId = shopId,
-            itemRank = shopPosition,
+            itemRank = 0,
             listResultType = AppLogSearch.ParamValue.SHOP,
             productID = null,
             searchKeyword = byteIOTrackingData.keyword,
-            rank = adapterPosition,
+            rank = getRank(),
             isAd = true,
             tokenType = byteIOTokenType(),
             isFirstPage = byteIOTrackingData.isFirstPage,
@@ -87,7 +82,6 @@ data class CpmDataView(
 
     fun productItemAsByteIOSearchResult(
         cpmProduct: CPMProduct,
-        adapterPosition: Int,
         productPosition: Int,
         aladdinButtonType: String?,
     ): AppLogSearch.SearchResult {
@@ -102,7 +96,7 @@ data class CpmDataView(
             listResultType = AppLogSearch.ParamValue.GOODS,
             productID = cpmProduct.id,
             searchKeyword = byteIOTrackingData.keyword,
-            rank = adapterPosition,
+            rank = getRank(),
             isAd = true,
             tokenType = byteIOTokenType(),
             isFirstPage = byteIOTrackingData.isFirstPage,
@@ -113,7 +107,6 @@ data class CpmDataView(
 
     fun productItemAsByteIOProduct(
         cpmProduct: CPMProduct,
-        adapterPosition: Int,
         productPosition: Int,
     ): AppLogSearch.Product {
         val cpmShop = cpmModel.data.getOrNull(0)?.cpm?.cpmShop
@@ -132,7 +125,7 @@ data class CpmDataView(
             listResultType = AppLogSearch.ParamValue.GOODS,
             searchKeyword = byteIOTrackingData.keyword,
             tokenType = byteIOTokenType(),
-            rank = adapterPosition,
+            rank = getRank(),
             shopID = shopId,
         )
     }

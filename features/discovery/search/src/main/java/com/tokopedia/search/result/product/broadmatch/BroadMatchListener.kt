@@ -3,13 +3,13 @@ package com.tokopedia.search.result.product.broadmatch
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 
 interface BroadMatchListener {
-    fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView, adapterPosition: Int)
+    fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
 
     fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView)
 
-    fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView, adapterPosition: Int)
+    fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
 
-    fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView, adapterPosition: Int)
+    fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView)
 
     fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView)
 

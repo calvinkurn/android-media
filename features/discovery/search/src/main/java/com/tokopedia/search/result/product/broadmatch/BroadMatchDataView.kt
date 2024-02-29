@@ -8,6 +8,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelated
 import com.tokopedia.search.result.domain.model.SearchProductV5
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.byteio.ByteIORanking
+import com.tokopedia.search.result.product.byteio.ByteIORankingImpl
 import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.deduplication.Deduplication
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
@@ -32,6 +34,7 @@ data class BroadMatchDataView(
     val cardButton: BroadMatchCardButton = BroadMatchCardButton(),
     override val verticalSeparator: VerticalSeparator = VerticalSeparator.None,
     val byteIOTrackingData: ByteIOTrackingData,
+    val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
 ) : ImpressHolder(),
     Visitable<ProductListTypeFactory>,
     VerticalSeparable,
@@ -43,7 +46,8 @@ data class BroadMatchDataView(
         componentId = componentId,
         applink = applink,
         dimension90 = dimension90,
-    ) {
+    ),
+    ByteIORanking by byteIORanking {
 
     override fun type(typeFactory: ProductListTypeFactory): Int {
         return typeFactory.type(this)
@@ -64,18 +68,27 @@ data class BroadMatchDataView(
         }
     }
 
-    fun asByteIOSearchResult(adapterPosition: Int) =
+    override fun setRank(value: Int) {
+        byteIORanking.setRank(value)
+
+        broadMatchItemDataViewList.forEachIndexed { index, broadMatchItemDataView ->
+            broadMatchItemDataView.setRank(value)
+            broadMatchItemDataView.setItemRank(index)
+        }
+    }
+
+    fun asByteIOSearchResult() =
         AppLogSearch.SearchResult(
             imprId = byteIOTrackingData.imprId,
             searchId = byteIOTrackingData.searchId,
-            searchResultId = adapterPosition.toString(),
+            searchResultId = getRank().toString(),
             listItemId = null,
             itemRank = null,
             listResultType = null,
             productID = null,
             searchKeyword = byteIOTrackingData.keyword,
             tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
-            rank = adapterPosition,
+            rank = getRank(),
             isAd = false,
             isFirstPage = byteIOTrackingData.isFirstPage,
             shopId = null,

@@ -26,7 +26,7 @@ class SameSessionRecommendationProductViewHolder(
             it.applyCarousel()
 
             it.setOnClickListener {
-                inspirationCarouselListener.onInspirationCarouselGridProductClicked(element, 0)
+                inspirationCarouselListener.onInspirationCarouselGridProductClicked(element)
             }
 
             it.setImageProductViewHintListener(element, createViewHintListener(element))

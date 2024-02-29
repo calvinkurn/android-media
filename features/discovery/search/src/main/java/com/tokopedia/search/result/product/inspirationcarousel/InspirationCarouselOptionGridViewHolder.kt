@@ -14,7 +14,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 class InspirationCarouselOptionGridViewHolder(
         itemView: View,
         private val inspirationCarouselListener: InspirationCarouselListener,
-        private val optionAdapterPosition: Int,
 ) : AbstractViewHolder<InspirationCarouselDataView.Option.Product>(itemView) {
 
     companion object {
@@ -28,16 +27,13 @@ class InspirationCarouselOptionGridViewHolder(
             it.applyCarousel()
 
             it.setOnClickListener {
-                inspirationCarouselListener.onInspirationCarouselGridProductClicked(item, optionAdapterPosition)
+                inspirationCarouselListener.onInspirationCarouselGridProductClicked(item)
             }
 
             it.setImageProductViewHintListener(item, createViewHintListener(item))
 
             it.addOnImpression1pxListener(item.byteIOImpressHolder) {
-                inspirationCarouselListener.onInspirationCarouselGridProductImpressed1Px(
-                    item,
-                    optionAdapterPosition,
-                )
+                inspirationCarouselListener.onInspirationCarouselGridProductImpressed1Px(item)
             }
         }
     }

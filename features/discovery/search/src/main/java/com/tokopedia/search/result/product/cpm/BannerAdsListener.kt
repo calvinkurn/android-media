@@ -9,7 +9,6 @@ interface BannerAdsListener {
         applink: String?,
         data: CpmData?,
         dataView: CpmDataView,
-        adapterPosition: Int,
     )
 
     fun onBannerAdsImpressionListener(
@@ -23,13 +22,11 @@ interface BannerAdsListener {
         position: Int,
         product: Product?,
         dataView: CpmDataView,
-        adapterPosition: Int,
     )
 
     fun onTopAdsCarouselItemImpressionListener(impressionCount: Int)
 
     fun onBannerAdsImpression1PxListener(
-        adapterPosition: Int,
         data: CpmDataView,
         isReimagine: Boolean,
     )

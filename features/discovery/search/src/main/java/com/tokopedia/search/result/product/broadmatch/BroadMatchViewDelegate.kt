@@ -32,10 +32,7 @@ class BroadMatchViewDelegate @Inject constructor(
     ContextProvider by WeakReferenceContextProvider(context),
     QueryKeyProvider by queryKeyProvider {
 
-    override fun trackEventClickBroadMatchItem(
-        broadMatchItemDataView: BroadMatchItemDataView,
-        adapterPosition: Int,
-    ) {
+    override fun trackEventClickBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView) {
         val broadMatchItem = ArrayList<Any>()
         broadMatchItem.add(broadMatchItemDataView.asClickObjectDataLayer())
 
@@ -49,18 +46,15 @@ class BroadMatchViewDelegate @Inject constructor(
         )
 
         AppLogSearch.eventSearchResultClick(
-            broadMatchItemDataView.asByteIOSearchResult(adapterPosition, "")
+            broadMatchItemDataView.asByteIOSearchResult("")
         )
 
         AppLogSearch.eventProductClick(
-            broadMatchItemDataView.asByteIOProduct(adapterPosition)
+            broadMatchItemDataView.asByteIOProduct()
         )
     }
 
-    override fun trackEventImpressionBroadMatchItem(
-        broadMatchItemDataView: BroadMatchItemDataView,
-        adapterPosition: Int
-    ) {
+    override fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView) {
         val trackingQueue = trackingQueue
         val broadMatchItemAsObjectDataLayer = ArrayList<Any>()
         broadMatchItemAsObjectDataLayer.add(broadMatchItemDataView.asImpressionObjectDataLayer())
@@ -74,25 +68,22 @@ class BroadMatchViewDelegate @Inject constructor(
         )
 
         AppLogSearch.eventSearchResultShow(
-            broadMatchItemDataView.asByteIOSearchResult(adapterPosition, null)
+            broadMatchItemDataView.asByteIOSearchResult(null)
         )
 
         AppLogSearch.eventProductShow(
-            broadMatchItemDataView.asByteIOProduct(adapterPosition)
+            broadMatchItemDataView.asByteIOProduct()
         )
     }
 
-    override fun trackEventImpressionBroadMatch(
-        broadMatchDataView: BroadMatchDataView,
-        adapterPosition: Int,
-    ) {
+    override fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView) {
         BroadMatchTracking.trackEventImpressionBroadMatch(
             iris,
             broadMatchDataView,
         )
 
         AppLogSearch.eventSearchResultShow(
-            broadMatchDataView.asByteIOSearchResult(adapterPosition)
+            broadMatchDataView.asByteIOSearchResult()
         )
     }
 
