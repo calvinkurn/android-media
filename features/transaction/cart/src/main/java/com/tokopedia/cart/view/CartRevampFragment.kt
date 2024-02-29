@@ -52,6 +52,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -149,6 +150,7 @@ import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -227,6 +229,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -248,6 +251,7 @@ import javax.inject.Inject
 import kotlin.math.abs
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.wishlist_common.R as wishlist_commonR
 
 @Keep
 class CartRevampFragment :
@@ -355,6 +359,10 @@ class CartRevampFragment :
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             onResultFromAddOnBottomSheet(result.resultCode, result.data)
         }
+    private var addToWishlistCollectionLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            onResultFromAddToWishlistCollection(result.resultCode, result.data)
+        }
 
     private val cartSwipeToDeleteOnBoardingPreferences: CartOnBoardingPreferences by lazy {
         CartOnBoardingPreferences(requireContext())
@@ -395,6 +403,7 @@ class CartRevampFragment :
         const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
         const val KEY_NEW_BUNDLE_ID = "new_bundle_id"
         const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
+        const val ADD_TO_WISHLIST_COLLECTION_SOURCE = "cart"
 
         private const val QUANTITY_MAX_LIMIT = 999
 
@@ -2941,10 +2950,10 @@ class CartRevampFragment :
 
                 is RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess -> {
                     this.wishlistIcon?.let {
-                        onRemoveFromWishlistSuccess(
-                            it,
-                            removeFromWishlistEvent.position
-                        )
+                        onRemoveFromWishlistSuccess(it, removeFromWishlistEvent.position)
+                        if (removeFromWishlistEvent.message.isNotBlank()) {
+                            showToast(removeFromWishlistEvent.message)
+                        }
                     }
                 }
 
@@ -3552,6 +3561,8 @@ class CartRevampFragment :
         if (isLastItem) {
             refreshCartWithSwipeToRefresh()
         }
+
+        addToWishlistCollection(productId, source)
     }
 
     private fun animateWishlisted(
@@ -3587,6 +3598,16 @@ class CartRevampFragment :
             }
             viewModel.processGetWishlistV2Data()
         }
+    }
+
+    private fun addToWishlistCollection(productId: String, source: String) {
+        val applinkCollection =
+            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET}?${ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID}=$productId&${ApplinkConstInternalPurchasePlatform.PATH_SRC}=$ADD_TO_WISHLIST_COLLECTION_SOURCE"
+        val intentBottomSheetWishlistCollection =
+            RouteManager.getIntent(context, applinkCollection)
+        val isProductActive = source == WISHLIST_SOURCE_AVAILABLE_ITEM
+        intentBottomSheetWishlistCollection.putExtra(WishlistV2CommonConsts.IS_PRODUCT_ACTIVE, isProductActive)
+        addToWishlistCollectionLauncher.launch(intentBottomSheetWishlistCollection)
     }
 
     private fun onRemoveFromWishlistSuccess(wishlistIcon: IconUnify, position: Int) {
@@ -3867,6 +3888,38 @@ class CartRevampFragment :
 
             else -> {
                 refreshCartWithProgressDialog()
+            }
+        }
+    }
+
+    private fun onResultFromAddToWishlistCollection(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            val isSuccess = data.getBooleanExtra(ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS, false)
+            val message =
+                data.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
+            val collectionId =
+                data.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_COLLECTION_ID)
+            if (message != null) {
+                if (isSuccess) {
+                    val actionText = getString(wishlist_commonR.string.cta_success_add_to_wishlist)
+                    val clickListener: (View) -> Unit = {
+                        if (collectionId != null) {
+                            routeToWishlistCollection(collectionId)
+                        }
+                    }
+                    view?.let {
+                        Toaster.build(
+                            it,
+                            message,
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_NORMAL,
+                            actionText,
+                            clickListener
+                        ).show()
+                    }
+                } else {
+                    showToastMessageRed(message = message)
+                }
             }
         }
     }
@@ -4594,6 +4647,12 @@ class CartRevampFragment :
             startActivityWithRefreshHandler(intent)
         }
     }
+
+    private fun routeToWishlistCollection(collectionId: String) {
+        RouteManager.route(context,
+            ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL, collectionId)
+    }
+
 
     private fun scrollToLastAddedProductShop() {
         val cartId: String = getCartId()

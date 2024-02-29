@@ -1938,7 +1938,10 @@ class CartViewModel @Inject constructor(
                 if (result is Success) {
                     if (isFromCart) {
                         _removeFromWishlistEvent.value =
-                            RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess(position)
+                            RemoveFromWishlistEvent.RemoveWishlistFromCartSuccess(
+                                position = position,
+                                message = result.data.message
+                            )
                     } else {
                         _removeFromWishlistEvent.value = RemoveFromWishlistEvent.Success(
                             result.data,
