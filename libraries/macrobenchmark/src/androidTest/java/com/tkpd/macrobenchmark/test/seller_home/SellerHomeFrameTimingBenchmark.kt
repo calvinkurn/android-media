@@ -4,8 +4,7 @@ import android.content.Intent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
-import com.tkpd.macrobenchmark.base.BaseFrameTimingBenchmark
-import com.tkpd.macrobenchmark.util.MacroDevOps
+import com.tkpd.macrobenchmark.base.BaseSellerAppFrameTimingBenchmark
 import com.tkpd.macrobenchmark.util.MacroIntent
 import com.tkpd.macrobenchmark.util.MacroInteration
 import org.junit.runner.RunWith
@@ -17,30 +16,16 @@ import org.junit.runner.RunWith
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
-class SellerHomeFrameTimingBenchmark : BaseFrameTimingBenchmark() {
-
-    override fun setupEnvironment() {
-        MacroDevOps.skipOnboardingSellerApp()
-        MacroDevOps.setupLoginFlow(
-            packageName = packageName(),
-            email = SellerHomeStartupBenchmark.EMAIL,
-            password = SellerHomeStartupBenchmark.PASSWORD
-        )
-    }
-
-    override fun setupMock() {
-    }
+class SellerHomeFrameTimingBenchmark : BaseSellerAppFrameTimingBenchmark() {
 
     override fun pageInteractionTest(currentIteration: Int) {
         Thread.sleep(10000)
         MacroInteration.basicFlingInteraction(
             packageName = packageName(),
-            MacroIntent.SellerHome.RV_RESOURCE_ID,
+            scrollableViewId = MacroIntent.SellerHome.RV_RESOURCE_ID,
             flingSpeed = 3000
         )
     }
 
     override fun getIntent(): Intent = MacroIntent.SellerHome.getIntent()
-
-    override fun packageName(): String = MacroIntent.TKPD_PACKAGE_SELLER_APP
 }
