@@ -213,7 +213,7 @@ object AppLogAnalytics {
     fun pushPageData() {
         val tempHashMap = HashMap<String, Any>()
         _pageDataList.add(tempHashMap)
-        Timber.d("Push _pageDataList: ${_pageDataList}}")
+        Timber.d("Push _pageDataList: ${_pageDataList.printForLog()}")
     }
 
     /**
@@ -237,7 +237,7 @@ object AppLogAnalytics {
                 _pageDataList.removeAt(shadowPageIndex)
             }
         }
-        Timber.d("Remove _pageDataList: ${_pageDataList}}")
+        Timber.d("Remove _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
     private fun clearCurrentPageData() {
@@ -249,7 +249,7 @@ object AppLogAnalytics {
      */
     fun putPageData(key: String, value: Any) {
         _pageDataList.lastOrNull()?.put(key, value)
-        Timber.d("Put _pageDataList: ${_pageDataList}}")
+        Timber.d("Put _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
     fun putEnterMethod(enterMethod: EnterMethod) {
@@ -341,4 +341,9 @@ object AppLogAnalytics {
             putPageData(REQUEST_ID, requestId)
         }
     }
+
+    private fun ArrayList<HashMap<String, Any>>.printForLog(): String {
+        return takeLast(5).joinToString("\n")
+    }
+
 }
