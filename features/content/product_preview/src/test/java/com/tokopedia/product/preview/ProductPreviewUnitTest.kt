@@ -9,6 +9,8 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewUiEvent
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.content.test.util.assertEqualTo
+import com.tokopedia.content.test.util.assertFalse
+import com.tokopedia.content.test.util.assertNotEqualTo
 import com.tokopedia.content.test.util.assertType
 import com.tokopedia.product.preview.robot.ProductPreviewViewModelRobot
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -238,6 +240,67 @@ class ProductPreviewUnitTest {
                 robot.initializeReviewMainData()
             }.also { event ->
                 event.last().assertEqualTo(ProductPreviewUiEvent.UnknownSourceData)
+            }
+        }
+    }
+
+    @Test
+    fun `when product media video ended and selected media should be plus 1`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val firstSelected = when (val source = sourceModel.source) {
+            is ProductPreviewSourceModel.ProductSourceData -> {
+                source.productSourceList.indexOfFirst { it.selected }
+            }
+            is ProductPreviewSourceModel.ReviewSourceData -> -1
+            ProductPreviewSourceModel.UnknownSource -> -1
+        }
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordState {
+                robot.initializeProductMainDataTestCase()
+                robot.productMediaVideoEndedTestCase()
+            }.also { state ->
+                val selected = state.productUiModel.productMedia.indexOfFirst { it.selected }
+                selected.assertEqualTo(firstSelected.plus(1))
+            }
+        }
+    }
+
+    @Test
+    fun `when review content selected and selected position should not same with previous`() {
+        val sourceModel = mockDataSource.mockSourceReview(productId, reviewSourceId, attachmentId)
+        var currentSelected: Int
+        var lastSelected: Int
+
+        getRobot(sourceModel).use { robot ->
+            currentSelected = robot._reviewPosition.value
+            currentSelected.assertEqualTo(0)
+
+            robot.initializeReviewMainData()
+            robot.reviewContentSelected(2)
+
+            lastSelected = robot._reviewPosition.value
+            lastSelected.assertEqualTo(2)
+
+            currentSelected.assertNotEqualTo(lastSelected)
+        }
+    }
+
+    @Test
+    fun `review content scrolling`() {
+        val sourceModel = mockDataSource.mockSourceReview(productId, reviewSourceId, attachmentId)
+        val scrolledPosition = 2
+        val isScrolling = true
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordState {
+                robot.initializeReviewMainData()
+                robot.reviewContentScrollingState(scrolledPosition, true)
+            }.also { state ->
+                state.reviewUiModel.reviewContent.mapIndexed { index, reviewContentUiModel ->
+                    if (index == scrolledPosition) reviewContentUiModel.isScrolling.assertEqualTo(isScrolling)
+                    else reviewContentUiModel.isScrolling.assertFalse()
+                }
             }
         }
     }

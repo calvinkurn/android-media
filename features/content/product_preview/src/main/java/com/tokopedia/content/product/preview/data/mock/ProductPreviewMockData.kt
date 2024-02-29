@@ -82,6 +82,35 @@ class ProductPreviewMockData {
         )
     }
 
+    fun mockProductMediaListNoVideo(): List<ProductMediaUiModel> {
+        return listOf(
+            ProductMediaUiModel(
+                contentId = "1",
+                selected = true,
+                variantName = "Content 1",
+                type = MediaType.Image,
+                thumbnailUrl = "thumbnail1.url",
+                url = "image1.source.url",
+            ),
+            ProductMediaUiModel(
+                contentId = "2",
+                selected = false,
+                variantName = "Content 2",
+                type = MediaType.Image,
+                thumbnailUrl = "thumbnail2.url",
+                url = "image2.source.url",
+            ),
+            ProductMediaUiModel(
+                contentId = "3",
+                selected = false,
+                variantName = "Content 3",
+                type = MediaType.Image,
+                thumbnailUrl = "thumbnail3.url",
+                url = "image3.source.url",
+            ),
+        )
+    }
+
     fun mockReviewDataByIds(): ReviewUiModel {
         val reviewContent = listOf(
             ReviewContentUiModel(

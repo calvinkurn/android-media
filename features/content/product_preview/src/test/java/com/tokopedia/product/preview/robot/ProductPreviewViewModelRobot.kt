@@ -14,6 +14,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import java.io.Closeable
@@ -32,8 +33,6 @@ internal class ProductPreviewViewModelRobot(
         userSessionInterface = userSession,
         productPrevSharedPref = sharedPref,
     )
-
-    fun getViewModel() = viewModel
 
     fun recordState(fn: suspend ProductPreviewViewModelRobot.() -> Unit): ProductPreviewUiState {
         return recordStateAsList(fn).last()
@@ -89,6 +88,8 @@ internal class ProductPreviewViewModelRobot(
         return uiState.last() to uiEvent
     }
 
+    val _reviewPosition = getPrivateField<MutableStateFlow<Int>>("_reviewPosition")
+
     private fun <T> getPrivateField(name: String): T {
         val field = viewModel.javaClass.getDeclaredField(name)
         field.isAccessible = true
@@ -109,6 +110,18 @@ internal class ProductPreviewViewModelRobot(
 
     fun initializeReviewMainData() {
         viewModel.onAction(ProductPreviewAction.InitializeReviewMainData)
+    }
+
+    fun productMediaVideoEndedTestCase() {
+        viewModel.onAction(ProductPreviewAction.ProductMediaVideoEnded)
+    }
+
+    fun reviewContentSelected(position: Int) {
+        viewModel.onAction(ProductPreviewAction.ReviewContentSelected(position))
+    }
+
+    fun reviewContentScrollingState(position: Int, isScrolling: Boolean) {
+        viewModel.onAction(ProductPreviewAction.ReviewContentScrolling(position, isScrolling))
     }
 
     fun cancelRemainingTasks() {
