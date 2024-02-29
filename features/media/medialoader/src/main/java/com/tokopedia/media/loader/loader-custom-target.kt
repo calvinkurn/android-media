@@ -53,7 +53,7 @@ fun String.getBitmapImageUrlAsFlow(
         Properties().apply(properties).setSource(url).let {
             it.listener(
                 onError = { e ->
-                    trySend(BitmapFlowResult(null, e))
+                    trySend(BitmapFlowResult.Failed(e))
                 }
             )
 
@@ -61,8 +61,8 @@ fun String.getBitmapImageUrlAsFlow(
                 context,
                 it,
                 MediaBitmapEmptyTarget(
-                    onReady = {
-                        trySend(BitmapFlowResult(it, null))
+                    onReady = { bitmapResult ->
+                        trySend(BitmapFlowResult.Success(bitmapResult))
                     }
                 )
             )
