@@ -32,7 +32,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
@@ -655,10 +657,11 @@ open class HomeRevampFragment :
             }
             val icons = IconBuilder(
                 IconBuilderFlag(pageSource = NavSource.HOME)
-            ).addIcon(getInboxIcon()) {}
-            icons.addIcon(IconList.ID_NOTIFICATION) {}
+            )
+            icons.addIcon(IconList.ID_MESSAGE) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_INBOX_HOMEPAGE) }
+            icons.addIcon(IconList.ID_NOTIFICATION) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_INBOX_HOMEPAGE) }
             icons.apply {
-                addIcon(IconList.ID_CART) {}
+                addIcon(IconList.ID_CART) { AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_CART_ICON_HOMEPAGE) }
                 addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             it.setIcon(icons)
@@ -689,10 +692,6 @@ open class HomeRevampFragment :
         if (this::viewModel.isInitialized) {
             getHomeViewModel().getSearchHint(isFirstInstall())
         }
-    }
-
-    private fun getInboxIcon(): Int {
-        return IconList.ID_MESSAGE
     }
 
     private fun ArrayList<CoachMark2Item>.buildSubscriptionCoachMark(subscriptionBalanceCoachMark: BalanceCoachmark) {
