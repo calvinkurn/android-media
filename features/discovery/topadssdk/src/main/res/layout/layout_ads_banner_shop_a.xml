@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/topads_sdk_headline_ad_width"
     android:layout_height="match_parent"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="12dp"
     android:maxHeight="@dimen/topads_sdk_headline_ad_max_height"
-    app:cardElevation="4dp"
+    app:cardElevation="0dp"
+    app:card_type="clear"
     app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true"
     tools:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout

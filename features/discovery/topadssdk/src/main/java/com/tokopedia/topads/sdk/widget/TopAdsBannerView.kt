@@ -29,8 +29,6 @@ import com.tokopedia.shopwidget.shopcard.ShopCardListener
 import com.tokopedia.shopwidget.shopcard.ShopCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardView
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.TopAdsConstants.DILYANI_TOKOPEDIA
-import com.tokopedia.topads.sdk.TopAdsConstants.FULFILLMENT
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_10
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_11
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_8
@@ -40,6 +38,8 @@ import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.*
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
+import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.addItemDecoratorShopAdsReimagine
+import com.tokopedia.topads.sdk.utils.MapperUtils
 import com.tokopedia.topads.sdk.utils.TopAdsSdkUtil
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.BannerAdsContract
@@ -58,8 +58,7 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import org.apache.commons.text.StringEscapeUtils
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 
 /**
  * Created by errysuprayogi on 12/28/17.
@@ -134,6 +133,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             val list = findViewById<RecyclerView>(R.id.list)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
+            list.addItemDecoratorShopAdsReimagine()
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
 
@@ -155,7 +155,6 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val shopAdsWithSingleProductVertical = findViewById<ShopAdsSingleItemVerticalLayout>(R.id.shopAdsWithSingleProductVertical)
         linearLayoutMerchantVoucher = findViewById(R.id.linearLayoutMerchantVoucher)
         topAdsFlashSaleTimer = findViewById(R.id.topAdsFlashSaleTimer)
-
         if (cpmData?.cpm?.layout != LAYOUT_6 && cpmData?.cpm?.layout != LAYOUT_5 && cpmData?.cpm?.layout != LAYOUT_8 && cpmData?.cpm?.layout != LAYOUT_9 && cpmData?.cpm?.layout != LAYOUT_10 && cpmData?.cpm?.layout != LAYOUT_11) {
             if (isEligible(cpmData)) {
                 if (cpmData != null && (cpmData.cpm.layout == LAYOUT_2)) {
@@ -250,7 +249,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         )
                     )
                     if (cpmData.cpm.cpmShop.products.isNotEmpty()) {
-                        val productCardModelList: ArrayList<ProductCardModel> = getProductCardModels(cpmData.cpm.cpmShop.products)
+                        val productCardModelList: ArrayList<ProductCardModel> = MapperUtils.getProductCardModels(cpmData.cpm.cpmShop.products, hasAddProductToCartButton)
                         for (i in 0 until productCardModelList.size) {
                             if (i < ITEM_3) {
                                 val model = BannerShopProductUiModel(
@@ -412,7 +411,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         )
         if (cpmData.cpm.cpmShop.products.isNotEmpty()) {
             val productCardModelList: ArrayList<ProductCardModel> =
-                getProductCardModels(cpmData.cpm.cpmShop.products)
+                MapperUtils.getProductCardModels(cpmData.cpm.cpmShop.products, hasAddProductToCartButton)
             for (i in 0 until productCardModelList.size) {
                 if (i < ITEM_3) {
                     val model = BannerShopProductUiModel(
@@ -613,127 +612,6 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             list.add(item)
         }
         return list
-    }
-
-    protected open fun getProductCardModels(products: List<Product>): ArrayList<ProductCardModel> {
-        return ArrayList<ProductCardModel>().apply {
-            products.map {
-                add(getProductCardViewModel(it))
-            }
-        }
-    }
-
-    private fun getProductCardViewModel(product: Product): ProductCardModel {
-        val isAvailAble = checkIfDTAvailable(product.labelGroupList)
-        val productCardModel = ProductCardModel(
-            productImageUrl = product.imageProduct.imageUrl,
-            productName = product.name,
-            discountPercentage = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
-            formattedPrice = product.priceFormat,
-            reviewCount = product.countReviewFormat.toIntOrZero(),
-            ratingString = product.productRatingFormat,
-            freeOngkir = ProductCardModel.FreeOngkir(
-                product.freeOngkir.isActive,
-                product.freeOngkir.imageUrl
-            ),
-            hasAddToCartButton = this.hasAddProductToCartButton,
-            addToCartButtonType = UnifyButton.Type.MAIN,
-            stockBarPercentage = product.stock_info.soldStockPercentage,
-            stockBarLabel = product.stock_info.stockWording,
-            stockBarLabelColor = product.stock_info.stockColour,
-            shopBadgeList = product.badges.map {
-                ProductCardModel.ShopBadge(
-                    imageUrl = it.imageUrl,
-                    title = it.title,
-                    isShown = it.isShow,
-                )
-            },
-        )
-        return getProductModelOnCondition(product, isAvailAble, productCardModel)
-    }
-
-    private fun getProductModelOnCondition(
-        product: Product,
-        isAvailAble: Boolean,
-        productCardModel: ProductCardModel
-    ): ProductCardModel {
-        if (isAvailAble) {
-            return if (!product.campaign.originalPrice.isNullOrEmpty()) {
-                productCardModel.copy(
-                    slashedPrice = product.campaign.originalPrice,
-                    labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                        product.labelGroupList.map {
-                            if (it.position != "integrity"){
-                                add(
-                                    ProductCardModel.LabelGroup(
-                                        position = it.position,
-                                        title = it.title,
-                                        type = it.type,
-                                        imageUrl = it.imageUrl,
-                                        styleList = it.styleList.map { style ->
-                                            ProductCardModel.LabelGroup.Style(style.key, style.value)
-                                        },
-                                    )
-                                )
-                            }
-                        }
-                    }
-                )
-            } else {
-                productCardModel.copy(
-                    labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                        product.labelGroupList.map {
-                            if (it.position != "integrity") {
-                                add(
-                                    ProductCardModel.LabelGroup(
-                                        position = it.position,
-                                        title = it.title,
-                                        type = it.type,
-                                        imageUrl = it.imageUrl,
-                                        styleList = it.styleList.map { style ->
-                                            ProductCardModel.LabelGroup.Style(style.key, style.value)
-                                        }
-                                    )
-                                )
-                            }
-                        }
-                    }
-                )
-            }
-        }
-
-        return productCardModel.copy(
-            slashedPrice = product.campaign.originalPrice,
-            countSoldRating = product.headlineProductRatingAverage,
-            labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                product.labelGroupList.map {
-                    add(
-                        ProductCardModel.LabelGroup(
-                            position = it.position,
-                            title = it.title,
-                            type = it.type,
-                            imageUrl = it.imageUrl,
-                            styleList = it.styleList.map { style ->
-                                ProductCardModel.LabelGroup.Style(style.key, style.value)
-                            }
-                        )
-                    )
-                }
-            }
-        )
-    }
-
-    private fun checkIfDTAvailable(labelGroupList: List<LabelGroup>): Boolean {
-        var isAvailable = false
-        run breaking@{
-            labelGroupList.forEach {
-                if (it.position == FULFILLMENT && it.title == DILYANI_TOKOPEDIA) {
-                    isAvailable = true
-                    return@breaking
-                }
-            }
-        }
-        return isAvailable
     }
 
     private fun bindFavorite(isFollowed: Boolean) {

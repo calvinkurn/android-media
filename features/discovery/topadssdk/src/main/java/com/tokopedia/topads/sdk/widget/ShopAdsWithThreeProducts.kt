@@ -27,6 +27,7 @@ import com.tokopedia.topads.sdk.shopwidgetthreeproducts.adapter.ShopWidgetAdapte
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.factory.ShopWidgetFactoryImpl
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.model.*
+import com.tokopedia.topads.sdk.utils.MapperUtils
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView.Companion.escapeHTML
 import com.tokopedia.unifycomponents.*
@@ -218,7 +219,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         items.add(EmptyShopCardModel(cpmData, shopApplink, adsClickUrl))
         if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
             val productCardModelList: ArrayList<ProductCardModel> =
-                getProductCardModels(cpmData.cpm.cpmShop.products, hasAddToCartButton)
+                MapperUtils.getProductCardModels(cpmData.cpm.cpmShop.products, hasAddToCartButton)
             for (i in 0 until productCardModelList.size) {
                 if (i < PRODUCT_CARD_COUNT_THREE) {
                     val product = cpmData.cpm.cpmShop.products[i]
@@ -247,44 +248,44 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         return items
     }
 
-    private fun getProductCardModels(
-        products: List<Product>,
-        hasAddToCartButton: Boolean
-    ): ArrayList<ProductCardModel> {
-        return ArrayList<ProductCardModel>().apply {
-            products.map {
-                add(getProductCardViewModel(it, hasAddToCartButton))
-            }
-        }
-    }
-
-    private fun getProductCardViewModel(
-        product: Product,
-        hasAddToCartButton: Boolean
-    ): ProductCardModel {
-        return ProductCardModel(
-            productImageUrl = product.imageProduct.imageUrl,
-            productName = product.name,
-            discountPercentage = if (product.campaign.discountPercentage != Int.ZERO) "${product.campaign.discountPercentage}%" else "",
-            slashedPrice = product.campaign.originalPrice,
-            formattedPrice = product.priceFormat,
-            reviewCount = product.countReviewFormat.toIntOrZero(),
-            ratingCount = product.productRating,
-            ratingString = product.productRatingFormat,
-            countSoldRating = product.headlineProductRatingAverage,
-            freeOngkir = ProductCardModel.FreeOngkir(
-                product.freeOngkir.isActive,
-                product.freeOngkir.imageUrl
-            ),
-            labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                product.labelGroupList.map {
-                    add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
-                }
-            },
-            hasAddToCartButton = hasAddToCartButton,
-            addToCartButtonType = UnifyButton.Type.MAIN
-        )
-    }
+//    private fun getProductCardModels(
+//        products: List<Product>,
+//        hasAddToCartButton: Boolean
+//    ): ArrayList<ProductCardModel> {
+//        return ArrayList<ProductCardModel>().apply {
+//            products.map {
+//                add(getProductCardViewModel(it, hasAddToCartButton))
+//            }
+//        }
+//    }
+//
+//    private fun getProductCardViewModel(
+//        product: Product,
+//        hasAddToCartButton: Boolean
+//    ): ProductCardModel {
+//        return ProductCardModel(
+//            productImageUrl = product.imageProduct.imageUrl,
+//            productName = product.name,
+//            discountPercentage = if (product.campaign.discountPercentage != Int.ZERO) "${product.campaign.discountPercentage}%" else "",
+//            slashedPrice = product.campaign.originalPrice,
+//            formattedPrice = product.priceFormat,
+//            reviewCount = product.countReviewFormat.toIntOrZero(),
+//            ratingCount = product.productRating,
+//            ratingString = product.productRatingFormat,
+//            countSoldRating = product.headlineProductRatingAverage,
+//            freeOngkir = ProductCardModel.FreeOngkir(
+//                product.freeOngkir.isActive,
+//                product.freeOngkir.imageUrl
+//            ),
+//            labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
+//                product.labelGroupList.map {
+//                    add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
+//                }
+//            },
+//            hasAddToCartButton = hasAddToCartButton,
+//            addToCartButtonType = UnifyButton.Type.MAIN
+//        )
+//    }
 
     private fun initVars() {
         shopName = findViewById(R.id.shopName)

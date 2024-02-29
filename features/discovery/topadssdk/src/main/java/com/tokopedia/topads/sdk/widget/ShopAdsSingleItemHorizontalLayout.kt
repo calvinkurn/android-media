@@ -3,47 +3,39 @@ package com.tokopedia.topads.sdk.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.strikethrough
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.ShopAdsWithSingleProductModel
+import com.tokopedia.topads.sdk.utils.MapperUtils
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.gm.common.R as gmcommonR
 import com.tokopedia.shopwidget.R as shopwidgetR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.productcard.R as productcardR
+
 
 class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
 
+    private var productCardGridView: ProductCardGridView? = null
     private var shopBadge: ImageUnify? = null
     private var shopImage: ImageUnify? = null
-    private var productImage: AppCompatImageView? = null
     private var bodyContainer: ConstraintLayout? = null
     private var merchantVoucher: Label? = null
     private var shopSlogan: Typography? = null
-    private var productTitle: Typography? = null
-    private var productDiscountPrice: Typography? = null
-    private var productSlashedPrice: Typography? = null
-    private var productDiscountPercent: Typography? = null
-    private var productContainer: CardUnify2? = null
-    private var productDiscountGroup: View? = null
+    private var margin = resources.getDimensionPixelSize(R.dimen.margin_2)
 
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context)
@@ -81,33 +73,37 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
     }
 
     private fun initViews() {
+        productCardGridView = findViewById(R.id.product_item)
         shopBadge = findViewById(R.id.shop_badge)
         shopImage = findViewById(R.id.headerShopImage)
-        productImage = findViewById(R.id.product_image)
         bodyContainer = findViewById(R.id.container)
         merchantVoucher = findViewById(R.id.merchantVoucher)
         shopSlogan = findViewById(R.id.shop_desc)
-        productTitle = findViewById(R.id.product_title)
-        productDiscountPrice = findViewById(R.id.discounted_price)
-        productSlashedPrice = findViewById(R.id.original_price)
-        productContainer = findViewById(R.id.product_container)
-        productDiscountPercent = findViewById(R.id.textRibbon)
-        productDiscountGroup = findViewById(R.id.discount_percent_group)
+    }
+
+    private fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int) {
+        if (view.layoutParams is MarginLayoutParams) {
+            val p = view.layoutParams as MarginLayoutParams
+            p.setMargins(left, top, right, bottom)
+            view.requestLayout()
+        }
     }
 
     private fun setProductWidget(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel) {
         shopAdsWithSingleProductModel.listItem?.let { product ->
             val productModel =
-                getProductCardViewModel(product, shopAdsWithSingleProductModel.hasAddToCartButton)
-            productImage?.loadImage(productModel.productImageUrl)
-            productTitle?.text = MethodChecker.fromHtml(productModel.productName).toString()
-            productDiscountPrice?.text = productModel.formattedPrice
-            productSlashedPrice?.text = productModel.slashedPrice
-            productSlashedPrice?.strikethrough()
-            setDiscountPercent(productModel)
+                MapperUtils.getProductCardViewModel(product, shopAdsWithSingleProductModel.hasAddToCartButton)
+            productCardGridView?.run {
+                setProductModel(productModel)
+//                setMargins(findViewById<Typography?>(productcardR.id.productCardName), margin,0,margin,0)
+//                setMargins(findViewById<Typography?>(productcardR.id.productCardLabelAssignedValue), margin,0,0,0)
+//                setMargins(findViewById<Typography?>(productcardR.id.productCardPriceContainer), margin,0,0,0)
+//                setMargins(findViewById<Typography?>(productcardR.id.productCardCredibility), margin,0,0,margin)
+//                setMargins(findViewById<Typography?>(productcardR.id.productCardShopSection), margin,0,0,margin)
+            }
 
             shopAdsWithSingleProductModel.impressHolder?.let { impressHolder ->
-                productContainer?.addOnImpressionListener(impressHolder) {
+                productCardGridView?.addOnImpressionListener(impressHolder) {
                     shopAdsWithSingleProductModel.impressionListener?.onImpressionProductAdsItem(Int.ZERO, shopAdsWithSingleProductModel.listItem, shopAdsWithSingleProductModel.cpmData)
                     shopAdsWithSingleProductModel.impressionListener?.onImpressionHeadlineAdsItem(Int.ZERO, shopAdsWithSingleProductModel.cpmData)
                 }
@@ -128,7 +124,7 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
                 }
             }
 
-            productContainer?.setOnClickListener {
+            productCardGridView?.setOnClickListener {
                 shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(
                     Int.ZERO,
                     product.applinks,
@@ -158,11 +154,6 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
                 )
             }
         }
-    }
-
-    private fun setDiscountPercent(productModel: ProductCardModel) {
-        productDiscountPercent?.text = productModel.discountPercentage
-        productDiscountGroup?.showWithCondition(productModel.discountPercentage.isNotEmpty())
     }
 
     private fun setSlogan(slogan: String) {
@@ -217,32 +208,5 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
         return shopAdsWithSingleProductModel.isOfficial ||
             shopAdsWithSingleProductModel.isPMPro ||
             shopAdsWithSingleProductModel.isPowerMerchant
-    }
-
-    private fun getProductCardViewModel(
-        product: Product,
-        hasAddToCartButton: Boolean
-    ): ProductCardModel {
-        return ProductCardModel(
-            productImageUrl = product.imageProduct.imageUrl,
-            productName = product.name,
-            discountPercentage = if (product.campaign.discountPercentage != Int.ZERO) "${product.campaign.discountPercentage}%" else "",
-            slashedPrice = product.campaign.originalPrice,
-            formattedPrice = product.priceFormat,
-            reviewCount = product.countReviewFormat.toIntOrZero(),
-            ratingCount = product.productRating,
-            ratingString = product.productRatingFormat,
-            countSoldRating = product.headlineProductRatingAverage,
-            freeOngkir = ProductCardModel.FreeOngkir(
-                product.freeOngkir.isActive,
-                product.freeOngkir.imageUrl
-            ),
-            labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                product.labelGroupList.map {
-                    add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
-                }
-            },
-            hasAddToCartButton = hasAddToCartButton
-        )
     }
 }

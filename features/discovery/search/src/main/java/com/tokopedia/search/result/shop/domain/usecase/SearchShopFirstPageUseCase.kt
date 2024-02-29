@@ -12,6 +12,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.search.result.domain.usecase.searchproduct.sreParams
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.TopAdsParams
@@ -48,7 +49,6 @@ internal class SearchShopFirstPageUseCase(
         variables[KEY_PARAMS] = UrlParamUtils.generateUrlParamString(useCaseRequestParams.parameters)
         variables[KEY_HEADLINE_PARAMS] = createHeadlineParams(useCaseRequestParams.parameters)
         variables[KEY_QUICK_FILTER_PARAMS] = createQuickFilterParams(useCaseRequestParams.parameters)
-
         return variables
     }
 
@@ -61,7 +61,7 @@ internal class SearchShopFirstPageUseCase(
         headlineParams[TopAdsParams.KEY_SRC] = SearchConstant.SearchShop.ADS_SOURCE
         headlineParams[TopAdsParams.KEY_HEADLINE_PRODUCT_COUNT] = SearchConstant.SearchShop.HEADLINE_PRODUCT_COUNT
 
-        return UrlParamUtils.generateUrlParamString(headlineParams)
+        return UrlParamUtils.generateUrlParamString(headlineParams) + sreParams()
     }
 
     private fun createQuickFilterParams(requestParams: Map<String, Any>): String {
@@ -218,6 +218,11 @@ query SearchShop(${'$'}params: String!, ${'$'}headline_params: String, ${'$'}qui
                 price_format
                 applinks
                 rating_average
+                badges {
+                    image_url
+                    title
+                    show
+                }
                 free_ongkir{
                     is_active
                     img_url
@@ -226,6 +231,11 @@ query SearchShop(${'$'}params: String!, ${'$'}headline_params: String, ${'$'}qui
                     title
                     type
                     position
+                    url
+                    styles {
+                        key
+                        value
+                    }
                 }
                 image_product {
                   product_id

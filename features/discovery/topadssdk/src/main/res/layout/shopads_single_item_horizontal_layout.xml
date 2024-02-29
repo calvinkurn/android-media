@@ -94,116 +94,14 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <com.tokopedia.unifycomponents.CardUnify2
-        android:id="@+id/product_container"
+    <com.tokopedia.productcard.ProductCardGridView
+        android:id="@+id/product_item"
         android:layout_width="0dp"
-        android:layout_marginLeft="4dp"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="12dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp"
+        app:reimagine="true"
+        app:reimagine_template="grid"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/divider"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.tokopedia.topads.sdk.view.SquareImageView
-                android:id="@+id/product_image"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:scaleType="centerCrop"
-                android:visibility="visible"
-                app:layout_constraintBottom_toTopOf="@id/product_title"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                app:unify_image_type="rect"
-                tools:src="@tools:sample/avatars" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/product_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="4dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/Unify_NN950"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toTopOf="@id/discounted_price"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/discounted_price"
-                app:typographyType="paragraph_3"
-                tools:text="Pig PU Doll Squishy Judgement" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/discounted_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginBottom="8dp"
-                android:textColor="@color/Unify_NN950"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:typographyType="display_2"
-                app:typographyWeight="bold"
-                tools:text="Rp1.290.000" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/original_price"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:paddingRight="12dp"
-                android:textColor="@color/Unify_NN400"
-                android:textSize="11sp"
-                app:layout_constraintBottom_toBottomOf="@id/discounted_price"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/discounted_price"
-                app:layout_constraintTop_toTopOf="@id/discounted_price"
-                app:typographyType="paragraph_3"
-                tools:text="1.999.999" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.tokopedia.unifycomponents.CardUnify2>
-
-    <LinearLayout
-        android:id="@+id/discount_percent_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:elevation="1dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintStart_toStartOf="@+id/divider"
-        app:layout_constraintTop_toTopOf="@+id/product_container">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textRibbon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/product_card_ribbon_background"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"
-            android:textColor="@color/Unify_Static_White"
-            app:typographyType="small"
-            app:typographyWeight="bold"
-            tools:text="20%" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/productCardRibbonSlip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/product_card_ribbon_slip" />
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
