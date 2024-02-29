@@ -42,7 +42,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_banner_product_group_viewpager
-        private const val EXTRA_WIDTH_TAB_TITLE_DP = 4
+        private const val EXTRA_WIDTH_TAB_TITLE_DP = 8
         private const val ONE_TAB = 1
         private const val MARGIN_16_DP = 16f
         private const val THREE_TAB = 3

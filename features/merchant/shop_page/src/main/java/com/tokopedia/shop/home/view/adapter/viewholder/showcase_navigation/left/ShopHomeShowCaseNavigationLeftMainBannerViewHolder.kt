@@ -43,7 +43,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_showcase_navigation_left_main_banner
-        private const val EXTRA_WIDTH_TAB_TITLE_DP = 4
+        private const val EXTRA_WIDTH_TAB_TITLE_DP = 8
         private const val ONE_TAB = 1
         private const val MARGIN_16_DP = 16f
         private const val MINIMAL_SHOWCASE_COUNT_ON_A_TAB = 5
