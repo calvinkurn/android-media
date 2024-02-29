@@ -1,8 +1,6 @@
 package com.tokopedia.feedplus.presentation.uiview
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -61,7 +59,7 @@ fun FeedProductLabel(
         }
     }
 
-    AnimatedVisibility(visible = isVisible, enter = slideInVertically(), exit = slideOutVertically()) {
+    AnimatedVisibility(visible = isVisible) {
         NestTheme(darkTheme = false) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,

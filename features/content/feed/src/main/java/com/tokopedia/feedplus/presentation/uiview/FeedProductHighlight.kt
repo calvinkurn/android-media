@@ -1,6 +1,9 @@
 package com.tokopedia.feedplus.presentation.uiview
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -59,12 +62,8 @@ fun FeedProductHighlight(
     NestTheme(darkTheme = false) {
         AnimatedVisibility(
             visible = isVisible,
-            enter = slideInVertically {
-                with(density) { 60.dp.roundToPx() }
-            },
-            exit = slideOutVertically {
-                with(density) { 60.dp.roundToPx() }
-            }
+            enter = slideInVertically (animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing)),
+            exit = slideOutVertically(animationSpec = tween(durationMillis = 300, easing = EaseOut), targetOffsetY = { it } )
         ) {
             Box(
                 modifier = Modifier
@@ -205,7 +204,7 @@ fun ProductTagItems(
     isFocused: Boolean = true
 ) {
     var needToBeShown by remember { mutableStateOf(false) }
-    val highlightedProduct by remember { mutableStateOf(products.firstOrNull()) }
+    val highlightedProduct by remember { mutableStateOf(products.firstOrNull{ it.isHighlight}) }
 
     if (isFocused) {
         LaunchedEffect(key1 = key) {
