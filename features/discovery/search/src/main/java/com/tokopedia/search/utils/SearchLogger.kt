@@ -1,5 +1,6 @@
 package com.tokopedia.search.utils
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -13,6 +14,7 @@ import java.net.UnknownHostException
 class SearchLogger(
     private val remoteConfig: RemoteConfig? = null,
     private val versionCode: Int? = null,
+    private val userId: String? = null
 ) {
 
     fun logWarning(message: String?, throwable: Throwable?) {
@@ -62,7 +64,8 @@ class SearchLogger(
     fun logSearchDebug(keyword: String?, filterParams: String? = null) {
         val hasKeyword = keyword != null
         val remoteConfigEnabled = isLogSearchDebugConfigEnabled()
-        val canSendLog = hasKeyword && remoteConfigEnabled
+        val enabledByUserId = isLogSearchDebugConfigByUserIdEnabled()
+        val canSendLog = hasKeyword && remoteConfigEnabled && enabledByUserId
 
         if (!canSendLog) return
 
@@ -76,12 +79,23 @@ class SearchLogger(
         )
     }
 
+    private fun isLogSearchDebugConfigByUserIdEnabled(): Boolean {
+        val userIdList = getRemoteConfigSearchDebugValue().lastOrNull()?.split(VERSION_CODE_SEPARATOR)
+
+        return userIdList?.contains(userId).orFalse()
+    }
+
     private fun isLogSearchDebugConfigEnabled(): Boolean {
         val versionCode = versionCode?.toString() ?: return false
-        val remoteConfigValue = remoteConfig?.getString(SEARCH_DEBUG_LOG) ?: ""
-        val remoteConfigVersionCodeList = remoteConfigValue.split(VERSION_CODE_SEPARATOR)
+        val remoteConfigValue = getRemoteConfigSearchDebugValue()
+        val remoteConfigVersionCodeList = remoteConfigValue.firstOrNull()?.split(VERSION_CODE_SEPARATOR)
 
-        return remoteConfigVersionCodeList.contains(versionCode)
+        return remoteConfigVersionCodeList?.contains(versionCode).orFalse()
+    }
+
+    private fun getRemoteConfigSearchDebugValue() : List<String> {
+        val remoteConfigValue = remoteConfig?.getString(SEARCH_DEBUG_LOG) ?: ""
+        return remoteConfigValue.split(USER_VERSION_SEPARATOR)
     }
 
     companion object {
@@ -94,5 +108,6 @@ class SearchLogger(
         const val KEYWORD = "keyword"
         const val FILTER = "filter"
         const val VERSION_CODE_SEPARATOR = ","
+        const val USER_VERSION_SEPARATOR = ";"
     }
 }
