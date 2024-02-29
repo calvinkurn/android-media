@@ -3,12 +3,14 @@ package com.tokopedia.search.result.product.cpm
 import android.content.Context
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_SHOP_NAME
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
 
 class BannerAdsListenerDelegate(
     queryKeyProvider: QueryKeyProvider,
@@ -44,6 +46,27 @@ class BannerAdsListenerDelegate(
         TopAdsGtmTracker.eventTopAdsHeadlineShopView(position, data, queryKey, userId)
     }
 
+    override fun onBannerAdsProductImpressionListener(
+        position: Int,
+        product: Product?,
+        dataView: CpmDataView,
+        adapterPosition: Int
+    ) {
+        if (dataView.isTrackByteIO() && product != null) {
+            AppLogSearch.eventSearchResultShow(
+                dataView.productItemAsByteIOSearchResult(
+                    product,
+                    adapterPosition,
+                    position,
+                    "",
+                )
+            )
+            AppLogSearch.eventProductShow(
+                dataView.productItemAsByteIOProduct(product, adapterPosition, position)
+            )
+        }
+    }
+
     override fun onTopAdsCarouselItemImpressionListener(impressionCount: Int) {
         bannerAdsPresenter.shopAdsImpressionCount(impressionCount)
     }
@@ -58,11 +81,17 @@ class BannerAdsListenerDelegate(
         if (applink.contains(SHOP)) {
             TopAdsGtmTracker.eventTopAdsHeadlineShopClick(position, queryKey, data, userId)
             TopAdsGtmTracker.eventSearchResultPromoShopClick(data, position)
-            AppLogSearch.eventSearchResultClick(dataView.asByteIOSearchResult(adapterPosition, CLICK_SHOP_NAME))
+
+            if (dataView.isTrackByteIO())
+                AppLogSearch.eventSearchResultClick(
+                    dataView.asByteIOSearchResult(adapterPosition, CLICK_SHOP_NAME)
+                )
         } else {
             TopAdsGtmTracker.eventTopAdsHeadlineProductClick(position, data, userId)
             TopAdsGtmTracker.eventSearchResultPromoProductClick(data, position)
-            trackByteIOProductClick(data, applink, dataView, adapterPosition, position)
+
+            if (dataView.isTrackByteIO())
+                trackByteIOProductClick(data, applink, dataView, adapterPosition, position)
         }
     }
 
@@ -76,7 +105,7 @@ class BannerAdsListenerDelegate(
         val cpmProduct = data.cpm.cpmShop.products.find { it.applinks == applink } ?: return
 
         AppLogSearch.eventSearchResultClick(
-            dataView.productAsByteIOSearchResult(
+            dataView.productItemAsByteIOSearchResult(
                 cpmProduct,
                 adapterPosition,
                 productPosition,
@@ -84,12 +113,25 @@ class BannerAdsListenerDelegate(
             )
         )
         AppLogSearch.eventProductClick(
-            dataView.productAsByteIOProduct(cpmProduct, adapterPosition, productPosition)
+            dataView.productItemAsByteIOProduct(cpmProduct, adapterPosition, productPosition)
         )
     }
 
-    override fun onBannerAdsImpression1PxListener(adapterPosition: Int, data: CpmDataView) {
-        AppLogSearch.eventSearchResultShow(data.asByteIOSearchResult(adapterPosition, null))
+    override fun onBannerAdsImpression1PxListener(
+        adapterPosition: Int,
+        data: CpmDataView,
+        isReimagine: Boolean,
+    ) {
+        if (data.isTrackByteIO()) {
+            AppLogSearch.eventSearchResultShow(
+                data.asByteIOSearchResult(adapterPosition, null)
+            )
+
+            if (!isReimagine)
+                AppLogSearch.eventSearchResultShow(
+                    data.shopItemAsByteIOSearchResult(adapterPosition, Int.ZERO, null)
+                )
+        }
     }
 
     companion object {

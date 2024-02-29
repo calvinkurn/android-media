@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.cpm
 
 import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
 
 interface BannerAdsListener {
     fun onBannerAdsClicked(
@@ -18,7 +19,18 @@ interface BannerAdsListener {
         adapterPosition: Int,
     )
 
+    fun onBannerAdsProductImpressionListener(
+        position: Int,
+        product: Product?,
+        dataView: CpmDataView,
+        adapterPosition: Int,
+    )
+
     fun onTopAdsCarouselItemImpressionListener(impressionCount: Int)
 
-    fun onBannerAdsImpression1PxListener(adapterPosition: Int, data: CpmDataView)
+    fun onBannerAdsImpression1PxListener(
+        adapterPosition: Int,
+        data: CpmDataView,
+        isReimagine: Boolean,
+    )
 }

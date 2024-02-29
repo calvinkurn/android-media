@@ -12,6 +12,7 @@ import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_2
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
 import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
@@ -47,10 +48,23 @@ class CpmReimagineViewHolder(
                         bannerAdsListener?.onTopAdsCarouselItemImpressionListener(binding?.adsBanner?.impressionCount ?: 0)
                     }
                 }
+
+                override fun onImpressionProductAdsItem(
+                    position: Int,
+                    product: Product?,
+                    data: CpmData
+                ) {
+                    bannerAdsListener?.onBannerAdsProductImpressionListener(
+                        position,
+                        product,
+                        element,
+                        bindingAdapterPosition,
+                    )
+                }
             })
 
             addOnImpression1pxListener(element.byteIOImpressHolder) {
-                bannerAdsListener?.onBannerAdsImpression1PxListener(bindingAdapterPosition, element)
+                bannerAdsListener?.onBannerAdsImpression1PxListener(bindingAdapterPosition, element, true)
             }
 
             displayHeadlineAds(element.cpmModel)
