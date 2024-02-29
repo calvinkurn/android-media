@@ -37,7 +37,7 @@ class UniversalInboxRecommendationProductViewHolder(
                 }
             )
 
-            addOnImpression1pxListener(uiModel.recommendationItem) {
+            addOnImpression1pxListener(uiModel.recommendationItem.appLogImpressHolder) {
                 AppLogRecommendation.sendProductShowAppLog(
                     uiModel.recommendationItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
                 )

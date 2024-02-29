@@ -54,7 +54,7 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
                 }
             )
 
-            addOnImpression1pxListener(element.recommendationItem) {
+            addOnImpression1pxListener(element.recommendationItem.appLogImpressHolder) {
                 AppLogRecommendation.sendProductShowAppLog(
                     element.recommendationItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
                 )

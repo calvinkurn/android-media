@@ -43,7 +43,7 @@ class WishlistRecommendationItemViewHolder(
                     }
                 )
 
-                addOnImpression1pxListener(item.recommItem) {
+                addOnImpression1pxListener(item.recommItem.appLogImpressHolder) {
                     AppLogRecommendation.sendProductShowAppLog(
                         item.recommItem.asProductTrackModel(entranceForm = EntranceForm.PURE_GOODS_CARD)
                     )
