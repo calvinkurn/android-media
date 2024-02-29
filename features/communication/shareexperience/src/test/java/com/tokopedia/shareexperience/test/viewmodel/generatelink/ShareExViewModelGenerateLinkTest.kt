@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
 
@@ -134,7 +135,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error == null)
                 assertEquals(ShareExImageTypeEnum.CONTEXTUAL_IMAGE, updatedValue.imageType)
-                assertEquals(null, updatedValue.errorEnum)
+                assertEquals(0, updatedValue.errorHistory.size)
 
                 expectNoEvents()
             }
@@ -232,7 +233,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error == null)
                 assertEquals(ShareExImageTypeEnum.CONTEXTUAL_IMAGE, updatedValue.imageType)
-                assertEquals(null, updatedValue.errorEnum)
+                assertEquals(0, updatedValue.errorHistory.size)
 
                 expectNoEvents()
             }
@@ -323,7 +324,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error == null)
                 assertEquals(ShareExImageTypeEnum.DEFAULT, updatedValue.imageType)
-                assertEquals(null, updatedValue.errorEnum)
+                assertEquals(0, updatedValue.errorHistory.size)
 
                 expectNoEvents()
             }
@@ -412,7 +413,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error == null)
                 assertEquals(ShareExImageTypeEnum.DEFAULT, updatedValue.imageType)
-                assertEquals(null, updatedValue.errorEnum)
+                assertEquals(0, updatedValue.errorHistory.size)
 
                 expectNoEvents()
             }
@@ -453,7 +454,8 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error != null)
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, updatedValue.imageType)
-                assertEquals(ShareExIntentErrorEnum.DEFAULT_URL_ERROR, updatedValue.errorEnum)
+                assertTrue(updatedValue.errorHistory.contains(ShareExIntentErrorEnum.DEFAULT_URL_ERROR))
+                assertEquals(1, updatedValue.errorHistory.size)
 
                 expectNoEvents()
             }
@@ -499,7 +501,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals(null, initialValue.channelEnum)
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, initialValue.imageType)
                 assertEquals(false, initialValue.isLoading)
-                assertEquals(null, initialValue.errorEnum)
+                assertEquals(0, initialValue.errorHistory.size)
 
                 val updatedValue = awaitItem()
                 assert(updatedValue.intent != null)
@@ -507,7 +509,8 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals("defaultUrl", updatedValue.shortLink)
                 assertEquals(ShareExChannelEnum.OTHERS, updatedValue.channelEnum)
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, updatedValue.imageType)
-                assertEquals(ShareExIntentErrorEnum.DEFAULT_URL_ERROR, updatedValue.errorEnum)
+                assertTrue(updatedValue.errorHistory.contains(ShareExIntentErrorEnum.DEFAULT_URL_ERROR))
+                assertEquals(1, updatedValue.errorHistory.size)
 
                 expectNoEvents()
             }
@@ -539,7 +542,8 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 assertEquals("", updatedValue.shortLink)
                 assertEquals(ShareExChannelEnum.OTHERS, updatedValue.channelEnum)
                 assertEquals(ShareExImageTypeEnum.NO_IMAGE, updatedValue.imageType)
-                assertEquals(ShareExIntentErrorEnum.DEFAULT_URL_ERROR, updatedValue.errorEnum)
+                assertTrue(updatedValue.errorHistory.contains(ShareExIntentErrorEnum.DEFAULT_URL_ERROR))
+                assertEquals(1, updatedValue.errorHistory.size)
 
                 expectNoEvents()
             }
@@ -554,7 +558,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
         assertEquals(true, loadingImageGenerator.isLoading)
         assert(loadingImageGenerator.error == null)
         assertEquals(ShareExImageTypeEnum.NO_IMAGE, loadingImageGenerator.imageType)
-        assertEquals(null, loadingImageGenerator.errorEnum)
+        assertEquals(0, loadingImageGenerator.errorHistory.size)
     }
 
     private fun assertLoadingLinkGenerator(loadingLinkGenerator: ShareExChannelIntentUiState) {
@@ -565,6 +569,6 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
         assertEquals(true, loadingLinkGenerator.isLoading)
         assert(loadingLinkGenerator.error == null)
         assertEquals(ShareExImageTypeEnum.NO_IMAGE, loadingLinkGenerator.imageType)
-        assertEquals(null, loadingLinkGenerator.errorEnum)
+        assertEquals(0, loadingLinkGenerator.errorHistory.size)
     }
 }
