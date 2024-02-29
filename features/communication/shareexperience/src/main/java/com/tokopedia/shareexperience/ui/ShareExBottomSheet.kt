@@ -222,18 +222,21 @@ class ShareExBottomSheet :
                 ShareExLogger.logExceptionToServerLogger(
                     it.error,
                     userSession.deviceId,
-                    it.errorEnum.toString()
+                    it.errorHistory.joinToString { enum-> enum.name }
                 )
             }
 
-            if (it.error != null && it.errorEnum == ShareExIntentErrorEnum.AFFILIATE_ERROR) {
+            if (it.errorHistory.contains(ShareExIntentErrorEnum.AFFILIATE_ERROR) &&
+                it.shortLink.isNotBlank()
+            ) {
                 dismiss()
                 listener?.onFailGenerateAffiliateLink(it.shortLink)
+                return@collect
             }
 
             if (it.error == null ||
-                it.errorEnum == ShareExIntentErrorEnum.IMAGE_DOWNLOADER ||
-                it.errorEnum == ShareExIntentErrorEnum.DEFAULT_URL_ERROR
+                it.errorHistory.contains(ShareExIntentErrorEnum.IMAGE_DOWNLOADER) ||
+                it.errorHistory.contains(ShareExIntentErrorEnum.DEFAULT_URL_ERROR)
             ) {
                 trackActionClickChannel(
                     it.channelEnum,
@@ -373,7 +376,7 @@ class ShareExBottomSheet :
         context?.copyTextToClipboard(intentUiState.message)
         // If image fail to download, then this intent is not complete and will absolutely give error
         // Open intent chooser for better experience to user
-        if (intentUiState.errorEnum == ShareExIntentErrorEnum.IMAGE_DOWNLOADER) {
+        if (intentUiState.errorHistory.contains(ShareExIntentErrorEnum.IMAGE_DOWNLOADER)) {
             val intentChooser = Intent().apply {
                 action = Intent.ACTION_SEND
                 type = ShareExMimeTypeEnum.TEXT.textType
