@@ -39,7 +39,8 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         private const val FOURTH_SHOWCASE_INDEX = 3
         private const val FIFTH_SHOWCASE_INDEX = 4
         private const val TWO = 2
-        private const val HALF_OF_SCREEN_WIDTH = 0.5
+        private const val CONST_MAIN_IMAGE_AREA_MULTIPLIER = 0.52
+        private const val CONST_SMALL_IMAGE_AREA_MULTIPLIER = 0.48
         private const val MARGIN_8_IN_DP = 8
         private const val MARGIN_4_IN_DP = 4
         private const val TEXT_SIZE_HEIGHT_IN_DP = 12
@@ -118,18 +119,17 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         val thirdShowcase = showcases.getOrNull(FOURTH_SHOWCASE_INDEX)
         val fourthShowcase = showcases.getOrNull(FIFTH_SHOWCASE_INDEX)
 
-        val showcaseNavigationWidgetMaxWidth = getScreenWidth()
-        
+        val showcaseNavigationWidgetMaxWidth = getScreenWidth() - 24.toPx()
+
         //Main showcase
-        val mainImageMaxSize = (showcaseNavigationWidgetMaxWidth * HALF_OF_SCREEN_WIDTH).toInt()
-        
+        val mainImageMaxSize = (showcaseNavigationWidgetMaxWidth * CONST_MAIN_IMAGE_AREA_MULTIPLIER).toInt()
+
         //Small showcase
-        val smallImageTextSizeHeight = TEXT_SIZE_HEIGHT_IN_DP.toPx()
         val smallImageTextSizeMarginTop = MARGIN_4_IN_DP.toPx()
         val smallImageFirstAndSecondRowMargin = MARGIN_8_IN_DP.toPx()
-        
-        val smallImageSize = ((mainImageMaxSize - (TWO * smallImageTextSizeHeight) - (TWO * smallImageTextSizeMarginTop) - smallImageFirstAndSecondRowMargin) / TWO) 
-        
+
+        val smallImageSize = (CONST_SMALL_IMAGE_AREA_MULTIPLIER * showcaseNavigationWidgetMaxWidth / TWO).toInt() - smallImageFirstAndSecondRowMargin - smallImageTextSizeMarginTop
+
         mainShowcase?.let {
             binding?.imgMainShowcase?.size(mainImageMaxSize)
             binding?.imgMainShowcase?.loadImage(mainShowcase.imageUrl)
