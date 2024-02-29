@@ -1,24 +1,18 @@
 package com.tokopedia.product.addedit.specification.presentation.adapter.viewholder
 
-import android.content.Context
-import android.content.res.ColorStateList
 import android.view.View
-import androidx.annotation.ColorRes
-import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.setText
+import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.SIGNAL_STATUS_VARIANT
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
-import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -73,7 +67,7 @@ class SpecificationValueViewHolder(
             setMessage(errorMessage)
             isInputError = errorMessage.isNotEmpty()
             setText(selectedSpecification.data)
-            tooltipRequired?.isVisible = selectedSpecification.required
+            tooltipRequired?.isVisible = selectedSpecification.specificationVariant == SIGNAL_STATUS_VARIANT
         }
         this.selectedSpecification = selectedSpecification
     }

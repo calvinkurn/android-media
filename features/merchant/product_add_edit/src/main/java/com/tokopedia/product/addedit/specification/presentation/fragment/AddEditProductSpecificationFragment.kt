@@ -130,9 +130,9 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
     }
 
     private fun observeProductInputModel() {
-        viewModel.productInputModel.observe(viewLifecycleOwner, {
+        viewModel.productInputModel.observe(viewLifecycleOwner) {
             viewModel.getSpecifications(it.detailInputModel.categoryId)
-        })
+        }
     }
 
     private fun observeValidateSpecificationInputModelResult() {
@@ -151,11 +151,11 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
     }
 
     private fun observeErrorMessage() {
-        viewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
+        viewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
             view?.apply {
                 Toaster.build(this, errorMessage, type = Toaster.TYPE_ERROR).show()
             }
-        })
+        }
     }
 
     private fun observeAnnotationCategoryData() {

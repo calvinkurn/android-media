@@ -439,7 +439,8 @@
     <string name="action_specification_change">Ubah</string>
     <string name="action_specification_refresh">Muat Ulang</string>
     <string name="action_specification_counter">, +%1$d lainnya</string>
-    <string name="error_specification_signal_status_empty">Status sinyal wajib diisi, ya.</string>
+    <string name="error_specification_required_empty">Spesifikasi ini wajib diisi, ya.</string>
+    <string name="error_specification_emoji_input">Nomor tidak dapat menggunakan emoji.</string>
     <string name="error_specification_signal_status_empty_red"><![CDATA[<font color=\'#D6001C\'>Status sinyal belum terisi.</font>.]]></string>
 
     <!-- Product Limitation -->
