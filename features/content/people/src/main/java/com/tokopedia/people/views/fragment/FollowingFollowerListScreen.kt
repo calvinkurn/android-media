@@ -7,16 +7,26 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.zIndex
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -87,35 +97,42 @@ internal fun FollowingFollowerListScreen(
             type = NestHeaderType.SingleLine(title = profileName, onBackClicked = onBackClicked),
             modifier = Modifier.fillMaxWidth()
         )
-        NestTabs(
-            config = NestTabsConfig(
-                selectedIndex = pagerState.currentPage,
-                mode = NestTabsConfig.Mode.FIXED,
-                tabConfigs = listOf(
-                    TabConfig(
-                        iconConfig = TabConfig.IconConfig.NoIcon,
-                        text = "$totalFollowersFmt Followers",
-                        counter = -1,
-                        dotted = false,
-                        showNewLabel = false,
-                        enabled = true
-                    ),
-                    TabConfig(
-                        iconConfig = TabConfig.IconConfig.NoIcon,
-                        text = "$totalFollowingsFmt Following",
-                        counter = -1,
-                        dotted = false,
-                        showNewLabel = false,
-                        enabled = true
-                    )
-                ).toImmutableList(),
-                onTabClicked = {
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(it)
+        Box(
+            Modifier
+                .zIndex(2f)
+                .background(NestTheme.colors.NN._0)
+        ) {
+            NestTabs(
+                config = NestTabsConfig(
+                    selectedIndex = pagerState.currentPage,
+                    mode = NestTabsConfig.Mode.FIXED,
+                    tabConfigs = listOf(
+                        TabConfig(
+                            iconConfig = TabConfig.IconConfig.NoIcon,
+                            text = "$totalFollowersFmt Followers",
+                            counter = -1,
+                            dotted = false,
+                            showNewLabel = false,
+                            enabled = true
+                        ),
+                        TabConfig(
+                            iconConfig = TabConfig.IconConfig.NoIcon,
+                            text = "$totalFollowingsFmt Following",
+                            counter = -1,
+                            dotted = false,
+                            showNewLabel = false,
+                            enabled = true
+                        )
+                    ).toImmutableList(),
+                    onTabClicked = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(it)
+                        }
                     }
-                }
+                )
             )
-        )
+        }
+
         HorizontalPager(
             count = FollowListType.values.size,
             state = pagerState,
@@ -242,34 +259,59 @@ internal fun FollowListScreen(
         onPeopleClicked = ::onPeopleClicked,
         onFollowClicked = ::onFollowClicked,
         onLoadMore = ::onLoadMore,
-        onRefresh = ::onRefresh
+        onRefresh = ::onRefresh,
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun FollowListScreen(
     state: FollowListState,
     onPeopleClicked: (PeopleUiModel) -> Unit,
     onFollowClicked: (PeopleUiModel) -> Unit,
     onLoadMore: () -> Unit,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
 ) {
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = state.isRefreshing,
+        onRefresh = onRefresh,
+    )
+
     if (state.result?.isFailure == true && state.followList.isEmpty()) {
-        Box(Modifier.fillMaxSize()) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .pullRefresh(pullRefreshState)
+                .verticalScroll(rememberScrollState())
+        ) {
             FollowListErrorScreen(
                 isLoading = state.isLoading,
                 onRefreshButtonClicked = onRefresh
             )
+
+            PullRefreshIndicator(
+                refreshing = state.isRefreshing,
+                state = pullRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
         }
     } else {
-        FollowListScreen(
-            people = state.followList.toImmutableList(),
-            hasNextPage = state.hasNextPage,
-            onLoadMore = onLoadMore,
-            onPeopleClicked = onPeopleClicked,
-            onFollowClicked = onFollowClicked,
-            Modifier.fillMaxSize()
-        )
+        Box(Modifier.fillMaxSize().pullRefresh(pullRefreshState)) {
+            FollowListScreen(
+                people = state.followList.toImmutableList(),
+                hasNextPage = state.hasNextPage,
+                onLoadMore = onLoadMore,
+                onPeopleClicked = onPeopleClicked,
+                onFollowClicked = onFollowClicked,
+                Modifier.fillMaxSize()
+            )
+
+            PullRefreshIndicator(
+                refreshing = state.isRefreshing,
+                state = pullRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
+        }
     }
 }
 
@@ -277,7 +319,6 @@ internal fun FollowListScreen(
 private fun rememberPlayToaster(): PlayToaster {
     val lifecycleOwner = LocalLifecycleOwner.current
     val view = LocalView.current
-    val context = LocalContext.current
 
     return remember { PlayToaster(view, lifecycleOwner) }
 }

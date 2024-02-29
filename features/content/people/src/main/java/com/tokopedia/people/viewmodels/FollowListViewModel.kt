@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.UiEventManager
+import com.tokopedia.content.common.util.combine
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.data.UserFollowRepository
@@ -47,6 +48,7 @@ internal class FollowListViewModel @AssistedInject constructor(
     private val _followMap = MutableStateFlow(emptyMap<PeopleIdentifier, PeopleUiModel>())
     private val _nextCursor = MutableStateFlow<String?>(null)
     private val _isLoading = MutableStateFlow(false)
+    private val _isRefreshing = MutableStateFlow(false)
     private val _result = MutableStateFlow<Result<Unit>?>(null)
     private val _countFmt = MutableStateFlow("")
 
@@ -55,14 +57,16 @@ internal class FollowListViewModel @AssistedInject constructor(
         _nextCursor,
         _result,
         _isLoading,
+        _isRefreshing,
         _countFmt,
-    ) { followMap, nextCursor, result, isLoading, countFmt ->
+    ) { followMap, nextCursor, result, isLoading, isRefreshing, countFmt ->
         withContext(dispatchers.io) {
             FollowListState(
                 followList = followMap.values.toList(),
                 hasNextPage = nextCursor == null || nextCursor.isNotBlank(),
                 result = result,
                 isLoading = isLoading,
+                isRefreshing = isRefreshing,
                 countFmt = countFmt,
             )
         }
@@ -96,7 +100,7 @@ internal class FollowListViewModel @AssistedInject constructor(
     }
 
     private fun onRefresh() {
-        loadData(cursor = "")
+        loadData(cursor = "", shouldRefresh = true)
     }
 
     private fun onLoadMore() {
@@ -173,25 +177,38 @@ internal class FollowListViewModel @AssistedInject constructor(
         }
     }
 
-    private fun loadData(cursor: String = "") {
+    private fun loadData(
+        cursor: String = "",
+        shouldRefresh: Boolean = false,
+    ) {
         if (_isLoading.value) return
 
+        if (shouldRefresh) _isRefreshing.value = true
         _isLoading.value = true
+
         viewModelScope.launch(dispatchers.io) {
             val (result, nextCursor, total) = when (type) {
                 FollowListType.Follower -> getFollowers(cursor)
                 FollowListType.Following -> getFollowings(cursor)
             }
-            _result.value = result.onSuccess { followList ->
-                _followMap.update {
-                    it + followList.transformToMap()
+            _result.value = result
+                .onSuccess { followList ->
+                    _followMap.update {
+                        if (shouldRefresh) followList.transformToMap()
+                        else it + followList.transformToMap()
+                    }
                 }
-            }.map {}
+                .onFailure {
+                    if (!shouldRefresh) return@onFailure
+                    _followMap.update { emptyMap() }
+                }
+                .map {}
             _nextCursor.value = nextCursor
-            if (total != null) {
-                _countFmt.value = total
-            }
+            if (total != null) _countFmt.value = total
+
+        }.invokeOnCompletion {
             _isLoading.value = false
+            _isRefreshing.value = false
         }
     }
 

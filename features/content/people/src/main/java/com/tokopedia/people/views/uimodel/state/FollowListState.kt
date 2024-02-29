@@ -11,6 +11,7 @@ data class FollowListState(
     val hasNextPage: Boolean,
     val result: Result<Unit>?,
     val isLoading: Boolean,
+    val isRefreshing: Boolean,
     val countFmt: String,
 ) {
     companion object {
@@ -19,6 +20,7 @@ data class FollowListState(
             hasNextPage = false,
             result = Result.success(),
             isLoading = false,
+            isRefreshing = false,
             countFmt = "",
         )
     }
