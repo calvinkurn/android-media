@@ -651,6 +651,7 @@ data class DataItem(
         }
 
     private var appLog: RecommendationAppLog? = null
+    var source: ComponentSourceData = ComponentSourceData.Unknown
 
     fun getLabelPrice(): LabelsGroup? {
         return findLabelGroup(LABEL_PRICE)

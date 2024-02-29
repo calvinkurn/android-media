@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentAdditionalInfo
+import com.tokopedia.discovery2.data.ComponentSourceData
 import com.tokopedia.discovery2.data.ComponentTracker
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -42,8 +43,11 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
         val additionalInfo = response.data.component?.compAdditionalInfo
         val componentItem = getComponent(requestParams.componentId, requestParams.pageEndpoint)
 
-        val componentData = response.data.component?.data
-        componentData?.setAppLog(additionalInfo?.tracker)
+        val componentData = response.data.component?.let {
+            it.data.apply {
+                setAppLog(additionalInfo?.tracker, it.getSource())
+            }
+        }
 
         val componentsListSize = componentItem?.getComponentsItem()?.size ?: 0
         val list = withContext(Dispatchers.Default) {
@@ -239,10 +243,14 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
         return Pair(list, additionalInfo)
     }
 
-    private fun List<DataItem>?.setAppLog(tracker: ComponentTracker?) {
+    private fun List<DataItem>?.setAppLog(
+        tracker: ComponentTracker?,
+        source: ComponentSourceData,
+    ) {
         tracker?.let { componentTracker ->
             this?.forEach { dataItem ->
                 dataItem.setAppLog(componentTracker)
+                dataItem.source = source
             }
         }
     }
