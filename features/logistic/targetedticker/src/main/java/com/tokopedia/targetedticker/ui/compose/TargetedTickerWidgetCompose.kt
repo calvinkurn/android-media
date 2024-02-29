@@ -1,11 +1,9 @@
 package com.tokopedia.targetedticker.ui.compose
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.components.ticker.NestTicker
 import com.tokopedia.nest.components.ticker.NestTickerData
 import com.tokopedia.nest.components.ticker.TickerType

@@ -58,8 +58,6 @@ class ConfirmShippingComposeActivity : AppCompatActivity() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private lateinit var bottomSheetUnify: BottomSheetUnify
-
     private val confirmShippingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[ConfirmShippingComposeViewModel::class.java]
     }
@@ -77,7 +75,6 @@ class ConfirmShippingComposeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         confirmShippingViewModel.onEvent(ConfirmShippingEvent.OnCreate(orderId, mode))
-        bottomSheetUnify = BottomSheetUnify()
 
         setContent {
             val view = LocalView.current
