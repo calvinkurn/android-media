@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_PANEL
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.PRODUCT_SEARCH
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.discovery.common.analytics.SearchId
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.utils.Dimension90Utils
@@ -158,7 +158,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         AppLogSearch.eventChooseSearchFilter(
             AppLogSearch.ChooseSearchFilter(
                 searchID = SearchId.value,
-                searchType = PRODUCT_SEARCH,
+                searchType = GOODS_SEARCH,
                 keyword = queryKey,
                 ecomSortName = ecomSortName(selectedSort.name),
                 ecomFilterName = "",
@@ -225,7 +225,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         val selectedOptionWithIndex = applySortFilterModel.selectedOptionWithIndex
 
         val ecomFilterName =
-            selectedOptionWithIndex.joinToString(separator = ",") { it.second.name }
+            selectedOptionWithIndex.joinToString(separator = ",") { it.second.key }
 
         val ecomFilterPosition =
             selectedOptionWithIndex.joinToString(separator = ",") { it.first.toString() }
@@ -233,7 +233,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         AppLogSearch.eventChooseSearchFilter(
             AppLogSearch.ChooseSearchFilter(
                 searchID = SearchId.value,
-                searchType = PRODUCT_SEARCH,
+                searchType = GOODS_SEARCH,
                 keyword = queryKey,
                 ecomSortName = ecomSortName(applySortFilterModel.selectedSortName),
                 ecomFilterName = ecomFilterName,
