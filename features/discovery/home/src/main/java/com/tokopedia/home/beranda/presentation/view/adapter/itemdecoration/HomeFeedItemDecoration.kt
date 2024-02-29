@@ -72,20 +72,7 @@ class HomeFeedItemDecoration : RecyclerView.ItemDecoration() {
 
     private fun hasInternalPadding(parent: RecyclerView, viewPosition: Int): Boolean {
         val adapter = parent.adapter
-        return if (viewPosition < 0 || viewPosition > (adapter?.itemCount ?: 0) - 1) {
-            false
-        } else {
-            when (adapter?.getItemViewType(viewPosition)) {
-                HomeRecommendationItemGridViewHolder.LAYOUT,
-                HomeRecommendationItemListViewHolder.LAYOUT,
-                ContentCardViewHolder.LAYOUT,
-                HomeBannerFeedViewHolder.LAYOUT,
-                HomeRecommendationBannerTopAdsOldViewHolder.LAYOUT,
-                HomeRecommendationBannerTopAdsViewHolder.LAYOUT,
-                HomeRecommendationPlayWidgetViewHolder.LAYOUT -> true
-                else -> false
-            }
-        }
+        return !(viewPosition < 0 || viewPosition > (adapter?.itemCount ?: 0) - 1)
     }
 
     private fun isSingleItem(parent: RecyclerView): Boolean {
