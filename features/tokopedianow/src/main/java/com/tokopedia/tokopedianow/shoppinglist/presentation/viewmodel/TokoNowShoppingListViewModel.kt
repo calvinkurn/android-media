@@ -72,6 +72,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -103,8 +104,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val checkUncheckStateParams = mutableListOf<SaveShoppingListStateActionParam>()
     private val cartProducts = mutableListOf<ShoppingListProductCartItemUiModel>()
 
-    private var availableProducts: List<ShoppingListHorizontalProductCardItemUiModel> = emptyList()
-    private var unavailableProducts: List<ShoppingListHorizontalProductCardItemUiModel> = emptyList()
+    private var availableProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
+    private var unavailableProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
     private var filteredAvailableProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
     private var filteredUnavailableProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
 
@@ -448,8 +449,12 @@ class TokoNowShoppingListViewModel @Inject constructor(
         val shoppingListData = result.component2() as GetShoppingListDataResponse.Data
         val productRecommendationData = result.component3() as RecommendationWidget
 
-        availableProducts = mapAvailableShoppingList(shoppingListData.listAvailableItem)
-        unavailableProducts = mapUnavailableShoppingList(shoppingListData.listUnavailableItem)
+        availableProducts.clear()
+        unavailableProducts.clear()
+
+        availableProducts.addAll(mapAvailableShoppingList(shoppingListData.listAvailableItem))
+        unavailableProducts.addAll(mapUnavailableShoppingList(shoppingListData.listUnavailableItem))
+
         val isShoppingListAvailable = availableProducts.isNotEmpty() || unavailableProducts.isNotEmpty()
 
         filterShoppingListByProductInCart(miniCartData)
@@ -551,7 +556,12 @@ class TokoNowShoppingListViewModel @Inject constructor(
         saveShoppingListStateJob?.cancel()
         saveShoppingListStateJob = launchCatchError(
             block = {
-                 filteredAvailableProducts
+                availableProducts
+                    .updateProductSelections(
+                        isSelected = isSelected
+                    )
+
+                filteredAvailableProducts
                     .updateProductSelections(
                         isSelected = isSelected
                     )
@@ -596,6 +606,12 @@ class TokoNowShoppingListViewModel @Inject constructor(
         saveShoppingListStateJob?.cancel()
         saveShoppingListStateJob = launchCatchError(
             block = {
+                availableProducts
+                    .updateProductSelections(
+                        productId = productId,
+                        isSelected = isSelected
+                    )
+
                 filteredAvailableProducts
                     .updateProductSelections(
                         productId = productId,
@@ -723,5 +739,15 @@ class TokoNowShoppingListViewModel @Inject constructor(
             }
         }
         _updateToolbarNotification.value = true
+    }
+
+    fun updateScrollState() {
+        _layoutState.update { state ->
+            if (state is Success<LayoutModel>) {
+                state.copy(getUpdatedLayout())
+            } else {
+                state
+            }
+        }
     }
 }

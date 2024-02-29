@@ -210,6 +210,7 @@ class TokoNowShoppingListFragment :
 
                     if (uiState.data.isRequiredToScrollUp) {
                         binding.rvShoppingList.scrollToPosition(Int.ZERO)
+                        viewModel.updateScrollState()
                     }
                 }
             }
