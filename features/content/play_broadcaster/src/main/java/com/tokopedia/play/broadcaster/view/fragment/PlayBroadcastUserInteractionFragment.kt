@@ -42,6 +42,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
@@ -106,6 +107,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val ivShareLink: AppCompatImageView by detachableView(R.id.iv_share_link)
     private val iconProduct: PlayBroIconWithGreenDotView by detachableView(R.id.icon_product)
     private val icFaceFilter: PlayBroIconWithGreenDotView by detachableView(R.id.ic_face_filter)
+    private val icStatistic: IconUnify by detachableView(R.id.ic_statistic)
     private val pmvMetrics: PlayMetricsView by detachableView(R.id.pmv_metrics)
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
@@ -369,6 +371,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 childFragmentManager,
                 requireActivity().classLoader
             ).showFaceSetupBottomSheet(BeautificationSetupFragment.PageSource.Live)
+        }
+
+        icStatistic.setOnClickListener {
+            /** JOE TODO: handle this */
         }
 
         childFragmentManager.commit {
@@ -827,6 +833,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 renderBeautificationMenu(prevState?.beautificationConfig, state.beautificationConfig)
 
+                renderStatisticMenu(prevState?.selectedContentAccount, state.selectedContentAccount)
+
                 if (::exitDialog.isInitialized) {
                     val exitDialog = getExitDialog()
                     exitDialog.dialogSecondaryCTA.isLoading = state.isExiting
@@ -1204,6 +1212,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         icFaceFilter.showWithCondition(!curr.isUnknown)
         analytic.viewBeautificationEntryPointOnLivePage(parentViewModel.selectedAccount)
+    }
+
+    private fun renderStatisticMenu(
+        prev: ContentAccountUiModel?,
+        curr: ContentAccountUiModel,
+    ) {
+        if (prev == curr) return
+
+        icStatistic.showWithCondition(curr.isShop)
     }
 
     private fun showInteractiveGameResultWidget(showCoachMark: Boolean) {
