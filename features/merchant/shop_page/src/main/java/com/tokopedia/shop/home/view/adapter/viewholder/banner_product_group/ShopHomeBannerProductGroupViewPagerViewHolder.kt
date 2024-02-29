@@ -42,7 +42,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_banner_product_group_viewpager
-        private const val CONST_EXTRA_WIDTH_TAB_TITLE_DP = 4
+        private const val EXTRA_WIDTH_TAB_TITLE_DP = 4
         private const val ONE_TAB = 1
         private const val MARGIN_16_DP = 16f
         private const val THREE_TAB = 3
@@ -104,7 +104,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
                 )
                 tabTitle?.text = fragments[currentPosition].first
                 tabTitle?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                tabTitle?.layoutParams?.width = tabTitle?.measuredWidth.orZero() + CONST_EXTRA_WIDTH_TAB_TITLE_DP.toPx()
+                tabTitle?.layoutParams?.width = tabTitle?.measuredWidth.orZero() + EXTRA_WIDTH_TAB_TITLE_DP.toPx()
                 if (currentPosition == 0) tab.select(model) else tab.unselect(model)
 
                 tab.view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
