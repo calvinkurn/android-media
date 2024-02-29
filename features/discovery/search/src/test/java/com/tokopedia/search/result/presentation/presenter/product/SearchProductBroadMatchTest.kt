@@ -765,7 +765,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
     private fun `Then verify tracking event impression not hit`() {
         verify(exactly = 0) {
-            broadMatchView.trackEventImpressionBroadMatchItem(any(), any())
+            broadMatchView.trackEventImpressionBroadMatchItem(any())
         }
     }
 }

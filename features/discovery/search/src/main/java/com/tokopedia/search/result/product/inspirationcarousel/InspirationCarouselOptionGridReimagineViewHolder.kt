@@ -13,7 +13,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 class InspirationCarouselOptionGridReimagineViewHolder(
     itemView: View,
     private val inspirationCarouselListener: InspirationCarouselListener,
-    private val optionAdapterPosition: Int,
 ): AbstractViewHolder<InspirationCarouselDataView.Option.Product>(itemView) {
 
     private val binding: SearchInspirationCarouselOptionGridReimagineBinding? by viewBinding()
@@ -23,7 +22,7 @@ class InspirationCarouselOptionGridReimagineViewHolder(
             setProductModel(productCardModel(product))
 
             setOnClickListener {
-                inspirationCarouselListener.onInspirationCarouselGridProductClicked(product, optionAdapterPosition)
+                inspirationCarouselListener.onInspirationCarouselGridProductClicked(product)
             }
 
             addOnImpressionListener(product) {
@@ -31,10 +30,7 @@ class InspirationCarouselOptionGridReimagineViewHolder(
             }
 
             addOnImpression1pxListener(product.byteIOImpressHolder) {
-                inspirationCarouselListener.onInspirationCarouselGridProductImpressed1Px(
-                    product,
-                    optionAdapterPosition,
-                )
+                inspirationCarouselListener.onInspirationCarouselGridProductImpressed1Px(product)
             }
         }
     }
