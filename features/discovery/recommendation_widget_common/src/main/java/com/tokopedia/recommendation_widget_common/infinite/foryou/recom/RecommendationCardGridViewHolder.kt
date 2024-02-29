@@ -72,6 +72,8 @@ class RecommendationCardGridViewHolder constructor(
             sessionId = model.appLog.sessionId,
             requestId = model.appLog.requestId,
             moduleName = model.pageName,
+            listName = model.tabName,
+            listNum = model.tabIndex,
         )
     }
 

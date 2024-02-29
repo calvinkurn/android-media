@@ -24,6 +24,8 @@ data class ContentCardModel(
     val shopId: String,
     val pageName: String,
     val appLog: RecommendationAppLog = RecommendationAppLog(),
+    val tabIndex: Int = -1,
+    val tabName: String = ""
 ) : ImpressHolder(), ForYouRecommendationVisitable {
 
     data class LabelState(

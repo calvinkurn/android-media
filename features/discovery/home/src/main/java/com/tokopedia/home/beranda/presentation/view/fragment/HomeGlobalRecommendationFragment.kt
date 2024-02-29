@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -408,6 +407,7 @@ class HomeGlobalRecommendationFragment :
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     homeRecomCurrentPage = page
                     viewModel.fetchNextHomeRecommendation(
+                        tabIndex,
                         tabName,
                         recomId,
                         DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
@@ -977,7 +977,6 @@ class HomeGlobalRecommendationFragment :
             tabName: String,
             sourceType: String
         ): HomeGlobalRecommendationFragment {
-            Log.d("byteio2", "newInstance: foryou baru $tabIndex")
             val homeFeedFragment = HomeGlobalRecommendationFragment()
             val bundle = Bundle()
             bundle.putInt(ARG_TAB_INDEX, tabIndex)

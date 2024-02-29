@@ -16,6 +16,8 @@ data class PlayCardModel(
     val pageName: String,
     val position: Int,
     val appLog: RecommendationAppLog = RecommendationAppLog(),
+    val tabIndex: Int = -1,
+    val tabName: String = ""
 ) : ForYouRecommendationVisitable, ImpressHolder() {
 
     override fun type(typeFactory: ForYouRecommendationTypeFactory): Int {

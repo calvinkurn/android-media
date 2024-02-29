@@ -30,6 +30,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
 
     fun mapToRecommendationCardDataModel(
         getHomeRecommendationCard: GetHomeRecommendationCardResponse.GetHomeRecommendationCard,
+        tabIndex: Int,
         tabName: String,
         pageNumber: Int
     ): HomeGlobalRecommendationDataModel {
@@ -48,6 +49,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                             pageNumber,
                             index,
                             getHomeRecommendationCard.recommendationCards.size,
+                            tabIndex,
                             tabName
                         )
                     )
@@ -56,7 +58,14 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                 TYPE_RECOM_CARD -> {
                     if (getHomeRecommendationCard.layoutName != HomeRecommendationUtil.LAYOUT_NAME_LIST) {
                         homeRecommendationTypeFactoryImplList.add(
-                            mapToEntityCardRecommendationCard(card, index, getHomeRecommendationCard.pageName, getHomeRecommendationCard.appLog)
+                            mapToEntityCardRecommendationCard(
+                                card,
+                                index,
+                                getHomeRecommendationCard.pageName,
+                                getHomeRecommendationCard.appLog,
+                                tabIndex,
+                                tabName
+                            )
                         )
                     }
                 }
@@ -77,7 +86,10 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                                     topAdsImageViewModel = mapToTopAdsImageViewModel(
                                         bannerItemResponse
                                     ),
-                                    pageName = getHomeRecommendationCard.pageName
+                                    pageName = getHomeRecommendationCard.pageName,
+                                    appLog = getHomeRecommendationCard.appLog.toAppLogModel(card.recParam),
+                                    tabIndex = tabIndex,
+                                    tabName = tabName,
                                 )
                             )
                         }
@@ -97,7 +109,9 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
                                     playVideoWidgetResponse = it,
                                     pageName = getHomeRecommendationCard.pageName,
                                     position = index,
-                                    appLog = getHomeRecommendationCard.appLog
+                                    appLog = getHomeRecommendationCard.appLog,
+                                    tabIndex = tabIndex,
+                                    tabName = tabName
                                 )
                             )
                         }
@@ -118,6 +132,8 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
         pageName: String,
         position: Int,
         appLog: GetHomeRecommendationCardResponse.GetHomeRecommendationCard.AppLog,
+        tabIndex: Int,
+        tabName: String
     ): PlayCardModel {
         return PlayCardModel(
             cardId = card.id,
@@ -151,7 +167,9 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
             shopId = card.shop.id,
             pageName = pageName,
             position = position,
-            appLog = appLog.toAppLogModel(card.recParam)
+            appLog = appLog.toAppLogModel(card.recParam),
+            tabIndex = tabIndex,
+            tabName = tabName,
         )
     }
 
@@ -160,6 +178,8 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
         index: Int,
         pageName: String,
         appLog: GetHomeRecommendationCardResponse.GetHomeRecommendationCard.AppLog,
+        tabIndex: Int,
+        tabName: String
     ): ContentCardModel {
         return ContentCardModel(
             id = recommendationCard.id,
@@ -180,7 +200,9 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
             isAds = recommendationCard.isTopads,
             shopId = recommendationCard.shop.id,
             pageName = pageName,
-            appLog = appLog.toAppLogModel(recommendationCard.recParam)
+            appLog = appLog.toAppLogModel(recommendationCard.recParam),
+            tabIndex = tabIndex,
+            tabName = tabName,
         )
     }
 
@@ -237,6 +259,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
         pageNumber: Int,
         index: Int,
         cardTotal: Int,
+        tabIndex: Int,
         tabName: String
     ): RecommendationCardModel {
         val productCard = mapToProductCardModel(recommendationCard)
@@ -247,6 +270,7 @@ class HomeGlobalRecommendationCardMapper @Inject constructor(
             pageName,
             layoutName,
             (((pageNumber - Int.ONE) * cardTotal) + index + Int.ONE),
+            tabIndex,
             tabName,
             appLog.toAppLogModel(recommendationCard.recParam),
         )
