@@ -11,7 +11,9 @@ import com.tokopedia.catalog.domain.GetCatalogProductListUseCase
 import com.tokopedia.catalog.domain.GetProductListFromSearchUseCase
 import com.tokopedia.catalog.domain.model.CatalogProductItem
 import com.tokopedia.catalog.domain.model.CatalogProductListResponse
+import com.tokopedia.catalog.ui.mapper.ProductListMapper.Companion.map
 import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
+import com.tokopedia.catalog.ui.model.CatalogProductListUiModel
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
@@ -74,10 +76,10 @@ class CatalogSellerOfferingProductListViewModel @Inject constructor(
     val totalCartItem: LiveData<Int>
         get() = _totalCartItem
 
-    val productList: LiveData<Result<CatalogProductListResponse>>
+    val productList: LiveData<Result<CatalogProductListUiModel>>
         get() = _productList
 
-    private val _productList = MutableLiveData<Result<CatalogProductListResponse>>()
+    private val _productList = MutableLiveData<Result<CatalogProductListUiModel>>()
 
     private fun showAtcResult(atcResult: AddToCartDataModel) {
         if (atcResult.isStatusError()) {
@@ -129,7 +131,7 @@ class CatalogSellerOfferingProductListViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val data = getProductListUseCase.execute(params)
-                _productList.postValue(Success(data))
+                _productList.postValue(Success(data.map()))
             },
             onError = {
                 _productList.postValue(Fail(it))

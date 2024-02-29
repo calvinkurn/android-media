@@ -41,6 +41,7 @@ import com.tokopedia.catalog.ui.composeUi.component.CatalogSellerOfferingToolbar
 import com.tokopedia.catalog.ui.composeUi.component.ItemProduct
 import com.tokopedia.catalog.ui.model.CatalogFilterProductListState
 import com.tokopedia.catalog.ui.model.CatalogProductListState
+import com.tokopedia.catalog.ui.model.CatalogProductListUiModel
 import com.tokopedia.globalerror.compose.NestGlobalError
 import com.tokopedia.globalerror.compose.NestGlobalErrorType
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
@@ -76,8 +77,8 @@ fun CatalogSellerOfferingScreen(
     onClickMoreFilter: () -> Unit,
     onLoadMore: () -> Unit,
     onErrorRefresh: () -> Unit,
-    onClickAtc: (CatalogProductListResponse.CatalogGetProductList.CatalogProduct, Int) -> Unit,
-    onClickItemProduct: (CatalogProductListResponse.CatalogGetProductList.CatalogProduct, Int) -> Unit,
+    onClickAtc: (CatalogProductListUiModel.CatalogProductUiModel, Int) -> Unit,
+    onClickItemProduct: (CatalogProductListUiModel.CatalogProductUiModel, Int) -> Unit,
     hasNextPage: MutableState<Boolean>
 ) {
     val listState = rememberLazyListState()
@@ -142,8 +143,8 @@ fun CatalogSellerOfferingBody(
     lcaListener: (ChooseAddressWidget) -> Unit,
     sortFilterState: MutableState<CatalogFilterProductListState>,
     onClickMoreFilter: () -> Unit,
-    onClickAtc: (CatalogProductListResponse.CatalogGetProductList.CatalogProduct, Int) -> Unit,
-    onClickItemProduct: (CatalogProductListResponse.CatalogGetProductList.CatalogProduct, Int) -> Unit,
+    onClickAtc: (CatalogProductListUiModel.CatalogProductUiModel, Int) -> Unit,
+    onClickItemProduct: (CatalogProductListUiModel.CatalogProductUiModel, Int) -> Unit,
     productListState: MutableState<CatalogProductListState>,
     countFilter: Int,
     hasNextPage: MutableState<Boolean>,

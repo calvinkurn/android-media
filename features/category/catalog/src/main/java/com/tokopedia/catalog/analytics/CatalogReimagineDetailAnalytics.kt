@@ -26,6 +26,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_TRACKER_ID
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_USER_ID
 import com.tokopedia.catalog.domain.model.CatalogProductItem
 import com.tokopedia.catalog.domain.model.CatalogProductListResponse
+import com.tokopedia.catalog.ui.model.CatalogProductListUiModel
 import com.tokopedia.oldcatalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.oldcatalog.model.util.CatalogUtil
 import com.tokopedia.track.TrackApp
@@ -227,7 +228,7 @@ object CatalogReimagineDetailAnalytics {
         eventCategory: String,
         catalogId: String,
         trackerId: String = "",
-        item: CatalogProductListResponse.CatalogGetProductList.CatalogProduct,
+        item: CatalogProductListUiModel.CatalogProductUiModel,
         searchFilterMap: HashMap<String, String>?,
         position: Int,
         userId: String,
@@ -330,7 +331,7 @@ object CatalogReimagineDetailAnalytics {
         eventCategory: String,
         catalogId: String,
         trackerId: String = "",
-        item: CatalogProductListResponse.CatalogGetProductList.CatalogProduct,
+        item: CatalogProductListUiModel.CatalogProductUiModel,
         searchFilterMap: HashMap<String, String>?,
         position: Int,
         userId: String,

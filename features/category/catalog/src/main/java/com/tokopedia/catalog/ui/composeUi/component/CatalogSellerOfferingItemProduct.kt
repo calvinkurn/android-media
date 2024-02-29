@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.domain.model.CatalogProductListResponse
+import com.tokopedia.catalog.ui.model.CatalogProductListUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -45,9 +46,9 @@ import com.tokopedia.catalogcommon.R as catalogcommonR
 
 @Composable
 fun ItemProduct(
-    onClickItem: (CatalogProductListResponse.CatalogGetProductList.CatalogProduct) -> Unit,
-    onClickAtc: (CatalogProductListResponse.CatalogGetProductList.CatalogProduct) -> Unit,
-    catalogProduct: CatalogProductListResponse.CatalogGetProductList.CatalogProduct
+    onClickItem: (CatalogProductListUiModel.CatalogProductUiModel) -> Unit,
+    onClickAtc: (CatalogProductListUiModel.CatalogProductUiModel) -> Unit,
+    catalogProduct: CatalogProductListUiModel.CatalogProductUiModel
 ) {
     val context = LocalContext.current
 

@@ -21,104 +21,104 @@ data class CatalogProductListResponse(
 
         data class CatalogProduct(
             @SerializedName("additionalService")
-            val additionalService: AdditionalService,
+            val additionalService: AdditionalService?,
             @SerializedName("credibility")
-            val credibility: Credibility,
+            val credibility: Credibility?,
             @SerializedName("delivery")
-            val delivery: Delivery,
+            val delivery: Delivery?,
             @SerializedName("isVariant")
-            val isVariant: Boolean,
+            val isVariant: Boolean?,
             @SerializedName("labelGroups")
-            val labelGroups: List<LabelGroup>,
+            val labelGroups: List<LabelGroup>?,
             @SerializedName("mediaUrl")
-            val mediaUrl: MediaUrl,
+            val mediaUrl: MediaUrl?,
             @SerializedName("paymentOption")
-            val paymentOption: PaymentOption,
+            val paymentOption: PaymentOption?,
             @SuppressLint("Invalid Data Type")
             @SerializedName("price")
-            val price: Price,
+            val price: Price?,
             @SerializedName("productID")
-            val productID: String,
+            val productID: String?,
             @SerializedName("shop")
-            val shop: Shop,
+            val shop: Shop?,
             @SerializedName("stock")
-            val stock: Stock,
+            val stock: Stock?,
             @SerializedName("warehouseID")
-            val warehouseID: String
+            val warehouseID: String?
         ) {
             data class AdditionalService(
                 @SerializedName("name")
-                val name: String
+                val name: String?
             )
 
             data class Credibility(
                 @SerializedName("rating")
-                val rating: String,
+                val rating: String?,
                 @SerializedName("ratingCount")
-                val ratingCount: String,
+                val ratingCount: String?,
                 @SerializedName("sold")
-                val sold: String
+                val sold: String?
             )
 
             data class Delivery(
                 @SerializedName("eta")
-                val eta: String,
+                val eta: String?,
                 @SerializedName("type")
-                val type: String
+                val type: String?
             )
 
             data class LabelGroup(
                 @SerializedName("position")
-                val position: String,
+                val position: String?,
                 @SerializedName("title")
-                val title: String,
+                val title: String?,
                 @SerializedName("url")
-                val url: String
+                val url: String?
             )
 
             data class MediaUrl(
                 @SerializedName("image")
-                val image: String,
+                val image: String?,
                 @SerializedName("image300")
-                val image300: String,
+                val image300: String?,
                 @SerializedName("image500")
-                val image500: String,
+                val image500: String?,
                 @SerializedName("image700")
-                val image700: String
+                val image700: String?
             )
 
             data class PaymentOption(
                 @SerializedName("desc")
-                val desc: String,
+                val desc: String?,
                 @SerializedName("iconUrl")
-                val iconUrl: String
+                val iconUrl: String?
             )
 
             data class Price(
                 @SerializedName("original")
-                val original: String,
+                val original: String?,
                 @SerializedName("text")
-                val text: String
+                val text: String?
             )
 
             data class Shop(
                 @SerializedName("badge")
-                val badge: String,
+                val badge: String?,
                 @SerializedName("city")
-                val city: String,
+                val city: String?,
                 @SerializedName("id")
-                val id: String,
+                val id: String?,
                 @SerializedName("name")
-                val name: String
+                val name: String?
             )
 
             data class Stock(
                 @SerializedName("isHidden")
-                val isHidden: Boolean,
+                val isHidden: Boolean?,
                 @SerializedName("soldPercentage")
-                val soldPercentage: Int,
+                val soldPercentage: Int?,
                 @SerializedName("wording")
-                val wording: String
+                val wording: String?
             )
         }
     }

@@ -24,6 +24,7 @@ import com.tokopedia.catalog.ui.mapper.ProductListMapper.Companion.mapperToCatal
 import com.tokopedia.catalog.ui.model.CatalogFilterProductListState
 import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.catalog.ui.model.CatalogProductListState
+import com.tokopedia.catalog.ui.model.CatalogProductListUiModel
 import com.tokopedia.catalog.ui.viewmodel.CatalogSellerOfferingProductListViewModel
 import com.tokopedia.catalog.util.ColorConst.COLOR_DEEP_AZURE
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
@@ -82,7 +83,7 @@ class CatalogSellerOfferingFragment :
     private var sortFilter = mutableStateOf<CatalogFilterProductListState>(CatalogFilterProductListState.Loading)
     private var userAddressData: LocalCacheModel? = null
     private var hasNextPageState = mutableStateOf(false)
-    private var productList = mutableListOf<CatalogProductListResponse.CatalogGetProductList.CatalogProduct>()
+    private var productList = mutableListOf<CatalogProductListUiModel.CatalogProductUiModel>()
 
     @Inject
     lateinit var viewModel: CatalogSellerOfferingProductListViewModel
@@ -293,9 +294,9 @@ class CatalogSellerOfferingFragment :
         viewModel.productList.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    hasNextPageState.value = it.data.catalogGetProductList.products.size == limit &&
-                        productListState.value.data?.size.orZero() != it.data.catalogGetProductList.header.totalData
-                    productList.addAll(it.data.catalogGetProductList.products)
+                    hasNextPageState.value = it.data.products.size == limit &&
+                        productListState.value.data?.size.orZero() != it.data.header.totalData
+                    productList.addAll(it.data.products)
                     productListState.value = CatalogProductListState.Success(productList)
                 }
 
@@ -586,7 +587,7 @@ class CatalogSellerOfferingFragment :
             getSortFilterCount(viewModel.searchParameter.getSearchParameterMap())
     }
 
-    private fun onClickAtc(catalogProduct: CatalogProductListResponse.CatalogGetProductList.CatalogProduct, position: Int) {
+    private fun onClickAtc(catalogProduct: CatalogProductListUiModel.CatalogProductUiModel, position: Int) {
         CatalogReimagineDetailAnalytics.sendEventAtc(
             event = CatalogTrackerConstant.EVENT_NAME_PRODUCT_CLICK,
             eventAction = CatalogTrackerConstant.EVENT_ACTION_CLICK_ADD_TO_CART,
@@ -650,7 +651,7 @@ class CatalogSellerOfferingFragment :
         initLoadData()
     }
 
-    private fun onClickItemProduct(catalogProduct: CatalogProductListResponse.CatalogGetProductList.CatalogProduct, position: Int) {
+    private fun onClickItemProduct(catalogProduct: CatalogProductListUiModel.CatalogProductUiModel, position: Int) {
         CatalogReimagineDetailAnalytics.sendEvent(
             event = CatalogTrackerConstant.EVENT_NAME_PRODUCT_CLICK,
             eventAction = CatalogTrackerConstant.EVENT_ACTION_CLICK_PRODUCT,
