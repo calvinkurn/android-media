@@ -30,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
+            android:textIsSelectable="true"
             android:gravity="center"
             android:text="APP LOG DEVICE ID:"
             app:unifyButtonSize="medium"
