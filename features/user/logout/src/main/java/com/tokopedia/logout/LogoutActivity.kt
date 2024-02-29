@@ -24,13 +24,6 @@ import com.gojek.kyc.plus.getKycSdkLogDirectoryPath
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.scp.auth.GotoSdk
-import com.scp.auth.common.utils.ScpUtils
-import com.scp.auth.common.utils.TkpdAdditionalHeaders
-import com.scp.login.core.domain.contracts.listener.LSdkLogoutCompletionListener
-import com.scp.login.core.domain.contracts.listener.LSdkOneTapListener
-import com.scp.login.core.domain.logout.mappers.LogoutError
-import com.scp.login.core.domain.onetaplogin.mappers.OneTapLoginError
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -118,78 +111,15 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         showLoading()
         saveLoginReminderData()
 
-        if (ScpUtils.isGotoLoginEnabled()) {
-            try {
-                migrateTokenIfNot()
-                if (isSaveSession) {
-                    logoutAndEnableOcl()
-                } else {
-                    logoutUser()
-                }
-            } catch (e: Exception) {
-                showErrorDialogWithOk("Terjadi kesalahan") {
-                    finish()
-                }
-            }
+        if (isClearDataOnly) {
+            clearData()
         } else {
-            if (isClearDataOnly) {
-                clearData()
+            if (isSaveSession) {
+                logoutViewModel.doLogout(LogoutUseCase.PARAM_SAVE_SESSION)
             } else {
-                if (isSaveSession) {
-                    logoutViewModel.doLogout(LogoutUseCase.PARAM_SAVE_SESSION)
-                } else {
-                    logoutViewModel.doLogout()
-                }
+                logoutViewModel.doLogout()
             }
         }
-    }
-
-    private fun logoutUser() {
-        GotoSdk.LSDKINSTANCE?.logout(
-            additionalHeaders = TkpdAdditionalHeaders(this),
-            logoutCompletionListener = object: LSdkLogoutCompletionListener {
-            override fun onLogoutSuccessful() {
-                lifecycleScope.launch {
-                    clearData()
-                }
-            }
-
-            override fun onLogoutFailed(error: LogoutError) {
-                lifecycleScope.launch {
-                    showErrorDialogWithRetry(error.error.message ?: "Terjadi kesalahan") {
-                        logoutUser()
-                    }
-                }
-            }
-        })
-    }
-
-    /*
-     Edge case: To make sure the token is migrated to login sdk before logout.
-     Example case: User logged in with old flow and then they receive the scp rollence and also the app hasn't restarted,
-     at the logout flow the app will use new logout func from scp and it will fail because the token is not yet migrated.
-     Note: access token is mandatory for login sdk logout flow.
-     We already handle the token migration at app launch (it mean user needs to relaunch the app)
-     */
-    private fun migrateTokenIfNot() {
-        if (GotoSdk.LSDKINSTANCE?.getAccessToken()?.isEmpty() == true) {
-            ScpUtils.saveTokens(userSession.accessToken, EncoderDecoder.Decrypt(userSession.freshToken, userSession.refreshTokenIV))
-        }
-    }
-
-    private fun logoutAndEnableOcl() {
-        GotoSdk.LSDKINSTANCE?.enableOneTapLogin(lifecycle, object: LSdkOneTapListener {
-            override fun onSuccess() {
-                logoutUser()
-            }
-            override fun onError(error: OneTapLoginError) {
-                lifecycleScope.launch {
-                    showErrorDialogWithRetry(error.error.message ?: "") {
-                        logoutAndEnableOcl()
-                    }
-                }
-            }
-        })
     }
 
     private fun getParam() {
@@ -254,45 +184,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }.show()
     }
 
-    private fun showErrorDialogWithOk(errorMessage: String, retryAction: () -> Unit) {
-        DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(R.string.logout))
-            setDescription(errorMessage)
-            setPrimaryCTAText("Oke")
-            setCancelable(false)
-            setOverlayClose(false)
-            setPrimaryCTAClickListener {
-                retryAction.invoke()
-                dismiss()
-            }
-        }.show()
-    }
-
-    private fun showErrorDialogWithRetry(errorMessage: String, retryAction: () -> Unit) {
-        DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(R.string.logout))
-            setDescription(errorMessage)
-            setPrimaryCTAText(getString(R.string.try_again))
-            setCancelable(false)
-            setOverlayClose(false)
-            setPrimaryCTAClickListener {
-                retryAction.invoke()
-                dismiss()
-            }
-        }.show()
-    }
-
-    /* Manually delete the lsdk token when the rollence off and the token is not empty */
-    private fun clearLsdkTokens() {
-        if (!ScpUtils.isGotoLoginEnabled()) {
-            try {
-                if (GotoSdk.LSDKINSTANCE?.getAccessToken()?.isNotEmpty() == true) {
-                    ScpUtils.clearTokens()
-                }
-            } catch (ignored: Exception) { }
-        }
-    }
-
     private fun clearData() {
         hideLoading()
         clearCacheGotoKyc()
@@ -313,7 +204,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         clearTemporaryTokenForSeamless()
         instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
-        clearLsdkTokens()
         userSession.logoutSession()
         TkpdFirebaseAnalytics.getInstance(this).setUserId(null)
 

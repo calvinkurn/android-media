@@ -205,7 +205,6 @@ includeIfEnabled("features:user:loginfingerprint")
 includeIfEnabled("features:user:notif-troubleshooter")
 includeIfEnabled("features:user:additional_check")
 includeIfEnabled("features:user:telephony_masking")
-includeIfEnabled("features:scp:auth")
 
 includeIfEnabled("features:category:age_restriction")
 includeIfEnabled("features:category:basemvvm")

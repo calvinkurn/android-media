@@ -128,12 +128,6 @@ object ApplinkConstInternalUserPlatform {
     const val COTP = "$NEW_INTERNAL_USER/cotp?$PARAM_OTP_TYPE={otp-type}"
 
     /**
-     * please refer [com.scp.auth.verification.ScpVerificationActivity]
-     * Applink: tokopedia-android-internal://user/scp-otp
-     */
-    const val SCP_OTP = "$NEW_INTERNAL_USER/scp-otp"
-
-    /**
      * LoginByQrResultActivity
      * @Applink : tokopedia-android-internal://user/qr-login-result
      **/
@@ -288,12 +282,6 @@ object ApplinkConstInternalUserPlatform {
      * @Applink : tokopedia-android-internal://user/profile-completion
      **/
     const val PROFILE_COMPLETION = "$NEW_INTERNAL_USER/profile-completion"
-
-    /**
-     * ScpAuthActivity
-     * @Applink : tokopedia-android-internal://user/scp-login
-     **/
-    const val SCP_LOGIN = "$NEW_INTERNAL_USER/scp-login"
 
     /**
      * AddNameActivity
