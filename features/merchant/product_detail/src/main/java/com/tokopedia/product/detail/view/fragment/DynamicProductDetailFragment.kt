@@ -36,6 +36,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -542,6 +543,7 @@ open class DynamicProductDetailFragment :
     private var campaignId: String = ""
     private var variantId: String = ""
     private var prefetchCacheId: String = ""
+    private var hasApplogScrollListener: Boolean = false
 
     // Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -653,6 +655,7 @@ open class DynamicProductDetailFragment :
         }
 
         setPDPDebugMode()
+        trackVerticalScroll()
     }
 
     private fun onClickDynamicOneLinerPromo() {
@@ -5547,6 +5550,12 @@ open class DynamicProductDetailFragment :
             intent.putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, screenName)
             startActivity(intent)
         }
+    }
+
+    fun trackVerticalScroll() {
+        if(hasApplogScrollListener) return
+        getRecyclerView()?.addVerticalTrackListener()
+        hasApplogScrollListener = true
     }
 
     // Will be delete soon

@@ -32,7 +32,7 @@ data class RecommendationVerticalModel(
             listener: RecommendationWidgetListener?,
             userId: String
         ): RecommendationVerticalModel = RecommendationVerticalModel(
-            visitable = RecommendationVisitable.create(metadata, trackingModel, userId),
+            visitable = RecommendationVisitable.create(metadata, trackingModel, userId, recommendationWidget.appLog),
             widget = recommendationWidget,
             source = source,
             listener = listener,

@@ -144,7 +144,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
         pageName = pageName,
         recommendationBanner = campaign.mapToBannerData(),
         isTokonow = isTokonow(),
-        endDate = campaign.endDate
+        endDate = campaign.endDate,
+        appLog = appLog.toAppLogModel(),
     )
 }
 

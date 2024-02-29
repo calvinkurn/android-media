@@ -112,7 +112,7 @@ class VerticalTrackScrollListener(
             val viewHolder = findViewHolderForAdapterPosition(i) ?: break@loop
             (viewHolder as? AppLogRecTriggerInterface)?.let {
                 if(it.isEligibleToTrack()) {
-                    recommendationTriggerObject = it.getRecommendationTriggerObject()
+                    recommendationTriggerObject = it.getRecommendationTriggerObject() ?: return true
                     return true
                 }
             }

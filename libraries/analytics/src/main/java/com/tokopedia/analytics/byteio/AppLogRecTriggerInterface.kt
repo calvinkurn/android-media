@@ -5,7 +5,7 @@ interface AppLogRecTriggerInterface {
     /**
      * Recommendation session id from recommendation response
      */
-    fun getRecommendationTriggerObject() : RecommendationTriggerObject
+    fun getRecommendationTriggerObject() : RecommendationTriggerObject?
 
     /**
      * Override this method if the ViewHolder used are shared for recom & no-recom use.
