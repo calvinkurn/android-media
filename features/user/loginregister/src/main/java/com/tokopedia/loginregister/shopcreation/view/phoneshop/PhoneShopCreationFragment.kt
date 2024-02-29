@@ -29,7 +29,7 @@ import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
-import com.tokopedia.loginregister.shopcreation.data.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.shopcreation.data.UserProfileValidate
 import com.tokopedia.loginregister.shopcreation.util.PhoneNumberTextWatcher
 import com.tokopedia.loginregister.shopcreation.view.base.BaseShopCreationFragment

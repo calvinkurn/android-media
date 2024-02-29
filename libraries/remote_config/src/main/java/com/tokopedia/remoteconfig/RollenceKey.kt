@@ -3,10 +3,6 @@ package com.tokopedia.remoteconfig
 object RollenceKey {
 
     //    Shop Page
-    const val AB_TEST_SHOP_FOLLOW_BUTTON_KEY = "shop_follow_aug2021"
-    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD = "follow_white_small"
-    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
-    const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
     const val AB_TEST_SHOP_AFFILIATE_SHARE_ICON = "shareIconShopAff"
     const val AB_TEST_SHOP_RE_IMAGINED = "shop_page_reimagined"
 
@@ -24,12 +20,11 @@ object RollenceKey {
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_KEY = "loadtime_homepage_an"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL = "control_variant"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_EXP = "experiment_variant"
+    const val HOME_MEGATAB = "megatab_ff"
+    const val HOME_MISSION_SIZE_KEY = "mission_px"
+    const val HOME_MISSION_SIZE_CONTROL = "control_var"
+    const val HOME_MISSION_SIZE_VARIANT = "exp_var"
     // end of home rollence section
-
-    // navigation rollence section
-    const val ME_PAGE_EXP = "GlobalMenuRV"
-    const val ME_PAGE_VARIANT = "Varian1"
-    // end of navigation rollence section
 
     // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
@@ -44,6 +39,8 @@ object RollenceKey {
     const val ICON_JUMPER_DEFAULT = "control_variant"
     const val ICON_JUMPER_EXP = "VariantA"
     const val ICON_JUMPER = "IconJumper"
+    const val ICON_JUMPER_SRE_KEY = "SREbottomnav"
+    const val ICON_JUMPER_SRE_VALUE = "GetIcon"
 
     // Auto Complete
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
@@ -123,22 +120,13 @@ object RollenceKey {
     const val WISHLIST_AFFILIATE_TICKER = "aff_ticker_col"
 
     // Search Reimagine
-    const val SEARCH_1_INST_AUTO = "search_1_inst_auto"
+    const val SEARCH_1_INST_AUTO = "inst_auto_v2"
     const val SEARCH_1_INST_AUTO_CONTROL = "control_variant"
-    const val SEARCH_1_INST_AUTO_VARIANT_1 = "variant_1"
-    const val SEARCH_1_INST_AUTO_VARIANT_2 = "variant_2"
-    const val SEARCH_1_INST_AUTO_VARIANT_3 = "variant_3"
-    const val SEARCH_1_INST_AUTO_VARIANT_4 = "variant_4"
-    const val SEARCH_2_COMPONENT = "search_2_component"
-    const val SEARCH_2_COMPONENT_CONTROL = "control_variant"
-    const val SEARCH_2_COMPONENT_CAROUSEL_VAR = "ads_crsl_var"
-    const val SEARCH_2_COMPONENT_QF_VAR = "ads_crsl_qf_var"
-    const val SEARCH_3_PRODUCT_CARD = "search_3_pc"
-    const val SEARCH_3_PRODUCT_CARD_CONTROL = "control_variant"
-    const val SEARCH_3_PRODUCT_CARD_VAR_1A = "var_1a"
-    const val SEARCH_3_PRODUCT_CARD_VAR_1B = "var_1b"
-    const val SEARCH_3_PRODUCT_CARD_VAR_2A = "var_2a"
-    const val SEARCH_3_PRODUCT_CARD_VAR_2B = "var_2b"
+    const val SEARCH_1_INST_AUTO_VARIANT_1 = "variant_1_is"
+    const val SEARCH_1_INST_AUTO_VARIANT_2 = "variant_2_is"
+    const val SEARCH_1_INST_AUTO_VARIANT_3 = "variant_1_ac"
+    const val SEARCH_1_INST_AUTO_VARIANT_4 = "variant_2_ac"
+    const val PRODUCT_CARD_SRE_2024 = "productcard_sre2024"
 
     const val ANDROID_INTERNAL_TEST = "android_internal"
 }

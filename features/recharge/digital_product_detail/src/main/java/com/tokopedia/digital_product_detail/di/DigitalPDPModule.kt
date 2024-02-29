@@ -8,6 +8,8 @@ import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
+import com.tokopedia.common.topupbills.data.source.ContactDataSource
+import com.tokopedia.common.topupbills.data.source.ContactDataSourceImpl
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
@@ -153,5 +155,11 @@ class DigitalPDPModule {
     @DigitalPDPScope
     fun provideDigitalPDPDataPlanPerformanceCallback(): DigitalPDPDataPlanPerformanceCallback {
         return DigitalPDPDataPlanPerformanceCallback()
+    }
+
+    @Provides
+    @DigitalPDPScope
+    fun provideContactDataSource(@ApplicationContext context: Context): ContactDataSource {
+        return ContactDataSourceImpl(context.contentResolver)
     }
 }

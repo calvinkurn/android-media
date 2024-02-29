@@ -55,7 +55,13 @@
                     "title": "Terjual 72",
                     "position": "integrity",
                     "type": "textDarkGrey",
-                    "url": ""
+                    "url": "",
+                    "styles": [
+                      {
+                        "key": "text-color",
+                        "value": "#FF0000"
+                      }
+                    ]
                   }
                 ],
                 "shop": {

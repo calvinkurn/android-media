@@ -13,7 +13,9 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+class ComparisonWidgetItemViewHolder constructor(
+    val view: View
+): RecyclerView.ViewHolder(view), ComparisonViewHolder {
 
     private var binding: ItemComparisonWidgetBinding? by viewBinding()
 
@@ -22,7 +24,7 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
     }
     val context: Context = view.context
 
-    fun bind(
+    override fun bind(
             comparisonModel: ComparisonModel,
             comparisonListModel: ComparisonListModel,
             comparisonWidgetInterface: ComparisonWidgetInterface,

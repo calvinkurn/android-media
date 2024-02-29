@@ -1,8 +1,0 @@
-query {
-    GetDynamicOnboarding {
-        enable
-        config
-        message
-        error_message
-    }
- }

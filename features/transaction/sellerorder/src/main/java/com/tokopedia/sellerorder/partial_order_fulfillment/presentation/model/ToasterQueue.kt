@@ -1,7 +1,7 @@
 package com.tokopedia.sellerorder.partial_order_fulfillment.presentation.model
 
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.sellerorder.orderextension.presentation.model.StringRes
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
 
 data class ToasterQueue(

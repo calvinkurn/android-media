@@ -2,12 +2,12 @@ package com.tokopedia.autocompletecomponent.initialstate.recentsearch
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteSingleLineItemBinding
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecentSearchSingleLineItemViewHolder(
@@ -30,7 +30,7 @@ class RecentSearchSingleLineItemViewHolder(
 
     private fun bindIconSearch(item: BaseItemInitialStateSearch) {
         binding?.iconImage?.let {
-            ImageHandler.loadImage2(it, item.imageUrl, R.drawable.autocomplete_ic_time)
+            it.loadImageWithError(item.imageUrl, R.drawable.autocomplete_ic_time)
         }
     }
 
@@ -42,11 +42,7 @@ class RecentSearchSingleLineItemViewHolder(
 
     private fun bindRemoveButton(item: BaseItemInitialStateSearch) {
         binding?.actionShortcutButton?.shouldShowWithAction(item.shortcutImage.isNotEmpty()) {
-            ImageHandler.loadImage2(
-                binding?.actionShortcutButton,
-                item.shortcutImage,
-                R.drawable.autocomplete_ic_remove
-            )
+            binding?.actionShortcutButton?.loadImageWithError(item.shortcutImage, R.drawable.autocomplete_ic_remove)
         }
     }
 

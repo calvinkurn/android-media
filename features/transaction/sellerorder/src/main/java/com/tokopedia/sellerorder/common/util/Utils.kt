@@ -15,7 +15,7 @@ import android.view.View
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithCacheData
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
@@ -204,7 +204,7 @@ object Utils {
 
     internal fun GlobalError.setUserNotAllowedToViewSom(onActionClick: () -> Unit) {
         val permissionGroup = SellerHomePermissionGroup.ORDER
-        ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
+        errorIllustration.loadImageWithCacheData(AdminPermissionUrl.ERROR_ILLUSTRATION)
         errorTitle.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_title, permissionGroup)
         errorDescription.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_desc, permissionGroup)
         errorAction.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_action)

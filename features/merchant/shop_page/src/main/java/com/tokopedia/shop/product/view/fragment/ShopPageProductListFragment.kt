@@ -88,7 +88,6 @@ import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivit
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
-import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
@@ -113,8 +112,8 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
-import com.tokopedia.merchantvoucher.R as merchantvoucherR
 import com.tokopedia.filter.R as filterR
+import com.tokopedia.merchantvoucher.R as merchantvoucherR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopPageProductListFragment :
@@ -1996,6 +1995,10 @@ class ShopPageProductListFragment :
 
     override fun getPatternColorType(): String {
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyPatternColorType().orEmpty()
+    }
+
+    override fun getBackgroundColor(): String {
+        return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBodyBackgroundHexColor().orEmpty()
     }
 
     private fun getShopHeaderBottomViewContainer(): View? {

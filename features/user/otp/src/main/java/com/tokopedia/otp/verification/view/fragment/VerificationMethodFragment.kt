@@ -238,9 +238,6 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                 analytics.trackClickMethodOtpButton(otpData.otpType, modeList.modeText)
                 try {
                     when (modeList.modeText) {
-                        OtpConstant.OtpMode.MISCALL -> {
-                            (activity as VerificationActivity).goToOnboardingMiscallPage(modeList)
-                        }
                         SILENT_VERIFICATION -> {
                             // Goto silent verification page
                             onSilentVerificationClicked(modeList)
@@ -449,11 +446,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     private fun skipView(modeListData: ModeListData) {
         viewmodel.done = true
-        if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
-            (activity as VerificationActivity).goToOnboardingMiscallPage(modeListData)
-        } else {
-            (activity as VerificationActivity).goToVerificationPage(modeListData, isMoreThanOneMethod)
-        }
+        (activity as VerificationActivity).goToVerificationPage(modeListData, isMoreThanOneMethod)
     }
 
     private fun onFailedGetVerificationMethod(): (Throwable) -> Unit {

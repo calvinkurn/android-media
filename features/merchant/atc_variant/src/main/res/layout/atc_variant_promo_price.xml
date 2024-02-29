@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="MissingDefaultResource">
+
+    <LinearLayout
+        android:id="@+id/atc_variant_promo_container_text_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="2dp"
+        android:paddingHorizontal="6dp"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/atc_variant_promo_icon_left"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="4dp"
+            tools:src="@tools:sample/avatars" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/atc_variant_promo_txt_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="Rp.9.000.0000000000000000000000000000000000000" />
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/atc_variant_promo_price_original_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_NN950"
+        android:maxLines="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/atc_variant_promo_container_text_icon"
+        app:typographyType="paragraph_3"
+        tools:text="Rp.9.000.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/atc_variant_promo_price_slash_price"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@+id/atc_variant_promo_price_original_price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/atc_variant_promo_price_original_price"
+        app:layout_constraintTop_toTopOf="@+id/atc_variant_promo_price_original_price"
+        app:typographyType="paragraph_3"
+        tools:text="Rp.19.000.000" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
