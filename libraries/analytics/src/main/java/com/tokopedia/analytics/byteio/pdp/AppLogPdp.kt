@@ -12,6 +12,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePreviousPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
+import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastData
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
@@ -37,7 +38,7 @@ object AppLogPdp {
         }
 
         AppLogAnalytics.send(EventName.ENTER_PRODUCT_DETAIL, JSONObject().also {
-            it.addPage()
+            it.put(PAGE_NAME, getLastData(PAGE_NAME))
             it.addEntranceForm()
             it.addSourcePageType()
             it.addSourceModule()
