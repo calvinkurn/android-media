@@ -1,4 +1,4 @@
-package com.tokopedia.catalog.ui.activity.sellerOfferingList
+package com.tokopedia.catalog.ui.composeUi.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,7 +40,6 @@ import com.tokopedia.nest.principles.utils.IconSource
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.catalog.R as catalogR
 import com.tokopedia.localizationchooseaddress.R as localizationchooseaddressR
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 
 @Preview

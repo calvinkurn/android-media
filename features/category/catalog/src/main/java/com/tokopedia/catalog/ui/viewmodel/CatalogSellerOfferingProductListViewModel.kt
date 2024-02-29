@@ -74,10 +74,10 @@ class CatalogSellerOfferingProductListViewModel @Inject constructor(
     val totalCartItem: LiveData<Int>
         get() = _totalCartItem
 
-    val productList: LiveData<Result<List<CatalogProductListResponse.CatalogGetProductList.CatalogProduct>>>
+    val productList: LiveData<Result<CatalogProductListResponse>>
         get() = _productList
 
-    private val _productList = MutableLiveData<Result<List<CatalogProductListResponse.CatalogGetProductList.CatalogProduct>>>()
+    private val _productList = MutableLiveData<Result<CatalogProductListResponse>>()
 
     private fun showAtcResult(atcResult: AddToCartDataModel) {
         if (atcResult.isStatusError()) {
@@ -128,7 +128,7 @@ class CatalogSellerOfferingProductListViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val data = getProductListUseCase.execute(params).catalogGetProductList.products
+                val data = getProductListUseCase.execute(params)
                 _productList.postValue(Success(data))
             },
             onError = {

@@ -1,4 +1,4 @@
-package com.tokopedia.catalog.ui.activity.sellerOfferingList
+package com.tokopedia.catalog.ui.composeUi.component
 
 import android.content.Context
 import androidx.compose.foundation.background
@@ -67,12 +67,15 @@ fun ItemProduct(
         it.position == "overlay_2"
     }
 
-    Column(
-        Modifier.clickable {
+    Column(Modifier
+        .clickable {
             onClickItem.invoke(catalogProduct)
-        }
-    ) {
-        Row(Modifier.background(colorResource(id = R.color.catalog_dms_light_color)), verticalAlignment = Alignment.CenterVertically) {
+        }) {
+        Spacer(modifier = Modifier.height(12.dp))
+        Row(
+            Modifier
+                .background(colorResource(id = R.color.catalog_dms_light_color)), verticalAlignment = Alignment.CenterVertically)
+        {
             Spacer(modifier = Modifier.width(16.dp))
             if (catalogProduct.stock.isHidden) {
                 ProductVisualWithoutStock(
@@ -124,6 +127,14 @@ fun ItemProduct(
                 Modifier
                     .height(44.dp)
                     .width(44.dp)
+                    .clip(
+                        RoundedCornerShape(
+                            topEnd = 0.dp,
+                            topStart = 10.dp,
+                            bottomEnd = 0.dp,
+                            bottomStart = 10.dp
+                        )
+                    )
                     .border(
                         0.5.dp,
                         colorResource(id = R.color.catalog_dms_misty_blue),
@@ -134,7 +145,6 @@ fun ItemProduct(
                             bottomStart = 10.dp
                         )
                     )
-                    .padding(10.dp)
                     .clickable {
                         onClickAtc.invoke(catalogProduct)
                     }
@@ -150,13 +160,7 @@ fun ItemProduct(
                 )
             }
         }
-        Spacer(Modifier.height(16.dp))
-        Divider(
-            Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-        )
-        Spacer(Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -220,6 +224,11 @@ private fun ProductVisualWithStock(
                         modifier = Modifier
                             .height(25.dp)
                             .width(48.dp)
+                            .clip(
+                                RoundedCornerShape(
+                                    bottomStart = 12.dp
+                                )
+                            )
                             .align(Alignment.BottomStart)
                     )
                 }
@@ -247,7 +256,8 @@ private fun ProductVisualWithStock(
                         isSmooth = true,
                         colorType = ProgressBarUnify.COLOR_RED,
                         icon = ContextCompat.getDrawable(context, catalogcommonR.drawable.catalog_ic_stockbar_progress_top),
-                        height = ProgressBarUnify.SIZE_SMALL
+                        height = ProgressBarUnify.SIZE_SMALL,
+                        trackColor = ContextCompat.getColor(context,R.color.catalog_dms_misty_blue)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                 }

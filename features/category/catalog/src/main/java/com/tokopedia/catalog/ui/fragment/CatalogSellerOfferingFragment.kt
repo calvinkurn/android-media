@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
@@ -20,9 +19,11 @@ import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.domain.model.CatalogProductListResponse
-import com.tokopedia.catalog.ui.activity.sellerOfferingList.CatalogSellerOfferingScreen
+import com.tokopedia.catalog.ui.composeUi.screen.CatalogSellerOfferingScreen
 import com.tokopedia.catalog.ui.mapper.ProductListMapper.Companion.mapperToCatalogProductAtcUiModel
+import com.tokopedia.catalog.ui.model.CatalogFilterProductListState
 import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
+import com.tokopedia.catalog.ui.model.CatalogProductListState
 import com.tokopedia.catalog.ui.viewmodel.CatalogSellerOfferingProductListViewModel
 import com.tokopedia.catalog.util.ColorConst.COLOR_DEEP_AZURE
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
@@ -38,6 +39,8 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
@@ -65,21 +68,21 @@ class CatalogSellerOfferingFragment :
     private var catalogId = ""
     private var minPrice = ""
     private var maxPrice = ""
-    private var hasNextPage = true
     private var userSession: UserSession? = null
     private var catalogUrl: String = ""
     private var page = 0
     private var selectedMoreFilterCount = mutableStateOf(0)
     private var throwableError = mutableStateOf<Throwable?>(null)
-
-    private var productListState = mutableStateListOf<CatalogProductListResponse.CatalogGetProductList.CatalogProduct>()
+    private var productListState = mutableStateOf<CatalogProductListState>(CatalogProductListState.Loading)
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var productTitleState = mutableStateOf(String.EMPTY)
     private var productVariantState = mutableStateOf(String.EMPTY)
     private var backgroundState = mutableStateOf(String.EMPTY)
     private var totalItemCart = mutableStateOf(0)
-    private var sortFilter = mutableStateOf(listOf<SortFilter>())
+    private var sortFilter = mutableStateOf<CatalogFilterProductListState>(CatalogFilterProductListState.Loading)
     private var userAddressData: LocalCacheModel? = null
+    private var hasNextPageState = mutableStateOf(false)
+    private var productList = mutableListOf<CatalogProductListResponse.CatalogGetProductList.CatalogProduct>()
 
     @Inject
     lateinit var viewModel: CatalogSellerOfferingProductListViewModel
@@ -134,7 +137,7 @@ class CatalogSellerOfferingFragment :
                         productVariantState.value,
                         backgroundState.value.stringHexColorParseToInt(),
                         totalItemCart.value,
-                        sortFilter.value.toMutableList(),
+                        sortFilter,
                         productListState,
                         selectedMoreFilterCount.value,
                         throwableError.value,
@@ -151,7 +154,8 @@ class CatalogSellerOfferingFragment :
                         onLoadMore = ::loadMoreData,
                         onClickItemProduct = ::onClickItemProduct,
                         onErrorRefresh = ::onRefresh,
-                        onClickAtc = ::onClickAtc
+                        onClickAtc = ::onClickAtc,
+                        hasNextPage = hasNextPageState
                     )
                 }
             }
@@ -167,7 +171,6 @@ class CatalogSellerOfferingFragment :
         catalogId = arguments?.getString(ARG_CATALOG_ID).orEmpty()
         minPrice = arguments?.getString(ARG_MIN_PRICE).orEmpty()
         maxPrice = arguments?.getString(ARG_MAX_PRICE).orEmpty()
-
         initChooseAddressWidget()
         initSearchQuickSortFilter()
         viewModel.fetchQuickFilters(getQuickFilterParams())
@@ -234,7 +237,7 @@ class CatalogSellerOfferingFragment :
 
     private fun initLoadData(isFilter: Boolean = false) {
         page = 0
-        productListState.clear()
+        productListState.value = CatalogProductListState.Loading
         if (isFilter) {
             viewModel.quickFilterClicked.value = true
             setSortFilterIndicatorCounter()
@@ -290,12 +293,13 @@ class CatalogSellerOfferingFragment :
         viewModel.productList.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    hasNextPage = it.data.size == limit
-                    productListState.addAll(it.data)
+                    hasNextPageState.value = it.data.catalogGetProductList.products.size == limit &&
+                        productListState.value.data?.size.orZero() != it.data.catalogGetProductList.header.totalData
+                    productList.addAll(it.data.catalogGetProductList.products)
+                    productListState.value = CatalogProductListState.Success(productList)
                 }
 
                 is Fail -> {
-//                    showGetListError(it.throwable)
                     throwableError.value = it.throwable
                 }
             }
@@ -445,7 +449,7 @@ class CatalogSellerOfferingFragment :
         processQuickFilter(quickFilterData)
     }
     private fun setQuickFilter(items: List<SortFilter>) {
-        sortFilter.value = items
+        sortFilter.value = CatalogFilterProductListState.Success(items.toMutableList())
     }
 
     private fun initSearchQuickSortFilter() {
@@ -639,6 +643,8 @@ class CatalogSellerOfferingFragment :
 
     private fun onRefresh() {
         throwableError.value = null
+        chooseAddressWidget?.show()
+        fetchUserLatestAddressData()
         viewModel.fetchQuickFilters(getQuickFilterParams())
         viewModel.fetchDynamicAttribute(getDynamicFilterParams())
         initLoadData()
