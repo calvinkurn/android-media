@@ -6,6 +6,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceInfo
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceInfoCart
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addRequestId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
@@ -167,6 +168,7 @@ object AppLogPdp {
             it.addEnterFrom()
             it.addSourcePreviousPage()
             it.addEnterMethod()
+            it.addEntranceInfoCart()
             it.put("cart_item_cnt", cartCount)
             it.put("cart_unavailable_cnt", cartUnavailCount)
         })
@@ -177,6 +179,7 @@ object AppLogPdp {
             it.addPage()
             it.addSourcePreviousPage()
             it.addEntranceForm()
+            it.addEntranceInfoCart()
             it.put("button_name", model.buttonName)
             it.put("cart_item_id", model.cartItemId)
             it.put("original_price_value", model.originalPriceValue)
@@ -196,6 +199,7 @@ object AppLogPdp {
             it.addTrackId()
             it.addSourcePageType()
             it.addEntranceForm()
+            it.addEntranceInfo()
             it.addSourceModule()
             it.put("is_success", if (model.isSuccess) 1 else 0)
             it.put("fail_reason", model.failReason)
