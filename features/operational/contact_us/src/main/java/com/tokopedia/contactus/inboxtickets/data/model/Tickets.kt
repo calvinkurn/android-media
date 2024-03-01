@@ -57,7 +57,7 @@ class Tickets {
     var isAllowClose = false
 
     @SerializedName("dynamicCSAT")
-    val dynamicCsat: DynamicCsat = DynamicCsat()
+    var dynamicCsat: DynamicCsat = DynamicCsat()
 
     fun isCommentsNull() = comments == null
 

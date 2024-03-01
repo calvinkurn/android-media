@@ -13,6 +13,8 @@ import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailViewMode
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.uimodel.InboxDetailUiEffect
 import com.tokopedia.contactus.inboxtickets.view.utils.Utils
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
+import com.tokopedia.csat_rating.dynamiccsat.data.model.DynamicCsat
+import com.tokopedia.csat_rating.dynamiccsat.data.model.Point
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -97,6 +99,7 @@ class InboxDetailViewModelTest {
     fun `get Ticket Detail`() {
         val csatTarget = createBadCsatReasonListItem()
         val ticketsTarget = createTicketDetail().getDataTicket()
+        val dynamicCsatData = createDynamicCsatData()
         coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
             statusTickets = "open"
         )
@@ -104,6 +107,7 @@ class InboxDetailViewModelTest {
         val actualResult = viewModel.uiState.value
         assertEquals(ticketsTarget.id, actualResult.ticketDetail.id)
         assertEquals(csatTarget.size, actualResult.csatReasonListBadReview.size)
+        assertEquals(dynamicCsatData.points.size, viewModel.getDynamicCsatData().points.size)
     }
 
     @Test
@@ -199,6 +203,11 @@ class InboxDetailViewModelTest {
         assertEquals(false, commentIsEmpty)
         val isNeedAttachmentTicket = viewModel.isNeedAttachment()
         assertEquals(false, isNeedAttachmentTicket)
+    }
+
+    @Test
+    fun `get dynamic csat data`() {
+        viewModel.getDynamicCsatData()
     }
 
     @Test
@@ -988,13 +997,14 @@ class InboxDetailViewModelTest {
     }
 
     @Test
-    fun `replay message with Image and it's success`(){
+    fun `replay message with Image and it's success`() {
         runBlockingTest {
             val replayMessageResponse: TicketReplyResponse = mockk(relaxed = true)
             val sendingUrlAttachmentOfReplayMessage: StepTwoResponse = mockk(relaxed = true)
             coEvery { getFileUseCase.getFilePath(any()) } returns arrayListOf("dsadsa")
             coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
-                isError = false, serverId = "1"
+                isError = false,
+                serverId = "1"
             )
             coEvery { secureUploadUseCase.uploadSecureImage(any(), any(), any()) } returns "dasdasdasdsad"
             coEvery { postMessageUseCase(any()) } returns replayMessageResponse
@@ -1015,11 +1025,12 @@ class InboxDetailViewModelTest {
     }
 
     @Test
-    fun `replay message with image but upload image is failed`(){
+    fun `replay message with image but upload image is failed`() {
         runBlockingTest {
             coEvery { getFileUseCase.getFilePath(any()) } returns arrayListOf("dsadsa")
             coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
-                isError = false, serverId = "1"
+                isError = false,
+                serverId = "1"
             )
             coEvery { secureUploadUseCase.uploadSecureImage(any(), any(), any()) } returns ""
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
@@ -1035,12 +1046,13 @@ class InboxDetailViewModelTest {
     }
 
     @Test
-    fun `replay message with image but upload image is failed because failed to send message`(){
+    fun `replay message with image but upload image is failed because failed to send message`() {
         runBlockingTest {
             val replayMessageResponse: TicketReplyResponse = mockk(relaxed = true)
             coEvery { getFileUseCase.getFilePath(any()) } returns arrayListOf("dsadsa")
             coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
-                isError = false, serverId = "1"
+                isError = false,
+                serverId = "1"
             )
             coEvery { secureUploadUseCase.uploadSecureImage(any(), any(), any()) } returns "dasdadas"
             coEvery { postMessageUseCase(any()) } returns replayMessageResponse
@@ -1058,12 +1070,13 @@ class InboxDetailViewModelTest {
     }
 
     @Test
-    fun `replay message with Image but it's failed because send message return empty postkey`(){
+    fun `replay message with Image but it's failed because send message return empty postkey`() {
         runBlockingTest {
             val replayMessageResponse: TicketReplyResponse = mockk(relaxed = true)
             coEvery { getFileUseCase.getFilePath(any()) } returns arrayListOf("dsadsa")
             coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
-                isError = false, serverId = "1"
+                isError = false,
+                serverId = "1"
             )
             coEvery { secureUploadUseCase.uploadSecureImage(any(), any(), any()) } returns "dasdasdasdsad"
             coEvery { postMessageUseCase(any()) } returns replayMessageResponse
@@ -1082,13 +1095,14 @@ class InboxDetailViewModelTest {
     }
 
     @Test
-    fun `replay message with Image but it's failed because failed to send attachment url`(){
+    fun `replay message with Image but it's failed because failed to send attachment url`() {
         runBlockingTest {
             val replayMessageResponse: TicketReplyResponse = mockk(relaxed = true)
             val sendingUrlAttachmentOfReplayMessage: StepTwoResponse = mockk(relaxed = true)
             coEvery { getFileUseCase.getFilePath(any()) } returns arrayListOf("dsadsa")
             coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
-                isError = false, serverId = "1"
+                isError = false,
+                serverId = "1"
             )
             coEvery { secureUploadUseCase.uploadSecureImage(any(), any(), any()) } returns "dasdasdasdsad"
             coEvery { postMessageUseCase(any()) } returns replayMessageResponse
@@ -1109,13 +1123,14 @@ class InboxDetailViewModelTest {
     }
 
     @Test
-    fun `replay message with Image but it's failed because send attachment url is down`(){
+    fun `replay message with Image but it's failed because send attachment url is down`() {
         runBlockingTest {
             val replayMessageResponse: TicketReplyResponse = mockk(relaxed = true)
             val sendingUrlAttachmentOfReplayMessage: StepTwoResponse = mockk(relaxed = true)
             coEvery { getFileUseCase.getFilePath(any()) } returns arrayListOf("dsadsa")
             coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
-                isError = false, serverId = "1"
+                isError = false,
+                serverId = "1"
             )
             coEvery { secureUploadUseCase.uploadSecureImage(any(), any(), any()) } returns "dasdasdasdsad"
             coEvery { postMessageUseCase(any()) } returns replayMessageResponse
@@ -1161,6 +1176,7 @@ class InboxDetailViewModelTest {
                         if (isEmpty) null else createCommentsItems(rating, isAllCustomer)
                     isAllowClose = isAllowCloseTicket
                     isNeedAttachment = isNeedAttachmentTicket
+                    dynamicCsat = createDynamicCsatData()
                 }
             )
         )
@@ -1182,6 +1198,12 @@ class InboxDetailViewModelTest {
         return badCsatReasonListItem
     }
 
+    private fun createDynamicCsatData(): DynamicCsat {
+        return DynamicCsat(
+            points = listOf(Point(score = 1))
+        )
+    }
+
     private fun createCommentsItems(
         rating: String,
         isAllCustomer: Boolean = false
@@ -1194,9 +1216,15 @@ class InboxDetailViewModelTest {
                     messagePlaintext = if (i == 3) "mes" else "message-$i",
                     rating = rating,
                     message = if (i == 3) "mes" else "message-$i",
-                    createdBy = if (isAllCustomer) CreatedBy(role = "customer") else if (i % 2 == 0) CreatedBy(
-                        role = "agent"
-                    ) else CreatedBy(role = "customer"),
+                    createdBy = if (isAllCustomer) {
+                        CreatedBy(role = "customer")
+                    } else if (i % 2 == 0) {
+                        CreatedBy(
+                            role = "agent"
+                        )
+                    } else {
+                        CreatedBy(role = "customer")
+                    },
                     createTime = if (i == 2) "" else "2023-01-04T06:09:08.000+0000"
                 )
             )
