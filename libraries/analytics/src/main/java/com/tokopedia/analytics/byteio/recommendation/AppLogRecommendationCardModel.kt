@@ -64,7 +64,8 @@ data class AppLogRecommendationCardModel(
 
     fun toRecTriggerJson() = JSONObject().apply {
         addPage()
-        put(AppLogParam.GLIDE_DISTANCE, "0")
+        addEnterFrom()
+        put(AppLogParam.GLIDE_DISTANCE, 0)
 
         put(AppLogParam.LIST_NAME, listName)
         put(AppLogParam.LIST_NUM, listNum)
