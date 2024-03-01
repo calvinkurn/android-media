@@ -17,10 +17,12 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartDetail
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.GiftingAddOn
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.GroupShopCart
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Product
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductLabel
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Shop
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopShipment
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableSection
+import com.tokopedia.cart.view.helper.DateHelper
 import com.tokopedia.cart.view.uimodel.CartAddOnData
 import com.tokopedia.cart.view.uimodel.CartAddOnProductData
 import com.tokopedia.cart.view.uimodel.CartAddOnWidgetData
@@ -31,6 +33,7 @@ import com.tokopedia.cart.view.uimodel.CartGroupBmGmHolderData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartProductBenefitData
+import com.tokopedia.cart.view.uimodel.CartProductLabelData
 import com.tokopedia.cart.view.uimodel.CartPurchaseBenefitData
 import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cart.view.uimodel.CartShopCoachmarkPlusData
@@ -39,6 +42,8 @@ import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
+import com.tokopedia.cart.view.uimodel.HexColor
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_BMGM_STATE_TICKER_ACTIVE
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
@@ -339,6 +344,7 @@ object CartUiModelMapper {
                             availableShop = null,
                             shopData = shopUiModel,
                             shouldShowBmGmBottomDivider = false
+
                         )
                         productUiModelList.add(productUiModel)
                     }
@@ -601,6 +607,7 @@ object CartUiModelMapper {
             showBundlePrice = cartData.showBundlePrice
             cartBmGmTickerData = mapCartBmGmTickerData(cartDetail, shopData, productId)
             showBmGmBottomDivider = shouldShowBmGmBottomDivider
+            cartProductLabelData = mapProductLabel(product.productLabel)
             productMetadata = product.productMetadata
         }
     }
@@ -934,6 +941,24 @@ object CartUiModelMapper {
         } else {
             return CartDetailInfo()
         }
+    }
+
+    private fun mapProductLabel(productLabel: ProductLabel): CartProductLabelData {
+        val expiredTime = DateHelper.toDate(productLabel.labelDetail.timer.expiredTime)?.time ?: 0L
+        val serverTime = DateHelper.toDate(productLabel.labelDetail.timer.serverTime)?.time ?: 0L
+        val remainingTimeMillis = expiredTime - serverTime
+        return CartProductLabelData(
+            type = productLabel.labelType,
+            localExpiredTimeMillis = System.currentTimeMillis() + remainingTimeMillis,
+            imageLogoUrl = productLabel.labelDetail.assetLabel.imageAsset.imageLabel,
+            iconUrl = productLabel.labelDetail.assetLabel.textAsset.squareIcon,
+            text = productLabel.labelDetail.assetLabel.textAsset.label,
+            textColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.fontColor),
+            backgroundStartColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.backgroundStartColor),
+            backgroundEndColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.backgroundEndColor),
+            lineColor = HexColor(productLabel.labelDetail.assetLabel.textAsset.lineColor),
+            alwaysShowTimer = remainingTimeMillis.isMoreThanZero()
+        )
     }
 
     private fun generateIdentifier(

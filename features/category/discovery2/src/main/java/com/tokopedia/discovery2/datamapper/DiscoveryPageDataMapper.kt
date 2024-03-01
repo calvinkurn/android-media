@@ -18,6 +18,7 @@ import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.ErrorState.NetworkErrorState
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.data.automatecoupon.Layout
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -30,6 +31,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.yout
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
@@ -249,6 +251,10 @@ class DiscoveryPageDataMapper(
                         position = position
                     )
                 )
+            }
+
+            ComponentNames.AutomateCoupon.componentName -> {
+                parseAutomateCoupon(component, listComponents)
             }
 
             else -> listComponents.add(component)
@@ -782,10 +788,28 @@ class DiscoveryPageDataMapper(
         } else {
             val updatedComponents = parseFestiveFlashSaleTab(componentsItem?.filter { !it.isTargetedTabComponent })
 
-            if (updatedComponents.isNotEmpty()) listComponents.first().setComponentsItem(updatedComponents)
+            if (updatedComponents.isNotEmpty()) {
+                listComponents.first().setComponentsItem(updatedComponents)
+                overwriteFlashSaleTabParentCompId(listComponents)
+            }
         }
 
         return listComponents
+    }
+
+    private fun overwriteFlashSaleTabParentCompId(listComponents: ArrayList<ComponentsItem>) {
+        val targetedIds = listComponents.first().getComponentsItem()
+            ?.filter {
+                it.name == ComponentNames.FlashSaleTokoTab.componentName
+            }
+            ?.map { it.data?.firstOrNull()?.targetComponentId.orEmpty() to it.id }
+            ?.filter { it.first.isNotEmpty() }
+
+        targetedIds?.forEach { (targetComponentId, tabId) ->
+            listComponents.first().getComponentsItem()
+                ?.find { it.isTargetedTabComponent && it.dynamicOriginalId == targetComponentId }
+                ?.parentComponentId = tabId
+        }
     }
 
     private fun markTargetedFST(componentsItem: List<ComponentsItem>?) {
@@ -888,6 +912,30 @@ class DiscoveryPageDataMapper(
             .construct(query, component.pagePath)
 
         parameter?.run { component.searchParameter = SearchParameter(this) }
+    }
+
+    private fun parseAutomateCoupon(
+        component: ComponentsItem,
+        listComponents: ArrayList<ComponentsItem>
+    ) {
+        val layout = component.data?.firstOrNull()?.couponLayout
+        layout?.let {
+            Layout.valueOf(it.asCamelCase())
+            val componentName = when (Layout.valueOf(it.asCamelCase())) {
+                Layout.Single -> ComponentNames.SingleAutomateCoupon.componentName
+                Layout.Double -> ComponentNames.GridAutomateCoupon.componentName
+                Layout.Carousel -> ComponentNames.CarouselAutomateCoupon.componentName
+            }
+
+            val uniqueId = "${it}_${component.id}"
+            val parsedComponent = component.copy(
+                id = uniqueId,
+                name = componentName,
+                parentComponentName = ComponentNames.AutomateCoupon.componentName
+            )
+            listComponents.add(parsedComponent)
+            setComponent(uniqueId, component.pageEndPoint, parsedComponent)
+        }
     }
 }
 

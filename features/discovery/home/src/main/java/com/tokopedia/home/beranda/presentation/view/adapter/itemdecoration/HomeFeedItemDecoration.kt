@@ -10,7 +10,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemListViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationPlayWidgetViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.RecomEntityCardViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardGridViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardListViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.viewholder.BannerTopAdsViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 import com.tokopedia.home.R as homeR
 
 class HomeFeedItemDecoration : RecyclerView.ItemDecoration() {
@@ -70,15 +74,22 @@ class HomeFeedItemDecoration : RecyclerView.ItemDecoration() {
         }
     }
 
+    @RecomTemporary
     private fun hasInternalPadding(parent: RecyclerView, viewPosition: Int): Boolean {
         val adapter = parent.adapter
         return if (viewPosition < 0 || viewPosition > (adapter?.itemCount ?: 0) - 1) {
             false
         } else {
             when (adapter?.getItemViewType(viewPosition)) {
+                // global
+                RecommendationCardGridViewHolder.LAYOUT,
+                RecommendationCardListViewHolder.LAYOUT,
+                BannerTopAdsViewHolder.LAYOUT,
+                ContentCardViewHolder.LAYOUT,
+
+                // old
                 HomeRecommendationItemGridViewHolder.LAYOUT,
                 HomeRecommendationItemListViewHolder.LAYOUT,
-                RecomEntityCardViewHolder.LAYOUT,
                 HomeBannerFeedViewHolder.LAYOUT,
                 HomeRecommendationBannerTopAdsOldViewHolder.LAYOUT,
                 HomeRecommendationBannerTopAdsViewHolder.LAYOUT,

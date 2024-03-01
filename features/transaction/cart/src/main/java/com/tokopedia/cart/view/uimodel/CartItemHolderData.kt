@@ -106,6 +106,9 @@ data class CartItemHolderData(
     // AddOns Product
     var addOnsProduct: CartAddOnData = CartAddOnData(),
 
+    // Cart Product Label
+    var cartProductLabelData: CartProductLabelData = CartProductLabelData(),
+
     // BMGM
     var cartBmGmTickerData: CartBmGmTickerData = CartBmGmTickerData(),
     var showBmGmBottomDivider: Boolean = false,

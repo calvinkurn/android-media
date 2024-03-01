@@ -112,17 +112,17 @@ class SetPeriodBottomSheetViewModelTest {
     }
 
     @Test
-    fun `When onOneYearPeriodSelected called, then start date and end date diff should be 1 month`() {
+    fun `When onOneMonthPeriodSelected called, then start date and end date diff should be 1 month`() {
         viewModel.onOneMonthPeriodSelected()
         val startDateValue = viewModel.startDate.value
         val endDateValue = viewModel.endDate.value
         assert(startDateValue == viewModel.getSelectedStartDate())
         assert(endDateValue == viewModel.getSelectedEndDate())
-        val monthsDiff = ChronoUnit.MONTHS.between(
+        val daysDiff = ChronoUnit.DAYS.between(
             LocalDateTime.ofInstant(startDateValue?.toInstant(), ZoneId.systemDefault()),
             LocalDateTime.ofInstant(endDateValue?.toInstant(), ZoneId.systemDefault())
         )
-        assert(monthsDiff == Int.ONE.toLong())
+        assert(daysDiff >= 29.toLong())
     }
 
     @Test

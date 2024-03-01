@@ -414,6 +414,28 @@ const val CART_REVAMP_V4_QUERY =
                           variant_description
                         }
                         bundle_ids
+                        product_label {
+                          label_type
+                          label_detail {
+                            timer {
+                              expired_time
+                              server_time
+                            }
+                            asset_label {
+                              image_asset {
+                                image_label
+                              }
+                              text_asset {
+                                square_icon
+                                label
+                                font_color
+                                background_start_color
+                                background_end_color
+                                line_color
+                              }
+                            }
+                          }
+                        }
                       }
                       errors
                       messages

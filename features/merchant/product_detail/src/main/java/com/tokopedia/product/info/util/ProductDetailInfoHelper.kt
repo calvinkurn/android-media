@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
@@ -18,7 +18,7 @@ object ProductDetailInfoHelper {
         fragmentActivity: FragmentActivity,
         daggerComponent: ProductDetailComponent?,
         listener: ProductDetailBottomSheetListener,
-        p1Data: DynamicProductInfoP1?,
+        p1Data: ProductInfoP1?,
         sizeChartImageUrl: String?,
         infoData: ProductDetailInfoDataModel,
         forceRefresh: Boolean,
@@ -53,7 +53,7 @@ object ProductDetailInfoHelper {
     }
 
     private fun generateProductInfoParcel(
-        productInfoP1: DynamicProductInfoP1?,
+        productInfoP1: ProductInfoP1?,
         variantGuideLine: String,
         productInfo: ProductDetailInfoDataModel,
         forceRefresh: Boolean,

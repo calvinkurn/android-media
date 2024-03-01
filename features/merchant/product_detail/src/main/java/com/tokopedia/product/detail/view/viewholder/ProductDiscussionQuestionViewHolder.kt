@@ -10,27 +10,48 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.talk.Question
 import com.tokopedia.product.detail.databinding.ItemDynamicDiscussionMostHelpfulQuestionAndAnswerBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private val binding = ItemDynamicDiscussionMostHelpfulQuestionAndAnswerBinding.bind(view)
 
-    fun bind(question: Question, dynamicProductDetailListener: DynamicProductDetailListener, type: String, name: String, adapterPosition: Int, itemCount: Int) {
+    fun bind(
+        question: Question,
+        productDetailListener: ProductDetailListener,
+        type: String,
+        name: String,
+        adapterPosition: Int,
+        itemCount: Int
+    ) {
         with(question) {
-            itemView.setOnClickListener { dynamicProductDetailListener.goToTalkReply(questionID, ComponentTrackDataModel(type, name, adapterPosition), itemCount.toString()) }
+            itemView.setOnClickListener {
+                productDetailListener.goToTalkReply(
+                    questionID,
+                    ComponentTrackDataModel(type, name, adapterPosition),
+                    itemCount.toString()
+                )
+            }
             showQuestion(content)
             showInquirerName(userName)
             showInquirerProfilePicture(userThumbnail)
             showInquiryDate(createTimeFormatted)
-            if(totalAnswer > 0 && answer.answerID.isNotEmpty()) {
+            if (totalAnswer > 0 && answer.answerID.isNotEmpty()) {
                 hideNoAnswersText()
                 showProfilePicture(answer.userThumbnail)
                 showDisplayName(answer.userName)
                 showSellerLabelWithCondition(answer.isSeller)
                 showDate(answer.createTimeFormatted)
                 showAnswer(answer.content)
-                showNumberOfOtherAnswersWithCondition(questionID, totalAnswer, dynamicProductDetailListener, adapterPosition, type, name, itemCount)
+                showNumberOfOtherAnswersWithCondition(
+                    questionID,
+                    totalAnswer,
+                    productDetailListener,
+                    adapterPosition,
+                    type,
+                    name,
+                    itemCount
+                )
             } else {
                 showNoAnswersText()
             }
@@ -139,13 +160,28 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
         binding.productDetailDiscussionNoAnswersText.hide()
     }
 
-    private fun showNumberOfOtherAnswersWithCondition(questionId: String, answer: Int, dynamicProductDetailListener: DynamicProductDetailListener, adapterPosition: Int, type: String, name: String, itemCount: Int) {
+    private fun showNumberOfOtherAnswersWithCondition(
+        questionId: String,
+        answer: Int,
+        productDetailListener: ProductDetailListener,
+        adapterPosition: Int,
+        type: String,
+        name: String,
+        itemCount: Int
+    ) {
         val answersToShow = answer - 1
-        if(answersToShow > 0) {
+        if (answersToShow > 0) {
             binding.productDetailDiscussionSeeOtherAnswers.apply {
-                text = itemView.context.getString(R.string.product_detail_discussion_total_answers, answersToShow)
+                text = itemView.context.getString(
+                    R.string.product_detail_discussion_total_answers,
+                    answersToShow
+                )
                 setOnClickListener {
-                    dynamicProductDetailListener.goToTalkReply(questionId, ComponentTrackDataModel(type, name, adapterPosition), itemCount.toString())
+                    productDetailListener.goToTalkReply(
+                        questionId,
+                        ComponentTrackDataModel(type, name, adapterPosition),
+                        itemCount.toString()
+                    )
                 }
                 show()
             }
