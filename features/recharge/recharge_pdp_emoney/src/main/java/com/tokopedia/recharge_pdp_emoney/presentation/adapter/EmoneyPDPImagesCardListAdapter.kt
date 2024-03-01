@@ -26,14 +26,14 @@ class EmoneyPDPImagesCardListAdapter: RecyclerView.Adapter<EmoneyPDPImagesCardLi
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmoneyPDPImageCardViewHolder {
-        val binding = ItemEmoneyImageCardListBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
+        val binding = ItemEmoneyImageCardListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return EmoneyPDPImageCardViewHolder(binding)
     }
 
     inner class EmoneyPDPImageCardViewHolder(val binding: ItemEmoneyImageCardListBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(image: EmoneyImageModel) {
             with(binding) {
-                binding.imgEmoneyCard.loadImage(image.imageUrl)
+                imgEmoneyCard.loadImage(image.imageUrl)
             }
         }
     }

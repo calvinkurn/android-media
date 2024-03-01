@@ -26,7 +26,7 @@ class EmoneyPDPImagesListBottomSheetAdapter: RecyclerView.Adapter<EmoneyPDPImage
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmoneyPDPImageBottomSheetViewHolder {
-        val binding = ItemEmoneyImageBottomSheetBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
+        val binding = ItemEmoneyImageBottomSheetBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return EmoneyPDPImageBottomSheetViewHolder(binding)
     }
 
