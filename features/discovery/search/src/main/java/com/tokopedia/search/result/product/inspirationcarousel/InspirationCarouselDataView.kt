@@ -128,7 +128,7 @@ data class InspirationCarouselDataView(
                 listItemId = null,
                 itemRank = null,
                 listResultType = null,
-                productID = null,
+                productID = "",
                 searchKeyword = byteIOTrackingData.keyword,
                 tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
                 rank = getRank(),
@@ -329,8 +329,6 @@ data class InspirationCarouselDataView(
 
             fun asByteIOProduct() = AppLogSearch.Product(
                 entranceForm = EntranceForm.SEARCH_HORIZONTAL_GOODS_CARD,
-                volume = null,
-                rate = ratingAverage.toFloatOrZero(),
                 isAd = isOrganicAds,
                 productID = id,
                 searchID = byteIOTrackingData.searchId,

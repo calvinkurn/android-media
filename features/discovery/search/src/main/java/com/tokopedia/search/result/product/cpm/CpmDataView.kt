@@ -50,7 +50,7 @@ data class CpmDataView(
             listItemId = null,
             itemRank = null,
             listResultType = AppLogSearch.ParamValue.SHOP,
-            productID = null,
+            productID = "",
             searchKeyword = byteIOTrackingData.keyword,
             rank = getRank(),
             isAd = true,
@@ -71,7 +71,7 @@ data class CpmDataView(
             listItemId = shopId,
             itemRank = 0,
             listResultType = AppLogSearch.ParamValue.SHOP,
-            productID = null,
+            productID = "",
             searchKeyword = byteIOTrackingData.keyword,
             rank = getRank(),
             isAd = true,
@@ -115,8 +115,6 @@ data class CpmDataView(
         val shopId = cpmShop?.id ?: ""
         return AppLogSearch.Product(
             entranceForm = if (isShopSmall()) SEARCH_SHOP_CARD_SMALL else SEARCH_SHOP_CARD_BIG,
-            volume = null,
-            rate = cpmProduct.productRatingFormat.toFloatOrZero(),
             isAd = true,
             productID = cpmProduct.id,
             searchID = byteIOTrackingData.searchId,
