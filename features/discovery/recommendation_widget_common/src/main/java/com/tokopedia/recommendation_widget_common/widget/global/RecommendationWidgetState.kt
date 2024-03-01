@@ -94,7 +94,7 @@ data class RecommendationWidgetState(
                 widget = widget,
                 source = model.source,
                 listener = model.listener,
-                userId = userId
+                userId = userId,
             )
         }
 

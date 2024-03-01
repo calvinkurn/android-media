@@ -79,6 +79,7 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
         }
         parentID
         recParam
+        countSold
       }
     }
   }

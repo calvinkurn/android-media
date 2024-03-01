@@ -2,12 +2,15 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mas
 
 import android.content.res.Resources
 import android.os.SystemClock
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
@@ -15,13 +18,16 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
@@ -36,7 +42,7 @@ import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
-    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener {
+    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener, AppLogRecTriggerInterface {
 
     private var masterProductCardItemViewModel: MasterProductCardItemViewModel? = null
     private var masterProductCardGridView: ProductCardGridView? = null
@@ -373,10 +379,12 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun handleUIClick(view: View) {
-        dataItem?.let {
-            AppLogRecommendation.sendProductClickAppLog(
-                it.asProductTrackModel(bindingAdapterPosition, productCardName)
-            )
+        if(isEligibleToTrack()) {
+            dataItem?.let {
+                AppLogRecommendation.sendProductClickAppLog(
+                    it.asProductTrackModel(bindingAdapterPosition, productCardName)
+                )
+            }
         }
         masterProductCardItemViewModel?.sendTopAdsClick()
         var applink = dataItem?.applinks ?: ""
@@ -416,10 +424,21 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun trackShowProductCard() {
         dataItem?.let {
-            masterProductCardGridView?.addOnImpression1pxListener(it) {
-                AppLogRecommendation.sendProductShowAppLog(
-                    it.asProductTrackModel(bindingAdapterPosition, productCardName)
-                )
+            masterProductCardGridView?.addOnImpression1pxListener(it.appLogImpressHolder) {
+                if(isEligibleToTrack()) {
+                    Log.d("byteio", "trackShowProductCard: show")
+                    AppLogRecommendation.sendProductShowAppLog(
+                        it.asProductTrackModel(bindingAdapterPosition, productCardName)
+                    )
+                }
+            }
+            masterProductCardListView?.addOnImpression1pxListener(it.appLogImpressHolder) {
+                if(isEligibleToTrack()) {
+                    Log.d("byteio", "trackShowProductCard: show")
+                    AppLogRecommendation.sendProductShowAppLog(
+                        it.asProductTrackModel(bindingAdapterPosition, productCardName)
+                    )
+                }
             }
         }
     }
@@ -494,5 +513,21 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     companion object {
         const val IS_FULFILLMENT = "fulfillment"
+    }
+
+    override fun getRecommendationTriggerObject(): RecommendationTriggerObject {
+        return RecommendationTriggerObject(
+            sessionId = dataItem?.getAppLog()?.sessionId.orEmpty(),
+            requestId = dataItem?.getAppLog()?.requestId.orEmpty(),
+            moduleName = dataItem?.getAppLog()?.pageName.orEmpty(),
+            listName = dataItem?.tabName.orEmpty(),
+            listNum = dataItem?.tabIndex?.firstOrNull().orZero(),
+        )
+    }
+
+    override fun isEligibleToTrack(): Boolean {
+        val byteio =  dataItem?.isEligibleToTrack().orFalse()
+        Log.d("byteio", "isEligibleToTrack: ${byteio}")
+        return byteio
     }
 }

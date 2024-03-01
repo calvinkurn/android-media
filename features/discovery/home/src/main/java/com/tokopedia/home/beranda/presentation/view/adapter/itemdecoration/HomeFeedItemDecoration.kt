@@ -11,6 +11,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemListViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationPlayWidgetViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardGridViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardListViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.viewholder.BannerTopAdsViewHolder
@@ -86,6 +87,7 @@ class HomeFeedItemDecoration : RecyclerView.ItemDecoration() {
                 RecommendationCardListViewHolder.LAYOUT,
                 BannerTopAdsViewHolder.LAYOUT,
                 ContentCardViewHolder.LAYOUT,
+                PlayCardViewHolder.LAYOUT,
 
                 // old
                 HomeRecommendationItemGridViewHolder.LAYOUT,

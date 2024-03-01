@@ -102,6 +102,7 @@ internal class GetRecommendationUseCaseRequest {
                         }
                         parentID
                         recParam
+                        countSold
                       }
                     }
                   }
@@ -199,6 +200,7 @@ internal class GetRecommendationUseCaseRequest {
                             value
                         }
                         recParam
+                        countSold
                        }
                    }
                  }

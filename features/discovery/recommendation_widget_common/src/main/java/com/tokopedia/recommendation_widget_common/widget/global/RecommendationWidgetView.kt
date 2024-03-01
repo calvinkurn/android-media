@@ -8,6 +8,8 @@ import androidx.core.view.forEach
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
+import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.viewutil.asLifecycleOwner
@@ -23,7 +25,7 @@ import android.R as androidR
 /**
  * Created by frenzel on 11/03/23
  */
-class RecommendationWidgetView : LinearLayout {
+class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
     constructor(context: Context) : super(context) {
         init()
     }
@@ -41,6 +43,8 @@ class RecommendationWidgetView : LinearLayout {
     private val recommendationWidgetViewModel by recommendationWidgetViewModel()
     private val typeFactory = RecommendationTypeFactoryImpl()
     private var job: MutableList<Job>? = mutableListOf()
+
+    private var recTriggerObject = RecommendationTriggerObject()
 
     private fun init() { }
 
@@ -99,6 +103,7 @@ class RecommendationWidgetView : LinearLayout {
     }
 
     private fun bind(visitableList: List<RecommendationVisitable>?, callback: Callback?) {
+        setRecTriggerObject(visitableList?.firstOrNull())
         val diffUtilCallback = RecommendationWidgetViewDiffUtilCallback(
             parentView = this,
             visitableList = visitableList,
@@ -158,6 +163,14 @@ class RecommendationWidgetView : LinearLayout {
         recommendationWidgetViewModel?.dismissMessage()
     }
 
+    private fun setRecTriggerObject(model: RecommendationVisitable?) {
+        recTriggerObject = RecommendationTriggerObject(
+            sessionId = model?.appLog?.sessionId.orEmpty(),
+            requestId = model?.appLog?.requestId.orEmpty(),
+            moduleName = model?.metadata?.pageName.orEmpty(),
+        )
+    }
+
     fun recycle() {
         job?.forEach { it.cancel() }
         job?.clear()
@@ -173,5 +186,9 @@ class RecommendationWidgetView : LinearLayout {
     interface Callback {
         fun onShow() { }
         fun onError() { }
+    }
+
+    override fun getRecommendationTriggerObject(): RecommendationTriggerObject {
+        return recTriggerObject
     }
 }

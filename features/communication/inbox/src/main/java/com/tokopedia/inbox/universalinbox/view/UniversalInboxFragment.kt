@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
@@ -45,7 +44,6 @@ import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxR
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactory
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactoryImpl
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationProductViewHolder
-import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationTitleViewHolder
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxEndlessScrollListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
@@ -200,14 +198,7 @@ class UniversalInboxFragment @Inject constructor(
 
     private fun addRecommendationScrollListener() {
         if(hasApplogScrollListener) return
-        binding?.inboxRv?.addVerticalTrackListener(
-            recommendationTriggerObject = RecommendationTriggerObject(
-                viewHolders = listOf(
-                    UniversalInboxRecommendationTitleViewHolder::class.java,
-                    UniversalInboxRecommendationProductViewHolder::class.java
-                )
-            )
-        )
+        binding?.inboxRv?.addVerticalTrackListener()
         hasApplogScrollListener = true
     }
 

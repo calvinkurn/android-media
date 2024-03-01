@@ -143,7 +143,7 @@ object ForYouDataMapper {
             position = position,
             isAds = isAds,
             shopId = shopId,
-            pageName = pageName
+            pageName = pageName,
         )
     }
 }

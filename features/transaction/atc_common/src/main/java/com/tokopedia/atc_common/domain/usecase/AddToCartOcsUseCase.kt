@@ -45,6 +45,7 @@ open class AddToCartOcsUseCase @Inject constructor(
         private const val PARAM_UC_UT = "uc_ut_param"
         private const val PARAM_IS_TRADE_IN = "is_trade_in"
         private const val PARAM_SHIPPING_PRICE = "shipping_price"
+        private const val PARAM_TRACKER_DATA = "tracker_data"
     }
 
     private fun getParams(ocsRequestParams: AddToCartOcsRequestParams): Map<String, Any?> {
@@ -61,7 +62,8 @@ open class AddToCartOcsUseCase @Inject constructor(
                 PARAM_UC_UT to ocsRequestParams.utParam,
                 PARAM_IS_TRADE_IN to ocsRequestParams.isTradeIn,
                 PARAM_SHIPPING_PRICE to ocsRequestParams.shippingPrice.roundToLong(),
-                KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+                KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress(),
+                PARAM_TRACKER_DATA to ocsRequestParams.trackerData
             )
         )
     }

@@ -28,7 +28,7 @@ class DeviceIdViewHolder(
         tp.text = String.format("DEVICE ID: ${GlobalConfig.DEVICE_ID}")
 
         val didView = itemView.findViewById<Typography>(R.id.applog_id)
-        val appLogDId = AppLog.getDid()
+        val appLogDId = runCatching { AppLog.getDid() }.getOrDefault("unknown")
         didView.text = String.format("APPLOG DEVICE ID: $appLogDId")
 
         val didCopy = itemView.findViewById<IconUnify>(R.id.ic_copy)

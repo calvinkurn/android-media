@@ -13,6 +13,8 @@ import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.model.StockBarDataView
+import com.tokopedia.search.result.product.byteio.ByteIORanking
+import com.tokopedia.search.result.product.byteio.ByteIORankingImpl
 import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option.Product
@@ -50,7 +52,8 @@ data class BroadMatchItemDataView(
     val stockBarDataView: StockBarDataView = StockBarDataView(),
     val warehouseID: String = "",
     val byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData(),
-) : ImpressHolder(), Wishlistable {
+    val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
+) : ImpressHolder(), Wishlistable, ByteIORanking by byteIORanking {
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
         if (this.id == productID) {
@@ -87,27 +90,24 @@ data class BroadMatchItemDataView(
         }
     }
 
-    fun asByteIOSearchResult(
-        optionAdapterPosition: Int,
-        aladdinButtonType: String?,
-    ) = AppLogSearch.SearchResult(
+    fun asByteIOSearchResult(aladdinButtonType: String?) = AppLogSearch.SearchResult(
         imprId = byteIOTrackingData.imprId,
         searchId = byteIOTrackingData.searchId,
         searchResultId = id,
         listItemId = id,
-        itemRank = position,
+        itemRank = getItemRank(),
         listResultType = AppLogSearch.ParamValue.GOODS,
         productID = id,
         searchKeyword = byteIOTrackingData.keyword,
         tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
-        rank = optionAdapterPosition,
+        rank = getRank(),
         isAd = isOrganicAds,
         isFirstPage = byteIOTrackingData.isFirstPage,
         shopId = null,
         aladdinButtonType = aladdinButtonType,
     )
 
-    fun asByteIOProduct(optionAdapterPosition: Int) = AppLogSearch.Product(
+    fun asByteIOProduct() = AppLogSearch.Product(
         entranceForm = EntranceForm.SEARCH_HORIZONTAL_GOODS_CARD,
         volume = null,
         rate = ratingAverage.toFloatOrZero(),
@@ -117,11 +117,11 @@ data class BroadMatchItemDataView(
         requestID = byteIOTrackingData.imprId,
         searchResultID = id,
         listItemId = id,
-        itemRank = position,
+        itemRank = getItemRank(),
         listResultType = AppLogSearch.ParamValue.GOODS,
         searchKeyword = byteIOTrackingData.keyword,
         tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
-        rank = optionAdapterPosition,
+        rank = getRank(),
         shopID = null,
     )
 

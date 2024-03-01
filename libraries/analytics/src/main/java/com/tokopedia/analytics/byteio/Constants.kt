@@ -21,7 +21,6 @@ data class TrackProduct(
 data class TrackProductDetail(
     val productId: String,
     val productCategory: String,
-//    val entrance_info: TODO
     val productType: ProductType,
     val originalPrice: String,
     val salePrice: String,
@@ -31,7 +30,6 @@ data class TrackProductDetail(
 data class TrackStayProductDetail(
     val productId: String,
     val productCategory: String,
-//    val entrance_info: TODO
     val productType: ProductType,
     val originalPrice: String,
     val salePrice: String,
@@ -46,7 +44,6 @@ data class TrackStayProductDetail(
 data class TrackConfirmSku(
     val productId: String,
     val productCategory: String,
-//    val entrance_info: TODO
     val productType: ProductType,
     val originalPrice: Double,
     val salePrice: Double,
@@ -60,7 +57,6 @@ data class TrackConfirmSku(
 data class TrackConfirmCart(
     val productId: String,
     val productCategory: String,
-//    val entrance_info: TODO
     val productType: ProductType,
     val originalPrice: Double,
     val salePrice: Double,
@@ -75,7 +71,6 @@ data class TrackConfirmCart(
 data class TrackConfirmCartResult(
     val productId: String,
     val productCategory: String,
-//    val entrance_info: TODO
     val productType: ProductType,
     val originalPrice: Double,
     val salePrice: Double,

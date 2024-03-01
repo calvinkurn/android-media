@@ -1180,7 +1180,7 @@ class ProductListFragment :
             isQuickFilterSelectedReversed,
             pageSource
         )
-        trackChooseSearchFilter(isQuickFilterSelectedReversed, option.value, position)
+        trackChooseSearchFilter(option.key, position)
     }
 
     private fun setFilterToQuickFilterController(option: Option, isQuickFilterSelected: Boolean) {
@@ -1206,18 +1206,12 @@ class ProductListFragment :
         )
     }
 
-    private fun trackChooseSearchFilter(
-        isSelected: Boolean,
-        filterValue: String,
-        position: Int,
-    ) {
-        if (!isSelected) return
-
+    private fun trackChooseSearchFilter(filterValue: String, position: Int) {
         AppLogSearch.eventChooseSearchFilter(AppLogSearch.ChooseSearchFilter(
             searchID = SearchId.value,
             searchType = GOODS_SEARCH,
             keyword = queryKey,
-            ecomSortName = ecomSortName(),
+            ecomSortName = "",
             ecomFilterName = filterValue,
             ecomFilterPosition = position.toString(),
             buttonTypeClick = FILTER_QUICK,
@@ -1570,14 +1564,8 @@ class ProductListFragment :
                 val selectedOptions = options?.filter {
                     it.inputState.toBooleanStrictOrNull().orFalse()
                 }
-                val filterValue = selectedOptions?.joinToString {
-                    it.value
-                }.orEmpty() // TODO milhamj: value or name or key?
-                trackChooseSearchFilter(
-                    selectedOptions?.isNotEmpty().orFalse(),
-                    filterValue,
-                    position
-                )
+                val filterValue = selectedOptions?.joinToString(Option::key.toString()).orEmpty()
+                trackChooseSearchFilter(filterValue, position)
             }
         }
 

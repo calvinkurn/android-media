@@ -277,16 +277,10 @@ class InspirationCarouselViewHolder(
                 ),
                 impressHolder = { product },
                 onImpressed = {
-                    inspirationCarouselListener.onImpressedInspirationCarouselChipsProduct(
-                        product,
-                        bindingAdapterPosition,
-                    )
+                    inspirationCarouselListener.onImpressedInspirationCarouselChipsProduct(product)
                 },
                 onClick = {
-                    inspirationCarouselListener.onInspirationCarouselChipsProductClicked(
-                        product,
-                        bindingAdapterPosition,
-                    )
+                    inspirationCarouselListener.onInspirationCarouselChipsProductClicked(product)
                 }
             )
         }
@@ -327,7 +321,6 @@ class InspirationCarouselViewHolder(
                             activeOptionsProducts.getOrNull(carouselProductCardPosition) ?: return
                         inspirationCarouselListener.onInspirationCarouselChipsProductClicked(
                             product,
-                            bindingAdapterPosition,
                         )
                     }
                 },
@@ -342,7 +335,6 @@ class InspirationCarouselViewHolder(
 
                         inspirationCarouselListener.onImpressedInspirationCarouselChipsProduct(
                             product,
-                            bindingAdapterPosition,
                         )
                     }
 
@@ -385,10 +377,7 @@ class InspirationCarouselViewHolder(
                 configureSeeAllButton(option)
 
                 it.addOnImpression1pxListener(option.byteIOImpressHolder) {
-                    inspirationCarouselListener.onInspirationCarouselOptionImpressed1Px(
-                        option,
-                        bindingAdapterPosition,
-                    )
+                    inspirationCarouselListener.onInspirationCarouselOptionImpressed1Px(option)
                 }
             } else {
                 it.setDefaultHeightInspirationCarouselOptionList()
@@ -517,7 +506,6 @@ class InspirationCarouselViewHolder(
         val typeFactory = InspirationCarouselOptionAdapterTypeFactory(
             inspirationCarouselListener,
             reimagineSearch2Component,
-            bindingAdapterPosition,
         )
         val inspirationCarouselProductAdapter = InspirationCarouselOptionAdapter(typeFactory)
         inspirationCarouselProductAdapter.clearData()

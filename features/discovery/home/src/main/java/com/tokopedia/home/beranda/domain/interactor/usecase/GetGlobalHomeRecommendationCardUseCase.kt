@@ -22,6 +22,7 @@ class GetGlobalHomeRecommendationCardUseCase @Inject constructor(
 
     suspend fun execute(
         productPage: Int,
+        tabIndex: Int,
         tabName: String,
         paramSource: String,
         location: String
@@ -29,6 +30,7 @@ class GetGlobalHomeRecommendationCardUseCase @Inject constructor(
         graphqlUseCase.setRequestParams(createRequestParams(productPage, paramSource, location))
         return homeRecommendationCardMapper.mapToRecommendationCardDataModel(
             graphqlUseCase.executeOnBackground().getHomeRecommendationCard,
+            tabIndex,
             tabName,
             productPage
         )

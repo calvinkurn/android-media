@@ -2,6 +2,8 @@ package com.tokopedia.recommendation_widget_common.infinite.foryou.play
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
@@ -18,9 +20,11 @@ class PlayCardViewHolder constructor(
 ) : BaseRecommendationViewHolder<PlayCardModel>(
     view,
     PlayCardModel::class.java
-) {
+), AppLogRecTriggerInterface {
 
     private val binding: WidgetPlayRecomBinding? by viewBinding()
+
+    private var recTriggerObject = RecommendationTriggerObject()
 
     init {
         manager.bind(binding?.homeRecomPlayWidgetVideo)
@@ -33,6 +37,7 @@ class PlayCardViewHolder constructor(
     }
 
     override fun bind(element: PlayCardModel) {
+        setRecTriggerObject(element)
         bindHomeRecomPlayWidgetVideo(element)
         setOnPlayVideoImpressionListener(element)
         setHomePlayWidgetVideoClick(element)
@@ -63,6 +68,16 @@ class PlayCardViewHolder constructor(
         )
     }
 
+    private fun setRecTriggerObject(model: PlayCardModel) {
+        recTriggerObject = RecommendationTriggerObject(
+            sessionId = model.appLog.sessionId,
+            requestId = model.appLog.requestId,
+            moduleName = model.pageName,
+            listName = model.tabName,
+            listNum = model.tabIndex,
+        )
+    }
+
     interface Listener {
         fun onPlayCardClicked(element: PlayCardModel, position: Int)
         fun onPlayCardImpressed(element: PlayCardModel, position: Int)
@@ -71,5 +86,9 @@ class PlayCardViewHolder constructor(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.widget_play_recom
+    }
+
+    override fun getRecommendationTriggerObject(): RecommendationTriggerObject {
+        return recTriggerObject
     }
 }

@@ -4,10 +4,7 @@ interface InspirationCarouselListener {
 
     fun onInspirationCarouselListProductImpressed(product: InspirationCarouselDataView.Option.Product)
 
-    fun onInspirationCarouselOptionImpressed1Px(
-        option: InspirationCarouselDataView.Option,
-        adapterPosition: Int
-    )
+    fun onInspirationCarouselOptionImpressed1Px(option: InspirationCarouselDataView.Option)
 
     fun onInspirationCarouselListProductClicked(product: InspirationCarouselDataView.Option.Product)
 
@@ -19,24 +16,20 @@ interface InspirationCarouselListener {
 
     fun onInspirationCarouselGridProductImpressed1Px(
         product: InspirationCarouselDataView.Option.Product,
-        optionAdapterPosition: Int,
     )
 
     fun onInspirationCarouselGridProductClicked(
         product: InspirationCarouselDataView.Option.Product,
-        optionAdapterPosition: Int,
     )
 
     fun onInspirationCarouselGridBannerClicked(option: InspirationCarouselDataView.Option)
 
     fun onInspirationCarouselChipsProductClicked(
         product: InspirationCarouselDataView.Option.Product,
-        optionAdapterPosition: Int
     )
 
     fun onImpressedInspirationCarouselChipsProduct(
         product: InspirationCarouselDataView.Option.Product,
-        optionAdapterPosition: Int,
     )
 
     fun onInspirationCarouselChipsSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option)

@@ -6,6 +6,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceInfo
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceInfoCart
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addRequestId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
@@ -69,7 +70,6 @@ object AppLogPdp {
             it.put("stay_time", durationInMs)
             it.put("is_load_data", if (product.isLoadData) 1 else 0)
             it.put("quit_type", quitType)
-            it.put("source_module",/*TODO*/ "")
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
             it.put("main_photo_view_cnt", product.mainPhotoViewCount)
@@ -167,6 +167,7 @@ object AppLogPdp {
             it.addEnterFrom()
             it.addSourcePreviousPage()
             it.addEnterMethod()
+            it.addEntranceInfoCart()
             it.put("cart_item_cnt", cartCount)
             it.put("cart_unavailable_cnt", cartUnavailCount)
         })
@@ -177,6 +178,7 @@ object AppLogPdp {
             it.addPage()
             it.addSourcePreviousPage()
             it.addEntranceForm()
+            it.addEntranceInfoCart()
             it.put("button_name", model.buttonName)
             it.put("cart_item_id", model.cartItemId)
             it.put("original_price_value", model.originalPriceValue)
@@ -196,6 +198,7 @@ object AppLogPdp {
             it.addTrackId()
             it.addSourcePageType()
             it.addEntranceForm()
+            it.addEntranceInfo()
             it.addSourceModule()
             it.put("is_success", if (model.isSuccess) 1 else 0)
             it.put("fail_reason", model.failReason)

@@ -9,7 +9,6 @@ interface InspirationCarouselPresenter {
 
     fun onInspirationCarouselProductClick(
         product: InspirationCarouselDataView.Option.Product,
-        optionAdapterPosition: Int,
     )
 
     fun onInspirationCarouselChipsClick(

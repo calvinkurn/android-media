@@ -7,6 +7,7 @@ import com.tkpd.atcvariant.data.uidata.VariantComponentDataModel
 import com.tkpd.atcvariant.data.uidata.VariantHeaderDataModel
 import com.tkpd.atcvariant.data.uidata.VariantQuantityDataModel
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
@@ -69,6 +70,7 @@ object AtcCommonMapper {
                     price = selectedChild?.finalPrice?.toString() ?: ""
                     this.userId = userId
                     this.shopName = shopName
+                    trackerData = AppLogAnalytics.getEntranceInfo("none")
                 }
             }
             ProductDetailCommonConstant.OCC_BUTTON -> {
@@ -112,6 +114,7 @@ object AtcCommonMapper {
                     category = categoryName
                     price = selectedChild?.finalPrice?.toString() ?: ""
                     this.userId = userId
+                    trackerData = AppLogAnalytics.getEntranceInfo("none")
                 }
             }
         }

@@ -5,7 +5,6 @@ import com.tokopedia.analytics.byteio.EntranceForm.SEARCH_PURE_GOODS_CARD
 import com.tokopedia.analytics.byteio.EntranceForm.SEARCH_VIDEO_GOODS_CARD
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.VIDEO_GOODS
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
@@ -13,8 +12,10 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
-import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.addtocart.AddToCartConstant.DEFAULT_PARENT_ID
+import com.tokopedia.search.result.product.byteio.ByteIORanking
+import com.tokopedia.search.result.product.byteio.ByteIORankingImpl
+import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
 import com.tokopedia.search.result.product.productitem.ProductItemVisitable
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.KEYWORD_INTENT_LOW
@@ -28,7 +29,12 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.topads.sdk.domain.model.Data as TopAdsProductData
 
-class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable {
+class ProductItemDataView:
+    ImpressHolder(),
+    ProductItemVisitable,
+    Wishlistable,
+    ByteIORanking by ByteIORankingImpl() {
+
     var productID: String = ""
     var warehouseID: String = ""
     var productName: String = ""
@@ -214,7 +220,7 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
             productID = productID,
             searchKeyword = byteIOTrackingData.keyword,
             tokenType = if (customVideoURL.isBlank()) GOODS else VIDEO_GOODS,
-            rank = position,
+            rank = getRank(),
             isAd = isAds,
             isFirstPage = byteIOTrackingData.isFirstPage,
             shopId = shopID,
@@ -242,7 +248,7 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
         listResultType = null,
         searchKeyword = byteIOTrackingData.keyword,
         tokenType = if (customVideoURL.isBlank()) GOODS else VIDEO_GOODS,
-        rank = position,
+        rank = getRank(),
         shopID = shopID,
     )
 

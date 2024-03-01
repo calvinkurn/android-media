@@ -18,8 +18,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.analytics.byteio.GlidePageTrackObject
-import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardClickAppLog
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardShowAppLog
@@ -794,12 +792,7 @@ class HomeRecommendationFragment :
 
     private fun trackVerticalScroll() {
         if(hasApplogScrollListener) return
-        recyclerView?.addVerticalTrackListener(
-            glidePageTrackObject = GlidePageTrackObject(),
-            recommendationTriggerObject = RecommendationTriggerObject(
-                viewHolders = listOf(),
-            ),
-        )
+        recyclerView?.addVerticalTrackListener(trackGlidePage = true)
         hasApplogScrollListener = true
     }
 

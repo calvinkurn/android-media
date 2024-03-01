@@ -138,6 +138,14 @@ object AppLogAnalytics {
         put(ENTRANCE_INFO, data)
     }
 
+    internal fun JSONObject.addEntranceInfoCart() {
+        val data = JSONObject().also {
+            it.addEntranceForm()
+            it.addSourcePageType()
+        }
+        put(ENTRANCE_INFO, data)
+    }
+
     internal fun JSONObject.addEnterFrom() {
         put(ENTER_FROM, getLastData(ENTER_FROM))
     }
@@ -148,7 +156,7 @@ object AppLogAnalytics {
 
     internal fun JSONObject.addSourcePreviousPage() {
         // todo need to know what data its expected to be
-        put(SOURCE_PREVIOUS_PAGE, getLastData(SOURCE_PREVIOUS_PAGE))
+        put(SOURCE_PREVIOUS_PAGE, getLastDataBeforeCurrent(PAGE_NAME))
     }
 
     internal fun JSONObject.addSourcePageType() {
@@ -213,7 +221,7 @@ object AppLogAnalytics {
     fun pushPageData() {
         val tempHashMap = HashMap<String, Any>()
         _pageDataList.add(tempHashMap)
-        Timber.d("Push _pageDataList: ${_pageDataList}}")
+        Timber.d("Push _pageDataList: ${_pageDataList.printForLog()}")
     }
 
     /**
@@ -237,7 +245,7 @@ object AppLogAnalytics {
                 _pageDataList.removeAt(shadowPageIndex)
             }
         }
-        Timber.d("Remove _pageDataList: ${_pageDataList}}")
+        Timber.d("Remove _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
     private fun clearCurrentPageData() {
@@ -249,7 +257,7 @@ object AppLogAnalytics {
      */
     fun putPageData(key: String, value: Any) {
         _pageDataList.lastOrNull()?.put(key, value)
-        Timber.d("Put _pageDataList: ${_pageDataList}}")
+        Timber.d("Put _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
     fun putEnterMethod(enterMethod: EnterMethod) {
@@ -341,4 +349,16 @@ object AppLogAnalytics {
             putPageData(REQUEST_ID, requestId)
         }
     }
+
+    private fun ArrayList<HashMap<String, Any>>.printForLog(): String {
+        return takeLast(5).joinToString("\n")
+    }
+
+    fun getEntranceInfo(buyType: String): String {
+        return JSONObject().also {
+            it.addEntranceInfo()
+            it.put("buy_type", buyType) // todo
+        }.toString()
+    }
+
 }

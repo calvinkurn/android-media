@@ -706,7 +706,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             name = homeRecommendationItemDataModel.recommendationProductItem.name,
             variant = "",
             productPrice = homeRecommendationItemDataModel.recommendationProductItem.priceInt.toString(),
-            productPosition = homeRecommendationItemDataModel.position.toString(),
+            productPosition = (homeRecommendationItemDataModel.position + 1).toString(),
             isFreeOngkir = homeRecommendationItemDataModel.recommendationProductItem.freeOngkirIsActive && !homeRecommendationItemDataModel.recommendationProductItem.labelGroup.any { it.position == LABEL_FULFILLMENT },
             isFreeOngkirExtra = homeRecommendationItemDataModel.recommendationProductItem.freeOngkirIsActive && homeRecommendationItemDataModel.recommendationProductItem.labelGroup.any { it.position == LABEL_FULFILLMENT },
             category = homeRecommendationItemDataModel.recommendationProductItem.categoryBreadcrumbs,

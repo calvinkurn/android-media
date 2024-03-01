@@ -64,12 +64,12 @@ internal class SearchProductHandleBroadMatchClickTest: ProductListPresenterTestF
     }
 
     private fun `When broad match product click`(broadMatchAdsData: BroadMatchItemDataView) {
-        productListPresenter.onBroadMatchItemClick(broadMatchAdsData, 0)
+        productListPresenter.onBroadMatchItemClick(broadMatchAdsData)
     }
 
     private fun `Then verify view interaction for click broad match`(broadMatchItemData: BroadMatchItemDataView) {
         verify {
-            broadMatchView.trackEventClickBroadMatchItem(broadMatchItemData, any())
+            broadMatchView.trackEventClickBroadMatchItem(broadMatchItemData)
             broadMatchView.openLink(broadMatchItemData)
         }
     }
@@ -149,13 +149,12 @@ internal class SearchProductHandleBroadMatchClickTest: ProductListPresenterTestF
                 dynamicProductCarousel,
                 carouselProductType.type,
                 carouselProductType.inspirationCarouselProduct,
-                any(),
             )
             broadMatchView.openLink(dynamicProductCarousel)
         }
 
         verify(exactly = 0) {
-            broadMatchView.trackEventClickBroadMatchItem(any(), any())
+            broadMatchView.trackEventClickBroadMatchItem(any())
         }
     }
 

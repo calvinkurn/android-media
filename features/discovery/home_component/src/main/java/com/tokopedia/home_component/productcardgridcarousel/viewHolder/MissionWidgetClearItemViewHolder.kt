@@ -90,7 +90,7 @@ class MissionWidgetClearItemViewHolder(
             containerMissionWidget.addOnImpressionListener(element) {
                 missionWidgetComponentListener.onMissionImpressed(element, element.cardPosition)
             }
-            containerMissionWidget.addOnImpression1pxListener(element) {
+            containerMissionWidget.addOnImpression1pxListener(element.appLogImpressHolder) {
                 if (element.isProduct()) {
                     AppLogRecommendation.sendProductShowAppLog(element.asProductTrackModel(element.isCache))
                 } else {

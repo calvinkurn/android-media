@@ -138,23 +138,18 @@ class BroadMatchPresenterDelegate @Inject constructor(
 
     override fun onBroadMatchItemImpressed(
         broadMatchItemDataView: BroadMatchItemDataView,
-        adapterPosition: Int,
     ) {
         if (broadMatchItemDataView.isOrganicAds)
             sendTrackingImpressBroadMatchAds(broadMatchItemDataView)
 
         when (val carouselProductType = broadMatchItemDataView.carouselProductType) {
             is BroadMatchProduct ->
-                broadMatchView.trackEventImpressionBroadMatchItem(
-                    broadMatchItemDataView,
-                    adapterPosition
-                )
+                broadMatchView.trackEventImpressionBroadMatchItem(broadMatchItemDataView)
             is DynamicCarouselProduct ->
                 dynamicProductView.trackDynamicProductCarouselImpression(
                     broadMatchItemDataView,
                     carouselProductType.type,
                     carouselProductType.inspirationCarouselProduct,
-                    adapterPosition,
                 )
         }
     }
@@ -172,17 +167,15 @@ class BroadMatchPresenterDelegate @Inject constructor(
 
     override fun onBroadMatchItemClick(
         broadMatchItemDataView: BroadMatchItemDataView,
-        adapterPosition: Int,
     ) {
         when (val carouselProductType = broadMatchItemDataView.carouselProductType) {
             is BroadMatchProduct ->
-                broadMatchView.trackEventClickBroadMatchItem(broadMatchItemDataView, adapterPosition)
+                broadMatchView.trackEventClickBroadMatchItem(broadMatchItemDataView)
             is DynamicCarouselProduct ->
                 dynamicProductView.trackDynamicProductCarouselClick(
                     broadMatchItemDataView,
                     carouselProductType.type,
                     carouselProductType.inspirationCarouselProduct,
-                    adapterPosition,
                 )
         }
 
@@ -203,17 +196,11 @@ class BroadMatchPresenterDelegate @Inject constructor(
         )
     }
 
-    override fun onBroadMatchImpressed(
-        broadMatchDataView: BroadMatchDataView,
-        adapterPosition: Int,
-    ) {
+    override fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView) {
         if (broadMatchDataView.carouselOptionType is BroadMatch)
-            broadMatchView.trackEventImpressionBroadMatch(broadMatchDataView, adapterPosition)
+            broadMatchView.trackEventImpressionBroadMatch(broadMatchDataView)
         else if (broadMatchDataView.carouselOptionType is DynamicCarouselOption)
-            dynamicProductView.trackDynamicCarouselImpression(
-                broadMatchDataView,
-                adapterPosition,
-            )
+            dynamicProductView.trackDynamicCarouselImpression(broadMatchDataView)
     }
 
     override fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {

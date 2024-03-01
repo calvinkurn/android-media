@@ -51,5 +51,6 @@ data class AddToCartOcsRequestParams(
     var categoryLevel2Name: String = "",
     var categoryLevel3Id: String = "",
     var categoryLevel3Name: String = "",
-    var shopName: String = ""
+    var shopName: String = "",
+    var trackerData: String = ""
 )

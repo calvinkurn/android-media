@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.PageName
-import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.applink.ApplinkConst
@@ -75,8 +74,6 @@ import com.tokopedia.wishlist.collection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlist.collection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_DIVIDER
 import com.tokopedia.wishlist.collection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_LOADER
 import com.tokopedia.wishlist.collection.view.adapter.itemdecoration.WishlistCollectionItemOffsetDecoration
-import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollectionRecommendationItemViewHolder
-import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollectionRecommendationTitleViewHolder
 import com.tokopedia.wishlist.collection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlist.collection.view.bottomsheet.BottomSheetKebabMenuWishlistCollection
 import com.tokopedia.wishlist.collection.view.bottomsheet.BottomSheetOnboardingWishlistCollection
@@ -90,8 +87,6 @@ import com.tokopedia.wishlist.detail.data.model.response.DeleteWishlistProgressR
 import com.tokopedia.wishlist.detail.util.WishlistAnalytics
 import com.tokopedia.wishlist.detail.util.WishlistConsts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
 import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter.Companion.LAYOUT_RECOMMENDATION_TITLE
-import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistRecommendationItemViewHolder
-import com.tokopedia.wishlist.detail.view.adapter.viewholder.WishlistRecommendationTitleViewHolder
 import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -357,16 +352,7 @@ class WishlistCollectionFragment :
 
     private fun addRecommendationScrollListener() {
         if(hasApplogScrollListener) return
-        binding?.rvWishlistCollection?.addVerticalTrackListener(
-            recommendationTriggerObject = RecommendationTriggerObject(
-                viewHolders = listOf(
-                    WishlistRecommendationTitleViewHolder::class.java,
-                    WishlistRecommendationItemViewHolder::class.java,
-                    WishlistCollectionRecommendationTitleViewHolder::class.java,
-                    WishlistCollectionRecommendationItemViewHolder::class.java,
-                )
-            )
-        )
+        binding?.rvWishlistCollection?.addVerticalTrackListener()
         hasApplogScrollListener = true
     }
 

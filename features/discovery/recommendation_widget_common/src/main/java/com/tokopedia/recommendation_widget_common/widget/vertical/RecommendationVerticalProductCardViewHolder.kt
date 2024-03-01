@@ -55,7 +55,7 @@ class RecommendationVerticalProductCardViewHolder(
     private fun setupProductCardListener(element: RecommendationVerticalProductCardModel) {
         with(binding.productCardView) {
             addOnImpressionListener(element.recomItem) { onProductCardImpressed(element) }
-            addOnImpression1pxListener(element.recomItem) { onProductCardImpressed1px(element) }
+            addOnImpression1pxListener(element.recomItem.appLogImpressHolder) { onProductCardImpressed1px(element) }
             setOnClickListener { onProductClicked(element) }
         }
     }

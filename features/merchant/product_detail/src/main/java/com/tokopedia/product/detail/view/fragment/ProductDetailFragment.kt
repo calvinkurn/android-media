@@ -36,6 +36,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
+import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -546,6 +547,7 @@ open class ProductDetailFragment :
     private var campaignId: String = ""
     private var variantId: String = ""
     private var prefetchCacheId: String = ""
+    private var hasApplogScrollListener: Boolean = false
 
     // Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -660,6 +662,7 @@ open class ProductDetailFragment :
         }
 
         setPDPDebugMode()
+        trackVerticalScroll()
     }
 
     private fun onClickDynamicOneLinerPromo() {
@@ -5054,6 +5057,7 @@ open class ProductDetailFragment :
                         price = data.finalPrice.toString()
                         userId = viewModel.userId
                         shopName = data.basic.shopName
+                        trackerData = AppLogAnalytics.getEntranceInfo("none")
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
@@ -5074,6 +5078,7 @@ open class ProductDetailFragment :
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
                         userId = viewModel.userId
+                        trackerData = AppLogAnalytics.getEntranceInfo("none")
                     }
                     viewModel.addToCart(addToCartRequestParams)
                 }
@@ -5636,6 +5641,12 @@ open class ProductDetailFragment :
             intent.putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, screenName)
             startActivity(intent)
         }
+    }
+
+    fun trackVerticalScroll() {
+        if(hasApplogScrollListener) return
+        getRecyclerView()?.addVerticalTrackListener()
+        hasApplogScrollListener = true
     }
 
     // Will be delete soon

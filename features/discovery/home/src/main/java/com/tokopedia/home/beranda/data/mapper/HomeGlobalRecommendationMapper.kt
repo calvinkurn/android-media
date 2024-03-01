@@ -102,7 +102,7 @@ class HomeGlobalRecommendationMapper {
                     pageName,
                     layoutName,
                     (((pageNumber - 1) * products.size) + position + 1),
-                    tabName
+                    tabName = tabName
                 )
             )
         }

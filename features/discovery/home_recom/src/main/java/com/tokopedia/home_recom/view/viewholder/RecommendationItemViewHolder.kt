@@ -104,7 +104,7 @@ class RecommendationItemViewHolder(
                 )
             }
 
-            addOnImpression1pxListener(element.productItem) {
+            addOnImpression1pxListener(element.productItem.appLogImpressHolder) {
                 AppLogRecommendation.sendProductShowAppLog(
                     element.productItem.asProductTrackModel(
                         entranceForm = EntranceForm.PURE_GOODS_CARD,
