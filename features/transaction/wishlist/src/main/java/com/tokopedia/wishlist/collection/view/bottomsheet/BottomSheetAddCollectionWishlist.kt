@@ -39,7 +39,6 @@ import com.tokopedia.wishlist.collection.data.response.GetWishlistCollectionsBot
 import com.tokopedia.wishlist.collection.di.DaggerWishlistCollectionComponent
 import com.tokopedia.wishlist.collection.di.WishlistCollectionComponent
 import com.tokopedia.wishlist.collection.di.WishlistCollectionModule
-import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.SOURCE_CART
 import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.SOURCE_PDP
 import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
 import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
