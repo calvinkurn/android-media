@@ -8,6 +8,7 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -16,6 +17,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_pdp_emoney.databinding.WidgetEmoneyInputCardNumberBinding
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPDPImagesCardListAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpImagesListAdapter
+import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyListImageBottomSheets
+import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyImageModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
 
@@ -61,15 +64,15 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
         })
     }
 
-    fun renderEmoneyImages(listImages: List<String>) {
+    fun renderEmoneyImages(listImages: List<EmoneyImageModel>, childFragmentManager: FragmentManager) {
         if (listImages.size <= LIST_SIZE) {
             renderEmoneyListImages(listImages)
         } else {
-            renderTextViewList(listImages)
+            renderTextViewList(listImages, childFragmentManager)
         }
     }
 
-    private fun renderTextViewList(listImages: List<String>) {
+    private fun renderTextViewList(listImages: List<EmoneyImageModel>, childFragmentManager: FragmentManager) {
         binding.tgSeePartners.show()
         binding.icChevronImageList.show()
         val bestThree = listImages.subList(Int.ZERO, LIST_LIMITED_SIZE)
@@ -77,9 +80,15 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
         binding.rvEmoneyLimitedList.adapter = adapter
         binding.rvEmoneyLimitedList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         adapter.renderList(bestThree)
+
+        binding.tgSeePartners.setOnClickListener {
+            val bottomSheet = EmoneyListImageBottomSheets()
+            bottomSheet.updateData(listImages)
+            bottomSheet.show(childFragmentManager, "")
+        }
     }
 
-    private fun renderEmoneyListImages(listImages: List<String>) {
+    private fun renderEmoneyListImages(listImages: List<EmoneyImageModel>) {
         binding.tgSeePartners.hide()
         binding.icChevronImageList.hide()
         if (listImages.isNotEmpty()) {

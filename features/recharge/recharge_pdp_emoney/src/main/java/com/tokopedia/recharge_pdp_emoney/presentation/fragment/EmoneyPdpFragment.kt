@@ -72,6 +72,7 @@ import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyBCAInfoB
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyMenuBottomSheets
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyProductDetailBottomSheet
 import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyBCAGenCheckModel
+import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyImageModel
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpBottomCheckoutWidget
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
@@ -396,17 +397,17 @@ open class EmoneyPdpFragment :
     }
 
     private fun renderImages(data: TelcoCatalogPrefixSelect) {
-        binding.emoneyPdpInputCardWidget.renderEmoneyImages(mapImage(data))
+        binding.emoneyPdpInputCardWidget.renderEmoneyImages(mapImage(data), childFragmentManager)
     }
 
-    private fun mapImage(data: TelcoCatalogPrefixSelect): List<String> {
+    private fun mapImage(data: TelcoCatalogPrefixSelect): List<EmoneyImageModel> {
 //        return data.rechargeCatalogPrefixSelect.prefixes.filter {
 //            it.operator.attributes.status == STATUS_ACTIVE
 //        }.map {
 //            it.operator.attributes.imageUrl
 //        }.distinct()
         return data.rechargeCatalogPrefixSelect.prefixes.map {
-            it.operator.attributes.imageUrl
+            EmoneyImageModel(it.operator.attributes.imageUrl, it.operator.attributes.name)
         }
     }
 

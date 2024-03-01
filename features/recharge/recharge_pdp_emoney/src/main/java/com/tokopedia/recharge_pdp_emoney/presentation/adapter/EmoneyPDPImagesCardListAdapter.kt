@@ -6,12 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_pdp_emoney.databinding.ItemEmoneyImageCardListBinding
+import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyImageModel
 
 class EmoneyPDPImagesCardListAdapter: RecyclerView.Adapter<EmoneyPDPImagesCardListAdapter.EmoneyPDPImageCardViewHolder>() {
 
-    var imageList = emptyList<String>()
+    var imageList = emptyList<EmoneyImageModel>()
 
-    fun renderList(list: List<String>) {
+    fun renderList(list: List<EmoneyImageModel>) {
         imageList = list
         notifyItemChanged(Int.ZERO, imageList.size)
     }
@@ -30,9 +31,9 @@ class EmoneyPDPImagesCardListAdapter: RecyclerView.Adapter<EmoneyPDPImagesCardLi
     }
 
     inner class EmoneyPDPImageCardViewHolder(val binding: ItemEmoneyImageCardListBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(imageUrl: String) {
+        fun bind(image: EmoneyImageModel) {
             with(binding) {
-                binding.imgEmoneyCard.loadImage(imageUrl)
+                binding.imgEmoneyCard.loadImage(image.imageUrl)
             }
         }
     }

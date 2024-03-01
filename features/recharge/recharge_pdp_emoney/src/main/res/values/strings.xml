@@ -46,4 +46,5 @@
     <string name="recharge_pdp_emoney_bca_text_gen_two">Gen 2</string>
     <string name="recharge_pdp_emoney_bca_gen_one_additional_link"><![CDATA[Info lebih lanjut  <a href="https://www.tokopedia.com/help"> klik disini. </a>]]></string>
     <string name="recharge_pdp_emoney_list_images">Lihat partner yang tersedia </string>
+    <string name="recharge_pdp_emoney_list_title_bottomsheet">Partner yang tersedia</string>
 </resources>
