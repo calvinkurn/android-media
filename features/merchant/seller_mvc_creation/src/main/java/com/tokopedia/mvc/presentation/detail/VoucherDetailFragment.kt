@@ -696,7 +696,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
                         else -> {
                             tpgVoucherNominalLabel.text = getString(R.string.smvc_percentage_cashback_label)
-                            tpgVoucherNominal.text = data.voucherDiscountAmountDecimalFormatted
+                            tpgVoucherNominal.text = data.voucherDiscountAmount.getPercentFormatted()
                             if (data.isGetSubsidy() && data.subsidyDetail.programDetail.promotionStatus != PromotionStatus.REJECTED) {
                                 setCashbackSubsidyDetail(data)
                             }
@@ -713,9 +713,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
                         else -> {
                             tpgVoucherNominalLabel.text = getString(R.string.smvc_percentage_discount_label)
-                            tpgVoucherNominal.text = data.voucherDiscountAmountDecimalFormatted
+                            tpgVoucherNominal.text = data.voucherDiscountAmount.getPercentFormatted()
                             if (data.isGetSubsidy() && data.subsidyDetail.programDetail.promotionStatus != PromotionStatus.REJECTED) {
-                                setDscountSubsidyDetail(data)
+                                setDiscountSubsidyDetail(data)
                             }
                         }
                     }
@@ -730,21 +730,21 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             llParentAdditionalSubsidy.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
             tpgInitialPromoLabel.text = getString(R.string.smvc_initial_cashback_label)
             tpgInitialPromo.text =
-                data.labelVoucher.labelBudgetsVoucher.firstOrNull()?.labelBudgetVoucherValueDecimal?.getPercentFormatted()
+                data.labelVoucher.labelBudgetsVoucher.firstOrNull()?.labelBudgetVoucherValue?.getPercentFormatted()
             tpgAdditionalSubsidy.text =
-                data.labelVoucher.labelBudgetsVoucher.lastOrNull()?.labelBudgetVoucherValueDecimal?.getPercentFormatted()
+                data.labelVoucher.labelBudgetsVoucher.lastOrNull()?.labelBudgetVoucherValue?.getPercentFormatted()
         }
     }
 
-    private fun setDscountSubsidyDetail(data: VoucherDetailData) {
+    private fun setDiscountSubsidyDetail(data: VoucherDetailData) {
         voucherSettingBinding?.apply {
             llParentInitialPromo.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
             llParentAdditionalSubsidy.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
             tpgInitialPromoLabel.text = getString(R.string.smvc_initial_discount_label)
             tpgInitialPromo.text =
-                data.labelVoucher.labelBudgetsVoucher.firstOrNull()?.labelBudgetVoucherValueDecimal?.getPercentFormatted()
+                data.labelVoucher.labelBudgetsVoucher.firstOrNull()?.labelBudgetVoucherValue?.getPercentFormatted()
             tpgAdditionalSubsidy.text =
-                data.labelVoucher.labelBudgetsVoucher.lastOrNull()?.labelBudgetVoucherValueDecimal?.getPercentFormatted()
+                data.labelVoucher.labelBudgetsVoucher.lastOrNull()?.labelBudgetVoucherValue?.getPercentFormatted()
         }
     }
 

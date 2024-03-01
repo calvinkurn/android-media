@@ -46,7 +46,6 @@ class GetVoucherListUseCase @Inject constructor(
                         voucher_discount_type_formatted
                         voucher_discount_amt
                         voucher_discount_amt_formatted
-	                    voucher_discount_amt_decimal_formatted
                         voucher_discount_amt_max
                         voucher_minimum_amt
                         voucher_quota

@@ -68,7 +68,6 @@ class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
                       voucher_status_formatted
                       voucher_discount_type_formatted
                       voucher_discount_amt_formatted
-                      voucher_discount_amt_decimal_formatted
                       voucher_discount_amt_max_formatted
                       voucher_minimum_amt
                       remaning_quota
@@ -111,7 +110,6 @@ class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
                           label_budget_voucher_formatted
                           label_budget_voucher
                           label_budget_voucher_value
-                          label_budget_voucher_value_decimal
                         }
                       }
                       is_editable

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.getPercentFormatted
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -193,7 +194,7 @@ class VouchersViewHolder(
             context.getString(
                 R.string.smvc_voucherlist_format_percent_desc,
                 getPromoName(context, voucher.type),
-                voucher.discountAmtDecimalFormatted,
+                voucher.discountAmt.getPercentFormatted(),
                 voucher.discountAmtMax.getCurrencyFormatted()
             )
         } else {
