@@ -19,7 +19,9 @@ import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
 import com.tokopedia.analytics.byteio.EnterMethod
+import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardClickAppLog
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardShowAppLog
@@ -52,6 +54,7 @@ import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCa
 import com.tokopedia.home.beranda.presentation.viewModel.HomeGlobalRecommendationViewModel
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayVideoWidgetView
@@ -745,7 +748,11 @@ class HomeGlobalRecommendationFragment :
 
     private fun trackVerticalScroll() {
         if(hasApplogScrollListener) return
-        recyclerView?.addVerticalTrackListener(trackGlidePage = true)
+        recyclerView?.addVerticalTrackListener {
+            GlidePageTrackObject(
+                distanceToTop = (parentFragment as? AppLogGlidePageInterface)?.getDistanceToTop().orZero()
+            )
+        }
         hasApplogScrollListener = true
     }
 

@@ -2,9 +2,6 @@ package com.tokopedia.analytics.byteio
 
 interface AppLogRecTriggerInterface {
 
-    /**
-     * Recommendation session id from recommendation response
-     */
     fun getRecommendationTriggerObject() : RecommendationTriggerObject?
 
     /**
