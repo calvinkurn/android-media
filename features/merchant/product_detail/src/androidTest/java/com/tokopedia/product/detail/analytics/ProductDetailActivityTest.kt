@@ -28,12 +28,11 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.view.ItemVariantChipViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
-import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.util.ProductDetailNetworkIdlingResource
 import com.tokopedia.product.detail.util.ProductIdlingInterface
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
-import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
+import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_holder.SocialProofTypeViewHolder
@@ -45,6 +44,7 @@ import org.hamcrest.core.AllOf.allOf
 import org.junit.*
 import org.junit.runner.RunWith
 import java.util.concurrent.TimeUnit
+import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 @LargeTest
 @RunWith(AndroidJUnit4ClassRunner::class)
@@ -68,7 +68,7 @@ class ProductDetailActivityTest {
 
             override fun idleState(): Boolean {
                 val fragment =
-                    activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
+                    activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as ProductDetailFragment
                 if (fragment.view?.findViewById<ConstraintLayout>(R.id.partial_layout_button_action) == null) {
                     throw RuntimeException("button not found")
                 }
@@ -83,13 +83,16 @@ class ProductDetailActivityTest {
             override fun getName(): String = "variantFinish"
 
             override fun idleState(): Boolean {
-                val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
+                val fragment =
+                    activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as ProductDetailFragment
                 val variantPosition = fragment.productAdapter?.currentList?.indexOfFirst {
                     it is ProductSingleVariantDataModel
                 } ?: return false
 
-                val variantVh = fragment.getRecyclerView()?.findViewHolderForAdapterPosition(variantPosition) as? ProductSingleVariantViewHolder
-                val vhContainer = variantVh?.view?.findViewById<RecyclerView>(R.id.rv_single_variant)
+                val variantVh = fragment.getRecyclerView()
+                    ?.findViewHolderForAdapterPosition(variantPosition) as? ProductSingleVariantViewHolder
+                val vhContainer =
+                    variantVh?.view?.findViewById<RecyclerView>(R.id.rv_single_variant)
 
                 return vhContainer?.findViewHolderForAdapterPosition(0) != null
             }
@@ -292,8 +295,8 @@ class ProductDetailActivityTest {
 
     private fun addToCartBottomSheetIsVisible(): Boolean? {
         val addToCartBottomSheet =
-            activityRule.activity.supportFragmentManager.findFragmentByTag("ADD_TO_CART") as? InstrumentTestAddToCartBottomSheet
-        return addToCartBottomSheet?.isVisible
+            activityRule.activity.supportFragmentManager.findFragmentByTag("ADD_TO_CART")
+        return addToCartBottomSheet != null
     }
 
     private fun waitForTrackerSent() {
@@ -338,7 +341,7 @@ class ProductDetailActivityTest {
         viewInteraction.perform(
             RecyclerViewActions.actionOnItemAtPosition<ItemVariantChipViewHolder>(
                 0,
-                clickChildViewWithId(com.tokopedia.product.detail.common.R.id.atc_variant_chip)
+                clickChildViewWithId(productdetailcommonR.id.atc_variant_chip)
             )
         )
     }

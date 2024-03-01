@@ -82,6 +82,7 @@ class GetTargetedTickerUseCase @Inject constructor(
 
     companion object {
         const val KEY_TYPE_ROLLENCE_NAME = "rollence_name"
+        const val PAGE_SLASH_PRICE = "seller.pengaturan-diskon"
     }
 
 }

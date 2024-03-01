@@ -4,8 +4,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.view.componentization.ComponentCallback
 import com.tokopedia.product.detail.view.componentization.ComponentEvent
@@ -41,7 +41,7 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
         get() = mediator.recyclerViewPool
 
     val isRemoteCacheableActive
-        get() = viewModel.getDynamicProductInfoP1?.cacheState?.remoteCacheableActive.orFalse()
+        get() = viewModel.getProductInfoP1?.cacheState?.remoteCacheableActive.orFalse()
 
     @Suppress("UNCHECKED_CAST")
     override fun event(event: ComponentEvent) {
@@ -62,7 +62,7 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
     }
 
     private fun onImpressComponent(trackData: ComponentTrackDataModel) {
-        if (viewModel.getDynamicProductInfoP1?.cacheState?.isPrefetch == true) return
+        if (viewModel.getProductInfoP1?.cacheState?.isPrefetch == true) return
 
         val purchaseProtectionUrl = when (trackData.componentName) {
             ProductDetailConstant.PRODUCT_PROTECTION -> getPurchaseProtectionUrl()
@@ -73,11 +73,11 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
             else -> ""
         }
 
-        DynamicProductDetailTracking.Impression
+        ProductDetailTracking.Impression
             .eventImpressionComponent(
                 trackingQueue = queueTracker,
                 componentTrackDataModel = trackData,
-                productInfo = viewModel.getDynamicProductInfoP1,
+                productInfo = viewModel.getProductInfoP1,
                 componentName = "",
                 purchaseProtectionUrl = purchaseProtectionUrl,
                 userId = viewModel.userId,
@@ -114,7 +114,7 @@ abstract class BaseComponentCallback<Event : ComponentEvent>(
     }
 
     protected fun getCommonTracker(): CommonTracker? {
-        val productInfo = viewModel.getDynamicProductInfoP1 ?: return null
+        val productInfo = viewModel.getProductInfoP1 ?: return null
         return CommonTracker(productInfo = productInfo, userId = viewModel.userId)
     }
 

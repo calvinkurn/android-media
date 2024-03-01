@@ -15,5 +15,8 @@ data class CollectionPointMetadata(
     val collectionPointVersion: String = "",
     @SerializedName("consent_payload")
     @Expose
-    var consentPayload: String = ""
+    var consentPayload: String = "",
+    @SerializedName("targeted_product_id")
+    @Expose
+    var targetedProductId: String = ""
 ) : Parcelable

@@ -20,14 +20,14 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_marginTop="@dimen/layout_lvl3"
-            android:id="@+id/tv_title"
+            android:id="@+id/tv_title_forbidden"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:typographyType="body_1"
             android:gravity="center"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_message"
+            android:id="@+id/tv_message_forbidden"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl1"
@@ -35,7 +35,7 @@
             android:gravity="center"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_retry"
+            android:id="@+id/btn_retry_forbidden"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAllCaps="false"

@@ -10,5 +10,6 @@ class ProductDataDomain constructor(
     @SerializedName("productID") @Expose val productId: String,
     @SerializedName("productName") @Expose val productName: String,
     @SerializedName("productImageURL") @Expose val productImageUrl: String,
-    @SerializedName("productStatus") @Expose val productStatus: Int
+    @SerializedName("productStatus") @Expose val productStatus: Int,
+    @SerializedName("productPageURL") @Expose val productPageUrl: String,
 )

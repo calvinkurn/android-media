@@ -86,7 +86,10 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
@@ -203,7 +206,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 arguments?.getParcelable<ChosenAddress>(BUNDLE_KEY_CHOSEN_ADDRESS)
             viewModel.loadPromoListWithPreSelectedGopayLaterPromo(
                 promoRequest = promoRequest,
-                chosenAddress = chosenAddress
+                chosenAddress = chosenAddress,
+                autoApplyImpressionTrackerEnable = getEnableSendAutoApplyTracker()
             )
         }
     private var loaderDialog: LoaderDialog? = null
@@ -486,6 +490,13 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         observeClosePromoPageUiAction()
         observeAutoScrollUiAction()
         observeClickTncUiAction()
+        observeAutoApplyAction()
+    }
+
+    private fun observeAutoApplyAction() {
+        viewModel.autoApplyAction.observe(viewLifecycleOwner) { promoItem ->
+            processAndSendImpressionAutoApplyGpl(promoItem)
+        }
     }
 
     private fun observePromoRecommendationUiAction() {
@@ -1090,10 +1101,26 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private val onClickPromoItem = { clickedItem: PromoItem ->
         viewModel.onClickPromo(clickedItem)
+
+        if (clickedItem.isPromoGopayLater && clickedItem.isPromoCtaRegisterGopayLater && clickedItem.isPromoCtaValid) {
+            processAndSendClickActivationGoPayLater(clickedItem)
+        }
+
+        if (clickedItem.isPromoGopayLater && !clickedItem.isPromoCtaRegisterGopayLater) {
+            processAndSendClickGplEligible(clickedItem)
+        }
     }
 
     private val onImpressionPromo = { item: PromoItem ->
         processAndSendImpressionOfPromoCardNewEvent(item)
+
+        if (item.isPromoGopayLater && item.isPromoCtaRegisterGopayLater && item.isPromoCtaValid) {
+            processAndSendImpressionActivationGoPayLater(item)
+        }
+
+        if (item.isPromoGopayLater && !item.isPromoCtaRegisterGopayLater) {
+            processAndSendImpressionGplEligible(item)
+        }
     }
 
     private val onRecommendationAnimationEnd = {
@@ -1225,6 +1252,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         fun onClearPromoFailed(throwable: Throwable)
     }
 
+    private fun getEnableSendAutoApplyTracker(): Boolean {
+        val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context?.applicationContext)
+        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_AUTO_APPLY_PROMO_TRACKER, false)
+    }
+
     // region Tracker
     private fun processAndSendViewAvailablePromoListNewEvent(
         items: List<DelegateAdapterItem>? = null,
@@ -1312,5 +1344,46 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             appliedPromos = appliedPromos
         )
     }
+
+    private fun processAndSendImpressionActivationGoPayLater(viewedPromo: PromoItem) {
+        promoUsageAnalytics.sendImpressionActivationGoPayLater(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            viewedPromo = viewedPromo
+        )
+    }
+
+    private fun processAndSendClickActivationGoPayLater(clickedPromo: PromoItem) {
+        promoUsageAnalytics.sendClickActivationGoPayLater(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            clickedPromo = clickedPromo
+        )
+    }
+
+    private fun processAndSendImpressionAutoApplyGpl(viewedPromo: PromoItem) {
+        promoUsageAnalytics.sendImpressionAutoApplyGpl(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            viewedPromo = viewedPromo
+        )
+    }
+
+    private fun processAndSendImpressionGplEligible(viewedPromo: PromoItem) {
+        promoUsageAnalytics.sendImpressionGplEligible(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            viewedPromo = viewedPromo
+        )
+    }
+
+    private fun processAndSendClickGplEligible(clickedPromo: PromoItem) {
+        promoUsageAnalytics.sendClickGplEligible(
+            userId = userSession.userId,
+            entryPoint = entryPoint,
+            clickedPromo = clickedPromo
+        )
+    }
+
     // endregion
 }

@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeBinding
-import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.TagAdapter
+import com.tokopedia.tokopedianow.oldrecipebookmark.presentation.adapter.TagAdapter
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx

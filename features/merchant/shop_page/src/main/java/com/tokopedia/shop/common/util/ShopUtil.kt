@@ -17,8 +17,6 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
@@ -101,12 +99,6 @@ object ShopUtil {
         }
     }
 
-    fun getShopFollowButtonAbTestVariant(): String? {
-        return RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-            AB_TEST_SHOP_FOLLOW_BUTTON_KEY,
-            AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
-        )
-    }
 
     fun <E> MutableList<E>.setElement(index: Int, element: E) {
         if (index in 0 until size) {
@@ -162,6 +154,15 @@ object ShopUtil {
             // TODO need to add default color from unify, but need to pass context on param
             FirebaseCrashlytics.getInstance().recordException(e)
             Int.ZERO
+        }
+    }
+    
+    fun parseColorOrFallback(hexColor: String, fallbackColor: Int): Int {
+        return try {
+            Color.parseColor(hexColor)
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            fallbackColor
         }
     }
 
