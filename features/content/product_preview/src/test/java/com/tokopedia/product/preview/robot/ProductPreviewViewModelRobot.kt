@@ -149,6 +149,10 @@ internal class ProductPreviewViewModelRobot(
         viewModel.onAction(ProductPreviewAction.ProductAction(model))
     }
 
+    fun navigateAppTestCase(appLink: String) {
+        viewModel.onAction(ProductPreviewAction.Navigate(appLink))
+    }
+
     fun cancelRemainingTasks() {
         viewModel.viewModelScope.coroutineContext.cancelChildren()
     }

@@ -527,4 +527,18 @@ class ProductPreviewUnitTest {
         }
     }
 
+    @Test
+    fun `when navigate to app link and should emit event with corresponding app link`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val appLink = "tokopedia://product/123567"
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordEvent {
+                robot.navigateAppTestCase(appLink)
+            }.also { event ->
+                event.last().assertEqualTo(ProductPreviewUiEvent.NavigateUiEvent(appLink))
+            }
+        }
+    }
+
 }
