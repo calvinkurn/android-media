@@ -475,7 +475,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val broadcastTimerStateChanged: Flow<PlayBroadcastTimerState>
         get() = broadcastTimer.stateChanged.map {
             if (it is PlayBroadcastTimerState.Active) {
-                updateLiveStats(LiveStatsUiModel.Duration(it.duration))
+                updateLiveStats(listOf(LiveStatsUiModel.Duration(it.duration)))
             }
 
             it
@@ -974,14 +974,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
         when (result) {
             is NewMetricList -> queueNewMetrics(playBroadcastMapper.mapNewMetricList(result))
-            is TotalView -> {
-                val totalView = playBroadcastMapper.mapTotalView(result)
-                updateLiveStats(LiveStatsUiModel.TotalViewer(totalView.totalView))
-            }
-            is TotalLike -> {
-                val totalLike = playBroadcastMapper.mapTotalLike(result)
-                updateLiveStats(LiveStatsUiModel.Like(totalLike.totalLike))
-            }
             is LiveDuration -> {
                 restartLiveDuration(result)
                 if (result.duration >= result.maxDuration) logSocket(result)
@@ -1024,6 +1016,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 val mappedResult = playBroadcastMapper.mapPinnedMessageSocket(result)
                 _pinnedMessage.value = mappedResult.copy(
                     editStatus = _pinnedMessage.value.editStatus
+                )
+            }
+            is LiveStats -> {
+                updateLiveStats(
+                    listOf(
+                        LiveStatsUiModel.Viewer(result.liveConcurrentUser),
+                        LiveStatsUiModel.TotalViewer(result.visitChannel),
+                        LiveStatsUiModel.EstimatedIncome(result.estimatedIncome),
+                        LiveStatsUiModel.Like(result.likeChannel),
+                    )
                 )
             }
         }
@@ -2393,14 +2395,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun updateLiveStats(newLiveStats: LiveStatsUiModel) {
+    private fun updateLiveStats(newLiveStats: List<LiveStatsUiModel>) {
         _liveStatsList.update {
             it.map { liveStats ->
-                if (liveStats::class == newLiveStats::class) {
-                    newLiveStats
-                } else {
-                    liveStats
-                }
+                newLiveStats.firstOrNull { item ->
+                    item::class == liveStats::class
+                } ?: return@map liveStats
             }
         }
     }

@@ -14,27 +14,35 @@ sealed interface LiveStatsUiModel {
     val text: String
 
     data class Viewer(
-        override val text: String = "0",
+        val value: String = "",
     ) : LiveStatsUiModel {
         override val icon: Int = IconUnify.USER
+        override val text: String
+            get() = value.ifEmpty { "0" }
     }
 
     data class TotalViewer(
-        override val text: String = "0",
+        val value: String = "",
     ) : LiveStatsUiModel {
         override val icon: Int = IconUnify.VISIBILITY
+        override val text: String
+            get() = value.ifEmpty { "0" }
     }
 
     data class EstimatedIncome(
-        override val text: String = "Rp0",
+        val value: String = "",
     ) : LiveStatsUiModel {
         override val icon: Int = IconUnify.SALDO
+        override val text: String
+            get() = value.ifEmpty { "Rp0" }
     }
 
     data class Like(
-        override val text: String = "0",
+        val value: String = "",
     ) : LiveStatsUiModel {
         override val icon: Int = IconUnify.THUMB
+        override val text: String
+            get() = value.ifEmpty { "0" }
     }
 
     data class Duration(
