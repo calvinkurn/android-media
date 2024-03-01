@@ -83,7 +83,7 @@ class CartRecentViewViewHolder(
                     } as? RecommendationCarouselModel
                     val recommendationItems: List<RecommendationItem> =
                         recommendationModel?.widget?.recommendationItemList ?: emptyList()
-                    if (element.hasSentImpressionAnalytics && recommendationItems.isNotEmpty()) {
+                    if (!element.hasSentImpressionAnalytics && recommendationItems.isNotEmpty()) {
                         listener?.onRecentViewImpression(recommendationItems)
                         element.hasSentImpressionAnalytics = true
                     }
