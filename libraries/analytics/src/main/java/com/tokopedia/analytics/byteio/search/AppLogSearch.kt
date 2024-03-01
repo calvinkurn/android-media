@@ -350,7 +350,7 @@ object AppLogSearch {
         val listItemId: String?,
         val itemRank: Int?,
         val listResultType: String?,
-        val productID: String?,
+        val productID: String,
         val searchKeyword: String,
         val tokenType: String,
         val rank: Int,
@@ -370,7 +370,7 @@ object AppLogSearch {
                 listItemId?.let { put(LIST_ITEM_ID, it) }
                 itemRank?.let { put(ITEM_RANK, it) }
                 listResultType?.let { put(LIST_RESULT_TYPE, it) }
-                productID?.let { put(PRODUCT_ID, it) }
+                put(PRODUCT_ID, productID)
                 put(SEARCH_KEYWORD, searchKeyword)
                 put(TOKEN_TYPE, tokenType)
                 put(RANK, rank)
