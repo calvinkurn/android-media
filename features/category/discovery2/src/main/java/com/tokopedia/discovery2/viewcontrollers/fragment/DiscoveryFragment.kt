@@ -38,6 +38,8 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -840,6 +842,7 @@ open class DiscoveryFragment :
             when (it) {
                 is Success -> {
                     pageInfoHolder = it.data
+                    trackEnterPage()
                     setToolBarPageInfoOnSuccess(it.data)
                     addMiniCartToPageFirstTime()
                     setupAffiliate()
@@ -1058,6 +1061,7 @@ open class DiscoveryFragment :
 
     private fun trackEnterPage() {
         if(hasTrackEnterPage) return
+        pageInfoHolder?.let { AppLogAnalytics.putPageData(PAGE_NAME, it.label.trackingPagename) } ?: return
         AppLogRecommendation.sendEnterPageAppLog()
         hasTrackEnterPage = true
     }

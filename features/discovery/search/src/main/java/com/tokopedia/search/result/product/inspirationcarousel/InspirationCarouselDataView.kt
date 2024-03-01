@@ -307,8 +307,8 @@ data class InspirationCarouselDataView(
             fun asByteIOSearchResult(aladdinButtonType: String?) = AppLogSearch.SearchResult(
                 imprId = byteIOTrackingData.imprId,
                 searchId = byteIOTrackingData.searchId,
-                searchResultId = getSearchResultId(),
-                listItemId = id,
+                searchResultId = getRank().toString(),
+                listItemId = getListItemId(),
                 itemRank = getItemRank(),
                 listResultType = AppLogSearch.ParamValue.GOODS,
                 productID = id,
@@ -321,7 +321,7 @@ data class InspirationCarouselDataView(
                 aladdinButtonType = aladdinButtonType,
             )
 
-            private fun getSearchResultId() =
+            private fun getListItemId() =
                 if (customVideoURL.isBlank())
                     if (hasParentId()) parentId
                     else id
@@ -335,8 +335,8 @@ data class InspirationCarouselDataView(
                 productID = id,
                 searchID = byteIOTrackingData.searchId,
                 requestID = byteIOTrackingData.imprId,
-                searchResultID = getSearchResultId(),
-                listItemId = id,
+                searchResultID = getRank().toString(),
+                listItemId = getListItemId(),
                 itemRank = getItemRank(),
                 listResultType = AppLogSearch.ParamValue.GOODS,
                 searchKeyword = byteIOTrackingData.keyword,

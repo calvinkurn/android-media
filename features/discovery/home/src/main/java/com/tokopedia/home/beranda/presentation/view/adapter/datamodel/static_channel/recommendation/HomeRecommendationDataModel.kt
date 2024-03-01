@@ -7,11 +7,11 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 data class HomeRecommendationDataModel(
     val homeRecommendations: List<BaseHomeRecommendationVisitable> = emptyList(),
     val isHasNextPage: Boolean = false,
-    val appLog: RecommendationAppLog = RecommendationAppLog(),
 )
 
 @RecomTemporary
 data class HomeGlobalRecommendationDataModel(
     val homeRecommendations: List<ForYouRecommendationVisitable> = emptyList(),
-    val isHasNextPage: Boolean = false
+    val isHasNextPage: Boolean = false,
+    val appLog: RecommendationAppLog = RecommendationAppLog(),
 )

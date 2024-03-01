@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.visitable
 
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.unifycomponents.CardUnify2
 
 /**
@@ -23,4 +24,5 @@ data class MissionWidgetDataModel(
     val campaignCode: String = "",
     val animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
     val isCache: Boolean,
+    val appLog: RecommendationAppLog = RecommendationAppLog(),
 )

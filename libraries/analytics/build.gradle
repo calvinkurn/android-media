@@ -73,7 +73,7 @@ dependencies {
     implementation 'com.bytedance.common_business:alog:2.0.0-rc.10'
     implementation 'com.bytedance.android:alog:1.0.0-rc.6@aar'
     implementation 'com.ss.android.ugc.quota:BDNetworkTag:0.0.1-alpha.2-support'
-    implementation 'com.bytedance.applog:bdtracker-et_verify:5.6.9-bugfix.6' // debugOnly
+    debugImplementation 'com.bytedance.applog:bdtracker-et_verify:5.6.9-bugfix.6' // debugOnly
 
     // ttnet
     implementation 'org.chromium.net:cronet:4.1.120.3-dut'

@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
@@ -27,7 +29,7 @@ import com.tokopedia.kotlin.extensions.view.gone
  * A activity class for default activity when opening recommendation page from deeplink
  */
 @SuppressLint("GoogleAppIndexingApiWarning")
-class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
+class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>, AppLogInterface {
     companion object{
         private const val PRODUCT_ID = "PRODUCT_ID"
 
@@ -187,5 +189,9 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         }
         if(isTaskRoot) RouteManager.route(this, ApplinkConst.HOME)
         this.finish()
+    }
+
+    override fun getPageName(): String {
+        return PageName.RECOMMENDATION
     }
 }

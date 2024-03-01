@@ -97,7 +97,7 @@ data class AppLogRecommendationProductModel(
         put(AppLogParam.LIST_NUM, listNum)
         put(AppLogParam.ACTION_TYPE, ActionType.CLICK_CARD)
         put(AppLogParam.MODULE_NAME, moduleName)
-        put(AppLogParam.GLIDE_DISTANCE, "0")
+        put(AppLogParam.GLIDE_DISTANCE, 0)
         put(AppLogParam.REC_SESSION_ID, recSessionId)
         put(AppLogParam.REQUEST_ID, requestId)
     }

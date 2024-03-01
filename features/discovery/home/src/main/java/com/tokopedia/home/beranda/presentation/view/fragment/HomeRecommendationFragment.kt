@@ -755,7 +755,6 @@ class HomeRecommendationFragment :
             DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
             getLocationParamString(),
             sourceType = sourceType,
-            refreshType = GetHomeRecommendationCardUseCase.REFRESH_TYPE_REFRESH
         )
     }
 
@@ -839,7 +838,6 @@ class HomeRecommendationFragment :
                 DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
                 getLocationParamString(),
                 sourceType = sourceType,
-                refreshType = GetHomeRecommendationCardUseCase.REFRESH_TYPE_OPEN,
             )
         }
     }

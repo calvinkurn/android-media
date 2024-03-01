@@ -20,7 +20,7 @@ object TrackDiscoveryRecommendationMapper {
             position = position,
             tabName = tabName.orEmpty(),
             tabPosition = tabIndex?.firstOrNull().orZero(),
-            moduleName = componentPromoName.orEmpty(),
+            moduleName = getAppLog()?.pageName.orEmpty(),
             isAd = isTopads.orFalse(),
             isUseCache = false,
             recSessionId = getAppLog()?.sessionId.orEmpty(),
@@ -56,11 +56,9 @@ object TrackDiscoveryRecommendationMapper {
 
     fun DataItem.isEligibleToTrack(): Boolean {
         return source == ComponentSourceData.Recommendation
-//            && !(getAppLog()?.pageName?.contains("injection").orFalse())
     }
 
     fun ComponentsItem.isEligibleToTrack(): Boolean {
         return getSource() == ComponentSourceData.Recommendation
-//            && !(getComponentAdditionalInfo()?.tracker?.recommendationPageName?.contains("injection").orFalse())
     }
 }

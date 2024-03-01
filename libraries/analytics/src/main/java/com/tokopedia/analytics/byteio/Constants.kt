@@ -149,6 +149,7 @@ object PageName {
     const val SHOP = "shoppage"
     const val SKU = "sku"
     const val EXTERNAL_PROMO = "external_promo"
+    const val RECOMMENDATION = "recommendation"
 }
 
 object QuitType {

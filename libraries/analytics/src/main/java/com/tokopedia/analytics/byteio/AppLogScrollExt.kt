@@ -16,8 +16,9 @@ import org.json.JSONObject
  */
 data class GlidePageTrackObject(
     val listName: String = "",
-    val listNum: Int = 0,
+    val listNum: Int = -1,
     val isUseCache: Boolean = false,
+    val distanceToTop: Int = 0,
 )
 
 /**
@@ -44,7 +45,8 @@ data class RecommendationTriggerObject(
 )
 
 class VerticalTrackScrollListener(
-    private val trackGlidePage: Boolean = false
+    private val trackGlidePage: Boolean = false,
+    private val glidePageTrackCallback: () -> GlidePageTrackObject?,
 ) : RecyclerView.OnScrollListener() {
     // total scroll is total offset for multiple glide.
     // for ex. User glide 3 times repeatly, means total scroll = total 3 glides.
@@ -56,7 +58,6 @@ class VerticalTrackScrollListener(
     // drag is started from recom section or not, to determine should send rec_trigger or not
     private var dragFromRecom = false
 
-    private var glidePageTrackObject = GlidePageTrackObject()
     private var recommendationTriggerObject = RecommendationTriggerObject()
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -151,7 +152,7 @@ class VerticalTrackScrollListener(
     }
 
     private fun sendGlidePage(scrollOffset: Float) {
-        if(!trackGlidePage) return
+        val glidePageTrackObject = glidePageTrackCallback.invoke() ?: return
         sendGlidePageTrack(scrollOffset, glidePageTrackObject)
     }
 }
@@ -192,9 +193,9 @@ fun sendGlidePageTrack(scrollOffset: Float, model: GlidePageTrackObject) {
         it.addEnterFrom()
         it.put(AppLogParam.GLIDE_TYPE, if (scrollOffset > 0) "more" else "less")
         it.put(AppLogParam.GLIDE_DISTANCE, scrollOffset)
-        it.put(AppLogParam.DISTANCE_TO_TOP, "")
+        it.put(AppLogParam.DISTANCE_TO_TOP, model.distanceToTop)
         it.put(AppLogParam.LIST_NAME, model.listName)
-        it.put(AppLogParam.LIST_NUM, model.listNum)
+        it.put(AppLogParam.LIST_NUM, model.listNum.inc())
         it.put(AppLogParam.IS_USE_CACHE, if (model.isUseCache) 1 else 0)
     })
 }
@@ -204,7 +205,7 @@ fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTrigg
         it.addPage()
         it.addEnterFrom()
         it.put(AppLogParam.LIST_NAME, model.listName)
-        it.put(AppLogParam.LIST_NUM, model.listNum)
+        it.put(AppLogParam.LIST_NUM, model.listNum.inc())
         it.put(AppLogParam.ACTION_TYPE, ActionType.GLIDE)
         it.put(AppLogParam.MODULE_NAME, model.moduleName)
         it.put(AppLogParam.GLIDE_DISTANCE, scrollOffset)
@@ -216,7 +217,7 @@ fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTrigg
 fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
     AppLogAnalytics.send(EventName.SLIDE_BAR, JSONObject().also {
         it.addPage()
-        it.addPage()
+        it.addEnterFrom()
         it.put(AppLogParam.SLIDE_TYPE, if (scrollOffset > 0) "show_right" else "show_left")
 
         it.put(AppLogParam.MODULE_NAME, model.moduleName)
@@ -231,9 +232,10 @@ fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
  * If no recommendation on the page, leave recommendedTriggerObject as null
  */
 fun RecyclerView.addVerticalTrackListener(
-    trackGlidePage: Boolean = false
+    trackGlidePage: Boolean = false,
+    glidePageTrackCallback: () -> GlidePageTrackObject? = { null },
 ) {
-    this.addOnScrollListener(VerticalTrackScrollListener(trackGlidePage))
+    this.addOnScrollListener(VerticalTrackScrollListener(trackGlidePage, glidePageTrackCallback))
 }
 
 /**
