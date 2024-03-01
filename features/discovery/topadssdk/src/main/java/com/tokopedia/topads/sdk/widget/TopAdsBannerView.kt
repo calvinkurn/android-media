@@ -783,6 +783,11 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                     override fun onProductItemImpressed(productPreviewIndex: Int) {
                         impressionListener?.onImpressionHeadlineAdsItem(productPreviewIndex, cpmData)
+                        impressionListener?.onImpressionProductAdsItem(
+                            productPreviewIndex,
+                            cpmData.cpm?.cpmShop?.products?.getOrNull(productPreviewIndex),
+                            cpmData
+                        )
                     }
 
                     override fun onProductItemClicked(productPreviewIndex: Int) {

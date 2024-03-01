@@ -33,6 +33,8 @@ data class CpmDataView(
     private fun byteIOTokenType() =
         if (isShopSmall()) SHOP_SMALL else SHOP_BIG
 
+    fun isShopBig() = layout() == TopAdsConstants.LAYOUT_1
+
     private fun isShopSmall() = layout() == TopAdsConstants.LAYOUT_2
 
     private fun layout() = cpmModel.data.getOrNull(0)?.cpm?.layout
