@@ -7,10 +7,12 @@ import com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationF
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import dagger.Component
 import com.tokopedia.home.beranda.di.HomeScope
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeGlobalRecommendationFragment
 
 @HomeScope
 @Component(modules = [HomeModule::class, ViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface BerandaComponent {
     fun inject(homeRevampFragment: HomeRevampFragment?)
     fun inject(homeRecommendationFragment: HomeRecommendationFragment)
+    fun inject(homeRecommendationFragment: HomeGlobalRecommendationFragment)
 }

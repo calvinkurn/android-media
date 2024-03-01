@@ -14,8 +14,6 @@ import com.tokopedia.product.detail.data.model.bottom_sheet_edu.BottomSheetEduDa
 import com.tokopedia.product.detail.data.model.bottom_sheet_edu.asUiModel
 import com.tokopedia.product.detail.data.model.custom_info_title.CustomInfoTitle
 import com.tokopedia.product.detail.data.model.dynamiconeliner.DynamicOneLiner
-import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
-import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
 import com.tokopedia.product.detail.data.model.gwp.GWPData
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
@@ -34,7 +32,7 @@ import com.tokopedia.product.detail.data.model.shop_review.asUiModel
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.ProductDetailMapper
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopscore.ProductShopRatingQuery
@@ -100,14 +98,6 @@ data class ProductInfoP2Data(
     @SerializedName("upcomingCampaigns")
     @Expose
     var upcomingCampaigns: List<ProductUpcomingData> = listOf(),
-
-    @SerializedName("installmentRecommendation")
-    @Expose
-    var productFinancingRecommendationData: PDPInstallmentRecommendationData = PDPInstallmentRecommendationData(),
-
-    @SerializedName("installmentCalculation")
-    @Expose
-    var productFinancingCalculationData: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse(),
 
     @SerializedName("restrictionInfo")
     @Expose
@@ -214,15 +204,13 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     cartRedirection = cartRedirection.data.associateBy({ it.productId }, { it }),
     nearestWarehouseInfo = nearestWarehouseInfo.associateBy({ it.productId }, { it.warehouseInfo }),
     upcomingCampaigns = upcomingCampaigns.associateBy { it.productId ?: "" },
-    productFinancingRecommendationData = productFinancingRecommendationData,
-    productFinancingCalculationData = productFinancingCalculationData,
     ratesEstimate = ratesEstimate,
     restrictionInfo = restrictionInfo,
     bebasOngkir = bebasOngkir,
     uspImageUrl = uspTokoCabangData.uspBoe.uspIcon,
     merchantVoucherSummary = merchantVoucherSummary,
     helpfulReviews = mostHelpFulReviewData.list,
-    imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage),
+    imageReview = ProductDetailMapper.generateImageReview(reviewImage),
     alternateCopy = cartRedirection.alternateCopy,
     rating = rating.asUiModel(),
     ticker = ticker,

@@ -10,8 +10,15 @@ interface ProductCardColor {
     val soldCountTextColor: Int
     val discountTextColor: Int
     val ratingTextColor: Int
+    val shopBadgeTextColor: Int
     val buttonColorMode: ColorMode
     val labelBenefitViewColor: LabelBenefitViewColor
+    val quantityEditorColor: QuantityEditorColor
     
     data class LabelBenefitViewColor(val cutoutFillColor: String)
+    data class QuantityEditorColor(
+        val buttonDeleteCartColorLight: Int,
+        val buttonDeleteCartColorDark: Int,
+        val quantityTextColor: Int
+    )
 }

@@ -4,30 +4,31 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverPojo
 import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
-import com.tokopedia.loginregister.common.domain.pojo.ProviderData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.common.domain.pojo.TickerInfoData
 import com.tokopedia.loginregister.common.domain.pojo.TickersInfoPojo
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestV2
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
-import com.tokopedia.sessioncommon.data.KeyData
+import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import timber.log.Timber
+import com.tokopedia.loginregister.test.R as loginregistertestR
 
 class FakeGraphqlRepository : GraphqlRepository {
 
     var registerCheckConfig: Config = Config.Default
     var discoverConfig: Config = Config.Default
+    var registerRequestConfig: Config = Config.Default
+    var loginConfig: Config = Config.Default
 
     override suspend fun response(
-        requests: List<GraphqlRequest>,
-        cacheStrategy: GraphqlCacheStrategy
+        requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
-        Timber.d("Passed through FakeGraphql: ${requests.first().query.slice(0..20)}")
+        Timber.d("Passed through FakeGraphql $this: ${requests.first().query.slice(0..20)}")
         return when (GqlQueryParser.parse(requests).first()) {
             "registerCheck" -> {
                 val obj: RegisterCheckPojo = when (registerCheckConfig) {
@@ -48,37 +49,20 @@ class FakeGraphqlRepository : GraphqlRepository {
             }
 
             "discover" -> {
-                val obj: DiscoverPojo = when (discoverConfig) {
-                    is Config.Default -> DiscoverPojo(
-                        DiscoverData(
-                            arrayListOf(
-                                ProviderData(
-                                    "gplus",
-                                    "Google",
-                                    "https://accounts.tokopedia.com/gplus-login",
-                                    "",
-                                    "#FFFFFF"
-                                )
-                            ),
-                            ""
-                        )
+                when (discoverConfig) {
+                    is Config.Default -> GqlMockUtil.createSuccessResponse<DiscoverPojo>(
+                        loginregistertestR.raw.discover_success
                     )
 
-                    is Config.Error -> throw Exception("mocked error")
-                    else -> DiscoverPojo()
+                    is Config.Error -> {
+                        throw Throwable("Error")
+                    }
+                    else -> GqlMockUtil.createSuccessResponse(DiscoverPojo())
                 }
-                GqlMockUtil.createSuccessResponse(obj)
             }
 
             "generate_key" -> {
-                GqlMockUtil.createSuccessResponse(
-                    GenerateKeyPojo(
-                        KeyData(
-                            key = "stubbedPublicKey",
-                            hash = "1234"
-                        )
-                    )
-                )
+                GqlMockUtil.createSuccessResponse<GenerateKeyPojo>(loginregistertestR.raw.generate_key_success)
             }
 
             "GetBanner" -> {
@@ -87,6 +71,34 @@ class FakeGraphqlRepository : GraphqlRepository {
 
             "ticker" -> {
                 GqlMockUtil.createSuccessResponse(TickerInfoData(TickersInfoPojo(listOf())))
+            }
+
+            "register_v2" -> {
+                when (registerRequestConfig) {
+                    is Config.Success -> GqlMockUtil.createSuccessResponse<RegisterRequestV2>(
+                        loginregistertestR.raw.register_v2_success
+                    )
+
+                    is Config.Error -> GqlMockUtil.createSuccessResponse<RegisterRequestV2>(
+                        loginregistertestR.raw.register_v2_failed_forbidden_name
+                    )
+
+                    else -> GqlMockUtil.createSuccessResponse(RegisterRequestV2())
+                }
+
+            }
+
+            "login_token_v2" -> {
+                return when (loginConfig) {
+                    is Config.Default -> {
+                        GqlMockUtil.createSuccessResponse(LoginTokenPojoV2())
+                    }
+                    is Config.WithResponse -> {
+                        GqlMockUtil.createSuccessResponse((loginConfig as Config.WithResponse).response as LoginTokenPojoV2)
+                    } else -> {
+                        GqlMockUtil.createSuccessResponse(LoginTokenPojoV2())
+                    }
+                }
             }
 
             else -> {
@@ -101,5 +113,5 @@ sealed class Config {
     object Default : Config()
     data class WithResponse(val response: Any) : Config()
     object Error : Config()
-    object Delay : Config()
+    object Success : Config()
 }

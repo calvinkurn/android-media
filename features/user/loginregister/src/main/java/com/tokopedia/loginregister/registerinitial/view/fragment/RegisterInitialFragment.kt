@@ -28,7 +28,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.scp.auth.common.utils.ScpUtils
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -62,6 +61,7 @@ import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
 import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.domain.pojo.ProviderData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.common.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.utils.PhoneUtils
@@ -79,7 +79,6 @@ import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.view.bottomsheet.OtherMethodBottomSheet
 import com.tokopedia.loginregister.registerinitial.view.bottomsheet.OtherMethodState
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialRouter
@@ -110,6 +109,9 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.network.R as networkR
+import com.tokopedia.sessioncommon.R as sessioncommonR
 
 /**
  * @author by nisie on 10/24/18.
@@ -449,14 +451,14 @@ class RegisterInitialFragment :
                 viewBinding?.register?.setColor(
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                        unifyprinciplesR.color.Unify_NN0
                     )
                 )
             }
             viewBinding?.register?.setBorderColor(
                 MethodChecker.getColor(
                     activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
+                    unifyprinciplesR.color.Unify_NN950_32
                 )
             )
             viewBinding?.register?.setRoundCorner(REGISTER_BUTTON_CORNER_SIZE)
@@ -619,13 +621,13 @@ class RegisterInitialFragment :
     private fun onFailedGetProvider(throwable: Throwable) {
         if (isUsingRedefineRegisterEmailMandatoryOptionalVariant()) {
             registerInitialViewModel.setOtherMethodState(
-                OtherMethodState.Failed(context?.getString(com.tokopedia.network.R.string.default_request_error_unknown))
+                OtherMethodState.Failed(context?.getString(networkR.string.default_request_error_unknown))
             )
             bottomSheetOtherMethod?.setState(registerInitialViewModel.otherMethodState)
         }
         dismissProgressBar()
         val forbiddenMessage = context?.getString(
-            com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth
+            sessioncommonR.string.default_request_error_forbidden_auth
         )
         val errorMessage = throwable.getMessage(requireActivity())
         if (errorMessage.removeErrorCode() == forbiddenMessage) {
@@ -1377,7 +1379,6 @@ class RegisterInitialFragment :
         registerPushNotif()
         submitIntegrityApi()
 
-        ScpUtils.saveTokens(userSession.accessToken, EncoderDecoder.Decrypt(userSession.freshToken, userSession.refreshTokenIV))
         if (viewBinding?.registerInputView?.textValue?.isNotBlank() == true) {
             userSession.autofillUserData = viewBinding?.registerInputView?.textValue
         }
@@ -1421,7 +1422,9 @@ class RegisterInitialFragment :
     }
 
     private fun onGoToForbiddenPage() {
-        ForbiddenActivity.startActivity(activity)
+        context?.let {
+            ForbiddenActivity.startActivity(it)
+        }
     }
 
     private fun getTickerType(hexColor: String): Int {
@@ -1680,7 +1683,7 @@ class RegisterInitialFragment :
                 ds.isUnderlineText = false
                 ds.color = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 )
             }
         }

@@ -1,14 +1,14 @@
 package com.tokopedia.product.detail.tracking
 
 import com.tokopedia.product.detail.common.ProductTrackingConstant
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.track.TrackApp
 
 
 data class ProductArTrackerData(
-        val productInfo: DynamicProductInfoP1?,
-        val componentTrackDataModel: ComponentTrackDataModel
+    val productInfo: ProductInfoP1?,
+    val componentTrackDataModel: ComponentTrackDataModel
 ) {
     private val productBasic = productInfo?.basic
     private val basicCategory = productBasic?.category

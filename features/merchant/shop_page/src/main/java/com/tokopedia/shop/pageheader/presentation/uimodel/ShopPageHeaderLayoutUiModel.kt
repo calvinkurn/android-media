@@ -42,6 +42,26 @@ data class ShopPageHeaderLayoutUiModel(
             return listBackgroundObject.firstOrNull { it.type.startsWith(bgObjectType.value) }
         }
 
+        fun getFinalPatternColorType(isAppThemeDarkMode: Boolean): String {
+            val backgroundColor = listBackgroundColor.firstOrNull().orEmpty()
+            val backgroundObject = listBackgroundObject.firstOrNull()
+            return if (backgroundColor.isNotEmpty() || backgroundObject != null) {
+                patternColorType
+            } else {
+                if (isAppThemeDarkMode) {
+                    ColorType.DARK.value
+                } else {
+                    ColorType.LIGHT.value
+                }
+            }
+        }
+
+        fun isTransparent(): Boolean {
+            val backgroundColor = listBackgroundColor.firstOrNull().orEmpty()
+            val backgroundObject = listBackgroundObject.firstOrNull()
+            return backgroundColor.isEmpty() && backgroundObject == null
+        }
+
         data class BackgroundObject(
             val url: String = "",
             val type: String = ""

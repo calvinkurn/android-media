@@ -237,7 +237,14 @@ object ShopPageProductListMapper {
         }
 
         val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductUiModel.isShowFreeOngkir, shopProductUiModel.freeOngkirPromoIcon ?: "")
-
+        val badges = shopProductUiModel.badge.map {
+            ProductCardModel.ShopBadge(
+                isShown = true,
+                imageUrl = it.imageUrl,
+                title = it.title
+            )
+        }
+        
         val baseProductCardModel = ProductCardModel(
             productImageUrl = shopProductUiModel.imageUrl ?: "",
             productName = shopProductUiModel.name ?: "",
@@ -256,13 +263,7 @@ object ShopPageProductListMapper {
             isWideContent = isWideContent,
             isWishlisted = shopProductUiModel.isWishList,
             forceLightModeColor = isForceLightMode,
-            shopBadgeList = shopProductUiModel.badge.map {
-                ProductCardModel.ShopBadge(
-                    isShown = false,
-                    imageUrl = it.imageUrl,
-                    title = it.title
-                )
-            },
+            shopBadgeList = badges,
             colorMode = productCardColorHelper.determineProductCardColorMode(
                 isDeviceOnDarkModeTheme = isDeviceOnDarkModeTheme,
                 shouldOverrideTheme = isForceLightMode,
