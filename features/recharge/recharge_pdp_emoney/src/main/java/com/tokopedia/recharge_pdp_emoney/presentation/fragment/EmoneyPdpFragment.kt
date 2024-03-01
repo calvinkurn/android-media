@@ -401,14 +401,11 @@ open class EmoneyPdpFragment :
     }
 
     private fun mapImage(data: TelcoCatalogPrefixSelect): List<EmoneyImageModel> {
-//        return data.rechargeCatalogPrefixSelect.prefixes.filter {
-//            it.operator.attributes.status == STATUS_ACTIVE
-//        }.map {
-//            it.operator.attributes.imageUrl
-//        }.distinct()
-        return data.rechargeCatalogPrefixSelect.prefixes.map {
+        return data.rechargeCatalogPrefixSelect.prefixes.filter {
+            it.operator.attributes.status == STATUS_ACTIVE
+        }.map {
             EmoneyImageModel(it.operator.attributes.imageUrl, it.operator.attributes.name)
-        }
+        }.distinct()
     }
 
     private fun trackOnClickMultiCheckout(data: DigitalAtcTrackingModel) {
