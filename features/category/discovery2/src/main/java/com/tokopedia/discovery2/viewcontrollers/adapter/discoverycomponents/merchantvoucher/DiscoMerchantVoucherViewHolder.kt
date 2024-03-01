@@ -107,7 +107,7 @@ class DiscoMerchantVoucherViewHolder(itemView: View, val fragment: Fragment) :
                     compId = discoMerchantVoucherViewModel?.components?.id.orEmpty(),
                     creativeName = discoMerchantVoucherViewModel?.components?.creativeName.orEmpty()
                 )
-            properties?.let { analytics?.trackMvcCtaClickEvent(it) }
+            properties?.let { analytics?.trackMvcClickEvent(it, true) }
         }
     }
 
@@ -127,7 +127,7 @@ class DiscoMerchantVoucherViewHolder(itemView: View, val fragment: Fragment) :
                     compId = discoMerchantVoucherViewModel?.components?.id.orEmpty(),
                     creativeName = discoMerchantVoucherViewModel?.components?.creativeName.orEmpty()
                 )
-            properties?.let { analytics?.trackMvcClickEvent(it) }
+            properties?.let { analytics?.trackMvcClickEvent(it, false) }
         }
     }
 

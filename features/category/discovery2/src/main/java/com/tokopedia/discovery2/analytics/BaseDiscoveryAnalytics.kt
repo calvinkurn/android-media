@@ -205,7 +205,6 @@ open class BaseDiscoveryAnalytics(
     open fun trackCouponCTAClickEvent(properties: CouponTrackingProperties) {}
     open fun trackSupportingBrandImpression(components: List<ComponentsItem>) {}
     open fun trackSupportingBrandClick(component: ComponentsItem, actionType: String) {}
-    open fun trackMvcImpression(list: List<MvcTrackingProperties>){}
-    open fun trackMvcClickEvent(properties: MvcTrackingProperties) {}
-    open fun trackMvcCtaClickEvent(properties: MvcTrackingProperties) {}
+    open fun trackMvcImpression(properties: List<MvcTrackingProperties>){}
+    open fun trackMvcClickEvent(properties: MvcTrackingProperties, isCta: Boolean) {}
 }

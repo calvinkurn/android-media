@@ -3096,14 +3096,14 @@ open class DiscoveryAnalytics(
         trackingQueue.putEETracking(impressionProperties)
     }
 
-    override fun trackMvcClickEvent(properties: MvcTrackingProperties) {
+    override fun trackMvcClickEvent(properties: MvcTrackingProperties, isCta: Boolean) {
         val generalProps = createGeneralCouponEvent(
-            EVENT_PROMO_CLICK,
-            CLICK_MVC
+            event = EVENT_PROMO_CLICK,
+            action = if (isCta.not()) CLICK_MVC else CLICK_MVC_CTA
         )
 
         val clickProperties = hashMapOf<String, Any>(
-            KEY_EVENT_LABEL to properties.shopId,
+            KEY_EVENT_LABEL to if (isCta.not()) properties.shopId else "${properties.shopId} - ${properties.action}",
             TRACKER_ID to TRACKER_ID_MVC_CLICK,
             USER_ID to userSession.userId,
             KEY_E_COMMERCE to constructMvcProps(EVENT_PROMO_CLICK, listOf(properties))
@@ -3111,27 +3111,6 @@ open class DiscoveryAnalytics(
 
         clickProperties.putAll(generalProps)
         getTracker().sendEnhanceEcommerceEvent(clickProperties)
-    }
-
-    override fun trackMvcCtaClickEvent(properties: MvcTrackingProperties) {
-        val generalProps = createGeneralCouponEvent(
-            EVENT_CLICK_COUPON,
-            CLICK_MVC_CTA
-        )
-
-        val label = with(properties) {
-            "$shopId - $action"
-        }
-
-        val ctaClickProperties = hashMapOf<String, Any>(
-            KEY_EVENT_LABEL to label,
-            TRACKER_ID to TRACKER_ID_MVC_CLICK_CTA,
-            USER_ID to userSession.userId,
-            KEY_E_COMMERCE to constructMvcProps(EVENT_PROMO_CLICK, listOf(properties))
-        )
-
-        ctaClickProperties.putAll(generalProps)
-        getTracker().sendEnhanceEcommerceEvent(ctaClickProperties)
     }
 
     //region private methods

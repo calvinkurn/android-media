@@ -128,7 +128,7 @@ class MerchantVoucherCarouselItemViewHolder(itemView: View, val fragment: Fragme
                 compId = merchantVoucherCarouselItemViewModel?.components?.parentComponentId.orEmpty(),
                 position = merchantVoucherCarouselItemViewModel?.components?.position.orZero()
             )
-            properties?.let { analytics?.trackMvcCtaClickEvent(it) }
+            properties?.let { analytics?.trackMvcClickEvent(it, true) }
         }
     }
 
@@ -148,7 +148,7 @@ class MerchantVoucherCarouselItemViewHolder(itemView: View, val fragment: Fragme
                 compId = merchantVoucherCarouselItemViewModel?.components?.parentComponentId.orEmpty(),
                 position = merchantVoucherCarouselItemViewModel?.components?.position.orZero()
             )
-            properties?.let { analytics?.trackMvcClickEvent(it) }
+            properties?.let { analytics?.trackMvcClickEvent(it, false) }
         }
     }
 
