@@ -332,4 +332,6 @@
     <string name="play_broadcaster_live_stats_visit_label">Kunjungan</string>
     <string name="play_broadcaster_live_stats_add_to_cart_label">Tambah ke Keranjang</string>
     <string name="play_broadcaster_live_stats_total_sold_label">Total Terjual</string>
+
+    <string name="play_broadcaster_estimated_income_info">Dihitung dari jumlah pesanan yang pembayarannya terkonfirmasi.</string>
 </resources>
