@@ -773,7 +773,7 @@ open class SellerHomeActivity :
         val moduleNameList = listOf(
             DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER
         )
-        DFInstaller.installOnBackground(this.application, moduleNameList, "Seller Home")
+//        DFInstaller.installOnBackground(this.application, moduleNameList, "Seller Home")
     }
 
     private fun handleToaster(intent: Intent?) {
