@@ -104,7 +104,7 @@ private fun LiveStatsViewPreview() {
                     text = "16,5rb"
                 ),
                 LiveStatsUiModel.Duration(
-                    text = "16,5rb"
+                    timeInMillis = 1000
                 )
             )
         )

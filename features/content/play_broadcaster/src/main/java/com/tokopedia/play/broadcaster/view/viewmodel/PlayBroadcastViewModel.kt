@@ -473,7 +473,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _uiEvent
 
     val broadcastTimerStateChanged: Flow<PlayBroadcastTimerState>
-        get() = broadcastTimer.stateChanged
+        get() = broadcastTimer.stateChanged.map {
+            if (it is PlayBroadcastTimerState.Active) {
+                updateLiveStats(LiveStatsUiModel.Duration(it.duration))
+            }
+
+            it
+        }
 
     val isBroadcastStopped
         get() = mIsBroadcastStopped
@@ -501,7 +507,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _observableChatList.value = mutableListOf()
 
         setupPreparationMenu()
-        setupLiveStats()
     }
 
     fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
@@ -971,23 +976,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is NewMetricList -> queueNewMetrics(playBroadcastMapper.mapNewMetricList(result))
             is TotalView -> {
                 val totalView = playBroadcastMapper.mapTotalView(result)
-                _liveStatsList.update {
-                    it.map { liveStats ->
-                        if (liveStats is LiveStatsUiModel.TotalViewer) {
-                            liveStats.copy(text = totalView.totalView)
-                        } else liveStats
-                    }
-                }
+                updateLiveStats(LiveStatsUiModel.TotalViewer(totalView.totalView))
             }
             is TotalLike -> {
                 val totalLike = playBroadcastMapper.mapTotalLike(result)
-                _liveStatsList.update {
-                    it.map { liveStats ->
-                        if (liveStats is LiveStatsUiModel.TotalViewer) {
-                            liveStats.copy(text = totalLike.totalLike)
-                        } else liveStats
-                    }
-                }
+                updateLiveStats(LiveStatsUiModel.Like(totalLike.totalLike))
             }
             is LiveDuration -> {
                 restartLiveDuration(result)
@@ -2225,6 +2218,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _selectedAccount.update { selectedAccount }
         sharedPref.setLastSelectedAccountType(selectedAccount.type)
         hydraConfigStore.setAuthor(selectedAccount)
+
+        setupLiveStats(_selectedAccount.value)
     }
 
     private fun handleSuccessOnBoardingUGC() {
@@ -2382,17 +2377,29 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) { }
     }
 
-    private fun setupLiveStats() {
+    private fun setupLiveStats(selectedAccount: ContentAccountUiModel) {
         viewModelScope.launch {
             _liveStatsList.update {
                 mutableListOf<LiveStatsUiModel>().apply {
-                    /** JOE TODO: don't expose EstimatedIncome if UGC */
-                    /** JOE TODO: handle default value properly */
-                    add(LiveStatsUiModel.Viewer("0"))
-                    add(LiveStatsUiModel.TotalViewer("0"))
-                    add(LiveStatsUiModel.EstimatedIncome("Rp0"))
-                    add(LiveStatsUiModel.Like("0"))
-                    add(LiveStatsUiModel.Duration("0"))
+                    add(LiveStatsUiModel.Viewer())
+                    add(LiveStatsUiModel.TotalViewer())
+                    if (selectedAccount.isShop) {
+                        add(LiveStatsUiModel.EstimatedIncome())
+                    }
+                    add(LiveStatsUiModel.Like())
+                    add(LiveStatsUiModel.Duration())
+                }
+            }
+        }
+    }
+
+    private fun updateLiveStats(newLiveStats: LiveStatsUiModel) {
+        _liveStatsList.update {
+            it.map { liveStats ->
+                if (liveStats::class == newLiveStats::class) {
+                    newLiveStats
+                } else {
+                    liveStats
                 }
             }
         }
