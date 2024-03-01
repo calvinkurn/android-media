@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.util
 
 import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
+import com.tokopedia.cart.view.helper.CartDataHelper
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartModel
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
@@ -44,9 +45,10 @@ object CartPageAnalyticsUtil {
         return checkoutMapData
     }
 
-    fun generateByteIoAnalyticsModel(cartItemDataList: List<CartItemHolderData>, subTotalState: SubTotalState?): CartClickAnalyticsModel {
+    fun generateByteIoAnalyticsModel(cartItems: ArrayList<Any>, subTotalState: SubTotalState?): CartClickAnalyticsModel {
+        val cartItemDataList = CartDataHelper.getSelectedCartItemData(cartItems)
         val salePrice = subTotalState?.asSuccess()?.data?.subtotalPrice.orZero()
-        val originalPriceWithWholesale = subTotalState?.asSuccess()?.data?.subtotalBeforeSlashedPrice.orZero()
+//        val originalPriceWithWholesale = subTotalState?.asSuccess()?.data?.subtotalBeforeSlashedPrice.orZero()
 
         val originalPriceValueWithoutWholesale = cartItemDataList.sumOf { cartItem ->
             val price = cartItem.productOriginalPrice

@@ -1828,6 +1828,7 @@ class CartRevampFragment :
             if (hasRedStatePromo) {
                 viewModel.doClearRedPromosBeforeGoToCheckout(clearPromo)
             } else {
+                viewModel.sendAtcButtonTracker()
                 goToCheckoutPage()
             }
         } else {
