@@ -16,7 +16,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.databinding.ItemLocalLoadUnifyBinding
 import com.tokopedia.product.detail.databinding.ItemSingleVariantViewHolderBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.util.ThumbnailSmoothScroller
 
 /**
@@ -25,7 +25,7 @@ import com.tokopedia.product.detail.view.util.ThumbnailSmoothScroller
 class ProductSingleVariantViewHolder(
     val view: View,
     val variantListener: AtcVariantListener,
-    val pdpListener: DynamicProductDetailListener
+    val pdpListener: ProductDetailListener
 ) : AbstractViewHolder<ProductSingleVariantDataModel>(view), AtcVariantListener by variantListener {
 
     private var containerAdapter: AtcVariantOptionAdapter? = null

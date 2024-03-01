@@ -387,12 +387,12 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         binding?.layoutMapsPreview?.mapViewDetail?.getMapAsync(this)
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = true
         this.googleMap?.uiSettings?.setAllGesturesEnabled(false)
-        activity?.let { MapsInitializer.initialize(activity) }
+        activity?.let { MapsInitializer.initialize(it) }
         moveMap(getLatLng(currentLat, currentLong))
     }
 

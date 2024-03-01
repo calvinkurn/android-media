@@ -48,7 +48,8 @@ class ProductItemDecoration(
         R.layout.search_result_product_card_reimagine_grid,
         R.layout.search_inspiration_seamless_reimagine_product_card,
         R.layout.search_inspiration_keyword_reimagine,
-        )
+        R.layout.search_result_product_coupon_layout
+    )
     private val marginMultiplier: Double
         get() = if (isReimagineProductCard) REIMAGINE_MARGIN_MULTIPLIER else 1.0
 

@@ -13,9 +13,7 @@ class BannerOldTopAdsModel(
     val bannerType: String
 ) : ForYouRecommendationVisitable, ImpressHolder() {
 
-    override fun type(typeFactory: ForYouRecommendationTypeFactory): Int {
-        return typeFactory.type(this)
-    }
+    override fun type(typeFactory: ForYouRecommendationTypeFactory) = Int.MIN_VALUE
 
     override fun areItemsTheSame(other: Any): Boolean {
         return other is BannerOldTopAdsModel &&

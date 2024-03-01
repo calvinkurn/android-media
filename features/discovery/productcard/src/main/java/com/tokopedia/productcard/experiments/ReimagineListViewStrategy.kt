@@ -21,6 +21,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.CompatPaddingUtils
 import com.tokopedia.productcard.reimagine.ProductCardRenderer
+import com.tokopedia.productcard.reimagine.ProductCardStockInfo
 import com.tokopedia.productcard.reimagine.ProductCardType
 import com.tokopedia.productcard.reimagine.cart.ProductCardCartExtension
 import com.tokopedia.productcard.reimagine.lazyView
@@ -47,6 +48,7 @@ internal class ReimagineListViewStrategy(
 
     private val renderer = ProductCardRenderer(productCardView, ProductCardType.List)
     private val cartExtension = ProductCardCartExtension(productCardView, ProductCardType.List)
+    private val stockInfo = ProductCardStockInfo(productCardView)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
@@ -104,7 +106,7 @@ internal class ReimagineListViewStrategy(
 
     fun setProductModel(productCardModel: ProductCardModelReimagine) {
         renderer.setProductModel(productCardModel)
-
+        stockInfo.render(productCardModel)
         cartExtension.render(productCardModel)
 
         renderVideo(productCardModel)

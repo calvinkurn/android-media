@@ -55,9 +55,11 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeEggListener
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder.Companion.LAYOUT
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.listener.ImpressionRecommendationItemListener
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
@@ -91,6 +93,7 @@ import com.tokopedia.abstraction.R as abstractionR
 class HomeRecommendationFragment :
     BaseRecommendationFragment(),
     GlobalRecomListener,
+    ImpressionRecommendationItemListener,
     TopAdsBannerClickListener {
 
     @Inject
@@ -117,6 +120,7 @@ class HomeRecommendationFragment :
 
     private val adapter by lazy {
         val factory = HomeRecommendationTypeFactoryImpl(
+            this,
             this,
             PlayVideoWidgetManager(recyclerView, viewLifecycleOwner)
         )
@@ -425,6 +429,53 @@ class HomeRecommendationFragment :
                     )
                 }
             }
+    }
+
+    override fun onProductCardImpressed(model: HomeRecommendationItemDataModel, position: Int) {
+        val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
+        if (model.recommendationProductItem.isTopAds) {
+            context?.let {
+                TopAdsUrlHitter(className).hitImpressionUrl(
+                    it,
+                    model.recommendationProductItem.trackerImageUrl,
+                    model.recommendationProductItem.id,
+                    model.recommendationProductItem.name,
+                    model.recommendationProductItem.imageUrl,
+                    HOME_RECOMMENDATION_FRAGMENT
+                )
+            }
+            if (userSessionInterface.isLoggedIn) {
+                trackingQueue.putEETracking(
+                    getRecommendationProductViewLoginTopAds(
+                        tabNameLowerCase,
+                        model
+                    ) as HashMap<String, Any>
+                )
+            } else {
+                trackingQueue.putEETracking(
+                    getRecommendationProductViewNonLoginTopAds(
+                        tabNameLowerCase,
+                        model
+                    ) as HashMap<String, Any>
+                )
+            }
+        } else {
+            if (userSessionInterface.isLoggedIn) {
+                trackingQueue.putEETracking(
+                    getRecommendationProductViewLogin(
+                        tabNameLowerCase,
+                        model
+                    ) as HashMap<String, Any>
+                )
+            } else {
+                trackingQueue.putEETracking(
+                    getRecommendationProductViewNonLogin(
+                        tabNameLowerCase,
+                        model
+                    ) as HashMap<String, Any>
+                )
+            }
+        }
     }
 
     override fun onProductCardImpressed(model: RecommendationCardModel, position: Int) {

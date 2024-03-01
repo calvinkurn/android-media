@@ -2,11 +2,13 @@ package com.tokopedia.home_component.visitable
 
 import android.os.Bundle
 import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.model.ChannelModel
 
-class OrigamiSDUIDataModel(
+data class OrigamiSDUIDataModel(
     val origamiData: String,
     val visitableID: String,
-    val channel: CampaignWidgetDataModel? = null
+    val channel: CampaignWidgetDataModel? = null,
+    val channelModel : ChannelModel? = null
 ) : HomeComponentVisitable {
     override fun visitableId(): String? {
         return visitableID
