@@ -419,11 +419,43 @@ class AddToCartTest : BaseCartViewModelTest() {
     }
 
     @Test
+    fun `WHEN add to cart from recent view with no click url THEN don't call tracker`() {
+        // GIVEN
+        val recommendationItem = RecommendationItem(
+            productId = 1,
+            clickUrl = "",
+            isTopAds = true
+        )
+
+        // WHEN
+        cartViewModel.processAddToCartRecentViewProduct(recommendationItem)
+
+        // THEN
+        assertEquals(null, cartViewModel.cartTrackerEvent.value)
+    }
+
+    @Test
     fun `WHEN add to cart from recent view with no topads THEN don't call tracker`() {
         // GIVEN
         val recommendationItem = RecommendationItem(
             productId = 1,
             clickUrl = "https://click.url",
+            isTopAds = false
+        )
+
+        // WHEN
+        cartViewModel.processAddToCartRecentViewProduct(recommendationItem)
+
+        // THEN
+        assertEquals(null, cartViewModel.cartTrackerEvent.value)
+    }
+
+    @Test
+    fun `WHEN add to cart from recent view with no topads and click url THEN don't call tracker`() {
+        // GIVEN
+        val recommendationItem = RecommendationItem(
+            productId = 1,
+            clickUrl = "",
             isTopAds = false
         )
 
