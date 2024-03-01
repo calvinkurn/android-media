@@ -5,7 +5,7 @@
     android:id="@+id/parent_swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants"
+    android:descendantFocusability="beforeDescendants"
     android:fitsSystemWindows="false">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -34,6 +34,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+                    <View
+                        android:id="@+id/background_color_shop_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        android:background="@color/Unify_NN0"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/background_image_shop_header"
                         android:layout_width="match_parent"
@@ -57,18 +69,6 @@
                         android:visibility="gone"
                         tools:visibility="visible"
                         app:surface_type="texture_view"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <View
-                        android:id="@+id/background_color_shop_header"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:visibility="gone"
-                        tools:visibility="visible"
-                        android:background="@color/Unify_NN0"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -418,7 +418,7 @@
 
 
         </com.google.android.material.appbar.AppBarLayout>
-
+        
         <FrameLayout
             android:id="@+id/tab_fragment"
             android:layout_width="match_parent"

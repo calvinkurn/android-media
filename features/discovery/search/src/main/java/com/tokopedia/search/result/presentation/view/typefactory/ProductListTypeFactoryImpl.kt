@@ -9,6 +9,7 @@ import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.discovery.common.reimagine.Search3ProductCard
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
+import com.tokopedia.search.result.presentation.model.CouponDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
@@ -40,6 +41,8 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchViewHolder
 import com.tokopedia.search.result.product.changeview.ChangeViewListener
 import com.tokopedia.search.result.product.changeview.ViewType
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
+import com.tokopedia.search.result.product.coupon.CouponGridViewHolder
+import com.tokopedia.search.result.product.coupon.CouponListener
 import com.tokopedia.search.result.product.cpm.BannerAdsListener
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.cpm.CpmReimagineViewHolder
@@ -141,6 +144,7 @@ class ProductListTypeFactoryImpl(
     private val isSneakPeekEnabled: Boolean = false,
     private val inspirationKeywordListener: InspirationKeywordListener,
     private val inspirationProductListener: InspirationProductListener,
+    private val couponListener: CouponListener,
     private val reimagineSearch2Component: Search2Component = Search2Component.CONTROL,
     private val reimagineSearch3ProductCard: Search3ProductCard = Search3ProductCard.CONTROL,
     ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
@@ -296,6 +300,10 @@ class ProductListTypeFactoryImpl(
     override fun type(separatorDataView: VerticalSeparatorDataView): Int =
         VerticalSeparatorViewHolder.LAYOUT
 
+    override fun type(couponDataView: CouponDataView): Int {
+        return CouponGridViewHolder.LAYOUT
+    }
+
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -413,6 +421,7 @@ class ProductListTypeFactoryImpl(
                 view,
                 reimagineSearch3ProductCard.isReimagineProductCard(),
             )
+            CouponGridViewHolder.LAYOUT -> CouponGridViewHolder(view, couponListener)
 
             else -> super.createViewHolder(view, type)
         }
