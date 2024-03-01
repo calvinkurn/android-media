@@ -26,11 +26,11 @@ class SpecificationValueViewHolder(
         fun onSpecificationValueTextClicked(position: Int)
         fun onSpecificationValueTextCleared(position: Int)
         fun onTooltipRequiredClicked()
+        fun onSpecificationValueTextChanged(position: Int, text: String)
     }
 
     private val tfSpecification: TextAreaUnify2? = itemView.findViewById(R.id.tfSpecification)
     private val tooltipRequired: View? = itemView.findViewById(R.id.tooltipRequired)
-    private var selectedSpecification: SpecificationInputModel = SpecificationInputModel()
 
     init {
         val iconColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN900)
@@ -43,7 +43,7 @@ class SpecificationValueViewHolder(
             onSpecificationClickListener.onSpecificationValueTextClicked(bindingAdapterPosition)
         }
         tfSpecification?.editText?.doOnTextChanged { text, _, count, _ ->
-            selectedSpecification.data = text.toString()
+            onSpecificationClickListener.onSpecificationValueTextChanged(bindingAdapterPosition, text.toString())
             if (count > Int.ZERO && text?.isBlank() == true)
                 onSpecificationClickListener.onSpecificationValueTextCleared(bindingAdapterPosition)
         }
@@ -72,6 +72,5 @@ class SpecificationValueViewHolder(
             setText(selectedSpecification.data)
             tooltipRequired?.isVisible = selectedSpecification.specificationVariant == SIGNAL_STATUS_VARIANT
         }
-        this.selectedSpecification = selectedSpecification
     }
 }

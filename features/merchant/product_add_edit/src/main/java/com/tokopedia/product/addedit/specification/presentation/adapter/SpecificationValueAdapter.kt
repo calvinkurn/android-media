@@ -58,6 +58,10 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
         SignalStatusSpecificationBottomSheet().show(fragmentManager)
     }
 
+    override fun onSpecificationValueTextChanged(position: Int, text: String) {
+        itemsSelected.getOrNull(position)?.data = text
+    }
+
     fun setData(items: List<AnnotationCategoryData>) {
         this.items = items.toMutableList()
         // generate item to collect input data
