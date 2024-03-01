@@ -338,7 +338,6 @@ open class BuyerOrderDetailFragment :
                 resultCode,
                 data
             )
-
             BuyerOrderDetailIntentCode.REQUEST_CODE_CREATE_RESOLUTION -> handleComplaintResult()
             BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY -> handleResultRefreshOnly()
             BuyerOrderDetailIntentCode.REQUEST_CODE_ORDER_EXTENSION -> {
@@ -346,12 +345,12 @@ open class BuyerOrderDetailFragment :
                     handleResultOrderExtension(data)
                 }
             }
-
             BuyerOrderDetailIntentCode.REQUEST_CODE_PARTIAL_ORDER_FULFILLMENT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     handleResultPartialOrderFulfillment(data)
                 }
             }
+            BuyerOrderDetailIntentCode.REQUEST_CODE_BRC_CSAT_FORM -> handleBrcCsatFormResult(data)
         }
     }
 
@@ -968,6 +967,14 @@ open class BuyerOrderDetailFragment :
     private fun handleResultRefreshOnly() {
         loadBuyerOrderDetail(false)
         bottomSheetManager.dismissBottomSheets()
+    }
+
+    private fun handleBrcCsatFormResult(data: Intent?) {
+        val message = data?.getStringExtra("message")
+        if (!message.isNullOrBlank()) {
+            loadBuyerOrderDetail(false)
+            showCommonToaster(message)
+        }
     }
 
     private fun stopLoadTimeMonitoring() {
