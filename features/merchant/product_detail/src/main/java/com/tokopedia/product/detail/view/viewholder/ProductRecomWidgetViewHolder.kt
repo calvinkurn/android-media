@@ -8,10 +8,10 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
 
@@ -20,7 +20,7 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
  */
 class ProductRecomWidgetViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : AbstractViewHolder<ProductRecomWidgetDataModel>(view),
     RecomCarouselWidgetBasicListener, RecommendationCarouselTokonowListener {
 
@@ -47,8 +47,7 @@ class ProductRecomWidgetViewHolder(
                     ),
                     adapterPosition = adapterPosition,
                     basicListener = this,
-                    tokonowListener = this,
-                    forceUseOldProductCard = true
+                    tokonowListener = this
                 )
             }
         }

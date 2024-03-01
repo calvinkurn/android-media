@@ -391,6 +391,7 @@ class DigitalPDPDataPlanFragment :
                     }
                 }
                 showEmptyState()
+                onHideBuyWidget()
             }
         }
     }
@@ -420,10 +421,8 @@ class DigitalPDPDataPlanFragment :
 
         viewModel.autoCompleteData.observe(viewLifecycleOwner) {
             when (it) {
-                is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
-                else -> {
-                    // no-op
-                }
+                is RechargeNetworkResult.Success -> setAutoCompleteList(it.data)
+                else -> setAutoCompleteList(emptyList())
             }
         }
 
@@ -803,34 +802,32 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
-        fun getContactByPermission(): MutableList<TopupBillsContact> {
-            context?.let {
-                val hasContactPermission = permissionCheckerHelper.hasPermission(
-                    it,
-                    arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT)
-                )
-                return if (hasContactPermission) {
-                    val contacts = viewModel.getContactList()
-                    contacts
-                } else {
-                    mutableListOf()
-                }
+    private fun getContactByPermission(): MutableList<TopupBillsContact> {
+        context?.let {
+            val hasContactPermission = permissionCheckerHelper.hasPermission(
+                it,
+                arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT)
+            )
+            return if (hasContactPermission) {
+                val contacts = viewModel.getContactList()
+                contacts
+            } else {
+                mutableListOf()
             }
-            return mutableListOf()
         }
+        return mutableListOf()
+    }
 
+    private fun setAutoCompleteList(autoComplete: List<AutoCompleteModel>) {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
-            if (autoComplete.isNotEmpty()) {
-                val contacts = getContactByPermission()
-                val mappedContacts = DigitalPDPWidgetMapper.mapContactToWidgetModels(contacts)
-                setAutoCompleteList(
-                    DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(
-                        autoComplete
-                    ),
-                    mappedContacts
-                )
-            }
+            val contacts = getContactByPermission()
+            val mappedContacts = DigitalPDPWidgetMapper.mapContactToWidgetModels(contacts)
+            setAutoCompleteList(
+                DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(
+                    autoComplete
+                ),
+                mappedContacts
+            )
         }
     }
 

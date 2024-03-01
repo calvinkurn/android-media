@@ -4,14 +4,16 @@ import com.tokopedia.remoteconfig.RollenceKey
 
 enum class Search2Component(val variant: String) {
     CONTROL("") {
+        override fun isReimagineShopAds(): Boolean = false
         override fun isReimagineCarousel(): Boolean = false
     },
 
     PRODUCT_CARD_SRE_2024(RollenceKey.PRODUCT_CARD_SRE_2024) {
+        override fun isReimagineShopAds(): Boolean = true
         override fun isReimagineCarousel(): Boolean = true
     };
 
-    fun isReimagineShopAds(): Boolean = false
+    abstract fun isReimagineShopAds(): Boolean
     fun isReimagineQuickFilter(): Boolean = true
     abstract fun isReimagineCarousel(): Boolean
 

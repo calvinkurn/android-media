@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoa
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 
@@ -18,7 +19,7 @@ data class ProductListUiModel(
     val productFulfilledHeaderLabel: ProductPofHeaderLabelUiModel?,
     val productUnfulfilledHeaderLabel: ProductPofHeaderLabelUiModel?,
     val productListHeaderUiModel: ProductListHeaderUiModel,
-    val addonsListUiModel: AddonsListUiModel?,
+    val orderLevelAddOn: OrderLevelAddOn?,
     val productListToggleUiModel: ProductListToggleUiModel?,
     val tickerInfo: TickerUiModel?
 ) {
@@ -66,7 +67,7 @@ data class ProductListUiModel(
         val totalPrice: String,
         val totalPriceText: String,
         val isProcessing: Boolean = false,
-        val addonsListUiModel: AddonsListUiModel? = null,
+        val addOnSummaryUiModel: AddOnSummaryUiModel? = null,
         val insurance: Insurance? = null,
         val isPof: Boolean = false,
         val shopId: String? = null,
@@ -129,6 +130,22 @@ data class ProductListUiModel(
     ) : BaseVisitableUiModel {
         override fun shouldShow(context: Context?): Boolean {
             return title.isNotBlank() || quantity.isNotBlank()
+        }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
+        }
+
+        override fun type(typeFactory: BuyerOrderDetailTypeFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
+
+    data class OrderLevelAddOn(
+        val addOnSummaryUiModel: AddOnSummaryUiModel?
+    ) : BaseVisitableUiModel {
+        override fun shouldShow(context: Context?): Boolean {
+            return addOnSummaryUiModel != null
         }
 
         override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {

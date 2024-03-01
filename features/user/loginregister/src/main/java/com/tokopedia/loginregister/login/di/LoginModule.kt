@@ -57,10 +57,14 @@ open class LoginModule {
     }
 
     @Provides
-    fun provideAeadEncryptor(@ApplicationContext context: Context): AeadEncryptor = AeadEncryptorImpl(context)
+    fun provideAeadEncryptor(@ApplicationContext context: Context): AeadEncryptor =
+        AeadEncryptorImpl(context)
 
     @Provides
-    fun provideGotoSeamlessPreference(@ApplicationContext context: Context, aeadEncryptor: AeadEncryptor): GotoSeamlessPreference {
+    fun provideGotoSeamlessPreference(
+        @ApplicationContext context: Context,
+        aeadEncryptor: AeadEncryptor
+    ): GotoSeamlessPreference {
         return GotoSeamlessPreference(context, aeadEncryptor)
     }
 
@@ -75,4 +79,5 @@ open class LoginModule {
     fun provideOclUtils(abTestPlatform: AbTestPlatform): OclUtils {
         return OclUtils(abTestPlatform)
     }
+
 }

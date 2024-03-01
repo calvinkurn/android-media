@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -192,6 +193,10 @@ class AddBankFragment : BaseDaggerFragment() {
                 inputType = InputType.TYPE_CLASS_NUMBER
                 keyListener = DigitsKeyListener.getInstance(false, false)
                 textChangedListener(onTextChangeExt = ::onTextChanged)
+                setOnEditorActionListener { v, actionId, event ->
+                    KeyboardHandler.hideSoftKeyboard(activity)
+                    true
+                }
             }
             textAreaBankAccountHolderName.editText.apply {
                 setTextSize(
@@ -382,6 +387,7 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun checkAccountNumber() {
+        KeyboardHandler.hideSoftKeyboard(activity)
         binding?.run {
             if (::bank.isInitialized) {
                 if (textAreaBankAccountNumber.editText.text != null) {

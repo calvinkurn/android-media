@@ -26,8 +26,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
-import com.tokopedia.cart.view.customview.BmGmWidgetView
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
+import com.tokopedia.cart.view.customview.BmGmWidgetView
 import com.tokopedia.cart.view.customview.CartSwipeRevealLayout
 import com.tokopedia.cart.view.customview.CartViewBinderHelper
 import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
@@ -35,6 +35,7 @@ import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
 import com.tokopedia.cart.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_HEADER
 import com.tokopedia.cart.view.uimodel.CartMainCoachMarkUiModel
+import com.tokopedia.cart.view.uimodel.CartProductLabelData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
@@ -74,7 +75,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Locale
 import com.tokopedia.nest.components.R as nestcomponentsR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -150,6 +151,7 @@ class CartItemViewHolder(
         renderBmGmOfferTicker(data)
         renderProductTagInfo(data)
         renderPurchaseBenefitWidget(data)
+        renderCartCampaignFestivityTicker(data)
     }
 
     private fun initSwipeLayout(data: CartItemHolderData) {
@@ -486,10 +488,7 @@ class CartItemViewHolder(
                         if (!data.isError) {
                             if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                                 actionListener?.onCartItemCheckChanged(bindingAdapterPosition, data)
-                                viewHolderListener?.onNeedToRefreshSingleShop(
-                                    data,
-                                    bindingAdapterPosition
-                                )
+                                handleCheckboxRefresh(data)
                             }
                         }
                     }
@@ -540,15 +539,19 @@ class CartItemViewHolder(
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
                         if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                             actionListener?.onBundleItemCheckChanged(data)
-                            viewHolderListener?.onNeedToRefreshSingleShop(
-                                data,
-                                bindingAdapterPosition
-                            )
+                            handleCheckboxRefresh(data)
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun handleCheckboxRefresh(data: CartItemHolderData) {
+        viewHolderListener?.onNeedToRefreshSingleShop(
+            data,
+            bindingAdapterPosition
+        )
     }
 
     private fun renderShopInfo(data: CartItemHolderData) {
@@ -1086,7 +1089,7 @@ class CartItemViewHolder(
             )
         }
 
-        if (data.wholesalePriceFormatted != null) {
+        if (data.wholesalePriceFormatted != null && data.isSelected) {
             binding.textProductPrice.text = data.wholesalePriceFormatted
                 ?: ""
         } else {
@@ -1099,7 +1102,7 @@ class CartItemViewHolder(
 
     private fun renderSlashPrice(data: CartItemHolderData) {
         val hasPriceOriginal = data.productOriginalPrice > 0
-        val hasWholesalePrice = data.wholesalePrice > 0
+        val hasWholesalePrice = data.wholesalePrice > 0 && data.isSelected
         val hasPriceDrop = data.productInitialPriceBeforeDrop > 0 &&
             data.productInitialPriceBeforeDrop > data.productPrice
         if (!data.isError && (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) && !data.isBundlingItem) {
@@ -1108,14 +1111,14 @@ class CartItemViewHolder(
                 renderSlashPriceFromCampaign(data)
             } else if (data.productInitialPriceBeforeDrop > 0) {
                 val wholesalePrice = data.wholesalePrice
-                if (wholesalePrice > 0 && wholesalePrice < data.productPrice) {
+                if (hasWholesalePrice && wholesalePrice < data.productPrice) {
                     // Wholesale
                     renderSlashPriceFromWholesale(data)
                 } else {
                     // Price drop
                     renderSlashPriceFromPriceDrop(data)
                 }
-            } else if (data.wholesalePrice > 0) {
+            } else if (hasWholesalePrice) {
                 // Wholesale
                 renderSlashPriceFromWholesale(data)
             }
@@ -1467,6 +1470,7 @@ class CartItemViewHolder(
         return if (quantity == data.minOrder) {
             binding.qtyEditorProduct.configState.value.qtyMinusButton.copy(
                 iconUnifyId = IconUnify.DELETE_SMALL,
+                layoutId = CART_TRASH_ICON_LAYOUT_ID,
                 colorInt = nestcomponentsR.color.Unify_NN950,
                 qtyEnabledCondition = { _, _ -> true },
                 onClick = {
@@ -1903,6 +1907,50 @@ class CartItemViewHolder(
         }
     }
 
+    private fun renderCartCampaignFestivityTicker(data: CartItemHolderData) {
+        val productLabelData = data.cartProductLabelData
+        when (productLabelData.type) {
+            CartProductLabelData.TYPE_DEFAULT -> {
+                val useImageLogo = productLabelData.imageLogoUrl.isNotBlank()
+                val useTextLogo = productLabelData.text.isNotBlank()
+                if (useImageLogo) {
+                    binding.cartCampaignProductLabel.showImageLabel(
+                        logoUrl = productLabelData.imageLogoUrl,
+                        backgroundStartColor = productLabelData.backgroundStartColor,
+                        backgroundEndColor = productLabelData.backgroundEndColor
+                    )
+                } else if (useTextLogo) {
+                    binding.cartCampaignProductLabel.showTextLabel(
+                        text = productLabelData.text,
+                        textColor = productLabelData.textColor,
+                        backgroundStartColor = productLabelData.backgroundStartColor,
+                        backgroundEndColor = productLabelData.backgroundEndColor
+                    )
+                } else {
+                    binding.cartCampaignProductLabel.hideTicker()
+                }
+            }
+
+            CartProductLabelData.TYPE_TIMER -> {
+                val remainingTimeMillis = productLabelData.localExpiredTimeMillis - System.currentTimeMillis()
+                if (productLabelData.alwaysShowTimer) {
+                    binding.cartCampaignProductLabel.showTimedLabel(
+                        remainingTimeMillis = remainingTimeMillis,
+                        iconUrl = productLabelData.iconUrl,
+                        backgroundColor = productLabelData.lineColor,
+                        alwaysShowTimer = true
+                    )
+                } else {
+                    binding.cartCampaignProductLabel.hideTicker()
+                }
+            }
+
+            else -> {
+                binding.cartCampaignProductLabel.hideTicker()
+            }
+        }
+    }
+
     fun getItemViewBinding(): ItemCartProductRevampBinding {
         return binding
     }
@@ -1942,6 +1990,8 @@ class CartItemViewHolder(
         private const val BOTTOM_DIVIDER_MARGIN_START = 114
 
         private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
+
+        private const val CART_TRASH_ICON_LAYOUT_ID = "quantity_editor_trash"
     }
 
     private fun getQuantityEditorView(): View {

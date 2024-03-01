@@ -203,4 +203,9 @@ public interface SearchConstant {
         String LIST_VIEW = "listview";
         String FIXED_GRID = "fixedgrid";
     }
+
+    interface SearchCoupon {
+        String SEARCH_COUPON_USE_CASE = "search_coupon_use_case";
+        String SEARCH_COUPON_REDEEM_USE_CASE = "search_coupon_redeem_use_case";
+    }
 }

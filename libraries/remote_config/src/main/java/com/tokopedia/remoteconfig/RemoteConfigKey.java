@@ -276,6 +276,8 @@ public class RemoteConfigKey {
 
     public static final String HOME_HPB_CACHE_EXPIRY = "android_home_hpb_cache_expiry";
 
+    public static final String HOME_GLOBAL_COMPONENT_FALLBACK = "android_fy_infinite_global_recom";
+
     public static final String MAINAPP_DISABLED_STORIES_ENTRY_POINTS = "android_main_app_disabled_stories_entry_points";
     public static final String SELLERAPP_DISABLED_STORIES_ENTRY_POINTS = "android_seller_app_disabled_stories_entry_points";
     public static final String APP_CONTENT_CREATION_STORIES_CONFIG = "android_app_content_creation_stories_config";
@@ -299,6 +301,8 @@ public class RemoteConfigKey {
     public static final String ANDROID_PM_OPT_OUT_DATE = "android_pm_opt_out_date";
 
     public static final String ENABLE_PDP_PREFETCH = "android_pdp_enable_prefetch";
+
+    public static final String ENABLE_SHOP_PAGE_PREFETCH = "android_shop_page_enable_prefetch";
 
     public static final String LOAD_PRODUCT_IMAGE_ARCHIVAL_KEY = "android_load_product_image_archival_enabled";
 
@@ -333,5 +337,11 @@ public class RemoteConfigKey {
     public static final String ANDROID_PDP_ENABLE_TABLET_MODE = "android_pdp_enable_tablet_mode";
 
     public static final String ANDROID_ENABLE_SDUI_CAMPAIGN_WIDGET_HOME = "android_home_enable_sdui";
+
+    public static final String ANDROID_CHATBOT_ENABLE_DYNAMIC_CSAT = "android_chatbot_enable_dynamic_csat";
+
+    public static final String ANDROID_ENABLE_AUTO_APPLY_PROMO_TRACKER = "android_enable_auto_apply_promo_tracker";
+
+    public static final String ANDROID_DISABLE_RECIPE_BOOKMARK_COMPOSE = "android_disable_recipe_bookmark_compose";
 
 }
