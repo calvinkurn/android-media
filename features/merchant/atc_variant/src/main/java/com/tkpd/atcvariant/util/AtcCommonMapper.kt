@@ -42,7 +42,7 @@ object AtcCommonMapper {
         actionButtonCart: Int,
         selectedChild: VariantChild?,
         selectedWarehouse: WarehouseInfo?,
-        shopIdInt: Int,
+        shopId: String,
         trackerAttributionPdp: String,
         trackerListNamePdp: String,
         categoryName: String,
@@ -56,7 +56,7 @@ object AtcCommonMapper {
             ProductDetailCommonConstant.OCS_BUTTON -> {
                 AddToCartOcsRequestParams().apply {
                     productId = selectedChild?.productId.toZeroStringIfNull()
-                    shopId = shopIdInt.toString()
+                    this.shopId = shopId
                     quantity = selectedChild?.getFinalMinOrder() ?: 0
                     notes = ""
                     customerId = userId
@@ -78,7 +78,7 @@ object AtcCommonMapper {
                     carts = listOf(
                         AddToCartOccMultiCartParam(
                             productId = selectedChild?.productId ?: "",
-                            shopId = shopIdInt.toString(),
+                            shopId = shopId,
                             quantity = selectedChild?.getFinalMinOrder().toString()
                         ).apply {
                             warehouseId = selectedWarehouse?.id ?: ""
@@ -103,7 +103,7 @@ object AtcCommonMapper {
 
                 AddToCartRequestParams().apply {
                     productId = selectedChild?.productId.toZeroStringIfNull()
-                    shopId = shopIdInt.toString()
+                    this.shopId = shopId
                     quantity = quantityData
                     notes = ""
                     attribution = trackerAttributionPdp

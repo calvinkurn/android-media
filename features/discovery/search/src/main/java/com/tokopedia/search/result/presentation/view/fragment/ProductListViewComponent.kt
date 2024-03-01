@@ -14,6 +14,7 @@ import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule
 import com.tokopedia.search.di.module.TrackingQueueModule
 import com.tokopedia.search.di.module.UserSessionModule
 import com.tokopedia.search.di.scope.SearchScope
+import com.tokopedia.search.result.domain.usecase.searchcoupon.SearchCouponModule
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getinspirationcarouselchips.GetInspirationCarouselChipsProductUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getlocalsearchrecommendation.GetLocalSearchRecommendationUseCaseModule
@@ -100,6 +101,8 @@ import dagger.Component
     DeduplicationModule::class,
     BottomSheetInappropriateModule::class,
     GetPostATCCarouselUseCaseModule::class,
+    SearchCouponModule::class,
+    IrisModule::class,
     ByteIOTrackingDataFactoryModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {

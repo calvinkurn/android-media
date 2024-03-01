@@ -21,6 +21,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
+import com.tokopedia.resources.common.R as resourcescommonR
 
 class BuyerOrderDetailNavigator(
     private val activity: Activity,
@@ -29,19 +30,14 @@ class BuyerOrderDetailNavigator(
 
     companion object {
         private const val KEY_URL = "url"
-        private const val TELEPHONY_URI = "tel:"
         private const val PREFIX_HTTP = "http"
-        private const val PREFIX_HTTPS = "https://"
         private const val INVOICE_REF_NUM = "invoice_ref_num"
         private const val KEY_ORDER_CATEGORY = "KEY_ORDER_CATEGORY"
         private const val BUYER_MODE = 1
     }
 
     private fun applyTransition() {
-        activity.overridePendingTransition(
-            com.tokopedia.resources.common.R.anim.slide_right_in_medium,
-            com.tokopedia.resources.common.R.anim.slide_left_out_medium
-        )
+        activity.overridePendingTransition(resourcescommonR.anim.slide_right_in_medium, resourcescommonR.anim.slide_left_out_medium)
     }
 
     fun goToBomDetailPage(orderId: String) {

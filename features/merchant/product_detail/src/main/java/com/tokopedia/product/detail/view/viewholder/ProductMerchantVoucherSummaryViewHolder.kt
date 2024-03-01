@@ -11,11 +11,11 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicMerchantVoucherSummaryBinding
 import com.tokopedia.product.detail.databinding.ItemDynamicMvcContentBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 class ProductMerchantVoucherSummaryViewHolder(
     val view: View,
-    val listener: DynamicProductDetailListener
+    val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<ProductMerchantVoucherSummaryDataModel>(view) {
 
     companion object {

@@ -10,6 +10,7 @@ private const val KEY_TYPE = "type"
 private const val KEY_TITLE = "title"
 private const val KEY_URL = "url"
 private const val KEY_STYLE = "style"
+private const val KEY_STYLES = "styles"
 
 @Parcelize
 data class LabelGroup(
@@ -29,7 +30,7 @@ data class LabelGroup(
     @Expose
     var imageUrl: String = "",
 
-    @SerializedName(KEY_STYLE)
+    @SerializedName(KEY_STYLE, alternate = [KEY_STYLES])
     @Expose
     var styleList: List<Style> = listOf()
 ) : Parcelable

@@ -2,6 +2,7 @@ package com.tokopedia.cart.view.util
 
 import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartProductLabelData
 import com.tokopedia.cart.view.uimodel.CartModel
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cart.view.uimodel.SubTotalState
@@ -33,7 +34,7 @@ object CartPageAnalyticsUtil {
         val enhancedECommerceCheckout = EnhancedECommerceCheckout().apply {
             for (cartItemData in cartItemDataList) {
                 val enhancedECommerceProductCartMapData =
-                    getCheckoutEnhancedECommerceProductCartMapData(cartItemData)
+                    getCheckoutEnhancedECommerceProductCartMapData(step, cartItemData)
                 addProduct(enhancedECommerceProductCartMapData.getProduct())
             }
             setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
@@ -66,7 +67,10 @@ object CartPageAnalyticsUtil {
         )
     }
 
-    private fun getCheckoutEnhancedECommerceProductCartMapData(cartItemHolderData: CartItemHolderData): EnhancedECommerceProductCartMapData {
+    private fun getCheckoutEnhancedECommerceProductCartMapData(
+        step: String,
+        cartItemHolderData: CartItemHolderData
+    ): EnhancedECommerceProductCartMapData {
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
             setDimension38(
                 cartItemHolderData.trackerAttribution.ifBlank {
@@ -104,6 +108,20 @@ object CartPageAnalyticsUtil {
             setDimension118(cartItemHolderData.bundleId)
             setDimension136(cartItemHolderData.cartStringOrder)
             setDimension137(cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId.toString())
+            when (step) {
+                EnhancedECommerceActionField.STEP_1 -> {
+                    if (cartItemHolderData.cartProductLabelData.type == CartProductLabelData.TYPE_TIMER) {
+                        val remainingTimeSeconds =
+                            (cartItemHolderData.cartProductLabelData.localExpiredTimeMillis - System.currentTimeMillis()) / 1_000L
+                        setDimension98(remainingTimeSeconds.toString())
+                    } else {
+                        setDimension98(String.EMPTY)
+                    }
+                }
+                else -> {
+                    setDimension98(cartItemHolderData.cartProductLabelData.type)
+                }
+            }
             setCampaignId(cartItemHolderData.campaignId)
             setImpressionAlgorithm(if (!cartItemHolderData.isError) cartItemHolderData.productInformation.firstOrNull() else "")
             if (cartItemHolderData.shopCartShopGroupTickerData.tickerText.isNotBlank()) {

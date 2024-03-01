@@ -53,6 +53,8 @@ data class InspirationCarouselDataView(
 
     fun isSeamlessProductLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
 
+    fun isCouponLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_CARD_COUPON
+
     override fun setRank(value: Int) {
         byteIORanking.setRank(value)
         options.forEach {
@@ -88,8 +90,8 @@ data class InspirationCarouselDataView(
         val keyword: String = "",
         val externalReference: String = "",
         val byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData(),
-        val byteIORanking: ByteIORankingImpl = ByteIORankingImpl()
-    ): Visitable<InspirationCarouselOptionTypeFactory>, ByteIORanking by byteIORanking {
+        val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
+    ) : Visitable<InspirationCarouselOptionTypeFactory>, ByteIORanking by byteIORanking {
 
         val byteIOImpressHolder = ImpressHolder()
 
@@ -103,10 +105,14 @@ data class InspirationCarouselDataView(
 
         fun getBannerDataLayer(keyword: String): Any {
             return DataLayer.mapOf(
-                "creative", carouselTitle,
-                "id", "0",
-                "name", "/search - $keyword",
-                "position", position
+                "creative",
+                carouselTitle,
+                "id",
+                "0",
+                "name",
+                "/search - $keyword",
+                "position",
+                position
             )
         }
 
@@ -174,9 +180,9 @@ data class InspirationCarouselDataView(
             val componentId: String = "",
             val inspirationCarouselTitle: String = "",
             val dimension90: String = "",
-            val customVideoURL : String = "",
+            val customVideoURL: String = "",
             val externalReference: String = "",
-            val discount : String = "",
+            val discount: String = "",
             val label: String = "",
             val bundleId: String = "",
             val parentId: String = "",
@@ -187,7 +193,7 @@ data class InspirationCarouselDataView(
             val categoryID: String = "",
             val byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData(),
             val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
-        ): ImpressHolder(),
+        ) : ImpressHolder(),
             Visitable<InspirationCarouselOptionTypeFactory>,
             ByteIORanking by byteIORanking {
 
@@ -201,7 +207,7 @@ data class InspirationCarouselDataView(
                 return typeFactory.type(layout)
             }
 
-            fun willShowSalesAndRating(): Boolean{
+            fun willShowSalesAndRating(): Boolean {
                 return ratingAverage.isNotEmpty() && getLabelIntegrity() != null
             }
 
@@ -224,11 +230,11 @@ data class InspirationCarouselDataView(
 
             fun getInspirationCarouselInfoProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(
-                        "id", id,
-                        "name", "/search - carousel",
-                        "creative", name,
-                        "position", optionPosition,
-                        "category", "none / other"
+                    "id", id,
+                    "name", "/search - carousel",
+                    "creative", name,
+                    "position", optionPosition,
+                    "category", "none / other"
                 )
             }
 
@@ -248,14 +254,14 @@ data class InspirationCarouselDataView(
                     "dimension90", dimension90,
                     "dimension131", externalReference.orNone(),
                     "dimension56", warehouseID.ifNullOrBlank { "0" },
-                    "dimension58", isFulfillment(),
+                    "dimension58", isFulfillment()
                 )
             }
 
             fun asUnificationAtcObjectDataLayer(
                 filterSortParams: String,
                 cartId: String,
-                quantity: Int,
+                quantity: Int
             ): Any {
                 return DataLayer.mapOf(
                     "item_name", name,
@@ -277,13 +283,15 @@ data class InspirationCarouselDataView(
                     "shop_type", "none / other",
                     "variant", "none / other",
                     "dimension56", warehouseID.ifNullOrBlank { "0" },
-                    "dimension58", isFulfillment(),
+                    "dimension58", isFulfillment()
                 )
             }
 
             private fun isFulfillment() =
-                (hasFulfillment(labelGroupDataList)
-                    || inspirationCarouselType == TYPE_DILAYANI_TOKOPEDIA).toString()
+                (
+                    hasFulfillment(labelGroupDataList) ||
+                        inspirationCarouselType == TYPE_DILAYANI_TOKOPEDIA
+                    ).toString()
 
             fun asSearchComponentTracking(keyword: String): SearchComponentTracking =
                 searchComponentTracking(
@@ -347,7 +355,7 @@ data class InspirationCarouselDataView(
         val price: Long = 0,
         val originalPrice: String = "",
         val discount: String = "",
-        val discountPercentage: Int = 0,
+        val discountPercentage: Int = 0
     ) {
         companion object {
             fun create(option: SearchProductModel.InspirationCarouselOption): Bundle {
@@ -357,14 +365,14 @@ data class InspirationCarouselDataView(
                     option.bundle.price,
                     option.bundle.originalPrice,
                     option.bundle.discount,
-                    option.bundle.discountPercentage,
+                    option.bundle.discountPercentage
                 )
             }
         }
 
         data class Shop(
             val name: String = "",
-            val url: String = "",
+            val url: String = ""
         ) {
             companion object {
                 fun create(shop: SearchProductModel.InspirationCarouselBundle.Shop): Shop {
@@ -374,5 +382,3 @@ data class InspirationCarouselDataView(
         }
     }
 }
-
-

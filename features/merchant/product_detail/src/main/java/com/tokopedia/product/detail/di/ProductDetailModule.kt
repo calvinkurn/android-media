@@ -43,8 +43,7 @@ class ProductDetailModule {
     @Provides
     fun provideDiscussionMostHelpfulUseCase(rawQueries: Map<String, String>, graphqlRepository: GraphqlRepository): DiscussionMostHelpfulUseCase =
         DiscussionMostHelpfulUseCase(
-            rawQueries[QUERY_DISCUSSION_MOST_HELPFUL]
-                ?: "",
+            rawQueries[QUERY_DISCUSSION_MOST_HELPFUL].orEmpty(),
             graphqlRepository
         )
 

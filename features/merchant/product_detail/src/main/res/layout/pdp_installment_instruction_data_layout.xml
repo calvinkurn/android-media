@@ -7,14 +7,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_instruction_icon"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_loading_image"
         android:contentDescription="iv_instruction_icon" />
 
     <com.tokopedia.unifyprinciples.Typography
