@@ -169,7 +169,6 @@ import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
@@ -183,7 +182,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoAnnotationTrackData
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
-import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -273,8 +271,6 @@ import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCa
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
-import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
-import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
 import com.tokopedia.product.detail.view.widget.NavigationTab
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
@@ -353,7 +349,6 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 
@@ -554,7 +549,6 @@ open class ProductDetailFragment :
     // View
     private lateinit var actionButtonView: PartialButtonActionView
     private var stickyLoginView: StickyLoginView? = null
-    private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
     private var productVideoCoordinator: ProductVideoCoordinator? = null
     private val adapterFactory by lazy {
@@ -1556,16 +1550,6 @@ open class ProductDetailFragment :
         when (name) {
             ProductDetailConstant.TRADE_IN -> {
                 onTradeinClicked(componentTrackDataModel)
-            }
-            ProductDetailConstant.PRODUCT_INSTALLMENT_INFO -> {
-                ProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(
-                    viewModel.getProductInfoP1,
-                    componentTrackDataModel
-                )
-                openFtInstallmentBottomSheet(
-                    viewModel.p2Data.value?.productFinancingCalculationData
-                        ?: FtInstallmentCalculationDataResponse()
-                )
             }
             ProductDetailConstant.PRODUCT_VARIANT_INFO -> {
                 if (!GlobalConfig.isSellerApp()) {
@@ -3895,14 +3879,9 @@ open class ProductDetailFragment :
 
     private fun showAddToCartDoneBottomSheet(cartDataModel: DataModel) {
         val cartRedirData = viewModel.p2Data.value?.cartRedirection?.get(cartDataModel.productId)
-        val postAtcLayout = cartRedirData?.postAtcLayout
+        val postAtcLayout = cartRedirData?.postAtcLayout ?: PostAtcLayout()
 
-        val remoteNewATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
-        if (postAtcLayout?.showPostAtc == true && remoteNewATC) {
-            showGlobalPostATC(cartDataModel, cartDataModel.productId, postAtcLayout)
-        } else {
-            showOldPostATC(cartDataModel.cartId)
-        }
+        showGlobalPostATC(cartDataModel, cartDataModel.productId, postAtcLayout)
     }
 
     private fun showGlobalPostATC(
@@ -3938,39 +3917,6 @@ open class ProductDetailFragment :
             productId,
             postAtcParams
         )
-    }
-
-    private fun showOldPostATC(cartId: String) {
-        viewModel.getProductInfoP1?.let {
-            val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
-            val productName = it.getProductName
-            val productImageUrl = it.data.getFirstProductImage()
-            val addedProductDataModel = AddToCartDoneAddedProductDataModel(
-                it.basic.productID,
-                productName,
-                productImageUrl,
-                it.data.variant.isVariant,
-                it.basic.shopID,
-                viewModel.getBebasOngkirDataByProductId().imageURL,
-                cartId = if (viewModel.getProductInfoP1?.basic?.isTokoNow == true) "" else cartId
-            )
-            val bundleData = Bundle()
-            bundleData.putParcelable(
-                AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL,
-                addedProductDataModel
-            )
-            addToCartDoneBottomSheet.arguments = bundleData
-            addToCartDoneBottomSheet.onDismiss = {
-                shouldShowCartAnimation = true
-                updateCartNotification()
-            }
-            fragmentManager?.let {
-                addToCartDoneBottomSheet.show(
-                    it,
-                    AddToCartDoneBottomSheet::class.simpleName
-                )
-            }
-        }
     }
 
     override fun openShipmentClickedBottomSheet(
@@ -4510,38 +4456,6 @@ open class ProductDetailFragment :
 
     private fun getLcaWarehouseId(): String {
         return viewModel.getUserLocationCache().warehouse_id
-    }
-
-    private fun openFtInstallmentBottomSheet(installmentData: FtInstallmentCalculationDataResponse) {
-        val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
-
-        val productInfo = viewModel.getProductInfoP1
-
-        context?.let {
-            val cacheManager = SaveInstanceCacheManager(it, true)
-            cacheManager.put(
-                FtInstallmentCalculationDataResponse::class.java.simpleName,
-                installmentData,
-                TimeUnit.HOURS.toMillis(1)
-            )
-            val bundleData = Bundle()
-
-            bundleData.putString(
-                FtPDPInstallmentBottomSheet.KEY_PDP_FINANCING_DATA,
-                cacheManager.id!!
-            )
-            bundleData.putDouble(
-                FtPDPInstallmentBottomSheet.KEY_PDP_PRODUCT_PRICE,
-                productInfo?.data?.price?.value.orZero()
-            )
-            bundleData.putBoolean(
-                FtPDPInstallmentBottomSheet.KEY_PDP_IS_OFFICIAL,
-                productInfo?.data?.isOS.orFalse()
-            )
-
-            pdpInstallmentBottomSheet.arguments = bundleData
-            pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
-        }
     }
 
     /**
