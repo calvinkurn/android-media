@@ -35,6 +35,7 @@ import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
@@ -1852,6 +1853,7 @@ open class ProductDetailFragment :
         applink: String,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
+        AppLogAnalytics.putPageData(AppLogParam.ENTER_METHOD, AppLogParam.ENTER_METHOD_SEE_MORE.format(recommendationWidget.pageName))
         ProductDetailTracking.Click.eventClickSeeMoreRecomWidget(
             recommendationWidget,
             pageName,
