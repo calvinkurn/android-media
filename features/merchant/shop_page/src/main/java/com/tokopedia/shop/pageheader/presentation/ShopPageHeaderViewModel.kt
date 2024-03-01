@@ -158,6 +158,10 @@ class ShopPageHeaderViewModel @Inject constructor(
     val resultAffiliate: LiveData<Result<GenerateAffiliateLinkEligibility>>
         get() = _resultAffiliate
 
+    private val _newProductListData = MutableLiveData<Result<ShopProduct.GetShopProduct>>()
+    val newProductListData: LiveData<Result<ShopProduct.GetShopProduct>>
+        get() = _newProductListData
+
     /*
     Function getNewShopPageTabData is expected to perform faster than
     older version due to:
@@ -264,7 +268,7 @@ class ShopPageHeaderViewModel @Inject constructor(
         return useCase.executeOnBackground()
     }
 
-    private suspend fun getProductListData(
+    fun getProductListData(
         shopId: String,
         page: Int,
         itemPerPage: Int,
@@ -272,27 +276,31 @@ class ShopPageHeaderViewModel @Inject constructor(
         keyword: String,
         etalaseId: String,
         widgetUserAddressLocalData: LocalCacheModel
-    ): ShopProduct.GetShopProduct {
-        val useCase = getShopProductListUseCase.get()
-        useCase.params = GqlGetShopProductUseCase.createParams(
-            shopId,
-            ShopProductFilterInput().apply {
-                etalaseMenu = etalaseId
-                this.page = page
-                perPage = itemPerPage
-                searchKeyword = keyword
-                sort = shopProductFilterParameter.getSortId().toIntOrZero()
-                rating = shopProductFilterParameter.getRating()
-                pmax = shopProductFilterParameter.getPmax()
-                pmin = shopProductFilterParameter.getPmin()
-                fcategory = shopProductFilterParameter.getCategory()
-                userDistrictId = widgetUserAddressLocalData.district_id
-                userCityId = widgetUserAddressLocalData.city_id
-                userLat = widgetUserAddressLocalData.lat
-                userLong = widgetUserAddressLocalData.long
-            }
-        )
-        return useCase.executeOnBackground()
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            val useCase = getShopProductListUseCase.get()
+            useCase.params = GqlGetShopProductUseCase.createParams(
+                shopId,
+                ShopProductFilterInput().apply {
+                    etalaseMenu = etalaseId
+                    this.page = page
+                    perPage = itemPerPage
+                    searchKeyword = keyword
+                    sort = shopProductFilterParameter.getSortId().toIntOrZero()
+                    rating = shopProductFilterParameter.getRating()
+                    pmax = shopProductFilterParameter.getPmax()
+                    pmin = shopProductFilterParameter.getPmin()
+                    fcategory = shopProductFilterParameter.getCategory()
+                    userDistrictId = widgetUserAddressLocalData.district_id
+                    userCityId = widgetUserAddressLocalData.city_id
+                    userLat = widgetUserAddressLocalData.lat
+                    userLong = widgetUserAddressLocalData.long
+                }
+            )
+            _newProductListData.postValue(Success(useCase.executeOnBackground()))
+        }, onError = {
+            _newProductListData.postValue(Fail(it))
+        })
     }
 
     private suspend fun getNewShopP1Data(
@@ -417,12 +425,6 @@ class ShopPageHeaderViewModel @Inject constructor(
     fun getShopShareAndOperationalHourStatusData(
         shopId: String,
         shopDomain: String,
-        page: Int,
-        itemPerPage: Int,
-        shopProductFilterParameter: ShopProductFilterParameter,
-        keyword: String,
-        etalaseId: String,
-        widgetUserAddressLocalData: LocalCacheModel,
         isRefresh: Boolean
     ) {
         launchCatchError(dispatcherProvider.io, block = {

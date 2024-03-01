@@ -185,6 +185,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderW
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_PLAY
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.pageheader.util.map
+import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.bottomsheet.ShopEtalaseNotFoundBottomSheet
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
@@ -492,6 +493,7 @@ class ShopPageReimagineHeaderFragment :
         shopHeaderViewModel?.followShopData?.removeObservers(this)
         shopHeaderViewModel?.shopPageHeaderTickerData?.removeObservers(this)
         shopHeaderViewModel?.shopPageShopShareData?.removeObservers(this)
+        shopHeaderViewModel?.newProductListData?.removeObservers(viewLifecycleOwner)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopPageFeedTabSharedViewModel?.sellerMigrationBottomSheet?.removeObservers(this)
@@ -773,11 +775,43 @@ class ShopPageReimagineHeaderFragment :
             }
         }
 
+        shopHeaderViewModel?.newProductListData?.observe(viewLifecycleOwner) {
+            // TODO: pass the data to sharing BS flow
+            when (it) {
+                is Success -> {
+                    val productListData = it.data.data
+                    showUniversalShareBottomSheet(path = null, productListData = productListData)
+                }
+                is Fail -> {
+                    it.throwable.message?.let { errMessage ->
+                        val errorMessage = ErrorHandler.getErrorMessage(
+                            context,
+                            MessageErrorException(errMessage)
+                        )
+                        showToasterFailedGetProductListForShare(errorMessage, Toaster.TYPE_ERROR)
+                    }
+                }
+            }
+
+        }
+
         shopHeaderViewModel?.shopImagePath?.observe(owner) {
             shopImageFilePath = it
             if (shopImageFilePath.isNotEmpty()) {
                 isGeneralShareBottomSheet = true
-                showUniversalShareBottomSheet()
+
+                // TODO: hit gql getProductList here with limit max 6 products
+                shopHeaderViewModel?.getProductListData(
+                    shopId = shopId,
+                    page = START_PAGE,
+                    itemPerPage = ShopUtil.getProductPerPage(context = context, isShare = true),
+                    shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
+                    keyword = "",
+                    etalaseId = "",
+                    widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel()
+                )
+
+                // showUniversalShareBottomSheet()
             }
         }
 
@@ -1121,12 +1155,12 @@ class ShopPageReimagineHeaderFragment :
         shopHeaderViewModel?.getShopShareAndOperationalHourStatusData(
             shopId,
             shopDomain.orEmpty(),
-            page = START_PAGE,
-            itemPerPage = ShopUtil.getProductPerPage(context),
-            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
-            keyword = "",
-            etalaseId = "",
-            widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
+//            page = START_PAGE,
+//            itemPerPage = ShopUtil.getProductPerPage(context),
+//            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
+//            keyword = "",
+//            etalaseId = "",
+//            widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             isRefresh
         )
     }
@@ -1745,7 +1779,16 @@ class ShopPageReimagineHeaderFragment :
         removeTemporaryShopImage(shopImageFilePath)
         saveShopImage()
 
-        // TODO: hit gql getProductList here with limit max 6 products
+//        // TODO: hit gql getProductList here with limit max 6 products
+//        shopHeaderViewModel?.getProductListData(
+//            shopId = shopId,
+//            page = START_PAGE,
+//            itemPerPage = ShopUtil.getProductPerPage(context = context, isShare = true),
+//            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
+//            keyword = "",
+//            etalaseId = "",
+//            widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel()
+//        )
     }
 
     internal fun clickSearch() {
@@ -2537,6 +2580,10 @@ class ShopPageReimagineHeaderFragment :
         ).setAnchorViewToShopHeaderBottomViewContainer(getBottomViewContainer()).show()
     }
 
+    private fun showToasterFailedGetProductListForShare(message: String, type: Int) {
+
+    }
+
     private fun isShopInfoAppLink(appLink: String): Boolean {
         val appLinkUri = Uri.parse(appLink)
         return appLinkUri.lastPathSegment.orEmpty() == ShopPageHeaderActivity.PATH_INFO
@@ -2946,7 +2993,7 @@ class ShopPageReimagineHeaderFragment :
 
     override fun screenShotTaken(path: String) {
         isGeneralShareBottomSheet = false
-        showUniversalShareBottomSheet(path)
+        showUniversalShareBottomSheet(path = path)
         shopPageTracking?.onImpressionScreenshotShareBottomSheet(
             customDimensionShopPage,
             userId,
@@ -2958,7 +3005,7 @@ class ShopPageReimagineHeaderFragment :
         return priceTextIdr.replace(IDR_CURRENCY_TO_RAW_STRING_REGEX.toRegex(), "").toLong()
     }
 
-    private fun showUniversalShareBottomSheet(path: String? = null) {
+    private fun showUniversalShareBottomSheet(path: String? = null, productListData: List<ShopProduct>? = null) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
             init(this@ShopPageReimagineHeaderFragment)
 
@@ -3013,8 +3060,6 @@ class ShopPageReimagineHeaderFragment :
 
         configShopShareBottomSheetImpressionTracker()
         // activate contextual image
-        val initialProductListData = shopHeaderViewModel?.productListData?.data ?: listOf()
-        val initialProductListSize = initialProductListData.size
 
         // core params
         val shopPageParamModel = ShopPageParamModel(
@@ -3100,87 +3145,91 @@ class ShopPageReimagineHeaderFragment :
 
         // TODO: Check the product list here after being hit from clickShopShare function,
         //  make sure we already got the product list to pass them to BS component
-        // shop products params
-        if (initialProductListSize.isMoreThanZero()) {
-            val isHasOneProduct = initialProductListSize >= PRODUCT_LIST_INDEX_ONE
-            val isHasTwoProducts = initialProductListSize >= PRODUCT_LIST_INDEX_TWO
-            val isHasThreeProducts = initialProductListSize >= PRODUCT_LIST_INDEX_THREE
-            val isHasSixProducts = initialProductListSize >= PRODUCT_LIST_IMG_GENERATOR_MAX_SIZE
-            when {
-                isHasSixProducts -> {
-                    val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
-                    val productTwo = initialProductListData[PRODUCT_LIST_INDEX_ONE]
-                    val productThree = initialProductListData[PRODUCT_LIST_INDEX_TWO]
-                    val productFour = initialProductListData[PRODUCT_LIST_INDEX_THREE]
-                    val productFive = initialProductListData[PRODUCT_LIST_INDEX_FOUR]
-                    val productSix = initialProductListData[PRODUCT_LIST_INDEX_FIVE]
-                    val productImage1 = productOne.primaryImage.original
-                    val productPrice1 = extractIdrPriceToRawValue(productOne.price.textIdr)
-                    val productImage2 = productTwo.primaryImage.original
-                    val productPrice2 = extractIdrPriceToRawValue(productTwo.price.textIdr)
-                    val productImage3 = productThree.primaryImage.original
-                    val productPrice3 = extractIdrPriceToRawValue(productThree.price.textIdr)
-                    val productImage4 = productFour.primaryImage.original
-                    val productPrice4 = extractIdrPriceToRawValue(productFour.price.textIdr)
-                    val productImage5 = productFive.primaryImage.original
-                    val productPrice5 = extractIdrPriceToRawValue(productFive.price.textIdr)
-                    val productImage6 = productSix.primaryImage.original
-                    val productPrice6 = extractIdrPriceToRawValue(productSix.price.textIdr)
-                    shopPageParamModel.productImage1 = productImage1
-                    shopPageParamModel.productPrice1 = productPrice1
-                    shopPageParamModel.productImage2 = productImage2
-                    shopPageParamModel.productPrice2 = productPrice2
-                    shopPageParamModel.productImage3 = productImage3
-                    shopPageParamModel.productPrice3 = productPrice3
-                    shopPageParamModel.productImage4 = productImage4
-                    shopPageParamModel.productPrice4 = productPrice4
-                    shopPageParamModel.productImage5 = productImage5
-                    shopPageParamModel.productPrice5 = productPrice5
-                    shopPageParamModel.productImage6 = productImage6
-                    shopPageParamModel.productPrice6 = productPrice6
-                    shopPageParamModel.productCount = PRODUCT_LIST_IMG_GENERATOR_MAX_SIZE
-                }
+        val initialProductListData = productListData // shopHeaderViewModel?.productListData?.data ?: listOf()
 
-                isHasThreeProducts -> {
-                    val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
-                    val productTwo = initialProductListData[PRODUCT_LIST_INDEX_ONE]
-                    val productThree = initialProductListData[PRODUCT_LIST_INDEX_TWO]
-                    val productImage1 = productOne.primaryImage.original
-                    val productPrice1 = extractIdrPriceToRawValue(productOne.price.textIdr)
-                    val productImage2 = productTwo.primaryImage.original
-                    val productPrice2 = extractIdrPriceToRawValue(productTwo.price.textIdr)
-                    val productImage3 = productThree.primaryImage.original
-                    val productPrice3 = extractIdrPriceToRawValue(productThree.price.textIdr)
-                    shopPageParamModel.productImage1 = productImage1
-                    shopPageParamModel.productPrice1 = productPrice1
-                    shopPageParamModel.productImage2 = productImage2
-                    shopPageParamModel.productPrice2 = productPrice2
-                    shopPageParamModel.productImage3 = productImage3
-                    shopPageParamModel.productPrice3 = productPrice3
-                    shopPageParamModel.productCount = PRODUCT_LIST_INDEX_THREE
-                }
+        initialProductListData?.let {
+            val initialProductListSize = it.size
+            if (initialProductListSize.isMoreThanZero()) {
+                val isHasOneProduct = initialProductListSize >= PRODUCT_LIST_INDEX_ONE
+                val isHasTwoProducts = initialProductListSize >= PRODUCT_LIST_INDEX_TWO
+                val isHasThreeProducts = initialProductListSize >= PRODUCT_LIST_INDEX_THREE
+                val isHasSixProducts = initialProductListSize >= PRODUCT_LIST_IMG_GENERATOR_MAX_SIZE
+                when {
+                    isHasSixProducts -> {
+                        val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
+                        val productTwo = initialProductListData[PRODUCT_LIST_INDEX_ONE]
+                        val productThree = initialProductListData[PRODUCT_LIST_INDEX_TWO]
+                        val productFour = initialProductListData[PRODUCT_LIST_INDEX_THREE]
+                        val productFive = initialProductListData[PRODUCT_LIST_INDEX_FOUR]
+                        val productSix = initialProductListData[PRODUCT_LIST_INDEX_FIVE]
+                        val productImage1 = productOne.primaryImage.original
+                        val productPrice1 = extractIdrPriceToRawValue(productOne.price.textIdr)
+                        val productImage2 = productTwo.primaryImage.original
+                        val productPrice2 = extractIdrPriceToRawValue(productTwo.price.textIdr)
+                        val productImage3 = productThree.primaryImage.original
+                        val productPrice3 = extractIdrPriceToRawValue(productThree.price.textIdr)
+                        val productImage4 = productFour.primaryImage.original
+                        val productPrice4 = extractIdrPriceToRawValue(productFour.price.textIdr)
+                        val productImage5 = productFive.primaryImage.original
+                        val productPrice5 = extractIdrPriceToRawValue(productFive.price.textIdr)
+                        val productImage6 = productSix.primaryImage.original
+                        val productPrice6 = extractIdrPriceToRawValue(productSix.price.textIdr)
+                        shopPageParamModel.productImage1 = productImage1
+                        shopPageParamModel.productPrice1 = productPrice1
+                        shopPageParamModel.productImage2 = productImage2
+                        shopPageParamModel.productPrice2 = productPrice2
+                        shopPageParamModel.productImage3 = productImage3
+                        shopPageParamModel.productPrice3 = productPrice3
+                        shopPageParamModel.productImage4 = productImage4
+                        shopPageParamModel.productPrice4 = productPrice4
+                        shopPageParamModel.productImage5 = productImage5
+                        shopPageParamModel.productPrice5 = productPrice5
+                        shopPageParamModel.productImage6 = productImage6
+                        shopPageParamModel.productPrice6 = productPrice6
+                        shopPageParamModel.productCount = PRODUCT_LIST_IMG_GENERATOR_MAX_SIZE
+                    }
 
-                isHasTwoProducts -> {
-                    val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
-                    val productTwo = initialProductListData[PRODUCT_LIST_INDEX_ONE]
-                    val productImage1 = productOne.primaryImage.original
-                    val productPrice1 = extractIdrPriceToRawValue(productOne.price.textIdr)
-                    val productImage2 = productTwo.primaryImage.original
-                    val productPrice2 = extractIdrPriceToRawValue(productTwo.price.textIdr)
-                    shopPageParamModel.productImage1 = productImage1
-                    shopPageParamModel.productPrice1 = productPrice1
-                    shopPageParamModel.productImage2 = productImage2
-                    shopPageParamModel.productPrice2 = productPrice2
-                    shopPageParamModel.productCount = PRODUCT_LIST_INDEX_TWO
-                }
+                    isHasThreeProducts -> {
+                        val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
+                        val productTwo = initialProductListData[PRODUCT_LIST_INDEX_ONE]
+                        val productThree = initialProductListData[PRODUCT_LIST_INDEX_TWO]
+                        val productImage1 = productOne.primaryImage.original
+                        val productPrice1 = extractIdrPriceToRawValue(productOne.price.textIdr)
+                        val productImage2 = productTwo.primaryImage.original
+                        val productPrice2 = extractIdrPriceToRawValue(productTwo.price.textIdr)
+                        val productImage3 = productThree.primaryImage.original
+                        val productPrice3 = extractIdrPriceToRawValue(productThree.price.textIdr)
+                        shopPageParamModel.productImage1 = productImage1
+                        shopPageParamModel.productPrice1 = productPrice1
+                        shopPageParamModel.productImage2 = productImage2
+                        shopPageParamModel.productPrice2 = productPrice2
+                        shopPageParamModel.productImage3 = productImage3
+                        shopPageParamModel.productPrice3 = productPrice3
+                        shopPageParamModel.productCount = PRODUCT_LIST_INDEX_THREE
+                    }
 
-                isHasOneProduct -> {
-                    val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
-                    val productImage1 = productOne.primaryImage.original
-                    val productPrice1 = extractIdrPriceToRawValue(productOne.price.textIdr)
-                    shopPageParamModel.productImage1 = productImage1
-                    shopPageParamModel.productPrice1 = productPrice1
-                    shopPageParamModel.productCount = PRODUCT_LIST_INDEX_ONE
+                    isHasTwoProducts -> {
+                        val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
+                        val productTwo = initialProductListData[PRODUCT_LIST_INDEX_ONE]
+                        val productImage1 = productOne.primaryImage.original
+                        val productPrice1 = extractIdrPriceToRawValue(productOne.price.textIdr)
+                        val productImage2 = productTwo.primaryImage.original
+                        val productPrice2 = extractIdrPriceToRawValue(productTwo.price.textIdr)
+                        shopPageParamModel.productImage1 = productImage1
+                        shopPageParamModel.productPrice1 = productPrice1
+                        shopPageParamModel.productImage2 = productImage2
+                        shopPageParamModel.productPrice2 = productPrice2
+                        shopPageParamModel.productCount = PRODUCT_LIST_INDEX_TWO
+                    }
+
+                    isHasOneProduct -> {
+                        val productOne = initialProductListData[PRODUCT_LIST_INDEX_ZERO]
+                        val productImage1 = productOne.primaryImage.original
+                        val productPrice1 = extractIdrPriceToRawValue(productOne.price.textIdr)
+                        shopPageParamModel.productImage1 = productImage1
+                        shopPageParamModel.productPrice1 = productPrice1
+                        shopPageParamModel.productCount = PRODUCT_LIST_INDEX_ONE
+                    }
                 }
             }
         }
