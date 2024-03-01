@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.extension.disableDirectPurchaseCapability
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopNewproductBigGridBinding
@@ -58,7 +57,7 @@ class ShopProductItemBigGridViewHolder(
             isDeviceOnDarkModeTheme = productCard?.context?.isDarkMode().orFalse()
         ).copy(
             stockBarLabelColor = stockBarLabelColor
-        ).disableDirectPurchaseCapability()
+        )
         productCard?.setProductModel(productCardModel)
         productCard?.setThreeDotsOnClickListener {
             shopProductClickedListener?.onThreeDotsClicked(shopProductUiModel, adapterPosition)

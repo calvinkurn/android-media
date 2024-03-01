@@ -238,6 +238,14 @@ object ShopPageHomeMapper {
             shopHomeProductViewModel.freeOngkirPromoIcon
                 ?: ""
         )
+        
+        val badges = shopHomeProductViewModel.shopBadgeList.map {
+            ProductCardModel.ShopBadge(
+                isShown = true,
+                imageUrl = it.imageUrl,
+                title = it.title
+            )
+        }
 
         val productCardColorMode = productCardColorHelper.determineProductCardColorMode(
             isDeviceOnDarkModeTheme = isDeviceOnDarkModeTheme,
@@ -262,7 +270,8 @@ object ShopPageHomeMapper {
             isWideContent = isWideContent,
             isWishlisted = shopHomeProductViewModel.isWishList,
             forceLightModeColor = forceLightModeColor,
-            colorMode = productCardColorMode
+            colorMode = productCardColorMode,
+            shopBadgeList = badges
         )
         return if (shopHomeProductViewModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(
                 shopHomeProductViewModel.isSoldOut

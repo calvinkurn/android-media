@@ -14,7 +14,6 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperUser {
 
-    const val KEY_ROLLENCE_PROFILE_MANAGEMENT_M2 = "M2_Profile_Mgmt"
     const val ROLLENCE_GOTO_KYC_MA = "goto_kyc_apps"
     const val ROLLENCE_GOTO_KYC_SA = "goto_kyc_sellerapp"
     const val ROLLENCE_GOTO_LOGIN = "scp_goto_login_and"
@@ -22,7 +21,6 @@ object DeeplinkMapperUser {
     const val PREF_SCP_DEBUG = "scp_goto_login_and"
 
     const val ROLLENCE_CVSDK_INTEGRATION = "and_cvsdk_intg"
-    const val ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE = "android_fundinvest"
     private const val REGISTER_PHONE_NUMBER = 116
     private const val REGISTER_EMAIL = 126
     private const val SQCP = 169
@@ -37,8 +35,7 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.ADD_PIN_ONBOARD -> ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING
             deeplink.startsWith(ApplinkConstInternalGlobal.ADVANCED_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
             deeplink.startsWith(ApplinkConstInternalGlobal.GENERAL_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
-            deeplink == ApplinkConst.SETTING_PROFILE -> getProfileApplink()
-            deeplink == ApplinkConstInternalUserPlatform.SETTING_PROFILE -> getProfileApplink()
+            deeplink == ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalUserPlatform.SETTING_PROFILE
             deeplink == ApplinkConst.INPUT_INACTIVE_NUMBER -> ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
             deeplink == ApplinkConst.PRIVACY_CENTER -> ApplinkConstInternalUserPlatform.PRIVACY_CENTER
@@ -91,25 +88,10 @@ object DeeplinkMapperUser {
         return WHITELISTED_SCP_OTP_TYPE.contains(otpType)
     }
 
-    private fun getProfileApplink(): String {
-        return if (isProfileManagementM2Activated()) {
-            ApplinkConstInternalUserPlatform.PROFILE_MANAGEMENT
-        } else {
-            ApplinkConstInternalUserPlatform.SETTING_PROFILE
-        }
-    }
-
     fun isGotoLoginEnabled(): Boolean {
         return RemoteConfigInstance.getInstance()
             .abTestPlatform
             .getString(ROLLENCE_GOTO_LOGIN)
-            .isNotEmpty()
-    }
-
-    fun isProfileManagementM2Activated(): Boolean {
-        return RemoteConfigInstance.getInstance()
-            .abTestPlatform
-            .getString(KEY_ROLLENCE_PROFILE_MANAGEMENT_M2)
             .isNotEmpty()
     }
 
@@ -149,12 +131,6 @@ object DeeplinkMapperUser {
             .abTestPlatform
             .getString(ROLLENCE_GOTO_LOGIN)
             .isEmpty()
-    }
-
-    fun isFundsAndInvestmentComposeActivated(): Boolean {
-        return getAbTestPlatform()
-            .getString(ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE)
-            .isNotEmpty()
     }
 
     private fun getAbTestPlatform(): AbTestPlatform =
