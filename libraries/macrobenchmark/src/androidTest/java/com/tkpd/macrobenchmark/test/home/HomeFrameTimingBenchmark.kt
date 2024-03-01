@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
 class HomeFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     override fun setupEnvironment() {
         MacroDevOps.skipOnboarding()
-        MacroDevOps.setupLoginFlow()
+//        MacroDevOps.setupLoginFlow()
     }
 
     override fun setupMock() {
