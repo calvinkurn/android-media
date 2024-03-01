@@ -541,4 +541,57 @@ class ProductPreviewUnitTest {
         }
     }
 
+    @Test
+    fun `when submit report and fail should emit event error toaster`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val model = mockDataSource.mockReviewReport()
+        val expectedThrow = Throwable("fail fetch")
+
+        coEvery { mockRepository.submitReport(model, reviewSourceId) } throws expectedThrow
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordEvent {
+                robot.submitReportTestCase(model)
+            }.also { event ->
+                event.last().assertType<ProductPreviewUiEvent.ShowErrorToaster>()
+                (event.last() as ProductPreviewUiEvent.ShowErrorToaster).onClick()
+            }
+        }
+    }
+
+    @Test
+    fun `when submit report and success should emit event success toaster`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val model = mockDataSource.mockReviewReport()
+
+        coEvery { mockRepository.submitReport(model, any()) } returns true
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordEvent {
+                robot.submitReportTestCase(model)
+            }.also { event ->
+                event.last().assertEqualTo(ProductPreviewUiEvent.ShowSuccessToaster(
+                    type = ProductPreviewUiEvent.ShowSuccessToaster.Type.Report
+                ))
+            }
+        }
+    }
+
+    @Test
+    fun `when submit report and fail request should emit event success toaster`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val model = mockDataSource.mockReviewReport()
+
+        coEvery { mockRepository.submitReport(model, reviewSourceId) } returns false
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordEvent {
+                robot.submitReportTestCase(model)
+            }.also { event ->
+                event.last().assertType<ProductPreviewUiEvent.ShowErrorToaster>()
+                (event.last() as ProductPreviewUiEvent.ShowErrorToaster).onClick()
+            }
+        }
+    }
+
 }

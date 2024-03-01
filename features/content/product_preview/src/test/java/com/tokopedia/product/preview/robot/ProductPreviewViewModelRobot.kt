@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreference
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewUiEvent
@@ -151,6 +152,10 @@ internal class ProductPreviewViewModelRobot(
 
     fun navigateAppTestCase(appLink: String) {
         viewModel.onAction(ProductPreviewAction.Navigate(appLink))
+    }
+
+    fun submitReportTestCase(model: ReviewReportUiModel) {
+        viewModel.onAction(ProductPreviewAction.SubmitReport(model))
     }
 
     fun cancelRemainingTasks() {

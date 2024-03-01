@@ -10,6 +10,7 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiSta
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMediaUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
+import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -352,6 +353,13 @@ class ProductPreviewMockData {
                     title = "This is Category 3",
                 )
             )
+        )
+    }
+
+    fun mockReviewReport(): ReviewReportUiModel {
+        return ReviewReportUiModel(
+            text = "Muka sellernya ngeselin",
+            reasonCode = 12,
         )
     }
 
