@@ -146,6 +146,7 @@
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/txt_desc_review_pdp"
         app:typographyType="paragraph_2"
+        app:typographyWeight="bold"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
