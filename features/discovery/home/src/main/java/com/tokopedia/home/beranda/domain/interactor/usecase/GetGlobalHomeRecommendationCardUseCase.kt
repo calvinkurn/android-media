@@ -24,9 +24,11 @@ class GetGlobalHomeRecommendationCardUseCase @Inject constructor(
         tabIndex: Int,
         tabName: String,
         paramSource: String,
-        location: String
+        location: String,
+        refreshType: Int,
+        bytedanceSessionId: String,
     ): HomeGlobalRecommendationDataModel {
-        graphqlUseCase.setRequestParams(createRequestParams(productPage, paramSource, location))
+        graphqlUseCase.setRequestParams(createRequestParams(productPage, paramSource, location, refreshType, bytedanceSessionId))
         return homeRecommendationCardMapper.mapToRecommendationCardDataModel(
             graphqlUseCase.executeOnBackground().getHomeRecommendationCard,
             tabIndex,
@@ -38,13 +40,17 @@ class GetGlobalHomeRecommendationCardUseCase @Inject constructor(
     private fun createRequestParams(
         productPage: Int,
         paramSource: String,
-        location: String
+        location: String,
+        refreshType: Int,
+        bytedanceSessionId: String,
     ): Map<String, Any> {
         return RequestParams.create().apply {
             putInt(PARAM_PRODUCT_PAGE, productPage)
             putString(PARAM_LAYOUTS, LAYOUTS_VALUE)
             putString(PARAM_SOURCE_TYPE, paramSource)
             putString(PARAM_LOCATION, location)
+            putInt(REFRESH_TYPE, refreshType)
+            putString(BYTEDANCE_SESSION_ID, bytedanceSessionId)
         }.parameters
     }
 
@@ -53,6 +59,13 @@ class GetGlobalHomeRecommendationCardUseCase @Inject constructor(
         private const val PARAM_SOURCE_TYPE = "param"
         private const val PARAM_PRODUCT_PAGE = "productPage"
         private const val PARAM_LAYOUTS = "layouts"
+        private const val REFRESH_TYPE = "refreshType"
+        private const val BYTEDANCE_SESSION_ID = "bytedanceSessionID"
+        const val REFRESH_TYPE_UNKNOWN = -1
+        const val REFRESH_TYPE_OPEN = 0
+        const val REFRESH_TYPE_REFRESH = 1
+        const val REFRESH_TYPE_LOAD_MORE = 2
+        const val REFRESH_TYPE_PUSH = 3
 
         private const val LAYOUTS_VALUE = "product,recom_card,banner_ads,video"
     }

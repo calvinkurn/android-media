@@ -56,11 +56,9 @@ object TrackDiscoveryRecommendationMapper {
 
     fun DataItem.isEligibleToTrack(): Boolean {
         return source == ComponentSourceData.Recommendation
-//            && !(getAppLog()?.pageName?.contains("injection").orFalse())
     }
 
     fun ComponentsItem.isEligibleToTrack(): Boolean {
         return getSource() == ComponentSourceData.Recommendation
-//            && !(getComponentAdditionalInfo()?.tracker?.recommendationPageName?.contains("injection").orFalse())
     }
 }

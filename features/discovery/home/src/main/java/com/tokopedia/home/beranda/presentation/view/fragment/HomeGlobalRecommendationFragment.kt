@@ -42,6 +42,8 @@ import com.tokopedia.home.analytics.byteio.TrackRecommendationMapper.asProductTr
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
+import com.tokopedia.home.beranda.domain.interactor.usecase.GetGlobalHomeRecommendationCardUseCase.Companion.REFRESH_TYPE_OPEN
+import com.tokopedia.home.beranda.domain.interactor.usecase.GetGlobalHomeRecommendationCardUseCase.Companion.REFRESH_TYPE_REFRESH
 import com.tokopedia.home.beranda.helper.HomeFeedEndlessScrollListener
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeEggListener
@@ -711,7 +713,8 @@ class HomeGlobalRecommendationFragment :
             recomId,
             DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
             getLocationParamString(),
-            sourceType = sourceType
+            sourceType = sourceType,
+            refreshType = REFRESH_TYPE_OPEN
         )
     }
 
@@ -798,7 +801,8 @@ class HomeGlobalRecommendationFragment :
                 recomId,
                 DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
                 getLocationParamString(),
-                sourceType = sourceType
+                sourceType = sourceType,
+                refreshType = REFRESH_TYPE_REFRESH
             )
         }
     }

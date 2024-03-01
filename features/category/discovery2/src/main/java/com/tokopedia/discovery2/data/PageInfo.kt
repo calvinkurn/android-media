@@ -43,6 +43,9 @@ data class PageInfo(
         @SerializedName("is_affiliate")
         val isAffiliate: Boolean = false,
 
+        @SerializedName("labels")
+        val label: Label = Label(),
+
         var additionalInfo: AdditionalInfo? = null,
 
         var redirectionUrl: String? = null,
@@ -50,4 +53,9 @@ data class PageInfo(
         var isAdult: Int = 0,
 
         var origin: Int = 0
-)
+) {
+    data class Label(
+        @SerializedName("tracking_pagename")
+        val trackingPagename: String = ""
+    )
+}

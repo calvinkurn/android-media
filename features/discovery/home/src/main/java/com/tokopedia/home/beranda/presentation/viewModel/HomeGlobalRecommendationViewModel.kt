@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.domain.interactor.GetHomeGlobalRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.GetGlobalHomeRecommendationCardUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.GetGlobalHomeRecommendationCardUseCase.Companion.REFRESH_TYPE_LOAD_MORE
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeGlobalRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
@@ -80,16 +81,20 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
 
     var topAdsBannerNextPage = TOPADS_PAGE_DEFAULT
 
+    private var recSessionId: String = ""
+
     fun fetchHomeRecommendation(
         tabName: String,
         recommendationId: Int,
         count: Int,
         locationParam: String = "",
         tabIndex: Int = 0,
-        sourceType: String
+        sourceType: String,
+        refreshType: Int,
     ) {
+        recSessionId = ""
         if (HomeRecommendationController.isUsingRecommendationCard()) {
-            fetchHomeRecommendationCard(tabIndex, tabName, locationParam, sourceType)
+            fetchHomeRecommendationCard(tabIndex, tabName, locationParam, sourceType, refreshType)
         } else {
             loadInitialPage(tabName, recommendationId, count, locationParam, tabIndex, sourceType)
         }
@@ -116,7 +121,8 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
         tabIndex: Int,
         tabName: String,
         locationParam: String,
-        sourceType: String
+        sourceType: String,
+        refreshType: Int
     ) {
         launchCatchError(coroutineContext, block = {
             val result = getHomeRecommendationCardUseCase.get().execute(
@@ -124,8 +130,13 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
                 tabIndex,
                 tabName,
                 sourceType,
-                locationParam
+                locationParam,
+                refreshType = refreshType,
+                bytedanceSessionId = recSessionId
             )
+
+            recSessionId = result.appLog.sessionId
+
             if (result.homeRecommendations.isEmpty()) {
                 _homeRecommendationCardState.emit(
                     HomeRecommendationCardState.EmptyData(
@@ -175,8 +186,12 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
                 tabIndex,
                 tabName,
                 sourceType,
-                locationParam
+                locationParam,
+                refreshType = REFRESH_TYPE_LOAD_MORE,
+                bytedanceSessionId = recSessionId
             )
+
+            recSessionId = result.appLog.sessionId
 
             existingRecommendationDataMutableList.removeAll { it is LoadMoreStateModel }
 

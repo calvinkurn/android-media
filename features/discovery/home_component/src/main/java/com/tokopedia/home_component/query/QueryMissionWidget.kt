@@ -10,10 +10,15 @@ import com.tokopedia.home_component.query.QueryMissionWidget.MISSION_WIDGET_QUER
 @GqlQuery(MISSION_WIDGET_QUERY_NAME, MISSION_WIDGET_QUERY)
 internal object QueryMissionWidget {
     const val MISSION_WIDGET_QUERY_NAME = "MissionWidgetQuery"
-    const val MISSION_WIDGET_QUERY = "query getHomeMissionWidget(\$type: String!, \$location: String!, \$param: String!) {\n" +
-        "  getHomeMissionWidget(type: \$type, location: \$location, param: \$param) {\n" +
+    const val MISSION_WIDGET_QUERY = "query getHomeMissionWidget(\$type: String!, \$location: String!, \$param: String!, \$bytedanceSessionID: String!, \$refreshType: Int!) {\n" +
+        "  getHomeMissionWidget(type: \$type, location: \$location, param: \$param, bytedanceSessionID: \$bytedanceSessionID, refreshType: \$refreshType) {\n" +
         "    header {\n" +
         "      title\n" +
+        "    }\n" +
+        "    appLog {\n" +
+        "      bytedanceSessionID\n" +
+        "      requestID\n" +
+        "      logID\n" +
         "    }\n" +
         "    missions {\n" +
         "      id\n" +
@@ -31,6 +36,7 @@ internal object QueryMissionWidget {
         "      isCarousel\n" +
         "      shopID\n" +
         "      campaignCode\n" +
+        "      recParam\n" +
         "    }\n" +
         "    config {\n" +
         "      styleParam\n" +
