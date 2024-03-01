@@ -70,6 +70,7 @@ object AtcCommonMapper {
                     price = selectedChild?.finalPrice?.toString() ?: ""
                     this.userId = userId
                     this.shopName = shopName
+                    trackerData = AppLogAnalytics.getEntranceInfo("none")
                 }
             }
             ProductDetailCommonConstant.OCC_BUTTON -> {
@@ -113,7 +114,7 @@ object AtcCommonMapper {
                     category = categoryName
                     price = selectedChild?.finalPrice?.toString() ?: ""
                     this.userId = userId
-                    trackerData = AppLogAnalytics.getEntranceInfo("other")
+                    trackerData = AppLogAnalytics.getEntranceInfo("none")
                 }
             }
         }
