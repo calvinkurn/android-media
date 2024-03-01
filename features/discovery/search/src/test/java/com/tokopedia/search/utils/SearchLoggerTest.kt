@@ -7,6 +7,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.SEARCH_DEBUG_LOG
 import com.tokopedia.search.utils.SearchLogger.Companion.DISCOVERY_SEARCH_DEBUG_TAG
 import com.tokopedia.search.utils.SearchLogger.Companion.FILTER
 import com.tokopedia.search.utils.SearchLogger.Companion.KEYWORD
+import com.tokopedia.search.utils.SearchLogger.Companion.USER_VERSION_SEPARATOR
 import com.tokopedia.search.utils.SearchLogger.Companion.VERSION_CODE_SEPARATOR
 import io.mockk.every
 import io.mockk.mockk
@@ -29,6 +30,7 @@ internal class SearchLoggerTest {
     private val searchLogger = SearchLogger(
         remoteConfig,
         DUMMY_VERSION_CODE,
+        DUMMY_USER_ID
     )
 
     @Before
@@ -51,7 +53,7 @@ internal class SearchLoggerTest {
     }
 
     private fun assertNoLogging() {
-        verify (exactly = 0) {
+        verify(exactly = 0) {
             ServerLogger.log(any(), any(), any())
         }
     }
@@ -110,8 +112,8 @@ internal class SearchLoggerTest {
     }
 
     @Test
-    fun `logSearchDebug will send log when toggle is true`() {
-        `given debug toggle is enabled`()
+    fun `logSearchDebug will send log when version code is true`() {
+        `given version code toggle is enabled`()
 
         val keyword = "samsung"
         searchLogger.logSearchDebug(keyword)
@@ -119,8 +121,22 @@ internal class SearchLoggerTest {
         assertLogSearchDebug(keyword)
     }
 
-    private fun `given debug toggle is enabled`() {
+    @Test
+    fun `logSearchDebug will send log when user id is true`() {
+        `given user id toggle is enabled`()
+
+        val keyword = "samsung"
+        searchLogger.logSearchDebug(keyword)
+
+        assertLogSearchDebug(keyword)
+    }
+
+    private fun `given version code toggle is enabled`() {
         every { remoteConfig.getString(SEARCH_DEBUG_LOG) } returns DUMMY_VERSION_CODE.toString()
+    }
+
+    private fun `given user id toggle is enabled`() {
+        every { remoteConfig.getString(SEARCH_DEBUG_LOG) } returns DUMMY_USER_ID
     }
 
     private fun assertLogSearchDebug(
@@ -141,7 +157,7 @@ internal class SearchLoggerTest {
 
     @Test
     fun `logSearchDebug can send filter params`() {
-        `given debug toggle is enabled`()
+        `given version code toggle is enabled`()
 
         val keyword = "samsung"
         val filterParams = "is_official=true"
@@ -185,7 +201,109 @@ internal class SearchLoggerTest {
         val keyword3 = "iphone"
         searchLogger = SearchLogger(remoteConfig, "300500999".toInt())
         searchLogger.logSearchDebug(keyword3)
-        verify (exactly = 0) {
+        verify(exactly = 0) {
+            ServerLogger.log(any(), keyword3, any())
+        }
+    }
+
+    @Test
+    fun `logSearchDebug remote config can support filtering with user id AND version code`() {
+        val configVersionCode1 = "300400100"
+        val userId = "123123"
+
+        `given config with user id AND version code`(userId, configVersionCode1)
+
+        val keyword1 = "samsung"
+        val searchLogger: SearchLogger = SearchLogger(remoteConfig, configVersionCode1.toInt())
+        searchLogger.logSearchDebug(keyword1)
+        assertLogSearchDebug(keyword1)
+    }
+
+    // todo
+    @Test
+    fun `logSearchDebug remote config can support filtering with multiple user ids and multiple version codes`() {
+        val userId1 = "1937403"
+        val userId2 = "9563845"
+
+        val configVersionCode1 = "300400100"
+        val configVersionCode2 = "300400101"
+
+        `given config with multiple user ids AND version codes`(
+            userId = listOf(userId1, userId2),
+            versionCode = listOf(configVersionCode1, configVersionCode2)
+        )
+
+        var searchLogger: SearchLogger
+
+        val keyword1 = "samsung"
+        searchLogger =
+            SearchLogger(remoteConfig, userId = userId1, versionCode = configVersionCode1.toInt())
+        searchLogger.logSearchDebug(keyword1)
+        assertLogSearchDebug(keyword1)
+
+        val keyword12 = "oppo"
+        searchLogger =
+            SearchLogger(remoteConfig, userId = userId1, versionCode = configVersionCode2.toInt())
+        searchLogger.logSearchDebug(keyword12)
+        assertLogSearchDebug(keyword12)
+
+        val keyword2 = "samsung galaxy"
+        searchLogger =
+            SearchLogger(remoteConfig, userId = userId2, versionCode = configVersionCode2.toInt())
+        searchLogger.logSearchDebug(keyword2)
+        assertLogSearchDebug(keyword2)
+
+        val keyword21 = "huawei"
+        searchLogger =
+            SearchLogger(remoteConfig, userId = userId2, versionCode = configVersionCode1.toInt())
+        searchLogger.logSearchDebug(keyword21)
+        assertLogSearchDebug(keyword21)
+
+        val keyword3 = "iphone"
+        searchLogger = SearchLogger(remoteConfig, userId = "998998", versionCode = 77658394)
+        searchLogger.logSearchDebug(keyword3)
+        verify(exactly = 0) {
+            ServerLogger.log(any(), keyword3, any())
+        }
+
+        val keyword4 = "redmi"
+        searchLogger = SearchLogger(remoteConfig, userId = userId2, versionCode = 22222)
+        searchLogger.logSearchDebug(keyword4)
+        assertLogSearchDebug(keyword4)
+
+        val keyword5 = "nokia"
+        searchLogger = SearchLogger(
+            remoteConfig,
+            userId = "48247859",
+            versionCode = configVersionCode2.toInt()
+        )
+        searchLogger.logSearchDebug(keyword5)
+        assertLogSearchDebug(keyword5)
+    }
+
+    @Test
+    fun `logSearchDebug remote config can support filtering with multiple user id`() {
+        val userId1 = "1937403"
+        val userId2 = "9563845"
+
+        `given config with multiple user ids`(listOf(userId1, userId2))
+
+        var searchLogger: SearchLogger
+
+        val keyword1 = "samsung"
+        searchLogger = SearchLogger(remoteConfig, userId = userId1)
+        searchLogger.logSearchDebug(keyword1)
+        assertLogSearchDebug(keyword1)
+
+        val keyword2 = "samsung galaxy"
+        searchLogger = SearchLogger(remoteConfig, userId = userId2)
+        searchLogger.logSearchDebug(keyword2)
+        assertLogSearchDebug(keyword2)
+
+        val keyword3 = "iphone"
+        searchLogger = SearchLogger(remoteConfig, userId = "998998")
+        searchLogger.logSearchDebug(keyword3)
+        verify(exactly = 0) {
             ServerLogger.log(any(), keyword3, any())
         }
     }
@@ -196,9 +314,35 @@ internal class SearchLoggerTest {
         every { remoteConfig.getString(SEARCH_DEBUG_LOG) } returns configVersionCode
     }
 
+    private fun `given config with multiple user ids`(userIds: List<String>) {
+        val remoteConfigValue = userIds.joinToString(separator = VERSION_CODE_SEPARATOR)
+
+        every { remoteConfig.getString(SEARCH_DEBUG_LOG) } returns remoteConfigValue
+    }
+
+    private fun `given config with user id AND version code`(userId: String, versionCode: String) {
+        val remoteConfigValue = "$versionCode$USER_VERSION_SEPARATOR$userId"
+
+        every { remoteConfig.getString(SEARCH_DEBUG_LOG) } returns remoteConfigValue
+    }
+
+    private fun `given config with multiple user ids AND version codes`(
+        userId: List<String>,
+        versionCode: List<String>
+    ) {
+        val remoteConfigValue =
+            "${versionCode.joinToString(separator = VERSION_CODE_SEPARATOR)}$USER_VERSION_SEPARATOR${
+                userId.joinToString(
+                    separator = VERSION_CODE_SEPARATOR
+                )
+            }"
+
+        every { remoteConfig.getString(SEARCH_DEBUG_LOG) } returns remoteConfigValue
+    }
+
     @Test
     fun `logSearchDebug will not log without versionCode`() {
-        `given debug toggle is enabled`()
+        `given version code toggle is enabled`()
 
         val searchLogger = SearchLogger(remoteConfig, null)
         searchLogger.logSearchDebug("samsung")
@@ -208,5 +352,6 @@ internal class SearchLoggerTest {
 
     companion object {
         private const val DUMMY_VERSION_CODE = 300400100
+        private const val DUMMY_USER_ID = "123412"
     }
 }
