@@ -34,8 +34,6 @@ import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.manager.PlayBroadcastToasterManager
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.seller.model.exception.PinnedProductException
@@ -56,10 +54,9 @@ import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastLiveStatsBottomSheet
-import com.tokopedia.play.broadcaster.view.compose.LiveStatsView
+import com.tokopedia.play.broadcaster.view.compose.livestats.LiveStatsView
 import com.tokopedia.play.broadcaster.view.custom.PlayBroIconWithGreenDotView
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
-import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.game.quiz.QuizFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView

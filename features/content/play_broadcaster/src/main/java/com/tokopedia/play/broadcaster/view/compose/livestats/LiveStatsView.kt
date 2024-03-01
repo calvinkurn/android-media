@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.compose
+package com.tokopedia.play.broadcaster.view.compose.livestats
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement

@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.compose
+package com.tokopedia.play.broadcaster.view.compose.livestats
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -18,7 +18,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.card.NestCard
 import com.tokopedia.nest.components.card.NestCardType
@@ -33,7 +32,7 @@ import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 @Composable
 fun LiveStatsBoxView(
     liveStats: LiveStatsUiModel,
-    onClick : (() -> Unit)?,
+    type: LiveStatsBoxType,
 ) {
     NestCard(
         type = NestCardType.NoBorder,
@@ -43,7 +42,11 @@ fun LiveStatsBoxView(
     ) {
         Column(
             modifier = Modifier
-                .noRippleClickable { onClick?.invoke() }
+                .noRippleClickable {
+                    if (type is LiveStatsBoxType.Clickable) {
+                        type.onClick()
+                    }
+                }
                 .padding(16.dp),
         ) {
             Row(
@@ -69,12 +72,12 @@ fun LiveStatsBoxView(
                     maxLines = 1,
                 )
 
-                if (onClick != null) {
+                if (type is LiveStatsBoxType.Clickable && type.icon != 0) {
                     Spacer(modifier = Modifier.width(8.dp))
 
                     NestIcon(
                         modifier = Modifier.size(16.dp),
-                        iconId = IconUnify.CHEVRON_RIGHT,
+                        iconId = type.icon,
                         colorNightEnable = NestTheme.colors.NN._600,
                         colorNightDisable = NestTheme.colors.NN._600,
                         colorLightDisable = NestTheme.colors.NN._600,
@@ -94,4 +97,13 @@ fun LiveStatsBoxView(
             )
         }
     }
+}
+
+sealed interface LiveStatsBoxType {
+    data class Clickable(
+        val icon: Int,
+        val onClick: () -> Unit,
+    ) : LiveStatsBoxType
+
+    object NotClickable : LiveStatsBoxType
 }

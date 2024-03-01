@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.compose
+package com.tokopedia.play.broadcaster.view.compose.livestats
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,6 +8,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 
@@ -29,10 +30,13 @@ fun LiveStatsLayout(
             val currLiveStats = liveStats[idx]
             LiveStatsBoxView(
                 liveStats = currLiveStats,
-                onClick = if (currLiveStats is LiveStatsUiModel.EstimatedIncome) {
-                    onEstimatedIncomeClicked
+                type = if (currLiveStats is LiveStatsUiModel.EstimatedIncome) {
+                    LiveStatsBoxType.Clickable(
+                        icon = IconUnify.CHEVRON_RIGHT,
+                        onClick = onEstimatedIncomeClicked,
+                    )
                 } else {
-                    null
+                    LiveStatsBoxType.NotClickable
                 }
             )
         }

@@ -8,7 +8,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.play.broadcaster.view.compose.LiveStatsLayout
+import com.tokopedia.play.broadcaster.view.compose.livestats.LiveStatsLayout
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.unifycomponents.BottomSheetUnify
