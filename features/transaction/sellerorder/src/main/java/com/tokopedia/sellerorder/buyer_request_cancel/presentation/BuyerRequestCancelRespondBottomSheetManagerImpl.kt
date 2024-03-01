@@ -2,8 +2,11 @@ package com.tokopedia.sellerorder.buyer_request_cancel.presentation
 
 class BuyerRequestCancelRespondBottomSheetManagerImpl : IBuyerRequestCancelRespondBottomSheetManager {
 
+    @Suppress("LateinitUsage")
     private lateinit var _bottomSheetManagerMediator: IBuyerRequestCancelRespondBottomSheetManager.Mediator
+    @Suppress("LateinitUsage")
     private lateinit var _bottomSheetListenerMediator: IBuyerRequestCancelRespondListener.Mediator
+    @Suppress("LateinitUsage")
     private lateinit var _bottomSheetListener: IBuyerRequestCancelRespondListener
 
     override var bottomSheetBuyerRequestCancelRespond: BuyerRequestCancelRespondBottomSheet? = null
