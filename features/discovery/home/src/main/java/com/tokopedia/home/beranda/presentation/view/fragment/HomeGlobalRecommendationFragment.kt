@@ -753,7 +753,7 @@ class HomeGlobalRecommendationFragment :
         if(hasApplogScrollListener) return
         recyclerView?.addVerticalTrackListener {
             GlidePageTrackObject(
-                distanceToTop = (parentFragment as? AppLogGlidePageInterface)?.getDistanceToTop().orZero()
+                distanceToTop = (parentFragment as? AppLogGlidePageInterface)?.getDistanceToTop().orZero() + totalScrollY
             )
         }
         hasApplogScrollListener = true

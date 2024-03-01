@@ -217,7 +217,7 @@ fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTrigg
 fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
     AppLogAnalytics.send(EventName.SLIDE_BAR, JSONObject().also {
         it.addPage()
-        it.addPage()
+        it.addEnterFrom()
         it.put(AppLogParam.SLIDE_TYPE, if (scrollOffset > 0) "show_right" else "show_left")
 
         it.put(AppLogParam.MODULE_NAME, model.moduleName)
