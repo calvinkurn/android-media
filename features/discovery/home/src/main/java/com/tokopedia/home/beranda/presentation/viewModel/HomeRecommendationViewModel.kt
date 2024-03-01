@@ -79,8 +79,6 @@ class HomeRecommendationViewModel @Inject constructor(
 
     var topAdsBannerNextPage = TOPADS_PAGE_DEFAULT
 
-    private var recSessionId: String = ""
-
     fun fetchHomeRecommendation(
         tabName: String,
         recommendationId: Int,
@@ -88,11 +86,9 @@ class HomeRecommendationViewModel @Inject constructor(
         locationParam: String = "",
         tabIndex: Int = 0,
         sourceType: String,
-        refreshType: Int,
     ) {
-        recSessionId = ""
         if (HomeRecommendationController.isUsingRecommendationCard()) {
-            fetchHomeRecommendationCard(tabName, locationParam, sourceType, refreshType)
+            fetchHomeRecommendationCard(tabName, locationParam, sourceType)
         } else {
             loadInitialPage(tabName, recommendationId, count, locationParam, tabIndex, sourceType)
         }
@@ -118,7 +114,6 @@ class HomeRecommendationViewModel @Inject constructor(
         tabName: String,
         locationParam: String,
         sourceType: String,
-        refreshType: Int,
     ) {
         launchCatchError(coroutineContext, block = {
             val result = getHomeRecommendationCardUseCase.get().execute(
@@ -126,11 +121,7 @@ class HomeRecommendationViewModel @Inject constructor(
                 tabName,
                 sourceType,
                 locationParam,
-                refreshType = refreshType,
-                bytedanceSessionId = recSessionId,
             )
-
-            recSessionId = result.appLog.sessionId
 
             if (result.homeRecommendations.isEmpty()) {
                 _homeRecommendationCardState.emit(
@@ -180,11 +171,7 @@ class HomeRecommendationViewModel @Inject constructor(
                 tabName,
                 sourceType,
                 locationParam,
-                refreshType = GetHomeRecommendationCardUseCase.REFRESH_TYPE_LOAD_MORE,
-                bytedanceSessionId = recSessionId,
             )
-
-            recSessionId = result.appLog.sessionId
 
             existingRecommendationDataMutableList.removeAll { it is HomeRecommendationLoadMore }
 

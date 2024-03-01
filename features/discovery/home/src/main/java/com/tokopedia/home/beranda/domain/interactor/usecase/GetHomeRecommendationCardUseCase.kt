@@ -109,16 +109,12 @@ class GetHomeRecommendationCardUseCase @Inject constructor(
         tabName: String,
         paramSource: String,
         location: String,
-        refreshType: Int,
-        bytedanceSessionId: String,
     ): HomeRecommendationDataModel {
         graphqlUseCase.setRequestParams(
             createRequestParams(
                 productPage,
                 paramSource,
                 location,
-                refreshType,
-                bytedanceSessionId
             )
         )
         return homeRecommendationCardMapper.mapToRecommendationCardDataModel(
@@ -132,8 +128,6 @@ class GetHomeRecommendationCardUseCase @Inject constructor(
         productPage: Int,
         paramSource: String,
         location: String,
-        refreshType: Int,
-        bytedanceSessionId: String,
     ): Map<String, Any> {
         return RequestParams.create().apply {
             putInt(PARAM_PRODUCT_PAGE, productPage)
@@ -141,8 +135,6 @@ class GetHomeRecommendationCardUseCase @Inject constructor(
             putString(PARAM_SOURCE_TYPE, paramSource)
             putString(PARAM_LOCATION, location)
             putString(PRODUCT_CARD_VERSION, getProductCardVersion())
-            putInt(REFRESH_TYPE, refreshType)
-            putString(BYTEDANCE_SESSION_ID, bytedanceSessionId)
         }.parameters
     }
 
@@ -158,13 +150,6 @@ class GetHomeRecommendationCardUseCase @Inject constructor(
         private const val PARAM_LAYOUTS = "layouts"
         private const val PRODUCT_CARD_VERSION = "productCardVersion"
         private const val PRODUCT_CARD_VERSION_V5 = "v5"
-        private const val REFRESH_TYPE = "refreshType"
-        private const val BYTEDANCE_SESSION_ID = "bytedanceSessionID"
-        const val REFRESH_TYPE_UNKNOWN = -1
-        const val REFRESH_TYPE_OPEN = 0
-        const val REFRESH_TYPE_REFRESH = 1
-        const val REFRESH_TYPE_LOAD_MORE = 2
-        const val REFRESH_TYPE_PUSH = 3
 
         private const val LAYOUTS_VALUE = "product,recom_card,banner_ads,video"
     }
