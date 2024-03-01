@@ -66,9 +66,9 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
             translatorManager?.clearSelectors()
 
             val rootView: View = activity.window.decorView.findViewById(android.R.id.content)
+            setAddonGlobalLayoutListener(rootView)
 
             launch {
-                setAddonGlobalLayoutListener(rootView)
 
                 rootView.viewTreeObserver
                     .onScrollChangedAsFlow()
@@ -173,12 +173,13 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
 
         override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
             super.onFragmentResumed(fm, f)
-            setTranslatorBottomSheet(f)
+            setTranslatorFragment(f)
         }
 
-        private fun setTranslatorBottomSheet(f: Fragment) {
+        private fun setTranslatorFragment(f: Fragment) {
             if (f.activity != null) {
                 val weakActivity = WeakReference<Activity>(f.activity)
+                translatorManager?.clearSelectors()
                 TranslatorManager.setCurrentActivity(weakActivity)
             }
             if (f is BottomSheetUnify) {
@@ -191,9 +192,8 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                     translatorManagerFragment?.clearSelectors()
 
                     f.view?.let {
-
+                        setAddonGlobalLayoutListener(it)
                         launch {
-                            setAddonGlobalLayoutListener(it)
 
                             it.viewTreeObserver.onScrollChangedAsFlow().collect {
                                 translatorManagerFragment?.startTranslate()

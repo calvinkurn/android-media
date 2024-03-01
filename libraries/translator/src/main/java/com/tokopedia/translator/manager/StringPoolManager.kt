@@ -35,6 +35,10 @@ class StringPoolManager {
         return mPools
     }
 
+    fun clearPools() {
+        mPools.clear()
+    }
+
     fun updateCache(old: Array<String>, new: Array<String>, destinationLang: String) {
         if (old.size != new.size)
             return

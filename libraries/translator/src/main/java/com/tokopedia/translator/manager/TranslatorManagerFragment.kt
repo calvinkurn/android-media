@@ -20,7 +20,6 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
-import com.tokopedia.translator.callback.ActivityTranslatorCallbacks
 import com.tokopedia.translator.repository.model.StringPoolItem
 import com.tokopedia.translator.repository.source.GetDataService
 import com.tokopedia.translator.repository.source.RetrofitClientInstance
@@ -125,7 +124,7 @@ class TranslatorManagerFragment() : CoroutineScope {
 
         for (view in views) {
             if (view is TextView && view !is EditText) {
-                if (view.tag == null || (view.tag is Boolean && !view.tag.toString().toBoolean())) {
+                if (view.tag == null || (view.tag !is Boolean && !view.tag.toString().toBoolean())) {
                     val selector = ViewTreeManagerFragment.createDOMIdentifier(view, fragment)
                     mSelectors[selector] = selector
 

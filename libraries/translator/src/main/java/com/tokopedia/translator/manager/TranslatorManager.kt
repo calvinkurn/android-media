@@ -134,8 +134,8 @@ class TranslatorManager() : CoroutineScope {
         if (views.isEmpty()) return
 
         for (view in views) {
-            if (view is TextView && view !is EditText) {
-                if (view.tag == null || (view.tag is Boolean && !view.tag.toString().toBoolean())) {
+            if (view is TextView) {
+                if (view.tag == null || (view.tag !is Boolean && !view.tag.toString().toBoolean())) {
                     val selector = ViewTreeManager.createDOMIdentifier(view, activity)
                     mSelectors[selector] = selector
 
@@ -165,6 +165,7 @@ class TranslatorManager() : CoroutineScope {
 
     fun clearSelectors() {
         mSelectors.clear()
+        mStringPoolManager.clearPools()
     }
 
     suspend fun startTranslate() {
