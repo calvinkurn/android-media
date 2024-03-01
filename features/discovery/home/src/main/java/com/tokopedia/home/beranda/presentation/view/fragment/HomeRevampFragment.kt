@@ -33,9 +33,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogGlidePageInterface
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
 import com.tokopedia.analytics.byteio.EnterMethod
+import com.tokopedia.analytics.byteio.GlidePageTrackObject
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
@@ -264,7 +266,8 @@ open class HomeRevampFragment :
     RecommendationWidgetListener,
     CMHomeWidgetCallback,
     HomePayLaterWidgetListener,
-    AppLogInterface {
+    AppLogInterface,
+    AppLogGlidePageInterface {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -848,7 +851,11 @@ open class HomeRevampFragment :
 
     private fun trackVerticalScroll() {
         if(hasApplogScrollListener) return
-        homeRecyclerView?.addVerticalTrackListener(trackGlidePage = true)
+        homeRecyclerView?.addVerticalTrackListener {
+            GlidePageTrackObject(
+                distanceToTop = scrollPositionY
+            )
+        }
         hasApplogScrollListener = true
     }
 
@@ -3128,5 +3135,9 @@ open class HomeRevampFragment :
     private fun getThematicUtil(): HomeThematicUtil {
         if (!::homeThematicUtil.isInitialized) initInjectorHome()
         return homeThematicUtil
+    }
+
+    override fun getDistanceToTop(): Int {
+        return scrollPositionY
     }
 }
