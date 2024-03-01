@@ -146,4 +146,8 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
 
         moveToOtherTab.postValue(position - 1)
     }
+
+    fun isBackgroundAvailable(): Boolean {
+        return components.data?.find { dataItem -> !dataItem.boxColor.isNullOrEmpty() } != null
+    }
 }

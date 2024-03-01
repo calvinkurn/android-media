@@ -173,6 +173,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                     removeAllTabs()
                 }
 
+                setTabsHolderShade()
+
                 var selectedPosition = 0
                 it.forEachIndexed { index, tabItem ->
                     if (tabItem.data?.isNotEmpty() == true) {
@@ -219,6 +221,17 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                     if (it) {
                         tabsHolder.setMargin(0, 0, 0, 16)
                     }
+                }
+            }
+        }
+    }
+
+    private fun setTabsHolderShade() {
+        tabsViewModel?.let {
+            if (it.isBackgroundAvailable()) {
+                tabsHolder.apply {
+                    whiteShadeLeft.setBackgroundResource(0)
+                    whiteShadeRight.setBackgroundResource(0)
                 }
             }
         }
