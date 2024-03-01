@@ -20,7 +20,7 @@ object TrackDiscoveryRecommendationMapper {
             position = position,
             tabName = tabName.orEmpty(),
             tabPosition = tabIndex?.firstOrNull().orZero(),
-            moduleName = componentPromoName.orEmpty(),
+            moduleName = getAppLog()?.pageName.orEmpty(),
             isAd = isTopads.orFalse(),
             isUseCache = false,
             recSessionId = getAppLog()?.sessionId.orEmpty(),
