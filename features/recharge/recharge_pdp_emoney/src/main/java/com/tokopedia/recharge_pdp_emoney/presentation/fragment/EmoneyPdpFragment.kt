@@ -396,10 +396,15 @@ open class EmoneyPdpFragment :
     }
 
     private fun renderImages(data: TelcoCatalogPrefixSelect) {
-        binding.emoneyPdpInputCardWidget.renderEmoneyListImages(mapImage(data))
+        binding.emoneyPdpInputCardWidget.renderEmoneyImages(mapImage(data))
     }
 
     private fun mapImage(data: TelcoCatalogPrefixSelect): List<String> {
+//        return data.rechargeCatalogPrefixSelect.prefixes.filter {
+//            it.operator.attributes.status == 1
+//        }.map {
+//            it.operator.attributes.imageUrl
+//        }.distinct()
         return data.rechargeCatalogPrefixSelect.prefixes.map {
             it.operator.attributes.imageUrl
         }

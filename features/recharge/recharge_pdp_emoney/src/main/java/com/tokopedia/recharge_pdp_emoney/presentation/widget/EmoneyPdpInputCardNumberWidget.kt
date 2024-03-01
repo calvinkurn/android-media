@@ -9,10 +9,12 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.databinding.WidgetEmoneyInputCardNumberBinding
+import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPDPImagesCardListAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpImagesListAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
@@ -59,14 +61,31 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
         })
     }
 
-    fun renderEmoneyListImages(listImages: List<String>) {
+    fun renderEmoneyImages(listImages: List<String>) {
+        if (listImages.size <= 5) {
+            renderEmoneyListImages(listImages)
+        } else {
+            renderTextViewList(listImages)
+        }
+    }
+
+    private fun renderTextViewList(listImages: List<String>) {
+        binding.tgSeePartners.show()
+        binding.icChevronImageList.show()
+        val bestThree = listImages.subList(0, 3)
+        val adapter = EmoneyPDPImagesCardListAdapter()
+        binding.rvEmoneyLimitedList.adapter = adapter
+        binding.rvEmoneyLimitedList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        adapter.renderList(bestThree)
+    }
+
+    private fun renderEmoneyListImages(listImages: List<String>) {
+        binding.tgSeePartners.hide()
+        binding.icChevronImageList.hide()
         if (listImages.isNotEmpty()) {
             binding.rvEmoneyList.show()
-            val counter = if (listImages.size < 5) {
-                 listImages.size
-            } else 5
             val adapter = EmoneyPdpImagesListAdapter()
-            val layoutManager = GridLayoutManager(context, counter)
+            val layoutManager = GridLayoutManager(context, listImages.size)
             binding.rvEmoneyList.adapter = adapter
             binding.rvEmoneyList.layoutManager = layoutManager
             adapter.renderList(listImages)

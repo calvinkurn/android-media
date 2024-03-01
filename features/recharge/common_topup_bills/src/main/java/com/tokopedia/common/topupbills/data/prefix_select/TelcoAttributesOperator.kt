@@ -18,5 +18,8 @@ data class TelcoAttributesOperator(
         val imageUrl: String = "",
         @SerializedName("default_product_id")
         @Expose
-        val defaultProductId: String = "0"
+        val defaultProductId: String = "0",
+        @SerializedName("status")
+        @Expose
+        val status: Int = 1,
 ): Parcelable
