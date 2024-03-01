@@ -5,6 +5,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.view.uimodel.AddToCartEvent
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartTrackerEvent
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -396,5 +397,40 @@ class AddToCartTest : BaseCartViewModelTest() {
             AddToCartEvent.Failed(exception),
             cartViewModel.addToCartEvent.value
         )
+    }
+
+    @Test
+    fun `WHEN add to cart from recent view with topads THEN call tracker`() {
+        // GIVEN
+        val recommendationItem = RecommendationItem(
+            productId = 1,
+            clickUrl = "https://click.url",
+            isTopAds = true
+        )
+
+        // WHEN
+        cartViewModel.processAddToCartRecentViewProduct(recommendationItem)
+
+        // THEN
+        assertEquals(
+            CartTrackerEvent.ATCTrackingURLRecent(recommendationItem),
+            cartViewModel.cartTrackerEvent.value
+        )
+    }
+
+    @Test
+    fun `WHEN add to cart from recent view with no topads THEN don't call tracker`() {
+        // GIVEN
+        val recommendationItem = RecommendationItem(
+            productId = 1,
+            clickUrl = "https://click.url",
+            isTopAds = false
+        )
+
+        // WHEN
+        cartViewModel.processAddToCartRecentViewProduct(recommendationItem)
+
+        // THEN
+        assertEquals(null, cartViewModel.cartTrackerEvent.value)
     }
 }
