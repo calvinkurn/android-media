@@ -73,7 +73,7 @@ import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerorder.common.presenter.fragments.SomContainerFragment;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
-import com.tokopedia.sessioncommon.worker.RefreshProfileWorker;
+import com.tokopedia.sessioncommon.refreshprofile.RefreshProfileWorker;
 import com.tokopedia.topchat.chatlist.view.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;

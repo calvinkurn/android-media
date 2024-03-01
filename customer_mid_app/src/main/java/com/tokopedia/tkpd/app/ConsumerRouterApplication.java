@@ -79,7 +79,7 @@ import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.GraphqlHelper;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.sessioncommon.worker.RefreshProfileWorker;
+import com.tokopedia.sessioncommon.refreshprofile.RefreshProfileWorker;
 import com.tokopedia.tkpd.ConsumerSplashScreen;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
