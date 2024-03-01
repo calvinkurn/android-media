@@ -11,7 +11,7 @@ object CartShopGroupTickerGroupMetadataRequestMapper {
             if (groupedByCartString.value.first().bundleGroupId.isNotEmpty()) {
                 groupedByCartString.value.groupBy { it.bundleGroupId }.map { groupedByBundleGroupId ->
                     val listProductBundle = arrayListOf<CartShopGroupTickerGroupMetadata.OrderData.GroupProduct.Product>()
-                    groupedByBundleGroupId.value.forEach { cartItem ->
+                    groupedByBundleGroupId.value.filter { it.isSelected }.forEach { cartItem ->
                         listProductBundle.add(
                             CartShopGroupTickerGroupMetadata.OrderData.GroupProduct.Product(
                                 uniqueId = cartItem.cartId,
@@ -32,7 +32,7 @@ object CartShopGroupTickerGroupMetadataRequestMapper {
             } else {
                 groupedByCartString.value.groupBy { it.identifier }.map { groupedByIdentifier ->
                     val listProduct = arrayListOf<CartShopGroupTickerGroupMetadata.OrderData.GroupProduct.Product>()
-                    groupedByIdentifier.value.forEach { cartItem ->
+                    groupedByIdentifier.value.filter { it.isSelected }.forEach { cartItem ->
                         listProduct.add(
                             CartShopGroupTickerGroupMetadata.OrderData.GroupProduct.Product(
                                 uniqueId = cartItem.cartId,
