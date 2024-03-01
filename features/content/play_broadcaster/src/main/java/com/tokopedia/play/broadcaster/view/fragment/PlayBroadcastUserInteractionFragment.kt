@@ -55,6 +55,7 @@ import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastLiveStatsBottomSheet
 import com.tokopedia.play.broadcaster.view.compose.LiveStatsView
 import com.tokopedia.play.broadcaster.view.custom.PlayBroIconWithGreenDotView
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
@@ -324,6 +325,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                 })
             }
+            is PlayBroadcastLiveStatsBottomSheet -> {
+                childFragment.setListener(object : PlayBroadcastLiveStatsBottomSheet.Listener {
+                    override fun onEstimatedIncomeClicked() {
+                        /** JOE TODO: handle this */
+                    }
+                })
+            }
         }
     }
 
@@ -422,7 +430,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 NestTheme(isOverrideStatusBarColor = false) {
                     LiveStatsView(
-                        liveStatsList = uiState.liveStatsList
+                        liveStatsList = uiState.liveStatsList,
+                        onClick = {
+                            openLiveStatsSheet()
+                        }
                     )
                 }
             }
@@ -1327,6 +1338,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             requireContext().classLoader
         )
         ongoingLeaderboardBottomSheet.show(childFragmentManager)
+    }
+
+    private fun openLiveStatsSheet() {
+        PlayBroadcastLiveStatsBottomSheet.getFragment(
+            childFragmentManager,
+            requireContext().classLoader
+        ).show(childFragmentManager)
     }
 
     private fun startBroadcast(ingestUrl: String) {

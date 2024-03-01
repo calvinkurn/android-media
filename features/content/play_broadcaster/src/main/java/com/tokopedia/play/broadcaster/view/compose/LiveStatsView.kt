@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.noRippleClickable
 import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 
 /**
@@ -25,9 +26,11 @@ import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
  */
 @Composable
 fun LiveStatsView(
-    liveStatsList: List<LiveStatsUiModel>
+    liveStatsList: List<LiveStatsUiModel>,
+    onClick: () -> Unit,
 ) {
     LazyRow(
+        modifier = Modifier.noRippleClickable { onClick() },
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         contentPadding = PaddingValues(horizontal = 16.dp),
     ) {
@@ -91,22 +94,13 @@ private fun LiveStatsViewPreview() {
     NestTheme {
         LiveStatsView(
             liveStatsList = listOf(
-                LiveStatsUiModel.Viewer(
-                    text = "16,5rb"
-                ),
-                LiveStatsUiModel.TotalViewer(
-                    text = "16,5rb"
-                ),
-                LiveStatsUiModel.EstimatedIncome(
-                    text = "16,5rb"
-                ),
-                LiveStatsUiModel.Like(
-                    text = "16,5rb"
-                ),
-                LiveStatsUiModel.Duration(
-                    timeInMillis = 1000
-                )
-            )
+                LiveStatsUiModel.Viewer("16,5rb"),
+                LiveStatsUiModel.TotalViewer("16,5rb"),
+                LiveStatsUiModel.EstimatedIncome("16,5rb"),
+                LiveStatsUiModel.Like("16,5rb"),
+                LiveStatsUiModel.Duration(1000),
+            ),
+            onClick = {},
         )
     }
 }

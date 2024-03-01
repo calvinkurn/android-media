@@ -321,4 +321,11 @@
     <string name="play_shorts_interspersing_video_old_video_desc">Video di Halaman Produk saat ini</string>
     <string name="play_shorts_interspersing_video_replace">akan menggantikan</string>
     <string name="play_shorts_interspersing_video_failed_check_pdp_video">Ada gangguan yang lagi dibereskan. Coba lagi, ya.</string>
+
+    <!-- Live Stats -->
+    <string name="play_broadcaster_live_stats_viewer_label">Penonton Sesi Ini</string>
+    <string name="play_broadcaster_live_stats_total_viewer_label">Total Penonton</string>
+    <string name="play_broadcaster_live_stats_estimated_income_label">Estimasi Pendapatan</string>
+    <string name="play_broadcaster_live_stats_like_label">Menyukai</string>
+    <string name="play_broadcaster_live_stats_live_duration_label">Durasi Live</string>
 </resources>
