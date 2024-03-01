@@ -323,7 +323,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             adapter?.items?.add(EditKeywordItemViewModel(it))
         }
         setCount()
-        adapter?.notifyItemChanged(adapter?.items?.size?.minus(Int.ONE) ?: Int.ZERO)
+        adapter?.notifyItemRangeChanged(Int.ZERO, listItem.size)
     }
 
     private fun onDeleteItem(position: Int) {
@@ -565,7 +565,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         adapter?.clearList()
         adapter?.items?.add(EditKeywordEmptyViewModel())
         setVisibilityOperation(View.GONE)
-        adapter?.notifyItemChanged(Int.ZERO)
+        val position = adapter?.items?.indexOfFirst { it is EditKeywordEmptyViewModel }
+        position?.let {
+            if (position >= Int.ZERO) adapter?.notifyItemChanged(it)
+        }
     }
 
     private fun setVisibilityOperation(visibility: Int) {
