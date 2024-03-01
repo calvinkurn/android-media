@@ -23,7 +23,7 @@ data class AutoTopUpItem(
     val additionalFee: List<AdditionalFee>? = emptyList(),
 
     @SerializedName("total_amount")
-    val totalAmount: Long = 0L,
+    val totalAmount: Float = 0.0f,
 
     @SerializedName("tkpd_product_id")
     @Expose
@@ -33,8 +33,8 @@ data class AutoTopUpItem(
         @SerializedName("type")
         val type: String = "",
         @SerializedName("amount")
-        val amount: Long = 0L,
+        val amount: Float = 0.0f,
         @SerializedName("percent")
-        val percent: Int = 0,
+        val percent: Float = 0.0f,
     )
 }

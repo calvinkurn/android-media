@@ -415,7 +415,10 @@ class TopAdsChooseCreditBottomSheet :
             )
 
             val bottomSheet = AutoTopUpConfirmationBottomSheet.newInstance(cacheManager?.id.orEmpty())
-            bottomSheet.onSaved = onSaved
+            bottomSheet.onSaved = {
+                onSaved?.invoke(true)
+                dismiss()
+            }
             bottomSheet.show(childFragmentManager)
 
             //old approach
@@ -469,9 +472,9 @@ class TopAdsChooseCreditBottomSheet :
         val frequencyText = getString(R.string.topads_auto_top_up_confirmation_frequency_every_day, autoTopUpFrequencySelected.toString())
 
         val ppnAmount = tax?.amount.orZero()
-        val ppnAmountFmt = Utils.convertToCurrencyString(ppnAmount)
+        val ppnAmountFmt = Utils.convertFloatToCurrencyString(ppnAmount)
 
-        val totalAmount = Utils.convertToCurrencyString(autoTopUpNominal?.totalAmount.orZero())
+        val totalAmount = Utils.convertFloatToCurrencyString(autoTopUpNominal?.totalAmount.orZero())
 
         return AutoTopUpConfirmationUiModel(
             topAdsCredit = topAdsCredit,

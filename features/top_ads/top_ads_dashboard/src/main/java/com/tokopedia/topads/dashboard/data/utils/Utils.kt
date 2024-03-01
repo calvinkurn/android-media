@@ -201,6 +201,10 @@ object Utils {
         return (NumberFormat.getNumberInstance(locale).format(value))
     }
 
+    fun convertFloatToCurrencyString(value: Float): String {
+        return (NumberFormat.getNumberInstance(locale).format(value))
+    }
+
     fun convertMoneyToValue(price: String): Int {
         return try {
             price.replace("Rp", "").replace(".", "").replace(",", "").trim().toIntOrZero()

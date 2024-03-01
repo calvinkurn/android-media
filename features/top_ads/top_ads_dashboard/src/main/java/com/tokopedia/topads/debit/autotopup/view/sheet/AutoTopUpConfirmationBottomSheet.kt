@@ -73,6 +73,7 @@ class AutoTopUpConfirmationBottomSheet : BottomSheetUnify(), HasComponent<TopAds
     private fun setChildView(inflater: LayoutInflater, container: ViewGroup?) {
         binding = TopadsAutoConfirmationBottomSheetBinding.inflate(inflater, container, false)
         showCloseIcon = true
+        overlayClickDismiss = false
         setChild(binding?.root)
     }
 
