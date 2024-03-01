@@ -5,36 +5,41 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_account.explicitprofile.data.QuestionDataModel
-import com.tokopedia.home_account.explicitprofile.domain.ExplicitProfileGetQuestionUseCase
+import com.tokopedia.home_account.explicitprofile.data.SaveMultipleAnswersParam
+import com.tokopedia.home_account.explicitprofile.domain.GetQuestionsUseCase
+import com.tokopedia.home_account.explicitprofile.domain.SaveMultipleAnswersUseCase
 import com.tokopedia.home_account.explicitprofile.personalize.ui.OptionSelected
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ExplicitPersonalizeViewModel @Inject constructor(
-    val explicitProfileGetQuestionUseCase: ExplicitProfileGetQuestionUseCase,
-    dispatcher: CoroutineDispatchers
+    val getQuestionsUseCase: GetQuestionsUseCase,
+    val saveMultipleAnswersUseCase: SaveMultipleAnswersUseCase,
+    val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
-    private val _uiState = MutableLiveData<ExplicitPersonalizeResult>()
-    val uiState : LiveData<ExplicitPersonalizeResult> get() = _uiState
+    private val _stateGetQuestion = MutableLiveData<ExplicitPersonalizeResult>()
+    val stateGetQuestion : LiveData<ExplicitPersonalizeResult> get() = _stateGetQuestion
+
+    private val _stateSaveAnswer = MutableLiveData<PersonalizeSaveAnswerResult>()
+    val stateSaveAnswer : LiveData<PersonalizeSaveAnswerResult> get() = _stateSaveAnswer
 
     private val _counterState = MutableLiveData(0)
     val counterState : LiveData<Int> get() = _counterState
 
-    private val selectedOptions = mutableListOf<String>()
+    private var sectionId = 0
+    private var templateId = 0
 
     init {
         getQuestion()
     }
 
     fun itemSelected(item: OptionSelected) {
-        val currentCounter = _counterState.value
-        if (item.isSelected) {
-            selectedOptions.remove(item.name)
-        } else {
-            selectedOptions.add(item.name)
+        if (_stateSaveAnswer.value is PersonalizeSaveAnswerResult.Loading) {
+            return
         }
+
+        val currentCounter = _counterState.value
 
         _counterState.value = if (item.isSelected) {
                 (currentCounter?.minus(1))
@@ -42,12 +47,12 @@ class ExplicitPersonalizeViewModel @Inject constructor(
                 (currentCounter?.plus(1))
             }
 
-        when (val state = uiState.value) {
+        when (val state = stateGetQuestion.value) {
             is ExplicitPersonalizeResult.Success -> {
                 val currentList = state.listQuestion
                 currentList[item.indexCategory].property.options[item.indexOption].isSelected = !item.isSelected
 
-                _uiState.value = ExplicitPersonalizeResult.Success(
+                _stateGetQuestion.value = ExplicitPersonalizeResult.Success(
                     listQuestion = currentList,
                     maxItemSelected = state.maxItemSelected
                 )
@@ -57,27 +62,81 @@ class ExplicitPersonalizeViewModel @Inject constructor(
     }
 
     fun getQuestion() {
-        _uiState.value = ExplicitPersonalizeResult.Loading
+        _stateGetQuestion.value = ExplicitPersonalizeResult.Loading
 
         launchCatchError (
             block = {
-                withContext(coroutineContext) {
-                    val response = explicitProfileGetQuestionUseCase(CATEGORY_PREFERENCE)
-                    if (response.isNotEmpty() && response.first().layout == MULTIPLE_ANSWER) {
-                        _uiState.value = ExplicitPersonalizeResult.Success(
-                            listQuestion = response.first().questions,
-                            maxItemSelected = response.first().maxAnswer
-                        )
-                    } else {
-                        _uiState.value = ExplicitPersonalizeResult.Failed
-                    }
+                val template = getQuestionsUseCase(GetQuestionsUseCase.QuestionParams(templateName = CATEGORY_PREFERENCE))
+                    .explicitProfileQuestionDataModel.template
+                templateId = template.id
+                val sections = template.sections
+                if (sections.isNotEmpty() && sections.first().layout == MULTIPLE_ANSWER) {
+                    sectionId = sections.first().sectionId
+                    sectionId = sections.first().sectionId
+                    _stateGetQuestion.value = ExplicitPersonalizeResult.Success(
+                        listQuestion = sections.first().questions,
+                        maxItemSelected = 10//sections.first().maxAnswer
+                    )
+                } else {
+                    _stateGetQuestion.value = ExplicitPersonalizeResult.Failed
                 }
             },
             onError = {
-                _uiState.value = ExplicitPersonalizeResult.Failed
+                _stateGetQuestion.value = ExplicitPersonalizeResult.Failed
             }
         )
+    }
 
+    fun saveAnswers() {
+        _stateSaveAnswer.value = PersonalizeSaveAnswerResult.Loading
+        launchCatchError (
+            context = dispatcher.io,
+            block = {
+                val questions = mutableListOf<SaveMultipleAnswersParam.InputParam.SectionsParam.QuestionsParam>()
+
+                when (val state = stateGetQuestion.value) {
+                    is ExplicitPersonalizeResult.Success -> {
+                        val currentList = state.listQuestion
+                        currentList.forEach { item ->
+                            val answers = mutableListOf<String>()
+                            item.property.options.forEach { option ->
+                                if (option.isSelected) {
+                                    answers.add(option.value)
+                                }
+                            }
+
+                            if (answers.isNotEmpty()) {
+                                questions.add(
+                                    SaveMultipleAnswersParam.InputParam.SectionsParam.QuestionsParam(
+                                        questionId = item.questionId,
+                                        answerValue = answers.toString()
+                                    )
+                                )
+                            }
+                        }
+                    }
+                    else -> {}
+                }
+
+                val parameter = SaveMultipleAnswersParam(
+                    input = SaveMultipleAnswersParam.InputParam(
+                        templateName = CATEGORY_PREFERENCE,
+                        sections = mutableListOf(
+                            SaveMultipleAnswersParam.InputParam.SectionsParam(
+                                sectionId = sectionId,
+                                questions = questions
+                            )
+                        )
+                    )
+                )
+
+                saveMultipleAnswersUseCase(mutableListOf(parameter))
+                _stateSaveAnswer.postValue(PersonalizeSaveAnswerResult.Success)
+            },
+            onError = {
+                _stateSaveAnswer.postValue(PersonalizeSaveAnswerResult.Failed(it))
+            }
+        )
     }
 
     companion object {
@@ -94,4 +153,10 @@ sealed interface ExplicitPersonalizeResult {
         val maxItemSelected: Int
     ) : ExplicitPersonalizeResult
     object Failed : ExplicitPersonalizeResult
+}
+
+sealed interface PersonalizeSaveAnswerResult {
+    object Loading : PersonalizeSaveAnswerResult
+    object Success : PersonalizeSaveAnswerResult
+    data class Failed(val throwable: Throwable) : PersonalizeSaveAnswerResult
 }

@@ -8,11 +8,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.LiveData
 import com.tokopedia.home_account.explicitprofile.personalize.ExplicitPersonalizeResult
+import com.tokopedia.home_account.explicitprofile.personalize.PersonalizeSaveAnswerResult
 import com.tokopedia.nest.principles.ui.NestTheme
 
 @Composable
 fun PersonalizeScreen(
     uiState: LiveData<ExplicitPersonalizeResult>,
+    saveAnswerState: LiveData<PersonalizeSaveAnswerResult>,
     counterState: LiveData<Int>,
     onRetry: () -> Unit,
     onSave: () -> Unit,
@@ -21,6 +23,7 @@ fun PersonalizeScreen(
 ) {
     val uiStateObserver by uiState.observeAsState(initial = ExplicitPersonalizeResult.Loading)
     val counterStateObserver by counterState.observeAsState(initial = 10)
+    val saveAnswerStateObserver by saveAnswerState.observeAsState()
     NestTheme {
         Surface(
             modifier = Modifier.fillMaxSize()
@@ -36,7 +39,8 @@ fun PersonalizeScreen(
                         maxItemSelected = state.maxItemSelected,
                         onSave = { onSave.invoke() },
                         onSkip = { onSkip.invoke() },
-                        onOptionSelected = { onOptionSelected(it) }
+                        onOptionSelected = { onOptionSelected(it) },
+                        isLoadingSaveAnswer = saveAnswerStateObserver is PersonalizeSaveAnswerResult.Loading
                     )
                 }
                 is ExplicitPersonalizeResult.Failed -> {

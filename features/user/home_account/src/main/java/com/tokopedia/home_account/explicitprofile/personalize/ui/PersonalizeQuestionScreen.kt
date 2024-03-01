@@ -26,6 +26,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 @Composable
 fun PersonalizeQuestionScreen(
     listQuestion: List<QuestionDataModel>,
+    isLoadingSaveAnswer: Boolean,
     countItemSelected: Int,
     maxItemSelected: Int,
     onSave: () -> Unit,
@@ -83,7 +84,8 @@ fun PersonalizeQuestionScreen(
                         .fillMaxWidth(),
                     text = LocalContext.current.getString(R.string.explicit_personalize_save),
                     isEnabled = countItemSelected.isMoreThanZero(),
-                    onClick = { onSave.invoke() }
+                    onClick = { onSave.invoke() },
+                    isLoading = isLoadingSaveAnswer
                 )
             }
         }
@@ -152,7 +154,8 @@ fun PersonalizeScreenPreview() {
             maxItemSelected = 10,
             onSave = {},
             onSkip = {},
-            onOptionSelected = {}
+            onOptionSelected = {},
+            isLoadingSaveAnswer = true
         )
     }
 }

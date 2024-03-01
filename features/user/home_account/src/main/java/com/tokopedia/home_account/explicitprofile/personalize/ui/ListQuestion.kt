@@ -31,7 +31,8 @@ fun ListQuestion(
                 onOptionSelected = {
                     onOptionSelected(it)
                 },
-                indexCategory = index
+                indexCategory = index,
+                questionId = item.questionId
             )
 
         }

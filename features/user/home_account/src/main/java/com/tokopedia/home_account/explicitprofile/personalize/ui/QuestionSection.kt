@@ -31,6 +31,7 @@ fun QuestionSection(
     urlImage: String,
     sectionTitle: String,
     isMaxOptionsSelected: Boolean,
+    questionId: Int,
     listOptions: List<QuestionDataModel.Property.Options>,
     onOptionSelected: (OptionSelected) -> Unit
 ) {
@@ -82,7 +83,8 @@ fun QuestionSection(
                                     indexOption = indexOption,
                                     indexCategory = indexCategory,
                                     isSelected = item.isSelected,
-                                    name = item.value
+                                    name = item.value,
+                                    questionId = questionId
                                 )
                             )
                         }
@@ -98,7 +100,8 @@ data class OptionSelected(
     val indexOption: Int,
     val indexCategory: Int,
     val isSelected: Boolean,
-    val name: String
+    val name: String,
+    val questionId: Int
 )
 
 @Preview(device = Devices.PIXEL_3A_XL, showBackground = true)
@@ -116,7 +119,8 @@ fun QuestionSectionPreview() {
                 QuestionDataModel.Property.Options(value = "Fashion Pria", isSelected = true)
             ),
             onOptionSelected = {},
-            indexCategory = 0
+            indexCategory = 0,
+            questionId = 0
         )
     }
 }
