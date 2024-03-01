@@ -21,11 +21,9 @@ import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
-import android.widget.ScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.translator.manager.TranslatorManager
 import com.tokopedia.translator.manager.TranslatorManagerFragment
 import com.tokopedia.translator.ui.SharedPrefsUtils
