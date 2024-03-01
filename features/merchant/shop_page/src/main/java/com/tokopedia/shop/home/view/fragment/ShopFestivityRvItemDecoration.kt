@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.view.fragment
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -12,22 +13,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopFestivityRvItemDecoration(
-    context: Context,
-    bodyBackgroundHexColor: String,
-    isOverrideTheme: Boolean
+    private val context: Context,
+    private val bodyBackgroundHexColor: String,
+    private val isOverrideTheme: Boolean
 ) : RecyclerView.ItemDecoration() {
 
     companion object {
@@ -35,20 +35,28 @@ class ShopFestivityRvItemDecoration(
         private const val INT_TWO = 2
     }
     private var backgroundDrawableWhite: Drawable? = null
+    private val deviceWidth by lazy { getScreenWidth() }
+    private val defaultBackgroundColor by lazy { MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0) }
 
     init {
-        val bgColor = if (isOverrideTheme) {
-            ShopUtil.parseColorFromHexString(bodyBackgroundHexColor)
-        } else {
-            MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0)
+        val backgroundColor = when {
+            isOverrideTheme && bodyBackgroundHexColor.isNotEmpty() -> {
+                ShopUtil.parseColorOrFallback(
+                    hexColor = bodyBackgroundHexColor,
+                    fallbackColor = defaultBackgroundColor
+                )
+            }
+            isOverrideTheme && bodyBackgroundHexColor.isEmpty() -> defaultBackgroundColor
+            else -> defaultBackgroundColor
         }
+        
         (
             MethodChecker.getDrawable(
                 context,
                 R.drawable.bg_festivity_widget_background_white
             ) as? GradientDrawable
             )?.let {
-            it.setColor(bgColor)
+            it.setColor(backgroundColor)
             backgroundDrawableWhite = it
         }
     }
@@ -68,7 +76,7 @@ class ShopFestivityRvItemDecoration(
                     when (val widgetUiModel = adapterData?.getOrNull(widgetPosition)) {
                         is BaseShopHomeWidgetUiModel -> {
                             if (!widgetUiModel.isFestivity) {
-                                drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
+                                drawOverlayColorBehindRecyclerViewItem(it, canvas)
                             }
                         }
                         is ThematicWidgetUiModel -> {
@@ -77,20 +85,7 @@ class ShopFestivityRvItemDecoration(
                             }
                         }
                         is ShopHomeProductUiModel -> {
-                            val productGridType = adapterData
-                                .filterIsInstance<ShopHomeProductChangeGridSectionUiModel>()
-                                .firstOrNull()
-                            if (productGridType?.gridType != ShopProductViewGridType.SMALL_GRID) {
-                                drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
-                            } else {
-                                val firstTwoProductData = adapterData
-                                    .filterIsInstance<ShopHomeProductUiModel>().take(INT_TWO)
-                                if (firstTwoProductData.contains(widgetUiModel)) {
-                                    drawWhiteBackgroundFromLeftParentToRightParent(it, parent, canvas)
-                                } else {
-                                    drawWhiteBackgroundFromLeftChildToRightChild(it, parent, canvas)
-                                }
-                            }
+                            drawOverlayColorBehindRecyclerViewItem(it, canvas)
                             checkForGapAtTheEndOfProductList(widgetPosition, adapter, parent, canvas)
                         }
                         else -> {
@@ -140,28 +135,38 @@ class ShopFestivityRvItemDecoration(
         return null
     }
 
+    private fun drawOverlayColorBehindRecyclerViewItem(child: View, canvas: Canvas) {
+        val bounds = Rect()
+        child.getHitRect(bounds)
+        
+        bounds.top = bounds.top - child.marginTop
+        bounds.left = 0
+        bounds.right = deviceWidth
+        bounds.bottom = bounds.bottom + child.marginBottom
+
+        val backgroundColor = when {
+            isOverrideTheme && bodyBackgroundHexColor.isNotEmpty() -> {
+                ShopUtil.parseColorOrFallback(
+                    hexColor = bodyBackgroundHexColor,
+                    fallbackColor = defaultBackgroundColor
+                )
+            }
+            isOverrideTheme && bodyBackgroundHexColor.isEmpty() -> defaultBackgroundColor
+            else -> defaultBackgroundColor
+        }
+        
+        val paint = Paint().apply { 
+            color = backgroundColor 
+        }
+        
+        canvas.drawRect(bounds, paint)
+    }
+
     private fun drawWhiteBackgroundFromLeftParentToRightParent(child: View, parent: RecyclerView, canvas: Canvas) {
         val top = child.top - child.marginTop
         val right = parent.right
         val bottom = child.bottom + child.marginBottom
         val left = parent.left
-        backgroundDrawableWhite?.setBounds(left, top, right, bottom)
-        backgroundDrawableWhite?.draw(canvas)
-    }
-
-    private fun drawWhiteBackgroundFromLeftChildToRightChild(child: View, parent: RecyclerView, canvas: Canvas) {
-        val top = child.top - child.marginTop
-        val right = if (child.right + parent.paddingRight == parent.right) {
-            child.right + parent.paddingRight
-        } else {
-            child.right
-        }
-        val bottom = child.bottom + child.marginBottom
-        val left = if (child.left - parent.paddingLeft == parent.left) {
-            child.left - parent.paddingLeft
-        } else {
-            child.left
-        }
         backgroundDrawableWhite?.setBounds(left, top, right, bottom)
         backgroundDrawableWhite?.draw(canvas)
     }

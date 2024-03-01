@@ -6,11 +6,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.TypingChatModel
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackground
 import com.tokopedia.chatbot.databinding.ItemChatbotBotTypingBinding
+import com.tokopedia.media.loader.loadAsGif
 
 class ChatBotTypingChatViewHolder(itemView: View) : AbstractViewHolder<TypingChatModel>(itemView) {
     val view = ItemChatbotBotTypingBinding.bind(itemView)
@@ -25,7 +25,7 @@ class ChatBotTypingChatViewHolder(itemView: View) : AbstractViewHolder<TypingCha
 
     override fun bind(element: TypingChatModel) {
         bindBackground()
-        ImageHandler.loadGif(logo, R.drawable.is_typing, R.drawable.is_typing)
+        logo.loadAsGif(R.drawable.is_typing)
     }
 
     private fun bindBackground() {

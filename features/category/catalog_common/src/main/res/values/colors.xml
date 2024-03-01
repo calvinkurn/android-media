@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="dms_static_text_color_light">#212121</color>
+    <color name="dms_static_text_color_small_light">#6D7588</color>
     <color name="dms_static_text_color_dark">#F5F6FF</color>
     <color name="dms_static_color_divider">#33AAB4C8</color>
     <color name="dms_static_dark_mode_nav">#00A958</color>
@@ -8,4 +9,23 @@
     <color name="dms_static_green_GN500">#00A958</color>
     <color name="dms_static_green_reviewer_status">#009C93</color>
     <color name="dms_static_fade_divider">#32AAB4C8</color>
+    <color name="dms_static_nn_600">#AEB2BF</color>
+    <color name="dms_static_color_secondary">#6D7588</color>
+    <color name="dms_static_catalog_color_yn_500">#FF7F17</color>
+    <color name="dms_static_catalog_color_error_light">#F94D63</color>
+    <color name="dms_static_catalog_color_error_dark">#FF425D</color>
+    <color name="dms_static_catalog_color_secondary">#F0F3F7</color>
+    <color name="dms_static_catalog_color_tertiary">#2E2F36</color>
+    <color name="dms_static_star_dark">#C9652A</color>
+    <color name="dms_static_star_inactive_dark">#4F525C</color>
+    <color name="dms_static_color_tertiary_for_dark">#696D78</color>
+    <color name="dms_static_color_tertiary_for_light">#AAB4C8</color>
+    <color name="dms_static_color_ocean_blue">#1AAEB2BF</color>
+    <color name="dms_static_color_crimson_red">#94192A</color>
+    <color name="dms_static_color_burgundy">#430F16</color>
+    <color name="dms_static_color_misty_blue">#BFC9D9</color>
+    <color name="dms_static_color_slate_gray">#4F525C</color>
+    <color name="dms_static_color_cotton_candy_pink">#FFB2C2</color>
+    <color name="dms_static_color_pearl_white">#FFF5F6</color>
+    <color name="dms_static_catalog_white">#FFFFFF</color>
 </resources>

@@ -51,3 +51,7 @@ internal const val PREFIX_BEARER = "Bearer"
 internal const val WEBP_SUPPORT = "image/webp"
 
 internal const val DEBUG_TIMBER_TAG = "media-loader"
+
+// error const message
+internal const val IMAGE_SOURCE_EMPTY_STRING = "Image source cannot be empty"
+internal const val IMAGE_SOURCE_NULL = "Image source cannot be null"

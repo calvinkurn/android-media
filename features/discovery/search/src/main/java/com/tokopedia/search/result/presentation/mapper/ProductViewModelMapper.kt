@@ -20,6 +20,7 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.StyleDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.broadmatch.RelatedDataView
@@ -372,7 +373,8 @@ class ProductViewModelMapper(
                 labelGroupModel.position,
                 labelGroupModel.type,
                 labelGroupModel.title,
-                labelGroupModel.url
+                labelGroupModel.url,
+                labelGroupModel.styleList.map(StyleDataView::create)
             )
         }
 

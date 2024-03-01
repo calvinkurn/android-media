@@ -3,6 +3,7 @@ package com.tokopedia.cart.view.mapper
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
+import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
@@ -143,7 +144,8 @@ class GenerateCouponListRequestParamTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC",
                         boType = 1
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             promoRequest
         )
@@ -296,7 +298,8 @@ class GenerateCouponListRequestParamTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC",
                         boType = 1
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             promoRequest
         )
@@ -515,7 +518,8 @@ class GenerateCouponListRequestParamTest {
                         cartStringGroup = "_-0-9466960-169751270-KEY_OWOC",
                         boType = 1
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             promoRequest
         )
@@ -678,7 +682,8 @@ class GenerateCouponListRequestParamTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC",
                         boType = 1
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             promoRequest
         )
@@ -911,7 +916,8 @@ class GenerateCouponListRequestParamTest {
                         cartStringGroup = "_-0-9466960-169751270-KEY_OWOC",
                         boType = 1
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             promoRequest
         )

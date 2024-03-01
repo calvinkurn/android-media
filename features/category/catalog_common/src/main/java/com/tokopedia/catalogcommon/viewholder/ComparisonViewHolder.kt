@@ -1,5 +1,6 @@
 package com.tokopedia.catalogcommon.viewholder
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,15 +48,19 @@ class ComparisonViewHolder(
         private const val DEFAULT_LINE_COUNT = 1
         private const val DEFAULT_CHAR_WIDTH = 15
         private const val DEFAULT_TITLE_CHAR_WIDTH = 20
+        private const val DEFAULT_TITLE_CATEGORY_CHAR_WIDTH = 29
         private const val TOP_SPEC_MARGIN = 16
         private const val WIDE_WIDTH_ITEM_COUNT = 2
         private const val NORMAL_WIDTH_DP_VALUE = 148
         private const val MAX_PRODUCT_TITLE_LINES = 2
+        private const val INTRO_ANIMATION_START = 1000L
+        private const val INTRO_ANIMATION_END = 3000L
     }
 
     private val binding by viewBinding<WidgetItemComparisonBinding>()
     private var comparisonContents: List<ComparisonUiModel.ComparisonContent> = emptyList()
     private var scrollProgress = 0
+    private var introAnimationPlayed = false
 
     init {
         binding?.btnSeeMore?.setOnClickListener {
@@ -66,10 +71,14 @@ class ComparisonViewHolder(
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun WidgetItemComparisonBinding.setupComparisonListItem(
         contents: List<ComparisonUiModel.ComparisonContent>
     ) {
         rvComparisonItems.apply {
+            if (contents.size == Int.ONE) {
+                setOnTouchListener { _, _ -> return@setOnTouchListener true }
+            }
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = ComparisonItemAdapter(
                 contents,
@@ -104,8 +113,20 @@ class ComparisonViewHolder(
                     LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
                 rvSpecs.adapter = ComparisonSpecItemAdapter(specs.orEmpty(), true)
                 setupComparisonListItem(comparisonItems)
+                playIntroAnimation(rvComparisonItems, comparisonItems.count().dec())
             }
         }
+    }
+
+    private fun playIntroAnimation(rvComparisonItems: RecyclerView, lastIndex: Int) {
+        if (introAnimationPlayed || !isDisplayingTopSpec) return
+        introAnimationPlayed = true
+        rvComparisonItems.postDelayed({
+            rvComparisonItems.smoothScrollToPosition(lastIndex)
+        }, INTRO_ANIMATION_START)
+        rvComparisonItems.postDelayed({
+            rvComparisonItems.smoothScrollToPosition(Int.ZERO)
+        }, INTRO_ANIMATION_END)
     }
 
     private fun configureRowsHeight(
@@ -116,6 +137,8 @@ class ComparisonViewHolder(
         val specs =
             if (isDisplayingTopSpec) comparedItem?.topComparisonSpecs else comparedItem?.comparisonSpecs
         val rowsHeight = List(specs?.size.orZero()) { DEFAULT_LINE_COUNT }.toMutableList()
+        val rowsTitleHeight = List(specs?.size.orZero()) { DEFAULT_LINE_COUNT }.toMutableList()
+        val categoryTitleHeight = List(specs?.size.orZero()) { DEFAULT_LINE_COUNT }.toMutableList()
         var titleHeight = DEFAULT_LINE_COUNT
 
         // update list
@@ -124,23 +147,23 @@ class ComparisonViewHolder(
                 ceil((it.productTitle.length * DEFAULT_TITLE_CHAR_WIDTH) / textAreaWidth).toInt()
             if (tempTitleHeight == MAX_PRODUCT_TITLE_LINES) titleHeight = tempTitleHeight
             if (isDisplayingTopSpec) {
-                it.topComparisonSpecs.updateRowsHeight(rowsHeight, textAreaWidth)
+                it.topComparisonSpecs.updateRowsHeight(rowsHeight, rowsTitleHeight, categoryTitleHeight, textAreaWidth)
             } else {
-                it.comparisonSpecs.updateRowsHeight(rowsHeight, textAreaWidth)
+                it.comparisonSpecs.updateRowsHeight(rowsHeight, rowsTitleHeight, categoryTitleHeight, textAreaWidth)
             }
         }
-        specs?.updateRowsHeight(rowsHeight, textAreaWidth)
+        specs?.updateRowsHeight(rowsHeight, rowsTitleHeight, categoryTitleHeight, textAreaWidth)
 
         // apply list to object
         comparisonItems.forEach {
             it.titleHeight = titleHeight
             if (isDisplayingTopSpec) {
-                it.topComparisonSpecs.applyRowsHeight(rowsHeight)
+                it.topComparisonSpecs.applyRowsHeight(rowsHeight, rowsTitleHeight, categoryTitleHeight)
             } else {
-                it.comparisonSpecs.applyRowsHeight(rowsHeight)
+                it.comparisonSpecs.applyRowsHeight(rowsHeight, rowsTitleHeight, categoryTitleHeight)
             }
         }
-        specs?.applyRowsHeight(rowsHeight)
+        specs?.applyRowsHeight(rowsHeight, rowsTitleHeight, categoryTitleHeight)
 
         // apply to comparison title
         binding?.layoutComparison?.tfProductName?.apply {
@@ -151,21 +174,41 @@ class ComparisonViewHolder(
 
     private fun List<ComparisonUiModel.ComparisonSpec>.updateRowsHeight(
         rowsHeight: MutableList<Int>,
+        rowsTitleHeight: MutableList<Int>,
+        categoryTitleHeight: MutableList<Int>,
         textAreaWidth: Double
     ) {
         forEachIndexed { index, comparisonSpec ->
             val lines = comparisonSpec.specValue.split("\n").sumOf { line ->
                 ceil((line.length * DEFAULT_CHAR_WIDTH) / textAreaWidth).toInt()
             }
+            val titleLines = comparisonSpec.specTitle.split("\n").sumOf { line ->
+                ceil((line.length * DEFAULT_CHAR_WIDTH) / textAreaWidth).toInt()
+            }
+            val categoryLines = comparisonSpec.specCategoryTitle.split("\n").sumOf { line ->
+                ceil((line.length * DEFAULT_TITLE_CATEGORY_CHAR_WIDTH) / textAreaWidth).toInt()
+            }
             if (rowsHeight.getOrNull(index) != null) {
                 if (lines > rowsHeight[index]) rowsHeight[index] = lines
+            }
+            if (rowsTitleHeight.getOrNull(index) != null) {
+                if (titleLines > rowsTitleHeight[index]) rowsTitleHeight[index] = titleLines
+            }
+            if (categoryTitleHeight.getOrNull(index) != null) {
+                if (categoryLines > categoryTitleHeight[index]) categoryTitleHeight[index] = categoryLines
             }
         }
     }
 
-    private fun List<ComparisonUiModel.ComparisonSpec>.applyRowsHeight(rowsHeight: MutableList<Int>) {
+    private fun List<ComparisonUiModel.ComparisonSpec>.applyRowsHeight(
+        rowsHeight: MutableList<Int>,
+        rowsTitleHeight: MutableList<Int>,
+        categoryTitleHeight: MutableList<Int>
+    ) {
         forEachIndexed { index, comparisonSpec ->
             comparisonSpec.specHeight = rowsHeight.getOrNull(index) ?: DEFAULT_LINE_COUNT
+            comparisonSpec.specTitleHeight = rowsTitleHeight.getOrNull(index) ?: DEFAULT_LINE_COUNT
+            comparisonSpec.specCategoryTitleHeight = categoryTitleHeight.getOrNull(index) ?: DEFAULT_LINE_COUNT
         }
     }
 

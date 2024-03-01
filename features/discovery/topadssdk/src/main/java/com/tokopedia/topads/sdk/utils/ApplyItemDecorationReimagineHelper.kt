@@ -7,7 +7,7 @@ internal object ApplyItemDecorationReimagineHelper {
 
     fun RecyclerView.addItemDecoratorShopAdsReimagine() {
         removeItemDecorationIfExist()
-        addItemDecoration(ItemDecorationShopAdsReimagine(16.toPx()))
+        addItemDecoration(ItemDecorationShopAdsReimagine(6.toPx()))
     }
 
     fun RecyclerView.addItemDecoratorShopCardAdsReimagine() {

@@ -25,8 +25,45 @@ data class SomCourierList(
 
             data class DataShipment(
                 @SerializedName("shipment")
-                val listShipment: List<Shipment> = listOf()
+                val listShipment: List<Shipment> = listOf(),
+
+                @SerializedName("ticker_unification_params")
+                val tickerUnificationParams: TickerUnificationParams = TickerUnificationParams()
             ) {
+
+                data class TickerUnificationParams(
+
+                    @SerializedName("page")
+                    val page: String = "",
+
+                    @SerializedName("target")
+                    val target: List<TickerUnificationTargets> = listOf(),
+
+                    @SerializedName("template")
+                    val template: Template = Template()
+
+                ) {
+                    data class Template(
+                        @SerializedName("contents")
+                        val contents: List<Content> = listOf()
+                    ) {
+                        data class Content(
+                            @SerializedName("key")
+                            val key: String = "",
+
+                            @SerializedName("value")
+                            val value: String = ""
+                        )
+                    }
+                }
+
+                data class TickerUnificationTargets(
+                    @SerializedName("type")
+                    val type: String = "",
+
+                    @SerializedName("values")
+                    val values: List<String> = listOf()
+                )
 
                 data class Shipment(
                     @SerializedName("shipping_max_add_fee")
@@ -47,7 +84,9 @@ data class SomCourierList(
                     @SerializedName("shipment_package")
                     val listShipmentPackage: List<ShipmentPackage> = listOf()
                 ) {
-
+                    override fun toString(): String {
+                        return shipmentName
+                    }
                     data class ShipmentPackage(
                         @SerializedName("desc")
                         val desc: String = "",
@@ -60,7 +99,11 @@ data class SomCourierList(
 
                         @SerializedName("sp_id")
                         val spId: String = ""
-                    )
+                    ) {
+                        override fun toString(): String {
+                            return name
+                        }
+                    }
                 }
             }
         }

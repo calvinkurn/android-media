@@ -326,6 +326,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         return PromoItem(
             id = coupon.code,
             headerId = couponSection.id,
+            promoId = coupon.id,
             index = coupon.index,
             title = coupon.title,
             uniqueId = coupon.uniqueId,

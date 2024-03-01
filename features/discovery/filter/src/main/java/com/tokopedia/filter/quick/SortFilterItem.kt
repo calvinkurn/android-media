@@ -5,4 +5,7 @@ data class SortFilterItem(
     val isSelected: Boolean = false,
     val iconUrl: String = "",
     val hasChevron: Boolean = false,
+    val shouldShowImage: Boolean = false,
+    val imageUrlActive: String = "",
+    val imageUrlInactive: String = ""
 )

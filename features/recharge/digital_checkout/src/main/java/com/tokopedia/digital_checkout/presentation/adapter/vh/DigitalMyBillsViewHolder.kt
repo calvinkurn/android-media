@@ -16,41 +16,52 @@ class DigitalMyBillsViewHolder(
     val listener: MyBillsActionListener
 ) : RecyclerView.ViewHolder(view) {
 
-    fun bindSubscription(subscription: FintechProduct) {
+    fun bindSubscription(subscription: FintechProduct, isGotoPlus: Boolean) {
         val binding = ItemDigitalCheckoutMyBillsSectionBinding.bind(itemView)
 
         with(binding) {
-            if (subscription.info.title.isNotEmpty()) {
-                itemView.show()
-                listener.onSubscriptionImpression(subscription)
+            itemView.show()
+            listener.onSubscriptionImpression(subscription)
 
+            if (isGotoPlus) {
+                widgetMyBills.hideSeparator()
+                widgetMyBills.hasMoreInfo(false)
+            } else {
+                widgetMyBills.showSeparator()
                 widgetMyBills.hasMoreInfo(true)
+            }
+            if (subscription.info.title.isEmpty()) {
+                widgetMyBills.hideTitle()
+            } else {
                 widgetMyBills.setTitle(subscription.info.title)
-                if (subscription.optIn) {
-                    widgetMyBills.setDescription(subscription.info.checkedSubtitle)
-                } else {
-                    widgetMyBills.setDescription(subscription.info.subtitle)
+                widgetMyBills.showTitle()
+            }
+            if (subscription.optIn) {
+                widgetMyBills.setDescription(subscription.info.checkedSubtitle)
+            } else {
+                widgetMyBills.setDescription(subscription.info.subtitle)
+            }
+
+            widgetMyBills.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
+                override fun onMoreInfoClicked() {
+                    listener.onSubscriptionMoreInfoClicked(subscription)
                 }
 
-                widgetMyBills.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
-                    override fun onMoreInfoClicked() {
-                        listener.onSubscriptionMoreInfoClicked(subscription)
+                override fun onCheckChanged(isChecked: Boolean) {
+                    if (isChecked) {
+                        widgetMyBills.setDescription(subscription.info.checkedSubtitle)
+                    } else {
+                        widgetMyBills.setDescription(subscription.info.subtitle)
                     }
-
-                    override fun onCheckChanged(isChecked: Boolean) {
-                        if (isChecked) widgetMyBills.setDescription(subscription.info.checkedSubtitle)
-                        else widgetMyBills.setDescription(subscription.info.subtitle)
-                        listener.onSubscriptionChecked(subscription, isChecked)
-                    }
+                    listener.onSubscriptionChecked(subscription, isChecked)
                 }
+            }
 
-                if (subscription.checkBoxDisabled) {
-                    widgetMyBills.disableCheckBox()
-                } else {
-                    if (!widgetMyBills.isChecked() && subscription.optIn) {
-                        widgetMyBills.setChecked(subscription.optIn)
-                    }
-                }
+            if (subscription.checkBoxDisabled) {
+                widgetMyBills.disableCheckBox()
+            }
+            if (!widgetMyBills.isChecked() && subscription.optIn) {
+                widgetMyBills.setChecked(subscription.optIn)
             }
         }
     }
@@ -63,13 +74,15 @@ class DigitalMyBillsViewHolder(
                 widgetMyBills.setDescription(fintechProduct.info.subtitle)
                 widgetMyBills.hasMoreInfo(
                     fintechProduct.info.urlLink.isNotEmpty() ||
-                            fintechProduct.info.tooltipText.isNotEmpty()
+                        fintechProduct.info.tooltipText.isNotEmpty()
                 )
 
                 widgetMyBills.setAdditionalImage(fintechProduct.info.iconUrl)
                 if (fintechProduct.info.iconUrl.isNotEmpty()) {
                     listener.onTebusMurahImpression(fintechProduct, position)
-                } else listener.onCrossellImpression(fintechProduct, position)
+                } else {
+                    listener.onCrossellImpression(fintechProduct, position)
+                }
 
                 widgetMyBills.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
                     override fun onMoreInfoClicked() {

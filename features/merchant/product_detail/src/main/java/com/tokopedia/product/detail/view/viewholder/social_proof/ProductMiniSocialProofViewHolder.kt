@@ -12,7 +12,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicSocialProofBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.SocialProofAdapter
 import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.SocialProofAdapterFactory
@@ -23,7 +23,7 @@ import com.tokopedia.unifycomponents.toPx
  */
 class ProductMiniSocialProofViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<ProductMiniSocialProofDataModel>(view) {
 
     companion object {

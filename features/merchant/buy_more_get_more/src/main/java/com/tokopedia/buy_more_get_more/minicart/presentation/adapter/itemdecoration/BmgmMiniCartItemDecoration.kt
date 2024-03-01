@@ -1,0 +1,64 @@
+package com.tokopedia.buy_more_get_more.minicart.presentation.adapter.itemdecoration
+
+import android.content.Context
+import android.graphics.Rect
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.buy_more_get_more.common.OfferType
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.orZero
+
+/**
+ * Created by @ilhamsuaib on 05/08/23.
+ */
+
+class BmgmMiniCartItemDecoration(
+    private val offerType: OfferType = OfferType.PROGRESSIVE_DISCOUNT
+) : RecyclerView.ItemDecoration() {
+
+    override fun getItemOffsets(
+        outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
+    ) {
+        val index = parent.getChildAdapterPosition(view)
+        val itemCount = parent.adapter?.itemCount.orZero()
+        val isFirstItem = index == Int.ZERO
+        val isLastItem = index == itemCount.minus(Int.ONE)
+
+        when {
+            isFirstItem -> setItemMargin(
+                context = parent.context,
+                outRect = outRect,
+                left = getFirstItemLeftMargin(),
+                right = 3
+            )
+
+            isLastItem -> setItemMargin(
+                context = parent.context,
+                outRect = outRect,
+                left = 3,
+                right = 16
+            )
+
+            else -> setItemMargin(
+                context = parent.context,
+                outRect = outRect,
+                left = 3,
+                right = 3
+            )
+        }
+    }
+
+    private fun getFirstItemLeftMargin(): Int {
+        return when (offerType) {
+            OfferType.PROGRESSIVE_DISCOUNT -> 16
+            OfferType.GIFT_WITH_PURCHASE -> 3
+        }
+    }
+
+    private fun setItemMargin(context: Context, outRect: Rect, left: Int, right: Int) {
+        outRect.left = context.dpToPx(left).toInt()
+        outRect.right = context.dpToPx(right).toInt()
+    }
+}
