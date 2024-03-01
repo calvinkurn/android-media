@@ -328,4 +328,8 @@
     <string name="play_broadcaster_live_stats_estimated_income_label">Estimasi Pendapatan</string>
     <string name="play_broadcaster_live_stats_like_label">Menyukai</string>
     <string name="play_broadcaster_live_stats_live_duration_label">Durasi Live</string>
+
+    <string name="play_broadcaster_live_stats_visit_label">Kunjungan</string>
+    <string name="play_broadcaster_live_stats_add_to_cart_label">Tambah ke Keranjang</string>
+    <string name="play_broadcaster_live_stats_total_sold_label">Total Terjual</string>
 </resources>

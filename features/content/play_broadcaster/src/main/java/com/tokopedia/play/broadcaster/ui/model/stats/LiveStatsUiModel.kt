@@ -86,4 +86,37 @@ sealed interface LiveStatsUiModel {
             private const val mmss = "%02d:%02d"
         }
     }
+
+    data class Visit(
+        val value: String = "",
+    ) : LiveStatsUiModel {
+        override val icon: Int = IconUnify.PRODUCT_NEXT
+
+        @StringRes override val label: Int = R.string.play_broadcaster_live_stats_visit_label
+
+        override val text: String
+            get() = value.ifEmpty { "0" }
+    }
+
+    data class AddToCart(
+        val value: String = "",
+    ) : LiveStatsUiModel {
+        override val icon: Int = IconUnify.CART
+
+        @StringRes override val label: Int = R.string.play_broadcaster_live_stats_add_to_cart_label
+
+        override val text: String
+            get() = value.ifEmpty { "0" }
+    }
+
+    data class TotalSold(
+        val value: String = "",
+    ) : LiveStatsUiModel {
+        override val icon: Int = IconUnify.SHOPPING_BAG
+
+        @StringRes override val label: Int = R.string.play_broadcaster_live_stats_total_sold_label
+
+        override val text: String
+            get() = value.ifEmpty { "0" }
+    }
 }
