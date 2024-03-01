@@ -11,7 +11,4 @@ sealed class ProductRecommendationEvent {
         val queryParam: String,
         val thematicId: String
     ) : ProductRecommendationEvent()
-
-    object RefreshRecommendation : ProductRecommendationEvent()
-
 }

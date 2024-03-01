@@ -728,7 +728,6 @@ open class DynamicProductDetailFragment :
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         shouldRefreshShippingBottomSheet = true
-        viewModel.onRecommendationEvent(ProductRecommendationEvent.RefreshRecommendation)
         super.onSwipeRefresh()
     }
 

@@ -33,6 +33,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -71,7 +73,6 @@ class ProductRecommSubViewModel @Inject constructor(
         get() = _loadTopAdsProduct
 
     private val _recomPageName = MutableSharedFlow<ProductRecommendationEvent.LoadRecommendation>()
-    private val _refreshPage = MutableStateFlow(false)
 
     private val enableRecomFlowRemoteConfig by remoteConfig.boolean(
         ANDROID_ENABLE_PDP_RECOMMENDATION_FLOW,
@@ -87,6 +88,9 @@ class ProductRecommSubViewModel @Inject constructor(
         var initialAccumulator: MutableList<ProductRecommUiState> = mutableListOf()
         _recomPageName
             .buffer()
+            .filterNot {
+                GlobalConfig.isSellerApp()
+            }
             .flatMapMerge {
                 getRecommendation(
                     pageName = it.pageName,
@@ -98,11 +102,6 @@ class ProductRecommSubViewModel @Inject constructor(
                 )
             }
             .map {
-                if (_refreshPage.value) {
-                    initialAccumulator.clear()
-                }
-                _refreshPage.emit(false)
-
                 initialAccumulator.add(it)
                 initialAccumulator
             }
@@ -143,12 +142,6 @@ class ProductRecommSubViewModel @Inject constructor(
                         queryParam = event.queryParam,
                         thematicId = event.thematicId
                     )
-                }
-            }
-
-            is ProductRecommendationEvent.RefreshRecommendation -> {
-                viewModelScope.launch {
-                    _refreshPage.emit(true)
                 }
             }
         }

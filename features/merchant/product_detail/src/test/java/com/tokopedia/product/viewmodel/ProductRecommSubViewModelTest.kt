@@ -37,9 +37,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -80,6 +80,14 @@ class ProductRecommSubViewModelTest {
 
     private lateinit var viewModel: IProductRecommSubViewModel
 
+    companion object {
+        private const val LOAD_RECOM_DEBOUNCE = 150L
+    }
+
+    private fun TestScope.delayUntilDebounce() {
+        advanceTimeBy(LOAD_RECOM_DEBOUNCE + 10L)
+    }
+
     @Before
     fun beforeTest() {
         MockKAnnotations.init(this)
@@ -106,9 +114,9 @@ class ProductRecommSubViewModelTest {
         every {
             remoteConfig.getLong(
                 RemoteConfigKey.ANDROID_PDP_DEBOUNCE_TIME,
-                150L
+                LOAD_RECOM_DEBOUNCE
             )
-        } returns 150L
+        } returns LOAD_RECOM_DEBOUNCE
     }
 
     @After
@@ -125,11 +133,11 @@ class ProductRecommSubViewModelTest {
             val response = listOf(recomWidget)
 
             val productListData = { viewModel.productListData.value }
-            val job = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            backgroundScope.launch(UnconfinedTestDispatcher()) {
                 viewModel.productListData.collect()
             }
 
-            advanceTimeBy(160L)
+            delayUntilDebounce()
 
             coEvery { getProductRecommendationUseCase.executeOnBackground(any()) } returns response.first()
 
@@ -144,9 +152,7 @@ class ProductRecommSubViewModelTest {
                 )
             )
 
-            advanceTimeBy(200L)
-
-            job.cancel()
+            delayUntilDebounce()
 
             coVerify { getProductRecommendationUseCase.executeOnBackground(any()) }
             assertTrue(productListData().size == 1)
@@ -192,37 +198,34 @@ class ProductRecommSubViewModelTest {
             viewModel.productListData.collect()
         }
 
-        viewModel.onRecommendationEvent(
-            ProductRecommendationEvent.LoadRecommendation(
-                1.toString(),
-                "",
-                false,
-                null,
-                "",
-                ""
+        delayUntilDebounce()
+
+        (1..3).forEach {
+            viewModel.onRecommendationEvent(
+                ProductRecommendationEvent.LoadRecommendation(
+                    it.toString(),
+                    "",
+                    false,
+                    null,
+                    "",
+                    ""
+                )
             )
-        )
-
-        advanceUntilIdle()
-
-        coVerify(exactly = 1) { getProductRecommendationUseCase.executeOnBackground(any()) }
-        assertTrue(productListData().size == 3)
-    }
-
-    @Test
-    fun `fail load recommendation FLOW when recommendation widget is empty`() = runTest {
-        val response = listOf<RecommendationWidget>()
-
-        val productListData = { viewModel.productListData.value }
-        backgroundScope.launch(UnconfinedTestDispatcher()) {
-            viewModel.productListData.collect()
         }
 
-        coEvery { getProductRecommendationUseCase.executeOnBackground(any()) } returns response.first()
+        delayUntilDebounce()
 
+        coVerify(exactly = 3) { getProductRecommendationUseCase.executeOnBackground(any()) }
+        assertTrue(productListData().size == 3)
+        assertTrue(productListData().all {
+            it.alreadyCollected
+        })
+
+        //After we load 3 recom under 150 ms, then after 150ms passed
+        //Load another recom and ensure the data emitted only one
         viewModel.onRecommendationEvent(
             ProductRecommendationEvent.LoadRecommendation(
-                "view_to_view",
+                "after",
                 "",
                 false,
                 null,
@@ -231,9 +234,13 @@ class ProductRecommSubViewModelTest {
             )
         )
 
-        coVerify { getProductRecommendationUseCase.executeOnBackground(any()) }
+        delayUntilDebounce()
 
-        assertTrue(productListData().first().data is ViewState.RenderFailure)
+        coVerify(exactly = 4) { getProductRecommendationUseCase.executeOnBackground(any()) }
+        assertTrue(productListData().size == 1)
+        assertTrue(productListData().all {
+            it.alreadyCollected
+        })
     }
 
     @Test
@@ -255,6 +262,8 @@ class ProductRecommSubViewModelTest {
                 ""
             )
         )
+
+        delayUntilDebounce()
 
         coVerify { getProductRecommendationUseCase.executeOnBackground(any()) }
         assertTrue(productListData().first().data is ViewState.RenderFailure)
