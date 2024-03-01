@@ -10,7 +10,7 @@ import rx.functions.Func1;
 /**
  * @author by nisie on 10/11/17.
  */
-
+@Deprecated
 public class TokenMapper implements Func1<Response<TokenViewModel>, TokenViewModel> {
 
     @Inject

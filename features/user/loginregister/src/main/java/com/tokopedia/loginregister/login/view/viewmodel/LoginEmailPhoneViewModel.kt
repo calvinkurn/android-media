@@ -33,7 +33,7 @@ import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.admin.AdminResult
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreference
 import com.tokopedia.sessioncommon.data.model.FingerPrintGqlParam
 import com.tokopedia.sessioncommon.data.model.LoginTokenV2GqlParam
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo

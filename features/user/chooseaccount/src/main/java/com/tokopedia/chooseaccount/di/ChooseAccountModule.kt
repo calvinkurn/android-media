@@ -9,8 +9,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreference
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreferenceManager
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface

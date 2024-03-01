@@ -4,6 +4,10 @@ package com.tokopedia.sessioncommon.data.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ *  Used by WSService.java (InstrumentationAuthHelper)
+ */
+
 public class SecurityPojo {
 
     @SerializedName("allow_login")

@@ -12,6 +12,7 @@ import rx.functions.Func1;
  * @author by nisie on 5/26/17.
  */
 
+@Deprecated
 public class MakeLoginMapper implements Func1<Response<DataResponse<MakeLoginPojo>>, MakeLoginPojo> {
 
     @Inject

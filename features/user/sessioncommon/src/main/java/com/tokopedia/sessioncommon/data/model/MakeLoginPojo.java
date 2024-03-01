@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * @author by nisie on 5/26/17.
+ * Used by WSService.java (InstrumentationAuthHelper)
  */
 
 public class MakeLoginPojo {

@@ -10,6 +10,7 @@ import java.io.IOException;
 /**
  * @author by nisie on 10/22/18.
  */
+@Deprecated
 public class TokenErrorResponse extends BaseResponseError {
 
     @SerializedName("error")

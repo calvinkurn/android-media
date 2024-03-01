@@ -11,7 +11,7 @@ import rx.functions.Func1;
 /**
  * @author by nisie on 6/19/17.
  */
-
+@Deprecated
 public class GetUserInfoMapper implements Func1<Response<GetUserInfoData>,
         GetUserInfoData> {
 

@@ -13,11 +13,11 @@ import rx.Observable;
 /**
  * @author by nisie on 10/16/18.
  */
+@Deprecated
 public interface TokenApi {
 
     @FormUrlEncoded
     @POST(SessionCommonUrl.PATH_GET_TOKEN)
-    Observable<Response<TokenViewModel>> getToken(@FieldMap Map<String, Object>
-                                                                        params);
+    Observable<Response<TokenViewModel>> getToken(@FieldMap Map<String, Object> params);
 
 }

@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * @author by nisie on 6/19/17.
+ * Used by AccountService.java (InstrumentationAuthHelper)
  */
 
 

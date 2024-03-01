@@ -6,7 +6,7 @@ import com.tokopedia.chooseaccount.data.AccountListDataModel
 import com.tokopedia.chooseaccount.data.AccountsDataModel
 import com.tokopedia.chooseaccount.data.ErrorResponseDataModel
 import com.tokopedia.chooseaccount.domain.usecase.GetFingerprintAccountListUseCase
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
+import com.tokopedia.sessioncommon.data.fingerprintpreference.FingerprintPreference
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
@@ -15,9 +15,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.instanceOf
-import org.hamcrest.MatcherAssert
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert
 import org.junit.Before

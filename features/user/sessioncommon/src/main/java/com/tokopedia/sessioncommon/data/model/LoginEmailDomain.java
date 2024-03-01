@@ -3,7 +3,7 @@ package com.tokopedia.sessioncommon.data.model;
 /**
  * @author by nisie on 12/19/17.
  */
-
+@Deprecated
 public class LoginEmailDomain {
     protected TokenViewModel token;
     protected GetUserInfoData info;

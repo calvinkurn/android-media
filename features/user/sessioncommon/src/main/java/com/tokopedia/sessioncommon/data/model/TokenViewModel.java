@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * @author by nisie on 10/11/17.
+ * Used by LoginService.java (InstrumentationAuthHelper)
  */
 
 public class TokenViewModel {
