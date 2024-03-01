@@ -7,12 +7,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
 import com.tokopedia.product.detail.view.util.PdpUiUpdater
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
-import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
 import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ViewState
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommUiState
@@ -40,7 +40,7 @@ class PartialRecommendationManager(
         get() = mediator.rootView.context
     private val viewLifecycleOwner: LifecycleOwner
         get() = mediator.rootView.viewLifecycleOwner
-    private val viewModel: DynamicProductDetailViewModel
+    private val viewModel: ProductDetailViewModel
         get() = mediator.pdpViewModel
     private val pdpUiUpdater: PdpUiUpdater?
         get() = mediator.uiUpdater
@@ -59,7 +59,7 @@ class PartialRecommendationManager(
         thematicId: String,
         isViewToView: Boolean
     ) {
-        val p1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
+        val p1 = viewModel.getProductInfoP1 ?: ProductInfoP1()
         val miniCart = if (isViewToView) null else viewModel.p2Data.value?.miniCart
         viewModel.onRecommendationEvent(
             ProductRecommendationEvent.LoadRecommendation(
@@ -123,7 +123,6 @@ class PartialRecommendationManager(
                 }
 
                 else -> {
-
                 }
             }
         }
@@ -164,7 +163,7 @@ class PartialRecommendationManager(
                 RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
                     pdpUiUpdater?.updateComparisonBpcDataModel(
                         result,
-                        viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
+                        viewModel.getProductInfoP1?.basic?.productID.orEmpty()
                     )
                 }
 
@@ -217,4 +216,3 @@ interface PartialRecommendationManagerListener {
         isViewToView: Boolean = false
     )
 }
-
