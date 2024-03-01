@@ -4653,7 +4653,6 @@ class CartRevampFragment :
             ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL, collectionId)
     }
 
-
     private fun scrollToLastAddedProductShop() {
         val cartId: String = getCartId()
         if (cartId.isNotBlank()) {
