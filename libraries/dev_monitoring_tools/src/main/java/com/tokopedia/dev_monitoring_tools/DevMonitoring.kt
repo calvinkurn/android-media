@@ -35,10 +35,9 @@ class DevMonitoring(private var context: Context) {
             ServerLogger.log(Priority.P1, "DEV_CRASH", mapOf("journey" to UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize),
                     "error" to Log.getStackTraceString(throwable).replace("\n", "").replace("\t", " ")))
             if (isCopyCrashToClipboardEnabled()) {
-                configCopyCrashStackTraceToClipboard(thread, throwable)
-            } else {
-                exceptionHandler?.uncaughtException(thread, throwable)
+                configCopyCrashStackTraceToClipboard(throwable)
             }
+            exceptionHandler?.uncaughtException(thread, throwable)
         }
     }
 
@@ -59,8 +58,7 @@ class DevMonitoring(private var context: Context) {
         }
     }
 
-    private fun configCopyCrashStackTraceToClipboard(thread: Thread, throwable: Throwable) {
-        val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
+    private fun configCopyCrashStackTraceToClipboard(throwable: Throwable) {
         val ctx = context
         val clipboard =
             ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
@@ -77,13 +75,7 @@ class DevMonitoring(private var context: Context) {
             ).show()
             Looper.loop()
         }.start()
-        // Allow some time for the Toast to be shown
-        try {
-            Thread.sleep(3000)
-            exceptionHandler?.uncaughtException(thread, throwable)
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        }
+        Thread.sleep(3000)
     }
 
     private fun isCopyCrashToClipboardEnabled(): Boolean {
