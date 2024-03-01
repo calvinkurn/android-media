@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:paddingHorizontal="16dp"
-    android:paddingBottom="8dp"
+    android:paddingVertical="8dp"
     tools:viewBindingIgnore="true">
 
     <FrameLayout
