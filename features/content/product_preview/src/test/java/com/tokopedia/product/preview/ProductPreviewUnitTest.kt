@@ -13,6 +13,7 @@ import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourc
 import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.content.test.util.assertFalse
 import com.tokopedia.content.test.util.assertNotEqualTo
+import com.tokopedia.content.test.util.assertTrue
 import com.tokopedia.content.test.util.assertType
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.product.preview.robot.ProductPreviewViewModelRobot
@@ -590,6 +591,102 @@ class ProductPreviewUnitTest {
             }.also { event ->
                 event.last().assertType<ProductPreviewUiEvent.ShowErrorToaster>()
                 (event.last() as ProductPreviewUiEvent.ShowErrorToaster).onClick()
+            }
+        }
+    }
+
+    @Test
+    fun `when click menu from login and user is login`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val reviewData = mockDataSource.mockReviewData()
+        val isFromLogin = true
+        val isLogin = true
+        val userId = "123"
+        var reviewPosition: Int
+
+        coEvery { mockUserSession.isLoggedIn } returns isLogin
+        coEvery { mockUserSession.userId } returns userId
+        coEvery { mockRepository.getReview(productId, 1) } returns reviewData
+
+        getRobot(sourceModel).use { robot ->
+            reviewPosition = robot._reviewPosition.value
+            robot.recordStateAndEvents {
+                robot.clickMenuTestCase(isFromLogin)
+            }.also { value  ->
+                value.first.reviewUiModel.reviewContent[reviewPosition].menus.isReportable.assertTrue()
+                value.second.last().assertEqualTo(ProductPreviewUiEvent.ShowMenuSheet(reviewData.reviewContent[reviewPosition].menus))
+            }
+        }
+    }
+
+    @Test
+    fun `when click menu from login and user is not login`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val reviewData = mockDataSource.mockReviewData()
+        val isFromLogin = true
+        val isLogin = false
+        val userId = "123"
+        var reviewPosition: Int
+
+        coEvery { mockUserSession.isLoggedIn } returns isLogin
+        coEvery { mockUserSession.userId } returns userId
+        coEvery { mockRepository.getReview(productId, 1) } returns reviewData
+
+        getRobot(sourceModel).use { robot ->
+            reviewPosition = robot._reviewPosition.value
+            robot.recordStateAndEvents {
+                robot.clickMenuTestCase(isFromLogin)
+            }.also { value  ->
+                value.first.reviewUiModel.reviewContent[reviewPosition].menus.isReportable.assertFalse()
+                value.second.last().assertEqualTo(ProductPreviewUiEvent.LoginUiEvent(reviewData.reviewContent[reviewPosition].menus.copy(isReportable = false)))
+            }
+        }
+    }
+
+    @Test
+    fun `when click menu from not login and user is login`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val reviewData = mockDataSource.mockReviewData()
+        val isFromLogin = true
+        val isLogin = true
+        val userId = "123"
+        var reviewPosition: Int
+
+        coEvery { mockUserSession.isLoggedIn } returns isLogin
+        coEvery { mockUserSession.userId } returns userId
+        coEvery { mockRepository.getReview(productId, 1) } returns reviewData
+
+        getRobot(sourceModel).use { robot ->
+            reviewPosition = robot._reviewPosition.value
+            robot.recordStateAndEvents {
+                robot.clickMenuTestCase(isFromLogin)
+            }.also { value  ->
+                value.first.reviewUiModel.reviewContent[reviewPosition].menus.isReportable.assertTrue()
+                value.second.last().assertEqualTo(ProductPreviewUiEvent.ShowMenuSheet(reviewData.reviewContent[reviewPosition].menus))
+            }
+        }
+    }
+
+    @Test
+    fun `when click menu from not login and user is not login`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val reviewData = mockDataSource.mockReviewData()
+        val isFromLogin = true
+        val isLogin = false
+        val userId = "123"
+        var reviewPosition: Int
+
+        coEvery { mockUserSession.isLoggedIn } returns isLogin
+        coEvery { mockUserSession.userId } returns userId
+        coEvery { mockRepository.getReview(productId, 1) } returns reviewData
+
+        getRobot(sourceModel).use { robot ->
+            reviewPosition = robot._reviewPosition.value
+            robot.recordStateAndEvents {
+                robot.clickMenuTestCase(isFromLogin)
+            }.also { value  ->
+                value.first.reviewUiModel.reviewContent[reviewPosition].menus.isReportable.assertFalse()
+                value.second.last().assertEqualTo(ProductPreviewUiEvent.LoginUiEvent(reviewData.reviewContent[reviewPosition].menus.copy(isReportable = false)))
             }
         }
     }

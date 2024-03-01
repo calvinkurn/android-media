@@ -158,6 +158,11 @@ internal class ProductPreviewViewModelRobot(
         viewModel.onAction(ProductPreviewAction.SubmitReport(model))
     }
 
+    fun clickMenuTestCase(isFromLogin: Boolean) {
+        initializeReviewMainDataTestCase()
+        viewModel.onAction(ProductPreviewAction.ClickMenu(isFromLogin))
+    }
+
     fun cancelRemainingTasks() {
         viewModel.viewModelScope.coroutineContext.cancelChildren()
     }
