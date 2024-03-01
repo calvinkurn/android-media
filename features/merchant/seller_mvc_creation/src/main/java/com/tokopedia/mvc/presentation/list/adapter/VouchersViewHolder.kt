@@ -194,7 +194,7 @@ class VouchersViewHolder(
             context.getString(
                 R.string.smvc_voucherlist_format_percent_desc,
                 getPromoName(context, voucher.type),
-                voucher.discountAmt.getPercentFormatted(),
+                voucher.discountAmtFormatted,
                 voucher.discountAmtMax.getCurrencyFormatted()
             )
         } else {
