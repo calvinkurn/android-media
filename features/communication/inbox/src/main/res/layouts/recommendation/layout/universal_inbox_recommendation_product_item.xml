@@ -4,4 +4,6 @@
     android:id="@+id/inbox_product_recommendation"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:reimagine_template="grid"
+    app:useCompatPadding="true"
     app:reimagine="true" />
