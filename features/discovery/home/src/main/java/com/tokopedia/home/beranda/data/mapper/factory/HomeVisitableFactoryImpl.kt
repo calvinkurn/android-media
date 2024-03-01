@@ -485,7 +485,7 @@ class HomeVisitableFactoryImpl(
             val mission = MissionWidgetListDataModel(
                 id = atfData.id.toString(),
                 name = atfData.name,
-                missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(it.missions, isCache),
+                missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(it.missions, isCache, it.appLog),
                 header = data.header.getAsHomeComponentHeader(),
                 config = data.config.getAsChannelConfig(),
                 verticalPosition = index,

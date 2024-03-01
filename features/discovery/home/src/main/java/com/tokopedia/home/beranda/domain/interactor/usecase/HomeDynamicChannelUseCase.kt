@@ -350,7 +350,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     },
                     mapToWidgetData = { visitableFound, data, _ ->
                         val resultList =
-                            LazyLoadDataMapper.mapMissionWidgetData(data.getHomeMissionWidget.missions, false)
+                            LazyLoadDataMapper.mapMissionWidgetData(data.getHomeMissionWidget.missions, false, data.getHomeMissionWidget.appLog)
                         visitableFound.copy(
                             missionWidgetList = resultList,
                             header = data.getHomeMissionWidget.header.getAsHomeComponentHeader(),

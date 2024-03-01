@@ -4,6 +4,7 @@ import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
 import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetDataModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationAppLog
 import com.tokopedia.unifycomponents.CardUnify2
 
 /**
@@ -12,7 +13,8 @@ import com.tokopedia.unifycomponents.CardUnify2
 object LazyLoadDataMapper {
     fun mapMissionWidgetData(
         missionWidgetList: List<HomeMissionWidgetData.Mission>,
-        isCache: Boolean
+        isCache: Boolean,
+        appLog: HomeMissionWidgetData.AppLog,
     ): List<MissionWidgetDataModel> {
         return missionWidgetList.map {
             MissionWidgetDataModel(
@@ -33,6 +35,12 @@ object LazyLoadDataMapper {
                 campaignCode = it.campaignCode,
                 animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE,
                 isCache = isCache,
+                appLog = RecommendationAppLog(
+                    sessionId = appLog.bytedanceSessionId,
+                    requestId = appLog.requestId,
+                    logId = appLog.logId,
+                    recParam = it.recParam
+                )
             )
         }
     }

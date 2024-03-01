@@ -19,6 +19,9 @@ class HomeMissionWidgetData {
         @SerializedName("header")
         @Expose
         val header: Header = Header(),
+        @SerializedName("appLog")
+        @Expose
+        val appLog: AppLog = AppLog(),
         @SerializedName("missions")
         @Expose
         val missions: List<Mission> = listOf(),
@@ -40,6 +43,18 @@ class HomeMissionWidgetData {
         @SerializedName("dividerType")
         @Expose
         val dividerType: Int = 0,
+    )
+
+    data class AppLog(
+        @SerializedName("bytedanceSessionID")
+        @Expose
+        val bytedanceSessionId: String = "",
+        @SerializedName("requestID")
+        @Expose
+        val requestId: String = "",
+        @SerializedName("logID")
+        @Expose
+        val logId: String = "",
     )
 
     data class Mission(
@@ -88,5 +103,8 @@ class HomeMissionWidgetData {
         @SerializedName("campaignCode")
         @Expose
         val campaignCode: String = "",
+        @SerializedName("recParam")
+        @Expose
+        val recParam: String = "",
     )
 }
