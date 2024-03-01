@@ -150,7 +150,6 @@ import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -2952,7 +2951,7 @@ class CartRevampFragment :
                     this.wishlistIcon?.let {
                         onRemoveFromWishlistSuccess(it, removeFromWishlistEvent.position)
                         if (removeFromWishlistEvent.message.isNotBlank()) {
-                            showToast(removeFromWishlistEvent.message)
+                            showToastMessageGreen(removeFromWishlistEvent.message)
                         }
                     }
                 }
@@ -3907,16 +3906,11 @@ class CartRevampFragment :
                             routeToWishlistCollection(collectionId)
                         }
                     }
-                    view?.let {
-                        Toaster.build(
-                            it,
-                            message,
-                            Toaster.LENGTH_LONG,
-                            Toaster.TYPE_NORMAL,
-                            actionText,
-                            clickListener
-                        ).show()
-                    }
+                    showToastMessageGreen(
+                        message = message,
+                        actionText = actionText,
+                        onClickListener = clickListener
+                    )
                 } else {
                     showToastMessageRed(message = message)
                 }
@@ -4649,8 +4643,11 @@ class CartRevampFragment :
     }
 
     private fun routeToWishlistCollection(collectionId: String) {
-        RouteManager.route(context,
-            ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL, collectionId)
+        RouteManager.route(
+            context,
+            ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL,
+            collectionId
+        )
     }
 
     private fun scrollToLastAddedProductShop() {
