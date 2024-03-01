@@ -55,6 +55,7 @@
     <string name="favorited_shop_title">Followers Toko</string>
     <string name="shop_search_product">Search Shop Product</string>
     <string name="shop_page_setting_title">Toko Kamu</string>
+    <string name="title_seller_shop_page">Seller Shop Page</string>
 
     <!-- Logistic -->
     <string name="title_layanan">Layanan</string>

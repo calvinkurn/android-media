@@ -77,6 +77,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_SELLER_FEEDBACK = "df_seller_feedback"
     const val DF_SELLER_TALK = "df_seller_talk"
     const val DF_SELLER_PDP = "df_seller_pdp"
+    const val DF_SELLER_SHOP_PAGE = "df_seller_shop_page"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()

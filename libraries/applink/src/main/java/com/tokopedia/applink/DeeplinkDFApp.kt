@@ -35,6 +35,7 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_TOKOPOINTS
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FEEDBACK
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FRONT_FUNNEL
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_PDP
+import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_SHOP_PAGE
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_TALK
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SHOP_SETTINGS_SELLER_APP
 import com.tokopedia.applink.DeeplinkDFMapper.DF_STORIES_CREATION
@@ -191,7 +192,14 @@ object DeeplinkDFApp {
         DF_SELLER_TALK to getDfSellerTalk(),
         DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp(),
         DF_SELLER_PDP to getDfSellerPdp(),
-        DF_STORIES_CREATION to getDfStoriesCreationSellerApp()
+        DF_STORIES_CREATION to getDfStoriesCreationSellerApp(),
+        DF_SELLER_SHOP_PAGE to getDfSellerShopPage()
+    )
+
+    private fun getDfSellerShopPage() = mutableListOf(
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/.*/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page-product-list/.*/"),
     )
 
     private fun Map<String, List<DFP>>?.filteredOnDF(context: Context): Map<String, List<DFP>> {
