@@ -6,6 +6,8 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.tokopedianow.shoppinglist.di.scope.ShoppingListScope
+import com.tokopedia.tokopedianow.shoppinglist.helper.ResourceStringProvider
+import com.tokopedia.tokopedianow.shoppinglist.helper.ResourceStringProviderImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -21,15 +23,11 @@ class ShoppingListModule(
 
     @ShoppingListScope
     @Provides
-    fun provideGrqphqlRepository(): GraphqlRepository {
-        return GraphqlInteractor.getInstance().graphqlRepository
-    }
+    fun provideGrqphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @ShoppingListScope
     @Provides
-    fun provideUserSession(context: Context): UserSessionInterface {
-        return UserSession(context)
-    }
+    fun provideUserSession(context: Context): UserSessionInterface = UserSession(context)
 
     @ShoppingListScope
     @Provides
@@ -37,4 +35,8 @@ class ShoppingListModule(
         @ApplicationContext context: Context,
         coroutineGqlRepository: GraphqlRepository
     ): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(context, coroutineGqlRepository)
+
+    @ShoppingListScope
+    @Provides
+    fun provideResourceStringProvider(context: Context): ResourceStringProvider = ResourceStringProviderImpl(context)
 }

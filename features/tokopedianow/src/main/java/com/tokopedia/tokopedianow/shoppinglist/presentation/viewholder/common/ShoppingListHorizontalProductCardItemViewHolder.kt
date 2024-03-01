@@ -175,7 +175,9 @@ class ShoppingListHorizontalProductCardItemViewHolder(
             )
             constraintSet.applyTo(normalLayout)
 
-            setOnClickListener { }
+            setOnClickListener {
+                listener?.onClickAddToShoppingList(data.id)
+            }
         }
         icuDelete.showIfWithBlock(data.productLayoutType != PRODUCT_RECOMMENDATION) {
             val constraintSet = ConstraintSet().apply {
@@ -190,7 +192,9 @@ class ShoppingListHorizontalProductCardItemViewHolder(
             )
             constraintSet.applyTo(normalLayout)
 
-            setOnClickListener { }
+            setOnClickListener {
+                listener?.onClickDeleteIcon(data.id)
+            }
         }
     }
 
@@ -292,6 +296,12 @@ class ShoppingListHorizontalProductCardItemViewHolder(
             isSelected: Boolean
         )
         fun onClickOtherOptions(
+            productId: String
+        )
+        fun onClickDeleteIcon(
+            productId: String
+        )
+        fun onClickAddToShoppingList(
             productId: String
         )
     }

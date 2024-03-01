@@ -15,6 +15,7 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.SHOW
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehousesData
 import com.tokopedia.tokopedianow.common.model.UiState
@@ -49,15 +50,18 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.modifyTopCheckAll
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.modifyTopCheckAllState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeLoadMore
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeProduct
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.removeRetry
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.updateProductSelections
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.GetShoppingListDataResponse
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.SaveShoppingListStateActionParam
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.GetShoppingListUseCase
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.SaveShoppingListStateUseCase
+import com.tokopedia.tokopedianow.shoppinglist.helper.ResourceStringProvider
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.BottomBulkAtcModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.LayoutModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.DELETE_WISHLIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductCartItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
@@ -65,6 +69,12 @@ import com.tokopedia.tokopedianow.shoppinglist.util.Constant.INVALID_INDEX
 import com.tokopedia.tokopedianow.shoppinglist.util.Constant.MAX_TOTAL_PRODUCT_DISPLAYED
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.UNAVAILABLE_SHOPPING_LIST
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_WISHLIST
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -83,6 +93,9 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val getShoppingListUseCase: GetShoppingListUseCase,
     private val saveShoppingListStateUseCase: SaveShoppingListStateUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
+    private val addToWishlistUseCase: AddToWishlistV2UseCase,
+    private val deleteFromWishlistUseCase: DeleteWishlistV2UseCase,
+    private val resourceStringProvider: ResourceStringProvider,
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.io) {
 
@@ -116,8 +129,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val _isTopCheckAllSelected: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val _isProductAvailable: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val _isLoaderDialogShown: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _toasterData: MutableStateFlow<ToasterModel?> = MutableStateFlow(null)
     private val _bottomBulkAtcData: MutableStateFlow<BottomBulkAtcModel?> = MutableStateFlow(null)
-    private val _updateToolbarNotification: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private var pageCounter: Int = PRODUCT_RECOMMENDATION_PAGE_NUMBER_COUNTER
     private var hasLoadedLayout: Boolean = false
@@ -146,8 +159,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
         get() = _isLoaderDialogShown.asStateFlow()
     val bottomBulkAtcData
         get() = _bottomBulkAtcData.asStateFlow()
-    val updateToolbarNotification
-        get() = _updateToolbarNotification.asStateFlow()
+    val toasterData
+        get() = _toasterData.asStateFlow()
 
     var headerModel: HeaderModel = HeaderModel()
 
@@ -738,7 +751,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 getMiniCart()
             }
         }
-        _updateToolbarNotification.value = true
     }
 
     fun updateScrollState() {
@@ -749,5 +761,89 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 state
             }
         }
+    }
+
+    fun addToWishlist(
+        productId: String
+    ) {
+        launchCatchError(
+            block = {
+                _toasterData.value = null
+
+                layout.modifyProduct(
+                    productId = productId,
+                    state = LOADING
+                )
+                _layoutState.value = Success(getUpdatedLayout())
+
+                addToWishlistUseCase.setParams(
+                    productId = productId,
+                    userId = userSession.userId
+                )
+                addToWishlistUseCase.executeOnBackground()
+
+                layout.removeProduct(
+                    productId = productId
+                )
+                _layoutState.value = Success(getUpdatedLayout())
+            },
+            onError = {
+                layout.modifyProduct(
+                    productId = productId,
+                    state = SHOW
+                )
+                _layoutState.value = Success(getUpdatedLayout())
+
+                _toasterData.value = ToasterModel(
+                    text = resourceStringProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_to_add_product_from_shopping_list),
+                    actionText = resourceStringProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_for_cta),
+                    type = Toaster.TYPE_ERROR,
+                    productId = productId,
+                    event = ADD_WISHLIST
+                )
+            }
+        )
+    }
+
+    fun deleteFromWishlist(
+        productId: String
+    ) {
+        launchCatchError(
+            block = {
+                _toasterData.value = null
+
+                layout.modifyProduct(
+                    productId = productId,
+                    state = LOADING
+                )
+                _layoutState.value = Success(getUpdatedLayout())
+
+                deleteFromWishlistUseCase.setParams(
+                    productId = productId,
+                    userId = userSession.userId
+                )
+                deleteFromWishlistUseCase.executeOnBackground()
+
+                layout.removeProduct(
+                    productId = productId
+                )
+                _layoutState.value = Success(getUpdatedLayout())
+            },
+            onError = {
+                layout.modifyProduct(
+                    productId = productId,
+                    state = SHOW
+                )
+                _layoutState.value = Success(getUpdatedLayout())
+
+                _toasterData.value = ToasterModel(
+                    text = resourceStringProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_to_delete_product_from_shopping_list),
+                    actionText = resourceStringProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_for_cta),
+                    type = Toaster.TYPE_ERROR,
+                    productId = productId,
+                    event = DELETE_WISHLIST
+                )
+            }
+        )
     }
 }

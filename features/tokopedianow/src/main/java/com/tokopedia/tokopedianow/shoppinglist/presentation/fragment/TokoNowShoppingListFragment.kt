@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
@@ -62,14 +63,18 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.Shoppin
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapterTypeFactory
 import com.tokopedia.tokopedianow.shoppinglist.presentation.bottomsheet.TokoNowShoppingListAnotherOptionBottomSheet
 import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListDecoration
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListExpandCollapseViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListRetryViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListTopCheckAllViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify.Companion.COLOR_WHITE
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.DELETE_WISHLIST
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_WISHLIST
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -239,7 +244,7 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private suspend fun collectStickyTopCheckAll(
+    private suspend fun collectTopCheckAllSelected(
         binding: FragmentTokopedianowShoppingListBinding
     ) {
         viewModel.isTopCheckAllSelected.collect { isSelected ->
@@ -301,7 +306,7 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private suspend fun collectLoaderDialog() {
+    private suspend fun collectLoaderDialogShown() {
         viewModel.isLoaderDialogShown.collect { isShown ->
             if (isShown) {
                 loader = context?.let {
@@ -312,6 +317,25 @@ class TokoNowShoppingListFragment :
                 }
             } else {
                 loader?.dismiss()
+            }
+        }
+    }
+
+    private suspend fun collectToasterErrorShown() {
+        viewModel.toasterData.collect { data ->
+            if (data != null) {
+                when(data.event) {
+                    ADD_WISHLIST -> {
+                        showToaster(data) {
+                            viewModel.addToWishlist(data.productId)
+                        }
+                    }
+                    DELETE_WISHLIST -> {
+                        showToaster(data) {
+                            viewModel.deleteFromWishlist(data.productId)
+                        }
+                    }
+                }
             }
         }
     }
@@ -343,6 +367,29 @@ class TokoNowShoppingListFragment :
         )
     }
 
+    private fun showToaster(
+        model: ToasterModel,
+        clickListener: () -> Unit
+    ) {
+        view?.let { view ->
+            if (model.text.isNotBlank()) {
+                Toaster.toasterCustomBottomHeight = getBottomSpace()
+                Toaster.build(
+                    view = view,
+                    text = model.text,
+                    duration = model.duration,
+                    type = model.type,
+                    actionText = model.actionText,
+                    clickListener = {
+                        clickListener()
+                    }
+                ).show()
+            }
+        }
+    }
+
+    private fun getBottomSpace(): Int = if (binding?.miniCartWidget?.isVisible.orFalse() || binding?.bottomBulkAtcView?.isVisible.orFalse()) context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_bottom_view_height).orZero() else Int.ZERO
+
     /**
      * Create a new coroutine in the [lifecycleScope]. [repeatOnLifecycle] launches the block in a new coroutine
      * every time the lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
@@ -358,10 +405,11 @@ class TokoNowShoppingListFragment :
                 launch { collectMiniCartState(this@collectStateFlow) }
                 launch { collectScrollBehavior(this@collectStateFlow) }
                 launch { collectErrorNavToolbar(this@collectStateFlow) }
-                launch { collectStickyTopCheckAll(this@collectStateFlow) }
+                launch { collectTopCheckAllSelected(this@collectStateFlow) }
                 launch { collectProductAvailability(this@collectStateFlow) }
                 launch { collectBottomBulkAtc(this@collectStateFlow) }
-                launch { collectLoaderDialog() }
+                launch { collectLoaderDialogShown() }
+                launch { collectToasterErrorShown() }
             }
         }
     }
@@ -433,10 +481,8 @@ class TokoNowShoppingListFragment :
 
     private fun FragmentTokopedianowShoppingListBinding.adjustRecyclerViewBottomPadding() {
         context?.apply {
-            val zero = resources.getDimensionPixelSize(unifyprinciplesR.dimen.layout_lvl0).orZero()
-            val space = if (miniCartWidget.isVisible || bottomBulkAtcView.isVisible) resources.getDimensionPixelSize(R.dimen.tokopedianow_bottom_view_height).orZero() else zero
-            rvShoppingList.setPadding(zero, zero, zero, space)
-            fbuBackToTop.setMargin(zero, zero, zero, space)
+            rvShoppingList.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, getBottomSpace())
+            fbuBackToTop.setMargin(Int.ZERO, Int.ZERO, Int.ZERO, getBottomSpace())
         }
     }
 
@@ -552,6 +598,18 @@ class TokoNowShoppingListFragment :
         ) {
             val bottomSheet = TokoNowShoppingListAnotherOptionBottomSheet.newInstance(productId)
             bottomSheet.show(childFragmentManager, ProductCardCompactSimilarProductBottomSheet::class.java.simpleName)
+        }
+
+        override fun onClickDeleteIcon(
+            productId: String
+        ) {
+            viewModel.deleteFromWishlist(productId)
+        }
+
+        override fun onClickAddToShoppingList(
+            productId: String
+        ) {
+            viewModel.addToWishlist(productId)
         }
     }
 

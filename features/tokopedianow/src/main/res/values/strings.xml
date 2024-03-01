@@ -294,4 +294,8 @@
     <string name="tokopedianow_shopping_list_bulk_atc_empty_price_text">Rp-</string>
     <string name="tokopedianow_shopping_list_bulk_atc_plus_cart">+ Keranjang</string>
     <string name="tokopedianow_shopping_list_bulk_atc_total">Total</string>
+    <string name="tokopedianow_shopping_list_product_cart_widget_see_detail">Lihat Detail</string>
+    <string name="tokopedianow_shopping_list_toaster_text_failed_to_delete_product_from_shopping_list">Oops, barang gagal dihapus di List Belanja.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_failed_to_add_product_from_shopping_list">Oops, barang gagal disimpan di List Belanja.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_error_for_cta">Coba Lagi</string>
 </resources>
