@@ -174,7 +174,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.databinding.NewShopPageMainBinding
 import com.tokopedia.shop.databinding.ShopPageHeaderFragmentContentLayoutBinding
-import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
+import com.tokopedia.shop.databinding.ShopPageWidgetSellerMigrationBottomSheetHasPostBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel.Companion.mapperForShopShowCase
@@ -468,7 +468,7 @@ class ShopPageHeaderFragment :
     private var viewOneTabSeparator: View? = null
     private var miniCart: MiniCartGeneralWidget? = null
     private var viewBinding by autoClearedNullable<NewShopPageMainBinding>()
-    private var viewBindingSellerMigrationBottomSheet by autoClearedNullable<WidgetSellerMigrationBottomSheetHasPostBinding>()
+    private var viewBindingSellerMigrationBottomSheet by autoClearedNullable<ShopPageWidgetSellerMigrationBottomSheetHasPostBinding>()
     private var viewBindingShopContentLayout: ShopPageHeaderFragmentContentLayoutBinding? by viewBinding()
     private val isLogin: Boolean
         get() = shopHeaderViewModel?.isUserSessionActive ?: false
@@ -670,7 +670,7 @@ class ShopPageHeaderFragment :
             BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
             BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)
             viewBindingSellerMigrationBottomSheet =
-                WidgetSellerMigrationBottomSheetHasPostBinding.inflate(LayoutInflater.from(context))
+                ShopPageWidgetSellerMigrationBottomSheetHasPostBinding.inflate(LayoutInflater.from(context))
             viewTarget.addView(viewBindingSellerMigrationBottomSheet?.root)
 
             val ivTabFeedHasPost: ImageUnify? =

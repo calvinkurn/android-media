@@ -149,7 +149,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedVie
 import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.databinding.ShopHeaderFragmentBinding
-import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
+import com.tokopedia.shop.databinding.ShopPageWidgetSellerMigrationBottomSheetHasPostBinding
 import com.tokopedia.shop.home.util.mapper.ShopPagePrefetchMapper
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
@@ -416,7 +416,7 @@ class ShopPageReimagineHeaderFragment :
     private var bottomViewContainer: ViewGroup? = null
     private var miniCart: MiniCartGeneralWidget? = null
     private var viewBinding by autoClearedNullable<ShopHeaderFragmentBinding>()
-    private var viewBindingSellerMigrationBottomSheet by autoClearedNullable<WidgetSellerMigrationBottomSheetHasPostBinding>()
+    private var viewBindingSellerMigrationBottomSheet by autoClearedNullable<ShopPageWidgetSellerMigrationBottomSheetHasPostBinding>()
     private val isLogin: Boolean
         get() = shopHeaderViewModel?.isUserSessionActive ?: false
 
@@ -606,7 +606,7 @@ class ShopPageReimagineHeaderFragment :
                 BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
                 BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)
                 viewBindingSellerMigrationBottomSheet =
-                    WidgetSellerMigrationBottomSheetHasPostBinding.inflate(
+                    ShopPageWidgetSellerMigrationBottomSheetHasPostBinding.inflate(
                         LayoutInflater.from(context)
                     )
                 viewTarget.addView(viewBindingSellerMigrationBottomSheet?.root)
