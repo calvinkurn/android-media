@@ -31,9 +31,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-/**
- * Created by fwidjaja on 2020-05-08.
- */
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class ConfirmShippingViewModelComposeTest {

@@ -38,8 +38,6 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
- * Created by fwidjaja on 2019-11-15.
- *
  * this used for
  * - confirm shipping
  * - change courier
