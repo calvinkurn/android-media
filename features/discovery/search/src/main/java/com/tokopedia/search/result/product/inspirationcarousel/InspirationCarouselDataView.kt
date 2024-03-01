@@ -321,8 +321,6 @@ data class InspirationCarouselDataView(
 
             fun asByteIOProduct() = AppLogSearch.Product(
                 entranceForm = EntranceForm.SEARCH_HORIZONTAL_GOODS_CARD,
-                volume = null,
-                rate = ratingAverage.toFloatOrZero(),
                 isAd = isOrganicAds,
                 productID = id,
                 searchID = byteIOTrackingData.searchId,

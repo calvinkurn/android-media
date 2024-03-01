@@ -7,7 +7,6 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.VIDEO_GOODS
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
@@ -236,8 +235,6 @@ class ProductItemDataView:
 
     fun asByteIOProduct() = AppLogSearch.Product(
         entranceForm = if (customVideoURL.isBlank()) SEARCH_PURE_GOODS_CARD else SEARCH_VIDEO_GOODS_CARD,
-        volume = soldCount,
-        rate = ratingString.toFloatOrZero(),
         isAd = isAds,
         productID = productID,
         searchID = byteIOTrackingData.searchId,
