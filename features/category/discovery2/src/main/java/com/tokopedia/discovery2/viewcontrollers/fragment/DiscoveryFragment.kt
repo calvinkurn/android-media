@@ -650,10 +650,10 @@ open class DiscoveryFragment :
 
     private fun updateLastVisibleComponent() {
         if (lastVisibleComponent != null && (
-                lastVisibleComponent?.name ==
-                    ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
-                    ComponentsList.ProductCardSprintSale.componentName
-                )
+            lastVisibleComponent?.name ==
+                ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
+                ComponentsList.ProductCardSprintSale.componentName
+            )
         ) {
             return
         }
@@ -663,11 +663,11 @@ open class DiscoveryFragment :
                 lastVisibleComponent = discoveryAdapter.currentList[positionArray.first()]
 
                 if (lastVisibleComponent != null && (
-                        lastVisibleComponent?.name ==
-                            ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
-                            ComponentsList.ProductCardSprintSaleItem.componentName ||
-                            lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName
-                        )
+                    lastVisibleComponent?.name ==
+                        ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
+                        ComponentsList.ProductCardSprintSaleItem.componentName ||
+                        lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName
+                    )
                 ) {
                     lastVisibleComponent = com.tokopedia.discovery2.datamapper
                         .getComponent(
@@ -1674,41 +1674,41 @@ open class DiscoveryFragment :
 
     private fun removePaddingIfComponent() {
         recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                var pos = Int.MIN_VALUE
-                discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
-                    if (componentsItem.name == ComponentsList.Tabs.componentName) {
-                        pos = index
-                    }
-                    if (index == pos + 1) {
-                        val i = pos + 1
-                        val firstVisibleItemPositions =
-                            staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
-                        val lastVisibleItemPositions =
-                            staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    var pos = Int.MIN_VALUE
+                    discoveryAdapter.currentList.forEachIndexed { index, componentsItem ->
+                        if (componentsItem.name == ComponentsList.Tabs.componentName) {
+                            pos = index
+                        }
+                        if (index == pos + 1) {
+                            val i = pos + 1
+                            val firstVisibleItemPositions =
+                                staggeredGridLayoutManager?.findFirstVisibleItemPositions(null)
+                            val lastVisibleItemPositions =
+                                staggeredGridLayoutManager?.findLastVisibleItemPositions(null)
 
-                        if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
-                            val firstVisibleItemPosition =
-                                firstVisibleItemPositions.minOrNull() ?: -1
-                            val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
+                            if (firstVisibleItemPositions != null && lastVisibleItemPositions != null) {
+                                val firstVisibleItemPosition =
+                                    firstVisibleItemPositions.minOrNull() ?: -1
+                                val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: -1
 
-                            if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
-                                if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
-                                    recyclerView.setPaddingToInnerRV(
-                                        0,
-                                        recyclerView.dpToPx(0).toInt(),
-                                        0,
-                                        0
-                                    )
+                                if (firstVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition != RecyclerView.NO_POSITION) {
+                                    if (i in firstVisibleItemPosition..lastVisibleItemPosition) {
+                                        recyclerView.setPaddingToInnerRV(
+                                            0,
+                                            recyclerView.dpToPx(0).toInt(),
+                                            0,
+                                            0
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
+                    recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
-                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
+            })
     }
 
     fun scrollToComponentWithID(componentID: String) {
@@ -2540,6 +2540,20 @@ open class DiscoveryFragment :
             it[sectionID]?.let { position ->
                 if (position >= 0) {
                     anchorViewHolder?.viewModel?.updateSelectedSection(sectionID, false)
+                }
+            }
+        }
+    }
+
+    fun rebindSelectedSection(sectionID: String, componentID: String) {
+        getSectionPositionMap(pageEndPoint)?.let {
+            it[sectionID]?.let { position ->
+                if (position >= 0) {
+                    (discoveryAdapter.getViewModelAtPosition(position) as? SectionViewModel)?.notifyChildViewModel(
+                        componentID,
+                        Any(),
+                        ComponentsList.FlashSaleTokoTab
+                    )
                 }
             }
         }

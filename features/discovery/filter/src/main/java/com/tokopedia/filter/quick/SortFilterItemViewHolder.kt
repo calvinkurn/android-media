@@ -27,7 +27,7 @@ internal class SortFilterItemViewHolder(
                 chip_image_icon.setImageUrl(sortFilterItem.iconUrl)
             }
 
-            chipSize = ChipsUnify.SIZE_MEDIUM
+            chipSize = ChipsUnify.SIZE_SMALL
 
             val imageUrl: String = if (sortFilterItem.isSelected) {
                 sortFilterItem.imageUrlActive

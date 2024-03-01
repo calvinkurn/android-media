@@ -109,6 +109,7 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        closeIfOfferEnded()
         setTitle(view.context.getString(R.string.bmgm_mini_cart_bmgm_bottom_sheet_title))
 
         setupView()
@@ -177,6 +178,14 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
         if (fm.isStateSaved || isAdded || isVisible) return
 
         show(fm, TAG)
+    }
+
+    private fun closeIfOfferEnded() {
+        val isOfferEnded = MiniCartUtils.checkIsOfferEnded(offerEndDate)
+        if (isOfferEnded) {
+            dismiss()
+            activity?.finish()
+        }
     }
 
     private fun collectData() {
@@ -257,7 +266,7 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
     }
 
     private fun sendAnalyticCloseClicked(data: BmgmMiniCartDataUiModel) {
-        super.setCloseClickListener {
+        bottomSheetClose.setOnClickListener {
             val warehouseId = param.warehouseIds.firstOrNull()?.toString().orEmpty()
             val shopId = param.shopIds.firstOrNull()?.toString().orEmpty()
             val userSession = viewModel.getUserId()

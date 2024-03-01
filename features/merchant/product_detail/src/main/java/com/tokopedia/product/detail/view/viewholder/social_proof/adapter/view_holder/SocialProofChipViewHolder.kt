@@ -9,7 +9,7 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.databinding.SocialProofChipItemBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 /**
  * Created by yovi.putra on 15/02/23"
@@ -18,7 +18,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
 class SocialProofChipViewHolder(
     private val binding: SocialProofChipItemBinding,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : SocialProofTypeViewHolder(binding.root) {
 
     override fun bind(uiModel: SocialProofUiModel, trackData: ComponentTrackDataModel?) = with(binding) {
@@ -77,7 +77,7 @@ class SocialProofChipViewHolder(
     companion object {
         fun create(
             parent: ViewGroup,
-            listener: DynamicProductDetailListener
+            listener: ProductDetailListener
         ): SocialProofChipViewHolder {
             val inflate = LayoutInflater.from(parent.context)
             val binding = SocialProofChipItemBinding.inflate(inflate, parent, false)

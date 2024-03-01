@@ -30,7 +30,6 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMa
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.SavingsWidgetUiStateMapper
-import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
@@ -59,11 +58,17 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.test.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -139,14 +144,13 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         totalPriceText = "Rp500.000",
         isProcessing = false,
         productUrl = "",
-        addonsListUiModel = AddonsListUiModel(
+        addOnSummaryUiModel = AddOnSummaryUiModel(
             addOnIdentifier = "1",
             totalPriceText = StringRes(order_management_commonR.string.raw_string_format, listOf("")),
             addonsLogoUrl = "",
             addonsTitle = "",
-            addonsItemList = listOf(),
-            canExpandCollapse = true,
-            showTotalPrice = true
+            addonItemList = listOf(),
+            canExpandCollapse = true
         )
     )
 

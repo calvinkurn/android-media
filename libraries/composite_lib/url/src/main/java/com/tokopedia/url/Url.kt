@@ -53,5 +53,4 @@ data class Url(
     val TOKOCHAT: String,
     val AFFILIATE: String,
     val ONE_KYC_CLICKSTREAM: String,
-    val GOTO_ACCOUNTS: String
 )

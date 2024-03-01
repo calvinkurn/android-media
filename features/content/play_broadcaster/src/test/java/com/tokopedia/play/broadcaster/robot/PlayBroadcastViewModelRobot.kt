@@ -26,6 +26,7 @@ import com.tokopedia.play.broadcaster.util.TestDoubleModelBuilder
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.TestUriParser
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
+import com.tokopedia.play.broadcaster.util.logger.error.BroadcasterErrorLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
@@ -67,6 +68,7 @@ internal class PlayBroadcastViewModelRobot(
     broadcastTimer: PlayBroadcastTimer = mockk(relaxed = true),
     playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig = mockk(relaxed = true),
     remoteConfig: RemoteConfig = mockk(relaxed = true),
+    errorLogger: BroadcasterErrorLogger = mockk(relaxed = true),
 ) : Closeable {
 
     private val testDoubleModelBuilder = TestDoubleModelBuilder()
@@ -94,6 +96,7 @@ internal class PlayBroadcastViewModelRobot(
         broadcastTimer,
         playShortsEntryPointRemoteConfig,
         remoteConfig,
+        errorLogger,
     )
 
     fun recordState(fn: suspend PlayBroadcastViewModelRobot.() -> Unit): PlayBroadcastUiState {

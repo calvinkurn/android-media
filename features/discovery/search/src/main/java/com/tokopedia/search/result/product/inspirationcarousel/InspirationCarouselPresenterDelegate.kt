@@ -2,9 +2,15 @@ package com.tokopedia.search.result.product.inspirationcarousel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.iris.Iris
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
+import com.tokopedia.search.result.domain.model.SearchCouponModel
+import com.tokopedia.search.result.domain.model.SearchCouponModel.Companion.isValidCoupon
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.SearchRedeemCouponModel
+import com.tokopedia.search.result.presentation.model.CouponDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.ViewUpdater
@@ -26,9 +32,11 @@ import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.UseCase
 import dagger.Lazy
+import org.json.JSONObject
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.coroutines.suspendCoroutine
 
 @SearchScope
 class InspirationCarouselPresenterDelegate @Inject constructor(
@@ -42,15 +50,21 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
     private val viewUpdater: ViewUpdater,
     private val deduplication: Deduplication,
-    private val byteIOTrackingDataFactory: ByteIOTrackingDataFactory,
+    @Named(SearchConstant.SearchCoupon.SEARCH_COUPON_USE_CASE)
+    private val couponUseCase: com.tokopedia.usecase.coroutines.UseCase<SearchCouponModel>,
+    @Named(SearchConstant.SearchCoupon.SEARCH_COUPON_REDEEM_USE_CASE)
+    private val redeemCouponUseCase: com.tokopedia.usecase.coroutines.UseCase<SearchRedeemCouponModel>,
+    private val iris: Iris,
+    private val byteIOTrackingDataFactory: ByteIOTrackingDataFactory
 ) : InspirationCarouselPresenter,
     ApplinkOpener by ApplinkOpenerDelegate {
 
-    private var inspirationCarouselSeamlessDataViewList = mutableListOf<InspirationCarouselDataView>()
+    private var inspirationCarouselSeamlessDataViewList =
+        mutableListOf<InspirationCarouselDataView>()
     private var inspirationCarouselDataViewList = mutableListOf<InspirationCarouselDataView>()
 
     fun setInspirationCarouselSeamlessDataViewList(
-        inspirationCarouselSeamlessDataViewList: List<InspirationCarouselDataView>,
+        inspirationCarouselSeamlessDataViewList: List<InspirationCarouselDataView>
     ) {
         this.inspirationCarouselSeamlessDataViewList =
             inspirationCarouselSeamlessDataViewList.toMutableList()
@@ -60,7 +74,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         totalProductItem: Int,
         externalReference: String,
         keyword: String,
-        action: (Int, List<Visitable<*>>) -> Unit,
+        action: (Int, List<Visitable<*>>) -> Unit
     ) {
         if (inspirationCarouselSeamlessDataViewList.isEmpty()) return
 
@@ -74,7 +88,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
                     InspirationSeamlessMapper.convertToInspirationList(
                         data.options,
                         externalReference,
-                        deduplication,
+                        deduplication
                     )
                 inspirationKeywordVisitableList.add(
                     InspirationKeywordCardView.create(
@@ -82,7 +96,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
                         inspirationKeyboard,
                         isOneOrMoreItemIsEmptyImage,
                         data.type,
-                        keyword,
+                        keyword
                     )
                 )
                 inspirationKeywordVisitableList.addAll(inspirationProduct)
@@ -129,9 +143,9 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     }
 
     private fun isInvalidInspirationCarouselLayout(data: InspirationCarouselDataView): Boolean {
-        return data.isInvalidCarouselChipsLayout()
-            || data.isInvalidCarouselVideoLayout()
-            || data.isInvalidProductBundleLayout()
+        return data.isInvalidCarouselChipsLayout() ||
+            data.isInvalidCarouselVideoLayout() ||
+            data.isInvalidProductBundleLayout()
     }
 
     private fun InspirationCarouselDataView.isInvalidCarouselChipsLayout(): Boolean {
@@ -147,10 +161,12 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         return firstOption != null && !firstOption.hasProducts()
     }
 
-    private fun InspirationCarouselDataView.isInvalidProductBundleLayout() : Boolean {
-        return isBundleLayout()
-            && (options.size < PRODUCT_BUNDLE_MINIMUM_SIZE
-            || options.size > PRODUCT_BUNDLE_MAXIMUM_SIZE)
+    private fun InspirationCarouselDataView.isInvalidProductBundleLayout(): Boolean {
+        return isBundleLayout() &&
+            (
+                options.size < PRODUCT_BUNDLE_MINIMUM_SIZE ||
+                    options.size > PRODUCT_BUNDLE_MAXIMUM_SIZE
+                )
     }
 
     private fun shouldShowInspirationCarousel(layout: String): Boolean {
@@ -180,18 +196,21 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         data.isSeamlessProductLayout() ->
             convertInspirationCarouselToSeamlessInspiration(data, externalReference)
 
+        data.isCouponLayout() ->
+            convertInspirationCarouselToCoupon(data)
+
         else ->
             listOf(data)
     }
 
     private fun convertInspirationCarouselToInspirationProductBundle(
         data: InspirationCarouselDataView,
-        externalReference: String,
+        externalReference: String
     ): List<Visitable<*>> {
         return listOf(
             data.convertToInspirationProductBundleDataView(
                 view.queryKey,
-                externalReference,
+                externalReference
             )
         )
     }
@@ -211,8 +230,9 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
         val hasTitle = data.title.isNotEmpty()
 
-        if (hasTitle)
+        if (hasTitle) {
             broadMatchVisitableList.add(SuggestionDataView.create(data))
+        }
 
         val optionList =
             BroadMatchDataView.createList(
@@ -241,8 +261,11 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         return listOf(
             data.copy(
                 options = data.options.mapIndexed { index, option ->
-                    if (index == 0) option.copy(product = productList)
-                    else option
+                    if (index == 0) {
+                        option.copy(product = productList)
+                    } else {
+                        option
+                    }
                 }
             )
         )
@@ -250,7 +273,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
     private fun convertInspirationCarouselToSeamlessInspiration(
         data: InspirationCarouselDataView,
-        externalReference: String,
+        externalReference: String
     ): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
@@ -261,7 +284,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
                 InspirationSeamlessMapper.convertToInspirationProductDataView(
                     option,
                     externalReference,
-                    deduplication,
+                    deduplication
                 )
             }
         )
@@ -269,6 +292,12 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         visitableList.add(VerticalSeparatorDataView)
 
         return visitableList
+    }
+
+    private fun convertInspirationCarouselToCoupon(
+        data: InspirationCarouselDataView
+    ): List<Visitable<*>> {
+        return listOf(CouponDataView.create(data))
     }
 
     override fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product) {
@@ -327,7 +356,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         adapterPosition: Int,
         inspirationCarouselViewModel: InspirationCarouselDataView,
         clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-        searchParameter: Map<String, Any>,
+        searchParameter: Map<String, Any>
     ) {
         changeActiveInspirationCarouselChips(
             inspirationCarouselViewModel,
@@ -343,13 +372,13 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
             adapterPosition,
             clickedInspirationCarouselOption,
             searchParameter,
-            inspirationCarouselViewModel.title,
+            inspirationCarouselViewModel.title
         )
     }
 
     private fun changeActiveInspirationCarouselChips(
         inspirationCarouselViewModel: InspirationCarouselDataView,
-        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option
     ) {
         inspirationCarouselViewModel.options.forEach {
             it.isChipsActive = false
@@ -362,7 +391,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         adapterPosition: Int,
         clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
         searchParameter: Map<String, Any>,
-        inspirationCarouselTitle: String,
+        inspirationCarouselTitle: String
     ) {
         getInspirationCarouselChipsUseCase.get().unsubscribe()
 
@@ -378,7 +407,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
             createGetInspirationCarouselChipProductsSubscriber(
                 adapterPosition,
                 clickedInspirationCarouselOption,
-                inspirationCarouselTitle,
+                inspirationCarouselTitle
             )
         )
     }
@@ -386,7 +415,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     private fun createGetInspirationCarouselChipProductsSubscriber(
         adapterPosition: Int,
         clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-        inspirationCarouselTitle: String,
+        inspirationCarouselTitle: String
     ): Subscriber<InspirationCarouselChipsProductModel> {
         return object : Subscriber<InspirationCarouselChipsProductModel>() {
             override fun onCompleted() {}
@@ -398,7 +427,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
                     adapterPosition,
                     inspirationCarouselChipsProductModel,
                     clickedInspirationCarouselOption,
-                    inspirationCarouselTitle,
+                    inspirationCarouselTitle
                 )
             }
         }
@@ -408,7 +437,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
         adapterPosition: Int,
         inspirationCarouselChipsProductModel: InspirationCarouselChipsProductModel,
         clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-        inspirationCarouselTitle: String,
+        inspirationCarouselTitle: String
     ) {
         val mapper = InspirationCarouselProductDataViewMapper()
         val inspirationCarouselProduct =
@@ -434,7 +463,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
     }
 
     private fun productLabelGroupToLabelGroupDataView(
-        productLabelGroupList: List<SearchProductModel.ProductLabelGroup>,
+        productLabelGroupList: List<SearchProductModel.ProductLabelGroup>
     ): List<LabelGroupDataView> {
         return productLabelGroupList.map {
             LabelGroupDataView(
@@ -444,6 +473,103 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
                 it.url
             )
         }
+    }
+
+    override suspend fun getInspirationCouponData(
+        visitableList: MutableList<Visitable<*>>,
+        dataView: CouponDataView
+    ) = suspendCoroutine {
+        val requestParams = dataView.createGetCouponDataRequestParam()
+        couponUseCase.execute(
+            { couponDataModel ->
+                it.resumeWith(processCouponDataModel(visitableList, couponDataModel, dataView))
+            },
+            { _ ->
+                it.resumeWith(processCouponDataModel(visitableList, null, dataView))
+            },
+            requestParams
+        )
+    }
+
+    private fun processCouponDataModel(
+        visitableList: MutableList<Visitable<*>>,
+        couponDataModel: SearchCouponModel?,
+        dataView: CouponDataView
+    ): Result<List<Visitable<*>>> {
+        val validCouponWidgetList =
+            couponDataModel?.promoCatalogGetCouponListWidget?.couponListWidget?.filter {
+                it.widgetInfo?.ctaList?.get(0).isValidCoupon()
+            }
+
+        if (couponDataModel == null || validCouponWidgetList.isNullOrEmpty()
+        ) {
+            visitableList.remove(dataView)
+            return Result.success(visitableList)
+        }
+
+        dataView.updateCouponModel(couponDataModel)
+        return Result.success(visitableList)
+    }
+
+    override fun ctaCoupon(dataView: CouponDataView, item: SearchCouponModel.CouponListWidget) {
+        view.trackEventCtaCouponItem(dataView, item)
+        when (item.widgetInfo?.ctaList?.getOrNull(0)?.type) {
+            CouponDataView.CTA_TYPE_CLAIM -> {
+                claimCoupon(dataView, item)
+            }
+
+            CouponDataView.CTA_TYPE_REDIRECT -> {
+                openLink(item)
+            }
+        }
+    }
+
+    private fun openLink(item: SearchCouponModel.CouponListWidget) {
+        val jsonMetaDataCta = item.widgetInfo?.ctaList?.getOrNull(0)?.jsonMetadata?.let {
+            JSONObject(
+                it
+            )
+        } ?: return
+        val appLink = jsonMetaDataCta.optString(CouponDataView.JSON_METADATA_APP_LINK)
+        val url = jsonMetaDataCta.optString(CouponDataView.JSON_METADATA_URL)
+        view.openLink(appLink, url)
+    }
+
+    private fun claimCoupon(
+        dataView: CouponDataView,
+        item: SearchCouponModel.CouponListWidget
+    ) {
+        val requestParams = dataView.createRedeemRequestParam(item)
+        redeemCouponUseCase.execute(
+            { redeemCouponModel ->
+                if (redeemCouponModel.hachikoRedeem?.coupons?.isNotEmpty() == true) {
+                    dataView.updateCouponCtaData(redeemCouponModel, item)
+                    viewUpdater.itemList?.indexOf(dataView)
+                        ?.let { viewUpdater.refreshItemAtIndex(it) }
+
+                    redeemCouponModel.hachikoRedeem?.redeemMessage?.let {
+                        viewUpdater.couponRedeemToaster(
+                            it
+                        )
+                    }
+                }
+            },
+            { throwable ->
+                when (throwable) {
+                    is MessageErrorException -> {
+                        throwable.message?.let { viewUpdater.couponRedeemToaster(it) }
+                    }
+
+                    else -> {
+                    }
+                }
+            },
+            requestParams
+        )
+    }
+
+    override fun onCouponImpressed(couponDataView: CouponDataView) {
+        couponDataView.impress(iris)
     }
 
     companion object {
@@ -458,6 +584,7 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
             LAYOUT_INSPIRATION_CAROUSEL_VIDEO,
             LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS,
             LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT,
+            LAYOUT_INSPIRATION_CAROUSEL_CARD_COUPON
         )
     }
 }

@@ -87,6 +87,35 @@
         app:typographyType="small"
         tools:text="25 Sep 2022 08:00 - 31 Des 2022 08:00 WIB" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_subsidy_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:typographyType="small"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintLeft_toLeftOf="@id/text_start_date_end_date"
+        app:layout_constraintTop_toBottomOf="@id/text_start_date_end_date"
+        tools:text="Disubsidi sebagian" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_subsidy_info"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="2dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:icon_color_light_disabled="@color/Unify_NN500"
+        app:icon_color_light_enable="@color/Unify_NN500"
+        app:icon_color_night_disabled="@color/Unify_NN500"
+        app:icon_color_night_enable="@color/Unify_NN500"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@id/text_subsidy_status"
+        app:layout_constraintLeft_toRightOf="@id/text_subsidy_status"
+        app:layout_constraintTop_toTopOf="@id/text_subsidy_status" />
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_edit_product"
         android:layout_width="20dp"
@@ -110,10 +139,21 @@
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toRightOf="@id/img_edit_product"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/ic_opt_out_subsidy"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_delete"
         app:unify_image_corner_radius="0" />
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_opt_out_subsidy"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="4dp"
+        app:icon_name="CLEAR"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toRightOf="@id/img_delete_product"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

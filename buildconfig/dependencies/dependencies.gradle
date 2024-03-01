@@ -67,7 +67,7 @@ ext {
     playServiceBase = '18.0.1'
     playServiceAnalytics = '17.0.0'
     playServiceLocation = '17.0.0'
-    playServiceMaps = '17.0.0'
+    playServiceMaps = '18.2.0'
     playServiceAuth = '17.0.0'
     playServicePlace = '17.0.0'
     playServiceAuthApiPhone = '16.0.0'
@@ -140,9 +140,9 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyIconsVersion = '1.0.34'
+    unifyIconsVersion = '1.0.35'
     unifyPrinciplesVersion = '1.4.18'
-    unifyComponentsVersion = '1.2.51'
+    unifyComponentsVersion = '1.2.52'
     unifyCoachMarkVersion = '1.2.23'
     unifyCalendarVersion = '1.2.3'
     unifyBannerVersion = '1.0.9'
@@ -379,7 +379,7 @@ ext {
     sduiDependencies = [
             divcore               : "com.yandex.div:div-core:$divKitVersion",
             div                   : "com.yandex.div:div:$divKitVersion",
-            divjson               : "com.yandex.div:div-json:$divKitVersion",
+            divjson               : "com.yandex.div:div-json:$divKitVersion-tkpd",
             divlottie             : "com.yandex.div:div-lottie:$divKitLottieVersion",
             divutils              : "com.yandex.div:utils:$divKitVersion",
     ]
