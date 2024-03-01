@@ -63,9 +63,9 @@ class SearchLogger(
 
     fun logSearchDebug(keyword: String?, filterParams: String? = null) {
         val hasKeyword = keyword != null
-        val remoteConfigEnabled = isLogSearchDebugConfigEnabled()
+        val enabledByVersionCode = isLogSearchDebugConfigByVersionCodeEnabled()
         val enabledByUserId = isLogSearchDebugConfigByUserIdEnabled()
-        val canSendLog = hasKeyword && remoteConfigEnabled && enabledByUserId
+        val canSendLog = hasKeyword && (enabledByVersionCode || enabledByUserId)
 
         if (!canSendLog) return
 
@@ -85,7 +85,7 @@ class SearchLogger(
         return userIdList?.contains(userId).orFalse()
     }
 
-    private fun isLogSearchDebugConfigEnabled(): Boolean {
+    private fun isLogSearchDebugConfigByVersionCodeEnabled(): Boolean {
         val versionCode = versionCode?.toString() ?: return false
         val remoteConfigValue = getRemoteConfigSearchDebugValue()
         val remoteConfigVersionCodeList = remoteConfigValue.firstOrNull()?.split(VERSION_CODE_SEPARATOR)
