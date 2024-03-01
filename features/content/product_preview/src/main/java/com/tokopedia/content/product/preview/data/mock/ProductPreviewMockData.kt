@@ -139,7 +139,7 @@ class ProductPreviewMockData {
                 likeState = ReviewLikeUiState(
                     count = 5,
                     state = ReviewLikeUiState.ReviewLikeStatus.getByValue(1),
-                    withAnimation = false
+                    withAnimation = true
                 ),
                 author = ReviewAuthorUiModel(
                     name = "Author Name",
@@ -189,8 +189,8 @@ class ProductPreviewMockData {
                 menus = ReviewMenuStatus(isReportable = true),
                 likeState = ReviewLikeUiState(
                     count = 5,
-                    state = ReviewLikeUiState.ReviewLikeStatus.getByValue(1),
-                    withAnimation = false
+                    state = ReviewLikeUiState.ReviewLikeStatus.getByValue(2),
+                    withAnimation = true
                 ),
                 author = ReviewAuthorUiModel(
                     name = "Author Name",
@@ -231,8 +231,8 @@ class ProductPreviewMockData {
                 menus = ReviewMenuStatus(isReportable = true),
                 likeState = ReviewLikeUiState(
                     count = 5,
-                    state = ReviewLikeUiState.ReviewLikeStatus.getByValue(1),
-                    withAnimation = false
+                    state = ReviewLikeUiState.ReviewLikeStatus.getByValue(2),
+                    withAnimation = true
                 ),
                 author = ReviewAuthorUiModel(
                     name = "Author Name",
@@ -273,8 +273,8 @@ class ProductPreviewMockData {
                 menus = ReviewMenuStatus(isReportable = true),
                 likeState = ReviewLikeUiState(
                     count = 5,
-                    state = ReviewLikeUiState.ReviewLikeStatus.getByValue(1),
-                    withAnimation = false
+                    state = ReviewLikeUiState.ReviewLikeStatus.getByValue(2),
+                    withAnimation = true
                 ),
                 author = ReviewAuthorUiModel(
                     name = "Author Name",

@@ -255,6 +255,7 @@ class ProductPreviewUnitTest {
             is ProductPreviewSourceModel.ProductSourceData -> {
                 source.productSourceList.indexOfFirst { it.selected }
             }
+
             is ProductPreviewSourceModel.ReviewSourceData -> -1
             ProductPreviewSourceModel.UnknownSource -> -1
         }
@@ -323,7 +324,9 @@ class ProductPreviewUnitTest {
                 robot.reviewContentScrollingState(scrolledPosition, true)
             }.also { state ->
                 state.reviewUiModel.reviewContent.mapIndexed { index, reviewContentUiModel ->
-                    if (index == scrolledPosition) reviewContentUiModel.isScrolling.assertEqualTo(isScrolling)
+                    if (index == scrolledPosition) reviewContentUiModel.isScrolling.assertEqualTo(
+                        isScrolling
+                    )
                     else reviewContentUiModel.isScrolling.assertFalse()
                 }
             }
@@ -348,8 +351,12 @@ class ProductPreviewUnitTest {
                     .medias.indexOfFirst { it.selected }
                 selectedMedia.assertEqualTo(mediaSelectedPosition)
                 state.reviewUiModel.reviewContent.mapIndexed { index, reviewContentUiModel ->
-                    if (index == reviewPosition) reviewContentUiModel.mediaSelectedPosition.assertEqualTo(mediaSelectedPosition)
-                    else reviewContentUiModel.mediaSelectedPosition.assertNotEqualTo(mediaSelectedPosition)
+                    if (index == reviewPosition) reviewContentUiModel.mediaSelectedPosition.assertEqualTo(
+                        mediaSelectedPosition
+                    )
+                    else reviewContentUiModel.mediaSelectedPosition.assertNotEqualTo(
+                        mediaSelectedPosition
+                    )
                 }
             }
         }
@@ -423,10 +430,12 @@ class ProductPreviewUnitTest {
             robot.recordEvent {
                 robot.productActionAddToChartTestCase(expectedData)
             }.also { event ->
-                event.last().assertEqualTo(ProductPreviewUiEvent.ShowSuccessToaster(
-                    type = ProductPreviewUiEvent.ShowSuccessToaster.Type.ATC,
-                    message = ProductPreviewUiEvent.ShowSuccessToaster.Type.ATC.textRes
-                ))
+                event.last().assertEqualTo(
+                    ProductPreviewUiEvent.ShowSuccessToaster(
+                        type = ProductPreviewUiEvent.ShowSuccessToaster.Type.ATC,
+                        message = ProductPreviewUiEvent.ShowSuccessToaster.Type.ATC.textRes
+                    )
+                )
             }
         }
     }
@@ -497,10 +506,12 @@ class ProductPreviewUnitTest {
             robot.recordEvent {
                 robot.productActionAddToChartTestCase(expectedData)
             }.also { event ->
-                event.last().assertEqualTo(ProductPreviewUiEvent.ShowSuccessToaster(
-                    type = ProductPreviewUiEvent.ShowSuccessToaster.Type.Remind,
-                    message = ProductPreviewUiEvent.ShowSuccessToaster.Type.Remind.textRes
-                ))
+                event.last().assertEqualTo(
+                    ProductPreviewUiEvent.ShowSuccessToaster(
+                        type = ProductPreviewUiEvent.ShowSuccessToaster.Type.Remind,
+                        message = ProductPreviewUiEvent.ShowSuccessToaster.Type.Remind.textRes
+                    )
+                )
             }
         }
     }
@@ -571,9 +582,11 @@ class ProductPreviewUnitTest {
             robot.recordEvent {
                 robot.submitReportTestCase(model)
             }.also { event ->
-                event.last().assertEqualTo(ProductPreviewUiEvent.ShowSuccessToaster(
-                    type = ProductPreviewUiEvent.ShowSuccessToaster.Type.Report
-                ))
+                event.last().assertEqualTo(
+                    ProductPreviewUiEvent.ShowSuccessToaster(
+                        type = ProductPreviewUiEvent.ShowSuccessToaster.Type.Report
+                    )
+                )
             }
         }
     }
@@ -612,9 +625,10 @@ class ProductPreviewUnitTest {
             reviewPosition = robot._reviewPosition.value
             robot.recordStateAndEvents {
                 robot.clickMenuTestCase(isFromLogin)
-            }.also { value  ->
+            }.also { value ->
                 value.first.reviewUiModel.reviewContent[reviewPosition].menus.isReportable.assertTrue()
-                value.second.last().assertEqualTo(ProductPreviewUiEvent.ShowMenuSheet(reviewData.reviewContent[reviewPosition].menus))
+                value.second.last()
+                    .assertEqualTo(ProductPreviewUiEvent.ShowMenuSheet(reviewData.reviewContent[reviewPosition].menus))
             }
         }
     }
@@ -636,9 +650,13 @@ class ProductPreviewUnitTest {
             reviewPosition = robot._reviewPosition.value
             robot.recordStateAndEvents {
                 robot.clickMenuTestCase(isFromLogin)
-            }.also { value  ->
+            }.also { value ->
                 value.first.reviewUiModel.reviewContent[reviewPosition].menus.isReportable.assertFalse()
-                value.second.last().assertEqualTo(ProductPreviewUiEvent.LoginUiEvent(reviewData.reviewContent[reviewPosition].menus.copy(isReportable = false)))
+                value.second.last().assertEqualTo(
+                    ProductPreviewUiEvent.LoginUiEvent(
+                        reviewData.reviewContent[reviewPosition].menus.copy(isReportable = false)
+                    )
+                )
             }
         }
     }
@@ -660,9 +678,10 @@ class ProductPreviewUnitTest {
             reviewPosition = robot._reviewPosition.value
             robot.recordStateAndEvents {
                 robot.clickMenuTestCase(isFromLogin)
-            }.also { value  ->
+            }.also { value ->
                 value.first.reviewUiModel.reviewContent[reviewPosition].menus.isReportable.assertTrue()
-                value.second.last().assertEqualTo(ProductPreviewUiEvent.ShowMenuSheet(reviewData.reviewContent[reviewPosition].menus))
+                value.second.last()
+                    .assertEqualTo(ProductPreviewUiEvent.ShowMenuSheet(reviewData.reviewContent[reviewPosition].menus))
             }
         }
     }
@@ -684,9 +703,96 @@ class ProductPreviewUnitTest {
             reviewPosition = robot._reviewPosition.value
             robot.recordStateAndEvents {
                 robot.clickMenuTestCase(isFromLogin)
-            }.also { value  ->
+            }.also { value ->
                 value.first.reviewUiModel.reviewContent[reviewPosition].menus.isReportable.assertFalse()
-                value.second.last().assertEqualTo(ProductPreviewUiEvent.LoginUiEvent(reviewData.reviewContent[reviewPosition].menus.copy(isReportable = false)))
+                value.second.last().assertEqualTo(
+                    ProductPreviewUiEvent.LoginUiEvent(
+                        reviewData.reviewContent[reviewPosition].menus.copy(isReportable = false)
+                    )
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `when like from result and is from double tap and user not login`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val reviewData = mockDataSource.mockReviewData()
+        val isDoubleTap = true
+        val isLogin = false
+        var reviewPosition: Int
+
+        coEvery { mockUserSession.isLoggedIn } returns isLogin
+        coEvery { mockRepository.getReview(productId, 1) } returns reviewData
+
+        getRobot(sourceModel).use { robot ->
+            reviewPosition = robot._reviewPosition.value
+            robot.recordEvent {
+                robot.likeFromResultTestCase(isDoubleTap)
+            }.also { event ->
+                event.last()
+                    .assertEqualTo(ProductPreviewUiEvent.LoginUiEvent(reviewData.reviewContent[reviewPosition].likeState))
+            }
+        }
+    }
+
+    @Test
+    fun `when like from result and is from double tap and user is login`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val reviewData = mockDataSource.mockReviewData()
+        val isDoubleTap = true
+        val isLogin = true
+        var reviewPosition: Int
+
+        coEvery { mockUserSession.isLoggedIn } returns isLogin
+        coEvery { mockRepository.getReview(productId, 1) } returns reviewData
+
+        getRobot(sourceModel).use { robot ->
+            reviewPosition = robot._reviewPosition.value
+            coEvery {
+                mockRepository.likeReview(
+                    reviewData.reviewContent[reviewPosition].likeState,
+                    any()
+                )
+            } returns reviewData.reviewContent[reviewPosition].likeState.copy(withAnimation = true)
+
+            robot.recordState {
+                robot.likeFromResultTestCase(isDoubleTap)
+            }.also { state ->
+                state.reviewUiModel.reviewContent.mapIndexed { index, reviewContentUiModel ->
+                    if (index == reviewPosition) reviewContentUiModel.likeState.withAnimation.assertEqualTo(
+                        isDoubleTap
+                    )
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when like from result and fail`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val reviewData = mockDataSource.mockReviewData()
+        val isDoubleTap = true
+        val isLogin = true
+        var reviewPosition: Int
+
+        coEvery { mockUserSession.isLoggedIn } returns isLogin
+        coEvery { mockRepository.getReview(productId, 1) } returns reviewData
+
+        getRobot(sourceModel).use { robot ->
+            reviewPosition = robot._reviewPosition.value
+            coEvery {
+                mockRepository.likeReview(
+                    reviewData.reviewContent[reviewPosition].likeState,
+                    any()
+                )
+            } throws Throwable("fail fetch")
+
+            robot.recordEvent {
+                robot.likeFromResultTestCase(isDoubleTap)
+            }.also { event ->
+                event.last().assertType<ProductPreviewUiEvent.ShowErrorToaster>()
+                (event.last() as ProductPreviewUiEvent.ShowErrorToaster).onClick()
             }
         }
     }

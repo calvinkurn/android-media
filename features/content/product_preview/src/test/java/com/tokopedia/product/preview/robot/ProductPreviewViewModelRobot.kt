@@ -163,6 +163,11 @@ internal class ProductPreviewViewModelRobot(
         viewModel.onAction(ProductPreviewAction.ClickMenu(isFromLogin))
     }
 
+    fun likeFromResultTestCase(isDoubleTap: Boolean) {
+        initializeReviewMainDataTestCase()
+        viewModel.onAction(ProductPreviewAction.Like(isDoubleTap))
+    }
+
     fun cancelRemainingTasks() {
         viewModel.viewModelScope.coroutineContext.cancelChildren()
     }
