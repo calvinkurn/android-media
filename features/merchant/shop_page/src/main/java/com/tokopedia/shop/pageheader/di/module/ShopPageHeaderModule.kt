@@ -19,7 +19,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
-import com.tokopedia.feedcomponent.R as feedcomponentR
+//import com.tokopedia.feedcomponent.R as feedcomponentR
 
 @Module(includes = [ShopPageHeaderViewModelModule::class])
 class ShopPageHeaderModule {
@@ -40,10 +40,11 @@ class ShopPageHeaderModule {
     @Provides
     @Named(ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST)
     fun provideGqlQueryShopFeedWhitelist(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(
-            context.resources,
-            feedcomponentR.raw.query_whitelist
-        )
+        return ""
+//        GraphqlHelper.loadRawString(
+//            context.resources,
+//            feedcomponentR.raw.query_whitelist
+//        )
     }
 
     @ShopPageHeaderScope

@@ -69,7 +69,7 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.presentation.utils.ContentCreationEntryPointSharedPref
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.feedcomponent.util.util.ClipboardHandler
+//import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.foldable.FoldableAndTabletSupportManager
 import com.tokopedia.foldable.FoldableInfo
 import com.tokopedia.foldable.FoldableSupportManager
@@ -2550,10 +2550,10 @@ class ShopPageHeaderFragment :
                             when (shopShare) {
                                 is ShopShareModel.CopyLink -> {
                                     linkerShareData?.url?.let {
-                                        ClipboardHandler().copyToClipboard(
-                                            (activity as Activity),
-                                            it
-                                        )
+//                                        ClipboardHandler().copyToClipboard(
+//                                            (activity as Activity),
+//                                            it
+//                                        )
                                     }
                                     activity?.runOnUiThread {
                                         Toast.makeText(

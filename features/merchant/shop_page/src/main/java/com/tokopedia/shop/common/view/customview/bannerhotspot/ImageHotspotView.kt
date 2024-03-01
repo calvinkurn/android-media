@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.DefaultLifecycleObserver
-import com.tokopedia.feedcomponent.util.util.doOnLayout
+//import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -96,15 +96,15 @@ class ImageHotspotView @JvmOverloads constructor(
     ) {
         clearDynamicView()
         this.listHotspot = listHotspot
-        imageBanner.doOnLayout {
-            post {
-                addHotspotTagView(listHotspot, listenerBubbleView)
-                addBubbleView(listHotspot)
-                if(isShowIntroAnimation) {
-                    showIntroAnimation()
-                }
-            }
-        }
+//        imageBanner.doOnLayout {
+//            post {
+//                addHotspotTagView(listHotspot, listenerBubbleView)
+//                addBubbleView(listHotspot)
+//                if(isShowIntroAnimation) {
+//                    showIntroAnimation()
+//                }
+//            }
+//        }
     }
 
     private fun clearDynamicView() {
