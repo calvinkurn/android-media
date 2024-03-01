@@ -21,9 +21,11 @@ import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.ScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.translator.manager.TranslatorManager
 import com.tokopedia.translator.manager.TranslatorManagerFragment
 import com.tokopedia.translator.ui.SharedPrefsUtils
@@ -36,6 +38,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
@@ -114,29 +117,21 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
     }
 
     @OptIn(FlowPreview::class)
-    fun ViewTreeObserver.onScrollChangedAsFlow() = callbackFlow<Unit> {
-        var isIdle = true
+    fun ViewTreeObserver.onScrollChangedAsFlow(): Flow<Unit> {
 
-        val preDrawListener = ViewTreeObserver.OnPreDrawListener {
-            isIdle = false
-            true
-        }
+        return callbackFlow<Unit> {
 
-        val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
-            if (!isIdle) {
-                isIdle = true
+            val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
                 trySend(Unit)
             }
-        }
 
-        addOnPreDrawListener(preDrawListener)
-        addOnScrollChangedListener(onScrollChangedListener)
+            addOnScrollChangedListener(onScrollChangedListener)
 
-        awaitClose {
-            removeOnPreDrawListener(preDrawListener)
-            removeOnScrollChangedListener(onScrollChangedListener)
-        }
-    }.debounce(DELAYING_SCROLL_TO_IDLE)
+            awaitClose {
+                removeOnScrollChangedListener(onScrollChangedListener)
+            }
+        }.debounce(DELAYING_SCROLL_TO_IDLE)
+    }
 
     private fun onDestLanguageChangedAsFlow(activity: Activity) = callbackFlow<String> {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
@@ -164,7 +159,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
     companion object {
         private val TAG = ActivityTranslatorCallbacks::class.java.simpleName
 
-        private const val DELAYING_SCROLL_TO_IDLE = 400L
+        private const val DELAYING_SCROLL_TO_IDLE = 500L
     }
 
     internal inner class FragmentTranslatorCallbacks : FragmentManager.FragmentLifecycleCallbacks() {

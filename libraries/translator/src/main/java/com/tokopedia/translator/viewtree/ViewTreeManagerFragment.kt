@@ -37,37 +37,39 @@ internal object ViewTreeManagerFragment {
         val viewPositioningSplitting = domeIdentifier[0].split(INDEX_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }
             .toTypedArray()
 
-        if (domeIdentifier.size > 1) {
-            return lookupForView(
-                (view as ViewGroup).getChildAt(Integer.parseInt(viewPositioningSplitting[1])),
+        val index = viewPositioningSplitting.getOrNull(1)?.toIntOrNull() ?: 0
+        val childView = (view as ViewGroup).getChildAt(index)
+
+        return if (domeIdentifier.size > 1) {
+            lookupForView(
+                childView,
                 Arrays.copyOfRange(domeIdentifier, 1, domeIdentifier.size)
             )
         } else {
-            return (view as ViewGroup).getChildAt(Integer.parseInt(viewPositioningSplitting[1]))
+            childView
         }
     }
 
     fun createDOMIdentifier(view: View, fragment: Fragment): String {
-        var domIdentifier = ""
+        val stringBuilder = StringBuilder()
         var currentView = view
 
         do {
             if (currentView.id == Window.ID_ANDROID_CONTENT) {
-                domIdentifier =
-                    fragment::class.java.name + FRAGMENT_NAME_SEPARATOR + MAIN_CONTENT_LAYOUT_NAME + domIdentifier
+                stringBuilder.insert(0, fragment.javaClass.name + FRAGMENT_NAME_SEPARATOR + MAIN_CONTENT_LAYOUT_NAME)
                 break
             } else {
-                domIdentifier =
-                    CHILD_SEPARATOR + currentView.javaClass.simpleName + INDEX_SEPARATOR + getChildIndexInsideViewGroup(
-                        currentView.parent as ViewGroup,
-                        currentView
-                    ) + domIdentifier
+                stringBuilder.insert(
+                    0,
+                    CHILD_SEPARATOR + currentView.javaClass.simpleName + INDEX_SEPARATOR +
+                        getChildIndexInsideViewGroup(currentView.parent as ViewGroup, currentView)
+                )
             }
 
             currentView = currentView.parent as View
         } while (true)
 
-        return domIdentifier
+        return stringBuilder.toString()
     }
 
     suspend fun findViewByDOMIdentifier(domIdentifier: String, fragment: Fragment): View? {

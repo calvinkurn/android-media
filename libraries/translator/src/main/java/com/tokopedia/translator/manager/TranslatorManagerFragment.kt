@@ -21,6 +21,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.tokopedia.translator.repository.model.StringPoolItem
+import com.tokopedia.translator.repository.model.TextViewUpdateModel
 import com.tokopedia.translator.repository.source.GetDataService
 import com.tokopedia.translator.repository.source.RetrofitClientInstance
 import com.tokopedia.translator.ui.SharedPrefsUtils
@@ -122,6 +123,8 @@ class TranslatorManagerFragment() : CoroutineScope {
 
         if (views.isEmpty()) return
 
+        val updateList = mutableListOf<TextViewUpdateModel>()
+
         for (view in views) {
             if (view is TextView && view !is EditText) {
                 if (view.tag == null || (view.tag !is Boolean && !view.tag.toString().toBoolean())) {
@@ -139,13 +142,20 @@ class TranslatorManagerFragment() : CoroutineScope {
                         } else {
                             //translate
                             if (view.text != stringPoolItem.demandedText) {
-                                withContext(Dispatchers.Main) {
-                                    view.text = stringPoolItem.demandedText
-                                    view.tag = true
-                                }
+                                updateList.add(TextViewUpdateModel(view, stringPoolItem.demandedText))
                             }
                         }
                     }
+                }
+            }
+        }
+
+        //Batch UI Updates
+        withContext(Dispatchers.Main) {
+            for (updateView in updateList) {
+                updateView.textView.text = updateView.newText
+                if (updateView.textView.tag != true) {
+                    updateView.textView.tag = true
                 }
             }
         }
@@ -247,39 +257,46 @@ class TranslatorManagerFragment() : CoroutineScope {
         }
     }
 
-    fun jsonStringToArray(jsonString: String?): Array<String> {
+    private fun jsonStringToArray(jsonString: String?): Array<String> {
         if (jsonString?.isBlank() == true) return emptyArray()
         return gson.fromJson(jsonString, Array<String>::class.java)
     }
 
     suspend fun updateScreenWithTranslatedString() {
         Log.d(TAG, "Starting screen update with translated string ${getCurrentFragment()}")
+
+        val updateViewList = mutableListOf<TextViewUpdateModel>()
         var stringPoolItem: StringPoolItem?
-        var tv: View?
-        for (selector in mSelectors) {
+        var tv: TextView?
+
+        for ((_, selector) in mSelectors) {
             try {
-                tv = ViewTreeManagerFragment.findViewByDOMIdentifier(
-                    selector.value,
+                tv = (ViewTreeManagerFragment.findViewByDOMIdentifier(
+                    selector,
                     getCurrentFragment()!!
-                )
+                ) as? TextView) ?: continue
 
-                if (tv is TextView && tv !is EditText) {
+                stringPoolItem = mStringPoolManager.get(tv.text?.toString())
 
-                    stringPoolItem = mStringPoolManager.get(tv.text?.toString())
+                if (stringPoolItem == null || stringPoolItem.demandedText.isEmpty()) {
+                    continue
+                }
 
-                    if (stringPoolItem == null || stringPoolItem.demandedText.isEmpty()) {
-                        continue
-                    }
-
-                    if (tv.text != stringPoolItem.demandedText) {
-                        withContext(Dispatchers.Main) {
-                            tv.text = stringPoolItem.demandedText
-                            tv.tag = true
-                        }
-                    }
+                if (tv.text != stringPoolItem.demandedText) {
+                    updateViewList.add(TextViewUpdateModel(tv, stringPoolItem.demandedText))
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+        }
+
+        // Batch UI Updates
+        withContext(Dispatchers.Main) {
+            for (updateView in updateViewList) {
+                updateView.textView.text = updateView.newText
+                if (updateView.textView.tag != true) {
+                    updateView.textView.tag = true
+                }
             }
         }
     }

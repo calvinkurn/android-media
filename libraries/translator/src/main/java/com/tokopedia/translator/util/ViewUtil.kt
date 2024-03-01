@@ -35,9 +35,9 @@ internal object ViewUtil {
             while (unTraversedViews.isNotEmpty()) {
                 val child = unTraversedViews.removeAt(0)
 
-                if (child is TextView && child !is EditText) {
-                    val stringPollItem = stringPoolManager?.get(child.text?.toString())
-                    if (stringPollItem?.demandedText != child.text) {
+                if (child is TextView) {
+                    val demandedText = stringPoolManager?.get(child.text?.toString())?.demandedText.orEmpty()
+                    if (demandedText != child.text) {
                         traversedViews.add(child)
                     }
                 }

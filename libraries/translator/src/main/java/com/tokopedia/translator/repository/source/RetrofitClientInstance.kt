@@ -23,7 +23,7 @@ interface RetrofitClientInstance {
         fun getRetrofitInstance(): Retrofit {
 
             return Retrofit.Builder()
-                .baseUrl("https://translate.yandex.net")
+                .baseUrl("https://clients5.google.com")
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build()
         }

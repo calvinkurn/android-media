@@ -19,7 +19,7 @@ import retrofit2.http.Headers
 import retrofit2.http.Query
 
 interface GetDataService {
-    @GET("https://clients5.google.com/translate_a/t")
+    @GET("/translate_a/t")
     @Headers("Content-Type: application/json")
     fun getTranslatedString(
         @Query("client") client: String,
