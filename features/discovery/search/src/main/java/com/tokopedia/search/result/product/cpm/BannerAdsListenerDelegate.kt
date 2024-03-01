@@ -119,7 +119,7 @@ class BannerAdsListenerDelegate(
                 data.asByteIOSearchResult(null)
             )
 
-            if (!isReimagine)
+            if (!isReimagine && data.isShopBig())
                 AppLogSearch.eventSearchResultShow(
                     data.shopItemAsByteIOSearchResult(null)
                 )
