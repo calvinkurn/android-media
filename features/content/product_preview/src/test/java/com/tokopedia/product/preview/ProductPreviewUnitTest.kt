@@ -459,4 +459,72 @@ class ProductPreviewUnitTest {
         }
     }
 
+    @Test
+    fun `when product action remind me and user not login should emit login event`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val expectedData = mockDataSource.mockProductMiniInfo(
+            hasVariant = false,
+            buttonState = BottomNavUiModel.ButtonState.OOS,
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns false
+        coEvery { mockRepository.getProductMiniInfo(productId) } returns expectedData
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordEvent {
+                robot.productActionAddToChartTestCase(expectedData)
+            }.also { event ->
+                event.last().assertEqualTo(ProductPreviewUiEvent.LoginUiEvent(expectedData))
+            }
+        }
+    }
+
+    @Test
+    fun `when product action remind me and success then should emit success toaster`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val expectedData = mockDataSource.mockProductMiniInfo(
+            hasVariant = false,
+            buttonState = BottomNavUiModel.ButtonState.OOS,
+        )
+        val expectedResult = BottomNavUiModel.RemindMeUiModel(true, "success")
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepository.getProductMiniInfo(productId) } returns expectedData
+        coEvery { mockRepository.remindMe(productId) } returns expectedResult
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordEvent {
+                robot.productActionAddToChartTestCase(expectedData)
+            }.also { event ->
+                event.last().assertEqualTo(ProductPreviewUiEvent.ShowSuccessToaster(
+                    type = ProductPreviewUiEvent.ShowSuccessToaster.Type.Remind,
+                    message = ProductPreviewUiEvent.ShowSuccessToaster.Type.Remind.textRes
+                ))
+            }
+        }
+    }
+
+    @Test
+    fun `when product action remind me and fail should emit error toaster`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val expectedData = mockDataSource.mockProductMiniInfo(
+            hasVariant = false,
+            buttonState = BottomNavUiModel.ButtonState.OOS,
+        )
+        val expectedResult = BottomNavUiModel.RemindMeUiModel(false, "not success")
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepository.getProductMiniInfo(productId) } returns expectedData
+        coEvery { mockRepository.remindMe(productId) } returns expectedResult
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordEvent {
+                robot.productActionAddToChartTestCase(expectedData)
+            }.also { event ->
+                event.last().assertType<ProductPreviewUiEvent.ShowErrorToaster>()
+                (event.last() as ProductPreviewUiEvent.ShowErrorToaster).onClick()
+            }
+        }
+    }
+
 }
