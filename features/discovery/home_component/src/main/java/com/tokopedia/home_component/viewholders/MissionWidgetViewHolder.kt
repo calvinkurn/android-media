@@ -122,7 +122,8 @@ class MissionWidgetViewHolder(
                 cardPosition = index,
                 animateOnPress = item.animateOnPress,
                 isCache = item.isCache,
-                type = type
+                type = type,
+                appLog = item.appLog,
             )
         }
     }
