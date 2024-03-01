@@ -401,7 +401,7 @@ open class EmoneyPdpFragment :
 
     private fun mapImage(data: TelcoCatalogPrefixSelect): List<String> {
 //        return data.rechargeCatalogPrefixSelect.prefixes.filter {
-//            it.operator.attributes.status == 1
+//            it.operator.attributes.status == STATUS_ACTIVE
 //        }.map {
 //            it.operator.attributes.imageUrl
 //        }.distinct()
@@ -1196,6 +1196,8 @@ open class EmoneyPdpFragment :
         const val ISSUER_NAME_EMONEY = "emoney"
         const val ISSUER_NAME_BRIZZI = "brizzi"
         const val ISSUER_NAME_TAPCASH = "tapcash"
+
+        private const val STATUS_ACTIVE = 1
 
         private const val TOOLBAR_ICON_SIZE = 64
 

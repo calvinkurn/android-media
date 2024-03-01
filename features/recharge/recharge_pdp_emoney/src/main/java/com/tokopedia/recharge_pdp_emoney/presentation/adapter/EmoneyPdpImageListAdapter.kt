@@ -3,7 +3,7 @@ package com.tokopedia.recharge_pdp_emoney.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_pdp_emoney.databinding.ItemEmoneyImageListBinding
 
@@ -13,7 +13,7 @@ class EmoneyPdpImagesListAdapter: RecyclerView.Adapter<EmoneyPdpImagesListAdapte
 
     fun renderList(list: List<String>) {
         imageList = list
-        notifyItemChanged(Int.ONE, imageList.size)
+        notifyItemChanged(Int.ZERO, imageList.size)
     }
 
     override fun getItemCount(): Int {

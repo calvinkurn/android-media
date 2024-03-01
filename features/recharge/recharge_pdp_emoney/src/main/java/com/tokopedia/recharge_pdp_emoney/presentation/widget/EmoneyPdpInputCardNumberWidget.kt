@@ -10,9 +10,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.databinding.WidgetEmoneyInputCardNumberBinding
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPDPImagesCardListAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpImagesListAdapter
@@ -62,7 +62,7 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun renderEmoneyImages(listImages: List<String>) {
-        if (listImages.size <= 5) {
+        if (listImages.size <= LIST_SIZE) {
             renderEmoneyListImages(listImages)
         } else {
             renderTextViewList(listImages)
@@ -72,7 +72,7 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
     private fun renderTextViewList(listImages: List<String>) {
         binding.tgSeePartners.show()
         binding.icChevronImageList.show()
-        val bestThree = listImages.subList(0, 3)
+        val bestThree = listImages.subList(Int.ZERO, LIST_LIMITED_SIZE)
         val adapter = EmoneyPDPImagesCardListAdapter()
         binding.rvEmoneyLimitedList.adapter = adapter
         binding.rvEmoneyLimitedList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -143,5 +143,7 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
     companion object {
         private const val MAX_CHAR_EMONEY_CARD_NUMBER_WITH_SPACES = 20
         private const val MAX_CHAR_EMONEY_CARD_NUMBER_BLOCK = 4
+        private const val LIST_SIZE = 5
+        private const val LIST_LIMITED_SIZE = 3
     }
 }
