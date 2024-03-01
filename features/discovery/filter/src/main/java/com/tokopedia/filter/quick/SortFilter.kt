@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class SortFilter: ConstraintLayout {
 
@@ -108,7 +109,7 @@ class SortFilter: ConstraintLayout {
         chip_container.gravity = Gravity.CENTER
         val chipBackground = GradientDrawable()
         chipBackground.shape = GradientDrawable.RECTANGLE
-        chipBackground.setColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
+        chipBackground.setColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN50))
         chipBackground.cornerRadius = 16.toPx().toFloat()
         background = chipBackground
     }
