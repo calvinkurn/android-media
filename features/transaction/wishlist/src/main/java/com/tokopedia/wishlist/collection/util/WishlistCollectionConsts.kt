@@ -14,7 +14,6 @@ object WishlistCollectionConsts {
     const val DELAY_REFETCH_PROGRESS_DELETION = 5000L
     const val DELAY_SHOW_COACHMARK_TOOLBAR = 500L
     const val SOURCE_PDP = "pdp"
-    const val SOURCE_CART = "cart"
     const val OK = "OK"
 
     const val TYPE_COLLECTION_TICKER = "collection_ticker"
