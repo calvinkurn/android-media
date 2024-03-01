@@ -153,32 +153,32 @@ class HydraSharedPreferences @Inject constructor(
         )
     }
 
-    fun setLiveToVodBottomSheetPref(page: String, authorId: String) {
+    fun setLiveToVodBottomSheetPref(key: String, authorId: String) {
         mSharedPrefs.edit()
             .putBoolean(
-                String.format(KEY_LIVE_TO_VOD_BOTTOM_SHEET, page, authorId),
+                String.format("${key}_%s", authorId),
                 false,
             ).apply()
     }
 
-    fun getLiveToVodBottomSheetPref(page: String, authorId: String): Boolean {
+    fun getLiveToVodBottomSheetPref(key: String, authorId: String): Boolean {
         return mSharedPrefs.getBoolean(
-            String.format(KEY_LIVE_TO_VOD_BOTTOM_SHEET, page, authorId),
+            String.format("${key}_%s", authorId),
             true,
         )
     }
 
-    fun setLiveToVodTickerPref(page: String, authorId: String) {
+    fun setLiveToVodTickerPref(key: String, authorId: String) {
         mSharedPrefs.edit()
             .putBoolean(
-                String.format(KEY_LIVE_TO_VOD_TICKER, page, authorId),
+                String.format("${key}_%s", authorId),
                 false,
             ).apply()
     }
 
-    fun getLiveToVodTickerPref(page: String, authorId: String): Boolean {
+    fun getLiveToVodTickerPref(key: String, authorId: String): Boolean {
         return mSharedPrefs.getBoolean(
-            String.format(KEY_LIVE_TO_VOD_TICKER, page, authorId),
+            String.format("${key}_%s", authorId),
             true,
         )
     }
@@ -196,7 +196,5 @@ class HydraSharedPreferences @Inject constructor(
         private const val KEY_LAST_SELECTED_ACCOUNT = "last_selected_account_%s"
         private const val KEY_SAVED_SELECTED_AUTO_GENERATED_COVER = "saved_selected_auto_generated_cover_%s_%s"
         private const val KEY_UPLOADED_COVER_SOURCE = "saved_cover_source_%s_%s"
-        private const val KEY_LIVE_TO_VOD_BOTTOM_SHEET = "live_to_vod_bottom_sheet_%s_%s"
-        private const val KEY_LIVE_TO_VOD_TICKER = "live_to_vod_ticker_%s_%s"
     }
 }

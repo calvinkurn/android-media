@@ -22,6 +22,8 @@ data class Data(
     val type: Int = 0,
     @SerializedName("imageURL")
     val imageURL: String = "",
+    @SerializedName("cacheKey")
+    val cacheKey: String = "",
     @SerializedName("mainText")
     val mainText: List<MainText> = emptyList(),
     @SerializedName("bottomText")

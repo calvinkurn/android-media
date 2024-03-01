@@ -6,13 +6,13 @@ import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.product.picker.seller.model.PriceUnknown
+import com.tokopedia.content.product.picker.seller.model.ProductPrice
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
-import com.tokopedia.content.product.picker.seller.model.PriceUnknown
-import com.tokopedia.content.product.picker.seller.model.ProductPrice
 import com.tokopedia.play.broadcaster.shorts.ui.model.ProductVideoUiModel
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
@@ -307,6 +307,7 @@ class UiModelBuilder {
             ),
             page = page,
             type = type,
+            cacheKey = "${type.name}_1",
             imageURL = "tokopedia.com",
             bottomText = TickerBottomSheetUiModel.BottomText(
                 action = listOf(

@@ -7,6 +7,10 @@ import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet
 import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.product.picker.seller.model.OriginalPrice
+import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.util.PriceFormatUtil
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
@@ -19,7 +23,6 @@ import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
-import com.tokopedia.content.product.picker.seller.model.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
@@ -28,9 +31,6 @@ import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
-import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
-import com.tokopedia.content.product.picker.seller.util.PriceFormatUtil
 import com.tokopedia.play.broadcaster.ui.model.log.BroadcasterErrorLog
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
@@ -942,7 +942,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getLiveToVodBottomSheetPref(
-            page = TickerBottomSheetPage.LIVE_PREPARATION.value,
+            key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
 
@@ -982,7 +982,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getLiveToVodBottomSheetPref(
-            page = TickerBottomSheetPage.LIVE_PREPARATION.value,
+            key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
 
@@ -1022,7 +1022,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getLiveToVodBottomSheetPref(
-            page = TickerBottomSheetPage.LIVE_PREPARATION.value,
+            key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
 
@@ -1052,13 +1052,17 @@ class PlayBroadcasterViewModelTest {
     fun `when user account eligible and fail get disable live to vod in preparation live, then it should not show`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
+        val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
+            page = TickerBottomSheetPage.LIVE_REPORT,
+            type = TickerBottomSheetType.TICKER,
+        )
         val isFirstTime = false
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } throws Throwable("Fail?")
         coEvery { mockHydraSharedPreferences.getLiveToVodBottomSheetPref(
-            page = TickerBottomSheetPage.LIVE_PREPARATION.value,
+            key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
 
@@ -1098,7 +1102,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getLiveToVodTickerPref(
-            page = TickerBottomSheetPage.LIVE_REPORT.value,
+            key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
 
@@ -1138,7 +1142,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getLiveToVodTickerPref(
-            page = TickerBottomSheetPage.LIVE_REPORT.value,
+            key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
 
@@ -1168,13 +1172,14 @@ class PlayBroadcasterViewModelTest {
     fun `when user account eligible and fail get disable live to vod in report page, then it should not show`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
+        val responseMock = uiModelBuilder.buildTickerBottomSheetResponse()
         val isFirstTime = false
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } throws Throwable("Fail?")
         coEvery { mockHydraSharedPreferences.getLiveToVodTickerPref(
-            page = TickerBottomSheetPage.LIVE_REPORT.value,
+            key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
 
@@ -1211,7 +1216,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getLiveToVodTickerPref(
-            page = TickerBottomSheetPage.LIVE_REPORT.value,
+            key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
 
@@ -1254,8 +1259,8 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getLiveToVodBottomSheetPref(
-            page = page.value,
-            authorId = authorId
+            key = responseMock.cacheKey,
+            authorId = authorId,
         ) } returns isFirstTime
 
         val robot = PlayBroadcastViewModelRobot(
@@ -1267,12 +1272,11 @@ class PlayBroadcasterViewModelTest {
         )
 
         robot.use {
-            it.getViewModel().submitAction(PlayBroadcastAction.SetLiveToVodPref(
-                type = type,
-                page = page,
-            ))
-            mockHydraSharedPreferences.getLiveToVodBottomSheetPref(page = page.value, authorId = authorId)
-                .assertEqualTo(false)
+            it.getViewModel().submitAction(PlayBroadcastAction.SetLiveToVodPref(type = type))
+            mockHydraSharedPreferences.getLiveToVodBottomSheetPref(
+                key = responseMock.cacheKey,
+                authorId = authorId
+            ).assertEqualTo(false)
         }
     }
 
@@ -1293,7 +1297,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getLiveToVodTickerPref(
-            page = page.value,
+            key = responseMock.cacheKey,
             authorId = authorId
         ) } returns isFirstTime
 
@@ -1306,12 +1310,11 @@ class PlayBroadcasterViewModelTest {
         )
 
         robot.use {
-            it.getViewModel().submitAction(PlayBroadcastAction.SetLiveToVodPref(
-                type = type,
-                page = page,
-            ))
-            mockHydraSharedPreferences.getLiveToVodTickerPref(page = page.value, authorId = authorId)
-                .assertEqualTo(false)
+            it.getViewModel().submitAction(PlayBroadcastAction.SetLiveToVodPref(type = type))
+            mockHydraSharedPreferences.getLiveToVodTickerPref(
+                key = responseMock.cacheKey,
+                authorId = authorId
+            ).assertEqualTo(false)
         }
     }
 

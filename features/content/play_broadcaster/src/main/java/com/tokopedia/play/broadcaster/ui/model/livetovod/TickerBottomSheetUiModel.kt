@@ -13,6 +13,7 @@ data class TickerBottomSheetUiModel(
     val type: TickerBottomSheetType,
     val page: TickerBottomSheetPage,
     val imageURL: String,
+    val cacheKey: String,
     val bottomText: BottomText,
     val mainText: List<MainText>,
 ) {
@@ -38,6 +39,7 @@ data class TickerBottomSheetUiModel(
             page = TickerBottomSheetPage.UNKNOWN,
             type = TickerBottomSheetType.UNKNOWN,
             imageURL = "",
+            cacheKey = "",
             bottomText = BottomText(
                 action = emptyList(),
                 description = "",
