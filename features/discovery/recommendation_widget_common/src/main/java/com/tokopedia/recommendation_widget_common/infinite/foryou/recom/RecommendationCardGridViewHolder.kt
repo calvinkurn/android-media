@@ -5,11 +5,10 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.R
-import com.tokopedia.recommendation_widget_common.databinding.WidgetForYouRecomGridBinding
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ParentRecommendationListener
-import com.tokopedia.utils.view.binding.viewBinding
 
 class RecommendationCardGridViewHolder constructor(
     view: View,
@@ -19,7 +18,7 @@ class RecommendationCardGridViewHolder constructor(
     RecommendationCardModel::class.java
 ), AppLogRecTriggerInterface {
 
-    private val binding: WidgetForYouRecomGridBinding? by viewBinding()
+    private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
 
     private var recTriggerObject = RecommendationTriggerObject()
 
@@ -31,12 +30,18 @@ class RecommendationCardGridViewHolder constructor(
         setItemThreeDotsClickListener(element)
     }
 
+    override fun bindPayload(newItem: RecommendationCardModel?) {
+        newItem?.let {
+            setItemThreeDotsClickListener(it)
+        }
+    }
+
     private fun setLayout(element: RecommendationCardModel) {
-        binding?.productCardView?.setProductModel(element.productCardModel)
+        productCardView?.setProductModel(element.productCardModel)
     }
 
     private fun productCardImpressionListener(element: RecommendationCardModel) {
-        binding?.productCardView?.setImageProductViewHintListener(
+        productCardView?.setImageProductViewHintListener(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
@@ -50,7 +55,7 @@ class RecommendationCardGridViewHolder constructor(
     }
 
     private fun setItemProductCardClickListener(element: RecommendationCardModel) {
-        binding?.productCardView?.setOnClickListener {
+        productCardView?.setOnClickListener {
             listener.onProductCardClicked(
                 element,
                 bindingAdapterPosition
@@ -59,7 +64,7 @@ class RecommendationCardGridViewHolder constructor(
     }
 
     private fun setItemThreeDotsClickListener(productCardItem: RecommendationCardModel) {
-        binding?.productCardView?.setThreeDotsOnClickListener {
+        productCardView?.setThreeDotsOnClickListener {
             listener.onProductCardThreeDotsClicked(
                 productCardItem,
                 bindingAdapterPosition

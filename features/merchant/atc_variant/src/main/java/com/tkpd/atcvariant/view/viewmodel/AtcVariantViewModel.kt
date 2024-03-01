@@ -482,7 +482,7 @@ class AtcVariantViewModel @Inject constructor(
 
     fun hitAtc(
         actionButton: Int,
-        shopIdInt: Int,
+        shopId: String,
         categoryName: String,
         userId: String,
         shippingMinPrice: Double,
@@ -537,7 +537,7 @@ class AtcVariantViewModel @Inject constructor(
                 actionButtonCart = actionButton,
                 selectedChild = selectedChild,
                 selectedWarehouse = selectedWarehouse,
-                shopIdInt = shopIdInt,
+                shopId = shopId,
                 trackerAttributionPdp = trackerAttributionPdp,
                 trackerListNamePdp = trackerListNamePdp,
                 categoryName = categoryName,

@@ -4,14 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
-import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterEmailFragment
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterEmailFragment.Companion.createInstance
@@ -61,8 +58,10 @@ class RegisterEmailActivity : BaseSimpleActivity(), HasComponent<RegisterInitial
             return Intent(context, RegisterEmailActivity::class.java)
         }
 
-        fun getCallingIntentWithEmail(context: Context, email: String,
-                                      source: String): Intent {
+        fun getCallingIntentWithEmail(
+            context: Context, email: String,
+            source: String
+        ): Intent {
             val intent = Intent(context, RegisterEmailActivity::class.java)
             val bundle = Bundle()
             bundle.putString(EXTRA_PARAM_EMAIL, email)

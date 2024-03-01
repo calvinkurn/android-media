@@ -151,6 +151,8 @@
         app:cardBackgroundColor="@color/Unify_NN0"
         app:cardElevation="4dp"
         android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -160,6 +162,19 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="2">
+            <com.tokopedia.iconunify.IconUnify
+                android:background="@drawable/shop_discount_bg_bulk_opt_out_button"
+                android:id="@+id/btn_bulk_opt_out"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="8dp"
+                android:padding="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:icon_name="CLEAR"
+                app:layout_constraintRight_toLeftOf="@id/text_opt_out_subsidy"
+                app:layout_constraintTop_toBottomOf="@id/imageView" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnBulkDelete"

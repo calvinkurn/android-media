@@ -122,6 +122,6 @@
         app:layout_constraintBottom_toBottomOf="@id/searchTextView"
         app:layout_constraintRight_toRightOf="@id/searchTextView"
         app:layout_constraintTop_toTopOf="@id/searchTextView"
-        app:srcCompat="@drawable/autocomplete_ic_add_animated" />
+        app:srcCompat="@drawable/autocomplete_ic_add" />
 
 </merge>

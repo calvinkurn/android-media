@@ -53,7 +53,6 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
@@ -594,7 +593,7 @@ class AtcVariantBottomSheet :
                 .getChildByProductId(productId)
                 ?.promoPrice
                 ?.promoCodes
-                ?.mapIntoPromoExternalAutoApply() ?: return
+                ?.mapIntoPromoExternalAutoApply() ?: arrayListOf()
 
         ProductCartHelper.goToOneClickCheckoutWithAutoApplyPromo(
             (context as AtcVariantActivity),
@@ -1006,7 +1005,7 @@ class AtcVariantBottomSheet :
 
             viewModel.hitAtc(
                 buttonAction,
-                sharedData?.shopId?.toIntOrZero() ?: 0,
+                sharedData?.shopId.orEmpty(),
                 viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted()
                     ?: "",
                 userSessionInterface.userId,

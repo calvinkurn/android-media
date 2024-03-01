@@ -37,6 +37,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
+import com.tokopedia.search.result.presentation.model.CouponDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
@@ -109,6 +110,10 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import rx.Observable
 import rx.Subscriber
@@ -239,9 +244,12 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
+    // Scope
+    private val coroutineJob = Job()
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + coroutineJob)
+
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
-
         chooseAddressDelegate.updateChooseAddress()
     }
 
@@ -386,7 +394,6 @@ class ProductListPresenter @Inject constructor(
             postProcessingFilter.resetCount()
             getViewToShowMoreData(searchParameter, searchProductModel, productDataView)
         }
-
     }
 
     private fun createProductDataView(
@@ -443,28 +450,32 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         productDataView: ProductDataView
     ) {
-        val loadMoreProductList = createProductItemVisitableList(
-            productDataView,
-            searchParameter
-        )
-
-        val loadMoreVisitableList =
-            visitableFactory.createLoadMoreVisitableList(
-                VisitableFactorySecondPageData(
-                    isLocalSearch(),
-                    responseCode,
-                    searchProductModel,
-                    externalReference,
-                    constructGlobalSearchApplink(),
-                    loadMoreProductList,
-                    view.queryKey
-                )
+        coroutineScope.launch {
+            val loadMoreProductList = createProductItemVisitableList(
+                productDataView,
+                searchParameter
             )
 
-        view.removeLoading()
-        view.addProductList(loadMoreVisitableList)
-        if (hasNextPage()) view.addLoading()
-        view.updateScrollListener()
+            val loadMoreVisitableList =
+                visitableFactory.createLoadMoreVisitableList(
+                    VisitableFactorySecondPageData(
+                        isLocalSearch(),
+                        responseCode,
+                        searchProductModel,
+                        externalReference,
+                        constructGlobalSearchApplink(),
+                        loadMoreProductList,
+                        view.queryKey
+                    )
+                ).toMutableList()
+
+            handleCouponVisitable(loadMoreVisitableList)
+
+            view.removeLoading()
+            view.addProductList(loadMoreVisitableList)
+            if (hasNextPage()) view.addLoading()
+            view.updateScrollListener()
+        }
     }
 
     private fun createProductItemVisitableList(
@@ -937,39 +948,54 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         productDataView: ProductDataView
     ) {
-        adsInjector.resetTopAdsPosition()
+        coroutineScope.launch {
+            adsInjector.resetTopAdsPosition()
 
-        val productList = createProductItemVisitableList(productDataView, searchParameter)
+            val productList = createProductItemVisitableList(productDataView, searchParameter)
 
-        val visitableList = visitableFactory.createFirstPageVisitableList(
-            VisitableFactoryFirstPageData(
-                productDataView,
-                pageTitle,
-                getIsGlobalNavWidgetAvailable(productDataView),
-                isLocalSearch(),
-                isTickerHasDismissed,
-                responseCode,
-                productList,
-                searchProductModel,
-                externalReference,
-                constructGlobalSearchApplink(),
-                view.queryKey
-            )
-        )
+            val visitableList = visitableFactory.createFirstPageVisitableList(
+                VisitableFactoryFirstPageData(
+                    productDataView,
+                    pageTitle,
+                    getIsGlobalNavWidgetAvailable(productDataView),
+                    isLocalSearch(),
+                    isTickerHasDismissed,
+                    responseCode,
+                    productList,
+                    searchProductModel,
+                    externalReference,
+                    constructGlobalSearchApplink(),
+                    view.queryKey
+                )
+            ).toMutableList()
 
-        additionalParams = productDataView.additionalParams
-        firstProductPositionWithBOELabel = getFirstProductPositionWithBOELabel(visitableList)
+            handleCouponVisitable(visitableList)
 
-        view.removeLoading()
-        view.setProductList(visitableList)
-        view.backToTop()
-        if (hasNextPage()) {
-            view.addLoading()
+            additionalParams = productDataView.additionalParams
+            firstProductPositionWithBOELabel = getFirstProductPositionWithBOELabel(visitableList)
+
+            view.removeLoading()
+            view.setProductList(visitableList)
+            view.backToTop()
+            if (hasNextPage()) {
+                view.addLoading()
+            }
+
+            view.updateScrollListener()
+
+            checkShouldShowViewTypeOnBoarding(productListType)
         }
+    }
 
-        view.updateScrollListener()
-
-        checkShouldShowViewTypeOnBoarding(productListType)
+    private suspend fun handleCouponVisitable(
+        loadMoreVisitableList: MutableList<Visitable<*>>
+    ) {
+        val couponDataViewList = loadMoreVisitableList.filterIsInstance<CouponDataView>()
+        if (couponDataViewList.isNotEmpty()) {
+            couponDataViewList.forEach {
+                getInspirationCouponData(loadMoreVisitableList, it)
+            }
+        }
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {
@@ -1604,7 +1630,7 @@ class ProductListPresenter @Inject constructor(
         getPostATCCarouselUseCase.get()?.unsubscribe()
         recommendationPresenterDelegate.detachView()
         onSafeSearchViewDestroyed()
-
+        coroutineJob.cancel()
         if (compositeSubscription?.isUnsubscribed == true) unsubscribeCompositeSubscription()
     }
 
