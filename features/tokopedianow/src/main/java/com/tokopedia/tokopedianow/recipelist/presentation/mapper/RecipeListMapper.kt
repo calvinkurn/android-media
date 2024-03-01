@@ -4,13 +4,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
+import com.tokopedia.tokopedianow.recipecommon.ui.model.TagUiModel
+import com.tokopedia.tokopedianow.recipelist.domain.model.GetRecipeListResponse
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeCountUiModel
+import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeEmptyStateUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeFilterUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeHeaderUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
-import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeEmptyStateUiModel
-import com.tokopedia.tokopedianow.recipelist.domain.model.GetRecipeListResponse
 
 object RecipeListMapper {
 

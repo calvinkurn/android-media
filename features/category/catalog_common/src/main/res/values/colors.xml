@@ -27,4 +27,5 @@
     <color name="dms_static_color_slate_gray">#4F525C</color>
     <color name="dms_static_color_cotton_candy_pink">#FFB2C2</color>
     <color name="dms_static_color_pearl_white">#FFF5F6</color>
+    <color name="dms_static_catalog_white">#FFFFFF</color>
 </resources>

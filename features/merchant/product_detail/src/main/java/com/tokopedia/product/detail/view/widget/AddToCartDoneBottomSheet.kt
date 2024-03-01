@@ -288,8 +288,7 @@ open class AddToCartDoneBottomSheet :
                             atcDoneAdapter.addElement(
                                 AddToCartDoneRecommendationCarouselDataModel(
                                     mapRecommendationWidgetToAddToCartRecommendationDataModel(it.data.first()),
-                                    addedProductDataModel?.shopId
-                                        ?: -1
+                                    addedProductDataModel?.shopId.orEmpty()
                                 )
                             )
                         } else {

@@ -30,11 +30,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationLoadingViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationPlayWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.RecomEntityCardViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.listener.ImpressionRecommendationItemListener
 import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayVideoWidgetManager
 
 class HomeRecommendationTypeFactoryImpl(
     private val listener: GlobalRecomListener,
+    private val impressionListener: ImpressionRecommendationItemListener,
     private val homeRecommendationVideoWidgetManager: PlayVideoWidgetManager
 ) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
     override fun type(dataModel: RecomEntityCardUiModel): Int {
@@ -88,6 +90,7 @@ class HomeRecommendationTypeFactoryImpl(
         return when (type) {
             HomeRecommendationItemGridViewHolder.LAYOUT -> HomeRecommendationItemGridViewHolder(
                 parent,
+                impressionListener,
                 listener
             )
 
@@ -95,6 +98,7 @@ class HomeRecommendationTypeFactoryImpl(
 
             HomeRecommendationItemListViewHolder.LAYOUT -> HomeRecommendationItemListViewHolder(
                 parent,
+                impressionListener,
                 listener
             )
 
