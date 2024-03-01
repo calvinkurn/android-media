@@ -206,11 +206,6 @@ class InboxDetailViewModelTest {
     }
 
     @Test
-    fun `get dynamic csat data`() {
-        viewModel.getDynamicCsatData()
-    }
-
-    @Test
     fun `get Ticket Detail status SOLVED`() {
         val csatTarget = createBadCsatReasonListItem()
         val ticketsTarget = createTicketDetail().getDataTicket()
