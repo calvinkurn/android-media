@@ -168,6 +168,11 @@ internal class ProductPreviewViewModelRobot(
         viewModel.onAction(ProductPreviewAction.Like(isDoubleTap))
     }
 
+    fun reviewWatchModeTestCase() {
+        initializeReviewMainDataTestCase()
+        viewModel.onAction(ProductPreviewAction.ToggleReviewWatchMode)
+    }
+
     fun cancelRemainingTasks() {
         viewModel.viewModelScope.coroutineContext.cancelChildren()
     }

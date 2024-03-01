@@ -797,4 +797,24 @@ class ProductPreviewUnitTest {
         }
     }
 
+    @Test
+    fun `when review watch mode updated`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val reviewData = mockDataSource.mockReviewData()
+        var reviewPosition: Int
+
+        coEvery { mockRepository.getReview(productId, 1) } returns reviewData
+
+        getRobot(sourceModel).use { robot ->
+            reviewPosition = robot._reviewPosition.value
+            robot.recordState {
+                robot.reviewWatchModeTestCase()
+            }.also { state ->
+                state.reviewUiModel.reviewContent.mapIndexed { index, reviewContentUiModel ->
+                    reviewContentUiModel.isWatchMode.assertEqualTo(index == reviewPosition)
+                }
+            }
+        }
+    }
+
 }
