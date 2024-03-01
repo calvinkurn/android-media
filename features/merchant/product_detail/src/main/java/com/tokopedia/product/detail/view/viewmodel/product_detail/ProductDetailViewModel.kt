@@ -425,11 +425,14 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     fun getShopInfo(): ShopInfo {
-        return p2Data.value?.shopInfo ?: ShopInfo()
+        val p2 = p2Data.value ?: return ShopInfo()
+        return p2.shopInfo
     }
 
     fun getCartTypeByProductId(): CartTypeData? {
-        return p2Data.value?.cartRedirection?.get(getProductInfoP1?.basic?.productID ?: "")
+        val p2 = p2Data.value ?: return null
+        val p1 = getProductInfoP1 ?: return null
+        return p2.cartRedirection[p1.basic.productID]
     }
 
     fun updateLastAction(talkLastAction: ProductDetailTalkLastAction) {
@@ -437,7 +440,10 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     fun getMiniCartItem(): MiniCartItem.MiniCartItemProduct? {
-        return p2Data.value?.miniCart?.get(getProductInfoP1?.basic?.productID ?: "")
+        val p2 = p2Data.value ?: return null
+        val miniCart = p2.miniCart ?: return null
+        val p1 = getProductInfoP1 ?: return null
+        return miniCart[p1.basic.productID]
     }
 
     fun updateDynamicProductInfoData(data: ProductInfoP1?) {
