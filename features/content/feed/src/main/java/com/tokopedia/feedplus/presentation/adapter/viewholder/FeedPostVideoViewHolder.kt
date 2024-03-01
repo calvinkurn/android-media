@@ -207,7 +207,7 @@ class FeedPostVideoViewHolder(
             postGestureDetector.onTouchEvent(motionEvent)
         }
 
-        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
     }
 
     fun bind(item: FeedContentAdapter.Item) {
