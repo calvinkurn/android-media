@@ -2,6 +2,7 @@ package com.tokopedia.catalog.domain.model
 
 
 import android.annotation.SuppressLint
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class CatalogProductListResponse(
@@ -44,7 +45,10 @@ data class CatalogProductListResponse(
             @SerializedName("stock")
             val stock: Stock?,
             @SerializedName("warehouseID")
-            val warehouseID: String?
+            val warehouseID: String?,
+            @SerializedName("categoryId")
+            @Expose
+            val categoryId: String?
         ) {
             data class AdditionalService(
                 @SerializedName("name")

@@ -24,7 +24,8 @@ data class CatalogProductListUiModel(
         val productID: String =  "",
         val shop: ShopUiModel = ShopUiModel(),
         val warehouseID: String = "",
-        val stock: StockUiModel = StockUiModel()
+        val stock: StockUiModel = StockUiModel(),
+        val categoryId: String = ""
     ) {
         data class AdditionalServiceUiModel(
             val name: String = ""

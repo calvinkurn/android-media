@@ -22,6 +22,7 @@ class GetCatalogProductListUseCase @Inject constructor(repository: GraphqlReposi
                   totalData
                 }
                 products {
+                  categoryId
                   productID
                   warehouseID
                   isVariant

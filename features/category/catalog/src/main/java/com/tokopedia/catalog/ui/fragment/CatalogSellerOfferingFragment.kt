@@ -18,7 +18,6 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.di.DaggerCatalogComponent
-import com.tokopedia.catalog.domain.model.CatalogProductListResponse
 import com.tokopedia.catalog.ui.composeUi.screen.CatalogSellerOfferingScreen
 import com.tokopedia.catalog.ui.mapper.ProductListMapper.Companion.mapperToCatalogProductAtcUiModel
 import com.tokopedia.catalog.ui.model.CatalogFilterProductListState
@@ -156,7 +155,8 @@ class CatalogSellerOfferingFragment :
                         onClickItemProduct = ::onClickItemProduct,
                         onErrorRefresh = ::onRefresh,
                         onClickAtc = ::onClickAtc,
-                        hasNextPage = hasNextPageState
+                        hasNextPage = hasNextPageState,
+                        onImpressionProduct = ::onImpressionProduct
                     )
                 }
             }
@@ -568,6 +568,14 @@ class CatalogSellerOfferingFragment :
         viewModel.searchParameter.getSearchParameterHashMap()
             .putAll(applySortFilterModel.mapParameter)
         viewModel.searchParametersMap.value = viewModel.searchParameter.getSearchParameterHashMap()
+        val labelTracker = "$catalogId - sort & filter: ${applySortFilterModel.selectedSortName}"
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
+            action = CatalogTrackerConstant.EVENT_ACTION_CLICK_FILTER,
+            category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST,
+            labels = labelTracker,
+            trackerId = CatalogTrackerConstant.TRACKER_ID_FILTER_CATALOG_PRODUCT_LIST
+        )
         initLoadData(true)
     }
 
@@ -663,8 +671,24 @@ class CatalogSellerOfferingFragment :
             searchFilterMap = viewModel.searchParametersMap.value,
             position = position + 1,
             userId = userSession?.userId.orEmpty(),
-            catalogUrl = catalogUrl
+            catalogUrl = catalogUrl,
+            productName = productTitleState.value
         )
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, catalogProduct.productID)
+    }
+    private fun onImpressionProduct(item: CatalogProductListUiModel.CatalogProductUiModel, position: Int) {
+        CatalogReimagineDetailAnalytics.sendEventImpression(
+            event = CatalogTrackerConstant.EVENT_NAME_PRODUCT_VIEW,
+            eventAction = CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_PRODUCT,
+            eventCategory = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST,
+            catalogId = catalogId,
+            trackerId = CatalogTrackerConstant.TRACKER_ID_IMPRESSION_PRODUCT,
+            item = item,
+            searchFilterMap = viewModel.searchParametersMap.value,
+            position = position + 1,
+            userId = userSession?.userId.orEmpty(),
+            catalogUrl = catalogUrl,
+            productName = productTitleState.value
+        )
     }
 }

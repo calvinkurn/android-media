@@ -2,7 +2,6 @@ package com.tokopedia.catalog.ui.composeUi.screen
 
 import android.content.Intent
 import android.provider.Settings
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -35,7 +34,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.domain.model.CatalogProductListResponse
 import com.tokopedia.catalog.ui.composeUi.component.CatalogSellerOfferingHeader
 import com.tokopedia.catalog.ui.composeUi.component.CatalogSellerOfferingToolbar
 import com.tokopedia.catalog.ui.composeUi.component.ItemProduct
@@ -79,7 +77,8 @@ fun CatalogSellerOfferingScreen(
     onErrorRefresh: () -> Unit,
     onClickAtc: (CatalogProductListUiModel.CatalogProductUiModel, Int) -> Unit,
     onClickItemProduct: (CatalogProductListUiModel.CatalogProductUiModel, Int) -> Unit,
-    hasNextPage: MutableState<Boolean>
+    hasNextPage: MutableState<Boolean>,
+    onImpressionProduct: (CatalogProductListUiModel.CatalogProductUiModel, Int) -> Unit
 ) {
     val listState = rememberLazyListState()
 
@@ -127,7 +126,8 @@ fun CatalogSellerOfferingScreen(
                 CatalogSellerOfferingBody(
                     listState, listener, background, lcaListener, sortFilter,
                     onClickMoreFilter, onClickAtc, onClickItemProduct,
-                    productListState, countFilter,hasNextPage, throwable, onErrorRefresh
+                    productListState, countFilter,hasNextPage, throwable, onErrorRefresh,
+                    onImpressionProduct
                 )
             }
         }
@@ -150,6 +150,7 @@ fun CatalogSellerOfferingBody(
     hasNextPage: MutableState<Boolean>,
     throwable: Throwable?,
     onErrorRefresh: () -> Unit,
+    onImpressionProduct: (CatalogProductListUiModel.CatalogProductUiModel, Int) -> Unit
 ) {
     LazyColumn(state = listState, modifier = Modifier.fillMaxWidth(), content = {
         item {
@@ -208,6 +209,7 @@ fun CatalogSellerOfferingBody(
             }else{
                 val  productList = productListState.value.data.orEmpty()
                 items(productList.size) { index ->
+                    onImpressionProduct.invoke(productList[index],index)
                     ItemProduct(onClickItem = {
                         onClickItemProduct.invoke(it, index)
                     }, onClickAtc = {
