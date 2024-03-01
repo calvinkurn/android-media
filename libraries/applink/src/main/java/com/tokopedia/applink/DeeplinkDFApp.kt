@@ -253,7 +253,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_PLAY_SHORTS, PathType.NO_PATH, ""),
         // live-broadcaster
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/chucker"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/.*\\")
+//        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/.*\\")
 
     )
 
