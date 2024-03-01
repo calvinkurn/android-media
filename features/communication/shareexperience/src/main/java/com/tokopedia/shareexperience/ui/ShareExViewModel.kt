@@ -413,6 +413,11 @@ class ShareExViewModel @Inject constructor(
         errorEnum: ShareExIntentErrorEnum?
     ) {
         _channelIntentUiState.update {
+            val newErrorHistory = if (errorEnum != null) {
+                it.errorHistory + errorEnum
+            } else {
+                it.errorHistory
+            }
             it.copy(
                 intent = intent,
                 message = message,
@@ -421,7 +426,7 @@ class ShareExViewModel @Inject constructor(
                 isLoading = isLoading,
                 error = error,
                 imageType = imageType,
-                errorEnum = errorEnum
+                errorHistory = newErrorHistory
             )
         }
     }
