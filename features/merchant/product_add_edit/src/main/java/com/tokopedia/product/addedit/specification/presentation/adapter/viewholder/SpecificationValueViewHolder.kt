@@ -4,6 +4,8 @@ import android.view.View
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -31,6 +33,7 @@ class SpecificationValueViewHolder(
 
     private val tfSpecification: TextAreaUnify2? = itemView.findViewById(R.id.tfSpecification)
     private val tooltipRequired: View? = itemView.findViewById(R.id.tooltipRequired)
+    private var isCoachmarkShown = false
 
     init {
         val iconColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN900)
@@ -71,6 +74,24 @@ class SpecificationValueViewHolder(
             isInputError = errorMessage.isNotEmpty()
             setText(selectedSpecification.data)
             tooltipRequired?.isVisible = selectedSpecification.specificationVariant == SIGNAL_STATUS_VARIANT
+
+            showCoachmark(tfSpecification, selectedSpecification.isTextInput)
+        }
+    }
+
+    private fun showCoachmark(anchor: View, isTextInput: Boolean) {
+        val coachMarkItem = ArrayList<CoachMark2Item>()
+        val coachMark = CoachMark2(itemView.context)
+        if (isTextInput && !isCoachmarkShown) {
+            coachMarkItem.add(
+                CoachMark2Item(
+                    anchor,
+                    "Title to give the main context",
+                    "Body text to describe the highlighted feature, make it clear and concise, no more than 2 lines"
+                )
+            )
+            coachMark.showCoachMark(coachMarkItem)
+            isCoachmarkShown = true
         }
     }
 }
