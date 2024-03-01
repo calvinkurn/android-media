@@ -969,7 +969,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             mJsHciCallbackFuncName = uri.getLastPathSegment();
             routeToHomeCredit(ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE, queryParam, headerText);
             return true;
-        } else if (getActivity() != null && uri.getPathSegments().size() == 1 && uri.getPathSegments().get(0).equalsIgnoreCase(PATH_WEBVIEW_BACK)) {
+        } else if (getActivity() != null && uri.getHost().equalsIgnoreCase(PATH_WEBVIEW_BACK)) {
             if (getActivity().isTaskRoot()) {
                 RouteManager.route(getContext(), ApplinkConst.HOME);
             } else {
