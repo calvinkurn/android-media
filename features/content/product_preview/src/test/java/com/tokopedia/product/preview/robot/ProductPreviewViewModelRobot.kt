@@ -3,6 +3,7 @@ package com.tokopedia.product.preview.robot
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreference
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewUiEvent
@@ -141,6 +142,11 @@ internal class ProductPreviewViewModelRobot(
     fun tabSelectedTestCase(position: Int) {
         checkInitialSourceTestCase()
         viewModel.onAction(ProductPreviewAction.TabSelected(position))
+    }
+
+    fun productActionAddToChartTestCase(model: BottomNavUiModel) {
+        viewModel.onAction(ProductPreviewAction.FetchMiniInfo)
+        viewModel.onAction(ProductPreviewAction.ProductAction(model))
     }
 
     fun cancelRemainingTasks() {

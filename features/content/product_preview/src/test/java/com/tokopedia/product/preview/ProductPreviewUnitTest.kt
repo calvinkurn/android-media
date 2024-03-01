@@ -4,6 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.content.product.preview.data.mock.ProductPreviewMockData
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreference
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewPaging
 import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewUiEvent
@@ -12,6 +14,7 @@ import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.content.test.util.assertFalse
 import com.tokopedia.content.test.util.assertNotEqualTo
 import com.tokopedia.content.test.util.assertType
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.product.preview.robot.ProductPreviewViewModelRobot
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
@@ -373,6 +376,86 @@ class ProductPreviewUnitTest {
             robot._currentTabPosition.value.assertNotEqualTo(selectedTab)
             robot.tabSelectedTestCase(selectedTab)
             robot._currentTabPosition.value.assertEqualTo(selectedTab)
+        }
+    }
+
+    @Test
+    fun `when product action add to chart and user not login should emit login event`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val expectedData = mockDataSource.mockProductMiniInfo(
+            hasVariant = true,
+            buttonState = BottomNavUiModel.ButtonState.Active,
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns false
+        coEvery { mockRepository.getProductMiniInfo(productId) } returns expectedData
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordEvent {
+                robot.productActionAddToChartTestCase(expectedData)
+            }.also { event ->
+                event.last().assertEqualTo(ProductPreviewUiEvent.LoginUiEvent(expectedData))
+            }
+        }
+    }
+
+    @Test
+    fun `when product action add to chart and success then should emit success toaster`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val expectedData = mockDataSource.mockProductMiniInfo(
+            hasVariant = true,
+            buttonState = BottomNavUiModel.ButtonState.Active,
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepository.getProductMiniInfo(productId) } returns expectedData
+        coEvery {
+            mockRepository.addToCart(
+                productId,
+                expectedData.title,
+                expectedData.shop.id,
+                expectedData.price.finalPrice.toDoubleOrZero()
+            )
+        } returns true
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordEvent {
+                robot.productActionAddToChartTestCase(expectedData)
+            }.also { event ->
+                event.last().assertEqualTo(ProductPreviewUiEvent.ShowSuccessToaster(
+                    type = ProductPreviewUiEvent.ShowSuccessToaster.Type.ATC,
+                    message = ProductPreviewUiEvent.ShowSuccessToaster.Type.ATC.textRes
+                ))
+            }
+        }
+    }
+
+    @Test
+    fun `when product action add to chart and fail should emit error toaster`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+        val expectedData = mockDataSource.mockProductMiniInfo(
+            hasVariant = true,
+            buttonState = BottomNavUiModel.ButtonState.Active,
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepository.getProductMiniInfo(productId) } returns expectedData
+        coEvery {
+            mockRepository.addToCart(
+                productId,
+                expectedData.title,
+                expectedData.shop.id,
+                expectedData.price.finalPrice.toDoubleOrZero()
+            )
+        } returns false
+
+        getRobot(sourceModel).use { robot ->
+            robot.recordEvent {
+                robot.productActionAddToChartTestCase(expectedData)
+            }.also { event ->
+                event.last().assertType<ProductPreviewUiEvent.ShowErrorToaster>()
+                (event.last() as ProductPreviewUiEvent.ShowErrorToaster).onClick()
+            }
         }
     }
 
