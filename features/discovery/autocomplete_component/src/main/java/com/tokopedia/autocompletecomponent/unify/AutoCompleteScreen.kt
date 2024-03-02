@@ -58,32 +58,7 @@ internal fun AutoCompleteScreen(
         )
 
         LaunchedEffect(key1 = state.value.appLogData.imprId) {
-            if (state.value.appLogData.imprId.isBlank()) return@LaunchedEffect
-
-            if (state.value.isInitialState) {
-                val enterFrom =
-                    AppLogSearch.enterFromBeforeCurrent(AppLogSearch.whitelistedEnterFromAutoComplete)
-                val enterMethod = ENTER
-                AppLogSearch.eventEnterSearchBlankPage(enterFrom, enterMethod)
-
-                AppLogAnalytics.putPageData(BLANKPAGE_ENTER_FROM, enterFrom)
-                AppLogAnalytics.putPageData(BLANKPAGE_ENTER_METHOD, enterMethod)
-            } else if (state.value.isSuggestion) {
-                AppLogSearch.eventTrendingShow(
-                    AppLogSearch.TrendingShow(
-                        imprId = state.value.appLogData.imprId,
-                        newSugSessionId = state.value.appLogData.newSugSessionId,
-                        rawQuery = state.value.query,
-                        enterMethod = state.value.enterMethod,
-                        wordsSource = state.value.appLogData.wordsSource,
-                        wordsNum = state.value.resultList.filter {
-                            it.domainModel.isTrendingWord()
-                        }.size
-                    )
-                )
-
-                AppLogAnalytics.putPageData(NEW_SUG_SESSION_ID, state.value.appLogData.newSugSessionId)
-            }
+            trackByteIOAutoComplete(state.value)
         }
 
         LazyColumn(
@@ -142,6 +117,35 @@ internal fun AutoCompleteScreen(
                 }
             }
         }
+    }
+}
+
+private fun trackByteIOAutoComplete(state: AutoCompleteState) {
+    if (state.appLogData.imprId.isBlank()) return
+
+    if (state.isInitialState) {
+        val enterFrom =
+            AppLogSearch.enterFromBeforeCurrent(AppLogSearch.whitelistedEnterFromAutoComplete)
+
+        AppLogSearch.eventEnterSearchBlankPage(enterFrom, state.enterMethod)
+
+        AppLogAnalytics.putPageData(BLANKPAGE_ENTER_FROM, enterFrom)
+        AppLogAnalytics.putPageData(BLANKPAGE_ENTER_METHOD, state.enterMethod)
+    } else if (state.isSuggestion) {
+        AppLogSearch.eventTrendingShow(
+            AppLogSearch.TrendingShow(
+                imprId = state.appLogData.imprId,
+                newSugSessionId = state.appLogData.newSugSessionId,
+                rawQuery = state.query,
+                enterMethod = state.enterMethod,
+                wordsSource = state.appLogData.wordsSource,
+                wordsNum = state.resultList.filter {
+                    it.domainModel.isTrendingWord()
+                }.size
+            )
+        )
+
+        AppLogAnalytics.putPageData(NEW_SUG_SESSION_ID, state.appLogData.newSugSessionId)
     }
 }
 

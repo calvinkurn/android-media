@@ -281,8 +281,8 @@ class SearchActivity :
         UrlParamUtils.generateUrlParamString(autoCompleteParams())
 
     private fun autoCompleteParams(): Map<String?, String> =
-        if (searchParameter.isMps()) autoCompleteMPSParams() else autoCompleteApplinkParams() +
-            enterMethodMap(CLICK_SEARCH_BAR)
+        if (searchParameter.isMps()) autoCompleteMPSParams()
+        else autoCompleteApplinkParams() + enterMethodMap(CLICK_SEARCH_BAR)
 
     private fun autoCompleteMPSParams() = searchParameter.getSearchQueryMap() + mapOf(ACTIVE_TAB to MPS)
 
@@ -293,13 +293,6 @@ class SearchActivity :
 
         return currentAutoCompleteParams + mapOf(PREVIOUS_KEYWORD to query)
     }
-
-    private fun enterFromMap() =
-        if (searchViewModel?.activeTabPosition == 0)
-            mapOf("enter_from" to GOODS_SEARCH) // TODO milhamj
-        else
-            mapOf("enter_from" to STORE_SEARCH) // TODO milhamj
-
 
     private fun encodedQuery() = URLEncoder
         .encode(searchParameter.getSearchQuery())

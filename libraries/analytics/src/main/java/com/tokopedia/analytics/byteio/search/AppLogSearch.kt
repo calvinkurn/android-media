@@ -140,6 +140,7 @@ object AppLogSearch {
         const val GOODS_SEARCH = "goods_search"
         const val STORE_SEARCH = "store_search"
         const val ENTER = "enter"
+        const val CANCEL = "cancel"
         const val RECOM_SEARCH = "recom_search"
         const val SEARCH_HISTORY = "search_history"
         const val SUG = "sug"
