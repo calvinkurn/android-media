@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.shopwidgetthreeproducts.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.Guideline
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.topads.sdk.R
@@ -10,6 +11,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.model.ProductItemModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.productcard.R as productcardR
 
 class ProductItemViewHolder(
     itemView: View,
@@ -28,6 +30,7 @@ class ProductItemViewHolder(
         productCardGridView.run {
             applyCarousel()
             setProductModel(productCardViewModel)
+            setHorizontalPadding()
             setImageProductViewHintListener(item, object : ViewHintListener {
                 override fun onViewHint() {
                     impressionListener?.onImpressionProductAdsItem(
@@ -55,6 +58,12 @@ class ProductItemViewHolder(
                 shopWidgetAddToCartClickListener?.onAdToCartClicked(item)
             }
         }
+    }
+
+    private fun ProductCardGridView.setHorizontalPadding() {
+        var padding = resources.getDimensionPixelSize(R.dimen.margin_8)
+        findViewById<Guideline?>(productcardR.id.productCardGuidelineStartContent).setGuidelineBegin(padding)
+        findViewById<Guideline?>(productcardR.id.productCardGuidelineEndContent).setGuidelineEnd(padding)
     }
 
     companion object {

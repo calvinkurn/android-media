@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.banner
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.Guideline
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.topads.sdk.R
@@ -11,6 +12,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
+import com.tokopedia.productcard.R as productcardR
 
 /**
  * Created by errysuprayogi on 4/16/18.
@@ -30,6 +32,7 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
             productCardGridView.run {
                 applyCarousel()
                 setProductModel(productCardViewModel)
+                setHorizontalPadding()
                 setImageProductViewHintListener(model, object : ViewHintListener {
                     override fun onViewHint() {
                         impressionListener?.onImpressionProductAdsItem(adapterPosition, model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition-1), model.cpmData)
@@ -48,6 +51,12 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
                 }
             }
         }
+    }
+
+    private fun ProductCardGridView.setHorizontalPadding() {
+        var padding = resources.getDimensionPixelSize(R.dimen.margin_8)
+        findViewById<Guideline?>(productcardR.id.productCardGuidelineStartContent).setGuidelineBegin(padding)
+        findViewById<Guideline?>(productcardR.id.productCardGuidelineEndContent).setGuidelineEnd(padding)
     }
 
     companion object {

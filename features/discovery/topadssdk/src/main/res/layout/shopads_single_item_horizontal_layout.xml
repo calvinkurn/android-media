@@ -99,7 +99,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:reimagine="true"
-        app:reimagine_template="grid"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/divider"
         app:layout_constraintTop_toTopOf="parent" />

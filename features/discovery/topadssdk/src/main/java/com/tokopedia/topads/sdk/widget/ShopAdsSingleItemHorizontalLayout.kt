@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -35,7 +36,6 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
     private var bodyContainer: ConstraintLayout? = null
     private var merchantVoucher: Label? = null
     private var shopSlogan: Typography? = null
-    private var margin = resources.getDimensionPixelSize(R.dimen.margin_2)
 
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context)
@@ -81,25 +81,13 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
         shopSlogan = findViewById(R.id.shop_desc)
     }
 
-    private fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int) {
-        if (view.layoutParams is MarginLayoutParams) {
-            val p = view.layoutParams as MarginLayoutParams
-            p.setMargins(left, top, right, bottom)
-            view.requestLayout()
-        }
-    }
-
     private fun setProductWidget(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel) {
         shopAdsWithSingleProductModel.listItem?.let { product ->
             val productModel =
                 MapperUtils.getProductCardViewModel(product, shopAdsWithSingleProductModel.hasAddToCartButton)
             productCardGridView?.run {
                 setProductModel(productModel)
-//                setMargins(findViewById<Typography?>(productcardR.id.productCardName), margin,0,margin,0)
-//                setMargins(findViewById<Typography?>(productcardR.id.productCardLabelAssignedValue), margin,0,0,0)
-//                setMargins(findViewById<Typography?>(productcardR.id.productCardPriceContainer), margin,0,0,0)
-//                setMargins(findViewById<Typography?>(productcardR.id.productCardCredibility), margin,0,0,margin)
-//                setMargins(findViewById<Typography?>(productcardR.id.productCardShopSection), margin,0,0,margin)
+                setHotizonalPadding()
             }
 
             shopAdsWithSingleProductModel.impressHolder?.let { impressHolder ->
@@ -154,6 +142,11 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
                 )
             }
         }
+    }
+    private fun setHotizonalPadding() {
+        var padding = resources.getDimensionPixelSize(R.dimen.margin_8)
+        findViewById<Guideline?>(productcardR.id.productCardGuidelineStartContent).setGuidelineBegin(padding)
+        findViewById<Guideline?>(productcardR.id.productCardGuidelineEndContent).setGuidelineEnd(padding)
     }
 
     private fun setSlogan(slogan: String) {

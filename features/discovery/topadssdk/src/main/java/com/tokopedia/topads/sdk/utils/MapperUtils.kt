@@ -41,8 +41,7 @@ object MapperUtils {
                     isShown = it.isShow,
                 )
             },
-            isTopAds = true,
-            isInBackground = true
+            isTopAds = true
         )
         return getProductModelOnCondition(product, isAvailAble, productCardModel)
     }

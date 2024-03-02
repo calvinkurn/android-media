@@ -2,7 +2,6 @@
 <com.tokopedia.productcard.ProductCardGridView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:reimagine="true"
-    app:reimagine_template="gridCarousel"
     android:id="@+id/product_item"
     android:minWidth="@dimen/carousel_product_card_grid_width"
     android:layout_width="wrap_content"
