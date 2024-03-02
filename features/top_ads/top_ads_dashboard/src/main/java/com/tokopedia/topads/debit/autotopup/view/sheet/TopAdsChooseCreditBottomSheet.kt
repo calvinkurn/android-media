@@ -434,7 +434,7 @@ class TopAdsChooseCreditBottomSheet :
         val frequencyText = getString(R.string.topads_auto_top_up_confirmation_frequency_every_day, autoTopUpFrequencySelected.toString())
 
         val subTotalActual = (topAdsValue / TOP_ADS_TAX_VALUE).roundToLong()
-        val subTotalActualFmt = Utils.convertToCurrencyString(subTotalActual)
+        val subTotalActualFmt = StringBuilder("Rp").append(Utils.convertToCurrencyString(subTotalActual)).toString()
 
         val ppnAmount = (topAdsValue * PPN_PERCENT_FORMULA).roundToLong()
         val ppnAmountFmt = Utils.convertToCurrencyString(ppnAmount)
@@ -456,7 +456,7 @@ class TopAdsChooseCreditBottomSheet :
     }
 
     private fun getNominalConfirmationUpAfterApril(autoTopUpNominal: AutoTopUpItem?): AutoTopUpConfirmationUiModel {
-        val topAdsCredit = autoTopUpNominal?.priceFmt.orEmpty()
+        val topAdsCredit = StringBuilder("Rp").append(autoTopUpNominal?.priceFmt.orEmpty().replace("Rp ", "")).toString()
         val topAdsValue = Utils.convertMoneyToValue(topAdsCredit)
 
         val tax = autoTopUpNominal?.additionalFee?.find { it.type == "tax" }
@@ -468,6 +468,8 @@ class TopAdsChooseCreditBottomSheet :
         val ppnAmount = tax?.amount.orZero()
         val ppnAmountFmt = Utils.convertFloatToCurrencyString(ppnAmount)
 
+        val ppnPercent = "${tax?.percent?.orZero()?.roundToInt()}%"
+
         val totalAmount = Utils.convertFloatToCurrencyString(autoTopUpNominal?.totalAmount.orZero())
 
         return AutoTopUpConfirmationUiModel(
@@ -477,7 +479,7 @@ class TopAdsChooseCreditBottomSheet :
             subTotalStrikethrough = "",
             autoTopUpFrequencySelected = autoTopUpFrequencySelected,
             subTotalActual = topAdsCredit,
-            ppnPercent = "${tax?.percent}%",
+            ppnPercent = ppnPercent,
             ppnAmount = ppnAmountFmt,
             totalAmount = totalAmount,
             selectedItemId = autoTopUpNominal?.id.orZero().toString()

@@ -124,7 +124,7 @@ class AutoTopUpConfirmationBottomSheet : BottomSheetUnify(), HasComponent<TopAds
                     tvSubtotalStrikethroughValue.text = MethodChecker.fromHtml(getString(R.string.topads_auto_top_up_confirmation_actual_subtotal, it.subTotalStrikethrough))
                 }
 
-                tvSubtotalActualValue.text = StringBuilder("Rp").append(it.subTotalActual).toString()
+                tvSubtotalActualValue.text = it.subTotalActual
 
                 tvAutoTopUpConfirmationPpn.text = getString(R.string.topads_auto_top_up_confirmation_ppn, it.ppnPercent)
                 tvAutoTopUpConfirmationPpnValue.text = StringBuilder("Rp").append(it.ppnAmount)
