@@ -12,5 +12,7 @@ class AutoCompleteStateModule(
 
     @Provides
     @AutoCompleteScope
-    fun provideAutoCompleteState() = AutoCompleteState(searchParameter.getSearchParameterHashMap())
+    fun provideAutoCompleteState() = AutoCompleteState(
+        searchParameter.getSearchParameterHashMap().toMap()
+    )
 }
