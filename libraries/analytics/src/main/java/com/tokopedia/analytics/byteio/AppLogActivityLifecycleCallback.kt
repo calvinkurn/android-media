@@ -8,6 +8,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.pushPageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp.sendStayProductDetail
+import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -57,7 +58,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         durationInMs: Long,
         product: TrackStayProductDetail,
         isFinishing: Boolean,
-        prevActCount: Int
+        hash: Int
     ) {
         if (isFinishing) {
             sendStayProductDetail(
@@ -67,7 +68,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
             return
         }
         delay(500)
-        val quitType = if (AppLogAnalytics.activityCount > prevActCount) {
+        val quitType = if (AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.ACTIVITY_HASH_CODE) == hash) {
             QuitType.NEXT
         } else {
             QuitType.CLOSE
@@ -81,10 +82,11 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
     override fun onActivityStopped(activity: Activity) {
         if (isPdpPage(activity) && activity is BaseSimpleActivity) {
             launch {
+                val hash = (activity as? AppLogInterface)?.hashCode().orZero()
                 suspendSendStayProductDetail(
                     System.currentTimeMillis() - activity.startTime,
                     (activity as IAppLogPdpActivity).getProductTrack(),
-                    activity.isFinishing, AppLogAnalytics.activityCount
+                    activity.isFinishing, hash
                 )
                 activity.startTime = 0L
             }
