@@ -53,13 +53,13 @@ class AutoTopUpConfirmationTooltipBottomSheet: BottomSheetUnify() {
 
     companion object {
 
-        private val TAG = AutoTopUpConfirmationBottomSheet::class.java.simpleName
+        private val TAG = AutoTopUpConfirmationTooltipBottomSheet::class.java.simpleName
 
         private const val AUTO_TU_CONFIRMATION_TOOLTIP_TITLE = "auto_ta_confirmation_tooltip_title"
         private const val AUTO_TU_CONFIRMATION_TOOLTIP_DESC = "auto_ta_confirmation_tooltip_desc"
 
-        fun newInstance(title: String, desc: String): AutoTopUpConfirmationBottomSheet {
-            return AutoTopUpConfirmationBottomSheet().apply {
+        fun newInstance(title: String, desc: String): AutoTopUpConfirmationTooltipBottomSheet {
+            return AutoTopUpConfirmationTooltipBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(AUTO_TU_CONFIRMATION_TOOLTIP_TITLE, title)
                     putString(AUTO_TU_CONFIRMATION_TOOLTIP_DESC, desc)

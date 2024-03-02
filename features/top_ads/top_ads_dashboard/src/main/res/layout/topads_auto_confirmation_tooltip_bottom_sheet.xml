@@ -3,19 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_auto_confirmation_tooltip_desc"
         android:layout_width="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         tools:text="Nominal yang akan ditarik dari sumber danamu setiap kali pengisian kredit."
-        app:typographyType="display_3"
-        android:textColor="@color/Unify_NN950"
+        app:typographyType="paragraph_1"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>

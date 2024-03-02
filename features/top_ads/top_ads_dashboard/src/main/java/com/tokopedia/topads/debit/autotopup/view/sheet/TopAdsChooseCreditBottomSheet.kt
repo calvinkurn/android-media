@@ -417,27 +417,21 @@ class TopAdsChooseCreditBottomSheet :
             val bottomSheet = AutoTopUpConfirmationBottomSheet.newInstance(cacheManager?.id.orEmpty())
             bottomSheet.onSaved = {
                 onSaved?.invoke(true)
+                bottomSheet.dismiss()
+                handleResponseSaving()
                 dismiss()
             }
             bottomSheet.show(childFragmentManager)
-
-            //old approach
-            viewModel?.saveSelection(
-                true,
-                autoTopUpAvailableNominalList[selectedNominalIndex],
-                autoTopUpFrequencySelected.toString()
-            )
         }
     }
 
     private fun getNominalConfirmationBeforeApril(autoTopUpNominal: AutoTopUpItem?): AutoTopUpConfirmationUiModel {
-        val topAdsCredit = autoTopUpNominal?.priceFmt.orEmpty()
+        val topAdsCredit = StringBuilder("Rp").append(autoTopUpNominal?.priceFmt.orEmpty().replace("Rp ", "")).toString()
         val topAdsValue = Utils.convertMoneyToValue(topAdsCredit)
 
         val topAdsBonus = Utils.convertToCurrencyString((topAdsValue * statusBonus / 100).toLong())
 
         val frequencyText = getString(R.string.topads_auto_top_up_confirmation_frequency_every_day, autoTopUpFrequencySelected.toString())
-
 
         val subTotalActual = (topAdsValue / TOP_ADS_TAX_VALUE).roundToLong()
         val subTotalActualFmt = Utils.convertToCurrencyString(subTotalActual)

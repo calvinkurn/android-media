@@ -690,6 +690,8 @@
     <string name="topads_auto_top_up_confirmation_nominal_to_be_withdrawn">Nominal yang akan ditarik</string>
     <string name="topads_auto_top_up_confirmation_button_title">Aktifkan Kredit Otomatis</string>
 
+    <string name="topads_auto_top_up_confirmation_bonus">(Bonus Rp%s)</string>
+
     <string name="topads_auto_top_up_confirmation_frequency_every_day">Maks. %s kali/hari</string>
 
     <string name="topads_auto_top_up_confirmation_actual_subtotal"><![CDATA[<strike>%1$s</strike>]]></string>

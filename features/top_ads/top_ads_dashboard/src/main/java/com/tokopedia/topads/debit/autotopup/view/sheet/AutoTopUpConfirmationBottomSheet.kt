@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.databinding.TopadsAutoConfirmationBottomSheetBinding
+import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.debit.autotopup.data.model.Loading
 import com.tokopedia.topads.debit.autotopup.data.model.ResponseSaving
@@ -23,6 +24,7 @@ import com.tokopedia.topads.debit.autotopup.view.uimodel.AutoTopUpConfirmationUi
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.lang.StringBuilder
 import javax.inject.Inject
 
 class AutoTopUpConfirmationBottomSheet : BottomSheetUnify(), HasComponent<TopAdsDashboardComponent> {
@@ -74,6 +76,8 @@ class AutoTopUpConfirmationBottomSheet : BottomSheetUnify(), HasComponent<TopAds
         binding = TopadsAutoConfirmationBottomSheetBinding.inflate(inflater, container, false)
         showCloseIcon = true
         overlayClickDismiss = false
+        clearContentPadding = true
+        setTitle(getString(R.string.topads_auto_top_up_confirmation_bottom_sheet_title))
         setChild(binding?.root)
     }
 
@@ -101,8 +105,6 @@ class AutoTopUpConfirmationBottomSheet : BottomSheetUnify(), HasComponent<TopAds
                 is ResponseSaving -> {
                     binding?.btnAutoTopUpConfirmation?.isLoading = false
                     onSaved?.invoke(true)
-                    dismissAutoTopUpConfirmationBottomSheet()
-                    dismiss()
                 }
 
                 else -> {
@@ -112,26 +114,22 @@ class AutoTopUpConfirmationBottomSheet : BottomSheetUnify(), HasComponent<TopAds
         }
     }
 
-    private fun dismissAutoTopUpConfirmationBottomSheet() {
-        activity?.setResult(Activity.RESULT_OK, Intent())
-    }
-
     private fun renderViews(autoTopUpConfirmationUiModel: AutoTopUpConfirmationUiModel?) {
         binding?.run {
             autoTopUpConfirmationUiModel?.let {
                 tvAutoTopUpCreditValue.text = it.topAdsCredit
-                tvAutoTopUpCreditBonusValue.text = it.topAdsBonus
+                tvAutoTopUpCreditBonusValue.text = getString(R.string.topads_auto_top_up_confirmation_bonus, it.topAdsBonus)
                 tvAutoTopUpFrequencyValue.text = it.frequencyText
                 tvSubtotalStrikethroughValue.shouldShowWithAction(it.subTotalStrikethrough.isNotBlank()) {
                     tvSubtotalStrikethroughValue.text = MethodChecker.fromHtml(getString(R.string.topads_auto_top_up_confirmation_actual_subtotal, it.subTotalStrikethrough))
                 }
 
-                tvSubtotalActualValue.text = MethodChecker.fromHtml(getString(R.string.topads_auto_top_up_confirmation_actual_subtotal))
+                tvSubtotalActualValue.text = StringBuilder("Rp").append(it.subTotalActual).toString()
 
-                tvAutoTopUpConfirmationPpn.text = it.ppnPercent
-                tvAutoTopUpConfirmationPpnValue.text = it.ppnAmount
+                tvAutoTopUpConfirmationPpn.text = getString(R.string.topads_auto_top_up_confirmation_ppn, it.ppnPercent)
+                tvAutoTopUpConfirmationPpnValue.text = StringBuilder("Rp").append(it.ppnAmount)
 
-                tvNominalToBeWithdrawnValue.text = it.totalAmount
+                tvNominalToBeWithdrawnValue.text = StringBuilder("Rp").append(it.totalAmount)
             }
         }
     }
