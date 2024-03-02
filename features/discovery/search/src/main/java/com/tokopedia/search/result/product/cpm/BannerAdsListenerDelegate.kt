@@ -26,11 +26,12 @@ class BannerAdsListenerDelegate(
         applink: String?,
         data: CpmData?,
         dataView: CpmDataView,
+        isReimagine: Boolean,
     ) {
         if (applink == null || data == null) return
 
         redirectionListener?.startActivityWithApplink(applink)
-        trackBannerAdsClicked(position, applink, data, dataView)
+        trackBannerAdsClicked(position, applink, data, dataView, isReimagine)
     }
 
     override fun onBannerAdsImpressionListener(
@@ -72,15 +73,22 @@ class BannerAdsListenerDelegate(
         applink: String,
         data: CpmData,
         dataView: CpmDataView,
+        isReimagine: Boolean,
     ) {
         if (applink.contains(SHOP)) {
             TopAdsGtmTracker.eventTopAdsHeadlineShopClick(position, queryKey, data, userId)
             TopAdsGtmTracker.eventSearchResultPromoShopClick(data, position)
 
-            if (dataView.isTrackByteIO())
-                AppLogSearch.eventSearchResultClick(
-                    dataView.asByteIOSearchResult(CLICK_SHOP_NAME)
-                )
+            if (dataView.isTrackByteIO()) {
+                if (position == 1) // Click on shop name
+                    AppLogSearch.eventSearchResultClick(
+                        dataView.asByteIOSearchResult(CLICK_SHOP_NAME)
+                    )
+                else if (!isReimagine) // Click on banner (only non reimagine)
+                    AppLogSearch.eventSearchResultClick(
+                        dataView.shopItemAsByteIOSearchResult(CLICK_SHOP_NAME)
+                    )
+            }
         } else {
             TopAdsGtmTracker.eventTopAdsHeadlineProductClick(position, data, userId)
             TopAdsGtmTracker.eventSearchResultPromoProductClick(data, position)
