@@ -689,7 +689,7 @@ object ShopPageHomeMapper {
         type = widgetResponse.type,
         header = mapToHeaderModel(widgetResponse.header, widgetLayout, isOverrideTheme, colorSchema),
         isFestivity = widgetLayout?.isFestivity.orFalse(),
-        productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct, isEnableDirectPurchase, shopId, widgetResponse.name),
+        productList = mapToWidgetProductListPersonalization(widgetResponse, isMyProduct, isEnableDirectPurchase, shopId, widgetResponse.name),
         shopId = shopId,
     )
 
@@ -1190,42 +1190,49 @@ object ShopPageHomeMapper {
     }
 
     private fun mapToWidgetProductListPersonalization(
-        data: List<ShopLayoutWidget.Widget.Data>,
+        widgets: ShopLayoutWidget.Widget,
         isMyOwnProduct: Boolean,
         isEnableDirectPurchase: Boolean,
         shopId: String,
-        widgetName: String
+        widgetName: String,
     ): List<ShopHomeProductUiModel> {
-        return data.map {
-            ShopHomeProductUiModel().apply {
-                id = it.productID
-                name = it.name
-                displayedPrice = it.displayPrice
-                originalPrice = it.originalPrice
-                discountPercentage = it.discountPercentage
-                imageUrl = it.imageUrl
-                rating = it.rating.toDoubleOrZero()
-                isPo = it.isPO
-                isWishList = false
-                productUrl = it.productUrl
-                isSoldOut = it.isSoldOut
-                isShowWishList = !isMyOwnProduct
-                isShowFreeOngkir = it.isShowFreeOngkir
-                freeOngkirPromoIcon = it.freeOngkirPromoIcon
-                recommendationType = it.recommendationType
-                categoryBreadcrumbs = it.categoryBreadcrumbs
-                labelGroupList = it.labelGroups.map { mapToLabelGroupViewModel(it) }
-                minimumOrder = it.minimumOrder
-                maximumOrder = getMaximumOrder(it.stock, it.maximumOrder)
-                this.stock = it.stock
-                this.isEnableDirectPurchase = isEnableDirectPurchase
-                this.isVariant = !it.parentId.toLongOrZero().isZero()
-                this.listChildId = it.listChildId
-                this.parentId = it.parentId
-                isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
-                warehouseId = it.warehouseID
-                this.shopId = shopId
-                this.widgetName = widgetName
+        return widgets.let {
+            val appLog = it.tracker.appLog
+            it.data.map {
+                ShopHomeProductUiModel().apply {
+                    id = it.productID
+                    name = it.name
+                    displayedPrice = it.displayPrice
+                    originalPrice = it.originalPrice
+                    discountPercentage = it.discountPercentage
+                    imageUrl = it.imageUrl
+                    rating = it.rating.toDoubleOrZero()
+                    isPo = it.isPO
+                    isWishList = false
+                    productUrl = it.productUrl
+                    isSoldOut = it.isSoldOut
+                    isShowWishList = !isMyOwnProduct
+                    isShowFreeOngkir = it.isShowFreeOngkir
+                    freeOngkirPromoIcon = it.freeOngkirPromoIcon
+                    recommendationType = it.recommendationType
+                    categoryBreadcrumbs = it.categoryBreadcrumbs
+                    labelGroupList = it.labelGroups.map { mapToLabelGroupViewModel(it) }
+                    minimumOrder = it.minimumOrder
+                    maximumOrder = getMaximumOrder(it.stock, it.maximumOrder)
+                    this.stock = it.stock
+                    this.isEnableDirectPurchase = isEnableDirectPurchase
+                    this.isVariant = !it.parentId.toLongOrZero().isZero()
+                    this.listChildId = it.listChildId
+                    this.parentId = it.parentId
+                    isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                    warehouseId = it.warehouseID
+                    this.shopId = shopId
+                    this.widgetName = widgetName
+                    this.recommendationPageName = it.recommendationPageName
+                    this.recParam = it.recParam
+                    this.recSessionId = appLog.sessionId
+                    this.requestId = appLog.requestId
+                }
             }
         }
     }

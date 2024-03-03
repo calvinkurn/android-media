@@ -12,12 +12,12 @@ object TrackShopRecommendationMapper {
         return AppLogRecommendationProductModel.create(
             productId = id,
             position = position,
-            moduleName = widgetName,
+            moduleName = recommendationPageName,
             isAd = false,
             isUseCache = false,
-            recSessionId = "", //TODO pageName from BE
-            recParams = "", //TODO pageName from BE
-            requestId = "", //TODO pageName from BE
+            recSessionId = recSessionId,
+            recParams = recParam,
+            requestId = requestId,
             shopId = shopId,
             entranceForm = EntranceForm.HORIZONTAL_GOODS_CARD,
             rate = rating.toFloat(),
