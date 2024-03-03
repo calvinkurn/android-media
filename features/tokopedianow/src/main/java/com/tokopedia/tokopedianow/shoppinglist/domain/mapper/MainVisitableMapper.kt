@@ -16,8 +16,8 @@ import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState.EXP
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.GetShoppingListDataResponse
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductCartItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductCartUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListCartProductItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListCartProductUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListEmptyUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel
@@ -27,7 +27,6 @@ import com.tokopedia.tokopedianow.shoppinglist.util.Constant.MAX_TOTAL_PRODUCT_D
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.PRODUCT_RECOMMENDATION
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.UNAVAILABLE_SHOPPING_LIST
-import java.lang.Exception
 
 internal object MainVisitableMapper {
     fun mapAvailableShoppingList(
@@ -62,20 +61,6 @@ internal object MainVisitableMapper {
             appLink = it.applink,
             productLayoutType = UNAVAILABLE_SHOPPING_LIST
         )
-    }
-
-    fun MutableList<Visitable<*>>.addProducts(
-        products: List<ShoppingListHorizontalProductCardItemUiModel>
-    ): MutableList<Visitable<*>> {
-        addAll(products)
-        return this
-    }
-
-    fun MutableList<Visitable<*>>.addProductCarts(
-        products: List<ShoppingListProductCartUiModel>
-    ): MutableList<Visitable<*>> {
-        addAll(products)
-        return this
     }
 
     fun MutableList<Visitable<*>>.addLoadingState(): MutableList<Visitable<*>> {
@@ -116,24 +101,22 @@ internal object MainVisitableMapper {
         return this
     }
 
-    fun mapHeader(
+    fun MutableList<Visitable<*>>.addHeader(
         headerModel: HeaderModel,
         @TokoNowLayoutState state: Int
-    ): TokoNowThematicHeaderUiModel = TokoNowThematicHeaderUiModel(
-        pageTitle = headerModel.pageTitle,
-        pageTitleColor = headerModel.pageTitleColor,
-        ctaText = headerModel.ctaText,
-        ctaTextColor = headerModel.ctaTextColor,
-        ctaChevronIsShown = headerModel.ctaChevronIsShown,
-        ctaChevronColor = headerModel.ctaChevronColor,
-        backgroundGradientColor = headerModel.backgroundGradientColor,
-        state = state
-    )
-
-    fun MutableList<Visitable<*>>.addHeader(
-        headers: List<TokoNowThematicHeaderUiModel>
     ) {
-        addAll(headers)
+        add(
+            TokoNowThematicHeaderUiModel(
+                pageTitle = headerModel.pageTitle,
+                pageTitleColor = headerModel.pageTitleColor,
+                ctaText = headerModel.ctaText,
+                ctaTextColor = headerModel.ctaTextColor,
+                ctaChevronIsShown = headerModel.ctaChevronIsShown,
+                ctaChevronColor = headerModel.ctaChevronColor,
+                backgroundGradientColor = headerModel.backgroundGradientColor,
+                state = state
+            )
+        )
     }
 
     fun MutableList<Visitable<*>>.addEmptyShoppingList(): MutableList<Visitable<*>> {
@@ -198,6 +181,24 @@ internal object MainVisitableMapper {
 
     fun MutableList<Visitable<*>>.removeRetry(): MutableList<Visitable<*>> {
         removeFirst { it is ShoppingListRetryUiModel }
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.addProducts(
+        products: List<ShoppingListHorizontalProductCardItemUiModel>
+    ): MutableList<Visitable<*>> {
+        addAll(products)
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.addProductCarts(
+        products: List<ShoppingListCartProductItemUiModel>
+    ): MutableList<Visitable<*>> {
+        add(
+            ShoppingListCartProductUiModel(
+                productList = products
+            )
+        )
         return this
     }
 
@@ -294,13 +295,13 @@ internal object MainVisitableMapper {
         return this
     }
 
-    fun MutableList<Visitable<*>>.removeProduct(
-        productId: String
-    ): MutableList<Visitable<*>> {
-        removeFirst { it is ShoppingListHorizontalProductCardItemUiModel && it.id == productId }
+    fun MutableList<ShoppingListHorizontalProductCardItemUiModel>.addProduct(
+        product: ShoppingListHorizontalProductCardItemUiModel
+    ) = add(product)
 
-        return this
-    }
+    fun MutableList<ShoppingListHorizontalProductCardItemUiModel>.removeProduct(
+        productId: String
+    ) = removeFirst { it.id == productId }
 
     fun MutableList<Visitable<*>>.doIf(
         predicate: Boolean,
@@ -325,7 +326,7 @@ internal object MainVisitableMapper {
         return this
     }
 
-    fun MutableList<ShoppingListProductCartItemUiModel>.addProductCartItem(
+    fun MutableList<ShoppingListCartProductItemUiModel>.addProductCartItem(
         productList: MutableList<ShoppingListHorizontalProductCardItemUiModel>,
         miniCartItems: List<MiniCartItem.MiniCartItemProduct>
     ): MutableList<ShoppingListHorizontalProductCardItemUiModel> {
@@ -334,7 +335,7 @@ internal object MainVisitableMapper {
             val nextProduct = iterator.next()
             for (miniCartItem in miniCartItems) {
                 if (nextProduct.id == miniCartItem.productId) {
-                    add(ShoppingListProductCartItemUiModel(nextProduct.image, nextProduct.appLink))
+                    add(ShoppingListCartProductItemUiModel(nextProduct.image, nextProduct.appLink))
                     iterator.remove()
                     break
                 }
@@ -357,32 +358,5 @@ internal object MainVisitableMapper {
             }
         }
         return this
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    fun MutableList<Visitable<*>>?.toMutableProductList(): MutableList<ShoppingListHorizontalProductCardItemUiModel>  {
-        return try {
-            this as MutableList<ShoppingListHorizontalProductCardItemUiModel>
-        } catch (e: Exception) {
-            mutableListOf()
-        }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    fun MutableList<Visitable<*>>?.toMutableProductCartList(): MutableList<ShoppingListProductCartUiModel>  {
-        return try {
-            this as MutableList<ShoppingListProductCartUiModel>
-        } catch (e: Exception) {
-            mutableListOf()
-        }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    fun MutableList<Visitable<*>>?.toMutableHeaderList(): MutableList<TokoNowThematicHeaderUiModel>  {
-        return try {
-            this as MutableList<TokoNowThematicHeaderUiModel>
-        } catch (e: Exception) {
-            mutableListOf()
-        }
     }
 }

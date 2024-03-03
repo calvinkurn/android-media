@@ -10,14 +10,14 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.TypographyUtil.setRightImageDrawable
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListProductCartBinding
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListProductInCartAdapter
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductCartUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListCartProductUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShoppingListProductCartViewHolder (
     itemView: View
-): AbstractViewHolder<ShoppingListProductCartUiModel>(itemView) {
+): AbstractViewHolder<ShoppingListCartProductUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_shopping_list_product_cart
@@ -36,7 +36,7 @@ class ShoppingListProductCartViewHolder (
         }
     }
 
-    override fun bind(element: ShoppingListProductCartUiModel) {
+    override fun bind(element: ShoppingListCartProductUiModel) {
         binding?.apply {
             rvProductInCart.layoutManager = LinearLayoutManager(
                 root.context,

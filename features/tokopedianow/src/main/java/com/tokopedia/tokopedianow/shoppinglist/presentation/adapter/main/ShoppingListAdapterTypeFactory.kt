@@ -28,7 +28,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.Shopp
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListEmptyUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListExpandCollapseUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListRetryUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductCartUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListCartProductUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListTopCheckAllUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListEmptyViewHolder
@@ -64,7 +64,7 @@ class ShoppingListAdapterTypeFactory(
     override fun type(uiModel: TokoNowErrorUiModel): Int = TokoNowErrorViewHolder.LAYOUT
 
     override fun type(uiModel: ShoppingListHorizontalProductCardItemUiModel): Int = ShoppingListHorizontalProductCardItemViewHolder.LAYOUT
-    override fun type(uiModel: ShoppingListProductCartUiModel): Int = ShoppingListProductCartViewHolder.LAYOUT
+    override fun type(uiModel: ShoppingListCartProductUiModel): Int = ShoppingListProductCartViewHolder.LAYOUT
     override fun type(uiModel: ShoppingListTopCheckAllUiModel): Int = ShoppingListTopCheckAllViewHolder.LAYOUT
     override fun type(uiModel: ShoppingListRetryUiModel): Int = ShoppingListRetryViewHolder.LAYOUT
     override fun type(uiModel: ShoppingListEmptyUiModel): Int = ShoppingListEmptyViewHolder.LAYOUT
