@@ -31,15 +31,11 @@ class StringPoolManager {
         return mPools.get(current.trim())
     }
 
-    fun getPools(): HashMap<String, StringPoolItem> {
-        return mPools
-    }
-
     fun clearPools() {
         mPools.clear()
     }
 
-    fun updateCache(old: Array<String>, new: Array<String>, destinationLang: String) {
+    fun updateCache(old: List<String>, new: Array<String>, destinationLang: String) {
         if (old.size != new.size)
             return
 
@@ -49,23 +45,17 @@ class StringPoolManager {
     }
 
 
-    fun getQueryString(): String {
-        val builder = StringBuilder()
+    fun getQueryStrList(): List<String> {
+        val queryStrList = ArrayList<String>()
 
-        for ((key, data) in mPools) {
+        for ((_, data) in mPools) {
 
-            if (data.demandedText.isEmpty()) {
-                builder.append(data.originalText).append(TranslatorManager.DELIM)
+            if (data.demandedText.isBlank()) {
+                queryStrList.add(data.originalText)
             }
         }
 
-        val length = builder.length
-
-        if (length > 0) {
-            builder.deleteCharAt(length - 1)
-        }
-
-        return builder.toString()
+        return queryStrList.toList()
     }
 
     override fun toString(): String {

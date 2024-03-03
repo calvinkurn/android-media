@@ -28,7 +28,7 @@ interface GetDataService {
         @Query("dt") dt: String,
         /* @Query("oe") oe: String, */
        /* @Query("ie") ie: String, */
-        @Query("q") q: Array<String>
+        @Query("q") q: List<String>
     ): Call<String>
 
     @GET("https://translate.yandex.net/api/v1.5/tr.json/translate")

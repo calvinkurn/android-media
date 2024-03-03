@@ -40,7 +40,6 @@ internal object ViewTreeManager {
         }
 
         return -1
-
     }
 
     private fun lookupForView(view: View?, domeIdentifier: Array<String>): View {
@@ -66,7 +65,9 @@ internal object ViewTreeManager {
 
         do {
             if (currentView.id == Window.ID_ANDROID_CONTENT) {
-                stringBuilder.insert(0, activity.javaClass.name + ACTIVITY_NAME_SEPARATOR + MAIN_CONTENT_LAYOUT_NAME)
+                stringBuilder.append(activity.localClassName)
+                    .append(ACTIVITY_NAME_SEPARATOR)
+                    .append(MAIN_CONTENT_LAYOUT_NAME)
                 break
             } else {
                 stringBuilder.insert(

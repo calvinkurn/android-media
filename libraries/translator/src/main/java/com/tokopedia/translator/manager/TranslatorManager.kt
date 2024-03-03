@@ -15,9 +15,9 @@ package com.tokopedia.translator.manager
 
 import android.app.Activity
 import android.app.Application
+import android.text.TextUtils
 import android.util.Log
 import android.view.*
-import android.widget.EditText
 import android.widget.TextView
 import com.google.gson.Gson
 import com.tokopedia.translator.callback.ActivityTranslatorCallbacks
@@ -53,6 +53,8 @@ class TranslatorManager() : CoroutineScope {
 
     private val service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService::class.java)
 
+    private val updateViewList = mutableListOf<TextViewUpdateModel>()
+
     constructor(application: Application, apiKey: String) : this() {
         mApplication = application
         API_KEY = SharedPrefsUtils.getStringPreference(application, API_KEY)
@@ -69,8 +71,8 @@ class TranslatorManager() : CoroutineScope {
                 SharedPrefsUtils.getStringPreference(application, DESTINATION_LANGUAGE)!!.split(DELIM_LANG_CODE)[1]
             }"
 
-            destinationLang = mApplication?.let { application ->
-                SharedPrefsUtils.getStringPreference(application.applicationContext, DESTINATION_LANGUAGE)?.split(DELIM_LANG_CODE.toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()?.getOrNull(1)
+            destinationLang = mApplication?.let { app ->
+                SharedPrefsUtils.getStringPreference(app.applicationContext, DESTINATION_LANGUAGE)?.split(DELIM_LANG_CODE.toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()?.getOrNull(1)
             } ?: "en"
         } catch (e: Exception) {
             e.printStackTrace()
@@ -88,9 +90,7 @@ class TranslatorManager() : CoroutineScope {
         private var sInstance: TranslatorManager? = null
 
         fun getCurrentActivity(): Activity? {
-            return mCurrentActivity?.let {
-                it.get()
-            } ?: run {
+            return mCurrentActivity?.get() ?: run {
                 null
             }
         }
@@ -124,32 +124,27 @@ class TranslatorManager() : CoroutineScope {
     }
 
 
-    private suspend fun prepareSelectors(views: List<View?>, activity: Activity) {
+    private fun prepareSelectors(views: List<TextView>) {
 
         if (views.isEmpty()) return
 
-        val updateList = mutableListOf<TextViewUpdateModel>()
+        updateViewList.clear()
 
         for (view in views) {
-            if (view is TextView) {
+            if (view.tag == null || (view.tag !is Boolean && !view.tag.toString().toBoolean())) {
 
-                val viewText = view.text.toString()
+                if (view.text.isNotBlank()) {
+                    val viewText = view.text.toString()
 
-                if (view.tag == null || (view.tag !is Boolean && !view.tag.toString().toBoolean())) {
-                    val selector = ViewTreeManager.createDOMIdentifier(view, activity)
-                    mSelectors[selector] = selector
+                    val stringPoolItem = mStringPoolManager.get(viewText)
 
-                    if (viewText.isNotBlank()) {
-                        val stringPoolItem = mStringPoolManager.get(viewText)
-
-                        if (stringPoolItem === null || stringPoolItem.demandedText.isBlank() || (stringPoolItem.requestedLocale != destinationLang)) {
-                            //prepare for translate
-                            mStringPoolManager.add(view.text.toString(), "", "")
-                        } else {
-                            //translate
-                            if (view.text != stringPoolItem.demandedText) {
-                                updateList.add(TextViewUpdateModel(view, stringPoolItem.demandedText))
-                            }
+                    if (stringPoolItem === null || stringPoolItem.demandedText.isBlank() || (stringPoolItem.requestedLocale != destinationLang)) {
+                        //prepare for translate
+                        mStringPoolManager.add(viewText, "", "")
+                    } else {
+                        //translate
+                        if (viewText != stringPoolItem.demandedText) {
+                            updateViewList.add(TextViewUpdateModel(view, stringPoolItem.demandedText))
                         }
                     }
                 }
@@ -158,13 +153,16 @@ class TranslatorManager() : CoroutineScope {
             Log.d(TAG, "Created selectors for current screen $mSelectors")
             Log.d(TAG, "current string pool $mStringPoolManager")
         }
+    }
 
-        //Batch UI Updates
+    private suspend fun updateViewList() {
         withContext(Dispatchers.Main) {
-            for (updateView in updateList) {
-                updateView.textView.text = updateView.newText
-                if (updateView.textView.tag != true) {
-                    updateView.textView.tag = true
+            for (view in updateViewList) {
+                if (view.newText != view.textView.text) {
+                    view.textView.text = view.newText
+                }
+                if (view.textView.tag != true) {
+                    view.textView.tag = true
                 }
             }
         }
@@ -172,11 +170,9 @@ class TranslatorManager() : CoroutineScope {
 
     fun clearSelectors() {
         mSelectors.clear()
-        mStringPoolManager.clearPools()
     }
 
     suspend fun startTranslate() {
-        Log.d(TAG, "Starting translation of ${getCurrentActivity()}")
         if (getCurrentActivity() == null || mApplication == null) {
             return
         }
@@ -189,26 +185,23 @@ class TranslatorManager() : CoroutineScope {
             destinationLang = currentDestLang
         }
 
-        val views = withContext(coroutineContext) {
-            ViewUtil.getChildren(ViewUtil.getContentView(getCurrentActivity()), mStringPoolManager)
-        }
+        val views = ViewUtil.getChildren(ViewUtil.getContentView(getCurrentActivity()))
 
-        prepareSelectors(views, getCurrentActivity()!!)
+        prepareSelectors(views)
 
-        origStrings = mStringPoolManager.getQueryString()
+        updateViewList()
 
-        Log.d(TAG, "Here is eligible string for translation in current screen $origStrings")
+        val originStrList = mStringPoolManager.getQueryStrList()
 
-        if (origStrings.isNullOrBlank()) {
-            Log.d(TAG, "Stopping translation as no new untranslated string found in this screen, ${getCurrentActivity()}")
+        if (originStrList.isEmpty()) {
             return
         }
 
-        val originStrList = origStrings.orEmpty().split(DELIM.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        fetchTranslationService(originStrList)
+        fetchTranslationService(originStrList, views)
     }
 
-    private suspend fun fetchTranslationService(originStrList: Array<String>) {
+    private suspend fun fetchTranslationService(originStrList: List<String>, views: List<TextView>) {
+
         val call = service.getTranslatedString("dict-chrome-ex", "id", destinationLang, "t", originStrList)
 
         try {
@@ -219,7 +212,6 @@ class TranslatorManager() : CoroutineScope {
             if (response.isSuccessful) {
                 try {
                     val strJson = response.body()
-                    Log.d(TranslatorManagerFragment.TAG, "Received response from server: $strJson --> ${TranslatorManagerFragment.getCurrentFragment()}")
 
                     val arrayStr = jsonStringToArray(strJson)
 
@@ -229,9 +221,7 @@ class TranslatorManager() : CoroutineScope {
 
                         val charCountOld = SharedPrefsUtils.getIntegerPreference(mApplication!!.applicationContext, CHARS_COUNT, 0)
 
-                        withContext(coroutineContext) {
-                            updateScreenWithTranslatedString()
-                        }
+                        updateScreenWithTranslatedString(views)
 
                         SharedPrefsUtils.setIntegerPreference(mApplication!!.applicationContext, CHARS_COUNT, origStrings!!.length + charCountOld)
                     }
@@ -253,46 +243,37 @@ class TranslatorManager() : CoroutineScope {
         }
     }
 
-    suspend fun updateScreenWithTranslatedString() {
-        Log.d(TAG, "Starting screen update with translated string ${getCurrentActivity()}")
-
+    private suspend fun updateScreenWithTranslatedString(views: List<TextView>) {
         val updateViewList = mutableListOf<TextViewUpdateModel>()
 
         var stringPoolItem: StringPoolItem?
-        var tv: View?
-        for (selector in mSelectors) {
-            try {
-                tv = withContext(coroutineContext) {
-                    ViewTreeManager.findViewByDOMIdentifier(selector.value, getCurrentActivity()!!)
+        try {
+
+            for (tv in views) {
+                val tvText = tv.text?.toString().orEmpty()
+
+                stringPoolItem = mStringPoolManager.get(tvText)
+
+                if (stringPoolItem == null || stringPoolItem.demandedText.isEmpty()) {
+                    continue
                 }
 
-                if (tv == null) continue
-
-                if (tv is TextView && tv !is EditText) {
-
-                    stringPoolItem = mStringPoolManager.get(tv.text?.toString())
-
-                    if (stringPoolItem == null || stringPoolItem.demandedText.isEmpty()) {
-                        continue
-                    }
-
-                    if (tv.text != stringPoolItem.demandedText) {
-                        updateViewList.add(TextViewUpdateModel(tv, stringPoolItem.demandedText))
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        //Batch UI Updates
-        withContext(Dispatchers.Main) {
-            for (updateView in updateViewList) {
-                updateView.textView.text = updateView.newText
-                if (updateView.textView.tag != true) {
-                    updateView.textView.tag = true
+                if (!TextUtils.equals(tvText, stringPoolItem.demandedText)) {
+                    updateViewList.add(TextViewUpdateModel(tv, stringPoolItem.demandedText))
                 }
             }
+
+            //Batch UI Updates
+            withContext(Dispatchers.Main) {
+                for (updateView in updateViewList) {
+                    updateView.textView.text = updateView.newText
+                    if (updateView.textView.tag != true) {
+                        updateView.textView.tag = true
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

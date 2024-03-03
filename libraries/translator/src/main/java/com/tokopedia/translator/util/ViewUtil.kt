@@ -14,42 +14,43 @@
 package com.tokopedia.translator.util
 
 import android.app.Activity
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.tokopedia.translator.manager.StringPoolManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.ArrayDeque
+import java.util.LinkedList
 
 
 internal object ViewUtil {
 
-    suspend fun getChildren(viewGroup: View?, stringPoolManager: StringPoolManager?): List<View> {
-        return withContext(Dispatchers.Default) {
-            val unTraversedViews = ArrayList<View>()
-            val traversedViews = ArrayList<View>()
+    suspend fun getChildren(viewGroup: View?): List<TextView> {
+        return withContext(Dispatchers.Main) {
+            val unTraversedViews = ArrayDeque<View>()
+            val traversedViews = ArrayList<TextView>()
+
             unTraversedViews.add(viewGroup!!)
 
             while (unTraversedViews.isNotEmpty()) {
-                val child = unTraversedViews.removeAt(0)
+                val child = unTraversedViews.poll()
 
-                if (child is TextView) {
-                    val demandedText = stringPoolManager?.get(child.text?.toString())?.demandedText.orEmpty()
-                    if (demandedText != child.text) {
+                if (child != null) {
+                    if (child is TextView) {
                         traversedViews.add(child)
                     }
-                }
 
-                if (child !is ViewGroup) {
-                    continue
-                }
-
-                for (counter in 0 until child.childCount) {
-                    unTraversedViews.add(child.getChildAt(counter))
+                    if (child is ViewGroup) {
+                        for (counter in 0 until child.childCount) {
+                            unTraversedViews.add(child.getChildAt(counter))
+                        }
+                    }
                 }
             }
-            traversedViews
+
+            traversedViews.toList()
         }
     }
 
