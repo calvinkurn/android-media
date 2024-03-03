@@ -1398,7 +1398,11 @@ public class MainParentActivity extends BaseActivity implements
 
     private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
         if (isFirstInit) {
-            bottomNavigation.setSelected(homePosition);
+            Object currentEnterMethod = AppLogAnalytics.INSTANCE.getLastData(ENTER_METHOD);
+            if (currentEnterMethod == null) {
+                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
+            }
+            bottomNavigation.setInitialState(homePosition);
         }
     }
 
