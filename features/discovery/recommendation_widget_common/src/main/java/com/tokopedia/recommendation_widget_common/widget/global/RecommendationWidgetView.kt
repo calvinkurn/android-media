@@ -10,10 +10,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.viewutil.asLifecycleOwner
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
+import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
@@ -44,6 +46,7 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
     private val typeFactory = RecommendationTypeFactoryImpl()
     private var job: MutableList<Job>? = mutableListOf()
 
+    private var eligibleToTrack = false
     private var recTriggerObject = RecommendationTriggerObject()
 
     private fun init() { }
@@ -103,7 +106,7 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
     }
 
     private fun bind(visitableList: List<RecommendationVisitable>?, callback: Callback?) {
-        setRecTriggerObject(visitableList?.firstOrNull())
+        setRecTriggerObject(visitableList)
         val diffUtilCallback = RecommendationWidgetViewDiffUtilCallback(
             parentView = this,
             visitableList = visitableList,
@@ -163,7 +166,10 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
         recommendationWidgetViewModel?.dismissMessage()
     }
 
-    private fun setRecTriggerObject(model: RecommendationVisitable?) {
+    private fun setRecTriggerObject(list: List<RecommendationVisitable>?) {
+        eligibleToTrack = list?.any { it is RecommendationVerticalModel }.orFalse()
+        if(!eligibleToTrack) return
+        val model = list?.firstOrNull()
         recTriggerObject = RecommendationTriggerObject(
             sessionId = model?.appLog?.sessionId.orEmpty(),
             requestId = model?.appLog?.requestId.orEmpty(),
@@ -190,5 +196,9 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
 
     override fun getRecommendationTriggerObject(): RecommendationTriggerObject {
         return recTriggerObject
+    }
+
+    override fun isEligibleToTrack(): Boolean {
+        return eligibleToTrack
     }
 }
