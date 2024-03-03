@@ -26,7 +26,7 @@ data class ShoppingListHorizontalProductCardItemUiModel(
 
     fun getChangePayload(item: ShoppingListHorizontalProductCardItemUiModel): Any? {
         return when {
-            isSelected != item.isSelected -> true
+            isSelected != item.isSelected && productLayoutType == item.productLayoutType -> true
             else -> null
         }
     }
