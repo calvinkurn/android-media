@@ -270,7 +270,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 doIf(
                     predicate = filteredAvailableProducts.isNotEmpty(),
                     then = layout@ {
-                        val areAllAvailableProductsSelected = filteredAvailableProducts.count { it.isSelected } == availableProducts.size
+                        val areAllAvailableProductsSelected = filteredAvailableProducts.count { it.isSelected } == filteredAvailableProducts.size
                         val areAvailableProductsMoreThanDefaultDisplayed = filteredAvailableProducts.size > MAX_TOTAL_PRODUCT_DISPLAYED
                         val remainingTotalProduct = filteredAvailableProducts.size - displayedAvailableItems.size
 
@@ -533,6 +533,33 @@ class TokoNowShoppingListViewModel @Inject constructor(
         }
     }
 
+    private fun updateLayout(
+        isRequiredToScrollUp: Boolean = false
+    ) {
+        filterProductRecommendationWithAvailableProduct()
+        filterShoppingListWithProductCart(mMiniCartData)
+
+        mutableLayout.clear()
+
+        val isShoppingListAvailable = availableProducts.isNotEmpty() || unavailableProducts.isNotEmpty()
+        val isFilteredShoppingListAvailable =  filteredAvailableProducts.isNotEmpty() || filteredUnavailableProducts.isNotEmpty()
+
+        addHeaderSection()
+        addShoppingListSection(
+            isShoppingListAvailable = isShoppingListAvailable
+        )
+        addProductCartWidgetSection(
+            isShoppingListAvailable = isFilteredShoppingListAvailable
+        )
+        addProductRecommendationSection(
+            isShoppingListAvailable = isShoppingListAvailable
+        )
+
+        _layoutState.value = Success(getUpdatedLayout(isRequiredToScrollUp))
+
+        setDataToBottomWidget(mMiniCartData)
+    }
+
     /**
      * -- public function section --
      */
@@ -768,32 +795,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
         }
     }
 
-    private fun updateLayout(
-        isRequiredToScrollUp: Boolean = false
-    ) {
-        filterProductRecommendationWithAvailableProduct()
-        filterShoppingListWithProductCart(mMiniCartData)
-
-        mutableLayout.clear()
-
-        val isShoppingListAvailable = availableProducts.isNotEmpty() || unavailableProducts.isNotEmpty()
-
-        addHeaderSection()
-        addShoppingListSection(
-            isShoppingListAvailable = isShoppingListAvailable
-        )
-        addProductCartWidgetSection(
-            isShoppingListAvailable = isShoppingListAvailable
-        )
-        addProductRecommendationSection(
-            isShoppingListAvailable = isShoppingListAvailable
-        )
-
-        _layoutState.value = Success(getUpdatedLayout(isRequiredToScrollUp))
-
-        setDataToBottomWidget(mMiniCartData)
-    }
-
     fun addToWishlist(
         product: ShoppingListHorizontalProductCardItemUiModel
     ) {
@@ -830,10 +831,11 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 updateLayout()
             },
             onError = {
-                mutableLayout.modifyProduct(
-                    productId = product.id,
-                    state = SHOW
-                )
+                mutableLayout
+                    .modifyProduct(
+                        productId = product.id,
+                        state = SHOW
+                    )
 
                 _layoutState.value = Success(getUpdatedLayout())
 
@@ -874,10 +876,12 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 updateLayout()
             },
             onError = {
-                mutableLayout.modifyProduct(
-                    productId = product.id,
-                    state = SHOW
-                )
+                mutableLayout
+                    .modifyProduct(
+                        productId = product.id,
+                        state = SHOW
+                    )
+
                 _layoutState.value = Success(getUpdatedLayout())
 
                 _toasterData.value = ToasterModel(
