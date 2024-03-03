@@ -116,22 +116,24 @@ internal object MainVisitableMapper {
         return this
     }
 
-    fun MutableList<Visitable<*>>.addHeader(
+    fun mapHeader(
         headerModel: HeaderModel,
         @TokoNowLayoutState state: Int
+    ): TokoNowThematicHeaderUiModel = TokoNowThematicHeaderUiModel(
+        pageTitle = headerModel.pageTitle,
+        pageTitleColor = headerModel.pageTitleColor,
+        ctaText = headerModel.ctaText,
+        ctaTextColor = headerModel.ctaTextColor,
+        ctaChevronIsShown = headerModel.ctaChevronIsShown,
+        ctaChevronColor = headerModel.ctaChevronColor,
+        backgroundGradientColor = headerModel.backgroundGradientColor,
+        state = state
+    )
+
+    fun MutableList<Visitable<*>>.addHeader(
+        headers: List<TokoNowThematicHeaderUiModel>
     ) {
-        add(
-            TokoNowThematicHeaderUiModel(
-                pageTitle = headerModel.pageTitle,
-                pageTitleColor = headerModel.pageTitleColor,
-                ctaText = headerModel.ctaText,
-                ctaTextColor = headerModel.ctaTextColor,
-                ctaChevronIsShown = headerModel.ctaChevronIsShown,
-                ctaChevronColor = headerModel.ctaChevronColor,
-                backgroundGradientColor = headerModel.backgroundGradientColor,
-                state = state
-            )
-        )
+        addAll(headers)
     }
 
     fun MutableList<Visitable<*>>.addEmptyShoppingList(): MutableList<Visitable<*>> {
@@ -370,6 +372,15 @@ internal object MainVisitableMapper {
     fun MutableList<Visitable<*>>?.toMutableProductCartList(): MutableList<ShoppingListProductCartUiModel>  {
         return try {
             this as MutableList<ShoppingListProductCartUiModel>
+        } catch (e: Exception) {
+            mutableListOf()
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun MutableList<Visitable<*>>?.toMutableHeaderList(): MutableList<TokoNowThematicHeaderUiModel>  {
+        return try {
+            this as MutableList<TokoNowThematicHeaderUiModel>
         } catch (e: Exception) {
             mutableListOf()
         }

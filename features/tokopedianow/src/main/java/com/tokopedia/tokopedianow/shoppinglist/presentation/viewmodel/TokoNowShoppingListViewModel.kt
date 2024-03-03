@@ -73,6 +73,8 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProductCarts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.filteredBy
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.mapHeader
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.toMutableHeaderList
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.toMutableProductCartList
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.toMutableProductList
 import com.tokopedia.tokopedianow.shoppinglist.helper.ResourceProvider
@@ -81,6 +83,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.E
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductCartUiModel
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListLayoutSection
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListLayoutSection.AVAILABLE_PRODUCT
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListLayoutSection.HEADER
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListLayoutSection.PRODUCT_CART
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListLayoutSection.PRODUCT_RECOMMENDATION
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListLayoutSection.UNAVAILABLE_PRODUCT
@@ -238,21 +241,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
      */
 
     private fun addHeaderSection() {
-        mutableLayout.addHeader(
-            headerModel = HeaderModel(
-                pageTitle = resourceProvider.getString(R.string.tokopedianow_shopping_list_page_title),
-                pageTitleColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_Static_White),
-                ctaText = resourceProvider.getString(R.string.tokopedianow_shopping_list_repurchase),
-                ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_Static_White),
-                ctaChevronIsShown = true,
-                ctaChevronColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_Static_White),
-                backgroundGradientColor = TokoNowThematicHeaderUiModel.GradientColor(
-                    startColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
-                    endColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN400)
-                )
-            ),
-            state = SHOW
-        )
+        val headerList = layoutMap[HEADER].toMutableHeaderList()
+        mutableLayout.addHeader(headerList)
     }
 
     private fun addShoppingListSection(
@@ -501,6 +491,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
         val shoppingListData = result.component2() as GetShoppingListDataResponse.Data
         val productRecommendationData = result.component3() as RecommendationWidget
 
+        layoutMap[HEADER] = getHeaderData().toMutableList()
         layoutMap[AVAILABLE_PRODUCT] = mapAvailableShoppingList(shoppingListData.listAvailableItem).toMutableList()
         layoutMap[UNAVAILABLE_PRODUCT] = mapUnavailableShoppingList(shoppingListData.listUnavailableItem).toMutableList()
         layoutMap[PRODUCT_RECOMMENDATION] = mapRecommendedProducts(productRecommendationData).toMutableList()
@@ -553,6 +544,24 @@ class TokoNowShoppingListViewModel @Inject constructor(
             _miniCartState.value = Error(throwable = Throwable())
         }
     }
+
+    private fun getHeaderData() = listOf(
+        mapHeader(
+            headerModel = HeaderModel(
+                pageTitle = resourceProvider.getString(R.string.tokopedianow_shopping_list_page_title),
+                pageTitleColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_Static_White),
+                ctaText = resourceProvider.getString(R.string.tokopedianow_shopping_list_repurchase),
+                ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_Static_White),
+                ctaChevronIsShown = true,
+                ctaChevronColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_Static_White),
+                backgroundGradientColor = TokoNowThematicHeaderUiModel.GradientColor(
+                    startColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
+                    endColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN400)
+                )
+            ),
+            state = SHOW
+        )
+    )
 
     /**
      * -- public function section --
