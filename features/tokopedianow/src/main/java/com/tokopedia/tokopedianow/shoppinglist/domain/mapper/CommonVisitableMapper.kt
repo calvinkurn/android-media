@@ -8,26 +8,22 @@ import com.tokopedia.tokopedianow.common.model.TokoNowErrorUiModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 
 internal object CommonVisitableMapper {
-    fun MutableList<Visitable<*>>.addRecommendedProducts(
+    fun mapRecommendedProducts(
         recommendationWidget: RecommendationWidget
-    ): MutableList<Visitable<*>> {
-        val newList = recommendationWidget.recommendationItemList.map {
-            ShoppingListHorizontalProductCardItemUiModel(
-                id = it.productId.toString(),
-                image = it.imageUrl,
-                price = it.price,
-                priceInt = it.priceInt.toDouble(),
-                name = it.name,
-                weight = it.labelGroupList.firstOrNull { label -> label.isWeightPosition() }?.title.orEmpty(),
-                percentage = it.discountPercentage,
-                slashPrice = it.slashedPrice,
-                appLink = it.appUrl,
-                productLayoutType = PRODUCT_RECOMMENDATION,
-                state = SHOW
-            )
-        }
-        addAll(newList)
-        return this
+    ): List<ShoppingListHorizontalProductCardItemUiModel> = recommendationWidget.recommendationItemList.map {
+        ShoppingListHorizontalProductCardItemUiModel(
+            id = it.productId.toString(),
+            image = it.imageUrl,
+            price = it.price,
+            priceInt = it.priceInt.toDouble(),
+            name = it.name,
+            weight = it.labelGroupList.firstOrNull { label -> label.isWeightPosition() }?.title.orEmpty(),
+            percentage = it.discountPercentage,
+            slashPrice = it.slashedPrice,
+            appLink = it.appUrl,
+            productLayoutType = PRODUCT_RECOMMENDATION,
+            state = SHOW
+        )
     }
 
     fun MutableList<Visitable<*>>.addErrorState(

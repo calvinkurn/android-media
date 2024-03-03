@@ -16,7 +16,8 @@ import com.tokopedia.tokopedianow.common.model.UiState.Error
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.addEmptyState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.addLoadingState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.addErrorState
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.addRecommendedProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.mapRecommendedProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProducts
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,7 +53,7 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
                 val productRecommendation = productRecommendationUseCase.getData(param)
                 layout.clear()
                 _uiState.value = Success(
-                    data = if (productRecommendation.recommendationItemList.isNotEmpty()) layout.addRecommendedProducts(productRecommendation) else layout.addEmptyState()
+                    data = if (productRecommendation.recommendationItemList.isNotEmpty()) layout.addProducts(mapRecommendedProducts(productRecommendation)) else layout.addEmptyState()
                 )
             },
             onError = { throwable ->

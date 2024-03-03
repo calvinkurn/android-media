@@ -27,6 +27,7 @@ import com.tokopedia.tokopedianow.shoppinglist.util.Constant.MAX_TOTAL_PRODUCT_D
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.PRODUCT_RECOMMENDATION
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.UNAVAILABLE_SHOPPING_LIST
+import java.lang.Exception
 
 internal object MainVisitableMapper {
     fun mapAvailableShoppingList(
@@ -63,8 +64,15 @@ internal object MainVisitableMapper {
         )
     }
 
-    fun MutableList<Visitable<*>>.addShoppingListProducts(
+    fun MutableList<Visitable<*>>.addProducts(
         products: List<ShoppingListHorizontalProductCardItemUiModel>
+    ): MutableList<Visitable<*>> {
+        addAll(products)
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.addProductCarts(
+        products: List<ShoppingListProductCartUiModel>
     ): MutableList<Visitable<*>> {
         addAll(products)
         return this
@@ -142,16 +150,6 @@ internal object MainVisitableMapper {
             )
         )
         return this
-    }
-
-    fun MutableList<Visitable<*>>.addProductCartWidget(
-        productList: List<ShoppingListProductCartItemUiModel>
-    ) {
-        add(
-            ShoppingListProductCartUiModel(
-                productList = productList
-            )
-        )
     }
 
     fun MutableList<Visitable<*>>.addExpandCollapse(
@@ -341,5 +339,39 @@ internal object MainVisitableMapper {
             }
         }
         return productList
+    }
+
+    fun MutableList<ShoppingListHorizontalProductCardItemUiModel>.filteredBy(
+        productList: MutableList<ShoppingListHorizontalProductCardItemUiModel>
+    ): MutableList<ShoppingListHorizontalProductCardItemUiModel> {
+        val iterator = this.iterator()
+        while (iterator.hasNext()) {
+            val nextProduct = iterator.next()
+            for (product in productList) {
+                if (nextProduct.id == product.id) {
+                    iterator.remove()
+                    break
+                }
+            }
+        }
+        return this
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun MutableList<Visitable<*>>?.toMutableProductList(): MutableList<ShoppingListHorizontalProductCardItemUiModel>  {
+        return try {
+            this as MutableList<ShoppingListHorizontalProductCardItemUiModel>
+        } catch (e: Exception) {
+            mutableListOf()
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun MutableList<Visitable<*>>?.toMutableProductCartList(): MutableList<ShoppingListProductCartUiModel>  {
+        return try {
+            this as MutableList<ShoppingListProductCartUiModel>
+        } catch (e: Exception) {
+            mutableListOf()
+        }
     }
 }

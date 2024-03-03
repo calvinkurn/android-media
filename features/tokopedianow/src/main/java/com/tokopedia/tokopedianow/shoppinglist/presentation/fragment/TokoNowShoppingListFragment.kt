@@ -75,6 +75,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.DELETE_WISHLIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_WISHLIST
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -161,9 +162,9 @@ class TokoNowShoppingListFragment :
             setupMiniCart()
             setupNavigationToolbar()
             setupOnScrollListener()
-
-            loadLayout()
         }
+
+        loadLayout()
     }
 
     override fun onResume() {
@@ -327,12 +328,12 @@ class TokoNowShoppingListFragment :
                 when(data.event) {
                     ADD_WISHLIST -> {
                         showToaster(data) {
-                            viewModel.addToWishlist(data.productId)
+                            viewModel.addToWishlist(data.product)
                         }
                     }
                     DELETE_WISHLIST -> {
                         showToaster(data) {
-                            viewModel.deleteFromWishlist(data.productId)
+                            viewModel.deleteFromWishlist(data.product)
                         }
                     }
                 }
@@ -350,21 +351,6 @@ class TokoNowShoppingListFragment :
             .shoppingListModule(ShoppingListModule(requireContext()))
             .build()
             .inject(this)
-    }
-
-    private fun setHeaderModel(context: Context) {
-        viewModel.headerModel = HeaderModel(
-            pageTitle = getString(R.string.tokopedianow_shopping_list_page_title),
-            pageTitleColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White),
-            ctaText = getString(R.string.tokopedianow_shopping_list_repurchase),
-            ctaTextColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White),
-            ctaChevronIsShown = true,
-            ctaChevronColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White),
-            backgroundGradientColor = TokoNowThematicHeaderUiModel.GradientColor(
-                startColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN500),
-                endColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN400)
-            )
-        )
     }
 
     private fun showToaster(
@@ -414,10 +400,7 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private fun FragmentTokopedianowShoppingListBinding.loadLayout() {
-        setHeaderModel(navToolbar.context)
-        viewModel.loadLayout()
-    }
+    private fun loadLayout() = viewModel.loadLayout()
 
     private fun FragmentTokopedianowShoppingListBinding.setupRecyclerView() {
         layoutManager = LinearLayoutManager(context)
@@ -601,15 +584,15 @@ class TokoNowShoppingListFragment :
         }
 
         override fun onClickDeleteIcon(
-            productId: String
+            product: ShoppingListHorizontalProductCardItemUiModel
         ) {
-            viewModel.deleteFromWishlist(productId)
+            viewModel.deleteFromWishlist(product)
         }
 
         override fun onClickAddToShoppingList(
-            productId: String
+            product: ShoppingListHorizontalProductCardItemUiModel
         ) {
-            viewModel.addToWishlist(productId)
+            viewModel.addToWishlist(product)
         }
     }
 

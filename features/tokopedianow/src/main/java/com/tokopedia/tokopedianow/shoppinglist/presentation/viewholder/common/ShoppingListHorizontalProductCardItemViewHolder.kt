@@ -176,7 +176,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
             constraintSet.applyTo(normalLayout)
 
             setOnClickListener {
-                listener?.onClickAddToShoppingList(data.id)
+                listener?.onClickAddToShoppingList(data)
             }
         }
         icuDelete.showIfWithBlock(data.productLayoutType != PRODUCT_RECOMMENDATION) {
@@ -193,7 +193,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
             constraintSet.applyTo(normalLayout)
 
             setOnClickListener {
-                listener?.onClickDeleteIcon(data.id)
+                listener?.onClickDeleteIcon(data)
             }
         }
     }
@@ -299,10 +299,10 @@ class ShoppingListHorizontalProductCardItemViewHolder(
             productId: String
         )
         fun onClickDeleteIcon(
-            productId: String
+            product: ShoppingListHorizontalProductCardItemUiModel
         )
         fun onClickAddToShoppingList(
-            productId: String
+            product: ShoppingListHorizontalProductCardItemUiModel
         )
     }
 }

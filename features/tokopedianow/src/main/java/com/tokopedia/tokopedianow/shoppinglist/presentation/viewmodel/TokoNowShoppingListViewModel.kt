@@ -28,17 +28,13 @@ import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutTyp
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState.COLLAPSE
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.addErrorState
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.addRecommendedProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addLoadingState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addDivider
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addEmptyShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addExpandCollapse
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addHeader
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addLoadMore
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProductCartItem
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProductCartWidget
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addRetry
-import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addShoppingListProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addTitle
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addTopCheckAllShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.doIf
@@ -57,7 +53,6 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.model.GetShoppingListDataR
 import com.tokopedia.tokopedianow.shoppinglist.domain.model.SaveShoppingListStateActionParam
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.GetShoppingListUseCase
 import com.tokopedia.tokopedianow.shoppinglist.domain.usecase.SaveShoppingListStateUseCase
-import com.tokopedia.tokopedianow.shoppinglist.helper.ResourceStringProvider
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.BottomBulkAtcModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.LayoutModel
@@ -72,8 +67,23 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.mapRecommendedProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProductCartItem
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProductCarts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.filteredBy
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.toMutableProductCartList
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.toMutableProductList
+import com.tokopedia.tokopedianow.shoppinglist.helper.ResourceProvider
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_WISHLIST
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.main.ShoppingListProductCartUiModel
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListLayoutSection
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListLayoutSection.AVAILABLE_PRODUCT
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListLayoutSection.PRODUCT_CART
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListLayoutSection.PRODUCT_RECOMMENDATION
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListLayoutSection.UNAVAILABLE_PRODUCT
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
@@ -85,6 +95,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoNowShoppingListViewModel @Inject constructor(
     private val addressData: TokoNowLocalAddress,
@@ -95,7 +106,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     private val addToWishlistUseCase: AddToWishlistV2UseCase,
     private val deleteFromWishlistUseCase: DeleteWishlistV2UseCase,
-    private val resourceStringProvider: ResourceStringProvider,
+    private val resourceProvider: ResourceProvider,
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.io) {
 
@@ -113,16 +124,15 @@ class TokoNowShoppingListViewModel @Inject constructor(
      * -- private variable section --
      */
 
-    private val layout = mutableListOf<Visitable<*>> ()
+    private val layoutMap = mutableMapOf<ShoppingListLayoutSection, MutableList<Visitable<*>>>()
+    private val mutableLayout = mutableListOf<Visitable<*>>()
     private val checkUncheckStateParams = mutableListOf<SaveShoppingListStateActionParam>()
-    private val cartProducts = mutableListOf<ShoppingListProductCartItemUiModel>()
 
-    private var availableProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
-    private var unavailableProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
     private var filteredAvailableProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
     private var filteredUnavailableProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
+    private var filteredRecommendedProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
 
-    private val _layoutState: MutableStateFlow<UiState<LayoutModel>> = MutableStateFlow(Loading(LayoutModel(layout.addLoadingState())))
+    private val _layoutState: MutableStateFlow<UiState<LayoutModel>> = MutableStateFlow(Loading(LayoutModel(mutableLayout.addLoadingState())))
     private val _miniCartState: MutableStateFlow<UiState<MiniCartSimplifiedData>> = MutableStateFlow(Loading())
     private val _isOnScrollNotNeeded: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val _isNavToolbarScrollingBehaviourEnabled: MutableStateFlow<Boolean> = MutableStateFlow(true)
@@ -161,8 +171,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
         get() = _bottomBulkAtcData.asStateFlow()
     val toasterData
         get() = _toasterData.asStateFlow()
-
-    var headerModel: HeaderModel = HeaderModel()
 
     /**
      * -- private suspend function section --
@@ -206,7 +214,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
     private suspend fun saveAllAvailableProductsState() {
         checkUncheckStateParams.clear()
-        checkUncheckStateParams.addAll(availableProducts.map { SaveShoppingListStateActionParam(it.id, it.isSelected) })
+        checkUncheckStateParams.addAll((layoutMap[AVAILABLE_PRODUCT].toMutableProductList()).map { SaveShoppingListStateActionParam(productId = it.id, isSelected = it.isSelected) })
 
         saveShoppingListState()
     }
@@ -230,8 +238,19 @@ class TokoNowShoppingListViewModel @Inject constructor(
      */
 
     private fun addHeaderSection() {
-        layout.addHeader(
-            headerModel = headerModel,
+        mutableLayout.addHeader(
+            headerModel = HeaderModel(
+                pageTitle = resourceProvider.getString(R.string.tokopedianow_shopping_list_page_title),
+                pageTitleColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_Static_White),
+                ctaText = resourceProvider.getString(R.string.tokopedianow_shopping_list_repurchase),
+                ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_Static_White),
+                ctaChevronIsShown = true,
+                ctaChevronColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_Static_White),
+                backgroundGradientColor = TokoNowThematicHeaderUiModel.GradientColor(
+                    startColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
+                    endColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN400)
+                )
+            ),
             state = SHOW
         )
     }
@@ -240,7 +259,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
         isShoppingListAvailable: Boolean,
         stockSelectedTotalData: Int
     ) {
-        layout.doIf(
+        mutableLayout.doIf(
             predicate = isShoppingListAvailable,
             then = {
                 val displayedAvailableItems = filteredAvailableProducts.take(MAX_TOTAL_PRODUCT_DISPLAYED)
@@ -255,7 +274,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                     then = layout@ {
                         calculateDataForBottomBulkAtc()
 
-                        val areAllAvailableProductsSelected = stockSelectedTotalData == filteredAvailableProducts.size
+                        val areAllAvailableProductsSelected = stockSelectedTotalData == layoutMap[AVAILABLE_PRODUCT].toMutableProductList().size
                         val areAvailableProductsMoreThanDefaultDisplayed = filteredAvailableProducts.size > MAX_TOTAL_PRODUCT_DISPLAYED
                         val remainingTotalProduct = filteredAvailableProducts.size - displayedAvailableItems.size
 
@@ -266,7 +285,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                                 productState = COLLAPSE,
                                 isSelected = areAllAvailableProductsSelected
                             )
-                            .addShoppingListProducts(displayedAvailableItems)
+                            .addProducts(displayedAvailableItems)
                             .doIf(
                                 predicate = areAvailableProductsMoreThanDefaultDisplayed,
                                 then = {
@@ -298,14 +317,14 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
                         this@layout
                             .addTitle("$EMPTY_STOCK_WIDGET_TITLE(${filteredUnavailableProducts.size})")
-                            .addShoppingListProducts(displayedUnavailableItems)
+                            .addProducts(displayedUnavailableItems)
                             .doIf(
                                 predicate = areUnavailableProductsMoreThanDefaultDisplayed,
                                 then = {
                                     addExpandCollapse(
                                         productState = COLLAPSE,
                                         remainingTotalProduct = remainingTotalProduct,
-                                        productLayoutType = ShoppingListProductLayoutType.UNAVAILABLE_SHOPPING_LIST
+                                        productLayoutType = UNAVAILABLE_SHOPPING_LIST
                                     )
                                 }
                             )
@@ -321,18 +340,20 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private fun addProductCartWidgetSection(
         isShoppingListAvailable: Boolean
     ) {
-        layout.doIf(
-            predicate = cartProducts.isNotEmpty(),
-            then = layout@ {
-                this@layout
-                    .doIf(
-                        predicate = isShoppingListAvailable,
-                        then = {
-                            addDivider()
-                        }
-                    )
-                    .addTitle("${cartProducts.size} $PRODUCT_CART_WIDGET_TITLE")
-                    .addProductCartWidget(cartProducts)
+        val cartProducts = layoutMap[PRODUCT_CART].toMutableProductCartList()
+        mutableLayout
+            .doIf(
+                predicate = cartProducts.isNotEmpty(),
+                then = layout@ {
+                    this@layout
+                        .doIf(
+                            predicate = isShoppingListAvailable,
+                            then = {
+                                addDivider()
+                            }
+                        )
+                        .addTitle("${cartProducts.size} $PRODUCT_CART_WIDGET_TITLE")
+                        .addProductCarts(cartProducts)
             }
         )
     }
@@ -341,9 +362,9 @@ class TokoNowShoppingListViewModel @Inject constructor(
         isShoppingListAvailable: Boolean,
         productRecommendationData: RecommendationWidget
     ) {
-        layout
+        mutableLayout
             .doIf(
-                predicate = productRecommendationData.recommendationItemList.isNotEmpty(),
+                predicate = filteredRecommendedProducts.isNotEmpty(),
                 then = layout@ {
                     this@layout
                         .doIf(
@@ -353,7 +374,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                             }
                         )
                         .addTitle(productRecommendationData.title)
-                        .addRecommendedProducts(productRecommendationData)
+                        .addProducts(filteredRecommendedProducts)
                         .doIf(
                             predicate = productRecommendationData.hasNext,
                             then = {
@@ -371,13 +392,15 @@ class TokoNowShoppingListViewModel @Inject constructor(
             )
     }
 
-    private fun filterShoppingListByProductInCart(
+    private fun filterShoppingListWithProductInCart(
         miniCartData: MiniCartSimplifiedData?
     ) {
         miniCartData?.apply {
-            val miniCartItems: List<MiniCartItem.MiniCartItemProduct> = miniCartItems.values.filterIsInstance<MiniCartItem.MiniCartItemProduct>()
+            val miniCartItems = miniCartItems.values.filterIsInstance<MiniCartItem.MiniCartItemProduct>()
+            val availableProducts = layoutMap[AVAILABLE_PRODUCT].toMutableProductList()
+            val unavailableProducts = layoutMap[UNAVAILABLE_PRODUCT].toMutableProductList()
 
-            cartProducts.clear()
+            val cartProducts = mutableListOf<ShoppingListProductCartItemUiModel>()
 
             val newAvailableProducts = cartProducts.addProductCartItem(
                 productList = availableProducts.toMutableList(),
@@ -389,9 +412,24 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 miniCartItems = miniCartItems
             )
 
+            if (cartProducts.isNotEmpty()) {
+                layoutMap[PRODUCT_CART] = mutableListOf(ShoppingListProductCartUiModel(productList = cartProducts))
+            }
+
             filteredAvailableProducts = newAvailableProducts
             filteredUnavailableProducts = newUnavailableProducts
         }
+    }
+
+    private fun filterShoppingListWithProductRecommendation() {
+        val availableProducts = layoutMap[AVAILABLE_PRODUCT].toMutableProductList()
+        val recommendedProducts = layoutMap[PRODUCT_RECOMMENDATION].toMutableProductList()
+
+        val newRecommendedProducts = recommendedProducts.filteredBy(
+            productList = availableProducts
+        )
+
+        filteredRecommendedProducts = newRecommendedProducts
     }
 
     private fun calculateDataForBottomBulkAtc() {
@@ -411,16 +449,16 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private fun getUpdatedLayout(
         isRequiredToScrollUp: Boolean = false
     ): LayoutModel = LayoutModel(
-        layout = layout.toList(),
+        layout = mutableLayout.toList(),
         isRequiredToScrollUp = isRequiredToScrollUp
     )
 
     private fun loadErrorState(
         throwable: Throwable
     ) {
-        layout.clear()
+        mutableLayout.clear()
 
-        layout.addErrorState(
+        mutableLayout.addErrorState(
             isFullPage = true,
             throwable = throwable
         )
@@ -431,9 +469,9 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     private fun loadLoadingState() {
-        layout.clear()
+        mutableLayout.clear()
 
-        layout.addLoadingState()
+        mutableLayout.addLoadingState()
 
         _layoutState.value = Loading(getUpdatedLayout())
 
@@ -455,28 +493,28 @@ class TokoNowShoppingListViewModel @Inject constructor(
         }
 
         /**
-         * cast the results to their respective types and set some variables to be some helpers
+         * cast the results to their respective types
+         * filter shopping list with product recommendation and product in cart
          */
 
         val miniCartData = result.component1() as MiniCartSimplifiedData?
         val shoppingListData = result.component2() as GetShoppingListDataResponse.Data
         val productRecommendationData = result.component3() as RecommendationWidget
 
-        availableProducts.clear()
-        unavailableProducts.clear()
+        layoutMap[AVAILABLE_PRODUCT] = mapAvailableShoppingList(shoppingListData.listAvailableItem).toMutableList()
+        layoutMap[UNAVAILABLE_PRODUCT] = mapUnavailableShoppingList(shoppingListData.listUnavailableItem).toMutableList()
+        layoutMap[PRODUCT_RECOMMENDATION] = mapRecommendedProducts(productRecommendationData).toMutableList()
 
-        availableProducts.addAll(mapAvailableShoppingList(shoppingListData.listAvailableItem))
-        unavailableProducts.addAll(mapUnavailableShoppingList(shoppingListData.listUnavailableItem))
+        val isShoppingListAvailable = !layoutMap[AVAILABLE_PRODUCT].isNullOrEmpty() || !layoutMap[UNAVAILABLE_PRODUCT].isNullOrEmpty()
 
-        val isShoppingListAvailable = availableProducts.isNotEmpty() || unavailableProducts.isNotEmpty()
-
-        filterShoppingListByProductInCart(miniCartData)
+        filterShoppingListWithProductRecommendation()
+        filterShoppingListWithProductInCart(miniCartData)
 
         /**
          * add each widget section
          */
 
-        layout.clear()
+        mutableLayout.clear()
 
         addHeaderSection()
         addShoppingListSection(
@@ -505,7 +543,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private fun setDataToBottomWidget(
         miniCartData: MiniCartSimplifiedData?
     ) {
-        if (availableProducts.isNotEmpty()) {
+        if (!layoutMap[AVAILABLE_PRODUCT].isNullOrEmpty()) {
             _isProductAvailable.value = true
         } else if (miniCartData != null) {
             _isProductAvailable.value = false
@@ -540,7 +578,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
         productState: ShoppingListProductState,
         productLayoutType: ShoppingListProductLayoutType
     ) {
-        layout
+        mutableLayout
             .modifyExpandCollapseProducts(
                 state = productState,
                 productLayoutType = productLayoutType,
@@ -569,7 +607,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
         saveShoppingListStateJob?.cancel()
         saveShoppingListStateJob = launchCatchError(
             block = {
-                availableProducts
+                layoutMap[AVAILABLE_PRODUCT]
+                    .toMutableProductList()
                     .updateProductSelections(
                         isSelected = isSelected
                     )
@@ -581,7 +620,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
                 calculateDataForBottomBulkAtc()
 
-                layout
+                mutableLayout
                     .modifyTopCheckAll(
                         isSelected = isSelected
                     )
@@ -602,7 +641,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     fun selectAllAvailableProducts(
         isSelected: Boolean
     ) {
-        val topCheckAllUiModel = layout.firstOrNull { it is ShoppingListTopCheckAllUiModel } as? ShoppingListTopCheckAllUiModel
+        val topCheckAllUiModel = mutableLayout.firstOrNull { it is ShoppingListTopCheckAllUiModel } as? ShoppingListTopCheckAllUiModel
 
         if (topCheckAllUiModel != null) {
             selectAllAvailableProducts(
@@ -619,7 +658,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
         saveShoppingListStateJob?.cancel()
         saveShoppingListStateJob = launchCatchError(
             block = {
-                availableProducts
+                layoutMap[AVAILABLE_PRODUCT]
+                    .toMutableProductList()
                     .updateProductSelections(
                         productId = productId,
                         isSelected = isSelected
@@ -635,7 +675,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
                 val areAllAvailableProductsSelected = filteredAvailableProducts.all { it.isSelected }
 
-                layout
+                mutableLayout
                     .modifyTopCheckAll(
                         isSelected = areAllAvailableProductsSelected
                     )
@@ -656,7 +696,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     fun switchRetryToLoadMore() {
-        layout
+        mutableLayout
             .removeRetry()
             .addLoadMore()
 
@@ -669,17 +709,19 @@ class TokoNowShoppingListViewModel @Inject constructor(
         if (isLastVisibleLoadingMore && loadLayoutJob?.isCompleted.orFalse()) {
             loadLayoutJob = launchCatchError(
                 block = {
-                    val productRecommendation = getProductRecommendationDeferred().await()
-
-                    layout
+                    val productRecommendationData = getProductRecommendationDeferred().await()
+                    mutableLayout
                         .removeLoadMore()
                         .doIf(
-                            predicate = productRecommendation.recommendationItemList.isNotEmpty(),
+                            predicate = productRecommendationData.recommendationItemList.isNotEmpty(),
                             then = layout@ {
+                                val recommendedProducts = layoutMap[PRODUCT_RECOMMENDATION].toMutableProductList()
+                                recommendedProducts.addAll(mapRecommendedProducts(productRecommendationData))
+
                                 this@layout
-                                    .addRecommendedProducts(productRecommendation)
+                                    .addProducts(recommendedProducts)
                                     .doIf(
-                                        predicate = productRecommendation.hasNext,
+                                        predicate = productRecommendationData.hasNext,
                                         then = {
                                             addLoadMore()
                                             pageCounter++
@@ -697,7 +739,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                     _layoutState.value = Success(getUpdatedLayout())
                 },
                 onError = {
-                    layout
+                    mutableLayout
                         .removeLoadMore()
                         .addRetry()
 
@@ -712,7 +754,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
         getMiniCartJob = launchCatchError(block = {
             val miniCartData = getMiniCartDeferred().await()
 
-            filterShoppingListByProductInCart(miniCartData)
+            filterShoppingListWithProductInCart(miniCartData)
 
             expandCollapseShoppingList(
                 productState = COLLAPSE,
@@ -764,41 +806,41 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     fun addToWishlist(
-        productId: String
+        product: ShoppingListHorizontalProductCardItemUiModel
     ) {
         launchCatchError(
             block = {
                 _toasterData.value = null
 
-                layout.modifyProduct(
-                    productId = productId,
+                mutableLayout.modifyProduct(
+                    productId = product.id,
                     state = LOADING
                 )
                 _layoutState.value = Success(getUpdatedLayout())
 
                 addToWishlistUseCase.setParams(
-                    productId = productId,
+                    productId = product.id,
                     userId = userSession.userId
                 )
                 addToWishlistUseCase.executeOnBackground()
 
-                layout.removeProduct(
-                    productId = productId
+                mutableLayout.removeProduct(
+                    productId = product.id
                 )
                 _layoutState.value = Success(getUpdatedLayout())
             },
             onError = {
-                layout.modifyProduct(
-                    productId = productId,
+                mutableLayout.modifyProduct(
+                    productId = product.id,
                     state = SHOW
                 )
                 _layoutState.value = Success(getUpdatedLayout())
 
                 _toasterData.value = ToasterModel(
-                    text = resourceStringProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_to_add_product_from_shopping_list),
-                    actionText = resourceStringProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_for_cta),
+                    text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_to_add_product_from_shopping_list),
+                    actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_for_cta),
                     type = Toaster.TYPE_ERROR,
-                    productId = productId,
+                    product = product,
                     event = ADD_WISHLIST
                 )
             }
@@ -806,41 +848,41 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     fun deleteFromWishlist(
-        productId: String
+        product: ShoppingListHorizontalProductCardItemUiModel
     ) {
         launchCatchError(
             block = {
                 _toasterData.value = null
 
-                layout.modifyProduct(
-                    productId = productId,
+                mutableLayout.modifyProduct(
+                    productId = product.id,
                     state = LOADING
                 )
                 _layoutState.value = Success(getUpdatedLayout())
 
                 deleteFromWishlistUseCase.setParams(
-                    productId = productId,
+                    productId = product.id,
                     userId = userSession.userId
                 )
                 deleteFromWishlistUseCase.executeOnBackground()
 
-                layout.removeProduct(
-                    productId = productId
+                mutableLayout.removeProduct(
+                    productId = product.id
                 )
                 _layoutState.value = Success(getUpdatedLayout())
             },
             onError = {
-                layout.modifyProduct(
-                    productId = productId,
+                mutableLayout.modifyProduct(
+                    productId = product.id,
                     state = SHOW
                 )
                 _layoutState.value = Success(getUpdatedLayout())
 
                 _toasterData.value = ToasterModel(
-                    text = resourceStringProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_to_delete_product_from_shopping_list),
-                    actionText = resourceStringProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_for_cta),
+                    text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_to_delete_product_from_shopping_list),
+                    actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_for_cta),
                     type = Toaster.TYPE_ERROR,
-                    productId = productId,
+                    product = product,
                     event = DELETE_WISHLIST
                 )
             }
