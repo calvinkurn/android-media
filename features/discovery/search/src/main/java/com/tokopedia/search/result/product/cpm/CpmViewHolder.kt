@@ -31,7 +31,7 @@ class CpmViewHolder(
         binding?.adsBanner?.run {
             setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
                 override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
-                    bannerAdsListener?.onBannerAdsClicked(position, applink, data, element)
+                    bannerAdsListener?.onBannerAdsClicked(position, applink, data, element, false)
                 }
             })
             setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {

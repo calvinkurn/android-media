@@ -1246,7 +1246,9 @@ class ProductListPresenter @Inject constructor(
                 externalReference = externalReference
             )
         )
-        view.sendTrackingByteIO()
+
+        if (productDataView.redirectApplink.isBlank())
+            view.sendTrackingByteIO()
     }
 
     private fun createGeneralSearchTrackingEventCategory() =

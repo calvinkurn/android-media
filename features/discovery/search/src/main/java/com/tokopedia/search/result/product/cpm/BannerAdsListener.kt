@@ -9,6 +9,7 @@ interface BannerAdsListener {
         applink: String?,
         data: CpmData?,
         dataView: CpmDataView,
+        isReimagine: Boolean,
     )
 
     fun onBannerAdsImpressionListener(

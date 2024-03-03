@@ -8,6 +8,8 @@ import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import rx.Subscriber
 
@@ -41,7 +43,7 @@ internal class SearchProductGetProductCountTest: ProductListPresenterTestFixture
         `When get product count`(mapParameter)
 
         `Then assert request params contains map parameters`(mapParameter)
-        `Then assert request params has key ROWS with value 0`()
+        `Then assert request params has required params for product count`()
         `Then assert view set product count`(successfulProductCountText)
     }
 
@@ -63,11 +65,25 @@ internal class SearchProductGetProductCountTest: ProductListPresenterTestFixture
         }
     }
 
-    private fun `Then assert request params has key ROWS with value 0`() {
+    private fun `Then assert request params has required params for product count`() {
         val requestParams = requestParamsSlot.captured
         val rowsValue = requestParams.parameters[SearchApiConst.ROWS]
         assert(rowsValue == "0") {
             "Request Params key \"${SearchApiConst.ROWS}\" is \"$rowsValue\". Expected is: 0"
+        }
+
+        val requiredParamsForProductCount =
+            mapOf(
+                SearchApiConst.ROWS to "0",
+                SearchApiConst.USECASE to SearchApiConst.COUNT_PRODUCT,
+            )
+
+        requiredParamsForProductCount.forEach { (key, expectedValue) ->
+            assertThat(
+                "Incorrect get product count request params.",
+                requestParams.parameters[key],
+                `is`(expectedValue)
+            )
         }
     }
 

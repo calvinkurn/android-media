@@ -2,14 +2,12 @@ package com.tokopedia.analytics.byteio.search
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
 import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
-import com.tokopedia.analytics.byteio.AppLogParam.ITEM_ORDER
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
@@ -54,7 +52,6 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.PRE_CLICK_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.PRE_SEARCH_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.PRODUCT_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.RANK
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.RATE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.RAW_QUERY
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ID
@@ -65,7 +62,6 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_TYPE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SHOP_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SUG_TYPE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.TOKEN_TYPE
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.VOLUME
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_CONTENT
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_NUM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.WORDS_POSITION
@@ -144,6 +140,7 @@ object AppLogSearch {
         const val GOODS_SEARCH = "goods_search"
         const val STORE_SEARCH = "store_search"
         const val ENTER = "enter"
+        const val CANCEL = "cancel"
         const val RECOM_SEARCH = "recom_search"
         const val SEARCH_HISTORY = "search_history"
         const val SUG = "sug"
@@ -350,7 +347,7 @@ object AppLogSearch {
         val listItemId: String?,
         val itemRank: Int?,
         val listResultType: String?,
-        val productID: String?,
+        val productID: String,
         val searchKeyword: String,
         val tokenType: String,
         val rank: Int,
@@ -370,7 +367,7 @@ object AppLogSearch {
                 listItemId?.let { put(LIST_ITEM_ID, it) }
                 itemRank?.let { put(ITEM_RANK, it) }
                 listResultType?.let { put(LIST_RESULT_TYPE, it) }
-                productID?.let { put(PRODUCT_ID, it) }
+                put(PRODUCT_ID, productID)
                 put(SEARCH_KEYWORD, searchKeyword)
                 put(TOKEN_TYPE, tokenType)
                 put(RANK, rank)
@@ -429,8 +426,6 @@ object AppLogSearch {
 
     data class Product(
         val entranceForm: EntranceForm,
-        val volume: Int?,
-        val rate: Float,
         val isAd: Boolean,
         val productID: String,
         val searchID: String,
@@ -459,9 +454,6 @@ object AppLogSearch {
         fun json() = JSONObject(buildMap {
             put(ENTRANCE_FORM, entranceForm.str)
             put(SOURCE_PAGE_TYPE, sourcePageType.str)
-            put(ITEM_ORDER, rank + 1)
-            volume?.let { put(VOLUME, it) }
-            put(RATE, rate)
             put(IS_AD, isAdInt)
             put(PRODUCT_ID, productID)
             put(AppLogParam.TRACK_ID, trackId)

@@ -779,10 +779,6 @@ class CartViewModel @Inject constructor(
 
         val updateCartRequestList = getUpdateCartRequest(cartItemDataList, onlyTokoNowProducts)
         if (updateCartRequestList.isNotEmpty()) {
-            val buttonClickTracker = CartPageAnalyticsUtil.generateByteIoAnalyticsModel(
-                cartItemDataList, subTotalState.value
-            )
-            AppLogPdp.sendCartButtonClick(buttonClickTracker)
             if (fireAndForget) {
                 // Trigger use case without composite subscription, because this should continue even after view destroyed
                 updateCartUseCase.setParams(
@@ -1550,6 +1546,13 @@ class CartViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun sendAtcButtonTracker() {
+        val buttonClickTracker = CartPageAnalyticsUtil.generateByteIoAnalyticsModel(
+            cartDataList.value, subTotalState.value
+        )
+        AppLogPdp.sendCartButtonClick(buttonClickTracker)
     }
 
     fun processAddToCart(productModel: Any) {

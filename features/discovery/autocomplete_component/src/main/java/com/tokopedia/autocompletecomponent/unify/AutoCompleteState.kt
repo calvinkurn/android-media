@@ -1,9 +1,12 @@
 package com.tokopedia.autocompletecomponent.unify
 
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CANCEL
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.ENTER
 import com.tokopedia.autocompletecomponent.unify.domain.model.SuggestionUnify
 import com.tokopedia.autocompletecomponent.unify.domain.model.UniverseSuggestionUnifyModel
 import com.tokopedia.autocompletecomponent.util.AutoCompleteNavigate
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ENTER_METHOD
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 
 data class AutoCompleteState(
@@ -11,7 +14,7 @@ data class AutoCompleteState(
     val resultList: List<AutoCompleteUnifyDataView> = listOf(),
     val navigate: AutoCompleteNavigate? = null,
     val appLogData: AutoCompleteAppLogData = AutoCompleteAppLogData(),
-    val actionReplaceKeyword: String? = null
+    val actionReplaceKeyword: String? = null,
 ) {
 
     val isInitialState: Boolean
@@ -21,12 +24,26 @@ data class AutoCompleteState(
         get() = !isInitialState
 
     val enterMethod: String
-        get() = parameter[SearchApiConst.ENTER_METHOD] ?: ""
+        get() = parameter[ENTER_METHOD] ?: ""
 
     val query: String
         get() = parameter[SearchApiConst.Q] ?: ""
 
-    fun updateParameter(parameter: Map<String, String>) = copy(parameter = parameter)
+    fun updateParameter(parameter: Map<String, String>): AutoCompleteState {
+        val previousState = this
+        val updatedParameterState = copy(parameter = parameter)
+        val enterMethod = updatedEnterMethod(previousState, updatedParameterState)
+
+        return updatedParameterState.copy(
+            parameter = updatedParameterState.parameter +
+                mapOf(ENTER_METHOD to enterMethod)
+        )
+    }
+
+    private fun updatedEnterMethod(previousState: AutoCompleteState, currentState: AutoCompleteState) =
+        if (previousState.isInitialState && currentState.isSuggestion) ENTER
+        else if (previousState.isSuggestion && currentState.isInitialState) CANCEL
+        else previousState.enterMethod
 
     fun updateResultList(
         resultData: UniverseSuggestionUnifyModel,
