@@ -19,4 +19,5 @@ data class AutoCompleteUnifyDataView(
     dimension90 = dimension90
 ) {
     val impressionHolder = ImpressionHolder()
+    val uniqueIdentifier = System.currentTimeMillis()
 }

@@ -79,4 +79,5 @@ object AutoCompleteUnifyRequestUtil {
 
     const val INITIAL_STATE_USE_CASE = "initial_state_use_case"
     const val SUGGESTION_STATE_USE_CASE = "suggestion_state_use_case"
+    const val URL_TRACKER_USE_CASE = "url_tracker_use_case"
 }

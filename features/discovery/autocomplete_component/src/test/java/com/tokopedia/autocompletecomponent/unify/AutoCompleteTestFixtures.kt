@@ -9,6 +9,7 @@ import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
+import com.tokopedia.usecase.UseCase as RxUseCase
 
 const val AutoCompleteInitialStateSuccessJSON = "autocomplete/unify/initial_state.json"
 const val AutoCompleteInitialStateRecentSuccessJSON = "autocomplete/unify/initial_state_recent.json"
@@ -25,7 +26,8 @@ abstract class AutoCompleteTestFixtures {
     protected val initialStateUseCase = mockk<UseCase<UniverseSuggestionUnifyModel>>(relaxed = true)
     protected val suggestionStateUseCase =
         mockk<UseCase<UniverseSuggestionUnifyModel>>(relaxed = true)
-    protected val deleteRecentUseCase = mockk<com.tokopedia.usecase.UseCase<Boolean>>(relaxed = true)
+    protected val deleteRecentUseCase = mockk<RxUseCase<Boolean>>(relaxed = true)
+    protected val suggestionTrackerUseCase = mockk<RxUseCase<Void?>>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     internal fun autoCompleteViewModel(state: AutoCompleteState = AutoCompleteState()): AutoCompleteViewModel =
         AutoCompleteViewModel(
@@ -33,8 +35,9 @@ abstract class AutoCompleteTestFixtures {
             initialStateUseCase = initialStateUseCase,
             suggestionStateUseCase = suggestionStateUseCase,
             deleteRecentSearchUseCase = deleteRecentUseCase,
+            suggestionTrackerUseCase = suggestionTrackerUseCase,
             userSession = userSession,
-            mockk(relaxed = true)
+            mockk(relaxed = true),
         )
 
     fun `Given Initial Use Case Is Successful`(

@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.text.Editable
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
@@ -62,6 +63,7 @@ import com.tokopedia.autocompletecomponent.util.SuggestionMPSListener
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.autocompletecomponent.util.addComponentId
 import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
+import com.tokopedia.autocompletecomponent.util.EXCLUDED_NAV_SOURCE
 import com.tokopedia.autocompletecomponent.util.getSearchQuery
 import com.tokopedia.autocompletecomponent.util.getTrackingSearchQuery
 import com.tokopedia.autocompletecomponent.util.getWithDefault
@@ -69,6 +71,7 @@ import com.tokopedia.autocompletecomponent.util.isMps
 import com.tokopedia.autocompletecomponent.util.removeKeys
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.BASE_SRP_APPLINK
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HINT
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PLACEHOLDER
@@ -387,9 +390,14 @@ open class BaseAutoCompleteActivity :
         initialStateFragment: InitialStateFragment,
         suggestionFragment: SuggestionFragment
     ) {
-        if (rollenceShouldShowV2) {
+        if (shouldShowAutocompleteV2()) {
             supportFragmentManager
                 .beginTransaction()
+                .replace(
+                    R.id.search_initial_state_container,
+                    initialStateFragment,
+                    INITIAL_STATE_FRAGMENT_TAG
+                )
                 .replace(
                     R.id.search_suggestion_container,
                     suggestionFragment,
@@ -565,17 +573,28 @@ open class BaseAutoCompleteActivity :
     private fun onSearchParameterChange(searchParameterMap: Map<String, String>) {
         this.searchParameter = SearchParameter(this.searchParameter, searchParameterMap)
 
-        if (rollenceShouldShowV2) {
+        if (shouldShowAutocompleteV2()) {
             executeParameterChangeOnRollenceTrue(searchParameterMap)
         } else {
             executeParameterChangeOnRollenceFalse(searchParameterMap)
         }
     }
 
+    private fun shouldShowAutocompleteV2(): Boolean {
+        val navSource = searchParameter.get(SearchApiConst.NAVSOURCE)
+        val isNotEligibleNavSource = EXCLUDED_NAV_SOURCE.contains(navSource)
+        val isLocalSearch = searchParameter.contains(SearchApiConst.SRP_PAGE_ID)
+        return rollenceShouldShowV2 && !isNotEligibleNavSource && !isLocalSearch
+    }
+
     private fun executeParameterChangeOnRollenceTrue(searchParameterMap: Map<String, String>) {
         if (!searchParameter.isMps()) {
             getAutoCompleteFragment()?.updateParameter(searchParameterMap)
             showUnifyView()
+        } else if (searchParameterMap.getSearchQuery().isEmpty() || viewModel?.activeKeyword?.keyword.isNullOrBlank()) {
+            getSuggestionFragment()?.hideSuggestionCoachMark()
+            getInitialStateFragment()?.show(searchParameterMap)
+            showInitialStateView()
         } else {
             val activeKeyword = viewModel?.activeKeyword ?: return
             getSuggestionFragment()?.getSuggestion(searchParameterMap, activeKeyword)
@@ -660,7 +679,7 @@ open class BaseAutoCompleteActivity :
 
         suggestionContainer?.hide()
         initialStateContainer?.show()
-        autoCompleteUnificationContainer?.show()
+        autoCompleteUnificationContainer?.hide()
     }
 
     private fun renderSearchBarState(state: SearchBarState) {

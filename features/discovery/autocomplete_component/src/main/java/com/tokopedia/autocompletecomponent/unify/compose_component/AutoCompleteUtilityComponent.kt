@@ -1,11 +1,14 @@
 package com.tokopedia.autocompletecomponent.unify.compose_component
 
 import android.text.TextUtils
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -63,10 +66,10 @@ internal fun AutoCompleteLeftIcon(item: SuggestionUnifyImage) {
             ),
             modifier = imageModifier
         )
-        if (/*item.iconImageUrl.isNotBlank()*/ item.isBorder) {
+        if (item.iconImageUrl.isNotBlank()) {
             NestImage(
                 source = ImageSource.Remote(
-                    source = "https://images.tokopedia.net/img/official_store_badge.png"
+                    source = item.iconImageUrl
                 ),
                 modifier = Modifier
                     .size(16.dp)
@@ -209,8 +212,11 @@ private fun getAnnotatedTitle(
         fontSize = NestTheme.typography.heading5.fontSize,
         color = NestTheme.typography.heading5.color
     )
-    if (searchQueryStartIndexInKeyword == -1 || title.typeIsBold()) {
+    if ((searchQueryStartIndexInKeyword == -1 && searchTerm.isNotEmpty()) || title.typeIsBold()) {
         return getAnnotatedTitleFullBold(title, boldSpanStyle)
+    }
+    if (searchTerm.isEmpty()) {
+        return getAnnotatedTitleFullNormal(title)
     }
     return getAnnotatedTitleAdaptive(
         title,
@@ -235,12 +241,26 @@ private fun getAnnotatedTitleFullBold(
 }
 
 @Composable
+private fun getAnnotatedTitleFullNormal(
+    title: SuggestionUnifyTitle
+): AnnotatedString {
+    return buildAnnotatedString {
+        append(title.text)
+    }
+}
+
+@Composable
 private fun getAnnotatedTitleAdaptive(
     title: SuggestionUnifyTitle,
     searchTerm: String,
     searchQueryStartIndexInKeyword: Int,
     boldSpanStyle: SpanStyle
 ): AnnotatedString {
+    if (searchTerm.isEmpty()) {
+        return buildAnnotatedString {
+            append(title.text)
+        }
+    }
     val starTitle = title.text.substring(0, searchQueryStartIndexInKeyword)
     val unboldedTitle = title.text.substring(
         searchQueryStartIndexInKeyword,
@@ -312,25 +332,38 @@ internal fun AutoCompleteRightIconCta(item: SuggestionUnifyCta, onItemClicked: (
 }
 
 @Composable
-internal fun AutoCompleteRightLabel(item: SuggestionUnifyLabel, onItemClicked: () -> Unit = {}) {
+internal fun AutoCompleteRightLabel(
+    item: SuggestionUnifyLabel,
+    defaultTextColor: Color = NestTheme.colors.NN._600,
+    defaultBgColor: Color = NestTheme.colors.NN._100,
+    onItemClicked: () -> Unit = {}
+) {
     val textColor: Color = if (item.textColor.isNotBlank()) {
         Color(android.graphics.Color.parseColor(item.textColor))
     } else {
-        NestTheme.colors.NN._600
+        defaultTextColor
     }
 
     val backgroundColor = if (item.bgColor.isNotBlank()) {
         Color(android.graphics.Color.parseColor(item.bgColor))
     } else {
-        Color.Transparent
+        defaultBgColor
     }
-    NestTypography(
-        text = item.text,
-        textStyle = NestTheme.typography.display3.copy(color = textColor),
-        modifier = Modifier.clickable {
-            onItemClicked()
-        }
-    )
+
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(3.dp))
+            .background(backgroundColor)
+            .padding(4.dp)
+            .clickable {
+                onItemClicked()
+            }
+    ) {
+        NestTypography(
+            text = item.text,
+            textStyle = NestTheme.typography.display3.copy(color = textColor)
+        )
+    }
 }
 
 @Composable

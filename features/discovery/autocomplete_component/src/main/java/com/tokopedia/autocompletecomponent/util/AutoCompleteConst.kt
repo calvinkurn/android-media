@@ -19,3 +19,8 @@ internal const val ACTION_DELETE = "delete"
 internal const val ACTION_REPLACE = "replace"
 
 internal const val FEATURE_ID_RECENT_SEARCH = "recent_search"
+
+internal val EXCLUDED_NAV_SOURCE = listOf(
+    "tokonow",
+)
+

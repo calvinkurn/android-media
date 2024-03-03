@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import com.tokopedia.autocompletecomponent.initialstate.DELETE_RECENT_SEARCH_USE_CASE
 import com.tokopedia.autocompletecomponent.initialstate.domain.deleterecentsearch.DeleteRecentSearchUseCase
+import com.tokopedia.autocompletecomponent.suggestion.domain.suggestiontracker.SuggestionTrackerUseCase
 import com.tokopedia.autocompletecomponent.unify.domain.AutoCompleteUnifyRequestUtil
+import com.tokopedia.autocompletecomponent.unify.domain.AutoCompleteUnifyRequestUtil.URL_TRACKER_USE_CASE
 import com.tokopedia.autocompletecomponent.unify.domain.model.SuggestionUnify
 import com.tokopedia.autocompletecomponent.unify.domain.model.UniverseSuggestionUnifyModel
 import com.tokopedia.autocompletecomponent.util.ACTION_DELETE
@@ -14,6 +16,7 @@ import com.tokopedia.autocompletecomponent.util.ChooseAddressUtilsWrapper
 import com.tokopedia.autocompletecomponent.util.DEFAULT_COUNT
 import com.tokopedia.autocompletecomponent.util.DEVICE_ID
 import com.tokopedia.autocompletecomponent.util.FEATURE_ID_RECENT_SEARCH
+import com.tokopedia.autocompletecomponent.util.IS_TYPING
 import com.tokopedia.autocompletecomponent.util.KEY_COUNT
 import com.tokopedia.autocompletecomponent.util.SEARCHBAR
 import com.tokopedia.autocompletecomponent.util.putChooseAddressParams
@@ -28,6 +31,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
+import com.tokopedia.usecase.UseCase as RxUseCase
 
 internal class AutoCompleteViewModel @Inject constructor(
     autoCompleteState: AutoCompleteState,
@@ -36,7 +40,9 @@ internal class AutoCompleteViewModel @Inject constructor(
     @Named(AutoCompleteUnifyRequestUtil.SUGGESTION_STATE_USE_CASE)
     private val suggestionStateUseCase: UseCase<UniverseSuggestionUnifyModel>,
     @Named(DELETE_RECENT_SEARCH_USE_CASE)
-    private val deleteRecentSearchUseCase: com.tokopedia.usecase.UseCase<Boolean>,
+    private val deleteRecentSearchUseCase: RxUseCase<Boolean>,
+    @Named(URL_TRACKER_USE_CASE)
+    private val suggestionTrackerUseCase: RxUseCase<Void?>,
     private val userSession: UserSessionInterface,
     private val chooseAddressUtilsWrapper: ChooseAddressUtilsWrapper
 ) : ViewModel() {
@@ -69,7 +75,7 @@ internal class AutoCompleteViewModel @Inject constructor(
     }
 
     private fun getSuggestionStateData(parameter: Map<String, String>) {
-        val requestParams = getParamsMainQuery(parameter, userSession)
+        val requestParams = getParamsMainQuerySuggestion(parameter, userSession)
         suggestionStateUseCase.execute(
             ::onGetStateDataSuccessful,
             ::onGetDataError,
@@ -78,7 +84,7 @@ internal class AutoCompleteViewModel @Inject constructor(
     }
 
     private fun getInitialStateData(parameter: Map<String, String>) {
-        val requestParams = getParamsMainQuery(parameter, userSession)
+        val requestParams = getParamsMainQueryInitial(parameter, userSession)
         initialStateUseCase.execute(
             ::onGetStateDataSuccessful,
             ::onGetDataError,
@@ -94,7 +100,35 @@ internal class AutoCompleteViewModel @Inject constructor(
     }
 
     fun onAutoCompleteItemClick(item: AutoCompleteUnifyDataView) {
+        trackItemWithUrl(item)
         _stateFlow.value = stateValue.updateNavigate(AutoCompleteNavigate(item.domainModel.applink, stateValue.parameter))
+    }
+
+    private fun trackItemWithUrl(item: AutoCompleteUnifyDataView) {
+        val param =
+            createSuggestionTrackerParams(item.domainModel.tracking.trackerUrl)
+        suggestionTrackerUseCase.execute(
+            param,
+            createEmtpySuggestionTrackerSubscriber()
+        )
+    }
+
+    private fun createSuggestionTrackerParams(urlTracker: String) = SuggestionTrackerUseCase.getParams(
+        urlTracker,
+        userSession.deviceId,
+        userSession.userId
+    )
+
+    private fun createEmtpySuggestionTrackerSubscriber() = object : Subscriber<Void?>() {
+        override fun onCompleted() {
+        }
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onNext(aVoid: Void?) {
+        }
     }
 
     fun onNavigated() {
@@ -198,6 +232,24 @@ internal class AutoCompleteViewModel @Inject constructor(
     }
 
     private fun getNavSource() = stateValue.getParameterMap()[SearchApiConst.NAVSOURCE] ?: ""
+
+    private fun getParamsMainQuerySuggestion(
+        searchParameter: Map<String, String>,
+        userSession: UserSessionInterface
+    ): RequestParams {
+        val params = getParamsMainQuery(searchParameter, userSession)
+        params.putBoolean(IS_TYPING, true)
+        return params
+    }
+
+    private fun getParamsMainQueryInitial(
+        searchParameter: Map<String, String>,
+        userSession: UserSessionInterface
+    ): RequestParams {
+        val params = getParamsMainQuery(searchParameter, userSession)
+        params.putBoolean(IS_TYPING, false)
+        return params
+    }
 
     @SuppressLint("PII Data Exposure")
     private fun getParamsMainQuery(
