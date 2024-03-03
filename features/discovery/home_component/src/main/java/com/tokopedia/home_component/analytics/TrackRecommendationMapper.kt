@@ -34,6 +34,7 @@ object TrackRecommendationMapper {
         enterMethod: String = "",
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
+            cardId = data.id.toString(),
             cardName = CardName.MISSION_PAGE_CARD.format(data.title),
             productId = data.productID,
             moduleName = data.pageName,

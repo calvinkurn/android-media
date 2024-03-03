@@ -1499,10 +1499,6 @@ open class HomeRevampFragment :
 
     private fun trackEnterPage() {
         if(hasTrackEnterPage) return
-        val currentEnterMethod = AppLogAnalytics.getLastData(ENTER_METHOD)?.toString()
-        if (currentEnterMethod.isNullOrEmpty()) {
-            AppLogAnalytics.putEnterMethod(EnterMethod.CLICK_APP_ICON)
-        }
         AppLogRecommendation.sendEnterPageAppLog()
         hasTrackEnterPage = true
     }

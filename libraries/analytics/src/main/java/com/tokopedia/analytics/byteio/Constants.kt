@@ -258,4 +258,5 @@ object AppLogParam {
     const val IS_SHADOW = "is_shadow"
     const val ACTIVITY_HASH_CODE = "activity_hash_code"
     const val ENTER_METHOD_DEFAULT_FORMAT = "click_%s_button"
+    val ENTER_METHOD_SEE_MORE = "${AppLogAnalytics.getCurrentData(PAGE_NAME)}_%s"
 }

@@ -54,14 +54,16 @@ object TrackRecommendationMapper {
         tabPosition: Int,
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
+            cardId = cardId,
             cardName = CardName.AD_FEED_CARD,
             tabName = tabName,
             tabPosition = tabPosition,
             moduleName = pageName,
             isAd = !topAdsImageViewModel?.adViewUrl.isNullOrEmpty() && !topAdsImageViewModel?.adClickUrl.isNullOrEmpty(),
             isUseCache = isCache,
-            recParams = "", // TODO need to confirm
-            requestId = "", // TODO need BE deployment
+            recParams = appLog.recParam,
+            requestId = appLog.requestId,
+            recSessionId = appLog.sessionId,
             shopId = topAdsImageViewModel?.shopId.orEmpty(),
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
             position = position,
@@ -74,14 +76,16 @@ object TrackRecommendationMapper {
         tabPosition: Int,
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
+            cardId = id,
             cardName = CardName.REC_CONTENT_CARD.format(layoutItem),
             tabName = tabName,
             tabPosition = tabPosition,
             moduleName = pageName,
             isAd = isAds,
             isUseCache = isCache,
-            recParams = "", // TODO need to confirm
-            requestId = "", // TODO need BE deployment
+            recParams = appLog.recParam,
+            requestId = appLog.requestId,
+            recSessionId = appLog.sessionId,
             shopId = shopId,
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
             position = position,
@@ -100,8 +104,9 @@ object TrackRecommendationMapper {
             moduleName = pageName,
             isAd = isAds,
             isUseCache = isCache,
-            recParams = "", // TODO need to confirm
-            requestId = "", // TODO need BE deployment
+            recParams = appLog.recParam,
+            requestId = appLog.requestId,
+            recSessionId = appLog.sessionId,
             shopId = shopId,
             groupId = playVideoWidgetUiModel.id,
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,

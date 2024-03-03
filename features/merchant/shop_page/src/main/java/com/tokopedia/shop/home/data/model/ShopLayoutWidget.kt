@@ -41,7 +41,9 @@ data class ShopLayoutWidget(
         @SerializedName("header")
         val header: Header = Header(),
         @SerializedName("data")
-        val data: List<Data> = listOf()
+        val data: List<Data> = listOf(),
+        @SerializedName("tracker")
+        val tracker: Tracker = Tracker()
     ) {
         // TODO need to sync this model on layoutV2 with header data from dynamicTab in the future so that we can map the data easier on ShopPageHomeMapper.mapToWidgetUiModel()
         data class Header(
@@ -66,6 +68,20 @@ data class ShopLayoutWidget(
             @SerializedName("widgetStyle")
             val widgetStyle: String = ""
         )
+
+        data class Tracker(
+            @SerializedName("appLog")
+            val appLog: AppLog = AppLog()
+        ) {
+            data class AppLog(
+                @SerializedName("requestID")
+                val requestId: String = "",
+                @SerializedName("sessionID")
+                val sessionId: String = "",
+                @SerializedName("logID")
+                val logId: String = "",
+            )
+        }
 
         data class Data(
             @SerializedName("bundleGroupID")
@@ -210,7 +226,11 @@ data class ShopLayoutWidget(
             @SerializedName("Products")
             val bmsmListProduct: List<Product> = listOf(),
             @SerializedName("OfferDetail")
-            val offeringDetail: OfferingDetail = OfferingDetail()
+            val offeringDetail: OfferingDetail = OfferingDetail(),
+            @SerializedName("recommendationPageName")
+            val recommendationPageName: String = "",
+            @SerializedName("recParam")
+            val recParam: String = "",
         ) {
             data class Component(
                 @SerializedName("componentID")
