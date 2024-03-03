@@ -437,11 +437,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
         return isShopValid && !isOutOfCoverage && isUserLoggedIn
     }
 
-    private fun updateMiniCartState(miniCartData: MiniCartSimplifiedData? = null, throwable: Throwable) {
-        _miniCartState.value = if (miniCartData != null) Success(miniCartData) else Error(throwable = throwable)
-        _isLoaderDialogShown.value = false
-    }
-
     private fun getUpdatedLayout(
         isRequiredToScrollUp: Boolean = false
     ): LayoutModel = LayoutModel(
@@ -521,9 +516,10 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private fun setDataToBottomWidget(
         miniCartData: MiniCartSimplifiedData?
     ) {
-        if (availableProducts.isNotEmpty()) {
+        if (filteredAvailableProducts.isNotEmpty()) {
             calculateDataForBottomBulkAtc()
             _isProductAvailable.value = true
+            _miniCartState.value = Error(throwable = Throwable())
         } else if (miniCartData != null) {
             _isProductAvailable.value = false
             _miniCartState.value = Success(miniCartData.copy())
@@ -760,9 +756,11 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
             updateLayout()
 
-            updateMiniCartState(mMiniCartData, throwable = Throwable())
+            _isLoaderDialogShown.value = false
         }) {
-            updateMiniCartState(throwable = it)
+            _miniCartState.value = Error(throwable = it)
+
+            _isLoaderDialogShown.value = false
         }
     }
 

@@ -16,7 +16,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
@@ -36,6 +35,7 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.productcard.compact.similarproduct.presentation.bottomsheet.ProductCardCompactSimilarProductBottomSheet
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH
@@ -45,7 +45,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.UiState
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
@@ -57,7 +56,6 @@ import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutTyp
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState
 import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListComponent
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
-import com.tokopedia.tokopedianow.shoppinglist.presentation.model.HeaderModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.activity.TokoNowShoppingListActivity
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapterTypeFactory
@@ -76,6 +74,7 @@ import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.DELETE_WISHLIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_WISHLIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListCartProductViewHolder
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -116,7 +115,8 @@ class TokoNowShoppingListFragment :
                 retryListener = createRetryCallback(),
                 errorListener = createErrorCallback(),
                 expandCollapseListener = createExpandCollapseCallback(),
-                topCheckAllListener = createTopCheckAllCallback()
+                topCheckAllListener = createTopCheckAllCallback(),
+                cartProductListener = createCartProductCallback()
             )
         )
     }
@@ -647,6 +647,12 @@ class TokoNowShoppingListFragment :
         viewModel.selectAllAvailableProducts(isSelected)
     }
 
+    private fun createCartProductCallback() = object : ShoppingListCartProductViewHolder.ShoppingListCartProductListener {
+        override fun onClickSeeDetail() {
+            getMiniCart()?.showMiniCartListBottomSheet(this@TokoNowShoppingListFragment)
+        }
+    }
+
     /**
      * -- internal function section --
      */
@@ -656,6 +662,8 @@ class TokoNowShoppingListFragment :
     internal fun switchToLightStatusBar() = (activity as? TokoNowShoppingListActivity)?.switchToLightToolbar()
 
     internal fun getRefreshLayout(): ParentIconSwipeRefreshLayout? = binding?.strRefreshLayout
+
+    internal fun getMiniCart(): MiniCartWidget? = binding?.miniCartWidget
 
     internal fun getLayoutManager(): LinearLayoutManager? = layoutManager
 }

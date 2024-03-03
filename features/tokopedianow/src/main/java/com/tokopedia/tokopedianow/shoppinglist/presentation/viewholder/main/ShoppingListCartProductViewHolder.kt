@@ -15,8 +15,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class ShoppingListProductCartViewHolder (
-    itemView: View
+class ShoppingListCartProductViewHolder(
+    itemView: View,
+    private val listener: ShoppingListCartProductListener? = null
 ): AbstractViewHolder<ShoppingListCartProductUiModel>(itemView) {
     companion object {
         @LayoutRes
@@ -27,25 +28,40 @@ class ShoppingListProductCartViewHolder (
 
     init {
         binding?.apply {
-            tpSeeDetail.setRightImageDrawable(
-                drawable = ContextCompat.getDrawable(root.context, unifycomponentsR.drawable.iconunify_chevron_down),
-                width = root.getDimens(R.dimen.tokopedianow_shopping_list_chevron_icon_size),
-                height = root.getDimens(R.dimen.tokopedianow_shopping_list_chevron_icon_size),
-                color = ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_GN500)
-            )
+            setupSeeDetail()
+            setupRecyclerView()
         }
     }
 
     override fun bind(element: ShoppingListCartProductUiModel) {
         binding?.apply {
-            rvProductInCart.layoutManager = LinearLayoutManager(
-                root.context,
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
             rvProductInCart.adapter = ShoppingListProductInCartAdapter(
                 itemList = element.productList
             )
         }
+    }
+
+    private fun ItemTokopedianowShoppingListProductCartBinding.setupSeeDetail() {
+        tpSeeDetail.setRightImageDrawable(
+            drawable = ContextCompat.getDrawable(root.context, unifycomponentsR.drawable.iconunify_chevron_down),
+            width = root.getDimens(R.dimen.tokopedianow_shopping_list_chevron_icon_size),
+            height = root.getDimens(R.dimen.tokopedianow_shopping_list_chevron_icon_size),
+            color = ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_GN500)
+        )
+        tpSeeDetail.setOnClickListener {
+            listener?.onClickSeeDetail()
+        }
+    }
+
+    private fun ItemTokopedianowShoppingListProductCartBinding.setupRecyclerView() {
+        rvProductInCart.layoutManager = LinearLayoutManager(
+            root.context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+    }
+
+    interface ShoppingListCartProductListener {
+        fun onClickSeeDetail()
     }
 }

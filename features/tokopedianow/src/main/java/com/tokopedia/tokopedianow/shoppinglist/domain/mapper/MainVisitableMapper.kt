@@ -196,7 +196,7 @@ internal object MainVisitableMapper {
     ): MutableList<Visitable<*>> {
         add(
             ShoppingListCartProductUiModel(
-                productList = products
+                productList = products.toMutableList()
             )
         )
         return this
@@ -335,7 +335,7 @@ internal object MainVisitableMapper {
             val nextProduct = iterator.next()
             for (miniCartItem in miniCartItems) {
                 if (nextProduct.id == miniCartItem.productId) {
-                    add(ShoppingListCartProductItemUiModel(nextProduct.image, nextProduct.appLink))
+                    add(ShoppingListCartProductItemUiModel(nextProduct.image))
                     iterator.remove()
                     break
                 }
