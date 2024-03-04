@@ -153,34 +153,30 @@ class HydraSharedPreferences @Inject constructor(
         )
     }
 
-    fun setLiveToVodBottomSheetPref(key: String, authorId: String) {
+    fun setLiveToVodBottomSheetPref(key: String) {
         mSharedPrefs.edit()
-            .putBoolean(
-                "${key}_$authorId",
-                false,
+            .putString(
+                KEY_DYNAMIC_BOTTOM_SHEET,
+                key,
             ).apply()
     }
 
-    fun getLiveToVodBottomSheetPref(key: String, authorId: String): Boolean {
-        return mSharedPrefs.getBoolean(
-            "${key}_$authorId",
-            true,
-        )
+    fun getLiveToVodBottomSheetPref(key: String): Boolean {
+        val cachedKey = mSharedPrefs.getString(KEY_DYNAMIC_BOTTOM_SHEET, "").orEmpty()
+        return cachedKey == key
     }
 
-    fun setLiveToVodTickerPref(key: String, authorId: String) {
+    fun setLiveToVodTickerPref(key: String) {
         mSharedPrefs.edit()
-            .putBoolean(
-                "${key}_$authorId",
-                false,
+            .putString(
+                KEY_DYNAMIC_TICKER,
+                key,
             ).apply()
     }
 
-    fun getLiveToVodTickerPref(key: String, authorId: String): Boolean {
-        return mSharedPrefs.getBoolean(
-            "${key}_$authorId",
-            true,
-        )
+    fun getLiveToVodTickerPref(key: String): Boolean {
+        val cachedKey = mSharedPrefs.getString(KEY_DYNAMIC_TICKER, "").orEmpty()
+        return cachedKey == key
     }
 
     companion object {
@@ -196,5 +192,7 @@ class HydraSharedPreferences @Inject constructor(
         private const val KEY_LAST_SELECTED_ACCOUNT = "last_selected_account_%s"
         private const val KEY_SAVED_SELECTED_AUTO_GENERATED_COVER = "saved_selected_auto_generated_cover_%s_%s"
         private const val KEY_UPLOADED_COVER_SOURCE = "saved_cover_source_%s_%s"
+        private const val KEY_DYNAMIC_BOTTOM_SHEET = "key_dynamic_bottom_sheet"
+        private const val KEY_DYNAMIC_TICKER = "key_dynamic_ticker"
     }
 }

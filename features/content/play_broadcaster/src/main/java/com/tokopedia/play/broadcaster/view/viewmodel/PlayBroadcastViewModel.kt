@@ -154,28 +154,7 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.Set
-import kotlin.collections.addAll
-import kotlin.collections.emptyList
-import kotlin.collections.filter
-import kotlin.collections.filterNot
-import kotlin.collections.first
-import kotlin.collections.firstOrNull
-import kotlin.collections.isNotEmpty
-import kotlin.collections.lastOrNull
-import kotlin.collections.map
-import kotlin.collections.minus
-import kotlin.collections.mutableListOf
-import kotlin.collections.mutableMapOf
-import kotlin.collections.orEmpty
-import kotlin.collections.plus
 import kotlin.collections.set
-import kotlin.collections.toList
-import kotlin.collections.toMutableList
-import kotlin.collections.toMutableSet
-import kotlin.collections.toSet
 
 /**
  * Created by mzennis on 24/05/20.
@@ -879,21 +858,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val cacheKey = response.cacheKey.ifBlank { return@launchCatchError }
             val pref = when (response.type) {
                 TickerBottomSheetType.BOTTOM_SHEET -> {
-                    sharedPref.getLiveToVodBottomSheetPref(
-                        key = cacheKey,
-                        authorId = selectedAccount.id
-                    )
+                    sharedPref.getLiveToVodBottomSheetPref(key = cacheKey)
                 }
                 TickerBottomSheetType.TICKER -> {
-                    sharedPref.getLiveToVodTickerPref(
-                        key = cacheKey,
-                        authorId = selectedAccount.id
-                    )
+                    sharedPref.getLiveToVodTickerPref(key = cacheKey)
                 }
                 TickerBottomSheetType.UNKNOWN -> false
             }
 
-            _tickerBottomSheetConfig.value = if (pref) response else TickerBottomSheetUiModel.Empty
+            _tickerBottomSheetConfig.value = if (pref) TickerBottomSheetUiModel.Empty else response
         }) {
             _tickerBottomSheetConfig.value = TickerBottomSheetUiModel.Empty
         }
@@ -903,14 +876,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         when (type) {
             TickerBottomSheetType.BOTTOM_SHEET -> {
                 sharedPref.setLiveToVodBottomSheetPref(
-                    key = _tickerBottomSheetConfig.value.cacheKey,
-                    authorId = selectedAccount.id
+                    key = _tickerBottomSheetConfig.value.cacheKey
                 )
             }
             TickerBottomSheetType.TICKER -> {
                 sharedPref.setLiveToVodTickerPref(
-                    key = _tickerBottomSheetConfig.value.cacheKey,
-                    authorId = selectedAccount.id
+                    key = _tickerBottomSheetConfig.value.cacheKey
                 )
             }
             TickerBottomSheetType.UNKNOWN -> return
