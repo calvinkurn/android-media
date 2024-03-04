@@ -13,6 +13,7 @@ import com.tokopedia.catalogcommon.listener.SellerOfferingListener
 import com.tokopedia.catalogcommon.uimodel.SellerOfferingUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.strikethrough
@@ -63,11 +64,12 @@ class SellerOfferingViewHolder(
             ivBadge.loadImage(element.shopBadge)
             tvShopName.text = element.shopName
             tvShopLocation.text = element.shopLocation
+            vPointShopLocationAndShopName.isVisible = element.shopLocation.isNotEmpty()
             tvShopResponsiveChat.setTextAndCheckShow(element.chatResponseTime)
             tvShopResponsiveOrder.setTextAndCheckShow(element.orderProcessTime)
             tvShopCredibility.showWithCondition(
-                element.chatResponseTime.isNotEmpty()
-                    || element.orderProcessTime.isNotEmpty()
+                element.chatResponseTime.isNotEmpty() ||
+                    element.orderProcessTime.isNotEmpty()
             )
             vPointResponseCredibility.showWithCondition(element.orderProcessTime.isNotEmpty())
             ivProduct.loadImage(element.productImage)
@@ -81,13 +83,13 @@ class SellerOfferingViewHolder(
             tvLabelPromo.setTextAndCheckShow(element.labelPromo)
             lnPromoBmsm.showWithCondition(element.labelPromo.isNotEmpty() || element.labelTotalDisc.isNotEmpty())
             lnRating.showWithCondition(
-                element.shopRating.isNotEmpty()
-                    || element.totalShopRating.isNotEmpty() || element.totalSold.isNotEmpty()
+                element.shopRating.isNotEmpty() ||
+                    element.totalShopRating.isNotEmpty() || element.totalSold.isNotEmpty()
             )
 
             clFreeOngkirEtaAndAddService.showWithCondition(
-                element.freeOngkir.isNotEmpty()
-                    || element.additionalService.isNotEmpty() || element.courier.isNotEmpty()
+                element.freeOngkir.isNotEmpty() ||
+                    element.additionalService.isNotEmpty() || element.courier.isNotEmpty()
             )
 
             tvLabelDisc.text = element.labelTotalDisc
@@ -137,10 +139,10 @@ class SellerOfferingViewHolder(
         val drawableCircle =
             ContextCompat.getDrawable(itemView.context, R.drawable.bg_circle_border_light)
         if (drawableCircle is GradientDrawable) {
-            if (element.darkMode){
-                drawableCircle.setColor(ContextCompat.getColor(itemView.context,R.color.dms_static_color_tertiary_for_dark))
-            }else{
-                drawableCircle.setColor(ContextCompat.getColor(itemView.context,R.color.dms_static_color_tertiary_for_light))
+            if (element.darkMode) {
+                drawableCircle.setColor(ContextCompat.getColor(itemView.context, R.color.dms_static_color_tertiary_for_dark))
+            } else {
+                drawableCircle.setColor(ContextCompat.getColor(itemView.context, R.color.dms_static_color_tertiary_for_light))
             }
         }
 

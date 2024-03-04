@@ -7,8 +7,8 @@ import com.tokopedia.search.result.domain.model.SearchCouponModel
 internal object SearchCouponQuery {
     const val GET_COUPON_QUERY_NAME = "GetCoupon"
     const val GET_COUPON_QUERY_PAYLOAD = """
-        query GetCoupon(${'$'}slugs: [String]!) {
-          promoCatalogGetCouponListWidget(source: "", themeType: "", widgetType: "", 
+        query GetCoupon(${'$'}slugs: [String]!, ${'$'}themeType: String!) {
+          promoCatalogGetCouponListWidget(source: "", themeType: ${'$'}themeType, widgetType: "", 
             filter: {catalogAttributeFilter: {
               ids: ["1"], 
               categoryIDs: ["1"], 

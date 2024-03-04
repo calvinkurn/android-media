@@ -1,8 +1,6 @@
 package com.tokopedia.search.result.product.coupon
 
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponGridView
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
@@ -17,7 +15,6 @@ import com.tokopedia.search.databinding.SearchResultProductCouponLayoutBinding
 import com.tokopedia.search.result.domain.model.SearchCouponModel
 import com.tokopedia.search.result.presentation.model.CouponDataView
 import com.tokopedia.search.result.product.inspirationcarousel.TYPE_INSPIRATION_CAROUSEL_COUPON_IMAGE
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class CouponGridViewHolder(
@@ -37,8 +34,8 @@ internal class CouponGridViewHolder(
                 coupon2Loader.visibility = View.VISIBLE
                 return
             }
-            
-            //Handle impress
+
+            // Handle impress
             cvMain.addOnImpressionListener(element) {
                 couponListener.onCouponImpressed(element)
             }
@@ -102,22 +99,13 @@ internal class CouponGridViewHolder(
         visibility = View.VISIBLE
         setModel(couponModel)
         if (widget == null) return
-        when(widget.widgetInfo?.ctaList?.getOrNull(0)?.type){
-            CouponDataView.CTA_TYPE_CLAIM -> {
-                setState(
-                    ButtonState.Claim {
-                        couponListener.claimCoupon(element, widget)
-                    }
-                )
+        setState(
+            ButtonState.Custom(
+                widget.widgetInfo?.ctaList?.getOrNull(0)?.text ?: ""
+            ) {
+                couponListener.claimCoupon(element, widget)
             }
-            CouponDataView.CTA_TYPE_REDIRECT -> {
-                setState(
-                    ButtonState.Redirection {
-                        couponListener.claimCoupon(element, widget)
-                    }
-                )
-            }
-        }
+        )
     }
 
     companion object {

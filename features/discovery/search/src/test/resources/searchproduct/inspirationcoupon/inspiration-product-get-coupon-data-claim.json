@@ -93,9 +93,9 @@
           ],
           "ctaList": [
             {
-              "text": "Claim",
-              "type": "claim",
-              "isDisabled": false,
+              "text": "Habis",
+              "type": "info",
+              "isDisabled": true,
               "jsonMetadata": "{\"catalog_id\":40487}",
               "toasters": []
             }

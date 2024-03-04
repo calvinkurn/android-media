@@ -413,6 +413,11 @@ class ShareExViewModel @Inject constructor(
         errorEnum: ShareExIntentErrorEnum?
     ) {
         _channelIntentUiState.update {
+            val newErrorHistory = if (errorEnum != null) {
+                it.errorHistory + errorEnum
+            } else {
+                it.errorHistory
+            }
             it.copy(
                 intent = intent,
                 message = message,
@@ -421,7 +426,7 @@ class ShareExViewModel @Inject constructor(
                 isLoading = isLoading,
                 error = error,
                 imageType = imageType,
-                errorEnum = errorEnum
+                errorHistory = newErrorHistory
             )
         }
     }
@@ -535,33 +540,49 @@ class ShareExViewModel @Inject constructor(
         val imageUrl = shortLinkRequest.linkerPropertiesRequest.ogImageUrl
         val message = shortLinkRequest.linkerPropertiesRequest.message
         val messageWithUrl = if (message.isNotBlank()) "$message $shortLink" else shortLink
-        getDownloadedImageUseCase.downloadImage(imageUrl).collectLatest {
-            when (it) {
-                is ShareExResult.Success -> {
-                    updateIntentUiState(
-                        intent = getAppIntent(channelItemModel, messageWithUrl, it.data),
-                        message = messageWithUrl,
-                        shortLink = shortLink,
-                        channelEnum = channelItemModel.channelEnum,
-                        isLoading = false,
-                        error = null,
-                        imageType = imageType,
-                        errorEnum = null
-                    )
+        when(channelItemModel.mimeType) {
+            ShareExMimeTypeEnum.ALL, ShareExMimeTypeEnum.IMAGE -> {
+                getDownloadedImageUseCase.downloadImageThumbnail(imageUrl).collectLatest {
+                    when (it) {
+                        is ShareExResult.Success -> {
+                            updateIntentUiState(
+                                intent = getAppIntent(channelItemModel, messageWithUrl, it.data),
+                                message = messageWithUrl,
+                                shortLink = shortLink,
+                                channelEnum = channelItemModel.channelEnum,
+                                isLoading = false,
+                                error = null,
+                                imageType = imageType,
+                                errorEnum = null
+                            )
+                        }
+                        is ShareExResult.Error -> {
+                            updateIntentUiState(
+                                intent = getAppIntent(channelItemModel, messageWithUrl, null),
+                                message = messageWithUrl,
+                                shortLink = shortLink,
+                                channelEnum = channelItemModel.channelEnum,
+                                isLoading = false,
+                                error = it.throwable,
+                                imageType = imageType,
+                                errorEnum = ShareExIntentErrorEnum.IMAGE_DOWNLOADER
+                            )
+                        }
+                        ShareExResult.Loading -> Unit
+                    }
                 }
-                is ShareExResult.Error -> {
-                    updateIntentUiState(
-                        intent = getAppIntent(channelItemModel, messageWithUrl, null),
-                        message = messageWithUrl,
-                        shortLink = shortLink,
-                        channelEnum = channelItemModel.channelEnum,
-                        isLoading = false,
-                        error = it.throwable,
-                        imageType = imageType,
-                        errorEnum = ShareExIntentErrorEnum.IMAGE_DOWNLOADER
-                    )
-                }
-                ShareExResult.Loading -> Unit
+            }
+            else -> {
+                updateIntentUiState(
+                    intent = getAppIntent(channelItemModel, messageWithUrl, null),
+                    message = messageWithUrl,
+                    shortLink = shortLink,
+                    channelEnum = channelItemModel.channelEnum,
+                    isLoading = false,
+                    error = null,
+                    imageType = imageType,
+                    errorEnum = null
+                )
             }
         }
     }

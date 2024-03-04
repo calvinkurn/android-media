@@ -577,7 +577,7 @@ class AtcVariantBottomSheet :
                 ?.mapIntoPromoExternalAutoApply() ?: arrayListOf()
 
         ProductCartHelper.goToOneClickCheckoutWithAutoApplyPromo(
-            (context as AtcVariantActivity),
+            getAtcActivity(),
             ArrayList(selectedPromoCodes)
         )
     }
