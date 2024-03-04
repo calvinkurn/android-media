@@ -28,11 +28,10 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
 
     override fun bind(element: BannerShopProductUiModel?) {
         element?.let { model ->
-            val productCardViewModel = model.product
+            val productCardViewModel = model.product.copy(isInBackground = true)
             productCardGridView.run {
                 applyCarousel()
                 setProductModel(productCardViewModel)
-                setHorizontalPadding()
                 setImageProductViewHintListener(model, object : ViewHintListener {
                     override fun onViewHint() {
                         impressionListener?.onImpressionProductAdsItem(adapterPosition, model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition-1), model.cpmData)
@@ -51,12 +50,6 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
                 }
             }
         }
-    }
-
-    private fun ProductCardGridView.setHorizontalPadding() {
-        var padding = resources.getDimensionPixelSize(R.dimen.margin_8)
-        findViewById<Guideline?>(productcardR.id.productCardGuidelineStartContent).setGuidelineBegin(padding)
-        findViewById<Guideline?>(productcardR.id.productCardGuidelineEndContent).setGuidelineEnd(padding)
     }
 
     companion object {

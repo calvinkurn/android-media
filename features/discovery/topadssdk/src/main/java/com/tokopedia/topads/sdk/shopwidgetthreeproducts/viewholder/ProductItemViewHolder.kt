@@ -26,11 +26,10 @@ class ProductItemViewHolder(
     }
 
     override fun bind(item: ProductItemModel) {
-        val productCardViewModel = item.productCardModel
+        val productCardViewModel = item.productCardModel.copy(isInBackground = true)
         productCardGridView.run {
             applyCarousel()
             setProductModel(productCardViewModel)
-            setHorizontalPadding()
             setImageProductViewHintListener(item, object : ViewHintListener {
                 override fun onViewHint() {
                     impressionListener?.onImpressionProductAdsItem(
@@ -58,12 +57,6 @@ class ProductItemViewHolder(
                 shopWidgetAddToCartClickListener?.onAdToCartClicked(item)
             }
         }
-    }
-
-    private fun ProductCardGridView.setHorizontalPadding() {
-        var padding = resources.getDimensionPixelSize(R.dimen.margin_8)
-        findViewById<Guideline?>(productcardR.id.productCardGuidelineStartContent).setGuidelineBegin(padding)
-        findViewById<Guideline?>(productcardR.id.productCardGuidelineEndContent).setGuidelineEnd(padding)
     }
 
     companion object {

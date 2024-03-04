@@ -86,8 +86,7 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
             val productModel =
                 MapperUtils.getProductCardViewModel(product, shopAdsWithSingleProductModel.hasAddToCartButton)
             productCardGridView?.run {
-                setProductModel(productModel)
-                setHotizonalPadding()
+                setProductModel(productModel.copy(isInBackground = true))
             }
 
             shopAdsWithSingleProductModel.impressHolder?.let { impressHolder ->
@@ -142,11 +141,6 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
                 )
             }
         }
-    }
-    private fun setHotizonalPadding() {
-        var padding = resources.getDimensionPixelSize(R.dimen.margin_8)
-        findViewById<Guideline?>(productcardR.id.productCardGuidelineStartContent).setGuidelineBegin(padding)
-        findViewById<Guideline?>(productcardR.id.productCardGuidelineEndContent).setGuidelineEnd(padding)
     }
 
     private fun setSlogan(slogan: String) {
