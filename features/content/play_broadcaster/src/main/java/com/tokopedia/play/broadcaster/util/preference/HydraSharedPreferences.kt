@@ -156,14 +156,14 @@ class HydraSharedPreferences @Inject constructor(
     fun setLiveToVodBottomSheetPref(key: String, authorId: String) {
         mSharedPrefs.edit()
             .putBoolean(
-                String.format("${key}_%s", authorId),
+                "${key}_$authorId",
                 false,
             ).apply()
     }
 
     fun getLiveToVodBottomSheetPref(key: String, authorId: String): Boolean {
         return mSharedPrefs.getBoolean(
-            String.format("${key}_%s", authorId),
+            "${key}_$authorId",
             true,
         )
     }
@@ -171,14 +171,14 @@ class HydraSharedPreferences @Inject constructor(
     fun setLiveToVodTickerPref(key: String, authorId: String) {
         mSharedPrefs.edit()
             .putBoolean(
-                String.format("${key}_%s", authorId),
+                "${key}_$authorId",
                 false,
             ).apply()
     }
 
     fun getLiveToVodTickerPref(key: String, authorId: String): Boolean {
         return mSharedPrefs.getBoolean(
-            String.format("${key}_%s", authorId),
+            "${key}_$authorId",
             true,
         )
     }
