@@ -16,7 +16,6 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_FROM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_METHOD
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.NEW_SUG_SESSION_ID
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.ENTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_HISTORY
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_SUG
 import com.tokopedia.applink.RouteManager
@@ -124,8 +123,7 @@ private fun trackByteIOAutoComplete(state: AutoCompleteState) {
     if (state.appLogData.imprId.isBlank()) return
 
     if (state.isInitialState) {
-        val enterFrom =
-            AppLogSearch.enterFromBeforeCurrent(AppLogSearch.whitelistedEnterFromAutoComplete)
+        val enterFrom = AppLogSearch.enterFrom()
 
         AppLogSearch.eventEnterSearchBlankPage(enterFrom, state.enterMethod)
 
