@@ -1,7 +1,10 @@
 package com.tokopedia.content.common.report_content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,8 +20,6 @@ import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.iconunify.compose.NestIcon
-import com.tokopedia.nest.components.NestDivider
-import com.tokopedia.nest.components.NestDividerSize
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -111,9 +112,9 @@ fun ItemMenu(menu: ContentMenuItem, onMenuClicked: (ContentMenuItem) -> Unit) {
             }
         )
 
-        NestDivider(
-            size = NestDividerSize.Small,
-            modifier = Modifier
+        Box(modifier = Modifier
+            .background(NestTheme.colors.NN._100)
+            .requiredHeight(1.dp)
                 .constrainAs(dividerView) {
                     end.linkTo(parent.end)
                     start.linkTo(parent.start)
