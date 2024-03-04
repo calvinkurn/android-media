@@ -12,5 +12,6 @@
 
     <color name="play_dms_coupon_color">@color/Unify_NN50</color>
     <color name="play_dms_discount_label_text">#FF6577</color>
+    <color name="play_dms_coupon_bg_header">#0A4A45</color>
 
 </resources>
