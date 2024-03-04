@@ -60,28 +60,28 @@ internal object ViewTreeManager {
     }
 
     fun createDOMIdentifier(view: View, activity: Activity): String {
-        val stringBuilder = StringBuilder()
-        var currentView = view
 
+        var domIdentifier = ""
+        var currentView = view
         do {
             if (currentView.id == Window.ID_ANDROID_CONTENT) {
-                stringBuilder.append(activity.localClassName)
-                    .append(ACTIVITY_NAME_SEPARATOR)
-                    .append(MAIN_CONTENT_LAYOUT_NAME)
+                domIdentifier = "${activity.localClassName}$ACTIVITY_NAME_SEPARATOR$MAIN_CONTENT_LAYOUT_NAME$domIdentifier"
                 break
             } else {
-                stringBuilder.insert(
-                    0,
-                    CHILD_SEPARATOR + currentView.javaClass.simpleName + INDEX_SEPARATOR +
-                        getChildIndexInsideViewGroup(currentView.parent as ViewGroup, currentView)
-                )
+                domIdentifier = "$CHILD_SEPARATOR${currentView.javaClass.simpleName}$INDEX_SEPARATOR${
+                    getChildIndexInsideViewGroup(
+                        currentView.parent as ViewGroup,
+                        currentView
+                    )
+                }$domIdentifier"
             }
 
             currentView = currentView.parent as View
         } while (true)
 
-        return stringBuilder.toString()
+        return domIdentifier
     }
+
 
     suspend fun findViewByDOMIdentifier(domIdentifier: String, activity: Activity): View? {
         return withContext(Dispatchers.Default) {

@@ -32,6 +32,8 @@ import com.tokopedia.translator.viewtree.ViewTreeManager
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.lang.ref.WeakReference
@@ -124,27 +126,29 @@ class TranslatorManager() : CoroutineScope {
     }
 
 
-    private fun prepareSelectors(views: List<TextView>) {
+    private fun prepareSelectors(views: List<View?>, activity: Activity) {
 
         if (views.isEmpty()) return
 
         updateViewList.clear()
 
         for (view in views) {
-            if (view.tag == null || (view.tag !is Boolean && !view.tag.toString().toBoolean())) {
+            if (view is TextView) {
+                if (view.tag == null || (view.tag !is Boolean && !view.tag.toString().toBoolean())) {
 
-                if (view.text.isNotBlank()) {
                     val viewText = view.text.toString()
+                    if (viewText.isNotBlank()) {
 
-                    val stringPoolItem = mStringPoolManager.get(viewText)
+                        val stringPoolItem = mStringPoolManager.get(viewText)
 
-                    if (stringPoolItem === null || stringPoolItem.demandedText.isBlank() || (stringPoolItem.requestedLocale != destinationLang)) {
-                        //prepare for translate
-                        mStringPoolManager.add(viewText, "", "")
-                    } else {
-                        //translate
-                        if (viewText != stringPoolItem.demandedText) {
-                            updateViewList.add(TextViewUpdateModel(view, stringPoolItem.demandedText))
+                        if (stringPoolItem === null || stringPoolItem.demandedText.isBlank() || (stringPoolItem.requestedLocale != destinationLang)) {
+                            //prepare for translate
+                            mStringPoolManager.add(viewText, "", "")
+                        } else {
+                            //translate
+                            if (viewText != stringPoolItem.demandedText) {
+                                updateViewList.add(TextViewUpdateModel(view, stringPoolItem.demandedText))
+                            }
                         }
                     }
                 }
@@ -185,11 +189,13 @@ class TranslatorManager() : CoroutineScope {
             destinationLang = currentDestLang
         }
 
-        val views = ViewUtil.getChildren(ViewUtil.getContentView(getCurrentActivity()))
-
-        prepareSelectors(views)
+        val views = ViewUtil.getChildrenViews(ViewUtil.getContentView(getCurrentActivity()))
 
         updateViewList()
+
+        getCurrentActivity()?.let {
+            prepareSelectors(views, it)
+        }
 
         val originStrList = mStringPoolManager.getQueryStrList()
 
@@ -244,31 +250,26 @@ class TranslatorManager() : CoroutineScope {
     }
 
     private suspend fun updateScreenWithTranslatedString(views: List<TextView>) {
+
         val updateViewList = mutableListOf<TextViewUpdateModel>()
 
-        var stringPoolItem: StringPoolItem?
         try {
+            for (view in views) {
 
-            for (tv in views) {
-                val tvText = tv.text?.toString().orEmpty()
+                val tvText = view.text?.toString()
 
-                stringPoolItem = mStringPoolManager.get(tvText)
+                val stringPoolItem = mStringPoolManager.get(tvText)
 
-                if (stringPoolItem == null || stringPoolItem.demandedText.isEmpty()) {
-                    continue
-                }
-
-                if (!TextUtils.equals(tvText, stringPoolItem.demandedText)) {
-                    updateViewList.add(TextViewUpdateModel(tv, stringPoolItem.demandedText))
+                if ((stringPoolItem?.demandedText?.isNotBlank() == true) && !TextUtils.equals(tvText, stringPoolItem.demandedText)) {
+                    updateViewList.add(TextViewUpdateModel(view, stringPoolItem.demandedText))
                 }
             }
 
-            //Batch UI Updates
             withContext(Dispatchers.Main) {
-                for (updateView in updateViewList) {
-                    updateView.textView.text = updateView.newText
-                    if (updateView.textView.tag != true) {
-                        updateView.textView.tag = true
+                for (update in updateViewList) {
+                    update.textView.text = update.newText
+                    if (update.textView.tag != true) {
+                        update.textView.tag = true
                     }
                 }
             }

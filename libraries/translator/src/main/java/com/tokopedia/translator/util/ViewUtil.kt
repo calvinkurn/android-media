@@ -14,43 +14,87 @@
 package com.tokopedia.translator.util
 
 import android.app.Activity
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import java.util.ArrayDeque
-import java.util.LinkedList
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 internal object ViewUtil {
 
-    suspend fun getChildren(viewGroup: View?): List<TextView> {
-        return withContext(Dispatchers.Main) {
-            val unTraversedViews = ArrayDeque<View>()
-            val traversedViews = ArrayList<TextView>()
+    suspend fun getChildren(viewGroup: View?): List<View?> {
+        return withContext(Dispatchers.Default) {
+            sequence {
 
-            unTraversedViews.add(viewGroup!!)
+                val unTraversedViews = ArrayDeque<View>()
 
-            while (unTraversedViews.isNotEmpty()) {
-                val child = unTraversedViews.poll()
+                viewGroup?.let {
+                    unTraversedViews.add(it)
+                    while (unTraversedViews.isNotEmpty()) {
+                        val child = unTraversedViews.poll()
 
-                if (child != null) {
-                    if (child is TextView) {
-                        traversedViews.add(child)
-                    }
+                        yield(child)
 
-                    if (child is ViewGroup) {
-                        for (counter in 0 until child.childCount) {
-                            unTraversedViews.add(child.getChildAt(counter))
+                        if (child is ViewGroup) {
+                            for (counter in 0 until child.childCount) {
+                                unTraversedViews.add(child.getChildAt(counter))
+                            }
                         }
                     }
                 }
+            }.toList()
+        }
+    }
+
+    suspend fun getChildrenViews(viewGroup: View?): List<TextView> {
+        return withContext(Dispatchers.Default) {
+            val traversedViews = mutableListOf<TextView>()
+
+            viewGroup?.let {
+                traverseViewGroupParallel(it, traversedViews)
             }
 
             traversedViews.toList()
+        }
+    }
+
+    private suspend fun traverseViewGroupParallel(
+        viewGroup: View,
+        traversedViews: MutableList<TextView>
+    ) = coroutineScope {
+        if (viewGroup is TextView) {
+            traversedViews.add(viewGroup)
+        }
+
+        if (viewGroup is ViewGroup) {
+            val jobs = (0 until viewGroup.childCount).map {
+                async {
+                    val childView = viewGroup.getChildAt(it)
+                    traverseViewGroup(childView, traversedViews)
+                }
+            }
+            jobs.awaitAll()
+        }
+    }
+
+    private fun traverseViewGroup(
+        viewGroup: View,
+        traversedViews: MutableList<TextView>
+    ) {
+        if (viewGroup is ViewGroup) {
+            for (counter in 0 until viewGroup.childCount) {
+                val childView = viewGroup.getChildAt(counter)
+                traverseViewGroup(childView, traversedViews)
+            }
+        } else if (viewGroup is TextView) {
+            traversedViews.add(viewGroup)
         }
     }
 
