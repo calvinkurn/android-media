@@ -809,6 +809,7 @@ internal class SearchProductInspirationCarouselTest : ProductListPresenterTestFi
         applink shouldBe inspirationCarouselProduct.applink
         priceString shouldBe inspirationCarouselProduct.priceStr
         ratingAverage shouldBe inspirationCarouselProduct.ratingAverage
+        shopId shouldBe inspirationCarouselProduct.shop.id
         shopLocation shouldBe inspirationCarouselProduct.shop.city
         shopName shouldBe inspirationCarouselProduct.shop.name
         position shouldBe index + 1
