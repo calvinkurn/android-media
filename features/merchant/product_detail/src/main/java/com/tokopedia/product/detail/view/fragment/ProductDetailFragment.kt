@@ -3061,7 +3061,11 @@ open class ProductDetailFragment :
                 affiliateChannel = affiliateChannel
             )
 
-            mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
+            mStoriesWidgetManager.updateStories(
+                shopIds = listOf(p1.basic.shopID),
+                categoryIds = viewModel.getProductInfoP1?.basic?.category?.detail?.map { it.id }.orEmpty(),
+                productIds = listOf(viewModel.getProductInfoP1?.basic?.productID.orEmpty()),
+            )
 
             handleShareAdditionalCheck(p2Data.shopInfo)
 

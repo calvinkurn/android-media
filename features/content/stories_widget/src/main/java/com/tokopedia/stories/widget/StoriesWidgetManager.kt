@@ -166,11 +166,15 @@ class StoriesWidgetManager private constructor(
         if (storiesView.isAttachedToWindow) listener.onViewAttachedToWindow(storiesView)
     }
 
-    fun updateStories(shopIds: List<String>) {
+    fun updateStories(
+        shopIds: List<String>,
+        categoryIds: List<String> = emptyList(),
+        productIds: List<String> = emptyList(),
+    ) {
         options.trackerSender.reset()
 
         getViewModel().onIntent(
-            StoriesWidgetIntent.GetStoriesStatus(shopIds)
+            StoriesWidgetIntent.GetStoriesStatus(shopIds, categoryIds, productIds)
         )
     }
 

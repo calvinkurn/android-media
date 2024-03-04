@@ -1,5 +1,6 @@
 package com.tokopedia.stories.widget.domain
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -61,10 +62,16 @@ internal class GetShopStoriesStatusUseCase @Inject constructor(
             fun create(
                 key: StoriesEntryPoint,
                 authors: List<Author> = emptyList(),
+                categoryIDs: List<String> = emptyList(),
+                productIDs: List<String> = emptyList(),
             ) = Request(
                 Data(
                     source = key.sourceName,
                     authors = authors,
+                    additionalRequest = Data.AdditionalRequest(
+                        categoryIDs,
+                        productIDs,
+                    )
                 )
             )
         }
@@ -75,7 +82,21 @@ internal class GetShopStoriesStatusUseCase @Inject constructor(
 
             @SerializedName("authors")
             private val authors: List<Author>,
-        )
+
+            @SerializedName("additionalRequest")
+            private val additionalRequest: AdditionalRequest,
+        ) {
+
+            data class AdditionalRequest(
+                @SuppressLint("Invalid Data Type")
+                @SerializedName("categoryIDs")
+                private val categoryIds: List<String>,
+
+                @SuppressLint("Invalid Data Type")
+                @SerializedName("productIDs")
+                private val productIds: List<String>,
+            )
+        }
 
         data class Author private constructor(
             @SerializedName("id")

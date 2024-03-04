@@ -13,6 +13,8 @@ interface StoriesWidgetRepository {
 
     suspend fun getStoriesWidgetInfo(
         entryPoint: StoriesEntryPoint,
-        shopIds: List<String>
+        shopIds: List<String>,
+        categoryIds: List<String> = emptyList(),
+        productIds: List<String> = emptyList(),
     ): StoriesWidgetInfo
 }
