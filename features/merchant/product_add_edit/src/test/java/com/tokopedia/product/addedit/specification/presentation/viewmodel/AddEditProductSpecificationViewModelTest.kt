@@ -75,41 +75,11 @@ class AddEditProductSpecificationViewModelTest: AddEditProductSpecificationViewM
     }
 
     @Test
-    fun `getItemSelected should return filled list data when product having specification`() = runBlocking {
-        // test without setting product input
-        val specificationInputModelEmpty = viewModel.getItemSelected(annotationCategoryData)
-
-        // test with setting product input
-        setProductInputModel(listOf(
-                SpecificationInputModel("1", "Indomie")
-        ))
-        val specificationInputModelFilled = viewModel.getItemSelected(annotationCategoryData)
-
-        // test with null setting product input
-        setProductInputModel(null)
-        val specificationInputModelNull = viewModel.getItemSelected(annotationCategoryData)
-
-        assertEquals("1", specificationInputModelFilled[0].id)
-        assertEquals("", specificationInputModelEmpty[0].id)
-        assertEquals("", specificationInputModelNull[0].id)
-    }
-
-    @Test
-    fun `getHasSpecification should return boolean when product having specification`() = runBlocking {
-        val specificationInputModel = listOf(SpecificationInputModel("1", "Indomie"))
-        val specificationInputModelEmpty = listOf(SpecificationInputModel("", "Indomie"))
-
-        val result = viewModel.getHasSpecification(specificationInputModel)
-        val resultEmpty = viewModel.getHasSpecification(specificationInputModelEmpty)
-
-        assert(result)
-        assert(!resultEmpty)
-    }
-
-    @Test
     fun `updateProductInputModelSpecifications should return filtered list`() = runBlocking {
         val specificationInputModel = listOf(
                 SpecificationInputModel("1", "Indomie"),
+                SpecificationInputModel("", "Indomie"),
+                SpecificationInputModel("2", ""),
                 SpecificationInputModel("", "")
         )
 
@@ -121,7 +91,7 @@ class AddEditProductSpecificationViewModelTest: AddEditProductSpecificationViewM
         viewModel.updateProductInputModelSpecifications(specificationInputModel)
 
         val spec = viewModel.productInputModel.getOrAwaitValue().detailInputModel.specifications.orEmpty()
-        assertEquals(1, spec.size)
+        assertEquals(3, spec.size)
     }
 
     @Test
