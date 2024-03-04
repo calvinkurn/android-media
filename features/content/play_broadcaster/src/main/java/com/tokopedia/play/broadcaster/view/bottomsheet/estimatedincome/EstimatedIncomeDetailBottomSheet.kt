@@ -2,6 +2,9 @@ package com.tokopedia.play.broadcaster.view.bottomsheet.estimatedincome
 
 import android.os.Bundle
 import android.view.View
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
@@ -49,29 +52,35 @@ class EstimatedIncomeDetailBottomSheet @Inject constructor(
                     isOverrideStatusBarColor = false,
                 ) {
                     /** JOE TODO: remove mock data */
+                    val state by remember {
+//                        mutableStateOf(NetworkResult.Fail(Exception()))
+                        mutableStateOf(NetworkResult.Loading)
+//                        mutableStateOf(NetworkResult.Success(
+//                            EstimatedIncomeDetailUiModel(
+//                                totalStatsList = listOf(
+//                                    LiveStatsUiModel.EstimatedIncome("Rp5.000.000", clickableIcon = IconUnify.INFORMATION),
+//                                    LiveStatsUiModel.Visit("1"),
+//                                    LiveStatsUiModel.AddToCart("2"),
+//                                    LiveStatsUiModel.TotalSold("3"),
+//                                ),
+//                                productStatsList = List(5) {
+//                                    ProductStatsUiModel(
+//                                        id = it.toString(),
+//                                        name = "Product Name $it",
+//                                        imageUrl = "",
+//                                        addToCartFmt = "1",
+//                                        paymentVerifiedFmt = "2",
+//                                        visitPdpFmt = "3",
+//                                        productSoldQtyFmt = "4",
+//                                        estimatedIncomeFmt = "Rp5.000.000",
+//                                    )
+//                                }
+//                            )
+//                        ))
+                    }
+
                     EstimatedIncomeDetailLayout(
-                        estimatedIncomeDetail = NetworkResult.Success(
-                            EstimatedIncomeDetailUiModel(
-                                totalStatsList = listOf(
-                                    LiveStatsUiModel.EstimatedIncome("Rp5.000.000", clickableIcon = IconUnify.INFORMATION),
-                                    LiveStatsUiModel.Visit("1"),
-                                    LiveStatsUiModel.AddToCart("2"),
-                                    LiveStatsUiModel.TotalSold("3"),
-                                ),
-                                productStatsList = List(1) {
-                                    ProductStatsUiModel(
-                                        id = it.toString(),
-                                        name = "Product Name $it",
-                                        imageUrl = "",
-                                        addToCartFmt = "1",
-                                        paymentVerifiedFmt = "2",
-                                        visitPdpFmt = "3",
-                                        productSoldQtyFmt = "4",
-                                        estimatedIncomeFmt = "Rp5.000.000",
-                                    )
-                                }
-                            )
-                        ),
+                        estimatedIncomeDetail = state,
                         onEstimatedIncomeClicked = {
                             showEstimatedIncomeInfoSheet()
                         }
