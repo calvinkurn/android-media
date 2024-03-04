@@ -98,9 +98,9 @@ internal object ViewUtil {
         }
 
         if (viewGroup is ViewGroup) {
-            (0 until viewGroup.childCount).forEach {
+            for (i in 0 until viewGroup.childCount) {
                 try {
-                    val childView = viewGroup.getChildAt(it)
+                    val childView = viewGroup.getChildAt(i)
                     traverseViewGroupFromRoot(childView, traversedViews)
                 } catch (e: Exception) {
                     e.printStackTrace()
