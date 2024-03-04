@@ -204,10 +204,8 @@ class TranslatorManager() : CoroutineScope {
 
         val views = ViewUtil.getChildrenViews(ViewUtil.getContentView(getCurrentActivity()))
 
-        getCurrentActivity()?.let {
-            prepareSelectors(views).run {
-                updateViewList()
-            }
+        prepareSelectors(views).run {
+            updateViewList()
         }
 
         mStringPoolManager.getQueryStrList().run {
