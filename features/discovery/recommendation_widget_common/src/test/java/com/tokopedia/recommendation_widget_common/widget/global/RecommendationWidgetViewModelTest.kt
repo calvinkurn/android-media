@@ -591,7 +591,7 @@ class RecommendationWidgetViewModelTest {
     }
 
     @Test
-    fun `error on cart direct event will show error message`() {
+    fun `error on cart add to cart direct will show error message`() {
         every { addToCartUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(responseErrorException)
         }
