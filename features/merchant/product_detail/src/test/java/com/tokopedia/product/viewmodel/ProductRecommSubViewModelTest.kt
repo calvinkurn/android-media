@@ -158,11 +158,40 @@ class ProductRecommSubViewModelTest {
             assertTrue(productListData().size == 1)
             assertTrue(productListData().first().data is ViewState.RenderSuccess)
         }
-
     }
 
     @Test
     fun `load recommendation FLOW sellerapp`() = runTest {
+        val recomWidget =
+            RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
+        val response = listOf(recomWidget)
+
+        every {
+            remoteConfig.getBoolean(
+                RemoteConfigKey.ANDROID_ENABLE_PDP_RECOMMENDATION_FLOW,
+                true
+            )
+        } returns false
+
+        coEvery { getProductRecommendationUseCase.executeOnBackground(any()) } returns response.first()
+
+        viewModel.onRecommendationEvent(
+            ProductRecommendationEvent.LoadRecommendation(
+                "view_to_view",
+                "",
+                false,
+                null,
+                "",
+                ""
+            )
+        )
+
+        coVerify { getProductRecommendationUseCase.executeOnBackground(any()) }
+        assertTrue(viewModel.loadTopAdsProduct.value is Success)
+    }
+
+    @Test
+    fun `load old recommendation when remote config flow false`() = runTest {
         val recomWidget =
             RecommendationWidget(recommendationItemList = listOf(RecommendationItem()))
         val response = listOf(recomWidget)
@@ -217,12 +246,14 @@ class ProductRecommSubViewModelTest {
 
         coVerify(exactly = 3) { getProductRecommendationUseCase.executeOnBackground(any()) }
         assertTrue(productListData().size == 3)
-        assertTrue(productListData().all {
-            it.alreadyCollected
-        })
+        assertTrue(
+            productListData().all {
+                it.alreadyCollected
+            }
+        )
 
-        //After we load 3 recom under 150 ms, then after 150ms passed
-        //Load another recom and ensure the data emitted only one
+        // After we load 3 recom under 150 ms, then after 150ms passed
+        // Load another recom and ensure the data emitted only one
         viewModel.onRecommendationEvent(
             ProductRecommendationEvent.LoadRecommendation(
                 "after",
@@ -238,9 +269,11 @@ class ProductRecommSubViewModelTest {
 
         coVerify(exactly = 4) { getProductRecommendationUseCase.executeOnBackground(any()) }
         assertTrue(productListData().size == 1)
-        assertTrue(productListData().all {
-            it.alreadyCollected
-        })
+        assertTrue(
+            productListData().all {
+                it.alreadyCollected
+            }
+        )
     }
 
     @Test
