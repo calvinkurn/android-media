@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.common.extensions.getDrawableChecker
 import com.tokopedia.product.detail.databinding.ThumbnailVariantViewBinding
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by yovi.putra on 13/01/23"
@@ -62,6 +63,7 @@ class ThumbnailVariantView(
 
     fun setSelectedState() {
         setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        setVariantTitleWeight(Typography.BOLD)
         setCardBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_selected)
         resetThumbGrayscale()
@@ -70,11 +72,13 @@ class ThumbnailVariantView(
     fun setSelectedStockEmptyState() {
         setDisableState()
         setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        setVariantTitleWeight(Typography.BOLD)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_selected)
     }
 
     fun setUnselectedState() {
         setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+        setVariantTitleWeight(Typography.REGULAR)
         setCardBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_default)
         resetThumbGrayscale()
@@ -82,6 +86,7 @@ class ThumbnailVariantView(
 
     fun setDisableState() {
         setVariantTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+        setVariantTitleWeight(Typography.REGULAR)
         setCardBackground(com.tokopedia.unifyprinciples.R.color.Unify_NN50)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_disable)
         setThumbGrayscale()
@@ -107,9 +112,13 @@ class ThumbnailVariantView(
         binding.variantTitle.setTextColor(color)
     }
 
+    private fun setVariantTitleWeight(weight: Int){
+        binding.variantTitle.setWeight(weight)
+    }
+
     private fun setCardBorder(resId: Int) {
         val drawable = context.getDrawableChecker(resId)
-        binding.variantCard.foreground = drawable
+        binding.variantForeground.setImageDrawable(drawable)
     }
 
     private fun setCardBackground(colorId: Int) {

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pdp_thumbnail_container"
-    android:layout_width="64dp"
+    android:layout_width="66dp"
     android:layout_height="88dp">
 
     <androidx.cardview.widget.CardView
@@ -12,9 +12,7 @@
         android:layout_height="match_parent"
         android:layout_marginEnd="8dp"
         app:cardElevation="0dp"
-        app:cardMaxElevation="0dp"
-        app:cardCornerRadius="8dp"
-        android:foreground="@drawable/pdp_thumbnail_variant_border_default">
+        app:cardMaxElevation="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -31,8 +29,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:unify_image_corner_radius="0"
+                app:unify_image_corner_radius="12"
                 tools:src="@tools:sample/avatars" />
+
+            <ImageView
+                android:id="@+id/variant_foreground"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:contentDescription="@null"
+                android:src="@drawable/pdp_thumbnail_variant_border_default"
+                app:layout_constraintBottom_toBottomOf="@id/variant_thumbnail"
+                app:layout_constraintEnd_toEndOf="@id/variant_thumbnail"
+                app:layout_constraintStart_toStartOf="@id/variant_thumbnail"
+                app:layout_constraintTop_toTopOf="@id/variant_thumbnail" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/variant_title"
@@ -55,8 +64,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/variant_promo_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_gravity="top|end"
         android:layout_marginEnd="2dp"
         app:srcCompat="@drawable/ic_pdp_promo"

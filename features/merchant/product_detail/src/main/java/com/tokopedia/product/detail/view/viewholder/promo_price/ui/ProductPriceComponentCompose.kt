@@ -29,6 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.NestImage
@@ -68,37 +70,22 @@ fun NormalPriceComponent(
     freeOngkirImageUrl: String = ""
 ) {
     val data = uiModel ?: return
-    Column(
+    FlowRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, start = 16.dp, end = 16.dp)
+            .padding(top = 8.dp, start = 16.dp, end = 16.dp),
+        crossAxisAlignment = FlowCrossAxisAlignment.Center
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            NestTypography(
-                modifier = Modifier.tag("txt_main_price"),
-                text = data.priceFmt,
-                textStyle = NestTheme.typography.heading3.copy(
-                    color = NestTheme.colors.NN._950,
-                    fontWeight = FontWeight.Bold
-                )
-            )
-
-            if (freeOngkirImageUrl.isNotEmpty()) {
-                NestImage(
-                    source = Remote(freeOngkirImageUrl, customUIError = {
-                    }),
-                    type = NestImageType.Rect(0.dp),
-                    modifier = Modifier
-                        .height(20.dp)
-                        .wrapContentWidth()
-                        .padding(start = 8.dp)
-                        .tag("img_free_ongkir")
-                )
-            }
-        }
-
+        NestTypography(
+            modifier = Modifier.tag("txt_main_price"),
+            text = data.priceFmt,
+            textStyle = NestTheme.typography.heading2.copy(
+                color = NestTheme.colors.NN._950,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(end = 4.dp)
+        )
         Row(
-            modifier = Modifier.padding(top = 2.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (data.slashPriceFmt.isNotEmpty()) {
@@ -111,7 +98,6 @@ fun NormalPriceComponent(
                     )
                 )
             }
-
             if (data.discPercentage.isNotEmpty()) {
                 NestTypography(
                     data.discPercentage,
@@ -119,7 +105,19 @@ fun NormalPriceComponent(
                         color = NestTheme.colors.RN._500,
                         fontWeight = FontWeight.Bold
                     ),
-                    modifier = Modifier.padding(start = 4.dp)
+                    modifier = Modifier.padding(start = 2.dp)
+                )
+            }
+            if (freeOngkirImageUrl.isNotEmpty()) {
+                NestImage(
+                    source = Remote(freeOngkirImageUrl, customUIError = {
+                    }),
+                    type = NestImageType.Rect(0.dp),
+                    modifier = Modifier
+                        .height(18.dp)
+                        .wrapContentWidth()
+                        .padding(start = 4.dp)
+                        .tag("img_free_ongkir")
                 )
             }
         }
