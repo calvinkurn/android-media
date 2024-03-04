@@ -8,10 +8,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
-import com.tokopedia.product.addedit.specification.domain.model.Values
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
-import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -37,7 +35,7 @@ class AddEditProductSpecificationViewModel @Inject constructor(
     val errorMessage: LiveData<String>
         get() = mErrorMessage
 
-    fun setProductInputModel(productInputModel: ProductInputModel?) {
+    fun setProductInputModel(productInputModel: ProductInputModel) {
         mProductInputModel.value = productInputModel
     }
 
@@ -51,49 +49,6 @@ class AddEditProductSpecificationViewModel @Inject constructor(
         }, onError = {
             mErrorMessage.value = it.message
         })
-    }
-
-    fun getItemSelected(annotationCategoryList: List<AnnotationCategoryData>) =
-        annotationCategoryList.map { annotationCategoryData ->
-            val productInputModel = mProductInputModel.value
-            var valueResult: Values? = null
-            val required = annotationCategoryData.isMandatory
-
-            if (productInputModel != null) {
-                val specificationList = productInputModel.detailInputModel.specifications.orEmpty()
-                valueResult = annotationCategoryData.data.firstOrNull { value ->
-                    specificationList.any { it.id == value.id }
-                }
-            }
-
-            return@map if (valueResult != null) {
-                SpecificationInputModel(
-                    id = valueResult.id,
-                    data = valueResult.name,
-                    specificationVariant = annotationCategoryData.variant,
-                    required = required)
-            } else if (annotationCategoryData.isCustomAnnotType) {
-                val specificationList = mProductInputModel.getValueOrDefault().detailInputModel.specifications.orEmpty()
-                val selectedSpecification = specificationList.firstOrNull {
-                    it.specificationVariant == annotationCategoryData.variant
-                } ?: SpecificationInputModel(
-                    required = required,
-                    specificationVariant = annotationCategoryData.variant,
-                )
-                selectedSpecification.apply {
-                    isTextInput = true
-                    variantId = annotationCategoryData.variantId.toString()
-                }
-            } else {
-                SpecificationInputModel(
-                    required = required,
-                    specificationVariant = annotationCategoryData.variant,
-                )
-            }
-        }
-
-    fun getHasSpecification(specificationList: List<SpecificationInputModel>) = specificationList.any {
-        it.id.isNotBlank() || it.data.isNotEmpty()
     }
 
     fun validateSpecificationInputModel(specificationList: List<SpecificationInputModel>) {

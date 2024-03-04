@@ -28,6 +28,7 @@ import com.tokopedia.product.addedit.specification.di.DaggerAddEditProductSpecif
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.presentation.adapter.SpecificationValueAdapter
 import com.tokopedia.product.addedit.specification.presentation.dialog.NewUserSpecificationBottomSheet
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputMapper
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.specification.presentation.viewmodel.AddEditProductSpecificationViewModel
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -75,7 +76,7 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
         val productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
                     ProductInputModel::class.java, ProductInputModel())
 
-        viewModel.setProductInputModel(productInputModel)
+        viewModel.setProductInputModel(productInputModel ?: return)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -159,12 +160,12 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
     }
 
     private fun observeAnnotationCategoryData() {
-        viewModel.annotationCategoryData.observe(viewLifecycleOwner, {
-            val itemSelected = viewModel.getItemSelected(it)
+        viewModel.annotationCategoryData.observe(viewLifecycleOwner) {
+            val itemSelected = SpecificationInputMapper.getItemSelected(it, viewModel.productInputModel.value)
             setupSpecificationAdapter(it, itemSelected)
             loaderSpecification?.gone()
             btnSpecification?.isEnabled = true
-        })
+        }
     }
 
     private fun setupToolbarActions() {
@@ -188,9 +189,9 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
         rvSpecification?.adapter = specificationValueAdapter
         setRecyclerViewToVertical(rvSpecification)
         specificationValueAdapter?.setData(annotationCategoryData, itemSelected)
-        tvDeleteAll?.isEnabled = viewModel.getHasSpecification(itemSelected)
+        tvDeleteAll?.isEnabled = SpecificationInputMapper.hasInputtedSpecification(itemSelected)
         specificationValueAdapter?.showOnSpecificationChanged {
-            tvDeleteAll?.isEnabled = viewModel.getHasSpecification(it)
+            tvDeleteAll?.isEnabled = SpecificationInputMapper.hasInputtedSpecification(it)
         }
     }
 
