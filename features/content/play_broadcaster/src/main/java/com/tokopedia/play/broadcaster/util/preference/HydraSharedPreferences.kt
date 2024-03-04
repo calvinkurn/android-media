@@ -153,7 +153,7 @@ class HydraSharedPreferences @Inject constructor(
         )
     }
 
-    fun setLiveToVodBottomSheetPref(key: String) {
+    fun setDynamicBottomSheetPref(key: String) {
         mSharedPrefs.edit()
             .putString(
                 KEY_DYNAMIC_BOTTOM_SHEET,
@@ -161,12 +161,12 @@ class HydraSharedPreferences @Inject constructor(
             ).apply()
     }
 
-    fun getLiveToVodBottomSheetPref(key: String): Boolean {
+    fun getDynamicBottomSheetPref(key: String): Boolean {
         val cachedKey = mSharedPrefs.getString(KEY_DYNAMIC_BOTTOM_SHEET, "").orEmpty()
         return cachedKey == key
     }
 
-    fun setLiveToVodTickerPref(key: String) {
+    fun setDynamicTickerPref(key: String) {
         mSharedPrefs.edit()
             .putString(
                 KEY_DYNAMIC_TICKER,
@@ -174,7 +174,7 @@ class HydraSharedPreferences @Inject constructor(
             ).apply()
     }
 
-    fun getLiveToVodTickerPref(key: String): Boolean {
+    fun getDynamicTickerPref(key: String): Boolean {
         val cachedKey = mSharedPrefs.getString(KEY_DYNAMIC_TICKER, "").orEmpty()
         return cachedKey == key
     }

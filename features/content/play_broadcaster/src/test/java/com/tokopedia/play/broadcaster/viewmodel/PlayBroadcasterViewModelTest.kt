@@ -941,7 +941,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getLiveToVodBottomSheetPref(
+        coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
             key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
@@ -981,7 +981,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getLiveToVodBottomSheetPref(
+        coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
             key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
@@ -1021,7 +1021,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getLiveToVodBottomSheetPref(
+        coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
             key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
@@ -1061,7 +1061,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } throws Throwable("Fail?")
-        coEvery { mockHydraSharedPreferences.getLiveToVodBottomSheetPref(
+        coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
             key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
@@ -1101,7 +1101,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getLiveToVodTickerPref(
+        coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
             key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
@@ -1141,7 +1141,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getLiveToVodTickerPref(
+        coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
             key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
@@ -1178,7 +1178,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } throws Throwable("Fail?")
-        coEvery { mockHydraSharedPreferences.getLiveToVodTickerPref(
+        coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
             key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
@@ -1215,7 +1215,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getLiveToVodTickerPref(
+        coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
             key = responseMock.cacheKey,
             authorId = accountMock.find { it.isShop }?.id.orEmpty()
         ) } returns isFirstTime
@@ -1258,7 +1258,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getLiveToVodBottomSheetPref(
+        coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
             key = responseMock.cacheKey,
             authorId = authorId,
         ) } returns isFirstTime
@@ -1273,7 +1273,7 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             it.getViewModel().submitAction(PlayBroadcastAction.SetLiveToVodPref(type = type))
-            mockHydraSharedPreferences.getLiveToVodBottomSheetPref(
+            mockHydraSharedPreferences.getDynamicBottomSheetPref(
                 key = responseMock.cacheKey,
                 authorId = authorId
             ).assertEqualTo(false)
@@ -1296,7 +1296,7 @@ class PlayBroadcasterViewModelTest {
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
-        coEvery { mockHydraSharedPreferences.getLiveToVodTickerPref(
+        coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
             key = responseMock.cacheKey,
             authorId = authorId
         ) } returns isFirstTime
@@ -1311,7 +1311,7 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             it.getViewModel().submitAction(PlayBroadcastAction.SetLiveToVodPref(type = type))
-            mockHydraSharedPreferences.getLiveToVodTickerPref(
+            mockHydraSharedPreferences.getDynamicTickerPref(
                 key = responseMock.cacheKey,
                 authorId = authorId
             ).assertEqualTo(false)

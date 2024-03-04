@@ -858,10 +858,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val cacheKey = response.cacheKey.ifBlank { return@launchCatchError }
             val pref = when (response.type) {
                 TickerBottomSheetType.BOTTOM_SHEET -> {
-                    sharedPref.getLiveToVodBottomSheetPref(key = cacheKey)
+                    sharedPref.getDynamicBottomSheetPref(key = cacheKey)
                 }
                 TickerBottomSheetType.TICKER -> {
-                    sharedPref.getLiveToVodTickerPref(key = cacheKey)
+                    sharedPref.getDynamicTickerPref(key = cacheKey)
                 }
                 TickerBottomSheetType.UNKNOWN -> false
             }
@@ -875,12 +875,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleSetLiveToVodPref(type: TickerBottomSheetType) {
         when (type) {
             TickerBottomSheetType.BOTTOM_SHEET -> {
-                sharedPref.setLiveToVodBottomSheetPref(
+                sharedPref.setDynamicBottomSheetPref(
                     key = _tickerBottomSheetConfig.value.cacheKey
                 )
             }
             TickerBottomSheetType.TICKER -> {
-                sharedPref.setLiveToVodTickerPref(
+                sharedPref.setDynamicTickerPref(
                     key = _tickerBottomSheetConfig.value.cacheKey
                 )
             }
