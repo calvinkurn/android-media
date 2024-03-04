@@ -285,7 +285,10 @@ class ReadReviewHeader @JvmOverloads constructor(
         preselectKeyword: String?,
         listener: ReadReviewFilterChipsListener
     ) {
-        if (keywords.isEmpty()) return
+        if (keywords.isEmpty()) {
+            binding.readReviewExtractedTopic.keywords = keywords
+            return
+        }
         binding.readReviewHighlightedTopicLeft.gone()
         binding.readReviewHighlightedTopicRight.gone()
 
