@@ -776,7 +776,6 @@ class ShopPageReimagineHeaderFragment :
         }
 
         shopHeaderViewModel?.newProductListData?.observe(viewLifecycleOwner) {
-            // TODO: pass the data to sharing BS flow
             when (it) {
                 is Success -> {
                     val productListData = it.data.data
@@ -800,7 +799,6 @@ class ShopPageReimagineHeaderFragment :
             if (shopImageFilePath.isNotEmpty()) {
                 isGeneralShareBottomSheet = true
 
-                // TODO: hit gql getProductList here with limit max 6 products
                 shopHeaderViewModel?.getProductListData(
                     shopId = shopId,
                     page = START_PAGE,
@@ -810,8 +808,6 @@ class ShopPageReimagineHeaderFragment :
                     etalaseId = "",
                     widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel()
                 )
-
-                // showUniversalShareBottomSheet()
             }
         }
 
@@ -1155,12 +1151,6 @@ class ShopPageReimagineHeaderFragment :
         shopHeaderViewModel?.getShopShareAndOperationalHourStatusData(
             shopId,
             shopDomain.orEmpty(),
-//            page = START_PAGE,
-//            itemPerPage = ShopUtil.getProductPerPage(context),
-//            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
-//            keyword = "",
-//            etalaseId = "",
-//            widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             isRefresh
         )
     }
@@ -1778,17 +1768,6 @@ class ShopPageReimagineHeaderFragment :
         }
         removeTemporaryShopImage(shopImageFilePath)
         saveShopImage()
-
-//        // TODO: hit gql getProductList here with limit max 6 products
-//        shopHeaderViewModel?.getProductListData(
-//            shopId = shopId,
-//            page = START_PAGE,
-//            itemPerPage = ShopUtil.getProductPerPage(context = context, isShare = true),
-//            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
-//            keyword = "",
-//            etalaseId = "",
-//            widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel()
-//        )
     }
 
     internal fun clickSearch() {
@@ -3143,9 +3122,7 @@ class ShopPageReimagineHeaderFragment :
             }
         }
 
-        // TODO: Check the product list here after being hit from clickShopShare function,
-        //  make sure we already got the product list to pass them to BS component
-        val initialProductListData = productListData // shopHeaderViewModel?.productListData?.data ?: listOf()
+        val initialProductListData = productListData
 
         initialProductListData?.let {
             val initialProductListSize = it.size

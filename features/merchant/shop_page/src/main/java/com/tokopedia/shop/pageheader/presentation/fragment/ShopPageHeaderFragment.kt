@@ -858,7 +858,6 @@ class ShopPageHeaderFragment :
         )
 
         shopHeaderViewModel?.newProductListData?.observe(viewLifecycleOwner) {
-            // TODO: pass the data to sharing BS flow
             when (it) {
                 is Success -> {
                     val productListData = it.data.data
@@ -884,7 +883,6 @@ class ShopPageHeaderFragment :
                 if (shopImageFilePath.isNotEmpty()) {
                     isGeneralShareBottomSheet = true
 
-                    // TODO: hit gql getProductList here with limit max 6 products
                     shopHeaderViewModel?.getProductListData(
                         shopId = shopId,
                         page = ShopPageReimagineHeaderFragment.START_PAGE,
@@ -894,7 +892,6 @@ class ShopPageHeaderFragment :
                         etalaseId = "",
                         widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel()
                     )
-                    // showUniversalShareBottomSheet()
                 }
             }
         )
@@ -1176,13 +1173,6 @@ class ShopPageHeaderFragment :
         shopHeaderViewModel?.getShopShareAndOperationalHourStatusData(
             shopId,
             shopDomain.orEmpty(),
-//            page = START_PAGE,
-//            itemPerPage = ShopUtil.getProductPerPage(context),
-//            shopProductFilterParameter = initialProductFilterParameter
-//                ?: ShopProductFilterParameter(),
-//            keyword = "",
-//            etalaseId = "",
-//            widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             isRefresh
         )
     }

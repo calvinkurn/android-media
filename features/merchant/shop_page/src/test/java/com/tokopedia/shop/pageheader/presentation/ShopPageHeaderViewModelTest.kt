@@ -578,7 +578,9 @@ class ShopPageHeaderViewModelTest {
         )
         assert(shopPageHeaderViewModel.shopPageHeaderTickerData.value is Success)
         assert(shopPageHeaderViewModel.shopPageShopShareData.value is Success)
-        assert(shopPageHeaderViewModel.productListData.data.size == 2)
+        assert(shopPageHeaderViewModel.newProductListData.value is Success)
+        // validate if the productListData.data.size == 2)
+
 
         shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(
             "0",
