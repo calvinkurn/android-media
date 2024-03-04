@@ -1,10 +1,10 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail
 
 import com.tokopedia.product.detail.common.ProductDetailPrefetch
+import com.tokopedia.product.detail.common.data.model.media.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
-import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel

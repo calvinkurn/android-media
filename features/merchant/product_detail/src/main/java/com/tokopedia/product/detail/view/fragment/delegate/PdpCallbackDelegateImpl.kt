@@ -19,4 +19,7 @@ class PdpCallbackDelegateImpl : PdpCallbackDelegate {
     override val gwp by callback { GWPCallback(mediator = _mediator) }
 
     override val productPrice by lazy { ProductPriceCallback(mediator = _mediator) }
+
+    //Fragment Level
+    override val productRecomm by lazy { PartialRecommendationManager(mediator = _mediator) }
 }

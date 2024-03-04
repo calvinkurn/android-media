@@ -10,7 +10,7 @@ sealed interface ProductChooserEvent {
 
     data class GetDataError(
         val throwable: Throwable,
-        val action: (() -> Unit)? = null,
+        val action: (() -> Unit)? = null
     ) : ProductChooserEvent
 
     data class DeleteProductSuccess(
@@ -19,11 +19,11 @@ sealed interface ProductChooserEvent {
 
     data class DeleteProductError(
         val throwable: Throwable,
-        val action: (() -> Unit)? = null,
+        val action: (() -> Unit)? = null
     ) : ProductChooserEvent
 
     data class FailPinUnPinProduct(
         val throwable: Throwable,
-        val isPinned: Boolean,
+        val isPinned: Boolean
     ) : ProductChooserEvent
 }
