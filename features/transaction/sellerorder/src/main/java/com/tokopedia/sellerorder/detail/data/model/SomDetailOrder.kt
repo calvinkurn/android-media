@@ -9,6 +9,7 @@ import com.tokopedia.order_management_common.domain.data.AddOnSummary
 import com.tokopedia.order_management_common.domain.data.ProductBenefit
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
+import com.tokopedia.sellerorder.common.util.SomConsts
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -142,6 +143,10 @@ data class SomDetailOrder(
         @Expose
         val pofData: PofData? = null
     ) {
+
+        fun getBuyerRequestCancelRespondButton(): Button? {
+            return button.firstOrNull { it.key == SomConsts.KEY_RESPOND_TO_CANCELLATION }
+        }
 
         fun getFirstProduct(): Details.Product? {
             return details.nonBundle?.firstOrNull()

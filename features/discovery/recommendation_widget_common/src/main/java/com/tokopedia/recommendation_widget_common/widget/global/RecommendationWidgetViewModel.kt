@@ -1,6 +1,9 @@
 package com.tokopedia.recommendation_widget_common.widget.global
 
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.mvvm.ViewModel
@@ -19,8 +22,8 @@ class RecommendationWidgetViewModel @Inject constructor(
     state: RecommendationWidgetState = RecommendationWidgetState(),
     private val getRecommendationWidgetUseCase: GetRecommendationUseCase,
     private val cartService: dagger.Lazy<CartService>,
-    private val userSession: UserSessionInterface,
-): androidx.lifecycle.ViewModel(),
+    private val userSession: UserSessionInterface
+) : androidx.lifecycle.ViewModel(),
     ViewModel<RecommendationWidgetState> {
 
     private val _stateFlow = MutableStateFlow(state)
@@ -61,7 +64,8 @@ class RecommendationWidgetViewModel @Inject constructor(
                 keywords = model.metadata.keyword,
                 isTokonow = model.metadata.isTokonow,
                 criteriaThematicIDs = model.metadata.criteriaThematicIDs,
-                hasNewProductCardEnabled = true
+                hasNewProductCardEnabled = true,
+                xSource = model.metadata.xSource
             )
         )
 
@@ -74,10 +78,11 @@ class RecommendationWidgetViewModel @Inject constructor(
         val shopId = stateValue.miniCartShopId
         val miniCartSource = stateValue.miniCartSource
 
-        if (shopId.isNotEmpty() && miniCartSource != null)
+        if (shopId.isNotEmpty() && miniCartSource != null) {
             cartService.get().getMiniCart(shopId, miniCartSource) { miniCartData ->
                 updateState { it.refreshMiniCart(miniCartData) }
             }
+        }
     }
 
     private fun onGetRecommendationWidgetError(model: RecommendationWidgetModel) {
@@ -91,7 +96,7 @@ class RecommendationWidgetViewModel @Inject constructor(
     internal fun onAddToCartNonVariant(
         model: RecommendationCarouselModel,
         item: RecommendationItem,
-        updatedQuantity: Int,
+        updatedQuantity: Int
     ) {
         val miniCartSource = stateValue.miniCartSource ?: return
         val productId = item.productId.toString()
@@ -103,48 +108,95 @@ class RecommendationWidgetViewModel @Inject constructor(
             updatedQuantity = updatedQuantity,
             miniCartItem = stateValue.getMiniCartItemProduct(productId),
             miniCartSource = miniCartSource,
-            onSuccessAddToCart = { addToCartData, miniCartData ->
-                val atcTrackingData = RecommendationCarouselWidgetTrackingATC(
-                    item,
-                    addToCartData.data.cartId,
-                    addToCartData.data.quantity,
-                )
-                model.widgetTracking?.sendEventAddToCart(atcTrackingData)
-
-                updateState {
-                    it.refreshMiniCart(
-                        miniCartData = miniCartData,
-                        successMessage = addToCartData.errorMessage.joinToString(separator = ", "),
-                    )
-                }
-            },
-            onSuccessUpdateCart = { updateCartData, miniCartData ->
-                model.widgetTracking?.sendEventUpdateCart()
-
-                updateState {
-                    it.refreshMiniCart(
-                        miniCartData = miniCartData,
-                        successMessage = updateCartData.error.joinToString(separator = ", "),
-                    )
-                }
-            },
+            onSuccessAddToCart = onSuccessAddToCart(item, model),
+            onSuccessUpdateCart = onSuccessUpdateCart(model),
             onSuccessDeleteCart = { deleteCartData, miniCartData ->
                 model.widgetTracking?.sendEventDeleteCart()
 
                 updateState {
                     it.refreshMiniCart(
                         miniCartData = miniCartData,
-                        successMessage = deleteCartData.errorMessage.joinToString(separator = ", "),
+                        successMessage = deleteCartData.errorMessage.joinToString(separator = ", ")
                     )
                 }
             },
-            onError = { throwable ->
-                updateState { it.showErrorMessage(throwable.message ?: "") }
-            }
+            onError = onErrorAddToCart(model)
         )
     }
+
+    private fun onErrorAddToCart(model: RecommendationCarouselModel): (Throwable) -> Unit = { throwable ->
+        model.listener?.onProductAddToCartFailed()
+        updateState { it.showErrorMessage(throwable.message ?: "") }
+    }
+
+    private fun onSuccessUpdateCart(model: RecommendationCarouselModel):
+        (UpdateCartV2Data, MiniCartSimplifiedData) -> Unit =
+        { updateCartData, miniCartData ->
+            model.widgetTracking?.sendEventUpdateCart()
+
+            updateState {
+                it.refreshMiniCart(
+                    miniCartData = miniCartData,
+                    successMessage = updateCartData.error.joinToString(separator = ", ")
+                )
+            }
+        }
+
+    private fun onSuccessAddToCart(
+        item: RecommendationItem,
+        model: RecommendationCarouselModel
+    ): (AddToCartDataModel, MiniCartSimplifiedData) -> Unit =
+        { addToCartData, miniCartData ->
+            val atcTrackingData = RecommendationCarouselWidgetTrackingATC(
+                item,
+                addToCartData.data.cartId,
+                addToCartData.data.quantity
+            )
+            model.widgetTracking?.sendEventAddToCart(atcTrackingData)
+
+            updateState {
+                it.refreshMiniCart(
+                    miniCartData = miniCartData,
+                    successMessage = addToCartData.errorMessage.joinToString(separator = ", ")
+                )
+            }
+        }
 
     fun dismissMessage() {
         updateState { it.dismissMessage() }
     }
+
+    fun onDirectAddToCart(
+        model: RecommendationCarouselModel,
+        productRecommendation: RecommendationItem,
+        minOrder: Int
+    ) {
+        val productId = productRecommendation.productId.toString()
+
+        cartService.get().directAddToCart(
+            productId,
+            productRecommendation.shopId.toString(),
+            minOrder,
+            model.metadata.atcFromExternalSource,
+            onSuccessDirectAddToCart(productRecommendation, model),
+            onErrorAddToCart(model)
+        )
+    }
+
+    private fun onSuccessDirectAddToCart(
+        productRecommendation: RecommendationItem,
+        model: RecommendationCarouselModel
+    ): (AddToCartDataModel) -> Unit =
+        { addToCartData ->
+            val atcTrackingData = RecommendationCarouselWidgetTrackingATC(
+                productRecommendation,
+                addToCartData.data.cartId,
+                addToCartData.data.quantity
+            )
+            model.widgetTracking?.sendEventAddToCart(atcTrackingData)
+            model.listener?.onProductAddToCartSuccess(productRecommendation, addToCartData)
+            updateState {
+                it.showSuccessMessage(addToCartData.errorMessage.joinToString(separator = ", "))
+            }
+        }
 }

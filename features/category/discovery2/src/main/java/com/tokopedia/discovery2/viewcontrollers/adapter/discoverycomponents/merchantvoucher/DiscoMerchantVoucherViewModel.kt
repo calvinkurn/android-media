@@ -4,15 +4,15 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherCarouselModel
+import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
+import com.tokopedia.discovery_component.widgets.automatecoupon.DynamicColorText
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.mvcwidget.AnimatedInfos
-import com.tokopedia.mvcwidget.MvcData
-import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import java.util.ArrayList
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -21,44 +21,67 @@ class DiscoMerchantVoucherViewModel(
     val components: ComponentsItem,
     val position: Int
 ) : DiscoveryBaseViewModel(), CoroutineScope {
-
     @JvmField
     @Inject
-    var mvcSummaryUseCase: MVCSummaryUseCase? = null
+    var merchantVoucherUseCase: MerchantVoucherUseCase? = null
 
-    private val _mvcData = MutableLiveData<MvcData>()
-    private val _errorState = MutableLiveData<Boolean>()
-    val mvcData: LiveData<MvcData> = _mvcData
-    val errorState: LiveData<Boolean> = _errorState
+    private val _coupon: MutableLiveData<MerchantVoucherCarouselModel> = MutableLiveData()
+    val coupon: LiveData<MerchantVoucherCarouselModel> = _coupon
+    private val _loadError: MutableLiveData<Boolean> = MutableLiveData()
+    val loadError: LiveData<Boolean> = _loadError
 
     fun fetchDataForCoupons() {
-        if (_mvcData.value == null && _errorState.value != true) {
-            getDataFromUseCase()
+        launchCatchError(block = {
+            merchantVoucherUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint)
+            setVoucherList()
+        }, onError = {
+            _loadError.value = true
+        })
+    }
+
+    private fun ComponentsItem.mapToAutomateCouponModelList(): MerchantVoucherCarouselModel {
+        val component = this.data?.firstOrNull()
+        return MerchantVoucherCarouselModel(
+            appLink = component?.shopInfo?.appLink.orEmpty(),
+            buttonText = component?.buttonText.orEmpty(),
+            url = component?.shopInfo?.url.orEmpty(),
+            automateCouponModel = AutomateCouponModel.List(
+                backgroundUrl = component?.backgroundImageUrl.orEmpty(),
+                benefit = DynamicColorText(
+                    value = "${component?.subtitle}"
+                ),
+                tnc = DynamicColorText(
+                    value = component?.subtitle_1.orEmpty(),
+                ),
+                iconUrl = component?.shopInfo?.iconUrl.orEmpty(),
+                shopName = DynamicColorText(
+                    value = component?.shopInfo?.name.orEmpty()
+                ),
+                type = DynamicColorText(
+                    value = component?.title.orEmpty(),
+                    colorHex = component?.fontColor.orEmpty(),
+                )
+            )
+        )
+    }
+
+    private fun setVoucherList() {
+        getVoucher().run {
+            if (this != null) {
+                _loadError.value = false
+                _coupon.value = this.mapToAutomateCouponModelList()
+                syncData.value = true
+            } else {
+                _loadError.value = true
+            }
         }
     }
 
-    fun getDataFromUseCase() {
-        launchCatchError(
-            block = {
-                if (getShopID().isNotEmpty()) {
-                    val response =
-                        mvcSummaryUseCase?.getQueryParams(getShopID())?.let {
-                            mvcSummaryUseCase?.getResponse(it)
-                        }
-                    response?.data?.let {
-                        _errorState.value = it.isShown?.not() ?: true
-                        if (it.isShown == true) {
-                            _mvcData.value = MvcData(it.animatedInfoList)
-                        }
-                    }
-                } else {
-                    _errorState.value = true
-                }
-            },
-            onError = {
-                _errorState.value = true
-            }
-        )
+    private fun getVoucher(): ComponentsItem? {
+        components.getComponentsItem()?.let { product ->
+            return product.firstOrNull()
+        }
+        return null
     }
 
     fun getShopID(): String {
@@ -67,15 +90,6 @@ class DiscoMerchantVoucherViewModel(
 
     fun getProductId(): String {
         return components.data?.firstOrNull()?.productId ?: ""
-    }
-
-    fun updateData(shopID: Any, isShown: Boolean, listInfo: ArrayList<AnimatedInfos>?) {
-        if (shopID == getShopID()) {
-            _errorState.value = !isShown
-            if (isShown) {
-                _mvcData.value = MvcData(listInfo)
-            }
-        }
     }
 
     override val coroutineContext: CoroutineContext

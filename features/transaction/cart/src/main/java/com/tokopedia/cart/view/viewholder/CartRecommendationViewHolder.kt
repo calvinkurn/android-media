@@ -26,6 +26,7 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
         binding.productCardView.apply {
             setProductModel(
                 element.recommendationItem.toProductCardModel(true, UnifyButton.Type.MAIN)
+                    .copy(isInBackground = true)
             )
             setOnClickListener {
                 actionListener?.onRecommendationProductClicked(

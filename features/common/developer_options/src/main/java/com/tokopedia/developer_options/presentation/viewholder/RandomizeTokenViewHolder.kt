@@ -5,7 +5,6 @@ import android.content.Intent
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.scp.auth.common.utils.ScpUtils
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.RandomizeAccessTokenUiModel
@@ -28,8 +27,6 @@ class RandomizeTokenViewHolder(
             val btn = itemView.findViewById<UnifyButton>(R.id.randomize_token_btn)
             btn.setOnClickListener {
                 userSession.setToken("abc12345", userSession.tokenType)
-                println("refreshtoken: ${EncoderDecoder.Decrypt(userSession.freshToken, userSession.refreshTokenIV)}")
-                ScpUtils.saveTokens("abc12345", EncoderDecoder.Decrypt(userSession.freshToken, userSession.refreshTokenIV))
             }
         }
     }
