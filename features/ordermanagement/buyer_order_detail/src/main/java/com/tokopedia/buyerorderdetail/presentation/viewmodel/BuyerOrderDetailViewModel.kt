@@ -24,6 +24,7 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMa
 import com.tokopedia.buyerorderdetail.presentation.mapper.AddToCartParamsMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.BuyerOrderDetailUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.EpharmacyInfoUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.GetBrcCsatWidgetUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderInsuranceUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderResolutionTicketStatusUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapper
@@ -519,21 +520,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): WidgetBrcCsatUiState {
         val currentState = brcCsatUiState.value
-        return if (getBuyerOrderDetailDataRequestState.getP0DataRequestState.getBuyerOrderDetailRequestState is GetBuyerOrderDetailRequestState.Requesting) {
-            if (currentState is WidgetBrcCsatUiState.HasData) {
-                WidgetBrcCsatUiState.HasData.Reloading(currentState.data)
-            } else {
-                WidgetBrcCsatUiState.Loading
-            }
-        } else if (getBuyerOrderDetailDataRequestState.getP0DataRequestState.getBuyerOrderDetailRequestState is GetBuyerOrderDetailRequestState.Complete.Success) {
-            if (currentState is WidgetBrcCsatUiState.HasData) {
-                WidgetBrcCsatUiState.HasData.Showing(currentState.data)
-            } else {
-                WidgetBrcCsatUiState.HasData.Showing(WidgetBrcCsatUiModel(expanded = true))
-            }
-        } else {
-            WidgetBrcCsatUiState.Hidden
-        }
+        return GetBrcCsatWidgetUiStateMapper.map(currentState, getBuyerOrderDetailDataRequestState)
     }
 
     private fun mapProductListUiState(

@@ -54,7 +54,7 @@ class WidgetBrcCsat(
     private fun onReloading(data: WidgetBrcCsatUiModel) {
         show()
         with(binding.accordionBomBrcCsat) {
-            contentBinding.setup()
+            contentBinding.setup(data.orderID, data.helpUrl)
             if (!accordionData.contains(contentData)) addGroup(contentData)
             if (data.expanded) expandAllGroup() else collapseAllGroup()
         }
@@ -63,7 +63,7 @@ class WidgetBrcCsat(
     private fun onShowing(data: WidgetBrcCsatUiModel) {
         show()
         with(binding.accordionBomBrcCsat) {
-            contentBinding.setup()
+            contentBinding.setup(data.orderID, data.helpUrl)
             if (!accordionData.contains(contentData)) addGroup(contentData)
             if (data.expanded) expandAllGroup() else collapseAllGroup()
         }
@@ -77,32 +77,32 @@ class WidgetBrcCsat(
         gone()
     }
 
-    private fun WidgetBrcCsatContentBinding.setup() {
-        setupSmileys()
-        setupHelpText()
+    private fun WidgetBrcCsatContentBinding.setup(orderID: String, helpUrl: String) {
+        setupSmileys(orderID)
+        setupHelpText(helpUrl)
     }
 
-    private fun WidgetBrcCsatContentBinding.setupSmileys() {
-        ivBomBrcCsatSmiley1.setOnClickListener { onSmileyClicked(1) }
-        ivBomBrcCsatSmiley2.setOnClickListener { onSmileyClicked(2) }
-        ivBomBrcCsatSmiley3.setOnClickListener { onSmileyClicked(3) }
-        ivBomBrcCsatSmiley4.setOnClickListener { onSmileyClicked(4) }
-        ivBomBrcCsatSmiley5.setOnClickListener { onSmileyClicked(5) }
+    private fun WidgetBrcCsatContentBinding.setupSmileys(orderID: String) {
+        ivBomBrcCsatSmiley1.setOnClickListener { onSmileyClicked(orderID, 1) }
+        ivBomBrcCsatSmiley2.setOnClickListener { onSmileyClicked(orderID, 2) }
+        ivBomBrcCsatSmiley3.setOnClickListener { onSmileyClicked(orderID, 3) }
+        ivBomBrcCsatSmiley4.setOnClickListener { onSmileyClicked(orderID, 4) }
+        ivBomBrcCsatSmiley5.setOnClickListener { onSmileyClicked(orderID, 5) }
     }
 
-    private fun WidgetBrcCsatContentBinding.onSmileyClicked(score: Int) {
+    private fun WidgetBrcCsatContentBinding.onSmileyClicked(orderID: String, feedback: Int) {
         ivBomBrcCsatSmiley1.isEnabled = false
         ivBomBrcCsatSmiley2.isEnabled = false
         ivBomBrcCsatSmiley3.isEnabled = false
         ivBomBrcCsatSmiley4.isEnabled = false
         ivBomBrcCsatSmiley5.isEnabled = false
-        _navigator?.goToBrcCsatForm(score)
+        _navigator?.goToBrcCsatForm(orderID, feedback)
     }
 
-    private fun WidgetBrcCsatContentBinding.setupHelpText() {
+    private fun WidgetBrcCsatContentBinding.setupHelpText(helpUrl: String) {
         tvBomBrcCsatHelp.movementMethod = LinkMovementMethod.getInstance()
         tvBomBrcCsatHelp.text = HtmlLinkHelper(
-            context, context.getString(R.string.bom_brc_csat_help)
+            context, context.getString(R.string.bom_brc_csat_help, helpUrl)
         ).apply {
             urlList.forEach { it.onClick = { _navigator?.openAppLink(it.linkUrl, false) } }
         }.spannedString ?: String.EMPTY

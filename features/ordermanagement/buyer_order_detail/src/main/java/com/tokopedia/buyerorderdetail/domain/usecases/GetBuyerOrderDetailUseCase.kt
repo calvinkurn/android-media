@@ -61,7 +61,6 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
         const val QUERY = """
             query MPBOMDetail(${'$'}$PARAM_INPUT: BomDetailV2Request!) {
               mp_bom_detail(input: ${'$'}$PARAM_INPUT) {
-                has_reso_status
                 order_id
                 group_type
                 invoice
@@ -604,7 +603,17 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                 }
                 is_plus
                 is_pof
-                has_ppp
+                widget {
+                  reso_status {
+                    show
+                  }
+                  reso_csat {
+                    show
+                  }
+                  ppp {
+                    show
+                  }
+                }
               }
             }
         """

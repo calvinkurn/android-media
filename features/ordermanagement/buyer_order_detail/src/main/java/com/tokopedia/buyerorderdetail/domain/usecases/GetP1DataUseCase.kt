@@ -1,6 +1,8 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
+import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetRequestParams
+import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailParams
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionParams
@@ -19,7 +21,8 @@ import javax.inject.Inject
 
 class GetP1DataUseCase @Inject constructor(
     private val getOrderResolutionUseCase: GetOrderResolutionUseCase,
-    private val getInsuranceDetailUseCase: GetInsuranceDetailUseCase
+    private val getInsuranceDetailUseCase: GetInsuranceDetailUseCase,
+    private val getBrcCsatWidgetUseCase: GetBrcCsatWidgetUseCase
 ) {
 
     operator fun invoke(params: GetP1DataParams) = execute(params).flowOn(Dispatchers.IO)
@@ -44,19 +47,33 @@ class GetP1DataUseCase @Inject constructor(
         }
     }
 
+    private suspend fun executeGetBrcCsatWidgetUseCase(
+        params: GetBrcCsatWidgetRequestParams
+    ) = getBrcCsatWidgetUseCase(params)
+
+    private fun getBrcCsatWidgetUseCaseRequestStates(params: GetP1DataParams) = flow {
+        if (params.hasBrcCsat) {
+            emitAll(executeGetBrcCsatWidgetUseCase(GetBrcCsatWidgetRequestParams(params.orderId.toString(), params.shouldCheckCache)))
+        } else {
+            emit(GetBrcCsatWidgetRequestState.Complete.Success(null))
+        }
+    }
+
     private suspend fun executeInsuranceDetailUseCase(params: GetInsuranceDetailParams) = getInsuranceDetailUseCase(params)
 
     private fun mapP1UseCasesRequestState(
         orderResolutionRequestState: GetOrderResolutionRequestState,
-        insuranceDetailRequestState: GetInsuranceDetailRequestState
+        insuranceDetailRequestState: GetInsuranceDetailRequestState,
+        getBrcCsatWidgetRequestState: GetBrcCsatWidgetRequestState
     ): GetP1DataRequestState {
         return if (
             orderResolutionRequestState is GetOrderResolutionRequestState.Requesting ||
-            insuranceDetailRequestState is GetInsuranceDetailRequestState.Requesting
+            insuranceDetailRequestState is GetInsuranceDetailRequestState.Requesting ||
+            getBrcCsatWidgetRequestState is GetBrcCsatWidgetRequestState.Requesting
         ) {
-            GetP1DataRequestState.Requesting(orderResolutionRequestState, insuranceDetailRequestState)
+            GetP1DataRequestState.Requesting(orderResolutionRequestState, insuranceDetailRequestState, getBrcCsatWidgetRequestState)
         } else {
-            GetP1DataRequestState.Complete(orderResolutionRequestState, insuranceDetailRequestState)
+            GetP1DataRequestState.Complete(orderResolutionRequestState, insuranceDetailRequestState, getBrcCsatWidgetRequestState)
         }
     }
 
@@ -67,13 +84,15 @@ class GetP1DataUseCase @Inject constructor(
         ) { flows ->
             mapP1UseCasesRequestState(
                 flows[0] as GetOrderResolutionRequestState, // please make sure that flow[0] is GetOrderResolutionRequestState after editing the flow source
-                flows[1] as GetInsuranceDetailRequestState // please make sure that flow[1] is GetInsuranceDetailRequestState after editing the flow source
+                flows[1] as GetInsuranceDetailRequestState, // please make sure that flow[1] is GetInsuranceDetailRequestState after editing the flow source
+                flows[2] as GetBrcCsatWidgetRequestState // please make sure that flow[2] is GetBrcCsatWidgetRequestState after editing the flow source
             )
         }.catch {
             emit(
                 GetP1DataRequestState.Complete(
                     GetOrderResolutionRequestState.Complete.Error(it),
-                    GetInsuranceDetailRequestState.Complete.Error(it)
+                    GetInsuranceDetailRequestState.Complete.Error(it),
+                    GetBrcCsatWidgetRequestState.Complete.Error(it)
                 )
             )
         }.onCompletion {

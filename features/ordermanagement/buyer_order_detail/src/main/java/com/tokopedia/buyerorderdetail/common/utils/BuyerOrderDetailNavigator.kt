@@ -21,6 +21,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiSta
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
+import com.tokopedia.resources.common.R as resourcescommonR
 
 class BuyerOrderDetailNavigator(
     private val activity: Activity,
@@ -36,14 +37,13 @@ class BuyerOrderDetailNavigator(
         private const val KEY_ORDER_CATEGORY = "KEY_ORDER_CATEGORY"
         private const val BUYER_MODE = 1
 
-        private const val BRC_CSAT_FORM_URL = "https://www.tokopedia.com/form?selectedScore="
+        private const val BRC_CSAT_ORDER_ID_PARAM = "${'$'}orderID"
+        private const val BRC_CSAT_FEEDBACK_PARAM = "${'$'}feedback"
+        private const val BRC_CSAT_FORM_URL = "https://www.tokopedia.com/order-details/marketplace/$BRC_CSAT_ORDER_ID_PARAM/csat?feedback=$BRC_CSAT_FEEDBACK_PARAM"
     }
 
     private fun applyTransition() {
-        activity.overridePendingTransition(
-            com.tokopedia.resources.common.R.anim.slide_right_in_medium,
-            com.tokopedia.resources.common.R.anim.slide_left_out_medium
-        )
+        activity.overridePendingTransition(resourcescommonR.anim.slide_right_in_medium, resourcescommonR.anim.slide_left_out_medium)
     }
 
     fun goToBomDetailPage(orderId: String) {
@@ -238,8 +238,13 @@ class BuyerOrderDetailNavigator(
         applyTransition()
     }
 
-    fun goToBrcCsatForm(score: Int) {
-        val intent = RouteManager.getIntent(activity, "$BRC_CSAT_FORM_URL$score")
+    fun goToBrcCsatForm(orderId: String, feedback: Int) {
+        val intent = RouteManager.getIntent(
+            activity,
+            BRC_CSAT_FORM_URL
+                .replace(BRC_CSAT_ORDER_ID_PARAM, orderId)
+                .replace(BRC_CSAT_FEEDBACK_PARAM, feedback.toString())
+        )
         fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_BRC_CSAT_FORM)
         applyTransition()
     }
