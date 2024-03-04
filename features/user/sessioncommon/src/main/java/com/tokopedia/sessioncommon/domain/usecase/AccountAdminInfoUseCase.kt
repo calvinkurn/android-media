@@ -1,5 +1,6 @@
 package com.tokopedia.sessioncommon.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -13,7 +14,7 @@ import javax.inject.Inject
 
 class AccountAdminInfoUseCase @Inject constructor(
     private val refreshShopBasicDataUseCase: RefreshShopBasicDataUseCase,
-    private val graphqlRepository: GraphqlRepository,
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<AccountAdminInfoGqlParam, Pair<AdminDataResponse?, ShopData?>>(dispatcher.io) {
 

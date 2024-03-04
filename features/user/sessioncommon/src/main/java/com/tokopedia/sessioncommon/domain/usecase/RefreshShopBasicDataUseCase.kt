@@ -1,5 +1,6 @@
 package com.tokopedia.sessioncommon.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -9,7 +10,7 @@ import com.tokopedia.sessioncommon.data.profile.ShopData
 import javax.inject.Inject
 
 class RefreshShopBasicDataUseCase @Inject constructor(
-    private val gqlRepository: GraphqlRepository,
+    @ApplicationContext private val gqlRepository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<Unit, ShopData>(dispatchers.io) {
 
