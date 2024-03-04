@@ -125,7 +125,6 @@ class ShopPageHeaderViewModel @Inject constructor(
 
     val shopPageP1Data = MutableLiveData<Result<ShopPageHeaderP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
-    var productListData: ShopProduct.GetShopProduct = ShopProduct.GetShopProduct()
     var homeWidgetLayoutData: HomeLayoutData = HomeLayoutData()
     val shopImagePath = MutableLiveData<String>()
 
@@ -158,9 +157,9 @@ class ShopPageHeaderViewModel @Inject constructor(
     val resultAffiliate: LiveData<Result<GenerateAffiliateLinkEligibility>>
         get() = _resultAffiliate
 
-    private val _newProductListData = MutableLiveData<Result<ShopProduct.GetShopProduct>>()
-    val newProductListData: LiveData<Result<ShopProduct.GetShopProduct>>
-        get() = _newProductListData
+    private val _productListData = MutableLiveData<Result<ShopProduct.GetShopProduct>>()
+    val productListData: LiveData<Result<ShopProduct.GetShopProduct>>
+        get() = _productListData
 
     /*
     Function getNewShopPageTabData is expected to perform faster than
@@ -297,9 +296,9 @@ class ShopPageHeaderViewModel @Inject constructor(
                     userLong = widgetUserAddressLocalData.long
                 }
             )
-            _newProductListData.postValue(Success(useCase.executeOnBackground()))
+            _productListData.postValue(Success(useCase.executeOnBackground()))
         }, onError = {
-            _newProductListData.postValue(Fail(it))
+            _productListData.postValue(Fail(it))
         })
     }
 
@@ -450,27 +449,7 @@ class ShopPageHeaderViewModel @Inject constructor(
                     null
                 }
             )
-//            val productListDataAsync = asyncCatchError(
-//                dispatcherProvider.io,
-//                block = {
-//                    getProductListData(
-//                        shopId = shopId,
-//                        page = page,
-//                        itemPerPage = itemPerPage,
-//                        shopProductFilterParameter = shopProductFilterParameter,
-//                        keyword = keyword,
-//                        etalaseId = etalaseId,
-//                        widgetUserAddressLocalData = widgetUserAddressLocalData
-//                    )
-//                },
-//                onError = {
-//                    null
-//                }
-//            )
             shopInfoData.await()?.let { shopInfo ->
-//                productListDataAsync.await()?.let { shopProductData ->
-//                    productListData = shopProductData
-//                }
                 _shopPageShopShareData.postValue(Success(shopInfo))
                 shopOperationalHourStatusData.await()?.let { shopOperationalHourStatus ->
                     _shopPageTickerData.postValue(
