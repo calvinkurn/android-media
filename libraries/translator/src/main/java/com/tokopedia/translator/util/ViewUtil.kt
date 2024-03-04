@@ -79,7 +79,7 @@ internal object ViewUtil {
                 async {
                     try {
                         val childView = viewGroup.getChildAt(it)
-                        traverseViewGroup(childView, traversedViews)
+                        traverseViewGroupFromRoot(childView, traversedViews)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -101,28 +101,7 @@ internal object ViewUtil {
             (0 until viewGroup.childCount).map {
                 try {
                     val childView = viewGroup.getChildAt(it)
-                    traverseViewGroup(childView, traversedViews)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
-
-    private fun traverseViewGroup(
-        viewGroup: View?,
-        traversedViews: MutableList<TextView>
-    ) {
-
-        if (viewGroup is TextView) {
-            traversedViews.add(viewGroup)
-        }
-
-        if (viewGroup is ViewGroup) {
-            for (counter in 0 until viewGroup.childCount) {
-                try {
-                    val childView = viewGroup.getChildAt(counter)
-                    traverseViewGroup(childView, traversedViews)
+                    traverseViewGroupFromRoot(childView, traversedViews)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
