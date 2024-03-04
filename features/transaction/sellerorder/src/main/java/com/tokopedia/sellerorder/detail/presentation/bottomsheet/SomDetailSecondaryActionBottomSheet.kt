@@ -8,9 +8,19 @@ import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
 import com.tokopedia.sellerorder.databinding.BottomsheetSecondaryActionListBinding
 
 class SomDetailSecondaryActionBottomSheet(
-        context: Context,
-        private val listener: SomBottomSheetRejectOrderAdapter.ActionListener
-) : SomBottomSheet<BottomsheetSecondaryActionListBinding>(LAYOUT, true, true, false, false, false, context.getString(R.string.som_detail_other_bottomsheet_title), context, true) {
+    context: Context,
+    private val listener: SomBottomSheetRejectOrderAdapter.ActionListener
+) : SomBottomSheet<BottomsheetSecondaryActionListBinding>(
+    childViewsLayoutResourceId = LAYOUT,
+    showOverlay = true,
+    showCloseButton = true,
+    showKnob = false,
+    clearPadding = false,
+    draggable = false,
+    bottomSheetTitle = context.getString(R.string.som_detail_other_bottomsheet_title),
+    context = context,
+    dismissOnClickOverlay = true
+) {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_secondary_action_list
