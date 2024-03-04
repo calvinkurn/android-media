@@ -61,6 +61,7 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import com.tokopedia.user.session.UserSessionInterface
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 
 class CartAdapter(
     private val actionListener: ActionListener,
@@ -409,7 +410,12 @@ class CartAdapter(
     }
 
     override fun onNeedToRefreshSingleProduct(childPosition: Int) {
-        notifyItemChanged(childPosition)
+        // work-around to prevent crash when focused quantity editor is going off screen
+        try {
+            notifyItemChanged(childPosition)
+        } catch (ex: Exception) {
+            Timber.e(ex)
+        }
         cartItemActionListener.onNeedToRecalculate()
     }
 
