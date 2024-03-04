@@ -634,21 +634,19 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     fun sendData(): Bundle {
         val bundle = Bundle()
         val list: ArrayList<KeySharedModel> = arrayListOf()
-        adapter?.getCurrentItems()?.let { list.addAll(it) }
 
-        if (adapter?.items?.isNotEmpty() == true && adapter?.items?.getOrNull(0) !is EditKeywordEmptyViewModel) {
-            adapter?.items?.forEachIndexed { index, item ->
-                if (index < (
-                            adapter?.data?.size
-                                ?: Int.ZERO
-                            ) && (item as EditKeywordItemViewModel).data.priceBid != (
-                            adapter?.data?.getOrNull(
-                                index
-                            ) ?: String.EMPTY
-                            )
-                ) {
-                    if (isExistsOriginal(item.data.name))
-                        editedKeywords?.add(item.data)
+        adapter?.let { adapter ->
+            list.addAll(adapter.getCurrentItems())
+            if (adapter.items.isNotEmpty() && adapter.items.getOrNull(Int.ZERO) !is EditKeywordEmptyViewModel) {
+                adapter.items.forEachIndexed { index, item ->
+                    if (index < adapter.data.size &&
+                        (item as EditKeywordItemViewModel).data.priceBid != (adapter.data.getOrNull(
+                            index
+                        ))
+                    ) {
+                        if (isExistsOriginal(item.data.name))
+                            editedKeywords?.add(item.data)
+                    }
                 }
             }
         }
