@@ -59,10 +59,10 @@ class InspirationCarouselDynamicProductViewDelegate @Inject constructor(
 
         InspirationCarouselTracking.trackCarouselClick(data)
 
-        AppLogSearch.eventSearchResultShow(
+        AppLogSearch.eventSearchResultClick(
             dynamicProductCarousel.asByteIOSearchResult(""),
         )
-        AppLogSearch.eventProductShow(
+        AppLogSearch.eventProductClick(
             dynamicProductCarousel.asByteIOProduct()
         )
     }
