@@ -149,7 +149,7 @@ open class SearchTestFixtures {
         tokoNowSearchViewModel.onViewCreated()
     }
 
-    protected fun `When view reload`() {
+    protected fun `When view reload page`() {
         tokoNowSearchViewModel.onViewReloadPage()
     }
 }

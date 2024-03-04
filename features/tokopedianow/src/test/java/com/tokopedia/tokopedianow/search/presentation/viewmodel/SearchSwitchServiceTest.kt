@@ -21,7 +21,7 @@ class SearchSwitchServiceTest : SearchTestFixtures() {
 
         `Given choose address data`(localCacheModel)
 
-        `When view reload`()
+        `When view reload page`()
 
         val needToShowOnBoardBottomSheet = tokoNowSearchViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = false)
         Assert.assertEquals(true, needToShowOnBoardBottomSheet)
@@ -34,7 +34,7 @@ class SearchSwitchServiceTest : SearchTestFixtures() {
 
         `Given choose address data`(localCacheModel)
 
-        `When view created`()
+        `When view reload page`()
 
         val needToShowOnBoardBottomSheet = tokoNowSearchViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = true)
         Assert.assertEquals(false, needToShowOnBoardBottomSheet)
@@ -86,7 +86,7 @@ class SearchSwitchServiceTest : SearchTestFixtures() {
         `Given choose address data`(localCacheModel)
         `Given user preference data`(userPreferenceResponse.data)
 
-        `When view reload`()
+        `When view reload page`()
         `When switch service called`()
 
         `Then verify user preference use case called`(localCacheModel, "15m")
@@ -104,7 +104,7 @@ class SearchSwitchServiceTest : SearchTestFixtures() {
         `Given choose address data`(localCacheModel)
         `Given user preference data`(userPreferenceResponse.data)
 
-        `When view reload`()
+        `When view reload page`()
         `When switch service called`()
 
         `Then verify user preference use case called`(localCacheModel, "2h")
@@ -122,7 +122,7 @@ class SearchSwitchServiceTest : SearchTestFixtures() {
         `Given choose address data`(localCacheModel)
         `Given user preference data`(userPreferenceResponse.data)
 
-        `When view reload`()
+        `When view reload page`()
         `When switch service called`()
 
         `Then verify user preference use case called`(localCacheModel, "2h")
@@ -145,7 +145,7 @@ class SearchSwitchServiceTest : SearchTestFixtures() {
         `Given choose address data`(localCacheModel)
         `Given an error result`(Throwable(message = "something went right"))
 
-        `When view reload`()
+        `When view reload page`()
         `When switch service called`()
 
         `Then verify user preference use case called`(localCacheModel, "15m")
