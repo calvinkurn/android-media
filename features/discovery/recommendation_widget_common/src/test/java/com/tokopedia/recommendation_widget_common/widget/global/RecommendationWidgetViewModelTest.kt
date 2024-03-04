@@ -559,7 +559,6 @@ class RecommendationWidgetViewModelTest {
         val trackingModel = RecommendationWidgetTrackingModel(androidPageName = "pageName")
         val model = RecommendationWidgetModel(
             metadata = metadata,
-            miniCart = miniCartParamTest,
             trackingModel = trackingModel
         )
         val recommendationWidgetList = "hatc.json".jsonToRecommendationWidgetList()
@@ -600,13 +599,11 @@ class RecommendationWidgetViewModelTest {
         val trackingModel = RecommendationWidgetTrackingModel(androidPageName = "pageName")
         val model = RecommendationWidgetModel(
             metadata = metadata,
-            miniCart = miniCartParamTest,
             trackingModel = trackingModel
         )
         val recommendationWidgetList = "hatc.json".jsonToRecommendationWidgetList()
         val currentState = RecommendationWidgetState()
             .from(model, recommendationWidgetList, userSession.userId)
-            .refreshMiniCart(miniCartSimplifiedData)
         val viewModel = ViewModel(currentState)
 
         val carouselModel =
