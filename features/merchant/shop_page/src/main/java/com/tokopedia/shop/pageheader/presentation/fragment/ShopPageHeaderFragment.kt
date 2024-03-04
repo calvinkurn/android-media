@@ -69,7 +69,6 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.presentation.utils.ContentCreationEntryPointSharedPref
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.discovery.common.constants.SearchApiConst
-//import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.foldable.FoldableAndTabletSupportManager
 import com.tokopedia.foldable.FoldableInfo
 import com.tokopedia.foldable.FoldableSupportManager
@@ -137,6 +136,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTT
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
+import com.tokopedia.shop.common.ShopPageClipboardHandler
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -2550,10 +2550,10 @@ class ShopPageHeaderFragment :
                             when (shopShare) {
                                 is ShopShareModel.CopyLink -> {
                                     linkerShareData?.url?.let {
-//                                        ClipboardHandler().copyToClipboard(
-//                                            (activity as Activity),
-//                                            it
-//                                        )
+                                        ShopPageClipboardHandler().copyToClipboard(
+                                            (activity as Activity),
+                                            it
+                                        )
                                     }
                                     activity?.runOnUiThread {
                                         Toast.makeText(

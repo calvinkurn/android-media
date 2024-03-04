@@ -2,14 +2,12 @@ package com.tokopedia.shop.pageheader.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.creation.common.presentation.utils.ContentCreationEntryPointSharedPref
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
-import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
 import com.tokopedia.shop.pageheader.di.scope.ShopPageHeaderScope
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterAuthorConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -19,7 +17,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
-//import com.tokopedia.feedcomponent.R as feedcomponentR
 
 @Module(includes = [ShopPageHeaderViewModelModule::class])
 class ShopPageHeaderModule {
@@ -38,25 +35,12 @@ class ShopPageHeaderModule {
 
     @ShopPageHeaderScope
     @Provides
-    @Named(ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST)
-    fun provideGqlQueryShopFeedWhitelist(@ApplicationContext context: Context): String {
-        return ""
-//        GraphqlHelper.loadRawString(
-//            context.resources,
-//            feedcomponentR.raw.query_whitelist
-//        )
-    }
-
-    @ShopPageHeaderScope
-    @Provides
     @Named(GQLQueryNamedConstant.SHOP_PAGE_P1_QUERIES)
     fun provideShopPageP1Queries(
         @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS) queryShopInfoCoreAssets: String,
-        @Named(ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST) queryShopFeedWhitelist: String
     ): Map<String, String> {
         return mapOf(
             GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS to queryShopInfoCoreAssets,
-            ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST to queryShopFeedWhitelist
         )
     }
 
