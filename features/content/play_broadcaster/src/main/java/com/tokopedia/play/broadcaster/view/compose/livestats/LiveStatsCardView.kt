@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.card.NestCard
@@ -30,7 +31,7 @@ import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
  * Created by Jonathan Darwin on 01 March 2024
  */
 @Composable
-fun LiveStatsBoxView(
+fun LiveStatsCardView(
     liveStats: LiveStatsUiModel,
     type: LiveStatsBoxType,
 ) {
@@ -106,4 +107,15 @@ sealed interface LiveStatsBoxType {
     ) : LiveStatsBoxType
 
     object NotClickable : LiveStatsBoxType
+}
+
+@Composable
+@Preview
+private fun LiveStatsCardViewPreview() {
+    NestTheme {
+        LiveStatsCardView(
+            liveStats = LiveStatsUiModel.Like(),
+            type = LiveStatsBoxType.NotClickable,
+        )
+    }
 }

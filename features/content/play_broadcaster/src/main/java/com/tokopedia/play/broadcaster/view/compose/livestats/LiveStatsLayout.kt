@@ -28,7 +28,7 @@ fun LiveStatsLayout(
     ) {
         items(liveStats.size) { idx ->
             val currLiveStats = liveStats[idx]
-            LiveStatsBoxView(
+            LiveStatsCardView(
                 liveStats = currLiveStats,
                 type = if (currLiveStats is LiveStatsUiModel.EstimatedIncome) {
                     LiveStatsBoxType.Clickable(
