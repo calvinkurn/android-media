@@ -46,3 +46,22 @@ fun constructSourceModule(
         else -> SOURCE_MODULE_HORIZONTAL_FORMAT.format(prefix, pageName, moduleName)
     }
 }
+
+fun constructTrackId(
+    cardId: String?,
+    productId: String,
+    requestId: String,
+    position: Int,
+    cardName: String,
+): String {
+    return when (cardName) {
+        CardName.REC_GOODS_CARD,
+        CardName.AD_GOODS_CARD,
+        CardName.MISSION_PRODUCT_CARD -> "${requestId}_${productId}_${position.inc()}"
+        CardName.REC_VIDEO_CARD -> "${requestId}_${cardId}_${productId}_${position.inc()}"
+        CardName.REC_CONTENT_CARD,
+        CardName.AD_FEED_CARD,
+        CardName.MISSION_PAGE_CARD -> "${requestId}_${cardId}_${position.inc()}"
+        else -> "${requestId}_${cardId}_${position.inc()}"
+    }
+}
