@@ -1,12 +1,13 @@
 package com.tokopedia.sessioncommon.domain.usecase
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
-import com.tokopedia.sessioncommon.data.model.LoginTokenV2GqlParam
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -61,3 +62,18 @@ open class LoginTokenV2UseCase @Inject constructor(
         return repository.request(graphqlQuery(), params)
     }
 }
+
+data class LoginTokenV2GqlParam(
+    @SerializedName("grant_type")
+    private val grantType: String,
+
+    @SerializedName("username")
+    private val username: String,
+
+    @SerializedName("password")
+    private val password: String,
+
+    @SerializedName("h")
+    private val hash: String
+
+) : GqlParam
