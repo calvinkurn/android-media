@@ -36,6 +36,10 @@ object AppLogRecommendation {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
         model.setGlobalParams()
+        AppLogAnalytics.putPageData(
+            AppLogParam.SOURCE_PREVIOUS_PAGE,
+            AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
+        )
     }
 
     fun sendCardShowAppLog(model: AppLogRecommendationCardModel) {

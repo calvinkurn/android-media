@@ -155,8 +155,7 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addSourcePreviousPage() {
-        // todo need to know what data its expected to be
-        put(SOURCE_PREVIOUS_PAGE, getLastDataBeforeCurrent(PAGE_NAME))
+        put(SOURCE_PREVIOUS_PAGE, getLastDataBeforeCurrent(SOURCE_PREVIOUS_PAGE))
     }
 
     internal fun JSONObject.addSourcePageType() {

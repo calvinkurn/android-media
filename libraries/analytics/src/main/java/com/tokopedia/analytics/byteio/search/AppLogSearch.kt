@@ -11,6 +11,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.IS_SHADOW
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_CLICK
@@ -495,6 +496,10 @@ object AppLogSearch {
             AppLogAnalytics.putPageData(SEARCH_ENTRANCE, searchEntrance)
             AppLogAnalytics.putPageData(SEARCH_ID, searchID)
             AppLogAnalytics.putPageData(SEARCH_RESULT_ID, searchResultID)
+            AppLogAnalytics.putPageData(
+                SOURCE_PREVIOUS_PAGE,
+                AppLogAnalytics.getLastDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty()
+            )
             listItemId?.let { AppLogAnalytics.putPageData(LIST_ITEM_ID, it) }
         }
     }
