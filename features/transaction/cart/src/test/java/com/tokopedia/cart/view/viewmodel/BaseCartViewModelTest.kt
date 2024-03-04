@@ -58,7 +58,6 @@ open class BaseCartViewModelTest {
     var updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     var userSessionInterface: UserSessionInterface = mockk()
     var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    var getRecentViewUseCase: GetRecommendationUseCase = mockk()
     var getWishlistV2UseCase: GetWishlistV2UseCase = mockk()
     var getRecommendationUseCase: GetRecommendationUseCase = mockk()
     var addToCartUseCase: AddToCartUseCase = mockk()
@@ -92,7 +91,7 @@ open class BaseCartViewModelTest {
             getCartRevampV4UseCase, deleteCartUseCase,
             undoDeleteCartUseCase, updateCartUseCase, compositeSubscription,
             addToWishListV2UseCase, deleteWishlistV2UseCase,
-            updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+            updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,
             getWishlistV2UseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
             seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndGetLastApplyUseCase,
             setCartlistCheckboxStateUseCase, followShopUseCase,
