@@ -10,7 +10,7 @@ import com.tokopedia.sessioncommon.data.profile.ShopData
 import javax.inject.Inject
 
 class RefreshShopBasicDataUseCase @Inject constructor(
-    @ApplicationContext private val gqlRepository: GraphqlRepository,
+    private val gqlRepository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<Unit, ShopData>(dispatchers.io) {
 

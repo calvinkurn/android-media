@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class AccountAdminInfoUseCase @Inject constructor(
     private val refreshShopBasicDataUseCase: RefreshShopBasicDataUseCase,
-    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<AccountAdminInfoGqlParam, Pair<AdminDataResponse?, ShopData?>>(dispatcher.io) {
 
