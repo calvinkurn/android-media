@@ -482,6 +482,7 @@ class TokoNowShoppingListFragment :
     ) {
         if(data.isShowMiniCartWidget && !bottomBulkAtcView.isVisible) {
             miniCartWidget.show()
+            miniCartWidget.updateData(data)
             adjustRecyclerViewBottomPadding()
         } else {
             hideMiniCart()
@@ -580,7 +581,10 @@ class TokoNowShoppingListFragment :
             productId: String
         ) {
             val bottomSheet = TokoNowShoppingListAnotherOptionBottomSheet.newInstance(productId)
-            bottomSheet.show(childFragmentManager, ProductCardCompactSimilarProductBottomSheet::class.java.simpleName)
+            bottomSheet.show(
+                fm = childFragmentManager,
+                availableProducts = viewModel.getAvailableProducts()
+            )
         }
 
         override fun onClickDeleteIcon(

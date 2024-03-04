@@ -21,6 +21,8 @@ import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListCo
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.bottomsheet.ShoppingListAnotherOptionBottomSheetAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListAnotherOptionBottomSheetDecoration
+import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListAnotherOptionBottomSheetViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.launch
@@ -58,7 +60,8 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
     private val adapter by lazy {
         ShoppingListAnotherOptionBottomSheetAdapter(
             ShoppingListAnotherOptionBottomSheetAdapterTypeFactory(
-                errorListener = createErrorCallback()
+                errorListener = createErrorCallback(),
+                productListener = createHorizontalProductCardItemCallback()
             )
         )
     }
@@ -68,6 +71,8 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
 
     private var binding
         by autoClearedNullable<BottomsheetTokopedianowShoppingListAnotherOptionBinding>()
+
+    private val availableProducts: MutableList<ShoppingListHorizontalProductCardItemUiModel> = mutableListOf()
 
     /**
      * -- override function section --
@@ -93,7 +98,9 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
 
         setupRecyclerView()
 
-        viewModel.loadLayout(productId.orEmpty())
+        viewModel.availableProducts.clear()
+        viewModel.availableProducts.addAll(availableProducts)
+        viewModel.loadLayout(String.EMPTY)
     }
 
     /**
@@ -118,7 +125,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
     private fun collectProductRecommendation() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
+                viewModel.layoutState.collect { uiState ->
                     when (uiState) {
                         is UiState.Loading -> {
                             if (!uiState.data.isNullOrEmpty()) {
@@ -168,7 +175,38 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         }
     }
 
-    fun show(fm: FragmentManager) {
+    private fun createHorizontalProductCardItemCallback() = object : ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener {
+        override fun onSelectCheckbox(
+            productId: String,
+            isSelected: Boolean
+        ) {
+        }
+
+        override fun onClickOtherOptions(
+            productId: String
+        ) {
+
+        }
+
+        override fun onClickDeleteIcon(
+            product: ShoppingListHorizontalProductCardItemUiModel
+        ) {
+
+        }
+
+        override fun onClickAddToShoppingList(
+            product: ShoppingListHorizontalProductCardItemUiModel
+        ) {
+            viewModel.addToWishlist(product)
+        }
+    }
+
+    fun show(
+        fm: FragmentManager,
+        availableProducts: List<ShoppingListHorizontalProductCardItemUiModel>
+    ) {
         show(fm, TAG)
+        this.availableProducts.clear()
+        this.availableProducts.addAll(availableProducts)
     }
 }

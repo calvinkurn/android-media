@@ -24,7 +24,7 @@ class ShoppingListAnotherOptionBottomSheetDiffer : BaseTokopediaNowDiffer() {
         val newItem = newList[newItemPosition]
 
         return if (oldItem is ShoppingListHorizontalProductCardItemUiModel && newItem is ShoppingListHorizontalProductCardItemUiModel) {
-            oldItem != newItem
+            oldItem.getChangePayload(newItem)
         } else {
             super.getChangePayload(oldItemPosition, newItemPosition)
         }

@@ -18,6 +18,17 @@ class ShoppingListDiffer : BaseTokopediaNowDiffer() {
         }
     }
 
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+
+        return if (oldItem is ShoppingListHorizontalProductCardItemUiModel && newItem is ShoppingListHorizontalProductCardItemUiModel) {
+            oldItem.getChangePayload(newItem)
+        } else {
+            super.getChangePayload(oldItemPosition, newItemPosition)
+        }
+    }
+
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return oldList[oldItemPosition] == newList[newItemPosition]
     }
@@ -33,16 +44,5 @@ class ShoppingListDiffer : BaseTokopediaNowDiffer() {
         this.oldList = oldList
         this.newList = newList
         return this
-    }
-
-    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-
-        return if (oldItem is ShoppingListHorizontalProductCardItemUiModel && newItem is ShoppingListHorizontalProductCardItemUiModel) {
-            oldItem.getChangePayload(newItem)
-        } else {
-            super.getChangePayload(oldItemPosition, newItemPosition)
-        }
     }
 }

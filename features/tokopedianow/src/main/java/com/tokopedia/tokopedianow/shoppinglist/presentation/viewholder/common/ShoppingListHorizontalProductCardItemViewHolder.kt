@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getDimens
@@ -25,6 +26,7 @@ import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutTyp
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.UNAVAILABLE_SHOPPING_LIST
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.PRODUCT_RECOMMENDATION_ADDED
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -162,7 +164,13 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.setupRightButton(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
-        tpAddWishlist.showIfWithBlock(data.productLayoutType == PRODUCT_RECOMMENDATION) {
+        tpAddWishlist.showIfWithBlock(data.productLayoutType == PRODUCT_RECOMMENDATION || data.productLayoutType == PRODUCT_RECOMMENDATION_ADDED) {
+            if (data.productLayoutType == PRODUCT_RECOMMENDATION) {
+                setTextColor(getColor(context, unifyprinciplesR.color.Unify_GN500 ))
+            } else {
+                setTextColor(getColor(context, unifyprinciplesR.color.Unify_NN600))
+            }
+
             val constraintSet = ConstraintSet().apply {
                 clone(normalLayout)
             }
@@ -179,7 +187,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
                 listener?.onClickAddToShoppingList(data)
             }
         }
-        icuDelete.showIfWithBlock(data.productLayoutType != PRODUCT_RECOMMENDATION) {
+        icuDelete.showIfWithBlock(data.productLayoutType != PRODUCT_RECOMMENDATION && data.productLayoutType != PRODUCT_RECOMMENDATION_ADDED) {
             val constraintSet = ConstraintSet().apply {
                 clone(normalLayout)
             }

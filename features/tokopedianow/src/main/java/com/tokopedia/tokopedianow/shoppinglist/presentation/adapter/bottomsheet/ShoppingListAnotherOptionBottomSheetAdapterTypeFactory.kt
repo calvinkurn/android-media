@@ -14,7 +14,8 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.bottomshe
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
 
 class ShoppingListAnotherOptionBottomSheetAdapterTypeFactory(
-    private val errorListener: TokoNowErrorViewHolder.TokoNowErrorListener
+    private val errorListener: TokoNowErrorViewHolder.TokoNowErrorListener,
+    private val productListener: ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener
 ):
     BaseAdapterTypeFactory(),
     ShoppingListHorizontalProductCardItemTypeFactory,
@@ -26,7 +27,7 @@ class ShoppingListAnotherOptionBottomSheetAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
        return when (type) {
-           ShoppingListHorizontalProductCardItemViewHolder.LAYOUT -> ShoppingListHorizontalProductCardItemViewHolder(parent)
+           ShoppingListHorizontalProductCardItemViewHolder.LAYOUT -> ShoppingListHorizontalProductCardItemViewHolder(parent, productListener)
            ShoppingListAnotherOptionBottomSheetEmptyStateViewHolder.LAYOUT -> ShoppingListAnotherOptionBottomSheetEmptyStateViewHolder(parent)
            TokoNowErrorViewHolder.LAYOUT -> TokoNowErrorViewHolder(parent, errorListener)
            else -> super.createViewHolder(parent, type)
