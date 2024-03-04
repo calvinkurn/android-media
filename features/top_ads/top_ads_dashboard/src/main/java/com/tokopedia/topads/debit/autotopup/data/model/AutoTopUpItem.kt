@@ -29,6 +29,10 @@ data class AutoTopUpItem(
     @Expose
     val id: Int = -1
 ) {
+
+    fun getTopAdsCreditFmt(): String {
+        return StringBuilder("Rp").append(priceFmt.replace("Rp ", "")).toString()
+    }
     data class AdditionalFee(
         @SerializedName("type")
         val type: String = "",

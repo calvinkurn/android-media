@@ -426,7 +426,7 @@ class TopAdsChooseCreditBottomSheet :
     }
 
     private fun getNominalConfirmationBeforeApril(autoTopUpNominal: AutoTopUpItem?): AutoTopUpConfirmationUiModel {
-        val topAdsCredit = StringBuilder("Rp").append(autoTopUpNominal?.priceFmt.orEmpty().replace("Rp ", "")).toString()
+        val topAdsCredit = autoTopUpNominal?.getTopAdsCreditFmt().orEmpty()
         val topAdsValue = Utils.convertMoneyToValue(topAdsCredit)
 
         val topAdsBonus = Utils.convertToCurrencyString((topAdsValue * statusBonus / 100).toLong())
@@ -456,7 +456,7 @@ class TopAdsChooseCreditBottomSheet :
     }
 
     private fun getNominalConfirmationUpAfterApril(autoTopUpNominal: AutoTopUpItem?): AutoTopUpConfirmationUiModel {
-        val topAdsCredit = StringBuilder("Rp").append(autoTopUpNominal?.priceFmt.orEmpty().replace("Rp ", "")).toString()
+        val topAdsCredit = autoTopUpNominal?.getTopAdsCreditFmt().orEmpty()
         val topAdsValue = Utils.convertMoneyToValue(topAdsCredit)
 
         val tax = autoTopUpNominal?.additionalFee?.find { it.type == "tax" }
