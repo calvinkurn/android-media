@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/pdProductIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/pdName"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="@id/pdProductIcon"
+        app:layout_constraintBottom_toBottomOf="@id/pdProductIcon"
+        app:layout_constraintStart_toEndOf="@id/pdProductIcon"
+        app:layout_constraintEnd_toStartOf="@+id/pdTotalPrice"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:layout_marginEnd="8dp"
+        tools:text="Nike Zoom"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdSubProductName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginTop="4dp"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toBottomOf="@id/pdName"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Product 1"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdQuantityXPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toBottomOf="@id/pdSubProductName"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="1 X RP.900.000"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdTotalPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Rp.800.000"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

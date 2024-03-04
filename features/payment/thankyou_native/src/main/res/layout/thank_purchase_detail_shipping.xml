@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/pdTotalPrice"
+        android:layout_marginEnd="8dp"
+        tools:text="Ongkos Kirim"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdShippingName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toBottomOf="@id/pdName"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Si Cepat"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdShippingEta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toBottomOf="@id/pdShippingName"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Estimasi tiba 23 - 26 Apr"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdTotalPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Rp.800.000"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
