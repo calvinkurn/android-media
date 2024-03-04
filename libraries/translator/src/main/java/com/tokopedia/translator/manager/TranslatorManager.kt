@@ -32,8 +32,6 @@ import com.tokopedia.translator.viewtree.ViewTreeManager
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.lang.ref.WeakReference
@@ -56,6 +54,7 @@ class TranslatorManager() : CoroutineScope {
     private val service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService::class.java)
 
     private val updateViewList = mutableListOf<TextViewUpdateModel>()
+    private val updateScreenViewList = mutableListOf<TextViewUpdateModel>()
 
     constructor(application: Application, apiKey: String) : this() {
         mApplication = application
@@ -126,7 +125,7 @@ class TranslatorManager() : CoroutineScope {
     }
 
 
-    private fun prepareSelectors(views: List<View?>, activity: Activity) {
+    private fun prepareSelectors(views: List<View?>) {
 
         if (views.isEmpty()) return
 
@@ -136,7 +135,7 @@ class TranslatorManager() : CoroutineScope {
             if (view is TextView) {
                 if (view.tag == null || (view.tag !is Boolean && !view.tag.toString().toBoolean())) {
 
-                    val viewText = view.text.toString()
+                    val viewText = view.text.trim().toString()
                     if (viewText.isNotBlank()) {
 
                         val stringPoolItem = mStringPoolManager.get(viewText)
@@ -146,7 +145,7 @@ class TranslatorManager() : CoroutineScope {
                             mStringPoolManager.add(viewText, "", "")
                         } else {
                             //translate
-                            if (viewText != stringPoolItem.demandedText) {
+                            if (!TextUtils.equals(viewText, stringPoolItem.demandedText)) {
                                 updateViewList.add(TextViewUpdateModel(view, stringPoolItem.demandedText))
                             }
                         }
@@ -162,6 +161,19 @@ class TranslatorManager() : CoroutineScope {
     private suspend fun updateViewList() {
         withContext(Dispatchers.Main) {
             for (view in updateViewList) {
+                if (view.newText != view.textView.text) {
+                    view.textView.text = view.newText
+                }
+                if (view.textView.tag != true) {
+                    view.textView.tag = true
+                }
+            }
+        }
+    }
+
+    private suspend fun updateScreenViewList() {
+        withContext(Dispatchers.Main) {
+            for (view in updateScreenViewList) {
                 if (view.newText != view.textView.text) {
                     view.textView.text = view.newText
                 }
@@ -189,21 +201,21 @@ class TranslatorManager() : CoroutineScope {
             destinationLang = currentDestLang
         }
 
-        val views = ViewUtil.getChildrenViews(ViewUtil.getContentView(getCurrentActivity()))
+        val views = ViewUtil.getChildrenViews(ViewUtil.getContentView(getCurrentActivity())).run {
+            updateViewList()
 
-        updateViewList()
+            getCurrentActivity()?.let {
+                prepareSelectors(this)
+            }
 
-        getCurrentActivity()?.let {
-            prepareSelectors(views, it)
+            this
         }
 
-        val originStrList = mStringPoolManager.getQueryStrList()
-
-        if (originStrList.isEmpty()) {
-            return
+        mStringPoolManager.getQueryStrList().run {
+            if (this.isNotEmpty()) {
+                fetchTranslationService(this, views)
+            }
         }
-
-        fetchTranslationService(originStrList, views)
     }
 
     private suspend fun fetchTranslationService(originStrList: List<String>, views: List<TextView>) {
@@ -227,7 +239,9 @@ class TranslatorManager() : CoroutineScope {
 
                         val charCountOld = SharedPrefsUtils.getIntegerPreference(mApplication!!.applicationContext, CHARS_COUNT, 0)
 
-                        updateScreenWithTranslatedString(views)
+                        updateScreenWithTranslatedString(views).run {
+                            updateScreenViewList()
+                        }
 
                         SharedPrefsUtils.setIntegerPreference(mApplication!!.applicationContext, CHARS_COUNT, origStrings!!.length + charCountOld)
                     }
@@ -249,30 +263,23 @@ class TranslatorManager() : CoroutineScope {
         }
     }
 
-    private suspend fun updateScreenWithTranslatedString(views: List<TextView>) {
+    private fun updateScreenWithTranslatedString(views: List<TextView>) {
 
-        val updateViewList = mutableListOf<TextViewUpdateModel>()
+        updateScreenViewList.clear()
 
         try {
             for (view in views) {
 
-                val tvText = view.text?.toString()
+                val tvText = view.text?.trim().toString()
 
                 val stringPoolItem = mStringPoolManager.get(tvText)
 
                 if ((stringPoolItem?.demandedText?.isNotBlank() == true) && !TextUtils.equals(tvText, stringPoolItem.demandedText)) {
-                    updateViewList.add(TextViewUpdateModel(view, stringPoolItem.demandedText))
+                    updateScreenViewList.add(TextViewUpdateModel(view, stringPoolItem.demandedText))
                 }
             }
 
-            withContext(Dispatchers.Main) {
-                for (update in updateViewList) {
-                    update.textView.text = update.newText
-                    if (update.textView.tag != true) {
-                        update.textView.tag = true
-                    }
-                }
-            }
+
         } catch (e: Exception) {
             e.printStackTrace()
         }

@@ -55,6 +55,7 @@ internal object ViewUtil {
 
     suspend fun getChildrenViews(viewGroup: View?): List<TextView> {
         return withContext(Dispatchers.Default) {
+
             val traversedViews = mutableListOf<TextView>()
 
             viewGroup?.let {
@@ -76,25 +77,56 @@ internal object ViewUtil {
         if (viewGroup is ViewGroup) {
             val jobs = (0 until viewGroup.childCount).map {
                 async {
-                    val childView = viewGroup.getChildAt(it)
-                    traverseViewGroup(childView, traversedViews)
+                    try {
+                        val childView = viewGroup.getChildAt(it)
+                        traverseViewGroup(childView, traversedViews)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             }
             jobs.awaitAll()
         }
     }
 
-    private fun traverseViewGroup(
+    private fun traverseViewGroupFromRoot(
         viewGroup: View,
         traversedViews: MutableList<TextView>
     ) {
+        if (viewGroup is TextView) {
+            traversedViews.add(viewGroup)
+        }
+
+        if (viewGroup is ViewGroup) {
+            (0 until viewGroup.childCount).map {
+                try {
+                    val childView = viewGroup.getChildAt(it)
+                    traverseViewGroup(childView, traversedViews)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    private fun traverseViewGroup(
+        viewGroup: View?,
+        traversedViews: MutableList<TextView>
+    ) {
+
+        if (viewGroup is TextView) {
+            traversedViews.add(viewGroup)
+        }
+
         if (viewGroup is ViewGroup) {
             for (counter in 0 until viewGroup.childCount) {
-                val childView = viewGroup.getChildAt(counter)
-                traverseViewGroup(childView, traversedViews)
+                try {
+                    val childView = viewGroup.getChildAt(counter)
+                    traverseViewGroup(childView, traversedViews)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
-        } else if (viewGroup is TextView) {
-            traversedViews.add(viewGroup)
         }
     }
 
