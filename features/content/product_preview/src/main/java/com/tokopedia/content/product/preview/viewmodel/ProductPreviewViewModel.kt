@@ -74,27 +74,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
         fun create(productPreviewSource: ProductPreviewSourceModel): ProductPreviewViewModel
     }
 
-    private val reviewSourceId: String
-        get() {
-            return when (val source = productPreviewSource.source) {
-                is ReviewSourceData -> {
-                    source.reviewSourceId
-                }
+    private val reviewSourceId = (productPreviewSource.source as? ReviewSourceData)?.reviewSourceId.orEmpty()
 
-                else -> ""
-            }
-        }
-
-    private val attachmentSourceId: String
-        get() {
-            return when (val source = productPreviewSource.source) {
-                is ReviewSourceData -> {
-                    source.attachmentSourceId
-                }
-
-                else -> ""
-            }
-        }
+    private val attachmentSourceId = (productPreviewSource.source as? ReviewSourceData)?.reviewSourceId.orEmpty()
 
     private val _tabContentState = MutableStateFlow(ProductPreviewTabUiModel.Empty)
     private val _productMediaState = MutableStateFlow(ProductUiModel.Empty)
@@ -577,6 +559,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     override fun onCleared() {
         super.onCleared()
         autoScrollProductMedia?.cancel()
+        autoScrollProductMedia = null
     }
 
     companion object {

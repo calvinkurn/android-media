@@ -817,4 +817,16 @@ class ProductPreviewUnitTest {
         }
     }
 
+    @Test
+    fun `when has visit coach mark updated`() {
+        val sourceModel = mockDataSource.mockSourceProduct(productId)
+
+        coEvery { mockSharedPref.hasVisited() } returns true
+
+        getRobot(sourceModel).use { robot ->
+            robot.hasVisitCoachMarkTestCase()
+            robot.hasVisit.assertTrue()
+        }
+    }
+
 }

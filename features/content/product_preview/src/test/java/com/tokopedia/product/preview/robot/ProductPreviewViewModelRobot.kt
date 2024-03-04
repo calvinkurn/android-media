@@ -92,6 +92,7 @@ internal class ProductPreviewViewModelRobot(
 
     val _reviewPosition = getPrivateField<MutableStateFlow<Int>>("_reviewPosition")
     val _currentTabPosition = getPrivateField<MutableStateFlow<Int>>("_currentTabPosition")
+    val hasVisit = viewModel.hasVisit
 
     private fun <T> getPrivateField(name: String): T {
         val field = viewModel.javaClass.getDeclaredField(name)
@@ -171,6 +172,10 @@ internal class ProductPreviewViewModelRobot(
     fun reviewWatchModeTestCase() {
         initializeReviewMainDataTestCase()
         viewModel.onAction(ProductPreviewAction.ToggleReviewWatchMode)
+    }
+
+    fun hasVisitCoachMarkTestCase() {
+        viewModel.onAction(ProductPreviewAction.HasVisitCoachMark)
     }
 
     fun cancelRemainingTasks() {
