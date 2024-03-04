@@ -108,7 +108,7 @@ data class AppLogRecommendationCardModel(
                 listNum = tabPosition.inc(),
                 moduleName = moduleName,
                 sourceModule = constructSourceModule(isAd, moduleName, entranceForm),
-                trackId = "${requestId}_${cardId}_${position.inc()}",
+                trackId = constructTrackId(cardId, productId, requestId, position, cardName),
                 isAd = if (isAd) 1 else 0,
                 isUseCache = if (isUseCache) 1 else 0,
                 recSessionId = recSessionId,
