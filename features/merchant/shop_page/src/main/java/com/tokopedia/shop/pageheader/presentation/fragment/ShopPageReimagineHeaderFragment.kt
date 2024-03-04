@@ -2560,7 +2560,12 @@ class ShopPageReimagineHeaderFragment :
     }
 
     private fun showToasterFailedGetProductListForShare(message: String, type: Int) {
-
+        Toaster.build(
+            requireView(),
+            message,
+            Toaster.LENGTH_SHORT,
+            type
+        )
     }
 
     private fun isShopInfoAppLink(appLink: String): Boolean {

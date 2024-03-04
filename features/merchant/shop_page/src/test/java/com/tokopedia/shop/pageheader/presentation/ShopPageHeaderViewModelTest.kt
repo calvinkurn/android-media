@@ -566,32 +566,21 @@ class ShopPageHeaderViewModelTest {
             data = listOf(ShopProduct(), ShopProduct())
         )
         shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(
-            mockShopId,
-            mockShopDomain,
-            1,
-            10,
-            ShopProductFilterParameter(),
-            "",
-            "",
-            addressWidgetData,
-            false
+            shopId = mockShopId,
+            shopDomain = mockShopDomain,
+            isRefresh = false
         )
         assert(shopPageHeaderViewModel.shopPageHeaderTickerData.value is Success)
         assert(shopPageHeaderViewModel.shopPageShopShareData.value is Success)
         assert(shopPageHeaderViewModel.newProductListData.value is Success)
+        assert(shopPageHeaderViewModel.newProductListData.value != null )
         // validate if the productListData.data.size == 2)
 
 
         shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(
-            "0",
-            mockShopDomain,
-            1,
-            10,
-            ShopProductFilterParameter(),
-            "",
-            "",
-            addressWidgetData,
-            true
+            shopId = "0",
+            shopDomain = mockShopDomain,
+            isRefresh = true
         )
         assert(shopPageHeaderViewModel.shopPageHeaderTickerData.value is Success)
         assert(shopPageHeaderViewModel.shopPageShopShareData.value is Success)
@@ -608,15 +597,9 @@ class ShopPageHeaderViewModelTest {
             gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
         } throws Exception()
         shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(
-            mockShopId,
-            mockShopDomain,
-            1,
-            10,
-            ShopProductFilterParameter(),
-            "",
-            "",
-            addressWidgetData,
-            false
+            shopId = mockShopId,
+            shopDomain = mockShopDomain,
+            isRefresh = false
         )
         assert(shopPageHeaderViewModel.shopPageShopShareData.value == null)
     }
@@ -632,15 +615,9 @@ class ShopPageHeaderViewModelTest {
             gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
         } throws Exception()
         shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(
-            mockShopId,
-            mockShopDomain,
-            1,
-            10,
-            ShopProductFilterParameter(),
-            "",
-            "",
-            addressWidgetData,
-            false
+            shopId = mockShopId,
+            shopDomain = mockShopDomain,
+            isRefresh = false
         )
         assert(shopPageHeaderViewModel.shopPageHeaderTickerData.value == null)
     }
@@ -656,15 +633,9 @@ class ShopPageHeaderViewModelTest {
             gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
         } returns ShopOperationalHourStatus()
         shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(
-            mockShopId,
-            mockShopDomain,
-            1,
-            10,
-            ShopProductFilterParameter(),
-            "",
-            "",
-            addressWidgetData,
-            false
+            shopId = mockShopId,
+            shopDomain = mockShopDomain,
+            isRefresh = false
         )
         assert(shopPageHeaderViewModel.shopPageHeaderTickerData.value == null)
         assert(shopPageHeaderViewModel.shopPageShopShareData.value == null)
