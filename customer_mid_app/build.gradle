@@ -227,7 +227,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoGamificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.shakeDetect)
     implementation projectOrAar(rootProject.ext.libraries.mapviewer)
-    implementation projectOrAar(rootProject.ext.features.scpAuth)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.features.install_referral)
     implementation projectOrAar(rootProject.ext.features.additional_check)
