@@ -226,7 +226,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_WEBVIEW_PARTNER_KYC_JS_INTERFACE = "android_enable_webview_partner_kyc_jsinterface";
 
     public static final String SELLER_HOME_ENABLE_WATCH_APP_CHECKING = "android_sellerapp_home_enable_watch_app_checking";
-    public static final String ENABLE_POST_ATC_PDP = "android_enable_post_atc_pdp";
 
     public static final String ENABLE_PERFORMANCE_TRACE = "android_enable_performance_trace";
 
@@ -343,5 +342,8 @@ public class RemoteConfigKey {
     public static final String ANDROID_ENABLE_AUTO_APPLY_PROMO_TRACKER = "android_enable_auto_apply_promo_tracker";
 
     public static final String ANDROID_DISABLE_RECIPE_BOOKMARK_COMPOSE = "android_disable_recipe_bookmark_compose";
+
+    public static final String ANDROID_ENABLE_PDP_RECOMMENDATION_FLOW = "android_enable_pdp_recommendation_flow";
+    public static final String ANDROID_PDP_DEBOUNCE_TIME = "android_pdp_debounce_time";
 
 }
