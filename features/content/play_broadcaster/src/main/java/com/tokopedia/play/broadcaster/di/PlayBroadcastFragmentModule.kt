@@ -8,8 +8,9 @@ import com.tokopedia.content.product.picker.seller.di.ProductPickerFragmentModul
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductPickerUserBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastLiveStatsBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.stats.PlayBroadcastLiveStatsBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.estimatedincome.EstimatedIncomeDetailBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.livetovod.PlayBroLiveToVodBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPreparationFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
@@ -138,4 +139,9 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(PlayBroadcastLiveStatsBottomSheet::class)
     abstract fun getPlayBroadcastLiveStatsBottomSheet(fragment: PlayBroadcastLiveStatsBottomSheet) : Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(EstimatedIncomeDetailBottomSheet::class)
+    abstract fun getEstimatedIncomeDetailBottomSheet(fragment: EstimatedIncomeDetailBottomSheet) : Fragment
 }

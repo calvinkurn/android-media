@@ -1,9 +1,6 @@
-package com.tokopedia.play.broadcaster.view.bottomsheet
+package com.tokopedia.play.broadcaster.view.bottomsheet.estimatedincome
 
 import android.os.Bundle
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier

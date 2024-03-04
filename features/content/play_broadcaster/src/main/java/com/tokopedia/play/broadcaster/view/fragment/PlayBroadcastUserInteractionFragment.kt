@@ -53,7 +53,8 @@ import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastLiveStatsBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.estimatedincome.EstimatedIncomeDetailBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.stats.PlayBroadcastLiveStatsBottomSheet
 import com.tokopedia.play.broadcaster.view.compose.livestats.LiveStatsView
 import com.tokopedia.play.broadcaster.view.custom.PlayBroIconWithGreenDotView
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
@@ -325,7 +326,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             is PlayBroadcastLiveStatsBottomSheet -> {
                 childFragment.setListener(object : PlayBroadcastLiveStatsBottomSheet.Listener {
                     override fun onEstimatedIncomeClicked() {
-                        /** JOE TODO: handle this */
+                        openEstimatedIncomeDetailSheet()
                     }
                 })
             }
@@ -387,7 +388,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         icStatistic.setOnClickListener {
-            /** JOE TODO: handle this */
+            openEstimatedIncomeDetailSheet()
         }
 
         childFragmentManager.commit {
@@ -1339,6 +1340,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun openLiveStatsSheet() {
         PlayBroadcastLiveStatsBottomSheet.getFragment(
+            childFragmentManager,
+            requireContext().classLoader
+        ).show(childFragmentManager)
+    }
+
+    private fun openEstimatedIncomeDetailSheet() {
+        EstimatedIncomeDetailBottomSheet.getFragment(
             childFragmentManager,
             requireContext().classLoader
         ).show(childFragmentManager)

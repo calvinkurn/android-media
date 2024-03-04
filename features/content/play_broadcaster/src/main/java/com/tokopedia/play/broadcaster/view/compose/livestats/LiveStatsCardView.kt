@@ -34,10 +34,11 @@ import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 fun LiveStatsCardView(
     liveStats: LiveStatsUiModel,
     type: LiveStatsBoxType,
+    modifier: Modifier = Modifier,
 ) {
     NestCard(
         type = NestCardType.NoBorder,
-        modifier = Modifier
+        modifier = modifier
             .shadow(4.dp, RoundedCornerShape(12.dp), clip = false)
             .border(BorderStroke(1.dp, MaterialTheme.colors.surface), RoundedCornerShape(12.dp))
     ) {

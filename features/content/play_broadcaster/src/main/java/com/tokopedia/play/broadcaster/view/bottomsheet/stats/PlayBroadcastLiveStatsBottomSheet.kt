@@ -1,10 +1,13 @@
-package com.tokopedia.play.broadcaster.view.bottomsheet
+package com.tokopedia.play.broadcaster.view.bottomsheet.stats
 
 import android.os.Bundle
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -47,7 +50,9 @@ class PlayBroadcastLiveStatsBottomSheet @Inject constructor(
                 ) {
                     Surface {
                         LiveStatsLayout(
+                            modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
                             liveStats = uiState.liveStatsList,
+                            gridCount = 2,
                             onEstimatedIncomeClicked = {
                                 mListener?.onEstimatedIncomeClicked()
                                 dismiss()
