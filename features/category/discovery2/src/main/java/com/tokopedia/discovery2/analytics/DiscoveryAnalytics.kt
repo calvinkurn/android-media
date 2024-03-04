@@ -4,6 +4,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils.Companion.getParentPosition
+import com.tokopedia.discovery2.analytics.merchantvoucher.MvcTrackingProperties
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.data.play.DiscoPlayWidgetType
 import com.tokopedia.discovery2.data.producthighlight.DiscoveryOCSDataModel
@@ -3078,6 +3079,40 @@ open class DiscoveryAnalytics(
         getTracker().sendGeneralEvent(ctaClickProperties)
     }
 
+    override fun trackMvcImpression(properties: List<MvcTrackingProperties>) {
+        val generalProps = createGeneralCouponEvent(
+            EVENT_PROMO_VIEW,
+            IMPRESSION_MV
+        )
+
+        val impressionProperties = hashMapOf<String, Any>(
+            KEY_EVENT_LABEL to EMPTY_STRING,
+            TRACKER_ID to TRACKER_ID_MVC_IMPRESSION,
+            USER_ID to userSession.userId,
+            KEY_E_COMMERCE to constructMvcProps(EVENT_PROMO_VIEW, properties)
+        )
+
+        impressionProperties.putAll(generalProps)
+        trackingQueue.putEETracking(impressionProperties)
+    }
+
+    override fun trackMvcClickEvent(properties: MvcTrackingProperties, isCta: Boolean) {
+        val generalProps = createGeneralCouponEvent(
+            event = EVENT_PROMO_CLICK,
+            action = if (isCta.not()) CLICK_MVC else CLICK_MVC_CTA
+        )
+
+        val clickProperties = hashMapOf<String, Any>(
+            KEY_EVENT_LABEL to if (isCta.not()) properties.shopId else "${properties.shopId} - ${properties.action}",
+            TRACKER_ID to TRACKER_ID_MVC_CLICK,
+            USER_ID to userSession.userId,
+            KEY_E_COMMERCE to constructMvcProps(EVENT_PROMO_CLICK, listOf(properties))
+        )
+
+        clickProperties.putAll(generalProps)
+        getTracker().sendEnhanceEcommerceEvent(clickProperties)
+    }
+
     //region private methods
     private fun createGeneralEvent(
         eventName: String = EVENT_CLICK_DISCOVERY,
@@ -3160,4 +3195,47 @@ open class DiscoveryAnalytics(
     }
 
     //endregion
+
+    private fun constructMvcProps(
+        keyEvent: String,
+        propsList: List<MvcTrackingProperties>
+    ): Map<String, Map<String, ArrayList<Map<String, Any>>>> {
+        val list = ArrayList<Map<String, Any>>()
+
+        propsList.forEach { dataItem ->
+            val itemName = if (dataItem.gtmItem.isNotEmpty()) {
+                replaceMvcPlaceholder(dataItem)
+            } else {
+                EMPTY_STRING
+            }
+
+            list.add(
+                mapOf(
+                    KEY_CREATIVE to dataItem.creativeName,
+                    KEY_POSITION to (dataItem.position + 1).toString(),
+                    KEY_CREATIVE_SLOT to (dataItem.position + 1).toString(),
+                    KEY_ID to "${dataItem.compId} - ${dataItem.shopId}",
+                    KEY_NAME to itemName
+                )
+            )
+        }
+
+        return mapOf(
+            keyEvent to mapOf(
+                KEY_PROMOTIONS to list
+            )
+        )
+    }
+
+    private fun replaceMvcPlaceholder(props: MvcTrackingProperties): String {
+        var replacedName = props.gtmItem.replace(
+            "#POSITION",
+            (props.position + 1).toString()
+        )
+
+        replacedName = replacedName.replace("#MEGA_TAB_VALUE", props.tabName)
+
+        return replacedName
+    }
+
 }

@@ -3,7 +3,6 @@ package com.tokopedia.network;
 import android.app.Activity;
 
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.network.data.model.ScpTokenModel;
 
 import okhttp3.Response;
 
@@ -39,8 +38,4 @@ public interface NetworkRouter {
     void sendAnalyticsAnomalyResponse(String title,
                                       String accessToken, String refreshToken,
                                       String response, String request);
-
-    ScpTokenModel onNewRefreshToken();
-
-    boolean isGotoAuthSdkEnabled();
 }
