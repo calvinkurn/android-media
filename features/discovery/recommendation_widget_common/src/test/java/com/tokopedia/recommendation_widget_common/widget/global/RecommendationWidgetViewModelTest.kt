@@ -18,20 +18,16 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.MainDispatcherRule
-import com.tokopedia.recommendation_widget_common.RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.jsonToObject
 import com.tokopedia.recommendation_widget_common.mvvm.ViewModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselModel
 import com.tokopedia.recommendation_widget_common.widget.cart.CartService
-import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetState
-import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalModel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetViewModelTest.Companion.AddToCartTestObject.addToCartQty
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetViewModelTest.Companion.AddToCartTestObject.addToCartSuccessData
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetViewModelTest.Companion.DeleteCartTestObject.TEST_DELETE_CART_PRODUCT_ID
@@ -43,6 +39,7 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetViewModelTest.Companion.UpdateCartTestObject.TEST_UPDATE_CART_PRODUCT_ID
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetViewModelTest.Companion.UpdateCartTestObject.TEST_UPDATE_CART_QUANTITY
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetViewModelTest.Companion.UpdateCartTestObject.updateCartSuccessData
+import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -56,7 +53,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import com.tokopedia.cartcommon.data.response.deletecart.Data as DeleteCartData
@@ -77,7 +73,7 @@ class RecommendationWidgetViewModelTest {
         getMiniCartUseCase,
         addToCartUseCase,
         updateCartUseCase,
-        deleteCartUseCase,
+        deleteCartUseCase
     )
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
@@ -112,7 +108,7 @@ class RecommendationWidgetViewModelTest {
             pageName = "pageName",
             categoryIds = listOf("1", "2", "3"),
             keyword = listOf("samsung", "iphone", "xiaomi"),
-            isTokonow = true,
+            isTokonow = true
         )
         val model = RecommendationWidgetModel(metadata = metadata)
 
@@ -141,7 +137,7 @@ class RecommendationWidgetViewModelTest {
             pageName = "pageName",
             categoryIds = listOf("1", "2", "3"),
             keyword = listOf("samsung", "iphone", "xiaomi"),
-            isTokonow = true,
+            isTokonow = true
         )
         val model = RecommendationWidgetModel(metadata = metadata)
 
@@ -161,12 +157,12 @@ class RecommendationWidgetViewModelTest {
         val metadata = RecommendationWidgetMetadata(pageName = "pageName")
         val model = RecommendationWidgetModel(
             metadata = metadata,
-            widget = "carousel_hatc.json".jsonToRecommendationWidgetList().first(),
+            widget = "carousel_hatc.json".jsonToRecommendationWidgetList().first()
         )
 
         viewModel.bind(model)
 
-        coVerify (exactly = 0) { getRecommendationWidgetUseCase.getData(any()) }
+        coVerify(exactly = 0) { getRecommendationWidgetUseCase.getData(any()) }
         assertEquals(1, viewModel.stateFlow.value.widgetMap.size)
         assertThat(
             viewModel.stateValue.widgetMap[model.id]!!.first(),
@@ -270,7 +266,7 @@ class RecommendationWidgetViewModelTest {
             pageName = "pageName",
             categoryIds = listOf("1", "2", "3"),
             keyword = listOf("samsung", "iphone", "xiaomi"),
-            isTokonow = true,
+            isTokonow = true
         )
         val model = RecommendationWidgetModel(metadata = metadata)
         val state = RecommendationWidgetState().loading(model)
@@ -278,7 +274,7 @@ class RecommendationWidgetViewModelTest {
 
         viewModel.bind(model)
 
-        coVerify (exactly = 0) { getRecommendationWidgetUseCase.getData(any()) }
+        coVerify(exactly = 0) { getRecommendationWidgetUseCase.getData(any()) }
     }
 
     @Test
@@ -297,7 +293,7 @@ class RecommendationWidgetViewModelTest {
             pageName = "pageName",
             categoryIds = listOf("1", "2", "3"),
             keyword = listOf("samsung", "iphone", "xiaomi"),
-            isTokonow = true,
+            isTokonow = true
         )
         val model = RecommendationWidgetModel(metadata = metadata, miniCart = miniCartParamTest)
         val viewModel = ViewModel()
@@ -308,7 +304,7 @@ class RecommendationWidgetViewModelTest {
 
         viewModel.stateValue.widgetMap.forEach { (_, visitableList) ->
             visitableList.forEach { visitable ->
-                if (visitable is RecommendationCarouselModel)
+                if (visitable is RecommendationCarouselModel) {
                     visitable.widget.recommendationItemList.forEach { recommendationItem ->
                         val productId = recommendationItem.productId.toString()
 
@@ -317,6 +313,7 @@ class RecommendationWidgetViewModelTest {
                             recommendationItem.quantity
                         )
                     }
+                }
             }
         }
 
@@ -344,7 +341,7 @@ class RecommendationWidgetViewModelTest {
         val model = RecommendationWidgetModel(
             metadata = metadata,
             miniCart = miniCartParamTest,
-            trackingModel = trackingModel,
+            trackingModel = trackingModel
         )
         val recommendationWidgetList = "hatc.json".jsonToRecommendationWidgetList()
         val currentState = RecommendationWidgetState()
@@ -360,7 +357,7 @@ class RecommendationWidgetViewModelTest {
         val expectedATCRequestParams = AddToCartRequestParams(
             recommendationItem.productId.toString(),
             recommendationItem.shopId.toString(),
-            addToCartQty,
+            addToCartQty
         )
 
         verify {
@@ -373,7 +370,7 @@ class RecommendationWidgetViewModelTest {
         assertEquals(miniCartSimplifiedData, viewModel.stateValue.miniCartData)
         assertEquals(
             addToCartSuccessData.errorMessage.joinToString(separator = ", "),
-            viewModel.stateValue.successMessage,
+            viewModel.stateValue.successMessage
         )
     }
 
@@ -423,7 +420,7 @@ class RecommendationWidgetViewModelTest {
 
         assertEquals(
             deleteCartSuccessData.errorMessage.joinToString(separator = ", "),
-            viewModel.stateValue.successMessage,
+            viewModel.stateValue.successMessage
         )
     }
 
@@ -465,13 +462,13 @@ class RecommendationWidgetViewModelTest {
             UpdateCartRequest(
                 cartId = miniCartItemProduct.cartId,
                 quantity = TEST_UPDATE_CART_QUANTITY,
-                notes = miniCartItemProduct.notes,
+                notes = miniCartItemProduct.notes
             )
         )
         verify {
             updateCartUseCase.setParams(
                 updateCartRequestList = expectedUpdateCartParams,
-                source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+                source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
             )
             updateCartUseCase.execute(any(), any())
         }
@@ -502,7 +499,7 @@ class RecommendationWidgetViewModelTest {
 
         viewModel.onAddToCartNonVariant(carouselModel, recommendationItem, 5)
 
-        verify (exactly = 0) {
+        verify(exactly = 0) {
             addToCartUseCase.execute(any(), any())
             updateCartUseCase.execute(any(), any())
             deleteCartUseCase.execute(any(), any())
@@ -520,7 +517,7 @@ class RecommendationWidgetViewModelTest {
         val model = RecommendationWidgetModel(
             metadata = metadata,
             miniCart = miniCartParamTest,
-            trackingModel = trackingModel,
+            trackingModel = trackingModel
         )
         val recommendationWidgetList = "hatc.json".jsonToRecommendationWidgetList()
         val currentState = RecommendationWidgetState()
@@ -550,12 +547,81 @@ class RecommendationWidgetViewModelTest {
         assertNull(viewModel.stateValue.errorMessage)
     }
 
+    @Test
+    fun `add to cart direct success`() {
+        every { addToCartUseCase.execute(any(), any()) } answers {
+            firstArg<(AddToCartDataModel) -> Unit>().invoke(addToCartSuccessData)
+        }
+        every { getMiniCartUseCase.execute(any(), any()) } answers {
+            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(miniCartSimplifiedData)
+        }
+
+        val metadata = RecommendationWidgetMetadata(pageName = "pageName")
+        val trackingModel = RecommendationWidgetTrackingModel(androidPageName = "pageName")
+        val model = RecommendationWidgetModel(
+            metadata = metadata,
+            trackingModel = trackingModel
+        )
+        val recommendationWidgetList = "hatc.json".jsonToRecommendationWidgetList()
+        val currentState = RecommendationWidgetState()
+            .from(model, recommendationWidgetList, userSession.userId)
+        val viewModel = ViewModel(currentState)
+
+        val carouselModel =
+            (currentState.widgetMap[model.id]?.first() as RecommendationCarouselModel)
+        val recommendationItem =
+            carouselModel.widget.recommendationItemList.find { it.quantity == 0 }!!
+        viewModel.onDirectAddToCart(carouselModel, recommendationItem, addToCartQty)
+
+        val expectedATCRequestParams = AddToCartRequestParams(
+            recommendationItem.productId.toString(),
+            recommendationItem.shopId.toString(),
+            addToCartQty
+        )
+
+        verify {
+            addToCartUseCase.setParams(expectedATCRequestParams)
+            addToCartUseCase.execute(any(), any())
+        }
+
+        assertEquals(
+            addToCartSuccessData.errorMessage.joinToString(separator = ", "),
+            viewModel.stateValue.successMessage
+        )
+    }
+
+    @Test
+    fun `error on cart add to cart direct will show error message`() {
+        every { addToCartUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(responseErrorException)
+        }
+
+        val metadata = RecommendationWidgetMetadata(pageName = "pageName")
+        val trackingModel = RecommendationWidgetTrackingModel(androidPageName = "pageName")
+        val model = RecommendationWidgetModel(
+            metadata = metadata,
+            trackingModel = trackingModel
+        )
+        val recommendationWidgetList = "hatc.json".jsonToRecommendationWidgetList()
+        val currentState = RecommendationWidgetState()
+            .from(model, recommendationWidgetList, userSession.userId)
+        val viewModel = ViewModel(currentState)
+
+        val carouselModel =
+            currentState.widgetMap[model.id]?.first() as RecommendationCarouselModel
+        val recommendationItem =
+            carouselModel.widget.recommendationItemList.find { it.quantity == 0 }!!
+        viewModel.onDirectAddToCart(carouselModel, recommendationItem, addToCartQty)
+
+        assertEquals(responseErrorException.message, viewModel.stateValue.errorMessage)
+    }
+
     companion object {
 
         private const val SHOP_ID_TEST = "10916130"
-        private val MINI_CART_SOURCE_TEST =  MiniCartSource.PDPRecommendationWidget
+        private val MINI_CART_SOURCE_TEST = MiniCartSource.PDPRecommendationWidget
         private val miniCartParamTest = RecommendationWidgetMiniCart(
-            MINI_CART_SOURCE_TEST,
+            MINI_CART_SOURCE_TEST
         )
         private val responseErrorException = ResponseErrorException(
             "Jumlah barang melebihi stok di toko. Kurangi pembelianmu, ya!"
@@ -575,8 +641,8 @@ class RecommendationWidgetViewModelTest {
                         success = 1,
                         cartId = cartId,
                         message = arrayListOf(),
-                        quantity = addToCartQty,
-                    ),
+                        quantity = addToCartQty
+                    )
                 )
         }
 
@@ -606,21 +672,21 @@ class RecommendationWidgetViewModelTest {
                         productId = "1578003235",
                         productParentId = "0",
                         quantity = 10,
-                        cartId = "12345",
+                        cartId = "12345"
                     ),
 
                     MiniCartItemKey("1614387824") to MiniCartItem.MiniCartItemProduct(
                         productId = "1614387824",
                         productParentId = "0",
                         quantity = 3,
-                        cartId = "12346",
+                        cartId = "12346"
                     ),
 
                     MiniCartItemKey("3132258458") to MiniCartItem.MiniCartItemProduct(
                         productId = "3132258458",
                         productParentId = "0",
                         quantity = 5,
-                        cartId = "12347",
+                        cartId = "12347"
                     )
                 )
 
@@ -630,10 +696,11 @@ class RecommendationWidgetViewModelTest {
             val updatedMiniCartData
                 get() = MiniCartSimplifiedData(
                     miniCartItems = miniCartItems.mapValues {
-                        if (it.value.productId == TEST_UPDATE_CART_PRODUCT_ID)
+                        if (it.value.productId == TEST_UPDATE_CART_PRODUCT_ID) {
                             it.value.copy(quantity = TEST_UPDATE_CART_QUANTITY)
-                        else
+                        } else {
                             it.value
+                        }
                     }
                 )
 

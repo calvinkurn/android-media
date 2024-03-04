@@ -5,5 +5,5 @@ import com.tokopedia.shareexperience.domain.util.ShareExResult
 import kotlinx.coroutines.flow.Flow
 
 interface ShareExGetDownloadedImageUseCase {
-    suspend fun downloadImage(imageUrl: String): Flow<ShareExResult<Uri>>
+    suspend fun downloadImageThumbnail(mediaUrl: String): Flow<ShareExResult<Uri>>
 }

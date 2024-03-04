@@ -233,11 +233,16 @@ object MacroIntent {
 
         const val RECYCLER_VIEW_ID = "rv_pdp"
         const val TRACE = "perf_trace_pdp"
+        private const val internalDeeplink = "tokopedia-android-internal://marketplace/product-detail"
 
-        fun getIntent(): Intent {
-            val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-detail/1742093676/?layoutID=4")
-            return intent
+        fun getIntent() = Intent("com.tokopedia.internal.VIEW").apply {
+            val parameter = MacroArgs.getParameter(InstrumentationRegistry.getArguments())
+
+            data = if (parameter.startsWith(internalDeeplink)) {
+                Uri.parse(parameter)
+            } else {
+                Uri.parse("$internalDeeplink/6225772444/?layoutID=4")
+            }
         }
     }
 

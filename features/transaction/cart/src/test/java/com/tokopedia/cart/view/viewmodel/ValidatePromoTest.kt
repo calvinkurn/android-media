@@ -1,10 +1,18 @@
 package com.tokopedia.cart.view.viewmodel
 
+import com.tokopedia.cart.data.model.response.promo.CartPromoData
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.view.helper.CartDataHelper
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
@@ -228,5 +236,129 @@ class ValidatePromoTest : BaseCartViewModelTest() {
         }
         assertEquals("", shopList[0].boCode)
         assertEquals(false, shopList[0].promoCodes.contains("asdf"))
+    }
+
+    @Test
+    fun `WHEN generate param last apply last apply response valid THEN generate validate use from last apply`() {
+        // GIVEN
+        val lastApplyPromo = LastApplyPromo(
+            lastApplyPromoData = LastApplyPromoData(
+                codes = listOf("code1", "code2")
+            )
+        )
+        val cartData = CartData(
+            promo = CartPromoData(
+                lastApplyPromo = lastApplyPromo
+            )
+        )
+        cartViewModel.cartModel.cartListData = cartData
+        cartViewModel.cartModel.lastValidateUseResponse = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                codes = listOf("code3", "code4")
+            )
+        )
+        cartViewModel.cartModel.isLastApplyResponseStillValid = true
+
+        // WHEN
+        val validateUsePromoRequest = cartViewModel.generateParamGetLastApplyPromo()
+
+        // THEN
+        val resultValidateUsePromoRequest = ValidateUsePromoRequest(
+            codes = arrayListOf("code1", "code2"),
+            state = CartConstant.PARAM_CART,
+            skipApply = 0,
+            cartType = CartConstant.PARAM_DEFAULT,
+            isCartCheckoutRevamp = true
+        )
+        assertEquals(resultValidateUsePromoRequest, validateUsePromoRequest)
+    }
+
+    @Test
+    fun `WHEN generate param last apply last validate response not null THEN generate validate use from last validate use response`() {
+        // GIVEN
+        val lastApplyPromo = LastApplyPromo(
+            lastApplyPromoData = LastApplyPromoData(
+                codes = listOf("code1", "code2")
+            )
+        )
+        val cartData = CartData(
+            promo = CartPromoData(
+                lastApplyPromo = lastApplyPromo
+            )
+        )
+        cartViewModel.cartModel.cartListData = cartData
+        cartViewModel.cartModel.lastValidateUseResponse = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                codes = listOf("code3", "code4")
+            )
+        )
+        cartViewModel.cartModel.isLastApplyResponseStillValid = false
+
+        // WHEN
+        val validateUsePromoRequest = cartViewModel.generateParamGetLastApplyPromo()
+
+        // THEN
+        val resultValidateUsePromoRequest = ValidateUsePromoRequest(
+            codes = arrayListOf("code3", "code4"),
+            state = CartConstant.PARAM_CART,
+            skipApply = 0,
+            cartType = CartConstant.PARAM_DEFAULT,
+            isCartCheckoutRevamp = true
+        )
+        assertEquals(resultValidateUsePromoRequest, validateUsePromoRequest)
+    }
+
+    @Test
+    fun `WHEN generate param last apply THEN generate validate use from current selected item`() {
+        // GIVEN
+        cartViewModel.cartModel.cartListData = CartData()
+        cartViewModel.cartModel.lastValidateUseResponse = null
+        cartViewModel.cartModel.isLastApplyResponseStillValid = false
+        val itemCartOne = CartItemHolderData(
+            productId = "1",
+            quantity = 1,
+            isSelected = true
+        )
+        val itemCartTwo = CartItemHolderData(
+            productId = "2",
+            quantity = 1,
+            isSelected = true
+        )
+        val cartGroupHolderData = CartGroupHolderData(
+            isAllSelected = true,
+            isError = false,
+            isCollapsed = true,
+            productUiModelList = mutableListOf(
+                itemCartOne,
+                itemCartTwo
+            )
+        )
+        cartViewModel.cartDataList.value = arrayListOf(cartGroupHolderData)
+
+        // WHEN
+        val validateUsePromoRequest = cartViewModel.generateParamGetLastApplyPromo()
+
+        // THEN
+        val resultValidateUsePromoRequest = ValidateUsePromoRequest(
+            orders = listOf(
+                OrdersItem(
+                    productDetails = listOf(
+                        ProductDetailsItem(
+                            productId = 1,
+                            quantity = 1
+                        ),
+                        ProductDetailsItem(
+                            productId = 2,
+                            quantity = 1
+                        )
+                    )
+                )
+            ),
+            state = CartConstant.PARAM_CART,
+            skipApply = 0,
+            cartType = CartConstant.PARAM_DEFAULT,
+            isCartCheckoutRevamp = true
+        )
+        assertEquals(resultValidateUsePromoRequest, validateUsePromoRequest)
     }
 }

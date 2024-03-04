@@ -98,5 +98,20 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.confirmshipping.ui.ConfirmShippingComposeActivity"
+            android:exported="true"
+            android:label="@string/title_som_confirm_shipping"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

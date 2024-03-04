@@ -333,6 +333,9 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
             ConstantTransactionAnalytics.EventLabel.PRODUCT_LAST_SEEN
         )
         dataLayer[ConstantTransactionAnalytics.Key.E_COMMERCE] = cartMap
+        dataLayer[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        dataLayer[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        dataLayer[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.VIEW_PRODUCT_LAST_SEEN
         sendEnhancedEcommerce(dataLayer)
     }
 
