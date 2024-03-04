@@ -16,9 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -45,6 +43,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.delay
+import java.lang.Exception
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
@@ -59,7 +58,6 @@ fun FeedProductHighlight(
     onProductClick: (FeedCardProductModel) -> Unit
 ) {
     val ctx = LocalContext.current
-    val density = LocalDensity.current
 
     NestTheme(darkTheme = false) {
         AnimatedVisibility(
@@ -203,22 +201,20 @@ fun ProductTagItems(
     onProductLabelClick: () -> Unit,
     onProductHighlightClose: () -> Unit,
     impressHighlight: (FeedCardProductModel) -> Unit,
-    isFocused: Boolean = true,
+    isFocused: MutableState<Boolean> ,
 ) {
-    var needToBeShown by remember { mutableStateOf(false) }
+    var isHighlightVisible by remember { mutableStateOf(false) }
     val highlightedProduct= products.firstOrNull { it.isHighlight}
 
-    if (isFocused) {
-        LaunchedEffect(key1 = key) {
-            delay(5000L)
-            needToBeShown = true
-            highlightedProduct?.let { impressHighlight.invoke(it) }
-        }
-    }
-
-    DisposableEffect(key1 = key){
-        onDispose {
-            needToBeShown = false
+    if (!isFocused.value) {
+        isHighlightVisible = false
+    } else {
+        LaunchedEffect(key1 = key){
+            try {
+                delay(5000L)
+                isHighlightVisible = true
+                highlightedProduct?.let { impressHighlight.invoke(it) }
+            } catch (e: Exception) {}
         }
     }
 
@@ -226,17 +222,17 @@ fun ProductTagItems(
         FeedProductLabel(
             products = products,
             totalProducts = totalProducts,
-            isVisible = !needToBeShown || highlightedProduct == null,
+            isVisible = !isHighlightVisible || highlightedProduct == null,
             onClick = onProductLabelClick
         )
 
         if (highlightedProduct != null) {
             FeedProductHighlight(
-                product = highlightedProduct ?: return@Column,
-                isVisible = needToBeShown,
+                product = highlightedProduct,
+                isVisible = isHighlightVisible,
                 onClose = {
                     onProductHighlightClose.invoke()
-                    needToBeShown = false
+                    isHighlightVisible = false
                 },
                 onAtcClick = onAtcClick,
                 onProductClick = onProductClick
