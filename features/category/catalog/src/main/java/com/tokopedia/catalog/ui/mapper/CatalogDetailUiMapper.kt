@@ -11,6 +11,7 @@ import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.model.PriceCtaSellerOfferingProperties
 import com.tokopedia.catalog.ui.model.ShareProperties
 import com.tokopedia.catalog.ui.model.WidgetTypes
+import com.tokopedia.catalogcommon.R as catalogcommonR
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
@@ -54,7 +55,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import com.tokopedia.catalog.R as catalogR
-import com.tokopedia.catalogcommon.R as catalogcommonR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -650,7 +650,12 @@ class CatalogDetailUiMapper @Inject constructor(
                     author = it.author,
                     videoLink = it.url,
                     textTitleColor = getTextColor(darkMode),
-                    textSubTitleColor = getTextColor(darkMode)
+                    textSubTitleColor = getTextColor(darkMode),
+                    backgroundColor = if (darkMode) {
+                        catalogcommonR.drawable.bg_rounded_border_dark
+                    } else {
+                        catalogcommonR.drawable.bg_rounded_border_light
+                    }
                 )
             }
         )

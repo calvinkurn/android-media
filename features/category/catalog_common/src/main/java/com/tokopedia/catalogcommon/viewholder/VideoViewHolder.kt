@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalogcommon.R
@@ -108,6 +109,6 @@ class VideoViewHolder(
                 element.styleIconPlay.iconColor
             )
         )
-        view.clLayout.setBackgroundResource(element.backgroundColor)
+        view.clLayout.background = MethodChecker.getDrawable(itemView.context, element.backgroundColor)
     }
 }
