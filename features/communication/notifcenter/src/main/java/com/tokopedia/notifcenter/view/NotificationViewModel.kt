@@ -326,7 +326,7 @@ class NotificationViewModel @Inject constructor(
                 val params = GetRecommendationRequestParam(
                     pageNumber = page,
                     xSource = RECOM_WIDGET,
-                    pageName = RECOM_SOURCE_INBOX_PAGE,
+                    pageName = RECOM_SOURCE_NOTIF_PAGE,
                     productIds = emptyList(),
                     hasNewProductCardEnabled = true
                 )
@@ -488,7 +488,7 @@ class NotificationViewModel @Inject constructor(
         const val TOP_ADS_DIMEN_ID = 3
 
         const val RECOM_WIDGET = "recom_widget"
-        const val RECOM_SOURCE_INBOX_PAGE = "inbox"
+        const val RECOM_SOURCE_NOTIF_PAGE = "recom_notif"
 
         const val DEFAULT_SHOP_ID = "0"
         const val CLEAR_ALL_NOTIF_TYPE = 0
