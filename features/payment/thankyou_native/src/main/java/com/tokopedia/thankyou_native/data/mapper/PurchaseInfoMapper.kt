@@ -15,16 +15,16 @@ import com.tokopedia.unifycomponents.toPx
 
 class PurchaseInfoMapper {
     companion object {
-        private const val TYPE_HEADING_1 = "heading_1"
-        private const val TYPE_HEADING_2 = "heading_2"
-        private const val TYPE_HEADING_3 = "heading_3"
-        private const val TYPE_NORMAL_TEXT = "normal_text"
-        private const val TYPE_PRODUCT = "product"
-        private const val TYPE_GROUP_PRODUCT = "group_product"
-        private const val TYPE_DISCOUNT = "discount"
-        private const val TYPE_SHIPPING = "shipping"
-        private const val TYPE_SEPARATOR = "separator"
-        private const val DIVIDER_HEIGHT_8 = 8
+        const val TYPE_HEADING_1 = "heading_1"
+        const val TYPE_HEADING_2 = "heading_2"
+        const val TYPE_HEADING_3 = "heading_3"
+        const val TYPE_NORMAL_TEXT = "normal_text"
+        const val TYPE_PRODUCT = "product"
+        const val TYPE_GROUP_PRODUCT = "group_product"
+        const val TYPE_DISCOUNT = "discount"
+        const val TYPE_SHIPPING = "shipping"
+        const val TYPE_SEPARATOR = "separator"
+        const val DIVIDER_HEIGHT_8 = 8
 
         fun createVisitable(purchaseInfo: PurchaseInfo): ArrayList<Visitable<*>> {
             val visitableList = mutableListOf<Visitable<*>>()

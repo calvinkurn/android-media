@@ -135,9 +135,9 @@ class InvoiceFragment : BottomSheetUnify() {
         private const val TAG_INVOICE_BOTTOM_SHEET = "tag_invoice_bottom_sheet"
         private const val ARG_ISV2 = "arg_isv2"
 
-        fun openInvoiceBottomSheet(activity: FragmentActivity?, thanksPageData: ThanksPageData) {
+        fun openInvoiceBottomSheet(activity: FragmentActivity?, thanksPageData: ThanksPageData, isPurchaseInfoEnabled: Boolean) {
             activity?.apply {
-                val invoiceBottomSheet = InvoiceFragment.getInvoiceFragment(thanksPageData, true)
+                val invoiceBottomSheet = InvoiceFragment.getInvoiceFragment(thanksPageData, isPurchaseInfoEnabled)
                 invoiceBottomSheet.show(supportFragmentManager, TAG_INVOICE_BOTTOM_SHEET)
             }
         }
