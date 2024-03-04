@@ -3,13 +3,18 @@ package com.tokopedia.play.broadcaster.view.compose.livestats
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.nest.components.loader.NestLoader
+import com.tokopedia.nest.components.loader.NestLoaderType
+import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 import kotlin.math.ceil
@@ -24,12 +29,63 @@ fun LiveStatsLayout(
     modifier: Modifier = Modifier,
     gridCount: Int = 2,
 ) {
-    if (gridCount <= 0) return
+    LiveStatsContainer(
+        modifier = modifier,
+        itemCount = liveStats.size,
+        gridCount = gridCount,
+        content = {
+            val currLiveStats = liveStats[it.coerceAtMost(liveStats.size - 1)]
+
+            LiveStatsCardView(
+                modifier = Modifier.weight(1f),
+                liveStats = currLiveStats,
+                type = if (currLiveStats is LiveStatsUiModel.EstimatedIncome) {
+                    LiveStatsBoxType.Clickable(
+                        icon = currLiveStats.clickableIcon,
+                        onClick = onEstimatedIncomeClicked,
+                    )
+                } else {
+                    LiveStatsBoxType.NotClickable
+                }
+            )
+        }
+    )
+}
+
+@Composable
+fun LiveStatsShimmer(
+    modifier: Modifier = Modifier,
+    itemCount: Int = 4,
+    gridCount: Int = 2,
+) {
+    LiveStatsContainer(
+        modifier = modifier,
+        itemCount = itemCount,
+        gridCount = gridCount,
+        content = {
+            NestLoader(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(80.dp),
+                variant = NestLoaderType.Shimmer(NestShimmerType.Rect(12.dp)),
+            )
+        }
+    )
+}
+
+@Composable
+private fun LiveStatsContainer(
+    itemCount: Int,
+    gridCount: Int,
+    content: @Composable RowScope.(idx: Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    if (gridCount <= 0 || itemCount <= 0) return
 
     Column(
         modifier = modifier,
     ) {
-        val rowCount = ceil(liveStats.size / gridCount.toFloat()).toInt()
+        val rowCount = ceil(itemCount / gridCount.toFloat()).toInt()
 
         for (i in 0 until rowCount) {
             val start = i * gridCount
@@ -42,25 +98,8 @@ fun LiveStatsLayout(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 for (j in start..end) {
-                    val currLiveStats = if (j < liveStats.size) {
-                        liveStats[j.coerceAtMost(liveStats.size - 1)]
-                    } else {
-                        null
-                    }
-
-                    if (currLiveStats != null) {
-                        LiveStatsCardView(
-                            modifier = Modifier.weight(1f),
-                            liveStats = currLiveStats,
-                            type = if (currLiveStats is LiveStatsUiModel.EstimatedIncome) {
-                                LiveStatsBoxType.Clickable(
-                                    icon = currLiveStats.clickableIcon,
-                                    onClick = onEstimatedIncomeClicked,
-                                )
-                            } else {
-                                LiveStatsBoxType.NotClickable
-                            }
-                        )
+                    if (j < itemCount) {
+                        content(j)
                     } else {
                         Spacer(modifier = Modifier.weight(1f))
                     }
@@ -84,6 +123,19 @@ private fun LiveStatsLayoutPreview() {
                     LiveStatsUiModel.Duration(),
                 ),
                 onEstimatedIncomeClicked = {},
+            )
+        }
+    }
+}
+
+@Composable
+@Preview
+private fun LiveStatsShimmerPreview() {
+    NestTheme {
+        Surface {
+            LiveStatsShimmer(
+                itemCount = 4,
+                gridCount = 2,
             )
         }
     }

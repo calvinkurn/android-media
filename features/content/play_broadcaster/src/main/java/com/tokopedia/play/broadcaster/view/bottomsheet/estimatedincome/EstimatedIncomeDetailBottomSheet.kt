@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.ui.model.stats.EstimatedIncomeDetailUiMode
 import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.stats.ProductStatsUiModel
 import com.tokopedia.play.broadcaster.view.compose.estimatedincome.EstimatedIncomeDetailLayout
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
@@ -49,25 +50,27 @@ class EstimatedIncomeDetailBottomSheet @Inject constructor(
                 ) {
                     /** JOE TODO: remove mock data */
                     EstimatedIncomeDetailLayout(
-                        estimatedIncomeDetail = EstimatedIncomeDetailUiModel(
-                            totalStatsList = listOf(
-                                LiveStatsUiModel.EstimatedIncome("Rp5.000.000", clickableIcon = IconUnify.INFORMATION),
-                                LiveStatsUiModel.Visit("1"),
-                                LiveStatsUiModel.AddToCart("2"),
-                                LiveStatsUiModel.TotalSold("3"),
-                            ),
-                            productStatsList = List(1) {
-                                ProductStatsUiModel(
-                                    id = it.toString(),
-                                    name = "Product Name $it",
-                                    imageUrl = "",
-                                    addToCartFmt = "1",
-                                    paymentVerifiedFmt = "2",
-                                    visitPdpFmt = "3",
-                                    productSoldQtyFmt = "4",
-                                    estimatedIncomeFmt = "Rp5.000.000",
-                                )
-                            }
+                        estimatedIncomeDetail = NetworkResult.Success(
+                            EstimatedIncomeDetailUiModel(
+                                totalStatsList = listOf(
+                                    LiveStatsUiModel.EstimatedIncome("Rp5.000.000", clickableIcon = IconUnify.INFORMATION),
+                                    LiveStatsUiModel.Visit("1"),
+                                    LiveStatsUiModel.AddToCart("2"),
+                                    LiveStatsUiModel.TotalSold("3"),
+                                ),
+                                productStatsList = List(1) {
+                                    ProductStatsUiModel(
+                                        id = it.toString(),
+                                        name = "Product Name $it",
+                                        imageUrl = "",
+                                        addToCartFmt = "1",
+                                        paymentVerifiedFmt = "2",
+                                        visitPdpFmt = "3",
+                                        productSoldQtyFmt = "4",
+                                        estimatedIncomeFmt = "Rp5.000.000",
+                                    )
+                                }
+                            )
                         ),
                         onEstimatedIncomeClicked = {
                             showEstimatedIncomeInfoSheet()

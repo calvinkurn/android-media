@@ -22,11 +22,14 @@ import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.card.NestCard
 import com.tokopedia.nest.components.card.NestCardType
+import com.tokopedia.nest.components.loader.NestLoader
+import com.tokopedia.nest.components.loader.NestLoaderType
+import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
-import com.tokopedia.play.broadcaster.ui.model.stats.ProductStatsUiModel
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.stats.ProductStatsUiModel
 
 /**
  * Created by Jonathan Darwin on 04 March 2024
@@ -128,6 +131,14 @@ fun ProductStatsCardView(
 }
 
 @Composable
+fun ProductStatsShimmer() {
+    NestLoader(
+        modifier = Modifier.height(140.dp).fillMaxWidth(),
+        variant = NestLoaderType.Shimmer(NestShimmerType.Rect(12.dp)),
+    )
+}
+
+@Composable
 private fun ProductStatsSection(
     label: String,
     text: String,
@@ -171,5 +182,13 @@ private fun ProductStatsCardViewPreview() {
                 estimatedIncomeFmt = "Rp5.000.000",
             )
         )
+    }
+}
+
+@Composable
+@Preview
+private fun ProductStatsShimmerPreview() {
+    NestTheme {
+        ProductStatsShimmer()
     }
 }

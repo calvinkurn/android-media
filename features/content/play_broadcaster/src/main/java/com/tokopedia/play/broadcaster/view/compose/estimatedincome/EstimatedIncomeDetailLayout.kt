@@ -14,6 +14,8 @@ import com.tokopedia.play.broadcaster.ui.model.stats.EstimatedIncomeDetailUiMode
 import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.stats.ProductStatsUiModel
 import com.tokopedia.play.broadcaster.view.compose.livestats.LiveStatsLayout
+import com.tokopedia.play.broadcaster.view.compose.livestats.LiveStatsShimmer
+import com.tokopedia.play_common.model.result.NetworkResult
 
 /**
  * Created by Jonathan Darwin on 04 March 2024
@@ -21,63 +23,95 @@ import com.tokopedia.play.broadcaster.view.compose.livestats.LiveStatsLayout
 
 @Composable
 fun EstimatedIncomeDetailLayout(
-    estimatedIncomeDetail: EstimatedIncomeDetailUiModel,
+    estimatedIncomeDetail: NetworkResult<EstimatedIncomeDetailUiModel>,
     onEstimatedIncomeClicked: () -> Unit,
 ) {
-    /** JOE TODO: handle loading & error state */
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
     ) {
-        item {
-            LiveStatsLayout(
-                liveStats = estimatedIncomeDetail.totalStatsList,
-                gridCount = 2,
-                onEstimatedIncomeClicked = onEstimatedIncomeClicked,
-            )
-        }
+        when(estimatedIncomeDetail) {
+            is NetworkResult.Loading -> {
+                item {
+                    LiveStatsShimmer()
+                }
 
-        items(estimatedIncomeDetail.productStatsList) {
-            ProductStatsCardView(productStats = it)
+                items(3) {
+                    ProductStatsShimmer()
+                }
+            }
+            is NetworkResult.Success -> {
+                item {
+                    LiveStatsLayout(
+                        liveStats = estimatedIncomeDetail.data.totalStatsList,
+                        gridCount = 2,
+                        onEstimatedIncomeClicked = onEstimatedIncomeClicked,
+                    )
+                }
+
+                items(estimatedIncomeDetail.data.productStatsList) {
+                    ProductStatsCardView(productStats = it)
+                }
+            }
+            is NetworkResult.Fail -> {
+                /** JOE TODO: handle error state */
+            }
+            else -> {}
         }
     }
 }
+
 @Composable
 @Preview
-private fun EstimatedIncomeLayoutPreview() {
+private fun EstimatedIncomeDetailLayoutPreview() {
     NestTheme {
         Surface {
             EstimatedIncomeDetailLayout(
-                estimatedIncomeDetail = EstimatedIncomeDetailUiModel(
-                    totalStatsList = listOf(
-                        LiveStatsUiModel.EstimatedIncome(value ="Rp5.000.000", clickableIcon = IconUnify.INFORMATION),
-                        LiveStatsUiModel.Visit("1"),
-                        LiveStatsUiModel.AddToCart("2"),
-                        LiveStatsUiModel.TotalSold("3"),
-                    ),
-                    productStatsList = listOf(
-                        ProductStatsUiModel(
-                            id = "123",
-                            name = "Product Name 1",
-                            imageUrl = "",
-                            addToCartFmt = "1",
-                            paymentVerifiedFmt = "2",
-                            visitPdpFmt = "3",
-                            productSoldQtyFmt = "4",
-                            estimatedIncomeFmt = "Rp5.000.000",
+                estimatedIncomeDetail = NetworkResult.Success(
+                    EstimatedIncomeDetailUiModel(
+                        totalStatsList = listOf(
+                            LiveStatsUiModel.EstimatedIncome(value ="Rp5.000.000", clickableIcon = IconUnify.INFORMATION),
+                            LiveStatsUiModel.Visit("1"),
+                            LiveStatsUiModel.AddToCart("2"),
+                            LiveStatsUiModel.TotalSold("3"),
                         ),
-                        ProductStatsUiModel(
-                            id = "456",
-                            name = "Product Name 2",
-                            imageUrl = "",
-                            addToCartFmt = "1",
-                            paymentVerifiedFmt = "2",
-                            visitPdpFmt = "3",
-                            productSoldQtyFmt = "4",
-                            estimatedIncomeFmt = "Rp5.000.000",
+                        productStatsList = listOf(
+                            ProductStatsUiModel(
+                                id = "123",
+                                name = "Product Name 1",
+                                imageUrl = "",
+                                addToCartFmt = "1",
+                                paymentVerifiedFmt = "2",
+                                visitPdpFmt = "3",
+                                productSoldQtyFmt = "4",
+                                estimatedIncomeFmt = "Rp5.000.000",
+                            ),
+                            ProductStatsUiModel(
+                                id = "456",
+                                name = "Product Name 2",
+                                imageUrl = "",
+                                addToCartFmt = "1",
+                                paymentVerifiedFmt = "2",
+                                visitPdpFmt = "3",
+                                productSoldQtyFmt = "4",
+                                estimatedIncomeFmt = "Rp5.000.000",
+                            )
                         )
                     )
                 ),
+                onEstimatedIncomeClicked = {}
+            )
+        }
+    }
+}
+
+@Composable
+@Preview
+private fun EstimatedIncomeDetailShimmerPreview() {
+    NestTheme {
+        Surface {
+            EstimatedIncomeDetailLayout(
+                estimatedIncomeDetail = NetworkResult.Loading,
                 onEstimatedIncomeClicked = {}
             )
         }
