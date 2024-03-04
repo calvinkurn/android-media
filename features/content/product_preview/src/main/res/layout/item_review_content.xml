@@ -142,7 +142,9 @@
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="MENU_KEBAB_HORIZONTAL"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/layout_like_review" />
+        app:layout_constraintEnd_toEndOf="@+id/layout_like_review"
+        app:layout_constraintStart_toStartOf="@+id/layout_like_review"
+        app:unify_image_type="circle" />
 
     <include
         android:id="@+id/layout_like_review"
