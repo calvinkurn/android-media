@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.common.presenter.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.sellerorder.common.util.SomConsts
 
 data class PopUp(
     @SerializedName("title")
@@ -16,6 +17,15 @@ data class PopUp(
     val template: Template? = null
 
 ) {
+
+    fun getPrimaryButton(): ActionButton? {
+        return actionButtons.firstOrNull { it.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON }
+    }
+
+    fun getSecondaryButton(): ActionButton? {
+        return actionButtons.firstOrNull { it.type == SomConsts.KEY_SECONDARY_DIALOG_BUTTON }
+    }
+
     data class ActionButton(
         @SerializedName("displayName")
         val displayName: String = "",
