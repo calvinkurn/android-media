@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.analytics.merchantvoucher
 
-import com.tokopedia.design.viewpagerindicator.TitlePageIndicator.LinePosition
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 

@@ -10,9 +10,13 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponModel
 import com.tokopedia.discovery_component.widgets.automatecoupon.DynamicColorText
 
-class MerchantVoucherCarouselItemViewModel(application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class MerchantVoucherCarouselItemViewModel(
+    application: Application,
+    val components: ComponentsItem,
+    val position: Int
+) : DiscoveryBaseViewModel() {
     private val _multiShopData = MutableLiveData<MerchantVoucherCarouselModel>()
-    val multiShopModel:LiveData<MerchantVoucherCarouselModel> = _multiShopData
+    val multiShopModel: LiveData<MerchantVoucherCarouselModel> = _multiShopData
 
 
     override fun onAttachToViewHolder() {
