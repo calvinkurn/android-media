@@ -10,6 +10,7 @@ import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.home_account.databinding.FragmentPersonalizeSuccessBinding
+import com.tokopedia.home_account.R
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class PersonalizeSuccessFragment: TkpdBaseV4Fragment() {
@@ -31,15 +32,16 @@ class PersonalizeSuccessFragment: TkpdBaseV4Fragment() {
     }
 
     private fun setUpAnimation() {
-        val imageUrl = "https://assets.tokopedia.net/asts/android/user/kyc/img_url_goto_kyc_status_submission_verified.json"
         binding?.apply {
-            LottieCompositionFactory.fromUrl(requireContext(), imageUrl).addListener { result: LottieComposition? ->
+            val imageUrlSuccessTop = getString(R.string.explicit_personalize_success_top)
+            LottieCompositionFactory.fromUrl(requireContext(), imageUrlSuccessTop).addListener { result: LottieComposition? ->
                 result?.let { animation1.setComposition(it) }
                 animation1.repeatCount = ValueAnimator.INFINITE
                 animation1.playAnimation()
             }
 
-            LottieCompositionFactory.fromUrl(requireContext(), imageUrl).addListener { result: LottieComposition? ->
+            val imageUrlSuccessBottom = getString(R.string.explicit_personalize_success_bottom)
+            LottieCompositionFactory.fromUrl(requireContext(), imageUrlSuccessBottom).addListener { result: LottieComposition? ->
                 result?.let { animation2.setComposition(it) }
                 animation2.repeatCount = ValueAnimator.INFINITE
                 animation2.playAnimation()
