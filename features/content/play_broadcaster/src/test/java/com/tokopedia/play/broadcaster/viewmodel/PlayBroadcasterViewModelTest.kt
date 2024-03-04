@@ -37,7 +37,6 @@ import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertEvent
 import com.tokopedia.play.broadcaster.util.assertFailed
 import com.tokopedia.play.broadcaster.util.assertFalse
-import com.tokopedia.play.broadcaster.util.assertNotEqualTo
 import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.util.logger.error.BroadcasterErrorLogger
@@ -906,7 +905,6 @@ class PlayBroadcasterViewModelTest {
     fun `when entry point from whatever that require open as seller but seller not eligible then selected account should be non-seller`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false)
-        val mockCover = PlayCoverUiModel(croppedCover = CoverSetupState.Blank, state = SetupDataState.Draft)
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
@@ -936,15 +934,14 @@ class PlayBroadcasterViewModelTest {
             page = TickerBottomSheetPage.LIVE_PREPARATION,
             type = TickerBottomSheetType.BOTTOM_SHEET,
         )
-        val isFirstTime = true
+        val alreadyShowed = true
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
-            key = responseMock.cacheKey,
-            authorId = accountMock.find { it.isShop }?.id.orEmpty()
-        ) } returns isFirstTime
+            key = responseMock.cacheKey
+        ) } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -976,15 +973,14 @@ class PlayBroadcasterViewModelTest {
             page = TickerBottomSheetPage.LIVE_PREPARATION,
             type = TickerBottomSheetType.BOTTOM_SHEET,
         )
-        val isFirstTime = true
+        val alreadyShowed = false
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
-            key = responseMock.cacheKey,
-            authorId = accountMock.find { it.isShop }?.id.orEmpty()
-        ) } returns isFirstTime
+            key = responseMock.cacheKey
+        ) } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -1003,28 +999,27 @@ class PlayBroadcasterViewModelTest {
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().contentAccountList.assertEqualTo(accountMock)
+            state.tickerBottomSheetConfig.type.assertEqualTo(TickerBottomSheetType.BOTTOM_SHEET)
             state.tickerBottomSheetConfig.page.assertEqualTo(TickerBottomSheetPage.LIVE_PREPARATION)
-            state.tickerBottomSheetConfig.type.assertNotEqualTo(TickerBottomSheetType.UNKNOWN)
         }
     }
 
     @Test
-    fun `when user account eligible and first not time show disable live to vod in preparation live, then it should not show`() {
+    fun `when user account eligible and not first time show disable live to vod in preparation live, then it should not show`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
             page = TickerBottomSheetPage.LIVE_PREPARATION,
             type = TickerBottomSheetType.BOTTOM_SHEET,
         )
-        val isFirstTime = false
+        val alreadyShowed = true
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
-            key = responseMock.cacheKey,
-            authorId = accountMock.find { it.isShop }?.id.orEmpty()
-        ) } returns isFirstTime
+            key = responseMock.cacheKey
+        ) } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -1056,15 +1051,14 @@ class PlayBroadcasterViewModelTest {
             page = TickerBottomSheetPage.LIVE_REPORT,
             type = TickerBottomSheetType.TICKER,
         )
-        val isFirstTime = false
+        val alreadyShowed = true
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } throws Throwable("Fail?")
         coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
-            key = responseMock.cacheKey,
-            authorId = accountMock.find { it.isShop }?.id.orEmpty()
-        ) } returns isFirstTime
+            key = responseMock.cacheKey
+        ) } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -1096,15 +1090,14 @@ class PlayBroadcasterViewModelTest {
             page = TickerBottomSheetPage.LIVE_REPORT,
             type = TickerBottomSheetType.TICKER,
         )
-        val isFirstTime = true
+        val alreadyShowed = false
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
             key = responseMock.cacheKey,
-            authorId = accountMock.find { it.isShop }?.id.orEmpty()
-        ) } returns isFirstTime
+        ) } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -1124,7 +1117,7 @@ class PlayBroadcasterViewModelTest {
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().contentAccountList.assertEqualTo(accountMock)
             state.tickerBottomSheetConfig.page.assertEqualTo(TickerBottomSheetPage.LIVE_REPORT)
-            state.tickerBottomSheetConfig.type.assertNotEqualTo(TickerBottomSheetType.UNKNOWN)
+            state.tickerBottomSheetConfig.type.assertEqualTo(TickerBottomSheetType.TICKER)
         }
     }
 
@@ -1136,15 +1129,14 @@ class PlayBroadcasterViewModelTest {
             page = TickerBottomSheetPage.LIVE_REPORT,
             type = TickerBottomSheetType.BOTTOM_SHEET,
         )
-        val isFirstTime = false
+        val alreadyShowed = true
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
-            key = responseMock.cacheKey,
-            authorId = accountMock.find { it.isShop }?.id.orEmpty()
-        ) } returns isFirstTime
+            key = responseMock.cacheKey
+        ) } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -1163,8 +1155,8 @@ class PlayBroadcasterViewModelTest {
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().contentAccountList.assertEqualTo(accountMock)
-            state.tickerBottomSheetConfig.page.assertEqualTo(TickerBottomSheetPage.UNKNOWN)
-            state.tickerBottomSheetConfig.type.assertEqualTo(TickerBottomSheetType.UNKNOWN)
+            state.tickerBottomSheetConfig.page.assertEqualTo(TickerBottomSheetPage.LIVE_REPORT)
+            state.tickerBottomSheetConfig.type.assertEqualTo(TickerBottomSheetType.BOTTOM_SHEET)
         }
     }
 
@@ -1173,15 +1165,14 @@ class PlayBroadcasterViewModelTest {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse()
-        val isFirstTime = false
+        val alreadyShowed = true
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } throws Throwable("Fail?")
         coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
-            key = responseMock.cacheKey,
-            authorId = accountMock.find { it.isShop }?.id.orEmpty()
-        ) } returns isFirstTime
+            key = responseMock.cacheKey
+        ) } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -1210,15 +1201,14 @@ class PlayBroadcasterViewModelTest {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse()
-        val isFirstTime = false
+        val alreadyShowed = true
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
-            key = responseMock.cacheKey,
-            authorId = accountMock.find { it.isShop }?.id.orEmpty()
-        ) } returns isFirstTime
+            key = responseMock.cacheKey
+        ) } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -1252,16 +1242,14 @@ class PlayBroadcasterViewModelTest {
             page = page,
             type = type,
         )
-        val isFirstTime = false
-        val authorId = accountMock.find { it.isShop }?.id.orEmpty()
+        val alreadyShowed = false
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
-            key = responseMock.cacheKey,
-            authorId = authorId,
-        ) } returns isFirstTime
+            key = responseMock.cacheKey
+        ) } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -1274,8 +1262,7 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             it.getViewModel().submitAction(PlayBroadcastAction.SetLiveToVodPref(type = type))
             mockHydraSharedPreferences.getDynamicBottomSheetPref(
-                key = responseMock.cacheKey,
-                authorId = authorId
+                key = responseMock.cacheKey
             ).assertEqualTo(false)
         }
     }
@@ -1290,16 +1277,14 @@ class PlayBroadcasterViewModelTest {
             page = page,
             type = type,
         )
-        val isFirstTime = false
-        val authorId = accountMock.find { it.isShop }?.id.orEmpty()
+        val alreadyShowed = false
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
         coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
         coEvery { mockHydraSharedPreferences.getDynamicTickerPref(
-            key = responseMock.cacheKey,
-            authorId = authorId
-        ) } returns isFirstTime
+            key = responseMock.cacheKey
+        ) } returns alreadyShowed
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -1312,8 +1297,7 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             it.getViewModel().submitAction(PlayBroadcastAction.SetLiveToVodPref(type = type))
             mockHydraSharedPreferences.getDynamicTickerPref(
-                key = responseMock.cacheKey,
-                authorId = authorId
+                key = responseMock.cacheKey
             ).assertEqualTo(false)
         }
     }
