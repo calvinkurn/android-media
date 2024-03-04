@@ -48,8 +48,8 @@ import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataMode
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.searchbar.navigation_component.NavSource
-import com.tokopedia.sessioncommon.data.admin.AccountAdminInfoGqlParam
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
+import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoGqlParam
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionAdminData
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
