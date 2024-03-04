@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.widget
+package com.tokopedia.product.detail.view.viewholder.media.component
 
 import android.annotation.SuppressLint
 import android.content.ContentResolver
@@ -7,11 +7,11 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.play.widget.liveindicator.analytic.PlayWidgetLiveIndicatorAnalytic
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomData
 import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.media.model.LiveIndicatorUiModel
 
 /**
  * Created by Yehezkiel on 23/11/20
@@ -30,18 +31,22 @@ class VideoPictureView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr) {
+) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private var componentTrackDataModel: ComponentTrackDataModel? = null
     private var mListener: ProductDetailListener? = null
     private var videoPictureAdapter: VideoPictureAdapter? = null
     private var binding: WidgetVideoPictureBinding =
-        WidgetVideoPictureBinding.inflate(LayoutInflater.from(context))
+        WidgetVideoPictureBinding.inflate(LayoutInflater.from(context), this, true)
     private var pagerSelectedLastPosition = 0
     private var previouslyPrefetch = false
 
+    // region uiModel
+    private var liveIndicator: LiveIndicatorUiModel = LiveIndicatorUiModel()
+    // endregion
+
+
     init {
-        addView(binding.root)
         binding.pdpViewPager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
     }
 
@@ -52,28 +57,40 @@ class VideoPictureView @JvmOverloads constructor(
         initialScrollPosition: Int,
         containerType: MediaContainerType,
         recommendation: ProductMediaRecomData,
+        liveIndicator: LiveIndicatorUiModel,
         isPrefetch: Boolean
     ) {
         this.mListener = listener
         this.componentTrackDataModel = componentTrackDataModel
+        this.liveIndicator = liveIndicator
 
         if (videoPictureAdapter == null || previouslyPrefetch) {
             setupViewPagerCallback()
             setupViewPager(containerType = containerType)
         }
 
-        updateImages(listOfImage = media, previouslyPrefetch = previouslyPrefetch)
+        updateImages(
+            listOfImage = media,
+            previouslyPrefetch = previouslyPrefetch,
+            isLive = liveIndicator.isLive
+        )
         updateMediaLabel(position = pagerSelectedLastPosition)
         setupRecommendationLabel(recommendation = recommendation)
         setupRecommendationLabelListener(position = pagerSelectedLastPosition)
-        shouldShowRecommendationLabel(position = pagerSelectedLastPosition)
+        setupLiveIndicatorAnalytic()
+        shouldShowLiveIndicatorXOverlayRecomm(position = pagerSelectedLastPosition)
         renderVideoOnceAtPosition(position = initialScrollPosition)
 
         previouslyPrefetch = isPrefetch
     }
 
-    private fun updateImages(listOfImage: List<MediaDataModel>?, previouslyPrefetch: Boolean) {
+    private fun updateImages(
+        listOfImage: List<MediaDataModel>?,
+        previouslyPrefetch: Boolean,
+        isLive: Boolean
+    ) {
         val mediaList = processMedia(listOfImage)
+            .map { it.copy(isLive = isLive) }
         videoPictureAdapter?.submitList(mediaList, previouslyPrefetch)
     }
 
@@ -85,7 +102,7 @@ class VideoPictureView @JvmOverloads constructor(
         binding.pdpViewPager.setCurrentItem(position, smoothScroll)
         updateMediaLabel(position)
         setupRecommendationLabelListener(position)
-        shouldShowRecommendationLabel(position)
+        shouldShowLiveIndicatorXOverlayRecomm(position)
     }
 
     private fun setupViewPager(
@@ -107,7 +124,7 @@ class VideoPictureView @JvmOverloads constructor(
             // NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
         }
 
-        viewPager.updateLayoutParams<ConstraintLayout.LayoutParams> {
+        viewPager.updateLayoutParams<LayoutParams> {
             if (this != null) {
                 dimensionRatio = containerType.ratio
             }
@@ -129,18 +146,18 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun setupViewPagerCallback() {
         binding.pdpViewPager.registerOnPageChangeCallback(object :
-                ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    onMediaPageSelected(position)
-                }
+            ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                onMediaPageSelected(position)
+            }
 
-                override fun onPageScrollStateChanged(state: Int) {
-                    if (state == RecyclerView.SCROLL_STATE_IDLE) {
-                        mListener?.getProductVideoCoordinator()
-                            ?.onScrollChangedListener(binding.pdpViewPager, pagerSelectedLastPosition)
-                    }
+            override fun onPageScrollStateChanged(state: Int) {
+                if (state == RecyclerView.SCROLL_STATE_IDLE) {
+                    mListener?.getProductVideoCoordinator()
+                        ?.onScrollChangedListener(binding.pdpViewPager, pagerSelectedLastPosition)
                 }
-            })
+            }
+        })
     }
 
     private fun onMediaPageSelected(position: Int) {
@@ -165,7 +182,7 @@ class VideoPictureView @JvmOverloads constructor(
 
             updateMediaLabel(position)
             setupRecommendationLabelListener(position)
-            shouldShowRecommendationLabel(position)
+            shouldShowLiveIndicatorXOverlayRecomm(position)
             pagerSelectedLastPosition = position
         }
     }
@@ -205,6 +222,7 @@ class VideoPictureView @JvmOverloads constructor(
             variantName.isEmpty() -> {
                 index
             }
+
             else -> {
                 context.getString(R.string.pdp_media_label_builder, index, variantName)
             }
@@ -231,11 +249,41 @@ class VideoPictureView @JvmOverloads constructor(
         }
     }
 
-    private fun shouldShowRecommendationLabel(position: Int) {
-        if (videoPictureAdapter?.isPicture(position) == true) {
-            binding.txtAnimLabelRecommendation.showView()
-        } else {
-            binding.txtAnimLabelRecommendation.hideView()
+    private fun setupLiveIndicatorAnalytic() = with(binding.liveBadgeView) {
+        val p1 = mListener?.getProductInfo() ?: return
+
+        setAnalyticModel(
+            model = PlayWidgetLiveIndicatorAnalytic.Model(
+                channelId = liveIndicator.channelID,
+                productId = p1.basic.productID,
+                shopId = p1.basic.shopID
+            )
+        )
+
+        setOnClickListener {
+            mListener?.goToApplink(url = liveIndicator.appLink)
+        }
+    }
+
+    private fun shouldShowLiveIndicatorXOverlayRecomm(position: Int) = with(binding) {
+        val isPictureType = videoPictureAdapter?.isPicture(position) == true
+        val isLive = liveIndicator.isLive
+
+        when {
+            isLive -> {
+                binding.liveBadgeView.show()
+                binding.txtAnimLabelRecommendation.hideView()
+            }
+
+            isPictureType -> {
+                binding.txtAnimLabelRecommendation.showView()
+                binding.liveBadgeView.hide()
+            }
+
+            else -> {
+                binding.txtAnimLabelRecommendation.hideView()
+                binding.liveBadgeView.hide()
+            }
         }
     }
 
