@@ -83,6 +83,7 @@ class CatalogSellerOfferingFragment :
     private var userAddressData: LocalCacheModel? = null
     private var hasNextPageState = mutableStateOf(false)
     private var productList = mutableListOf<CatalogProductListUiModel.CatalogProductUiModel>()
+    private val seenTracker = mutableListOf<String>()
 
     @Inject
     lateinit var viewModel: CatalogSellerOfferingProductListViewModel
@@ -131,7 +132,7 @@ class CatalogSellerOfferingFragment :
         // Inflate the layout for this fragment
         return ComposeView(requireContext()).apply {
             setContent {
-                NestTheme(isOverrideStatusBarColor = false) {
+                NestTheme(isOverrideStatusBarColor = false, darkTheme = false) {
                     CatalogSellerOfferingScreen(
                         productTitleState.value,
                         productVariantState.value,
@@ -677,18 +678,27 @@ class CatalogSellerOfferingFragment :
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, catalogProduct.productID)
     }
     private fun onImpressionProduct(item: CatalogProductListUiModel.CatalogProductUiModel, position: Int) {
-        CatalogReimagineDetailAnalytics.sendEventImpression(
-            event = CatalogTrackerConstant.EVENT_NAME_PRODUCT_VIEW,
-            eventAction = CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_PRODUCT,
-            eventCategory = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST,
-            catalogId = catalogId,
-            trackerId = CatalogTrackerConstant.TRACKER_ID_IMPRESSION_PRODUCT,
-            item = item,
-            searchFilterMap = viewModel.searchParametersMap.value,
-            position = position + 1,
-            userId = userSession?.userId.orEmpty(),
-            catalogUrl = catalogUrl,
-            productName = productTitleState.value
-        )
+        sendOnTimeImpression(item.productID) {
+            CatalogReimagineDetailAnalytics.sendEventImpression(
+                event = CatalogTrackerConstant.EVENT_NAME_PRODUCT_VIEW,
+                eventAction = CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_PRODUCT,
+                eventCategory = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE_PRODUCT_LIST,
+                catalogId = catalogId,
+                trackerId = CatalogTrackerConstant.TRACKER_ID_IMPRESSION_PRODUCT,
+                item = item,
+                searchFilterMap = viewModel.searchParametersMap.value,
+                position = position + 1,
+                userId = userSession?.userId.orEmpty(),
+                catalogUrl = catalogUrl,
+                productName = productTitleState.value
+            )
+        }
+    }
+
+    private fun sendOnTimeImpression(uniqueId: String, trackerFunction: () -> Unit) {
+        if (!seenTracker.any { it == uniqueId }) {
+            seenTracker.add(uniqueId)
+            trackerFunction.invoke()
+        }
     }
 }

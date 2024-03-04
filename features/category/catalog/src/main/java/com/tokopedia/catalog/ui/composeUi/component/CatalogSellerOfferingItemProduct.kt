@@ -9,13 +9,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,7 +26,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.domain.model.CatalogProductListResponse
 import com.tokopedia.catalog.ui.model.CatalogProductListUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
@@ -40,6 +38,8 @@ import com.tokopedia.nest.components.card.NestCardType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.ImpressionHolder
+import com.tokopedia.nest.principles.utils.addImpression
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.compose.NestProgressBar
 import com.tokopedia.catalogcommon.R as catalogcommonR
@@ -48,7 +48,9 @@ import com.tokopedia.catalogcommon.R as catalogcommonR
 fun ItemProduct(
     onClickItem: (CatalogProductListUiModel.CatalogProductUiModel) -> Unit,
     onClickAtc: (CatalogProductListUiModel.CatalogProductUiModel) -> Unit,
-    catalogProduct: CatalogProductListUiModel.CatalogProductUiModel
+    catalogProduct: CatalogProductListUiModel.CatalogProductUiModel,
+    onImpressionProduct: () -> Unit,
+    listState: LazyListState
 ) {
     val context = LocalContext.current
 
@@ -68,14 +70,24 @@ fun ItemProduct(
         it.position == "overlay_2"
     }
 
-    Column(Modifier
-        .clickable {
-            onClickItem.invoke(catalogProduct)
-        }) {
+    Column(
+        Modifier
+            .addImpression(
+                catalogProduct.productID, state = listState,
+                onItemViewed = {
+                    onImpressionProduct.invoke()
+                },
+                impressionState = ImpressionHolder()
+            )
+            .clickable {
+                onClickItem.invoke(catalogProduct)
+            }) {
         Spacer(modifier = Modifier.height(12.dp))
         Row(
             Modifier
-                .background(colorResource(id = R.color.catalog_dms_light_color)), verticalAlignment = Alignment.CenterVertically)
+                .background(colorResource(id = R.color.catalog_dms_light_color)),
+            verticalAlignment = Alignment.CenterVertically
+        )
         {
             Spacer(modifier = Modifier.width(16.dp))
             if (catalogProduct.stock.isHidden) {
@@ -110,7 +122,10 @@ fun ItemProduct(
                 Spacer(modifier = Modifier.height(6.dp))
                 ProductPriceRow(catalogProduct.price.text, catalogProduct.price.original)
                 Spacer(modifier = Modifier.height(4.dp))
-                ProductOfferAndBenefit(productBenefit?.title.orEmpty(), productOffer?.title.orEmpty())
+                ProductOfferAndBenefit(
+                    productBenefit?.title.orEmpty(),
+                    productOffer?.title.orEmpty()
+                )
                 Spacer(modifier = Modifier.height(6.dp))
                 ShopCredibilityRow(
                     rating = catalogProduct.credibility.rating,
@@ -166,7 +181,11 @@ fun ItemProduct(
 }
 
 @Composable
-private fun ProductVisualWithoutStock(productImage: String, freeOngkir: String, modifier: Modifier) {
+private fun ProductVisualWithoutStock(
+    productImage: String,
+    freeOngkir: String,
+    modifier: Modifier
+) {
     Box {
         NestImage(
             source = ImageSource.Remote(productImage),
@@ -256,9 +275,12 @@ private fun ProductVisualWithStock(
                         value = stock,
                         isSmooth = true,
                         colorType = ProgressBarUnify.COLOR_RED,
-                        icon = ContextCompat.getDrawable(context, catalogcommonR.drawable.catalog_ic_stockbar_progress_top),
+                        icon = ContextCompat.getDrawable(
+                            context,
+                            catalogcommonR.drawable.catalog_ic_stockbar_progress_top
+                        ),
                         height = ProgressBarUnify.SIZE_SMALL,
-                        trackColor = ContextCompat.getColor(context,R.color.catalog_dms_misty_blue)
+                        trackColor = ContextCompat.getColor(context, R.color.catalog_dms_misty_blue)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                 }

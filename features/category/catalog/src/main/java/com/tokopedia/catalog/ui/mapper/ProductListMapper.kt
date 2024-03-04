@@ -61,7 +61,7 @@ class ProductListMapper {
                         stock = CatalogProductListUiModel.CatalogProductUiModel.StockUiModel(
                             it.stock?.isHidden.orFalse(), it.stock?.soldPercentage.orZero(), it.stock?.wording.orEmpty()
                         ),
-                        categoryId = it.categoryId.orEmpty()
+                        categoryId = it.category?.id.orEmpty()
                     )
                 }
             )

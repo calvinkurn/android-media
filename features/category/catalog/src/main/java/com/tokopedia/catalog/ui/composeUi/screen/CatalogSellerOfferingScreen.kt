@@ -126,7 +126,7 @@ fun CatalogSellerOfferingScreen(
                 CatalogSellerOfferingBody(
                     listState, listener, background, lcaListener, sortFilter,
                     onClickMoreFilter, onClickAtc, onClickItemProduct,
-                    productListState, countFilter,hasNextPage, throwable, onErrorRefresh,
+                    productListState, countFilter, hasNextPage, throwable, onErrorRefresh,
                     onImpressionProduct
                 )
             }
@@ -162,7 +162,7 @@ fun CatalogSellerOfferingBody(
                 )
             }
         }
-        if (throwable != null){
+        if (throwable != null) {
             item {
                 val errorType = when (throwable) {
                     is SocketTimeoutException, is UnknownHostException, is ConnectException -> NestGlobalErrorType.NoConnection
@@ -186,36 +186,43 @@ fun CatalogSellerOfferingBody(
                     secondaryActionText = "Ke Pengaturan"
                 )
             }
-        }else {
+        } else {
             stickyHeader {
                 Box(
                     Modifier
                         .fillMaxWidth()
                         .background(Color.White)
                 ) {
-                    if (sortFilterState.value is CatalogFilterProductListState.Loading){
+                    if (sortFilterState.value is CatalogFilterProductListState.Loading) {
                         FilterLoadingState()
-                    }else{
-                        Filter(sortFilterState.value.data.orEmpty(), Size.DEFAULT, onPrefixClicked = onClickMoreFilter, countFilter = countFilter)
+                    } else {
+                        Filter(
+                            sortFilterState.value.data.orEmpty(),
+                            Size.DEFAULT,
+                            onPrefixClicked = onClickMoreFilter,
+                            countFilter = countFilter
+                        )
                     }
 
                 }
             }
 
-            if (productListState.value is CatalogProductListState.Loading){
-                items(5){
+            if (productListState.value is CatalogProductListState.Loading) {
+                items(5) {
                     ProductListLoadingState()
                 }
-            }else{
-                val  productList = productListState.value.data.orEmpty()
+            } else {
+                val productList = productListState.value.data.orEmpty()
                 items(productList.size) { index ->
-                    onImpressionProduct.invoke(productList[index],index)
+                    onImpressionProduct.invoke(productList[index], index)
                     ItemProduct(onClickItem = {
                         onClickItemProduct.invoke(it, index)
                     }, onClickAtc = {
                         onClickAtc.invoke(it, index)
-                    }, productList[index])
-                    if (index != productList.size-1){
+                    }, productList[index], onImpressionProduct = {
+                        onImpressionProduct.invoke(productList[index], index)
+                    }, listState)
+                    if (index != productList.size - 1) {
                         Divider(
                             Modifier
                                 .fillMaxWidth()
@@ -257,9 +264,9 @@ fun Filter(
 
 @Composable
 @Preview
-fun FilterLoadingState(){
-    Row(Modifier.padding(start = 16.dp, top=16.dp, bottom = 8.dp)) {
-        repeat(4){
+fun FilterLoadingState() {
+    Row(Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)) {
+        repeat(4) {
             NestLoader(
                 variant = NestLoaderType.Shimmer(type = NestShimmerType.Rect(16.dp)),
                 modifier = Modifier
@@ -272,7 +279,7 @@ fun FilterLoadingState(){
 }
 
 @Composable
-fun ProductListLoadingState(){
+fun ProductListLoadingState() {
     Row(Modifier.padding(vertical = 16.dp, horizontal = 16.dp)) {
         NestLoader(
             variant = NestLoaderType.Shimmer(type = NestShimmerType.Rect(16.dp)),

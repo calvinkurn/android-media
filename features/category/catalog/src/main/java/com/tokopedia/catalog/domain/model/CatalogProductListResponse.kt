@@ -46,13 +46,18 @@ data class CatalogProductListResponse(
             val stock: Stock?,
             @SerializedName("warehouseID")
             val warehouseID: String?,
-            @SerializedName("categoryId")
+            @SerializedName("category")
             @Expose
-            val categoryId: String?
+            val category: Category?
         ) {
             data class AdditionalService(
                 @SerializedName("name")
                 val name: String?
+            )
+
+            data class Category(
+                @SerializedName("id")
+                val id: String?
             )
 
             data class Credibility(

@@ -237,15 +237,18 @@ object CatalogReimagineDetailAnalytics {
     ) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
-//        productMap[KEY_ITEM_CATEGORY] = item.categoryId.toString()
+        productMap[KEY_ITEM_CATEGORY] = item.categoryId
         productMap[KEY_ITEM_ID] = item.productID
         productMap[CatalogDetailAnalytics.KEYS.LIST] =
             CatalogDetailAnalytics.getCatalogTrackingUrl(catalogUrl)
         productMap[KEY_ITEM_NAME] = productName
         productMap[KEY_DIMENSION61] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
         productMap[KEY_INDEX] = position
+        val price = item.price.original.ifEmpty {
+            item.price.text
+        }
         productMap[KEY_PRICE] = CurrencyFormatHelper.convertRupiahToInt(
-            CurrencyFormatHelper.convertRupiahToInt(item.price.original).toString()
+            CurrencyFormatHelper.convertRupiahToInt(price).toString()
         ).toString()
         list.add(productMap)
 
@@ -347,8 +350,11 @@ object CatalogReimagineDetailAnalytics {
         productMap[KEY_ITEM_NAME] = productName
         productMap[KEY_DIMENSION61] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
         productMap[KEY_INDEX] = position
+        val price = item.price.original.ifEmpty {
+            item.price.text
+        }
         productMap[KEY_PRICE] = CurrencyFormatHelper.convertRupiahToInt(
-            CurrencyFormatHelper.convertRupiahToInt(item.price.original).toString()
+            CurrencyFormatHelper.convertRupiahToInt(price).toString()
         ).toString()
         list.add(productMap)
 
@@ -444,8 +450,11 @@ object CatalogReimagineDetailAnalytics {
             CatalogDetailAnalytics.getCatalogTrackingUrl(catalogUrl)
         productMap[KEY_ITEM_NAME] = productName
         productMap[KEY_INDEX] = position
+        val price = item.price.original.ifEmpty {
+            item.price.text
+        }
         productMap[KEY_PRICE] = CurrencyFormatHelper.convertRupiahToInt(
-            CurrencyFormatHelper.convertRupiahToInt(item.price.original).toString()
+            CurrencyFormatHelper.convertRupiahToInt(price).toString()
         ).toString()
         list.add(productMap)
 
