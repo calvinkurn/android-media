@@ -20,7 +20,6 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 
 import com.newrelic.agent.android.FeatureFlag;
-import com.scp.auth.GotoSdk;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -220,18 +219,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
         showDevOptNotification();
-        initGotoSDK();
         if (RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)) {
             PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
             pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
         }
         initializeAppPerformanceTrace();
     }
-
-    private void initGotoSDK() {
-        GotoSdk.init(this);
-    }
-    
     private void initializeAppPerformanceTrace() {
         if (GlobalConfig.isAllowDebuggingTools()) {
             AppPerformanceTrace.Companion.init(
