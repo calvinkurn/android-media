@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnSummaryViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.order_management_common.util.setupCardDarkMode
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.DetailProductCardItemBinding
@@ -20,12 +20,12 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class SomDetailNonProductBundleCardViewHolder(
     private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?,
-    private val addOnListener: BmgmAddOnViewHolder.Listener,
+    private val addOnListener: AddOnViewHolder.Listener,
     private val recyclerViewSharedPool: RecyclerView.RecycledViewPool,
     itemView: View?
 ) : AbstractViewHolder<NonProductBundleUiModel>(itemView),
-    BmgmAddOnSummaryViewHolder.Delegate.Mediator,
-    BmgmAddOnSummaryViewHolder.Delegate by BmgmAddOnSummaryViewHolder.Delegate.Impl() {
+    AddOnSummaryViewHolder.Delegate.Mediator,
+    AddOnSummaryViewHolder.Delegate by AddOnSummaryViewHolder.Delegate.Impl() {
 
     companion object {
         val RES_LAYOUT = R.layout.detail_product_card_item
@@ -54,7 +54,7 @@ class SomDetailNonProductBundleCardViewHolder(
         return recyclerViewSharedPool
     }
 
-    override fun getAddOnSummaryListener(): BmgmAddOnViewHolder.Listener {
+    override fun getAddOnSummaryListener(): AddOnViewHolder.Listener {
         return addOnListener
     }
 

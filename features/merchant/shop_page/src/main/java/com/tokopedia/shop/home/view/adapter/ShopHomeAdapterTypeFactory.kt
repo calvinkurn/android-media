@@ -146,7 +146,7 @@ open class ShopHomeAdapterTypeFactory(
             WidgetNameEnum.DISPLAY_DOUBLE_COLUMN.value,
             WidgetNameEnum.DISPLAY_TRIPLE_COLUMN.value -> getShopHomeMultipleImageColumnViewHolder(baseShopHomeWidgetUiModel)
             WidgetNameEnum.SLIDER_SQUARE_BANNER.value -> getShopHomeSliderSquareViewHolder(baseShopHomeWidgetUiModel)
-            WidgetNameEnum.SLIDER_BANNER.value,
+            WidgetNameEnum.SLIDER_BANNER.value -> getShopHomeSliderBannerViewHolder(baseShopHomeWidgetUiModel)
             WidgetNameEnum.ADVANCED_SLIDER_BANNER.value -> ShopHomeDisplayAdvanceCarouselBannerViewHolder.LAYOUT_RES
             WidgetNameEnum.VIDEO.value -> ShopHomeVideoViewHolder.LAYOUT_RES
             WidgetNameEnum.PRODUCT.value -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)

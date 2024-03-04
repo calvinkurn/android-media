@@ -39,6 +39,9 @@
     
     <color name="dms_static_light_NN0_dark">#121212</color>
     <color name="dms_static_light_NN100">#E4EBF5</color>
+    <color name="dms_static_light_NN600">#6D7588</color>
+    <color name="dms_static_light_NN900">#2E3137</color>
+    <color name="dms_static_light_NN950">#212121</color>
     <color name="dms_static_light_NN950_44">#70212121</color>
     <color name="dms_static_light_NN950_68">#AD212121</color>
     <color name="dms_static_light_YN400">#FFA617</color>
@@ -51,6 +54,9 @@
     <color name="dms_static_light_GN500">#00AA5B</color>
     <color name="dms_static_light_GN100">#C9FDE0</color>
 
+    <color name="dms_static_dark_NN600">#AEB2BF</color>
+    <color name="dms_static_dark_NN900">#E9EBF5</color>
+    <color name="dms_static_dark_NN950">#F5F6FF</color>
     <color name="dms_static_dark_NN950_96">#F5F5F6FF</color>
     <color name="dms_static_dark_NN950_44">#70F5F6FF</color>
     <color name="dms_static_dark_NN950_68">#ADF5F6FF</color>
