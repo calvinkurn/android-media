@@ -5,7 +5,8 @@ import com.google.gson.annotations.SerializedName
 
 data class RechargeSetFailData(
     @SerializedName("rechargeSetOrderToFailV2")
-    val rechargeSetOrderToFail: RechargeSetOrderToFail = RechargeSetOrderToFail()
+    val rechargeSetOrderToFail: RechargeSetOrderToFail = RechargeSetOrderToFail(),
+    var isNeedRefresh: Boolean = false
 ) {
     data class RechargeSetOrderToFail(
         @SerializedName("attributes")

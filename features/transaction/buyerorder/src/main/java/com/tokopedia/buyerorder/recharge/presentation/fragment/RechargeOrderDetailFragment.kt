@@ -449,7 +449,8 @@ class RechargeOrderDetailFragment :
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.rechargeSetOrderToFail.attributes.isSuccess
-                    if (isSuccess) {
+                    if (isSuccess && it.data.isNeedRefresh) {
+//                        it.data.isNeedRefresh = false
                         rechargeViewModel.resetOrderDetailData()
                         activity?.recreate()
                     } else {
