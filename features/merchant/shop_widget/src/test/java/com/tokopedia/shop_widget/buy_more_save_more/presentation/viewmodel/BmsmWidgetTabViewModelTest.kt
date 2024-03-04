@@ -17,7 +17,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop_widget.buy_more_save_more.data.mapper.GetOfferingInfoForBuyerMapper
 import com.tokopedia.shop_widget.buy_more_save_more.data.mapper.GetOfferingProductListMapper
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoByShopIdUiModel
-import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoForBuyerUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingInfoForBuyerUiModel.BmsmWidgetUiState
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel.Product
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -33,10 +32,9 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Assert.assertEquals
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -114,7 +112,7 @@ class BmsmWidgetTabViewModelTest {
     @Test
     fun `when setInitialValue is called, should set uiState data accordingly`() {
         runBlockingTest {
-            //Given
+            // Given
             val offerIds = listOf(2178L)
             val shopId = 6555135L
             val defaultOfferingData = OfferingInfoByShopIdUiModel()
@@ -131,7 +129,7 @@ class BmsmWidgetTabViewModelTest {
                 viewModel.uiState.toList(emittedValue)
             }
 
-            //When
+            // When
             viewModel.setInitialUiState(
                 offerIds = offerIds,
                 shopId = shopId,
@@ -139,7 +137,7 @@ class BmsmWidgetTabViewModelTest {
                 localCacheModel = localCacheModel
             )
 
-            //Then
+            // Then
             val actual = emittedValue.last()
             assertEquals(expectedUiState, actual)
 
@@ -150,7 +148,7 @@ class BmsmWidgetTabViewModelTest {
     @Test
     fun `when defaultOfferingData is available, should populate productListData accordingly`() {
         runBlockingTest {
-            //Given
+            // Given
             val offerIds = listOf(2178L)
             val shopId = 6555135L
             val defaultOfferingData = OfferingInfoByShopIdUiModel(
@@ -169,7 +167,7 @@ class BmsmWidgetTabViewModelTest {
                 viewModel.uiState.toList(emittedValue)
             }
 
-            //When
+            // When
             viewModel.setInitialUiState(
                 offerIds = offerIds,
                 shopId = shopId,
@@ -177,7 +175,7 @@ class BmsmWidgetTabViewModelTest {
                 localCacheModel = localCacheModel
             )
 
-            //Then
+            // Then
             val actual = viewModel.productList.getOrAwaitValue()
             assertEquals(expected, actual)
 
@@ -188,7 +186,7 @@ class BmsmWidgetTabViewModelTest {
     @Test
     fun `when getOfferingInfoForBuyer is called, should get the data and set uiState value accordingly`() {
         runBlockingTest {
-            //Given
+            // Given
             val expected = getOfferingInfoForBuyerMapper.map(getDummyOfferingInfoResponse())
             mockGetOfferingInfoForBuyerGqlCall()
             mockGetOfferingProductListGqlCall()
@@ -198,10 +196,10 @@ class BmsmWidgetTabViewModelTest {
                 viewModel.uiState.toList(emittedValue)
             }
 
-            //When
+            // When
             viewModel.getOfferingData()
 
-            //Then
+            // Then
             val actual = emittedValue.last().offeringInfo
             assertEquals(expected, actual)
             job.cancel()
@@ -211,14 +209,14 @@ class BmsmWidgetTabViewModelTest {
     @Test
     fun `when getOfferingInfoForBuyer is returning error, should handle the error properly`() {
         runBlockingTest {
-            //Given
+            // Given
             val expectedErrorMsg = "Server Error"
             mockErrorGetOfferingInfoForBuyerGqlCall()
 
-            //When
+            // When
             viewModel.getOfferingData()
 
-            //Then
+            // Then
             val actualErrorMsg = viewModel.error.getOrAwaitValue().localizedMessage
             assertEquals(expectedErrorMsg, actualErrorMsg)
         }
@@ -227,14 +225,14 @@ class BmsmWidgetTabViewModelTest {
     @Test
     fun `when getOfferingProductList is returning error, should handle the error properly`() {
         runBlockingTest {
-            //Given
+            // Given
             val expectedErrorMsg = "Server Error"
             mockErrorGetOfferingProductListGqlCall()
 
-            //When
+            // When
             viewModel.getOfferingData()
 
-            //Then
+            // Then
             val actualErrorMsg = viewModel.error.getOrAwaitValue().localizedMessage
             assertEquals(expectedErrorMsg, actualErrorMsg)
         }
@@ -243,7 +241,7 @@ class BmsmWidgetTabViewModelTest {
     @Test
     fun `when getMinicartV3 is called, should set uiState value accordingly`() {
         runBlockingTest {
-            //Given
+            // Given
             val expected = MiniCartSimplifiedData()
             mockGetMinicartV3GqlCall()
 
@@ -252,10 +250,10 @@ class BmsmWidgetTabViewModelTest {
                 viewModel.uiState.toList(emittedValue)
             }
 
-            //When
+            // When
             viewModel.getMinicartV3()
 
-            //Then
+            // Then
             val actual = emittedValue.last().miniCartData
             assertEquals(expected, actual)
             job.cancel()
@@ -265,7 +263,7 @@ class BmsmWidgetTabViewModelTest {
     @Test
     fun `when addToCart is called, should hit the addToCartGql properly`() {
         runBlockingTest {
-            //Given
+            // Given
             val expected = Success(AddToCartDataModel())
             val dummyProduct = Product(
                 name = "dummy product",
@@ -273,10 +271,30 @@ class BmsmWidgetTabViewModelTest {
             )
             mockAddToCartGqlCall()
 
-            //When
+            // When
             viewModel.addToCart(dummyProduct)
 
-            //Then
+            // Then
+            val actual = viewModel.miniCartAdd.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun `when addToCart is called and product is not having minOrder, should hit the addToCartGql properly`() {
+        runBlockingTest {
+            // Given
+            val expected = Success(AddToCartDataModel())
+            val dummyProduct = Product(
+                name = "dummy product",
+                minOrder = 0
+            )
+            mockAddToCartGqlCall()
+
+            // When
+            viewModel.addToCart(dummyProduct)
+
+            // Then
             val actual = viewModel.miniCartAdd.getOrAwaitValue()
             assertEquals(expected, actual)
         }
@@ -285,17 +303,17 @@ class BmsmWidgetTabViewModelTest {
     @Test
     fun `when addToCart is return error, should get the error data properly`() {
         runBlockingTest {
-            //Given
+            // Given
             val dummyProduct = Product(
                 name = "dummy product",
                 minOrder = 2
             )
             mockErrorAddToCartGqlCall()
 
-            //When
+            // When
             viewModel.addToCart(dummyProduct)
 
-            //Then
+            // Then
             val actual = viewModel.miniCartAdd.getOrAwaitValue()
             assert(actual is Fail)
         }
@@ -335,7 +353,6 @@ class BmsmWidgetTabViewModelTest {
         val error = MessageErrorException("Server Error")
         coEvery { addToCartUseCase.executeOnBackground() } throws error
     }
-
 
     private fun getDummyOfferingInfoResponse(): OfferInfoForBuyerResponse =
         OfferInfoForBuyerResponse(
