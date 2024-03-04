@@ -490,6 +490,7 @@ object AppLogSearch {
                 trackId = trackId,
                 sourcePageType = sourcePageType,
                 requestId = requestID,
+                sourcePreviousPage = AppLogAnalytics.getLastDataBeforeCurrent(PAGE_NAME)?.toString()
             )
 
             AppLogAnalytics.putPageData(SEARCH_ENTRANCE, searchEntrance)

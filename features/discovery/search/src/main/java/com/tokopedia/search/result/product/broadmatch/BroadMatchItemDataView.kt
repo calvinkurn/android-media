@@ -30,6 +30,7 @@ data class BroadMatchItemDataView(
     val url: String = "",
     val applink: String = "",
     val priceString: String = "",
+    val shopId: String = "",
     val shopLocation: String = "",
     val shopName: String = "",
     val badgeItemDataViewList: List<BadgeItemDataView> = listOf(),
@@ -103,7 +104,7 @@ data class BroadMatchItemDataView(
         rank = getRank(),
         isAd = isOrganicAds,
         isFirstPage = byteIOTrackingData.isFirstPage,
-        shopId = null,
+        shopId = shopId,
         aladdinButtonType = aladdinButtonType,
     )
 
@@ -120,7 +121,7 @@ data class BroadMatchItemDataView(
         searchKeyword = byteIOTrackingData.keyword,
         tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
         rank = getRank(),
-        shopID = null,
+        shopID = shopId,
     )
 
     companion object {
@@ -140,6 +141,7 @@ data class BroadMatchItemDataView(
             url = otherRelatedProduct.url,
             applink = otherRelatedProduct.applink,
             priceString = otherRelatedProduct.priceString,
+            shopId = otherRelatedProduct.shop.id,
             shopLocation = otherRelatedProduct.shop.city,
             badgeItemDataViewList = otherRelatedProduct.badgeList.map { BadgeItemDataView.create(it) },
             freeOngkirDataView = FreeOngkirDataView.create(otherRelatedProduct.freeOngkir),
@@ -178,6 +180,7 @@ data class BroadMatchItemDataView(
             ratingAverage = product.ratingAverage,
             labelGroupDataList = product.labelGroupDataList,
             badgeItemDataViewList = product.badgeItemDataViewList,
+            shopId = product.shopId,
             shopLocation = product.shopLocation,
             shopName = product.shopName,
             position = index + 1,
@@ -212,6 +215,7 @@ data class BroadMatchItemDataView(
             imageUrl = otherRelatedProduct.mediaURL.image,
             url = otherRelatedProduct.url,
             applink = otherRelatedProduct.applink,
+            shopId = otherRelatedProduct.shop.id,
             shopLocation = otherRelatedProduct.shop.city,
             badgeItemDataViewList = listOf(BadgeItemDataView.create(otherRelatedProduct.badge)),
             freeOngkirDataView = FreeOngkirDataView.create(otherRelatedProduct.freeShipping),
