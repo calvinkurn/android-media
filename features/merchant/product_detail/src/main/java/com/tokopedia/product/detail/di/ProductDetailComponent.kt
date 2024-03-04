@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
-import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
 import dagger.Component
 
@@ -23,6 +22,5 @@ interface ProductDetailComponent {
 
     fun inject(activity: ProductDetailActivity)
     fun inject(fragment: ProductDetailFragment)
-    fun inject(bottomSheetFragment: AddToCartDoneBottomSheet)
     fun inject(productDetailBottomSheet: ProductDetailInfoBottomSheet)
 }

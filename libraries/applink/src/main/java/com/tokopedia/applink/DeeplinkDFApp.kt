@@ -610,7 +610,6 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/change-name", USER_PROFILE_SETTINGS),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/profile-completion", USER_PROFILE_SETTINGS),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/edit-profile-info", USER_PROFILE_SETTINGS),
-        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/profile-management", USER_PROFILE_SETTINGS),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/webview-kyc", USER_PROFILE_SETTINGS),
 
         // settingbank
