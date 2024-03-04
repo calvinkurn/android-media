@@ -98,7 +98,7 @@ internal object ViewUtil {
         }
 
         if (viewGroup is ViewGroup) {
-            (0 until viewGroup.childCount).map {
+            (0 until viewGroup.childCount).forEach {
                 try {
                     val childView = viewGroup.getChildAt(it)
                     traverseViewGroupFromRoot(childView, traversedViews)
