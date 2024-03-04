@@ -65,6 +65,7 @@
                   }
                 ],
                 "shop": {
+                  "id": "shop-id",
                   "city": "Kab. Sidoarjo"
                 },
                 "badge": {
