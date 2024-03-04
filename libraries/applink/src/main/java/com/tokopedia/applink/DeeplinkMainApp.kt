@@ -974,6 +974,9 @@ object DeeplinkMainApp {
             },
             DLP.startsWith(PATH_SELLER_PARTIAL_ORDER_FULFILLMENT) { uri: Uri ->
                 DeeplinkMapperOrder.getRegisteredNavigationSellerPartialOrderFulfillment(uri)
+            },
+            DLP.startsWith(DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.BuyerRequestCancelRespond.getRegisteredNavigation(uri)
             }
         ),
         "seller-review-detail" to mutableListOf(
@@ -1034,7 +1037,8 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("pod/{order_id}") { deeplink: String ->
                 DeeplinkMapperLogistic.getRegisteredNavigationPod(deeplink)
-            }
+            },
+            DLP.startsWith("tipping", ApplinkConstInternalLogistic.TIPPING_DRIVER)
         ),
         "shop" to mutableListOf(
             DLP.matchPattern("{shop_id}/etalase-list") { _, _, _, idList ->

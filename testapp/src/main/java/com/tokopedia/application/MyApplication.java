@@ -18,9 +18,6 @@ import kotlin.jvm.functions.Function1;
 
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.FirebaseApp;
-import com.scp.auth.GotoSdk;
-import com.scp.auth.common.utils.ScpRefreshHelper;
-import com.scp.auth.common.utils.ScpUtils;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -53,7 +50,6 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.network.data.model.ScpTokenModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.tkpd.BuildConfig;
@@ -70,7 +66,6 @@ import java.util.Objects;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
-import kotlin.jvm.functions.Function1;
 import okhttp3.Response;
 import timber.log.Timber;
 
@@ -221,12 +216,6 @@ public class MyApplication extends BaseMainApplication
         TokoChatConnection.init(this, false);
 
         UserSession userSession = new UserSession(this);
-
-        GotoSdk.init(this);
-
-        if (userSession.isLoggedIn() && Objects.requireNonNull(GotoSdk.LSDKINSTANCE).getAccessToken().isEmpty()) {
-            GotoSdk.LSDKINSTANCE.save(userSession.getAccessToken(), userSession.getFreshToken());
-        }
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -547,15 +536,5 @@ public class MyApplication extends BaseMainApplication
     @Override
     public void onRefreshCM(String token) {
         refreshFCMFromInstantIdService(token);
-    }
-
-    @Override
-    public boolean isGotoAuthSdkEnabled() {
-        return ScpUtils.INSTANCE.isGotoLoginEnabled();
-    }
-
-    @Override
-    public ScpTokenModel onNewRefreshToken() {
-        return new ScpRefreshHelper(this).refreshToken();
     }
 }

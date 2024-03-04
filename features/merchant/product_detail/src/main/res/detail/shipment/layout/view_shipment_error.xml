@@ -20,7 +20,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toTopOf="@id/pdp_shipment_error_subtitle"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,13 +35,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="12dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/pdp_shipment_error_title"
         app:layout_constraintStart_toStartOf="@id/pdp_shipment_error_title"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_error_title"
-        app:typographyType="paragraph_2"
+        app:typographyType="display_3"
         tools:text="Yuk, cari produk lain atau Ganti Alamat." />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

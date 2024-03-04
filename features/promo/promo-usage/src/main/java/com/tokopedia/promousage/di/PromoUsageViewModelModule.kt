@@ -22,4 +22,5 @@ abstract class PromoUsageViewModelModule {
     @ActivityScope
     @ViewModelKey(PromoUsageViewModel::class)
     internal abstract fun bindPromoUsageViewModel(viewModel: PromoUsageViewModel): ViewModel
+
 }

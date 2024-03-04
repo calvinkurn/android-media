@@ -84,14 +84,10 @@ object MacroIntent {
 
     object Session {
         fun getSessionMacroSetupIntent(): Intent {
-            val intent = Intent("com.tokopedia.internal.VIEW")
+            val intent = Intent("android.intent.action.VIEW")
             intent.setPackage(TKPD_PACKAGE_NAME)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            var loginParam = "non-login"
-            if (MacroArgs.isLogin(InstrumentationRegistry.getArguments())) {
-                loginParam = "login"
-            }
-            intent.data = Uri.parse("tokopedia-android-internal://session-setting/opt/$loginParam")
+            intent.data = Uri.parse("tokopedia://login")
             return intent
         }
     }
@@ -202,7 +198,7 @@ object MacroIntent {
 
         fun getSearchResultIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://discovery/search-result?q=samsung")
+            intent.data = Uri.parse("tokopedia-android-internal://discovery/search-result?q=Sarung+Tangan")
             return intent
         }
     }
@@ -237,11 +233,16 @@ object MacroIntent {
 
         const val RECYCLER_VIEW_ID = "rv_pdp"
         const val TRACE = "perf_trace_pdp"
+        private const val internalDeeplink = "tokopedia-android-internal://marketplace/product-detail"
 
-        fun getIntent(): Intent {
-            val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-detail/1742093676/?layoutID=4")
-            return intent
+        fun getIntent() = Intent("com.tokopedia.internal.VIEW").apply {
+            val parameter = MacroArgs.getParameter(InstrumentationRegistry.getArguments())
+
+            data = if (parameter.startsWith(internalDeeplink)) {
+                Uri.parse(parameter)
+            } else {
+                Uri.parse("$internalDeeplink/6225772444/?layoutID=4")
+            }
         }
     }
 

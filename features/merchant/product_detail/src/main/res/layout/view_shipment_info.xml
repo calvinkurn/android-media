@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="8dp">
+    android:paddingTop="4dp">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/pdp_shipment_info_logo"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         app:icon_color_light_enable="@color/Unify_NN600"
         app:icon_color_night_enable="@color/Unify_NN500"
         app:icon_name="CLOCK"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,7 +27,7 @@
         app:layout_constraintStart_toEndOf="@id/pdp_shipment_info_logo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginStart="0dp"
-        app:typographyType="display_2"
+        app:typographyType="display_3"
         tools:text="Estimasi tiba besok - 25 Agu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

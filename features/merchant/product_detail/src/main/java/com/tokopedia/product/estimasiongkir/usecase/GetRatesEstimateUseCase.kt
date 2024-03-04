@@ -47,7 +47,7 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
             poTime: Long,
             shopTier: Int,
             uniqueId: String,
-            orderValue: Int,
+            orderValue: Double,
             boMetadata: String,
             warehouseId: String
         ): Map<String, Any?> = mapOf(

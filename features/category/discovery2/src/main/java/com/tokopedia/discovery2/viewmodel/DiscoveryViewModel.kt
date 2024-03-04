@@ -77,12 +77,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
-import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSourceValue
+import com.tokopedia.minicart.domain.GetMiniCartParam
+import com.tokopedia.minicart.domain.GetMiniCartWidgetUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -103,7 +104,7 @@ private const val SCROLL_DEPTH = 100
 
 class DiscoveryViewModel @Inject constructor(
     private val discoveryDataUseCase: DiscoveryDataUseCase,
-    private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
+    private val getMiniCartUseCase: GetMiniCartWidgetUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
@@ -193,10 +194,12 @@ class DiscoveryViewModel @Inject constructor(
             miniCartItem == null -> addItemToCart(
                 discoATCRequestParams
             )
+
             discoATCRequestParams.quantity.isZero() -> removeItemCart(
                 miniCartItem,
                 discoATCRequestParams
             )
+
             else -> updateItemCart(
                 miniCartItem,
                 discoATCRequestParams
@@ -308,15 +311,11 @@ class DiscoveryViewModel @Inject constructor(
         bmGmDataParam: BmGmDataParam
     ) {
         launchCatchError(block = {
-            getMiniCartUseCase.setParams(
-                shopIds = shopId,
-                source = MiniCartSource.DiscoOfferPage,
-                bmGmParam = BmgmParamModel(
-                    offerIds = listOf(bmGmDataParam.offerId.toLongOrZero()),
-                    warehouseIds = listOf(bmGmDataParam.warehouseTco.toLongOrZero())
-                )
-            )
-            executeGetMiniCartUseCase {
+            executeGetMiniCartUseCase(
+                shopId = shopId,
+                bmGmDataParam = bmGmDataParam,
+                source = MiniCartSource.DiscoOfferPage.value
+            ) {
                 _bmGmDataList.postValue(
                     Pair(
                         bmGmDataParam,
@@ -339,11 +338,10 @@ class DiscoveryViewModel @Inject constructor(
     ) {
         if (shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
-                getMiniCartUseCase.setParams(
-                    shopIds = shopId,
-                    source = MiniCartSource.TokonowDiscoveryPage
-                )
-                executeGetMiniCartUseCase {
+                executeGetMiniCartUseCase(
+                    shopId = shopId,
+                    source = MiniCartSource.TokonowDiscoveryPage.value
+                ) {
                     _miniCart.postValue(Success(it))
                 }
             }) {
@@ -352,15 +350,32 @@ class DiscoveryViewModel @Inject constructor(
         }
     }
 
-    private fun executeGetMiniCartUseCase(
+    private suspend fun executeGetMiniCartUseCase(
+        shopId: List<String>,
+        source: MiniCartSourceValue,
+        bmGmDataParam: BmGmDataParam? = null,
         onSuccessAction: ((miniCartSimplifiedData: MiniCartSimplifiedData) -> Unit)? = null
     ) {
-        getMiniCartUseCase.execute({
-            miniCartSimplifiedData = it
-            onSuccessAction?.invoke(it)
-        }, {
-            _miniCart.postValue(Fail(it))
-        })
+        try {
+            val data = getMiniCartUseCase.invoke(
+                GetMiniCartParam(
+                    shopIds = shopId,
+                    source = source,
+                    bmgm = if (bmGmDataParam != null) {
+                        GetMiniCartParam.GetMiniCartBmgmParam(
+                            offerIds = listOf(bmGmDataParam.offerId.toLongOrZero()),
+                            warehouseIds = listOf(bmGmDataParam.warehouseTco.toLongOrZero())
+                        )
+                    } else {
+                        null
+                    }
+                )
+            ).toSimplifiedData()
+            miniCartSimplifiedData = data
+            onSuccessAction?.invoke(data)
+        } catch (e: Throwable) {
+            _miniCart.postValue(Fail(e))
+        }
     }
 
     private fun removeItemCart(
@@ -392,7 +407,11 @@ class DiscoveryViewModel @Inject constructor(
         })
     }
 
-    fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>, userAddressData: LocalCacheModel?, isFromTabNavigation: Boolean = false) {
+    fun getDiscoveryData(
+        queryParameterMap: MutableMap<String, String?>,
+        userAddressData: LocalCacheModel?,
+        isFromTabNavigation: Boolean = false
+    ) {
         pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
         if (!isFromTabNavigation) {
             queryParameterMap.remove(FORCED_NAVIGATION)
@@ -408,9 +427,19 @@ class DiscoveryViewModel @Inject constructor(
                         queryParameterMapWithoutRpc = it.queryParamMapWithoutRpc
                     }
                 } else {
-                    setParameterMap(queryParameterMap[QUERY_PARENT], queryParameterMapWithRpc, queryParameterMapWithoutRpc)
+                    setParameterMap(
+                        queryParameterMap[QUERY_PARENT],
+                        queryParameterMapWithRpc,
+                        queryParameterMapWithoutRpc
+                    )
                 }
-                val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier, queryParameterMap, queryParameterMapWithRpc, queryParameterMapWithoutRpc, userAddressData)
+                val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(
+                    pageIdentifier,
+                    queryParameterMap,
+                    queryParameterMapWithRpc,
+                    queryParameterMapWithoutRpc,
+                    userAddressData
+                )
                 pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
                 pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                 data.let {
@@ -430,16 +459,24 @@ class DiscoveryViewModel @Inject constructor(
     }
 
     private fun setDiscoveryLiveState(pageInfo: PageInfo) {
-        if (!pageInfo.redirectionUrl.isNullOrEmpty() && discoveryLiveStateData.value != RouteToApplink(pageInfo.redirectionUrl ?: "")) {
+        if (!pageInfo.redirectionUrl.isNullOrEmpty() && discoveryLiveStateData.value != RouteToApplink(
+                pageInfo.redirectionUrl ?: ""
+            )
+        ) {
             discoveryLiveStateData.value = RouteToApplink(pageInfo.redirectionUrl ?: "")
-        } else if (pageInfo.redirectionUrl.isNullOrEmpty() && pageInfo.isAdult == IS_ADULT && discoveryLiveStateData.value != GoToAgeRestriction(pageInfo.identifier, pageInfo.origin)) {
+        } else if (pageInfo.redirectionUrl.isNullOrEmpty() && pageInfo.isAdult == IS_ADULT && discoveryLiveStateData.value != GoToAgeRestriction(
+                pageInfo.identifier,
+                pageInfo.origin
+            )
+        ) {
             discoveryLiveStateData.value = GoToAgeRestriction(pageInfo.identifier, pageInfo.origin)
         }
     }
 
     private fun setPageInfo(discoPageData: DiscoveryPageData?) {
         discoPageData?.pageInfo?.let { pageInfoData ->
-            pageType = if (pageInfoData.type.isNullOrEmpty()) DISCOVERY_DEFAULT_PAGE_TYPE else pageInfoData.type
+            pageType =
+                if (pageInfoData.type.isNullOrEmpty()) DISCOVERY_DEFAULT_PAGE_TYPE else pageInfoData.type
             pagePath = pageInfoData.path ?: ""
             chooseAddressVisibilityLiveData.value = pageInfoData.showChooseAddress
             pageInfoData.additionalInfo = discoPageData.additionalInfo
@@ -463,18 +500,25 @@ class DiscoveryViewModel @Inject constructor(
     fun getDiscoveryResponseList(): LiveData<Result<List<ComponentsItem>>> = discoveryResponseList
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
     fun getDiscoveryLiveStateData(): LiveData<DiscoveryLiveState> = discoveryLiveStateData
-    fun getDiscoveryAnchorTabLiveData(): LiveData<Result<ComponentsItem>> = discoveryAnchorTabLiveData
-    fun getDiscoveryNavToolbarConfigLiveData(): LiveData<NavToolbarConfig> = discoveryNavToolbarConfig
+    fun getDiscoveryAnchorTabLiveData(): LiveData<Result<ComponentsItem>> =
+        discoveryAnchorTabLiveData
+
+    fun getDiscoveryNavToolbarConfigLiveData(): LiveData<NavToolbarConfig> =
+        discoveryNavToolbarConfig
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
-        val queryMap: MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")
+        val queryMap: MutableMap<String, Any> =
+            mutableMapOf("fabShopId" to shopId, "source" to "discovery")
         launchCatchError(
             block = {
                 val customTopChatResponse = customTopChatUseCase.getCustomTopChatMessageId(queryMap)
                 customTopChatResponse?.let {
                     it.chatExistingChat?.let { chatExistingChat ->
                         if (chatExistingChat.messageId != 0) {
-                            RouteManager.route(context, appLinks.plus(chatExistingChat.messageId.toString()))
+                            RouteManager.route(
+                                context,
+                                appLinks.plus(chatExistingChat.messageId.toString())
+                            )
                         }
                     }
                 }
@@ -531,7 +575,10 @@ class DiscoveryViewModel @Inject constructor(
         )
     }
 
-    fun scrollToPinnedComponent(listComponent: List<ComponentsItem>, pinnedComponentId: String?): Pair<Int, Boolean> {
+    fun scrollToPinnedComponent(
+        listComponent: List<ComponentsItem>,
+        pinnedComponentId: String?
+    ): Pair<Int, Boolean> {
         var isTabsAbovePinnedComponent = false
         listComponent.forEachIndexed { index, componentsItem ->
             if (componentsItem.name == ComponentsList.Tabs.componentName) {
@@ -663,11 +710,19 @@ class DiscoveryViewModel @Inject constructor(
         }
     }
 
-    private fun setParameterMap(queryParameterMap: String?, queryParameterMapWithRpc: MutableMap<String, String>, queryParameterMapWithoutRpc: MutableMap<String, String>) {
+    private fun setParameterMap(
+        queryParameterMap: String?,
+        queryParameterMapWithRpc: MutableMap<String, String>,
+        queryParameterMapWithoutRpc: MutableMap<String, String>
+    ) {
         launchCatchError(
             (this + Dispatchers.Default).coroutineContext,
             block = {
-                Utils.setParameterMapUtil(queryParameterMap, queryParameterMapWithRpc, queryParameterMapWithoutRpc)
+                Utils.setParameterMapUtil(
+                    queryParameterMap,
+                    queryParameterMapWithRpc,
+                    queryParameterMapWithoutRpc
+                )
             },
             onError = {
                 it

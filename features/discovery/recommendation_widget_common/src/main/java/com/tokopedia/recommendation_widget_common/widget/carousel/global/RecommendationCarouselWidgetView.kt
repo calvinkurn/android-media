@@ -81,9 +81,26 @@ class RecommendationCarouselWidgetView :
             carouselProductCardOnItemClickListener = itemClickListener(model),
             carouselSeeMoreClickListener = seeMoreClickListener(model),
             carouselProductCardOnItemATCNonVariantClickListener = itemAddToCartNonVariantListener(model),
+            carouselProductCardOnItemAddToCartListener = itemAddToCartListener(model),
             finishCalculate = ::finishCalculateCarouselHeight
         )
     }
+
+    private fun itemAddToCartListener(model: RecommendationCarouselModel) =
+        object : CarouselProductCardListener.OnItemAddToCartListener {
+            override fun onItemAddToCart(
+                productCardModel: ProductCardModel,
+                carouselProductCardPosition: Int
+            ) {
+                val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
+                if (model.listener?.onProductAddToCartClick(productRecommendation) == true) return
+                recommendationWidgetViewModel?.onDirectAddToCart(
+                    model,
+                    productRecommendation,
+                    productRecommendation.minOrder
+                )
+            }
+        }
 
     private fun itemImpressionListener(model: RecommendationCarouselModel) =
         object : CarouselProductCardListener.OnItemImpressedListener {
@@ -96,6 +113,7 @@ class RecommendationCarouselWidgetView :
             ) {
                 val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
 
+                if (model.listener?.onProductImpress(carouselProductCardPosition, productRecommendation) == true) return
                 if (productCardModel.isTopAds) {
                     TopAdsUrlHitter(context).hitImpressionUrl(
                         this@RecommendationCarouselWidgetView::class.java.simpleName,
@@ -130,7 +148,8 @@ class RecommendationCarouselWidgetView :
             ) {
                 val productRecommendation = model.getItem(carouselProductCardPosition) ?: return
 
-                if (productCardModel.isTopAds)
+                if (model.listener?.onProductClick(carouselProductCardPosition, productRecommendation) == true) return
+                if (productCardModel.isTopAds) {
                     TopAdsUrlHitter(context).hitClickUrl(
                         this@RecommendationCarouselWidgetView::class.java.simpleName,
                         productRecommendation.clickUrl,
@@ -138,15 +157,16 @@ class RecommendationCarouselWidgetView :
                         productRecommendation.name,
                         productRecommendation.imageUrl
                     )
-                if(model.listener?.onProductClick(productRecommendation) == true) return
-                if (model.widgetTracking != null)
+                }
+                if (model.widgetTracking != null) {
                     model.widgetTracking.sendEventItemClick(productRecommendation)
-                else
+                } else {
                     RecommendationCarouselTracking.sendEventItemClick(
                         model.widget,
                         productRecommendation,
                         model.trackingModel
                     )
+                }
 
                 RouteManager.route(context, productRecommendation.appUrl)
             }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -33,6 +34,7 @@ import com.tokopedia.logisticseller.ui.confirmshipping.data.ConfirmShippingAnaly
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
 import com.tokopedia.logisticseller.ui.confirmshipping.di.ConfirmShippingComponent
 import com.tokopedia.logisticseller.ui.confirmshipping.di.DaggerConfirmShippingComponent
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -75,12 +77,29 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
         false
     }
 
+    private val composeIntent =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                activity?.setResult(
+                    Activity.RESULT_OK,
+                    Intent().apply {
+                        putExtra(
+                            RESULT_CONFIRM_SHIPPING,
+                            result.data?.extras?.getString(RESULT_CONFIRM_SHIPPING)
+                        )
+                    }
+                )
+            }
+            activity?.finish()
+        }
+
     private val binding by viewBinding(FragmentSomConfirmShippingBinding::bind)
 
     companion object {
         private const val ERROR_CONFIRM_SHIPPING = "Error when confirm shipping."
         private const val ERROR_GET_COURIER_LIST = "Error when get courier list."
         private const val ERROR_CHANGE_COURIER = "Error when change courier."
+        private const val TOGGLE_COMPOSE = "android_disable_confirm_shipping_compose"
 
         private const val TAG_BOTTOMSHEET = "bottomSheet"
 
@@ -116,10 +135,23 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkRemoteConfig()
         setupLayout()
         setupListeners()
         observingCourierList()
         observingChangeCourier()
+    }
+
+    private fun checkRemoteConfig() {
+        val firebaseRemoteConfigImpl = FirebaseRemoteConfigImpl(context)
+        val disableCompose = firebaseRemoteConfigImpl.getBoolean(TOGGLE_COMPOSE)
+        if (!disableCompose) {
+            val intent = Intent(requireContext(), ConfirmShippingComposeActivity::class.java).apply {
+                putExtra(PARAM_ORDER_ID, currOrderId)
+                putExtra(PARAM_CURR_IS_CHANGE_SHIPPING, currIsChangeShipping)
+            }
+            composeIntent.launch(intent)
+        }
     }
 
     override fun onResume() {

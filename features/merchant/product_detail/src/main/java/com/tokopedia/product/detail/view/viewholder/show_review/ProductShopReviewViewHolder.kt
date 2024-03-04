@@ -18,7 +18,7 @@ import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShop
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewUiModel
 import com.tokopedia.product.detail.databinding.ItemDynamicShopReviewBinding
 import com.tokopedia.product.detail.databinding.ShopReviewContentBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.util.isInflated
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.show_review.adapter.ShopReviewListItemAdapter
@@ -29,7 +29,7 @@ import com.tokopedia.unifycomponents.toPx
  */
 class ProductShopReviewViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<ProductShopReviewDataModel>(view) {
 
     companion object {

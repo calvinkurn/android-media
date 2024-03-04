@@ -1,17 +1,14 @@
 package com.tokopedia.home_account.view.fragment
 
-import android.Manifest
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
@@ -29,11 +26,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.scp.auth.GotoSdk
-import com.scp.auth.common.utils.ScpUtils
-import com.scp.auth.common.utils.TkpdAdditionalHeaders
-import com.scp.login.core.domain.contracts.listener.LSdkCheckOneTapStatusListener
-import com.scp.login.core.domain.onetaplogin.mappers.OneTapLoginError
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -85,7 +77,7 @@ import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.ui.accountsettings.AccountSettingActivity
-import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentComposeActivity
+import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentActivity
 import com.tokopedia.home_account.ui.mediaquality.MediaQualitySettingActivity
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
@@ -290,8 +282,7 @@ open class HomeAccountUserFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val label = getLabelProfileManagement()
-        homeAccountAnalytic.sendViewOnAkunSayaPageEvent(label)
+        homeAccountAnalytic.sendViewOnAkunSayaPageEvent()
 
         binding?.homeAccountUserToolbar?.let {
             it.setIcon(
@@ -369,17 +360,8 @@ open class HomeAccountUserFragment :
         }
     }
 
-    private fun getLabelProfileManagement(): String {
-        return if (DeeplinkMapperUser.isProfileManagementM2Activated()) {
-            AccountConstants.Analytics.Label.LABEL_M2
-        } else {
-            AccountConstants.Analytics.Label.LABEL_EMPTY
-        }
-    }
-
     override fun onProfileClicked() {
-        val label = getLabelProfileManagement()
-        homeAccountAnalytic.eventClickProfile(label)
+        homeAccountAnalytic.eventClickProfile()
     }
 
     override fun onIconWarningClicked(profile: ProfileDataView) {
@@ -387,8 +369,7 @@ open class HomeAccountUserFragment :
     }
 
     override fun onEditProfileClicked() {
-        val label = getLabelProfileManagement()
-        homeAccountAnalytic.eventClickProfile(label)
+        homeAccountAnalytic.eventClickProfile()
         goToEditProfile()
     }
 
@@ -1126,22 +1107,8 @@ open class HomeAccountUserFragment :
         setupSettingList()
         getFirstRecommendation()
         viewModel.getSafeModeValue()
-        if (ScpUtils.isGotoLoginEnabled()) {
-            GotoSdk.LSDKINSTANCE?.getOneTapStatus(
-                lifecycle,
-                additionalHeaders = TkpdAdditionalHeaders(requireContext()),
-                object : LSdkCheckOneTapStatusListener {
-                    override fun onCompleted(isEligible: Boolean) {
-                        viewModel.setOneTapStatus(isEligible)
-                    }
-
-                    override fun onError(error: OneTapLoginError) {}
-                }
-            )
-        } else {
-            if (oclUtils.isOclEnabled()) {
-                viewModel.getOclStatus()
-            }
+        if (oclUtils.isOclEnabled()) {
+            viewModel.getOclStatus()
         }
     }
 
@@ -1261,7 +1228,7 @@ open class HomeAccountUserFragment :
     }
 
     private fun goToFundsAndInvestment() {
-        val intent = Intent(activity, FundsAndInvestmentComposeActivity::class.java)
+        val intent = Intent(activity, FundsAndInvestmentActivity::class.java)
         startActivity(intent)
     }
 
@@ -1479,7 +1446,7 @@ open class HomeAccountUserFragment :
     private fun checkLogoutOffering() {
         if (viewModel.isOclEligible.value == true) {
             showOclBtmSheet()
-        } else if (DeeplinkMapperUser.isGotoLoginDisabled() && isEnableBiometricOffering()) {
+        } else if (isEnableBiometricOffering()) {
             homeAccountAnalytic.trackOnClickLogoutDialog()
             viewModel.getFingerprintStatus()
         } else {
