@@ -22,7 +22,6 @@ import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationToaster
 import com.tokopedia.epharmacy.utils.EPharmacyUploadError
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.epharmacy.utils.PRESCRIPTION_ATTACH_SUCCESS
-import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
@@ -90,7 +89,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     fun updateEPharmacyCart(uiUpdater: EPharmacyAttachmentUiUpdater) {
         updateCartUseCase.setParams(
-            updateCartRequestList = uiUpdater.getUpdateCartParams(),
+            updateCartRequestList = uiUpdater.getUpdateCartParams(ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.userCartContent),
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         )
         updateCartUseCase.execute({

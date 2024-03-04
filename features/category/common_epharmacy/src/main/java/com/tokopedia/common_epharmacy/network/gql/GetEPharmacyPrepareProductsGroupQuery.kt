@@ -19,6 +19,11 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                   checkout_flow {
                       error_message
                   }
+                  user_cart_content {
+                    cart_id
+                    product_id
+                    current_qty
+                  }
                   attachment_page_ticker_text
                   attachment_page_ticker_logo_url
                   toaster {
