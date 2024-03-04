@@ -100,7 +100,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
 
         viewModel.availableProducts.clear()
         viewModel.availableProducts.addAll(availableProducts)
-        viewModel.loadLayout(String.EMPTY)
+        viewModel.loadLayout(productId.toString())
     }
 
     /**

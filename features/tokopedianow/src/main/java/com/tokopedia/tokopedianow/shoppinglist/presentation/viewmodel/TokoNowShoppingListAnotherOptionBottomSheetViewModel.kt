@@ -42,7 +42,7 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.io)  {
     private companion object {
-        const val RECOMMENDATION_PAGE_NAME = "tokonow_shopping_list"
+        const val RECOMMENDATION_PAGE_NAME = "tokonow_similar"
     }
 
     private val mutableLayout: MutableList<Visitable<*>> = mutableListOf()
@@ -86,6 +86,7 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
                             addProducts(filteredRecommendedProducts)
                         },
                         ifNot = {
+                            clear()
                             addEmptyState()
                         }
                     )
