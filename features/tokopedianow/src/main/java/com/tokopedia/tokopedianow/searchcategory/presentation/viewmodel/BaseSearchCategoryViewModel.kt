@@ -43,7 +43,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.authentication.AuthHelper
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -64,7 +63,6 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_DISABLE
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ENABLED
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ROWS
 import com.tokopedia.tokopedianow.common.constant.ServiceType
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehouses
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.mapProductAdsCarousel
@@ -77,14 +75,10 @@ import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
-import com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
-import com.tokopedia.tokopedianow.home.domain.mapper.oldrepurchase.HomeRepurchaseMapper
-import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOP_NAV
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
@@ -119,7 +113,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataVie
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.PRODUCT_ADS_PARAMS
-import com.tokopedia.tokopedianow.searchcategory.utils.REPURCHASE_WIDGET_POSITION
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.track.TrackAppUtils.EVENT
@@ -150,7 +143,7 @@ abstract class BaseSearchCategoryViewModel(
     private val remoteConfig: RemoteConfig,
     protected val chooseAddressWrapper: ChooseAddressWrapper,
     private val affiliateService: NowAffiliateService,
-    protected val userSession: UserSessionInterface,
+    protected val userSession: UserSessionInterface
 ) : BaseViewModel(baseDispatcher.io) {
     companion object {
         private const val MIN_PRODUCT_COUNT = 6
@@ -266,13 +259,6 @@ abstract class BaseSearchCategoryViewModel(
     private val generalSearchEventMutableLiveData = SingleLiveEvent<Map<String, Any>>()
     val generalSearchEventLiveData: LiveData<Map<String, Any>> = generalSearchEventMutableLiveData
 
-    private val addToCartRepurchaseWidgetTrackingMutableLiveData =
-        SingleLiveEvent<Triple<Int, String, TokoNowProductCardUiModel>>()
-
-    val addToCartRepurchaseWidgetTrackingLiveData:
-        LiveData<Triple<Int, String, TokoNowProductCardUiModel>> =
-            addToCartRepurchaseWidgetTrackingMutableLiveData
-
     private val oocOpenScreenTrackingMutableEvent = SingleLiveEvent<Boolean>()
     val oocOpenScreenTrackingEvent: LiveData<Boolean> = oocOpenScreenTrackingMutableEvent
 
@@ -290,9 +276,6 @@ abstract class BaseSearchCategoryViewModel(
 
     private val needToUpdateProductRecommendationMutableLiveData = MutableLiveData<Boolean>()
     val needToUpdateProductRecommendationLiveData: LiveData<Boolean> = needToUpdateProductRecommendationMutableLiveData
-
-    private val blockAddToCartMutableLiveData = MutableLiveData<Unit>()
-    val blockAddToCartLiveData: LiveData<Unit> = blockAddToCartMutableLiveData
 
     private val updateAdsCarouselMutableLiveData = MutableLiveData<Pair<Int, TokoNowAdsCarouselUiModel>>()
     val updateAdsCarouselLiveData: LiveData<Pair<Int, TokoNowAdsCarouselUiModel>> = updateAdsCarouselMutableLiveData
@@ -817,12 +800,10 @@ abstract class BaseSearchCategoryViewModel(
         val productList = contentDataView
             .aceSearchProductData
             .productList
-        val repurchaseWidget = contentDataView.repurchaseWidget
         val productAds = contentDataView.productAds
 
         addProductAds(contentVisitableList, productAds)
         addProductList(contentVisitableList, productList)
-        addRepurchaseWidget(contentVisitableList, repurchaseWidget, productList)
 
         return contentVisitableList
     }
@@ -835,9 +816,9 @@ abstract class BaseSearchCategoryViewModel(
             contentVisitableList.add(
                 mapProductAdsCarousel(
                     id = PRODUCT_ADS_CAROUSEL,
-                response =response,
-                    miniCartData =miniCartWidgetLiveData.value,
-                    hasBlockedAddToCart =hasBlockedAddToCart
+                    response = response,
+                    miniCartData = miniCartWidgetLiveData.value,
+                    hasBlockedAddToCart = hasBlockedAddToCart
                 )
             )
         }
@@ -858,48 +839,6 @@ abstract class BaseSearchCategoryViewModel(
         contentVisitableList.addAll(productListDataView)
     }
 
-    protected open fun addRepurchaseWidget(
-        contentVisitableList: MutableList<Visitable<*>>,
-        repurchaseWidget: RepurchaseData,
-        productList: List<Product>
-    ) {
-        val canShowRepurchaseWidget =
-            repurchaseWidget.products.isNotEmpty() &&
-                productList.size > REPURCHASE_WIDGET_POSITION
-
-        if (canShowRepurchaseWidget) {
-            contentVisitableList.add(
-                REPURCHASE_WIDGET_POSITION,
-                createRepurchaseWidgetUIModel(repurchaseWidget)
-            )
-        }
-    }
-
-    private fun createRepurchaseWidgetUIModel(repurchaseWidget: RepurchaseData) =
-        HomeRepurchaseMapper.mapToRepurchaseUiModel(
-            TokoNowRepurchaseUiModel(
-                id = "",
-                title = "",
-                productList = listOf(),
-                state = TokoNowLayoutState.IDLE
-            ),
-            repurchaseWidget
-        ).also {
-            updateRepurchaseWidgetQuantity(it)
-        }
-
-    private fun updateRepurchaseWidgetQuantity(
-        repurchaseUiModel: TokoNowRepurchaseUiModel,
-        index: Int = -1,
-        updatedProductIndices: MutableList<Int>? = null
-    ) {
-        repurchaseUiModel.productList.forEach { productUiModel ->
-            productUiModel.product = createUpdatedRepurchaseWidgetQuantity(productUiModel)
-        }
-
-        updatedProductIndices?.add(index)
-    }
-
     private fun updateAdsCarouselQuantity(
         adsCarouselUiModel: TokoNowAdsCarouselUiModel,
         index: Int
@@ -909,23 +848,6 @@ abstract class BaseSearchCategoryViewModel(
         }
         val newAdsCarousel = adsCarouselUiModel.copy(items = newItems)
         updateAdsCarouselMutableLiveData.postValue(Pair(index, newAdsCarousel))
-    }
-
-    private fun createUpdatedRepurchaseWidgetQuantity(
-        repurchaseProduct: TokoNowProductCardUiModel
-    ): ProductCardModel {
-        val quantity = cartService.getProductQuantity(
-            repurchaseProduct.productId,
-            repurchaseProduct.parentId
-        )
-
-        val nonVariant = repurchaseProduct.product.nonVariant?.copy(quantity = quantity)
-        val variant = repurchaseProduct.product.variant?.copy(quantity = quantity)
-
-        return repurchaseProduct.product.copy(
-            nonVariant = nonVariant,
-            variant = variant
-        )
     }
 
     private fun createProductCardCompactModel(
@@ -1012,12 +934,6 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun updateVisitableListLiveData() {
         visitableListMutableLiveData.value = visitableList
-    }
-
-    protected open suspend fun suspendUpdateVisitableListLiveData() {
-        withContext(baseDispatcher.main) {
-            updateVisitableListLiveData()
-        }
     }
 
     protected open fun updateNextPageData() {
@@ -1284,8 +1200,6 @@ abstract class BaseSearchCategoryViewModel(
         when (visitable) {
             is ProductItemDataView ->
                 updateProductItemQuantity(index, visitable, updatedProductIndices)
-            is TokoNowRepurchaseUiModel ->
-                updateRepurchaseWidgetQuantity(visitable, index, updatedProductIndices)
             is TokoNowAdsCarouselUiModel ->
                 updateAdsCarouselQuantity(visitable, index)
             is BroadMatchDataView ->
@@ -1500,70 +1414,6 @@ abstract class BaseSearchCategoryViewModel(
         updateToolbarNotificationLiveData.postValue(true)
     }
 
-    open fun onViewATCRepurchaseWidget(
-        repurchaseProduct: TokoNowProductCardUiModel,
-        quantity: Int
-    ) {
-        val nonVariant = repurchaseProduct.product.nonVariant ?: return
-        val productId = repurchaseProduct.productId
-        val shopId = repurchaseProduct.shopId
-        val currentQuantity = nonVariant.quantity
-
-        if (hasBlockedAddToCart) {
-            // this only blocks add to cart when using repurchase widget
-            blockAddToCartMutableLiveData.value = Unit
-        } else {
-            cartService.handleCart(
-                CartProductItem(productId, shopId, currentQuantity),
-                quantity,
-                onSuccessAddToCart = {
-                    addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                    onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
-                    sendAddToCartRepurchaseProductTracking(quantity, it.data.cartId, repurchaseProduct)
-                    updateToolbarNotification()
-                },
-                onSuccessUpdateCart = {
-                    onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
-                    updateToolbarNotification()
-                },
-                onSuccessDeleteCart = {
-                    removeFromCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                    onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, 0)
-                    updateToolbarNotification()
-                },
-                onError = ::onAddToCartFailed,
-                handleCartEventNonLogin = {
-                    handleAddToCartEventNonLogin(getRepurchaseWidgetIndex())
-                }
-            )
-        }
-    }
-
-    private fun onSuccessATCRepurchaseWidgetProduct(
-        repurchaseProduct: TokoNowProductCardUiModel,
-        quantity: Int
-    ) {
-        val nonVariant = repurchaseProduct.product.nonVariant ?: return
-
-        repurchaseProduct.product = repurchaseProduct.product.copy(
-            nonVariant = nonVariant.copy(quantity = quantity)
-        )
-
-        refreshMiniCart()
-    }
-
-    private fun sendAddToCartRepurchaseProductTracking(
-        quantity: Int,
-        cartId: String,
-        repurchaseProduct: TokoNowProductCardUiModel
-    ) {
-        addToCartRepurchaseWidgetTrackingMutableLiveData.value =
-            Triple(quantity, cartId, repurchaseProduct)
-    }
-
-    private fun getRepurchaseWidgetIndex() =
-        visitableList.indexOfFirst { it is TokoNowRepurchaseUiModel }
-
     private fun getUniqueId() =
         if (userSession.isLoggedIn) {
             AuthHelper.getMD5Hash(userSession.userId)
@@ -1649,7 +1499,6 @@ abstract class BaseSearchCategoryViewModel(
 
     protected data class ContentDataView(
         val aceSearchProductData: SearchProductData = SearchProductData(),
-        val repurchaseWidget: RepurchaseData = RepurchaseData(),
         val productAds: ProductAdsResponse = ProductAdsResponse()
     )
 
