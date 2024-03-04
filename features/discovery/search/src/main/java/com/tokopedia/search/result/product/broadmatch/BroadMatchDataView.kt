@@ -85,7 +85,7 @@ data class BroadMatchDataView(
             listItemId = null,
             itemRank = null,
             listResultType = null,
-            productID = null,
+            productID = "",
             searchKeyword = byteIOTrackingData.keyword,
             tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
             rank = getRank(),
