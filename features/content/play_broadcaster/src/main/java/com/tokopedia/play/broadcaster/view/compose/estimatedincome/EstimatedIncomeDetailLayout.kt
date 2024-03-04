@@ -8,6 +8,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.ui.model.stats.EstimatedIncomeDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
@@ -23,6 +24,7 @@ fun EstimatedIncomeDetailLayout(
     estimatedIncomeDetail: EstimatedIncomeDetailUiModel,
     onEstimatedIncomeClicked: () -> Unit,
 ) {
+    /** JOE LOG: handle loading & error state */
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
@@ -48,7 +50,7 @@ private fun EstimatedIncomeLayoutPreview() {
             EstimatedIncomeDetailLayout(
                 estimatedIncomeDetail = EstimatedIncomeDetailUiModel(
                     totalStatsList = listOf(
-                        LiveStatsUiModel.EstimatedIncome("Rp5.000.000"),
+                        LiveStatsUiModel.EstimatedIncome(value ="Rp5.000.000", clickableIcon = IconUnify.INFORMATION),
                         LiveStatsUiModel.Visit("1"),
                         LiveStatsUiModel.AddToCart("2"),
                         LiveStatsUiModel.TotalSold("3"),

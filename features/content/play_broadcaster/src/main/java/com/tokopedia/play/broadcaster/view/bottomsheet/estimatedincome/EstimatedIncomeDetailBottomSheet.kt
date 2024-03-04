@@ -5,6 +5,7 @@ import android.view.View
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.R
@@ -13,11 +14,14 @@ import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.stats.ProductStatsUiModel
 import com.tokopedia.play.broadcaster.view.compose.estimatedincome.EstimatedIncomeDetailLayout
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import javax.inject.Inject
 
 /**
  * Created by Jonathan Darwin on 04 March 2024
  */
-class EstimatedIncomeDetailBottomSheet : BottomSheetUnify() {
+class EstimatedIncomeDetailBottomSheet @Inject constructor(
+
+): BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupBottomSheet()
@@ -27,7 +31,7 @@ class EstimatedIncomeDetailBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
 
         view.layoutParams = view.layoutParams.apply {
-            height = (getScreenHeight() * 0.8).toInt()
+            height = (getScreenHeight() * HEIGHT_PERCENTAGE).toInt()
         }
     }
 
@@ -47,12 +51,12 @@ class EstimatedIncomeDetailBottomSheet : BottomSheetUnify() {
                     EstimatedIncomeDetailLayout(
                         estimatedIncomeDetail = EstimatedIncomeDetailUiModel(
                             totalStatsList = listOf(
-                                LiveStatsUiModel.EstimatedIncome("Rp5.000.000"),
+                                LiveStatsUiModel.EstimatedIncome("Rp5.000.000", clickableIcon = IconUnify.INFORMATION),
                                 LiveStatsUiModel.Visit("1"),
                                 LiveStatsUiModel.AddToCart("2"),
                                 LiveStatsUiModel.TotalSold("3"),
                             ),
-                            productStatsList = List(5) {
+                            productStatsList = List(1) {
                                 ProductStatsUiModel(
                                     id = it.toString(),
                                     name = "Product Name $it",
@@ -89,6 +93,8 @@ class EstimatedIncomeDetailBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val TAG = "EstimatedIncomeDetailBottomSheet"
+
+        private const val HEIGHT_PERCENTAGE = 0.8
 
         fun getFragment(
             fragmentManager: FragmentManager,

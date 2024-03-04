@@ -40,6 +40,7 @@ sealed interface LiveStatsUiModel {
 
     data class EstimatedIncome(
         val value: String = "",
+        val clickableIcon: Int = IconUnify.CHEVRON_RIGHT,
     ) : LiveStatsUiModel {
         override val icon: Int = IconUnify.SALDO
 

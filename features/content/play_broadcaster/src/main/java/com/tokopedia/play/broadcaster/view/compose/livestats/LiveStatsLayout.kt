@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 import kotlin.math.ceil
@@ -54,9 +53,8 @@ fun LiveStatsLayout(
                             modifier = Modifier.weight(1f),
                             liveStats = currLiveStats,
                             type = if (currLiveStats is LiveStatsUiModel.EstimatedIncome) {
-                                /** JOE TODO: make icon here dynamic */
                                 LiveStatsBoxType.Clickable(
-                                    icon = IconUnify.CHEVRON_RIGHT,
+                                    icon = currLiveStats.clickableIcon,
                                     onClick = onEstimatedIncomeClicked,
                                 )
                             } else {
