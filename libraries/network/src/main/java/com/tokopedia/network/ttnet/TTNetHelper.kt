@@ -24,7 +24,6 @@ object TTNetHelper {
                 false
             )
             TTNetInit.preInitCronetKernel()
-            Log.d("BYTEIO", "Ip address: ${TTNetDetectHttpGetInfo().ip}")
         } catch (e: Throwable) {
             e.printStackTrace()
         }

@@ -26,6 +26,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRAN
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_RESULT_ID
 import com.tokopedia.analyticsdebugger.cassava.Cassava
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -204,8 +205,10 @@ object AppLogAnalytics {
     fun init(application: Application) {
         initAppLog(application.applicationContext)
         remoteConfig = FirebaseRemoteConfigImpl(application.applicationContext)
-        EventsSenderUtils.setEventsSenderEnable("573733", true, application)
-        EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net")
+        if (GlobalConfig.DEBUG) {
+            EventsSenderUtils.setEventsSenderEnable("573733", true, application)
+            EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net")
+        }
         Timber.d(
             """(%s) 
             |AppLog dId: ${AppLog.getDid()} 
