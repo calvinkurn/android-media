@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_1"
@@ -19,7 +18,7 @@
         android:id="@+id/tv_success_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Cihuy! Pilihanmu udah disimpan"
+        android:text="@string/explicit_personalize_title"
         app:layout_constraintBottom_toTopOf="@+id/tv_success_subtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +31,7 @@
         android:id="@+id/tv_success_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Kami siapin rekomendasi yang kamu banget!"
+        android:text="@string/explicit_personalize_subtitle"
         app:layout_constraintBottom_toTopOf="@+id/animation_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

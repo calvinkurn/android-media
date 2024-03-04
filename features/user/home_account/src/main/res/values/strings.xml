@@ -237,6 +237,8 @@
     <string name="explicit_personalize_counter">%s/%s terpilih</string>
     <string name="explicit_personalize_skip">Nanti Aja</string>
     <string name="explicit_personalize_save">Simpan</string>
+    <string name="explicit_personalize_success_title">Cihuy! Pilihanmu udah disimpan</string>
+    <string name="explicit_personalize_success_subtitle">Cihuy! Pilihanmu udah disimpan</string>
 
     <!-- ADD/VERIFY PHONE -->
     <string name="add_phone_success_message">Yay! Nomor HP berhasil ditambah.</string>
