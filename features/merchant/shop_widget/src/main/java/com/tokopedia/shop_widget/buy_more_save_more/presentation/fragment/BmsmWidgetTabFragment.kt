@@ -66,9 +66,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
-
 
 class BmsmWidgetTabFragment :
     BaseDaggerFragment(),
@@ -175,7 +173,7 @@ class BmsmWidgetTabFragment :
             DaggerBmsmWidgetComponent
                 .builder()
                 .bmsmWidgetModule(BmsmWidgetModule())
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this@BmsmWidgetTabFragment)
         }
@@ -207,8 +205,10 @@ class BmsmWidgetTabFragment :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
-            if (atcMessage.isNotEmpty()) viewModel.getMinicartV3()
+        context?.let {
+            AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
+                if (atcMessage.isNotEmpty()) viewModel.getMinicartV3()
+            }
         }
     }
 
@@ -431,7 +431,6 @@ class BmsmWidgetTabFragment :
                             params.marginStart = PD_WIDGET_TITLE_LOADER_LEFT_MARGIN
                             loaderTitle.layoutParams = params
                         }
-
                     }
                     cardErrorState.gone()
                     flContentWrapper.gone()
@@ -525,12 +524,12 @@ class BmsmWidgetTabFragment :
 
     private fun setupPdHeader(offerMessage: List<String>) {
         binding?.apply {
-            //gift image section
+            // gift image section
             imgGiftItems.gone()
             imgGiftWhiteFrameBroder.gone()
             groupStackedImg.gone()
 
-            //upselling wording section
+            // upselling wording section
             tpgSubTitleWidget.gone()
             pdUpsellingWrapper.apply {
                 visibleWithCondition(offerMessage.isNotEmpty())
@@ -557,7 +556,7 @@ class BmsmWidgetTabFragment :
             productGiftImages?.firstOrNull() ?: defaultOfferingData.thumbnails.firstOrNull()
 
         binding?.apply {
-            //gift image section
+            // gift image section
             if (productGiftImages.isNullOrEmpty()) {
                 imgGiftItems.gone()
                 imgGiftWhiteFrameBroder.gone()
@@ -570,7 +569,7 @@ class BmsmWidgetTabFragment :
                 imgGiftWhiteFrameBroder.visible()
                 groupStackedImg.showWithCondition(productGiftImages.size > Int.ONE)
             }
-            //upselling wording section
+            // upselling wording section
             pdUpsellingWrapper.gone()
         }
     }

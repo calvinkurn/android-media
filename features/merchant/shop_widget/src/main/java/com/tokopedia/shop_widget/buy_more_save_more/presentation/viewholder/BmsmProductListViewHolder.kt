@@ -12,9 +12,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class BmsmProductListViewHolder(
     itemView: View,
     private val listener: BmsmWidgetItemEventListener,
-    val isOverrideTheme: Boolean
+    private val isOverrideTheme: Boolean
 ) : RecyclerView.ViewHolder(itemView) {
-
 
     private val binding: ItemBmsmWidgetProductListBinding? by viewBinding()
 

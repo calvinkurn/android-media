@@ -5,17 +5,17 @@ import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.listener.BmsmWidgetItemEventListener
 import com.tokopedia.shop_widget.buy_more_save_more.util.Constant
 import com.tokopedia.shop_widget.databinding.ItemBmsmWidgetSeeAllBinding
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.shop_widget.R
 
 class BmsmSeeAllProductViewHolder(
     itemView: View,
     private val listener: BmsmWidgetItemEventListener,
-    val isOverrideTheme: Boolean
+    private val isOverrideTheme: Boolean
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val binding: ItemBmsmWidgetSeeAllBinding? by viewBinding()
