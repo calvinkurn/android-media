@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.common.util
 
 import android.app.Activity
 import android.content.Context
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
@@ -9,7 +10,9 @@ import java.math.BigInteger
 
 object SharedPreferencesUtil {
 
+    private const val MA_SA_ADDEDITPRODUCT_SHARED_PREF = "aep_shared_pref"
     private const val MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION = "FirstTimeSpecification"
+    private const val MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION_CERTIFICATION = "FirstTimeSpecificationCertification"
     private const val MA_SA_ADDEDITPRODUCT_FIRST_TIME_CUSTOM_VARIANT_TYPE = "FirstTimeCVT"
     private const val MA_SA_ADDEDITPRODUCT_FIRST_TIME_WEIGHT_PER_VARIANT = "FirstTimeWPV"
     private const val MA_SA_ADDEDITPRODUCT_PRICE_WHEN_LOADED = "PriceWhenLoaded"
@@ -96,6 +99,22 @@ object SharedPreferencesUtil {
         val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             putBoolean(MA_SA_ADDEDITPRODUCT_FIRST_TIME_WEIGHT_PER_VARIANT, value)
+            commit()
+        }
+    }
+
+    fun getFirstTimeSpecificationCertification(context: Context, key: String): Boolean {
+        val sharedPref = context.getSharedPreferences(
+            MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION_CERTIFICATION + key, Context.MODE_PRIVATE)
+        val storedValue = sharedPref.getString(MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION, "")
+        return storedValue?.isNotEmpty().orFalse()
+    }
+
+    fun setFirstTimeSpecificationCertification(context: Context, key: String) {
+        val sharedPref = context.getSharedPreferences(
+            MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION_CERTIFICATION + key, Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putString(MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION, key)
             commit()
         }
     }

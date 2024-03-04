@@ -448,6 +448,7 @@
     <string name="message_onboarding_izin_edar_number">Untuk produk dari kategori yang dipilih, kamu bisa masukkan nomor Izin Edar, ya.</string>
     <string name="message_onboarding_sni_or_postel">Untuk produk dari kategori yang dipilih, kamu bisa masukkan nomor SNI / Sertifikat Postel, ya.</string>
     <string name="message_onboarding_health">Untuk produk dari kategori yang dipilih, kamu bisa masukkan nomor BPOM / PKRT / NIE, ya.</string>
+    <string name="message_onboarding_toaster">Untuk produk dari kategori yang dipilih, kamu bisa masukkan %s, ya.</string>
 
 
     <!-- Product Limitation -->

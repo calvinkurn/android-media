@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.MAX_TEXT_INPUT_LENGTH
 import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.SIGNAL_STATUS_VARIANT
@@ -33,7 +34,6 @@ class SpecificationValueViewHolder(
 
     private val tfSpecification: TextAreaUnify2? = itemView.findViewById(R.id.tfSpecification)
     private val tooltipRequired: View? = itemView.findViewById(R.id.tooltipRequired)
-    private var isCoachmarkShown = false
 
     init {
         val iconColor = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN900)
@@ -75,23 +75,24 @@ class SpecificationValueViewHolder(
             setText(selectedSpecification.data)
             tooltipRequired?.isVisible = selectedSpecification.specificationVariant == SIGNAL_STATUS_VARIANT
 
-            showCoachmark(tfSpecification, selectedSpecification.isTextInput)
+            showCoachmark(tfSpecification, selectedSpecification.isTextInput, selectedSpecification.specificationVariant)
         }
     }
 
-    private fun showCoachmark(anchor: View, isTextInput: Boolean) {
+    private fun showCoachmark(anchor: View, isTextInput: Boolean, specificationVariant: String) {
         val coachMarkItem = ArrayList<CoachMark2Item>()
         val coachMark = CoachMark2(itemView.context)
+        val isCoachmarkShown = SharedPreferencesUtil.getFirstTimeSpecificationCertification(itemView.context, specificationVariant)
         if (isTextInput && !isCoachmarkShown) {
             coachMarkItem.add(
                 CoachMark2Item(
                     anchor,
-                    "Title to give the main context",
-                    "Body text to describe the highlighted feature, make it clear and concise, no more than 2 lines"
+                    "",
+                    itemView.context.getString(R.string.message_onboarding_toaster, specificationVariant)
                 )
             )
             coachMark.showCoachMark(coachMarkItem)
-            isCoachmarkShown = true
+            SharedPreferencesUtil.setFirstTimeSpecificationCertification(itemView.context, specificationVariant)
         }
     }
 }
