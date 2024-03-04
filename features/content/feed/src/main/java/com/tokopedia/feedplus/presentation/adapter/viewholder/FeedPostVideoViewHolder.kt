@@ -207,7 +207,7 @@ class FeedPostVideoViewHolder(
             postGestureDetector.onTouchEvent(motionEvent)
         }
 
-        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
+        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool)
     }
 
     fun bind(item: FeedContentAdapter.Item) {
@@ -589,7 +589,6 @@ class FeedPostVideoViewHolder(
         campaignView.resetView()
         hideClearView()
         productButtonView.pauseProductIconAnimation()
-        binding.productTagView.disposeComposition()
     }
 
     override fun onViewRecycled() {

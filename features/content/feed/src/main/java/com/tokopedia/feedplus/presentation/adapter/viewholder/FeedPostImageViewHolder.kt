@@ -232,7 +232,7 @@ class FeedPostImageViewHolder(
         }
 
         binding.scrollableHost.setTargetParent(parentToBeDisabled)
-        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
+        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool)
     }
 
     fun bind(item: FeedContentAdapter.Item) {
@@ -396,7 +396,6 @@ class FeedPostImageViewHolder(
         onScrolling(false)
 
         isAutoSwipeOn = false
-        binding.productTagView.disposeComposition()
     }
 
     private fun updateProductTagText(element: FeedCardImageContentModel, isFocused: Boolean) {
