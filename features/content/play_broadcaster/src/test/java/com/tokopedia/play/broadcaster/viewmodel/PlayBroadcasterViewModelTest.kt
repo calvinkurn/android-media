@@ -31,6 +31,7 @@ import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.util.PriceFormatUtil
+import com.tokopedia.play.broadcaster.ui.model.log.BroadcasterErrorLog
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertEvent
@@ -39,6 +40,7 @@ import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.assertNotEqualTo
 import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
+import com.tokopedia.play.broadcaster.util.logger.error.BroadcasterErrorLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
@@ -47,6 +49,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
@@ -76,6 +79,7 @@ class PlayBroadcasterViewModelTest {
     private val mockDataStore: PlayBroadcastDataStore = mockk(relaxed = true)
     private val mockHydraConfigStore: HydraConfigStore = mockk(relaxed = true)
     private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
+    private val mockErrorLogger: BroadcasterErrorLogger = mockk(relaxed = true)
 
     private val productUiMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(PriceFormatUtil())
 
@@ -1530,6 +1534,38 @@ class PlayBroadcasterViewModelTest {
                 it.getViewModel().submitAction(PlayBroadcastAction.ClickPinProduct(product))
             }
             event.last().assertEqualTo(PlayBroadcastEvent.FailPinUnPinProduct(error, product.pinStatus.isPinned))
+        }
+    }
+
+    @Test
+    fun `when sending broadcaster error log, it should send the error data along with additional useful information (channel id and author information)`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel(onlyBuyer = true)
+
+        val mockException = Exception("Error")
+        val errorLog = BroadcasterErrorLog(
+            channelId = configMock.channelId,
+            authorId = accountMock.first().id,
+            authorType = accountMock.first().type,
+        )
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = productUiMapper,
+            errorLogger = mockErrorLogger,
+        )
+
+        robot.use {
+            it.getAccountConfiguration()
+            it.getViewModel().submitAction(PlayBroadcastAction.SendErrorLog(mockException))
+
+            coVerify(exactly = 1) { mockErrorLogger.sendLog(mockException, errorLog) }
         }
     }
 }

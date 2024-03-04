@@ -17,6 +17,7 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.provider.Waiti
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * Created by yusuf.hendrawan on 2020-09-07.
@@ -81,7 +82,7 @@ class BottomSheetWaitingPaymentOrderTips : BottomSheetUnify() {
         adapter.setElements(items)
         rvTips?.apply {
             adapter = this@BottomSheetWaitingPaymentOrderTips.adapter
-            val margins = context.resources.getDimension(com.tokopedia.unifycomponents.R.dimen.spacing_lvl3).toInt()
+            val margins = context.resources.getDimension(unifycomponentsR.dimen.spacing_lvl3).toInt()
             addItemDecoration(
                 RecyclerViewItemDivider(
                     divider = MethodChecker.getDrawable(context, R.drawable.waiting_payment_tips_divider),

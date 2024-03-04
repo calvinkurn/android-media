@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -35,6 +36,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.util.doOnLayout
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
@@ -47,7 +49,13 @@ import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.header.compose.HeaderActionButton
+import com.tokopedia.header.compose.HeaderOptionals
+import com.tokopedia.header.compose.NestHeader
+import com.tokopedia.header.compose.NestHeaderType
+import com.tokopedia.header.compose.NestHeaderVariant
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
@@ -57,6 +65,8 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
+import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.IconSource
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
@@ -73,6 +83,7 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity.Comp
 import com.tokopedia.people.views.activity.ProfileSettingsActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
+import com.tokopedia.people.views.compose.UserProfileHeader
 import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment.Companion.EXTRA_FOLLOWERS
 import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment.Companion.EXTRA_FOLLOWING
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileBadgeBottomSheet
@@ -85,7 +96,9 @@ import com.tokopedia.people.views.uimodel.profile.ProfileTabState
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.state.HeaderUiState
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
+import com.tokopedia.people.views.uimodel.stateholder.HeaderStateHolder
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -126,6 +139,8 @@ class UserProfileFragment @Inject constructor(
     PermissionListener,
     ShopRecomWidgetCallback,
     FeedPlusContainerListener {
+
+    private val headerStateHolder = HeaderStateHolder()
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenShotDetector: ScreenshotDetector? = null
@@ -205,8 +220,15 @@ class UserProfileFragment @Inject constructor(
         mainBinding.appBarUserProfile.addOnOffsetChangedListener { _, verticalOffset ->
             binding.swipeRefreshLayout.isEnabled = verticalOffset == 0
             val condition = abs(verticalOffset) > mainBinding.appBarUserProfile.totalScrollRange / HEADER_HEIGHT_OFFSET
-            mainBinding.headerProfile.headerView?.showWithCondition(condition && mainBinding.headerProfile.title.isNotEmpty())
-            mainBinding.headerProfile.subheaderView?.showWithCondition(condition && mainBinding.headerProfile.subtitle.isNotEmpty())
+
+            headerStateHolder.state = if (condition) {
+                HeaderUiState.ShowUserInfo(
+                    name = viewModel.displayName,
+                    username = getUsernameWithAddOrEmpty()
+                )
+            } else {
+                HeaderUiState.HideUserInfo
+            }
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -588,11 +610,6 @@ class UserProfileFragment @Inject constructor(
     ) {
         if (prev == curr || curr == ProfileUiModel.Empty) return
 
-        val userName = if (curr.username.isEmpty()) "" else getString(R.string.up_username_template, curr.username)
-        mainBinding.headerProfile.title = curr.name
-        mainBinding.headerProfile.subtitle = userName
-        mainBinding.headerProfile.visible()
-
         binding.viewFlipper.displayedChild = PAGE_CONTENT
 
         userProfileTracker.openUserProfile(
@@ -609,7 +626,7 @@ class UserProfileFragment @Inject constructor(
 
         with(mainBinding) {
             textDisplayName.text = curr.name
-            textUserName.text = userName
+            textUserName.text = getUsernameWithAddOrEmpty()
             setProfileBadge(curr.badges)
             layoutUserProfileStats.textContentCount.text = curr.stats.totalPostFmt
             layoutUserProfileStats.textReviewCount.text = curr.stats.totalReviewFmt
@@ -941,31 +958,41 @@ class UserProfileFragment @Inject constructor(
 
     private fun setHeader() {
         mainBinding.headerProfile.apply {
-            setNavigationOnClickListener {
+            val onBackClicked = {
                 activity?.onBackPressed()
                 userProfileTracker.clickBack(userSession.userId, self = viewModel.isSelfProfile)
             }
 
-            val imgShare = addRightIcon(0)
-
-            imgShare.clearImage()
-            imgShare.setImageDrawable(getIconUnifyDrawable(context, IconUnify.SHARE_MOBILE))
-            imgShare.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    unifyprinciplesR.color.Unify_NN1000
-                ),
-                android.graphics.PorterDuff.Mode.MULTIPLY
+            val headerActionMenu = headerStateHolder.getOptions(
+                onShareClicked = {
+                    showUniversalShareBottomSheet()
+                    userProfileTracker.clickShare(userSession.userId, self = viewModel.isSelfProfile)
+                    userProfileTracker.clickShareButton(userSession.userId, self = viewModel.isSelfProfile)
+                    userProfileTracker.viewShareChannel(userSession.userId, self = viewModel.isSelfProfile)
+                },
+                onMenuClicked = {
+                    userProfileTracker.clickBurgerMenu(userSession.userId, self = viewModel.isSelfProfile)
+                    RouteManager.route(
+                        activity,
+                        bundleOf(Pair(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, NavSource.USER_PROFILE.toString())),
+                        APPLINK_MENU
+                    )
+                }
             )
 
-            imgShare.setOnClickListener {
-                showUniversalShareBottomSheet()
-                userProfileTracker.clickShare(userSession.userId, self = viewModel.isSelfProfile)
-                userProfileTracker.clickShareButton(userSession.userId, self = viewModel.isSelfProfile)
-                userProfileTracker.viewShareChannel(userSession.userId, self = viewModel.isSelfProfile)
+            doOnLayout {
+                mainBinding.collapsingToolbar.minimumHeight = it.height
             }
 
-            if (!GlobalConfig.isSellerApp()) addNavigationMainMenu(this)
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+
+            setContent {
+                UserProfileHeader(
+                    headerState = headerStateHolder.state,
+                    optionsButton = headerActionMenu,
+                    onBackClicked = onBackClicked
+                )
+            }
         }
     }
 
@@ -974,30 +1001,6 @@ class UserProfileFragment @Inject constructor(
         val biographyEmpty = state.profileInfo.biography.isBlank()
 
         return viewModel.isSelfProfile && usernameEmpty && biographyEmpty
-    }
-
-    private fun addNavigationMainMenu(parent: HeaderUnify) {
-        parent.addRightIcon(0).apply {
-            clearImage()
-            setImageDrawable(getIconUnifyDrawable(context, IconUnify.MENU_HAMBURGER))
-
-            setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    unifyprinciplesR.color.Unify_NN1000
-                ),
-                android.graphics.PorterDuff.Mode.MULTIPLY
-            )
-
-            setOnClickListener {
-                userProfileTracker.clickBurgerMenu(userSession.userId, self = viewModel.isSelfProfile)
-                RouteManager.route(
-                    activity,
-                    bundleOf(Pair(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, NavSource.USER_PROFILE.toString())),
-                    APPLINK_MENU
-                )
-            }
-        }
     }
 
     private fun setupCoachMark() {
@@ -1028,6 +1031,8 @@ class UserProfileFragment @Inject constructor(
     private fun getDefaultErrorMessage() = getString(R.string.up_error_unknown)
 
     private fun getUsernameWithAdd() = getString(R.string.up_username_template, viewModel.profileUsername)
+
+    private fun getUsernameWithAddOrEmpty() = if (viewModel.profileUsername.isEmpty()) "" else getUsernameWithAdd()
 
     override fun getScreenName(): String = TAG
 

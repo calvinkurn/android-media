@@ -678,4 +678,12 @@
         <key>android_pdp_enable_tablet_mode</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>android_enable_pdp_recommendation_flow</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_pdp_debounce_time</key>
+        <value>150L</value>
+    </entry>
 </defaultsMap>

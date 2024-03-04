@@ -7,17 +7,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocRecyclerviewPoolListener
 import com.tokopedia.buyerorderdetail.presentation.model.OwocAddonsListUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnSummaryViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.order_management_common.R as order_management_commonR
 
 class OwocAddonsViewHolder(
     itemView: View,
     private val recyclerviewPoolListener: OwocRecyclerviewPoolListener
 ) : AbstractViewHolder<OwocAddonsListUiModel>(itemView),
-    BmgmAddOnViewHolder.Listener,
-    BmgmAddOnSummaryViewHolder.Delegate.Mediator,
-    BmgmAddOnSummaryViewHolder.Delegate by BmgmAddOnSummaryViewHolder.Delegate.Impl() {
+    AddOnViewHolder.Listener,
+    AddOnSummaryViewHolder.Delegate.Mediator,
+    AddOnSummaryViewHolder.Delegate by AddOnSummaryViewHolder.Delegate.Impl() {
 
     companion object {
         @LayoutRes
@@ -25,6 +25,7 @@ class OwocAddonsViewHolder(
     }
 
     override fun bind(element: OwocAddonsListUiModel?) {
+        registerAddOnSummaryDelegate(this)
         bindAddonSummary(element?.addOnSummaryUiModel)
     }
 
@@ -33,7 +34,10 @@ class OwocAddonsViewHolder(
             if (it is Pair<*, *>) {
                 val (oldItem, newItem) = it
                 if (oldItem is OwocAddonsListUiModel && newItem is OwocAddonsListUiModel) {
-                    if (oldItem != newItem) bindAddonSummary(element?.addOnSummaryUiModel)
+                    if (oldItem != newItem) {
+                        registerAddOnSummaryDelegate(this)
+                        bindAddonSummary(element?.addOnSummaryUiModel)
+                    }
                     return
                 }
             }
@@ -44,7 +48,7 @@ class OwocAddonsViewHolder(
     override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
     }
 
-    override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
+    override fun onAddOnsExpand(isExpand: Boolean, addOnsIdentifier: String) {
     }
 
     override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
@@ -60,7 +64,7 @@ class OwocAddonsViewHolder(
         return recyclerviewPoolListener.parentPool
     }
 
-    override fun getAddOnSummaryListener(): BmgmAddOnViewHolder.Listener {
+    override fun getAddOnSummaryListener(): AddOnViewHolder.Listener {
         return this
     }
 }

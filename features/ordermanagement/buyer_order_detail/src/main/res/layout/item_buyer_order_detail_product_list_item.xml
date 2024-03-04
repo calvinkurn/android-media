@@ -32,7 +32,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
             android:inflatedId="@+id/layout_bom_detail_product_add_on"
-            android:layout="@layout/partial_bmgm_add_on_summary"
+            android:layout="@layout/partial_add_on_summary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

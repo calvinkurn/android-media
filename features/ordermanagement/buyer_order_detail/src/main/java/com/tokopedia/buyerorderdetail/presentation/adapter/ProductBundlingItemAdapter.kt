@@ -19,15 +19,15 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnSummaryViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductBundlingItemAdapter(
     private val listener: ViewHolder.Listener,
-    private val addOnListener: BmgmAddOnViewHolder.Listener
+    private val addOnListener: AddOnViewHolder.Listener
 ) : RecyclerView.Adapter<ProductBundlingItemAdapter.ViewHolder>() {
 
     private val itemList = arrayListOf<ProductListUiModel.ProductUiModel>()
@@ -59,10 +59,10 @@ class ProductBundlingItemAdapter(
     class ViewHolder(
         itemView: View,
         private val listener: Listener,
-        private val addOnListener: BmgmAddOnViewHolder.Listener
+        private val addOnListener: AddOnViewHolder.Listener
     ) : AbstractViewHolder<ProductListUiModel.ProductUiModel>(itemView),
-        BmgmAddOnSummaryViewHolder.Delegate.Mediator,
-        BmgmAddOnSummaryViewHolder.Delegate by BmgmAddOnSummaryViewHolder.Delegate.Impl() {
+        AddOnSummaryViewHolder.Delegate.Mediator,
+        AddOnSummaryViewHolder.Delegate by AddOnSummaryViewHolder.Delegate.Impl() {
 
         private val containerProductInfo = itemView.findViewById<ConstraintLayout>(R.id.container_product_info)
         private val ivBundleItemInsuranceLogo = itemView.findViewById<ImageUnify>(R.id.iv_item_bom_detail_bundling_insurance_logo)
@@ -156,7 +156,7 @@ class ProductBundlingItemAdapter(
             return null
         }
 
-        override fun getAddOnSummaryListener(): BmgmAddOnViewHolder.Listener {
+        override fun getAddOnSummaryListener(): AddOnViewHolder.Listener {
             return addOnListener
         }
 

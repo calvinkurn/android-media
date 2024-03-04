@@ -134,4 +134,16 @@ internal class SearchBarGetSubmitSearchParameterTest: SearchBarViewModelTestFixt
         `Then verify actual params should be equal expected params`(actualParams, expectedParams)
     }
 
+    @Test
+    fun `no keyword test`() {
+        `Given active keyword updated`("")
+
+        val actualParams = `When getSubmitSearchParameter called`()
+
+        val expectedParams = mapOf(
+            SearchApiConst.Q to "",
+            SearchApiConst.ACTIVE_TAB to SearchApiConst.ACTIVE_TAB_PRODUCT,
+        )
+        `Then verify actual params should be equal expected params`(actualParams, expectedParams)
+    }
 }

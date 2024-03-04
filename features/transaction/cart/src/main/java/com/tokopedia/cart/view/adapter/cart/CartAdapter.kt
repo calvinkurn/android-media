@@ -20,7 +20,6 @@ import com.tokopedia.cart.databinding.ItemGroupRevampBinding
 import com.tokopedia.cart.databinding.ItemSelectedAmountBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.diffutil.CartDiffUtilCallback
-import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
 import com.tokopedia.cart.view.customview.CartViewBinderHelper
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
@@ -62,6 +61,7 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import com.tokopedia.user.session.UserSessionInterface
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 
 class CartAdapter(
     private val actionListener: ActionListener,
@@ -75,7 +75,6 @@ class CartAdapter(
     private var compositeSubscription = CompositeSubscription()
 
     var cartWishlistAdapter: CartWishlistAdapter? = null
-    private var cartRecentViewAdapter: CartRecentViewAdapter? = null
 
     private var plusCoachMark: CoachMark2? = null
     private var mainCoachMark: CartMainCoachMarkUiModel = CartMainCoachMarkUiModel()
@@ -315,7 +314,6 @@ class CartAdapter(
             CartRecentViewViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartRecentViewHolderData
                 (holder as CartRecentViewViewHolder).bind(data)
-                cartRecentViewAdapter = holder.recentViewAdapter
             }
 
             CartWishlistViewHolder.LAYOUT -> {
@@ -373,8 +371,13 @@ class CartAdapter(
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         super.onViewRecycled(holder)
-        if (holder.itemViewType == CartRecommendationViewHolder.LAYOUT) {
-            (holder as CartRecommendationViewHolder).clearImage()
+        when (holder.itemViewType) {
+            CartRecommendationViewHolder.LAYOUT -> {
+                (holder as CartRecommendationViewHolder).clearImage()
+            }
+            CartRecentViewViewHolder.LAYOUT -> {
+                (holder as? CartRecentViewViewHolder)?.recycle()
+            }
         }
     }
 
@@ -407,7 +410,12 @@ class CartAdapter(
     }
 
     override fun onNeedToRefreshSingleProduct(childPosition: Int) {
-        notifyItemChanged(childPosition)
+        // work-around to prevent crash when focused quantity editor is going off screen
+        try {
+            notifyItemChanged(childPosition)
+        } catch (ex: Exception) {
+            Timber.e(ex)
+        }
         cartItemActionListener.onNeedToRecalculate()
     }
 
