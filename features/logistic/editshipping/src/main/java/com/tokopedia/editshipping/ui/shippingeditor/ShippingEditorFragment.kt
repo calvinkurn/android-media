@@ -37,7 +37,6 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperDetailModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperGroupModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShippingEditorState
-import com.tokopedia.editshipping.domain.model.shippingEditor.TickerModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ValidateShippingEditorModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.WarehousesModel
 import com.tokopedia.editshipping.ui.bottomsheet.ShipperDetailBottomSheet
@@ -257,6 +256,7 @@ class ShippingEditorFragment :
                     showToaster(it.errorMessage, Toaster.TYPE_ERROR)
                     binding?.swipeRefresh?.isRefreshing = false
                 }
+
                 else -> binding?.swipeRefresh?.isRefreshing = true
             }
         }
@@ -279,6 +279,7 @@ class ShippingEditorFragment :
                     binding?.swipeRefresh?.isRefreshing = false
                     showToaster(it.errorMessage, Toaster.TYPE_ERROR)
                 }
+
                 else -> binding?.swipeRefresh?.isRefreshing = true
             }
         }
@@ -351,6 +352,12 @@ class ShippingEditorFragment :
         context?.let { openBottomSheetValidateCourierNotCovered(it, data) }
     }
 
+    private fun setDataCodNotCovered(data: ValidateShippingEditorModel) {
+        bottomSheetCourierInactiveState = BOTTOMSHEET_VALIDATE_COD_INACTIVE_STATE
+        bottomSheetCourierInactiveAdapter.setData(data.uiContent.warehouses)
+        context?.let { openBottomSheetValidateCourierNotCovered(it, data) }
+    }
+
     private fun updateHeaderTickerData(data: HeaderTickerModel) {
         if (data.isActive) {
             binding?.tickerHeader?.apply {
@@ -374,24 +381,34 @@ class ShippingEditorFragment :
             binding?.tickerHeader?.gone()
         }
     }
+
     private fun validateSaveData(data: ValidateShippingEditorModel) {
-        if (data.state == VALIDATE_MULTIPLE_LOC_STATE) {
-            setDataCourierNotCovered(data)
-        } else if (data.state == VALIDATE_BO_MULTIPLE_LOC_STATE) {
-            setDataBoAndCourierNotCovered(data)
-        } else if (data.state == VALIDATE_BEBAS_ONGKIR_STATE) {
-            context?.let { openBottomSheetValidateBOData(it, data) }
-        } else {
-            viewModel.saveShippingData(
-                userSession.shopId.toLong(),
-                getListActivatedSpIds(
-                    shippingEditorConventionalAdapter.getActiveSpIds(),
-                    shippingEditorOnDemandAdapter.getActiveSpIds()
-                ),
-                convertFeatureIdToString(data.featureId)
-            )
+        when (data.state) {
+            VALIDATE_COD_STATE -> {
+                setDataCodNotCovered(data)
+            }
+            VALIDATE_MULTIPLE_LOC_STATE -> {
+                setDataCourierNotCovered(data)
+            }
+            VALIDATE_BO_MULTIPLE_LOC_STATE -> {
+                setDataBoAndCourierNotCovered(data)
+            }
+            VALIDATE_BEBAS_ONGKIR_STATE -> {
+                context?.let { openBottomSheetValidateBOData(it, data) }
+            }
+            else -> {
+                viewModel.saveShippingData(
+                    userSession.shopId.toLong(),
+                    getListActivatedSpIds(
+                        shippingEditorConventionalAdapter.getActiveSpIds(),
+                        shippingEditorOnDemandAdapter.getActiveSpIds()
+                    ),
+                    convertFeatureIdToString(data.featureId)
+                )
+            }
         }
     }
+
 
     private fun convertFeatureIdToString(featureId: List<Long>?): String {
         return featureId?.joinToString(separator = ",").orEmpty()
@@ -434,7 +451,8 @@ class ShippingEditorFragment :
             data
         )
 
-        if (bottomSheetCourierInactiveState == BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE) {
+        if (bottomSheetCourierInactiveState == BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE ||
+            bottomSheetCourierInactiveState == BOTTOMSHEET_VALIDATE_COD_INACTIVE_STATE) {
             bottomSheetCourierInactive?.setTitle(data.uiContent.header)
         } else {
             bottomSheetCourierInactive?.setTitle(getString(R.string.bottomsheet_inactive_title))
@@ -541,16 +559,55 @@ class ShippingEditorFragment :
             BOTTOMSHEET_SHIPPER_WAREHOUSE_INACTIVE_STATE -> {
                 showBottomSheetShipperWarehouseInactive(child, header, courierCount)
             }
+
             BOTTOMSHEET_HEADER_WAREHOUSE_INACTIVE_STATE -> {
                 showBottomSheetHeaderWarehouseInactive(child)
             }
+
             BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE -> {
                 showBottomSheetValidateWarehouseInactive(child, data)
             }
+
             BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_BO_STATE -> {
                 showBottomSheetValidateWarehouseInactiveBO(child, courierCount, data)
             }
+
+            BOTTOMSHEET_VALIDATE_COD_INACTIVE_STATE -> {
+                showBottomSheetCODInactive(child, data)
+            }
         }
+    }
+
+    private fun showBottomSheetCODInactive(
+        child: BottomsheetCourierInactiveBinding,
+        data: ValidateShippingEditorModel?
+    ) {
+        child.tvCourierInactive.text = data?.uiContent?.body?.get(0)?.let {
+            context?.let { it1 ->
+                HtmlLinkHelper(it1, it).spannedString
+            }
+        }
+        child.btnPrimaryHorizontal.text = getString(R.string.button_back)
+        child.btnPrimaryHorizontal.setOnClickListener {
+            bottomSheetCourierInactive?.dismiss()
+        }
+
+        child.btnSecondaryHorizonal.text = getString(R.string.button_continue)
+        child.btnSecondaryHorizonal.setOnClickListener {
+            viewModel.saveShippingData(
+                userSession.shopId.toLong(),
+                getListActivatedSpIds(
+                    shippingEditorConventionalAdapter.getActiveSpIds(),
+                    shippingEditorOnDemandAdapter.getActiveSpIds()
+                ),
+                convertFeatureIdToString(data?.featureId)
+            )
+            bottomSheetCourierInactive?.dismiss()
+        }
+        child.btnVerticalLayout.gone()
+        child.rvWarehouseInactive.gone()
+        child.btnHorizonalLayout.visible()
+        child.tickerChargeBo.gone()
     }
 
     private fun showBottomSheetShipperWarehouseInactive(
@@ -744,11 +801,13 @@ class ShippingEditorFragment :
                     showGlobalError(GlobalError.NO_CONNECTION)
                 }
             }
+
             is RuntimeException -> {
                 when (throwable.localizedMessage?.toIntOrNull()) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(
                         GlobalError.NO_CONNECTION
                     )
+
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
 
@@ -758,6 +817,7 @@ class ShippingEditorFragment :
                     }
                 }
             }
+
             else -> {
                 showGlobalError(GlobalError.SERVER_ERROR)
                 if (throwable.message?.contains(ERROR_CODE_NO_ACCESS) == true) {
@@ -885,7 +945,9 @@ class ShippingEditorFragment :
         private const val BOTTOMSHEET_HEADER_WAREHOUSE_INACTIVE_STATE = 2
         private const val BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE = 3
         private const val BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_BO_STATE = 4
+        private const val BOTTOMSHEET_VALIDATE_COD_INACTIVE_STATE = 5
 
+        private const val VALIDATE_COD_STATE = 1
         private const val VALIDATE_BEBAS_ONGKIR_STATE = 4
         private const val VALIDATE_MULTIPLE_LOC_STATE = 5
         private const val VALIDATE_BO_MULTIPLE_LOC_STATE = 6
