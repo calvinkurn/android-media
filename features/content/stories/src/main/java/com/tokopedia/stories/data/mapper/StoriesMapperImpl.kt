@@ -105,6 +105,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     isContentLoaded = false,
                     author = buildAuthor(stories.author),
                     category = StoriesDetailItem.StoryCategory.getByValue(stories.category),
+                    categoryName = stories.categoryName,
                     publishedAt = stories.publishedAt,
                     menus = buildMenu(stories.interaction, stories.author),
                     share = StoriesDetailItem.Sharing(

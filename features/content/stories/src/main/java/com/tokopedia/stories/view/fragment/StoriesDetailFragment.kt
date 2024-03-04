@@ -435,7 +435,7 @@ class StoriesDetailFragment @Inject constructor(
             mAdapter.clearAllItems()
             mAdapter.notifyItemRangeRemoved(0, state.groupHeader.size)
             val selectedGroup = state.groupItems[state.selectedGroupPosition]
-            binding.tvTitle.text = selectedGroup.groupName
+            binding.tvTitle.text = selectedGroup.detail.detailItems[selectedGroup.detail.selectedDetailPosition].categoryName
         }
 
         binding.layoutDetailLoading.categoriesLoader.hide()

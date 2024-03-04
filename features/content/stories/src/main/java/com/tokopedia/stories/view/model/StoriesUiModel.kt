@@ -55,6 +55,7 @@ data class StoriesDetailItem(
     val productCount: String = "",
     val author: StoryAuthor = StoryAuthor.Unknown,
     val category: StoryCategory = StoryCategory.ASGC,
+    val categoryName: String = "",
     val publishedAt: String = "",
     val menus: List<ContentMenuItem> = emptyList(),
     val share: Sharing = Sharing.Empty,
