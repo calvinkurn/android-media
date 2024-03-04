@@ -325,6 +325,7 @@ object AppLogAnalytics {
         trackId: String? = null,
         sourcePageType: SourcePageType? = null,
         requestId: String? = null,
+        sourcePreviousPage: String? = null
     ) {
         entranceForm?.let {
             putPageData(ENTRANCE_FORM, entranceForm)
@@ -346,6 +347,9 @@ object AppLogAnalytics {
         }
         requestId?.let {
             putPageData(REQUEST_ID, requestId)
+        }
+        sourcePreviousPage?.let {
+            putPageData(SOURCE_PREVIOUS_PAGE, sourcePreviousPage)
         }
     }
 

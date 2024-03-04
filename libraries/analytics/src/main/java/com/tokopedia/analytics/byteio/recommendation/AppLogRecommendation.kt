@@ -36,10 +36,6 @@ object AppLogRecommendation {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
         model.setGlobalParams()
-        AppLogAnalytics.putPageData(
-            AppLogParam.SOURCE_PREVIOUS_PAGE,
-            AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString().orEmpty()
-        )
     }
 
     fun sendCardShowAppLog(model: AppLogRecommendationCardModel) {
@@ -74,6 +70,7 @@ object AppLogRecommendation {
             trackId = trackId,
             sourcePageType = SourcePageType.PRODUCT_CARD,
             requestId = requestId,
+            sourcePreviousPage = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString()
         )
     }
 
@@ -86,6 +83,7 @@ object AppLogRecommendation {
             trackId = trackId,
             sourcePageType = SourcePageType.PRODUCT_CARD,
             requestId = requestId,
+            sourcePreviousPage = AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.PAGE_NAME)?.toString()
         )
     }
 }
