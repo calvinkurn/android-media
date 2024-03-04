@@ -55,7 +55,11 @@ class ProductDetailAdapter(
         bind(holder as AbstractViewHolder<DynamicPdpDataModel>, getItem(position))
     }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int, payloads: MutableList<Any>) {
+    override fun onBindViewHolder(
+        holder: AbstractViewHolder<*>,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
         if (payloads.isNotEmpty()) {
             bind(holder as AbstractViewHolder<DynamicPdpDataModel>, getItem(position), payloads)
         } else {
@@ -157,8 +161,13 @@ class ProductDetailAdapter(
         holder.bind(item)
     }
 
-    fun bind(holder: AbstractViewHolder<DynamicPdpDataModel>, item: DynamicPdpDataModel, payloads: MutableList<Any>) {
-        val payloadInt = (payloads.firstOrNull() as? Bundle)?.getInt(ProductDetailConstant.DIFFUTIL_PAYLOAD)
+    fun bind(
+        holder: AbstractViewHolder<DynamicPdpDataModel>,
+        item: DynamicPdpDataModel,
+        payloads: MutableList<Any>
+    ) {
+        val payloadInt =
+            (payloads.firstOrNull() as? Bundle)?.getInt(ProductDetailConstant.DIFFUTIL_PAYLOAD)
         if (payloads.isNotEmpty() && payloads.firstOrNull() != null && payloadInt != null) {
             holder.bind(item, listOf(payloadInt))
         } else {

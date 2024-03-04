@@ -343,4 +343,7 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_DISABLE_RECIPE_BOOKMARK_COMPOSE = "android_disable_recipe_bookmark_compose";
 
+    public static final String ANDROID_ENABLE_PDP_RECOMMENDATION_FLOW = "android_enable_pdp_recommendation_flow";
+    public static final String ANDROID_PDP_DEBOUNCE_TIME = "android_pdp_debounce_time";
+
 }
