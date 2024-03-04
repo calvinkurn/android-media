@@ -2,6 +2,7 @@ package com.tokopedia.analytics.byteio.search
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogAnalytics.getSourcePreviousPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam
@@ -485,6 +486,7 @@ object AppLogSearch {
                 trackId = trackId,
                 sourcePageType = sourcePageType,
                 requestId = requestID,
+                sourcePreviousPage = getSourcePreviousPage()
             )
 
             AppLogAnalytics.putPageData(SEARCH_ENTRANCE, searchEntrance)

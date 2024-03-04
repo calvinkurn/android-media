@@ -112,6 +112,7 @@ class DeveloperOptionAdapter(
         DevOptsAuthorizationUiModel(listOf(KEYWORD_DEV_OPTS_AUTHORIZE)),
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
+        DeviceIdUiModel(listOf(KEYWORD_DEVICE_ID)),
         SystemNonSystemAppsUiModel(
             listOf(
                 KEYWORD_SYSTEM_APPS,
@@ -164,7 +165,6 @@ class DeveloperOptionAdapter(
         ShowApplinkOnToastUiModel(listOf(KEYWORD_SHOW_APPLINK_ON_TOAST)),
         NetworkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_NETWORK_LOG_ON_NOTIFICATION)),
         ViewNetworkLogUiModel(listOf(KEYWORD_VIEW_NETWORK_LOG)),
-        DeviceIdUiModel(listOf(KEYWORD_DEVICE_ID)),
         TopAdsLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_TOPADS_LOG_ON_NOTIFICATION)),
         ViewTopAdsLogUiModel(listOf(KEYWORD_VIEW_TOPADS_LOG)),
         ApplinkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_APPLINK_LOG_ON_NOTIFICATION)),

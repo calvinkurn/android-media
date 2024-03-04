@@ -2,6 +2,7 @@ package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogAnalytics.getSourcePreviousPage
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD
@@ -70,6 +71,7 @@ object AppLogRecommendation {
             trackId = trackId,
             sourcePageType = SourcePageType.PRODUCT_CARD,
             requestId = requestId,
+            sourcePreviousPage = getSourcePreviousPage()
         )
     }
 
@@ -82,6 +84,7 @@ object AppLogRecommendation {
             trackId = trackId,
             sourcePageType = SourcePageType.PRODUCT_CARD,
             requestId = requestId,
+            sourcePreviousPage = getSourcePreviousPage()
         )
     }
 }
