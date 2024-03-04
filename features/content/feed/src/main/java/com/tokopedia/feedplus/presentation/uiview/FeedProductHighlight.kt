@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -205,7 +206,7 @@ fun ProductTagItems(
     isFocused: Boolean = true,
 ) {
     var needToBeShown by remember { mutableStateOf(false) }
-    val highlightedProduct by remember { mutableStateOf(products.firstOrNull{ it.isHighlight}) }
+    val highlightedProduct= products.firstOrNull { it.isHighlight}
 
     if (isFocused) {
         LaunchedEffect(key1 = key) {
