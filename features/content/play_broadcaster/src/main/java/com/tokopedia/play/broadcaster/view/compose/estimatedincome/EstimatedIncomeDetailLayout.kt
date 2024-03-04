@@ -24,7 +24,7 @@ fun EstimatedIncomeDetailLayout(
     estimatedIncomeDetail: EstimatedIncomeDetailUiModel,
     onEstimatedIncomeClicked: () -> Unit,
 ) {
-    /** JOE LOG: handle loading & error state */
+    /** JOE TODO: handle loading & error state */
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
