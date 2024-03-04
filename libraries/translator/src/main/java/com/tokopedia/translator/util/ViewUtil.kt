@@ -14,10 +14,13 @@
 package com.tokopedia.translator.util
 
 import android.app.Activity
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -38,7 +41,7 @@ internal object ViewUtil {
                 viewGroup?.let {
                     unTraversedViews.add(it)
                     while (unTraversedViews.isNotEmpty()) {
-                        val child = unTraversedViews.poll()
+                        val child = unTraversedViews.pop()
 
                         yield(child)
 
@@ -53,61 +56,38 @@ internal object ViewUtil {
         }
     }
 
-    suspend fun getChildrenViews(viewGroup: View?): List<TextView> {
-        return withContext(Dispatchers.Default) {
+    fun getChildrenViews(viewGroup: View?): List<TextView> {
+        val traversedViews = mutableSetOf<TextView>()
 
-            val traversedViews = mutableListOf<TextView>()
-
-            viewGroup?.let {
-                traverseViewGroupParallel(it, traversedViews)
-            }
-
-            traversedViews.toList()
+        viewGroup?.let {
+            traverseChildrenViews(it, traversedViews)
         }
+
+        return traversedViews.toList()
     }
 
-    private suspend fun traverseViewGroupParallel(
+    private fun traverseChildrenViews(
         viewGroup: View,
-        traversedViews: MutableList<TextView>
-    ) = coroutineScope {
+        traversedViews: MutableSet<TextView>
+    )  {
+
         if (viewGroup is TextView) {
             traversedViews.add(viewGroup)
         }
 
         if (viewGroup is ViewGroup) {
-            val jobs = (0 until viewGroup.childCount).map {
-                async {
+            with(viewGroup) {
+                for (i in 0 until childCount) {
                     try {
-                        val childView = viewGroup.getChildAt(it)
-                        traverseViewGroupFromRoot(childView, traversedViews)
+                        traverseChildrenViews(getChildAt(i), traversedViews)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
                 }
             }
-            jobs.awaitAll()
         }
     }
 
-    private fun traverseViewGroupFromRoot(
-        viewGroup: View,
-        traversedViews: MutableList<TextView>
-    ) {
-        if (viewGroup is TextView) {
-            traversedViews.add(viewGroup)
-        }
-
-        if (viewGroup is ViewGroup) {
-            for (i in 0 until viewGroup.childCount) {
-                try {
-                    val childView = viewGroup.getChildAt(i)
-                    traverseViewGroupFromRoot(childView, traversedViews)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
 
     private fun getViewGroupId(viewGroup: View, activity: Activity): String {
         return try {

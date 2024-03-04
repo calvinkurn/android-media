@@ -32,6 +32,7 @@ import com.tokopedia.translator.viewtree.ViewTreeManager
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.lang.ref.WeakReference
@@ -140,7 +141,7 @@ class TranslatorManager() : CoroutineScope {
 
                         val stringPoolItem = mStringPoolManager.get(viewText)
 
-                        if (stringPoolItem === null || stringPoolItem.demandedText.isBlank() || (stringPoolItem.requestedLocale != destinationLang)) {
+                        if (stringPoolItem == null || stringPoolItem.demandedText.isBlank() || (stringPoolItem.requestedLocale != destinationLang)) {
                             //prepare for translate
                             mStringPoolManager.add(viewText, "", "")
                         } else {
@@ -201,14 +202,12 @@ class TranslatorManager() : CoroutineScope {
             destinationLang = currentDestLang
         }
 
-        val views = ViewUtil.getChildrenViews(ViewUtil.getContentView(getCurrentActivity())).run {
+        val views = ViewUtil.getChildrenViews(ViewUtil.getContentView(getCurrentActivity())).apply {
             updateViewList()
 
             getCurrentActivity()?.let {
                 prepareSelectors(this)
             }
-
-            this
         }
 
         mStringPoolManager.getQueryStrList().run {
