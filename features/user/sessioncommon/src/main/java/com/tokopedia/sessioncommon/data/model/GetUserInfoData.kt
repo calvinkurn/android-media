@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName
 class GetUserInfoData {
     @SerializedName("user_id")
     @Expose
-    var userId: String? = null
+    var userId: String = ""
 
     @SerializedName("full_name")
     @Expose
@@ -70,7 +70,7 @@ class GetUserInfoData {
 
     @SerializedName("roles")
     @Expose
-    var roles: List<Int>? = null
+    var roles: List<Int> = ArrayList<Int>()
 
     @SerializedName("profile_picture")
     @Expose
