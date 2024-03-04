@@ -67,7 +67,7 @@ fun QuestionSection(
         ) {
             listOptions.forEachIndexed { indexOption, item ->
                 NestChips(
-                    text = item.value,
+                    text = item.caption,
                     size = NestChipsSize.Large,
                     state = if (item.isSelected) {
                         NestChipsState.Selected
@@ -113,10 +113,10 @@ fun QuestionSectionPreview() {
             sectionTitle = "Fashion",
             isMaxOptionsSelected = false,
             listOptions = listOf(
-                QuestionDataModel.Property.Options(value = "Fashion Muslim", isSelected = true),
-                QuestionDataModel.Property.Options(value = "Fashion Wanita", isSelected = false),
-                QuestionDataModel.Property.Options(value = "Fashion Anak & Bayi", isSelected = true),
-                QuestionDataModel.Property.Options(value = "Fashion Pria", isSelected = true)
+                QuestionDataModel.Property.Options(caption = "Fashion Muslim", isSelected = true),
+                QuestionDataModel.Property.Options(caption = "Fashion Wanita", isSelected = false),
+                QuestionDataModel.Property.Options(caption = "Fashion Anak & Bayi", isSelected = true),
+                QuestionDataModel.Property.Options(caption = "Fashion Pria", isSelected = true)
             ),
             onOptionSelected = {},
             indexCategory = 0,

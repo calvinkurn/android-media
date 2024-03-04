@@ -25,7 +25,7 @@ fun ListQuestion(
         ) { index, item ->
             QuestionSection(
                 urlImage = item.property.image,
-                sectionTitle = item.property.title,
+                sectionTitle = item.property.name,
                 isMaxOptionsSelected = isMaxOptionsSelected,
                 listOptions = item.property.options,
                 onOptionSelected = {
