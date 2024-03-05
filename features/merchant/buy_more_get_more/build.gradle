@@ -43,6 +43,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation project(':features:transaction:cart')
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)

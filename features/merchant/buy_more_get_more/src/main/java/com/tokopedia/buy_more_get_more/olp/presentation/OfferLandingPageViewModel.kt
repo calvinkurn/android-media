@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -32,6 +33,11 @@ import com.tokopedia.campaign.data.request.GetOfferingInfoForBuyerRequestParam.U
 import com.tokopedia.campaign.data.request.GetOfferingProductListRequestParam
 import com.tokopedia.campaign.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.campaign.usecase.GetOfferProductListUseCase
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.domain.usecase.GetCartParam
+import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
+import com.tokopedia.cart.view.mapper.CartUiModelMapper
+import com.tokopedia.cart.view.uimodel.CartMutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -50,6 +56,7 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
@@ -62,6 +69,7 @@ class OfferLandingPageViewModel @Inject constructor(
     private val getNotificationUseCase: GetNotificationUseCase,
     private val getMiniCartUseCase: GetMiniCartUseCase,
     private val addToCartUseCase: AddToCartUseCase,
+    private val getCartRevampV4UseCase: GetCartRevampV4UseCase,
     private val userSession: UserSessionInterface,
     private val getOfferingInfoForBuyerMapper: GetOfferInfoForBuyerMapper,
     private val getOfferingProductListMapper: GetOfferProductListMapper
@@ -99,6 +107,9 @@ class OfferLandingPageViewModel @Inject constructor(
     val tierGifts: LiveData<Result<SelectedTierData>>
         get() = _tierGifts
 
+    val cartDataList: CartMutableLiveData<ArrayList<Any>> =
+        CartMutableLiveData(arrayListOf())
+
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
@@ -109,6 +120,10 @@ class OfferLandingPageViewModel @Inject constructor(
 
     val isLogin: Boolean
         get() = userSession.isLoggedIn
+
+    companion object {
+        const val GET_CART_STATE_DEFAULT = 0
+    }
 
     fun processEvent(event: OlpEvent) {
         when (event) {
@@ -155,6 +170,7 @@ class OfferLandingPageViewModel @Inject constructor(
             is OlpEvent.SetOfferTypeId -> setOfferTypeId(event.offerTypeId)
             is OlpEvent.SetSharingData -> setSharingData(event.sharingData)
             is OlpEvent.TapTier -> handleTapTier(event.selectedTier, event.offerInfo)
+            is OlpEvent.SetCartId -> setCartId(event.cartId)
         }
     }
 
@@ -296,6 +312,32 @@ class OfferLandingPageViewModel @Inject constructor(
         )
     }
 
+    private fun getCartData(
+        selectedTier: OfferInfoForBuyerUiModel.Offering.Tier,
+        offerInfo: OfferInfoForBuyerUiModel
+    ) {
+        viewModelScope.launch {
+            try {
+                val cartData = getCartRevampV4UseCase(
+                    GetCartParam(
+                        cartId = uiState.value.cartId,
+                        state = GET_CART_STATE_DEFAULT,
+                        isCartReimagine = true
+                    )
+                )
+                setCartDataList(cartData)
+                getTierGifts(selectedTier, offerInfo)
+            } catch (_: Throwable) { }
+        }
+    }
+
+    private fun setCartDataList(cartData: CartData) {
+        cartDataList.value.run {
+            clear()
+            addAll(CartUiModelMapper.mapAvailableGroupUiModel(cartData))
+        }
+    }
+
     private fun getSharingDataByOfferId() {
         launchCatchError(
             dispatchers.io,
@@ -380,6 +422,14 @@ class OfferLandingPageViewModel @Inject constructor(
         }
     }
 
+    private fun setCartId(cartId: String) {
+        _uiState.update {
+            it.copy(
+                cartId = cartId
+            )
+        }
+    }
+
     fun addAvailableProductImpression(product: OfferProductListUiModel.Product) {
         _uiState.update {
             val list = it.availableProductImpressionList
@@ -440,7 +490,7 @@ class OfferLandingPageViewModel @Inject constructor(
         selectedTier: OfferInfoForBuyerUiModel.Offering.Tier,
         offerInfo: OfferInfoForBuyerUiModel
     ) {
-        getTierGifts(selectedTier, offerInfo)
+        getCartData(selectedTier, offerInfo)
     }
 
     private fun getTierGifts(

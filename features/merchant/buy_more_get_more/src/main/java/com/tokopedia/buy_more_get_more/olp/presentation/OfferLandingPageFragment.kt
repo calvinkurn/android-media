@@ -7,8 +7,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -22,7 +20,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.bmsm_widget.domain.entity.MainProduct
 import com.tokopedia.bmsm_widget.domain.entity.PageSource
 import com.tokopedia.bmsm_widget.domain.entity.TierGifts
 import com.tokopedia.bmsm_widget.presentation.bottomsheet.GiftListBottomSheet
@@ -55,6 +53,8 @@ import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.campaign.utils.constant.SharingComponentConstant
 import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.cart.view.helper.CartDataHelper
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -73,7 +73,6 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.shop_widget.buy_more_save_more.entity.OfferingProductListUiModel.Product
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties
@@ -320,6 +319,7 @@ class OfferLandingPageFragment :
                             miniCartView.showToaster(atc.data.data.message.firstOrNull().orEmpty())
                         }
                     }
+                    viewModel.processEvent(OlpEvent.SetCartId(atc.data.data.cartId))
                     viewModel.processEvent(OlpEvent.GetNotification)
                 }
 
@@ -508,6 +508,7 @@ class OfferLandingPageFragment :
                 binding?.miniCartView.showToaster(atcMessage)
             }
             fetchMiniCart()
+            viewModel.processEvent(OlpEvent.SetCartId(cartId))
             tracker.sendClickCloseVariantEvent(
                 currentState.offerIds.toSafeString(),
                 currentState.warehouseIds.toSafeString(),
@@ -1019,7 +1020,7 @@ class OfferLandingPageFragment :
             pageSource = PageSource.OFFER_LANDING_PAGE,
             autoSelectTierChipByTierId = selectedTierId,
             shopId = currentState.shopData.shopId.toString(),
-            mainProducts = emptyList() //TODO: Replace with real data of main products from cart
+            mainProducts = getGiftListMainProducts()
         )
 
         bottomSheet.setOnDismissListener {
@@ -1042,5 +1043,21 @@ class OfferLandingPageFragment :
         return Status.values().firstOrNull { value ->
             value.code == errorCode.toLong()
         } ?: Status.SUCCESS
+    }
+
+    private fun getGiftListMainProducts(): List<MainProduct> {
+        val cartDataList = viewModel.cartDataList.value
+        val cartItem = cartDataList.filterIsInstance<CartItemHolderData>()
+        val cartStringOrder = cartItem.firstOrNull {
+            it.shopHolderData.shopId == currentState.shopData.shopId.toString()
+        }?.cartStringOrder.orEmpty()
+
+        return CartDataHelper.getListProductByOfferIdAndCartStringOrder(
+            cartDataList,
+            currentState.offerIds.firstOrNull().orZero(),
+            cartStringOrder
+        )
+            .filter { it.isSelected && it.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerTypeId == currentState.offerTypeId }
+            .map { MainProduct(it.productId.toLongOrZero(), it.quantity) }
     }
 }
