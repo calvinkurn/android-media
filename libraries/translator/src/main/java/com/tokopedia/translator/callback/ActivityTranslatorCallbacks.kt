@@ -79,13 +79,11 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
 
             launch {
 
-                if (fragmentSize <= 1) {
-                    rootView.viewTreeObserver
-                        .onScrollChangedAsFlow()
-                        .collect {
-                            translatorManager?.startTranslate()
-                        }
-                }
+                rootView.viewTreeObserver
+                    .onScrollChangedAsFlow()
+                    .collect {
+                        translatorManager?.startTranslate()
+                    }
 
                 onDestLanguageChangedAsFlow(activity)
                     .collect {
@@ -185,7 +183,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                 val weakActivity = WeakReference<Activity>(f.activity)
                 TranslatorManager.setCurrentActivity(weakActivity)
             }
-            if (f is BottomSheetUnify || fragmentSize > 1) {
+            if (f is BottomSheetUnify) {
                 val mContext = f.context
                 if (mContext?.let { SharedPrefsUtils.getBooleanPreference(it, TranslatorSettingView.IS_ENABLE, false) } == true) {
                     Log.i(TAG, "onFragmentResumed() invoked of :" + f::class.java.simpleName)
