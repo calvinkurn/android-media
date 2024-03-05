@@ -81,7 +81,6 @@ import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.oldrepurchase.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
@@ -98,11 +97,11 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryF
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductCardCompactCallback
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductCardCompactSimilarProductTrackerCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductCardCompactSimilarProductTrackerCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -123,8 +122,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.collections.set
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-abstract class BaseSearchCategoryFragment:
+abstract class BaseSearchCategoryFragment :
     BaseDaggerFragment(),
     ChooseAddressListener,
     BannerComponentListener,
@@ -137,7 +137,6 @@ abstract class BaseSearchCategoryFragment:
     ProductItemListener,
     SwitcherWidgetListener,
     TokoNowEmptyStateNoResultListener,
-    TokoNowProductCardListener,
     FeedbackWidgetListener {
 
     companion object {
@@ -233,16 +232,16 @@ abstract class BaseSearchCategoryFragment:
         navToolbar.setToolbarPageName(toolbarPageName)
         navToolbar.setIcon(createNavToolbarIconBuilder())
         navToolbar.setupSearchbar(
-                hints = getNavToolbarHint(),
-                searchbarClickCallback = ::onSearchBarClick,
-                disableDefaultGtmTracker = isDisableSearchBarDefaultGtmTracker,
+            hints = getNavToolbarHint(),
+            searchbarClickCallback = ::onSearchBarClick,
+            disableDefaultGtmTracker = isDisableSearchBarDefaultGtmTracker
         )
 
         configureToolbarBackgroundInteraction()
     }
 
     private fun updateToolbarNotification(update: Boolean) {
-        if(update) navToolbar?.updateNotification()
+        if (update) navToolbar?.updateNotification()
     }
 
     private fun updateAdsProductCarousel(data: Pair<Int, TokoNowAdsCarouselUiModel>) {
@@ -278,32 +277,29 @@ abstract class BaseSearchCategoryFragment:
     }
 
     private fun createNavRecyclerViewOnScrollListener(
-            navToolbar: NavToolbar,
+        navToolbar: NavToolbar
     ): RecyclerView.OnScrollListener {
         val toolbarTransitionRangePixel = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range).orZero()
 
         return NavRecyclerViewScrollListener(
-                navToolbar = navToolbar,
-                startTransitionPixel = searchCategoryToolbarHeight,
-                toolbarTransitionRangePixel = toolbarTransitionRangePixel,
-                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                    override fun onAlphaChanged(offsetAlpha: Float) {
+            navToolbar = navToolbar,
+            startTransitionPixel = searchCategoryToolbarHeight,
+            toolbarTransitionRangePixel = toolbarTransitionRangePixel,
+            navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                override fun onAlphaChanged(offsetAlpha: Float) {
+                }
 
-                    }
+                override fun onSwitchToLightToolbar() {
+                }
 
-                    override fun onSwitchToLightToolbar() {
+                override fun onSwitchToDarkToolbar() {
+                    navToolbar.hideShadow()
+                }
 
-                    }
-
-                    override fun onSwitchToDarkToolbar() {
-                        navToolbar.hideShadow()
-                    }
-
-                    override fun onYposChanged(yOffset: Int) {
-
-                    }
-                },
-                fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+                override fun onYposChanged(yOffset: Int) {
+                }
+            },
+            fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
         )
     }
 
@@ -324,20 +320,22 @@ abstract class BaseSearchCategoryFragment:
     protected open fun onNavToolbarShareClicked() { /* override to use this function */ }
 
     protected fun IconBuilder.addGlobalNav(): IconBuilder =
-            if (getViewModel().hasGlobalMenu)
-                this.addIcon(
-                        ID_NAV_GLOBAL,
-                        disableRouteManager = false,
-                        disableDefaultGtmTracker = false
-                ) { }
-            else this
+        if (getViewModel().hasGlobalMenu) {
+            this.addIcon(
+                ID_NAV_GLOBAL,
+                disableRouteManager = false,
+                disableDefaultGtmTracker = false
+            ) { }
+        } else {
+            this
+        }
 
     protected fun IconBuilder.addCart(): IconBuilder = this
         .addIcon(
             iconId = ID_CART,
             disableRouteManager = false,
             disableDefaultGtmTracker = disableDefaultCartTracker,
-            onClick = ::onNavToolbarCartClicked,
+            onClick = ::onNavToolbarCartClicked
         )
 
     protected fun IconBuilder.addShare(): IconBuilder = this
@@ -345,7 +343,7 @@ abstract class BaseSearchCategoryFragment:
             iconId = ID_SHARE,
             disableRouteManager = false,
             disableDefaultGtmTracker = disableDefaultShareTracker,
-            onClick = ::onNavToolbarShareClicked,
+            onClick = ::onNavToolbarShareClicked
         )
 
     protected open fun createNavToolbarIconBuilder() = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.TOKONOW))
@@ -362,7 +360,7 @@ abstract class BaseSearchCategoryFragment:
         val autoCompleteApplink = getAutoCompleteApplink()
         val params = getModifiedAutoCompleteQueryParam(autoCompleteApplink)
         val finalApplink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" +
-                UrlParamUtils.generateUrlParamString(params)
+            UrlParamUtils.generateUrlParamString(params)
 
         RouteManager.route(context, finalApplink)
     }
@@ -370,17 +368,18 @@ abstract class BaseSearchCategoryFragment:
     protected open fun getAutoCompleteApplink(): String {
         val viewModelAutoCompleteApplink = getViewModel().autoCompleteApplink
 
-        return if (viewModelAutoCompleteApplink.isEmpty())
+        return if (viewModelAutoCompleteApplink.isEmpty()) {
             getBaseAutoCompleteApplink()
-        else
+        } else {
             viewModelAutoCompleteApplink
+        }
     }
 
     protected open fun getBaseAutoCompleteApplink() =
-            ApplinkConstInternalDiscovery.AUTOCOMPLETE
+        ApplinkConstInternalDiscovery.AUTOCOMPLETE
 
     protected open fun getModifiedAutoCompleteQueryParam(
-            autoCompleteApplink: String
+        autoCompleteApplink: String
     ): Map<String?, String> {
         val urlParser = URLParser(autoCompleteApplink)
 
@@ -446,10 +445,11 @@ abstract class BaseSearchCategoryFragment:
         val activity = activity ?: return
 
         val statusBarBackgroundVisibility =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                    View.INVISIBLE
-                else
-                    View.VISIBLE
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                View.INVISIBLE
+            } else {
+                View.VISIBLE
+            }
 
         statusBarBackground?.apply {
             layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
@@ -468,7 +468,7 @@ abstract class BaseSearchCategoryFragment:
     protected open fun configureRecyclerView() {
         searchCategoryAdapter = SearchCategoryAdapter(createTypeFactory())
         gridLayoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
-            endlessScrollListener =  createEndlessScrollListener(this)
+            endlessScrollListener = createEndlessScrollListener(this)
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return when (searchCategoryAdapter?.getItemViewType(position)) {
@@ -490,19 +490,19 @@ abstract class BaseSearchCategoryFragment:
     }
 
     private fun createEndlessScrollListener(layoutManager: GridLayoutManager) =
-            object : EndlessRecyclerViewScrollListener(layoutManager) {
-                override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    onLoadMore()
-                }
+        object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                onLoadMore()
             }
+        }
 
     private fun createNavToolbarShadowOnScrollListener() =
-            object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    evaluateHeaderBackgroundOnScroll(recyclerView, dy)
-                }
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                evaluateHeaderBackgroundOnScroll(recyclerView, dy)
             }
+        }
 
     private fun evaluateHeaderBackgroundOnScroll(recyclerView: RecyclerView, dy: Int) {
         headerBackground?.translationY = getViewModel().getTranslationYHeaderBackground(
@@ -541,7 +541,6 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().routeApplinkLiveData.observe(::routeApplink)
         getViewModel().deleteCartTrackingLiveData.observe(::sendDeleteCartTrackingEvent)
         getViewModel().generalSearchEventLiveData.observe(::sendTrackingGeneralEvent)
-        getViewModel().addToCartRepurchaseWidgetTrackingLiveData.observe(::sendAddToCartRepurchaseProductTrackingEvent)
         getViewModel().oocOpenScreenTrackingEvent.observe(::sendOOCOpenScreenTracking)
         getViewModel().setUserPreferenceLiveData.observe(::setUserPreferenceData)
         getViewModel().querySafeLiveData.observe(::showDialogAgeRestriction)
@@ -549,10 +548,6 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().needToUpdateProductRecommendationLiveData.observe(::updateProductRecommendation)
         getViewModel().updateAdsCarouselLiveData.observe(::updateAdsProductCarousel)
         getViewModel().stopPerformanceMonitoringLiveData.observe(::stopPerformanceMonitoring)
-
-        getViewModel().blockAddToCartLiveData.observe(viewLifecycleOwner) {
-            showToasterWhenAddToCartBlocked()
-        }
 
         productRecommendationViewModel.addItemToCart.observe(viewLifecycleOwner) { result ->
             when (result) {
@@ -609,12 +604,12 @@ abstract class BaseSearchCategoryFragment:
         if (shopId.isEmpty()) return
 
         miniCartWidget?.initialize(
-                shopIds = listOf(shopId),
-                fragment = this,
-                listener = this,
-                autoInitializeData = false,
-                pageName = miniCartWidgetPageName,
-                source = miniCartWidgetSource
+            shopIds = listOf(shopId),
+            fragment = this,
+            listener = this,
+            autoInitializeData = false,
+            pageName = miniCartWidgetPageName,
+            source = miniCartWidgetSource
         )
     }
 
@@ -667,9 +662,9 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onSeeAllCategoryClicked() {
         RouteManager.route(
-                context,
-                ApplinkConstInternalTokopediaNow.CATEGORY_LIST,
-                getViewModel().warehouseId,
+            context,
+            ApplinkConstInternalTokopediaNow.CATEGORY_LIST,
+            getViewModel().warehouseId
         )
     }
 
@@ -702,10 +697,10 @@ abstract class BaseSearchCategoryFragment:
 
         sortFilterBottomSheet = SortFilterBottomSheet().also {
             it.show(
-                    parentFragmentManager,
-                    mapParameter,
-                    dynamicFilterModel,
-                    this
+                parentFragmentManager,
+                mapParameter,
+                dynamicFilterModel,
+                this
             )
 
             it.setOnDismissListener {
@@ -731,8 +726,8 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun setFilterProductCount(countText: String) {
         val productCountText = String.format(
-                getString(R.string.tokopedianow_apply_filter_text),
-                countText
+            getString(R.string.tokopedianow_apply_filter_text),
+            countText
         )
 
         sortFilterBottomSheet?.setResultCountText(productCountText)
@@ -740,10 +735,11 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun configureL3BottomSheet(filter: Filter?) {
-        if (filter != null)
+        if (filter != null) {
             openCategoryChooserFilterPage(filter)
-        else
+        } else {
             dismissCategoryChooserFilterPage()
+        }
     }
 
     protected open fun openCategoryChooserFilterPage(filter: Filter) {
@@ -754,10 +750,10 @@ abstract class BaseSearchCategoryFragment:
             getViewModel().onViewDismissL3FilterPage()
         }
         categoryChooserBottomSheet?.show(
-                parentFragmentManager,
-                getViewModel().queryParam,
-                filter,
-                this,
+            parentFragmentManager,
+            getViewModel().queryParam,
+            filter,
+            this
         )
     }
 
@@ -803,22 +799,24 @@ abstract class BaseSearchCategoryFragment:
                 getMiniCartHeight()
             } else {
                 context?.resources?.getDimensionPixelSize(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
+                    unifyprinciplesR.dimen.layout_lvl0
+                ).orZero()
             }
             stickyView?.setPadding(NO_PADDING, NO_PADDING, NO_PADDING, paddingBottom)
         }
     }
 
     private fun getMiniCartHeight(): Int {
-        return miniCartWidget?.height.orZero() - context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)?.toInt().orZero()
+        return miniCartWidget?.height.orZero() - context?.resources?.getDimension(unifyprinciplesR.dimen.unify_space_16)?.toInt().orZero()
     }
 
     private fun notifyAdapterItemChange(indices: List<Int>) {
         val searchCategoryAdapter = searchCategoryAdapter ?: return
 
         indices.forEach {
-            if (it in searchCategoryAdapter.list.indices)
+            if (it in searchCategoryAdapter.list.indices) {
                 searchCategoryAdapter.notifyItemChanged(it, true)
+            }
         }
     }
 
@@ -842,21 +840,21 @@ abstract class BaseSearchCategoryFragment:
         val context = context ?: return
 
         AtcVariantHelper.goToAtcVariant(
-                context = context,
-                productId = productId,
-                pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
-                isTokoNow = true,
-                shopId = shopId,
-                trackerCdListName = getCDListName(),
-                startActivitResult = this::startActivityForResult,
+            context = context,
+            productId = productId,
+            pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
+            isTokoNow = true,
+            shopId = shopId,
+            trackerCdListName = getCDListName(),
+            startActivitResult = this::startActivityForResult
         )
     }
 
     protected abstract fun getCDListName(): String
 
     override fun onProductNonVariantQuantityChanged(
-            productItemDataView: ProductItemDataView,
-            quantity: Int,
+        productItemDataView: ProductItemDataView,
+        quantity: Int
     ) {
         getViewModel().onViewATCProductNonVariant(productItemDataView, quantity)
     }
@@ -872,10 +870,10 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun showToaster(
-            message: String?,
-            toasterType: Int,
-            actionText: String = "",
-            clickListener: (View) -> Unit = { },
+        message: String?,
+        toasterType: Int,
+        actionText: String = "",
+        clickListener: (View) -> Unit = { }
     ) {
         val view = view ?: return
         message ?: return
@@ -884,12 +882,12 @@ abstract class BaseSearchCategoryFragment:
         Toaster.toasterCustomBottomHeight = getMiniCartHeight()
 
         Toaster.build(
-                view,
-                message,
-                Toaster.LENGTH_LONG,
-                toasterType,
-                actionText,
-                clickListener,
+            view,
+            message,
+            Toaster.LENGTH_LONG,
+            toasterType,
+            actionText,
+            clickListener
         ).show()
     }
 
@@ -995,33 +993,9 @@ abstract class BaseSearchCategoryFragment:
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
     }
 
-    override fun onCartQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
-        getViewModel().onViewATCRepurchaseWidget(data, quantity)
-    }
-
-    override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
-
-    }
-
-    override fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel) {
-
-    }
-
-    override fun createAffiliateLink(url: String): String {
-        return getViewModel().createAffiliateLink(url)
-    }
-
-    override fun onAddVariantClicked(data: TokoNowProductCardUiModel) {
-        openATCVariantBottomSheet(
-            data.productId,
-            data.shopId,
-        )
-    }
-
     protected open fun sendAddToCartRepurchaseProductTrackingEvent(
         addToCartRepurchaseProductData: Triple<Int, String, TokoNowProductCardUiModel>
     ) {
-
     }
 
     override fun onClickSwitcherTo15M() {
@@ -1035,25 +1009,25 @@ abstract class BaseSearchCategoryFragment:
 
     private fun setUserPreferenceData(result: Result<SetUserPreference.SetUserPreferenceData>) {
         showContent()
-        when(result) {
+        when (result) {
             is Success -> {
                 context?.apply {
-                    //Set user preference data to local cache
+                    // Set user preference data to local cache
                     updateLocalCacheModel(
                         data = result.data,
                         context = this
                     )
 
-                    //Refresh the page
+                    // Refresh the page
                     gridLayoutManager?.scrollToPosition(TOP_LIST)
                     refreshLayout()
 
-                    //Show toaster
+                    // Show toaster
                     showOnBoardingToaster(
                         data = result.data
                     )
 
-                    //Refresh mini cart
+                    // Refresh mini cart
                     getViewModel().refreshMiniCart()
                 }
             }
@@ -1101,14 +1075,17 @@ abstract class BaseSearchCategoryFragment:
     private fun show20mOnBoardBottomSheet() {
         TokoNowOnBoard20mBottomSheet
             .newInstance()
-            .show(childFragmentManager, OnBoard20mBottomSheetCallback(
-                onBackTo2hClicked = {
-                    RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME + QUERY_PARAM_SERVICE_TYPE_NOW2H)
-                },
-                onDismiss = {
-                    sharedPref.set20mBottomSheetOnBoardShown(true)
-                }
-            ))
+            .show(
+                childFragmentManager,
+                OnBoard20mBottomSheetCallback(
+                    onBackTo2hClicked = {
+                        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME + QUERY_PARAM_SERVICE_TYPE_NOW2H)
+                    },
+                    onDismiss = {
+                        sharedPref.set20mBottomSheetOnBoardShown(true)
+                    }
+                )
+            )
     }
 
     private fun showSwitcherToaster(serviceType: String) {
@@ -1127,20 +1104,26 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
-            override fun onFail() {
-                activity?.finish()
+        AdultManager.handleActivityResult(
+            activity,
+            requestCode,
+            resultCode,
+            data,
+            object : AdultManager.Callback {
+                override fun onFail() {
+                    activity?.finish()
+                }
+
+                override fun onVerificationSuccess(message: String?) {}
+
+                override fun onLoginPreverified() {}
             }
-
-            override fun onVerificationSuccess(message: String?) {}
-
-            override fun onLoginPreverified() {}
-        })
+        )
     }
 
     override fun onFeedbackCtaClicked() {
         TokoNowProductFeedbackBottomSheet().also {
-            it.showBottomSheet(activity?.supportFragmentManager,view)
+            it.showBottomSheet(activity?.supportFragmentManager, view)
         }
     }
 
@@ -1155,7 +1138,7 @@ abstract class BaseSearchCategoryFragment:
         eventCategory = getEventCategory(true),
         getListValue = { recommendationItem ->
             getListValue(true, recommendationItem)
-        },
+        }
     )
 
     protected open fun createProductRecommendationCallback() = ProductRecommendationCallback(
@@ -1171,10 +1154,10 @@ abstract class BaseSearchCategoryFragment:
         onAddToCartBlocked = this::showToasterWhenAddToCartBlocked,
         getListValue = { recommendationItem ->
             getListValue(false, recommendationItem)
-        },
+        }
     )
 
-    protected open fun createSimilarProductCallback(isCategoryPage: Boolean) : ProductCardCompactSimilarProductTrackerCallback {
+    protected open fun createSimilarProductCallback(isCategoryPage: Boolean): ProductCardCompactSimilarProductTrackerCallback {
         return ProductCardCompactSimilarProductTrackerCallback(isCategoryPage)
     }
 

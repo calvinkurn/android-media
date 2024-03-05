@@ -13,16 +13,17 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
+import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
-import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
-import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
@@ -73,7 +74,7 @@ open class SearchTestFixtures {
     }
 
     protected fun `Given choose address data`(
-            chooseAddressData: LocalCacheModel = dummyChooseAddressData
+        chooseAddressData: LocalCacheModel = dummyChooseAddressData
     ) {
         every {
             chooseAddressWrapper.getChooseAddressData()
@@ -95,26 +96,26 @@ open class SearchTestFixtures {
 
     protected fun `Given search view model`(queryParamMap: Map<String, String> = defaultQueryParamMap) {
         tokoNowSearchViewModel = TokoNowSearchViewModel(
-                CoroutineTestDispatchersProvider,
-                queryParamMap,
-                getSearchFirstPageUseCase,
-                getSearchLoadMorePageUseCase,
-                getFilterUseCase,
-                getProductCountUseCase,
-                getMiniCartListSimplifiedUseCase,
-                cartService,
-                getWarehouseUseCase,
-                setUserPreferenceUseCase,
-                remoteConfig,
-                chooseAddressWrapper,
-                affiliateService,
-                userSession,
+            CoroutineTestDispatchersProvider,
+            queryParamMap,
+            getSearchFirstPageUseCase,
+            getSearchLoadMorePageUseCase,
+            getFilterUseCase,
+            getProductCountUseCase,
+            getMiniCartListSimplifiedUseCase,
+            cartService,
+            getWarehouseUseCase,
+            setUserPreferenceUseCase,
+            remoteConfig,
+            chooseAddressWrapper,
+            affiliateService,
+            userSession
         )
     }
 
     protected fun `Given get search first page use case will be successful`(
-            searchModel: SearchModel,
-            requestParamsSlot: CapturingSlot<RequestParams> = slot()
+        searchModel: SearchModel,
+        requestParamsSlot: CapturingSlot<RequestParams> = slot()
     ) {
         every {
             getSearchFirstPageUseCase.execute(any(), any(), capture(requestParamsSlot))
@@ -124,17 +125,21 @@ open class SearchTestFixtures {
     }
 
     protected fun createMandatoryTokonowQueryParams(
-            chooseAddressData: LocalCacheModel = dummyChooseAddressData
+        chooseAddressData: LocalCacheModel = dummyChooseAddressData
     ) = mapOf(
-            SearchApiConst.SOURCE to TOKONOW,
-            SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
-            SearchApiConst.USER_CITY_ID to chooseAddressData.city_id,
-            SearchApiConst.USER_ADDRESS_ID to chooseAddressData.address_id,
-            SearchApiConst.USER_DISTRICT_ID to chooseAddressData.district_id,
-            SearchApiConst.USER_LAT to chooseAddressData.lat,
-            SearchApiConst.USER_LONG to chooseAddressData.long,
-            SearchApiConst.USER_POST_CODE to chooseAddressData.postal_code,
+        SearchApiConst.SOURCE to TOKONOW,
+        SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
+        SearchApiConst.USER_CITY_ID to chooseAddressData.city_id,
+        SearchApiConst.USER_ADDRESS_ID to chooseAddressData.address_id,
+        SearchApiConst.USER_DISTRICT_ID to chooseAddressData.district_id,
+        SearchApiConst.USER_LAT to chooseAddressData.lat,
+        SearchApiConst.USER_LONG to chooseAddressData.long,
+        SearchApiConst.USER_POST_CODE to chooseAddressData.postal_code
     )
+
+    protected fun `Given address data null`() {
+        tokoNowSearchViewModel.mockSuperClassField("chooseAddressData", null)
+    }
 
     protected fun `Given view already created`() {
         tokoNowSearchViewModel.onViewCreated()
@@ -142,5 +147,9 @@ open class SearchTestFixtures {
 
     protected fun `When view created`() {
         tokoNowSearchViewModel.onViewCreated()
+    }
+
+    protected fun `When view reload page`() {
+        tokoNowSearchViewModel.onViewReloadPage()
     }
 }

@@ -1,21 +1,19 @@
-package com.tokopedia.tokopedianow.searchcategory
+package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.oldcategory.presentation.viewmodel.CategoryTestFixtures
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
-import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.search.domain.model.SearchModel
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Callback
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartQty
+import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 
-class CategoryAffiliateTest: CategoryTestFixtures(), Callback {
-
-    private val categoryModelJSON = "oldcategory/first-page-products-variant-and-non-variant.json"
-    private val categoryModel = categoryModelJSON.jsonToObject<CategoryModel>()
+class SearchAffiliateTest : SearchTestFixtures(), Callback {
 
     private lateinit var addToCartTestHelper: AddToCartNonVariantTestHelper
 
@@ -23,25 +21,27 @@ class CategoryAffiliateTest: CategoryTestFixtures(), Callback {
         super.setUp()
 
         addToCartTestHelper = AddToCartNonVariantTestHelper(
-            tokoNowCategoryViewModel,
+            tokoNowSearchViewModel,
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,
             getMiniCartListSimplifiedUseCase,
             userSession,
-            this,
+            this
         )
     }
 
     override fun `Given first page API will be successful`() {
-        `Given get category first page use case will be successful`(categoryModel)
+        val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
+        `Given get search first page use case will be successful`(searchModel)
     }
 
     @Test
     fun `when add to cart should call check atc affiliate cookie`() {
         addToCartTestHelper.`test add to cart success`()
 
-        val productItemList = tokoNowCategoryViewModel.visitableListLiveData.value!!.getProductItemList()
+        val productItemList =
+            tokoNowSearchViewModel.visitableListLiveData.value!!.getProductItemList()
         val productItemDataViewToATC = productItemList[0]
         val productCardModel = productItemDataViewToATC.productCardModel
 
@@ -88,7 +88,12 @@ class CategoryAffiliateTest: CategoryTestFixtures(), Callback {
     private fun List<Visitable<*>>.getProductItemList() = filterIsInstance<ProductItemDataView>()
 
     private fun `given init affiliate cookie error`() {
-        coEvery { affiliateService.initAffiliateCookie(anyString(), anyString()) } throws NullPointerException()
+        coEvery {
+            affiliateService.initAffiliateCookie(
+                anyString(),
+                anyString()
+            )
+        } throws NullPointerException()
     }
 
     private fun `given check atc affiliate cookie error`() {
@@ -96,7 +101,7 @@ class CategoryAffiliateTest: CategoryTestFixtures(), Callback {
     }
 
     private fun `when create affiliate link`(url: String) {
-        tokoNowCategoryViewModel.createAffiliateLink(url)
+        tokoNowSearchViewModel.createAffiliateLink(url)
     }
 
     private fun `assert check atc affiliate cookie called`(expectedData: NowAffiliateAtcData) {

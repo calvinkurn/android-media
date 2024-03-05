@@ -61,8 +61,8 @@ import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
-import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L1
+import com.tokopedia.tokopedianow.category.domain.model.CategorySharingModel
+import com.tokopedia.tokopedianow.category.constant.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
