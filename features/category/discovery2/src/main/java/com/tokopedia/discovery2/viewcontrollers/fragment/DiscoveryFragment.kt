@@ -1063,7 +1063,6 @@ open class DiscoveryFragment :
 
     private fun trackEnterPage() {
         if(hasTrackEnterPage || getPageName().isEmpty()) return
-//        AppLogAnalytics.updateCurrentPageData(this)
         pageInfoHolder?.let { AppLogAnalytics.putPageData(PAGE_NAME, it.label.trackingPagename) } ?: return
         AppLogRecommendation.sendEnterPageAppLog()
         hasTrackEnterPage = true
