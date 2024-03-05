@@ -1047,8 +1047,42 @@ class PlayBroadcasterViewModelTest {
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().contentAccountList.assertEqualTo(accountMock)
+            state.tickerBottomSheetConfig.cacheKey.assertEqualTo(cacheKey1)
             state.tickerBottomSheetConfig.type.assertEqualTo(TickerBottomSheetType.BOTTOM_SHEET)
             state.tickerBottomSheetConfig.page.assertEqualTo(TickerBottomSheetPage.LIVE_PREPARATION)
+        }
+
+        val cacheKey2 = "cacheKey_2"
+        val responseMock2 = uiModelBuilder.buildTickerBottomSheetResponse(
+            cacheKey = cacheKey2,
+            page = TickerBottomSheetPage.LIVE_PREPARATION,
+            type = TickerBottomSheetType.BOTTOM_SHEET,
+        )
+
+        coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock2
+        coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
+            key = responseMock2.cacheKey
+        ) } returns alreadyShowed
+
+        val robot2 = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            sharedPref = mockHydraSharedPreferences,
+        )
+
+        robot2.use {
+            robot2.recordState {
+                getAccountConfiguration(TYPE_SHOP)
+                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
+                    TickerBottomSheetPage.LIVE_PREPARATION
+                ))
+            }.also { state ->
+                state.tickerBottomSheetConfig.cacheKey.assertEqualTo(cacheKey2)
+                state.tickerBottomSheetConfig.type.assertEqualTo(TickerBottomSheetType.BOTTOM_SHEET)
+                state.tickerBottomSheetConfig.page.assertEqualTo(TickerBottomSheetPage.LIVE_PREPARATION)
+            }
         }
     }
 
