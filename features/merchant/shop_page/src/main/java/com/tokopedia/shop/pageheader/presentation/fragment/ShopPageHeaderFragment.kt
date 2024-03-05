@@ -547,7 +547,7 @@ class ShopPageHeaderFragment :
         shopHeaderViewModel?.shopShareTracker?.removeObservers(this)
         shopHeaderViewModel?.followStatusData?.removeObservers(this)
         shopHeaderViewModel?.followShopData?.removeObservers(this)
-        shopHeaderViewModel?.productListData?.removeObservers(viewLifecycleOwner)
+        shopHeaderViewModel?.productListData?.removeObservers(this)
         shopHeaderViewModel?.shopPageHeaderTickerData?.removeObservers(this)
         shopHeaderViewModel?.shopPageShopShareData?.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(
@@ -857,7 +857,7 @@ class ShopPageHeaderFragment :
             }
         )
 
-        shopHeaderViewModel?.productListData?.observe(viewLifecycleOwner) {
+        shopHeaderViewModel?.productListData?.observe(owner) {
             when (it) {
                 is Success -> {
                     val productListData = it.data.data
