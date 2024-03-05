@@ -63,8 +63,15 @@ fun FeedProductHighlight(
     NestTheme(darkTheme = false) {
         AnimatedVisibility(
             visible = isVisible,
-            enter = slideInVertically (animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing)),
-            exit = slideOutVertically(animationSpec = tween(durationMillis = 300, easing = EaseOut), targetOffsetY = { it } )
+            enter = slideInVertically(
+                animationSpec = tween(
+                    durationMillis = 500,
+                    easing = LinearOutSlowInEasing
+                )
+            ),
+            exit = slideOutVertically(
+                animationSpec = tween(durationMillis = 300, easing = EaseOut),
+                targetOffsetY = { it })
         ) {
             Box(
                 modifier = Modifier
@@ -202,20 +209,22 @@ fun ProductTagItems(
     onProductLabelClick: () -> Unit,
     onProductHighlightClose: () -> Unit,
     impressHighlight: (FeedCardProductModel) -> Unit,
-    isFocused: MutableState<Boolean> ,
+    isFocused: MutableState<Boolean>,
 ) {
     var isHighlightVisible by remember { mutableStateOf(false) }
-    val highlightedProduct= products.firstOrNull { it.isHighlight}
+    val highlightedProduct = products.firstOrNull { it.isHighlight }
 
     if (!isFocused.value) {
         isHighlightVisible = false
     } else {
-        LaunchedEffect(key1 = key){
+        LaunchedEffect(key1 = key) {
             try {
                 delay(5000L)
                 isHighlightVisible = true
                 highlightedProduct?.let { impressHighlight.invoke(it) }
-            } catch (e: Exception) { Timber.d(e) }
+            } catch (e: Exception) {
+                Timber.d(e)
+            }
         }
     }
 
