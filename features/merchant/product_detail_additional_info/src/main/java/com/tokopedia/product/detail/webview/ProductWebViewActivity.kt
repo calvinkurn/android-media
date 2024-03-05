@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.common.showImmediately
 class ProductWebViewActivity : BaseSimpleActivity() {
 
     companion object {
+        private const val EXTRAS_TITLE = "title"
         private const val EXTRAS_URL = "url"
     }
 
@@ -26,8 +27,10 @@ class ProductWebViewActivity : BaseSimpleActivity() {
 
         val extras = intent.extras ?: return
         val url = extras.getString(EXTRAS_URL) ?: ""
+        val title = extras.getString(EXTRAS_TITLE) ?: ""
         showImmediately(supportFragmentManager, ProductWebViewBottomSheet.TAG) {
             ProductWebViewBottomSheet.instance(
+                title = title,
                 url = url
             )
         }

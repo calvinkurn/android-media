@@ -12,12 +12,14 @@ import com.tokopedia.webview.TkpdWebView
 class ProductWebViewBottomSheet : BottomSheetUnify() {
     companion object {
         const val TAG = "ProductWebViewBottomSheet"
-        const val ARG_URL = "args_url"
+        private const val ARG_TITLE = "args_title"
         fun instance(
+            title: String,
             url: String
         ) = ProductWebViewBottomSheet().apply {
             arguments = Bundle().apply {
-                putString(ARG_URL, url)
+                putString(ARG_TITLE, title)
+                putString(ProductWebViewFragment.ARG_URL, url)
             }
         }
     }
@@ -32,15 +34,23 @@ class ProductWebViewBottomSheet : BottomSheetUnify() {
     }
 
     private fun init() {
+        val arguments = arguments ?: return
+        val title = arguments.getString(ARG_TITLE) ?: ""
+
+
         clearContentPadding = true
+        isFullpage = true
+        setTitle(title)
 
-        val url = arguments?.getString(ARG_URL) ?: ""
-        val view = View.inflate(context, R.layout.product_webview_container, null)
-        val webView = view.findViewById<TkpdWebView>(R.id.pdp_web_view)
-        webView.loadUrl(url)
-        // User Agent Override ke: "Tokopedia Webview - Liteapp"
-
+        val view = View.inflate(requireContext(), R.layout.product_webview_container, null)
         setChild(view)
+
+        val fragment = ProductWebViewFragment.getInstance(arguments)
+        childFragmentManager.beginTransaction().replace(
+            R.id.pdp_frame_container,
+            fragment
+        ).commit()
+        // User Agent Override ke: "Tokopedia Webview - Liteapp"
     }
 
     override fun onDismiss(dialog: DialogInterface) {
