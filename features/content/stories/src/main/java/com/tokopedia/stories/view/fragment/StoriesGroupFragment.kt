@@ -67,7 +67,6 @@ class StoriesGroupFragment @Inject constructor(
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
     private var mTrackGroupChanged = false
-    private var mHasShownGroupHighlight = false
 
     private val pagerListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
@@ -152,22 +151,17 @@ class StoriesGroupFragment @Inject constructor(
     }
 
     private fun showSelectedGroupHighlight(position: Int) {
-        if (args.source == StoriesSource.BROWSE_WIDGET.value && mHasShownGroupHighlight) {
-            viewLifecycleOwner.lifecycleScope.launch {
-                delay(800)
-                viewModelAction(StoriesUiAction.PageIsSelected)
-            }
-            return
-        }
-
         viewLifecycleOwner.lifecycleScope.launch {
-            binding.tvHighlight.text = pagerAdapter.getCurrentPageGroupName(position)
-            binding.tvHighlight.show()
-            binding.tvHighlight.animate().alpha(1f)
-            delay(1000)
-            binding.tvHighlight.animate().alpha(0f)
+            if (args.source != StoriesSource.BROWSE_WIDGET.value) {
+                binding.tvHighlight.text = pagerAdapter.getCurrentPageGroupName(position)
+                binding.tvHighlight.show()
+                binding.tvHighlight.animate().alpha(1f)
+                delay(1000)
+                binding.tvHighlight.animate().alpha(0f)
+            } else {
+                delay(800)
+            }
             viewModelAction(StoriesUiAction.PageIsSelected)
-            mHasShownGroupHighlight = true
         }
     }
 
