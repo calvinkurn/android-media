@@ -12,7 +12,6 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -28,6 +27,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventClickOpera
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventClickShopPerformanceOperationalInsightBottomSheet
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventViewOperationalInsightBottomSheet
 import com.tokopedia.topchat.common.util.Utils.getOperationalInsightStateReport
+import com.tokopedia.topchat.common.util.Utils.isDarkMode
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -36,7 +36,7 @@ import com.tokopedia.unifyprinciples.Typography
 class OperationalInsightBottomSheet(
     private var ticker: ShopChatTicker,
     private var shopId: String
-): BottomSheetUnify() {
+) : BottomSheetUnify() {
 
     private var childView: View? = null
 
@@ -81,7 +81,9 @@ class OperationalInsightBottomSheet(
             ticker.date
         )
         val textDatePerformanceWeekly = HtmlCompat.fromHtml(
-            stringDatePerformanceWeekly, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            stringDatePerformanceWeekly,
+            HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
         datePerformanceWeekly?.text = textDatePerformanceWeekly
     }
 
@@ -110,12 +112,12 @@ class OperationalInsightBottomSheet(
                     val maintainTickerColor = getMaintainTickerColors()
                     drawable.colors = maintainTickerColor
                 }
-                false-> {
+                false -> {
                     val notMaintainTickerColor = getNotMaintainTickerColors()
                     drawable.colors = notMaintainTickerColor
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -136,7 +138,7 @@ class OperationalInsightBottomSheet(
     }
 
     private fun getTextSummary(): Spanned? {
-        return when(ticker.isMaintain) {
+        return when (ticker.isMaintain) {
             true -> {
                 HtmlCompat.fromHtml(
                     getString(R.string.topchat_operational_insight_ticker_maintain),
@@ -154,7 +156,7 @@ class OperationalInsightBottomSheet(
     }
 
     private fun getIconSummary(): String {
-        return when(ticker.isMaintain) {
+        return when (ticker.isMaintain) {
             true -> MAINTAIN_IMAGE_URL
             false -> FIX_IMAGE_URL
             else -> ""
@@ -276,10 +278,6 @@ class OperationalInsightBottomSheet(
         return null
     }
 
-    private fun isDarkMode(): Boolean {
-        return AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
-    }
-    
     private fun initTarget() {
         val tvReplyRateTarget: Typography? = childView?.findViewById(R.id.tv_target_rate_reply)
         val replyRateTarget = ticker.target?.chatRepliedTarget.toIntSafely()
@@ -302,9 +300,11 @@ class OperationalInsightBottomSheet(
 
     private fun initUrlShopPerformance() {
         val spannablePerformanceShop = createSpannableWithLink(
-            getString(R.string.topchat_operational_insight_data_ninety_days))
+            getString(R.string.topchat_operational_insight_data_ninety_days)
+        )
         val tvOperationalInsightShopPerformance: Typography? = childView?.findViewById(
-            R.id.tv_operational_insight_shop_performance)
+            R.id.tv_operational_insight_shop_performance
+        )
         tvOperationalInsightShopPerformance?.isClickable = true
         tvOperationalInsightShopPerformance?.linksClickable = true
         tvOperationalInsightShopPerformance?.movementMethod = LinkMovementMethod.getInstance()
@@ -328,7 +328,7 @@ class OperationalInsightBottomSheet(
         try {
             val startPosition = completeString.indexOf(getPerformanceShopText())
             val endPosition = completeString.lastIndexOf(getPerformanceShopText()) +
-                    getPerformanceShopText().length
+                getPerformanceShopText().length
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(textView: View) {
                     goToShopScorePage()
@@ -337,7 +337,9 @@ class OperationalInsightBottomSheet(
                     super.updateDrawState(drawState)
                     drawState.isUnderlineText = false
                     drawState.color = MethodChecker.getColor(
-                        context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
                 }
             }
             spannableString.setSpan(
@@ -350,7 +352,7 @@ class OperationalInsightBottomSheet(
         return spannableString
     }
 
-    private fun getPerformanceShopText() : String {
+    private fun getPerformanceShopText(): String {
         return getString(R.string.topchat_operational_insight_performance_shop)
     }
 
@@ -381,7 +383,7 @@ class OperationalInsightBottomSheet(
             replyChatRate = ticker.data?.chatReplied.toString().removeSuffix(SUFFIX_FLOAT),
             targetReplyChatRate = ticker.target?.chatRepliedTarget.toString().removeSuffix(SUFFIX_FLOAT),
             replyChatSpeed = ticker.data?.chatSpeed.toString().removeSuffix(SUFFIX_FLOAT),
-            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString().removeSuffix(SUFFIX_FLOAT),
+            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString().removeSuffix(SUFFIX_FLOAT)
         )
     }
 
@@ -392,7 +394,7 @@ class OperationalInsightBottomSheet(
             replyChatRate = ticker.data?.chatReplied.toString().removeSuffix(SUFFIX_FLOAT),
             targetReplyChatRate = ticker.target?.chatRepliedTarget.toString().removeSuffix(SUFFIX_FLOAT),
             replyChatSpeed = ticker.data?.chatSpeed.toString().removeSuffix(SUFFIX_FLOAT),
-            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString().removeSuffix(SUFFIX_FLOAT),
+            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString().removeSuffix(SUFFIX_FLOAT)
         )
     }
 
@@ -403,7 +405,7 @@ class OperationalInsightBottomSheet(
             replyChatRate = ticker.data?.chatReplied.toString().removeSuffix(SUFFIX_FLOAT),
             targetReplyChatRate = ticker.target?.chatRepliedTarget.toString().removeSuffix(SUFFIX_FLOAT),
             replyChatSpeed = ticker.data?.chatSpeed.toString().removeSuffix(SUFFIX_FLOAT),
-            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString().removeSuffix(SUFFIX_FLOAT),
+            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString().removeSuffix(SUFFIX_FLOAT)
         )
     }
 
