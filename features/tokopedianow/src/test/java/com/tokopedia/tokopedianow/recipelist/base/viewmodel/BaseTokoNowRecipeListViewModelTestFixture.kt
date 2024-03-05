@@ -62,7 +62,7 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
 
     fun onGetRecipes_thenReturn(
         response: TokoNowGetRecipes,
-        recipeListParamSlot: CapturingSlot<RecipeListParam> = slot(),
+        recipeListParamSlot: CapturingSlot<RecipeListParam> = slot()
     ) {
         coEvery { getRecipeListUseCase.execute(capture(recipeListParamSlot)) } returns response.response
     }
@@ -111,7 +111,7 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
         assertEquals(expectedPage, actualRecipeListParam.page)
         assertEquals(expectedPerPage, actualRecipeListParam.perPage)
         assertEquals(expectedSourcePage, actualRecipeListParam.sourcePage)
-        assertEquals(expectedWarehouseId, actualRecipeListParam.warehouseID)
+        assertEquals(expectedWarehouseId, actualRecipeListParam.warehouses)
         assertEquals(expectedSortByParams, actualQueryParamsMap["sort_by"])
         assertEquals(expectedTagIdsParam, actualQueryParamsMap["tag_ids"])
         assertEquals(expectedIngredientIdsParam, actualQueryParamsMap["ingredient_ids"])

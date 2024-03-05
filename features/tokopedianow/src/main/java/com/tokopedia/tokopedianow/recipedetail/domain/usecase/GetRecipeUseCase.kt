@@ -3,12 +3,13 @@ package com.tokopedia.tokopedianow.recipedetail.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeResponse
 import com.tokopedia.tokopedianow.recipedetail.domain.model.TokoNowGetRecipe
 import com.tokopedia.tokopedianow.recipedetail.domain.query.GetRecipe
 import com.tokopedia.tokopedianow.recipedetail.domain.query.GetRecipe.PARAM_RECIPE_ID
 import com.tokopedia.tokopedianow.recipedetail.domain.query.GetRecipe.PARAM_SLUG
-import com.tokopedia.tokopedianow.recipedetail.domain.query.GetRecipe.PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.recipedetail.domain.query.GetRecipe.PARAM_WAREHOUSES
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -29,26 +30,28 @@ class GetRecipeUseCase @Inject constructor(gqlRepository: GraphqlRepository) {
     /**
      * @param recipeId id of the recipe
      * @param slug slug obtained from recipe url as identifier
-     * @param warehouseId warehouseId obtained from address data
+     * @param warehouses warehouseId obtained from address data
      */
     suspend fun execute(
         recipeId: String = DEFAULT_RECIPE_ID,
         slug: String = DEFAULT_SLUG,
-        warehouseId: String
+        warehouses: List<WarehouseData>
     ): RecipeResponse {
         graphql.apply {
             setGraphqlQuery(GetRecipe)
             setTypeClass(TokoNowGetRecipe::class.java)
 
-            if(recipeId.isEmpty() && slug.isEmpty()) {
+            if (recipeId.isEmpty() && slug.isEmpty()) {
                 throw MessageErrorException(PARAM_ERROR_MESSAGE)
             }
 
-            setRequestParams(RequestParams.create().apply {
-                putString(PARAM_RECIPE_ID, recipeId)
-                putString(PARAM_SLUG, slug)
-                putString(PARAM_WAREHOUSE_ID, warehouseId)
-            }.parameters)
+            setRequestParams(
+                RequestParams.create().apply {
+                    putString(PARAM_RECIPE_ID, recipeId)
+                    putString(PARAM_SLUG, slug)
+                    putObject(PARAM_WAREHOUSES, warehouses)
+                }.parameters
+            )
 
             val getRecipe = executeOnBackground()
             return getRecipe.response.data

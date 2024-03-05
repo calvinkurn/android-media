@@ -13,6 +13,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
@@ -204,8 +205,8 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     private fun getRecipe() {
         launchCatchError(block = {
-            val warehouseId = addressData.getWarehouseId().toString()
-            val response = getRecipeUseCase.execute(recipeId, slug, warehouseId)
+            val warehouses = AddressMapper.mapToWarehousesData(addressData.getAddressData())
+            val response = getRecipeUseCase.execute(recipeId, slug, warehouses)
             val bookmarked = response.isBookmarked
             recipeId = response.id
 

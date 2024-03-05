@@ -2,11 +2,11 @@ package com.tokopedia.tokopedianow.recipedetail.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-internal object GetRecipe: GqlQueryInterface {
+internal object GetRecipe : GqlQueryInterface {
 
     const val PARAM_RECIPE_ID = "recipeID"
     const val PARAM_SLUG = "slug"
-    const val PARAM_WAREHOUSE_ID = "warehouseID"
+    const val PARAM_WAREHOUSES = "warehouses"
 
     private const val OPERATION_NAME = "TokonowGetRecipe"
 
@@ -17,13 +17,13 @@ internal object GetRecipe: GqlQueryInterface {
     override fun getQuery(): String {
         return """
         query $OPERATION_NAME(
-                ${'$'}${PARAM_RECIPE_ID}: String!, 
-                ${'$'}${PARAM_SLUG}: String!, 
-                ${'$'}${PARAM_WAREHOUSE_ID}: String) {
+                ${'$'}$PARAM_RECIPE_ID: String!, 
+                ${'$'}$PARAM_SLUG: String!, 
+                ${'$'}$PARAM_WAREHOUSES: [WarehousePerService!]) {
             $OPERATION_NAME(input: {
-                ${PARAM_RECIPE_ID}:${'$'}${PARAM_RECIPE_ID}, 
-                ${PARAM_SLUG}:${'$'}${PARAM_SLUG}, 
-                ${PARAM_WAREHOUSE_ID}:${'$'}${PARAM_WAREHOUSE_ID}
+                $PARAM_RECIPE_ID:${'$'}$PARAM_RECIPE_ID, 
+                $PARAM_SLUG:${'$'}$PARAM_SLUG, 
+                $PARAM_WAREHOUSES:${'$'}$PARAM_WAREHOUSES
             }) {
                 header {
                   success
@@ -141,7 +141,7 @@ internal object GetRecipe: GqlQueryInterface {
                 }
             }
        }
-       """.trimIndent()
+        """.trimIndent()
     }
 
     override fun getTopOperationName(): String {

@@ -21,7 +21,7 @@ class RecipeListParamTest {
         recipeListParam.apply {
             page = 1
             perPage = 5
-            warehouseID = "2"
+            warehouses = "2"
             sourcePage = "TokoNow Home"
             mapToQueryParamsMap(queryParams)
         }
@@ -48,7 +48,7 @@ class RecipeListParamTest {
         recipeListParam.apply {
             page = 1
             perPage = 5
-            warehouseID = "2"
+            warehouses = "2"
             sourcePage = "TokoNow Home"
             mapToQueryParamsMap(queryParams)
         }
@@ -57,7 +57,7 @@ class RecipeListParamTest {
         recipeListParam.apply {
             page = 2
             perPage = 7
-            warehouseID = "5"
+            warehouses = "5"
             sourcePage = "TokoNow Search"
             queryParamsMap["title"] = "Hello now"
             queryParamsMap["ingredient_ids"] = "5,6,7"
@@ -84,7 +84,7 @@ class RecipeListParamTest {
         recipeListParam.apply {
             page = 2
             perPage = 7
-            warehouseID = "5"
+            warehouses = "5"
             sourcePage = "TokoNow Search"
             queryParamsMap["title"] = "Hello now"
             queryParamsMap["ingredient_ids"] = ""

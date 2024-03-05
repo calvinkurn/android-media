@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
+import com.tokopedia.localizationchooseaddress.common.model.WarehouseData
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import kotlinx.parcelize.Parcelize
@@ -86,5 +87,10 @@ class ChosenAddressRequestHelper @Inject constructor(@ApplicationContext private
                 )
             )
         }
+    }
+
+    fun getWarehouses(): List<WarehouseData> {
+        val warehouses = getChosenAddress().tokonow.warehouses
+        return warehouses.map { WarehouseData(it.warehouse_id.toString(), it.service_type) }
     }
 }

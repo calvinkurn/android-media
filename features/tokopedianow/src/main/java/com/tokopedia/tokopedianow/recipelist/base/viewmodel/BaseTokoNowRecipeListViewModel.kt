@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
@@ -93,9 +94,12 @@ open class BaseTokoNowRecipeListViewModel(
 
     fun getRecipeList() {
         launchCatchError(block = {
+            val chosenAddress = addressData.getAddressData()
+            val warehouses = AddressMapper.mapToWarehousesData(chosenAddress)
+
             showProgressBar()
             getRecipeListParam.sourcePage = sourcePage
-            getRecipeListParam.warehouseID = addressData.getWarehouseId().toString()
+            getRecipeListParam.warehouses = warehouses
 
             val response = getRecipeListUseCase.execute(getRecipeListParam)
             hasNext = response.metadata.hasNext
@@ -178,8 +182,8 @@ open class BaseTokoNowRecipeListViewModel(
                         title = title,
                         recipeId = recipeId,
                         isSuccess = true
+                    )
                 )
-            )
             )
 
             visitableItems.updateRecipeBookmark(
@@ -195,8 +199,8 @@ open class BaseTokoNowRecipeListViewModel(
                     model = ToasterModel(
                         recipeId = recipeId,
                         isSuccess = false
+                    )
                 )
-            )
             )
         }
     }
@@ -248,8 +252,11 @@ open class BaseTokoNowRecipeListViewModel(
         showLoadMoreProgressBar()
 
         launchCatchError(block = {
+            val chosenAddress = addressData.getAddressData()
+            val warehouses = AddressMapper.mapToWarehousesData(chosenAddress)
+
             getRecipeListParam.sourcePage = sourcePage
-            getRecipeListParam.warehouseID = addressData.getWarehouseId().toString()
+            getRecipeListParam.warehouses = warehouses
             getRecipeListParam.page = getRecipeListParam.page + 1
 
             val response = getRecipeListUseCase.execute(getRecipeListParam)

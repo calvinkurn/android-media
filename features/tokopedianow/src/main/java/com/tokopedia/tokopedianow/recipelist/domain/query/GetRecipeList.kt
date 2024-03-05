@@ -2,11 +2,11 @@ package com.tokopedia.tokopedianow.recipelist.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-internal object GetRecipeList: GqlQueryInterface {
+internal object GetRecipeList : GqlQueryInterface {
 
     const val PARAM_PAGE = "page"
     const val PARAM_PER_PAGE = "perPage"
-    const val PARAM_WAREHOUSE_ID = "warehouseID"
+    const val PARAM_WAREHOUSES = "warehouses"
     const val PARAM_SOURCE_PAGE = "sourcePage"
     const val PARAM_QUERY_PARAM = "queryParam"
 
@@ -19,18 +19,18 @@ internal object GetRecipeList: GqlQueryInterface {
     override fun getQuery(): String {
         return """
         query $OPERATION_NAME(
-            ${'$'}${PARAM_PAGE}: Int!, 
-            ${'$'}${PARAM_PER_PAGE}: Int!,
-            ${'$'}${PARAM_WAREHOUSE_ID}: String,
-            ${'$'}${PARAM_SOURCE_PAGE}: String,
-            ${'$'}${PARAM_QUERY_PARAM}: String
+            ${'$'}$PARAM_PAGE: Int!, 
+            ${'$'}$PARAM_PER_PAGE: Int!,
+            ${'$'}$PARAM_WAREHOUSES: [WarehousePerService!],
+            ${'$'}$PARAM_SOURCE_PAGE: String,
+            ${'$'}$PARAM_QUERY_PARAM: String
         ) {
             $OPERATION_NAME(input: {
-                ${PARAM_PAGE}:${'$'}${PARAM_PAGE}, 
-                ${PARAM_PER_PAGE}:${'$'}${PARAM_PER_PAGE},
-                ${PARAM_WAREHOUSE_ID}:${'$'}${PARAM_WAREHOUSE_ID},
-                ${PARAM_SOURCE_PAGE}:${'$'}${PARAM_SOURCE_PAGE},
-                ${PARAM_QUERY_PARAM}:${'$'}${PARAM_QUERY_PARAM}
+                $PARAM_PAGE:${'$'}$PARAM_PAGE, 
+                $PARAM_PER_PAGE:${'$'}$PARAM_PER_PAGE,
+                $PARAM_WAREHOUSES:${'$'}$PARAM_WAREHOUSES,
+                $PARAM_SOURCE_PAGE:${'$'}$PARAM_SOURCE_PAGE,
+                $PARAM_QUERY_PARAM:${'$'}$PARAM_QUERY_PARAM
             }) {
                 header {
                   processTime
