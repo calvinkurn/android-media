@@ -14,7 +14,9 @@ import com.tkpd.atcvariant.databinding.AtcAnimationLayoutBinding
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
+import com.tokopedia.kotlin.extensions.view.setLayoutWidth
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.toPx
 import com.tkpd.atcvariant.R as atcvariantR
 
@@ -25,7 +27,7 @@ import com.tkpd.atcvariant.R as atcvariantR
  */
 
 
-class AtcAnimation(private val context: Context) {
+class AtcAnimation(context: Context) {
     companion object {
         /**
          * refer to [R.layout.toolbar_viewholder_icon]
@@ -46,14 +48,20 @@ class AtcAnimation(private val context: Context) {
         private val TARGET_IMAGE_SIZE_AFTER_ANIMATE = 24.toPx()
         private const val DELAY_BETWEEN_SHOW_AND_FLY_ANIMATE = 750L
         private const val ANIMATE_DURATION = 350L
+        private val STROKE_WIDTH = 4.toPx()
     }
 
     private var mSourceImageView: ImageView? = null
-    private val binding = AtcAnimationLayoutBinding.inflate(LayoutInflater.from(context))
-    private val popupWindow =
-        PopupWindow(binding.root, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
+    private val binding by lazyThreadSafetyNone {
+        AtcAnimationLayoutBinding.inflate(LayoutInflater.from(context))
+    }
+    private val popupWindow by lazyThreadSafetyNone {
+        PopupWindow(
+            binding.root, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT
+        ).apply {
             animationStyle = atcvariantR.style.popup_window_animation
         }
+    }
 
     private val locationOnScreen = IntArray(2)
     private var currentX = 0
@@ -64,32 +72,40 @@ class AtcAnimation(private val context: Context) {
 
     fun setView(view: ImageView): AtcAnimation {
         mSourceImageView = view
-        binding.productImage.setImageDrawable(view.drawable)
-        currentWidth = view.width
-        currentHeight = view.height
         return this
     }
 
-    fun show() {
-        initialBehaviour()
-        showPopUpWindow()
-    }
+    private fun prepare(): Boolean {
+        val source = mSourceImageView ?: return false
 
-    /**
-     * get current location of source image view
-     * set to current position for popUpWindow
-     */
-    private fun initialBehaviour() {
-        val target = mSourceImageView ?: return
-        target.getLocationOnScreen(locationOnScreen)
-        currentX = locationOnScreen[0]
-        currentY = locationOnScreen[1]
-        currentWidth = target.width
-        currentHeight = target.width
+        // set resource as drawable from source
+        binding.productImage.setImageDrawable(source.drawable)
+
+        // set current size from source size
+        currentWidth = source.width
+        currentHeight = source.height
+
+        // set current position from source location
+        source.getLocationOnScreen(locationOnScreen)
+        currentX = locationOnScreen[0] - STROKE_WIDTH
+        currentY = locationOnScreen[1] - STROKE_WIDTH
+
         currentAlpha = Float.ONE
 
-        updatePosition()
-        updateAlpha()
+        return true
+    }
+
+    fun show() {
+        if (prepare()) {
+            resetState()
+            showPopUpWindow()
+        }
+    }
+
+    private fun resetState() {
+        transformSize()
+        transformPosition()
+        transformAlpha()
     }
 
     private fun showPopUpWindow() {
@@ -134,39 +150,31 @@ class AtcAnimation(private val context: Context) {
 
         val translateX = currentX.animatePositionTo(to = targetX) {
             currentX = it
-            updatePosition()
+            transformPosition()
         }
 
         val translateY = currentY.animatePositionTo(to = targetY) {
             currentY = it
-            updatePosition()
+            transformPosition()
         }
 
         val translateWidth = currentWidth.animatePositionTo(to = targetSize) {
             currentWidth = it
-            updatePosition()
+            transformSize()
         }
 
         val translateHeight = currentHeight.animatePositionTo(to = targetSize) {
             currentHeight = it
-            updatePosition()
+            transformSize()
         }
 
         val alpha = currentAlpha.animatePositionTo(to = Float.ZERO) {
             currentAlpha = it
-            updateAlpha()
+            transformAlpha()
         }
 
         return listOf(translateX, translateY, translateWidth, translateHeight, alpha)
     }
-
-    private fun Float.animatePositionTo(to: Float, onValueChanged: (Float) -> Unit) =
-        ValueAnimator.ofFloat(this, to).apply {
-            addUpdateListener {
-                val value = it.animatedValue as Float
-                onValueChanged(value)
-            }
-        }
 
     private fun Int.animatePositionTo(to: Int, onValueChanged: (Int) -> Unit) =
         ValueAnimator.ofInt(this, to).apply {
@@ -176,16 +184,24 @@ class AtcAnimation(private val context: Context) {
             }
         }
 
-    private fun updatePosition() {
-        binding.productImage.updateLayoutParams<LayoutParams> {
-            if (this?.height != currentWidth) {
-                this?.height = currentWidth
-            }
-            if (this?.width != currentWidth) {
-                this?.width = currentHeight
+    private fun Float.animatePositionTo(to: Float, onValueChanged: (Float) -> Unit) =
+        ValueAnimator.ofFloat(this, to).apply {
+            addUpdateListener {
+                val value = it.animatedValue as Float
+                onValueChanged(value)
             }
         }
 
+    // update popup-window content size
+    private fun transformSize() {
+        binding.productImage.apply {
+            setLayoutWidth(currentWidth)
+            setLayoutHeight(currentHeight)
+        }
+    }
+
+    // update popup-window location
+    private fun transformPosition() {
         popupWindow.update(
             currentX,
             currentY,
@@ -194,7 +210,8 @@ class AtcAnimation(private val context: Context) {
         )
     }
 
-    private fun updateAlpha() {
+    // update popup-window alpha
+    private fun transformAlpha() {
         if (binding.root.alpha == currentAlpha) return
         binding.root.alpha = currentAlpha
     }

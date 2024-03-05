@@ -324,7 +324,10 @@ class AtcVariantBottomSheet :
     private fun getDataFromPreviousPage(productVariantBottomSheetParams: ProductVariantBottomSheetParams): ProductVariantBottomSheetParams? {
         context?.let { ctx ->
             val cacheManager =
-                SaveInstanceCacheManager(ctx, productVariantBottomSheetParams.cacheId)
+                SaveInstanceCacheManager(
+                    ctx.applicationContext,
+                    productVariantBottomSheetParams.cacheId
+                )
             val data: ProductVariantBottomSheetParams? = cacheManager.get(
                 AtcVariantHelper.PDP_PARCEL_KEY_RESPONSE,
                 ProductVariantBottomSheetParams::class.java,
@@ -979,17 +982,18 @@ class AtcVariantBottomSheet :
 
             if (openShipmentBottomSheetWhenError()) return@let
 
-            /*showProgressDialog {
-                loadingProgressDialog?.dismiss()
-            }*/
+            if (pageSource == VariantPageSource.PDP_PAGESOURCE.source) {
+                val targetView = productImage ?: return
+                atcAnimator
+                    .setView(targetView)
+                    .show()
+            } else {
+                showProgressDialog {
+                    loadingProgressDialog?.dismiss()
+                }
+            }
 
-            val targetView = productImage ?: return
-
-            atcAnimator
-                .setView(targetView)
-                .show()
-
-            /*viewModel.hitAtc(
+            viewModel.hitAtc(
                 buttonAction,
                 sharedData?.shopId.orEmpty(),
                 viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted()
@@ -1000,7 +1004,7 @@ class AtcVariantBottomSheet :
                 sharedData?.trackerListNamePdp ?: "",
                 sharedData?.showQtyEditor ?: false,
                 viewModel.getVariantAggregatorData()?.simpleBasicInfo?.shopName ?: ""
-            )*/
+            )
         }
     }
 
