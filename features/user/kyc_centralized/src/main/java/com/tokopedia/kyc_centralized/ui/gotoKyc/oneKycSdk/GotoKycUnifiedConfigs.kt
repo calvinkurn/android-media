@@ -52,7 +52,7 @@ class GotoKycUnifiedConfigs : UnifiedKycConfigs {
     }
 
     // Usage for Toko: Deeplink for Help CTA in Challenge Screen(FR Challenge)
-    override fun getPartnerKycFrChallengeQuestionsHelpPageId(kycSdkPartner: KycSdkPartner): String {
+    override fun getPartnerKycFrChallengeQuestionsHelpPageId(kycSdkPartner: KycSdkPartner, onboardingPartner: String): String {
         /*
         * base url (https://www.tokopedia.com/) is set statically for staging and production environments
         * because the url between the both is different and
