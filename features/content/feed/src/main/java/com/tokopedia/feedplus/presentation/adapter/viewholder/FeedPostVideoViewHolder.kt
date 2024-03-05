@@ -44,7 +44,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play_common.util.extension.changeConstraint
 
 /**
@@ -238,6 +237,7 @@ class FeedPostVideoViewHolder(
                 bindCampaignRibbon(data)
                 bindComments(data)
                 bindVideoPlayer(data)
+                bindProductLabel(data)
 
                 val trackerData =
                     trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(data)
@@ -272,9 +272,11 @@ class FeedPostVideoViewHolder(
             val newPayloads = mutableListOf<Any>().apply {
                 addAll(payloads)
                 if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
-                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(
-                    scrollingPayload
-                )
+                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) {
+                    add(
+                        scrollingPayload
+                    )
+                }
             }
             bind(item.data as FeedCardVideoContentModel, newPayloads)
         }
@@ -547,6 +549,32 @@ class FeedPostVideoViewHolder(
         listener.onWatchPostVideo(element, trackerModel)
         onScrolling(false)
         productButtonView.playProductIconAnimation()
+    }
+
+    private fun onNotSelected() {
+        mIsSelected = false
+        mVideoPlayer?.pause()
+        mVideoPlayer?.reset()
+        onScrolling(false)
+        campaignView.resetView()
+        hideClearView()
+        productButtonView.pauseProductIconAnimation()
+        isSelected.value = false
+    }
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        val thePlayer = mVideoPlayer
+        mVideoPlayer = null
+
+        binding.playerFeedVideo.player = null
+        binding.playerControl.player = null
+        thePlayer?.let { listener.detachPlayer(it) }
+    }
+
+    private fun bindProductLabel(element: FeedCardVideoContentModel) {
+        val trackerModel =
+            trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(element)
         binding.productTagView.setContent {
             ProductTagItems(
                 isFocused = isSelected,
@@ -581,30 +609,9 @@ class FeedPostVideoViewHolder(
                 },
                 onProductHighlightClose = {
                     listener.onHighlightClose(trackerDataModel)
-                })
+                }
+            )
         }
-        binding.productTagView.rootView.addImpressionListener {}
-    }
-
-    private fun onNotSelected() {
-        mIsSelected = false
-        mVideoPlayer?.pause()
-        mVideoPlayer?.reset()
-        onScrolling(false)
-        campaignView.resetView()
-        hideClearView()
-        productButtonView.pauseProductIconAnimation()
-        isSelected.value = false
-    }
-
-    override fun onViewRecycled() {
-        super.onViewRecycled()
-        val thePlayer = mVideoPlayer
-        mVideoPlayer = null
-
-        binding.playerFeedVideo.player = null
-        binding.playerControl.player = null
-        thePlayer?.let { listener.detachPlayer(it) }
     }
 
     companion object {
