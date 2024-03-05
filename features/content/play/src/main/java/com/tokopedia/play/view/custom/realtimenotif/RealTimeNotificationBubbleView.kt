@@ -5,10 +5,11 @@ import android.text.Spanned
 import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.play.R
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.media.loader.R as medialoaderR
 
 /**
  * Created by jegul on 03/08/21
@@ -32,7 +33,9 @@ class RealTimeNotificationBubbleView : RoundedConstraintLayout {
     }
 
     fun setIconUrl(url: String) {
-        imageNotif.loadImage(url)
+        imageNotif.loadImageCircle(url) {
+            setErrorDrawable(medialoaderR.drawable.media_placeholder_grey)
+        }
     }
 
     fun setText(text: Spanned) {
