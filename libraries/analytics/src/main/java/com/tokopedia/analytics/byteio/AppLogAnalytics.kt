@@ -136,7 +136,7 @@ object AppLogAnalytics {
             it.put(SEARCH_ID, getLastData(SEARCH_ID))
             it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
             it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
-        }.toString()
+        }
         put(ENTRANCE_INFO, data)
     }
 
@@ -150,6 +150,10 @@ object AppLogAnalytics {
 
     internal fun JSONObject.addEnterFrom() {
         put(ENTER_FROM, getLastData(ENTER_FROM))
+    }
+
+    internal fun JSONObject.addEnterFromInfo() {
+        put(ENTER_FROM_INFO, getLastData(ENTER_FROM))
     }
 
     internal fun JSONObject.addPreviousEnterFrom() {

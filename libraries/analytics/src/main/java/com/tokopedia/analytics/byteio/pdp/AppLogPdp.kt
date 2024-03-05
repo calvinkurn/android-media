@@ -3,6 +3,7 @@ package com.tokopedia.analytics.byteio.pdp
 import android.annotation.SuppressLint
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFromInfo
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceForm
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceInfo
@@ -14,7 +15,6 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePreviousPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastData
-import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
@@ -44,6 +44,7 @@ object AppLogPdp {
             it.addSourcePageType()
             it.addSourceModule()
             it.addEntranceInfo()
+            it.addEnterFromInfo()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
             it.put("product_type", product.productType.type)
@@ -67,6 +68,7 @@ object AppLogPdp {
             it.addSourceModule()
             it.addTrackId()
             it.addEntranceInfo()
+            it.addEnterFromInfo()
             it.put("stay_time", durationInMs)
             it.put("is_load_data", if (product.isLoadData) 1 else 0)
             it.put("quit_type", quitType)
@@ -92,6 +94,7 @@ object AppLogPdp {
             it.addSourcePageType()
             it.addEntranceForm()
             it.addSourceModule()
+            it.addEnterFromInfo()
             it.addEntranceInfo()
             it.put("product_id", product.productId)
             it.put("product_category", product.productCategory)
@@ -114,6 +117,7 @@ object AppLogPdp {
             it.addEntranceForm()
             it.addSourceModule()
             it.addSourcePreviousPage()
+            it.addEnterFromInfo()
             it.addRequestId()
             it.addEntranceInfo()
             it.put("product_id", product.productId)
@@ -137,6 +141,7 @@ object AppLogPdp {
             it.addSourcePageType()
             it.addEntranceForm()
             it.addSourceModule()
+            it.addEnterFromInfo()
             it.addSourcePreviousPage()
             it.addRequestId()
             it.addEntranceInfo()
