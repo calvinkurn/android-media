@@ -1021,7 +1021,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is LiveStats -> {
                 updateLiveStats(
                     listOf(
-                        LiveStatsUiModel.Viewer(result.liveConcurrentUser),
+                        /** JOE TODO: adjust this */
+//                        LiveStatsUiModel.Viewer(result.liveConcurrentUser),
                         LiveStatsUiModel.TotalViewer(result.visitChannel),
                         LiveStatsUiModel.EstimatedIncome(result.estimatedIncome),
                         LiveStatsUiModel.Like(result.likeChannel),

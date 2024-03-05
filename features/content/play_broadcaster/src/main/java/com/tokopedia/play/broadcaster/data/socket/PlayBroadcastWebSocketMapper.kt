@@ -38,6 +38,7 @@ class PlayBroadcastWebSocketMapper(
             PlaySocketEnum.TotalView.value -> convertToModel(response.jsonObject, TotalView::class.java)
             PlaySocketEnum.TotalLike.value -> convertToModel(response.jsonObject, TotalLike::class.java)
             PlaySocketEnum.LiveDuration.value -> convertToModel(response.jsonObject, LiveDuration::class.java)
+            /** JOE TODO: change this, don't use LiveStats. Create a new class */
             PlaySocketEnum.LiveStats.value -> convertToModel(response.jsonObject, LiveStats::class.java)
             PlaySocketEnum.NewMetric.value -> NewMetricList(convertToModel(response.jsonArray, newMetricListType) ?: emptyList())
             PlaySocketEnum.ProductTag.value -> convertToModel(response.jsonObject, SectionedProductTagSocketResponse::class.java)

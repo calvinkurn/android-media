@@ -120,7 +120,7 @@ private fun EstimatedIncomeDetailLayoutPreview() {
                 estimatedIncomeDetail = NetworkResult.Success(
                     EstimatedIncomeDetailUiModel(
                         totalStatsList = listOf(
-                            LiveStatsUiModel.EstimatedIncome(value ="Rp5.000.000", clickableIcon = IconUnify.INFORMATION),
+                            LiveStatsUiModel.EstimatedIncome(value ="Rp5.000.000"),
                             LiveStatsUiModel.Visit("1"),
                             LiveStatsUiModel.AddToCart("2"),
                             LiveStatsUiModel.TotalSold("3"),

@@ -49,5 +49,7 @@ data class GetLiveStatisticsResponse(
         val addToCart: String = "",
         @SerializedName("productSoldQtyFmt")
         val productSlotQuantity: String = "",
+        @SerializedName("maxConcurrentUsersFmt")
+        val maxConcurrentUsers: String = "",
     )
 }
