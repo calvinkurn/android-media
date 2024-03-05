@@ -4,7 +4,7 @@ ext {
     tkpdInternalLibDependencies = [
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24.12",
             globalconfig            : "com.tokopedia.config:global_config:1.0.26",
-            url                     : "com.tokopedia.url:url:1.0.27",
+            url                     : "com.tokopedia.url:url:1.0.28",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.6",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.6",

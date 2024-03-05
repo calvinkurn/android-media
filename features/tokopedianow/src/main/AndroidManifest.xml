@@ -240,7 +240,7 @@
         </activity>
 
         <activity
-            android:name=".recipebookmark.persentation.activity.TokoNowRecipeBookmarkActivity"
+            android:name=".recipebookmark.presentation.activity.TokoNowRecipeBookmarkActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
@@ -257,6 +257,13 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".oldrecipebookmark.presentation.activity.TokoNowRecipeBookmarkActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
 
         <activity
             android:name="com.tokopedia.tokopedianow.common.activity.TokoNowMediaGalleryActivity"

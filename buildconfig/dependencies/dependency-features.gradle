@@ -321,7 +321,6 @@ ext {
             telephony_masking               : ":features:user:telephony_masking",
             watch                           : ":features:watch",
             tokofood                        : ":features:tokofood",
-            samples                         : ":features:samples",
-			scpAuth                         : ":features:scp:auth"
-    ]
+            samples                         : ":features:samples"
+	]
 }

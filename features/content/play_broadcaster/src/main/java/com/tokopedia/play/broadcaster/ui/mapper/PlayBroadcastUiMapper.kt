@@ -332,7 +332,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                 },
             ),
             quizConfig = QuizConfigUiModel(
-                isActive = if (authorType == TYPE_SHOP) response.interactiveConfig.tapTapConfig.isActive else false,
+                isActive = if (authorType == TYPE_SHOP) response.interactiveConfig.quizConfig.isActive else false,
                 isGiftActive = authorType == TYPE_SHOP,
                 maxTitleLength = response.interactiveConfig.quizConfig.maxTitleLength,
                 maxChoicesCount = response.interactiveConfig.quizConfig.maxChoicesCount,

@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.data.repository.StoriesRepository
+import com.tokopedia.stories.utils.StoriesPreference
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
@@ -27,13 +28,15 @@ internal class StoriesViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
     args: StoriesArgsModel = StoriesArgsModel(),
     userSession: UserSessionInterface = mockk(relaxed = true),
-    repository: StoriesRepository = mockk(relaxed = true)
+    repository: StoriesRepository = mockk(relaxed = true),
+    sharedPref: StoriesPreference = mockk(relaxed = true),
 ) : Closeable {
 
     private val viewModel = StoriesViewModel(
         args = args,
         repository = repository,
-        userSession = userSession
+        userSession = userSession,
+        sharedPref = sharedPref,
     )
 
     fun getViewModel() = viewModel

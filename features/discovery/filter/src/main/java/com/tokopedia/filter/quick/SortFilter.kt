@@ -1,11 +1,13 @@
 package com.tokopedia.filter.quick
 
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.tokopedia.filter.R
@@ -17,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class SortFilter: ConstraintLayout {
 
@@ -104,6 +107,11 @@ class SortFilter: ConstraintLayout {
         chip_container.removeAllViews()
         chip_container.addView(chipsLayout)
         chip_container.gravity = Gravity.CENTER
+        val chipBackground = GradientDrawable()
+        chipBackground.shape = GradientDrawable.RECTANGLE
+        chipBackground.setColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN50))
+        chipBackground.cornerRadius = 16.toPx().toFloat()
+        background = chipBackground
     }
 
     private fun initFilterButton() {

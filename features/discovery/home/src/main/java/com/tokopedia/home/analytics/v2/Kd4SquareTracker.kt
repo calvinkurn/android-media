@@ -6,6 +6,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.track.builder.util.BaseTrackerConst.Event.CLICK_HOMEPAGE
 
 object Kd4SquareTracker : BaseTrackerConst() {
 
@@ -14,25 +15,25 @@ object Kd4SquareTracker : BaseTrackerConst() {
     private const val IMPRESSION_ACTION = "impression on banner dynamic channel 4 square"
     fun widgetImpressed(model: ChannelModel, userId: String, position: Int): Map<String, Any> {
         val attribute = model.trackingAttributionModel
-        val grid = model.channelGrids.first()
 
         val trackingBuilder = BaseTrackerBuilder().constructBasicPromotionView(
             event = PROMO_VIEW,
             eventAction = IMPRESSION_ACTION,
             eventCategory = Category.HOMEPAGE,
             eventLabel = "${attribute.channelId} - ${attribute.headerName}",
-            promotions = listOf(
+            promotions = model.channelGrids.mapIndexed { index, channelGrid ->
                 Promotion(
                     id = "${attribute.channelId}_${attribute.bannerId}_${attribute.categoryId}_${attribute.persoType}",
                     name = "/ - p${position + 1} - dynamic channel 4 square - banner - ${attribute.headerName}",
-                    position = (position + 1).toString(),
-                    creative = grid.attribution
+                    position = (index + 1).toString(),
+                    creative = channelGrid.attribution
                 )
-            )
+            }
         )
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendChannelId(attribute.channelId)
+            .appendCampaignCode(attribute.campaignCode)
             .appendCustomKeyValue(TrackerId.KEY, IMPRESSION_TRACKER_ID)
             .appendUserId(userId)
 
@@ -76,7 +77,7 @@ object Kd4SquareTracker : BaseTrackerConst() {
         val attribute = model.trackingAttributionModel
 
         val trackingBuilder = BaseTrackerBuilder().constructBasicGeneralClick(
-            event = PROMO_CLICK,
+            event = CLICK_HOMEPAGE,
             eventAction = CHEVRON_CLICK_ACTION,
             eventCategory = Category.HOMEPAGE,
             eventLabel = "${attribute.channelId} - ${attribute.headerName}"

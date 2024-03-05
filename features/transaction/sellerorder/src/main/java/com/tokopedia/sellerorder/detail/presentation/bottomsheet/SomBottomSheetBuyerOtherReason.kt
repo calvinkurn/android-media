@@ -14,11 +14,15 @@ import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 class SomBottomSheetBuyerOtherReason(
-        context: Context,
-        private var rejectReason: SomReasonRejectData.Data.SomRejectReason,
-        private var orderId: String,
-        private val listener: SomRejectOrderBottomSheetListener
-) : SomBaseRejectOrderBottomSheet<BottomsheetSecondaryBinding>(context, LAYOUT, SomConsts.VALUE_REASON_OTHER) {
+    context: Context,
+    private var rejectReason: SomReasonRejectData.Data.SomRejectReason,
+    private var orderId: String,
+    private val listener: SomRejectOrderBottomSheetListener
+) : SomBaseRejectOrderBottomSheet<BottomsheetSecondaryBinding>(
+    context = context,
+    childViewsLayoutResourceId = LAYOUT,
+    bottomSheetTitle = SomConsts.VALUE_REASON_OTHER
+) {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_secondary

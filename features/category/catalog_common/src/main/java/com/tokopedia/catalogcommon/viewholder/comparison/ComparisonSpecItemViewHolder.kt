@@ -31,8 +31,11 @@ class ComparisonSpecItemViewHolder(
         itemView.post {
             binding?.apply {
                 tfSpecValue.ellipsize = TextUtils.TruncateAt.END
-                tfSpecValue.maxLines = item.specHeight
-                tfSpecValue.minLines = item.specHeight
+                tfSpecValue.setLines(item.specHeight)
+                tfSpecTitle.ellipsize = TextUtils.TruncateAt.END
+                tfSpecTitle.setLines(item.specTitleHeight)
+                tfSpecCategoryTitle.ellipsize = TextUtils.TruncateAt.END
+                tfSpecCategoryTitle.setLines(item.specCategoryTitleHeight)
                 tfSpecCategoryTitle.text = item.specCategoryTitle
                 tfSpecTitle.text = item.specTitle
                 tfSpecValue.text = item.specValue
