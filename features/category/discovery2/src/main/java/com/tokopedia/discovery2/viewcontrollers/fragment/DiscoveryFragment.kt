@@ -39,6 +39,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -226,7 +227,8 @@ open class DiscoveryFragment :
     ShareBottomsheetListener,
     ScreenShotListener,
     PermissionListener,
-    MiniCartWidgetListener {
+    MiniCartWidgetListener,
+    AppLogInterface {
 
     private var bmGmDataParam: BmGmDataParam? = null
     private var recyclerViewPaddingResetNeeded: Boolean = false
@@ -1060,7 +1062,8 @@ open class DiscoveryFragment :
     }
 
     private fun trackEnterPage() {
-        if(hasTrackEnterPage) return
+        if(hasTrackEnterPage || getPageName().isEmpty()) return
+//        AppLogAnalytics.updateCurrentPageData(this)
         pageInfoHolder?.let { AppLogAnalytics.putPageData(PAGE_NAME, it.label.trackingPagename) } ?: return
         AppLogRecommendation.sendEnterPageAppLog()
         hasTrackEnterPage = true
@@ -2728,5 +2731,9 @@ open class DiscoveryFragment :
         if (!color.isNullOrEmpty()) {
             setupHexBackgroundColor(color)
         }
+    }
+
+    override fun getPageName(): String {
+        return pageInfoHolder?.label?.trackingPagename.orEmpty()
     }
 }
