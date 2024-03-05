@@ -281,7 +281,8 @@
     <!-- Shopping List -->
     <string name="tokopedianow_shopping_list_page_title">List Belanja</string>
     <string name="tokopedianow_shopping_list_repurchase">Beli Lagi</string>
-    <string name="tokopedianow_shopping_list_add_to_shopping_list">+ List Belanja</string>
+    <string name="tokopedianow_shopping_list_horizontal_product_card_add_to_shopping_list">List Belanja</string>
+    <string name="tokopedianow_shopping_list_horizontal_product_card_product_available">Ada di list</string>
     <string name="tokopedianow_shopping_list_another_option">Pilihan lain</string>
     <string name="tokopedianow_shopping_list_another_option_bottom_sheet_empty_layout_title">Tidak ada produk serupa yang tersedia</string>
     <string name="tokopedianow_shopping_list_another_option_bottom_sheet_empty_layout_description">Kamu bisa cek rekomendasi lain di halaman List Belanja.</string>
@@ -294,8 +295,13 @@
     <string name="tokopedianow_shopping_list_bulk_atc_empty_price_text">Rp-</string>
     <string name="tokopedianow_shopping_list_bulk_atc_plus_cart">+ Keranjang</string>
     <string name="tokopedianow_shopping_list_bulk_atc_total">Total</string>
-    <string name="tokopedianow_shopping_list_product_cart_widget_see_detail">Lihat Detail</string>
-    <string name="tokopedianow_shopping_list_toaster_text_failed_to_delete_product_from_shopping_list">Oops, barang gagal dihapus di List Belanja.</string>
+    <string name="tokopedianow_shopping_list_cart_product_widget_see_detail">Lihat Detail</string>
+    <string name="tokopedianow_shopping_list_toaster_text_failed_to_delete_product_from_shopping_list">Oops, ada barang yang sudah tidak tersedia.</string>
     <string name="tokopedianow_shopping_list_toaster_text_failed_to_add_product_from_shopping_list">Oops, barang gagal disimpan di List Belanja.</string>
-    <string name="tokopedianow_shopping_list_toaster_text_error_for_cta">Coba Lagi</string>
+    <string name="tokopedianow_shopping_list_toaster_text_failed_to_add_product_to_cart">Oops, barang gagal ditambahkan ke Keranjang.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_failed_for_cta">Coba Lagi</string>
+    <string name="tokopedianow_shopping_list_toaster_text_success_to_delete_product_from_shopping_list">1 barang berhasil dihapus dari List Belanja.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_success_to_add_product_from_shopping_list">1 barang berhasil ditambahkan ke list belanja.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_success_to_add_product_to_cart">%1$d barang berhasil ditambahkan ke keranjang.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_success_for_cta">Oke</string>
 </resources>

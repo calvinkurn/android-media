@@ -17,6 +17,7 @@ import com.tokopedia.tokopedianow.common.model.UiState.Loading
 import com.tokopedia.tokopedianow.common.model.UiState.Error
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.addEmptyState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.addLoadingState
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.AnotherOptionBottomSheetVisitableMapper.switchToProductRecommendationAdded
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.addErrorState
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.mapRecommendedProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.modifyProduct
@@ -26,7 +27,7 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper
 import com.tokopedia.tokopedianow.shoppinglist.helper.ResourceProvider
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -57,6 +58,79 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
 
     val layoutState
         get() = _layoutState.asStateFlow()
+    val toasterData
+        get() = _toasterData.asStateFlow()
+
+    private fun showProductShimmering(
+        productId: String
+    ) {
+        mutableLayout
+            .modifyProduct(
+                productId = productId,
+                state = TokoNowLayoutState.LOADING
+            )
+
+        _layoutState.value = Success(getUpdatedLayout())
+    }
+
+    private fun filterProductRecommendationWithAvailableProduct() {
+        val newRecommendedProducts = recommendedProducts.switchToProductRecommendationAdded(
+            availableProducts = availableProducts
+        )
+
+        filteredRecommendedProducts.clear()
+        filteredRecommendedProducts.addAll(newRecommendedProducts)
+    }
+
+    private fun getUpdatedLayout(): List<Visitable<*>> = mutableLayout.toList()
+
+    private fun onSuccessAddingWishlist(
+        product: ShoppingListHorizontalProductCardItemUiModel
+    ) {
+        availableProducts
+            .addProduct(
+                product.copy(
+                    productLayoutType = AVAILABLE_SHOPPING_LIST,
+                    isSelected = true,
+                    state = TokoNowLayoutState.SHOW
+                )
+            )
+
+        filterProductRecommendationWithAvailableProduct()
+
+        mutableLayout.clear()
+        mutableLayout.addProducts(filteredRecommendedProducts)
+
+        _layoutState.value = Success(getUpdatedLayout())
+
+        _toasterData.value = ToasterModel(
+            text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_to_add_product_from_shopping_list),
+            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_for_cta),
+            type = Toaster.TYPE_NORMAL,
+            product = product,
+            event = ToasterModel.Event.ADD_WISHLIST
+        )
+    }
+
+    private fun onErrorAddingWishlist(
+        product: ShoppingListHorizontalProductCardItemUiModel
+    ) {
+        mutableLayout
+            .modifyProduct(
+                productId = product.id,
+                state = TokoNowLayoutState.SHOW
+            )
+
+        _layoutState.value = Success(getUpdatedLayout())
+
+        _toasterData.value = ToasterModel(
+            text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_to_add_product_from_shopping_list),
+            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_for_cta),
+            type = Toaster.TYPE_ERROR,
+            product = product,
+            event = ToasterModel.Event.ADD_WISHLIST
+        )
+    }
 
     fun loadLayout(
         productId: String
@@ -125,79 +199,23 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
             block = {
                 _toasterData.value = null
 
-                mutableLayout
-                    .modifyProduct(
-                        productId = product.id,
-                        state = TokoNowLayoutState.LOADING
-                    )
-
-                _layoutState.value = Success(getUpdatedLayout())
+                showProductShimmering(product.id)
 
                 addToWishlistUseCase.setParams(
                     productId = product.id,
                     userId = userSession.userId
                 )
-                addToWishlistUseCase.executeOnBackground()
+                val response = addToWishlistUseCase.executeOnBackground()
 
-                availableProducts
-                    .addProduct(
-                        product.copy(
-                            productLayoutType = ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST,
-                            isSelected = true,
-                            state = TokoNowLayoutState.SHOW
-                        )
-                    )
-
-                filterProductRecommendationWithAvailableProduct()
-
-                mutableLayout.clear()
-
-                mutableLayout.addProducts(filteredRecommendedProducts)
-
-                _layoutState.value = Success(getUpdatedLayout())
+                if (response is com.tokopedia.usecase.coroutines.Success) {
+                    onSuccessAddingWishlist(product)
+                } else {
+                    onErrorAddingWishlist(product)
+                }
             },
             onError = {
-                mutableLayout
-                    .modifyProduct(
-                        productId = product.id,
-                        state = TokoNowLayoutState.SHOW
-                    )
-
-                _layoutState.value = Success(getUpdatedLayout())
-
-                _toasterData.value = ToasterModel(
-                    text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_to_add_product_from_shopping_list),
-                    actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_for_cta),
-                    type = Toaster.TYPE_ERROR,
-                    product = product,
-                    event = ToasterModel.Event.ADD_WISHLIST
-                )
+                onErrorAddingWishlist(product)
             }
         )
     }
-
-    private fun filterProductRecommendationWithAvailableProduct() {
-        val newRecommendedProducts = recommendedProducts.toMutableList()
-        newRecommendedProducts.filteredBy(
-            productList = availableProducts
-        )
-
-        filteredRecommendedProducts.clear()
-        filteredRecommendedProducts.addAll(newRecommendedProducts)
-    }
-
-    fun MutableList<ShoppingListHorizontalProductCardItemUiModel>.filteredBy(
-        productList: MutableList<ShoppingListHorizontalProductCardItemUiModel>
-    ): MutableList<ShoppingListHorizontalProductCardItemUiModel> {
-        for (availableProduct in availableProducts) {
-            for (recommendedProduct in recommendedProducts) {
-                if (availableProduct.id == recommendedProduct.id) {
-                    modifyProduct(recommendedProduct.id, productLayoutType = ShoppingListProductLayoutType.PRODUCT_RECOMMENDATION_ADDED)
-                }
-            }
-        }
-        return this
-    }
-
-    private fun getUpdatedLayout(): List<Visitable<*>> = mutableLayout.toList()
 }

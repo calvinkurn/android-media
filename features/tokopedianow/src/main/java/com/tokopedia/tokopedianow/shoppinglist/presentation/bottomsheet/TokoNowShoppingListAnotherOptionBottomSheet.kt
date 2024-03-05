@@ -5,9 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -19,11 +18,13 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.bottomsheet.
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListComponent
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
+import com.tokopedia.tokopedianow.shoppinglist.helper.AbstractShoppingListHorizontalProductCardItemListener
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.bottomsheet.ShoppingListAnotherOptionBottomSheetAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListAnotherOptionBottomSheetDecoration
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
-import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel.TokoNowShoppingListAnotherOptionBottomSheetViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -94,18 +95,48 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        collectProductRecommendation()
 
+        collectStateFlow()
         setupRecyclerView()
 
         viewModel.availableProducts.clear()
         viewModel.availableProducts.addAll(availableProducts)
-        viewModel.loadLayout(productId.toString())
+        viewModel.loadLayout(String.EMPTY)
     }
 
     /**
      * -- private function section --
      */
+
+    private suspend fun collectProductRecommendation() {
+        viewModel.layoutState.collect { uiState ->
+            when (uiState) {
+                is UiState.Loading -> {
+                    if (!uiState.data.isNullOrEmpty()) {
+                        adapter.submitList(uiState.data)
+                    }
+                }
+                is UiState.Error -> {
+                    if (!uiState.data.isNullOrEmpty()) {
+                        adapter.submitList(uiState.data)
+                    }
+                }
+                is UiState.Success -> {
+                    adapter.submitList(uiState.data)
+                }
+            }
+        }
+    }
+
+    private suspend fun collectToasterErrorShown() {
+        viewModel.toasterData.collect { data ->
+            if (data != null && data.event == ToasterModel.Event.ADD_WISHLIST) {
+                showToaster(data) {
+                    viewModel.addToWishlist(data.product)
+                }
+            }
+        }
+    }
 
     private fun initInjector() {
         DaggerShoppingListComponent.builder()
@@ -122,27 +153,28 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         configureBottomSheet()
     }
 
-    private fun collectProductRecommendation() {
+    private fun collectStateFlow() {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.layoutState.collect { uiState ->
-                    when (uiState) {
-                        is UiState.Loading -> {
-                            if (!uiState.data.isNullOrEmpty()) {
-                                adapter.submitList(uiState.data)
-                            }
-                        }
-                        is UiState.Error -> {
-                            if (!uiState.data.isNullOrEmpty()) {
-                                adapter.submitList(uiState.data)
-                            }
-                        }
-                        is UiState.Success -> {
-                            adapter.submitList(uiState.data)
-                        }
-                    }
-                }
+            withStarted {
+                launch { collectProductRecommendation() }
+                launch { collectToasterErrorShown() }
             }
+        }
+    }
+
+    private fun showToaster(
+        model: ToasterModel,
+        clickListener: View.OnClickListener
+    ) {
+        binding?.let {
+            Toaster.build(
+                view = it.root,
+                text = model.text,
+                duration = model.duration,
+                type = model.type,
+                actionText = model.actionText,
+                clickListener = if (model.type == Toaster.TYPE_ERROR) clickListener else View.OnClickListener {  }
+            ).show()
         }
     }
 
@@ -175,25 +207,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun createHorizontalProductCardItemCallback() = object : ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener {
-        override fun onSelectCheckbox(
-            productId: String,
-            isSelected: Boolean
-        ) {
-        }
-
-        override fun onClickOtherOptions(
-            productId: String
-        ) {
-
-        }
-
-        override fun onClickDeleteIcon(
-            product: ShoppingListHorizontalProductCardItemUiModel
-        ) {
-
-        }
-
+    private fun createHorizontalProductCardItemCallback() = object : AbstractShoppingListHorizontalProductCardItemListener() {
         override fun onClickAddToShoppingList(
             product: ShoppingListHorizontalProductCardItemUiModel
         ) {

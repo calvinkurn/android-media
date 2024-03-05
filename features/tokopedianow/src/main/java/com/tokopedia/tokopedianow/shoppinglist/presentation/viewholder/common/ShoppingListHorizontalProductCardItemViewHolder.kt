@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common
 
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintSet
@@ -20,6 +21,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.SHOW
 import com.tokopedia.tokopedianow.common.util.ImageUtil.applyBrightnessFilter
+import com.tokopedia.tokopedianow.common.util.TypographyUtil.setLeftImageDrawable
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowShoppingListHorizontalProductCardBinding
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.PRODUCT_RECOMMENDATION
@@ -29,6 +31,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.Shopp
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.PRODUCT_RECOMMENDATION_ADDED
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShoppingListHorizontalProductCardItemViewHolder(
     itemView: View,
@@ -165,11 +168,31 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         data: ShoppingListHorizontalProductCardItemUiModel
     ) {
         tpAddWishlist.showIfWithBlock(data.productLayoutType == PRODUCT_RECOMMENDATION || data.productLayoutType == PRODUCT_RECOMMENDATION_ADDED) {
+            val color: Int
+            val icon: Drawable?
+
             if (data.productLayoutType == PRODUCT_RECOMMENDATION) {
-                setTextColor(getColor(context, unifyprinciplesR.color.Unify_GN500 ))
+                color = getColor(context, unifyprinciplesR.color.Unify_GN500)
+                icon = ContextCompat.getDrawable(root.context, unifycomponentsR.drawable.iconunify_add)
+                text = getString(R.string.tokopedianow_shopping_list_horizontal_product_card_add_to_shopping_list)
+                setOnClickListener {
+                    listener?.onClickAddToShoppingList(data)
+                }
             } else {
-                setTextColor(getColor(context, unifyprinciplesR.color.Unify_NN600))
+                color = getColor(context, unifyprinciplesR.color.Unify_NN600)
+                icon = ContextCompat.getDrawable(root.context, unifycomponentsR.drawable.iconunify_check_big)
+                text = getString(R.string.tokopedianow_shopping_list_horizontal_product_card_product_available)
+                setOnClickListener(null)
             }
+
+            setLeftImageDrawable(
+                drawable = icon,
+                width = root.getDimens(R.dimen.tokopedianow_shopping_list_plus_and_check_icon_size),
+                height = root.getDimens(R.dimen.tokopedianow_shopping_list_plus_and_check_icon_size),
+                color = color
+            )
+
+            setTextColor(color)
 
             val constraintSet = ConstraintSet().apply {
                 clone(normalLayout)
@@ -182,10 +205,6 @@ class ShoppingListHorizontalProductCardItemViewHolder(
                 normalLayout.getDimens(unifyprinciplesR.dimen.unify_space_12)
             )
             constraintSet.applyTo(normalLayout)
-
-            setOnClickListener {
-                listener?.onClickAddToShoppingList(data)
-            }
         }
         icuDelete.showIfWithBlock(data.productLayoutType != PRODUCT_RECOMMENDATION && data.productLayoutType != PRODUCT_RECOMMENDATION_ADDED) {
             val constraintSet = ConstraintSet().apply {

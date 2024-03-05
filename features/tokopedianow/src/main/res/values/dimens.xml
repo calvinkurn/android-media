@@ -23,5 +23,6 @@
     <dimen name="tokopedianow_quest_star_offset">8.5dp</dimen>
     <dimen name="tokopedianow_quest_lottie_offset">10dp</dimen>
     <dimen name="tokopedianow_shopping_list_chevron_icon_size">18dp</dimen>
+    <dimen name="tokopedianow_shopping_list_plus_and_check_icon_size">14dp</dimen>
     <dimen name="tokopedianow_bottom_view_height">72dp</dimen>
 </resources>

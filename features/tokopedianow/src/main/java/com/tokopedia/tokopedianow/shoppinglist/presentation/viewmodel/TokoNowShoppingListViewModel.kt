@@ -498,6 +498,10 @@ class TokoNowShoppingListViewModel @Inject constructor(
             title = productRecommendationData.title
         )
 
+        availableProducts.clear()
+        unavailableProducts.clear()
+        recommendedProducts.clear()
+
         availableProducts.addAll(mapAvailableShoppingList(shoppingListData.listAvailableItem))
         unavailableProducts.addAll(mapUnavailableShoppingList(shoppingListData.listUnavailableItem))
         recommendedProducts.addAll(mapRecommendedProducts(productRecommendationData))
@@ -839,7 +843,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
                 _toasterData.value = ToasterModel(
                     text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_to_add_product_from_shopping_list),
-                    actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_for_cta),
+                    actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_for_cta),
                     type = Toaster.TYPE_ERROR,
                     product = product,
                     event = ADD_WISHLIST
@@ -884,7 +888,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
                 _toasterData.value = ToasterModel(
                     text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_to_delete_product_from_shopping_list),
-                    actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_for_cta),
+                    actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_for_cta),
                     type = Toaster.TYPE_ERROR,
                     product = product,
                     event = DELETE_WISHLIST

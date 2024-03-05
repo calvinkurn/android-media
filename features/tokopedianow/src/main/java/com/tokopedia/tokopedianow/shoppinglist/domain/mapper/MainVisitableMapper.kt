@@ -48,8 +48,8 @@ internal object MainVisitableMapper {
     }
 
     fun mapUnavailableShoppingList(
-        listAvailableItem: List<GetShoppingListDataResponse.UnavailableItem>
-    ): List<ShoppingListHorizontalProductCardItemUiModel> = listAvailableItem.map {
+        listUnavailableItem: List<GetShoppingListDataResponse.UnavailableItem>
+    ): List<ShoppingListHorizontalProductCardItemUiModel> = listUnavailableItem.map {
         ShoppingListHorizontalProductCardItemUiModel(
             id = it.id,
             image = it.imageUrl,

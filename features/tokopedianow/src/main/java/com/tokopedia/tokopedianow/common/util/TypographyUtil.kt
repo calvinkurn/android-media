@@ -28,4 +28,25 @@ object TypographyUtil {
             setCompoundDrawables(null, null, drawable, null)
         }
     }
+
+    fun Typography.setLeftImageDrawable(
+        drawable: Drawable?,
+        width: Int,
+        height: Int,
+        color: Int
+    ) {
+        if (drawable != null) {
+            drawable.setBounds(
+                DEFAULT_BOUND,
+                DEFAULT_BOUND,
+                width,
+                height
+            )
+            drawable.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                color,
+                BlendModeCompat.SRC_ATOP
+            )
+            setCompoundDrawables(drawable, null, null, null)
+        }
+    }
 }
