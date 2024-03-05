@@ -46,11 +46,10 @@ class TranslatorManager() : CoroutineScope {
     private var mApplication: Application? = null
     private var mSelectors = HashMap<String, String>()
     private var mStringPoolManager: StringPoolManager = StringPoolManager()
-    private var origStrings: String? = null
     private var API_KEY: String? = null
     private var mLangsGroup: String? = "id-en"
 
-    private var isTranslationInProgress = false
+    var isTranslationInProgress = false
 
     var destinationLang: String = "en"
 
