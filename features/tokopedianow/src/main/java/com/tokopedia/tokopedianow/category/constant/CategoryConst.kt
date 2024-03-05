@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.oldcategory.utils
+package com.tokopedia.tokopedianow.category.constant
 
 internal const val TOKONOW_CATEGORY_L1 = "tokonow_category_l1"
 internal const val TOKONOW_CATEGORY_L2 = "tokonow_category_l2"

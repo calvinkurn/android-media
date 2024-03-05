@@ -51,8 +51,8 @@ import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
-import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L1
+import com.tokopedia.tokopedianow.category.domain.model.CategorySharingModel
+import com.tokopedia.tokopedianow.category.constant.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -449,14 +449,16 @@ class TokoNowCategoryViewModel @Inject constructor(
         val deepLinkParam = "$DEFAULT_DEEPLINK_PARAM/$categoryIdL1"
         val utmCampaignList = getUtmCampaignList()
 
-        _shareLiveData.postValue(CategorySharingModel(
+        _shareLiveData.postValue(
+            CategorySharingModel(
             categoryIdLvl2 = "",
             categoryIdLvl3 = "",
             title = title,
             deeplinkParam = deepLinkParam,
             url = url,
             utmCampaignList = utmCampaignList
-        ))
+        )
+        )
     }
 
     private fun getUtmCampaignList(): List<String> {

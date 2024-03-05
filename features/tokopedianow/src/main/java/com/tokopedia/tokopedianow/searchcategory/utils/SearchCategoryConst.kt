@@ -20,5 +20,3 @@ internal const val TOKONOW_CATEGORY = "tokonow_category"
 internal const val CATEGORY_LIST_DEPTH = 1
 
 internal const val NO_VARIANT_PARENT_PRODUCT_ID = "0"
-
-internal const val REPURCHASE_WIDGET_POSITION = 9

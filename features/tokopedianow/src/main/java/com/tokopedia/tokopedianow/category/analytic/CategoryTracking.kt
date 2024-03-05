@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.oldcategory.analytics
+package com.tokopedia.tokopedianow.category.analytic
 
 import android.os.Bundle
 import com.google.android.gms.tagmanager.DataLayer
@@ -13,55 +13,54 @@ import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardComp
 import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_VIEW_EMPTY_STATE_CATEGORY
 import com.tokopedia.productcard.compact.similarproduct.analytic.ProductCardCompactSimilarProductAnalyticsConstants.TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_CATEGORY
 import com.tokopedia.productcard.compact.similarproduct.presentation.uimodel.ProductCardCompactSimilarProductUiModel
-import com.tokopedia.tokopedianow.category.analytic.CategoryL2Analytic.Companion.EVENT_CATEGORY_PAGE_L2
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.ADD_QUANTITY_ON_BOTTOM_SHEET
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.APPLY_CATEGORY_FILTER
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_APPLY_FILTER
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_ATC_ON_PAST_PURCHASE_WIDGET
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_BANNER
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_CART_BUTTON_TOP_NAV
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_CATEGORY_FILTER
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_FILTER
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_LEVEL_2_FILTER_WIDGET
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_LIHAT_CATEGORY_LAINNYA
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_PILIH_VARIANT_BUTTON
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_PRODUCT
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_PRODUCT_ON_PAST_PURCHASE_WIDGET
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_QUICK_FILTER
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_SEARCH_BAR
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_SEMUA_KATEGORI
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_VIEW_ALL_ON_TOKONOW_CLP_RECOMMENDATION
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_ADD_TO_CART
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_CLOSE_BOTTOMSHEET
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_PRODUCT
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_SIMILAR_PRODUCT_BTN
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.EVENT_ACTION_IMPRESSION_BOTTOMSHEET
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.EVENT_ACTION_IMPRESSION_EMPTY_STATE
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.IMPRESSION_BANNER
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.IMPRESSION_ON_PAST_PURCHASE_WIDGET
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.IMPRESSION_PRODUCT
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.REMOVE_QUANTITY_ON_BOTTOM_SHEET
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Category.TOKONOW_DASH_CATEGORY_PAGE
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Category.TOP_NAV_TOKONOW_CATEGORY_PAGE
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Event.CLICK_TOP_NAV
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.CATEGORY
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.CATEGORY_ID
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.LABEL_GROUP_HALAL
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.NORMAL_PRICE
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.PRODUCT_ID
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.SLASH_PRICE
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_PAGE_PAST_PURCHASE_WIDGET
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_SCREEN
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.TOKONOW_OOC_SCREEN_NAME
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.WITHOUT_HALAL_LABEL
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.WITHOUT_VARIANT
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.WITH_HALAL_LABEL
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.WITH_VARIANT
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.TRACKER_ID.TRACKER_ID_CLICK_CATEGORY_MENU_WIDGET
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.TRACKER_ID.TRACKER_ID_CLICK_SEE_ALL_CATEGORY
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.TRACKER_ID.TRACKER_ID_IMPRESSION_CATEGORY_MENU_WIDGET
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.ADD_QUANTITY_ON_BOTTOM_SHEET
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.APPLY_CATEGORY_FILTER
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_APPLY_FILTER
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_ATC_ON_PAST_PURCHASE_WIDGET
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_BANNER
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_CART_BUTTON_TOP_NAV
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_CATEGORY_FILTER
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_FILTER
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_LEVEL_2_FILTER_WIDGET
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_LIHAT_CATEGORY_LAINNYA
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_PILIH_VARIANT_BUTTON
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_PRODUCT
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_PRODUCT_ON_PAST_PURCHASE_WIDGET
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_QUICK_FILTER
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_SEARCH_BAR
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_SEMUA_KATEGORI
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.CLICK_VIEW_ALL_ON_TOKONOW_CLP_RECOMMENDATION
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.EVENT_ACTION_CLICK_ADD_TO_CART
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.EVENT_ACTION_CLICK_CLOSE_BOTTOMSHEET
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.EVENT_ACTION_CLICK_PRODUCT
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.EVENT_ACTION_CLICK_SIMILAR_PRODUCT_BTN
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.EVENT_ACTION_IMPRESSION_BOTTOMSHEET
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.EVENT_ACTION_IMPRESSION_EMPTY_STATE
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.IMPRESSION_BANNER
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.IMPRESSION_ON_PAST_PURCHASE_WIDGET
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.IMPRESSION_PRODUCT
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Action.REMOVE_QUANTITY_ON_BOTTOM_SHEET
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Category.TOKONOW_DASH_CATEGORY_PAGE
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Category.TOP_NAV_TOKONOW_CATEGORY_PAGE
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Event.CLICK_TOP_NAV
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.CATEGORY
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.CATEGORY_ID
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.LABEL_GROUP_HALAL
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.NORMAL_PRICE
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.PRODUCT_ID
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.SLASH_PRICE
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.TOKONOW_CATEGORY_PAGE_PAST_PURCHASE_WIDGET
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.TOKONOW_CATEGORY_SCREEN
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.TOKONOW_OOC_SCREEN_NAME
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.WITHOUT_HALAL_LABEL
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.WITHOUT_VARIANT
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.WITH_HALAL_LABEL
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.WITH_VARIANT
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.TRACKER_ID.TRACKER_ID_CLICK_CATEGORY_MENU_WIDGET
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.TRACKER_ID.TRACKER_ID_CLICK_SEE_ALL_CATEGORY
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.TRACKER_ID.TRACKER_ID_IMPRESSION_CATEGORY_MENU_WIDGET
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_FILES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_ADD_TO_WISHLIST
@@ -111,7 +110,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.joinDa
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.TRACKER_ID.TRACKER_ID_IMPRESSION_PAGINATION
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.TRACKER_ID.TRACKER_ID_IMPRESSION_PAGINATION
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ACTION_FIELD
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ADD
@@ -201,7 +200,7 @@ object CategoryTracking {
         const val PRODUCT_ID = "productId"
         const val TOKONOW_CATEGORY_ORGANIC = "/tokonow - category - %s"
         const val RECOM_LIST_PAGE = "clp_product"
-        const val RECOM_LIST_PAGE_NON_OOC = "/${com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.RECOM_LIST_PAGE} - tokonow - rekomendasi untuk anda"
+        const val RECOM_LIST_PAGE_NON_OOC = "/$RECOM_LIST_PAGE - tokonow - rekomendasi untuk anda"
         const val WITH_HALAL_LABEL = "with halal label"
         const val WITHOUT_HALAL_LABEL = "without halal label"
         const val SLASH_PRICE = "slash price"
@@ -274,7 +273,7 @@ object CategoryTracking {
 
     private fun ChannelModel.getAsObjectDataLayer(): List<Any> {
         return channelGrids.mapIndexed { index, channelGrid ->
-            com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.getChannelGridAsObjectDataLayer(
+            getChannelGridAsObjectDataLayer(
                 this,
                 channelGrid,
                 index
@@ -325,7 +324,7 @@ object CategoryTracking {
     }
 
     fun sendAllCategoryClickEvent(categoryId: String) {
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendGeneralEvent(
+        sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_SEMUA_KATEGORI,
@@ -407,7 +406,7 @@ object CategoryTracking {
     }
 
     fun sendApplyCategoryL2FilterEvent(categoryId: String, filterCategoryId: String) {
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendGeneralEvent(
+        sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_LEVEL_2_FILTER_WIDGET,
@@ -420,7 +419,7 @@ object CategoryTracking {
     }
 
     fun sendAisleClickEvent(categoryId: String, aisleCategoryId: String) {
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendGeneralEvent(
+        sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_LIHAT_CATEGORY_LAINNYA,
@@ -433,7 +432,7 @@ object CategoryTracking {
     }
 
     fun sendFilterClickEvent(categoryId: String) {
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendGeneralEvent(
+        sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_FILTER,
@@ -446,7 +445,7 @@ object CategoryTracking {
     }
 
     fun sendQuickFilterClickEvent(categoryId: String) {
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendGeneralEvent(
+        sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_QUICK_FILTER,
@@ -459,7 +458,7 @@ object CategoryTracking {
     }
 
     fun sendApplySortFilterEvent(categoryId: String) {
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendGeneralEvent(
+        sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_APPLY_FILTER,
@@ -472,7 +471,7 @@ object CategoryTracking {
     }
 
     fun sendOpenCategoryL3FilterEvent(categoryId: String) {
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendGeneralEvent(
+        sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_CATEGORY_FILTER,
@@ -485,7 +484,7 @@ object CategoryTracking {
     }
 
     fun sendApplyCategoryL3FilterEvent(categoryId: String, filterCategoryId: String) {
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendGeneralEvent(
+        sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, APPLY_CATEGORY_FILTER,
@@ -508,7 +507,7 @@ object CategoryTracking {
             DataLayer.mapOf(
                 EVENT, SearchCategoryTrackingConst.Event.ADD_TO_CART,
                 EVENT_ACTION,
-                com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.ADD_TO_CART,
+                Action.ADD_TO_CART,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, categoryId,
                 KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
@@ -548,7 +547,7 @@ object CategoryTracking {
     }
 
     fun sendChooseVariantClickEvent(categoryId: String) {
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendGeneralEvent(
+        sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_PILIH_VARIANT_BUTTON,
@@ -563,7 +562,7 @@ object CategoryTracking {
 
 
     fun sendIncreaseQtyEvent(categoryId: String) {
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendGeneralEvent(
+        sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, ADD_QUANTITY_ON_BOTTOM_SHEET,
@@ -576,7 +575,7 @@ object CategoryTracking {
     }
 
     fun sendDecreaseQtyEvent(categoryId: String) {
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendGeneralEvent(
+        sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, REMOVE_QUANTITY_ON_BOTTOM_SHEET,
@@ -599,7 +598,7 @@ object CategoryTracking {
             EVENT_ACTION, IMPRESSION_ON_PAST_PURCHASE_WIDGET,
             EVENT_CATEGORY, TOKONOW_DASH_CATEGORY_PAGE,
             EVENT_LABEL,
-            com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.createEventLabelRepurchaseWidget(
+            createEventLabelRepurchaseWidget(
                 repurchaseProduct
             ),
             KEY_BUSINESS_UNIT, BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
@@ -662,7 +661,7 @@ object CategoryTracking {
                 EVENT_ACTION, CLICK_PRODUCT_ON_PAST_PURCHASE_WIDGET,
                 EVENT_CATEGORY, TOKONOW_DASH_CATEGORY_PAGE,
                 EVENT_LABEL,
-                com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.createEventLabelRepurchaseWidget(
+                createEventLabelRepurchaseWidget(
                     repurchaseProduct
                 ),
                 KEY_BUSINESS_UNIT, BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
@@ -694,7 +693,7 @@ object CategoryTracking {
                 EVENT_ACTION, CLICK_ATC_ON_PAST_PURCHASE_WIDGET,
                 EVENT_CATEGORY, TOKONOW_DASH_CATEGORY_PAGE,
                 EVENT_LABEL,
-                com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.createEventLabelRepurchaseWidget(
+                createEventLabelRepurchaseWidget(
                     repurchaseProduct
                 ),
                 KEY_BUSINESS_UNIT, BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
@@ -731,7 +730,7 @@ object CategoryTracking {
         }
 
     fun sendRecommendationSeeAllClickEvent(categoryIdTracking: String) {
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendGeneralEvent(
+        sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_VIEW_ALL_ON_TOKONOW_CLP_RECOMMENDATION,
@@ -953,7 +952,7 @@ object CategoryTracking {
         warehouseId: String,
         productIdTriggered: String
     ) {
-        val dataLayer = com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.createGeneralDataLayer(
+        val dataLayer = createGeneralDataLayer(
             event = EVENT_CLICK_GROCERIES,
             action = EVENT_ACTION_CLICK_SIMILAR_PRODUCT_BTN,
             label = "$warehouseId - $productIdTriggered",
@@ -963,7 +962,7 @@ object CategoryTracking {
             putString(KEY_TRACKER_ID, TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_CATEGORY)
         }
 
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendEnhanceEcommerceEvent(
+        sendEnhanceEcommerceEvent(
             eventName = EVENT_CLICK_GROCERIES,
             dataLayer = dataLayer
         )
@@ -976,7 +975,7 @@ object CategoryTracking {
         productIdTriggered: String
     ) {
         val items = arrayListOf(
-            com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.createProductItemDataLayer(
+            createProductItemDataLayer(
                 index = similarProduct.position,
                 id = similarProduct.id,
                 name = similarProduct.name,
@@ -985,7 +984,7 @@ object CategoryTracking {
             )
         )
 
-        val dataLayer = com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.createGeneralDataLayer(
+        val dataLayer = createGeneralDataLayer(
             event = EVENT_VIEW_ITEM_LIST,
             action = EVENT_ACTION_IMPRESSION_BOTTOMSHEET,
             label = "$warehouseId - $productIdTriggered - ${similarProduct.id}",
@@ -997,7 +996,7 @@ object CategoryTracking {
             putParcelableArrayList(KEY_ITEMS, ArrayList(items))
         }
 
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendEnhanceEcommerceEvent(
+        sendEnhanceEcommerceEvent(
             eventName = EVENT_VIEW_PG_IRIS,
             dataLayer = dataLayer
         )
@@ -1010,7 +1009,7 @@ object CategoryTracking {
         productIdTriggered: String
     ) {
         val items = arrayListOf(
-            com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.createProductItemDataLayer(
+            createProductItemDataLayer(
                 index = similarProduct.position,
                 id = similarProduct.id,
                 name = similarProduct.name,
@@ -1019,7 +1018,7 @@ object CategoryTracking {
             )
         )
 
-        val dataLayer = com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.createGeneralDataLayer(
+        val dataLayer = createGeneralDataLayer(
             event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_PRODUCT,
             label = "$warehouseId - $productIdTriggered - ${similarProduct.id}",
@@ -1031,7 +1030,7 @@ object CategoryTracking {
             putParcelableArrayList(KEY_ITEMS, ArrayList(items))
         }
 
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendEnhanceEcommerceEvent(
+        sendEnhanceEcommerceEvent(
             eventName = EVENT_SELECT_CONTENT,
             dataLayer = dataLayer
         )
@@ -1045,7 +1044,7 @@ object CategoryTracking {
         newQuantity: Int
     ) {
         val items = arrayListOf(
-            com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.createAtcProductItemDataLayer(
+            createAtcProductItemDataLayer(
                 id = similarProduct.id,
                 name = similarProduct.name,
                 price = similarProduct.priceFmt,
@@ -1057,7 +1056,7 @@ object CategoryTracking {
             )
         )
 
-        val dataLayer = com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.createGeneralDataLayer(
+        val dataLayer = createGeneralDataLayer(
             event = TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART,
             action = EVENT_ACTION_CLICK_ADD_TO_CART,
             label = "$warehouseId - $productIdTriggered - ${similarProduct.id}",
@@ -1069,7 +1068,7 @@ object CategoryTracking {
             putParcelableArrayList(KEY_ITEMS, items)
         }
 
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendEnhanceEcommerceEvent(
+        sendEnhanceEcommerceEvent(
             eventName = TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART,
             dataLayer = dataLayer
         )
@@ -1080,7 +1079,7 @@ object CategoryTracking {
         warehouseId: String,
         productIdTriggered: String
     ) {
-        val dataLayer = com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.createGeneralDataLayer(
+        val dataLayer = createGeneralDataLayer(
             event = EVENT_CLICK_GROCERIES,
             action = EVENT_ACTION_CLICK_CLOSE_BOTTOMSHEET,
             label = "$warehouseId - $productIdTriggered",
@@ -1089,7 +1088,7 @@ object CategoryTracking {
             putString(KEY_TRACKER_ID, TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_CATEGORY)
         }
 
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendEnhanceEcommerceEvent(
+        sendEnhanceEcommerceEvent(
             eventName = EVENT_CLICK_GROCERIES,
             dataLayer = dataLayer
         )
@@ -1100,8 +1099,8 @@ object CategoryTracking {
         warehouseId: String,
         productIdTriggered: String
     ) {
-        val dataLayer = com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.createGeneralDataLayer(
-            event = TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_GROCERIES,
+        val dataLayer = createGeneralDataLayer(
+            event = EVENT_VIEW_GROCERIES,
             action = EVENT_ACTION_IMPRESSION_EMPTY_STATE,
             label = "$warehouseId - $productIdTriggered",
             userId = userId
@@ -1109,8 +1108,8 @@ object CategoryTracking {
             putString(KEY_TRACKER_ID, TRACKER_ID_VIEW_EMPTY_STATE_CATEGORY)
         }
 
-        com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendEnhanceEcommerceEvent(
-            eventName = TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_GROCERIES,
+        sendEnhanceEcommerceEvent(
+            eventName = EVENT_VIEW_GROCERIES,
             dataLayer = dataLayer
         )
     }
@@ -1140,7 +1139,7 @@ object CategoryTracking {
                     categoryName = categoryName,
                     warehouseId = warehouseId,
                     position = newPosition,
-                    itemName = com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.getCategoryMenuItemName(
+                    itemName = getCategoryMenuItemName(
                         position = newPosition,
                         headerName = DEFAULT_HEADER_CATEGORY_MENU
                     )
@@ -1172,7 +1171,7 @@ object CategoryTracking {
                     categoryName = categoryName,
                     warehouseId = warehouseId,
                     position = newPosition,
-                    itemName = com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.getCategoryMenuItemName(
+                    itemName = getCategoryMenuItemName(
                         position = newPosition,
                         headerName = DEFAULT_HEADER_CATEGORY_MENU
                     )

@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.oldcategory.presentation.viewmodel
+package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
@@ -12,7 +12,7 @@ import io.mockk.coVerify
 import org.junit.Assert
 import org.junit.Test
 
-class CategorySwitchServiceTest: CategoryTestFixtures() {
+class SearchSwitchServiceTest : SearchTestFixtures() {
 
     @Test
     fun `when service type is 20m and bottomsheet not yet been shown should show bottomsheet`() {
@@ -23,7 +23,7 @@ class CategorySwitchServiceTest: CategoryTestFixtures() {
 
         `When view reload page`()
 
-        val needToShowOnBoardBottomSheet = tokoNowCategoryViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = false)
+        val needToShowOnBoardBottomSheet = tokoNowSearchViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = false)
         Assert.assertEquals(true, needToShowOnBoardBottomSheet)
     }
 
@@ -36,7 +36,7 @@ class CategorySwitchServiceTest: CategoryTestFixtures() {
 
         `When view reload page`()
 
-        val needToShowOnBoardBottomSheet = tokoNowCategoryViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = true)
+        val needToShowOnBoardBottomSheet = tokoNowSearchViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = true)
         Assert.assertEquals(false, needToShowOnBoardBottomSheet)
     }
 
@@ -47,9 +47,9 @@ class CategorySwitchServiceTest: CategoryTestFixtures() {
 
         `Given choose address data`(localCacheModel)
 
-        `When view reload page`()
+        `When view created`()
 
-        val needToShowOnBoardBottomSheet = tokoNowCategoryViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = true)
+        val needToShowOnBoardBottomSheet = tokoNowSearchViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = true)
         Assert.assertEquals(false, needToShowOnBoardBottomSheet)
     }
 
@@ -60,9 +60,9 @@ class CategorySwitchServiceTest: CategoryTestFixtures() {
 
         `Given choose address data`(localCacheModel)
 
-        `When view reload page`()
+        `When view created`()
 
-        val needToShowOnBoardBottomSheet = tokoNowCategoryViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = false)
+        val needToShowOnBoardBottomSheet = tokoNowSearchViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = false)
         Assert.assertEquals(false, needToShowOnBoardBottomSheet)
     }
 
@@ -70,7 +70,7 @@ class CategorySwitchServiceTest: CategoryTestFixtures() {
     fun `when address data is null should not show bottomsheet`() {
         `Given address data null`()
 
-        val needToShowOnBoardBottomSheet = tokoNowCategoryViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = true)
+        val needToShowOnBoardBottomSheet = tokoNowSearchViewModel.needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown = true)
 
         Assert.assertEquals(false, needToShowOnBoardBottomSheet)
     }
@@ -161,7 +161,7 @@ class CategorySwitchServiceTest: CategoryTestFixtures() {
     }
 
     private fun `When switch service called`() {
-        tokoNowCategoryViewModel.switchService()
+        tokoNowSearchViewModel.switchService()
     }
 
     private fun `Then verify user preference use case called`(
@@ -176,12 +176,12 @@ class CategorySwitchServiceTest: CategoryTestFixtures() {
     }
 
     private fun `Then verify the data`(data: SetUserPreference.SetUserPreferenceData) {
-        tokoNowCategoryViewModel.setUserPreferenceLiveData
+        tokoNowSearchViewModel.setUserPreferenceLiveData
             .verifySuccessEquals(Success(data))
     }
 
     private fun `Then verify the data`(data: Throwable) {
-        tokoNowCategoryViewModel.setUserPreferenceLiveData
+        tokoNowSearchViewModel.setUserPreferenceLiveData
             .verifyErrorEquals(Fail(data))
     }
 }

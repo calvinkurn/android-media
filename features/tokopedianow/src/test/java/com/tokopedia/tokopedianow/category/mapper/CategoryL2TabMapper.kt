@@ -31,7 +31,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiMod
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
-import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L2
+import com.tokopedia.tokopedianow.category.constant.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedbackWidgetUiModel

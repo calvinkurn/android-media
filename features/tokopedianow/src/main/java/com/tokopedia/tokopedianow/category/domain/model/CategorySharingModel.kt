@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.oldcategory.domain.model
+package com.tokopedia.tokopedianow.category.domain.model
 
 data class CategorySharingModel(
     val categoryIdLvl2: String,
