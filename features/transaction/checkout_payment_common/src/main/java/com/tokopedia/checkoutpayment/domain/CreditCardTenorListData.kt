@@ -1,5 +1,7 @@
 package com.tokopedia.checkoutpayment.domain
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+
 data class CreditCardTenorListData(
     val processTime: String = "",
     val errorCode: String = "",
@@ -16,4 +18,17 @@ data class TenorListData(
     val rate: Double = 0.0,
     val disable: Boolean = false,
     val gatewayCode: String = ""
-)
+) {
+
+    val tenure: Int
+        get() {
+            if (type != PAYMENT_CC_TYPE_TENOR_FULL) {
+                return type.toIntOrZero()
+            }
+            return 0
+        }
+
+    companion object {
+        const val PAYMENT_CC_TYPE_TENOR_FULL = "FULL"
+    }
+}

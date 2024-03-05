@@ -547,7 +547,18 @@ class CheckoutCalculator @Inject constructor(
         val priceTotal: Double = if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
 
         shipmentCost = shipmentCost.copy(originalPaymentFees = newPayment.data?.paymentFeeDetails ?: emptyList())
-        val paymentFee = shipmentCost.finalPaymentFee
+        var paymentFee = shipmentCost.finalPaymentFee
+        val paymentWidgetData = newPayment.data?.paymentWidgetData?.firstOrNull()
+        if (paymentWidgetData != null) {
+            val installmentOption = newPayment.installmentData?.installmentOptions?.firstOrNull { it.installmentTerm == paymentWidgetData.installmentPaymentData.selectedTenure }
+            if (installmentOption != null) {
+                paymentFee = installmentOption.interestAmount + installmentOption.feeAmount
+            }
+            val tenor = newPayment.tenorList?.firstOrNull { it.tenure == paymentWidgetData.installmentPaymentData.selectedTenure }
+            if (tenor != null) {
+                paymentFee = tenor.fee
+            }
+        }
         val finalPrice = priceTotal + paymentFee
 
         buttonPaymentModel = buttonPaymentModel.copy(

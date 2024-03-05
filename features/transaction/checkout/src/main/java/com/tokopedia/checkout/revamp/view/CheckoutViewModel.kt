@@ -54,6 +54,8 @@ import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetRequest
 import com.tokopedia.checkoutpayment.data.PaymentFeeRequest
+import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_CC_TENOR_LIST
+import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_INSTALLMENT_OPTIONS
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
@@ -3142,7 +3144,7 @@ class CheckoutViewModel @Inject constructor(
         }
 
         val paymentData = payment.data?.paymentWidgetData?.firstOrNull()
-        if (paymentData?.mandatoryHit?.contains("credit_card") == true) {
+        if (paymentData?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
             payment = paymentProcessor.getTenorList(payment, paymentData, paymentRequest)
 
             if (payment.tenorList == null) {
@@ -3160,7 +3162,7 @@ class CheckoutViewModel @Inject constructor(
             }
         }
 
-        if (paymentData?.mandatoryHit?.contains("gocicil") == true) {
+        if (paymentData?.mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
             payment = paymentProcessor.getInstallmentList(payment, paymentData, paymentRequest)
 
             if (payment.installmentData == null) {

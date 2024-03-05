@@ -10,6 +10,8 @@ import com.tokopedia.checkoutpayment.domain.DynamicPaymentFeeUseCase
 import com.tokopedia.checkoutpayment.domain.GetPaymentWidgetUseCase
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentData
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOptionUseCase
+import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_CC_TENOR_LIST
+import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_INSTALLMENT_OPTIONS
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetListData
 import com.tokopedia.checkoutpayment.domain.TenorListData
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
@@ -110,13 +112,13 @@ class PaymentProcessor @Inject constructor(
                 }
             }
 
-            if (paymentData.mandatoryHit.contains("gocicil")) {
+            if (paymentData.mandatoryHit.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS)) {
                 if (installmentData?.installmentOptions?.find { it.isActive } == null) {
                     return PaymentValidationReport.UnavailableTenureError
                 }
             }
 
-            if (paymentData.mandatoryHit.contains("tenor_list")) {
+            if (paymentData.mandatoryHit.contains(MANDATORY_HIT_CC_TENOR_LIST)) {
                 if (tenorList?.find { !it.disable } == null) {
                     return PaymentValidationReport.UnavailableTenureError
                 }

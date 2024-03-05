@@ -28,11 +28,11 @@ import com.tokopedia.checkoutpayment.data.SummariesItemData
 import com.tokopedia.checkoutpayment.data.UsageSummariesData
 import com.tokopedia.checkoutpayment.data.VoucherOrderItemData
 import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
+import com.tokopedia.checkoutpayment.domain.TenorListData.Companion.PAYMENT_CC_TYPE_TENOR_FULL
 import com.tokopedia.checkoutpayment.processor.PaymentProcessor
 import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.oneclickcheckout.common.PAYMENT_CC_TYPE_TENOR_FULL
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost

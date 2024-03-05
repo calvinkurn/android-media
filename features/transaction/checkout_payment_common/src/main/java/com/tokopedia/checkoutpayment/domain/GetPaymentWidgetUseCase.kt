@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetRequest
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetResponse
+import com.tokopedia.checkoutpayment.data.PaymentAmountValidationResponse
 import com.tokopedia.checkoutpayment.data.PaymentFeeDetailResponse
 import com.tokopedia.checkoutpayment.data.PaymentWidgetDataResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -22,12 +23,20 @@ class GetPaymentWidgetUseCase @Inject constructor(
         return mapResponse(
             GetPaymentWidgetResponse(
                 paymentWidgetData = listOf(
-                    PaymentWidgetDataResponse()
+                    PaymentWidgetDataResponse(
+                        gatewayCode = "ALFAMART",
+                        gatewayName = "Alfamart / Alfamidi / Lawson / Dan+Dan",
+                        imageUrl = "https://images.tokopedia.net/img/toppay/payment-logo/alfamart.png",
+                        amountValidation = PaymentAmountValidationResponse(
+                            minimumAmount = 10000,
+                            maximumAmount = 5000000
+                        )
+                    )
                 ),
                 paymentFeeDetails = listOf(
                     PaymentFeeDetailResponse(
                         title = "testing title",
-                        amount = 2000.0,
+                        amount = 10000.0,
                         showTooltip = true,
                         showSlashed = true,
                         slashedFee = 3000,

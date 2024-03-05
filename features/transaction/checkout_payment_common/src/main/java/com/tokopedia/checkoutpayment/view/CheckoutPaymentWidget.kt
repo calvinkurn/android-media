@@ -117,13 +117,13 @@ fun CheckoutPaymentWidget(
                         )
                         Row(
                             modifier = Modifier
-                                .padding(start = 16.dp, end = 28.dp, bottom = 12.dp)
+                                .padding(start = 16.dp, end = 28.dp, bottom = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             NestImage(
                                 ImageSource.Remote(data.logoUrl),
                                 modifier = Modifier
                                     .size(28.dp)
-                                    .align(Alignment.CenterVertically)
                             )
                             Column(
                                 modifier = Modifier
@@ -150,19 +150,20 @@ fun CheckoutPaymentWidget(
                                         maxLines = 1
                                     )
                                 }
-                                NestTypography(
-                                    text = data.description,
-                                    modifier = Modifier.padding(top = 2.dp),
-                                    textStyle = NestTheme.typography.display3.copy(
-                                        color = if (data.isDescriptionRed) NestTheme.colors.RN._500 else NestTheme.colors.NN._600
+                                if (data.description.isNotEmpty()) {
+                                    NestTypography(
+                                        text = data.description,
+                                        modifier = Modifier.padding(top = 2.dp),
+                                        textStyle = NestTheme.typography.display3.copy(
+                                            color = if (data.isDescriptionRed) NestTheme.colors.RN._500 else NestTheme.colors.NN._600
+                                        )
                                     )
-                                )
+                                }
                             }
                             NestIcon(
                                 iconId = IconUnify.CHEVRON_RIGHT,
                                 modifier = Modifier
-                                    .size(24.dp)
-                                    .align(Alignment.CenterVertically),
+                                    .size(24.dp),
                                 colorLightEnable = NestTheme.colors.NN._500,
                                 colorNightEnable = NestTheme.colors.NN._500
                             )
@@ -205,10 +206,16 @@ fun CheckoutPaymentWidgetPreview() {
         CheckoutPaymentWidget(
             CheckoutPaymentWidgetData(
                 state = CheckoutPaymentWidgetState.Normal,
+                title = "Bank nama panjang sekali"
+            )
+        )
+        CheckoutPaymentWidget(
+            CheckoutPaymentWidgetData(
+                state = CheckoutPaymentWidgetState.Normal,
                 title = "Bank nama panjang sekali",
                 isTitleRed = true,
                 subtitle = "(isi saldo rekening panjang sekali)",
-                description = "cicilan sangat panjang hingga butuh 2 baris utk menuliskannya semua",
+                description = "cicilan sangat panjang",
                 isDescriptionRed = true
             )
         )

@@ -22,7 +22,13 @@ data class PaymentWidgetData(
     val errorDetails: PaymentErrorDetail = PaymentErrorDetail(),
     val mandatoryHit: List<String> = emptyList(),
     val metadata: String = ""
-)
+) {
+
+    companion object {
+        const val MANDATORY_HIT_CC_TENOR_LIST = "CreditCardTenorList"
+        const val MANDATORY_HIT_INSTALLMENT_OPTIONS = "getInstallmentInfo"
+    }
+}
 
 data class PaymentAmountValidation(
     val minimumAmount: Long = 0,
