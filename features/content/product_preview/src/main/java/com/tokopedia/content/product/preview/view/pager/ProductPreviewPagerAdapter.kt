@@ -28,6 +28,10 @@ class ProductPreviewPagerAdapter(
         notifyItemRangeChanged(0, fragments.size)
     }
 
+    fun getCurrentTabName(position: Int): String {
+        return fragments[position].name
+    }
+
     fun getCurrentTabKey(position: Int): String {
         return fragments[position].key
     }

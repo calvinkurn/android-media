@@ -1,7 +1,5 @@
 package com.tokopedia.content.product.preview.analytics
 
-import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
-
 interface ProductPreviewAnalytics {
 
     /**
@@ -17,7 +15,7 @@ interface ProductPreviewAnalytics {
      * 1. swipe left or right to next content / tab
      * 49587
      */
-    fun onSwipeContentAndTab()
+    fun onSwipeContentAndTab(tabName: String, isTabChanged: Boolean)
 
     /**
      * 2. impress video
@@ -30,12 +28,6 @@ interface ProductPreviewAnalytics {
      * 49589
      */
     fun onImpressATC(pageSource: String)
-
-    /**
-     * 4. click ATC button
-     * 49590
-     */
-    fun onClickATC(pageSource: String, bottomNavUiModel: BottomNavUiModel)
 
     /**
      * 5. click content thumbnail in Produk tab

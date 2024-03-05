@@ -1,13 +1,9 @@
 package com.tokopedia.content.product.preview.analytics
 
 import com.tokopedia.content.analytic.BusinessUnit
-import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.EventCategory
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.analytic.manager.ContentAnalyticManager
-import com.tokopedia.content.analytic.model.ContentEnhanceEcommerce
-import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
-import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -35,10 +31,10 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      * 1. swipe left or right to next content / tab
      * 49587
      */
-    override fun onSwipeContentAndTab() {
+    override fun onSwipeContentAndTab(tabName: String, isTabChanged: Boolean) {
         analyticManager.sendClickContent(
             eventAction = "scroll - swipe left right content",
-            eventLabel = productId,
+            eventLabel = "$tabName - $productId - ${if (isTabChanged) "different tab" else "same tab"}",
             mainAppTrackerId = "49587",
             customFields = mapOf(Key.productId to productId)
         )
@@ -65,43 +61,6 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
             eventAction = "view - add to cart media fullscreen",
             eventLabel = "$pageSource - $productId - 0",
             mainAppTrackerId = "49589",
-            customFields = mapOf(Key.productId to productId)
-        )
-    }
-
-    /**
-     * 4. click ATC button
-     * 49590
-     */
-    override fun onClickATC(pageSource: String, bottomNavUiModel: BottomNavUiModel) {
-        var categoryId = ""
-        var itemCategory = ""
-        bottomNavUiModel.categoryTree.forEachIndexed { index, categoryTree ->
-            categoryId += if (index != 0) " / " else "" + categoryTree.id
-            itemCategory += if (index != 0) " / " else "" + categoryTree.name
-        }
-        analyticManager.sendEEProduct(
-            event = Event.add_to_cart,
-            eventAction = "click - add to cart media fullscreen",
-            eventLabel = "$pageSource - $productId",
-            itemList = "",
-            products = listOf(
-                ContentEnhanceEcommerce.Product(
-                    itemId = productId,
-                    itemName = bottomNavUiModel.title,
-                    itemBrand = "",
-                    itemCategory = itemCategory,
-                    itemVariant = bottomNavUiModel.hasVariant.toString(),
-                    price = bottomNavUiModel.price.finalPrice,
-                    index = "",
-                    customFields = mapOf(
-                        "category_id" to categoryId,
-                        "shop_id" to bottomNavUiModel.shop.id,
-                        "shop_name" to bottomNavUiModel.shop.name
-                    )
-                )
-            ),
-            mainAppTrackerId = "49590",
             customFields = mapOf(Key.productId to productId)
         )
     }
