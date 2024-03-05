@@ -123,8 +123,8 @@ class MainNavViewModel @Inject constructor(
         get() = _profileDataLiveData
     private val _profileDataLiveData: MutableLiveData<AccountHeaderDataModel> = MutableLiveData()
 
-    private val _onAtcProductState = MutableStateFlow<Pair<Boolean?, String>>(Pair(null, ""))
-    val onAtcProductState get() = _onAtcProductState.asStateFlow()
+    val onAtcProductState: LiveData<Pair<Boolean, String>> get() = _onAtcProductState
+    private val _onAtcProductState: MutableLiveData<Pair<Boolean, String>> = MutableLiveData()
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
@@ -242,12 +242,13 @@ class MainNavViewModel @Inject constructor(
                 val result = addToCartUseCase.get().executeOnBackground()
 
                 withContext(baseDispatcher.get().main) {
-                    _onAtcProductState.emit(
-                        Pair(result.isStatusError(), result.getAtcErrorMessage().orEmpty())
+                    _onAtcProductState.value = Pair(
+                        result.isStatusError(),
+                        result.getAtcErrorMessage().orEmpty()
                     )
                 }
             } catch (t: Throwable) {
-                _onAtcProductState.emit(Pair(false, t.message.orEmpty()))
+                _onAtcProductState.value = Pair(false, t.message.orEmpty())
             }
         }
     }

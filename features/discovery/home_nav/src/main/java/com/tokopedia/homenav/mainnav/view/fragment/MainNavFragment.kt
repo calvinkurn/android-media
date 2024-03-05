@@ -181,22 +181,17 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             }
         )
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.onAtcProductState.collect {
-                    val (isError, message) = it
-                    if (isError == null) return@collect
+        viewModel.onAtcProductState.observe(viewLifecycleOwner) {
+            val (isError, message) = it
 
-                    if (isError) {
-                        onShowToast(message, Toaster.TYPE_ERROR)
-                    } else {
-                        val succeedMessage = getString(R.string.transaction_buy_again_atc_message)
-                        val ctaTitle = getString(R.string.transaction_buy_again_atc_cta)
+            if (isError) {
+                onShowToast(message, Toaster.TYPE_ERROR)
+            } else {
+                val succeedMessage = getString(R.string.transaction_buy_again_atc_message)
+                val ctaTitle = getString(R.string.transaction_buy_again_atc_cta)
 
-                        onShowToast(succeedMessage, Toaster.TYPE_NORMAL, ctaTitle) {
-                            startActivity(RouteManager.getIntent(requireContext(), ApplinkConst.CART))
-                        }
-                    }
+                onShowToast(succeedMessage, Toaster.TYPE_NORMAL, ctaTitle) {
+                    startActivity(RouteManager.getIntent(requireContext(), ApplinkConst.CART))
                 }
             }
         }
