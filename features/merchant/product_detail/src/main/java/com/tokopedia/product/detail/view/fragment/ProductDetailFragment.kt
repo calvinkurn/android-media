@@ -5107,7 +5107,8 @@ open class ProductDetailFragment :
                 }
             ),
             userId = viewModel.userId,
-            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
+            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP,
+            trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.INSTANT)
         )
         viewModel.addToCart(addToCartOccRequestParams)
     }

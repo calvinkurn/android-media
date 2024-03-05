@@ -7,7 +7,8 @@ data class AddToCartOccMultiRequestParams(
     var lang: String = "id",
     var userId: String = "",
     var source: String = SOURCE_PDP,
-    var atcFromExternalSource: String = AtcFromExternalSource.ATC_FROM_OTHERS
+    var atcFromExternalSource: String = AtcFromExternalSource.ATC_FROM_OTHERS,
+    var trackerData: String = "",
 ) {
     companion object {
         const val SOURCE_PDP = "pdp"
@@ -37,5 +38,5 @@ data class AddToCartOccMultiCartParam(
     var categoryLevel2Name: String = "",
     var categoryLevel3Id: String = "",
     var categoryLevel3Name: String = "",
-    var shopName: String = ""
+    var shopName: String = "",
 )
