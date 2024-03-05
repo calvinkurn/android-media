@@ -129,11 +129,9 @@ object AppLogSearch {
         const val ECOM_SORT_CHOSEN = "ecom_sort_chosen"
         const val ECOM_FILTER_CHOSEN = "ecom_filter_chosen"
         const val ECOM_FILTER_TYPE = "ecom_filter_type"
-        const val SEARCH_CORRECT_WORD = "search_correct_word"
-        const val VOLUME = "volume"
-        const val RATE = "rate"
         const val IS_AD = "is_ad"
         const val PRODUCT_ID = "product_id"
+        const val DEFAULT_SEARCH_KEYWORD = "default_search_keyword"
     }
 
     object ParamValue {
