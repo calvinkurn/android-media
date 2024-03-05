@@ -248,7 +248,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mNearbiesBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap?.setOnMapClickListener {
             setDefaultMap()

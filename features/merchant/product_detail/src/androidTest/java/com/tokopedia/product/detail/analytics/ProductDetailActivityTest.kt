@@ -28,7 +28,6 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.view.ItemVariantChipViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
-import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.util.ProductDetailNetworkIdlingResource
 import com.tokopedia.product.detail.util.ProductIdlingInterface
@@ -45,6 +44,7 @@ import org.hamcrest.core.AllOf.allOf
 import org.junit.*
 import org.junit.runner.RunWith
 import java.util.concurrent.TimeUnit
+import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 @LargeTest
 @RunWith(AndroidJUnit4ClassRunner::class)
@@ -295,8 +295,8 @@ class ProductDetailActivityTest {
 
     private fun addToCartBottomSheetIsVisible(): Boolean? {
         val addToCartBottomSheet =
-            activityRule.activity.supportFragmentManager.findFragmentByTag("ADD_TO_CART") as? InstrumentTestAddToCartBottomSheet
-        return addToCartBottomSheet?.isVisible
+            activityRule.activity.supportFragmentManager.findFragmentByTag("ADD_TO_CART")
+        return addToCartBottomSheet != null
     }
 
     private fun waitForTrackerSent() {
@@ -341,7 +341,7 @@ class ProductDetailActivityTest {
         viewInteraction.perform(
             RecyclerViewActions.actionOnItemAtPosition<ItemVariantChipViewHolder>(
                 0,
-                clickChildViewWithId(com.tokopedia.product.detail.common.R.id.atc_variant_chip)
+                clickChildViewWithId(productdetailcommonR.id.atc_variant_chip)
             )
         )
     }

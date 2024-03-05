@@ -95,7 +95,7 @@ class ShareExGetShortLinkUseCaseImpl @Inject constructor(
                         identifierType = 0, // Currently not used, same as IOS
                         additionalParams = listOf(
                             ShareExAffiliateLinkAdditionalParamRequest(OG_TITLE_RAW, params.linkerPropertiesRequest.ogTitle),
-                            ShareExAffiliateLinkAdditionalParamRequest(OG_DESCRIPTION_RAW, params.linkerPropertiesRequest.ogTitle),
+                            ShareExAffiliateLinkAdditionalParamRequest(OG_DESCRIPTION_RAW, params.linkerPropertiesRequest.ogDescription),
                             ShareExAffiliateLinkAdditionalParamRequest(OG_IMAGE_URL_RAW, params.linkerPropertiesRequest.ogImageUrl)
                         )
                     )

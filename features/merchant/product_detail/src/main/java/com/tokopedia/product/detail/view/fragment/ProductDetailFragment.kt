@@ -94,6 +94,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -168,7 +169,6 @@ import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
@@ -176,12 +176,12 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoAnnotationTrackData
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
-import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -271,8 +271,7 @@ import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCa
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
-import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
-import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
+import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
 import com.tokopedia.product.detail.view.widget.NavigationTab
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
@@ -286,7 +285,6 @@ import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
-import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.extension.DEFAULT_QTY_1
 import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_RECOM_ATC
@@ -314,7 +312,9 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.shareexperience.domain.util.ShareExConstants.Rollence.ROLLENCE_SHARE_EX
 import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.shop.common.constant.ShopStatusDef
+import com.tokopedia.shop.common.domain.entity.ShopPrefetchData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.prefetch.ShopPagePrefetch
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.stories.widget.NoAnimateAnimationStrategy
@@ -349,7 +349,6 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 
@@ -550,7 +549,6 @@ open class ProductDetailFragment :
     // View
     private lateinit var actionButtonView: PartialButtonActionView
     private var stickyLoginView: StickyLoginView? = null
-    private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
     private var productVideoCoordinator: ProductVideoCoordinator? = null
     private val adapterFactory by lazy {
@@ -634,8 +632,12 @@ open class ProductDetailFragment :
     override val recyclerViewPool: RecyclerView.RecycledViewPool?
         get() = getRecyclerView()?.recycledViewPool
 
+    override val pdpRemoteConfig: RemoteConfig
+        get() = remoteConfig
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        productRecomm.init()
         if (prefetchCacheId.isEmpty()) showLoading()
         initBtnAction()
 
@@ -746,7 +748,6 @@ open class ProductDetailFragment :
         observeP2Login()
         observeToggleFavourite()
         observeToggleNotifyMe()
-        observeRecommendationProduct()
         observeAddToCart()
         observeOnThumbnailVariantSelected()
         observeATCRecomData()
@@ -1553,16 +1554,6 @@ open class ProductDetailFragment :
             ProductDetailConstant.TRADE_IN -> {
                 onTradeinClicked(componentTrackDataModel)
             }
-            ProductDetailConstant.PRODUCT_INSTALLMENT_INFO -> {
-                ProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(
-                    viewModel.getProductInfoP1,
-                    componentTrackDataModel
-                )
-                openFtInstallmentBottomSheet(
-                    viewModel.p2Data.value?.productFinancingCalculationData
-                        ?: FtInstallmentCalculationDataResponse()
-                )
-            }
             ProductDetailConstant.PRODUCT_VARIANT_INFO -> {
                 if (!GlobalConfig.isSellerApp()) {
                     ProductDetailTracking.Click.eventClickVariant(
@@ -1900,25 +1891,19 @@ open class ProductDetailFragment :
     }
 
     override fun loadTopads(pageName: String, queryParam: String, thematicId: String) {
-        val p1 = viewModel.getProductInfoP1 ?: ProductInfoP1()
-        viewModel.loadRecommendation(
+        productRecomm.loadRecommendation(
             pageName = pageName,
-            productId = p1.basic.productID,
-            isTokoNow = p1.basic.isTokoNow,
-            miniCart = viewModel.p2Data.value?.miniCart,
             queryParam = queryParam,
             thematicId = thematicId
         )
     }
 
     override fun loadViewToView(pageName: String, queryParam: String, thematicId: String) {
-        val p1 = viewModel.getProductInfoP1 ?: ProductInfoP1()
-        viewModel.loadViewToView(
+        productRecomm.loadRecommendation(
             pageName = pageName,
-            productId = p1.basic.productID,
-            isTokoNow = p1.basic.isTokoNow,
             queryParam = queryParam,
-            thematicId = thematicId
+            thematicId = thematicId,
+            isViewToView = true
         )
     }
 
@@ -3192,87 +3177,6 @@ open class ProductDetailFragment :
         view?.showToasterSuccess(if (isNplFollowerType) getString(productdetailcommonR.string.merchant_product_detail_success_follow_shop_npl) else message)
     }
 
-    private fun observeRecommendationProduct() {
-        viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
-            data.doSuccessOrFail({
-                if (it.data.recommendationItemList.isNotEmpty()) {
-                    val enableComparisonWidget = remoteConfig.getBoolean(
-                        RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET,
-                        true
-                    )
-                    if (enableComparisonWidget) {
-                        when (it.data.layoutType) {
-                            RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
-                                pdpUiUpdater?.updateComparisonBpcDataModel(
-                                    it.data,
-                                    viewModel.getProductInfoP1?.basic?.productID.orEmpty()
-                                )
-                                updateUi()
-                            }
-                            RecommendationTypeConst.TYPE_COMPARISON_WIDGET -> {
-                                pdpUiUpdater?.updateComparisonDataModel(it.data)
-                                updateUi()
-                            }
-                            else -> {
-                                pdpUiUpdater?.updateRecommendationData(it.data)
-                                updateUi()
-                            }
-                        }
-                    } else {
-                        pdpUiUpdater?.updateRecommendationData(it.data)
-                        updateUi()
-                    }
-                } else {
-                    // recomUiPageName used because there is possibilites gql recom return empty pagename
-                    pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
-                    updateUi()
-                }
-            }, {
-                pdpUiUpdater?.removeComponent(it.message ?: "")
-                updateUi()
-                logException(it)
-            })
-        }
-
-        viewLifecycleOwner.observe(viewModel.statusFilterTopAdsProduct) {
-            if (it is Fail) {
-                view?.showToasterError(
-                    context?.getString(R.string.recom_filter_chip_click_error_network).orEmpty(),
-                    ctaText = getString(productdetailcommonR.string.pdp_common_oke)
-                )
-            }
-        }
-
-        viewLifecycleOwner.observe(viewModel.filterTopAdsProduct) { data ->
-            pdpUiUpdater?.updateFilterRecommendationData(data)
-            updateUi()
-        }
-
-        observeViewToView()
-    }
-
-    private fun observeViewToView() {
-        observe(viewModel.loadViewToView) { data ->
-            data.doSuccessOrFail({
-                if (it.data.recommendationItemList.size > 1) {
-                    pdpUiUpdater?.updateViewToViewData(
-                        it.data.copy(
-                            recommendationItemList = it.data.recommendationItemList
-                        )
-                    )
-                    updateUi()
-                } else {
-                    pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
-                    updateUi()
-                }
-            }, {
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.VIEW_TO_VIEW)
-                updateUi()
-                logException(it)
-            })
-        }
-    }
-
     /**
      * When Vertical Recommendation Exists, will attach endless scroll listener
      * otherwise, the listener will be remove from recyclerView
@@ -3465,7 +3369,7 @@ open class ProductDetailFragment :
         }
     }
 
-    private fun updateUi() {
+    override fun updateUi() {
         val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
 
         val finalData = if (isTabletMode()) {
@@ -3491,11 +3395,7 @@ open class ProductDetailFragment :
         renderVariant(viewModel.variantData)
 
         pdpUiUpdater?.updateDataP1(productInfo, true)
-        pdpUiUpdater?.updateInitialMedia(
-            productInfo.data.media,
-            productInfo.data.containerType,
-            productInfo.data.productMediaRecomBasicInfo
-        )
+
         pdpUiUpdater?.updateInitialAPlusContent(
             productInfo = productInfo,
             userID = viewModel.userId,
@@ -3705,7 +3605,7 @@ open class ProductDetailFragment :
         goToShipmentErrorAddressOrChat(Int.ZERO)
     }
 
-    private fun logException(t: Throwable) {
+    override fun logException(t: Throwable) {
         if (!BuildConfig.DEBUG) {
             val errorMessage = String.format(
                 getString(R.string.on_error_p1_string_builder),
@@ -3900,14 +3800,9 @@ open class ProductDetailFragment :
 
     private fun showAddToCartDoneBottomSheet(cartDataModel: DataModel) {
         val cartRedirData = viewModel.p2Data.value?.cartRedirection?.get(cartDataModel.productId)
-        val postAtcLayout = cartRedirData?.postAtcLayout
+        val postAtcLayout = cartRedirData?.postAtcLayout ?: PostAtcLayout()
 
-        val remoteNewATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
-        if (postAtcLayout?.showPostAtc == true && remoteNewATC) {
-            showGlobalPostATC(cartDataModel, cartDataModel.productId, postAtcLayout)
-        } else {
-            showOldPostATC(cartDataModel.cartId)
-        }
+        showGlobalPostATC(cartDataModel, cartDataModel.productId, postAtcLayout)
     }
 
     private fun showGlobalPostATC(
@@ -3943,39 +3838,6 @@ open class ProductDetailFragment :
             productId,
             postAtcParams
         )
-    }
-
-    private fun showOldPostATC(cartId: String) {
-        viewModel.getProductInfoP1?.let {
-            val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
-            val productName = it.getProductName
-            val productImageUrl = it.data.getFirstProductImage()
-            val addedProductDataModel = AddToCartDoneAddedProductDataModel(
-                it.basic.productID,
-                productName,
-                productImageUrl,
-                it.data.variant.isVariant,
-                it.basic.shopID,
-                viewModel.getBebasOngkirDataByProductId().imageURL,
-                cartId = if (viewModel.getProductInfoP1?.basic?.isTokoNow == true) "" else cartId
-            )
-            val bundleData = Bundle()
-            bundleData.putParcelable(
-                AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL,
-                addedProductDataModel
-            )
-            addToCartDoneBottomSheet.arguments = bundleData
-            addToCartDoneBottomSheet.onDismiss = {
-                shouldShowCartAnimation = true
-                updateCartNotification()
-            }
-            fragmentManager?.let {
-                addToCartDoneBottomSheet.show(
-                    it,
-                    AddToCartDoneBottomSheet::class.simpleName
-                )
-            }
-        }
     }
 
     override fun openShipmentClickedBottomSheet(
@@ -4515,38 +4377,6 @@ open class ProductDetailFragment :
 
     private fun getLcaWarehouseId(): String {
         return viewModel.getUserLocationCache().warehouse_id
-    }
-
-    private fun openFtInstallmentBottomSheet(installmentData: FtInstallmentCalculationDataResponse) {
-        val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
-
-        val productInfo = viewModel.getProductInfoP1
-
-        context?.let {
-            val cacheManager = SaveInstanceCacheManager(it, true)
-            cacheManager.put(
-                FtInstallmentCalculationDataResponse::class.java.simpleName,
-                installmentData,
-                TimeUnit.HOURS.toMillis(1)
-            )
-            val bundleData = Bundle()
-
-            bundleData.putString(
-                FtPDPInstallmentBottomSheet.KEY_PDP_FINANCING_DATA,
-                cacheManager.id!!
-            )
-            bundleData.putDouble(
-                FtPDPInstallmentBottomSheet.KEY_PDP_PRODUCT_PRICE,
-                productInfo?.data?.price?.value.orZero()
-            )
-            bundleData.putBoolean(
-                FtPDPInstallmentBottomSheet.KEY_PDP_IS_OFFICIAL,
-                productInfo?.data?.isOS.orFalse()
-            )
-
-            pdpInstallmentBottomSheet.arguments = bundleData
-            pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
-        }
     }
 
     /**
@@ -5105,15 +4935,44 @@ open class ProductDetailFragment :
                 shopId,
                 componentTrackDataModel
             )
+            val intent = RouteManager.getIntent(
+                it,
+                ApplinkConst.SHOP,
+                shopId
+            )
+
+
+            val shopCredibility = pdpUiUpdater?.shopCredibility ?: return
+
+            val prefetch = ShopPagePrefetch()
+            val prefetchData = shopCredibility.toShopPrefetchData()
+            prefetch.redirectToShopPageWithPrefetch(context ?: return, prefetchData, intent)
+
             startActivityForResult(
-                RouteManager.getIntent(
-                    it,
-                    ApplinkConst.SHOP,
-                    shopId
-                ),
+                intent,
                 ProductDetailConstant.REQUEST_CODE_SHOP_INFO
             )
         }
+    }
+
+    private fun ProductShopCredibilityDataModel.toShopPrefetchData(): ShopPrefetchData {
+        val averageShopRatingId = context?.getString(R.string.pdp_product_average_review).orEmpty()
+        val shopRating = infoShopData.firstOrNull { it.desc == averageShopRatingId }?.value
+        val castedShopRating = try {
+            shopRating.toFloatOrZero()
+        } catch (e: Exception) {
+            Timber.e(e)
+            0f
+        }
+
+        return ShopPrefetchData(
+            shopAvatar = shopAva,
+            shopName = shopName,
+            shopBadge = shopTierBadgeUrl,
+            shopLastOnline = shopLastActive,
+            shopRating = castedShopRating,
+            isFollowed = isFavorite
+        )
     }
 
     override fun onShopTickerClicked(

@@ -90,10 +90,11 @@ object ShopPageConstant {
      */
     @Suppress("unused")
     object ShopPageFeatureImprovementType {
-        const val V3_IMPROVEMENT            = "V3"      // Faster shop header using more slimmer P1 network call
-        const val V4_REIMAGINED             = "V4"       // Shop Page Reimagined
-        const val V4_WITH_OPTIMIZED_P1      = "V4.1"       // Shop Page Reimagined with more optimized P1
-        const val V4_2      = "V4.2"                    // Shop Page Reimagined with more optimized P1 by removeing getShopProduct on P1
-        const val V4_3      = "V4.3"                    // Shop Page Reimagined with more optimized P1 by caching GetShopPageHeaderLayoutUseCase
+        const val V3_IMPROVEMENT = "V3" // Faster shop header using more slimmer P1 network call
+        const val V4_REIMAGINED = "V4" // Shop Page Reimagined
+        const val V4_WITH_OPTIMIZED_P1 = "V4.1" // Shop Page Reimagined with more optimized P1
+        const val V4_2 = "V4.2" // Shop Page Reimagined with more optimized P1 by removeing getShopProduct on P1
+        const val V4_3 = "V4.3" // Shop Page Reimagined with more optimized P1 by caching GetShopPageHeaderLayoutUseCase
+        const val PREFETCH_V1_0 = "prefetch_V1.0" // Shop Page with prefetch data.
     }
 }

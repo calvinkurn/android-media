@@ -18,11 +18,15 @@ import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 class SomBottomSheetCourierProblem(
-        context: Context,
-        private var rejectReason: SomReasonRejectData.Data.SomRejectReason,
-        private var orderId: String,
-        private val listener: SomRejectOrderBottomSheetListener
-) : SomBaseRejectOrderBottomSheet<BottomsheetSecondaryBinding>(context, LAYOUT, SomConsts.TITLE_COURIER_PROBLEM), SomBottomSheetCourierProblemsAdapter.ActionListener {
+    context: Context,
+    private var rejectReason: SomReasonRejectData.Data.SomRejectReason,
+    private var orderId: String,
+    private val listener: SomRejectOrderBottomSheetListener
+) : SomBaseRejectOrderBottomSheet<BottomsheetSecondaryBinding>(
+    context = context,
+    childViewsLayoutResourceId = LAYOUT,
+    bottomSheetTitle = SomConsts.TITLE_COURIER_PROBLEM
+), SomBottomSheetCourierProblemsAdapter.ActionListener {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_secondary

@@ -77,4 +77,6 @@
     <string name="cart_text_overweight">Kelebihan %s kg. Kurangi barang dulu, ya.</string>
     <string name="content_desc_button_change_note">button change note</string>
     <string name="content_desc_button_wishlist">button wishlist</string>
+    <string name="label_cart_countdown_timer_format">%1$s : %2$s : %3$s</string>
+    <string name="label_cart_countdown_timer_days_format">%1$s hari</string>
 </resources>

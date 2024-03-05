@@ -3,11 +3,14 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.data.model.media.LiveIndicatorData
+import com.tokopedia.product.detail.common.data.model.media.Media
+import com.tokopedia.product.detail.common.data.model.media.ProductMediaRecomBasicInfo
+import com.tokopedia.product.detail.common.data.model.media.YoutubeVideo
 import com.tokopedia.product.detail.common.data.model.product.Cashback
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.product.detail.common.data.model.product.Stock
 import com.tokopedia.product.detail.common.data.model.product.VariantBasic
-import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.utils.extensions.validDimensionRatio
@@ -56,12 +59,20 @@ data class ComponentData(
     val isTradeIn: Boolean = false,
     @SerializedName("isWishlist")
     val isWishlist: Boolean = false,
+
+    // region media
     @SerializedName("media")
     val media: List<Media> = listOf(),
     @SerializedName("recommendation")
     val productMediaRecomBasicInfo: ProductMediaRecomBasicInfo = ProductMediaRecomBasicInfo(),
     @SerializedName("containerType")
     val containerType: String = "",
+    @SerializedName("videos")
+    val youtubeVideos: List<YoutubeVideo> = listOf(),
+    @SerializedName("liveIndicator")
+    val liveIndicator: LiveIndicatorData = LiveIndicatorData(),
+    // endregion
+
     @SerializedName("name")
     val name: String = "",
     @SerializedName("parentName")
@@ -76,8 +87,6 @@ data class ComponentData(
     val stock: Stock = Stock(),
     @SerializedName("variant")
     val variant: VariantBasic = VariantBasic(),
-    @SerializedName("videos")
-    val youtubeVideos: List<YoutubeVideo> = listOf(),
     @SerializedName("wholesale")
     val wholesale: List<Wholesale>? = null,
     @SerializedName("preorder")

@@ -16,7 +16,6 @@ import com.tokopedia.profilecompletion.settingprofile.changepin.view.viewmodel.C
 import com.tokopedia.profilecompletion.profilecompletion.viewmodel.ProfileInfoViewModel
 import com.tokopedia.profilecompletion.profilecompletion.viewmodel.ProfileRoleViewModel
 import com.tokopedia.profilecompletion.settingprofile.profileinfo.viewmodel.ProfileViewModel
-import com.tokopedia.profilecompletion.settingprofile.profilemanagement.ProfileManagementViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -86,10 +85,5 @@ abstract class ProfileCompletionViewModelsModule {
     @IntoMap
     @ViewModelKey(ChangeBioUsernameViewModel::class)
     internal abstract fun changeBioUsernameViewModel(viewModel: ChangeBioUsernameViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(ProfileManagementViewModel::class)
-    internal abstract fun profileManagementViewModel(viewModel: ProfileManagementViewModel): ViewModel
 
 }

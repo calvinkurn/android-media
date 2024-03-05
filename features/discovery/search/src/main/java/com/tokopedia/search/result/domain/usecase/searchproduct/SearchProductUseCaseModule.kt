@@ -78,6 +78,7 @@ class SearchProductUseCaseModule {
             SearchLogger(
                 remoteConfig,
                 GlobalConfig.VERSION_CODE,
+                userSession.userId
             ),
             reimagineRollence,
         )

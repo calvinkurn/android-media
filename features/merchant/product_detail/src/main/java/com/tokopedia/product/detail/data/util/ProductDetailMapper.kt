@@ -16,14 +16,14 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirType
+import com.tokopedia.product.detail.common.data.model.media.Media
+import com.tokopedia.product.detail.common.data.model.media.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.Component
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
-import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
@@ -646,7 +646,8 @@ object ProductDetailMapper {
             containerType = mediaData.containerType,
             productMediaRecomBasicInfo = mediaData.productMediaRecomBasicInfo,
             componentPriceType = promoPriceData.componentPriceType,
-            promoPrice = promoPriceData.promoPrice
+            promoPrice = promoPriceData.promoPrice,
+            liveIndicator = mediaData.liveIndicator
         ) ?: ComponentData()
 
         assignIdToMedia(newDataWithMedia.media)

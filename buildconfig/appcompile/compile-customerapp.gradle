@@ -304,7 +304,6 @@ includeIfEnabled("features:tokofood")
 
 includeIfEnabled("tkpddesign")
 includeIfEnabled("tkpdabstraction")
-includeIfEnabled("features:scp:auth")
 
 includeIfEnabled("testapp-features:user:logintestapp")
 includeIfEnabled("customerapp")

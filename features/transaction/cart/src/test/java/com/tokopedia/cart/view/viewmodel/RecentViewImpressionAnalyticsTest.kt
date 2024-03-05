@@ -1,9 +1,9 @@
 package com.tokopedia.cart.view.viewmodel
 
-import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -15,8 +15,8 @@ class RecentViewImpressionAnalyticsTest : BaseCartViewModelTest() {
         // GIVEN
         val result: Map<String, Any>?
 
-        val recentViewDataList = mutableListOf<CartRecentViewItemHolderData>().apply {
-            add(CartRecentViewItemHolderData())
+        val recentViewDataList = mutableListOf<RecommendationItem>().apply {
+            add(RecommendationItem())
         }
 
         // WHEN
@@ -32,8 +32,8 @@ class RecentViewImpressionAnalyticsTest : BaseCartViewModelTest() {
         // GIVEN
         val result: Map<String, Any>?
 
-        val recentViewDataList = mutableListOf<CartRecentViewItemHolderData>().apply {
-            add(CartRecentViewItemHolderData())
+        val recentViewDataList = mutableListOf<RecommendationItem>().apply {
+            add(RecommendationItem())
         }
 
         // WHEN
@@ -49,8 +49,8 @@ class RecentViewImpressionAnalyticsTest : BaseCartViewModelTest() {
         // GIVEN
         val result: Map<String, Any>?
 
-        val recentViewDataList = mutableListOf<CartRecentViewItemHolderData>().apply {
-            add(CartRecentViewItemHolderData())
+        val recentViewDataList = mutableListOf<RecommendationItem>().apply {
+            add(RecommendationItem())
         }
 
         // WHEN

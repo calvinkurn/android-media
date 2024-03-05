@@ -574,13 +574,13 @@ class AtcVariantBottomSheet :
                 .getChildByProductId(productId)
                 ?.promoPrice
                 ?.promoCodes
-                ?.mapIntoPromoExternalAutoApply() ?: return
+                ?.mapIntoPromoExternalAutoApply() ?: arrayListOf()
 
         if (atcResult.isOccNewCheckoutPage) {
             ProductCartHelper.goToCheckoutWithAutoApplyPromo(getAtcActivity(), ArrayList(selectedPromoCodes))
         } else {
             ProductCartHelper.goToOneClickCheckoutWithAutoApplyPromo(
-                (context as AtcVariantActivity),
+                getAtcActivity(),
                 ArrayList(selectedPromoCodes)
             )
         }

@@ -52,6 +52,7 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.convertUrlToBitmapAndLoadImage
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopPageHeaderRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopFollowButtonUiModel
@@ -80,6 +81,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
+import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -175,11 +177,12 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         listWidgetShopData: List<ShopPageHeaderWidgetUiModel>,
         shopFollowButtonUiModel: ShopFollowButtonUiModel,
         shopHeaderConfig: ShopPageHeaderLayoutUiModel.Config?,
-        isOverrideTheme: Boolean
+        isOverrideTheme: Boolean,
+        shopPageHeaderDataModel: ShopPageHeaderDataModel?
     ) {
         setHeaderBackground(shopHeaderConfig, isOverrideTheme)
-        setShopLogoImage(listWidgetShopData)
-        setShopBasicInfoSection(listWidgetShopData, shopHeaderConfig, isOverrideTheme)
+        setShopLogoImage(listWidgetShopData, shopPageHeaderDataModel)
+        setShopBasicInfoSection(listWidgetShopData, shopHeaderConfig, isOverrideTheme, shopPageHeaderDataModel)
         setShopPerformanceSection(listWidgetShopData, shopHeaderConfig, isOverrideTheme)
         setShopStatusSection(listWidgetShopData, shopHeaderConfig, isOverrideTheme)
         setShopActionSection(
@@ -187,7 +190,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             shopFollowButtonUiModel,
             shopHeaderConfig,
             isOverrideTheme,
-            shopHeaderConfig?.patternColorType.orEmpty()
+            shopHeaderConfig?.getFinalPatternColorType(context.isDarkMode()).orEmpty()
         )
         setSgcPlaySection(listWidgetShopData, shopHeaderConfig)
     }
@@ -432,12 +435,18 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         startDynamicUspCycle(listWidgetShopData)
     }
 
-    private fun setShopLogoImage(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
+    private fun setShopLogoImage(
+        listWidgetShopData: List<ShopPageHeaderWidgetUiModel>,
+        shopPageHeaderDataModel: ShopPageHeaderDataModel?
+    ) {
         val shopBasicData = getShopBasicInfoData(listWidgetShopData)
         val shopBasicDataLogoComponent = getShopBasicDataShopLogoComponent(shopBasicData)
-        val shopLogoImageUrl = shopBasicDataLogoComponent?.image.orEmpty()
+        val shopAvatarDataFromListWidget = shopBasicDataLogoComponent?.image.orEmpty()
+        val shopAvatarDataFromShopHeader = shopPageHeaderDataModel?.avatar.orEmpty()
+        val shopLogoImageUrl = shopAvatarDataFromListWidget.takeIf {
+            it.isNotEmpty()
+        } ?: shopAvatarDataFromShopHeader
         imageShopLogo?.loadImageCircle(shopLogoImageUrl)
-
         val shopId = shopBasicDataLogoComponent?.shopId.orEmpty()
         shopLogoContainer?.run {
             listenerHeader?.getStoriesWidgetManager()?.manage(this, shopId)
@@ -455,13 +464,18 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     private fun setShopBasicInfoSection(
         listWidgetShopData: List<ShopPageHeaderWidgetUiModel>,
         shopHeaderConfig: ShopPageHeaderLayoutUiModel.Config?,
-        isOverrideTheme: Boolean
+        isOverrideTheme: Boolean,
+        shopPageHeaderDataModel: ShopPageHeaderDataModel?
     ) {
         val shopBasicData = getShopBasicInfoData(listWidgetShopData)
-        val shopBadgeImageUrl =
-            getShopBasicDataShopNameComponent(shopBasicData)?.text?.firstOrNull()?.icon.orEmpty()
-        val shopName =
-            getShopBasicDataShopNameComponent(shopBasicData)?.text?.firstOrNull()?.textHtml.orEmpty()
+        val shopBadgeImageUrlFromListWidget = getShopBasicDataShopNameComponent(shopBasicData)?.text?.firstOrNull()?.icon.orEmpty()
+        val shopBadgeImageUrlFromShopHeader = shopPageHeaderDataModel?.shopBadge.orEmpty()
+        val shopBadgeImageUrl = shopBadgeImageUrlFromListWidget.takeIf {
+            it.isNotEmpty()
+        } ?: shopBadgeImageUrlFromShopHeader
+        val shopNameFromListWidget = getShopBasicDataShopNameComponent(shopBasicData)?.text?.firstOrNull()?.textHtml.orEmpty()
+        val shopNameFromShopHeader = shopPageHeaderDataModel?.shopName.orEmpty()
+        val shopName = shopNameFromListWidget.takeIf { it.isNotEmpty() } ?: shopNameFromShopHeader
         val appLink =
             getShopBasicDataShopNameComponent(shopBasicData)?.text?.firstOrNull()?.textLink.orEmpty()
         imageShopBadge?.shouldShowWithAction(shopBadgeImageUrl.isNotEmpty()) {
@@ -498,12 +512,11 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 ShopPageHeaderLayoutUiModel.BgObjectType.VIDEO
             )
             val backgroundColor = shopHeaderConfig?.listBackgroundColor?.firstOrNull().orEmpty()
+            setHeaderBackgroundColor(backgroundColor)
             if (null != backgroundVideo) {
                 setHeaderBackgroundVideo(backgroundVideo.url)
             } else if (null != backgroundImage) {
                 setHeaderBackgroundImage(backgroundImage.url)
-            } else {
-                setHeaderBackgroundColor(backgroundColor)
             }
         }
     }
@@ -513,19 +526,23 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     private fun setHeaderBackgroundColor(backgroundColor: String) {
-        backgroundVideoShopHeader?.hide()
-        backgroundImageShopHeader?.hide()
         backgroundColorShopHeader?.apply {
             show()
-            setBackgroundColor(ShopUtil.parseColorFromHexString(backgroundColor))
+            val finalBackgroundColor = if (backgroundColor.isEmpty()) {
+                MethodChecker.getColor(
+                    context,
+                    unifyprinciplesR.color.Unify_NN0
+                )
+            } else {
+                ShopUtil.parseColorFromHexString(backgroundColor)
+            }
+            setBackgroundColor(finalBackgroundColor)
         }
     }
 
     private fun setHeaderBackgroundImage(imageUrl: String) {
-        backgroundColorShopHeader?.hide()
         backgroundVideoShopHeader?.hide()
         backgroundImageShopHeader?.apply {
-            backgroundColorShopHeader?.hide()
             show()
             loadImage(imageUrl)
         }
@@ -895,7 +912,6 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 
     private fun setHeaderBackgroundVideo(videoUrl: String) {
         backgroundImageShopHeader?.hide()
-        backgroundColorShopHeader?.hide()
         if (playVideoWrapper == null) {
             playVideoWrapper = PlayVideoWrapper.Builder(context).build()
             playVideoWrapper?.addListener(object : PlayVideoWrapper.Listener {

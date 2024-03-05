@@ -18,15 +18,17 @@ interface ForYouRecommendationTypeFactory {
     fun type(model: PlayCardModel): Int
     fun type(model: ContentCardModel): Int
     fun type(model: RecommendationCardModel): Int
-    fun type(model: BannerRecommendationModel): Int
 
     fun type(model: BannerTopAdsModel): Int
-    fun type(model: BannerOldTopAdsModel): Int
-    fun type(model: HeadlineTopAdsModel): Int
 
     fun type(model: RetryButtonStateModel): Int
     fun type(model: ShimmeringStateModel): Int
     fun type(model: LoadMoreStateModel): Int
     fun type(model: ErrorStateModel): Int
     fun type(model: EmptyStateModel): Int
+
+    // deprecated yet temporary needs for fixes unresolved resources for old experiment.
+    fun type(model: BannerRecommendationModel): Int
+    fun type(model: BannerOldTopAdsModel): Int
+    fun type(model: HeadlineTopAdsModel): Int
 }
