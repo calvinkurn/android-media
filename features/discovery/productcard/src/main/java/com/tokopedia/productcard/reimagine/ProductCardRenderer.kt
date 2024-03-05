@@ -367,7 +367,6 @@ internal class ProductCardRenderer(
     private fun renderSafeContent(productCardModel: ProductCardModel) {
         safeGroup?.showWithCondition(productCardModel.isSafeProduct)
     }
-    
 
     private fun handleColorMode(colorMode: ProductCardColor?) {
         if (colorMode == null) return
@@ -375,31 +374,49 @@ internal class ProductCardRenderer(
     }
 
     private fun overrideColor(colorMode: ProductCardColor) {
-        val productNameColor = ContextCompat.getColor(context, colorMode.productNameTextColor)
-        val productPriceTextColor = ContextCompat.getColor(context, colorMode.priceTextColor)
-        val slashedPriceTextColor = ContextCompat.getColor(context, colorMode.slashPriceTextColor)
-        val credibilityTextColor = ContextCompat.getColor(context, colorMode.soldCountTextColor)
-        val discountTextColor = ContextCompat.getColor(context, colorMode.discountTextColor)
-        val ratingTextColor = ContextCompat.getColor(context, colorMode.ratingTextColor)
-        val shopBadgeTextColor = ContextCompat.getColor(context, colorMode.shopBadgeTextColor)
-        
-        cardContainer?.setCardUnifyBackgroundColor(MethodChecker.getColor(context, colorMode.cardBackgroundColor))
+        colorMode.cardBackgroundColor?.let { cardBackgroundColor ->
+            cardContainer?.setCardUnifyBackgroundColor(ContextCompat.getColor(context, cardBackgroundColor))
+        }
 
-        nameText?.setTextColor(productNameColor)
-        priceText?.setTextColor(productPriceTextColor)
-        slashedPriceText?.setTextColor(slashedPriceTextColor)
-        discountText?.setTextColor(discountTextColor)
-        credibilityText?.setTextColor(credibilityTextColor)
-        ratingText?.setTextColor(ratingTextColor)
-        shopNameBadgeText?.setTextColor(shopBadgeTextColor)
-        
-        buttonAddToCart?.applyColorMode(colorMode.buttonColorMode)
-        
-        val hasCustomCutoutFillColor = colorMode.labelBenefitViewColor.cutoutFillColor.isNotEmpty()
-        if (hasCustomCutoutFillColor) {
-            labelBenefitView?.setCutoutFillColor(colorMode.labelBenefitViewColor.cutoutFillColor)
-        } else {
-            labelBenefitView?.setCutoutFillColor(unifyprinciplesR.color.Unify_NN0)
+        colorMode.productNameTextColor?.let { productNameTextColor ->
+            nameText?.setTextColor(ContextCompat.getColor(context, productNameTextColor))
+        }
+
+        colorMode.priceTextColor?.let { priceTextColor ->
+            priceText?.setTextColor(ContextCompat.getColor(context, priceTextColor))
+        }
+
+        colorMode.slashPriceTextColor?.let { slashPriceTextColor ->
+            slashedPriceText?.setTextColor(ContextCompat.getColor(context, slashPriceTextColor))
+        }
+
+        colorMode.soldCountTextColor?.let { soldCountTextColor ->
+            credibilityText?.setTextColor(ContextCompat.getColor(context, soldCountTextColor))
+        }
+
+        colorMode.discountTextColor?.let { discountTextColor ->
+            discountText?.setTextColor(ContextCompat.getColor(context, discountTextColor))
+        }
+
+        colorMode.ratingTextColor?.let { ratingTextColor ->
+            ratingText?.setTextColor(ContextCompat.getColor(context, ratingTextColor))
+        }
+
+        colorMode.shopBadgeTextColor?.let { shopBadgeTextColor ->
+            shopNameBadgeText?.setTextColor(ContextCompat.getColor(context, shopBadgeTextColor))
+        }
+
+        colorMode.buttonColorMode?.let { buttonColorMode ->
+            buttonAddToCart?.applyColorMode(buttonColorMode)
+        }
+
+        colorMode.labelBenefitViewColor?.let { labelBenefitViewColor ->
+            val hasCustomCutoutFillColor = labelBenefitViewColor.cutoutFillColor.isNotEmpty()
+            if (hasCustomCutoutFillColor) {
+                labelBenefitView?.setCutoutFillColor(labelBenefitViewColor.cutoutFillColor)
+            } else {
+                labelBenefitView?.setCutoutFillColor(unifyprinciplesR.color.Unify_NN0)
+            }
         }
     }
 }

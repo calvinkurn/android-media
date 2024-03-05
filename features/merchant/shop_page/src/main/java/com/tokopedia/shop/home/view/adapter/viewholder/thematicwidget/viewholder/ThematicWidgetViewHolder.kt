@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
-import com.tokopedia.shop_widget.R as shop_widgetR
 import com.tokopedia.shop.home.view.adapter.viewholder.thematicwidget.DynamicHeaderCustomView
 import com.tokopedia.shop.home.view.adapter.viewholder.thematicwidget.DynamicHeaderCustomView.HeaderCustomViewListener
 import com.tokopedia.shop_widget.common.util.ColorUtil.getBackGroundColor
@@ -40,9 +39,9 @@ import kotlin.math.abs
 // need to surpress this one, since there are no pii related data defined on this class
 @SuppressLint("PII Data Exposure")
 class ThematicWidgetViewHolder(
-        itemView: View,
-        private val listener: ThematicWidgetListener,
-        private val isOverrideTheme: Boolean
+    itemView: View,
+    private val listener: ThematicWidgetListener,
+    private val isOverrideTheme: Boolean
 ) : AbstractViewHolder<ThematicWidgetUiModel>(itemView), CoroutineScope, HeaderCustomViewListener {
 
     companion object {

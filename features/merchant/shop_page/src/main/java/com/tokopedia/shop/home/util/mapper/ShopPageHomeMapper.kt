@@ -220,7 +220,8 @@ object ShopPageHomeMapper {
         forceLightModeColor: Boolean,
         patternColorType: String,
         backgroundColor: String,
-        isDeviceOnDarkModeTheme: Boolean
+        isDeviceOnDarkModeTheme: Boolean,
+        isFestivity: Boolean
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -246,7 +247,7 @@ object ShopPageHomeMapper {
         }
 
         val productCardColorMode = productCardColorHelper.determineProductCardColorMode(
-            isDeviceOnDarkModeTheme = isDeviceOnDarkModeTheme,
+            isFestivity = isFestivity,
             shouldOverrideTheme = forceLightModeColor,
             patternColorType = patternColorType,
             backgroundColor = backgroundColor

@@ -221,8 +221,7 @@ object ShopPageProductListMapper {
         isShowThreeDots: Boolean = true,
         isForceLightMode: Boolean = false,
         patternType: String = "",
-        backgroundColor: String = "",
-        isDeviceOnDarkModeTheme: Boolean = false
+        backgroundColor: String = ""
     ): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
@@ -265,7 +264,7 @@ object ShopPageProductListMapper {
             forceLightModeColor = isForceLightMode,
             shopBadgeList = badges,
             colorMode = productCardColorHelper.determineProductCardColorMode(
-                isDeviceOnDarkModeTheme = isDeviceOnDarkModeTheme,
+                isFestivity = false,
                 shouldOverrideTheme = isForceLightMode,
                 patternColorType = patternType,
                 backgroundColor = backgroundColor

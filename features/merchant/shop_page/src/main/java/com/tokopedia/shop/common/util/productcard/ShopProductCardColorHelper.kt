@@ -1,55 +1,89 @@
 package com.tokopedia.shop.common.util.productcard
 
 import com.tokopedia.productcard.experiments.ProductCardColor
+import com.tokopedia.shop.common.util.productcard.festivity.FestivityLightProductCardColor
+import com.tokopedia.shop.common.util.productcard.festivity.FestivityTransparentProductCardColor
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
+import com.tokopedia.unifyprinciples.ColorMode
+import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.productcard.reimagine.DarkThemedShopProductCard
+import com.tokopedia.shop.common.util.productcard.reimagine.LightThemedShopProductCard
 
 class ShopProductCardColorHelper {
 
+    private val defaultProductCardColor = null
+
+    private val transparentProductCard = object : ProductCardColor {
+        override val cardBackgroundColor: Int? = android.R.color.transparent
+        override val productNameTextColor: Int? = defaultProductCardColor
+        override val priceTextColor: Int? = defaultProductCardColor
+        override val slashPriceTextColor: Int? = defaultProductCardColor
+        override val soldCountTextColor: Int? = defaultProductCardColor
+        override val discountTextColor: Int? = defaultProductCardColor
+        override val ratingTextColor: Int? = defaultProductCardColor
+        override val buttonColorMode: ColorMode? = defaultProductCardColor
+        override val labelBenefitViewColor = defaultProductCardColor
+        override val shopBadgeTextColor: Int? = defaultProductCardColor
+        override val quantityEditorColor = defaultProductCardColor
+        override val stockBarColor = defaultProductCardColor
+    }
+
+
     fun determineProductCardColorMode(
-        isDeviceOnDarkModeTheme: Boolean,
+        isFestivity: Boolean,
         shouldOverrideTheme: Boolean,
         patternColorType: String,
-        backgroundColor: String
+        backgroundColor: String,
+        makeProductCardTransparent: Boolean = true
     ): ProductCardColor {
-        val isShopReimagine = shouldOverrideTheme
-        
-        return if (isShopReimagine) {
-            determineColorModeForShopReimagine(patternColorType, backgroundColor)
+        return when {
+            isFestivity -> overrideToFestivityColor(makeProductCardTransparent, backgroundColor)
+            shouldOverrideTheme -> overrideToShopThemeColor(makeProductCardTransparent, patternColorType, backgroundColor)
+            else -> followDeviceThemeColor()
+        }
+    }
+
+    private fun overrideToFestivityColor(
+        makeProductCardTransparent: Boolean,
+        shopPageBackgroundColor: String,
+    ): ProductCardColor {
+        return if (makeProductCardTransparent) {
+            FestivityTransparentProductCardColor(labelBenefitCutoutFillColor = shopPageBackgroundColor)
         } else {
-            //Festivity and non-shop reimagine
-            determineColorModeForNonShopReimagine(isDeviceOnDarkModeTheme, backgroundColor)
+            FestivityLightProductCardColor(labelBenefitCutoutFillColor = shopPageBackgroundColor)
         }
     }
 
     /**
-     * If shop is reimagine, we will ignore the device selected theme and override the product card color 
+     * If shop is reimagine, we will ignore the device selected theme and override the product card color
      * based on the shop selected theme from `patternColorType` property instead.
      */
-    private fun determineColorModeForShopReimagine(
+    private fun overrideToShopThemeColor(
+        makeProductCardTransparent: Boolean,
         patternColorType: String,
         backgroundColor: String
     ): ProductCardColor {
         val isLightThemedShop = patternColorType == ShopPageHeaderLayoutUiModel.ColorType.LIGHT.value
-        
-        return if (isLightThemedShop) {
-            LightThemedShopProductCard(labelBenefitCutoutFillColor = backgroundColor)
+        val cardBackgroundColorResId = if (makeProductCardTransparent) {
+            android.R.color.transparent
         } else {
-            DarkThemedShopProductCard(labelBenefitCutoutFillColor = backgroundColor)
+            R.color.dms_static_white
+        }
+
+        return if (isLightThemedShop) {
+            LightThemedShopProductCard(
+                cardBackgroundColorResId = cardBackgroundColorResId,
+                labelBenefitCutoutFillColor = backgroundColor
+            )
+        } else {
+            DarkThemedShopProductCard(
+                cardBackgroundColorResId = cardBackgroundColorResId,
+                labelBenefitCutoutFillColor = backgroundColor
+            )
         }
     }
 
-    /**
-     * If shop is non reimagine (e.g normal shop or festivity) we still need to return dark themed and light themed product card color concrete implementation 
-     * that respect the device-selected theme and make the product card background transparent
-     */
-    private fun determineColorModeForNonShopReimagine(
-        isDeviceOnDarkModeTheme: Boolean,
-        backgroundColor: String
-    ): ProductCardColor {
-        return if (isDeviceOnDarkModeTheme) {
-            DarkThemedShopProductCard(labelBenefitCutoutFillColor = backgroundColor)
-        } else {
-            LightThemedShopProductCard(labelBenefitCutoutFillColor = backgroundColor)
-        }
+    private fun followDeviceThemeColor(): ProductCardColor {
+        return transparentProductCard
     }
 }

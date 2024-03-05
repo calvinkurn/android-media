@@ -57,7 +57,8 @@ open class ShopHomeProductItemBigGridViewHolder(
             forceLightModeColor = shopHomeListener.isOverrideTheme(),
             patternColorType = shopHomeListener.getPatternColorType(),
             backgroundColor = shopHomeListener.getBackgroundColor(),
-            isDeviceOnDarkModeTheme = productCard?.context?.isDarkMode().orFalse()
+            isDeviceOnDarkModeTheme = productCard?.context?.isDarkMode().orFalse(),
+            isFestivity = false
         )
         productCard?.setProductModel(productCardModel)
         setListener(productCardModel)

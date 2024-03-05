@@ -81,7 +81,8 @@ class ShopHomeCarousellProductViewHolder(
         this.shopHomeCarousellProductUiModel = shopHomeCarousellProductUiModel
         bindShopProductCarousel(
             shopHomeProductViewModelList = shopHomeCarousellProductUiModel.productList,
-            isOverrideWidgetTheme = shopHomeCarousellProductUiModel.header.isOverrideTheme
+            isOverrideWidgetTheme = shopHomeCarousellProductUiModel.header.isOverrideTheme,
+            isFestivity = shopHomeCarousellProductUiModel.isFestivity
         )
         val title = shopHomeCarousellProductUiModel.header.title
         val ctaText = shopHomeCarousellProductUiModel.header.ctaText
@@ -153,7 +154,8 @@ class ShopHomeCarousellProductViewHolder(
 
     private fun bindShopProductCarousel(
         shopHomeProductViewModelList: List<ShopHomeProductUiModel>,
-        isOverrideWidgetTheme: Boolean
+        isOverrideWidgetTheme: Boolean,
+        isFestivity: Boolean
     ) {
         recyclerView?.findViewById<RecyclerView>(carouselproductcardR.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
         recyclerViewForSingleOrDoubleProductCard?.isNestedScrollingEnabled = false
@@ -168,7 +170,8 @@ class ShopHomeCarousellProductViewHolder(
                 forceLightModeColor = shopHomeListener.isOverrideTheme(),
                 patternColorType = shopHomeListener.getPatternColorType(),
                 backgroundColor = shopHomeListener.getBackgroundColor(),
-                isDeviceOnDarkModeTheme = recyclerView?.context?.isDarkMode().orFalse()
+                isDeviceOnDarkModeTheme = recyclerView?.context?.isDarkMode().orFalse(),
+                isFestivity = isFestivity
             )
         }
         if (isProductCardSingleOrDouble(shopHomeProductViewModelList)) {
