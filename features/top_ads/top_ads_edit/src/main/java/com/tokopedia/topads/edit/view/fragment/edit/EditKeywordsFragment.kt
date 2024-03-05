@@ -81,7 +81,8 @@ import com.tokopedia.topads.common.R as topadscommonR
 
 private const val CLICK_TAMBAH_KATA_KUNCI = "click - tambah kata kunci"
 private const val CLICK_DAILY_BUDGET_BOX = "click - box biaya iklan pencarian"
-private const val CLICK_DAILY_BUDGET_REKOMENDASI_BOX = "click - box biaya iklan manual di rekomendasi"
+private const val CLICK_DAILY_BUDGET_REKOMENDASI_BOX =
+    "click - box biaya iklan manual di rekomendasi"
 private const val CLICK_EDIT_KEYWORD_TYPE = "click - button edit luas pencarian"
 private const val CLICK_EDIT_KEYWORD_BID = "click - edit kata kunci"
 private const val CLICK_EDIT_KEYWORD_DELETE = "click - delete icon kata kunci"
@@ -90,7 +91,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var adapter: EditKeywordListAdapter
+    private var adapter: EditKeywordListAdapter? = null
     private lateinit var callBack: ButtonAction
     private var minSuggestKeyword = Int.ZERO.toString()
     private var maxSuggestKeyword = Int.ZERO.toString()
@@ -231,8 +232,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     fun getSuggestedBidSettings(): List<GroupEditInput.Group.TopadsSuggestionBidSetting> {
         return listOf(
-            GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_SEARCH, suggestBidPerClick.toFloat()),
-            GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_BROWSE, suggestBidPerClick.toFloat())
+            GroupEditInput.Group.TopadsSuggestionBidSetting(
+                PRODUCT_SEARCH,
+                suggestBidPerClick.toFloat()
+            ),
+            GroupEditInput.Group.TopadsSuggestionBidSetting(
+                PRODUCT_BROWSE,
+                suggestBidPerClick.toFloat()
+            )
         )
     }
 
@@ -249,9 +256,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
         sheet.show(childFragmentManager, String.EMPTY)
         sheet.onSaved = { bid, position ->
-            (adapter.items.getOrNull(position) as? EditKeywordItemViewModel)?.let {
+            (adapter?.items?.getOrNull(position) as? EditKeywordItemViewModel)?.let {
                 it.data.priceBid = bid
-                adapter.notifyItemChanged(position)
+                adapter?.notifyItemChanged(position)
             }
         }
     }
@@ -259,7 +266,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun onEditType(pos: Int) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_EDIT_KEYWORD_TYPE, "")
         val sheet = ChooseKeyBottomSheet.newInstance()
-        val item = (adapter.items.getOrNull(pos) as? EditKeywordItemViewModel)
+        val item = (adapter?.items?.getOrNull(pos) as? EditKeywordItemViewModel)
 
         val type = item?.data?.typeInt
         if (type != null) {
@@ -280,7 +287,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 }
             }
 
-            adapter.notifyItemChanged(pos)
+            adapter?.notifyItemChanged(pos)
         }
     }
 
@@ -311,27 +318,33 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 listItem.add(mapToModelManual(selected))
             }
         }
-        adapter.items.clear()
+        adapter?.items?.clear()
         listItem.forEach {
-            adapter.items.add(EditKeywordItemViewModel(it))
+            adapter?.items?.add(EditKeywordItemViewModel(it))
         }
         setCount()
-        adapter.notifyDataSetChanged()
+        adapter?.notifyItemRangeChanged(Int.ZERO, listItem.size)
     }
 
     private fun onDeleteItem(position: Int) {
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_EDIT_KEYWORD_DELETE, "")
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
+            CLICK_EDIT_KEYWORD_DELETE,
+            ""
+        )
         showConfirmationDialog(position)
     }
 
     private fun updateString() {
-        if (adapter.items.count() == 0)
+        if (adapter?.items?.count() == 0)
             setEmptyView()
     }
 
     private fun setCount() {
         selectedKeyword.text =
-            String.format(getString(topadscommonR.string.topads_common_selected_keyword), adapter.items.count())
+            String.format(
+                getString(topadscommonR.string.topads_common_selected_keyword),
+                adapter?.items?.count()
+            )
     }
 
     private fun mapToModelManual(selected: GetKeywordResponse.KeywordsItem): KeySharedModel {
@@ -365,16 +378,20 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun prepareBundle(pos: Int): Bundle {
         val bundle = Bundle()
-        if ((adapter.items[pos] as EditKeywordItemViewModel).data.priceBid == Int.ZERO.toString())
-            (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid = minSuggestKeyword
+        if ((adapter?.items?.getOrNull(pos) as EditKeywordItemViewModel).data.priceBid == Int.ZERO.toString())
+            (adapter?.items?.getOrNull(pos) as EditKeywordItemViewModel).data.priceBid =
+                minSuggestKeyword
         bundle.putString(MAX_BID, maxSuggestKeyword)
         bundle.putString(MIN_BID, minSuggestKeyword)
         bundle.putString(
             SUGGESTION_BID,
-            (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid
+            (adapter?.items?.getOrNull(pos) as EditKeywordItemViewModel).data.priceBid
         )
         bundle.putInt(ITEM_POSITION, pos)
-        bundle.putString(KEYWORD_NAME, (adapter.items[pos] as EditKeywordItemViewModel).data.name)
+        bundle.putString(
+            KEYWORD_NAME,
+            (adapter?.items?.getOrNull(pos) as EditKeywordItemViewModel).data.name
+        )
         bundle.putInt(FROM_EDIT, Int.ONE)
         bundle.putString(GROUPID, groupId.toString())
         return bundle
@@ -382,8 +399,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun actionStatusChange(position: Int) {
         if (isExistsOriginal(position)) {
-            deletedKeywords?.add((adapter.items[position] as EditKeywordItemViewModel).data)
-            addedKeywords?.add((adapter.items[position] as EditKeywordItemViewModel).data)
+            deletedKeywords?.add((adapter?.items?.getOrNull(position) as EditKeywordItemViewModel).data)
+            addedKeywords?.add((adapter?.items?.getOrNull(position) as EditKeywordItemViewModel).data)
         }
     }
 
@@ -393,14 +410,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             dialog.setTitle(
                 String.format(
                     getString(R.string.topads_edit_delete_keyword_conf_dialog_title),
-                    (adapter.items[position] as EditKeywordItemViewModel).data.name
+                    (adapter?.items?.getOrNull(position) as EditKeywordItemViewModel).data.name
                 )
             )
             dialog.setDescription(
                 MethodChecker.fromHtml(
                     String.format(
                         getString(R.string.topads_edit_delete_keyword_conf_dialog_desc),
-                        (adapter.items[position] as EditKeywordItemViewModel).data.name
+                        (adapter?.items?.getOrNull(position) as EditKeywordItemViewModel).data.name
                     )
                 )
             )
@@ -423,7 +440,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             minSuggestKeyword = it.minBid
             maxSuggestKeyword = it.maxBid
         }
-        adapter.setBid(minSuggestKeyword)
+        adapter?.setBid(minSuggestKeyword)
     }
 
     private fun onAddKeyword() {
@@ -440,20 +457,20 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         var pos = Int.ZERO
         if (selectedData?.isNotEmpty() == true) {
             selectedData?.forEachIndexed { index, select ->
-                if (select.keyword == (adapter.items[position] as EditKeywordItemViewModel).data.name) {
+                if (select.keyword == (adapter?.items?.getOrNull(position) as EditKeywordItemViewModel).data.name) {
                     pos = index
                 }
             }
             selectedData?.removeAt(pos)
         }
-        if (adapter.items[position] is EditKeywordItemViewModel) {
+        if (adapter?.items?.getOrNull(position) is EditKeywordItemViewModel) {
             if (isExistsOriginal(position)) {
-                deletedKeywords?.add((adapter.items[position] as EditKeywordItemViewModel).data)
+                deletedKeywords?.add((adapter?.items?.getOrNull(position) as EditKeywordItemViewModel).data)
             } else {
                 if (addedKeywords?.isNotEmpty() == true) {
                     var index = Int.ZERO
                     addedKeywords?.forEachIndexed { it, key ->
-                        if (key.name == (adapter.items[position] as EditKeywordItemViewModel).data.name) {
+                        if (key.name == (adapter?.items?.getOrNull(position) as EditKeywordItemViewModel).data.name) {
                             index = it
                         }
                     }
@@ -461,18 +478,19 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 }
             }
         }
-        if (position < adapter.itemCount)
-            adapter.items.removeAt(position)
+        if (position < (adapter?.itemCount ?: Int.ZERO))
+            adapter?.items?.removeAt(position)
         if (position < isnewlyAddded.size)
             isnewlyAddded.removeAt(position)
         if (position < initialBudget.size)
             initialBudget.removeAt(position)
-        if (adapter.items.isEmpty()) {
+        if (adapter?.items?.isEmpty() == true) {
             setEmptyView()
         }
-        adapter.notifyDataSetChanged()
+        if (position >= Int.ZERO)
+            adapter?.notifyItemRemoved(position)
         setCount()
-        adapter.getBidData(initialBudget, isnewlyAddded)
+        adapter?.getBidData(initialBudget, isnewlyAddded)
         updateString()
         view?.let {
             Toaster.build(
@@ -485,7 +503,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun isExistsOriginal(position: Int): Boolean {
-        return (originalKeyList.find { (adapter.items.getOrNull(position) as? EditKeywordItemViewModel)?.data?.name == it } != null)
+        return (originalKeyList.find { (adapter?.items?.getOrNull(position) as? EditKeywordItemViewModel)?.data?.name == it } != null)
     }
 
     private fun isExistsOriginal(name: String): Boolean {
@@ -538,16 +556,19 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 setVisibilityOperation(View.VISIBLE)
             }
             recyclerviewScrollListener.updateStateAfterGetData()
-            adapter.getBidData(initialBudget, isnewlyAddded)
+            adapter?.getBidData(initialBudget, isnewlyAddded)
         }
 
     }
 
     private fun setEmptyView() {
-        adapter.clearList()
-        adapter.items.add(EditKeywordEmptyViewModel())
+        adapter?.clearList()
+        adapter?.items?.add(EditKeywordEmptyViewModel())
         setVisibilityOperation(View.GONE)
-        adapter.notifyDataSetChanged()
+        val position = adapter?.items?.indexOfFirst { it is EditKeywordEmptyViewModel }
+        position?.let {
+            if (position >= Int.ZERO) adapter?.notifyItemChanged(it)
+        }
     }
 
     private fun setVisibilityOperation(visibility: Int) {
@@ -569,14 +590,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun updateKeywords(selectedKeywords: ArrayList<KeywordDataItem>?) {
-        if (adapter.items.isNotEmpty() && adapter.items.firstOrNull() is EditKeywordEmptyViewModel) {
-            adapter.clearList()
+        if (adapter?.items?.isNotEmpty() == true && adapter?.items?.firstOrNull() is EditKeywordEmptyViewModel) {
+            adapter?.clearList()
         }
         selectedKeywords?.forEach {
-            if (adapter.items.find { item -> it.keyword == (item as EditKeywordItemViewModel).data.name } == null) {
+            if (adapter?.items?.find { item -> it.keyword == (item as EditKeywordItemViewModel).data.name } == null) {
                 if (it.bidSuggest == Int.ZERO.toString())
                     it.bidSuggest = DEFAULT_NEW_KEYWORD_VALUE
-                adapter.items.add(EditKeywordItemViewModel(mapToSharedModel(it)))
+                adapter?.items?.add(EditKeywordItemViewModel(mapToSharedModel(it)))
                 initialBudget.add(it.bidSuggest)
                 isnewlyAddded.add(true)
                 if (!isExistsOriginal(it.keyword)) {
@@ -584,7 +605,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 }
             }
         }
-        adapter.getBidData(initialBudget, isnewlyAddded)
+        adapter?.getBidData(initialBudget, isnewlyAddded)
         setVisibilityOperation(View.VISIBLE)
     }
 
@@ -613,13 +634,19 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     fun sendData(): Bundle {
         val bundle = Bundle()
         val list: ArrayList<KeySharedModel> = arrayListOf()
-        list.addAll(adapter.getCurrentItems())
 
-        if (this::adapter.isInitialized && adapter.items.isNotEmpty() && adapter.items[0] !is EditKeywordEmptyViewModel) {
-            adapter.items.forEachIndexed { index, item ->
-                if (index < adapter.data.size && (item as EditKeywordItemViewModel).data.priceBid != adapter.data[index]) {
-                    if (isExistsOriginal(item.data.name))
-                        editedKeywords?.add(item.data)
+        adapter?.let { adapter ->
+            list.addAll(adapter.getCurrentItems())
+            if (adapter.items.isNotEmpty() && adapter.items.getOrNull(Int.ZERO) !is EditKeywordEmptyViewModel) {
+                adapter.items.forEachIndexed { index, item ->
+                    if (index < adapter.data.size &&
+                        (item as EditKeywordItemViewModel).data.priceBid != (adapter.data.getOrNull(
+                            index
+                        ))
+                    ) {
+                        if (isExistsOriginal(item.data.name))
+                            editedKeywords?.add(item.data)
+                    }
                 }
             }
         }
