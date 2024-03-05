@@ -17,6 +17,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
@@ -75,7 +76,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
 
             val rootView: View = activity.window.decorView.findViewById(android.R.id.content)
 
-            setAddonGlobalLayoutListener(rootView)
+//            setAddonGlobalLayoutListener(rootView)
 
             launch {
 
@@ -192,7 +193,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                     TranslatorManagerFragment.setCurrentFragment(weakFragment)
 
                     f.view?.let {
-                        setAddonGlobalLayoutListener(it)
+//                        setAddonGlobalLayoutListener(it)
                         launch {
 
                             it.viewTreeObserver.onScrollChangedAsFlow().collect {
