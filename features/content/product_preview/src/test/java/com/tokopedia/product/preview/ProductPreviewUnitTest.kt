@@ -388,7 +388,7 @@ class ProductPreviewUnitTest {
     }
 
     @Test
-    fun `when product action add to chart and user not login should emit login event`() {
+    fun `when product action add to cart and user not login should emit login event`() {
         val sourceModel = mockDataSource.mockSourceProduct(productId)
         val expectedData = mockDataSource.mockProductMiniInfo(
             hasVariant = true,
@@ -408,7 +408,7 @@ class ProductPreviewUnitTest {
     }
 
     @Test
-    fun `when product action add to chart and success then should emit success toaster`() {
+    fun `when product action add to cart and success then should emit success toaster`() {
         val sourceModel = mockDataSource.mockSourceProduct(productId)
         val expectedData = mockDataSource.mockProductMiniInfo(
             hasVariant = true,
@@ -441,7 +441,7 @@ class ProductPreviewUnitTest {
     }
 
     @Test
-    fun `when product action add to chart and fail should emit error toaster`() {
+    fun `when product action add to cart and fail should emit error toaster`() {
         val sourceModel = mockDataSource.mockSourceProduct(productId)
         val expectedData = mockDataSource.mockProductMiniInfo(
             hasVariant = true,
