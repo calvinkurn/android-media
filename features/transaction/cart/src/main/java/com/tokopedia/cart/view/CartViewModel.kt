@@ -284,9 +284,7 @@ class CartViewModel @Inject constructor(
         const val ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5
         const val RECENT_VIEW_XSOURCE = "recentview"
         const val PAGE_NAME_RECENT_VIEW = "cart_recent_view"
-        const val PAGE_NAME_RECENT_VIEW_TEST = "cart_recent_view_test" // FOR TESTING ONLY, REVERT THIS BEFORE MERGE!!!
         const val PAGE_NAME_RECOMMENDATION = "cart"
-        const val PAGE_NAME_RECOMMENDATION_TEST = "cart_test_2" // FOR TESTING ONLY, REVERT THIS BEFORE MERGE!!!
         const val RECOMMENDATION_XSOURCE = "recom_widget"
 
         private const val QUERY_APP_CLIENT_ID = "{app_client_id}"
@@ -964,7 +962,7 @@ class CartViewModel @Inject constructor(
             val cartRecentViewHolderData = CartRecentViewHolderData(
                 recommendationWidgetMetadata = RecommendationWidgetMetadata(
                     pageNumber = 1,
-                    pageName = PAGE_NAME_RECENT_VIEW_TEST, // TODO: REVERT THIS BEFORE MERGE!!!
+                    pageName = PAGE_NAME_RECENT_VIEW,
                     xSource = RECENT_VIEW_XSOURCE,
                     productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
                     atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECENT_VIEW
@@ -1027,7 +1025,7 @@ class CartViewModel @Inject constructor(
                     GetRecommendationRequestParam(
                         pageNumber = cartModel.recommendationPage,
                         xSource = RECOMMENDATION_XSOURCE,
-                        pageName = PAGE_NAME_RECOMMENDATION_TEST, // TODO: REVERT THIS BEFORE MERGE!!!
+                        pageName = PAGE_NAME_RECOMMENDATION,
                         productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
                         queryParam = "",
                         hasNewProductCardEnabled = true

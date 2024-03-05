@@ -654,7 +654,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         val cartRecentViewHolderData = CartRecentViewHolderData(
             recommendationWidgetMetadata = RecommendationWidgetMetadata(
                 pageNumber = 1,
-                pageName = CartViewModel.PAGE_NAME_RECENT_VIEW_TEST,
+                pageName = CartViewModel.PAGE_NAME_RECENT_VIEW,
                 xSource = CartViewModel.RECENT_VIEW_XSOURCE,
                 atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECENT_VIEW
             )
