@@ -436,10 +436,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onProductCardImpressed(model: RecommendationCardModel, position: Int) {
         sendProductShowAppLog(
-            model.asProductTrackModel(
-                tabName = tabName,
-                tabPosition = tabIndex,
-            )
+            model.asProductTrackModel()
         )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
@@ -489,10 +486,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onProductCardClicked(model: RecommendationCardModel, position: Int) {
         sendProductClickAppLog(
-            model.asProductTrackModel(
-                tabName = tabName,
-                tabPosition = tabIndex,
-            )
+            model.asProductTrackModel()
         )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
@@ -582,10 +576,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
         sendCardClickAppLog(
-            model.asCardTrackModel(
-                tabName = tabName,
-                tabPosition = tabIndex,
-            )
+            model.asCardTrackModel()
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
@@ -612,10 +603,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int) {
         sendCardShowAppLog(
-            model.asCardTrackModel(
-                tabName = tabName,
-                tabPosition = tabIndex,
-            )
+            model.asCardTrackModel()
         )
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
@@ -636,10 +624,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onContentCardImpressed(item: ContentCardModel, position: Int) {
         sendCardShowAppLog(
-            item.asCardTrackModel(
-                tabName = tabName,
-                tabPosition = tabIndex,
-            )
+            item.asCardTrackModel()
         )
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressEntityCardTracking(
@@ -653,10 +638,7 @@ class HomeGlobalRecommendationFragment :
     override fun onContentCardClicked(item: ContentCardModel, position: Int) {
         setAppLogEnterMethod(EnterMethod.CLICK_RECOM_CARD_INFINITE)
         sendCardClickAppLog(
-            item.asCardTrackModel(
-                tabName = tabName,
-                tabPosition = tabIndex,
-            )
+            item.asCardTrackModel()
         )
         HomeRecommendationTracking.sendClickEntityCardTracking(
             item,
@@ -671,10 +653,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onPlayCardClicked(element: PlayCardModel, position: Int) {
         sendCardClickAppLog(
-            element.asCardTrackModel(
-                tabName = tabName,
-                tabPosition = tabIndex,
-            )
+            element.asCardTrackModel()
         )
         HomeRecommendationTracking.sendClickVideoRecommendationCardTracking(
             element,
@@ -689,10 +668,7 @@ class HomeGlobalRecommendationFragment :
 
     override fun onPlayCardImpressed(element: PlayCardModel, position: Int) {
         sendCardShowAppLog(
-            element.asCardTrackModel(
-                tabName = tabName,
-                tabPosition = tabIndex,
-            )
+            element.asCardTrackModel()
         )
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressPlayVideoWidgetTracking(
@@ -723,7 +699,8 @@ class HomeGlobalRecommendationFragment :
             DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
             getLocationParamString(),
             sourceType = sourceType,
-            refreshType = REFRESH_TYPE_OPEN
+            refreshType = REFRESH_TYPE_OPEN,
+            tabIndex = tabIndex
         )
     }
 
@@ -811,7 +788,8 @@ class HomeGlobalRecommendationFragment :
                 DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
                 getLocationParamString(),
                 sourceType = sourceType,
-                refreshType = REFRESH_TYPE_REFRESH
+                refreshType = REFRESH_TYPE_REFRESH,
+                tabIndex = tabIndex
             )
         }
     }
