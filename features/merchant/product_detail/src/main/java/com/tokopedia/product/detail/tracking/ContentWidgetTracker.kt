@@ -1,12 +1,12 @@
 package com.tokopedia.product.detail.tracking
 
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 
 data class ContentWidgetTracker(
     val userId: String,
-    private val productInfo: DynamicProductInfoP1,
+    private val productInfo: ProductInfoP1,
     private val componentTrackDataModel: ComponentTrackDataModel,
     private val playItem: PlayWidgetChannelUiModel? = null,
     val isRemindMe: Boolean = false

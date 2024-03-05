@@ -16,11 +16,13 @@ import dagger.Component
 
 @ActivityScope
 @SessionCommonScope
-@Component(modules = [
-    ShopCreationModule::class,
-    ShopCreationViewModelModule::class,
-    SessionModule::class
-], dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [
+        ShopCreationModule::class,
+        ShopCreationViewModelModule::class,
+        SessionModule::class //TODO: remove this after GetProfileUseCase migrated to coroutine usecase
+    ], dependencies = [BaseAppComponent::class]
+)
 interface ShopCreationComponent {
     fun inject(fragment: LandingShopCreationFragment)
     fun inject(fragment: NameShopCreationFragment)

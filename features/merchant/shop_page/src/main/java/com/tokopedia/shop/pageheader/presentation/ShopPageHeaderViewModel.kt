@@ -384,16 +384,9 @@ class ShopPageHeaderViewModel @Inject constructor(
         }
     }
 
-    fun getFollowStatusData(shopId: String, followButtonVariantType: String) {
+    fun getFollowStatusData(shopId: String) {
         launchCatchError(dispatcherProvider.io, block = {
-            val pageSource = when (followButtonVariantType) {
-                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL, RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG -> {
-                    // set empty page source to get voucher icon white color
-                    ""
-                }
-
-                else -> SOURCE_SHOP_PAGE
-            }
+            val pageSource = SOURCE_SHOP_PAGE
             getFollowStatusUseCase.get().params =
                 GetFollowStatusUseCase.createParams(shopId, pageSource)
             _followStatusData.postValue(Success(getFollowStatusUseCase.get().executeOnBackground()))

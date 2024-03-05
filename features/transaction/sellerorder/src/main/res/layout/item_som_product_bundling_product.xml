@@ -65,7 +65,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
         android:inflatedId="@+id/layoutProductBundleAddOn"
-        android:layout="@layout/partial_bmgm_add_on_summary"
+        android:layout="@layout/partial_add_on_summary"
         app:layout_constraintTop_toBottomOf="@id/tvSomBundleNotes" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.TopAdsConstants.SEEN_ADS
+import com.tokopedia.topads.sdk.utils.TopAdsHeadlineViewParams.createHeadlineParams
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -22,10 +23,11 @@ class SearchProductLoadMoreGqlUseCase(
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
         val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
         val params = UrlParamUtils.generateUrlParamString(searchProductParams) + sreParams()
-        val headlineAdsParams = com.tokopedia.topads.sdk.utils.TopAdsHeadlineViewParams.createHeadlineParams(
+        val headlineAdsParams = createHeadlineParams(
                 requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String, Any?>,
                 HEADLINE_ITEM_VALUE_LOAD_MORE,
-                requestParams.parameters[SEEN_ADS] as String)
+                requestParams.parameters[SEEN_ADS] as String
+        ) + sreParams()
 
         val graphqlRequestList = graphqlRequests {
             addAceSearchProductRequest(reimagineRollence, params)

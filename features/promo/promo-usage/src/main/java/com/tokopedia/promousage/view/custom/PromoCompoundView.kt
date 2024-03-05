@@ -339,27 +339,7 @@ class PromoCompoundView @JvmOverloads constructor(
                 }
 
                 is PromoItemState.Normal -> {
-                    val isPromoGopayLater = if (promo.useSecondaryPromo) {
-                        promo.secondaryPromo.couponType.firstOrNull {
-                            it == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
-                        } != null
-                    } else {
-                        promo.couponType.firstOrNull {
-                            it == PromoItem.COUPON_TYPE_GOPAY_LATER_CICIL
-                        } != null
-                    }
-                    val isPromoCtaRegisterGopayLater = if (promo.useSecondaryPromo) {
-                        promo.secondaryPromo.cta.type == PromoItemCta.TYPE_REGISTER_GOPAY_LATER_CICIL
-                    } else {
-                        promo.cta.type == PromoItemCta.TYPE_REGISTER_GOPAY_LATER_CICIL
-                    }
-                    val isPromoCtaValid = if (promo.useSecondaryPromo) {
-                        promo.secondaryPromo.cta.text.isNotBlank() &&
-                            promo.secondaryPromo.cta.appLink.isNotBlank()
-                    } else {
-                        promo.cta.text.isNotBlank() && promo.cta.appLink.isNotBlank()
-                    }
-                    if (isPromoGopayLater && isPromoCtaRegisterGopayLater && isPromoCtaValid) {
+                    if (promo.isPromoGopayLater && promo.isPromoCtaRegisterGopayLater && promo.isPromoCtaValid) {
                         tpgAdditionalInfoMessage.text =
                             promo.cta.text.toSpannableHtmlString(tpgAdditionalInfoMessage.context)
                         tpgAdditionalInfoMessage

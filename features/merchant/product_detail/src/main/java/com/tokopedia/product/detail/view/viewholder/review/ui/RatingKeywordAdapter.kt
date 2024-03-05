@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.common.utils.extensions.addOnPdpImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.review.delegate.ReviewCallback
 import com.tokopedia.product.detail.view.viewholder.review.event.ReviewComponentEvent
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -18,7 +18,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 
 class RatingKeywordAdapter(
     private val callback: ReviewCallback,
-    private val pdpListener: DynamicProductDetailListener
+    private val pdpListener: ProductDetailListener
 ) : ListAdapter<ReviewRatingUiModel.Keyword, RatingKeywordAdapter.ViewHolder>(DIFF_UTIL) {
 
     companion object {
@@ -54,7 +54,7 @@ class RatingKeywordAdapter(
     class ViewHolder(
         private val chip: ChipsUnify,
         private val callback: ReviewCallback,
-        private val pdpListener: DynamicProductDetailListener
+        private val pdpListener: ProductDetailListener
     ) : RecyclerView.ViewHolder(chip) {
 
         fun bind(keyword: ReviewRatingUiModel.Keyword, count: Int) {

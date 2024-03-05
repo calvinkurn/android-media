@@ -91,6 +91,7 @@ import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.listener.MixTopComponentListener
+import com.tokopedia.home_component.delegate.OrigamiListenerDelegate
 import com.tokopedia.home_component.listener.ProductHighlightListener
 import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.listener.ReminderWidgetListener
@@ -101,6 +102,7 @@ import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
 import com.tokopedia.home_component.viewholders.CampaignWidgetViewHolder
 import com.tokopedia.home_component.viewholders.CategoryWidgetV2ViewHolder
+import com.tokopedia.home_component.viewholders.CouponWidgetViewHolder
 import com.tokopedia.home_component.viewholders.CueWidgetCategoryViewHolder
 import com.tokopedia.home_component.viewholders.DealsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.DynamicIconViewHolder
@@ -121,11 +123,13 @@ import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
 import com.tokopedia.home_component.viewholders.TodoWidgetViewHolder
 import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
+import com.tokopedia.home_component.viewholders.coupon.CouponWidgetListener
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
+import com.tokopedia.home_component.visitable.CouponWidgetDataModel
 import com.tokopedia.home_component.visitable.CueCategoryDataModel
 import com.tokopedia.home_component.visitable.DealsDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
@@ -207,7 +211,9 @@ class HomeAdapterFactory(
     private val bestSellerListener: BestSellerListener,
     private val specialReleaseRevampListener: SpecialReleaseRevampListener,
     private val shopFlashSaleWidgetListener: ShopFlashSaleWidgetListener,
+    private val couponWidgetListener: CouponWidgetListener,
     private val homeThematicUtil: HomeThematicUtil,
+    private val origamiListenerDelegate: OrigamiListenerDelegate,
     private val remoteConfig: RemoteConfig
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
@@ -456,6 +462,10 @@ class HomeAdapterFactory(
         return Lego3AutoViewHolder.LAYOUT
     }
 
+    override fun type(couponWidgetModel: CouponWidgetDataModel): Int {
+        return CouponWidgetViewHolder.LAYOUT
+    }
+
     override fun type(shopFlashSaleWidgetDataModel: ShopFlashSaleWidgetDataModel): Int {
         return ShopFlashSaleWidgetViewHolder.LAYOUT
     }
@@ -638,8 +648,9 @@ class HomeAdapterFactory(
                 )
             SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
             ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
-            OrigamiSDUIViewHolder.LAYOUT -> viewHolder = OrigamiSDUIViewHolder(view, campaignWidgetComponentListener)
+            OrigamiSDUIViewHolder.LAYOUT -> viewHolder = OrigamiSDUIViewHolder(view, origamiListenerDelegate, homeComponentListener)
             Lego3AutoViewHolder.LAYOUT -> viewHolder = Lego3AutoViewHolder(view, legoListener)
+            CouponWidgetViewHolder.LAYOUT -> viewHolder = CouponWidgetViewHolder(view, parentRecycledViewPool, couponWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

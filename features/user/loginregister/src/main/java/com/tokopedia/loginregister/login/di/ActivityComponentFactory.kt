@@ -7,6 +7,8 @@ import com.tokopedia.loginregister.redefineregisteremail.di.DaggerRedefineRegist
 import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailComponent
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
+import com.tokopedia.loginregister.shopcreation.di.DaggerShopCreationComponent
+import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 
 open class ActivityComponentFactory {
 
@@ -24,6 +26,12 @@ open class ActivityComponentFactory {
 
     open fun createRedefineRegisterEmailComponent(application: Application): RedefineRegisterEmailComponent {
         return DaggerRedefineRegisterEmailComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
+    }
+
+    open fun createShopCreationComponent(application: Application): ShopCreationComponent {
+        return DaggerShopCreationComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .build()
     }

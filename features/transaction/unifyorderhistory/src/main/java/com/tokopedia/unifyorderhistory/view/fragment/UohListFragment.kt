@@ -2718,15 +2718,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 )
             }
 
-            uohListViewModel.doAtcMulti(
-                userSession?.userId ?: "",
-                GraphqlHelper.loadRawString(
-                    activity?.resources,
-                    atc_commonR.raw.mutation_add_to_cart_multi
-                ),
-                _listParamAtcMulti,
-                _atcVerticalCategory
-            )
+            uohListViewModel.doAtcMulti(_listParamAtcMulti)
         }
     }
 

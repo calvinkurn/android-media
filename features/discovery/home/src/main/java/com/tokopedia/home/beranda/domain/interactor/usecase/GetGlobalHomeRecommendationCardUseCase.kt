@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.home.beranda.data.mapper.HomeGlobalRecommendationCardMapper
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommendationCardResponse
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeGlobalRecommendationDataModel
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -43,7 +44,13 @@ class GetGlobalHomeRecommendationCardUseCase @Inject constructor(
             putString(PARAM_LAYOUTS, LAYOUTS_VALUE)
             putString(PARAM_SOURCE_TYPE, paramSource)
             putString(PARAM_LOCATION, location)
+            putString(PRODUCT_CARD_VERSION, getProductCardVersion())
         }.parameters
+    }
+
+    private fun getProductCardVersion(): String {
+        val isReimagine = ProductCardExperiment.isReimagine()
+        return if(isReimagine) PRODUCT_CARD_VERSION_V5 else ""
     }
 
     companion object {
@@ -51,6 +58,8 @@ class GetGlobalHomeRecommendationCardUseCase @Inject constructor(
         private const val PARAM_SOURCE_TYPE = "param"
         private const val PARAM_PRODUCT_PAGE = "productPage"
         private const val PARAM_LAYOUTS = "layouts"
+        private const val PRODUCT_CARD_VERSION = "productCardVersion"
+        private const val PRODUCT_CARD_VERSION_V5 = "v5"
 
         private const val LAYOUTS_VALUE = "product,recom_card,banner_ads,video"
     }

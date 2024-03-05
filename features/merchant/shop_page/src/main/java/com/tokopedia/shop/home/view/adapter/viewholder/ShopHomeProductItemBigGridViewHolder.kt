@@ -10,7 +10,6 @@ import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.extension.disableDirectPurchaseCapability
 import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopHomeProductCardBigGridBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
@@ -59,7 +58,7 @@ open class ShopHomeProductItemBigGridViewHolder(
             patternColorType = shopHomeListener.getPatternColorType(),
             backgroundColor = shopHomeListener.getBackgroundColor(),
             isDeviceOnDarkModeTheme = productCard?.context?.isDarkMode().orFalse()
-        ).disableDirectPurchaseCapability()
+        )
         productCard?.setProductModel(productCardModel)
         setListener(productCardModel)
     }

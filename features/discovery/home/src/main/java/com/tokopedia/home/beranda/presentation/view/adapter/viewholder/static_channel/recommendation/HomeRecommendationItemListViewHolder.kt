@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.ForYouDataMapper.toModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.listener.ImpressionRecommendationItemListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
@@ -16,6 +17,7 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomLis
 
 class HomeRecommendationItemListViewHolder(
     itemView: View,
+    private val listener: ImpressionRecommendationItemListener,
     private val homeRecommendationListener: GlobalRecomListener
 ) : BaseRecommendationViewHolder<HomeRecommendationItemDataModel>(
     itemView,
@@ -53,8 +55,8 @@ class HomeRecommendationItemListViewHolder(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    homeRecommendationListener.onProductCardImpressed(
-                        element.toModel(),
+                    listener.onProductCardImpressed(
+                        element,
                         bindingAdapterPosition
                     )
                 }

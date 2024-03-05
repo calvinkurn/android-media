@@ -41,6 +41,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
     private var isOverrideTheme: Boolean = false
     private var patternColorType: String = ""
     private var colorSchema: ShopPageColorSchema = ShopPageColorSchema()
+    private var isTransparent: Boolean = false
 
     companion object {
         @ColorRes
@@ -107,7 +108,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
         ctx?.let {
             textTabName.apply {
                 show()
-                if (isOverrideTheme) {
+                if (isUsingReimagineConfig()) {
                     setTabNameReimaginedColor(this, active)
                 } else {
                     setTabNameDefaultColor(this, active)
@@ -218,7 +219,7 @@ internal class ShopPageHeaderFragmentPagerAdapter(
                 iconDataJsonString,
                 ShopPageHeaderTabIconUrlModel::class.java
             ).run {
-                if (isOverrideTheme) {
+                if (isUsingReimagineConfig()) {
                     configIconColorByBackgroundTheme(lightModeUrl, darkThemeUrl)
                 } else {
                     configIconColorByDeviceTheme(lightModeUrl, darkModeUrl)
@@ -345,10 +346,16 @@ internal class ShopPageHeaderFragmentPagerAdapter(
     fun setPageTheme(
         isOverrideTheme: Boolean,
         patternColorType: String,
-        colorSchema: ShopPageColorSchema
+        colorSchema: ShopPageColorSchema,
+        isTransparent: Boolean
     ) {
         this.isOverrideTheme = isOverrideTheme
         this.patternColorType = patternColorType
         this.colorSchema = colorSchema
+        this.isTransparent = isTransparent
+    }
+
+    private fun isUsingReimagineConfig(): Boolean {
+        return isOverrideTheme && !isTransparent
     }
 }

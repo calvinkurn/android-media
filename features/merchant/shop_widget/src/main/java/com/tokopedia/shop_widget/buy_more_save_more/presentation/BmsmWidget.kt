@@ -305,10 +305,10 @@ class BmsmWidget : ConstraintLayout {
                 if (colorSchema.listColorSchema.isNotEmpty()) {
                     colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
                 } else {
-                    ContextCompat.getColor(context, color.Unify_NN950)
+                    ContextCompat.getColor(context, color.Unify_NN1000)
                 }
             }
-            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, R.color.dms_static_black)
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, color.Unify_NN1000)
         }
         return textColor
     }
@@ -320,10 +320,10 @@ class BmsmWidget : ConstraintLayout {
                 if (colorSchema.listColorSchema.isNotEmpty()) {
                     colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
                 } else {
-                    ContextCompat.getColor(context, color.Unify_NN950)
+                    ContextCompat.getColor(context, color.Unify_NN1000)
                 }
             }
-            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, R.color.dms_static_black)
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(context, color.Unify_NN1000)
         }
         return textColor
     }

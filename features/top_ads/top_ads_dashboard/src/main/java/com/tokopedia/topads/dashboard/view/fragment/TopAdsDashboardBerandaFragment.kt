@@ -66,7 +66,6 @@ import com.tokopedia.topads.dashboard.view.sheet.RecommendationInfoBottomSheet
 import com.tokopedia.topads.dashboard.view.sheet.SummaryAdTypesBottomSheet
 import com.tokopedia.topads.dashboard.view.sheet.SummaryInformationBottomSheet
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModel
-import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickBalanceEvent
@@ -77,6 +76,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
 import javax.inject.Inject
+import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.topads.common.R as topadscommonR
 
 /**
  * Created by Ankit
@@ -142,8 +144,10 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     @JvmField @Inject
     var mapper: InsightDataMapper? = null
 
-    private val topAdsDashboardViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[TopAdsDashboardViewModel::class.java]
+    private var topAdsDashboardViewModel: TopAdsDashboardViewModel? = null
+    private fun initializeViewModel() {
+        if (::viewModelFactory.isInitialized)
+            topAdsDashboardViewModel = ViewModelProvider(this, viewModelFactory)[TopAdsDashboardViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -175,7 +179,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                     this.layoutRoundedView.imageView.setImageDrawable(
                         ContextCompat.getDrawable(
                             it,
-                            com.tokopedia.unifycomponents.R.drawable.iconunify_product_budget
+                            unifycomponentsR.drawable.iconunify_product_budget
                         )
                     )
                 }
@@ -201,7 +205,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             showInformationBottomSheet()
         }
         binding.tambahKreditLayout.btnRefreshCredits.setOnClickListener {
-            topAdsDashboardViewModel.fetchShopDeposit()
+            topAdsDashboardViewModel?.fetchShopDeposit()
         }
         binding.layoutLatestReading.btnReadMore.setOnClickListener {
             context?.openWebView(READ_MORE_URL)
@@ -241,7 +245,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         binding.layoutRecommendasi.layoutProdukBerpostensi.recyclerView.adapter =
             produkBerpotensiAdapter
         setInsightRecyclerView()
-        topAdsDashboardViewModel.getLatestReadings()
+        topAdsDashboardViewModel?.getLatestReadings()
     }
 
     private fun setInsightRecyclerView() {
@@ -316,7 +320,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         if (summaryAdTypeList.isNotEmpty()) {
             selectedAdType = summaryAdTypeList[0]
         }
-
+        initializeViewModel()
         setUpRecyclerView()
         observeLiveData()
         initializeListener()
@@ -326,7 +330,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     private fun observeLiveData() {
-        topAdsDashboardViewModel.shopDepositLiveData.observe(viewLifecycleOwner) {
+        topAdsDashboardViewModel?.shopDepositLiveData?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     binding.tambahKreditLayout.creditAmount.text = it.data.amountFmt
@@ -336,7 +340,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             }
         }
 
-        topAdsDashboardViewModel.summaryStatisticsLiveData.observe(viewLifecycleOwner) {
+        topAdsDashboardViewModel?.summaryStatisticsLiveData?.observe(viewLifecycleOwner) {
             hideShimmer()
             when (it) {
                 is Success -> {
@@ -354,7 +358,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             }
         }
 
-        topAdsDashboardViewModel.recommendationStatsLiveData.observe(viewLifecycleOwner) {
+        topAdsDashboardViewModel?.recommendationStatsLiveData?.observe(viewLifecycleOwner) {
             hideShimmer()
             when (it) {
                 is Success -> {
@@ -365,7 +369,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             }
         }
 
-        topAdsDashboardViewModel.latestReadingLiveData.observe(viewLifecycleOwner) { data ->
+        topAdsDashboardViewModel?.latestReadingLiveData?.observe(viewLifecycleOwner) { data ->
             when (data) {
                 is Success -> latestReadingRvAdapter.addItems(data.data)
                 else -> {
@@ -374,7 +378,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             }
         }
 
-        topAdsDashboardViewModel.tickerLiveData.observe(viewLifecycleOwner) {
+        topAdsDashboardViewModel?.tickerLiveData?.observe(viewLifecycleOwner) {
             if (it.status.errorCode == 0) {
                 showTickerTopads(it.data.tickerInfo)
             } else {
@@ -386,7 +390,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     private fun observeInsight() {
-        topAdsDashboardViewModel.productInsights.observe(viewLifecycleOwner) {
+        topAdsDashboardViewModel?.productInsights?.observe(viewLifecycleOwner) {
             when (it) {
                 is TopAdsListAllInsightState.Success -> {
                     onSuccessFetchProductInsight(it)
@@ -398,7 +402,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             }
         }
 
-        topAdsDashboardViewModel.adGroupWithInsight.observe(viewLifecycleOwner) {
+        topAdsDashboardViewModel?.adGroupWithInsight?.observe(viewLifecycleOwner) {
             when (it) {
                 is TopAdsListAllInsightState.Success -> {
                     binding.layoutInsight.topAdsInsightCenterTopWidget.topLevelWidgetShimmer.shimmerLayoutTopLevelRecommendation.hide()
@@ -422,7 +426,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             binding.layoutInsight.topAdsInsightCenterTopWidget.insightWidgetTitle.text = context?.getString(R.string.topads_insight_max_out_title)
             binding.layoutInsight.topAdsInsightCenterTopWidget.insightWidgetIcon.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.perfomace_widget_optimized_icon
                 )
             )
@@ -433,7 +437,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             )
             binding.layoutInsight.topAdsInsightCenterTopWidget.insightWidgetIcon.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.performance_widget_default_icon
                 )
             )
@@ -444,7 +448,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             )
             binding.layoutInsight.topAdsInsightCenterTopWidget.insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.performance_widget_default_icon
                 )
             )
@@ -452,7 +456,11 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessFetchProductInsight(it: TopAdsListAllInsightState.Success<MutableList<InsightListUiModel>>) {
-        val temp = arrayListOf(EmptyStateUiListModel("0", topAdsDashboardViewModel.emptyStateData))
+        val temp = arrayListOf(topAdsDashboardViewModel?.emptyStateData?.let { it1 ->
+            EmptyStateUiListModel("0",
+                it1
+            )
+        })
         if (it.data.size.isZero()) {
             insightListAdapter.submitList(temp as? List<InsightListUiModel>)
             binding.layoutInsight.insightWidgetSeeMore.hide()
@@ -480,7 +488,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             override fun onDismiss() {}
         })
 
-        topAdsDashboardViewModel.getAutoTopUpDefaultSate.observe(viewLifecycleOwner) {
+        topAdsDashboardViewModel?.getAutoTopUpDefaultSate?.observe(viewLifecycleOwner) {
             if (it is Success) {
                 isAutoTopUpActive = it.data.isAutoTopUp
                 setButtonRefreshCreditState(it.data.isAutoTopUp)
@@ -490,7 +498,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             }
         }
 
-        topAdsDashboardViewModel.autoTopUpStatusLiveData.observe(viewLifecycleOwner) {
+        topAdsDashboardViewModel?.autoTopUpStatusLiveData?.observe(viewLifecycleOwner) {
             if (it is Success) {
                 autoTopUpBonus = it.data.statusBonus
             }
@@ -541,7 +549,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     fun loadSummaryStats() {
-        topAdsDashboardViewModel.fetchSummaryStatistics(
+        topAdsDashboardViewModel?.fetchSummaryStatistics(
             (activity as? TopAdsDashboardActivity)?.startDate.asString(),
             (activity as? TopAdsDashboardActivity)?.endDate.asString(),
             selectedAdType.adTypeId
@@ -551,27 +559,27 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private fun loadData() {
         showShimmer()
         binding.swipeRefreshLayout.isEnabled = true
-        topAdsDashboardViewModel.fetchShopDeposit()
+        topAdsDashboardViewModel?.fetchShopDeposit()
         adTypeChanged(selectedAdType)
-        topAdsDashboardViewModel.fetchRecommendationStatistics()
-        topAdsDashboardViewModel.getTopadsTicker()
-        topAdsDashboardViewModel.getAutoTopUpStatus()
-        topAdsDashboardViewModel.getSelectedTopUpType()
+        topAdsDashboardViewModel?.fetchRecommendationStatistics()
+        topAdsDashboardViewModel?.getTopadsTicker()
+        topAdsDashboardViewModel?.getAutoTopUpStatus()
+        topAdsDashboardViewModel?.getSelectedTopUpType()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_ADD_CREDIT) {
-            topAdsDashboardViewModel.fetchShopDeposit()
+            topAdsDashboardViewModel?.fetchShopDeposit()
         } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK) {
             if (data?.getBooleanExtra("no_redirect", false) != true) {
                 goToCreditHistory(true)
             } else {
-                topAdsDashboardViewModel.getSelectedTopUpType()
+                topAdsDashboardViewModel?.getSelectedTopUpType()
             }
         } else if (requestCode == REQUEST_CODE_TOP_UP_CREDIT) {
-            topAdsDashboardViewModel.fetchShopDeposit()
-            topAdsDashboardViewModel.getSelectedTopUpType()
+            topAdsDashboardViewModel?.fetchShopDeposit()
+            topAdsDashboardViewModel?.getSelectedTopUpType()
             if (resultCode == Activity.RESULT_OK) {
                 setButtonRefreshCreditState(true)
                 Toaster.build(
@@ -579,7 +587,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                     getString(R.string.topads_dash_auto_topup_activated_toast),
                     Snackbar.LENGTH_SHORT,
                     Toaster.TYPE_NORMAL,
-                    getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)
+                    getString(topadscommonR.string.topads_common_text_ok)
                 ).show()
             }
         }
@@ -592,7 +600,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 binding.tambahKreditLayout.btnRefreshCredits.setColorFilter(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        unifyprinciplesR.color.Unify_GN500
                     )
                 )
             }
@@ -656,23 +664,23 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         }
 
         binding.scrollView.viewTreeObserver?.addOnScrollChangedListener(object :
-                ViewTreeObserver.OnScrollChangedListener {
-                private var scrollY = Int.ZERO
+            ViewTreeObserver.OnScrollChangedListener {
+            private var scrollY = Int.ZERO
 
-                override fun onScrollChanged() {
-                    val newScrollY = binding.scrollView.scrollY
-                    if (newScrollY != scrollY && needToHitInsight) {
-                        needToHitInsight = false
-                        fetchInsight()
-                    }
-                    scrollY = newScrollY
+            override fun onScrollChanged() {
+                val newScrollY = binding.scrollView.scrollY
+                if (newScrollY != scrollY && needToHitInsight) {
+                    needToHitInsight = false
+                    fetchInsight()
                 }
-            })
+                scrollY = newScrollY
+            }
+        })
     }
 
     private fun fetchInsight() {
-        topAdsDashboardViewModel.fetchInsightTitle()
-        topAdsDashboardViewModel.fetchInsightItems(
+        topAdsDashboardViewModel?.fetchInsightTitle()
+        topAdsDashboardViewModel?.fetchInsightItems(
             adGroupType = "$PRODUCT_KEY,$HEADLINE_KEY",
             insightType = INSIGHT_TYPE_ALL,
             mapper = mapper

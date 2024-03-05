@@ -13,6 +13,7 @@ import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.usecase.ClaimCouponClickUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -20,12 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-
-private const val CATALOG_ID = "catalogId"
-private const val IS_GIFT = "isGift"
-private const val GIFT_USER_ID = "giftUserId"
-private const val GIFT_EMAIL = "giftEmail"
-private const val NOTES = "notes"
 
 class ClaimCouponItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -66,7 +61,8 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
     fun redeemCoupon(showToaster: (message: String) -> Unit) {
         launchCatchError(block = {
             if (userSession?.isLoggedIn == true) {
-                val data = claimCouponClickUseCase?.redeemCoupon(getQueryMap())
+                val id = components.claimCouponList?.firstOrNull()?.id ?: 0
+                val data = claimCouponClickUseCase?.redeemCoupon(id.orZero())
                 if (!data?.hachikoRedeem?.coupons?.firstOrNull()?.appLink.isNullOrEmpty()) {
                     components.data?.firstOrNull()?.applinks = data?.hachikoRedeem?.coupons?.firstOrNull()?.appLink
                 }
@@ -101,21 +97,5 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
         if (components.claimCouponList.isNullOrEmpty()) return ""
 
         return components.claimCouponList?.get(0)?.appLink
-    }
-
-    private fun getQueryMap(): Map<String, Any> {
-        return mapOf(
-            CATALOG_ID to (
-                try {
-                    components.claimCouponList?.firstOrNull()?.id ?: 0
-                } catch (e: NumberFormatException) {
-                    0
-                }
-                ),
-            IS_GIFT to 0,
-            GIFT_USER_ID to 0,
-            GIFT_EMAIL to "",
-            NOTES to ""
-        )
     }
 }

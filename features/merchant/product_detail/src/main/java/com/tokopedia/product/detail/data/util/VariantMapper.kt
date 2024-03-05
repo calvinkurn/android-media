@@ -7,8 +7,8 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.PromoPriceResponse
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -30,7 +30,7 @@ object VariantMapper {
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 
-    fun updateDynamicProductInfo(oldData: DynamicProductInfoP1?, newData: VariantChild?): DynamicProductInfoP1? {
+    fun updateDynamicProductInfo(oldData: ProductInfoP1?, newData: VariantChild?): ProductInfoP1? {
         if (oldData == null) return null
 
         val basic = oldData.basic.copy(
@@ -65,7 +65,7 @@ object VariantMapper {
             labelIcons = newData?.labelIcons.orEmpty()
         )
 
-        return DynamicProductInfoP1(
+        return ProductInfoP1(
             basic = basic,
             data = data,
             bestSellerContent = oldData.bestSellerContent,
@@ -74,7 +74,7 @@ object VariantMapper {
         )
     }
 
-    private fun DynamicProductInfoP1.variantCampignToCampaignModular(
+    private fun ProductInfoP1.variantCampignToCampaignModular(
         newData: VariantChild?,
         newPrice: Price
     ) = data.campaign.copy(

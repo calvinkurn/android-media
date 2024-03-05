@@ -13,12 +13,12 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetState
 import com.tokopedia.product.detail.databinding.BsProductMediaRecomBinding
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ProductMediaRecomTracker
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
@@ -33,7 +33,7 @@ import java.net.UnknownHostException
 
 class ProductMediaRecomBottomSheetManager(
     private val fragmentManager: FragmentManager,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) {
 
     companion object {
@@ -100,7 +100,7 @@ class ProductMediaRecomBottomSheetManager(
 
         private var binding by viewBinding(BsProductMediaRecomBinding::bind)
 
-        private var pdpListener: DynamicProductDetailListener? = null
+        private var pdpListener: ProductDetailListener? = null
 
         init {
             clearContentPadding = true
@@ -199,7 +199,7 @@ class ProductMediaRecomBottomSheetManager(
             adapterPosition: Int
         ) {}
 
-        fun setListener(listener: DynamicProductDetailListener) {
+        fun setListener(listener: ProductDetailListener) {
             pdpListener = listener
             setOnDismissListener { listener.onProductMediaRecomBottomSheetDismissed() }
             binding?.globalErrorProductMedia?.setActionClickListener {
@@ -264,7 +264,7 @@ class ProductMediaRecomBottomSheetManager(
         }
 
         private fun createCommonTracker() = CommonTracker(
-            productInfo = pdpListener?.getProductInfo() ?: DynamicProductInfoP1(),
+            productInfo = pdpListener?.getProductInfo() ?: ProductInfoP1(),
             userId = pdpListener?.getUserSession()?.userId.orEmpty()
         )
     }

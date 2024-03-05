@@ -29,7 +29,6 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.InflateException;
@@ -64,6 +63,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -91,6 +93,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 import com.tokopedia.webview.jsinterface.PartnerWebAppInterface;
 import com.tokopedia.webview.jsinterface.PrintWebPageInterface;
+import com.tokopedia.webview.verification.util.SmsBroadcastReceiver;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -129,6 +132,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
     private static final String GOJEK_APP_LINK = "https://gojek.link/goclub/membership?source=toko_status_match";
     private static final String GOFOOD_LINK = "https://gofood.link/";
+    private static final String PAYLATER_OTP_VERIF_LINK = "paylater/acquisition/otp-verification";
+    private static final String OTP_CODE = "otpCode";
+    private static final String URL_PARAM = "?url=";
     private static final String OPEN_CONTACT_PICKER_APPLINK = "tokopedia://open-contact-picker";
 
     String mJsHciCallbackFuncName;
@@ -177,6 +183,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private PageLoadLogger pageLoadLogger;
 
+    private SmsBroadcastReceiver smsBroadcastReceiver;
+
+    private SmsRetrieverClient smsRetriever;
+
+    private Boolean isSmsRegistered = false;
+
     /**
      * return the url to load in the webview
      * You can use URLGenerator.java to use generate the seamless URL.
@@ -201,6 +213,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     protected void initInjector() {
         // noop
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (getActivity() != null && isSmsRegistered) {
+            getActivity().unregisterReceiver(smsBroadcastReceiver);
+        }
     }
 
     @Override
@@ -730,6 +750,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             if (activityInstance instanceof BaseSimpleWebViewActivity) {
                 ((BaseSimpleWebViewActivity) activityInstance).updateToolbarVisibility(url);
             }
+            if (url.contains(PAYLATER_OTP_VERIF_LINK) && !url.contains(OTP_CODE)) {
+                startSmsListener();
+            } else {
+                if (getActivity() != null && isSmsRegistered) {
+                    getActivity().unregisterReceiver(smsBroadcastReceiver);
+                }
+            }
         }
 
         @Override
@@ -854,6 +881,31 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             messageMap.put("reason", errorResponse.getReasonPhrase());
             messageMap.put("web_url", webUrl);
             ServerLogger.log(Priority.P1, "WEBVIEW_ERROR_RESPONSE", messageMap);
+        }
+
+        private void startSmsListener() {
+            if (getContext() != null && !isSmsRegistered) {
+                smsBroadcastReceiver = new SmsBroadcastReceiver();
+                smsRetriever = SmsRetriever.getClient(getContext());
+                Task<Void> task = smsRetriever.startSmsRetriever();
+                task.addOnSuccessListener(aVoid -> {
+                    isSmsRegistered = true;
+                    if (getActivity() == null) return;
+                    smsBroadcastReceiver.register(getActivity(), otpCode -> {
+                        String currentUrl = webView.getUrl();
+                        if (currentUrl != null && currentUrl.contains(PAYLATER_OTP_VERIF_LINK)) {
+                            String newUrl = Uri.parse(currentUrl).buildUpon()
+                                    .appendQueryParameter(OTP_CODE, otpCode).build().toString();
+
+                            RouteManager.route(getContext(), ApplinkConst.GOTO_KYC_WEBVIEW+URL_PARAM+newUrl);
+                            if (getActivity() != null) {
+                                getActivity().finish();
+                            }
+                        }
+                    });
+                });
+                task.addOnFailureListener(e -> {});
+            }
         }
     }
 

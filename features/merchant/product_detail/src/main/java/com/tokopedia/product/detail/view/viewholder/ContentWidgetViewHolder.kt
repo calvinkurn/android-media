@@ -6,12 +6,12 @@ import com.tokopedia.play.widget.analytic.global.model.PlayWidgetPDPAnalyticMode
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 class ContentWidgetViewHolder(
     view: View,
     private val playWidgetViewHolder: PlayWidgetViewHolder,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<ContentWidgetDataModel>(view) {
 
     companion object {

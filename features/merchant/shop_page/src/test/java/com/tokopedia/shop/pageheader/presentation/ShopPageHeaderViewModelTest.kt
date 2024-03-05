@@ -344,15 +344,13 @@ class ShopPageHeaderViewModelTest {
             null
         )
         shopPageHeaderViewModel.getFollowStatusData(
-            SAMPLE_SHOP_ID,
-            RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL
+            SAMPLE_SHOP_ID
         )
         coVerify { getFollowStatusUseCase.get().executeOnBackground() }
         assert(shopPageHeaderViewModel.followStatusData.value is Success)
 
         shopPageHeaderViewModel.getFollowStatusData(
-            SAMPLE_SHOP_ID,
-            RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG
+            SAMPLE_SHOP_ID
         )
         coVerify { getFollowStatusUseCase.get().executeOnBackground() }
         assert(shopPageHeaderViewModel.followStatusData.value is Success)
@@ -362,7 +360,7 @@ class ShopPageHeaderViewModelTest {
     fun `check whether get follow status is fail`() {
         every { userSessionInterface.isLoggedIn } returns true
         coEvery { getFollowStatusUseCase.get().executeOnBackground() } throws Throwable()
-        shopPageHeaderViewModel.getFollowStatusData(SAMPLE_SHOP_ID, "mock_key")
+        shopPageHeaderViewModel.getFollowStatusData(SAMPLE_SHOP_ID)
         coVerify { getFollowStatusUseCase.get().executeOnBackground() }
         assert(shopPageHeaderViewModel.followStatusData.value is Fail)
     }

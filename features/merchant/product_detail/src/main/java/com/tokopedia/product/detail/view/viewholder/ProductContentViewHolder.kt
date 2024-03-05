@@ -6,14 +6,14 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
 import com.tokopedia.product.detail.view.fragment.partialview.PartialContentView
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 /**
  * Created by Yehezkiel on 06/05/20
  */
 class ProductContentViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<ProductContentDataModel>(view) {
 
     companion object {
@@ -21,7 +21,7 @@ class ProductContentViewHolder(
     }
 
     private val binding = ItemDynamicProductContentBinding.bind(view)
-    private val header = PartialContentView(binding, listener)
+    private val header = PartialContentView(binding)
 
     override fun bind(element: ProductContentDataModel) {
         initializeClickListener(element)
@@ -39,7 +39,6 @@ class ProductContentViewHolder(
         }
 
         header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
-        header.updateUniversalShareWidget(element.shouldShowShareWidget)
     }
 
     override fun bind(element: ProductContentDataModel?, payloads: MutableList<Any>) {
@@ -58,8 +57,6 @@ class ProductContentViewHolder(
                 header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
                 // only triggered when get data from p2, will update with boe/bo imageurl from Restriction Engine p2
                 header.renderFreeOngkir(element.freeOngkirImgUrl, element.data?.isShowPrice == true)
-
-                header.updateUniversalShareWidget(element.shouldShowShareWidget)
             }
         }
         view.addOnImpressionListener(

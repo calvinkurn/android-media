@@ -1,12 +1,10 @@
 package com.tokopedia.discovery2.repository.claimCoupon
 
 import com.tokopedia.basemvvm.repository.BaseRepository
-import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.claim_coupon.ClaimCouponRequest
 import com.tokopedia.discovery2.data.claim_coupon.ClaimCouponResponse
 import com.tokopedia.discovery2.data.claimcoupon.RedeemCouponResponse
 import javax.inject.Inject
-
 
 open class ClaimCouponGQLRepository @Inject constructor(val getGQLString: (Int) -> String) : BaseRepository(), IClaimCouponGqlRepository {
 
@@ -15,9 +13,11 @@ open class ClaimCouponGQLRepository @Inject constructor(val getGQLString: (Int) 
     }
 
     override suspend fun redeemCoupon(mapOf: Map<String, Any>): RedeemCouponResponse {
-        val redeemCouponResponse = getGQLData(mutationRedeemCouponGql,
-            RedeemCouponResponse::class.java, mapOf) as RedeemCouponResponse
-        return redeemCouponResponse
+        return getGQLData(
+            mutationRedeemCouponGql,
+            RedeemCouponResponse::class.java,
+            mapOf
+        )
     }
 
     fun setParams(claimCouponRequest: ClaimCouponRequest): Map<String, Any> {
@@ -29,7 +29,6 @@ open class ClaimCouponGQLRepository @Inject constructor(val getGQLString: (Int) 
 
         return params
     }
-
 
     companion object {
         private const val PARAM_CATEGORY_SLUG = "categorySlug"
@@ -80,10 +79,10 @@ open class ClaimCouponGQLRepository @Inject constructor(val getGQLString: (Int) 
     }
   }
 }
-""".trimIndent()
+        """.trimIndent()
 
-        private val mutationRedeemCouponGql: String = """mutation hachikoRedeem(${'$'}catalogId: Int!, ${'$'}isGift: Int!, ${'$'}giftUserId: Int!, ${'$'}giftEmail: String, ${'$'}notes: String ) {
-  hachikoRedeem(catalog_id: ${'$'}catalogId, is_gift: ${'$'}isGift, gift_user_id: ${'$'}giftUserId, gift_email: ${'$'}giftEmail, notes: ${'$'}notes) {
+        private val mutationRedeemCouponGql: String = """mutation hachikoRedeem(${'$'}catalogId: Int!, ${'$'}isGift: Int!, ${'$'}giftUserId: Int!, ${'$'}giftEmail: String, ${'$'}notes: String, ${'$'}apiVersion: String) {
+  hachikoRedeem(catalog_id: ${'$'}catalogId, is_gift: ${'$'}isGift, gift_user_id: ${'$'}giftUserId, gift_email: ${'$'}giftEmail, notes: ${'$'}notes, apiVersion: ${'$'}apiVersion) {
     coupons{
       id
       owner
@@ -97,10 +96,14 @@ open class ClaimCouponGQLRepository @Inject constructor(val getGQLString: (Int) 
     }
     reward_points
     redeemMessage
+    ctaList {
+      text
+      type
+      isDisabled
+      jsonMetadata
+    }
   }
-}""".trimIndent()
-
+}
+        """.trimIndent()
     }
 }
-
-
