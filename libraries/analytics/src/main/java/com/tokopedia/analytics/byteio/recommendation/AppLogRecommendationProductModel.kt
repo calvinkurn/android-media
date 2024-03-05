@@ -126,7 +126,7 @@ data class AppLogRecommendationProductModel(
             cardName: String = CardName.REC_GOODS_CARD,
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
-                productId = productId,
+                productId = productId.takeIf { it != "0" }.orEmpty(),
                 listName = tabName,
                 listNum = tabPosition.inc(),
                 moduleName = moduleName,
@@ -137,7 +137,7 @@ data class AppLogRecommendationProductModel(
                 recSessionId = recSessionId,
                 recParams = recParams,
                 requestId = requestId,
-                shopId = shopId,
+                shopId = shopId.takeIf { it != "0" }.orEmpty(),
                 itemOrder = position.inc(),
                 entranceForm = entranceForm.str,
                 volume = volume,
@@ -145,8 +145,8 @@ data class AppLogRecommendationProductModel(
                 originalPrice = originalPrice,
                 salesPrice = salesPrice,
                 enterMethod = enterMethod,
-                authorId = authorId,
-                groupId = groupId,
+                authorId = authorId.takeIf { it != "0" }.orEmpty(),
+                groupId = groupId.takeIf { it != "0" }.orEmpty(),
                 cardName = if(cardName == CardName.REC_GOODS_CARD) {
                     if(isAd) CardName.AD_GOODS_CARD
                     else CardName.REC_GOODS_CARD

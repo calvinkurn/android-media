@@ -103,7 +103,7 @@ data class AppLogRecommendationCardModel(
         ): AppLogRecommendationCardModel {
             return AppLogRecommendationCardModel(
                 cardName = cardName,
-                productId = productId,
+                productId = productId.takeIf { it != "0" }.orEmpty(),
                 listName = tabName,
                 listNum = tabPosition.inc(),
                 moduleName = moduleName,
@@ -114,8 +114,8 @@ data class AppLogRecommendationCardModel(
                 recSessionId = recSessionId,
                 recParams = recParams,
                 requestId = requestId,
-                shopId = shopId,
-                groupId = groupId,
+                shopId = shopId.takeIf { it != "0" }.orEmpty(),
+                groupId = groupId.takeIf { it != "0" }.orEmpty(),
                 itemOrder = position.inc(),
                 entranceForm = entranceForm.str,
                 volume = volume,
