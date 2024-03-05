@@ -122,8 +122,8 @@ object AppLogAnalytics {
         put(ENTRANCE_FORM, getLastData(ENTRANCE_FORM))
     }
 
-    internal fun JSONObject.addEntranceInfo() {
-        val data = JSONObject().also {
+    private fun generateEntranceInfoJson(): JSONObject {
+        return JSONObject().also {
             it.put(ENTER_FROM_INFO, getLastData(ENTER_FROM))
             it.addEntranceForm()
             it.addSourcePageType()
@@ -137,7 +137,10 @@ object AppLogAnalytics {
             it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
             it.put(LIST_ITEM_ID, getLastData(LIST_ITEM_ID))
         }
-        put(ENTRANCE_INFO, data)
+    }
+
+    internal fun JSONObject.addEntranceInfo() {
+        put(ENTRANCE_INFO, generateEntranceInfoJson())
     }
 
     internal fun JSONObject.addEntranceInfoCart() {
@@ -367,7 +370,7 @@ object AppLogAnalytics {
 
     fun getEntranceInfo(buyType: AtcBuyType): String {
         return JSONObject().also {
-            it.addEntranceInfo()
+            it.put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
             it.put("buy_type", buyType.code)
         }.toString()
     }
