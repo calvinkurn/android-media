@@ -2,7 +2,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mas
 
 import android.content.res.Resources
 import android.os.SystemClock
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -66,7 +65,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         }
         lastClickTime = 0L
         initView()
-        trackShowProductCard()
     }
 
     private fun initView() {
@@ -172,6 +170,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 lifecycle,
                 Observer { data ->
                     dataItem = data
+                    trackShowProductCard(data)
                 }
             )
             masterProductCardItemViewModel?.getProductModelValue()?.observe(
@@ -382,7 +381,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         if(isEligibleToTrack()) {
             dataItem?.let {
                 AppLogRecommendation.sendProductClickAppLog(
-                    it.asProductTrackModel(bindingAdapterPosition, productCardName)
+                    it.asProductTrackModel(productCardName)
                 )
             }
         }
@@ -422,23 +421,19 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         }
     }
 
-    private fun trackShowProductCard() {
-        dataItem?.let {
-            masterProductCardGridView?.addOnImpression1pxListener(it.appLogImpressHolder) {
-                if(isEligibleToTrack()) {
-                    Log.d("byteio", "trackShowProductCard: show")
-                    AppLogRecommendation.sendProductShowAppLog(
-                        it.asProductTrackModel(bindingAdapterPosition, productCardName)
-                    )
-                }
+    private fun trackShowProductCard(dataItem: DataItem) {
+        masterProductCardGridView?.addOnImpression1pxListener(dataItem.appLogImpressHolder) {
+            if(isEligibleToTrack()) {
+                AppLogRecommendation.sendProductShowAppLog(
+                    dataItem.asProductTrackModel(productCardName)
+                )
             }
-            masterProductCardListView?.addOnImpression1pxListener(it.appLogImpressHolder) {
-                if(isEligibleToTrack()) {
-                    Log.d("byteio", "trackShowProductCard: show")
-                    AppLogRecommendation.sendProductShowAppLog(
-                        it.asProductTrackModel(bindingAdapterPosition, productCardName)
-                    )
-                }
+        }
+        masterProductCardListView?.addOnImpression1pxListener(dataItem.appLogImpressHolder) {
+            if(isEligibleToTrack()) {
+                AppLogRecommendation.sendProductShowAppLog(
+                    dataItem.asProductTrackModel(productCardName)
+                )
             }
         }
     }
@@ -526,8 +521,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     override fun isEligibleToTrack(): Boolean {
-        val byteio =  dataItem?.isEligibleToTrack().orFalse()
-        Log.d("byteio", "isEligibleToTrack: ${byteio}")
-        return byteio
+        return dataItem?.isEligibleToTrack().orFalse()
     }
 }

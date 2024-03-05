@@ -652,7 +652,9 @@ data class DataItem(
     var typeProductHighlightComponentCard: String? = "",
 
     @SerializedName("warehouse_id")
-    var warehouseId: Long? = null
+    var warehouseId: Long? = null,
+
+    var itemPosition: Int = 0,
 ) {
     val leftMargin: Int
         get() {

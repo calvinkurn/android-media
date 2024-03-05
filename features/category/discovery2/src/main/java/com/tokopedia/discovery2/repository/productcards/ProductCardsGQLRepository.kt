@@ -248,7 +248,8 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
         source: ComponentSourceData,
     ) {
         tracker?.let { componentTracker ->
-            this?.forEach { dataItem ->
+            this?.forEachIndexed { index, dataItem ->
+                dataItem.itemPosition = index
                 dataItem.setAppLog(componentTracker)
                 dataItem.source = source
             }

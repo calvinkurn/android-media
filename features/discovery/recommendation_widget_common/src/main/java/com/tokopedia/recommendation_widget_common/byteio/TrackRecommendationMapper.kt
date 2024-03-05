@@ -14,14 +14,12 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.B
 
 object TrackRecommendationMapper {
     fun RecommendationCardModel.asProductTrackModel(
-        isCache: Boolean = false,
-        tabName: String,
-        tabPosition: Int,
+        isCache: Boolean = false
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = recommendationProductItem.id,
             tabName = tabName,
-            tabPosition = tabPosition,
+            tabPosition = tabIndex.inc(),
             moduleName = pageName,
             isAd = productCardModel.isTopAds,
             isUseCache = isCache,
@@ -49,14 +47,12 @@ object TrackRecommendationMapper {
 
     fun BannerTopAdsModel.asCardTrackModel(
         isCache: Boolean = false,
-        tabName: String,
-        tabPosition: Int,
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardId = cardId,
             cardName = CardName.AD_FEED_CARD,
             tabName = tabName,
-            tabPosition = tabPosition,
+            tabPosition = tabIndex.inc(),
             moduleName = pageName,
             isAd = !topAdsImageViewModel?.adViewUrl.isNullOrEmpty() && !topAdsImageViewModel?.adClickUrl.isNullOrEmpty(),
             isUseCache = isCache,
@@ -71,14 +67,12 @@ object TrackRecommendationMapper {
 
     fun ContentCardModel.asCardTrackModel(
         isCache: Boolean = false,
-        tabName: String,
-        tabPosition: Int,
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardId = id,
             cardName = CardName.REC_CONTENT_CARD.format(layoutItem),
             tabName = tabName,
-            tabPosition = tabPosition,
+            tabPosition = tabIndex.inc(),
             moduleName = pageName,
             isAd = isAds,
             isUseCache = isCache,
@@ -93,13 +87,11 @@ object TrackRecommendationMapper {
 
     fun PlayCardModel.asCardTrackModel(
         isCache: Boolean = false,
-        tabName: String,
-        tabPosition: Int,
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardName = CardName.REC_VIDEO_CARD,
             tabName = tabName,
-            tabPosition = tabPosition,
+            tabPosition = tabIndex,
             moduleName = pageName,
             isAd = isAds,
             isUseCache = isCache,

@@ -479,10 +479,7 @@ class HomeRecommendationFragment :
 
     override fun onProductCardImpressed(model: RecommendationCardModel, position: Int) {
         sendProductShowAppLog(
-            model.asProductTrackModel(
-                tabName = tabName,
-                tabPosition = tabIndex,
-            )
+            model.asProductTrackModel()
         )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
@@ -532,10 +529,7 @@ class HomeRecommendationFragment :
 
     override fun onProductCardClicked(model: RecommendationCardModel, position: Int) {
         sendProductClickAppLog(
-            model.asProductTrackModel(
-                tabName = tabName,
-                tabPosition = tabIndex,
-            )
+            model.asProductTrackModel()
         )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
@@ -626,10 +620,7 @@ class HomeRecommendationFragment :
 
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
         sendCardClickAppLog(
-            model.asCardTrackModel(
-                tabName = tabName,
-                tabPosition = tabIndex,
-            )
+            model.asCardTrackModel()
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
@@ -656,10 +647,7 @@ class HomeRecommendationFragment :
 
     override fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int) {
         sendCardShowAppLog(
-            model.asCardTrackModel(
-                tabName = tabName,
-                tabPosition = tabIndex,
-            )
+            model.asCardTrackModel()
         )
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
@@ -680,10 +668,7 @@ class HomeRecommendationFragment :
 
     override fun onContentCardImpressed(item: ContentCardModel, position: Int) {
         sendCardShowAppLog(
-            item.asCardTrackModel(
-                tabName = tabName,
-                tabPosition = tabIndex,
-            )
+            item.asCardTrackModel()
         )
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressEntityCardTracking(
@@ -696,10 +681,7 @@ class HomeRecommendationFragment :
 
     override fun onContentCardClicked(item: ContentCardModel, position: Int) {
         sendCardClickAppLog(
-            item.asCardTrackModel(
-                tabName = tabName,
-                tabPosition = tabIndex,
-            )
+            item.asCardTrackModel()
         )
         HomeRecommendationTracking.sendClickEntityCardTracking(
             item,
