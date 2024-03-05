@@ -43,6 +43,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.delay
+import timber.log.Timber
 import java.lang.Exception
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
@@ -214,7 +215,7 @@ fun ProductTagItems(
                 delay(5000L)
                 isHighlightVisible = true
                 highlightedProduct?.let { impressHighlight.invoke(it) }
-            } catch (e: Exception) {}
+            } catch (e: Exception) { Timber.d(e) }
         }
     }
 
