@@ -148,6 +148,15 @@ data class RecommendationCard(
             isWishlist = isWishlist,
             wishListUrl = wishlistUrl,
             countSold = countSold,
+            shop = RecommendationCardModel.ProductItem.Shop(
+                id = shop.id,
+                city = shop.city,
+                applink = shop.applink,
+                domain = shop.domain,
+                imageUrl = shop.imageUrl,
+                name = shop.name,
+                reputation = shop.reputation,
+            )
         )
     }
 
