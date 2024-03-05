@@ -158,7 +158,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
     companion object {
         private val TAG = ActivityTranslatorCallbacks::class.java.simpleName
 
-        private const val DELAYING_SCROLL_TO_IDLE = 500L
+        private const val DELAYING_SCROLL_TO_IDLE = 300L
     }
 
     internal inner class FragmentTranslatorCallbacks : FragmentManager.FragmentLifecycleCallbacks() {
