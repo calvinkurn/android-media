@@ -56,6 +56,7 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 voucherStatusFormatted = voucherStatusFormatted,
                 voucherDiscountTypeFormatted = voucherDiscountTypeFormatted,
                 voucherDiscountAmountFormatted = voucherDiscountAmountFormatted,
+                voucherDiscountAmountDecimalFormatted = voucherDiscountAmountDecimalFormatted,
                 voucherDiscountAmountMaxFormatted = voucherDiscountAmountMaxFormatted,
                 remainingQuota = remainingQuota,
                 tnc = tnc,
@@ -118,7 +119,8 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 VoucherDetailData.LabelVoucher.LabelBudgetVoucher(
                     labelBudgetVoucherFormatted = it.labelBudgetVoucherFormatted,
                     labelBudgetVoucher = it.labelBudgetVoucher,
-                    labelBudgetVoucherValue = it.labelBudgetVoucherValue
+                    labelBudgetVoucherValue = it.labelBudgetVoucherValue,
+                    labelBudgetVoucherValueDecimal = it.labelBudgetVoucherDecimalValue
                 )
             }
         )
