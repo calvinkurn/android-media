@@ -18,4 +18,6 @@ class ProductWebViewFragment : BaseWebViewFragment() {
         val url = arguments?.getString(ARG_URL) ?: ""
         webView?.loadUrl(url)
     }
+
+    override fun getUrl() = arguments?.getString(ARG_URL) ?: ""
 }

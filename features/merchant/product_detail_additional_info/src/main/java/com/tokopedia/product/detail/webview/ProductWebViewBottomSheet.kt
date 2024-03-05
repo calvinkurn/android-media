@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import com.tokopedia.product.detail.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.webview.TkpdWebView
 
 class ProductWebViewBottomSheet : BottomSheetUnify() {
     companion object {
@@ -37,7 +37,6 @@ class ProductWebViewBottomSheet : BottomSheetUnify() {
         val arguments = arguments ?: return
         val title = arguments.getString(ARG_TITLE) ?: ""
 
-
         clearContentPadding = true
         isFullpage = true
         setTitle(title)
@@ -47,10 +46,19 @@ class ProductWebViewBottomSheet : BottomSheetUnify() {
 
         val fragment = ProductWebViewFragment.getInstance(arguments)
         childFragmentManager.beginTransaction().replace(
-            R.id.pdp_frame_container,
+            R.id.pdp_webbs_container,
             fragment
         ).commit()
-        // User Agent Override ke: "Tokopedia Webview - Liteapp"
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val confirmButton = view.findViewById<View>(R.id.pdp_webbs_button_oke)
+        confirmButton.setOnClickListener { dismiss() }
+        confirmButton.post {
+            val webViewContainer = view.findViewById<View>(R.id.pdp_webbs_container)
+            webViewContainer.updatePadding(bottom = confirmButton.height)
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
