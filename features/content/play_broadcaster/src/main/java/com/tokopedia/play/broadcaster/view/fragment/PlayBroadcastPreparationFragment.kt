@@ -441,7 +441,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setupListener(object : PlayBroLiveToVodBottomSheet.Listener {
                     override fun onButtonActionPressed() {
                         parentViewModel.submitAction(
-                            PlayBroadcastAction.SetLiveToVodPref(
+                            PlayBroadcastAction.SetDynamicTickerBottomSheetPref(
                                 type = TickerBottomSheetType.BOTTOM_SHEET
                             )
                         )

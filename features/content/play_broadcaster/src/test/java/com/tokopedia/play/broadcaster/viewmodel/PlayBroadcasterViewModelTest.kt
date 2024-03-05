@@ -954,7 +954,7 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetTickerBottomSheetConfig(
+                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
                     TickerBottomSheetPage.LIVE_PREPARATION
                 ))
             }
@@ -993,7 +993,7 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetTickerBottomSheetConfig(
+                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
                     TickerBottomSheetPage.LIVE_PREPARATION
                 ))
             }
@@ -1032,7 +1032,7 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetTickerBottomSheetConfig(
+                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
                     TickerBottomSheetPage.LIVE_PREPARATION
                 ))
             }
@@ -1071,7 +1071,7 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetTickerBottomSheetConfig(
+                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
                     TickerBottomSheetPage.LIVE_PREPARATION
                 ))
             }
@@ -1110,7 +1110,7 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetTickerBottomSheetConfig(
+                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
                     TickerBottomSheetPage.LIVE_REPORT
                 ))
             }
@@ -1149,7 +1149,7 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetTickerBottomSheetConfig(
+                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
                     TickerBottomSheetPage.LIVE_REPORT
                 ))
             }
@@ -1185,7 +1185,7 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetTickerBottomSheetConfig(
+                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
                     TickerBottomSheetPage.LIVE_REPORT
                 ))
             }
@@ -1221,7 +1221,7 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                it.getViewModel().submitAction(PlayBroadcastAction.GetTickerBottomSheetConfig(
+                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
                     TickerBottomSheetPage.LIVE_REPORT
                 ))
             }
@@ -1260,7 +1260,7 @@ class PlayBroadcasterViewModelTest {
         )
 
         robot.use {
-            it.getViewModel().submitAction(PlayBroadcastAction.SetLiveToVodPref(type = type))
+            it.getViewModel().submitAction(PlayBroadcastAction.SetDynamicTickerBottomSheetPref(type = type))
             mockHydraSharedPreferences.getDynamicBottomSheetPref(
                 key = responseMock.cacheKey
             ).assertEqualTo(false)
@@ -1295,7 +1295,7 @@ class PlayBroadcasterViewModelTest {
         )
 
         robot.use {
-            it.getViewModel().submitAction(PlayBroadcastAction.SetLiveToVodPref(type = type))
+            it.getViewModel().submitAction(PlayBroadcastAction.SetDynamicTickerBottomSheetPref(type = type))
             mockHydraSharedPreferences.getDynamicTickerPref(
                 key = responseMock.cacheKey
             ).assertEqualTo(false)

@@ -31,8 +31,8 @@ sealed interface PlayBroadcastAction {
     data class GetConfiguration(val selectedType: String = TYPE_UNKNOWN) : PlayBroadcastAction
     data class SwitchAccount(val needLoading: Boolean = true) : PlayBroadcastAction
 
-    data class GetTickerBottomSheetConfig(val page: TickerBottomSheetPage) : PlayBroadcastAction
-    data class SetLiveToVodPref(val type: TickerBottomSheetType) : PlayBroadcastAction
+    data class GetDynamicTickerBottomSheetConfig(val page: TickerBottomSheetPage) : PlayBroadcastAction
+    data class SetDynamicTickerBottomSheetPref(val type: TickerBottomSheetType) : PlayBroadcastAction
 
     /** Game */
     data class ClickGameOption(val gameType: GameType) : PlayBroadcastAction

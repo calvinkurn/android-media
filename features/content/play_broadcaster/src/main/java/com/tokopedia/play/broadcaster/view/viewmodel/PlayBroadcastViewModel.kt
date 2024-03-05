@@ -572,8 +572,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.GetConfiguration -> handleGetConfiguration(event.selectedType)
             is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.needLoading)
             is PlayBroadcastAction.SuccessOnBoardingUGC -> handleSuccessOnBoardingUGC()
-            is PlayBroadcastAction.GetTickerBottomSheetConfig -> handleTickerBottomSheetConfig(event.page)
-            is PlayBroadcastAction.SetLiveToVodPref -> handleSetLiveToVodPref(type = event.type)
+            is PlayBroadcastAction.GetDynamicTickerBottomSheetConfig -> handleGetDynamicTickerBottomSheetConfig(event.page)
+            is PlayBroadcastAction.SetDynamicTickerBottomSheetPref -> handleSetDynamicTickerBottomSheetPref(type = event.type)
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -757,7 +757,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (configUiModel.channelStatus == ChannelStatus.Draft ||
                 configUiModel.channelStatus == ChannelStatus.CompleteDraft
             ) {
-                handleTickerBottomSheetConfig(page = TickerBottomSheetPage.LIVE_PREPARATION)
+                handleGetDynamicTickerBottomSheetConfig(page = TickerBottomSheetPage.LIVE_PREPARATION)
             }
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcasterAuthorConfig(selectedAccount) }
@@ -852,7 +852,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) { }
     }
 
-    private fun handleTickerBottomSheetConfig(page: TickerBottomSheetPage) {
+    private fun handleGetDynamicTickerBottomSheetConfig(page: TickerBottomSheetPage) {
         viewModelScope.launchCatchError(block = {
             val response = repo.getTickerBottomSheetConfig(GetTickerBottomSheetRequest(page))
             val cacheKey = response.cacheKey.ifBlank { return@launchCatchError }
@@ -872,7 +872,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleSetLiveToVodPref(type: TickerBottomSheetType) {
+    private fun handleSetDynamicTickerBottomSheetPref(type: TickerBottomSheetType) {
         when (type) {
             TickerBottomSheetType.BOTTOM_SHEET -> {
                 sharedPref.setDynamicBottomSheetPref(
