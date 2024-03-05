@@ -39,6 +39,7 @@ import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
 import com.tokopedia.analytics.byteio.addVerticalTrackListener
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
@@ -5059,7 +5060,7 @@ open class ProductDetailFragment :
                         price = data.finalPrice.toString()
                         userId = viewModel.userId
                         shopName = data.basic.shopName
-                        trackerData = AppLogAnalytics.getEntranceInfo("none")
+                        trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.OCS)
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
@@ -5080,7 +5081,7 @@ open class ProductDetailFragment :
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
                         userId = viewModel.userId
-                        trackerData = AppLogAnalytics.getEntranceInfo("none")
+                        trackerData = AppLogAnalytics.getEntranceInfo(AtcBuyType.ATC)
                     }
                     viewModel.addToCart(addToCartRequestParams)
                 }

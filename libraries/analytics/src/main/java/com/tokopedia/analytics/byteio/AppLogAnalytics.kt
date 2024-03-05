@@ -20,6 +20,7 @@ import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_KEY
 import com.tokopedia.analytics.byteio.Constants.EVENT_ORIGIN_FEATURE_VALUE
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ENTER_METHOD
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.LIST_ITEM_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
@@ -360,10 +361,10 @@ object AppLogAnalytics {
         return takeLast(5).joinToString("\n")
     }
 
-    fun getEntranceInfo(buyType: String): String {
+    fun getEntranceInfo(buyType: AtcBuyType): String {
         return JSONObject().also {
             it.addEntranceInfo()
-            it.put("buy_type", buyType) // todo
+            it.put("buy_type", buyType.code)
         }.toString()
     }
 
