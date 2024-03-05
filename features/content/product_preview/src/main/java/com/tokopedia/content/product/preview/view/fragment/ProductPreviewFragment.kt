@@ -39,7 +39,7 @@ import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTa
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
-import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
+import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewUiEvent
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -240,19 +240,19 @@ class ProductPreviewFragment @Inject constructor(
                 Lifecycle.State.RESUMED
             ).collect {
                 when (val event = it) {
-                    is ProductPreviewEvent.LoginEvent<*> -> {
+                    is ProductPreviewUiEvent.LoginUiEvent<*> -> {
                         val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
                         when (event.data) {
                             is BottomNavUiModel -> productAtcResult.launch(intent)
                         }
                     }
 
-                    is ProductPreviewEvent.NavigateEvent -> router.route(
+                    is ProductPreviewUiEvent.NavigateUiEvent -> router.route(
                         requireContext(),
                         event.appLink
                     )
-                    is ProductPreviewEvent.ShowSuccessToaster -> {
-                        val isAtc = event.type == ProductPreviewEvent.ShowSuccessToaster.Type.ATC
+                    is ProductPreviewUiEvent.ShowSuccessToaster -> {
+                        val isAtc = event.type == ProductPreviewUiEvent.ShowSuccessToaster.Type.ATC
                         Toaster.build(
                             requireView().rootView,
                             text = getString(event.type.textRes),
@@ -266,8 +266,8 @@ class ProductPreviewFragment @Inject constructor(
                         ).show()
                     }
 
-                    is ProductPreviewEvent.ShowErrorToaster -> {
-                        if (event.type == ProductPreviewEvent.ShowErrorToaster.Type.Report) return@collect
+                    is ProductPreviewUiEvent.ShowErrorToaster -> {
+                        if (event.type == ProductPreviewUiEvent.ShowErrorToaster.Type.Report) return@collect
                         Toaster.build(
                             requireView().rootView,
                             text = event.message.message.ifNull { getString(event.type.textRes) },
@@ -279,10 +279,10 @@ class ProductPreviewFragment @Inject constructor(
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
-                    is ProductPreviewEvent.FailFetchMiniInfo -> {
+                    is ProductPreviewUiEvent.FailFetchMiniInfo -> {
                         binding.viewFooter.gone()
                     }
-                    is ProductPreviewEvent.UnknownSourceData -> activity?.finish()
+                    is ProductPreviewUiEvent.UnknownSourceData -> activity?.finish()
                     else -> return@collect
                 }
             }

@@ -46,6 +46,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
 
     implementation projectOrAar(rootProject.ext.features.contentAnalytic)
+    implementation projectOrAar(rootProject.ext.features.contentTest)
     implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.medialoader)
@@ -80,6 +81,12 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.unifyDependencies.nestComponents
     implementation rootProject.ext.unifyDependencies.nestPrinciples
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 }
 
 

@@ -5,7 +5,7 @@ import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTa
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
 
-data class ProductReviewUiState(
+data class ProductPreviewUiState(
     val tabsUiModel: ProductPreviewTabUiModel = ProductPreviewTabUiModel.Empty,
     val productUiModel: ProductUiModel = ProductUiModel.Empty,
     val reviewUiModel: ReviewUiModel = ReviewUiModel.Empty,

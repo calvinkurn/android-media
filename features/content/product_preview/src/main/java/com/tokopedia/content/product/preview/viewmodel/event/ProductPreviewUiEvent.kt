@@ -7,12 +7,12 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatu
 /**
  * @author by astidhiyaa on 12/12/23
  */
-sealed interface ProductPreviewEvent {
-    data class LoginEvent<T>(val data: T) : ProductPreviewEvent
+sealed interface ProductPreviewUiEvent {
+    data class LoginUiEvent<T>(val data: T) : ProductPreviewUiEvent
     data class ShowSuccessToaster(
         val message: Int? = null,
         val type: Type
-    ) : ProductPreviewEvent {
+    ) : ProductPreviewUiEvent {
         enum class Type(val textRes: Int) {
             ATC(R.string.bottom_atc_success_toaster), Remind(R.string.bottom_wishlist_toaster), Report(
                 R.string.review_report_success_toaster
@@ -25,7 +25,7 @@ sealed interface ProductPreviewEvent {
         val message: Throwable,
         val type: Type = Type.Unknown,
         val onClick: () -> Unit
-    ) : ProductPreviewEvent {
+    ) : ProductPreviewUiEvent {
         enum class Type(val textRes: Int) {
             ATC(R.string.bottom_atc_failed_toaster), Report(R.string.review_report_failed_toaster), Unknown(
                 0
@@ -33,21 +33,21 @@ sealed interface ProductPreviewEvent {
         }
     }
 
-    data class NavigateEvent(
+    data class NavigateUiEvent(
         val appLink: String
-    ) : ProductPreviewEvent
+    ) : ProductPreviewUiEvent
 
     data class ShowMenuSheet(
         val status: ReviewMenuStatus
-    ) : ProductPreviewEvent
+    ) : ProductPreviewUiEvent
 
     data class LikeUpdate(
         val state: ReviewLikeUiState
-    ) : ProductPreviewEvent
+    ) : ProductPreviewUiEvent
 
     data class FailFetchMiniInfo(
         val message: Throwable
-    ) : ProductPreviewEvent
+    ) : ProductPreviewUiEvent
 
-    object UnknownSourceData : ProductPreviewEvent
+    object UnknownSourceData : ProductPreviewUiEvent
 }

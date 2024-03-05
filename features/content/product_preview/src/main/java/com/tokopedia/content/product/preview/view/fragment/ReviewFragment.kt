@@ -43,7 +43,7 @@ import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiM
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
-import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
+import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewUiEvent
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.ifNull
@@ -187,7 +187,7 @@ class ReviewFragment @Inject constructor(
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
                 .collect {
                     when (val event = it) {
-                        is ProductPreviewEvent.ShowMenuSheet -> {
+                        is ProductPreviewUiEvent.ShowMenuSheet -> {
                             MenuBottomSheet.getOrCreate(
                                 childFragmentManager,
                                 requireActivity().classLoader
@@ -196,18 +196,18 @@ class ReviewFragment @Inject constructor(
                             }.show(childFragmentManager)
                         }
 
-                        is ProductPreviewEvent.LoginEvent<*> -> {
+                        is ProductPreviewUiEvent.LoginUiEvent<*> -> {
                             when (event.data) {
                                 is ReviewMenuStatus -> menuResult.launch(Unit)
                                 is ReviewLikeUiState -> likeResult.launch(Unit)
                             }
                         }
 
-                        is ProductPreviewEvent.ShowSuccessToaster -> {
-                            if (event.type == ProductPreviewEvent.ShowSuccessToaster.Type.Report) dismissSheets()
+                        is ProductPreviewUiEvent.ShowSuccessToaster -> {
+                            if (event.type == ProductPreviewUiEvent.ShowSuccessToaster.Type.Report) dismissSheets()
                         }
 
-                        is ProductPreviewEvent.ShowErrorToaster -> {
+                        is ProductPreviewUiEvent.ShowErrorToaster -> {
                             val view = ReviewReportBottomSheet.get(childFragmentManager)?.view?.rootView ?: requireView().rootView
                             Toaster.build(
                                 view ?: return@collect,
