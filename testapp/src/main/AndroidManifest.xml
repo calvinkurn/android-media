@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 
     <application
-        android:name="com.tokopedia.application.MyApplication"
+        android:name="com.tokopedia.tkpd.application.MyApplication"
         android:allowBackup="false"
         android:label="@string/testapp_name"
         android:networkSecurityConfig="@xml/network_security_config"

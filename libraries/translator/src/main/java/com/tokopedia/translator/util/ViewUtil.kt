@@ -14,56 +14,50 @@
 package com.tokopedia.translator.util
 
 import android.app.Activity
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 internal object ViewUtil {
 
-    suspend fun getChildren(viewGroup: View?): List<View?> {
-        return withContext(Dispatchers.Default) {
-            sequence {
+    suspend fun getChildren(viewGroup: View?): List<TextView> = coroutineScope {
+        sequence {
+            val unTraversedViews = ArrayDeque<View>()
 
-                val unTraversedViews = ArrayDeque<View>()
+            viewGroup?.let {
 
-                viewGroup?.let {
-                    unTraversedViews.add(it)
-                    while (unTraversedViews.isNotEmpty()) {
-                        val child = unTraversedViews.pop()
+                unTraversedViews.add(it)
+                while (unTraversedViews.isNotEmpty()) {
+                    val child = unTraversedViews.poll()
 
+                    if (child is TextView) {
                         yield(child)
+                    }
 
-                        if (child is ViewGroup) {
-                            for (counter in 0 until child.childCount) {
-                                unTraversedViews.add(child.getChildAt(counter))
-                            }
+                    if (child is ViewGroup) {
+                        for (counter in 0 until child.childCount) {
+                            unTraversedViews.add(child.getChildAt(counter))
                         }
                     }
                 }
-            }.toList()
-        }
+            }
+        }.toList()
     }
 
-    fun getChildrenViews(viewGroup: View?): List<TextView> {
+    suspend fun getChildrenViews(viewGroup: View?): List<TextView> = coroutineScope {
         val traversedViews = mutableSetOf<TextView>()
 
         viewGroup?.let {
             traverseChildrenViews(it, traversedViews)
         }
 
-        return traversedViews.toList()
+        traversedViews.toList()
     }
 
     private fun traverseChildrenViews(
@@ -71,7 +65,7 @@ internal object ViewUtil {
         traversedViews: MutableSet<TextView>
     ) {
 
-        if (viewGroup is TextView) {
+        if (viewGroup is Typography) {
             traversedViews.add(viewGroup)
         }
 

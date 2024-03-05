@@ -79,6 +79,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
 
                 onDestLanguageChangedAsFlow(activity)
                     .collect {
+                        translatorManager?.destinationLang = it
                         translatorManager?.startTranslate()
                     }
             }
