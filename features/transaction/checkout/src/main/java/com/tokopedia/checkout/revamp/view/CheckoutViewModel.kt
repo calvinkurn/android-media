@@ -1630,6 +1630,7 @@ class CheckoutViewModel @Inject constructor(
             isTradeInByDropOff
         )
         newItems = getEntryPointInfo(newItems, checkoutItems)
+        newItems = checkCrossSellImpressionState(newItems)
         listData.value = newItems
         calculateTotal()
         sendEEStep3()
@@ -2365,6 +2366,17 @@ class CheckoutViewModel @Inject constructor(
                 isReloadAfterPriceChangeHigher = false
             )
         }
+    }
+
+    private fun checkCrossSellImpressionState(newItems: List<CheckoutItem>): List<CheckoutItem> {
+        // workaround racing condition between set impression state & get promo entry point
+        val checkoutItems = newItems.toMutableList()
+        val crossSellGroup = checkoutItems.crossSellGroup() ?: return newItems
+        val originalCrossSellGroup = listData.value.crossSellGroup() ?: return newItems
+        if (crossSellGroup.shouldTriggerScrollInteraction != originalCrossSellGroup.shouldTriggerScrollInteraction) {
+            checkoutItems[checkoutItems.size - CROSS_SELL_INDEX_FROM_BOTTOM] = crossSellGroup.copy(shouldTriggerScrollInteraction = originalCrossSellGroup.shouldTriggerScrollInteraction)
+        }
+        return checkoutItems
     }
 
     fun updateCrossSell(checked: Boolean) {
