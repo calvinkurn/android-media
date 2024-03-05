@@ -23,7 +23,7 @@ object TrackShopRecommendationMapper {
             rate = rating.toFloat(),
             originalPrice = originalPrice.toFloatOrZero(),
             salesPrice = displayedPrice.toFloatOrZero(),
-            volume = 0 //TODO
+            volume = 0, //TODO
         )
     }
 }

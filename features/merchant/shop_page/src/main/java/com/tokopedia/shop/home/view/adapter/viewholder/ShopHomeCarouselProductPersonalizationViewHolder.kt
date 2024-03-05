@@ -211,7 +211,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
                 }
                 AppLogRecommendation.sendProductClickAppLog(
                     productItem.asProductTrackModel(
-                        bindingAdapterPosition
+                        carouselProductCardPosition
                     )
                 )
             }
