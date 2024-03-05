@@ -76,7 +76,7 @@ import org.json.JSONObject
 
 object AppLogSearch {
 
-    val whitelistedEnterFromAutoComplete = listOf(GOODS_SEARCH, STORE_SEARCH, PageName.HOME)
+    private val whitelistedEnterFrom = listOf(GOODS_SEARCH, STORE_SEARCH, PageName.HOME)
 
     object Event {
         const val SHOW_SEARCH = "show_search"
@@ -176,11 +176,19 @@ object AppLogSearch {
         AppLogAnalytics.send(
             SHOW_SEARCH, JSONObject(
                 mapOf(
-                    SEARCH_ENTRANCE to if (currentPageName == "/") HOMEPAGE else "",
-                    ENTER_FROM to if (currentPageName == "/") HOMEPAGE else "",
+                    SEARCH_ENTRANCE to searchEntrance(),
+                    ENTER_FROM to if (currentPageName == "/") PageName.HOME else "",
                 )
             )
         )
+    }
+
+    private fun searchEntrance(): String {
+        val firstPageName =
+            AppLogAnalytics.pageDataList.firstNotNullOfOrNull { it[PAGE_NAME]?.toString() }
+
+        return if (firstPageName == PageName.HOME) firstPageName
+        else ""
     }
 
     data class TrendingWords(
@@ -196,7 +204,7 @@ object AppLogSearch {
             WORDS_POSITION to index,
             WORDS_CONTENT to content,
             SEARCH_POSITION to HOMEPAGE,
-            SEARCH_ENTRANCE to HOMEPAGE,
+            SEARCH_ENTRANCE to searchEntrance(),
             GROUP_ID to groupId,
             IMPR_ID to imprId,
         )
@@ -262,7 +270,7 @@ object AppLogSearch {
                 mapOf(
                     ENTER_FROM to enterFrom,
                     ENTER_METHOD to enterMethod,
-                    SEARCH_ENTRANCE to HOMEPAGE,
+                    SEARCH_ENTRANCE to searchEntrance(),
                 )
             )
         )
@@ -279,7 +287,7 @@ object AppLogSearch {
         fun json() = JSONObject(
             mapOf(
                 SEARCH_POSITION to enterFrom(),
-                SEARCH_ENTRANCE to HOMEPAGE,
+                SEARCH_ENTRANCE to searchEntrance(),
                 IMPR_ID to imprId,
                 NEW_SUG_SESSION_ID to newSugSessionId,
                 RAW_QUERY to rawQuery,
@@ -308,7 +316,7 @@ object AppLogSearch {
         fun json() = JSONObject(
             mapOf(
                 SEARCH_POSITION to enterFrom(),
-                SEARCH_ENTRANCE to HOMEPAGE,
+                SEARCH_ENTRANCE to searchEntrance(),
                 GROUP_ID to groupId,
                 IMPR_ID to imprId,
                 NEW_SUG_SESSION_ID to newSugSessionId,
@@ -357,7 +365,7 @@ object AppLogSearch {
             buildMap {
                 put(IMPR_ID, imprId)
                 put(SEARCH_ID, searchId)
-                put(SEARCH_ENTRANCE, HOMEPAGE)
+                put(SEARCH_ENTRANCE, searchEntrance())
                 put(ENTER_FROM, GOODS_SEARCH)
                 put(SEARCH_RESULT_ID, searchResultId)
                 listItemId?.let { put(LIST_ITEM_ID, it) }
@@ -378,10 +386,8 @@ object AppLogSearch {
     fun enterFrom(): String {
         val actualEnterFrom = AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM)?.toString() ?: ""
 
-        return if (whitelistedEnterFromAutoComplete.contains(actualEnterFrom)) {
-            if (actualEnterFrom == PageName.HOME) HOMEPAGE
-            else actualEnterFrom
-        } else ""
+        return if (whitelistedEnterFrom.contains(actualEnterFrom)) actualEnterFrom
+        else ""
     }
 
     fun eventSearchResultShow(searchResult: SearchResult) {
@@ -403,7 +409,7 @@ object AppLogSearch {
     ) {
 
         fun json() = JSONObject(buildMap {
-            put(SEARCH_ENTRANCE, HOMEPAGE)
+            put(SEARCH_ENTRANCE, searchEntrance())
             put(SEARCH_ID, searchID)
             put(SEARCH_TYPE, searchType)
             put(SEARCH_KEYWORD, keyword)
@@ -445,7 +451,7 @@ object AppLogSearch {
             get() = isAd.intValue
 
         val searchEntrance: String
-            get() = HOMEPAGE
+            get() = searchEntrance()
 
         fun json() = JSONObject(buildMap {
             put(ENTRANCE_FORM, entranceForm.str)
