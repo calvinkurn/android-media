@@ -93,6 +93,9 @@ class ShopPageHeaderViewModelTest {
     lateinit var getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>
 
     @RelaxedMockK
+    lateinit var gqlGetShopProductUseCase: Lazy<GqlGetShopProductUseCase>
+
+    @RelaxedMockK
     lateinit var updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>
 
     @RelaxedMockK
@@ -471,6 +474,60 @@ class ShopPageHeaderViewModelTest {
         shopPageHeaderViewModel.saveShopImageToPhoneStorage(context, "")
         assert(shopPageHeaderViewModel.shopImagePath.value == null)
     }
+
+    // =================== Get product list
+    @Test
+    fun `given shopId, page, itemPerPage, shopProductFilterParameter, keyword, etalaseId, and widgetUserAddressLocalData should return value`() {
+        val mockShopId = "123"
+        val mockPage = 1
+        val mockItemPerPage = 6
+        val mockKeyword = ""
+        val mockEtalaseId = "132344"
+
+        coEvery {
+            getShopProductListUseCase.get().executeOnBackground()
+        } returns ShopProduct.GetShopProduct()
+
+        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct()
+        shopPageHeaderViewModel.getProductListData(
+            shopId = mockShopId,
+            page = mockPage,
+            itemPerPage = mockItemPerPage,
+            shopProductFilterParameter = ShopProductFilterParameter(),
+            keyword = mockKeyword,
+            etalaseId = mockEtalaseId,
+            widgetUserAddressLocalData = addressWidgetData
+        )
+        coVerify { getShopProductListUseCase.get().executeOnBackground() }
+        assertTrue(shopPageHeaderViewModel.productListData.value is Success)
+    }
+
+    @Test
+    fun `given shopId, page, itemPerPage, shopProductFilterParameter, keyword, etalaseId, and widgetUserAddressLocalData should throws exception`() {
+        val mockShopId = "123"
+        val mockPage = 1
+        val mockItemPerPage = 6
+        val mockKeyword = ""
+        val mockEtalaseId = "132344"
+
+        coEvery {
+            getShopProductListUseCase.get().executeOnBackground()
+        } returns ShopProduct.GetShopProduct()
+
+        coEvery { getShopProductListUseCase.get().executeOnBackground() } throws Exception()
+        shopPageHeaderViewModel.getProductListData(
+            shopId = mockShopId,
+            page = mockPage,
+            itemPerPage = mockItemPerPage,
+            shopProductFilterParameter = ShopProductFilterParameter(),
+            keyword = mockKeyword,
+            etalaseId = mockEtalaseId,
+            widgetUserAddressLocalData = addressWidgetData
+        )
+        coVerify { getShopProductListUseCase.get().executeOnBackground() }
+        assertTrue(shopPageHeaderViewModel.productListData.value is Fail)
+    }
+    // ===================================
 
     @Test
     fun `check whether userShopId should return same value as mocked userSessionInterface shopId`() {
