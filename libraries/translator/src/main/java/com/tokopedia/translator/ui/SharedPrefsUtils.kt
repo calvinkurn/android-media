@@ -80,7 +80,8 @@ object SharedPrefsUtils {
         if (preferences != null) {
             val editor = preferences.edit()
             editor.putFloat(key, value)
-            return editor.commit()
+            editor.apply()
+            return true
         }
         return false
     }
@@ -117,7 +118,8 @@ object SharedPrefsUtils {
         if (preferences != null) {
             val editor = preferences.edit()
             editor.putLong(key, value)
-            return editor.commit()
+            editor.apply()
+            return true
         }
         return false
     }
@@ -154,7 +156,8 @@ object SharedPrefsUtils {
         if (preferences != null) {
             val editor = preferences.edit()
             editor.putInt(key, value)
-            return editor.commit()
+            editor.apply()
+            return true
         }
         return false
     }
@@ -191,7 +194,8 @@ object SharedPrefsUtils {
         if (preferences != null) {
             val editor = preferences.edit()
             editor.putBoolean(key, value)
-            return editor.commit()
+            editor.apply()
+            return true
         }
         return false
     }

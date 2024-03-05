@@ -79,13 +79,11 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
 
             launch {
 
-                if (fragmentSize <= 1) {
-                    rootView.viewTreeObserver
-                        .onScrollChangedAsFlow()
-                        .collect {
-                            translatorManager?.startTranslate()
-                        }
-                }
+                rootView.viewTreeObserver
+                    .onScrollChangedAsFlow()
+                    .collect {
+                        translatorManager?.startTranslate()
+                    }
 
                 onDestLanguageChangedAsFlow(activity)
                     .collect {
