@@ -66,7 +66,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 5. click content thumbnail in Produk tab
+     * 4. click content thumbnail in Produk tab
      * 49594
      */
     override fun onClickThumbnailProduct() {
@@ -79,7 +79,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 6. impress image content
+     * 5. impress image content
      * 49598
      */
     override fun onImpressImage(pageSource: String) {
@@ -92,7 +92,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 7. impress Ingatkan Saya button
+     * 6. impress Ingatkan Saya button
      * 49600
      */
     override fun onImpressRemindMe(pageSource: String) {
@@ -105,7 +105,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 8. click Ingatkan Saya button
+     * 7. click Ingatkan Saya button
      * 49601
      */
     override fun onClickRemindMe(pageSource: String) {
@@ -118,7 +118,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 9. swipe up down to next content in Ulasan tab
+     * 8. swipe up down to next content in Ulasan tab
      * 49602
      */
     override fun onSwipeReviewNextContent() {
@@ -131,7 +131,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 10. click account name
+     * 9. click account name
      * 49603
      */
     override fun onClickReviewAccountName() {
@@ -144,7 +144,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 11. Click 3 dots menu
+     * 10. Click 3 dots menu
      * 49605
      */
     override fun onClickReviewThreeDots() {
@@ -157,7 +157,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 12. click Back button to PDP
+     * 11. click Back button to PDP
      * 49606
      */
     override fun onClickBackButton(pageSource: String) {
@@ -170,7 +170,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 13. click ATC to global variant bottomsheet
+     * 12. click ATC to global variant bottomsheet
      * 49607
      */
     override fun onClickVariantGBVS(pageSource: String) {
@@ -183,7 +183,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 14. click laporkan ulasan in ulasan tab
+     * 13. click laporkan ulasan in ulasan tab
      * 49650
      */
     override fun onClickReviewReport() {
@@ -196,7 +196,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 15. click mode nonton in ulasan tab
+     * 14. click mode nonton in ulasan tab
      * 49651
      */
     override fun onClickReviewWatchMode() {
@@ -209,7 +209,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 16. click pause/play in video
+     * 15. click pause/play in video
      * 49845
      */
     override fun onClickPauseOrPlayVideo(pageSource: String) {
@@ -222,7 +222,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 17. submit report from ulasan tab
+     * 16. submit report from ulasan tab
      * 49850
      */
     override fun onClickSubmitReport() {
@@ -235,7 +235,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 18. like/unlike content
+     * 17. like/unlike content
      * 49851
      */
     override fun onClickLikeOrUnlike() {
