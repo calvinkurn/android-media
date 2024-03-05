@@ -1564,7 +1564,10 @@ class ProductListFragment :
                 val selectedOptions = options?.filter {
                     it.inputState.toBooleanStrictOrNull().orFalse()
                 }
-                val filterValue = selectedOptions?.joinToString(Option::key.toString()).orEmpty()
+                val filterValue = selectedOptions?.joinToString(
+                    separator = ",",
+                    transform = Option::key,
+                ).orEmpty()
                 trackChooseSearchFilter(filterValue, position)
             }
         }
