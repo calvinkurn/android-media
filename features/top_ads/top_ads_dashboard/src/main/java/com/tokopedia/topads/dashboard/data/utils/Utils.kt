@@ -207,7 +207,7 @@ object Utils {
 
     fun convertMoneyToValue(price: String): Int {
         return try {
-            price.replace("Rp", "").replace(".", "").replace(",", "").trim().toIntOrZero()
+            price.find { it.isDigit() }?.toString().orEmpty().trim().toIntOrZero()
         } catch (e: NumberFormatException) {
             Int.ZERO
         }
