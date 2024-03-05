@@ -102,7 +102,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
 
     private fun RecyclerView.trackHorizontalScroll() {
         val component = mProductCarouselComponentViewModel?.components
-        if(hasApplogScrollListener || component?.isEligibleToTrack().orFalse()) return
+        if(hasApplogScrollListener || !component?.isEligibleToTrack().orFalse()) return
         val pageName = component?.compAdditionalInfo?.tracker?.recommendationPageName.orEmpty()
         addHorizontalTrackListener(
             slideTrackObject = SlideTrackObject(
