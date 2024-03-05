@@ -82,7 +82,7 @@ object AppLogRecommendation {
             sourceModule = sourceModule,
             isAd = isAd,
             trackId = trackId,
-            sourcePageType = SourcePageType.PRODUCT_CARD,
+            sourcePageType = sourcePageType,
             requestId = requestId,
             sourcePreviousPage = getSourcePreviousPage()
         )
