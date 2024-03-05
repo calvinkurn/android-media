@@ -69,13 +69,10 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 for ((index, chatItemPojoByDateByTime) in chatItemPojoByDate.replies.withIndex()) {
                     if (hasAttachment(chatItemPojoByDateByTime)) {
                         val attachmentIds = getAttachmentIds(pojo.chatReplies.attachmentIds)
-                        validateMapDataToChat(
-                            chatItemPojoByDateByTime,
-                            index,
-                            chatItemPojoByDate,
-                            listChat,
-                            attachmentIds
-                        )
+                        val hasReplied = validateActionButtonHasBeenReplied(index, chatItemPojoByDateByTime, chatItemPojoByDate)
+                        if (!hasReplied) {
+                            listChat.add(mapAttachment(chatItemPojoByDateByTime, attachmentIds))
+                        }
                     } else {
                         listChat.add(convertToMessageUiModel(chatItemPojoByDateByTime))
                     }
@@ -86,40 +83,6 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
         return listChat
     }
 
-    private fun validateMapDataToChat(
-        chatItemPojoByDateByTime: Reply,
-        index: Int,
-        chatItemPojoByDate: Chat,
-        listChat: ArrayList<Visitable<*>>,
-        attachmentIds: List<String>
-    ) {
-        if (chatItemPojoByDateByTime.attachment.type.toString() == DYNAMIC_ATTACHMENT) {
-            val dynamicAttachment = gson.fromJson(
-                chatItemPojoByDateByTime.attachment.attributes,
-                DynamicAttachment::class.java
-            )
-
-            val contentCode =
-                dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
-            if (contentCode == ChatbotConstant.DynamicAttachment.DYNAMIC_STICKY_BUTTON_RECEIVE) {
-                if (!hasNextMessage(index, chatItemPojoByDate)) {
-                    listChat.add(mapAttachment(chatItemPojoByDateByTime, attachmentIds))
-                }
-            } else {
-                listChat.add(mapAttachment(chatItemPojoByDateByTime, attachmentIds))
-            }
-        } else {
-            val hasReplied = validateActionButtonHasBeenReplied(
-                index,
-                chatItemPojoByDateByTime,
-                chatItemPojoByDate
-            )
-            if (!hasReplied) {
-                listChat.add(mapAttachment(chatItemPojoByDateByTime, attachmentIds))
-            }
-        }
-    }
-
     private fun validateActionButtonHasBeenReplied(
         index: Int,
         chatItemPojoByDateByTime: Reply,
@@ -128,22 +91,9 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
         val attachmentId = chatItemPojoByDateByTime.attachment.type.toString()
         if (attachmentId != TYPE_CHAT_BALLOON_ACTION) return false
 
-        return hasReplied(index, chatItemPojoByDate)
-    }
-
-    private fun hasReplied(index: Int, chatItemPojoByDate: Chat): Boolean {
         return if (index < (chatItemPojoByDate.replies.size - 1)) {
             val nextItem = chatItemPojoByDate.replies[index + 1]
             !nextItem.isOpposite
-        } else {
-            false
-        }
-    }
-
-    private fun hasNextMessage(index: Int, chatItemPojoByDate: Chat): Boolean {
-        return if (index < (chatItemPojoByDate.replies.size - 1)) {
-            val nextItem = chatItemPojoByDate.replies[index + 1]
-            nextItem.isOpposite
         } else {
             false
         }
