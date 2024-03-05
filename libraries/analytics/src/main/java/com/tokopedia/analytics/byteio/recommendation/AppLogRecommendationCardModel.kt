@@ -7,7 +7,8 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SourcePageType
-import com.tokopedia.analytics.byteio.util.cleanParam
+import com.tokopedia.analytics.byteio.util.spacelessParam
+import com.tokopedia.analytics.byteio.util.underscoredParam
 import org.json.JSONObject
 
 /**
@@ -41,9 +42,9 @@ data class AppLogRecommendationCardModel(
 
     fun toShowClickJson() = JSONObject().apply {
         addPage()
-        put(AppLogParam.CARD_NAME, cardName.cleanParam())
-        put(AppLogParam.LIST_NAME, listName)
-        put(AppLogParam.LIST_NUM, listNum)
+        put(AppLogParam.CARD_NAME, cardName.spacelessParam())
+        put(AppLogParam.LIST_NAME, listName.underscoredParam())
+        put(AppLogParam.LIST_NUM, listNum.zeroAsEmpty())
         addEnterFrom()
         put(AppLogParam.SOURCE_PAGE_TYPE, sourcePageType)
         put(AppLogParam.SOURCE_MODULE, sourceModule)
@@ -54,7 +55,7 @@ data class AppLogRecommendationCardModel(
         put(AppLogParam.TRACK_ID, trackId)
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.REC_PARAMS, recParams)
-        put(AppLogParam.SHOP_ID, shopId)
+        put(AppLogParam.SHOP_ID, shopId.zeroAsEmpty())
         put(AppLogParam.ITEM_ORDER, itemOrder)
         if(volume > 0) put(AppLogParam.VOLUME, volume)
         if(rate > 0) put(AppLogParam.RATE, rate)
@@ -68,8 +69,8 @@ data class AppLogRecommendationCardModel(
         addEnterFrom()
         put(AppLogParam.GLIDE_DISTANCE, 0)
 
-        put(AppLogParam.LIST_NAME, listName)
-        put(AppLogParam.LIST_NUM, listNum)
+        put(AppLogParam.LIST_NAME, listName.underscoredParam())
+        put(AppLogParam.LIST_NUM, listNum.zeroAsEmpty())
 
         put(AppLogParam.ACTION_TYPE, ActionType.CLICK_CARD)
         put(AppLogParam.MODULE_NAME, moduleName)

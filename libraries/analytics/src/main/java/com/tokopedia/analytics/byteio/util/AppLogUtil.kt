@@ -8,7 +8,12 @@ import java.util.*
 
 private val alphanumericRegex = Regex("[^A-Za-z0-9_]")
 
-fun String.cleanParam(): String {
+fun String.spacelessParam(): String {
     val withoutSpace = this.lowercase(Locale.getDefault()).replace(" ", "")
+    return alphanumericRegex.replace(withoutSpace, "")
+}
+
+fun String.underscoredParam(): String {
+    val withoutSpace = this.lowercase(Locale.getDefault()).replace(" ", "_")
     return alphanumericRegex.replace(withoutSpace, "")
 }
