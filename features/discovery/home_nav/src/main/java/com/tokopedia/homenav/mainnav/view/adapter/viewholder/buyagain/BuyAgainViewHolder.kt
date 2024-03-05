@@ -9,12 +9,14 @@ import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderTransactionBuyAgainBinding
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.NavOrderSpacingDecoration
 import com.tokopedia.homenav.mainnav.view.datamodel.buyagain.BuyAgainUiModel
+import com.tokopedia.homenav.mainnav.view.widget.BuyAgainModel
 import com.tokopedia.homenav.mainnav.view.widget.BuyAgainView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BuyAgainViewHolder constructor(
     view: View,
-    private val listener: BuyAgainView.Listener
+    private val listener: Listener
 ) : AbstractViewHolder<BuyAgainUiModel>(view) {
 
     private val binding: HolderTransactionBuyAgainBinding? by viewBinding()
@@ -29,15 +31,30 @@ class BuyAgainViewHolder constructor(
             LinearLayoutManager.HORIZONTAL,
             false
         )
+
         binding?.lstProduct?.addItemDecoration(
             NavOrderSpacingDecoration(
                 SPACING_BETWEEN.toDpInt(),
                 EDGE_MARGIN.toDpInt()
             )
         )
+
+        binding?.lstProduct?.addOnImpressionListener(element) {
+            listener.onBuyAgainWidgetImpression(element.data, bindingAdapterPosition)
+        }
     }
 
     private fun setupAdapter(element: BuyAgainUiModel) {
+        val listener = object : BuyAgainView.Listener {
+            override fun onProductCardClicked(model: BuyAgainModel) {
+                listener.onProductCardClicked(model, bindingAdapterPosition)
+            }
+
+            override fun onAtcButtonClicked(model: BuyAgainModel) {
+                listener.onAtcButtonClicked(model, bindingAdapterPosition)
+            }
+        }
+
         mAdapter = if (mAdapter == null) {
             ProductBuyAgainAdapter(element.data, listener)
         } else {
@@ -45,6 +62,12 @@ class BuyAgainViewHolder constructor(
         }
 
         binding?.lstProduct?.adapter = mAdapter
+    }
+
+    interface Listener {
+        fun onProductCardClicked(model: BuyAgainModel, position: Int)
+        fun onAtcButtonClicked(model: BuyAgainModel, position: Int)
+        fun onBuyAgainWidgetImpression(models: List<BuyAgainModel>, position: Int)
     }
 
     companion object {

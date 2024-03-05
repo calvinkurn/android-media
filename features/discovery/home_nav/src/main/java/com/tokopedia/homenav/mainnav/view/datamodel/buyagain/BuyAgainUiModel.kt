@@ -3,7 +3,7 @@ package com.tokopedia.homenav.mainnav.view.datamodel.buyagain
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavVisitable
 import com.tokopedia.homenav.mainnav.view.widget.BuyAgainModel
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class BuyAgainUiModel(
     val data: List<BuyAgainModel>

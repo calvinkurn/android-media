@@ -41,15 +41,11 @@ class BuyAgainView @JvmOverloads constructor(
 
     private fun setupClickableListener(data: Data) {
         binding.root.setOnClickListener {
-            listener?.onProductCardClicked(data.productId)
+            listener?.onProductCardClicked(data)
         }
 
         binding.btnAtc.setOnClickListener {
-            listener?.onAtcButtonClicked(data.productId, data.shopId, data.hasVariant)
-        }
-
-        binding.bgButton.setOnClickListener {
-            listener?.onAtcButtonClicked(data.productId, data.shopId, data.hasVariant)
+            listener?.onAtcButtonClicked(data)
         }
     }
 
@@ -73,8 +69,12 @@ class BuyAgainView @JvmOverloads constructor(
     }
 
     data class Data(
+        val productName: String,
         val productId: String,
+        val cartId: String,
         val shopId: String,
+        val shopName: String,
+        val shopType: String,
         val hasVariant: Boolean,
         val bannerUrl: String,
         val price: String,
@@ -83,7 +83,7 @@ class BuyAgainView @JvmOverloads constructor(
     )
 
     interface Listener {
-        fun onProductCardClicked(productId: String)
-        fun onAtcButtonClicked(productId: String, shopId: String, hasVariant: Boolean)
+        fun onProductCardClicked(model: BuyAgainModel)
+        fun onAtcButtonClicked(model: BuyAgainModel)
     }
 }

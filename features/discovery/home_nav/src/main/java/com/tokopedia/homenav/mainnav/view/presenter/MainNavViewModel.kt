@@ -66,9 +66,11 @@ import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
 import dagger.Lazy
-import kotlinx.coroutines.*
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MainNavViewModel @Inject constructor(
@@ -227,27 +229,27 @@ class MainNavViewModel @Inject constructor(
     }
 
     fun addToCartProduct(productId: String, shopId: String) {
+        // set param
         val param = AddToCartUseCase.getMinimumParams(
             productId = productId,
             shopId = shopId
         )
 
-        launchCatchError(
-            context = coroutineContext,
-            block = {
-                addToCartUseCase.get().addToCartRequestParams = param
+        addToCartUseCase.get().setParams(param)
+
+        viewModelScope.launch {
+            try {
                 val result = addToCartUseCase.get().executeOnBackground()
 
                 withContext(baseDispatcher.get().main) {
-                    _onAtcProductState.tryEmit(
-                        Pair(result.isDataError(), result.getAtcErrorMessage().orEmpty())
+                    _onAtcProductState.emit(
+                        Pair(result.isStatusError(), result.getAtcErrorMessage().orEmpty())
                     )
                 }
-            },
-            onError = { throwable ->
-                _onAtcProductState.tryEmit(Pair(false, throwable.message.orEmpty()))
+            } catch (t: Throwable) {
+                _onAtcProductState.emit(Pair(false, t.message.orEmpty()))
             }
-        )
+        }
     }
 
     private fun MutableList<Visitable<*>>.addTransactionMenu() {

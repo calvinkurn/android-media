@@ -15,8 +15,12 @@ object BuyAgainMapper {
 
     fun map(item: RecommendationItem): BuyAgainModel {
         return BuyAgainModel(
+            productName = item.name,
             productId = item.productId.toString(),
+            cartId = item.cartId,
             shopId = item.shopId.toString(),
+            shopName = item.shopName,
+            shopType = item.shopType,
             hasVariant = item.isUseQuantityEditor(),
             bannerUrl = item.imageUrl,
             price = item.price,

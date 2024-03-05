@@ -15,7 +15,6 @@ import com.tokopedia.homenav.base.diffutil.holder.HomeNavTickerViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.*
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.buyagain.BuyAgainShimmerViewHolder
-import com.tokopedia.homenav.mainnav.view.widget.BuyAgainView
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.buyagain.BuyAgainViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ErrorReviewViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.review.ReviewViewHolder
@@ -34,7 +33,7 @@ class MainNavTypeFactoryImpl(
     private val mainNavListener: MainNavListener,
     private val userSession: UserSessionInterface,
     private val tokopediaPlusListener: TokopediaPlusListener,
-    private val buyAgainListener: BuyAgainView.Listener
+    private val buyAgainListener: BuyAgainViewHolder.Listener
 ) :
     HomeNavTypeFactory, MainNavTypeFactory {
 
