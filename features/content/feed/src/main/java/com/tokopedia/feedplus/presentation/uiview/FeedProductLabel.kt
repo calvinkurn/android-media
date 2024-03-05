@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.presentation.uiview
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -66,7 +65,8 @@ fun FeedProductLabel(
     }
 
     AnimatedVisibility(
-        visible = isVisible, enter = fadeIn(animationSpec = tween(delayMillis = 300)), exit = fadeOut(animationSpec = tween())
+        visible = isVisible, enter = fadeIn(animationSpec = tween(delayMillis = 300, durationMillis = 600, easing = EaseOut)),
+        exit = slideOutVertically (animationSpec = tween(easing = EaseOut), targetOffsetY = { it } )  + fadeOut(animationSpec = tween(easing = EaseOut)),
     ) {
         NestTheme(darkTheme = false) {
             Row(
