@@ -36,6 +36,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.suspendCoroutine
 
 
 class TranslatorManager() : CoroutineScope {
@@ -48,6 +49,8 @@ class TranslatorManager() : CoroutineScope {
     private var origStrings: String? = null
     private var API_KEY: String? = null
     private var mLangsGroup: String? = "id-en"
+
+    private var isTranslationInProgress = false
 
     var destinationLang: String = "en"
 
@@ -170,22 +173,28 @@ class TranslatorManager() : CoroutineScope {
     }
 
     suspend fun startTranslate() {
-        if (getCurrentActivity() == null || mApplication == null) {
+        if (getCurrentActivity() == null || mApplication == null || isTranslationInProgress) {
             return
         }
 
-        val views = coroutineScope {
-            async {
-                ViewUtil.getChildren(ViewUtil.getContentView(getCurrentActivity()))
-            }.await().apply {
-                prepareSelectors(this)
+        isTranslationInProgress = true
+
+        try {
+            val views = coroutineScope {
+                async {
+                    ViewUtil.getChildren(ViewUtil.getContentView(getCurrentActivity()))
+                }.await()
             }
-        }
 
-        val strList = mStringPoolManager.getQueryStrList()
+            prepareSelectors(views)
 
-        if (strList.isNotEmpty()) {
-            fetchTranslationService(strList, views)
+            val strList = mStringPoolManager.getQueryStrList()
+
+            if (strList.isNotEmpty()) {
+                fetchTranslationService(strList, views)
+            }
+        } finally {
+            isTranslationInProgress = false
         }
     }
 

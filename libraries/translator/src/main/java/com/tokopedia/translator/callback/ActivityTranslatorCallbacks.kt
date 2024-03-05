@@ -173,7 +173,6 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         private fun setTranslatorFragment(f: Fragment) {
             if (f.activity != null) {
                 val weakActivity = WeakReference<Activity>(f.activity)
-                translatorManager?.clearSelectors()
                 TranslatorManager.setCurrentActivity(weakActivity)
             }
             if (f is BottomSheetUnify) {

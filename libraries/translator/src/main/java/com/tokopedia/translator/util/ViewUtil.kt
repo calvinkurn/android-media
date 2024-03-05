@@ -18,7 +18,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.coroutineScope
 import java.util.*
