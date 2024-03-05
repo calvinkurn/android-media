@@ -202,15 +202,15 @@ class TranslatorManager() : CoroutineScope {
             destinationLang = currentDestLang
         }
 
-        val views = ViewUtil.getChildrenViews(ViewUtil.getContentView(getCurrentActivity()))
+        ViewUtil.getChildrenViews(ViewUtil.getContentView(getCurrentActivity())).run {
+            prepareSelectors(this).run {
+                updateViewList()
+            }
 
-        prepareSelectors(views).run {
-            updateViewList()
-        }
-
-        mStringPoolManager.getQueryStrList().run {
-            if (this.isNotEmpty()) {
-                fetchTranslationService(this, views)
+            mStringPoolManager.getQueryStrList().also { strList ->
+                if (strList.isNotEmpty()) {
+                    fetchTranslationService(strList, this)
+                }
             }
         }
     }

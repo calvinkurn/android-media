@@ -69,7 +69,7 @@ internal object ViewUtil {
     private fun traverseChildrenViews(
         viewGroup: View,
         traversedViews: MutableSet<TextView>
-    )  {
+    ) {
 
         if (viewGroup is TextView) {
             traversedViews.add(viewGroup)
