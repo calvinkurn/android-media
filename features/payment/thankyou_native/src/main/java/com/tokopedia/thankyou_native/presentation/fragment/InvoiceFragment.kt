@@ -13,11 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.di.component.DaggerThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.DetailedInvoiceAdapter
+import com.tokopedia.thankyou_native.presentation.adapter.PurchaseDetailAdapter
 import com.tokopedia.thankyou_native.presentation.viewModel.DetailInvoiceViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
@@ -27,12 +29,16 @@ import javax.inject.Inject
 class InvoiceFragment : BottomSheetUnify() {
 
     private lateinit var thanksPageData: ThanksPageData
+    private var isV2: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
     @Inject
     lateinit var invoiceAdapter: dagger.Lazy<DetailedInvoiceAdapter>
+
+    @Inject
+    lateinit var purchaseDetailAdapter: dagger.Lazy<PurchaseDetailAdapter>
 
     private val detailInvoiceViewModel: DetailInvoiceViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -56,6 +62,9 @@ class InvoiceFragment : BottomSheetUnify() {
             if (it.containsKey(ARG_THANK_PAGE_DATA)) {
                 thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)!!
             }
+            if (it.containsKey(ARG_ISV2)) {
+                isV2 = it.getBoolean(ARG_ISV2)
+            }
         }
         initInjector()
         initUI()
@@ -69,6 +78,10 @@ class InvoiceFragment : BottomSheetUnify() {
         childView?.apply {
             initRecyclerView(findViewById(R.id.recyclerView))
             observeViewModel()
+            if (isV2) {
+                detailInvoiceViewModel.fetchPurchaseInfo(thanksPageData)
+                return
+            }
             detailInvoiceViewModel.createInvoiceData(thanksPageData)
         }
     }
@@ -84,6 +97,11 @@ class InvoiceFragment : BottomSheetUnify() {
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
+        if (isV2) {
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            recyclerView.adapter = purchaseDetailAdapter.get()
+            return
+        }
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = invoiceAdapter.get()
     }
@@ -94,9 +112,20 @@ class InvoiceFragment : BottomSheetUnify() {
                 addDataToAdapter(it)
             }
         })
+
+        detailInvoiceViewModel.purchaseDetailVisitables.observe(this) {
+            it?.let {
+                addDataToAdapter(it)
+            }
+        }
     }
 
     private fun addDataToAdapter(list: ArrayList<Visitable<*>>) {
+        if (isV2) {
+            purchaseDetailAdapter.get().addItems(list)
+            purchaseDetailAdapter.get().notifyItemRangeInserted(Int.ZERO, list.size - 1)
+            return
+        }
         invoiceAdapter.get().addItems(list)
         invoiceAdapter.get().notifyDataSetChanged()
     }
@@ -104,18 +133,20 @@ class InvoiceFragment : BottomSheetUnify() {
     companion object {
         private const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
         private const val TAG_INVOICE_BOTTOM_SHEET = "tag_invoice_bottom_sheet"
+        private const val ARG_ISV2 = "arg_isv2"
 
-        fun openInvoiceBottomSheet(activity: FragmentActivity?, thanksPageData: ThanksPageData) {
+        fun openInvoiceBottomSheet(activity: FragmentActivity?, thanksPageData: ThanksPageData, isPurchaseInfoEnabled: Boolean) {
             activity?.apply {
-                val invoiceBottomSheet = InvoiceFragment.getInvoiceFragment(thanksPageData)
+                val invoiceBottomSheet = InvoiceFragment.getInvoiceFragment(thanksPageData, isPurchaseInfoEnabled)
                 invoiceBottomSheet.show(supportFragmentManager, TAG_INVOICE_BOTTOM_SHEET)
             }
         }
 
-        private fun getInvoiceFragment(thanksPageData: ThanksPageData)
+        private fun getInvoiceFragment(thanksPageData: ThanksPageData, isV2: Boolean)
                 : InvoiceFragment = InvoiceFragment().apply {
             val bundle = Bundle()
             bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
+            bundle.putBoolean(ARG_ISV2, isV2)
             arguments = bundle
         }
     }

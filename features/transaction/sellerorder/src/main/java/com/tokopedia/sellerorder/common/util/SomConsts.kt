@@ -171,4 +171,12 @@ object SomConsts {
     const val SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_1 = "LG_FMD_1"
     const val SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_2 = "LG_FMD_2"
     const val SOM_DROP_OFF_BOTTOM_SHEET_TEMPLATE_3 = "LG_FMD_3"
+
+    // Error messages
+    const val ERROR_GET_ORDER_DETAIL = "Error when get order detail."
+    const val ERROR_ACCEPTING_ORDER = "Error when accepting order."
+    const val ERROR_GET_ORDER_REJECT_REASONS = "Error when get order reject reasons."
+    const val ERROR_WHEN_SET_DELIVERED = "Error when set order status to delivered."
+    const val ERROR_EDIT_AWB = "Error when edit AWB."
+    const val ERROR_REJECT_ORDER = "Error when rejecting order."
 }

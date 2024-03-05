@@ -977,6 +977,9 @@ object DeeplinkMainApp {
             },
             DLP.startsWith(PATH_SELLER_PARTIAL_ORDER_FULFILLMENT) { uri: Uri ->
                 DeeplinkMapperOrder.getRegisteredNavigationSellerPartialOrderFulfillment(uri)
+            },
+            DLP.startsWith(DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH) { uri: Uri ->
+                DeeplinkMapperOrder.BuyerRequestCancelRespond.getRegisteredNavigation(uri)
             }
         ),
         "seller-review-detail" to mutableListOf(

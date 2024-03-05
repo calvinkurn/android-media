@@ -2,7 +2,9 @@ package com.tokopedia.shopdiscount.manage.presentation.list
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.common.entity.ProductType
@@ -12,7 +14,9 @@ import com.tokopedia.shopdiscount.utils.extension.strikethrough
 import com.tokopedia.unifycomponents.Label.Companion.HIGHLIGHT_LIGHT_GREY
 import com.tokopedia.unifycomponents.Label.Companion.HIGHLIGHT_LIGHT_RED
 
-class ProductViewHolder(private val binding: SdItemProductBinding) :
+class ProductViewHolder(
+    private val binding: SdItemProductBinding,
+) :
     RecyclerView.ViewHolder(binding.root) {
 
     companion object {
@@ -29,6 +33,7 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         onOverflowMenuClicked: (Product) -> Unit,
         onVariantInfoClicked: (Product, Int) -> Unit,
         onProductSelectionChange: (Product, Boolean) -> Unit,
+        onSubsidyInformationClicked: (Product) -> Unit,
         isLoading: Boolean
     ) {
         binding.imgProduct.loadImage(product.imageUrl)
@@ -45,6 +50,33 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         handleChangeDiscountButtonAppearance(product.shouldDisplayCheckbox)
         handleOverflowMenuAppearance(product.shouldDisplayCheckbox)
         handleCardSelectable(product.disableClick)
+        setSubsidyStatusSectionData(
+            product,
+            onSubsidyInformationClicked
+        )
+    }
+
+    private fun setSubsidyStatusSectionData(
+        product: Product,
+        onSubsidyInformationClicked: (Product) -> Unit
+    ) {
+        binding.textSubsidyStatus.hide()
+        binding.iconSubsidyInfo.hide()
+        if(product.isSubsidy){
+            binding.textSubsidyStatus.apply {
+                show()
+                text = product.subsidyStatusText
+                setOnClickListener {
+                    onSubsidyInformationClicked.invoke(product)
+                }
+            }
+            binding.iconSubsidyInfo.apply {
+                show()
+                setOnClickListener {
+                    onSubsidyInformationClicked.invoke(product)
+                }
+            }
+        }
     }
 
     private fun handleCheckboxAppearance(

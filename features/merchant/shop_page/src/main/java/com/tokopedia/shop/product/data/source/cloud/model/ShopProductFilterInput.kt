@@ -63,5 +63,5 @@ data class ShopProductFilterInput(
 
     @SerializedName("usecase")
     @Expose
-    var usecase: String = ShopParamApiConstant.SHOP_GET_PRODUCT_V2
+    var usecase: String = ""
 )

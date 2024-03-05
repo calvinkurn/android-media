@@ -892,4 +892,8 @@ public interface ApplinkConst {
         String STORIES_VIEWER = "tokopedia://stories/{stories_type}/{author_id}";
         String STORIES_CREATION = "tokopedia://stories/creation";
     }
+
+    interface Som {
+        String BUYER_REQUEST_CANCEL_RESPOND = "tokopedia://seller/buyer-request-cancel-respond";
+    }
 }

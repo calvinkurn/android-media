@@ -89,7 +89,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_subtitle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/unify_space_8"
             android:ellipsize="end"
@@ -98,6 +98,8 @@
             android:textColor="@color/Unify_NN950_96"
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintTop_toBottomOf="@id/tv_title"
             app:layout_goneMarginTop="@dimen/unify_space_4"
             app:typographyType="body_2"
@@ -107,7 +109,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_min_purchase"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/unify_space_8"
             android:ellipsize="end"
@@ -116,6 +118,8 @@
             android:textColor="@color/Unify_NN600"
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintTop_toBottomOf="@id/tv_subtitle"
             app:layout_goneMarginTop="@dimen/unify_space_4"
             app:typographyType="small"

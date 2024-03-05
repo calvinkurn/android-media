@@ -43,6 +43,12 @@ class AutomateCouponListView @JvmOverloads constructor(
         }
     }
 
+    override fun onClick(action: () -> Unit) {
+        binding.root.setOnClickListener {
+            action.invoke()
+        }
+    }
+
     //region private methods
     private fun renderDetails(model: AutomateCouponModel.List) {
         with(binding) {
@@ -54,7 +60,7 @@ class AutomateCouponListView @JvmOverloads constructor(
     }
 
     private fun renderShopName(text: DynamicColorText?) {
-        if (text == null) {
+        if (text == null || text.value.isEmpty()) {
             binding.tvStoreName.hide()
             return
         }
@@ -75,8 +81,8 @@ class AutomateCouponListView @JvmOverloads constructor(
         binding.remainingBadge.render(badgeText)
     }
 
-    private fun renderExpiredDate(limit: TimeLimit) {
-        if (!limit.isAvailable()) {
+    private fun renderExpiredDate(limit: TimeLimit?) {
+        if (limit?.isAvailable() != true) {
             binding.tvTimeLimitPrefix.hide()
             binding.tvTimeLimit.hide()
             binding.timerCoupon.hide()
@@ -129,14 +135,18 @@ class AutomateCouponListView @JvmOverloads constructor(
     }
 
     private fun onClicked(action: () -> Unit) {
+        binding.btnAction.apply {
+            isInverse = false
+            isEnabled = true
+        }
         binding.btnAction.setOnClickListener {
             action.invoke()
         }
     }
 
-    private fun Typography.render(dynamicColorText: DynamicColorText) {
-        text = MethodChecker.fromHtml(dynamicColorText.value)
-        HexColorParser.parse(dynamicColorText.colorHex) {
+    private fun Typography.render(dynamicColorText: DynamicColorText?) {
+        text = MethodChecker.fromHtml(dynamicColorText?.value)
+        HexColorParser.parse(dynamicColorText?.colorHex.orEmpty()) {
             setTextColor(it)
         }
     }
