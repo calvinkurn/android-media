@@ -70,6 +70,10 @@ internal fun String.zeroAsEmpty(): String {
     return this.takeIf { it != "0" }.orEmpty()
 }
 
+internal fun Int.zeroAsEmpty(): String {
+    return this.takeIf { it != 0 }?.toString().orEmpty()
+}
+
 internal fun getCardName(
     cardName: String,
     isAd: Boolean,

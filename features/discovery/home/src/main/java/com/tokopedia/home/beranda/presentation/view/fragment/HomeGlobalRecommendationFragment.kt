@@ -486,7 +486,9 @@ class HomeGlobalRecommendationFragment :
 
     override fun onProductCardClicked(model: RecommendationCardModel, position: Int) {
         sendProductClickAppLog(
-            model.asProductTrackModel()
+            model.asProductTrackModel(
+                enterMethod = EnterMethod.CLICK_RECOM_CARD_INFINITE
+            )
         )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
@@ -576,7 +578,9 @@ class HomeGlobalRecommendationFragment :
 
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
         sendCardClickAppLog(
-            model.asCardTrackModel()
+            model.asCardTrackModel(
+                enterMethod = EnterMethod.CLICK_RECOM_CARD_INFINITE
+            )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
@@ -638,7 +642,9 @@ class HomeGlobalRecommendationFragment :
     override fun onContentCardClicked(item: ContentCardModel, position: Int) {
         setAppLogEnterMethod(EnterMethod.CLICK_RECOM_CARD_INFINITE)
         sendCardClickAppLog(
-            item.asCardTrackModel()
+            item.asCardTrackModel(
+                enterMethod = EnterMethod.CLICK_RECOM_CARD_INFINITE
+            )
         )
         HomeRecommendationTracking.sendClickEntityCardTracking(
             item,
@@ -653,7 +659,9 @@ class HomeGlobalRecommendationFragment :
 
     override fun onPlayCardClicked(element: PlayCardModel, position: Int) {
         sendCardClickAppLog(
-            element.asCardTrackModel()
+            element.asCardTrackModel(
+                enterMethod = EnterMethod.CLICK_RECOM_CARD_INFINITE
+            )
         )
         HomeRecommendationTracking.sendClickVideoRecommendationCardTracking(
             element,

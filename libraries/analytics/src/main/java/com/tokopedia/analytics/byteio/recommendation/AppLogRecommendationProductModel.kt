@@ -9,6 +9,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SourcePageType
+import com.tokopedia.analytics.byteio.util.underscoredParam
 import org.json.JSONObject
 
 /**
@@ -33,7 +34,7 @@ data class AppLogRecommendationProductModel(
     val rate: Float,
     val originalPrice: Float,
     val salesPrice: Float,
-    val enterMethod: String,
+    val enterMethod: String?,
     val authorId: String,
     val groupId: String,
     val cardName: String,
@@ -56,7 +57,7 @@ data class AppLogRecommendationProductModel(
         groupId = groupId,
         itemOrder = itemOrder,
         entranceForm = entranceForm,
-        sourcePageType = SourcePageType.PRODUCT_CARD.str,
+        sourcePageType = SourcePageType.PRODUCT_CARD,
         enterMethod = enterMethod,
         originalPrice = originalPrice,
         salesPrice = salesPrice,
@@ -67,22 +68,22 @@ data class AppLogRecommendationProductModel(
 
     fun toShowClickJson() = JSONObject().apply {
         addPage()
-        put(AppLogParam.LIST_NAME, listName)
-        put(AppLogParam.LIST_NUM, listNum)
+        put(AppLogParam.LIST_NAME, listName.underscoredParam())
+        put(AppLogParam.LIST_NUM, listNum.zeroAsEmpty())
         addEnterFrom()
         put(AppLogParam.SOURCE_PAGE_TYPE, AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME))
         put(AppLogParam.ENTRANCE_FORM, entranceForm)
         put(AppLogParam.SOURCE_MODULE, sourceModule)
         addEnterMethod()
-        put(AppLogParam.AUTHOR_ID, authorId)
+        put(AppLogParam.AUTHOR_ID, authorId.zeroAsEmpty())
         put(AppLogParam.PRODUCT_ID, productId)
         put(AppLogParam.IS_AD, isAd)
         put(AppLogParam.IS_USE_CACHE, isUseCache)
-        put(AppLogParam.GROUP_ID, groupId)
+        put(AppLogParam.GROUP_ID, groupId.zeroAsEmpty())
         put(AppLogParam.TRACK_ID, trackId)
         put(AppLogParam.REC_PARAMS, recParams)
         put(AppLogParam.REQUEST_ID, requestId)
-        put(AppLogParam.SHOP_ID, shopId)
+        put(AppLogParam.SHOP_ID, shopId.zeroAsEmpty())
         put(AppLogParam.ITEM_ORDER, itemOrder)
         if(volume > 0) put(AppLogParam.VOLUME, volume)
         if(rate > 0) put(AppLogParam.RATE, rate)
@@ -94,8 +95,8 @@ data class AppLogRecommendationProductModel(
     fun toRecTriggerJson() = JSONObject().apply {
         addPage()
         addEnterFrom()
-        put(AppLogParam.LIST_NAME, listName)
-        put(AppLogParam.LIST_NUM, listNum)
+        put(AppLogParam.LIST_NAME, listName.underscoredParam())
+        put(AppLogParam.LIST_NUM, listNum.zeroAsEmpty())
         put(AppLogParam.ACTION_TYPE, ActionType.CLICK_CARD)
         put(AppLogParam.MODULE_NAME, moduleName)
         put(AppLogParam.GLIDE_DISTANCE, 0)
@@ -121,7 +122,7 @@ data class AppLogRecommendationProductModel(
             rate: Float = 0f,
             originalPrice: Float = 0f,
             salesPrice: Float = 0f,
-            enterMethod: String = "",
+            enterMethod: String? = null,
             authorId: String = "",
             groupId: String = "",
             cardName: String = CardName.REC_GOODS_CARD,

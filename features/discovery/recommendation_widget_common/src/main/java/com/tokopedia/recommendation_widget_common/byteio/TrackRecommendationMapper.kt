@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.byteio
 
+import com.tokopedia.analytics.byteio.EnterMethod
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendationCardModel
@@ -14,12 +15,13 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.B
 
 object TrackRecommendationMapper {
     fun RecommendationCardModel.asProductTrackModel(
-        isCache: Boolean = false
+        isCache: Boolean = false,
+        enterMethod: EnterMethod? = null,
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = recommendationProductItem.id,
             tabName = tabName,
-            tabPosition = tabIndex.inc(),
+            tabPosition = tabIndex,
             moduleName = pageName,
             isAd = productCardModel.isTopAds,
             isUseCache = isCache,
@@ -29,30 +31,37 @@ object TrackRecommendationMapper {
             shopId = recommendationProductItem.shop.id,
             entranceForm = getEntranceForm(),
             originalPrice = (
-                if(recommendationProductItem.slashedPriceInt > 0)
+                if (recommendationProductItem.slashedPriceInt > 0) {
                     recommendationProductItem.slashedPriceInt
-                else recommendationProductItem.priceInt
-            ).toFloat(),
+                } else {
+                    recommendationProductItem.priceInt
+                }
+                ).toFloat(),
             salesPrice = recommendationProductItem.priceInt.toFloat(),
             position = position,
             volume = recommendationProductItem.countSold,
             rate = productCardModel.countSoldRating.toFloatOrZero(),
+            enterMethod = enterMethod?.str,
         )
     }
 
     private fun RecommendationCardModel.getEntranceForm(): EntranceForm {
-        return if(isFullSpan()) EntranceForm.DETAIL_GOODS_CARD
-        else EntranceForm.PURE_GOODS_CARD
+        return if (isFullSpan()) {
+            EntranceForm.DETAIL_GOODS_CARD
+        } else {
+            EntranceForm.PURE_GOODS_CARD
+        }
     }
 
     fun BannerTopAdsModel.asCardTrackModel(
         isCache: Boolean = false,
+        enterMethod: EnterMethod? = null,
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardId = cardId,
             cardName = CardName.AD_FEED_CARD,
             tabName = tabName,
-            tabPosition = tabIndex.inc(),
+            tabPosition = tabIndex,
             moduleName = pageName,
             isAd = !topAdsImageViewModel?.adViewUrl.isNullOrEmpty() && !topAdsImageViewModel?.adClickUrl.isNullOrEmpty(),
             isUseCache = isCache,
@@ -62,17 +71,19 @@ object TrackRecommendationMapper {
             shopId = topAdsImageViewModel?.shopId.orEmpty(),
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
             position = position,
+            enterMethod = enterMethod?.str,
         )
     }
 
     fun ContentCardModel.asCardTrackModel(
         isCache: Boolean = false,
+        enterMethod: EnterMethod? = null,
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardId = id,
             cardName = CardName.REC_CONTENT_CARD.format(layoutItem),
             tabName = tabName,
-            tabPosition = tabIndex.inc(),
+            tabPosition = tabIndex,
             moduleName = pageName,
             isAd = isAds,
             isUseCache = isCache,
@@ -82,11 +93,13 @@ object TrackRecommendationMapper {
             shopId = shopId,
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
             position = position,
+            enterMethod = enterMethod?.str,
         )
     }
 
     fun PlayCardModel.asCardTrackModel(
         isCache: Boolean = false,
+        enterMethod: EnterMethod? = null,
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardName = CardName.REC_VIDEO_CARD,
@@ -103,6 +116,7 @@ object TrackRecommendationMapper {
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
             sourcePageType = SourcePageType.VIDEO,
             position = position,
+            enterMethod = enterMethod?.str,
         )
     }
 }
