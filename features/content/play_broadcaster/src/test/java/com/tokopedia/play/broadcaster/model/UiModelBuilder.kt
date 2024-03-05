@@ -288,6 +288,7 @@ class UiModelBuilder {
     )
 
     fun buildTickerBottomSheetResponse(
+        cacheKey: String,
         page: TickerBottomSheetPage = TickerBottomSheetPage.UNKNOWN,
         type: TickerBottomSheetType = TickerBottomSheetType.UNKNOWN,
     ): TickerBottomSheetUiModel {
@@ -307,7 +308,7 @@ class UiModelBuilder {
             ),
             page = page,
             type = type,
-            cacheKey = "${type.name}_1",
+            cacheKey = cacheKey,
             imageURL = "tokopedia.com",
             bottomText = TickerBottomSheetUiModel.BottomText(
                 action = listOf(

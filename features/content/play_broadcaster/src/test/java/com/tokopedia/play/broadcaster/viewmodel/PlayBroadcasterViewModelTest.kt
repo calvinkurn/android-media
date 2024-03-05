@@ -927,10 +927,13 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
-    fun `when user account not eligible, then no disable live to vod config should show`() {
+    fun `when user account not eligible, then no dynamic ticker bottom sheet config should show`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel(usernameBuyer = false, tncShop = false)
+
+        val cacheKey1 = "cacheKey_1"
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
+            cacheKey = cacheKey1,
             page = TickerBottomSheetPage.LIVE_PREPARATION,
             type = TickerBottomSheetType.BOTTOM_SHEET,
         )
@@ -966,10 +969,13 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
-    fun `when user account eligible and first time show disable live to vod in preparation live, then it should show`() {
+    fun `when user account eligible and first time show dynamic ticker bottom sheet in preparation live, then it should show`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
+
+        val cacheKey1 = "cacheKey_1"
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
+            cacheKey = cacheKey1,
             page = TickerBottomSheetPage.LIVE_PREPARATION,
             type = TickerBottomSheetType.BOTTOM_SHEET,
         )
@@ -1005,10 +1011,55 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
-    fun `when user account eligible and not first time show disable live to vod in preparation live, then it should not show`() {
+    fun `when user account eligible and already show dynamic ticker bottom sheet in preparation live then the key changed, then it should show`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
+
+        val cacheKey1 = "cacheKey_1"
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
+            cacheKey = cacheKey1,
+            page = TickerBottomSheetPage.LIVE_PREPARATION,
+            type = TickerBottomSheetType.BOTTOM_SHEET,
+        )
+        val alreadyShowed = false
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+        coEvery { mockRepo.getTickerBottomSheetConfig(any()) } returns responseMock
+        coEvery { mockHydraSharedPreferences.getDynamicBottomSheetPref(
+            key = responseMock.cacheKey
+        ) } returns alreadyShowed
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            sharedPref = mockHydraSharedPreferences,
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                getAccountConfiguration(TYPE_SHOP)
+                it.getViewModel().submitAction(PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
+                    TickerBottomSheetPage.LIVE_PREPARATION
+                ))
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
+            it.getViewModel().contentAccountList.assertEqualTo(accountMock)
+            state.tickerBottomSheetConfig.type.assertEqualTo(TickerBottomSheetType.BOTTOM_SHEET)
+            state.tickerBottomSheetConfig.page.assertEqualTo(TickerBottomSheetPage.LIVE_PREPARATION)
+        }
+    }
+
+    @Test
+    fun `when user account eligible and not first time show dynamic ticker bottom sheet in preparation live, then it should not show`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel()
+
+        val cacheKey1 = "cacheKey_1"
+        val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
+            cacheKey = cacheKey1,
             page = TickerBottomSheetPage.LIVE_PREPARATION,
             type = TickerBottomSheetType.BOTTOM_SHEET,
         )
@@ -1044,12 +1095,15 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
-    fun `when user account eligible and fail get disable live to vod in preparation live, then it should not show`() {
+    fun `when user account eligible and fail get dynamic ticker bottom sheet in preparation live, then it should not show`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
+
+        val cacheKey1 = "cacheKey_1"
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
-            page = TickerBottomSheetPage.LIVE_REPORT,
-            type = TickerBottomSheetType.TICKER,
+            cacheKey = cacheKey1,
+            page = TickerBottomSheetPage.LIVE_PREPARATION,
+            type = TickerBottomSheetType.BOTTOM_SHEET,
         )
         val alreadyShowed = true
 
@@ -1083,10 +1137,13 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
-    fun `when user account eligible and first time show disable live to vod in report page, then it should show`() {
+    fun `when user account eligible and first time show dynamic ticker bottom sheet in report page, then it should show`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
+
+        val cacheKey1 = "cacheKey_1"
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
+            cacheKey = cacheKey1,
             page = TickerBottomSheetPage.LIVE_REPORT,
             type = TickerBottomSheetType.TICKER,
         )
@@ -1122,10 +1179,13 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
-    fun `when user account eligible and first not time show disable live to vod in report page, then it should not show`() {
+    fun `when user account eligible and first not time show dynamic ticker bottom sheet in report page, then it should not show`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
+
+        val cacheKey1 = "cacheKey_1"
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
+            cacheKey = cacheKey1,
             page = TickerBottomSheetPage.LIVE_REPORT,
             type = TickerBottomSheetType.BOTTOM_SHEET,
         )
@@ -1161,10 +1221,11 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
-    fun `when user account eligible and fail get disable live to vod in report page, then it should not show`() {
+    fun `when user account eligible and fail get dynamic ticker bottom sheet in report page, then it should not show`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
-        val responseMock = uiModelBuilder.buildTickerBottomSheetResponse()
+        val cacheKey1 = "cacheKey_1"
+        val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(cacheKey = cacheKey1)
         val alreadyShowed = true
 
         coEvery { mockRepo.getAccountList() } returns accountMock
@@ -1197,10 +1258,11 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
-    fun `when user account eligible and disable live to vod in unknown page and type, then it should not show`() {
+    fun `when user account eligible and dynamic ticker bottom sheet in unknown page and type, then it should not show`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
-        val responseMock = uiModelBuilder.buildTickerBottomSheetResponse()
+        val cacheKey1 = "cacheKey_1"
+        val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(cacheKey = cacheKey1)
         val alreadyShowed = true
 
         coEvery { mockRepo.getAccountList() } returns accountMock
@@ -1233,12 +1295,15 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
-    fun `when user set live to vod pref in preparation live`() {
+    fun `when user set dynamic ticker bottom sheet pref in preparation live`() {
         val type = TickerBottomSheetType.BOTTOM_SHEET
         val page = TickerBottomSheetPage.LIVE_PREPARATION
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
+
+        val cacheKey1 = "cacheKey_1"
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
+            cacheKey = cacheKey1,
             page = page,
             type = type,
         )
@@ -1268,12 +1333,15 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
-    fun `when user set live to vod pref in report page`() {
+    fun `when user set dynamic ticker bottom sheet pref in report page`() {
         val type = TickerBottomSheetType.TICKER
         val page = TickerBottomSheetPage.LIVE_REPORT
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel()
+
+        val cacheKey1 = "cacheKey_1"
         val responseMock = uiModelBuilder.buildTickerBottomSheetResponse(
+            cacheKey = cacheKey1,
             page = page,
             type = type,
         )
