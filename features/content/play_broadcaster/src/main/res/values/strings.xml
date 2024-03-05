@@ -333,6 +333,7 @@
     <string name="play_broadcaster_live_stats_add_to_cart_label">Tambah ke Keranjang</string>
     <string name="play_broadcaster_live_stats_total_sold_label">Total Terjual</string>
     <string name="play_broadcaster_live_stats_max_concurrent_view_label">Penonton Terbanyak Pada Satu Sesi</string>
+    <string name="play_broadcaster_live_stats_game_participant_label">Peserta Game</string>
 
     <string name="play_broadcaster_estimated_income_info">Dihitung dari jumlah pesanan yang pembayarannya terkonfirmasi.</string>
 </resources>

@@ -120,4 +120,15 @@ sealed interface LiveStatsUiModel {
         override val text: String
             get() = value.ifEmpty { "0" }
     }
+
+    data class GameParticipant(
+        val value: String = "",
+    ) : LiveStatsUiModel {
+        override val icon: Int = IconUnify.GAME
+
+        @StringRes override val label: Int = R.string.play_broadcaster_live_stats_game_participant_label
+
+        override val text: String
+            get() = value.ifEmpty { "0" }
+    }
 }
