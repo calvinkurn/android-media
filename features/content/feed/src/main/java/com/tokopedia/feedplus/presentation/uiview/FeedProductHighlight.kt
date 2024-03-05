@@ -25,6 +25,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -127,7 +129,8 @@ fun FeedProductHighlight(
                     NestTypography(
                         text = finalPrice,
                         textStyle = NestTheme.typography.display2.copy(
-                            color = NestTheme.colors.NN._0
+                            color = NestTheme.colors.NN._0,
+                            fontWeight = FontWeight.Bold
                         ),
                         modifier = Modifier.constrainAs(ogPrice) {
                             width = Dimension.fillToConstraints
@@ -182,7 +185,7 @@ fun FeedProductHighlight(
                         NestTypography(
                             text = product.priceFmt,
                             textStyle = NestTheme.typography.small.copy(
-                                color = NestTheme.colors.NN._0,
+                                color = colorResource(id = R.color.feed_dms_highlight_slash),
                                 textDecoration = TextDecoration.LineThrough
                             ),
                             modifier = Modifier.constrainAs(discountedPrice) {
