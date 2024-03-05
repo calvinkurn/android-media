@@ -30,7 +30,7 @@ class GetRecipeUseCase @Inject constructor(gqlRepository: GraphqlRepository) {
     /**
      * @param recipeId id of the recipe
      * @param slug slug obtained from recipe url as identifier
-     * @param warehouses warehouseId obtained from address data
+     * @param warehouses warehouses obtained from address data
      */
     suspend fun execute(
         recipeId: String = DEFAULT_RECIPE_ID,
