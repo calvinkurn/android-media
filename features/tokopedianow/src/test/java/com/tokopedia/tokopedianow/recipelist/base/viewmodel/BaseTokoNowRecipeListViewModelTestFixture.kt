@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.recipelist.base.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.AddRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
@@ -44,6 +45,13 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
 
     protected lateinit var viewModel: BaseTokoNowRecipeListViewModel
 
+    protected val warehouses = listOf(
+        WarehouseData(
+            warehouseId = "155111",
+            serviceType = "2h"
+        )
+    )
+
     @Before
     fun setUp() {
         getRecipeListUseCase = mockk(relaxed = true)
@@ -75,6 +83,10 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
         coEvery { addressData.getWarehouseId() } returns warehouseId
     }
 
+    fun onGetWarehouses_thenReturn(warehouses: List<WarehouseData>) {
+        coEvery { addressData.getWarehousesData() } returns warehouses
+    }
+
     fun onAddBookmark_thenReturn(response: AddRecipeBookmarkResponse) {
         coEvery { addRecipeBookmarkUseCase.execute(any()) } returns response.tokonowAddRecipeBookmark
     }
@@ -98,7 +110,7 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
     fun verifyGetRecipeListParams(
         expectedPage: Int,
         expectedSourcePage: String = "",
-        expectedWarehouseId: String,
+        expectedWarehouses: List<WarehouseData>,
         expectedSortByParams: String?,
         expectedTagIdsParam: String?,
         expectedIngredientIdsParam: String?,
@@ -111,7 +123,7 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
         assertEquals(expectedPage, actualRecipeListParam.page)
         assertEquals(expectedPerPage, actualRecipeListParam.perPage)
         assertEquals(expectedSourcePage, actualRecipeListParam.sourcePage)
-        assertEquals(expectedWarehouseId, actualRecipeListParam.warehouses)
+        assertEquals(expectedWarehouses, actualRecipeListParam.warehouses)
         assertEquals(expectedSortByParams, actualQueryParamsMap["sort_by"])
         assertEquals(expectedTagIdsParam, actualQueryParamsMap["tag_ids"])
         assertEquals(expectedIngredientIdsParam, actualQueryParamsMap["ingredient_ids"])
