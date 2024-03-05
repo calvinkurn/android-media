@@ -28,6 +28,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
+import com.tokopedia.shop.common.constant.ShopParamApiConstant
 import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
@@ -347,7 +348,8 @@ class ShopPageProductListViewModel @Inject constructor(
                 userCityId = widgetUserAddressLocalData.city_id,
                 userLat = widgetUserAddressLocalData.lat,
                 userLong = widgetUserAddressLocalData.long,
-                extraParam = extraParam
+                extraParam = extraParam,
+                usecase = ShopParamApiConstant.SHOP_GET_PRODUCT_V2
             )
         )
         val productListResponse = useCase.executeOnBackground()

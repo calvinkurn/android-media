@@ -31,6 +31,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.SHARED_PREF_AFFILIATE_CHANNEL
+import com.tokopedia.shop.common.constant.ShopParamApiConstant
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.data.response.RestrictValidateRestriction
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
@@ -288,7 +289,8 @@ class ShopPageProductListResultViewModel @Inject constructor(
                         widgetUserAddressLocalData.city_id,
                         widgetUserAddressLocalData.lat,
                         widgetUserAddressLocalData.long,
-                        shopProductFilterParameter.getExtraParam()
+                        shopProductFilterParameter.getExtraParam(),
+                        usecase = ShopParamApiConstant.SHOP_GET_PRODUCT_V2
                     ),
                     etalaseType,
                     isEnableDirectPurchase
