@@ -81,6 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:text="@string/play_broadcaster_done"
         app:layout_constraintBottom_toBottomOf="parent"
