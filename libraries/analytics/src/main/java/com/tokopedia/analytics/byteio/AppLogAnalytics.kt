@@ -295,17 +295,18 @@ object AppLogAnalytics {
 
     fun pushPageData(appLogInterface: AppLogInterface) {
         pushPageData()
+        putPageData(ACTIVITY_HASH_CODE, appLogInterface.hashCode())
         putAppLogInterfaceData(appLogInterface)
     }
 
     fun updateCurrentPageData(appLogInterface: AppLogInterface) {
+        val hashCode = getCurrentData(ACTIVITY_HASH_CODE)
         clearCurrentPageData()
+        hashCode?.let { putPageData(ACTIVITY_HASH_CODE, it) }
         putAppLogInterfaceData(appLogInterface)
     }
 
     private fun putAppLogInterfaceData(appLogInterface: AppLogInterface) {
-        putPageData(ACTIVITY_HASH_CODE, appLogInterface.hashCode())
-
         if (appLogInterface.getPageName().isNotBlank()) {
             putPageData(PAGE_NAME, appLogInterface.getPageName())
             if (appLogInterface.isEnterFromWhitelisted()) {
