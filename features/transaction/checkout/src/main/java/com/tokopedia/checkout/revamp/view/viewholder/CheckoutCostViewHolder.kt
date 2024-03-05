@@ -492,6 +492,8 @@ class CheckoutCostViewHolder(
                     }
                     tvCheckoutCostPaymentFeeSlashedValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(paymentFee.slashedFee, false).removeDecimalSuffix()
                     tvCheckoutCostPaymentFeeSlashedValue.isVisible = paymentFee.showSlashed
+                    tvCheckoutCostPaymentFeeSlashedValue.paintFlags =
+                        tvCheckoutCostPaymentFeeSlashedValue.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(paymentFee.fee, false).removeDecimalSuffix()
                     tvCheckoutCostPaymentFeeValue.isVisible = true
                     tvCheckoutCostPaymentsTitle.isVisible = false
@@ -519,6 +521,8 @@ class CheckoutCostViewHolder(
                     }
                     tvCheckoutCostPaymentFeeSlashedValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(paymentFee.slashedFee, false).removeDecimalSuffix()
                     tvCheckoutCostPaymentFeeSlashedValue.isVisible = paymentFee.showSlashed
+                    tvCheckoutCostPaymentFeeSlashedValue.paintFlags =
+                        tvCheckoutCostPaymentFeeSlashedValue.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(paymentFee.amount, false).removeDecimalSuffix()
                     tvCheckoutCostPaymentFeeValue.isVisible = true
                     tvCheckoutCostPaymentsTitle.isVisible = false
