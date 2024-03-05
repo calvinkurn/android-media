@@ -8,6 +8,7 @@
     android:paddingRight="16dp"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
+    app:shop_lv_image="@drawable/ic_info_email_grey"
     app:shop_lv_image_width="48dp"
     app:shop_lv_image_height="48dp"
     app:shop_lv_title_text_style="normal"
