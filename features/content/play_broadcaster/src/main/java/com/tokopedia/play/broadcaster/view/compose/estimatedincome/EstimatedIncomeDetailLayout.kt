@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.content.common.util.throwable.isNetworkError
 import com.tokopedia.globalerror.compose.NestGlobalError
 import com.tokopedia.globalerror.compose.NestGlobalErrorType
 import com.tokopedia.iconunify.IconUnify
@@ -69,9 +70,11 @@ fun EstimatedIncomeDetailLayout(
                 }
             }
             is NetworkResult.Fail -> {
-                /** JOE TODO: handle type & actionClick */
                 NestGlobalError(
-                    type = NestGlobalErrorType.NoConnection,
+                    type = if (estimatedIncomeDetail.error.isNetworkError)
+                            NestGlobalErrorType.NoConnection
+                        else NestGlobalErrorType.ServerError,
+                    onClickAction = estimatedIncomeDetail.onRetry,
                 )
             }
             else -> {}

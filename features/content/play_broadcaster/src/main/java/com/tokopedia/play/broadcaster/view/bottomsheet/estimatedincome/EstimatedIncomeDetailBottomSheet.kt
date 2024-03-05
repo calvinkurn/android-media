@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.ui.model.stats.ProductStatsUiModel
 import com.tokopedia.play.broadcaster.view.compose.estimatedincome.EstimatedIncomeDetailLayout
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -53,8 +54,8 @@ class EstimatedIncomeDetailBottomSheet @Inject constructor(
                 ) {
                     /** JOE TODO: remove mock data */
                     val state by remember {
-//                        mutableStateOf(NetworkResult.Fail(Exception()))
-                        mutableStateOf(NetworkResult.Loading)
+                        mutableStateOf(NetworkResult.Fail(UnknownHostException()))
+//                        mutableStateOf(NetworkResult.Loading)
 //                        mutableStateOf(NetworkResult.Success(
 //                            EstimatedIncomeDetailUiModel(
 //                                totalStatsList = listOf(
