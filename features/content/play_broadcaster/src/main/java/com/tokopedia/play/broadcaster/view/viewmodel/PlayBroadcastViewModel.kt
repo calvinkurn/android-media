@@ -972,6 +972,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val socketMapper = PlayBroadcastWebSocketMapper(message, gson)
             socketMapper.map()
         }
+
+        println("JOE LOG socket result $result")
+
         when (result) {
             is NewMetricList -> queueNewMetrics(playBroadcastMapper.mapNewMetricList(result))
             is LiveDuration -> {
@@ -1021,8 +1024,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is LiveStats -> {
                 updateLiveStats(
                     listOf(
-                        /** JOE TODO: adjust this */
-//                        LiveStatsUiModel.Viewer(result.liveConcurrentUser),
+                        LiveStatsUiModel.Viewer(result.liveConcurrentUsers),
                         LiveStatsUiModel.TotalViewer(result.visitChannel),
                         LiveStatsUiModel.EstimatedIncome(result.estimatedIncome),
                         LiveStatsUiModel.Like(result.likeChannel),

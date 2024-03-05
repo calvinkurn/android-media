@@ -9,23 +9,23 @@ import com.tokopedia.play.broadcaster.data.type.PlaySocketType
  * Created by mzennis on 22/06/20.
  */
 data class LiveStats(
-    @SerializedName("addToCartFmt")
+    @SerializedName("add_to_cart_fmt")
     val addToCart: String = "",
-    @SerializedName("productSoldQtyFmt")
+    @SerializedName("product_sold_qty_fmt")
     val productSlotQuantity: String = "",
-    @SerializedName("followShopFmt")
+    @SerializedName("follow_shop_fmt")
     val followShop: String = "",
-    @SerializedName("likeChannelFmt")
+    @SerializedName("like_channel_fmt")
     val likeChannel: String = "",
-    @SerializedName("visitShopFmt")
+    @SerializedName("visit_shop_fmt")
     val visitShop: String = "",
-    @SerializedName("visitPDPFmt")
+    @SerializedName("visit_pdp_fmt")
     val visitPdp: String = "",
-    @SerializedName("visitChannelFmt")
+    @SerializedName("visit_channel_fmt")
     val visitChannel: String = "",
-    @SerializedName("maxConcurrentUsersFmt")
-    val maxConcurrentUsers: String = "",
-    @SerializedName("estimatedIncomeFmt")
+    @SerializedName("live_concurrent_users_fmt")
+    val liveConcurrentUsers: String = "",
+    @SerializedName("estimated_income_fmt")
     val estimatedIncome: String = "",
 ): PlaySocketType {
         override val type: PlaySocketEnum get() = PlaySocketEnum.LiveStats

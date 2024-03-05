@@ -93,7 +93,7 @@ class PlayBroadcastUiMapper @Inject constructor(
         }
     }
 
-    private fun mapToLiveTrafficUiMetricsShop(metrics: LiveStats): List<TrafficMetricUiModel> {
+    private fun mapToLiveTrafficUiMetricsShop(metrics: GetLiveStatisticsResponse.ReportSellerChannelMetric): List<TrafficMetricUiModel> {
         return mutableListOf(
             TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannel),
             TrafficMetricUiModel(TrafficMetricType.MaximumConcurrentViews, metrics.maxConcurrentUsers),
