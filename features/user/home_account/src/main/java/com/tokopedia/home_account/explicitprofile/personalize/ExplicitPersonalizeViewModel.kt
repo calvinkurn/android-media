@@ -109,7 +109,7 @@ class ExplicitPersonalizeViewModel @Inject constructor(
                                 questions.add(
                                     SaveMultipleAnswersParam.InputParam.SectionsParam.QuestionsParam(
                                         questionId = item.questionId,
-                                        answerValue = answers.toString()
+                                        answerValueList = answers
                                     )
                                 )
                             }
@@ -120,6 +120,7 @@ class ExplicitPersonalizeViewModel @Inject constructor(
 
                 val parameter = SaveMultipleAnswersParam(
                     input = SaveMultipleAnswersParam.InputParam(
+                        templateId = templateId,
                         templateName = CATEGORY_PREFERENCE,
                         sections = mutableListOf(
                             SaveMultipleAnswersParam.InputParam.SectionsParam(

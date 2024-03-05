@@ -41,7 +41,9 @@ data class SaveMultipleAnswersParam(
                 @SerializedName("questionId")
                 var questionId: Int = 0,
                 @SerializedName("answerValue")
-                var answerValue: String = ""
+                var answerValue: String = "",
+                @SerializedName("answerValueList")
+                var answerValueList: MutableList<String> = mutableListOf(),
             )
         }
     }
