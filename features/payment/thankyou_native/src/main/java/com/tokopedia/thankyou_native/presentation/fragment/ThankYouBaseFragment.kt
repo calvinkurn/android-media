@@ -1135,7 +1135,6 @@ open class ThankYouBaseFragment :
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
         getLoadingView()?.gone()
         thanksPageData = data
-        thankYouPageAnalytics.get().sendSubmitOrderByteIoTracker(data)
         showPaymentStatusDialog(isTimerExpired(data), thanksPageData)
     }
 

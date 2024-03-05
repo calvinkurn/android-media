@@ -424,6 +424,10 @@ data class SearchProductModel(
     }
 
     data class OtherRelatedProductShop(
+            @SerializedName("id")
+            @Expose
+            val id: String = "",
+
             @SerializedName("city")
             @Expose
             val city: String = ""

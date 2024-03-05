@@ -1352,9 +1352,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         this.embracePageName = pageTitle;
         MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
-        if (fragment instanceof AppLogInterface appLogInterface) {
-            AppLogAnalytics.INSTANCE.updateCurrentPageData(appLogInterface);
-        }
+        updateAppLogPageData(position);
         handleAppLogEnterMethod(pageTitle);
         return true;
     }
@@ -1364,6 +1362,13 @@ public class MainParentActivity extends BaseActivity implements
             AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_HOME_ICON);
         } else if (pageTitle.equals(getResources().getString(R.string.wishlist))) {
             AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_WISHLIST_ICON);
+        }
+    }
+
+    private void updateAppLogPageData(int position) {
+        Fragment fragment = fragmentList.get(position);
+        if (fragment instanceof AppLogInterface appLogInterface) {
+            AppLogAnalytics.INSTANCE.updateCurrentPageData(appLogInterface);
         }
     }
 
@@ -1398,6 +1403,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
         if (isFirstInit) {
+            updateAppLogPageData(homePosition);
             Object currentEnterMethod = AppLogAnalytics.INSTANCE.getLastData(ENTER_METHOD);
             if (currentEnterMethod == null) {
                 AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
