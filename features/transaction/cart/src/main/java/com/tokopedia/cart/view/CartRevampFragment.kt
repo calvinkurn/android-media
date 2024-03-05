@@ -3611,8 +3611,7 @@ class CartRevampFragment :
     private fun setBuyAgainFloatingButton() {
         if (cartPreferences.hasClickedBuyAgainFloatingButton()) {
             binding?.fabBuyAgain?.gone()
-        }
-        else {
+        } else {
             CartBuyAgainAnalytics.sendImpressionFloatingButtonEvent(CartViewModel.BUY_AGAIN_WORDING)
             binding?.fabBuyAgain?.visible()
             binding?.fabBuyAgain?.setContent {
@@ -3623,15 +3622,22 @@ class CartRevampFragment :
                     isVisible = floatingButtonData?.isVisible == true,
                     onClick = {
                         CartBuyAgainAnalytics.sendClickFloatingButtonEvent(CartViewModel.BUY_AGAIN_WORDING)
-                        cartPreferences.setHasClickedBuyAgainFloatingButton()
                         val buyAgainViewHolderIndex =
                             CartDataHelper.getBuyAgainViewHolderIndex(viewModel.cartDataList.value)
                         if (buyAgainViewHolderIndex != RecyclerView.NO_POSITION) {
-                            binding?.rvCart?.smoothSnapToPosition(position = buyAgainViewHolderIndex)
+                            binding?.rvCart?.smoothSnapToPosition(
+                                position = buyAgainViewHolderIndex,
+                                topOffset = 250.dpToPx(requireContext().resources.displayMetrics)
+                            )
                         }
-                        binding?.fabBuyAgain?.gone()
+                        updateBuyAgainFloatingButtonVisibility(false)
+                        cartPreferences.setHasClickedBuyAgainFloatingButton()
                     }
                 )
+            }
+
+            lifecycleScope.launch {
+                buyAgainFloatingButtonFlow.emit(true)
             }
         }
     }
@@ -6141,5 +6147,6 @@ class CartRevampFragment :
             CartPageAnalyticsUtil.generateBuyAgainDataProductAnalytics(listOf(product)),
             userSession.userId
         )
+        onProductClicked(product.id)
     }
 }
