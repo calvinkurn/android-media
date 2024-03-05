@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -45,10 +44,17 @@ class PlainTabItemViewHolder(
                     renderTabItem(it)
                 }
             }
+
             viewModel?.getSelectionChangeLiveData()?.observe(lifecycleOwner) {
                 itemData?.let { dataItem ->
                     renderTabItem(dataItem)
                 }
+            }
+
+            viewModel?.getInactiveColorChangeLiveData()?.observe(lifecycleOwner) {
+                val inactiveColor = Color.parseColor(Utils.getValidHexCode(itemView.context, it))
+                tabTitleView.setTextColor(inactiveColor)
+                tabIconView.setColorFilter(Color.parseColor(it))
             }
         }
     }
@@ -58,6 +64,7 @@ class PlainTabItemViewHolder(
         lifecycleOwner?.let {
             viewModel?.getComponentData()?.removeObservers(lifecycleOwner)
             viewModel?.getSelectionChangeLiveData()?.removeObservers(lifecycleOwner)
+            viewModel?.getInactiveColorChangeLiveData()?.removeObservers(lifecycleOwner)
         }
     }
 
@@ -95,9 +102,7 @@ class PlainTabItemViewHolder(
         val tintColor = item.getDynamicColor()
 
         if (!tintColor.isNullOrEmpty()) {
-            tabIconView.backgroundTintList = ColorStateList.valueOf(
-                Color.parseColor(tintColor)
-            )
+            tabIconView.setColorFilter(Color.parseColor(tintColor))
         }
     }
 

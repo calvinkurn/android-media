@@ -244,13 +244,28 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         if (!isFromCategory) {
             scrollToCurrentTabPositionRunnable = Runnable {
                 tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
-                tabsViewModel?.switchThematicHeaderData(selectedPosition.inc())
+                tabsViewModel?.apply {
+                    switchThematicHeaderData(selectedPosition.inc())
+                    setInactiveColorTab(selectedPosition)
+                }
             }
             scrollToCurrentTabPositionRunnable?.apply {
                 scrollToCurrentTabPositionHandler.removeCallbacks(this)
                 scrollToCurrentTabPositionHandler.postDelayed(
                     this,
                     DELAY_400
+                )
+            }
+        }
+    }
+
+    private fun TabsViewModel.setInactiveColorTab(selectedPosition: Int) {
+        if (selectedPosition == 0) {
+            val tabsComponentId = components.getComponentsItem()?.map { it.id }
+            if (!tabsComponentId.isNullOrEmpty()) {
+                setInactiveTabColor(
+                    selectedPosition,
+                    tabsComponentId
                 )
             }
         }
@@ -339,8 +354,35 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             if (tab.customView != null && tab.customView is CustomViewCreator) {
                 setSelectedTabItem(tabsViewModel, tab, true)
             }
+
             setSelectedTabBackground(tabsViewModel.components, tab.position)
+
+            tabsViewModel.components.getComponentsItem()?.let {
+                setInactiveTabColor(tab.position, it.map { component -> component.id })
+            }
         }
+    }
+
+    private fun setInactiveTabColor(
+        selectedTabPosition: Int,
+        tabsComponentId: List<String>
+    ) {
+        val selectedComponent = (getTabView(selectedTabPosition)?.viewModel as? PlainTabItemViewModel)
+            ?.components
+
+        selectedComponent?.let {
+            tabsComponentId.forEachIndexed { index, id ->
+                if (id != it.id) {
+                    val customViewCreator = getTabView(index)
+                    (customViewCreator?.viewModel as? PlainTabItemViewModel)
+                        ?.setInactiveTabColor(selectedComponent.data?.firstOrNull()?.inactiveFontColor)
+                }
+            }
+        }
+    }
+
+    private fun getTabView(index: Int): CustomViewCreator? {
+        return tabsHolder.tabLayout.getTabAt(index)?.customView as? CustomViewCreator
     }
 
     private fun setSelectedTabBackground(components: ComponentsItem, selectedPosition: Int) {
