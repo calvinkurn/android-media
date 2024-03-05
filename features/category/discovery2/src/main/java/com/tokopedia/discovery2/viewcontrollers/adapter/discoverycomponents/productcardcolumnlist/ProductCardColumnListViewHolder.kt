@@ -87,7 +87,6 @@ class ProductCardColumnListViewHolder(
             val product = getProduct(itemPosition)?.also {
                 AppLogRecommendation.sendProductShowAppLog(
                     it.asProductTrackModel(
-                        itemPosition,
                         it.parentComponentName.orEmpty()
                     )
                 )
@@ -108,7 +107,6 @@ class ProductCardColumnListViewHolder(
                 if(it.isEligibleToTrack()) {
                     AppLogRecommendation.sendProductClickAppLog(
                         it.asProductTrackModel(
-                            itemPosition,
                             it.parentComponentName.orEmpty()
                         )
                     )

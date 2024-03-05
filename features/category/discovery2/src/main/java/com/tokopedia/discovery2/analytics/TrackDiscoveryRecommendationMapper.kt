@@ -12,12 +12,11 @@ import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 
 object TrackDiscoveryRecommendationMapper {
     fun DataItem.asProductTrackModel(
-        position: Int,
         componentNames: String
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = productId.orEmpty(),
-            position = position,
+            position = itemPosition,
             tabName = tabName.orEmpty(),
             tabPosition = tabIndex?.firstOrNull().orZero(),
             moduleName = getAppLog()?.pageName.orEmpty(),
