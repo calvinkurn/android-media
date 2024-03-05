@@ -230,8 +230,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsViewModel?.let {
             if (it.isBackgroundAvailable()) {
                 tabsHolder.apply {
-                    whiteShadeLeft.setBackgroundResource(0)
-                    whiteShadeRight.setBackgroundResource(0)
+                    removeView(whiteShadeLeft)
+                    removeView(whiteShadeRight)
                 }
             }
         }
