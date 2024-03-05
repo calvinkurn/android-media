@@ -94,6 +94,8 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun removeDynamicStickyButton()
 
+    fun removeDynamicStickyButtonAction()
+
     fun handleQuickReplyFromDynamicAttachment(
         toShow: Boolean,
         rejectReasons: DynamicAttachmentRejectReasons

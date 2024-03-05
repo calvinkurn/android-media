@@ -44,6 +44,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.chat_common.R as chat_commonR
 
 /**
  * @author by nisie on 07/12/18.
@@ -413,7 +414,7 @@ class ChatbotViewStateImpl(
         val action = notifier.findViewById<View>(R.id.action)
         if (isWebSocketError) {
             notifier.show()
-            title.setText(com.tokopedia.chat_common.R.string.error_no_connection_retrying)
+            title.setText(chat_commonR.string.error_no_connection_retrying)
             action.show()
         } else {
             action.hide()
@@ -432,6 +433,23 @@ class ChatbotViewStateImpl(
 
         if (item != null && adapter.list.isNotEmpty()) {
             adapter.clearElement(item)
+        }
+    }
+
+    override fun removeDynamicStickyButtonAction() {
+        var dynamicStickyButtonUiModel: DynamicStickyButtonUiModel? = null
+        var tmpIndex = 0
+        for ((index, data) in adapter.list.withIndex()) {
+            if (data is DynamicStickyButtonUiModel) {
+                dynamicStickyButtonUiModel = data
+                tmpIndex = index
+                break
+            }
+        }
+
+        if (dynamicStickyButtonUiModel != null && tmpIndex > 0) {
+            dynamicStickyButtonUiModel.isShowButtonAction = false
+            adapter.notifyItemChanged(tmpIndex)
         }
     }
 

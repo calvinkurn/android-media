@@ -19,10 +19,12 @@ class DynamicStickyButtonUiModel(
     var status: Int = ChatbotConstant.RENDER_TO_UI_BASED_ON_STATUS,
     val actionBubble: ChatActionBubbleUiModel,
     val contentText: String,
-): BaseChatUiModel(
+    var isShowButtonAction: Boolean = true
+) : BaseChatUiModel(
     messageId, fromUid,
     from, fromRole, attachmentId, attachmentType, replyTime, message, source
-), Visitable<ChatbotTypeFactory> {
+),
+    Visitable<ChatbotTypeFactory> {
     override fun type(typeFactory: ChatbotTypeFactory): Int {
         return typeFactory.type(this)
     }
