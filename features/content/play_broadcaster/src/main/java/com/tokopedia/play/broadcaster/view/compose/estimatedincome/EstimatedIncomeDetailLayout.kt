@@ -19,6 +19,7 @@ import com.tokopedia.globalerror.compose.NestGlobalErrorType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.ui.model.stats.EstimatedIncomeDetailUiModel
+import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsCardModel
 import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.stats.ProductStatsUiModel
 import com.tokopedia.play.broadcaster.view.compose.livestats.LiveStatsLayout
@@ -58,9 +59,23 @@ fun EstimatedIncomeDetailLayout(
                 EstimatedIncomeDetailContainer(isScrollable = true) {
                     item {
                         LiveStatsLayout(
-                            liveStats = estimatedIncomeDetail.data.totalStatsList,
                             gridCount = 2,
-                            onEstimatedIncomeClicked = onEstimatedIncomeClicked,
+                            listData = estimatedIncomeDetail.data.totalStatsList.map {
+                                when (it) {
+                                    is LiveStatsUiModel.EstimatedIncome -> {
+                                        LiveStatsCardModel.Clickable(
+                                            liveStats = it,
+                                            clickableIcon = IconUnify.INFORMATION,
+                                            onClick = onEstimatedIncomeClicked,
+                                        )
+                                    }
+                                    else -> {
+                                        LiveStatsCardModel.NotClickable(
+                                            liveStats = it
+                                        )
+                                    }
+                                }
+                            },
                         )
                     }
 

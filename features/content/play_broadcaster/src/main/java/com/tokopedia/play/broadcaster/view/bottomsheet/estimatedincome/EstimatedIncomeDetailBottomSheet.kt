@@ -54,30 +54,30 @@ class EstimatedIncomeDetailBottomSheet @Inject constructor(
                 ) {
                     /** JOE TODO: remove mock data */
                     val state by remember {
-                        mutableStateOf(NetworkResult.Fail(UnknownHostException()))
+//                        mutableStateOf(NetworkResult.Fail(UnknownHostException()))
 //                        mutableStateOf(NetworkResult.Loading)
-//                        mutableStateOf(NetworkResult.Success(
-//                            EstimatedIncomeDetailUiModel(
-//                                totalStatsList = listOf(
-//                                    LiveStatsUiModel.EstimatedIncome("Rp5.000.000", clickableIcon = IconUnify.INFORMATION),
-//                                    LiveStatsUiModel.Visit("1"),
-//                                    LiveStatsUiModel.AddToCart("2"),
-//                                    LiveStatsUiModel.TotalSold("3"),
-//                                ),
-//                                productStatsList = List(5) {
-//                                    ProductStatsUiModel(
-//                                        id = it.toString(),
-//                                        name = "Product Name $it",
-//                                        imageUrl = "",
-//                                        addToCartFmt = "1",
-//                                        paymentVerifiedFmt = "2",
-//                                        visitPdpFmt = "3",
-//                                        productSoldQtyFmt = "4",
-//                                        estimatedIncomeFmt = "Rp5.000.000",
-//                                    )
-//                                }
-//                            )
-//                        ))
+                        mutableStateOf(NetworkResult.Success(
+                            EstimatedIncomeDetailUiModel(
+                                totalStatsList = listOf(
+                                    LiveStatsUiModel.EstimatedIncome("Rp5.000.000", clickableIcon = IconUnify.INFORMATION),
+                                    LiveStatsUiModel.Visit("1"),
+                                    LiveStatsUiModel.AddToCart("2"),
+                                    LiveStatsUiModel.TotalSold("3"),
+                                ),
+                                productStatsList = List(5) {
+                                    ProductStatsUiModel(
+                                        id = it.toString(),
+                                        name = "Product Name $it",
+                                        imageUrl = "",
+                                        addToCartFmt = "1",
+                                        paymentVerifiedFmt = "2",
+                                        visitPdpFmt = "3",
+                                        productSoldQtyFmt = "4",
+                                        estimatedIncomeFmt = "Rp5.000.000",
+                                    )
+                                }
+                            )
+                        ))
                     }
 
                     EstimatedIncomeDetailLayout(

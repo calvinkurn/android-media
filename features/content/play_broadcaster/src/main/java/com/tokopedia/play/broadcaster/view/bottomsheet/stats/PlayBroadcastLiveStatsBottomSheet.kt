@@ -10,7 +10,10 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsCardModel
+import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.view.compose.livestats.LiveStatsLayout
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
@@ -51,12 +54,26 @@ class PlayBroadcastLiveStatsBottomSheet @Inject constructor(
                     Surface {
                         LiveStatsLayout(
                             modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
-                            liveStats = uiState.liveStatsList,
                             gridCount = 2,
-                            onEstimatedIncomeClicked = {
-                                mListener?.onEstimatedIncomeClicked()
-                                dismiss()
-                            }
+                            listData = uiState.liveStatsList.map {
+                                when (it) {
+                                    is LiveStatsUiModel.EstimatedIncome -> {
+                                        LiveStatsCardModel.Clickable(
+                                            liveStats = it,
+                                            clickableIcon = IconUnify.CHEVRON_RIGHT,
+                                            onClick = {
+                                                mListener?.onEstimatedIncomeClicked()
+                                                dismiss()
+                                            }
+                                        )
+                                    }
+                                    else -> {
+                                        LiveStatsCardModel.NotClickable(
+                                            liveStats = it
+                                        )
+                                    }
+                                }
+                            },
                         )
                     }
                 }

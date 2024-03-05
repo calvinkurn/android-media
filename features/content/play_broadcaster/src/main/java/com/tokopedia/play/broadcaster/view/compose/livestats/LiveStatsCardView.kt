@@ -25,6 +25,7 @@ import com.tokopedia.nest.components.card.NestCardType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.noRippleClickable
+import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsCardModel
 import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 
 /**
@@ -32,8 +33,7 @@ import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
  */
 @Composable
 fun LiveStatsCardView(
-    liveStats: LiveStatsUiModel,
-    type: LiveStatsBoxType,
+    liveStatsCardModel: LiveStatsCardModel,
     modifier: Modifier = Modifier,
 ) {
     NestCard(
@@ -45,8 +45,8 @@ fun LiveStatsCardView(
         Column(
             modifier = Modifier
                 .noRippleClickable {
-                    if (type is LiveStatsBoxType.Clickable) {
-                        type.onClick()
+                    if (liveStatsCardModel is LiveStatsCardModel.Clickable) {
+                        liveStatsCardModel.onClick()
                     }
                 }
                 .padding(16.dp),
@@ -56,7 +56,7 @@ fun LiveStatsCardView(
             ) {
                 NestIcon(
                     modifier = Modifier.size(16.dp),
-                    iconId = liveStats.icon,
+                    iconId = liveStatsCardModel.liveStats.icon,
                     colorNightEnable = NestTheme.colors.NN._600,
                     colorNightDisable = NestTheme.colors.NN._600,
                     colorLightDisable = NestTheme.colors.NN._600,
@@ -67,19 +67,19 @@ fun LiveStatsCardView(
 
                 NestTypography(
                     modifier = Modifier.weight(1f),
-                    text = stringResource(liveStats.label),
+                    text = stringResource(liveStatsCardModel.liveStats.label),
                     textStyle = NestTheme.typography.body3.copy(
                         color = NestTheme.colors.NN._600,
                     ),
                     maxLines = 1,
                 )
 
-                if (type is LiveStatsBoxType.Clickable && type.icon != 0) {
+                if (liveStatsCardModel is LiveStatsCardModel.Clickable) {
                     Spacer(modifier = Modifier.width(8.dp))
 
                     NestIcon(
                         modifier = Modifier.size(16.dp),
-                        iconId = type.icon,
+                        iconId = liveStatsCardModel.clickableIcon,
                         colorNightEnable = NestTheme.colors.NN._600,
                         colorNightDisable = NestTheme.colors.NN._600,
                         colorLightDisable = NestTheme.colors.NN._600,
@@ -91,7 +91,7 @@ fun LiveStatsCardView(
             Spacer(modifier = Modifier.height(4.dp))
 
             NestTypography(
-                text = liveStats.text,
+                text = liveStatsCardModel.liveStats.text,
                 textStyle = NestTheme.typography.body1.copy(
                     fontWeight = FontWeight.Bold,
                 ),
@@ -101,22 +101,12 @@ fun LiveStatsCardView(
     }
 }
 
-sealed interface LiveStatsBoxType {
-    data class Clickable(
-        val icon: Int,
-        val onClick: () -> Unit,
-    ) : LiveStatsBoxType
-
-    object NotClickable : LiveStatsBoxType
-}
-
 @Composable
 @Preview
 private fun LiveStatsCardViewPreview() {
     NestTheme {
         LiveStatsCardView(
-            liveStats = LiveStatsUiModel.Like(),
-            type = LiveStatsBoxType.NotClickable,
+            liveStatsCardModel = LiveStatsCardModel.NotClickable(LiveStatsUiModel.Like()),
         )
     }
 }

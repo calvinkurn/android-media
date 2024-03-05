@@ -16,6 +16,7 @@ import com.tokopedia.nest.components.loader.NestLoader
 import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsCardModel
 import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 import kotlin.math.ceil
 
@@ -24,29 +25,20 @@ import kotlin.math.ceil
  */
 @Composable
 fun LiveStatsLayout(
-    liveStats: List<LiveStatsUiModel>,
-    onEstimatedIncomeClicked: () -> Unit,
+    listData: List<LiveStatsCardModel>,
     modifier: Modifier = Modifier,
     gridCount: Int = 2,
 ) {
     LiveStatsContainer(
         modifier = modifier,
-        itemCount = liveStats.size,
+        itemCount = listData.size,
         gridCount = gridCount,
         content = {
-            val currLiveStats = liveStats[it.coerceAtMost(liveStats.size - 1)]
+            val curr = listData[it.coerceAtMost(listData.size - 1)]
 
             LiveStatsCardView(
                 modifier = Modifier.weight(1f),
-                liveStats = currLiveStats,
-                type = if (currLiveStats is LiveStatsUiModel.EstimatedIncome) {
-                    LiveStatsBoxType.Clickable(
-                        icon = currLiveStats.clickableIcon,
-                        onClick = onEstimatedIncomeClicked,
-                    )
-                } else {
-                    LiveStatsBoxType.NotClickable
-                }
+                liveStatsCardModel = curr,
             )
         }
     )
@@ -115,14 +107,13 @@ private fun LiveStatsLayoutPreview() {
     NestTheme {
         Surface {
             LiveStatsLayout(
-                liveStats = listOf(
-                    LiveStatsUiModel.Viewer(),
-                    LiveStatsUiModel.TotalViewer(),
-                    LiveStatsUiModel.EstimatedIncome(),
-                    LiveStatsUiModel.Like(),
-                    LiveStatsUiModel.Duration(),
-                ),
-                onEstimatedIncomeClicked = {},
+                listData = listOf(
+                    LiveStatsCardModel.NotClickable(LiveStatsUiModel.Viewer()),
+                    LiveStatsCardModel.NotClickable(LiveStatsUiModel.TotalViewer()),
+                    LiveStatsCardModel.NotClickable(LiveStatsUiModel.EstimatedIncome()),
+                    LiveStatsCardModel.NotClickable(LiveStatsUiModel.Like()),
+                    LiveStatsCardModel.NotClickable(LiveStatsUiModel.Duration()),
+                )
             )
         }
     }
