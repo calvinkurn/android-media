@@ -1564,7 +1564,10 @@ class ProductListFragment :
                 val selectedOptions = options?.filter {
                     it.inputState.toBooleanStrictOrNull().orFalse()
                 }
-                val filterValue = selectedOptions?.joinToString(Option::key.toString()).orEmpty()
+                val filterValue = selectedOptions?.joinToString(
+                    separator = ",",
+                    transform = Option::key,
+                ).orEmpty()
                 trackChooseSearchFilter(filterValue, position)
             }
         }
@@ -1591,7 +1594,8 @@ class ProductListFragment :
         val queryParams = filterController.getParameter() +
             originFilterMap() +
             componentIdMap(SearchSortFilterTracking.DROPDOWN_QUICK_FILTER_COMPONENT_ID) +
-            manualFilterToggleMap()
+            manualFilterToggleMap() +
+            enterMethodMap(AppLogSearch.ParamValue.TAB_SEARCH)
 
         refreshSearchParameter(queryParams)
 

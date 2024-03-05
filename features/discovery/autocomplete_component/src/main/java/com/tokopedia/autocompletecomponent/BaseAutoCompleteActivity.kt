@@ -26,6 +26,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.DEFAULT_SEARCH_KEYWORD
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.NORMAL_SEARCH
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -61,7 +63,7 @@ import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
 import com.tokopedia.autocompletecomponent.util.SuggestionMPSListener
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.autocompletecomponent.util.addComponentId
-import com.tokopedia.autocompletecomponent.util.addEnterMethodNormalSearch
+import com.tokopedia.autocompletecomponent.util.enterMethodMap
 import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
 import com.tokopedia.autocompletecomponent.util.getSearchQuery
 import com.tokopedia.autocompletecomponent.util.getTrackingSearchQuery
@@ -70,6 +72,7 @@ import com.tokopedia.autocompletecomponent.util.isMps
 import com.tokopedia.autocompletecomponent.util.removeKeys
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.BASE_SRP_APPLINK
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HINT
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PLACEHOLDER
@@ -519,15 +522,22 @@ open class BaseAutoCompleteActivity :
             ApplinkConstInternalDiscovery.SEARCH_RESULT
         )
 
+        val enterMethod = enterMethod(searchParameter)
         val modifiedParameter = parameter.toMutableMap().apply {
             addComponentId()
             addQueryIfEmpty()
             removeKeys(BASE_SRP_APPLINK, HINT, PLACEHOLDER)
-            addEnterMethodNormalSearch()
+            enterMethodMap(enterMethod)
         }
 
         return "$searchResultApplink?${UrlParamHelper.generateUrlParamString(modifiedParameter)}"
     }
+
+    private fun enterMethod(searchParameter: Map<String, String>) =
+        // Enter with placeholder
+        if (searchParameter[SearchApiConst.Q].isNullOrEmpty()) DEFAULT_SEARCH_KEYWORD
+        // Enter with keyword input
+        else NORMAL_SEARCH
 
     private fun sendTrackingSubmitQuery(
         searchParameter: Map<String, String>,

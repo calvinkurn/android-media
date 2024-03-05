@@ -126,6 +126,6 @@ internal fun getBoldStyle(context: Context?): Any {
         StyleSpan(Typeface.BOLD)
 }
 
-internal fun MutableMap<String, String>.addEnterMethodNormalSearch() {
-    put(SearchApiConst.ENTER_METHOD, AppLogSearch.ParamValue.NORMAL_SEARCH)
+internal fun MutableMap<String, String>.enterMethodMap(enterMethod: String) {
+    put(SearchApiConst.ENTER_METHOD, enterMethod)
 }
