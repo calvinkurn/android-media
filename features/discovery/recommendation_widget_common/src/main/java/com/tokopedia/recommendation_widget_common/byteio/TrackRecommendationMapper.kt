@@ -19,7 +19,7 @@ object TrackRecommendationMapper {
         return AppLogRecommendationProductModel.create(
             productId = recommendationProductItem.id,
             tabName = tabName,
-            tabPosition = tabIndex.inc(),
+            tabPosition = tabIndex,
             moduleName = pageName,
             isAd = productCardModel.isTopAds,
             isUseCache = isCache,
@@ -29,30 +29,35 @@ object TrackRecommendationMapper {
             shopId = recommendationProductItem.shop.id,
             entranceForm = getEntranceForm(),
             originalPrice = (
-                if(recommendationProductItem.slashedPriceInt > 0)
+                if (recommendationProductItem.slashedPriceInt > 0) {
                     recommendationProductItem.slashedPriceInt
-                else recommendationProductItem.priceInt
-            ).toFloat(),
+                } else {
+                    recommendationProductItem.priceInt
+                }
+                ).toFloat(),
             salesPrice = recommendationProductItem.priceInt.toFloat(),
             position = position,
             volume = recommendationProductItem.countSold,
-            rate = productCardModel.countSoldRating.toFloatOrZero(),
+            rate = productCardModel.countSoldRating.toFloatOrZero()
         )
     }
 
     private fun RecommendationCardModel.getEntranceForm(): EntranceForm {
-        return if(isFullSpan()) EntranceForm.DETAIL_GOODS_CARD
-        else EntranceForm.PURE_GOODS_CARD
+        return if (isFullSpan()) {
+            EntranceForm.DETAIL_GOODS_CARD
+        } else {
+            EntranceForm.PURE_GOODS_CARD
+        }
     }
 
     fun BannerTopAdsModel.asCardTrackModel(
-        isCache: Boolean = false,
+        isCache: Boolean = false
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardId = cardId,
             cardName = CardName.AD_FEED_CARD,
             tabName = tabName,
-            tabPosition = tabIndex.inc(),
+            tabPosition = tabIndex,
             moduleName = pageName,
             isAd = !topAdsImageViewModel?.adViewUrl.isNullOrEmpty() && !topAdsImageViewModel?.adClickUrl.isNullOrEmpty(),
             isUseCache = isCache,
@@ -61,18 +66,18 @@ object TrackRecommendationMapper {
             recSessionId = appLog.sessionId,
             shopId = topAdsImageViewModel?.shopId.orEmpty(),
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
-            position = position,
+            position = position
         )
     }
 
     fun ContentCardModel.asCardTrackModel(
-        isCache: Boolean = false,
+        isCache: Boolean = false
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardId = id,
             cardName = CardName.REC_CONTENT_CARD.format(layoutItem),
             tabName = tabName,
-            tabPosition = tabIndex.inc(),
+            tabPosition = tabIndex,
             moduleName = pageName,
             isAd = isAds,
             isUseCache = isCache,
@@ -81,12 +86,12 @@ object TrackRecommendationMapper {
             recSessionId = appLog.sessionId,
             shopId = shopId,
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
-            position = position,
+            position = position
         )
     }
 
     fun PlayCardModel.asCardTrackModel(
-        isCache: Boolean = false,
+        isCache: Boolean = false
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
             cardName = CardName.REC_VIDEO_CARD,
@@ -102,7 +107,7 @@ object TrackRecommendationMapper {
             groupId = playVideoWidgetUiModel.id,
             entranceForm = EntranceForm.CONTENT_GOODS_CARD,
             sourcePageType = SourcePageType.VIDEO,
-            position = position,
+            position = position
         )
     }
 }
