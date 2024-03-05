@@ -387,15 +387,19 @@ class ShippingEditorFragment :
             VALIDATE_COD_STATE -> {
                 setDataCodNotCovered(data)
             }
+
             VALIDATE_MULTIPLE_LOC_STATE -> {
                 setDataCourierNotCovered(data)
             }
+
             VALIDATE_BO_MULTIPLE_LOC_STATE -> {
                 setDataBoAndCourierNotCovered(data)
             }
+
             VALIDATE_BEBAS_ONGKIR_STATE -> {
                 context?.let { openBottomSheetValidateBOData(it, data) }
             }
+
             else -> {
                 viewModel.saveShippingData(
                     userSession.shopId.toLong(),
@@ -452,7 +456,8 @@ class ShippingEditorFragment :
         )
 
         if (bottomSheetCourierInactiveState == BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE ||
-            bottomSheetCourierInactiveState == BOTTOMSHEET_VALIDATE_COD_INACTIVE_STATE) {
+            bottomSheetCourierInactiveState == BOTTOMSHEET_VALIDATE_COD_INACTIVE_STATE
+        ) {
             bottomSheetCourierInactive?.setTitle(data.uiContent.header)
         } else {
             bottomSheetCourierInactive?.setTitle(getString(R.string.bottomsheet_inactive_title))
@@ -582,11 +587,12 @@ class ShippingEditorFragment :
         child: BottomsheetCourierInactiveBinding,
         data: ValidateShippingEditorModel?
     ) {
-        child.tvCourierInactive.text = data?.uiContent?.body?.get(0)?.let {
-            context?.let { it1 ->
-                HtmlLinkHelper(it1, it).spannedString
+        context?.let { context ->
+            child.tvCourierInactive.text = data?.uiContent?.body?.getOrNull(0)?.let {
+                HtmlLinkHelper(context, it).spannedString
             }
         }
+
         child.btnPrimaryHorizontal.text = getString(R.string.button_back)
         child.btnPrimaryHorizontal.setOnClickListener {
             bottomSheetCourierInactive?.dismiss()
