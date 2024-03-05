@@ -129,8 +129,8 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
@@ -301,7 +301,6 @@ class CartViewModel @Inject constructor(
         const val PAGE_NAME_RECOMMENDATION = "cart"
         const val PAGE_NAME_RECOMMENDATION_TEST = "cart_test_2" // FOR TESTING ONLY, REVERT THIS BEFORE MERGE!!!
         const val RECOMMENDATION_XSOURCE = "recom_widget"
-
         const val BUY_AGAIN_WORDING = "Waktunya beli lagi!"
         private const val PAGE_NAME_BUY_AGAIN = "buy_it_again_cart"
 
@@ -961,7 +960,7 @@ class CartViewModel @Inject constructor(
         viewModelScope.launchCatchError(
             context = dispatchers.io,
             block = {
-                val recommendationWidgets = getRecentViewUseCase.getData(
+                val recommendationWidgets = getRecommendationUseCase.getData(
                     GetRecommendationRequestParam(
                         pageNumber = 1,
                         xSource = RECENT_VIEW_XSOURCE,
