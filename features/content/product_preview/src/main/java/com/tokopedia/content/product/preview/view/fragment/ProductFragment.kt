@@ -27,6 +27,7 @@ import com.tokopedia.content.product.preview.view.listener.ProductPreviewVideoLi
 import com.tokopedia.content.product.preview.view.listener.ProductThumbnailListener
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_NAME
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction
@@ -94,7 +95,10 @@ class ProductFragment @Inject constructor(
     private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState != RecyclerView.SCROLL_STATE_IDLE) return
-            analytics.onSwipeContentAndTab()
+            analytics.onSwipeContentAndTab(
+                tabName = TAB_PRODUCT_NAME,
+                isTabChanged = false,
+            )
             val position = getMediaCurrentPosition()
             scrollTo(position)
             viewModel.onAction(ProductMediaSelected(position))
@@ -274,7 +278,7 @@ class ProductFragment @Inject constructor(
     }
 
     override fun onImpressedVideo() {
-        analytics.onImpressVideo(ProductPreviewTabUiModel.TAB_PRODUCT_KEY)
+        analytics.onImpressVideo(TAB_PRODUCT_NAME)
     }
 
     override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {

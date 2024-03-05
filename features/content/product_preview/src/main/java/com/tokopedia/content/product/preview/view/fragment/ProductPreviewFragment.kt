@@ -44,7 +44,6 @@ import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewVie
 import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourceModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.ifNull
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -208,7 +207,10 @@ class ProductPreviewFragment @Inject constructor(
 
             val position = binding.vpProductPreview.currentItem
             viewModel.onAction(ProductPreviewAction.TabSelected(position))
-            analytics.onSwipeContentAndTab()
+            analytics.onSwipeContentAndTab(
+                tabName = pagerAdapter.getCurrentTabName(position),
+                isTabChanged = true
+            )
         }
     }
 
@@ -328,7 +330,6 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun handleAtc(model: BottomNavUiModel) {
-        analytics.onClickATC(pageSource, model)
         if (model.buttonState == OOS) analytics.onClickRemindMe(pageSource)
         if (model.hasVariant) {
             AtcVariantHelper.goToAtcVariant(

@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
@@ -35,6 +34,7 @@ import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAd
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
 import com.tokopedia.content.product.preview.view.listener.ReviewMediaListener
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_NAME
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewAuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
@@ -47,7 +47,6 @@ import com.tokopedia.content.product.preview.viewmodel.event.ProductPreviewEvent
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.ifNull
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -302,7 +301,10 @@ class ReviewFragment @Inject constructor(
      * Review Media Listener
      */
     override fun onReviewMediaScrolled() {
-        analytics.onSwipeContentAndTab()
+        analytics.onSwipeContentAndTab(
+            tabName = TAB_REVIEW_NAME,
+            isTabChanged = false,
+        )
     }
 
     override fun onPauseResumeVideo() {
@@ -314,7 +316,7 @@ class ReviewFragment @Inject constructor(
     }
 
     override fun onImpressedVideo() {
-        analytics.onImpressVideo(ProductPreviewTabUiModel.TAB_REVIEW_KEY)
+        analytics.onImpressVideo(TAB_REVIEW_NAME)
     }
 
     override fun onMediaSelected(position: Int) {
