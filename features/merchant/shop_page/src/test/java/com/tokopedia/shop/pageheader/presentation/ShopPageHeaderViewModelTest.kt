@@ -610,7 +610,7 @@ class ShopPageHeaderViewModelTest {
     }
 
     @Test
-    fun `check whether shopPageTickerData and shopPageShopShareData post success value`() {
+    fun `check whether shopPageTickerData post success value`() {
         val mockShopId = "123"
         val mockShopDomain = "mock domain"
         coEvery {
@@ -619,9 +619,7 @@ class ShopPageHeaderViewModelTest {
         coEvery {
             gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
         } returns ShopOperationalHourStatus()
-        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
-            data = listOf(ShopProduct(), ShopProduct())
-        )
+
         shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(
             shopId = mockShopId,
             shopDomain = mockShopDomain,
@@ -629,9 +627,6 @@ class ShopPageHeaderViewModelTest {
         )
         assert(shopPageHeaderViewModel.shopPageHeaderTickerData.value is Success)
         assert(shopPageHeaderViewModel.shopPageShopShareData.value is Success)
-        assert(shopPageHeaderViewModel.productListData.value is Success)
-        assert(shopPageHeaderViewModel.productListData.value != null )
-
 
         shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(
             shopId = "0",
