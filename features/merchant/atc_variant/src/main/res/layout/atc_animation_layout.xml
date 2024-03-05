@@ -6,18 +6,11 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/productImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         app:unify_image_corner_radius="24"
         tools:src="@tools:sample/avatars" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/atc_animation_stroke" />
-
 </FrameLayout>

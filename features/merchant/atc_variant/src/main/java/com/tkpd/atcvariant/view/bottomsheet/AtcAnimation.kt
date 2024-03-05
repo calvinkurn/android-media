@@ -3,7 +3,7 @@ package com.tkpd.atcvariant.view.bottomsheet
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
-import android.app.Activity
+import android.content.Context
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup.LayoutParams
@@ -25,7 +25,7 @@ import com.tkpd.atcvariant.R as atcvariantR
  */
 
 
-class AtcAnimation(private val activity: Activity) {
+class AtcAnimation(private val context: Context) {
     companion object {
         /**
          * refer to [R.layout.toolbar_viewholder_icon]
@@ -45,15 +45,15 @@ class AtcAnimation(private val activity: Activity) {
         private val TOOLBAR_HEIGHT = 54.toPx()
         private val TARGET_IMAGE_SIZE_AFTER_ANIMATE = 24.toPx()
         private const val DELAY_BETWEEN_SHOW_AND_FLY_ANIMATE = 750L
-        private const val ANIMATE_DURATION = 250L
+        private const val ANIMATE_DURATION = 350L
     }
 
     private var mSourceImageView: ImageView? = null
-    private val binding = AtcAnimationLayoutBinding.inflate(LayoutInflater.from(activity))
-    private val popupWindow = PopupWindow(activity).apply {
-        animationStyle = atcvariantR.style.popup_window_animation
-        contentView = binding.root
-    }
+    private val binding = AtcAnimationLayoutBinding.inflate(LayoutInflater.from(context))
+    private val popupWindow =
+        PopupWindow(binding.root, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
+            animationStyle = atcvariantR.style.popup_window_animation
+        }
 
     private val locationOnScreen = IntArray(2)
     private var currentX = 0
@@ -94,12 +94,11 @@ class AtcAnimation(private val activity: Activity) {
 
     private fun showPopUpWindow() {
         val target = mSourceImageView ?: return
-        popupWindow.apply {
-            showAtLocation(target, Gravity.NO_GRAVITY, currentX, currentY)
-            contentView.postDelayed({
-                flyingAnimation()
-            }, DELAY_BETWEEN_SHOW_AND_FLY_ANIMATE)
-        }
+        popupWindow.showAtLocation(target, Gravity.NO_GRAVITY, currentX, currentY)
+
+        binding.root.postDelayed({
+            flyingAnimation()
+        }, DELAY_BETWEEN_SHOW_AND_FLY_ANIMATE)
     }
 
     private val animatorListener = object : Animator.AnimatorListener {
@@ -108,7 +107,7 @@ class AtcAnimation(private val activity: Activity) {
         }
 
         override fun onAnimationEnd(p0: Animator) {
-            // popupWindow.dismiss()
+            popupWindow.dismiss()
         }
 
         override fun onAnimationCancel(p0: Animator) {
@@ -179,9 +178,14 @@ class AtcAnimation(private val activity: Activity) {
 
     private fun updatePosition() {
         binding.productImage.updateLayoutParams<LayoutParams> {
-            this?.height = currentWidth
-            this?.width = currentHeight
+            if (this?.height != currentWidth) {
+                this?.height = currentWidth
+            }
+            if (this?.width != currentWidth) {
+                this?.width = currentHeight
+            }
         }
+
         popupWindow.update(
             currentX,
             currentY,
@@ -191,8 +195,9 @@ class AtcAnimation(private val activity: Activity) {
     }
 
     private fun updateAlpha() {
-        binding.productImage.alpha = currentAlpha
+        if (binding.root.alpha == currentAlpha) return
+        binding.root.alpha = currentAlpha
     }
 }
 
-fun Fragment.atcAnimator() = lazy { AtcAnimation(activity = requireActivity()) }
+fun Fragment.atcAnimator() = lazy { AtcAnimation(context = requireContext()) }
