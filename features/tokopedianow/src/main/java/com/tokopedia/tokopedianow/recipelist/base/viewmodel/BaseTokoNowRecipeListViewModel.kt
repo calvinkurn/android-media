@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
@@ -94,12 +93,9 @@ open class BaseTokoNowRecipeListViewModel(
 
     fun getRecipeList() {
         launchCatchError(block = {
-            val chosenAddress = addressData.getAddressData()
-            val warehouses = AddressMapper.mapToWarehousesData(chosenAddress)
-
             showProgressBar()
             getRecipeListParam.sourcePage = sourcePage
-            getRecipeListParam.warehouses = warehouses
+            getRecipeListParam.warehouses = addressData.getWarehousesData()
 
             val response = getRecipeListUseCase.execute(getRecipeListParam)
             hasNext = response.metadata.hasNext
@@ -252,11 +248,8 @@ open class BaseTokoNowRecipeListViewModel(
         showLoadMoreProgressBar()
 
         launchCatchError(block = {
-            val chosenAddress = addressData.getAddressData()
-            val warehouses = AddressMapper.mapToWarehousesData(chosenAddress)
-
             getRecipeListParam.sourcePage = sourcePage
-            getRecipeListParam.warehouses = warehouses
+            getRecipeListParam.warehouses = addressData.getWarehousesData()
             getRecipeListParam.page = getRecipeListParam.page + 1
 
             val response = getRecipeListUseCase.execute(getRecipeListParam)
