@@ -1,9 +1,11 @@
 package com.tokopedia.feedplus.presentation.uiview
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -66,14 +68,15 @@ fun FeedProductHighlight(
         AnimatedVisibility(
             visible = isVisible,
             enter = slideInVertically(
+                initialOffsetY = { it },
                 animationSpec = tween(
+                    delayMillis = 100,
                     durationMillis = 500,
-                    easing = LinearOutSlowInEasing
-                )
-            ),
+                    easing = EaseIn
+                ),
+            ) + fadeIn(),
             exit = slideOutVertically(
-                animationSpec = tween(durationMillis = 300, easing = EaseOut),
-                targetOffsetY = { it })
+                animationSpec = tween(durationMillis = 300, easing = EaseOut),  targetOffsetY = { it }) + fadeOut()
         ) {
             Box(
                 modifier = Modifier

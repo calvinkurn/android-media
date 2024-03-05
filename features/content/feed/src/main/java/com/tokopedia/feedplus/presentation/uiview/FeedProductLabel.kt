@@ -1,5 +1,13 @@
 package com.tokopedia.feedplus.presentation.uiview
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -52,13 +60,14 @@ fun FeedProductLabel(
         }
 
         else -> {
-            val total =
-                if (totalProducts > PRODUCT_COUNT_ZERO) totalProducts else products.size
+            val total = if (totalProducts > PRODUCT_COUNT_ZERO) totalProducts else products.size
             ctx.getString(R.string.feeds_tag_product_text, total)
         }
     }
 
-    if (isVisible) {
+    AnimatedVisibility(
+        visible = isVisible, enter = fadeIn(animationSpec = tween(delayMillis = 300)), exit = fadeOut(animationSpec = tween())
+    ) {
         NestTheme(darkTheme = false) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
