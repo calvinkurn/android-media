@@ -493,7 +493,7 @@ class ShopPageReimagineHeaderFragment :
         shopHeaderViewModel?.followShopData?.removeObservers(this)
         shopHeaderViewModel?.shopPageHeaderTickerData?.removeObservers(this)
         shopHeaderViewModel?.shopPageShopShareData?.removeObservers(this)
-        shopHeaderViewModel?.productListData?.removeObservers(viewLifecycleOwner)
+        shopHeaderViewModel?.productListData?.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopPageFeedTabSharedViewModel?.sellerMigrationBottomSheet?.removeObservers(this)
@@ -775,7 +775,7 @@ class ShopPageReimagineHeaderFragment :
             }
         }
 
-        shopHeaderViewModel?.productListData?.observe(viewLifecycleOwner) {
+        shopHeaderViewModel?.productListData?.observe(owner) {
             when (it) {
                 is Success -> {
                     val productListData = it.data.data
