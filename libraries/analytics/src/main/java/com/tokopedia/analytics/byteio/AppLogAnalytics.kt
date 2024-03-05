@@ -112,7 +112,7 @@ object AppLogAnalytics {
         get() = if (this) 1 else 0
 
     internal fun JSONObject.addPage() {
-        put(PREVIOUS_PAGE, getLastDataBeforeCurrent(PAGE_NAME))
+        put(PREVIOUS_PAGE, getLastDataBeforeCurrent(PAGE_NAME)?.toString().orEmpty())
         put(PAGE_NAME, getLastData(PAGE_NAME))
     }
 
