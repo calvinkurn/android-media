@@ -182,6 +182,7 @@ object AppLogPdp {
         AppLogAnalytics.send(EventName.BUTTON_CLICK, JSONObject().also {
             it.addPage()
             it.addSourcePreviousPage()
+            it.addEnterFrom()
             it.addEntranceForm()
             it.addEntranceInfoCart()
             it.put("button_name", model.buttonName)
