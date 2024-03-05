@@ -322,10 +322,8 @@ data class InspirationCarouselDataView(
             )
 
             private fun getListItemId() =
-                if (customVideoURL.isBlank())
-                    if (hasParentId()) parentId
-                    else id
-                else ""
+                if (hasParentId()) parentId
+                else id
 
             fun asByteIOProduct() = AppLogSearch.Product(
                 entranceForm = EntranceForm.SEARCH_HORIZONTAL_GOODS_CARD,

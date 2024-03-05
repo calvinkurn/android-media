@@ -227,11 +227,8 @@ class ProductItemDataView:
         )
 
     private fun byteIOTrackingSearchResultID(): String =
-        if (customVideoURL.isBlank())
-            if (hasParent()) parentId
-            else productID
-        else
-            ""
+        if (hasParent()) parentId
+        else productID
 
     fun asByteIOProduct() = AppLogSearch.Product(
         entranceForm = if (customVideoURL.isBlank()) SEARCH_PURE_GOODS_CARD else SEARCH_VIDEO_GOODS_CARD,
