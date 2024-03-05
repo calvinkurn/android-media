@@ -278,7 +278,7 @@ class ProductFragment @Inject constructor(
     }
 
     override fun onImpressedVideo() {
-        analytics.onImpressVideo(ProductPreviewTabUiModel.TAB_PRODUCT_KEY)
+        analytics.onImpressVideo(TAB_PRODUCT_NAME)
     }
 
     override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {

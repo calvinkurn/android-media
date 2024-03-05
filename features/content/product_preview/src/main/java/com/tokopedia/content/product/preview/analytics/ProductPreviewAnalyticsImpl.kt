@@ -46,7 +46,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
      */
     override fun onImpressVideo(pageSource: String) {
         analyticManager.sendOpenScreen(
-            screenName = "/unified view pdp - $productId - 0 - $pageSource",
+            screenName = "/product detail page - unified content viewing - $productId - 0 - $pageSource",
             mainAppTrackerId = "49588",
             customFields = mapOf(Key.productId to productId)
         )

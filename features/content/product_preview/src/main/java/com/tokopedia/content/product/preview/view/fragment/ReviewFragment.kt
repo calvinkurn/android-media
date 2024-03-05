@@ -316,7 +316,7 @@ class ReviewFragment @Inject constructor(
     }
 
     override fun onImpressedVideo() {
-        analytics.onImpressVideo(ProductPreviewTabUiModel.TAB_REVIEW_KEY)
+        analytics.onImpressVideo(TAB_REVIEW_NAME)
     }
 
     override fun onMediaSelected(position: Int) {
