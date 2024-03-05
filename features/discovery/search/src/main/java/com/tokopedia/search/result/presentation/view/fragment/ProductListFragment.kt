@@ -1594,7 +1594,8 @@ class ProductListFragment :
         val queryParams = filterController.getParameter() +
             originFilterMap() +
             componentIdMap(SearchSortFilterTracking.DROPDOWN_QUICK_FILTER_COMPONENT_ID) +
-            manualFilterToggleMap()
+            manualFilterToggleMap() +
+            enterMethodMap(AppLogSearch.ParamValue.TAB_SEARCH)
 
         refreshSearchParameter(queryParams)
 
