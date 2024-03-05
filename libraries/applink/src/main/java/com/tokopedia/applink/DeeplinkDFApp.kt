@@ -197,13 +197,13 @@ object DeeplinkDFApp {
     )
 
     private fun getDfSellerShopPage() = mutableListOf(
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/.*/"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/.*/home"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/.*/info"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/.*/review"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/.*/product"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/.*/feed"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop/.*/note"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/home"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/info"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/review"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/product"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/feed"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/note"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page-product-list/.*/etalase/.*/"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-info/.*/"),
     )
