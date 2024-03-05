@@ -37,8 +37,8 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.analytics.byteio.TrackRecommendationMapper.asCardTrackModel
-import com.tokopedia.home.analytics.byteio.TrackRecommendationMapper.asProductTrackModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asCardTrackModel
+import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent

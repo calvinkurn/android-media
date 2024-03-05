@@ -367,4 +367,10 @@ object AppLogAnalytics {
         }.toString()
     }
 
+    fun getSourcePreviousPage(): String? {
+        getLastDataBeforeCurrent(PAGE_NAME)?.let {
+            return it.toString()
+        }
+        return null
+    }
 }

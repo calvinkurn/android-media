@@ -2,6 +2,7 @@ package com.tokopedia.analytics.byteio.search
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogAnalytics.getSourcePreviousPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam
@@ -229,10 +230,8 @@ object AppLogSearch {
         val ecomFilterType: String? = null,
     ) {
         fun json() = JSONObject(buildMap {
-            val enterFrom = enterFromBeforeCurrent(listOf(PageName.HOME))
-
             put(IMPR_ID, imprId)
-            put(ENTER_FROM, enterFrom)
+            put(ENTER_FROM, enterFrom())
             put(SEARCH_TYPE, searchType)
             put(ENTER_METHOD, enterMethod)
             put(SEARCH_KEYWORD, searchKeyword)
@@ -279,7 +278,7 @@ object AppLogSearch {
     ) {
         fun json() = JSONObject(
             mapOf(
-                SEARCH_POSITION to HOMEPAGE,
+                SEARCH_POSITION to enterFrom(),
                 SEARCH_ENTRANCE to HOMEPAGE,
                 IMPR_ID to imprId,
                 NEW_SUG_SESSION_ID to newSugSessionId,
@@ -292,10 +291,7 @@ object AppLogSearch {
     }
 
     fun eventTrendingShow(trendingShow: TrendingShow) {
-        AppLogAnalytics.send(
-            TRENDING_SHOW,
-            trendingShow.json()
-        )
+        AppLogAnalytics.send(TRENDING_SHOW, trendingShow.json())
     }
 
     data class TrendingWordsSuggestion(
@@ -311,7 +307,7 @@ object AppLogSearch {
     ) {
         fun json() = JSONObject(
             mapOf(
-                SEARCH_POSITION to enterFromBeforeCurrent(whitelistedEnterFromAutoComplete),
+                SEARCH_POSITION to enterFrom(),
                 SEARCH_ENTRANCE to HOMEPAGE,
                 GROUP_ID to groupId,
                 IMPR_ID to imprId,
@@ -379,10 +375,10 @@ object AppLogSearch {
         )
     }
 
-    fun enterFromBeforeCurrent(whitelistedEnterFrom: List<String>): String {
+    fun enterFrom(): String {
         val actualEnterFrom = AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM)?.toString() ?: ""
 
-        return if (whitelistedEnterFrom.contains(actualEnterFrom)) {
+        return if (whitelistedEnterFromAutoComplete.contains(actualEnterFrom)) {
             if (actualEnterFrom == PageName.HOME) HOMEPAGE
             else actualEnterFrom
         } else ""
@@ -490,7 +486,7 @@ object AppLogSearch {
                 trackId = trackId,
                 sourcePageType = sourcePageType,
                 requestId = requestID,
-                sourcePreviousPage = AppLogAnalytics.getLastDataBeforeCurrent(PAGE_NAME)?.toString()
+                sourcePreviousPage = getSourcePreviousPage()
             )
 
             AppLogAnalytics.putPageData(SEARCH_ENTRANCE, searchEntrance)

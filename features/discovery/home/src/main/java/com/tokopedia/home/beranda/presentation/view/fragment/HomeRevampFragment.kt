@@ -2119,7 +2119,7 @@ open class HomeRevampFragment :
     private fun appLogTrendingWords(index: Int, hintData: HintData) =
         AppLogSearch.TrendingWords(
             index = index,
-            content = hintData.keyword,
+            content = hintData.keyword.trim(),
             groupId = hintData.groupId,
             imprId = hintData.imprId,
             wordsSource = hintData.wordsSource,

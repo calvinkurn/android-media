@@ -146,7 +146,7 @@ object PageName {
     const val PDP = "product_detail"
     const val SEARCH_RESULT = "search_result"
     const val CART = "cart"
-    const val SHOP = "shoppage"
+    const val SHOP = "shop"
     const val SKU = "sku"
     const val EXTERNAL_PROMO = "external_promo"
     const val RECOMMENDATION = "recommendation"
