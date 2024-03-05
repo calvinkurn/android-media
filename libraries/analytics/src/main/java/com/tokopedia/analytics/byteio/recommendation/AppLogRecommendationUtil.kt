@@ -25,7 +25,7 @@ object CardName {
     const val MISSION_PRODUCT_CARD = "mission_%s_product_card"
 }
 
-fun constructSourceModule(
+internal fun constructSourceModule(
     isAd: Boolean,
     moduleName: String,
     entranceForm: EntranceForm,
@@ -47,7 +47,7 @@ fun constructSourceModule(
     }
 }
 
-fun constructTrackId(
+internal fun constructTrackId(
     cardId: String?,
     productId: String,
     requestId: String,
@@ -64,4 +64,18 @@ fun constructTrackId(
         CardName.MISSION_PAGE_CARD -> "${requestId}_${cardId}_${position.inc()}"
         else -> "${requestId}_${cardId}_${position.inc()}"
     }
+}
+
+internal fun String.zeroAsEmpty(): String {
+    return this.takeIf { it != "0" }.orEmpty()
+}
+
+internal fun getCardName(
+    cardName: String,
+    isAd: Boolean,
+): String {
+    return if(cardName == CardName.REC_GOODS_CARD) {
+        if(isAd) CardName.AD_GOODS_CARD
+        else CardName.REC_GOODS_CARD
+    } else cardName
 }

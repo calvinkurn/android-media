@@ -3,6 +3,7 @@ package com.tokopedia.analytics.byteio.recommendation
 import com.tokopedia.analytics.byteio.ActionType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SourcePageType
@@ -103,19 +104,19 @@ data class AppLogRecommendationCardModel(
         ): AppLogRecommendationCardModel {
             return AppLogRecommendationCardModel(
                 cardName = cardName,
-                productId = productId.takeIf { it != "0" }.orEmpty(),
+                productId = productId.zeroAsEmpty(),
                 listName = tabName,
                 listNum = tabPosition.inc(),
                 moduleName = moduleName,
                 sourceModule = constructSourceModule(isAd, moduleName, entranceForm),
                 trackId = constructTrackId(cardId, productId, requestId, position, cardName),
-                isAd = if (isAd) 1 else 0,
-                isUseCache = if (isUseCache) 1 else 0,
+                isAd = isAd.intValue,
+                isUseCache = isUseCache.intValue,
                 recSessionId = recSessionId,
                 recParams = recParams,
                 requestId = requestId,
-                shopId = shopId.takeIf { it != "0" }.orEmpty(),
-                groupId = groupId.takeIf { it != "0" }.orEmpty(),
+                shopId = shopId.zeroAsEmpty(),
+                groupId = groupId.zeroAsEmpty(),
                 itemOrder = position.inc(),
                 entranceForm = entranceForm.str,
                 volume = volume,

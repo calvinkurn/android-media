@@ -5,6 +5,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SourcePageType
@@ -126,18 +127,18 @@ data class AppLogRecommendationProductModel(
             cardName: String = CardName.REC_GOODS_CARD,
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
-                productId = productId.takeIf { it != "0" }.orEmpty(),
+                productId = productId.zeroAsEmpty(),
                 listName = tabName,
                 listNum = tabPosition.inc(),
                 moduleName = moduleName,
                 sourceModule = constructSourceModule(isAd, moduleName, entranceForm),
                 trackId = constructTrackId(null, productId, requestId, position, cardName),
-                isAd = if (isAd) 1 else 0,
-                isUseCache = if (isUseCache) 1 else 0,
+                isAd = isAd.intValue,
+                isUseCache = isUseCache.intValue,
                 recSessionId = recSessionId,
                 recParams = recParams,
                 requestId = requestId,
-                shopId = shopId.takeIf { it != "0" }.orEmpty(),
+                shopId = shopId.zeroAsEmpty(),
                 itemOrder = position.inc(),
                 entranceForm = entranceForm.str,
                 volume = volume,
@@ -145,12 +146,9 @@ data class AppLogRecommendationProductModel(
                 originalPrice = originalPrice,
                 salesPrice = salesPrice,
                 enterMethod = enterMethod,
-                authorId = authorId.takeIf { it != "0" }.orEmpty(),
-                groupId = groupId.takeIf { it != "0" }.orEmpty(),
-                cardName = if(cardName == CardName.REC_GOODS_CARD) {
-                    if(isAd) CardName.AD_GOODS_CARD
-                    else CardName.REC_GOODS_CARD
-                } else cardName
+                authorId = authorId.zeroAsEmpty(),
+                groupId = groupId.zeroAsEmpty(),
+                cardName = getCardName(cardName, isAd)
             )
         }
     }
