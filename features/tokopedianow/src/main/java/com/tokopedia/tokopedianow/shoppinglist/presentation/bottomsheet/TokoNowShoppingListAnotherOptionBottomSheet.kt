@@ -183,9 +183,6 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         clearContentPadding = true
         showCloseIcon = true
         isHideable = true
-        setCloseClickListener {
-            dismiss()
-        }
     }
 
     private fun setupRecyclerView() {
@@ -193,6 +190,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
             adapter = this@TokoNowShoppingListAnotherOptionBottomSheet.adapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(ShoppingListAnotherOptionBottomSheetDecoration())
+            itemAnimator = null
         }
     }
 
@@ -217,8 +215,14 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
 
     fun show(
         fm: FragmentManager,
-        availableProducts: List<ShoppingListHorizontalProductCardItemUiModel>
+        availableProducts: List<ShoppingListHorizontalProductCardItemUiModel>,
+        onClickCloseListener: () -> Unit
     ) {
+        setCloseClickListener {
+            val isDataUpdated = viewModel.availableProducts != availableProducts
+            if (isDataUpdated) onClickCloseListener.invoke()
+            dismiss()
+        }
         show(fm, TAG)
         this.availableProducts.clear()
         this.availableProducts.addAll(availableProducts)

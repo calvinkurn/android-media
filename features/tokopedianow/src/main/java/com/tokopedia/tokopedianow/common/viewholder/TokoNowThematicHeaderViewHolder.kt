@@ -133,6 +133,8 @@ class TokoNowThematicHeaderViewHolder(
             .toBuilder()
             .setAllCornerSizes(ALL_CORNER_SIZES_CTA.toPx())
             .build()
+
+        root.background = null
     }
 
     private fun ItemTokopedianowHeaderBinding.setupTitle(

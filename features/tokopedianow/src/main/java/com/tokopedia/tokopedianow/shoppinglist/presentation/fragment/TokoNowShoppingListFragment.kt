@@ -37,7 +37,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.productcard.compact.similarproduct.presentation.bottomsheet.ProductCardCompactSimilarProductBottomSheet
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -198,6 +197,8 @@ class TokoNowShoppingListFragment :
         viewModel.layoutState.collect { uiState ->
             when (uiState) {
                 is UiState.Loading -> {
+                    binding.bottomBulkAtcView.hide()
+                    binding.miniCartWidget.hide()
                     val layout = uiState.data?.layout
                     if (!layout.isNullOrEmpty()) {
                         adapter.submitList(layout)
@@ -274,6 +275,7 @@ class TokoNowShoppingListFragment :
     ) {
         viewModel.bottomBulkAtcData.collect { model ->
             if (model != null) {
+                binding.bottomBulkAtcView.show()
                 binding.bottomBulkAtcView.bind(
                     counter = model.counter,
                     priceInt = model.price
@@ -583,7 +585,10 @@ class TokoNowShoppingListFragment :
             val bottomSheet = TokoNowShoppingListAnotherOptionBottomSheet.newInstance(productId)
             bottomSheet.show(
                 fm = childFragmentManager,
-                availableProducts = viewModel.getAvailableProducts()
+                availableProducts = viewModel.getAvailableProducts(),
+                onClickCloseListener = {
+                    viewModel.refreshLayout()
+                }
             )
         }
 
