@@ -81,8 +81,8 @@ class AutomateCouponListView @JvmOverloads constructor(
         binding.remainingBadge.render(badgeText)
     }
 
-    private fun renderExpiredDate(limit: TimeLimit) {
-        if (!limit.isAvailable()) {
+    private fun renderExpiredDate(limit: TimeLimit?) {
+        if (limit?.isAvailable() != true) {
             binding.tvTimeLimitPrefix.hide()
             binding.tvTimeLimit.hide()
             binding.timerCoupon.hide()
@@ -144,9 +144,9 @@ class AutomateCouponListView @JvmOverloads constructor(
         }
     }
 
-    private fun Typography.render(dynamicColorText: DynamicColorText) {
-        text = MethodChecker.fromHtml(dynamicColorText.value)
-        HexColorParser.parse(dynamicColorText.colorHex) {
+    private fun Typography.render(dynamicColorText: DynamicColorText?) {
+        text = MethodChecker.fromHtml(dynamicColorText?.value)
+        HexColorParser.parse(dynamicColorText?.colorHex.orEmpty()) {
             setTextColor(it)
         }
     }

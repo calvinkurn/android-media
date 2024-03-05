@@ -153,6 +153,7 @@ open class ThankYouBaseFragment :
     lateinit var thanksPageData: ThanksPageData
     private var isWidgetOrderingEnabled: Boolean = true
     private var isV2Enabled: Boolean = true
+    private var isPurchaseInfoEnabled: Boolean = true
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -192,6 +193,9 @@ open class ThankYouBaseFragment :
             }
             if (it.containsKey(ARG_IS_V2_ENABLED)) {
                 isV2Enabled = it.getBoolean(ARG_IS_V2_ENABLED)
+            }
+            if (it.containsKey(ARG_IS_PURCHASE_INFO_ENABLED)) {
+                isPurchaseInfoEnabled = it.getBoolean(ARG_IS_PURCHASE_INFO_ENABLED)
             }
         }
         activity?.apply {
@@ -672,7 +676,7 @@ open class ThankYouBaseFragment :
     }
 
     fun openInvoiceDetail(thanksPageData: ThanksPageData) {
-        InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData)
+        InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData, isPurchaseInfoEnabled)
         thankYouPageAnalytics.get().sendLihatDetailClickEvent(
             thanksPageData.profileCode,
             PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
@@ -685,7 +689,7 @@ open class ThankYouBaseFragment :
     }
 
     override fun openInvoiceDetail() {
-        InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData)
+        InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData, isPurchaseInfoEnabled)
         thankYouPageAnalytics.get().sendLihatDetailClickEvent(
             thanksPageData.profileCode,
             PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
@@ -1079,6 +1083,7 @@ open class ThankYouBaseFragment :
         const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
         const val ARG_IS_WIDGET_ORDERING_ENABLED = "arg_is_enabled_ordering_enabled"
         const val ARG_IS_V2_ENABLED = "arg_is_v2_enabled"
+        const val ARG_IS_PURCHASE_INFO_ENABLED = "arg_is_purchase_info_enabled"
 
         /* Constant for toads headlines widget*/
         const val TOP_ADS_SRC = "thank_you_page"
@@ -1098,13 +1103,15 @@ open class ThankYouBaseFragment :
             bundle: Bundle,
             thanksPageData: ThanksPageData,
             isWidgetOrderingEnabled: Boolean,
-            isV2Enabled: Boolean
+            isV2Enabled: Boolean,
+            isPurchaseInfoEnabled: Boolean
         ): ThankYouBaseFragment = ThankYouBaseFragment().apply {
             bundle.let {
                 arguments = bundle
                 bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
                 bundle.putBoolean(ARG_IS_WIDGET_ORDERING_ENABLED, isWidgetOrderingEnabled)
                 bundle.putBoolean(ARG_IS_V2_ENABLED, isV2Enabled)
+                bundle.putBoolean(ARG_IS_PURCHASE_INFO_ENABLED, isPurchaseInfoEnabled)
             }
         }
     }

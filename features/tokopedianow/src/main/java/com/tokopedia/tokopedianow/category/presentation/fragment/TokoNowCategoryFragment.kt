@@ -52,9 +52,9 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryL1Binding
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
-import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_CATEGORY_ID
-import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_REF
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking
+import com.tokopedia.tokopedianow.category.constant.RECOM_QUERY_PARAM_CATEGORY_ID
+import com.tokopedia.tokopedianow.category.constant.RECOM_QUERY_PARAM_REF
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

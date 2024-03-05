@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.mvcwidget.multishopmvc.MvcMultiShopView
+    <com.tokopedia.discovery_component.widgets.automatecoupon.AutomateCouponListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/mvc_multi_view"

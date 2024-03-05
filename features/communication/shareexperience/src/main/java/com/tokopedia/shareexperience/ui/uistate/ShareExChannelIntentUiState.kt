@@ -13,5 +13,5 @@ data class ShareExChannelIntentUiState(
     val isLoading: Boolean = false,
     val error: Throwable? = null,
     val imageType: ShareExImageTypeEnum = ShareExImageTypeEnum.NO_IMAGE,
-    val errorEnum: ShareExIntentErrorEnum? = null
+    val errorHistory: List<ShareExIntentErrorEnum> = listOf()
 )

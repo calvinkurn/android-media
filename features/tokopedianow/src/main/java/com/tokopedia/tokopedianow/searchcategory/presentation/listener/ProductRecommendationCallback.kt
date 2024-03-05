@@ -10,12 +10,13 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
-import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_CATEGORY_ID
-import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_REF
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
+import com.tokopedia.tokopedianow.category.constant.RECOM_QUERY_PARAM_CATEGORY_ID
+import com.tokopedia.tokopedianow.category.constant.RECOM_QUERY_PARAM_REF
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapProductItemToRecommendationItem
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
@@ -133,7 +134,7 @@ data class ProductRecommendationCallback(
         appLink: String
     ) {
         val newAppLink = if (eventCategory == TOKONOW_CATEGORY_PAGE) {
-            com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.sendRecommendationSeeAllClickEvent(categoryIdTracking)
+            CategoryTracking.sendRecommendationSeeAllClickEvent(categoryIdTracking)
             modifySeeMoreAppLink(appLink)
         } else {
             SearchResultTracker.sendRecommendationSeeAllClickEvent(query)

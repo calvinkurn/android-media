@@ -1,7 +1,6 @@
 package com.tokopedia.shareexperience.stub.di
 
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.shareexperience.data.di.ShareExUseCaseModule
 import com.tokopedia.shareexperience.data.di.ShareExViewModelModule
 import com.tokopedia.shareexperience.data.di.component.ShareExComponent
 import com.tokopedia.shareexperience.stub.di.base.ShareExFakeBaseAppComponent
@@ -14,10 +13,10 @@ import dagger.Component
         // Stub modules
         ShareExModuleStub::class,
         ShareExRepositoryModuleStub::class,
+        ShareExUseCaseModuleStub::class,
 
         // Real modules
-        ShareExViewModelModule::class,
-        ShareExUseCaseModule::class
+        ShareExViewModelModule::class
     ],
     dependencies = [ShareExFakeBaseAppComponent::class]
 )

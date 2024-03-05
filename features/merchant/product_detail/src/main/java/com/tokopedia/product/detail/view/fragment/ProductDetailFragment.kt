@@ -273,6 +273,7 @@ import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCa
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
 import com.tokopedia.product.detail.view.widget.NavigationTab
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
@@ -286,7 +287,6 @@ import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
-import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.extension.DEFAULT_QTY_1
 import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_RECOM_ATC
@@ -637,8 +637,12 @@ open class ProductDetailFragment :
     override val recyclerViewPool: RecyclerView.RecycledViewPool?
         get() = getRecyclerView()?.recycledViewPool
 
+    override val pdpRemoteConfig: RemoteConfig
+        get() = remoteConfig
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        productRecomm.init()
         if (prefetchCacheId.isEmpty()) showLoading()
         initBtnAction()
 
@@ -749,7 +753,6 @@ open class ProductDetailFragment :
         observeP2Login()
         observeToggleFavourite()
         observeToggleNotifyMe()
-        observeRecommendationProduct()
         observeAddToCart()
         observeOnThumbnailVariantSelected()
         observeATCRecomData()
@@ -1893,25 +1896,19 @@ open class ProductDetailFragment :
     }
 
     override fun loadTopads(pageName: String, queryParam: String, thematicId: String) {
-        val p1 = viewModel.getProductInfoP1 ?: ProductInfoP1()
-        viewModel.loadRecommendation(
+        productRecomm.loadRecommendation(
             pageName = pageName,
-            productId = p1.basic.productID,
-            isTokoNow = p1.basic.isTokoNow,
-            miniCart = viewModel.p2Data.value?.miniCart,
             queryParam = queryParam,
             thematicId = thematicId
         )
     }
 
     override fun loadViewToView(pageName: String, queryParam: String, thematicId: String) {
-        val p1 = viewModel.getProductInfoP1 ?: ProductInfoP1()
-        viewModel.loadViewToView(
+        productRecomm.loadRecommendation(
             pageName = pageName,
-            productId = p1.basic.productID,
-            isTokoNow = p1.basic.isTokoNow,
             queryParam = queryParam,
-            thematicId = thematicId
+            thematicId = thematicId,
+            isViewToView = true
         )
     }
 
@@ -3233,87 +3230,6 @@ open class ProductDetailFragment :
         view?.showToasterSuccess(if (isNplFollowerType) getString(productdetailcommonR.string.merchant_product_detail_success_follow_shop_npl) else message)
     }
 
-    private fun observeRecommendationProduct() {
-        viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
-            data.doSuccessOrFail({
-                if (it.data.recommendationItemList.isNotEmpty()) {
-                    val enableComparisonWidget = remoteConfig.getBoolean(
-                        RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET,
-                        true
-                    )
-                    if (enableComparisonWidget) {
-                        when (it.data.layoutType) {
-                            RecommendationTypeConst.TYPE_COMPARISON_BPC_WIDGET -> {
-                                pdpUiUpdater?.updateComparisonBpcDataModel(
-                                    it.data,
-                                    viewModel.getProductInfoP1?.basic?.productID.orEmpty()
-                                )
-                                updateUi()
-                            }
-                            RecommendationTypeConst.TYPE_COMPARISON_WIDGET -> {
-                                pdpUiUpdater?.updateComparisonDataModel(it.data)
-                                updateUi()
-                            }
-                            else -> {
-                                pdpUiUpdater?.updateRecommendationData(it.data)
-                                updateUi()
-                            }
-                        }
-                    } else {
-                        pdpUiUpdater?.updateRecommendationData(it.data)
-                        updateUi()
-                    }
-                } else {
-                    // recomUiPageName used because there is possibilites gql recom return empty pagename
-                    pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
-                    updateUi()
-                }
-            }, {
-                pdpUiUpdater?.removeComponent(it.message ?: "")
-                updateUi()
-                logException(it)
-            })
-        }
-
-        viewLifecycleOwner.observe(viewModel.statusFilterTopAdsProduct) {
-            if (it is Fail) {
-                view?.showToasterError(
-                    context?.getString(R.string.recom_filter_chip_click_error_network).orEmpty(),
-                    ctaText = getString(productdetailcommonR.string.pdp_common_oke)
-                )
-            }
-        }
-
-        viewLifecycleOwner.observe(viewModel.filterTopAdsProduct) { data ->
-            pdpUiUpdater?.updateFilterRecommendationData(data)
-            updateUi()
-        }
-
-        observeViewToView()
-    }
-
-    private fun observeViewToView() {
-        observe(viewModel.loadViewToView) { data ->
-            data.doSuccessOrFail({
-                if (it.data.recommendationItemList.size > 1) {
-                    pdpUiUpdater?.updateViewToViewData(
-                        it.data.copy(
-                            recommendationItemList = it.data.recommendationItemList
-                        )
-                    )
-                    updateUi()
-                } else {
-                    pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
-                    updateUi()
-                }
-            }, {
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.VIEW_TO_VIEW)
-                updateUi()
-                logException(it)
-            })
-        }
-    }
-
     /**
      * When Vertical Recommendation Exists, will attach endless scroll listener
      * otherwise, the listener will be remove from recyclerView
@@ -3497,7 +3413,7 @@ open class ProductDetailFragment :
         }
     }
 
-    private fun updateUi() {
+    override fun updateUi() {
         val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
 
         val finalData = if (isTabletMode()) {
@@ -3523,11 +3439,7 @@ open class ProductDetailFragment :
         renderVariant(viewModel.variantData)
 
         pdpUiUpdater?.updateDataP1(productInfo, true)
-        pdpUiUpdater?.updateInitialMedia(
-            productInfo.data.media,
-            productInfo.data.containerType,
-            productInfo.data.productMediaRecomBasicInfo
-        )
+
         pdpUiUpdater?.updateInitialAPlusContent(
             productInfo = productInfo,
             userID = viewModel.userId,
@@ -3737,7 +3649,7 @@ open class ProductDetailFragment :
         goToShipmentErrorAddressOrChat(Int.ZERO)
     }
 
-    private fun logException(t: Throwable) {
+    override fun logException(t: Throwable) {
         if (!BuildConfig.DEBUG) {
             val errorMessage = String.format(
                 getString(R.string.on_error_p1_string_builder),
@@ -5073,20 +4985,20 @@ open class ProductDetailFragment :
                 shopId
             )
 
-            
+
             val shopCredibility = pdpUiUpdater?.shopCredibility ?: return
 
             val prefetch = ShopPagePrefetch()
             val prefetchData = shopCredibility.toShopPrefetchData()
             prefetch.redirectToShopPageWithPrefetch(context ?: return, prefetchData, intent)
-            
+
             startActivityForResult(
                 intent,
                 ProductDetailConstant.REQUEST_CODE_SHOP_INFO
             )
         }
     }
-    
+
     private fun ProductShopCredibilityDataModel.toShopPrefetchData(): ShopPrefetchData {
         val averageShopRatingId = context?.getString(R.string.pdp_product_average_review).orEmpty()
         val shopRating = infoShopData.firstOrNull { it.desc == averageShopRatingId }?.value

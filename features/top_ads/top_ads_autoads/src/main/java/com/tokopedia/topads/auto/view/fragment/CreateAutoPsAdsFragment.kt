@@ -248,6 +248,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
         binding?.manualAdsWidget?.manualAdsCta?.setOnClickListener(this)
         binding?.btnSubmit?.setOnClickListener(this)
         binding?.infoTextCta?.setOnClickListener(this)
+        binding?.autoadsWidget?.autoAdsCta?.setOnClickListener(this)
 
         binding?.editBudgetWidget?.dailyBudget?.editText?.addTextChangedListener(object :
             NumberTextWatcher(binding?.editBudgetWidget?.dailyBudget?.editText!!) {
@@ -435,6 +436,8 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                 tipsListSheet?.setTitle(getString(topadscommonR.string.topads_common_daily_budget_tips))
                 tipsListSheet?.show(childFragmentManager, String.EMPTY)
             }
+
+            binding?.autoadsWidget?.autoAdsCta?.id -> showManualAdsConfirmationDailog()
         }
     }
 

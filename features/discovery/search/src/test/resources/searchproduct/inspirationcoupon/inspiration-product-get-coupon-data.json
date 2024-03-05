@@ -93,7 +93,7 @@
           ],
           "ctaList": [
             {
-              "text": "Klaim",
+              "text": "Claim",
               "type": "claim",
               "isDisabled": false,
               "jsonMetadata": "{\"catalog_id\":40487}",
