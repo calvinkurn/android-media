@@ -799,7 +799,7 @@ abstract class BaseSearchCategoryFragment :
                 getMiniCartHeight()
             } else {
                 context?.resources?.getDimensionPixelSize(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
+                    unifyprinciplesR.dimen.layout_lvl0
                 ).orZero()
             }
             stickyView?.setPadding(NO_PADDING, NO_PADDING, NO_PADDING, paddingBottom)
