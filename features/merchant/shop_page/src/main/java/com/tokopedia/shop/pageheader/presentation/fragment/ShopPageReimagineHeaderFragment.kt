@@ -799,10 +799,10 @@ class ShopPageReimagineHeaderFragment :
             if (shopImageFilePath.isNotEmpty()) {
                 isGeneralShareBottomSheet = true
 
-                shopHeaderViewModel?.getProductListData(
+                shopHeaderViewModel?.getShopShareProductListData(
                     shopId = shopId,
                     page = START_PAGE,
-                    itemPerPage = ShopUtil.getProductPerPage(context = context, isShare = true),
+                    itemPerPage = ShopPageConstant.DEFAULT_PER_FOR_SHARE_PURPOSE,
                     shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
                     keyword = "",
                     etalaseId = "",

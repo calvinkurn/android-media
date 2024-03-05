@@ -267,7 +267,7 @@ class ShopPageHeaderViewModel @Inject constructor(
         return useCase.executeOnBackground()
     }
 
-    fun getProductListData(
+    fun getShopShareProductListData(
         shopId: String,
         page: Int,
         itemPerPage: Int,

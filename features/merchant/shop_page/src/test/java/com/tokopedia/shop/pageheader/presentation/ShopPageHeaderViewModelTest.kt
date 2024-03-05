@@ -489,7 +489,7 @@ class ShopPageHeaderViewModelTest {
         } returns ShopProduct.GetShopProduct()
 
         coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct()
-        shopPageHeaderViewModel.getProductListData(
+        shopPageHeaderViewModel.getShopShareProductListData(
             shopId = mockShopId,
             page = mockPage,
             itemPerPage = mockItemPerPage,
@@ -515,7 +515,7 @@ class ShopPageHeaderViewModelTest {
         } returns ShopProduct.GetShopProduct()
 
         coEvery { getShopProductListUseCase.get().executeOnBackground() } throws Exception()
-        shopPageHeaderViewModel.getProductListData(
+        shopPageHeaderViewModel.getShopShareProductListData(
             shopId = mockShopId,
             page = mockPage,
             itemPerPage = mockItemPerPage,

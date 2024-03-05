@@ -43,14 +43,10 @@ object ShopUtil {
 
     fun getProductPerPage(context: Context?, isShare: Boolean = false): Int {
         return context?.let {
-            if (isShare) {
-                DEFAULT_PER_FOR_SHARE_PURPOSE
+            if (DeviceScreenInfo.isTablet(context)) {
+                DEFAULT_PER_PAGE_TABLET
             } else {
-                if (DeviceScreenInfo.isTablet(context)) {
-                    DEFAULT_PER_PAGE_TABLET
-                } else {
-                    DEFAULT_PER_PAGE_NON_TABLET
-                }
+                DEFAULT_PER_PAGE_NON_TABLET
             }
         } ?: DEFAULT_PER_PAGE_NON_TABLET
     }
