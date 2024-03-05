@@ -71,7 +71,6 @@ object AppLogRecommendation {
             trackId = trackId,
             sourcePageType = SourcePageType.PRODUCT_CARD,
             requestId = requestId,
-            sourcePreviousPage = getSourcePreviousPage()
         )
     }
 
@@ -84,7 +83,6 @@ object AppLogRecommendation {
             trackId = trackId,
             sourcePageType = SourcePageType.PRODUCT_CARD,
             requestId = requestId,
-            sourcePreviousPage = getSourcePreviousPage()
         )
     }
 }

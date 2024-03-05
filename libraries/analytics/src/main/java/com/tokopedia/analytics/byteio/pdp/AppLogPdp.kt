@@ -15,8 +15,10 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePreviousPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastData
+import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastDataBeforeCurrent
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.PageName
@@ -167,6 +169,10 @@ object AppLogPdp {
     }
 
     fun sendCartEnterPage(cartCount: Int, cartUnavailCount: Int) {
+        /**
+         * Setting global param source previous page
+         * */
+        AppLogAnalytics.putPageData(SOURCE_PREVIOUS_PAGE, getLastDataBeforeCurrent(PAGE_NAME).toString())
         AppLogAnalytics.send(EventName.ENTER_PAGE, JSONObject().also {
             it.addPage()
             it.addEnterFrom()
