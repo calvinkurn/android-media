@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -189,19 +190,31 @@ private fun ProductVisualWithoutStock(
     Box {
         NestImage(
             source = ImageSource.Remote(productImage),
-            type = NestImageType.Rect(12.dp),
+            type = NestImageType.Rect(0.dp),
+            contentScale = ContentScale.FillBounds,
             modifier = Modifier
                 .height(90.dp)
                 .width(90.dp)
+                .clip(
+                    RoundedCornerShape(
+                        12.dp
+                    )
+                )
         )
         if (freeOngkir.isNotEmpty()) {
             NestImage(
                 source = ImageSource.Remote(freeOngkir),
                 type = NestImageType.Rect(0.dp),
+                alignment = Alignment.BottomStart,
                 modifier = Modifier
                     .height(25.dp)
                     .width(48.dp)
                     .align(Alignment.BottomStart)
+                    .clip(
+                        RoundedCornerShape(
+                            bottomStart = 12.dp
+                        )
+                    )
             )
         }
     }
@@ -241,6 +254,7 @@ private fun ProductVisualWithStock(
                     NestImage(
                         source = ImageSource.Remote(freeOngkir),
                         type = NestImageType.Rect(0.dp),
+                        alignment =  Alignment.BottomStart,
                         modifier = Modifier
                             .height(25.dp)
                             .width(48.dp)
@@ -250,6 +264,11 @@ private fun ProductVisualWithStock(
                                 )
                             )
                             .align(Alignment.BottomStart)
+                            .clip(
+                                RoundedCornerShape(
+                                    bottomStart = 12.dp
+                                )
+                            )
                     )
                 }
             }
@@ -291,6 +310,19 @@ private fun ProductVisualWithStock(
 
 @Composable
 private fun ShopInfoRow(shopName: String, shopLocation: String, badge: String) {
+    val maxCharShopName = 32
+    val maxCharShopLocation = 16
+    val shopNameTruncate = if (shopName.length > maxCharShopName) {
+        shopName.substring(Int.ZERO,maxCharShopName) + "....."
+    } else {
+        shopName
+    }
+
+    val shopLocationTruncate = if (shopLocation.length > maxCharShopLocation) {
+        shopLocation.substring(Int.ZERO,maxCharShopLocation) + "....."
+    } else {
+        shopLocation
+    }
     Row(verticalAlignment = Alignment.CenterVertically) {
         NestImage(
             source = ImageSource.Remote(badge),
@@ -300,13 +332,14 @@ private fun ShopInfoRow(shopName: String, shopLocation: String, badge: String) {
         )
         Spacer(modifier = Modifier.width(4.dp))
         NestTypography(
-            text = shopName,
+            text = shopNameTruncate,
             textStyle = NestTheme.typography.display3.copy(
                 color = colorResource(
                     id = R.color.catalog_dms_light_color_text_description
                 ),
-                fontWeight = FontWeight.Normal
-            )
+                fontWeight = FontWeight.Normal,
+            ),
+            maxLines = 1
         )
         Spacer(modifier = Modifier.width(4.dp))
 
@@ -324,13 +357,15 @@ private fun ShopInfoRow(shopName: String, shopLocation: String, badge: String) {
             )
             Spacer(modifier = Modifier.width(4.dp))
             NestTypography(
-                text = shopLocation,
+                text = shopLocationTruncate,
                 textStyle = NestTheme.typography.display3.copy(
                     color = colorResource(
                         id = R.color.catalog_dms_light_color_text_description
                     ),
                     fontWeight = FontWeight.Normal
-                )
+                ),
+                maxLines = 1,
+                modifier = Modifier.width(100.dp)
             )
         }
     }
