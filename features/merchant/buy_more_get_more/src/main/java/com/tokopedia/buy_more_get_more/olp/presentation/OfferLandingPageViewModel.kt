@@ -28,6 +28,7 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.SelectedTierData
 import com.tokopedia.buy_more_get_more.olp.domain.entity.SharingDataByOfferIdUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetSharingDataByOfferIDUseCase
 import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil
+import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil.toCartDataList
 import com.tokopedia.campaign.data.request.GetOfferingInfoForBuyerRequestParam
 import com.tokopedia.campaign.data.request.GetOfferingInfoForBuyerRequestParam.UserLocation
 import com.tokopedia.campaign.data.request.GetOfferingProductListRequestParam
@@ -36,7 +37,6 @@ import com.tokopedia.campaign.usecase.GetOfferProductListUseCase
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.usecase.GetCartParam
 import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
-import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.uimodel.CartMutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -334,7 +334,7 @@ class OfferLandingPageViewModel @Inject constructor(
     private fun setCartDataList(cartData: CartData) {
         cartDataList.value.run {
             clear()
-            addAll(CartUiModelMapper.mapAvailableGroupUiModel(cartData))
+            addAll(cartData.toCartDataList())
         }
     }
 

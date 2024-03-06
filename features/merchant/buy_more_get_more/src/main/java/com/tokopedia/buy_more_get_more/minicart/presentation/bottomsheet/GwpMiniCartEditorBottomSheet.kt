@@ -33,6 +33,7 @@ import com.tokopedia.buy_more_get_more.minicart.presentation.model.effect.MiniCa
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.event.MiniCartEditorEvent
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.state.MiniCartEditorState
 import com.tokopedia.buy_more_get_more.minicart.presentation.viewmodel.MiniCartEditorViewModel
+import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil.getGiftListMainProducts
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -86,6 +87,7 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        viewModel.setEvent(MiniCartEditorEvent.GetCartData(param.cartId))
         viewModel.setEvent(MiniCartEditorEvent.FetchData(param))
     }
 
@@ -157,7 +159,11 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
             pageSource = PageSource.OFFER_LANDING_PAGE,
             autoSelectTierChipByTierId = selectedTierId,
             shopId = shopId,
-            mainProducts = emptyList() //TODO: Replace with real data of main products from cart
+            mainProducts = getGiftListMainProducts(
+                cartDataList = viewModel.cartDataList.value,
+                offerId = selectedOfferId,
+                shopId = shopId
+            )
         )
         if (childFragmentManager.isStateSaved || bottomSheet.isAdded) return
         bottomSheet.show(childFragmentManager, bottomSheet.tag)

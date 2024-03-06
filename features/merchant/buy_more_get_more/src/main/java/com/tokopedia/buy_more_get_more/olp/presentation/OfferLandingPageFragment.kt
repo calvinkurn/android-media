@@ -39,6 +39,7 @@ import com.tokopedia.buy_more_get_more.olp.presentation.adapter.decoration.Produ
 import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.TncBottomSheet
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
+import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil
 import com.tokopedia.buy_more_get_more.olp.utils.constant.BundleConstant
 import com.tokopedia.buy_more_get_more.olp.utils.constant.Constant
 import com.tokopedia.buy_more_get_more.olp.utils.extension.setDefaultStatusBar
@@ -321,6 +322,7 @@ class OfferLandingPageFragment :
                     }
                     viewModel.processEvent(OlpEvent.SetCartId(atc.data.data.cartId))
                     viewModel.processEvent(OlpEvent.GetNotification)
+                    fetchMiniCart()
                 }
 
                 is Fail -> {
@@ -507,8 +509,8 @@ class OfferLandingPageFragment :
             if (atcMessage.isNotEmpty()) {
                 binding?.miniCartView.showToaster(atcMessage)
             }
-            fetchMiniCart()
             viewModel.processEvent(OlpEvent.SetCartId(cartId))
+            fetchMiniCart()
             tracker.sendClickCloseVariantEvent(
                 currentState.offerIds.toSafeString(),
                 currentState.warehouseIds.toSafeString(),
@@ -800,7 +802,8 @@ class OfferLandingPageFragment :
             shopIds = listOf(currentState.shopData.shopId),
             offerIds = currentState.offerIds,
             offerJsonData = currentState.offeringJsonData,
-            warehouseIds = currentState.warehouseIds
+            warehouseIds = currentState.warehouseIds,
+            cartId = currentState.cartId
         )
     }
 
@@ -1020,7 +1023,12 @@ class OfferLandingPageFragment :
             pageSource = PageSource.OFFER_LANDING_PAGE,
             autoSelectTierChipByTierId = selectedTierId,
             shopId = currentState.shopData.shopId.toString(),
-            mainProducts = getGiftListMainProducts()
+            mainProducts = BmgmUtil.getGiftListMainProducts(
+                viewModel.cartDataList.value,
+                offerId = currentState.offerIds.firstOrNull().orZero(),
+                shopId = currentState.shopData.shopId.toString(),
+                offerTypeId = currentState.offerTypeId
+            )
         )
 
         bottomSheet.setOnDismissListener {
