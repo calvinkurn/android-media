@@ -281,7 +281,7 @@ class FundsAndInvestmentTest {
         composeRule.setContent {
             FundsAndInvestmentScreen(
                 userId = "",
-                uiState = MutableLiveData(FundsAndInvestmentResult.Loading(false)),
+                uiState = MutableLiveData(FundsAndInvestmentResult.Content(listOf(), listOf())),
                 onItemClicked = {},
                 onBackClicked = { callback = true },
                 onReloadData = {}

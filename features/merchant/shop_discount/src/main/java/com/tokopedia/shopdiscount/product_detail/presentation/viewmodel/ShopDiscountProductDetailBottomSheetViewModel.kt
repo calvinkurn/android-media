@@ -10,12 +10,16 @@ import com.tokopedia.shopdiscount.common.data.response.DoSlashPriceProductReserv
 import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
 import com.tokopedia.shopdiscount.manage.data.response.DeleteDiscountResponse
 import com.tokopedia.shopdiscount.manage.domain.usecase.DeleteDiscountUseCase
+import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
+import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageEntrySource
 import com.tokopedia.shopdiscount.product_detail.ShopDiscountProductDetailMapper
 import com.tokopedia.shopdiscount.product_detail.data.response.GetSlashPriceProductDetailResponse
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountDetailReserveProductUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailDeleteUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
 import com.tokopedia.shopdiscount.product_detail.domain.GetSlashPriceProductDetailUseCase
+import com.tokopedia.shopdiscount.subsidy.model.mapper.ShopDiscountManageProductSubsidyUiModelMapper
+import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountManageProductSubsidyUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -44,6 +48,10 @@ class ShopDiscountProductDetailBottomSheetViewModel @Inject constructor(
     val deleteProductDiscount: LiveData<Result<ShopDiscountProductDetailDeleteUiModel>>
         get() = _deleteProductDiscount
 
+    val manageProductSubsidyUiModelLiveData: LiveData<Result<ShopDiscountManageProductSubsidyUiModel>>
+        get() = _manageProductSubsidyUiModelLiveData
+    private val _manageProductSubsidyUiModelLiveData =
+        MutableLiveData<Result<ShopDiscountManageProductSubsidyUiModel>>()
 
     fun getProductDetailListData(productId: String, status: Int) {
         launchCatchError(dispatcherProvider.io, block = {
@@ -97,8 +105,9 @@ class ShopDiscountProductDetailBottomSheetViewModel @Inject constructor(
     ): GetSlashPriceProductDetailResponse {
         getSlashPriceProductDetailUseCase.setParams(
             ShopDiscountProductDetailMapper.getGetSlashPriceProductDetailRequestData(
-                productId,
-                status
+                listOf(productId),
+                status,
+                false
             )
         )
         return getSlashPriceProductDetailUseCase.executeOnBackground()
@@ -125,4 +134,38 @@ class ShopDiscountProductDetailBottomSheetViewModel @Inject constructor(
         return deleteDiscountUseCase.executeOnBackground()
     }
 
+    fun getListProductDetailForManageSubsidy(
+        listProductDetailData: List<ShopDiscountProductDetailUiModel.ProductDetailData>,
+        mode: String
+    ) {
+        val entrySource = getEntrySource(mode)
+        val mappedUiModel = ShopDiscountManageProductSubsidyUiModelMapper.map(
+            listProductDetailData = listProductDetailData,
+            mode = mode,
+            entrySource = entrySource
+        )
+        if (mode == ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY) {
+            listProductDetailData.filter { it.isSubsidy }.map {
+                mappedUiModel.addSelectedProductToOptOut(it)
+            }
+        }
+        _manageProductSubsidyUiModelLiveData.postValue(Success(mappedUiModel))
+    }
+
+    private fun getEntrySource(mode: String): ShopDiscountManageEntrySource {
+        return when (mode) {
+            ShopDiscountManageDiscountMode.UPDATE -> {
+                ShopDiscountManageEntrySource.EDIT
+            }
+            ShopDiscountManageDiscountMode.DELETE -> {
+                ShopDiscountManageEntrySource.DELETE
+            }
+            ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
+                ShopDiscountManageEntrySource.OPT_OUT
+            }
+            else -> {
+                ShopDiscountManageEntrySource.EDIT
+            }
+        }
+    }
 }

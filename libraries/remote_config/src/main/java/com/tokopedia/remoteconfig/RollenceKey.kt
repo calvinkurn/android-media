@@ -103,7 +103,6 @@ object RollenceKey {
     const val THANKYOU_PAGE_WIDGET_VARIANT = "TYP_Exp_PG_DG"
 
     // TokopediaNOW
-    const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
     const val TOKOPEDIA_NOW_PAGINATION = "now_pagination"
     const val TOKOPEDIA_NOW_EXPERIMENT = "now_experiment"
 

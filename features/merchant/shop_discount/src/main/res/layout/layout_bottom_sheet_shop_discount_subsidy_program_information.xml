@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_subsidy_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="paragraph_3"
+            tools:text="Description" />
+
+        <LinearLayout
+            android:id="@+id/price_info_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/shop_discount_bg_subsidy_detail_information_item"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_price_info_section_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sd_subsidy_price_info_label_section_single_warehouse"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="paragraph_3"
+                app:typographyWeight="bold" />
+
+            <LinearLayout
+                android:id="@+id/multi_wh_tokopedia_discount_range_percentage_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sd_subsidy_multi_wh_discount_range_percentage_label"
+                    android:textColor="@color/Unify_NN600"
+                    app:typographyType="paragraph_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_tokopedia_discount_range_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="paragraph_3"
+                    tools:text="20% - 25%" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/original_price_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sd_subsidy_original_price_label"
+                    android:textColor="@color/Unify_NN600"
+                    app:typographyType="paragraph_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_original_price_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="paragraph_3"
+                    tools:text="Rp 300.000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/seller_discount_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/sd_vertical_divider"
+                        app:typographyType="paragraph_3"
+                        tools:text="Harga Diskon" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/sd_subsidy_seller_discount_label"
+                        android:textColor="@color/Unify_NN600"
+                        app:typographyType="paragraph_3" />
+                </LinearLayout>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_seller_discount_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:gravity="end"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="paragraph_3"
+                    tools:text="-Rp30.000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/seller_discount_percentage_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/sd_vertical_divider" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_seller_discount_percentage_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/Unify_NN600"
+                    app:typographyType="small"
+                    tools:text="@string/sd_subsidy_discount_percentage_format" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tokopedia_subsidy_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/sd_vertical_divider" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/sd_subsidy_tokopedia_subsidy_label"
+                        android:textColor="@color/Unify_NN600"
+                        app:typographyType="paragraph_3" />
+                </LinearLayout>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_tokopedia_subsidy_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:gravity="end"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="paragraph_3"
+                    tools:text="-Rp20.000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tokopedia_subsidy_percentage_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/sd_vertical_divider" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_tokopedia_subsidy_percentage_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/Unify_NN600"
+                    app:typographyType="small"
+                    tools:text="@string/sd_subsidy_discount_percentage_format" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/final_price_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sd_subsidy_final_price_label"
+                    android:textColor="@color/Unify_NN600"
+                    app:typographyType="paragraph_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_final_price_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="paragraph_3"
+                    app:typographyWeight="bold"
+                    tools:text="Rp250.000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/final_price_percentage_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_final_price_percentage_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_NN600"
+                    app:typographyType="small"
+                    tools:text="@string/sd_subsidy_discount_percentage_format" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/stock_info_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/shop_discount_bg_subsidy_detail_information_item"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sd_subsidy_stock_info_label_section"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="paragraph_3"
+                app:typographyWeight="bold" />
+
+
+            <LinearLayout
+                android:id="@+id/main_stock_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sd_subsidy_main_stock_label"
+                    android:textColor="@color/Unify_NN600"
+                    app:typographyType="paragraph_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_main_stock_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="paragraph_3"
+                    tools:text="400" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/subsidy_stock_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sd_subsidy_subsidy_stock_label"
+                    android:textColor="@color/Unify_NN600"
+                    app:typographyType="paragraph_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_subsidy_stock_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="paragraph_3"
+                    tools:text="100" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/remaining_subsidy_stock_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sd_subsidy_remaining_subsidy_stock_label"
+                    android:textColor="@color/Unify_NN600"
+                    app:typographyType="paragraph_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_remaining_subsidy_stock_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="paragraph_3"
+                    tools:text="100" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/max_order_info_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/shop_discount_bg_subsidy_detail_information_item"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sd_subsidy_max_order_info_label_section"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="paragraph_3"
+                app:typographyWeight="bold" />
+
+            <LinearLayout
+                android:id="@+id/max_order_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sd_subsidy_max_order_info_label"
+                    android:textColor="@color/Unify_NN600"
+                    app:typographyType="paragraph_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_max_order_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="paragraph_3"
+                    tools:text="10" />
+            </LinearLayout>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/sd_subsidy_handled_by_tokopedia"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="small" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/subsidy_period_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/shop_discount_bg_subsidy_detail_information_item"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sd_subsidy_period_subsidy_info_label_section"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="paragraph_3"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_subsidy_period_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="paragraph_3"
+                tools:text="26 Sep 2022 08:00 - 31 Des 2022 08:00 WIB" />
+        </LinearLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_multi_warehouse_product_information"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="paragraph_3"
+            android:text="@string/sd_subsidy_multi_wh_program_information_description"
+            tools:visibility="visible"/>
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

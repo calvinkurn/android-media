@@ -127,5 +127,4 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.tokomemberUiCommon)
     implementation projectOrAar(rootProject.ext.features.centralizedPromo)
     implementation projectOrAar(rootProject.ext.features.powerMerchantSubscribe)
-    implementation projectOrAar(rootProject.ext.features.scpAuth)
 }

@@ -21,6 +21,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
+import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_FOR_SHARE_PURPOSE
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_PAGE_NON_TABLET
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_PAGE_TABLET
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
@@ -40,7 +41,7 @@ object ShopUtil {
     var isFoldableAndHorizontalScreen: Boolean = false
     var isFoldable: Boolean = true
 
-    fun getProductPerPage(context: Context?): Int {
+    fun getProductPerPage(context: Context?, isShare: Boolean = false): Int {
         return context?.let {
             if (DeviceScreenInfo.isTablet(context)) {
                 DEFAULT_PER_PAGE_TABLET
@@ -154,6 +155,15 @@ object ShopUtil {
             // TODO need to add default color from unify, but need to pass context on param
             FirebaseCrashlytics.getInstance().recordException(e)
             Int.ZERO
+        }
+    }
+    
+    fun parseColorOrFallback(hexColor: String, fallbackColor: Int): Int {
+        return try {
+            Color.parseColor(hexColor)
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            fallbackColor
         }
     }
 

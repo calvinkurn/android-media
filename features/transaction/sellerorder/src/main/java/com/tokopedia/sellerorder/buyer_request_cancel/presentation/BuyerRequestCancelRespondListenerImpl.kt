@@ -5,6 +5,7 @@ import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 
 class BuyerRequestCancelRespondListenerImpl: IBuyerRequestCancelRespondListener {
 
+    @Suppress("LateinitUsage")
     private lateinit var _mediator: IBuyerRequestCancelRespondListener.Mediator
 
     override fun registerBuyerRequestCancelRespondListenerMediator(mediator: IBuyerRequestCancelRespondListener.Mediator) {

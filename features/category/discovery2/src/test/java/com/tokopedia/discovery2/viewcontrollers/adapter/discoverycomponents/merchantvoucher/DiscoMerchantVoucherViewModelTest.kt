@@ -4,10 +4,12 @@ import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
-import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
-import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
-import io.mockk.*
+import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
@@ -23,7 +25,7 @@ class DiscoMerchantVoucherViewModelTest {
     private var viewModel: DiscoMerchantVoucherViewModel = spyk(DiscoMerchantVoucherViewModel(application, componentsItem, 99))
     private val list = ArrayList<DataItem>()
     private val mockDataItem:DataItem = mockk()
-    private val mvcSummaryUseCase: MVCSummaryUseCase by lazy {
+    private val mvcSummaryUseCase: MerchantVoucherUseCase by lazy {
         mockk()
     }
 
@@ -76,59 +78,9 @@ class DiscoMerchantVoucherViewModelTest {
 
     }
 
-    /**************************** test for update data *******************************************/
-    @Test
-    fun`test for update data`(){
-        val viewModel: DiscoMerchantVoucherViewModel = spyk(DiscoMerchantVoucherViewModel(application, componentsItem, 99))
-        list.clear()
-        every { componentsItem.data } returns list
-        list.add(mockDataItem)
-        val listOfShopIds = ArrayList<Int>()
-        every { mockDataItem.shopIds} returns listOfShopIds
-        listOfShopIds.add(101)
-        listOfShopIds.add(102)
-
-        viewModel.updateData("105",false, mockk())
-
-        assert(viewModel.errorState.value == null)
-
-        viewModel.updateData("101",false, mockk())
-        assert(viewModel.errorState.value == true)
-        assert(viewModel.mvcData.value == null)
-        viewModel.updateData("101",true, mockk())
-        assert(viewModel.errorState.value == false)
-        assert(viewModel.mvcData.value != null)
-    }
     /**************************** end of update data *******************************************/
 
     /**************************** test for fetchDataForCoupons *******************************************/
-    @Test
-    fun`test for fetchDataForCoupons`() {
-        val viewModel: DiscoMerchantVoucherViewModel = spyk(DiscoMerchantVoucherViewModel(application, componentsItem, 99))
-        list.clear()
-        val listOfShopIds = ArrayList<Int>()
-        listOfShopIds.add(101)
-        listOfShopIds.add(102)
-        every { mockDataItem.shopIds} returns listOfShopIds
-        list.add(mockDataItem)
-        every { componentsItem.data } returns list
-        val data = TokopointsCatalogMVCSummary(resultStatus = null, isShown = true,counterTotal = null,animatedInfoList = listOf())
-        val tokopointsCatalogMVCSummaryResponse = TokopointsCatalogMVCSummaryResponse(data = data)
-        viewModel.mvcSummaryUseCase = mvcSummaryUseCase
-        coEvery {
-            mvcSummaryUseCase.getQueryParams(
-                any())
-        } returns HashMap()
-        coEvery {
-            mvcSummaryUseCase.getResponse(
-                any())
-        } returns tokopointsCatalogMVCSummaryResponse
-
-        viewModel.fetchDataForCoupons()
-
-        assert(viewModel.mvcData.value != null)
-
-    }
 
     @Test
     fun`test for fetchDataForCoupons when response data is null`() {
@@ -140,20 +92,15 @@ class DiscoMerchantVoucherViewModelTest {
         every { mockDataItem.shopIds} returns listOfShopIds
         list.add(mockDataItem)
         every { componentsItem.data } returns list
-        val tokopointsCatalogMVCSummaryResponse = TokopointsCatalogMVCSummaryResponse(data = null)
-        viewModel.mvcSummaryUseCase = mvcSummaryUseCase
+        viewModel.merchantVoucherUseCase = mvcSummaryUseCase
         coEvery {
-            mvcSummaryUseCase.getQueryParams(
-                any())
-        } returns HashMap()
-        coEvery {
-            mvcSummaryUseCase.getResponse(
-                any())
-        } returns tokopointsCatalogMVCSummaryResponse
+            mvcSummaryUseCase.loadFirstPageComponents(
+                any(), any())
+        } returns true
 
         viewModel.fetchDataForCoupons()
 
-        assert(viewModel.mvcData.value == null)
+        assert(viewModel.coupon.value == null)
 
     }
 
@@ -167,7 +114,7 @@ class DiscoMerchantVoucherViewModelTest {
 
         viewModel.fetchDataForCoupons()
 
-        assert(viewModel.errorState.value == true)
+        assert(viewModel.loadError.value == true)
 
     }
 
@@ -181,17 +128,15 @@ class DiscoMerchantVoucherViewModelTest {
         every { mockDataItem.shopIds} returns listOfShopIds
         list.add(mockDataItem)
         every { componentsItem.data } returns list
-        val data = TokopointsCatalogMVCSummary(resultStatus = null, isShown = true,counterTotal = null,animatedInfoList = listOf())
-        val tokopointsCatalogMVCSummaryResponse = TokopointsCatalogMVCSummaryResponse(data = data)
-        viewModel.mvcSummaryUseCase = mvcSummaryUseCase
+        viewModel.merchantVoucherUseCase = mvcSummaryUseCase
         coEvery {
-            mvcSummaryUseCase.getResponse(
-                any())
-        } returns tokopointsCatalogMVCSummaryResponse
+            mvcSummaryUseCase.loadFirstPageComponents(
+                any(), any())
+        } returns false
 
         viewModel.fetchDataForCoupons()
 
-        assert(viewModel.errorState.value == true)
+        assert(viewModel.loadError.value == true)
 
     }
 }

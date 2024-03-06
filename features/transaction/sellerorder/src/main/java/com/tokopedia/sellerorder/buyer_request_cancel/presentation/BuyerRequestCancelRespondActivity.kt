@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.buyer_request_cancel.presentation
 
+import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
@@ -44,13 +45,14 @@ class BuyerRequestCancelRespondActivity : BaseSimpleActivity(), HasComponent<Buy
     }
 
     private fun adjustDimming() {
-        try {
+        runCatching {
             window.setDimAmount(0f)
-        } catch (th: Throwable) {
-            Timber.e(th)
+        }.onFailure {
+            Timber.e(it)
         }
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     private fun adjustOrientation() {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT

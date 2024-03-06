@@ -77,7 +77,7 @@ class HomeGlobalRecommendationMapper {
                     banner.buAttribution,
                     banner.creativeName,
                     banner.target,
-                    (((pageNumber - 1) * banners.size) + position + 1).toInt(),
+                    (((pageNumber - 1) * banners.size) + position + 1),
                     banner.galaxyAttribution,
                     banner.persona,
                     banner.brandId,
@@ -115,7 +115,8 @@ class HomeGlobalRecommendationMapper {
                 position = it.position,
                 type = it.type,
                 title = it.title,
-                imageUrl = it.imageUrl
+                imageUrl = it.imageUrl,
+                styleList = it.styles.map { ProductCardModel.LabelGroup.Style(it.key, it.value) }
             )
         }
     }
@@ -137,7 +138,10 @@ class HomeGlobalRecommendationMapper {
             isWishlistVisible = true,
             isWishlisted = product.isWishlist,
             shopBadgeList = product.badges.map {
-                ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+                ProductCardModel.ShopBadge(
+                    title = it.title,
+                    imageUrl = it.imageUrl
+                )
             },
             freeOngkir = ProductCardModel.FreeOngkir(
                 isActive = product.freeOngkirInformation.isActive,
