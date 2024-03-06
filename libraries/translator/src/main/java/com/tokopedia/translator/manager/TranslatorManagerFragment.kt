@@ -49,6 +49,8 @@ class TranslatorManagerFragment() : CoroutineScope {
 
     private var destinationLang: String = "en"
 
+    private var isTranslationInProgress = false
+
     constructor(application: Application) : this() {
         mApplication = application
         SharedPrefsUtils.setStringPreference(application, SOURCE_LANGUAGE, "Indonesian-id")
@@ -68,7 +70,6 @@ class TranslatorManagerFragment() : CoroutineScope {
     companion object {
         private var LOCK = Any()
         val TAG = "Tkpd-TranslatorManagerFragment"
-        val DELIM = "#"
 
         private var mCurrentFragment: WeakReference<Fragment>? = null
 
@@ -162,22 +163,28 @@ class TranslatorManagerFragment() : CoroutineScope {
     }
 
     suspend fun startTranslate() {
-        if (getCurrentFragment() == null || mApplication == null) {
+        if (getCurrentFragment() == null || mApplication == null || isTranslationInProgress) {
             return
         }
 
-        val views = coroutineScope {
-            async {
-                ViewUtil.getChildren(ViewUtil.getContentView(getCurrentFragment()))
-            }.await().apply {
-                prepareSelectors(this)
+        isTranslationInProgress = true
+
+        try {
+            val views = coroutineScope {
+                async {
+                    ViewUtil.getChildren(ViewUtil.getContentView(getCurrentFragment()))
+                }.await()
             }
-        }
 
-        val strList = mStringPoolManager.getQueryStrList()
+            prepareSelectors(views)
 
-        if (strList.isNotEmpty()) {
-            fetchTranslationService(strList, views)
+            val strList = mStringPoolManager.getQueryStrList()
+
+            if (strList.isNotEmpty()) {
+                fetchTranslationService(strList, views)
+            }
+        } finally {
+            isTranslationInProgress = false
         }
     }
 
@@ -204,10 +211,12 @@ class TranslatorManagerFragment() : CoroutineScope {
 
                         updateScreenWithTranslatedString(views)
 
-                        SharedPrefsUtils.setIntegerPreference(
-                            mApplication!!.applicationContext, CHARS_COUNT,
-                            originStrList.size + charCountOld
-                        )
+                        mApplication?.applicationContext?.let {
+                            SharedPrefsUtils.setIntegerPreference(
+                                it, CHARS_COUNT,
+                                originStrList.size + charCountOld
+                            )
+                        }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()

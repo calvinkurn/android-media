@@ -63,7 +63,6 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
     }
 
     override fun onActivityResumed(activity: Activity) {
-
         if (activity is FragmentActivity) {
             fragmentSize = activity.supportFragmentManager.fragments.size
         }
@@ -82,11 +81,13 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
 
             launch {
 
-                rootView.viewTreeObserver
-                    .onScrollChangedAsFlow()
-                    .collect {
-                        translatorManager?.startTranslate()
-                    }
+                if (fragmentSize == 0) {
+                    rootView.viewTreeObserver
+                        .onScrollChangedAsFlow()
+                        .collect {
+                            translatorManager?.startTranslate()
+                        }
+                }
 
                 onDestLanguageChangedAsFlow(activity)
                     .collect {
@@ -186,21 +187,18 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                 val weakActivity = WeakReference<Activity>(f.activity)
                 TranslatorManager.setCurrentActivity(weakActivity)
             }
-            if (f is BottomSheetUnify) {
-                val mContext = f.context
-                if (mContext?.let { SharedPrefsUtils.getBooleanPreference(it, TranslatorSettingView.IS_ENABLE, false) } == true) {
-                    Log.i(TAG, "onFragmentResumed() invoked of :" + f::class.java.simpleName)
+            val mContext = f.context
+            if (mContext?.let { SharedPrefsUtils.getBooleanPreference(it, TranslatorSettingView.IS_ENABLE, false) } == true) {
+                Log.i(TAG, "onFragmentResumed() invoked of :" + f::class.java.simpleName)
 
-                    val weakFragment = WeakReference<Fragment>(f)
-                    TranslatorManagerFragment.setCurrentFragment(weakFragment)
+                val weakFragment = WeakReference<Fragment>(f)
+                TranslatorManagerFragment.setCurrentFragment(weakFragment)
 
-                    f.view?.let {
-//                        setAddonGlobalLayoutListener(it)
-                        launch {
+                f.view?.let {
+                    launch {
 
-                            it.viewTreeObserver.onScrollChangedAsFlow().collect {
-                                translatorManagerFragment?.startTranslate()
-                            }
+                        it.viewTreeObserver.onScrollChangedAsFlow().collect {
+                            translatorManagerFragment?.startTranslate()
                         }
                     }
                 }
