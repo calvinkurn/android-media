@@ -76,7 +76,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private val reviewSourceId = (productPreviewSource.source as? ReviewSourceData)?.reviewSourceId.orEmpty()
 
-    private val attachmentSourceId = (productPreviewSource.source as? ReviewSourceData)?.reviewSourceId.orEmpty()
+    private val attachmentSourceId = (productPreviewSource.source as? ReviewSourceData)?.attachmentSourceId.orEmpty()
 
     private val _tabContentState = MutableStateFlow(ProductPreviewTabUiModel.Empty)
     private val _productMediaState = MutableStateFlow(ProductUiModel.Empty)
