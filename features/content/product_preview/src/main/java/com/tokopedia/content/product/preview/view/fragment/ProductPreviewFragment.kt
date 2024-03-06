@@ -347,7 +347,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun handleCoachMark() {
-        if (productPreviewSource.source !is ProductPreviewSourceModel.ProductSourceData || viewModel.hasVisit) return
+        if (productPreviewSource.source !is ProductPreviewSourceModel.ProductSourceData && viewModel.hasVisit) return
         coachMarkJob?.cancel()
         coachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
             delay(DELAY_COACH_MARK)
