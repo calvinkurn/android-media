@@ -19,28 +19,31 @@ object BuyAgainTracker : BaseTrackerConst() {
     // @Link: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890 (row: 18)
     private const val IMPRESSION_ACTION = "product list impression"
     private const val IMPRESSION_TRACKER_ID = "49873"
-    fun impression(userId: String, position: Int, models: List<BuyAgainModel>, pageDetail: BuyAgainCallback.PageDetail?): Map<String, Any> {
-        return BaseTrackerBuilder().constructBasicPromotionView(
-            event = Event.PRODUCT_VIEW,
-            eventCategory = COMMON_CATEGORY,
-            eventAction = IMPRESSION_ACTION,
-            eventLabel = COMPONENT_NAME,
-            promotions = models.mapIndexed { _, model ->
-                Promotion(
-                    id = model.productId,
-                    name = model.productName,
-                    creative = "", // TODO ??
-                    position = position.toString()
-                )
-            }
-        )
-            .appendCurrentSite(CurrentSite.DEFAULT)
-            .appendUserId(userId)
-            .appendBusinessUnit(BusinessUnit.DEFAULT)
-            .appendCustomKeyValue(TrackerId.KEY, IMPRESSION_TRACKER_ID)
-            .appendCustomKeyValue(ItemList.KEY, GLOBAL_MENU_ITEM.format(COMPONENT_NAME))
-            as HashMap<String, Any>
-    }
+    fun impression(
+        userId: String,
+        position: Int,
+        models: List<BuyAgainModel>,
+        pageDetail: BuyAgainCallback.PageDetail?
+    ) = BaseTrackerBuilder().constructBasicPromotionView(
+        event = Event.PRODUCT_VIEW,
+        eventCategory = COMMON_CATEGORY,
+        eventAction = IMPRESSION_ACTION,
+        eventLabel = COMPONENT_NAME,
+        promotions = models.mapIndexed { _, model ->
+            Promotion(
+                id = model.productId,
+                name = model.productName,
+                creative = "", // TODO ??
+                position = position.toString()
+            )
+        }
+    )
+        .appendCurrentSite(CurrentSite.DEFAULT)
+        .appendUserId(userId)
+        .appendBusinessUnit(BusinessUnit.DEFAULT)
+        .appendCustomKeyValue(TrackerId.KEY, IMPRESSION_TRACKER_ID)
+        .appendCustomKeyValue(ItemList.KEY, GLOBAL_MENU_ITEM.format(COMPONENT_NAME))
+        .build()
 
     // @Link: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890 (row: 19)
     private const val PRODUCT_CLICK_ACTION = "click product list"
