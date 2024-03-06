@@ -27,7 +27,8 @@ object ProductMapper {
             price = when (FeedProductFormatPriority.getFormatPriority(product.priceFormatPriority)) {
                 FeedProductFormatPriority.Masked -> ContentTaggedProductUiModel.CampaignPrice(
                     formattedPrice = product.priceMaskedFmt,
-                    price = product.priceMasked.toDouble()
+                    price = product.priceMasked.toDouble(),
+                    isMasked = true
                 )
 
                 FeedProductFormatPriority.Discount -> ContentTaggedProductUiModel.DiscountedPrice(

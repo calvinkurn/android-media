@@ -41,9 +41,6 @@ class ContentTaggedProductBottomSheetItemView(
         binding.ivProductImage.setImageUrl(product.imageUrl)
         binding.tvProductTitle.text = product.title
 
-        bindPrice(product.price)
-        bindCampaign(product.campaign)
-
         binding.btnProductBuy.setOnClickListener {
             mListener?.onBuyProductButtonClicked(this, product)
         }
@@ -62,7 +59,9 @@ class ContentTaggedProductBottomSheetItemView(
             }
         }
 
-        bindStock(product.stock)
+        bindStock(product.stock, product.price)
+        bindCampaign(product.campaign)
+        bindPrice(product.price)
     }
 
     private fun bindPrice(price: ContentTaggedProductUiModel.Price) {
@@ -71,6 +70,12 @@ class ContentTaggedProductBottomSheetItemView(
                 binding.tvProductDiscount.hide()
                 binding.tvOriginalPrice.hide()
                 binding.tvCurrentPrice.text = price.formattedPrice
+
+                if (price.isMasked) {
+                    binding.btnProductAtc.hide()
+                    binding.btnProductBuy.hide()
+                    binding.btnProductLongAtc.hide()
+                }
             }
 
             is ContentTaggedProductUiModel.DiscountedPrice -> {
@@ -119,12 +124,17 @@ class ContentTaggedProductBottomSheetItemView(
         }
     }
 
-    private fun bindStock(stock: ContentTaggedProductUiModel.Stock) {
+    private fun bindStock(
+        stock: ContentTaggedProductUiModel.Stock,
+        price: ContentTaggedProductUiModel.Price
+    ) {
         val isShown = stock is ContentTaggedProductUiModel.Stock.Available
+        val isMaskedPrice = price is ContentTaggedProductUiModel.CampaignPrice && price.isMasked
+
         binding.btnProductBuy.isEnabled = isShown
         binding.btnProductAtc.isEnabled = isShown
-        binding.viewOverlayOos.showWithCondition(!isShown)
-        binding.labelOutOfStock.showWithCondition(!isShown)
+        binding.viewOverlayOos.showWithCondition(!isShown && !isMaskedPrice)
+        binding.labelOutOfStock.showWithCondition(!isShown && !isMaskedPrice)
     }
 
     interface Listener {

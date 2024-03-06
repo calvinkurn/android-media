@@ -39,7 +39,8 @@ data class ContentTaggedProductUiModel(
 
     data class CampaignPrice(
         val formattedPrice: String,
-        override val price: Double
+        override val price: Double,
+        val isMasked: Boolean
     ) : Price
 
     data class NormalPrice(
