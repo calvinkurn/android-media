@@ -26,6 +26,7 @@ import com.tokopedia.checkoutpayment.data.CartAddressData
 import com.tokopedia.checkoutpayment.data.CartData
 import com.tokopedia.checkoutpayment.data.CartDetail
 import com.tokopedia.checkoutpayment.data.CartDetailData
+import com.tokopedia.checkoutpayment.data.CartDetailsItem
 import com.tokopedia.checkoutpayment.data.CartGroupData
 import com.tokopedia.checkoutpayment.data.CartProductCategoryData
 import com.tokopedia.checkoutpayment.data.CartProductData
@@ -36,6 +37,7 @@ import com.tokopedia.checkoutpayment.data.DetailsItemData
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetRequest
 import com.tokopedia.checkoutpayment.data.GoCicilAddressRequest
 import com.tokopedia.checkoutpayment.data.GoCicilInstallmentRequest
+import com.tokopedia.checkoutpayment.data.GoCicilProductRequest
 import com.tokopedia.checkoutpayment.data.PaymentData
 import com.tokopedia.checkoutpayment.data.PaymentFeeRequest
 import com.tokopedia.checkoutpayment.data.PaymentRequest
@@ -50,6 +52,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -387,16 +390,20 @@ class CheckoutPaymentProcessor @Inject constructor(
     private fun generateCreditCardTenorRequest(
         payment: CheckoutPaymentModel,
         paymentData: PaymentWidgetData,
-        paymentRequest: PaymentRequest
+        paymentRequest: PaymentRequest,
+        checkoutItems: List<CheckoutItem>,
+        cost: CheckoutCostModel
     ): CreditCardTenorListRequest {
         return CreditCardTenorListRequest(
             tokenId = paymentData.installmentPaymentData.creditCardAttribute.tokenId,
             userId = userSessionInterface.userId.toLongOrZero(),
             totalAmount = paymentRequest.payment.paymentAmount,
-            discountAmount = 0.0,
+            discountAmount = cost.totalDiscounts,
             profileCode = paymentData.profileCode,
-            otherAmount = 0.0,
-            cartDetails = emptyList(),
+            otherAmount = cost.totalOtherFee,
+            cartDetails = checkoutItems.filterIsInstance(CheckoutOrderModel::class.java).map {
+                CartDetailsItem(it.shopTypeInfoData.shopTier, cost.totalProductAndShippingPrice)
+            },
             ccfeeSignature = paymentData.installmentPaymentData.creditCardAttribute.tenureSignature,
             timestamp = paymentData.unixTimestamp,
             additionalData = payment.metadata,
@@ -407,10 +414,12 @@ class CheckoutPaymentProcessor @Inject constructor(
     suspend fun getTenorList(
         payment: CheckoutPaymentModel,
         paymentData: PaymentWidgetData,
-        paymentRequest: PaymentRequest
+        paymentRequest: PaymentRequest,
+        checkoutItems: List<CheckoutItem>,
+        cost: CheckoutCostModel
     ): CheckoutPaymentModel {
         val tenorList = processor.getCreditCardTenorList(
-            generateCreditCardTenorRequest(payment, paymentData, paymentRequest)
+            generateCreditCardTenorRequest(payment, paymentData, paymentRequest, checkoutItems, cost)
         )
         return payment.copy(tenorList = tenorList)
     }
@@ -418,30 +427,77 @@ class CheckoutPaymentProcessor @Inject constructor(
     private fun generateInstallmentRequest(
         payment: CheckoutPaymentModel,
         paymentData: PaymentWidgetData,
-        paymentRequest: PaymentRequest
+        paymentRequest: PaymentRequest,
+        checkoutItems: List<CheckoutItem>,
+        cost: CheckoutCostModel
     ): GoCicilInstallmentRequest {
+        val address = checkoutItems.address()!!.recipientAddressModel
+        val order = checkoutItems.filterIsInstance(CheckoutOrderModel::class.java).first()
         return GoCicilInstallmentRequest(
             gatewayCode = paymentData.gatewayCode,
             merchantCode = paymentData.merchantCode,
             profileCode = paymentData.profileCode,
             userId = userSessionInterface.userId.toLongOrZero(),
-            paymentAmount = 0.0,
-            merchantType = "",
-            address = GoCicilAddressRequest(),
-            shopId = "",
-            products = emptyList(),
+            paymentAmount = paymentRequest.payment.paymentAmount,
+            merchantType = getMerchantTypeFromShopTier(order.shopTypeInfoData.shopTier),
+            address = GoCicilAddressRequest(
+                addressStreet = address.street,
+                provinceName = address.provinceName,
+                cityName = address.cityName,
+                country = address.countryName,
+                postalCode = address.postalCode
+            ),
+            shopId = order.shopId.toString(),
+            products = checkoutItems.filterIsInstance(CheckoutProductModel::class.java).map {
+                GoCicilProductRequest(
+                    it.productId.toString(),
+                    it.price,
+                    it.quantity,
+                    it.productCatId,
+                    it.lastLevelCategory,
+                    it.categoryIdentifier
+                )
+            },
+            promoCodes = getValidPromoCodes(checkoutItems.promo()?.promo),
             additionalData = payment.metadata,
             detailData = paymentRequest
         )
     }
 
+    private fun getValidPromoCodes(lastApplyUiModel: LastApplyUiModel?): List<String> {
+        val promoCodes = mutableListOf<String>()
+        if (lastApplyUiModel != null) {
+            if (lastApplyUiModel.message.state != "red") {
+                promoCodes.addAll(lastApplyUiModel.codes)
+            }
+            lastApplyUiModel.voucherOrders.forEach {
+                if (it.message.state != "red") {
+                    promoCodes.add(it.code)
+                }
+            }
+        }
+        return promoCodes
+    }
+
+    private fun getMerchantTypeFromShopTier(shopTier: Int): String {
+        return when (shopTier) {
+            0 -> MERCHANT_TYPE_REGULAR_MERCHANT
+            1 -> MERCHANT_TYPE_POWER_MERCHANT
+            2 -> MERCHANT_TYPE_OFFICIAL_STORE
+            3 -> MERCHANT_TYPE_POWER_MERCHANT_PRO
+            else -> ""
+        }
+    }
+
     suspend fun getInstallmentList(
         payment: CheckoutPaymentModel,
         paymentData: PaymentWidgetData,
-        paymentRequest: PaymentRequest
+        paymentRequest: PaymentRequest,
+        checkoutItems: List<CheckoutItem>,
+        cost: CheckoutCostModel
     ): CheckoutPaymentModel {
         val installmentData = processor.getGocicilInstallmentOption(
-            generateInstallmentRequest(payment, paymentData, paymentRequest)
+            generateInstallmentRequest(payment, paymentData, paymentRequest, checkoutItems, cost)
         )
         return payment.copy(installmentData = installmentData)
     }
@@ -480,5 +536,13 @@ class CheckoutPaymentProcessor @Inject constructor(
             )
         }
         return checkoutItems
+    }
+
+    companion object {
+        // 0 = RM, 1 = PM, 2 = OS, 3 = PMPRO
+        private const val MERCHANT_TYPE_REGULAR_MERCHANT = "RM"
+        private const val MERCHANT_TYPE_POWER_MERCHANT = "PM"
+        private const val MERCHANT_TYPE_OFFICIAL_STORE = "OS"
+        private const val MERCHANT_TYPE_POWER_MERCHANT_PRO = "PMPRO"
     }
 }

@@ -3131,7 +3131,6 @@ class CheckoutViewModel @Inject constructor(
         )
         if (cost.dynamicPaymentFees == null) {
             // show error
-            val newItems = listData.value.toMutableList()
             payment = payment.copy(
                 widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Error)
             )
@@ -3145,11 +3144,10 @@ class CheckoutViewModel @Inject constructor(
 
         val paymentData = payment.data?.paymentWidgetData?.firstOrNull()
         if (paymentData?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
-            payment = paymentProcessor.getTenorList(payment, paymentData, paymentRequest)
+            payment = paymentProcessor.getTenorList(payment, paymentData, paymentRequest, listData.value, cost)
 
             if (payment.tenorList == null) {
                 // show error
-                val newItems = listData.value.toMutableList()
                 payment = payment.copy(
                     widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Error)
                 )
@@ -3163,11 +3161,10 @@ class CheckoutViewModel @Inject constructor(
         }
 
         if (paymentData?.mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
-            payment = paymentProcessor.getInstallmentList(payment, paymentData, paymentRequest)
+            payment = paymentProcessor.getInstallmentList(payment, paymentData, paymentRequest, listData.value, cost)
 
             if (payment.installmentData == null) {
                 // show error
-                val newItems = listData.value.toMutableList()
                 payment = payment.copy(
                     widget = payment.widget.copy(state = CheckoutPaymentWidgetState.Error)
                 )

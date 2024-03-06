@@ -1419,7 +1419,7 @@ class ShipmentMapper @Inject constructor() {
             metadata = response.metadata,
 //            enable = response.enable,
             enable = true,
-            errorMessage = response.errorMessage
+            errorMessage = "response.errorMessage"
         )
     }
 

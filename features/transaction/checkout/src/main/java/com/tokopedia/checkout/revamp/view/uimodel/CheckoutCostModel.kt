@@ -26,9 +26,6 @@ data class CheckoutCostModel(
     var promoMessage: String? = null,
     var emasPrice: Double = 0.0,
     var tradeInPrice: Double = 0.0,
-    var totalPromoStackAmount: Int = 0,
-    var totalPromoStackAmountStr: String? = null,
-    var totalDiscWithoutCashback: Int = 0,
     var bookingFee: Int = 0,
     var discountLabel: String = "",
     var discountAmount: Int = 0,
@@ -59,5 +56,15 @@ data class CheckoutCostModel(
             } else {
                 dynamicPlatformFee.fee
             }
+        }
+
+    val totalDiscounts: Double
+        get() {
+            return (productDiscountAmount + shippingDiscountAmount + discountAmount).toDouble()
+        }
+
+    val totalProductAndShippingPrice: Double
+        get() {
+            return finalItemPrice + finalShippingFee
         }
 }
