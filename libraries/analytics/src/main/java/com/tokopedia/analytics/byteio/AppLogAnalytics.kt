@@ -369,6 +369,7 @@ object AppLogAnalytics {
         return JSONObject().also {
             it.put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
             it.put("buy_type", buyType.code)
+            it.put("os_type", "android")
         }.toString()
     }
 
