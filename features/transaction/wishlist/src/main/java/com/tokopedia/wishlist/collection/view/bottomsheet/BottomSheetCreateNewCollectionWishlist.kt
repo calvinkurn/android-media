@@ -237,8 +237,7 @@ class BottomSheetCreateNewCollectionWishlist :
                     listCollections.forEach { item ->
                         if (checkName.lowercase() == item.name.lowercase()) {
                             binding?.run {
-                                collectionCreateNameInputTextField.isInputError = _productIds.isEmpty()
-
+                                collectionCreateNameInputTextField.isInputError = true
                                 val labelMessage =
                                     getString(wishlistR.string.collection_create_bottomsheet_name_error)
                                 collectionCreateNameInputTextField.setMessage(labelMessage)
