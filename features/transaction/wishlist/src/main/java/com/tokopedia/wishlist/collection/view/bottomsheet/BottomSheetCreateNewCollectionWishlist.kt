@@ -352,7 +352,7 @@ class BottomSheetCreateNewCollectionWishlist :
                         } else if (result.data.dataItem.message.isNotEmpty()) {
                             result.data.dataItem.message
                         } else {
-                            getString(com.tokopedia.wishlist.R.string.wishlist_v2_common_error_msg)
+                            getString(wishlistR.string.wishlist_v2_common_error_msg)
                         }
                         actionListenerFromPdp?.onFailedSaveToNewCollection(errorMessage)
                         dismiss()
