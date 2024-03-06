@@ -18,7 +18,7 @@ data class AppLogRecommendationCardModel(
     val cardName: String,
     val productId: String,
     val listName: String,
-    val listNum: Int,
+    val listNum: String,
     val moduleName: String,
     val sourceModule: String,
     val trackId: String,
@@ -42,9 +42,9 @@ data class AppLogRecommendationCardModel(
 
     fun toShowClickJson() = JSONObject().apply {
         addPage()
-        put(AppLogParam.CARD_NAME, cardName.spacelessParam())
-        put(AppLogParam.LIST_NAME, listName.underscoredParam())
-        put(AppLogParam.LIST_NUM, listNum.zeroAsEmpty())
+        put(AppLogParam.CARD_NAME, cardName)
+        put(AppLogParam.LIST_NAME, listName)
+        put(AppLogParam.LIST_NUM, listNum)
         addEnterFrom()
         put(AppLogParam.SOURCE_PAGE_TYPE, sourcePageType)
         put(AppLogParam.SOURCE_MODULE, sourceModule)
@@ -55,7 +55,7 @@ data class AppLogRecommendationCardModel(
         put(AppLogParam.TRACK_ID, trackId)
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.REC_PARAMS, recParams)
-        put(AppLogParam.SHOP_ID, shopId.zeroAsEmpty())
+        put(AppLogParam.SHOP_ID, shopId)
         put(AppLogParam.ITEM_ORDER, itemOrder)
         if(volume > 0) put(AppLogParam.VOLUME, volume)
         if(rate > 0) put(AppLogParam.RATE, rate)
@@ -69,8 +69,8 @@ data class AppLogRecommendationCardModel(
         addEnterFrom()
         put(AppLogParam.GLIDE_DISTANCE, 0)
 
-        put(AppLogParam.LIST_NAME, listName.underscoredParam())
-        put(AppLogParam.LIST_NUM, listNum.zeroAsEmpty())
+        put(AppLogParam.LIST_NAME, listName)
+        put(AppLogParam.LIST_NUM, listNum)
 
         put(AppLogParam.ACTION_TYPE, ActionType.CLICK_CARD)
         put(AppLogParam.MODULE_NAME, moduleName)
@@ -104,10 +104,10 @@ data class AppLogRecommendationCardModel(
             authorId: String = "",
         ): AppLogRecommendationCardModel {
             return AppLogRecommendationCardModel(
-                cardName = cardName,
+                cardName = cardName.spacelessParam(),
                 productId = productId.zeroAsEmpty(),
-                listName = tabName,
-                listNum = tabPosition.inc(),
+                listName = tabName.underscoredParam(),
+                listNum = tabPosition.inc().zeroAsEmpty(),
                 moduleName = moduleName,
                 sourceModule = constructSourceModule(isAd, moduleName, entranceForm),
                 trackId = constructTrackId(cardId, productId, requestId, position, cardName),
@@ -126,7 +126,7 @@ data class AppLogRecommendationCardModel(
                 salesPrice = salesPrice,
                 enterMethod = enterMethod,
                 sourcePageType = sourcePageType,
-                authorId = authorId,
+                authorId = authorId.zeroAsEmpty(),
             )
         }
     }
