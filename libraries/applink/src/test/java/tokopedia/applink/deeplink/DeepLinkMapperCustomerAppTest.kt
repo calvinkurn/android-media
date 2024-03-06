@@ -34,7 +34,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
         const val SIZE_HOST = 161
-        const val SIZE_PATH = 271
+        const val SIZE_PATH = 273
     }
 
     override fun setup() {
@@ -2417,6 +2417,20 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check seller order buyer cancel respond appLink then should return tokopedia internal seller order buyer cancel respond in customerapp`() {
+        val orderId = "987654321"
+        val statusCode = "220"
+        val statusText = "Pesanan Baru"
+        val l2Reason = "Saya ingin merubah jumlah pesanan"
+        val description = "Lorem ipsum dolor sit amet amet cabang bayi"
+        val primaryButtonText = "Terima Pesanan"
+        val secondaryButtonText = "Batalkan Pesanan"
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://seller/${DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH}?${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_ID}=$orderId&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_STATUS_CODE}=$statusCode&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_STATUS_TEXT}=$statusText&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_L2_CANCELLATION_REASON}=$l2Reason&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_DESCRIPTION}=$description&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_PRIMARY_BUTTON_TEXT}=$primaryButtonText&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_SECONDARY_BUTTON_TEXT}=$secondaryButtonText&$KEY_REDIRECT_TO_SELLER_APP=true"
+        assertEqualsDeepLinkMapper("${ApplinkConst.Som.BUYER_REQUEST_CANCEL_RESPOND}?${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_ID}=$orderId&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_STATUS_CODE}=$statusCode&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_STATUS_TEXT}=$statusText&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_ORDER_L2_CANCELLATION_REASON}=$l2Reason&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_DESCRIPTION}=$description&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_PRIMARY_BUTTON_TEXT}=$primaryButtonText&${DeeplinkMapperOrder.BuyerRequestCancelRespond.INTENT_PARAM_SECONDARY_BUTTON_TEXT}=$secondaryButtonText&$KEY_REDIRECT_TO_SELLER_APP=true", expectedDeepLink)
+    }
+
+    @Test
     fun `check tokonow home appLink then should return tokopedia internal tokonow home in customerapp`() {
         val expectedDeepLink = ApplinkConstInternalTokopediaNow.HOME
         val actualDeeplink = ApplinkConst.TokopediaNow.HOME
@@ -2502,6 +2516,16 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check tokonow see all category appLink then should return tokopedia internal tokonow see all category in customerapp`() {
         val expectedDeepLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
         val actualDeeplink = ApplinkConst.TokopediaNow.SEE_ALL_CATEGORY
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokonow all annotation appLink then should return tokopedia internal tokonow all annotation in customerapp`() {
+        val categoryIdL1 = "123"
+        val warehouses = "1234%232h%2C54321%23f"
+        val annotationType = "BRAND"
+        val expectedDeepLink = "${ApplinkConstInternalTokopediaNow.ALL_ANNOTATION}?category_id=$categoryIdL1&warehouses=$warehouses&annotation_type=$annotationType"
+        val actualDeeplink = "${ApplinkConst.TokopediaNow.ALL_ANNOTATION}?category_id=$categoryIdL1&warehouses=$warehouses&annotation_type=$annotationType"
         assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
     }
 

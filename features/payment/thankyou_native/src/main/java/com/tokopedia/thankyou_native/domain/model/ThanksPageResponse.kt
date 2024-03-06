@@ -603,5 +603,7 @@ data class CustomDataOtherV2(
     @SerializedName("promo_flags")
     val promoFlags: String?,
     @SerializedName("tickers")
-    val tickers: String?
+    val tickers: String?,
+    @SerializedName("signature_purchase_info")
+    val signaturePurchaseInfo: String?
 ) : Parcelable

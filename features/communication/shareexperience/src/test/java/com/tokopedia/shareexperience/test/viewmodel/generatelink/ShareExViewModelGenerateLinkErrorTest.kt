@@ -28,11 +28,12 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
 
     @Test
-    fun `generate short link and error image generator, get short link`() {
+    fun `generate short link with image channel and error image generator, get short link`() {
         runTest {
             // Given
             viewModel.bottomSheetArgs = ShareExBottomSheetArg(
@@ -72,6 +73,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 getGeneratedImageUseCase.getData(any())
             } returns flow {
                 emit(ShareExResult.Loading)
+                delay(10)
                 emit(ShareExResult.Error(dummyThrowable))
             }
 
@@ -79,14 +81,16 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 getShortLinkUseCase.getShortLink(any())
             } returns flow {
                 emit(Pair(ShareExShortLinkFallbackPriorityEnum.AFFILIATE, ShareExResult.Loading))
+                delay(10)
                 emit(Pair(ShareExShortLinkFallbackPriorityEnum.AFFILIATE, ShareExResult.Success(dummyShortLink)))
             }
 
             val mockUri: Uri = mockk(relaxed = true)
             coEvery {
-                getDownloadedImageUseCase.downloadImage(any())
+                getDownloadedImageUseCase.downloadImageThumbnail(any())
             } returns flow {
                 emit(ShareExResult.Loading)
+                delay(10)
                 emit(ShareExResult.Success(mockUri))
             }
 
@@ -94,10 +98,10 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 // When
                 viewModel.setupViewModelObserver()
                 viewModel.processAction(ShareExAction.InitializePage)
-                viewModel.processAction(ShareExAction.GenerateLink(dummyChannel))
+                viewModel.processAction(ShareExAction.GenerateLink(dummyChannelWithImage))
 
                 // Then
-                skipItems(3) // initial, loading image generator, loading short link
+                skipItems(3) // loading image generator, loading short link
 
                 val updatedValue = awaitItem()
                 assert(updatedValue.intent != null)
@@ -107,7 +111,84 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error == null)
                 assertEquals(ShareExImageTypeEnum.DEFAULT, updatedValue.imageType)
-                assertEquals(null, updatedValue.errorEnum)
+                assertEquals(0, updatedValue.errorHistory.size)
+
+                expectNoEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `generate short link with text channel and error image generator, get short link`() {
+        runTest {
+            // Given
+            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
+                identifier = dummyIdentifier,
+                pageTypeEnum = ShareExPageTypeEnum.PDP,
+                defaultUrl = "",
+                trackerArg = ShareExTrackerArg(""),
+                bottomSheetModel = ShareExBottomSheetModel(
+                    title = "testTitle",
+                    subtitle = "testSubtitle",
+                    bottomSheetPage = ShareExBottomSheetPageModel(
+                        listChip = listOf(),
+                        listShareProperty = listOf(
+                            ShareExPropertyModel(
+                                affiliate = ShareExAffiliateModel(
+                                    eligibility = ShareExAffiliateEligibilityModel(true)
+                                ),
+                                linkProperties = ShareExLinkProperties(
+                                    androidUrl = dummyUrl,
+                                    iosUrl = dummyUrl,
+                                    desktopUrl = dummyUrl
+                                ),
+                                imageGenerator = ShareExImageGeneratorPropertyModel(
+                                    sourceId = "testSourceId",
+                                    args = mapOf("test" to "test")
+                                )
+                            )
+                        )
+                    )
+                ),
+                throwable = null
+            )
+
+            mockUriBuilder()
+
+            coEvery {
+                getGeneratedImageUseCase.getData(any())
+            } returns flow {
+                emit(ShareExResult.Loading)
+                delay(10)
+                emit(ShareExResult.Error(dummyThrowable))
+            }
+
+            coEvery {
+                getShortLinkUseCase.getShortLink(any())
+            } returns flow {
+                emit(Pair(ShareExShortLinkFallbackPriorityEnum.AFFILIATE, ShareExResult.Loading))
+                delay(10)
+                emit(Pair(ShareExShortLinkFallbackPriorityEnum.AFFILIATE, ShareExResult.Success(dummyShortLink)))
+            }
+
+            viewModel.channelIntentUiState.test {
+                // When
+                viewModel.setupViewModelObserver()
+                viewModel.processAction(ShareExAction.InitializePage)
+                viewModel.processAction(ShareExAction.GenerateLink(dummyChannel))
+
+                // Then
+                skipItems(3) // loading image generator, loading short link
+
+                val updatedValue = awaitItem()
+                assert(updatedValue.intent != null)
+                assertEquals(dummyShortLink, updatedValue.message)
+                assertEquals(dummyShortLink, updatedValue.shortLink)
+                assertEquals(ShareExChannelEnum.OTHERS, updatedValue.channelEnum)
+                assertEquals(false, updatedValue.isLoading)
+                assert(updatedValue.error == null)
+                assertEquals(ShareExImageTypeEnum.DEFAULT, updatedValue.imageType)
+                assertEquals(0, updatedValue.errorHistory.size)
 
                 expectNoEvents()
             }
@@ -159,14 +240,16 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 getShortLinkUseCase.getShortLink(any())
             } returns flow {
                 emit(Pair(ShareExShortLinkFallbackPriorityEnum.AFFILIATE, ShareExResult.Loading))
+                delay(10)
                 emit(Pair(ShareExShortLinkFallbackPriorityEnum.AFFILIATE, ShareExResult.Success(dummyShortLink)))
             }
 
             val mockUri: Uri = mockk(relaxed = true)
             coEvery {
-                getDownloadedImageUseCase.downloadImage(any())
+                getDownloadedImageUseCase.downloadImageThumbnail(any())
             } returns flow {
                 emit(ShareExResult.Loading)
+                delay(10)
                 emit(ShareExResult.Success(mockUri))
             }
 
@@ -177,7 +260,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 viewModel.processAction(ShareExAction.GenerateLink(dummyChannel))
 
                 // Then
-                skipItems(2) // initial and loading short link
+                skipItems(2) // loading short link
 
                 val updatedValue = awaitItem()
                 assert(updatedValue.intent != null)
@@ -187,7 +270,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error == null)
                 assertEquals(ShareExImageTypeEnum.DEFAULT, updatedValue.imageType)
-                assertEquals(null, updatedValue.errorEnum)
+                assertEquals(0, updatedValue.errorHistory.size)
 
                 expectNoEvents()
             }
@@ -254,9 +337,10 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
 
             val mockUri: Uri = mockk(relaxed = true)
             coEvery {
-                getDownloadedImageUseCase.downloadImage(any())
+                getDownloadedImageUseCase.downloadImageThumbnail(any())
             } returns flow {
                 emit(ShareExResult.Loading)
+                delay(10)
                 emit(ShareExResult.Success(mockUri))
             }
 
@@ -277,7 +361,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error != null)
                 assertEquals(ShareExImageTypeEnum.CONTEXTUAL_IMAGE, updatedValue.imageType)
-                assertEquals(ShareExIntentErrorEnum.AFFILIATE_ERROR, updatedValue.errorEnum)
+                assertEquals(1, updatedValue.errorHistory.size)
 
                 expectNoEvents()
             }
@@ -325,6 +409,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 getGeneratedImageUseCase.getData(any())
             } returns flow {
                 emit(ShareExResult.Loading)
+                delay(10)
                 emit(
                     ShareExResult.Success(
                         ShareExImageGeneratorModel(
@@ -344,9 +429,10 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
 
             val mockUri: Uri = mockk(relaxed = true)
             coEvery {
-                getDownloadedImageUseCase.downloadImage(any())
+                getDownloadedImageUseCase.downloadImageThumbnail(any())
             } returns flow {
                 emit(ShareExResult.Loading)
+                delay(10)
                 emit(ShareExResult.Success(mockUri))
             }
 
@@ -367,7 +453,8 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error != null)
                 assertEquals(ShareExImageTypeEnum.CONTEXTUAL_IMAGE, updatedValue.imageType)
-                assertEquals(ShareExIntentErrorEnum.BRANCH_ERROR, updatedValue.errorEnum)
+                assertTrue(updatedValue.errorHistory.contains(ShareExIntentErrorEnum.BRANCH_ERROR))
+                assertEquals(1, updatedValue.errorHistory.size)
 
                 expectNoEvents()
             }
@@ -415,6 +502,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 getGeneratedImageUseCase.getData(any())
             } returns flow {
                 emit(ShareExResult.Loading)
+                delay(10)
                 emit(
                     ShareExResult.Success(
                         ShareExImageGeneratorModel(
@@ -433,9 +521,10 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
             }
 
             coEvery {
-                getDownloadedImageUseCase.downloadImage(any())
+                getDownloadedImageUseCase.downloadImageThumbnail(any())
             } returns flow {
                 emit(ShareExResult.Loading)
+                delay(10)
                 emit(ShareExResult.Error(dummyThrowable))
             }
 
@@ -443,7 +532,7 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 // When
                 viewModel.setupViewModelObserver()
                 viewModel.processAction(ShareExAction.InitializePage)
-                viewModel.processAction(ShareExAction.GenerateLink(dummyChannel))
+                viewModel.processAction(ShareExAction.GenerateLink(dummyChannelWithImage))
 
                 // Then
                 skipItems(3) // initial, loading image generator, loading short link
@@ -456,7 +545,8 @@ class ShareExViewModelGenerateLinkErrorTest : ShareExViewModelTestFixture() {
                 assertEquals(false, updatedValue.isLoading)
                 assert(updatedValue.error != null)
                 assertEquals(ShareExImageTypeEnum.CONTEXTUAL_IMAGE, updatedValue.imageType)
-                assertEquals(ShareExIntentErrorEnum.IMAGE_DOWNLOADER, updatedValue.errorEnum)
+                assertTrue(updatedValue.errorHistory.contains(ShareExIntentErrorEnum.IMAGE_DOWNLOADER))
+                assertEquals(1, updatedValue.errorHistory.size)
 
                 expectNoEvents()
             }

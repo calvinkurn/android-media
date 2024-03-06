@@ -76,7 +76,7 @@ class CartService @Inject constructor(
             )
     }
 
-    private fun addToCart(
+    fun addToCart(
         productId: String,
         shopId: String,
         updatedQuantity: Int,
@@ -143,6 +143,29 @@ class CartService @Inject constructor(
                 }
             },
             onError = onError,
+        )
+    }
+
+    fun directAddToCart(
+        productId: String,
+        shopId: String,
+        minOrder: Int,
+        atcFromExternalSource: String,
+        onSuccessAddToCart: (AddToCartDataModel) -> Unit,
+        onErrorAddToCart: (Throwable) -> Unit
+    ) {
+        val params = AddToCartRequestParams(
+            productId = productId,
+            shopId = shopId,
+            quantity = minOrder,
+            atcFromExternalSource = atcFromExternalSource
+        )
+        addToCartUseCase.setParams(params)
+        addToCartUseCase.execute(
+            onSuccess = { atcResponse ->
+                    onSuccessAddToCart(atcResponse)
+            },
+            onError = onErrorAddToCart,
         )
     }
 }

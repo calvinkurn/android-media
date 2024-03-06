@@ -13,9 +13,19 @@ import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.sellerorder.databinding.BottomsheetSetDeliveredBinding
 
 class SomBottomSheetSetDelivered(
-        context: Context,
-        private val listener: SomBottomSheetSetDeliveredListener
-) : SomBottomSheet<BottomsheetSetDeliveredBinding>(LAYOUT, true, true, false, false, false, context.getString(R.string.bottomsheet_set_delivered), context, true), TextWatcher, View.OnClickListener {
+    context: Context,
+    private val listener: SomBottomSheetSetDeliveredListener
+) : SomBottomSheet<BottomsheetSetDeliveredBinding>(
+    childViewsLayoutResourceId = LAYOUT,
+    showOverlay = true,
+    showCloseButton = true,
+    showKnob = false,
+    clearPadding = false,
+    draggable = false,
+    bottomSheetTitle = context.getString(R.string.bottomsheet_set_delivered),
+    context = context,
+    dismissOnClickOverlay = true
+), TextWatcher, View.OnClickListener {
 
     companion object {
         private const val KEYBOARD_HEIGHT_PERCENTAGE_PORTRAIT = 0.25f

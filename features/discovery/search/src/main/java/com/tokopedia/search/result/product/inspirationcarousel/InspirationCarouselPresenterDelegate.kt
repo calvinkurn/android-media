@@ -461,9 +461,10 @@ class InspirationCarouselPresenterDelegate @Inject constructor(
 
     override suspend fun getInspirationCouponData(
         visitableList: MutableList<Visitable<*>>,
-        dataView: CouponDataView
+        dataView: CouponDataView,
+        isDarkMode: Boolean,
     ) = suspendCoroutine {
-        val requestParams = dataView.createGetCouponDataRequestParam()
+        val requestParams = dataView.createGetCouponDataRequestParam(isDarkMode)
         couponUseCase.execute(
             { couponDataModel ->
                 it.resumeWith(processCouponDataModel(visitableList, couponDataModel, dataView))
