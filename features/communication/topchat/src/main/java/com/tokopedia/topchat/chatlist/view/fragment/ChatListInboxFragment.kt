@@ -245,7 +245,6 @@ open class ChatListInboxFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupLifecycleObserver()
-        onOperationalInsightTickerClicked(ShopChatTicker())
     }
 
     override fun onScrollToTop() {}
