@@ -78,6 +78,7 @@ import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -190,7 +191,7 @@ internal open class ProductListPresenterTestFixtures {
     val iris = mockk<Iris>()
 
     protected lateinit var productListPresenter: ProductListPresenter
-
+    val coroutineDispatchers = CoroutineTestDispatchers
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     open fun setUp() {
@@ -329,7 +330,8 @@ internal open class ProductListPresenterTestFixtures {
             inspirationProductPresenterDelegate,
             reimagineRollence,
             lastClickedProductIdProvider,
-            deduplication
+            deduplication,
+            coroutineDispatchers
         )
         productListPresenter.attachView(productListView)
 
