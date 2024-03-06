@@ -745,7 +745,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         productId: String,
         promoPriceStyle: List<PromoPriceStyle>?,
         freeOngkirImgUrl: String,
-        //update promoCodes when change variant, no need to update when update p2data
+        // update promoCodes when change variant, no need to update when update p2data
         promoCodes: List<PromoCodesResponse>? = null
     ) {
         updateData(ProductDetailConstant.PRICE) {
@@ -769,7 +769,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                             mainTextColor = selectedPromoStyle.mainTextColor,
                             cardBackgroundColor = selectedPromoStyle.backgroundColor,
                             superGraphicIconUrl = selectedPromoStyle.superGraphicUrl,
-                            separatorColor = selectedPromoStyle.separatorColor,
+                            separatorColor = selectedPromoStyle.separatorColor
                         )
                     }
                 }
@@ -1358,12 +1358,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         productId: String,
         dynamicOneLinerVariant: List<DynamicOneLinerVariantResponse>
     ) {
-        mapOfData.values.asSequence().filter {
+        mapOfData.values.filter {
             it.type() == ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER_VARIANT
         }.onEach { visitable ->
             val selectedDynamicOneLiner = dynamicOneLinerVariant.firstOrNull {
                 it.dynamicOneLinerData.name == visitable.name() && productId in it.productIds
-            }?.dynamicOneLinerData ?: DynamicOneLiner() //return default data to hide the component
+            }?.dynamicOneLinerData ?: DynamicOneLiner() // return default data to hide the component
 
             updateMapDynamicOneLiner(visitable.name(), selectedDynamicOneLiner)
         }

@@ -40,7 +40,7 @@ class DynamicOneLinerViewHolder(
                 impressComponent(element)
             }
 
-            STATUS_HIDE -> {
+            else -> {
                 itemView.setLayoutHeight(0)
             }
         }
@@ -113,9 +113,13 @@ class DynamicOneLinerViewHolder(
     ) {
         if (showClickArea) {
             itemView.setOnClickListener {
-                callback.event(DynamicOneLinerEvent.OnDynamicOneLinerClicked(
-                    text, url, componentTrackDataModel
-                ))
+                callback.event(
+                    DynamicOneLinerEvent.OnDynamicOneLinerClicked(
+                        text,
+                        url,
+                        componentTrackDataModel
+                    )
+                )
             }
         } else {
             itemView.setOnClickListener(null)
