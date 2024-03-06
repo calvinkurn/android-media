@@ -167,7 +167,7 @@ fun CatalogSellerOfferingScreen(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CatalogSellerOfferingBody(
     listState: LazyListState,
