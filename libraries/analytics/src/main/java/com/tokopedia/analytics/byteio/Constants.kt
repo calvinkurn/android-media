@@ -260,5 +260,5 @@ object AppLogParam {
     const val ACTIVITY_HASH_CODE = "activity_hash_code"
     const val ENTER_METHOD_DEFAULT_FORMAT = "click_%s_button"
     val ENTER_METHOD_SEE_MORE = "${AppLogAnalytics.getCurrentData(PAGE_NAME)}_%s"
-    const val IS_HOME = "is_home"
+    const val IS_MAIN_PARENT = "is_main_parent_activity"
 }
