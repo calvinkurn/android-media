@@ -67,7 +67,9 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         if (activity is FragmentActivity) {
             fragmentSize = activity.supportFragmentManager.fragments.size
         }
+    }
 
+    override fun onActivityPostResumed(activity: Activity) {
         if (SharedPrefsUtils.getBooleanPreference(activity, TranslatorSettingView.IS_ENABLE, false)) {
             Log.i(TAG, "onActivityResumed() invoked of :" + activity.localClassName)
             val weakActivity = WeakReference<Activity>(activity)
@@ -76,7 +78,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
 
             val rootView: View = activity.window.decorView.findViewById(android.R.id.content)
 
-//            setAddonGlobalLayoutListener(rootView)
+            setAddonGlobalLayoutListener(rootView)
 
             launch {
 
