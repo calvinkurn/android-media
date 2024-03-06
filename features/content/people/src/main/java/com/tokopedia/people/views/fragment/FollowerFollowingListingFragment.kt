@@ -208,11 +208,6 @@ internal class FollowerFollowingListingFragment @Inject constructor(
                     getString(peopleR.string.up_title_followers),
                     currState.stats.totalFollowerFmt
                 ),
-//                FollowListFragment.getOrCreate(
-//                    childFragmentManager,
-//                    requireContext().classLoader,
-//                    FollowListFragment.Param(FollowListType.Follower, userId)
-//                )
                 FollowerListingFragment.getFragment(
                     childFragmentManager,
                     requireContext().classLoader
@@ -223,11 +218,6 @@ internal class FollowerFollowingListingFragment @Inject constructor(
                     getString(peopleR.string.up_title_following),
                     currState.stats.totalFollowingFmt
                 ),
-//                FollowListFragment.getOrCreate(
-//                    childFragmentManager,
-//                    requireContext().classLoader,
-//                    FollowListFragment.Param(FollowListType.Following, userId)
-//                )
                 FollowingListingFragment.getFragment(
                     childFragmentManager,
                     requireContext().classLoader
