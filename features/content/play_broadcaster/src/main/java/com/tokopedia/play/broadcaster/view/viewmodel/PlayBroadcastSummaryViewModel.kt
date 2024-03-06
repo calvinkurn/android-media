@@ -88,8 +88,11 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
         )
     }
 
-    private val _liveReportUiState = _trafficMetric.map {
-        LiveReportUiState(it)
+    private val _liveReportUiState = combine(
+        _trafficMetric,
+        _trafficMetricHighlight
+    ) { trafficMetric, trafficMetricHighlight ->
+        LiveReportUiState(trafficMetric, trafficMetricHighlight)
     }
 
     private val _tagUiState = combine(
