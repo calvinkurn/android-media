@@ -35,6 +35,7 @@ import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.date.DateUtil
@@ -164,6 +165,7 @@ fun TrackingHistoryItem(
                     visibility =
                         if (trackHistoryModel.proof.imageId.isNotEmpty()) Visibility.Visible else Visibility.Gone
                 }
+                .tag("img_proof")
                 .clickable { seeProofOfDelivery(trackHistoryModel.proof) },
             source = ImageSource.Remote(
                 trackHistoryModel.proof.imageUrl,
