@@ -35,6 +35,7 @@ internal fun AutoCompleteScreen(
     viewModel: AutoCompleteViewModel,
     iris: Iris,
     listener: AutoCompleteListener?,
+    searchEntrance: String,
 ) {
     val analytics = TrackApp.getInstance().gtm
 
@@ -57,7 +58,7 @@ internal fun AutoCompleteScreen(
         )
 
         LaunchedEffect(key1 = state.value.appLogData.imprId) {
-            trackByteIOAutoComplete(state.value)
+            trackByteIOAutoComplete(state.value, searchEntrance)
         }
 
         LazyColumn(
@@ -70,7 +71,7 @@ internal fun AutoCompleteScreen(
                     item.impress(iris)
                     if (viewModel.stateValue.isSuggestion)
                         AppLogSearch.eventTrendingWordsShowSuggestion(
-                            trendingWordsSuggestion(viewModel, item)
+                            trendingWordsSuggestion(viewModel, item, searchEntrance)
                         )
                 })
                 when (item.domainModel.template) {
@@ -92,7 +93,7 @@ internal fun AutoCompleteScreen(
                                     )
 
                                     AppLogSearch.eventTrendingWordsClickSuggestion(
-                                        trendingWordsSuggestion(viewModel, item)
+                                        trendingWordsSuggestion(viewModel, item, searchEntrance)
                                     )
                                 }
                             },
@@ -119,13 +120,13 @@ internal fun AutoCompleteScreen(
     }
 }
 
-private fun trackByteIOAutoComplete(state: AutoCompleteState) {
+private fun trackByteIOAutoComplete(state: AutoCompleteState, searchEntrance: String) {
     if (state.appLogData.imprId.isBlank()) return
 
     if (state.isInitialState) {
         val enterFrom = AppLogSearch.enterFrom()
 
-        AppLogSearch.eventEnterSearchBlankPage(enterFrom, state.enterMethod)
+        AppLogSearch.eventEnterSearchBlankPage(enterFrom, state.enterMethod, searchEntrance)
 
         AppLogAnalytics.putPageData(BLANKPAGE_ENTER_FROM, enterFrom)
         AppLogAnalytics.putPageData(BLANKPAGE_ENTER_METHOD, state.enterMethod)
@@ -139,7 +140,8 @@ private fun trackByteIOAutoComplete(state: AutoCompleteState) {
                 wordsSource = state.appLogData.wordsSource,
                 wordsNum = state.resultList.filter {
                     it.domainModel.isTrendingWord()
-                }.size
+                }.size,
+                searchEntrance = searchEntrance,
             )
         )
 
@@ -189,7 +191,8 @@ private fun EvaluateActionReplace(
 
 private fun trendingWordsSuggestion(
     viewModel: AutoCompleteViewModel,
-    item: AutoCompleteUnifyDataView
+    item: AutoCompleteUnifyDataView,
+    searchEntrance: String,
 ) = AppLogSearch.TrendingWordsSuggestion(
     groupId = item.groupId,
     imprId = viewModel.stateValue.appLogData.imprId,
@@ -199,4 +202,5 @@ private fun trendingWordsSuggestion(
     sugType = item.sugType,
     wordsContent = item.domainModel.title.text,
     wordsPosition = item.appLogIndex,
+    searchEntrance = searchEntrance,
 )

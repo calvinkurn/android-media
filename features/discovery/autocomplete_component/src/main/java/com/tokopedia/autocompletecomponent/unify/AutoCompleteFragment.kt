@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
+import com.tokopedia.discovery.common.analytics.SearchEntrance
 import com.tokopedia.iris.Iris
 import com.tokopedia.nest.principles.ui.NestTheme
 import javax.inject.Inject
@@ -21,6 +22,7 @@ class AutoCompleteFragment @Inject constructor(
 ) : TkpdBaseV4Fragment() {
 
     private val viewModel: AutoCompleteViewModel by viewModels { viewModelFactory }
+    private val searchEntrance = SearchEntrance()
 
     override fun getScreenName(): String = SCREEN_UNIVERSEARCH
 
@@ -33,7 +35,12 @@ class AutoCompleteFragment @Inject constructor(
 
         setContent {
             NestTheme {
-                AutoCompleteScreen(viewModel, iris, (activity as? AutoCompleteListener))
+                AutoCompleteScreen(
+                    viewModel,
+                    iris,
+                    (activity as? AutoCompleteListener),
+                    searchEntrance.value,
+                )
             }
         }
 

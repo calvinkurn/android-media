@@ -7,6 +7,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_PANEL
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
+import com.tokopedia.discovery.common.analytics.SearchEntrance
 import com.tokopedia.discovery.common.analytics.SearchId
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.utils.Dimension90Utils
@@ -49,6 +50,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val reimagineRollence: ReimagineRollence,
     queryKeyProvider: QueryKeyProvider,
+    private val searchEntrance: SearchEntrance,
 ) : BottomSheetFilterView,
     ContextProvider by WeakReferenceContextProvider(context),
     FragmentProvider by fragmentProvider,
@@ -164,6 +166,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
                 ecomFilterName = "",
                 ecomFilterPosition = "",
                 buttonTypeClick = FILTER_PANEL,
+                searchEntrance = searchEntrance.value,
             )
         )
     }
@@ -239,6 +242,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
                 ecomFilterName = ecomFilterName,
                 ecomFilterPosition = ecomFilterPosition,
                 buttonTypeClick = FILTER_PANEL,
+                searchEntrance = searchEntrance.value,
             )
         )
     }

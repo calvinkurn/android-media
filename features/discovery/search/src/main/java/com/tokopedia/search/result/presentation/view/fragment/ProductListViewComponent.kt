@@ -9,6 +9,7 @@ import com.tokopedia.search.di.module.RecycledViewPoolModule
 import com.tokopedia.search.di.module.ReimagineRollenceModule
 import com.tokopedia.search.di.module.RemoteConfigModule
 import com.tokopedia.search.di.module.SearchContextModule
+import com.tokopedia.search.di.module.SearchEntranceModule
 import com.tokopedia.search.di.module.SearchNavigationListenerModule
 import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule
 import com.tokopedia.search.di.module.TrackingQueueModule
@@ -104,6 +105,7 @@ import dagger.Component
     SearchCouponModule::class,
     IrisModule::class,
     ByteIOTrackingDataFactoryModule::class,
+    SearchEntranceModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 

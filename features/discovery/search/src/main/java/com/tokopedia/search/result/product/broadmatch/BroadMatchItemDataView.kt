@@ -94,6 +94,7 @@ data class BroadMatchItemDataView(
     fun asByteIOSearchResult(aladdinButtonType: String?) = AppLogSearch.SearchResult(
         imprId = byteIOTrackingData.imprId,
         searchId = byteIOTrackingData.searchId,
+        searchEntrance = byteIOTrackingData.searchEntrance,
         searchResultId = getRank().toString(),
         listItemId = id,
         itemRank = getItemRank(),
@@ -122,6 +123,7 @@ data class BroadMatchItemDataView(
         tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
         rank = getRank(),
         shopID = shopId,
+        searchEntrance = byteIOTrackingData.searchEntrance,
     )
 
     companion object {

@@ -38,7 +38,7 @@ class CpmReimagineViewHolder(
         binding?.adsBanner?.run {
             setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
                 override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
-                    bannerAdsListener?.onBannerAdsClicked(position, applink, data, element, true)
+                    bannerAdsListener?.onBannerAdsClicked(position, applink, data, element)
                 }
             })
             setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
@@ -60,10 +60,14 @@ class CpmReimagineViewHolder(
                         element,
                     )
                 }
+
+                override fun onImpressionSeeMoreItem(position: Int, data: CpmData) {
+                    bannerAdsListener?.onImpressionSeeMoreItem(element, position)
+                }
             })
 
             addOnImpression1pxListener(element.byteIOImpressHolder) {
-                bannerAdsListener?.onBannerAdsImpression1PxListener(element, true)
+                bannerAdsListener?.onBannerAdsImpression1PxListener(element)
             }
 
             displayHeadlineAds(element.cpmModel)

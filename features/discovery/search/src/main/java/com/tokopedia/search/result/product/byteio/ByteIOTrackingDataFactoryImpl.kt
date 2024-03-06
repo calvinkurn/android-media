@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.product.byteio
 
+import com.tokopedia.discovery.common.analytics.SearchEntrance
 import com.tokopedia.discovery.common.analytics.SearchId
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.QueryKeyProvider
@@ -13,6 +14,8 @@ class ByteIOTrackingDataFactoryImpl @Inject constructor(
 
     var requestId = ""; private set
     var searchId = ""; private set
+
+    val searchEntrance = SearchEntrance()
 
     fun renew(requestId: String) {
         update(requestId)
@@ -32,5 +35,6 @@ class ByteIOTrackingDataFactoryImpl @Inject constructor(
             searchId = searchId,
             keyword = queryKey,
             isFirstPage = isFirstPage,
+            searchEntrance = searchEntrance.value,
         )
 }

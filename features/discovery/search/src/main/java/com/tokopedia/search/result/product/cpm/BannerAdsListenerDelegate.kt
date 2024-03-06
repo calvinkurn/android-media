@@ -26,12 +26,11 @@ class BannerAdsListenerDelegate(
         applink: String?,
         data: CpmData?,
         dataView: CpmDataView,
-        isReimagine: Boolean,
     ) {
         if (applink == null || data == null) return
 
         redirectionListener?.startActivityWithApplink(applink)
-        trackBannerAdsClicked(position, applink, data, dataView, isReimagine)
+        trackBannerAdsClicked(position, applink, data, dataView)
     }
 
     override fun onBannerAdsImpressionListener(
@@ -73,7 +72,6 @@ class BannerAdsListenerDelegate(
         applink: String,
         data: CpmData,
         dataView: CpmDataView,
-        isReimagine: Boolean,
     ) {
         if (applink.contains(SHOP)) {
             TopAdsGtmTracker.eventTopAdsHeadlineShopClick(position, queryKey, data, userId)
@@ -84,9 +82,9 @@ class BannerAdsListenerDelegate(
                     AppLogSearch.eventSearchResultClick(
                         dataView.asByteIOSearchResult(CLICK_SHOP_NAME)
                     )
-                else if (!isReimagine) // Click on banner (only non reimagine)
+                else // Click on banner
                     AppLogSearch.eventSearchResultClick(
-                        dataView.shopItemAsByteIOSearchResult(CLICK_SHOP_NAME)
+                        dataView.shopItemAsByteIOSearchResult(position, CLICK_SHOP_NAME)
                     )
             }
         } else {
@@ -118,20 +116,18 @@ class BannerAdsListenerDelegate(
         )
     }
 
-    override fun onBannerAdsImpression1PxListener(
-        data: CpmDataView,
-        isReimagine: Boolean,
-    ) {
-        if (data.isTrackByteIO()) {
+    override fun onBannerAdsImpression1PxListener(data: CpmDataView) {
+        if (data.isTrackByteIO())
             AppLogSearch.eventSearchResultShow(
                 data.asByteIOSearchResult(null)
             )
+    }
 
-            if (!isReimagine && data.isShopBig())
-                AppLogSearch.eventSearchResultShow(
-                    data.shopItemAsByteIOSearchResult(null)
-                )
-        }
+    override fun onImpressionSeeMoreItem(data: CpmDataView, position: Int) {
+        if (data.isTrackByteIO())
+            AppLogSearch.eventSearchResultShow(
+                data.shopItemAsByteIOSearchResult(position, null)
+            )
     }
 
     companion object {

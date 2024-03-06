@@ -1,8 +1,10 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.discovery.common.analytics.SearchEntrance
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductListType.FIXED_GRID
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
@@ -337,6 +339,7 @@ internal open class ProductListPresenterTestFixtures {
             lastClickedProductIdProvider,
             deduplication,
             byteIOTrackingDataFactoryImpl,
+            mockk() { every { value } returns PageName.HOME },
         )
         productListPresenter.attachView(productListView)
 
