@@ -1,6 +1,7 @@
 package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.ActionType
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
@@ -35,7 +36,7 @@ data class AppLogRecommendationCardModel(
     val rate: Float,
     val originalPrice: Float,
     val salesPrice: Float,
-    val sourcePageType: SourcePageType,
+    val sourcePageType: String,
     val enterMethod: String?,
     val authorId: String,
 ) {
@@ -100,7 +101,7 @@ data class AppLogRecommendationCardModel(
             originalPrice: Float = 0f,
             salesPrice: Float = 0f,
             enterMethod: String? = null,
-            sourcePageType: SourcePageType = SourcePageType.PRODUCT_CARD,
+            sourcePageType: String = AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME)?.toString().orEmpty(),
             authorId: String = "",
         ): AppLogRecommendationCardModel {
             return AppLogRecommendationCardModel(

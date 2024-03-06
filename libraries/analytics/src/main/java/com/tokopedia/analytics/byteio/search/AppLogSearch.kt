@@ -439,7 +439,7 @@ object AppLogSearch {
         val rank: Int,
         val shopID: String?,
     ) {
-        val sourcePageType: SourcePageType
+        val sourcePageType: String
             get() = SourcePageType.PRODUCT_CARD
 
         val trackId: String
@@ -453,7 +453,7 @@ object AppLogSearch {
 
         fun json() = JSONObject(buildMap {
             put(ENTRANCE_FORM, entranceForm.str)
-            put(SOURCE_PAGE_TYPE, sourcePageType.str)
+            put(SOURCE_PAGE_TYPE, sourcePageType)
             put(IS_AD, isAdInt)
             put(PRODUCT_ID, productID)
             put(AppLogParam.TRACK_ID, trackId)

@@ -335,7 +335,7 @@ object AppLogAnalytics {
         sourceModule: String? = null,
         isAd: Int? = null,
         trackId: String? = null,
-        sourcePageType: SourcePageType? = null,
+        sourcePageType: String? = null,
         requestId: String? = null,
         sourcePreviousPage: String? = null
     ) {
@@ -355,7 +355,7 @@ object AppLogAnalytics {
             putPageData(TRACK_ID, trackId)
         }
         sourcePageType?.let {
-            putPageData(SOURCE_PAGE_TYPE, sourcePageType.str)
+            putPageData(SOURCE_PAGE_TYPE, sourcePageType)
         }
         requestId?.let {
             putPageData(REQUEST_ID, requestId)

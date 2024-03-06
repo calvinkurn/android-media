@@ -172,10 +172,11 @@ enum class EntranceForm(val str: String) {
     APPEND_GOODS_CARD("append_goods_card")
 }
 
-enum class SourcePageType(val str: String) {
-    VIDEO("video"),
-    LIVE("live"),
-    PRODUCT_CARD(AppLogAnalytics.getCurrentData(PAGE_NAME)?.toString().orEmpty())
+object SourcePageType {
+    const val VIDEO = "video"
+    const val LIVE = "live"
+    val PRODUCT_CARD
+        get() = AppLogAnalytics.getCurrentData(PAGE_NAME)?.toString().orEmpty()
 }
 
 enum class EnterMethod(val str: String) {
