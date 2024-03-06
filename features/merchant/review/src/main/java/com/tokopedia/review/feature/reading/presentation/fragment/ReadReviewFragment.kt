@@ -652,23 +652,12 @@ open class ReadReviewFragment :
                 attachmentId = attachmentId
             )
         } else {
-            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
-                context = requireContext(),
-                pageSource = ReviewMediaGalleryRouter.PageSource.PDP,
-                productID = viewModel.getProductId(),
-                shopID = viewModel.getShopId(),
-                isProductReview = isProductReview,
-                isFromGallery = false,
-                mediaPosition = positionClicked.plus(1),
-                showSeeMore = false,
-                preloadedDetailedReviewMediaResult = ReadReviewDataMapper.mapReadReviewDataToReviewMediaPreviewData(
-                    productReview,
-                    reviewMediaThumbnailUiModel,
-                    shopId
-                )
-            ).let {
-                startActivityForResult(it, GALLERY_ACTIVITY_CODE)
-            }
+            goToReviewMediaGallery(
+                positionClicked = positionClicked,
+                reviewMediaThumbnailUiModel = reviewMediaThumbnailUiModel,
+                productReview = productReview,
+                shopId = shopId,
+            )
         }
     }
 
@@ -1234,6 +1223,31 @@ open class ReadReviewFragment :
             )
         )
         startActivity(intent)
+    }
+
+    private fun goToReviewMediaGallery(
+        positionClicked: Int,
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel,
+        productReview: ProductReview,
+        shopId: String
+    ) {
+        ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+            context = requireContext(),
+            pageSource = ReviewMediaGalleryRouter.PageSource.PDP,
+            productID = viewModel.getProductId(),
+            shopID = viewModel.getShopId(),
+            isProductReview = isProductReview,
+            isFromGallery = false,
+            mediaPosition = positionClicked.plus(1),
+            showSeeMore = false,
+            preloadedDetailedReviewMediaResult = ReadReviewDataMapper.mapReadReviewDataToReviewMediaPreviewData(
+                productReview,
+                reviewMediaThumbnailUiModel,
+                shopId
+            )
+        ).let {
+            startActivityForResult(it, GALLERY_ACTIVITY_CODE)
+        }
     }
 
     private fun goToReportReview(reviewId: String, shopId: String) {
