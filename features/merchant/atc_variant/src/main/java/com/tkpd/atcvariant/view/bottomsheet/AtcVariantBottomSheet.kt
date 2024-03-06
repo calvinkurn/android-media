@@ -151,10 +151,9 @@ class AtcVariantBottomSheet :
     private var alreadyHitQtyTrack = false
     private var shouldSetActivityResult = true
     private val atcAnimator by atcAnimator()
-    private var productImage: ImageView? = null
 
     override fun onProductImageChanged(container: ImageView) {
-        productImage = container
+        atcAnimator.setSourceView(view = container)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -295,7 +294,7 @@ class AtcVariantBottomSheet :
     private fun observeParamsData() {
         sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner, {
             val previousData = getDataFromPreviousPage(it)
-
+            atcAnimator.setTargetLocation(it.cartPosition)
             // If complete data is coming from previous page, set params into this data (directly show without hit network)
             // if not just use general data from aggregatorParams (data do not complete, hit network)
             val data = if (previousData != null) {
@@ -982,16 +981,7 @@ class AtcVariantBottomSheet :
 
             if (openShipmentBottomSheetWhenError()) return@let
 
-            if (pageSource == VariantPageSource.PDP_PAGESOURCE.source) {
-                val targetView = productImage ?: return
-                atcAnimator
-                    .setView(targetView)
-                    .show()
-            } else {
-                showProgressDialog {
-                    loadingProgressDialog?.dismiss()
-                }
-            }
+            showWaitingIndicator(source = pageSource)
 
             viewModel.hitAtc(
                 buttonAction,
@@ -1005,6 +995,16 @@ class AtcVariantBottomSheet :
                 sharedData?.showQtyEditor ?: false,
                 viewModel.getVariantAggregatorData()?.simpleBasicInfo?.shopName ?: ""
             )
+        }
+    }
+
+    private fun showWaitingIndicator(source: String) {
+        if (source == VariantPageSource.PDP_PAGESOURCE.source) {
+            atcAnimator.show()
+        } else {
+            showProgressDialog {
+                loadingProgressDialog?.dismiss()
+            }
         }
     }
 

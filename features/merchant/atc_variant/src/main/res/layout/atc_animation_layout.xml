@@ -3,15 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/atc_animation_stroke"
-    android:padding="4dp">
+    android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/productImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitCenter"
-        app:unify_image_corner_radius="24"
-        tools:src="@tools:sample/avatars" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:foreground="@drawable/atc_animation_stroke"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp"
+        app:contentPadding="4dp">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/productImage"
+            android:layout_width="144dp"
+            android:layout_height="144dp"
+            android:scaleType="fitCenter"
+            app:unify_image_corner_radius="20"
+            tools:src="@tools:sample/avatars" />
+    </androidx.cardview.widget.CardView>
 </FrameLayout>

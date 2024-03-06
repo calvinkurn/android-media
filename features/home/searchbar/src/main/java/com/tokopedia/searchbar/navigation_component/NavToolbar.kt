@@ -962,8 +962,17 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     fun setNavToolbarIconCustomColor(
         navToolbarIconCustomLightColor: Int,
         navToolbarIconCustomDarkColor: Int
-    ){
+    ) {
         this.navToolbarIconCustomLightColor = navToolbarIconCustomLightColor
         this.navToolbarIconCustomDarkColor = navToolbarIconCustomDarkColor
+    }
+
+    fun getCartIconPosition(): View? {
+        val shareIconPosition = navIconAdapter?.getCartIconPosition()
+        shareIconPosition?.let {
+            val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it)
+            return viewholder?.itemView
+        }
+        return null
     }
 }

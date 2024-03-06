@@ -8,13 +8,18 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.os.SystemClock
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -483,4 +488,13 @@ fun View.setOnClickDebounceListener(interval: Int = 750, block: () -> Unit) {
         lastClickTime = SystemClock.elapsedRealtime()
         block()
     }
+}
+
+/**
+ * get location on screen from a view
+ */
+fun View.getLocationOnScreen(): Point {
+    val location = IntArray(2)
+    this.getLocationOnScreen(location)
+    return Point(location[0], location[1])
 }

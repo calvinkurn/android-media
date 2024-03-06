@@ -8,6 +8,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
+import android.graphics.Point
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -87,6 +88,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
+import com.tokopedia.kotlin.extensions.view.getLocationOnScreen
 import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.ifNull
@@ -3740,13 +3742,19 @@ open class ProductDetailFragment :
                         restrictionData = p2Data?.restrictionInfo,
                         isFavorite = pdpUiUpdater?.shopCredibility?.isFavorite ?: false,
                         uspImageUrl = p2Data?.uspImageUrl ?: "",
-                        saveAfterClose = saveAfterClose
+                        saveAfterClose = saveAfterClose,
+                        cartViewLocation = getCartIconLocation()
                     ) { data, code ->
                         startActivityForResult(data, code)
                     }
                 }
             }
         }
+    }
+
+    private fun getCartIconLocation(): Point? {
+        val icon = navToolbar?.getCartIconPosition()
+        return icon?.getLocationOnScreen()
     }
 
     private fun renderVariant(data: ProductVariant?) {

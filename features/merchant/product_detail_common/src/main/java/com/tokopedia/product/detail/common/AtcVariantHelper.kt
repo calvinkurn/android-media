@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.common
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Point
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -28,6 +29,7 @@ object AtcVariantHelper {
     const val PDP_PARCEL_KEY_RESULT = "pdp_page_result"
 
     const val ATC_VARIANT_CACHE_ID = "atc_variant_cache_id"
+    const val ATC_VARIANT_CART_POSITION = "atc_variant_cart_position"
 
     const val ATC_VARIANT_RESULT_CODE = 19202
     const val KEY_DISMISS_AFTER_ATC = "dismiss_after_atc"
@@ -59,6 +61,7 @@ object AtcVariantHelper {
         uspImageUrl: String = "",
         dismissAfterTransaction: Boolean = false,
         saveAfterClose: Boolean = true,
+        cartViewLocation: Point? = null, // only for pdp
         startActivitResult: (Intent, Int) -> Unit
     ) {
         val cacheManager = SaveInstanceCacheManager(context, true)
@@ -99,8 +102,18 @@ object AtcVariantHelper {
         )
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productInfoP1.basic.productID, "", pageSource.source, "", "", "")
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalMarketplace.ATC_VARIANT,
+            productInfoP1.basic.productID,
+            "",
+            pageSource.source,
+            "",
+            "",
+            ""
+        )
             .putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
+            .putExtra(ATC_VARIANT_CART_POSITION, cartViewLocation)
         startActivitResult.invoke(intent, ATC_VARIANT_RESULT_CODE)
     }
 
