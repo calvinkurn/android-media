@@ -11,25 +11,20 @@ import android.content.Intent
 import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.SparseIntArray
-import android.view.Display
 import android.view.KeyEvent
 import android.view.View
-import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.ContextCompat.getSystemServiceName
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -98,6 +93,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.ifNull
@@ -342,7 +338,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_INDEFINITE
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -365,7 +360,7 @@ import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.roundToInt
+import kotlin.math.ceil
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
@@ -806,7 +801,6 @@ open class ProductDetailFragment :
 
     private fun observeBitmapReady() {
         viewLifecycleOwner.observe(viewModel.bitmapImage) { bitmap ->
-
         }
     }
 
@@ -943,9 +937,9 @@ open class ProductDetailFragment :
 
     private fun reloadFintechWidget() {
         if (pdpUiUpdater == null || (
-                pdpUiUpdater?.fintechWidgetMap == null &&
-                    pdpUiUpdater?.fintechWidgetV2Map == null
-                )
+            pdpUiUpdater?.fintechWidgetMap == null &&
+                pdpUiUpdater?.fintechWidgetV2Map == null
+            )
         ) {
             return
         }
@@ -1239,8 +1233,8 @@ open class ProductDetailFragment :
         val hasQuantityEditor =
             viewModel.getProductInfoP1?.basic?.isTokoNow == true ||
                 (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
-                    ?.data
-                    ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
+                ?.data
+                ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
         if (viewModel.getProductInfoP1 == null ||
             context == null ||
@@ -2857,7 +2851,7 @@ open class ProductDetailFragment :
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
                 if (it.basic.isTokoNow && cartTypeData?.availableButtonsPriority?.firstOrNull()
-                        ?.isCartTypeDisabledOrRemindMe() == false
+                    ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
                 } else {
@@ -2869,7 +2863,7 @@ open class ProductDetailFragment :
 
             val shouldShowTokoNow = it.basic.isTokoNow &&
                 cartTypeData?.availableButtonsPriority?.firstOrNull()
-                    ?.isCartTypeDisabledOrRemindMe() == false &&
+                ?.isCartTypeDisabledOrRemindMe() == false &&
                 (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
 
             val tokonowVariantButtonData = if (shouldShowTokoNow) {
@@ -3400,7 +3394,7 @@ open class ProductDetailFragment :
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                            viewModel.getProductInfoP1?.parentProductId.orEmpty()
+                        viewModel.getProductInfoP1?.parentProductId.orEmpty()
                         }"
                         ProductDetailTracking.Click.eventActivationOvo(
                             viewModel.getProductInfoP1?.parentProductId ?: "",
@@ -4856,58 +4850,27 @@ open class ProductDetailFragment :
         }
     }
 
-    fun getStatusBarHeight(context: Context): Int {
-        var height = 0
-        val resourceId = context.resources.getIdentifier(
-            "status_bar_height", "dimen", "android"
-        )
-        if (resourceId > 0) {
-            height = context.resources.getDimensionPixelSize(resourceId)
+    private fun getStatusBarHeight(context: Context): Int {
+        val resources = context.resources
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        return if (resourceId > 0) {
+            resources.getDimensionPixelSize(resourceId)
+        } else {
+            ceil(((if (VERSION.SDK_INT >= VERSION_CODES.M) 24 else 25) * resources.displayMetrics.density).toDouble())
+                .toInt()
         }
-        return height
-    }
-
-    fun getScreenCenterCoordinates(windowManager: WindowManager): Point {
-        val display: Display = windowManager.defaultDisplay
-        val screenSize = Point()
-        display.getSize(screenSize)
-        UnifyMotion.EASE_IN_OUT
-        getScreenHeight()
-        val centerX = screenSize.x / 2
-        val centerY = screenSize.y / 2 + getStatusBarHeight(requireContext()) / 2
-        return Point(centerX, centerY)
     }
 
     var asd = false
     private fun runAtcAnimation() {
         viewModel.bitmapImage.value?.let { bitmap ->
             val viewCart = navToolbar?.getCartIconPosition()
-            val windowManager =
-                requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            val centerCoordinates = getScreenCenterCoordinates(windowManager)
-            val centerX = centerCoordinates.x
-            val centerY = centerCoordinates.y
-
-            var rootX = 0
-            var rootY = 0
-            binding?.composeAtc?.let {
-                val location = it.getLocationOnScreen()
-
-                rootX = location.x
-                rootY = location.y
-
-                println("posisinya image x : ${rootX} ")
-                println("posisinya image y : ${rootY}")
-            }
-
-
-
+            val centerX = getScreenWidth() / 2
+            val centerY = getScreenHeight() / 2 + getStatusBarHeight(requireContext())
             viewCart?.post {
                 val location = viewCart.getLocationOnScreen()
-                val absX = location.x
-                val absY = location.y
-
-
+                val absX = location.x + viewCart.width / 2 + 2.toPx()
+                val absY = location.y + viewCart.height / 2 + 2.toPx()
 
                 binding?.composeAtc?.post {
                     binding?.composeAtc?.apply {
@@ -4916,22 +4879,20 @@ open class ProductDetailFragment :
                         setContent {
                             asd = !asd
 
-                            val density = LocalDensity.current
-                            val anchorSquareSize = with(density) { 218.dp.toPx() }
-
                             println("animnya x: ${viewCart.width.toPx()}")
                             println("animnya y: ${viewCart.width.toPx()}")
 
-                            println("posisinya x : ${centerX - anchorSquareSize / 2} ")
-                            println("posisinya y : ${centerY - anchorSquareSize / 2}")
+                            println("posisinya x : $centerX ")
+                            println("posisinya y : $centerY")
 
-                            val locImageX = (centerX - anchorSquareSize / 2).roundToInt()
-                            val locImageY = (centerY - anchorSquareSize / 2).roundToInt()
+                            val x = absX - centerX
+                            val y = centerY - absY
 
                             AnimatedImageWithAnchor(
                                 asd,
-                                absX - locImageX,
-                                -(locImageY - absY), bitmap
+                                x,
+                                -y,
+                                bitmap
                             )
                         }
                     }
@@ -5110,7 +5071,6 @@ open class ProductDetailFragment :
                 shopId
             )
 
-
             val shopCredibility = pdpUiUpdater?.shopCredibility ?: return
 
             val prefetch = ShopPagePrefetch()
@@ -5259,7 +5219,7 @@ open class ProductDetailFragment :
     private fun setLoadingNplShopFollowers(isLoading: Boolean) {
         val restrictionData = viewModel.p2Data.value?.restrictionInfo
         if (restrictionData?.restrictionData?.firstOrNull()
-                ?.restrictionShopFollowersType() == false
+            ?.restrictionShopFollowersType() == false
         ) {
             return
         }
