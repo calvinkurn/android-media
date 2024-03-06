@@ -25,8 +25,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -72,10 +70,20 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.hideKeyboard
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
@@ -191,6 +199,7 @@ import com.tokopedia.topchat.common.custom.TopChatKeyboardHandler
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.Utils.isFromBubble
+import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.toPx
@@ -205,6 +214,7 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -1323,13 +1333,29 @@ open class TopChatRoomFragment :
     }
 
     override fun renderBackground(url: String) {
-        chatBackground?.let {
-            Glide.with(it.context)
-                .load(url)
-                .centerInside()
-                .dontAnimate()
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .into(it)
+        if (!context.isValidGlideContext()) return
+        context?.let {
+            url.getBitmapImageUrl(
+                context = it,
+                properties = {
+                    this.setPlaceHolder(-1) // no placeholder
+                    this.setCacheStrategy(MediaCacheStrategy.DATA)
+                },
+                onReady = { resource ->
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        // Calculate the scale to match ImageView's width
+                        val imageViewWidth = chatBackground?.width ?: resource.width
+                        val scaledBitmap = withContext(dispatcher.default) {
+                            ViewUtil.scaleBitmap(resource, imageViewWidth)
+                        }
+                        // Create a BitmapDrawable from the scaled bitmap
+                        val bitmapDrawable = withContext(dispatcher.default) {
+                            ViewUtil.verticalTileBitmap(it, scaledBitmap)
+                        }
+                        chatBackground?.background = bitmapDrawable
+                    }
+                }
+            )
         }
     }
 

@@ -1,0 +1,49 @@
+{
+  "TokonowGetAnnotationList": {
+    "header": {
+      "process_time": 0,
+      "messages": [],
+      "reason": "",
+      "error_code": 200
+    },
+    "annotationHeader": {
+      "title": "Brand",
+      "hasMore": true,
+      "allPageAppLink": "tokopedia://now/all-annotation?category_id=123",
+      "allPageWebLink": "https://www.tokopedia.com/now/all-annotation?category_id=123"
+    },
+    "status": 1,
+    "annotationList": [
+      {
+        "annotationID": "1",
+        "imageURL": "https://images.tokopedia.net/img/cache/200-square/WgKiGm/2023/9/25/img1.png",
+        "appLink": "tokopedia://discovery/now-inspirational?category_id=123&annotation_id=11",
+        "webLink": "/discovery/now-inspirational?category_id=123&annotation_id=11"
+      },
+      {
+        "annotationID": "2",
+        "imageURL": "https://images.tokopedia.net/img/cache/200-square/WgKiGm/2023/9/25/img1.png",
+        "appLink": "tokopedia://discovery/now-inspirational?category_id=123&annotation_id=11",
+        "webLink": "/discovery/now-inspirational?category_id=123&annotation_id=11"
+      },
+      {
+        "annotationID": "3",
+        "imageURL": "https://images.tokopedia.net/img/cache/200-square/WgKiGm/2023/9/25/img1.png",
+        "appLink": "tokopedia://discovery/now-inspirational?category_id=123&annotation_id=11",
+        "webLink": "/discovery/now-inspirational?category_id=123&annotation_id=11"
+      },
+      {
+        "annotationID": "4",
+        "imageURL": "https://images.tokopedia.net/img/cache/200-square/WgKiGm/2023/9/25/img1.png",
+        "appLink": "tokopedia://discovery/now-inspirational?category_id=123&annotation_id=11",
+        "webLink": "/discovery/now-inspirational?category_id=123&annotation_id=11"
+      },
+      {
+        "annotationID": "5",
+        "imageURL": "https://images.tokopedia.net/img/cache/200-square/WgKiGm/2023/9/25/img1.png",
+        "appLink": "tokopedia://discovery/now-inspirational?category_id=123&annotation_id=11",
+        "webLink": "/discovery/now-inspirational?category_id=123&annotation_id=11"
+      }
+    ]
+  }
+}
