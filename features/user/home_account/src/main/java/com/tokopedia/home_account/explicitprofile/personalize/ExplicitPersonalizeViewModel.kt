@@ -61,7 +61,7 @@ class ExplicitPersonalizeViewModel @Inject constructor(
         }
     }
 
-    fun getQuestion() {
+    private fun getQuestion() {
         _stateGetQuestion.value = ExplicitPersonalizeResult.Loading
 
         launchCatchError (
@@ -70,12 +70,13 @@ class ExplicitPersonalizeViewModel @Inject constructor(
                     .explicitProfileQuestionDataModel.template
                 templateId = template.id
                 val sections = template.sections
+                val maxItemSelected = template.rules.maxAnswer
                 if (sections.isNotEmpty() && sections.first().layout == MULTIPLE_ANSWER) {
                     sectionId = sections.first().sectionId
                     sectionId = sections.first().sectionId
                     _stateGetQuestion.value = ExplicitPersonalizeResult.Success(
                         listQuestion = sections.first().questions,
-                        maxItemSelected = 10//sections.first().maxAnswer
+                        maxItemSelected = maxItemSelected
                     )
                 } else {
                     _stateGetQuestion.value = ExplicitPersonalizeResult.Failed
@@ -151,7 +152,7 @@ sealed interface ExplicitPersonalizeResult {
     object Loading : ExplicitPersonalizeResult
     data class Success(
         val listQuestion: List<QuestionDataModel>,
-        val maxItemSelected: Int
+        val maxItemSelected: Int?
     ) : ExplicitPersonalizeResult
     object Failed : ExplicitPersonalizeResult
 }

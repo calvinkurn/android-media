@@ -39,11 +39,19 @@ data class TemplateDataModel(
     var name: String = "",
     @SerializedName("description")
     var description: String = "",
+    @SerializedName("rules")
+    var rules: Rules = Rules(),
     @SerializedName("property")
     var property: Property = Property(),
     @SerializedName("sections")
     var sections: MutableList<SectionsDataModel> = mutableListOf()
 ) {
+    data class Rules(
+        @SerializedName("minAnswer")
+        var minAnswer: Int? = null,
+        @SerializedName("maxAnswer")
+        var maxAnswer: Int? = null
+    )
     data class Property(
         @SerializedName("title")
         var title: String = "",

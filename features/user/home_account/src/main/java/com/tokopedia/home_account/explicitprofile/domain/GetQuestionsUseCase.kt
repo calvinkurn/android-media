@@ -33,6 +33,10 @@ class GetQuestionsUseCase @Inject constructor(
                   id
                   name
                   description
+                  rules {
+                    minAnswer
+                    maxAnswer
+                  }
                   property {
                     title
                     image

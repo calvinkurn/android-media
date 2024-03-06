@@ -28,7 +28,7 @@ fun PersonalizeQuestionScreen(
     listQuestion: List<QuestionDataModel>,
     isLoadingSaveAnswer: Boolean,
     countItemSelected: Int,
-    maxItemSelected: Int,
+    maxItemSelected: Int?,
     onSave: () -> Unit,
     onSkip: () -> Unit,
     onOptionSelected: (OptionSelected) -> Unit,

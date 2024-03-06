@@ -18,7 +18,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 @Composable
 fun HeaderSection(
     countItemSelected: Int,
-    maxItemSelected: Int
+    maxItemSelected: Int?
 ) {
     Column(
         modifier = Modifier.padding(16.dp)
@@ -39,20 +39,22 @@ fun HeaderSection(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        NestTypography(
-            text = LocalContext.current.getString(
-                R.string.explicit_personalize_counter,
-                countItemSelected.toString(),
-                maxItemSelected.toString()
-            ),
-            textStyle = NestTheme.typography.paragraph2.copy(
-                color = if (countItemSelected == 0)
-                    NestTheme.colors.NN._600
-                else
-                    NestTheme.colors.GN._500
-            ),
-            modifier = Modifier.align(Alignment.End)
-        )
+        if (maxItemSelected != null && maxItemSelected != 0) {
+            NestTypography(
+                text = LocalContext.current.getString(
+                    R.string.explicit_personalize_counter,
+                    countItemSelected.toString(),
+                    maxItemSelected.toString()
+                ),
+                textStyle = NestTheme.typography.paragraph2.copy(
+                    color = if (countItemSelected == 0)
+                        NestTheme.colors.NN._600
+                    else
+                        NestTheme.colors.GN._500
+                ),
+                modifier = Modifier.align(Alignment.End)
+            )
+        }
     }
 }
 
@@ -69,5 +71,13 @@ fun HeaderSectionSelectedPreview() {
 fun HeaderSectionUnSelectedPreview() {
     NestTheme {
         HeaderSection(countItemSelected = 0, maxItemSelected = 10)
+    }
+}
+
+@Preview(device = Devices.PIXEL_3A_XL, showBackground = true)
+@Composable
+fun HeaderSectionNullMaxAnswerPreview() {
+    NestTheme {
+        HeaderSection(countItemSelected = 0, maxItemSelected = null)
     }
 }
