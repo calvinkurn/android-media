@@ -4,7 +4,8 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.FloatTweenSpec
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,8 +24,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,9 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -79,8 +76,6 @@ fun ProductDetailPriceComponent(
         } else {
             PromoPriceCard(promoPriceData, onPromoPriceClicked)
         }
-
-
     }
 }
 
@@ -100,14 +95,13 @@ fun NormalPriceComponent(
                 data.priceFmt,
                 textStyle = NestTheme.typography.heading3.copy(
                     color = NestTheme.colors.NN._950,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Bold
                 )
             )
 
             if (freeOngkirImageUrl.isNotEmpty()) {
                 NestImage(
                     source = Remote(freeOngkirImageUrl, customUIError = {
-
                     }),
                     type = NestImageType.Rect(0.dp),
                     modifier = Modifier
@@ -160,10 +154,11 @@ fun PromoPriceHeader(
     ) {
         if (mainIconUrl.isNotEmpty()) {
             NestImage(
-                source = Remote(mainIconUrl,
+                source = Remote(
+                    mainIconUrl,
                     customUIError = {
-
-                    }),
+                    }
+                ),
                 modifier = Modifier
                     .size(24.dp)
                     .padding(end = 4.dp)
@@ -227,11 +222,9 @@ fun PromoPriceFooter(
             )
         }
 
-
         if (boLogo.isNotEmpty()) {
             NestImage(
                 source = Remote(source = boLogo, customUIError = {
-
                 }),
                 type = NestImageType.Rect(0.dp),
                 modifier = Modifier
@@ -292,7 +285,6 @@ fun PromoPriceCard(
         if (data.superGraphicIconUrl.isNotEmpty()) {
             NestImage(
                 source = Remote(source = data.superGraphicIconUrl, customUIError = {
-
                 }),
                 type = NestImageType.Rect(0.dp),
                 modifier = Modifier.constrainAs(superGraphic) {
@@ -367,7 +359,10 @@ val String.color
     }
 
 val bezierCustomInterpolators = CubicBezierEasing(
-    0.63F, 0.01F, 0.29F, 1f
+    0.63F,
+    0.01F,
+    0.29F,
+    1f
 )
 
 @Composable
@@ -377,31 +372,44 @@ fun AnimatedImageWithAnchor(
     y: Int,
     imageDrawable: Bitmap
 ) {
-
     val alphaAnimation = remember(shouldAnimate) { Animatable(0F) }
     val yAnimation = remember(shouldAnimate) { Animatable(0F) }
     val xAnimation = remember(shouldAnimate) { Animatable(0F) }
-    val sizeAnimation = remember(shouldAnimate) { Animatable(218F) }
+    val scaleAnimation = remember(shouldAnimate) { Animatable(0F) }
 
     LaunchedEffect(shouldAnimate) {
-        alphaAnimation.animateTo(
-            1f, animationSpec = FloatTweenSpec(
-                UnifyMotion.T3.toInt(), 0, easing = bezierCustomInterpolators
+        val initialAlpha = async {
+            alphaAnimation.animateTo(
+                1F,
+                animationSpec = tween(UnifyMotion.T3.toInt(), easing = FastOutSlowInEasing)
             )
-        )
+        }
+
+        val initialSize = async {
+            scaleAnimation.animateTo(
+                1F,
+                animationSpec = tween(UnifyMotion.T3.toInt(), easing = FastOutSlowInEasing)
+            )
+        }
+
+        awaitAll(initialAlpha, initialSize)
 
         val a = async {
             yAnimation.animateTo(
-                y.toFloat(), animationSpec = FloatTweenSpec(
-                    UnifyMotion.T3.toInt(), 0, easing = bezierCustomInterpolators
+                y.toFloat(),
+                animationSpec = tween(
+                    UnifyMotion.T5.toInt(),
+                    easing = FastOutSlowInEasing
                 )
             )
         }
 
         val b = async {
             xAnimation.animateTo(
-                x.toFloat(), animationSpec = FloatTweenSpec(
-                    UnifyMotion.T3.toInt(), 0, easing = bezierCustomInterpolators
+                x.toFloat(),
+                animationSpec = tween(
+                    UnifyMotion.T5.toInt(),
+                    easing = FastOutSlowInEasing
                 )
             )
         }
@@ -409,33 +417,38 @@ fun AnimatedImageWithAnchor(
         val c = async {
             alphaAnimation.animateTo(
                 0f,
-                animationSpec = FloatTweenSpec(
-                    UnifyMotion.T3.toInt(), 100, easing = bezierCustomInterpolators
-                ),
+                animationSpec = tween(
+                    UnifyMotion.T5.toInt(),
+                    easing = FastOutSlowInEasing
+                )
             )
         }
 
         val d = async {
-            sizeAnimation.animateTo(
-                30F, animationSpec = FloatTweenSpec(
-                    UnifyMotion.T3.toInt(), 0, easing = bezierCustomInterpolators
+            scaleAnimation.animateTo(
+                0.05F,
+                animationSpec = tween(
+                    UnifyMotion.T5.toInt(),
+                    easing = FastOutSlowInEasing
                 )
             )
         }
 
         awaitAll(a, b, c, d)
-        //onFinishHere
+        // onFinishHere
     }
 
     Image(
         painter = rememberAsyncImagePainter(imageDrawable),
         contentDescription = null,
         modifier = Modifier
-            .size(sizeAnimation.value.dp)
+            .size(218.dp)
             .offset {
                 IntOffset(xAnimation.value.roundToInt(), yAnimation.value.roundToInt())
             }
             .graphicsLayer {
+                scaleX = scaleAnimation.value
+                scaleY = scaleAnimation.value
                 alpha = alphaAnimation.value
             }
             .clip(shape = RoundedCornerShape(24.dp))
@@ -453,7 +466,6 @@ fun PromoPriceCardPreview() {
                 .background(NestTheme.colors.NN._0)
                 .fillMaxSize()
         ) {
-
 //            Testing()
         }
     }
