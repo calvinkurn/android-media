@@ -16,4 +16,6 @@ sealed interface MiniCartEditorEvent {
     data class DeleteCart(val product: BmgmMiniCartVisitable.ProductUiModel) : MiniCartEditorEvent
 
     object SetCartListCheckboxState : MiniCartEditorEvent
+
+    data class GetCartListData(val cartId: String) : MiniCartEditorEvent
 }
