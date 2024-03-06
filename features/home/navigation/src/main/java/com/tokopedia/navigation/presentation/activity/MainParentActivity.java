@@ -1,7 +1,8 @@
 package com.tokopedia.navigation.presentation.activity;
 
 import static com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD;
-import static com.tokopedia.analytics.byteio.AppLogParam.IS_HOME;
+import static com.tokopedia.analytics.byteio.AppLogParam.IS_MAIN_PARENT;
+import static com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME;
 import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_APPLINK_PARAM;
 import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_PARAM_TRUE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
@@ -1369,8 +1370,9 @@ public class MainParentActivity extends BaseActivity implements
     private void updateAppLogPageData(int position) {
         Fragment fragment = fragmentList.get(position);
         if (fragment instanceof AppLogInterface applogInterface) {
+            if(applogInterface.getPageName().equals(AppLogAnalytics.INSTANCE.getCurrentData(PAGE_NAME).toString())) return;
             AppLogAnalytics.INSTANCE.pushPageData(applogInterface);
-            AppLogAnalytics.INSTANCE.putPageData(IS_HOME, true);
+            AppLogAnalytics.INSTANCE.putPageData(IS_MAIN_PARENT, true);
         }
     }
 
