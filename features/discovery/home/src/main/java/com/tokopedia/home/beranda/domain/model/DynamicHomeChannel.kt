@@ -184,6 +184,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_SPECIAL_RELEASE_REVAMP: String = "rilisan_spesial"
             const val LAYOUT_SPECIAL_SHOP_FLASH_SALE: String = "flash_sale_toko"
             const val LAYOUT_LEGO_3_AUTO: String = "lego_3_auto"
+            const val LAYOUT_COUPON_WIDGET: String = "coupon_widget"
             const val channelId: String = "channelId"
             const val DIVIDER_NO_DIVIDER = 0
         }

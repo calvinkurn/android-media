@@ -31,4 +31,5 @@ sealed interface StoriesUiEvent {
         StoriesUiEvent
 
     object ShowStoriesTimeCoachmark : StoriesUiEvent
+    object OnboardShown : StoriesUiEvent
 }

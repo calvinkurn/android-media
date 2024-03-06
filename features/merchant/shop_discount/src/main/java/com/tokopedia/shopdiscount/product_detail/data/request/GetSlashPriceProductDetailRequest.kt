@@ -8,6 +8,8 @@ data class GetSlashPriceProductDetailRequest(
     var requestHeader: RequestHeader = RequestHeader(),
     @SerializedName("filter")
     var slashPriceProductDetailFilter: SlashPriceProductDetailFilter = SlashPriceProductDetailFilter(),
+    @SerializedName("validate_size_variants")
+    var isValidateSizeVariant: Boolean = false,
 ){
     data class SlashPriceProductDetailFilter(
         @SerializedName("product_ids")

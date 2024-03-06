@@ -1,0 +1,799 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 7331620,
+      "totalDataText": "7.3jt+",
+      "defaultView": 1,
+      "responseCode": 0,
+      "errorMessage": "",
+      "additionalParams": "",
+      "keywordProcess": "6",
+      "componentId": "02.02.02.01",
+      "meta": {
+        "productListType": "",
+        "isPostProcessing": false,
+        "showButtonAtc": false
+      }
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource=home&q=sepatu",
+      "backendFilters": "",
+      "backendFiltersToggle": "",
+      "keywordIntention": 1,
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0,
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "banner": {
+        "position": 0,
+        "text": "",
+        "applink": "",
+        "imageUrl": "",
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "trackingOption": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": "",
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "products": [
+        {
+          "id": 6350176663,
+          "name": "Sepatu Nike Air Zoom Alphafly Next% 2 - Total Orange",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 12819278,
+            "name": "GALAXY-SNEAKER-JAKARTA",
+            "city": "Jakarta Selatan",
+            "url": "https://www.tokopedia.com/galaxysneakerjakarta",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/bo-reg-0k.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/22/91d4c6c3-6d5a-4da3-9eeb-c604bf97e07e.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/9/22/91d4c6c3-6d5a-4da3-9eeb-c604bf97e07e.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/9/22/91d4c6c3-6d5a-4da3-9eeb-c604bf97e07e.jpg",
+          "price": "Rp649.000",
+          "priceInt": 649000,
+          "priceRange": "",
+          "categoryId": 1759,
+          "categoryName": "Fashion Pria",
+          "categoryBreadcrumb": "fashion-pria/sepatu-pria/sneakers-pria",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/galaxysneakerjakarta/sepatu-nike-air-zoom-alphafly-next-2-total-orange",
+          "labelGroups": [
+            {
+              "title": "Sisa 2",
+              "position": "gimmick",
+              "type": "textDarkRed",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 34",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 5 Aug",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/6350176663?extParam=ivf%3Dfalse%26src%3Dsearch",
+          "customVideoURL": "",
+          "parentId": 0,
+          "isPortrait": false
+        },
+        {
+          "id": 8782144430,
+          "name": "Servodio 36-44 Navy Sepatu Sneakers Casual Pria Wanita SV02",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 8261136,
+            "name": "Servodio Official Store",
+            "city": "",
+            "url": "https://www.tokopedia.com/servodioofficialstore",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/3/27/1cd1a647-1a20-4540-9385-b366df226e0b.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/3/27/1cd1a647-1a20-4540-9385-b366df226e0b.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/3/27/1cd1a647-1a20-4540-9385-b366df226e0b.jpg",
+          "price": "Rp79.600",
+          "priceInt": 79600,
+          "priceRange": "",
+          "categoryId": 1759,
+          "categoryName": "Fashion Pria",
+          "categoryBreadcrumb": "fashion-pria/sepatu-pria/sneakers-pria",
+          "ratingAverage": "4.9",
+          "originalPrice": "Rp199.000",
+          "discountPercentage": 60,
+          "warehouseIdDefault": 0,
+          "boosterList": "",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/servodioofficialstore/servodio-36-44-navy-sepatu-sneakers-casual-pria-wanita-sv02-navy-37",
+          "labelGroups": [
+            {
+              "title": "Terjual 82",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 6 Aug",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [
+            {
+              "title": "39",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "40",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "41",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "42",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "43",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "3",
+              "type": "lightGrey",
+              "type_variant": "custom",
+              "hex_color": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/8782144430?extParam=ivf%3Dfalse%26src%3Dsearch",
+          "customVideoURL": "",
+          "parentId": 8782144405,
+          "isPortrait": false
+        },
+        {
+          "id": 6752594829,
+          "name": "Sepatu Sneaker Pria Fuccino - RJT Sepatu Kasual New",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 13998988,
+            "name": "RJT-Store",
+            "city": "Jakarta Timur",
+            "url": "https://www.tokopedia.com/rjtstore",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/bo-reg-0k.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/10/14/a6899458-fcf1-4f5c-ba27-3b83013b987d.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/10/14/a6899458-fcf1-4f5c-ba27-3b83013b987d.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/10/14/a6899458-fcf1-4f5c-ba27-3b83013b987d.png",
+          "price": "Rp136.000",
+          "priceInt": 136000,
+          "priceRange": "",
+          "categoryId": 1759,
+          "categoryName": "Fashion Pria",
+          "categoryBreadcrumb": "fashion-pria/sepatu-pria/sneakers-pria",
+          "ratingAverage": "4.9",
+          "originalPrice": "Rp155.000",
+          "discountPercentage": 12,
+          "warehouseIdDefault": 0,
+          "boosterList": "",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/rjtstore/sepatu-sneaker-pria-fuccino-rjt-sepatu-kasual-new-hijau-43",
+          "labelGroups": [
+            {
+              "title": "Terjual 592",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 5 Aug",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/6752594829?extParam=ivf%3Dfalse%26src%3Dsearch",
+          "customVideoURL": "",
+          "parentId": 6752594823,
+          "isPortrait": false
+        },
+        {
+          "id": 9775338096,
+          "name": "Sepatu Sneakers Mills Sportage CL 9701001 Original BNIB",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 271016,
+            "name": "KING OF DRIBBLE",
+            "city": "",
+            "url": "https://www.tokopedia.com/kingofdribble",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/bo-reg-0k.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/5/28/dc127233-0f6c-4201-bdc5-9501ed562bab.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/5/28/dc127233-0f6c-4201-bdc5-9501ed562bab.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2023/5/28/dc127233-0f6c-4201-bdc5-9501ed562bab.jpg",
+          "price": "Rp254.150",
+          "priceInt": 254150,
+          "priceRange": "",
+          "categoryId": 1759,
+          "categoryName": "Fashion Pria",
+          "categoryBreadcrumb": "fashion-pria/sepatu-pria/sneakers-pria",
+          "ratingAverage": "5.0",
+          "originalPrice": "Rp299.000",
+          "discountPercentage": 15,
+          "warehouseIdDefault": 0,
+          "boosterList": "",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/kingofdribble/sepatu-sneakers-mills-sportage-cl-9701001-original-bnib-42-9d636",
+          "labelGroups": [
+            {
+              "title": "Terjual 12",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 5 Aug",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/9775338096?extParam=ivf%3Dfalse%26src%3Dsearch",
+          "customVideoURL": "",
+          "parentId": 9775338077,
+          "isPortrait": false
+        },
+        {
+          "id": 9578776878,
+          "name": "Sepatu olahraga Alope ZICO sepatu Badminton best seller unisex",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 10785973,
+            "name": "Alope Official",
+            "city": "",
+            "url": "https://www.tokopedia.com/alopeofficial",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/5/19/e78a1015-9441-4aab-8873-83c95f85b213.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/5/19/e78a1015-9441-4aab-8873-83c95f85b213.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2023/5/19/e78a1015-9441-4aab-8873-83c95f85b213.jpg",
+          "price": "Rp114.999",
+          "priceInt": 114999,
+          "priceRange": "",
+          "categoryId": 1759,
+          "categoryName": "Fashion Pria",
+          "categoryBreadcrumb": "fashion-pria/sepatu-pria/sneakers-pria",
+          "ratingAverage": "4.9",
+          "originalPrice": "Rp450.000",
+          "discountPercentage": 74,
+          "warehouseIdDefault": 0,
+          "boosterList": "",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/alopeofficial/sepatu-olahraga-alope-zico-sepatu-badminton-best-seller-unisex-abu-orange-42",
+          "labelGroups": [
+            {
+              "title": "Terjual 180",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 6 Aug",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "WIB",
+              "position": "campaign",
+              "type": "",
+              "url": "https://images.tokopedia.net/img/phOWBv/2023/7/7/3385ece3-15a8-4eb1-a423-29f91910ea0b.png"
+            }
+          ],
+          "labelGroupVariant": [
+            {
+              "title": "39",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "40",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "41",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "42",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "43",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/9578776878?extParam=ivf%3Dtrue%26src%3Dsearch",
+          "customVideoURL": "https://vod.tokopedia.com/view/adaptive.m3u8?id=116eac50ff6c71edaa7a87c7371d0102",
+          "parentId": 9578776840,
+          "isPortrait": false
+        },
+        {
+          "id": 7938285078,
+          "name": "Sepatu Sneakers Pria Nike Court Vision low NN DH2987-101",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 10778734,
+            "name": "Daily Wear Sport",
+            "city": "",
+            "url": "https://www.tokopedia.com/dailywears-1",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/3/17/39de5379-210a-4f75-a2a0-e70aaa7697ca.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/17/39de5379-210a-4f75-a2a0-e70aaa7697ca.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2023/3/17/39de5379-210a-4f75-a2a0-e70aaa7697ca.jpg",
+          "price": "Rp639.200",
+          "priceInt": 639200,
+          "priceRange": "",
+          "categoryId": 1759,
+          "categoryName": "Fashion Pria",
+          "categoryBreadcrumb": "fashion-pria/sepatu-pria/sneakers-pria",
+          "ratingAverage": "4.7",
+          "originalPrice": "Rp799.000",
+          "discountPercentage": 20,
+          "warehouseIdDefault": 0,
+          "boosterList": "",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/dailywears-1/sepatu-sneakers-pria-nike-court-vision-low-nn-dh2987-101",
+          "labelGroups": [
+            {
+              "title": "Terjual 21",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 5 Aug",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/7938285078?extParam=cmp%3D1%26ivf%3Dfalse%26src%3Dsearch",
+          "customVideoURL": "",
+          "parentId": 0,
+          "isPortrait": false
+        },
+        {
+          "id": 9793960897,
+          "name": "Aerostreet 39-44 Massive Costa Hitam Gum - Sepatu Sneakers Casual",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 6673471,
+            "name": "Aerostreet",
+            "city": "",
+            "url": "https://www.tokopedia.com/aerostreet",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/5/29/b267370e-e6e7-4c5c-b6c3-94ff3fc15a48.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/5/29/b267370e-e6e7-4c5c-b6c3-94ff3fc15a48.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2023/5/29/b267370e-e6e7-4c5c-b6c3-94ff3fc15a48.jpg",
+          "price": "Rp149.900",
+          "priceInt": 149900,
+          "priceRange": "",
+          "categoryId": 1759,
+          "categoryName": "Fashion Pria",
+          "categoryBreadcrumb": "fashion-pria/sepatu-pria/sneakers-pria",
+          "ratingAverage": "4.9",
+          "originalPrice": "Rp299.800",
+          "discountPercentage": 50,
+          "warehouseIdDefault": 0,
+          "boosterList": "",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/aerostreet/aerostreet-39-44-massive-costa-hitam-gum-sepatu-sneakers-casual-44",
+          "labelGroups": [
+            {
+              "title": "Terjual 403",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 6 Aug",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [
+            {
+              "title": "40",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "41",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "42",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "44",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/9793960897?extParam=ivf%3Dtrue%26src%3Dsearch",
+          "customVideoURL": "https://vod.tokopedia.com/view/adaptive.m3u8?id=b946d9c029e271eebfcc97c6360c0102",
+          "parentId": 9793960889,
+          "isPortrait": false
+        },
+        {
+          "id": 4885710420,
+          "name": "SEPATU SEKOLAH NB TALI (PENDEK) TERMURAH",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 3241995,
+            "name": "TOKO SEPATU SENDAL NURUL",
+            "city": "Jakarta Utara",
+            "url": "https://www.tokopedia.com/archive-nurulaluz",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/bo-reg-0k.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/10/11/c78fbda2-445d-4301-b74c-22152ecbb465.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/11/c78fbda2-445d-4301-b74c-22152ecbb465.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/10/11/c78fbda2-445d-4301-b74c-22152ecbb465.jpg",
+          "price": "Rp60.000",
+          "priceInt": 60000,
+          "priceRange": "",
+          "categoryId": 1759,
+          "categoryName": "Fashion Pria",
+          "categoryBreadcrumb": "fashion-pria/sepatu-pria/sneakers-pria",
+          "ratingAverage": "4.8",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "",
+          "source_engine": "0",
+          "minOrder": 0,
+          "url": "https://www.tokopedia.com/archive-nurulaluz/sepatu-sekolah-nb-tali-pendek-termurah-hitam-hitam-36",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 619",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 2 - 5 Aug",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [
+            {
+              "title": "36",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "37",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "38",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "41",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "42",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "3",
+              "type": "lightGrey",
+              "type_variant": "custom",
+              "hex_color": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/4885710420?extParam=ivf%3Dfalse%26src%3Dsearch",
+          "customVideoURL": "",
+          "parentId": 2274006808,
+          "isPortrait": false
+        }
+      ],
+      "violation": {
+        "headerText": "",
+        "descriptionText": "",
+        "imageURL": "",
+        "ctaURL": "",
+        "buttonText": "",
+        "buttonType": ""
+      }
+    }
+  },
+  "searchInspirationCarouselV2": {
+    "data": [
+      {
+        "title": "",
+        "type": "coupon_image",
+        "position": 4,
+        "layout": "card_coupon",
+        "tracking_option": "3",
+        "options": [
+          {
+            "title": "https://images.tokopedia.net/img/jbZAUJ/2024/2/7/0f246fc4-0a25-46f4-92b8-8a5ba8a8cd61.png",
+            "subtitle": "S&k berlaku",
+            "icon_subtitle": "",
+            "url": "",
+            "applink": "",
+            "banner_image_url": "https://images.tokopedia.net/img/jbZAUJ/2024/2/7/6e2165a0-3e3f-4d54-b396-794954058e1b.png",
+            "banner_link_url": "",
+            "banner_applink_url": "",
+            "identifier": "ATCDWCB10",
+            "meta": "#FFFFFF",
+            "component_id": "03.67.01.00",
+            "product": [],
+            "card_button": {
+              "title": "",
+              "applink": ""
+            },
+            "bundle": {
+              "shop": {
+                "name": "",
+                "url": ""
+              },
+              "count_sold": "",
+              "price": 0,
+              "original_price": "",
+              "discount": "",
+              "discount_percentage": 0
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

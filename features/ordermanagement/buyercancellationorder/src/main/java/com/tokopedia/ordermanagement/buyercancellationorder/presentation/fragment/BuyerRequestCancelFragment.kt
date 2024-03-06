@@ -479,11 +479,10 @@ class BuyerRequestCancelFragment :
                         showToaster(getString(R.string.toaster_manual_max), Toaster.TYPE_ERROR)
                     }
                     else -> {
-                        val subReasonLainnya =
-                            tvChooseSubReasonLabel.text.toString().trimStart()
+                        val reason = tfChooseSubReasonEditable.editText.text.toString().trimStart()
                         tfChooseSubReasonEditable.editText.text.toString().trimStart()
-                        if (subReasonLainnya.isNotEmpty() && !isCancelAlreadyClicked) {
-                            reasonCancel = subReasonLainnya
+                        if (reason.isNotEmpty() && !isCancelAlreadyClicked) {
+                            reasonCancel = reason
                             isCancelAlreadyClicked = true
                         }
                         if (isEligibleInstantCancel) {

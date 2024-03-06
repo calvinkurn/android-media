@@ -16,14 +16,14 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirType
+import com.tokopedia.product.detail.common.data.model.media.Media
+import com.tokopedia.product.detail.common.data.model.media.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.Component
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
-import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
@@ -113,6 +113,14 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.R
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
+import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateEligibilityRequest
+import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateProductRequest
+import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateShopRequest
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExInitializerArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
+import com.tokopedia.shareexperience.ui.uistate.ShareExInitializationUiState
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
 import com.tokopedia.universal_sharing.model.PdpParamModel
@@ -123,6 +131,7 @@ import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 import java.text.SimpleDateFormat
+import java.util.*
 
 object ProductDetailMapper {
     /**
@@ -637,7 +646,8 @@ object ProductDetailMapper {
             containerType = mediaData.containerType,
             productMediaRecomBasicInfo = mediaData.productMediaRecomBasicInfo,
             componentPriceType = promoPriceData.componentPriceType,
-            promoPrice = promoPriceData.promoPrice
+            promoPrice = promoPriceData.promoPrice,
+            liveIndicator = mediaData.liveIndicator
         ) ?: ComponentData()
 
         assignIdToMedia(newDataWithMedia.media)
@@ -1043,6 +1053,69 @@ object ProductDetailMapper {
                 formattedProductPrice = productInfo.data.price.priceFmt
             ),
             shop = Shop(
+                shopID = productInfo.basic.shopID,
+                isOS = productInfo.data.isOS,
+                isPM = productInfo.data.isPowerMerchant,
+                shopStatus = shopInfo?.statusInfo?.shopStatus
+            )
+        )
+    }
+
+    fun generateShareExInitializerArg(
+        productInfo: ProductInfoP1,
+        shopInfo: ShopInfo?,
+        variantData: ProductVariant?,
+        onSuccess: (ShareExInitializationUiState) -> Unit = {}
+    ): ShareExInitializerArg {
+        return ShareExInitializerArg(
+            affiliateEligibilityRequest = generateAffiliateEligibilityRequest(
+                productInfo,
+                shopInfo,
+                variantData
+            ),
+            onSuccess = onSuccess
+        )
+    }
+
+    fun generateShareExBottomSheetArg(
+        productId: String,
+        productUrl: String,
+        campaignId: String
+    ): ShareExBottomSheetArg {
+        return ShareExBottomSheetArg(
+            identifier = productId,
+            pageTypeEnum = ShareExPageTypeEnum.PDP,
+            defaultUrl = productUrl,
+            trackerArg = ShareExTrackerArg(
+                utmCampaign = "pdp-${ShareExTrackerArg.SHARE_ID_KEY}-$productId-$campaignId",
+                labelImpressionBottomSheet = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
+                labelActionClickShareIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
+                labelActionCloseIcon = "${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId",
+                labelActionClickChannel = "${ShareExTrackerArg.CHANNEL_KEY} - ${ShareExTrackerArg.SHARE_ID_KEY} - $productId - $campaignId - ${ShareExTrackerArg.IMAGE_TYPE_KEY}",
+                labelImpressionAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}",
+                labelActionClickAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}"
+            )
+        )
+    }
+
+    private fun generateAffiliateEligibilityRequest(
+        productInfo: ProductInfoP1,
+        shopInfo: ShopInfo?,
+        variantData: ProductVariant?
+    ): ShareExAffiliateEligibilityRequest {
+        return ShareExAffiliateEligibilityRequest(
+            pageType = ShareExPageTypeEnum.PDP.value,
+            product = ShareExAffiliateProductRequest(
+                productID = productInfo.basic.productID,
+                catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "0",
+                catLevel2 = productInfo.basic.category.detail.getOrNull(1)?.id ?: "0",
+                catLevel3 = productInfo.basic.category.detail.getOrNull(2)?.id ?: "0",
+                productPrice = productInfo.data.price.value.toString(),
+                maxProductPrice = getMaxPriceVariant(productInfo, variantData).toString(),
+                productStatus = productInfo.basic.status,
+                formattedProductPrice = productInfo.data.price.priceFmt
+            ),
+            shop = ShareExAffiliateShopRequest(
                 shopID = productInfo.basic.shopID,
                 isOS = productInfo.data.isOS,
                 isPM = productInfo.data.isPowerMerchant,

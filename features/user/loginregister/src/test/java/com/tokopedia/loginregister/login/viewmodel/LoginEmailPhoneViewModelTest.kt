@@ -10,10 +10,13 @@ import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverPojo
 import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.common.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.common.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessPreference
@@ -22,10 +25,7 @@ import com.tokopedia.loginregister.goto_seamless.model.TempKeyData
 import com.tokopedia.loginregister.goto_seamless.model.TempKeyResponse
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
-import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.model.LoginOption
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -195,7 +195,7 @@ class LoginEmailPhoneViewModelTest {
         val responseData = RegisterCheckData()
         val response = RegisterCheckPojo(data = responseData)
 
-        coEvery { registerCheckUseCase.executeOnBackground() } returns response
+        coEvery { registerCheckUseCase(any()) } returns response
 
         viewModel.registerCheck(testId)
 
@@ -207,7 +207,7 @@ class LoginEmailPhoneViewModelTest {
     fun `on Failed Register Check`() {
         val testId = "123456"
 
-        coEvery { registerCheckUseCase.executeOnBackground() } throws throwable
+        coEvery { registerCheckUseCase(any()) } throws throwable
 
         viewModel.registerCheck(testId)
 
@@ -231,7 +231,7 @@ class LoginEmailPhoneViewModelTest {
 
         val testId = "123456"
 
-        coEvery { registerCheckUseCase.executeOnBackground() } returns response
+        coEvery { registerCheckUseCase(any()) } returns response
 
         viewModel.registerCheck(testId)
 

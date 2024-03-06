@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.RepositoryProvider
+import com.tokopedia.discovery2.repository.automatecoupon.AutomateCouponGqlRepository
+import com.tokopedia.discovery2.repository.automatecoupon.IAutomateCouponGqlRepository
 import com.tokopedia.discovery2.repository.banner.BannerGQLRepository
 import com.tokopedia.discovery2.repository.banner.BannerRepository
 import com.tokopedia.discovery2.repository.bannerinfinite.BannerInfiniteGQLRepository
@@ -258,5 +260,10 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideSupportingBrandRepository(): SupportingBrandRepository {
         return SupportingBrandGQLRepository()
+    }
+
+    @Provides
+    fun provideAutomateCouponRepository(@ApplicationContext context: Context): IAutomateCouponGqlRepository {
+        return AutomateCouponGqlRepository(provideGetStringMethod(context))
     }
 }

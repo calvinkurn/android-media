@@ -1,18 +1,12 @@
 {
   "register_v2": {
-    "user_id": 219039651,
-    "is_active": 1,
-    "access_token": "cM9TdWoDeg",
-    "refresh_token": "fWormA",
+    "user_id": 238963076,
+    "sid": "CAE5qDNokwL_vYAhoJAqb-BGi0VlLcMHq1Nez0AJUq72i2o5POt8rfqCoxvHo7JoYibG6YhZwH18hi06tBgk_YZVQBxWqyzGhxPdl8PioT8Ypa6ByN4yNffxE-ULQlDc",
+    "access_token": "tA3SmxLHS6mvTq0GxPhsgg",
+    "refresh_token": "90DgPsc9QS6u2umNf6uU5g",
     "token_type": "Bearer",
-    "sid": "pG-pMmqzn5H",
-    "enable_2fa": true,
-    "enable_skip_2fa": false,
-    "errors": [],
-    "popup_error": {
-      "header": "",
-      "body": "",
-      "action": ""
-    }
+    "is_active": 1,
+    "action": 0,
+    "errors": []
   }
 }

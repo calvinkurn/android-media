@@ -9,10 +9,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_8
@@ -32,6 +32,7 @@ import com.tokopedia.topads.sdk.widget.TopAdsBannerView.Companion.escapeHTML
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 private const val PRODUCT_CARD_COUNT_THREE = 3
 
@@ -205,7 +206,6 @@ class ShopAdsWithThreeProducts : BaseCustomView {
                 }
             }
         }
-
     }
 
     private fun getList(
@@ -367,14 +367,14 @@ class ShopAdsWithThreeProducts : BaseCustomView {
             shopAdsText?.setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                    unifyprinciplesR.color.Unify_NN0
                 )
             )
         } else {
             shopAdsText?.setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
+                    unifyprinciplesR.color.Unify_NN950_68
                 )
             )
         }
@@ -405,7 +405,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
 
         val labelVoucher = context?.let { Label(it) }
 
-        labelVoucher?.setLabelType(Label.GENERAL_LIGHT_GREEN)
+        labelVoucher?.setLabelType(Label.HIGHLIGHT_LIGHT_RED)
         labelVoucher?.text = voucher
         labelVoucher?.layoutParams = layoutParams
 
@@ -425,15 +425,19 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         if (shopBadgeUrl.isNotEmpty()) {
             shopBadge?.loadImage(shopBadgeUrl)
             shopBadge?.show()
-        } else shopBadge?.hide()
+        } else {
+            shopBadge?.hide()
+        }
     }
 
     private fun getTextColor(variant: Int): Int {
-        return if (variant == LAYOUT_8) ContextCompat.getColor(
-            context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN0
-        )
-        else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-
+        return if (variant == LAYOUT_8) {
+            ContextCompat.getColor(
+                context,
+                unifyprinciplesR.color.Unify_NN0
+            )
+        } else {
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
+        }
     }
 }

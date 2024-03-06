@@ -52,7 +52,7 @@ class GlobalRecommendationViewHolder(
                 shopId = element.shopId
             ),
             listener = object : RecommendationWidgetListener {
-                override fun onProductClick(item: RecommendationItem): Boolean {
+                override fun onProductClick(position: Int, item: RecommendationItem): Boolean {
                     callback.dismiss()
                     return false
                 }

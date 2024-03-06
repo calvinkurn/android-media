@@ -14,18 +14,21 @@ import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArg
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
+import com.tokopedia.content.common.util.throwable.isNetworkError
 import com.tokopedia.content.product.picker.R
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
+import com.tokopedia.content.product.picker.databinding.BottomSheetUserProductPickerBinding
 import com.tokopedia.content.product.picker.seller.model.PriceUnknown
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
-import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
-import com.tokopedia.content.product.picker.databinding.BottomSheetUserProductPickerBinding
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
+import com.tokopedia.content.product.picker.seller.util.getCustomErrorMessage
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import kotlinx.coroutines.flow.collectLatest
+import java.text.ParseException
 import javax.inject.Inject
 
 /**
@@ -33,7 +36,7 @@ import javax.inject.Inject
  */
 class ProductPickerUserBottomSheet @Inject constructor(
     private val dialogCustomizer: ContentDialogCustomizer,
-    private val analytic: ContentProductTagAnalytic,
+    private val analytic: ContentProductTagAnalytic
 ) : BaseProductSetupBottomSheet() {
 
     private val offsetToaster by lazy { context?.resources?.getDimensionPixelOffset(R.dimen.content_product_picker_50_dp) ?: 0 }
@@ -62,7 +65,7 @@ class ProductPickerUserBottomSheet @Inject constructor(
                             commission = 0L,
                             extraCommission = false,
                             pinStatus = PinProductUiModel.Empty,
-                            number = "",
+                            number = ""
                         )
                     }
                 )
@@ -220,8 +223,11 @@ class ProductPickerUserBottomSheet @Inject constructor(
                     is ProductChooserEvent.ShowError -> {
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = it.error.message,
-                            bottomMargin = offsetToaster
+                            bottomMargin = offsetToaster,
+                            customErrMessage = requireContext().getCustomErrorMessage(
+                                throwable = it.error,
+                                defaultMessage = getString(R.string.product_chooser_error_save)
+                            )
                         )
                     }
                     else -> {}

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.Build
 import android.text.method.LinkMovementMethod
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -101,5 +102,9 @@ object Utils {
 
     fun getBuildVersion(): Int {
         return Build.VERSION.SDK_INT
+    }
+
+    fun isDarkMode(): Boolean {
+        return AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
     }
 }

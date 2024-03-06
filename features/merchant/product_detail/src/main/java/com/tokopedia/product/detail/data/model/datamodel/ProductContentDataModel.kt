@@ -21,10 +21,7 @@ data class ProductContentDataModel(
     var data: ProductContentMainData? = null,
     var isWishlisted: Boolean = false,
     var freeOngkirImgUrl: String = "",
-
-    // Ribbon Data
-    var isNpl: Boolean = false,
-    var shouldShowShareWidget: Boolean = false
+    var isNpl: Boolean = false
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
         { false },
@@ -67,9 +64,7 @@ data class ProductContentDataModel(
             }
 
             val bundle = Bundle()
-            if (freeOngkirImgUrl != newData.freeOngkirImgUrl ||
-                shouldShowShareWidget != newData.shouldShowShareWidget
-            ) {
+            if (freeOngkirImgUrl != newData.freeOngkirImgUrl) {
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, PAYLOAD_BOE_SHARE)
                 return bundle
             }

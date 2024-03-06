@@ -28,9 +28,8 @@ class TkpdPaySettingModule {
     @Provides
     @ActivityScope
     fun provideAccountAnalytics(
-        @ApplicationContext context: Context,
         userSessionInterface: UserSessionInterface
     ): AccountAnalytics {
-        return AccountAnalytics(context, userSessionInterface)
+        return AccountAnalytics(userSessionInterface)
     }
 }
