@@ -8,12 +8,9 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.home_account.explicitprofile.di.component.ExplicitProfileComponents
 import com.tokopedia.home_account.explicitprofile.personalize.ui.PersonalizeScreen
-import com.tokopedia.home_account.R
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
