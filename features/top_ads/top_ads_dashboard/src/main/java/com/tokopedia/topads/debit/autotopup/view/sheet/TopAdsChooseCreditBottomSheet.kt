@@ -454,13 +454,13 @@ class TopAdsChooseCreditBottomSheet :
 
         val frequencyText = getString(R.string.topads_auto_top_up_confirmation_frequency_every_day, autoTopUpFrequencySelected.toString())
 
-        val subTotalActual = (topAdsValue / TOP_ADS_TAX_VALUE).toLong()
-        val subTotalActualFmt = StringBuilder("Rp").append(Utils.convertToCurrencyString(subTotalActual)).toString()
+        val subTotalActual = (topAdsValue / TOP_ADS_TAX_VALUE)
+        val subTotalActualFmt = StringBuilder("Rp").append(Utils.convertToCurrencyString(subTotalActual.toLong())).toString()
 
-        val ppnAmount = (subTotalActual * PPN_PERCENT_FORMULA).roundToLong()
-        val ppnAmountFmt = Utils.convertToCurrencyString(ppnAmount)
+        val ppnAmount = (subTotalActual * PPN_PERCENT_FORMULA)
+        val ppnAmountFmt = Utils.convertToCurrencyString(ppnAmount.roundToLong())
 
-        val totalAmount = Utils.convertToCurrencyString(subTotalActual + ppnAmount)
+        val totalAmount = Utils.convertToCurrencyString((subTotalActual + ppnAmount).roundToLong())
 
         return AutoTopUpConfirmationUiModel(
             topAdsCredit = topAdsCredit,
