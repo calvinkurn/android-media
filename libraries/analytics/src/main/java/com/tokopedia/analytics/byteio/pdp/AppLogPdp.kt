@@ -63,7 +63,7 @@ object AppLogPdp {
         quitType: String
     ) {
         AppLogAnalytics.send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
-            it.put(PREVIOUS_PAGE, AppLogAnalytics.getLastDataBeforeCurrent(PAGE_NAME))
+            it.put(PREVIOUS_PAGE, getLastDataBeforeCurrent(PAGE_NAME))
             it.put(PAGE_NAME, PageName.PDP)
             it.addSourcePageType()
             it.addEntranceForm()

@@ -124,7 +124,7 @@ object AppLogAnalytics {
 
     private fun generateEntranceInfoJson(): JSONObject {
         return JSONObject().also {
-            it.put(ENTER_FROM_INFO, getLastData(ENTER_FROM))
+            it.addEnterFromInfo()
             it.addEntranceForm()
             it.addSourcePageType()
             it.addTrackId()
@@ -156,7 +156,8 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEnterFromInfo() {
-        put(ENTER_FROM_INFO, getLastData(ENTER_FROM))
+        // todo: explain
+        put(ENTER_FROM_INFO, getLastDataBeforeCurrent(ENTER_FROM))
     }
 
     internal fun JSONObject.addPreviousEnterFrom() {
