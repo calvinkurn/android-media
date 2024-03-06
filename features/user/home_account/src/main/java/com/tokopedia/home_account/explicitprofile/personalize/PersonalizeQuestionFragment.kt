@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.home_account.explicitprofile.di.component.ExplicitProfileComponents
 import com.tokopedia.home_account.explicitprofile.personalize.ui.PersonalizeScreen
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
@@ -55,7 +56,7 @@ class PersonalizeQuestionFragment: BaseDaggerFragment() {
                     showSuccessPage()
                 }
                 is PersonalizeSaveAnswerResult.Failed -> {
-                    showToasterError()
+                    showToasterError(it.throwable)
                 }
                 else -> {}
             }
@@ -68,8 +69,9 @@ class PersonalizeQuestionFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun showToasterError() {
-        Toaster.build(requireView(), "message", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+    private fun showToasterError(throwable: Throwable) {
+        val message = ErrorHandler.getErrorMessage(context, throwable)
+        Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
     private fun finishResultOk() {
