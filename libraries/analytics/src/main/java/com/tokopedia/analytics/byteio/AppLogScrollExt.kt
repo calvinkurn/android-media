@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
+import com.tokopedia.analytics.byteio.recommendation.zeroAsEmpty
+import com.tokopedia.analytics.byteio.util.underscoredParam
 import org.json.JSONObject
 
 /**
@@ -194,8 +196,8 @@ fun sendGlidePageTrack(scrollOffset: Float, model: GlidePageTrackObject) {
         it.put(AppLogParam.GLIDE_TYPE, if (scrollOffset > 0) "more" else "less")
         it.put(AppLogParam.GLIDE_DISTANCE, scrollOffset)
         it.put(AppLogParam.DISTANCE_TO_TOP, model.distanceToTop)
-        it.put(AppLogParam.LIST_NAME, model.listName)
-        it.put(AppLogParam.LIST_NUM, model.listNum.inc())
+        it.put(AppLogParam.LIST_NAME, model.listName.underscoredParam())
+        it.put(AppLogParam.LIST_NUM, model.listNum.inc().zeroAsEmpty())
         it.put(AppLogParam.IS_USE_CACHE, if (model.isUseCache) 1 else 0)
     })
 }
@@ -204,8 +206,8 @@ fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTrigg
     AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject().also {
         it.addPage()
         it.addEnterFrom()
-        it.put(AppLogParam.LIST_NAME, model.listName)
-        it.put(AppLogParam.LIST_NUM, model.listNum.inc())
+        it.put(AppLogParam.LIST_NAME, model.listName.underscoredParam())
+        it.put(AppLogParam.LIST_NUM, model.listNum.inc().zeroAsEmpty())
         it.put(AppLogParam.ACTION_TYPE, ActionType.GLIDE)
         it.put(AppLogParam.MODULE_NAME, model.moduleName)
         it.put(AppLogParam.GLIDE_DISTANCE, scrollOffset)
@@ -222,7 +224,7 @@ fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
 
         it.put(AppLogParam.MODULE_NAME, model.moduleName)
         it.put(AppLogParam.BAR_NAME, model.barName)
-        it.put(AppLogParam.SHOP_ID, model.shopId)
+        it.put(AppLogParam.SHOP_ID, model.shopId.zeroAsEmpty())
     })
 }
 

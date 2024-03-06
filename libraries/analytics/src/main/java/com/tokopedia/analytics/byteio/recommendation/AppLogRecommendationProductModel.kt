@@ -18,7 +18,7 @@ import org.json.JSONObject
 data class AppLogRecommendationProductModel(
     val productId: String,
     val listName: String,
-    val listNum: Int,
+    val listNum: String,
     val moduleName: String,
     val sourceModule: String,
     val trackId: String,
@@ -68,22 +68,22 @@ data class AppLogRecommendationProductModel(
 
     fun toShowClickJson() = JSONObject().apply {
         addPage()
-        put(AppLogParam.LIST_NAME, listName.underscoredParam())
-        put(AppLogParam.LIST_NUM, listNum.zeroAsEmpty())
+        put(AppLogParam.LIST_NAME, listName)
+        put(AppLogParam.LIST_NUM, listNum)
         addEnterFrom()
-        put(AppLogParam.SOURCE_PAGE_TYPE, AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME))
+        put(AppLogParam.SOURCE_PAGE_TYPE, SourcePageType.PRODUCT_CARD)
         put(AppLogParam.ENTRANCE_FORM, entranceForm)
         put(AppLogParam.SOURCE_MODULE, sourceModule)
         addEnterMethod()
-        put(AppLogParam.AUTHOR_ID, authorId.zeroAsEmpty())
+        put(AppLogParam.AUTHOR_ID, authorId)
         put(AppLogParam.PRODUCT_ID, productId)
         put(AppLogParam.IS_AD, isAd)
         put(AppLogParam.IS_USE_CACHE, isUseCache)
-        put(AppLogParam.GROUP_ID, groupId.zeroAsEmpty())
+        put(AppLogParam.GROUP_ID, groupId)
         put(AppLogParam.TRACK_ID, trackId)
         put(AppLogParam.REC_PARAMS, recParams)
         put(AppLogParam.REQUEST_ID, requestId)
-        put(AppLogParam.SHOP_ID, shopId.zeroAsEmpty())
+        put(AppLogParam.SHOP_ID, shopId)
         put(AppLogParam.ITEM_ORDER, itemOrder)
         if(volume > 0) put(AppLogParam.VOLUME, volume)
         if(rate > 0) put(AppLogParam.RATE, rate)
@@ -129,8 +129,8 @@ data class AppLogRecommendationProductModel(
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
                 productId = productId.zeroAsEmpty(),
-                listName = tabName,
-                listNum = tabPosition.inc(),
+                listName = tabName.underscoredParam(),
+                listNum = tabPosition.inc().zeroAsEmpty(),
                 moduleName = moduleName,
                 sourceModule = constructSourceModule(isAd, moduleName, entranceForm),
                 trackId = constructTrackId(null, productId, requestId, position, cardName),
