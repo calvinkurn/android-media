@@ -116,6 +116,12 @@ class ProductPreviewFragment @Inject constructor(
 
     private var coachMarkJob: Job? = null
 
+    private val hasReview : Boolean get() =
+        when(val source = productPreviewSource.source) {
+            is ProductPreviewSourceModel.ProductSourceData -> source.hasReviewMedia
+            else -> true
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -347,7 +353,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun handleCoachMark() {
-        if (productPreviewSource.source !is ProductPreviewSourceModel.ProductSourceData && viewModel.hasVisit) return
+        if (!hasReview && viewModel.hasVisit) return
         coachMarkJob?.cancel()
         coachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
             delay(DELAY_COACH_MARK)
