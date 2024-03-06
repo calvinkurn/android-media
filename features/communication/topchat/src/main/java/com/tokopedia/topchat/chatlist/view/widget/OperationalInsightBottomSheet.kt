@@ -32,13 +32,13 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class OperationalInsightBottomSheet(
-    private var ticker: ShopChatTicker,
-    private var shopId: String
-) : BottomSheetUnify() {
+class OperationalInsightBottomSheet : BottomSheetUnify() {
 
     private var childView: View? = null
+    private var ticker: ShopChatTicker = ShopChatTicker()
+    private var shopId: String = ""
 
     init {
         showKnob = true
@@ -54,6 +54,11 @@ class OperationalInsightBottomSheet(
     ): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    fun setData(ticker: ShopChatTicker, shopId: String) {
+        this.ticker = ticker
+        this.shopId = shopId
     }
 
     private fun initChildLayout() {
@@ -125,15 +130,15 @@ class OperationalInsightBottomSheet(
 
     private fun getMaintainTickerColors(): IntArray {
         return intArrayOf(
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN50),
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_TN50)
+            MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN50),
+            MethodChecker.getColor(context, unifyprinciplesR.color.Unify_TN50)
         )
     }
 
     private fun getNotMaintainTickerColors(): IntArray {
         return intArrayOf(
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN50),
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN100)
+            MethodChecker.getColor(context, unifyprinciplesR.color.Unify_YN50),
+            MethodChecker.getColor(context, unifyprinciplesR.color.Unify_YN100)
         )
     }
 
@@ -338,7 +343,7 @@ class OperationalInsightBottomSheet(
                     drawState.isUnderlineText = false
                     drawState.color = MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        unifyprinciplesR.color.Unify_GN500
                     )
                 }
             }
