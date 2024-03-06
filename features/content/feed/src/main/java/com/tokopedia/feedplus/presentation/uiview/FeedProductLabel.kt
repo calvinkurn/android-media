@@ -5,8 +5,6 @@ import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -65,8 +63,8 @@ internal fun FeedProductLabel(
     }
 
     AnimatedVisibility(
-        visible = isVisible, enter = fadeIn(animationSpec = tween(durationMillis = 600, easing = EaseOut)),
-        exit = fadeOut(animationSpec = tween(easing = EaseOut, delayMillis = 200)),
+        visible = isVisible, enter = fadeIn(animationSpec = tween(durationMillis = 600, easing = EaseOut, delayMillis = 600)),
+        exit = fadeOut(animationSpec = tween(easing = EaseOut, delayMillis = 600)),
     ) {
         NestTheme(darkTheme = false) {
             Row(

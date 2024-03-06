@@ -221,7 +221,7 @@ fun ProductTagItems(
     if (!isFocused.value) {
         isHighlightVisible = false
     } else {
-        LaunchedEffect(key1 = key, key3 = isHighlightVisible, key2 = highlightedProduct) {
+        LaunchedEffect(key1 = key) {
             try {
                 delay(5000L)
                 isHighlightVisible = true
@@ -232,25 +232,23 @@ fun ProductTagItems(
         }
     }
 
-    Box {
-        FeedProductLabel(
-            products = products,
-            totalProducts = totalProducts,
-            isVisible = !isHighlightVisible || highlightedProduct == null,
-            onClick = onProductLabelClick
-        )
+    FeedProductLabel(
+        products = products,
+        totalProducts = totalProducts,
+        isVisible = !isHighlightVisible || highlightedProduct == null,
+        onClick = onProductLabelClick
+    )
 
-        if (highlightedProduct != null) {
-            FeedProductHighlight(
-                product = highlightedProduct,
-                isVisible = isHighlightVisible,
-                onClose = {
-                    onProductHighlightClose.invoke()
-                    isHighlightVisible = false
-                },
-                onAtcClick = onAtcClick,
-                onProductClick = onProductClick
-            )
-        }
+    if (highlightedProduct != null) {
+        FeedProductHighlight(
+            product = highlightedProduct,
+            isVisible = isHighlightVisible,
+            onClose = {
+                onProductHighlightClose.invoke()
+                isHighlightVisible = false
+            },
+            onAtcClick = onAtcClick,
+            onProductClick = onProductClick
+        )
     }
 }
