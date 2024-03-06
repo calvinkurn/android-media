@@ -55,43 +55,11 @@ object MapperUtils {
             return if (!product.campaign.originalPrice.isNullOrEmpty()) {
                 productCardModel.copy(
                     slashedPrice = product.campaign.originalPrice,
-                    labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                        product.labelGroupList.map {
-                            if (it.position != "integrity"){
-                                add(
-                                    ProductCardModel.LabelGroup(
-                                        position = it.position,
-                                        title = it.title,
-                                        type = it.type,
-                                        imageUrl = it.imageUrl,
-                                        styleList = it.styleList.map { style ->
-                                            ProductCardModel.LabelGroup.Style(style.key, style.value)
-                                        },
-                                    )
-                                )
-                            }
-                        }
-                    }
+                    labelGroupList = mappingLabelGroupList(product)
                 )
             } else {
                 productCardModel.copy(
-                    labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                        product.labelGroupList.map {
-                            if (it.position != "integrity") {
-                                add(
-                                    ProductCardModel.LabelGroup(
-                                        position = it.position,
-                                        title = it.title,
-                                        type = it.type,
-                                        imageUrl = it.imageUrl,
-                                        styleList = it.styleList.map { style ->
-                                            ProductCardModel.LabelGroup.Style(style.key, style.value)
-                                        }
-                                    )
-                                )
-                            }
-                        }
-                    }
+                    labelGroupList = mappingLabelGroupList(product)
                 )
             }
         }
@@ -117,16 +85,29 @@ object MapperUtils {
         )
     }
 
-    fun checkIfDTAvailable(labelGroupList: List<LabelGroup>): Boolean {
-        var isAvailable = false
-        run breaking@{
-            labelGroupList.forEach {
-                if (it.position == TopAdsConstants.FULFILLMENT && it.title == TopAdsConstants.DILYANI_TOKOPEDIA) {
-                    isAvailable = true
-                    return@breaking
+    private fun mappingLabelGroupList(product: Product): ArrayList<ProductCardModel.LabelGroup> {
+        return ArrayList<ProductCardModel.LabelGroup>().apply {
+            product.labelGroupList.map {
+                if (it.position != "integrity") {
+                    add(
+                        ProductCardModel.LabelGroup(
+                            position = it.position,
+                            title = it.title,
+                            type = it.type,
+                            imageUrl = it.imageUrl,
+                            styleList = it.styleList.map { style ->
+                                ProductCardModel.LabelGroup.Style(style.key, style.value)
+                            },
+                        )
+                    )
                 }
             }
         }
-        return isAvailable
+    }
+
+    fun checkIfDTAvailable(labelGroupList: List<LabelGroup>): Boolean {
+        return labelGroupList.find {
+            it.position == TopAdsConstants.FULFILLMENT && it.title == TopAdsConstants.DILYANI_TOKOPEDIA
+        } != null
     }
 }
