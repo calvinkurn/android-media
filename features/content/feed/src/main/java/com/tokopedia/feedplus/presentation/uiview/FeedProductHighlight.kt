@@ -9,9 +9,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -40,7 +38,6 @@ import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.NestImage
-import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
@@ -73,7 +70,8 @@ fun FeedProductHighlight(
                 ),
             ) + fadeIn(),
             exit = slideOutVertically(
-                animationSpec = tween(durationMillis = 400, easing = EaseOut),  targetOffsetY = { it }) + fadeOut()
+                animationSpec = tween(durationMillis = 400, easing = EaseOut),
+                targetOffsetY = { it }) + fadeOut()
         ) {
             Box(
                 modifier = Modifier
@@ -103,7 +101,6 @@ fun FeedProductHighlight(
                     // Product Image
                     NestImage(
                         source = ImageSource.Remote(source = product.coverUrl),
-                        type = NestImageType.Rect(12.dp),
                         modifier = Modifier
                             .constrainAs(image) {
                                 top.linkTo(parent.top)
@@ -218,7 +215,7 @@ fun ProductTagItems(
     isFocused: MutableState<Boolean>,
 ) {
     var isHighlightVisible by remember { mutableStateOf(false) }
-    val highlightedProduct = products.firstOrNull()
+    val highlightedProduct = products.firstOrNull { it.isHighlight }
 
     if (!isFocused.value) {
         isHighlightVisible = false
@@ -234,7 +231,7 @@ fun ProductTagItems(
         }
     }
 
-    Column(verticalArrangement = Arrangement.Bottom) {
+    Box {
         FeedProductLabel(
             products = products,
             totalProducts = totalProducts,

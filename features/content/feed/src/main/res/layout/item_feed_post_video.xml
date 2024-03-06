@@ -75,7 +75,7 @@
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/product_tag_view"
         android:layout_width="wrap_content"
-        android:layout_height="88dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
         android:visibility="visible"
