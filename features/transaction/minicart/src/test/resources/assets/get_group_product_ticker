@@ -1,0 +1,132 @@
+{
+   "data":{
+      "status":"OK",
+      "error_message":[
+
+      ],
+      "data":{
+         "type":"BMGM",
+         "action":"",
+         "cart_string_order":"1-2-3-4-5-6",
+         "offer_id":"1",
+         "icon":{
+            "url":"http://tokopedia.com/icon.png"
+         },
+         "message":[
+            {
+               "text":"Potongan harga Rp 10Rb . Summer Sale Clearance!",
+               "url":""
+            }
+         ],
+         "discount_amount":10000,
+         "multiple_data":[
+            {
+               "type":"BMGM",
+               "action":"",
+               "cart_string_order":"1-2-3-4-5-6",
+               "offer_id":"1",
+               "icon":{
+                  "url":"http://tokopedia.com/icon.png"
+               },
+               "message":[
+                  {
+                     "text":"Potongan harga Rp 10Rb . Summer Sale Clearance!",
+                     "url":""
+                  }
+               ],
+               "discount_amount":10000,
+               "widget":{
+                  "wording":[
+                     {
+                        "id":1,
+                        "text":""
+                     }
+                  ],
+                  "contents":[
+                     {
+                        "id":1,
+                        "name":"gift1",
+                        "quantity":1,
+                        "image_url":"bmgm",
+                        "weight": 2.0,
+                        "actual_weight": 3.0
+                     }
+                  ]
+               },
+               "bmgm":{
+                  "offer_id":1,
+                  "offer_type_id":2,
+                  "offer_name":"Summer Sale",
+                  "offer_icon":"left icon",
+                  "offer_message":[
+                     "Yay, kamu dapat potongan Rp150 rb"
+                  ],
+                  "offer_landing_page_link":"/offer-landing-page/1?warehouseID=12",
+                  "total_discount":50000,
+                  "is_tier_achieved":true,
+                  "tier_product":[
+                     {
+                        "tier_id":5,
+                        "tier_name":"",
+                        "benefit_quantity":5,
+                        "benefit_wording":"Hello world",
+                        "action_wording":"Hello world",
+                        "tier_message":"",
+                        "tier_discount_text":"diskon 25%",
+                        "tier_discount_amount":65000,
+                        "price_before_benefit":1100000,
+                        "price_after_benefit":1035000,
+                        "list_product":[
+                           {
+                              "product_id":111,
+                              "warehouse_id":12,
+                              "quantity":1,
+                              "price_before_benefit":400000,
+                              "price_after_benefit":300000,
+                              "cart_id":"123"
+                           },
+                           {
+                              "product_id":111,
+                              "warehouse_id":12,
+                              "quantity":1,
+                              "price_before_benefit":400000,
+                              "price_after_benefit":300000,
+                              "cart_id":"123"
+                           },
+                           {
+                              "product_id":111,
+                              "warehouse_id":12,
+                              "quantity":1,
+                              "price_before_benefit":400000,
+                              "price_after_benefit":300000,
+                              "cart_id":"123"
+                           }
+                        ],
+                        "products_benefit":[
+                           {
+                              "product_id":222,
+                              "product_name":"gift3",
+                              "quantity":1,
+                              "product_cache_image_url":"bmgm",
+                              "stock":100,
+                              "original_price":20000,
+                              "final_price":0
+                           },
+                           {
+                              "product_id":223,
+                              "product_name":"gift4",
+                              "quantity":3,
+                              "product_cache_image_url":"bmgm",
+                              "stock":100,
+                              "original_price":40000,
+                              "final_price":0
+                           }
+                        ]
+                     }
+                  ]
+               }
+            }
+         ]
+      }
+   }
+}

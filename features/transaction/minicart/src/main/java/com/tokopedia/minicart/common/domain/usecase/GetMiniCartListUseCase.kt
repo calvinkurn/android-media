@@ -141,6 +141,26 @@ class GetMiniCartListUseCase @Inject constructor(
                         }
                       }
                       cart_details {
+                        cart_detail_info {
+                          cart_detail_type
+                          bmgm {
+                            offer_id
+                            offer_icon
+                            offer_message
+                            offer_landing_page_link
+                            tier_product {
+                              tier_id
+                              benefit_wording
+                              action_wording
+                              products_benefit {
+                                product_id
+                                product_name
+                                product_cache_image_url
+                                quantity
+                              }
+                            }
+                          }
+                        }
                         errors
                         bundle_detail { 
                           bundle_id
