@@ -30,18 +30,15 @@ class GetReportProductSummaryUseCase @Inject constructor(
     }
 
     companion object {
-        private const val PARAM_CONTENT_ID = "contentID"
-        private const val PARAM_CONTENT_TYPE = "contentType"
+        private const val PARAM_REQ = "req"
 
         const val QUERY_NAME = "GetReportProductSummaryUseCaseQuery"
         const val QUERY = """
             query broadcasterReportReportProductSummary(
-                ${"$${PARAM_CONTENT_ID}"}: String!,
-                ${"$${PARAM_CONTENT_TYPE}"}: String!
+                ${"$${PARAM_REQ}"}: broadcasterReportReportProductSummaryRequest!
             ) {
                 broadcasterReportReportProductSummary(
-                    ${PARAM_CONTENT_ID}: ${"$${PARAM_CONTENT_ID}"},
-                    ${PARAM_CONTENT_TYPE}: ${"$${PARAM_CONTENT_TYPE}"}
+                    ${PARAM_REQ}: ${"$${PARAM_REQ}"}
                 ) {
                     reportProductAggregate {
                         estimatedIncomeFmt

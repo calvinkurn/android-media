@@ -158,8 +158,13 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
         return remoteConfig.getBoolean(KEY_ENABLE_SCHEDULING, true)
     }
 
-    override suspend fun getReportProductSummary(channelId: String, channelType: String): EstimatedIncomeDetailUiModel = withContext(dispatchers.io) {
-        val response = getReportProductSummaryUseCase(GetReportProductSummaryRequest(channelId, channelType))
+    override suspend fun getReportProductSummary(channelId: String): EstimatedIncomeDetailUiModel = withContext(dispatchers.io) {
+        val response = getReportProductSummaryUseCase(
+            GetReportProductSummaryRequest.create(
+                channelId,
+                GetReportProductSummaryRequest.Type.Play
+            )
+        )
         mapper.mapReportProductSummary(response)
     }
 

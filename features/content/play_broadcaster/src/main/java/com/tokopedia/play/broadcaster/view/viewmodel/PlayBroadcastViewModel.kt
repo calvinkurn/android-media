@@ -1981,10 +1981,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             _estimatedIncomeDetail.update { NetworkResult.Loading }
 
-            val response = repo.getReportProductSummary(
-                channelId = channelId,
-                channelType = selectedAccount.type,
-            )
+            val response = repo.getReportProductSummary(channelId = channelId)
 
             _estimatedIncomeDetail.update {
                 NetworkResult.Success(response)
