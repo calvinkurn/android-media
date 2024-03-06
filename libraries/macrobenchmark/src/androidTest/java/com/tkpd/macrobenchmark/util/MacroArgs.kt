@@ -9,6 +9,7 @@ object MacroArgs {
     const val rvIteration = "rviteration"
     const val useMock = "useMock"
     const val isLogin = "isLogin"
+    const val parameter = "parameter"
 
     const val compilation = "compilation"
     const val compilationNone = "none"
@@ -58,5 +59,9 @@ object MacroArgs {
     fun isLogin(args: Bundle?): Boolean {
         val isLogin = args?.getString(isLogin) ?: ""
         return isLogin == "true"
+    }
+
+    fun getParameter(args: Bundle?): String {
+        return args?.getString(parameter).orEmpty()
     }
 }

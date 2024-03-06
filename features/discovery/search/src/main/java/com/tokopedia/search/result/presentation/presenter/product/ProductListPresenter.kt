@@ -981,7 +981,7 @@ class ProductListPresenter @Inject constructor(
         val couponDataViewList = loadMoreVisitableList.filterIsInstance<CouponDataView>()
         if (couponDataViewList.isNotEmpty()) {
             couponDataViewList.forEach {
-                getInspirationCouponData(loadMoreVisitableList, it)
+                getInspirationCouponData(loadMoreVisitableList, it, view.isDarkMode())
             }
         }
     }

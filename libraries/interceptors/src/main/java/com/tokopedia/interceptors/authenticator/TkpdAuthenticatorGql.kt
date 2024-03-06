@@ -85,11 +85,7 @@ class TkpdAuthenticatorGql(
 
     @Synchronized
     override fun authenticate(route: Route?, response: Response): Request? {
-        return if (networkRouter.isGotoAuthSdkEnabled) {
-            isGotoLoginSdkEnabled(response)
-        } else {
-            isGotoLoginSdkDisabled(response)
-        }
+        return isGotoLoginSdkDisabled(response)
     }
 
     private fun isGotoLoginSdkDisabled(response: Response): Request? {
@@ -146,46 +142,6 @@ class TkpdAuthenticatorGql(
                         trimToken(userSession.accessToken)
                     )
                     null
-                }
-            } else {
-                networkRouter.showForceLogoutTokenDialog("/")
-                logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
-                return null
-            }
-        } else {
-            if (responseCount(response) != 0) {
-                logRefreshTokenEvent("", TYPE_RESPONSE_COUNT_NOT_LOGIN, "", "")
-                return null
-            }
-        }
-        return response.request
-    }
-
-    private fun isGotoLoginSdkEnabled(response: Response): Request? {
-        if (isNeedRefresh()) {
-            if (responseCount(response) == 0) {
-                try {
-                    val refreshSuccess = networkRouter.onNewRefreshToken()
-                    val originalRequest = response.request
-                    val newAccessToken = refreshSuccess.accessToken
-                    val newRefreshToken = refreshSuccess.refreshToken
-                    return if (newAccessToken?.isNotEmpty() == true && newRefreshToken?.isNotEmpty() == true) {
-                        onRefreshTokenSuccess(
-                            accessToken = newAccessToken,
-                            refreshToken = newRefreshToken,
-                            tokenType = "Bearer"
-                        )
-                        
-                        updateRequestWithNewToken(originalRequest)
-                    } else {
-                        networkRouter.showForceLogoutTokenDialog("/")
-                        logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
-                        null
-                    }
-                } catch (ex: Exception) {
-                    networkRouter.showForceLogoutTokenDialog("/")
-                    logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
-                    return null
                 }
             } else {
                 networkRouter.showForceLogoutTokenDialog("/")

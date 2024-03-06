@@ -67,7 +67,7 @@ ext {
     playServiceBase = '18.0.1'
     playServiceAnalytics = '17.0.0'
     playServiceLocation = '17.0.0'
-    playServiceMaps = '17.0.0'
+    playServiceMaps = '18.2.0'
     playServiceAuth = '17.0.0'
     playServicePlace = '17.0.0'
     playServiceAuthApiPhone = '16.0.0'
@@ -104,9 +104,6 @@ ext {
     windowVersion = '1.0.0'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
-    gotoLsdkVersion = '2.7.1'
-    gotoCvsdkVersion = '2.1.1'
-    gotoPinSdkVersion = '0.2.2'
     playIntegrityVersion = '1.0.1'
     wearRemoteInteractionVersion = '1.0.0'
     conversationsVersion = '7.10.3-970f75aa'
@@ -351,9 +348,6 @@ ext {
             localBroadcastManager : "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion",
             startupRuntime        : "androidx.startup:startup-runtime:$startupRuntimeVersion",
             gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion",
-            gotoLoginSdk          : "com.goto.scp:login-tokopedia:$gotoLsdkVersion",
-            gotoCvSdk             : "com.goto.scp:verification-tokopedia:$gotoCvsdkVersion",
-            gotoPinSdk            : "com.goto.android:pin:$gotoPinSdkVersion",
             dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0",
             playIntegrityApi      : "com.google.android.play:integrity:$playIntegrityVersion",
             wearRemoteInteraction : "androidx.wear:wear-remote-interactions:$wearRemoteInteractionVersion",
