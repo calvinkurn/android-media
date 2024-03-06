@@ -99,54 +99,54 @@ fun PersonalizeScreenPreview() {
         PersonalizeQuestionScreen(
             listQuestion = listOf(
                 QuestionDataModel(questionId = 1, property = QuestionDataModel.Property(
-                    title = "Fashion", options = mutableListOf(
-                        QuestionDataModel.Property.Options(value = "Fashion Muslim", isSelected = true),
-                        QuestionDataModel.Property.Options(value = "Fashion Wanita", isSelected = false),
-                        QuestionDataModel.Property.Options(value = "Fashion Anak & Bayi", isSelected = true),
-                        QuestionDataModel.Property.Options(value = "Fashion Pria", isSelected = true)
+                    name = "Fashion", options = mutableListOf(
+                        QuestionDataModel.Property.Options(caption = "Fashion Muslim", isSelected = true),
+                        QuestionDataModel.Property.Options(caption = "Fashion Wanita", isSelected = false),
+                        QuestionDataModel.Property.Options(caption = "Fashion Anak & Bayi", isSelected = true),
+                        QuestionDataModel.Property.Options(caption = "Fashion Pria", isSelected = true)
                     )
                 )),
                 QuestionDataModel(questionId = 2, property = QuestionDataModel.Property(
-                    title = "Elektronik", options = mutableListOf(
-                        QuestionDataModel.Property.Options(value = "Audio", isSelected = true),
-                        QuestionDataModel.Property.Options(value = "Kamera", isSelected = false),
-                        QuestionDataModel.Property.Options(value = "Laptop & Komputer", isSelected = true),
-                        QuestionDataModel.Property.Options(value = "Elektronik", isSelected = true),
-                        QuestionDataModel.Property.Options(value = "Handphone & Tablet", isSelected = true)
+                    name = "Elektronik", options = mutableListOf(
+                        QuestionDataModel.Property.Options(caption = "Audio", isSelected = true),
+                        QuestionDataModel.Property.Options(caption = "Kamera", isSelected = false),
+                        QuestionDataModel.Property.Options(caption = "Laptop & Komputer", isSelected = true),
+                        QuestionDataModel.Property.Options(caption = "Elektronik", isSelected = true),
+                        QuestionDataModel.Property.Options(caption = "Handphone & Tablet", isSelected = true)
                     )
                 )),
                 QuestionDataModel(questionId = 3, property = QuestionDataModel.Property(
-                    title = "Kebutuhan Rumah", options = mutableListOf(
-                        QuestionDataModel.Property.Options(value = "Rumah Tangga", isSelected = true),
-                        QuestionDataModel.Property.Options(value = "Office & Stationery", isSelected = false),
-                        QuestionDataModel.Property.Options(value = "Makanan & Minuman", isSelected = true),
-                        QuestionDataModel.Property.Options(value = "Perlengkapan Pesta", isSelected = true),
-                        QuestionDataModel.Property.Options(value = "Ibu & Bayi", isSelected = true),
-                        QuestionDataModel.Property.Options(value = "Pertukangan", isSelected = true)
+                    name = "Kebutuhan Rumah", options = mutableListOf(
+                        QuestionDataModel.Property.Options(caption = "Rumah Tangga", isSelected = true),
+                        QuestionDataModel.Property.Options(caption = "Office & Stationery", isSelected = false),
+                        QuestionDataModel.Property.Options(caption = "Makanan & Minuman", isSelected = true),
+                        QuestionDataModel.Property.Options(caption = "Perlengkapan Pesta", isSelected = true),
+                        QuestionDataModel.Property.Options(caption = "Ibu & Bayi", isSelected = true),
+                        QuestionDataModel.Property.Options(caption = "Pertukangan", isSelected = true)
                     )
                 )),
                 QuestionDataModel(questionId = 4, property = QuestionDataModel.Property(
-                    title = "Kesehatan & Kecantikan", options = mutableListOf(
-                        QuestionDataModel.Property.Options(value = "Perawatan Tubuh", isSelected = true),
-                        QuestionDataModel.Property.Options(value = "Kesehatan", isSelected = false),
-                        QuestionDataModel.Property.Options(value = "Kecantikan", isSelected = false),
+                    name = "Kesehatan & Kecantikan", options = mutableListOf(
+                        QuestionDataModel.Property.Options(caption = "Perawatan Tubuh", isSelected = true),
+                        QuestionDataModel.Property.Options(caption = "Kesehatan", isSelected = false),
+                        QuestionDataModel.Property.Options(caption = "Kecantikan", isSelected = false),
                     )
                 )),
                 QuestionDataModel(questionId = 5, property = QuestionDataModel.Property(
-                    title = "Hobi", options = mutableListOf(
-                        QuestionDataModel.Property.Options(value = "Buku", isSelected = true),
-                        QuestionDataModel.Property.Options(value = "Gaming", isSelected = false),
-                        QuestionDataModel.Property.Options(value = "Film & Musik", isSelected = false),
-                        QuestionDataModel.Property.Options(value = "Olahraga", isSelected = false),
-                        QuestionDataModel.Property.Options(value = "Otomotif", isSelected = false),
-                        QuestionDataModel.Property.Options(value = "Mainan & Hobi", isSelected = false),
+                    name = "Hobi", options = mutableListOf(
+                        QuestionDataModel.Property.Options(caption = "Buku", isSelected = true),
+                        QuestionDataModel.Property.Options(caption = "Gaming", isSelected = false),
+                        QuestionDataModel.Property.Options(caption = "Film & Musik", isSelected = false),
+                        QuestionDataModel.Property.Options(caption = "Olahraga", isSelected = false),
+                        QuestionDataModel.Property.Options(caption = "Otomotif", isSelected = false),
+                        QuestionDataModel.Property.Options(caption = "Mainan & Hobi", isSelected = false),
                     )
                 )),
                 QuestionDataModel(questionId = 6, property = QuestionDataModel.Property(
-                    title = "Lainnya", options = mutableListOf(
-                        QuestionDataModel.Property.Options(value = "Tiket, Travel, Voucher", isSelected = true),
-                        QuestionDataModel.Property.Options(value = "Logam Mulia", isSelected = false),
-                        QuestionDataModel.Property.Options(value = "Perawatan Hewan", isSelected = false)
+                    name = "Lainnya", options = mutableListOf(
+                        QuestionDataModel.Property.Options(caption = "Tiket, Travel, Voucher", isSelected = true),
+                        QuestionDataModel.Property.Options(caption = "Logam Mulia", isSelected = false),
+                        QuestionDataModel.Property.Options(caption = "Perawatan Hewan", isSelected = false)
                     )
                 ))
             ),
