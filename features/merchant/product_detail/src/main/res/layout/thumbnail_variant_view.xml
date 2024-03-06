@@ -7,14 +7,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <!--    cardview - foreground selected
-                framelayout
-                    imageunify
-                    typography -> background overlay
-            typography
-            imageunify -> promo
-    -->
-
     <FrameLayout
         android:id="@+id/variant_thumbnail_container"
         android:layout_width="wrap_content"
@@ -24,9 +16,10 @@
             android:id="@+id/variant_card"
             android:layout_width="64dp"
             android:layout_height="64dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:foreground="@drawable/pdp_thumbnail_variant_border_default"
-            app:cardCornerRadius="8dp"
+            app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
             app:cardMaxElevation="0dp">
 
@@ -36,8 +29,8 @@
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/variant_thumbnail"
-                    android:layout_width="63dp"
-                    android:layout_height="63dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     tools:src="@tools:sample/avatars" />
 

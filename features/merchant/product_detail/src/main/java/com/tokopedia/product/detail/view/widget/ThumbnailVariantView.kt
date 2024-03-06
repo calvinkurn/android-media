@@ -100,19 +100,19 @@ class ThumbnailVariantView(
 
     private fun setThumbGrayscale() {
         binding.variantOverlayEmpty.show()
-//        if (binding.variantThumbnail.colorFilter == null) {
-//            val colorMatrix = ColorMatrix()
-//            colorMatrix.setSaturation(0f)
-//            val filter = ColorMatrixColorFilter(colorMatrix)
-//            binding.variantThumbnail.colorFilter = filter
-//        }
+        if (binding.variantThumbnail.colorFilter == null) {
+            val colorMatrix = ColorMatrix()
+            colorMatrix.setSaturation(0f)
+            val filter = ColorMatrixColorFilter(colorMatrix)
+            binding.variantThumbnail.colorFilter = filter
+        }
     }
 
     private fun resetThumbGrayscale() {
         binding.variantOverlayEmpty.hide()
-//        if (binding.variantThumbnail.colorFilter != null) {
-//            binding.variantThumbnail.colorFilter = null
-//        }
+        if (binding.variantThumbnail.colorFilter != null) {
+            binding.variantThumbnail.colorFilter = null
+        }
     }
 
     private fun setVariantTitleColor(resId: Int) {
