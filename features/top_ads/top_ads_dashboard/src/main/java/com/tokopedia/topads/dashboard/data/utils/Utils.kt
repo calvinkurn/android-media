@@ -207,7 +207,7 @@ object Utils {
 
     fun convertMoneyToValue(price: String): Int {
         return try {
-            price.find { it.isDigit() }?.toString().orEmpty().trim().toIntOrZero()
+            price.filter { it.isDigit() }.toIntOrZero()
         } catch (e: NumberFormatException) {
             Int.ZERO
         }
