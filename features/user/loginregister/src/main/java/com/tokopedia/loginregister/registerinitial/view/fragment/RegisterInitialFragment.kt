@@ -900,6 +900,7 @@ class RegisterInitialFragment :
                 RegisterConstants.Request.REQUEST_CHANGE_NAME -> { onActivityResultChangeName(resultCode) }
                 RegisterConstants.Request.REQUEST_OTP_VALIDATE -> { onActivityResultOtpValidate(resultCode, data) }
                 RegisterConstants.Request.REQUEST_PENDING_OTP_VALIDATE -> { onActivityResultPendingOtpValidate(resultCode, data) }
+                RegisterConstants.Request.REQUEST_EXPLICIT_PERSONALIZE -> { finishSuccessResult() }
                 else -> { super.onActivityResult(requestCode, resultCode, data) }
             }
         }
@@ -1386,20 +1387,17 @@ class RegisterInitialFragment :
         }
 
         activity?.let {
-            val bundle = Bundle()
-
             if (isSmartLogin) {
                 analytics.trackerSuccessRegisterFromLogin(userSession.loginMethod)
             }
 
-            if (!isSmartRegister) {
-                bundle.putBoolean(PARAM_IS_SUCCESS_REGISTER, true)
-            }
-
             TkpdFirebaseAnalytics.getInstance(it).setUserId(userSession.userId)
 
-            it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
-            it.finish()
+            if (isUsingExplicitPersonalize()) {
+                goToExplicitPersonalize()
+            } else {
+                finishSuccessResult()
+            }
             saveFirstInstallTime()
 
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
@@ -1407,6 +1405,27 @@ class RegisterInitialFragment :
             TwoFactorMluHelper.clear2FaInterval(it)
             initTokoChatConnection()
         }
+    }
+
+    private fun finishSuccessResult() {
+        activity?.let {
+            val bundle = Bundle()
+            if (!isSmartRegister) {
+                bundle.putBoolean(PARAM_IS_SUCCESS_REGISTER, true)
+            }
+            it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
+            it.finish()
+        }
+    }
+
+    private fun goToExplicitPersonalize() {
+        registerInitialRouter.goToExplicitPersonalize(this@RegisterInitialFragment)
+    }
+
+    private fun isUsingExplicitPersonalize() : Boolean {
+        return RemoteConfigInstance.getInstance()
+            .abTestPlatform
+            .getString("cat_affinity_android") == "control_variant"
     }
 
     private fun initTokoChatConnection() {

@@ -106,4 +106,9 @@ class RegisterInitialRouterHelper @Inject constructor() {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, isFromScp)
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_ADD_NAME_REGISTER_PHONE)
     }
+
+    fun goToExplicitPersonalize(fragment: Fragment) {
+        val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalUserPlatform.EXPLICIT_PERSONALIZE)
+        fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_EXPLICIT_PERSONALIZE)
+    }
 }
