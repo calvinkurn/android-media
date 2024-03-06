@@ -66,9 +66,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         if (activity is FragmentActivity) {
             fragmentSize = activity.supportFragmentManager.fragments.size
         }
-    }
 
-    override fun onActivityPostResumed(activity: Activity) {
         if (SharedPrefsUtils.getBooleanPreference(activity, TranslatorSettingView.IS_ENABLE, false)) {
             Log.i(TAG, "onActivityResumed() invoked of :" + activity.localClassName)
             val weakActivity = WeakReference<Activity>(activity)
@@ -77,11 +75,10 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
 
             val rootView: View = activity.window.decorView.findViewById(android.R.id.content)
 
-            setAddonGlobalLayoutListener(rootView)
-
             launch {
 
                 if (fragmentSize == 0) {
+
                     rootView.viewTreeObserver
                         .onScrollChangedAsFlow()
                         .collect {
@@ -96,6 +93,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                     }
             }
         }
+
     }
 
     override fun onActivityPaused(activity: Activity) {
@@ -114,12 +112,12 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         }
     }
 
-    private fun setAddonGlobalLayoutListener(rootView: View) {
+    private fun setAddonGlobalLayoutListener(rootView: View, startTranslate: suspend () -> Unit) {
         rootView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
 
                 launch {
-                    translatorManager?.startTranslate()
+                    startTranslate.invoke()
                 }
 
                 rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -183,10 +181,6 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         }
 
         private fun setTranslatorFragment(f: Fragment) {
-            if (f.activity != null) {
-                val weakActivity = WeakReference<Activity>(f.activity)
-                TranslatorManager.setCurrentActivity(weakActivity)
-            }
             val mContext = f.context
             if (mContext?.let { SharedPrefsUtils.getBooleanPreference(it, TranslatorSettingView.IS_ENABLE, false) } == true) {
                 Log.i(TAG, "onFragmentResumed() invoked of :" + f::class.java.simpleName)
@@ -195,6 +189,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                 TranslatorManagerFragment.setCurrentFragment(weakFragment)
 
                 f.view?.let {
+
                     launch {
 
                         it.viewTreeObserver.onScrollChangedAsFlow().collect {

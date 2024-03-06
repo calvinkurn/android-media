@@ -77,9 +77,7 @@ class TranslatorManagerFragment() : CoroutineScope {
         private var sInstance: TranslatorManagerFragment? = null
 
         fun getCurrentFragment(): Fragment? {
-            return mCurrentFragment?.get() ?: run {
-                null
-            }
+            return mCurrentFragment?.get()
         }
 
         fun setCurrentFragment(mCurrentFragment: WeakReference<Fragment>) {
@@ -121,22 +119,20 @@ class TranslatorManagerFragment() : CoroutineScope {
         val updateViewList = mutableListOf<TextViewUpdateModel>()
 
         for (view in views) {
-            if (view is TextView) {
-                if (view.tag == null || (view.tag !is Boolean && !view.tag.toString().toBoolean())) {
+            if (view is TextView && view.tag != true) {
+                val viewText = view.text.trim().toString()
 
-                    val viewText = view.text.trim().toString()
-                    if (viewText.isNotBlank()) {
+                if (viewText.isNotBlank()) {
 
-                        val stringPoolItem = mStringPoolManager.get(viewText)
+                    val stringPoolItem = mStringPoolManager.get(viewText)
 
-                        if (stringPoolItem == null || stringPoolItem.demandedText.isBlank() || (stringPoolItem.requestedLocale != destinationLang)) {
-                            //prepare for translate
-                            mStringPoolManager.add(viewText, "", "")
-                        } else {
-                            //translate
-                            if (!TextUtils.equals(viewText, stringPoolItem.demandedText)) {
-                                updateViewList.add(TextViewUpdateModel(view, stringPoolItem.demandedText))
-                            }
+                    if (stringPoolItem == null || stringPoolItem.demandedText.isBlank() || (stringPoolItem.requestedLocale != destinationLang)) {
+                        //prepare for translate
+                        mStringPoolManager.add(view, viewText, "", "")
+                    } else {
+                        //translate
+                        if (!TextUtils.equals(viewText, stringPoolItem.demandedText)) {
+                            updateViewList.add(TextViewUpdateModel(view, stringPoolItem.demandedText))
                         }
                     }
                 }
@@ -205,7 +201,7 @@ class TranslatorManagerFragment() : CoroutineScope {
 
                     if (arrayStr.isNotEmpty()) {
 
-                        mStringPoolManager.updateCache(originStrList, arrayStr, destinationLang)
+                        mStringPoolManager.updateCache(views, originStrList, arrayStr, destinationLang)
 
                         val charCountOld = SharedPrefsUtils.getIntegerPreference(mApplication!!.applicationContext, CHARS_COUNT, 0)
 

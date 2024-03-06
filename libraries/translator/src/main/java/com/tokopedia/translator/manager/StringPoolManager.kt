@@ -13,14 +13,15 @@
  */
 package com.tokopedia.translator.manager
 
+import android.widget.TextView
 import com.tokopedia.translator.repository.model.StringPoolItem
 
 class StringPoolManager {
 
     private val mPools: HashMap<String, StringPoolItem> = HashMap()
 
-    fun add(current: String, newStr: String, destinationLang: String) {
-        mPools.put(current.trim(), StringPoolItem(current, newStr, destinationLang))
+    fun add(textView: TextView, current: String, newStr: String, destinationLang: String) {
+        mPools.put(current.trim(), StringPoolItem(textView, current, newStr, destinationLang))
     }
 
     fun get(current: String?): StringPoolItem? {
@@ -35,12 +36,12 @@ class StringPoolManager {
         mPools.clear()
     }
 
-    fun updateCache(old: List<String>, new: Array<String>, destinationLang: String) {
+    fun updateCache(textViews: List<TextView>, old: List<String>, new: Array<String>, destinationLang: String) {
         if (old.size != new.size)
             return
 
         for (i in 0 until old.size) {
-            add(old[i].trim(), new[i], destinationLang)
+            add(textViews[i], old[i].trim(), new[i], destinationLang)
         }
     }
 
@@ -50,7 +51,7 @@ class StringPoolManager {
 
         for ((_, data) in mPools) {
 
-            if (data.demandedText.isBlank()) {
+            if (data.demandedText.isBlank() || data.textView.text != data.demandedText) {
                 queryStrList.add(data.originalText)
             }
         }
