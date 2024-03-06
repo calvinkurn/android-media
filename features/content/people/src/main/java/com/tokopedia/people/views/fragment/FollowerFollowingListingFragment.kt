@@ -44,6 +44,8 @@ import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.people.views.uimodel.action.FollowListAction
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.state.LoadingState
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.unifycomponents.setCustomText
@@ -57,7 +59,8 @@ internal class FollowerFollowingListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val followListVMFactory: FollowListViewModel.Factory,
     private val followerFollowingListVMFactory: FollowerFollowingListViewModel.Factory,
-    private var userProfileTracker: UserProfileTracker
+    private val userProfileTracker: UserProfileTracker,
+    private val remoteConfig: RemoteConfig,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: UpFragmentFollowerFollowingListingBinding? = null
@@ -124,39 +127,43 @@ internal class FollowerFollowingListingFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val isComposeEnabled = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAINAPP_PROFILE_FOLLOW_LIST_COMPOSE_ENABLE)
         _binding = UpFragmentFollowerFollowingListingBinding.inflate(inflater, container, false)
-//        return binding.root
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        return if (!isComposeEnabled) {
+            binding.root
+        } else {
+            ComposeView(requireContext()).apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
-            setContent {
-                val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
+                setContent {
+                    val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
 
-                NestTheme {
-                    FollowingFollowerListScreen(
-                        profileName = uiState.profileName,
-                        totalFollowersFmt = uiState.totalFollowersFmt,
-                        totalFollowingsFmt = uiState.totalFollowingsFmt,
-                        onPageChanged = ::onPageChanged,
-                        onBackClicked = ::onNavigationBackClicked,
-                        onListRefresh = ::onListRefresh,
-                        initialSelectedTabType = if (selectedTab == EXTRA_FOLLOWING) FollowListType.Following else FollowListType.Follower,
-                        followListViewModel = { type ->
-                            ViewModelProvider(
-                                { followListViewModelStoreProvider.getOrCreateViewModelStore(type) },
-                                object : ViewModelProvider.Factory {
-                                    @Suppress("UNCHECKED_CAST")
-                                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                                        val vm = followListVMFactory.create(type, userId)
-                                        vm.onAction(FollowListAction.Init)
-                                        return vm as T
+                    NestTheme {
+                        FollowingFollowerListScreen(
+                            profileName = uiState.profileName,
+                            totalFollowersFmt = uiState.totalFollowersFmt,
+                            totalFollowingsFmt = uiState.totalFollowingsFmt,
+                            onPageChanged = ::onPageChanged,
+                            onBackClicked = ::onNavigationBackClicked,
+                            onListRefresh = ::onListRefresh,
+                            initialSelectedTabType = if (selectedTab == EXTRA_FOLLOWING) FollowListType.Following else FollowListType.Follower,
+                            followListViewModel = { type ->
+                                ViewModelProvider(
+                                    { followListViewModelStoreProvider.getOrCreateViewModelStore(type) },
+                                    object : ViewModelProvider.Factory {
+                                        @Suppress("UNCHECKED_CAST")
+                                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                                            val vm = followListVMFactory.create(type, userId)
+                                            vm.onAction(FollowListAction.Init)
+                                            return vm as T
+                                        }
                                     }
-                                }
-                            )[FollowListViewModel::class.java]
-                        },
-                        tracker = userProfileTracker,
-                        modifier = Modifier.fillMaxSize()
-                    )
+                                )[FollowListViewModel::class.java]
+                            },
+                            tracker = userProfileTracker,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
                 }
             }
         }
@@ -201,10 +208,14 @@ internal class FollowerFollowingListingFragment @Inject constructor(
                     getString(peopleR.string.up_title_followers),
                     currState.stats.totalFollowerFmt
                 ),
-                FollowListFragment.getOrCreate(
+//                FollowListFragment.getOrCreate(
+//                    childFragmentManager,
+//                    requireContext().classLoader,
+//                    FollowListFragment.Param(FollowListType.Follower, userId)
+//                )
+                FollowerListingFragment.getFragment(
                     childFragmentManager,
-                    requireContext().classLoader,
-                    FollowListFragment.Param(FollowListType.Follower, userId)
+                    requireContext().classLoader
                 )
             ),
             Pair(
@@ -212,10 +223,14 @@ internal class FollowerFollowingListingFragment @Inject constructor(
                     getString(peopleR.string.up_title_following),
                     currState.stats.totalFollowingFmt
                 ),
-                FollowListFragment.getOrCreate(
+//                FollowListFragment.getOrCreate(
+//                    childFragmentManager,
+//                    requireContext().classLoader,
+//                    FollowListFragment.Param(FollowListType.Following, userId)
+//                )
+                FollowingListingFragment.getFragment(
                     childFragmentManager,
-                    requireContext().classLoader,
-                    FollowListFragment.Param(FollowListType.Following, userId)
+                    requireContext().classLoader
                 )
             )
         )
