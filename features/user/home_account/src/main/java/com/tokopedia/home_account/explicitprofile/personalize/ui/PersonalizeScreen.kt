@@ -16,7 +16,6 @@ fun PersonalizeScreen(
     uiState: LiveData<ExplicitPersonalizeResult>,
     saveAnswerState: LiveData<PersonalizeSaveAnswerResult>,
     counterState: LiveData<Int>,
-    onRetry: () -> Unit,
     onSave: () -> Unit,
     onOptionSelected: (OptionSelected) -> Unit,
     onSkip: () -> Unit
@@ -43,11 +42,7 @@ fun PersonalizeScreen(
                         isLoadingSaveAnswer = saveAnswerStateObserver is PersonalizeSaveAnswerResult.Loading
                     )
                 }
-                is ExplicitPersonalizeResult.Failed -> {
-                    FailedScreen {
-                        onRetry.invoke()
-                    }
-                }
+                else -> {}
             }
 
         }

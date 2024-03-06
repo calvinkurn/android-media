@@ -33,7 +33,6 @@ class PersonalizeQuestionFragment: BaseDaggerFragment() {
                     PersonalizeScreen(
                         uiState = viewModel.stateGetQuestion,
                         counterState = viewModel.counterState,
-                        onRetry = { viewModel.getQuestion() },
                         onSave = { viewModel.saveAnswers() },
                         onSkip = { finishResultOk() },
                         onOptionSelected = { viewModel.itemSelected(it) },
@@ -59,6 +58,12 @@ class PersonalizeQuestionFragment: BaseDaggerFragment() {
                     showToasterError()
                 }
                 else -> {}
+            }
+        }
+
+        viewModel.stateGetQuestion.observe(viewLifecycleOwner) {
+            if (it is ExplicitPersonalizeResult.Failed) {
+                finishResultOk()
             }
         }
     }
