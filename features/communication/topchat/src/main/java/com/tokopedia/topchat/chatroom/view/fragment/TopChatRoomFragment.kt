@@ -7,8 +7,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -27,9 +25,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -87,7 +82,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
@@ -1339,33 +1335,27 @@ open class TopChatRoomFragment :
     override fun renderBackground(url: String) {
         if (!context.isValidGlideContext()) return
         context?.let {
-            Glide.with(it)
-                .asBitmap()
-                .load(url)
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            // Calculate the scale to match ImageView's width
-                            val imageViewWidth = chatBackground?.width ?: resource.width
-                            val scaledBitmap = withContext(dispatcher.default) {
-                                ViewUtil.scaleBitmap(resource, imageViewWidth)
-                            }
-
-                            // Create a BitmapDrawable from the scaled bitmap
-                            val bitmapDrawable = withContext(dispatcher.default) {
-                                ViewUtil.verticalTileBitmap(it, scaledBitmap)
-                            }
-                            chatBackground?.background = bitmapDrawable
+            url.getBitmapImageUrl(
+                context = it,
+                properties = {
+                    this.setPlaceHolder(-1) // no placeholder
+                    this.setCacheStrategy(MediaCacheStrategy.DATA)
+                },
+                onReady = { resource ->
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        // Calculate the scale to match ImageView's width
+                        val imageViewWidth = chatBackground?.width ?: resource.width
+                        val scaledBitmap = withContext(dispatcher.default) {
+                            ViewUtil.scaleBitmap(resource, imageViewWidth)
                         }
+                        // Create a BitmapDrawable from the scaled bitmap
+                        val bitmapDrawable = withContext(dispatcher.default) {
+                            ViewUtil.verticalTileBitmap(it, scaledBitmap)
+                        }
+                        chatBackground?.background = bitmapDrawable
                     }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        chatBackground?.clearImage()
-                    }
-                })
+                }
+            )
         }
     }
 
