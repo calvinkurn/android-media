@@ -1,11 +1,11 @@
-package com.tokopedia.shop_widget.thematicwidget.adapter
+package com.tokopedia.shop.home.view.adapter.viewholder.thematicwidget.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardSeeAllUiModel
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.shop.home.view.model.thematicwidget.ProductCardSeeAllUiModel
 
-class ProductCardDiffer: DiffUtil.Callback() {
+class ShopHomeThematicWidgetDiffUtil: DiffUtil.Callback() {
     private var oldList: List<Visitable<*>> = emptyList()
     private var newList: List<Visitable<*>> = emptyList()
 
@@ -18,7 +18,7 @@ class ProductCardDiffer: DiffUtil.Callback() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return if (oldItem is ProductCardUiModel && newItem is ProductCardUiModel) {
+        return if (oldItem is ShopHomeProductUiModel && newItem is ShopHomeProductUiModel) {
             oldItem.id == newItem.id
         } else if (oldItem is ProductCardSeeAllUiModel && newItem is ProductCardSeeAllUiModel) {
             oldItem.appLink == newItem.appLink
@@ -38,7 +38,7 @@ class ProductCardDiffer: DiffUtil.Callback() {
     fun create(
         oldList: List<Visitable<*>>,
         newList: List<Visitable<*>>
-    ): ProductCardDiffer {
+    ): ShopHomeThematicWidgetDiffUtil {
         this.oldList = oldList
         this.newList = newList
         return this
