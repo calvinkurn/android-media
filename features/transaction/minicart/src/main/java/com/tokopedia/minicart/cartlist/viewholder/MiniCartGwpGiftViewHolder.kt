@@ -47,7 +47,8 @@ class MiniCartGwpGiftViewHolder (
                         }
                     )
                 ),
-                pageSource = PageSource.MINICART_NOW
+                pageSource = PageSource.MINICART_NOW,
+                shopId = element.shopId
             )
 
             setupCtaClickListener(element.ctaText) {

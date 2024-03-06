@@ -256,7 +256,13 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
                     // Add gwp gift if bmgm only
                     if (cartDetail.isBmGm() && cartDetail.cartDetailInfo.bmgmData.tierProductList.isNotEmpty()) {
-                        miniCartAvailableSectionUiModels.addAll(mapGwpGift(cartDetail.cartDetailInfo.bmgmData, cartIndex))
+                        miniCartAvailableSectionUiModels.addAll(
+                            mapGwpGift(
+                                bmgmData = cartDetail.cartDetailInfo.bmgmData,
+                                cartIndex = cartIndex,
+                                shopId = availableGroup.shop.shopId
+                            )
+                        )
                     }
                 }
             }
@@ -382,7 +388,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
     private fun mapGwpGift(
         bmgmData: BmGmData,
-        cartIndex: Int
+        cartIndex: Int,
+        shopId: String
     ): List<MiniCartGwpGiftUiModel> {
         return bmgmData.tierProductList.map { tierProduct ->
             MiniCartGwpGiftUiModel(
@@ -402,7 +409,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
                 },
                 progressiveInfoText = bmgmData.offerMessage.firstOrNull().orEmpty(),
                 position = cartIndex.inc(),
-                warehouseId = tierProduct.listProduct.firstOrNull()?.warehouseId.orZero()
+                warehouseId = tierProduct.listProduct.firstOrNull()?.warehouseId.orZero(),
+                shopId = shopId
             )
         }
     }
