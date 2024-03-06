@@ -8,17 +8,28 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
+import android.graphics.Point
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.SparseIntArray
+import android.view.Display
 import android.view.KeyEvent
 import android.view.View
+import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.ContextCompat.getSystemServiceName
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -86,6 +97,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.ifNull
@@ -93,6 +105,7 @@ import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -269,9 +282,9 @@ import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHold
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
+import com.tokopedia.product.detail.view.viewholder.promo_price.ui.AnimatedImageWithAnchor
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
 import com.tokopedia.product.detail.view.widget.NavigationTab
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
@@ -328,6 +341,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_INDEFINITE
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -350,6 +365,7 @@ import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.roundToInt
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
@@ -546,6 +562,8 @@ open class ProductDetailFragment :
     // Share Experience
     private var shareExInitializer: ShareExInitializer? = null
 
+    private var drawableFirstImage: Drawable? = null
+
     // View
     private lateinit var actionButtonView: PartialButtonActionView
     private var stickyLoginView: StickyLoginView? = null
@@ -635,6 +653,9 @@ open class ProductDetailFragment :
     override val pdpRemoteConfig: RemoteConfig
         get() = remoteConfig
 
+    private var initialXPosition = 0
+    private var initialYPosition = 0
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         productRecomm.init()
@@ -654,6 +675,17 @@ open class ProductDetailFragment :
             )
         }
 
+        binding?.composeAtc?.apply {
+            val locRoot = getLocationOnScreen()
+            val density = resources.displayMetrics.density
+            val pxValue = (218.dp * density).value.toInt()
+
+            val absXRoot = locRoot.x - pxValue / 2
+            val absYRoot = locRoot.y - pxValue / 2
+
+            initialXPosition = absXRoot
+            initialYPosition = absYRoot
+        }
         setPDPDebugMode()
     }
 
@@ -769,6 +801,13 @@ open class ProductDetailFragment :
         observeProductMediaRecomData()
         observeBottomSheetEdu()
         observeAffiliateEligibility()
+        observeBitmapReady()
+    }
+
+    private fun observeBitmapReady() {
+        viewLifecycleOwner.observe(viewModel.bitmapImage) { bitmap ->
+
+        }
     }
 
     private fun observeBottomSheetEdu() {
@@ -792,9 +831,11 @@ open class ProductDetailFragment :
                             shopId = viewModel.getProductInfoP1?.basic?.shopID ?: ""
                         )
                     }
+
                     is OneTimeMethodEvent.ImpressGeneralEduBs -> {
                         goToEducational(url = it.event.appLink)
                     }
+
                     else -> {
                         // noop
                     }
@@ -902,9 +943,9 @@ open class ProductDetailFragment :
 
     private fun reloadFintechWidget() {
         if (pdpUiUpdater == null || (
-            pdpUiUpdater?.fintechWidgetMap == null &&
-                pdpUiUpdater?.fintechWidgetV2Map == null
-            )
+                pdpUiUpdater?.fintechWidgetMap == null &&
+                    pdpUiUpdater?.fintechWidgetV2Map == null
+                )
         ) {
             return
         }
@@ -1023,20 +1064,24 @@ open class ProductDetailFragment :
             RQUEST_CODE_UPDATE_FINTECH_WIDGET, RQUEST_CODE_ACTIVATE_GOPAY -> {
                 reloadFintechWidget()
             }
+
             ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE,
             ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST -> {
                 data?.let {
                     activityResultTradeIn(it)
                 }
             }
+
             ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT -> {
                 updateCartNotification()
             }
+
             ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT -> {
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
                     onSwipeRefresh()
                 }
             }
+
             ProductDetailConstant.REQUEST_CODE_LOGIN -> {
                 hideProgressDialog()
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
@@ -1055,11 +1100,13 @@ open class ProductDetailFragment :
                     }
                 }
             }
+
             ProductDetailConstant.REQUEST_CODE_REPORT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     view?.showToasterSuccess(getString(R.string.success_to_report))
                 }
             }
+
             ProductDetailConstant.REQUEST_CODE_SHOP_INFO -> {
                 if (data != null) {
                     val isFavoriteFromShopPage =
@@ -1076,6 +1123,7 @@ open class ProductDetailFragment :
                     }
                 }
             }
+
             ProductDetailConstant.REQUEST_CODE_TOP_CHAT -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val favoriteData =
@@ -1090,6 +1138,7 @@ open class ProductDetailFragment :
                     }
                 }
             }
+
             PRODUCT_CARD_OPTIONS_REQUEST_CODE -> {
                 handleProductCardOptionsActivityResult(
                     requestCode,
@@ -1102,6 +1151,7 @@ open class ProductDetailFragment :
                     }
                 )
             }
+
             REQUEST_CODE_ADD_WISHLIST_COLLECTION -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val isSuccess = data.getBooleanExtra(BOOLEAN_EXTRA_SUCCESS, false)
@@ -1126,6 +1176,7 @@ open class ProductDetailFragment :
                     }
                 }
             }
+
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -1416,6 +1467,7 @@ open class ProductDetailFragment :
             R.id.shop_credibility_ava, R.id.shop_credibility_name -> gotoShopDetail(
                 componentTrackDataModel
             )
+
             else -> {
             }
         }
@@ -1554,6 +1606,7 @@ open class ProductDetailFragment :
             ProductDetailConstant.TRADE_IN -> {
                 onTradeinClicked(componentTrackDataModel)
             }
+
             ProductDetailConstant.PRODUCT_VARIANT_INFO -> {
                 if (!GlobalConfig.isSellerApp()) {
                     ProductDetailTracking.Click.eventClickVariant(
@@ -1565,6 +1618,7 @@ open class ProductDetailFragment :
                     )
                 }
             }
+
             ProductDetailConstant.PRODUCT_WHOLESALE_INFO -> {
                 val data =
                     ProductDetailMapper.mapToWholesale(viewModel.getProductInfoP1?.data?.wholesale)
@@ -1578,6 +1632,7 @@ open class ProductDetailFragment :
                     }
                 }
             }
+
             ProductDetailConstant.PRODUCT_PROTECTION -> {
                 ProductDetailTracking.Click.eventClickPDPInsuranceProtection(
                     viewModel.getProductInfoP1,
@@ -1586,6 +1641,7 @@ open class ProductDetailFragment :
                 )
                 openFtInsuranceWebView(getPurchaseProtectionUrl())
             }
+
             ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO -> {
                 goToApplink(appLink)
                 ProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(
@@ -1593,6 +1649,7 @@ open class ProductDetailFragment :
                     componentTrackDataModel
                 )
             }
+
             ProductDetailConstant.INFO_OBAT_KERAS -> {
                 if (appLink.isNotEmpty()) {
                     goToApplink(appLink)
@@ -2080,11 +2137,12 @@ open class ProductDetailFragment :
         goToRecommendation()
     }
 
-    private val mvcLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
-            onSwipeRefresh()
+    private val mvcLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
+                onSwipeRefresh()
+            }
         }
-    }
 
     override fun onMerchantVoucherSummaryClicked(
         @MvcSource source: Int,
@@ -2468,7 +2526,10 @@ open class ProductDetailFragment :
         viewModel.deleteCartLiveData.observe(viewLifecycleOwner) {
             hideProgressDialog()
             it.doSuccessOrFail({ message ->
-                view?.showToasterSuccess(message.data, ctaText = getString(productdetailcommonR.string.pdp_common_oke))
+                view?.showToasterSuccess(
+                    message.data,
+                    ctaText = getString(productdetailcommonR.string.pdp_common_oke)
+                )
                 updateButtonState()
             }) { throwable ->
                 view?.showToasterError(
@@ -2483,7 +2544,10 @@ open class ProductDetailFragment :
     private fun observeUpdateCart() {
         viewModel.updateCartLiveData.observe(viewLifecycleOwner) {
             it.doSuccessOrFail({ success ->
-                view?.showToasterSuccess(success.data, ctaText = getString(productdetailcommonR.string.pdp_common_oke))
+                view?.showToasterSuccess(
+                    success.data,
+                    ctaText = getString(productdetailcommonR.string.pdp_common_oke)
+                )
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
@@ -2522,6 +2586,7 @@ open class ProductDetailFragment :
                         getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
                     }
                 )
+
                 is Fail -> view?.showToasterError(
                     getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder)
                 )
@@ -2804,7 +2869,7 @@ open class ProductDetailFragment :
 
             val shouldShowTokoNow = it.basic.isTokoNow &&
                 cartTypeData?.availableButtonsPriority?.firstOrNull()
-                ?.isCartTypeDisabledOrRemindMe() == false &&
+                    ?.isCartTypeDisabledOrRemindMe() == false &&
                 (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
 
             val tokonowVariantButtonData = if (shouldShowTokoNow) {
@@ -2875,7 +2940,10 @@ open class ProductDetailFragment :
             )
         } else {
             val errorMessage = getErrorMessage(t)
-            view?.showToasterError(errorMessage, ctaText = getString(productdetailcommonR.string.pdp_common_oke))
+            view?.showToasterError(
+                errorMessage,
+                ctaText = getString(productdetailcommonR.string.pdp_common_oke)
+            )
             ProductDetailServerLogger.logBreadCrumbAtc(
                 isSuccess = false,
                 errorMessage = errorMessage,
@@ -2925,6 +2993,12 @@ open class ProductDetailFragment :
                 stopPLTRenderPageAndMonitoringP1()
             }
         }
+    }
+
+    private fun View.getLocationOnScreen(): Point {
+        val location = IntArray(2)
+        this.getLocationOnScreen(location)
+        return Point(location[0], location[1])
     }
 
     private fun handleObserverP1Error(error: Throwable) {
@@ -3203,8 +3277,10 @@ open class ProductDetailFragment :
 
         if (recommendationWidget.hasNext) {
             addEndlessScrollListener {
-                val page = pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
-                val placeholderData = pdpUiUpdater?.getVerticalRecommendationPlaceholder(recommendationWidget.pageName)
+                val page =
+                    pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
+                val placeholderData =
+                    pdpUiUpdater?.getVerticalRecommendationPlaceholder(recommendationWidget.pageName)
 
                 viewModel.getVerticalRecommendationData(
                     recommendationWidget.pageName,
@@ -3255,18 +3331,22 @@ open class ProductDetailFragment :
                     )
                 }
             }
+
             ProductDetailCommonConstant.OCC_BUTTON -> {
                 sendTrackingATC(cartId)
                 goToOneClickCheckout()
             }
+
             ProductDetailCommonConstant.BUY_BUTTON -> {
                 sendTrackingATC(cartId)
                 goToCartCheckout(cartId)
             }
+
             ProductDetailCommonConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
-                showAddToCartDoneBottomSheet(result.data)
+//                showAddToCartDoneBottomSheet(result.data)
             }
+
             ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE -> {
                 // Same with OCS but should send devideId
                 sendTrackingATC(cartId)
@@ -3328,6 +3408,7 @@ open class ProductDetailFragment :
                         )
                         RouteManager.route(it, applink)
                     }
+
                     ProductDetailCommonConstant.OVO_INSUFFICIENT_BALANCE_STATUS -> {
                         val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(
                             viewModel.getProductInfoP1?.parentProductId ?: "",
@@ -3336,6 +3417,7 @@ open class ProductDetailFragment :
                         )
                         bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
                     }
+
                     else -> view?.showToasterError(
                         getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         ctaText = getString(productdetailcommonR.string.pdp_common_oke)
@@ -3361,7 +3443,8 @@ open class ProductDetailFragment :
     }
 
     override fun updateUi() {
-        val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
+        val newData =
+            pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
 
         val finalData = if (isTabletMode()) {
             manipulateDataTabletMode(newData)
@@ -3562,6 +3645,7 @@ open class ProductDetailFragment :
 
                 onShopFavoriteClick(isNplFollowType = true)
             }
+
             reData.restrictionCategoriesType() -> {
                 reData.action.firstOrNull()?.buttonLink?.let {
                     if (it.isEmpty()) {
@@ -3571,6 +3655,7 @@ open class ProductDetailFragment :
                     }
                 }
             }
+
             reData.restrictionGamificationType() -> {
                 ProductDetailTracking.Click.onRestrictionGamificationClicked(
                     viewModel.getProductInfoP1,
@@ -3581,6 +3666,7 @@ open class ProductDetailFragment :
                     goToApplink(it)
                 }
             }
+
             reData.restrictionLocationType() -> {
                 onRestrictionLocationClicked(reData)
             }
@@ -4617,7 +4703,12 @@ open class ProductDetailFragment :
             viewModel.getProductInfoP1
         )
         if (GlobalConfig.isSellerApp()) {
-            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE, productId, TOPADS_PERFORMANCE_CURRENT_SITE)
+            RouteManager.route(
+                context,
+                ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE,
+                productId,
+                TOPADS_PERFORMANCE_CURRENT_SITE
+            )
         } else {
             goToPdpSellerApp()
         }
@@ -4765,7 +4856,92 @@ open class ProductDetailFragment :
         }
     }
 
+    fun getStatusBarHeight(context: Context): Int {
+        var height = 0
+        val resourceId = context.resources.getIdentifier(
+            "status_bar_height", "dimen", "android"
+        )
+        if (resourceId > 0) {
+            height = context.resources.getDimensionPixelSize(resourceId)
+        }
+        return height
+    }
+
+    fun getScreenCenterCoordinates(windowManager: WindowManager): Point {
+        val display: Display = windowManager.defaultDisplay
+        val screenSize = Point()
+        display.getSize(screenSize)
+        UnifyMotion.EASE_IN_OUT
+        getScreenHeight()
+        val centerX = screenSize.x / 2
+        val centerY = screenSize.y / 2 + getStatusBarHeight(requireContext()) / 2
+        return Point(centerX, centerY)
+    }
+
+    var asd = false
+    private fun runAtcAnimation() {
+        viewModel.bitmapImage.value?.let { bitmap ->
+            val viewCart = navToolbar?.getCartIconPosition()
+            val windowManager =
+                requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            val centerCoordinates = getScreenCenterCoordinates(windowManager)
+            val centerX = centerCoordinates.x
+            val centerY = centerCoordinates.y
+
+            var rootX = 0
+            var rootY = 0
+            binding?.composeAtc?.let {
+                val location = it.getLocationOnScreen()
+
+                rootX = location.x
+                rootY = location.y
+
+                println("posisinya image x : ${rootX} ")
+                println("posisinya image y : ${rootY}")
+            }
+
+
+
+            viewCart?.post {
+                val location = viewCart.getLocationOnScreen()
+                val absX = location.x
+                val absY = location.y
+
+
+
+                binding?.composeAtc?.post {
+                    binding?.composeAtc?.apply {
+                        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+
+                        setContent {
+                            asd = !asd
+
+                            val density = LocalDensity.current
+                            val anchorSquareSize = with(density) { 218.dp.toPx() }
+
+                            println("animnya x: ${viewCart.width.toPx()}")
+                            println("animnya y: ${viewCart.width.toPx()}")
+
+                            println("posisinya x : ${centerX - anchorSquareSize / 2} ")
+                            println("posisinya y : ${centerY - anchorSquareSize / 2}")
+
+                            val locImageX = (centerX - anchorSquareSize / 2).roundToInt()
+                            val locImageY = (centerY - anchorSquareSize / 2).roundToInt()
+
+                            AnimatedImageWithAnchor(
+                                asd,
+                                absX - locImageX,
+                                -(locImageY - absY), bitmap
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun doAtc(buttonAction: Int) {
+        runAtcAnimation()
         buttonActionType = buttonAction
         context?.let {
             val isVariant = viewModel.getProductInfoP1?.data?.variant?.isVariant ?: false
@@ -4831,7 +5007,7 @@ open class ProductDetailFragment :
         val selectedWarehouseId = viewModel.getMultiOriginByProductId().id
 
         viewModel.getProductInfoP1?.let { data ->
-            showProgressDialog()
+//            showProgressDialog()
             when (actionButton) {
                 ProductDetailCommonConstant.OCS_BUTTON -> {
                     val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
@@ -4853,9 +5029,11 @@ open class ProductDetailFragment :
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
+
                 ProductDetailCommonConstant.OCC_BUTTON -> {
                     addToCartOcc(data, selectedWarehouseId)
                 }
+
                 else -> {
                     val addToCartRequestParams = AddToCartRequestParams().apply {
                         productId = data.basic.productID
@@ -5081,7 +5259,7 @@ open class ProductDetailFragment :
     private fun setLoadingNplShopFollowers(isLoading: Boolean) {
         val restrictionData = viewModel.p2Data.value?.restrictionInfo
         if (restrictionData?.restrictionData?.firstOrNull()
-            ?.restrictionShopFollowersType() == false
+                ?.restrictionShopFollowersType() == false
         ) {
             return
         }
@@ -5877,6 +6055,10 @@ open class ProductDetailFragment :
 
     override fun getUserSession(): UserSessionInterface {
         return viewModel.userSessionInterface
+    }
+
+    override fun sendImageBitmap(drawable: Drawable) {
+        viewModel.setBitmapImage(drawable.toBitmap())
     }
 
     override fun onImpressStockAssurance(

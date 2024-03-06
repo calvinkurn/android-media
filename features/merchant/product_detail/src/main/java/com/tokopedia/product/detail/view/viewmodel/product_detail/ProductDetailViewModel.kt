@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
@@ -166,7 +167,12 @@ class ProductDetailViewModel @Inject constructor(
     private val productRecommSubViewModel: ProductRecommSubViewModel,
     playWidgetSubViewModel: PlayWidgetSubViewModel,
     thumbnailVariantSubViewModel: ThumbnailVariantSubViewModel
-) : ParentSubViewModel(dispatcher.main, productRecommSubViewModel, playWidgetSubViewModel, thumbnailVariantSubViewModel),
+) : ParentSubViewModel(
+    dispatcher.main,
+    productRecommSubViewModel,
+    playWidgetSubViewModel,
+    thumbnailVariantSubViewModel
+),
     IProductRecommSubViewModel by productRecommSubViewModel,
     IPlayWidgetSubViewModel by playWidgetSubViewModel,
     IThumbnailVariantSubViewModel by thumbnailVariantSubViewModel,
@@ -256,6 +262,11 @@ class ProductDetailViewModel @Inject constructor(
     private val _oneTimeMethod = MutableStateFlow(OneTimeMethodState())
     val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
 
+    val bitmapImage: LiveData<Bitmap>
+        get() = _bitmapImage
+
+    private val _bitmapImage = MutableLiveData<Bitmap>()
+
     val showBottomSheetEdu: LiveData<BottomSheetEduUiModel?> = p2Data.map {
         val edu = it.bottomSheetEdu
         val showEdu = edu.isShow && edu.appLink.isNotBlank()
@@ -293,7 +304,8 @@ class ProductDetailViewModel @Inject constructor(
         get() = userSessionInterface.isLoggedIn
 
     private var _productMediaRecomBottomSheetData: ProductMediaRecomBottomSheetData? = null
-    private val _productMediaRecomBottomSheetState = MutableLiveData<ProductMediaRecomBottomSheetState>()
+    private val _productMediaRecomBottomSheetState =
+        MutableLiveData<ProductMediaRecomBottomSheetState>()
     val productMediaRecomBottomSheetState: LiveData<ProductMediaRecomBottomSheetState>
         get() = _productMediaRecomBottomSheetState
 
@@ -307,7 +319,8 @@ class ProductDetailViewModel @Inject constructor(
 
     var deviceId: String = userSessionInterface.deviceId ?: ""
 
-    private var aPlusContentExpanded: Boolean = ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
+    private var aPlusContentExpanded: Boolean =
+        ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
 
     override fun getP1(): ProductInfoP1? = getProductInfoP1
 
@@ -317,6 +330,10 @@ class ProductDetailViewModel @Inject constructor(
 
     init {
         iniQuantityFlow()
+    }
+
+    fun setBitmapImage(bitmap: Bitmap) {
+        _bitmapImage.value = bitmap
     }
 
     fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct) {
@@ -627,9 +644,11 @@ class ProductDetailViewModel @Inject constructor(
                 is AddToCartRequestParams -> {
                     getAddToCartUseCase(requestParams)
                 }
+
                 is AddToCartOcsRequestParams -> {
                     getAddToCartOcsUseCase(requestParams)
                 }
+
                 is AddToCartOccMultiRequestParams -> {
                     getAddToCartOccUseCase(atcParams)
                 }
@@ -1134,8 +1153,8 @@ class ProductDetailViewModel @Inject constructor(
                 uuid = uuid
             )
         }, onError = {
-                // no op, expect to be handled by Affiliate SDK
-            })
+            // no op, expect to be handled by Affiliate SDK
+        })
     }
 
     private fun updateRecomAtcStatusAndMiniCart(
@@ -1252,12 +1271,14 @@ class ProductDetailViewModel @Inject constructor(
                     it.copy(event = event, impressRestriction = true)
                 }
             }
+
             is OneTimeMethodEvent.ImpressGeneralEduBs -> {
                 if (_oneTimeMethod.value.impressGeneralEduBS) return
                 _oneTimeMethod.update {
                     it.copy(event = event, impressGeneralEduBS = true)
                 }
             }
+
             else -> {
                 // noop
             }
@@ -1272,17 +1293,18 @@ class ProductDetailViewModel @Inject constructor(
     ) {
         launch(context = dispatcher.main) {
             runCatching {
-                val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
-                    if (
-                        productMediaRecomBottomSheetData?.pageName == pageName &&
-                        productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
-                    ) {
-                        productMediaRecomBottomSheetData
-                    } else {
-                        setProductMediaRecomBottomSheetLoading(title)
-                        loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                val data =
+                    _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
+                        if (
+                            productMediaRecomBottomSheetData?.pageName == pageName &&
+                            productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
+                        ) {
+                            productMediaRecomBottomSheetData
+                        } else {
+                            setProductMediaRecomBottomSheetLoading(title)
+                            loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                        }
                     }
-                }
                 setProductMediaRecomBottomSheetData(title, data)
             }.onFailure {
                 setProductMediaRecomBottomSheetError(title = title, error = it)

@@ -178,6 +178,12 @@ internal class NavToolbarIconAdapter(
         model?.let { return iconConfig.iconList.indexOf(model) }
         return null
     }
+
+    fun getCartIconPosition(): Int? {
+        val model = iconConfig.iconList.find { it.id == IconList.ID_CART }
+        model?.let { return iconConfig.iconList.indexOf(model) }
+        return null
+    }
 }
 
 internal abstract class IconHolder(view: View) : RecyclerView.ViewHolder(view) {
