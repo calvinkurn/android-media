@@ -9,21 +9,25 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.ModelLoader
 import com.bumptech.glide.load.model.ModelLoaderFactory
 import com.bumptech.glide.load.model.MultiModelLoaderFactory
+import com.bumptech.glide.load.model.stream.HttpGlideUrlLoader
+import com.tokopedia.media.loader.data.DEFAULT_TIMEOUT
 import com.tokopedia.media.loader.internal.NetworkResponseManager
 import com.tokopedia.media.loader.tracker.RequestLogger
 import com.tokopedia.media.loader.utils.FeatureToggleManager
+import com.tokopedia.media.loader.utils.OkHttpClientManager
 import okhttp3.Call
-import okhttp3.OkHttpClient
 import okhttp3.Response
 import java.io.InputStream
 
-class OkHttpModelLoader constructor(
-    private val context: Context,
-    private val client: Call.Factory
+class OkHttpModelLoader (
+    private val context: Context
 ) : ModelLoader<GlideUrl, InputStream> {
 
-    override fun buildLoadData(model: GlideUrl, width: Int, height: Int, options: Options) =
-        ModelLoader.LoadData(model, CustomOkHttpStreamFetcher(context, client, model))
+    override fun buildLoadData(model: GlideUrl, width: Int, height: Int, options: Options): ModelLoader.LoadData<InputStream> {
+        val timeoutMs = options.get(HttpGlideUrlLoader.TIMEOUT)
+        val client = OkHttpClientManager.getClient(timeoutMs ?: DEFAULT_TIMEOUT)
+        return ModelLoader.LoadData(model, CustomOkHttpStreamFetcher(context, client, model))
+    }
 
     override fun handles(model: GlideUrl): Boolean {
         return true
@@ -34,26 +38,14 @@ class OkHttpModelLoader constructor(
     ) : ModelLoaderFactory<GlideUrl, InputStream> {
 
         override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<GlideUrl, InputStream> {
-            return OkHttpModelLoader(context, instanceClient())
+            return OkHttpModelLoader(context)
         }
 
-        override fun teardown() = Unit // no-op
-
-        companion object {
-            @Volatile var client: Call.Factory? = null
-
-            fun instanceClient(): Call.Factory {
-                return synchronized(Factory::class) {
-                    client ?: OkHttpClient().also {
-                        client = it
-                    }
-                }
-            }
-        }
+        override fun teardown() = Unit
     }
 }
 
-internal class CustomOkHttpStreamFetcher constructor(
+internal class CustomOkHttpStreamFetcher (
     private val context: Context,
     client: Call.Factory,
     url: GlideUrl

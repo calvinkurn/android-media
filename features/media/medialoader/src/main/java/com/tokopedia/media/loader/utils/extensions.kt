@@ -1,5 +1,6 @@
 package com.tokopedia.media.loader.utils
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
@@ -7,6 +8,7 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
+import com.tokopedia.media.loader.data.DEFAULT_TIMEOUT
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.module.GlideRequest
 import java.util.Locale
@@ -63,9 +65,8 @@ internal fun GlideRequest<Bitmap>.transition(properties: Properties): GlideReque
     return this
 }
 
+@SuppressLint("CheckResult")
 internal fun GlideRequest<Bitmap>.timeout(properties: Properties): GlideRequest<Bitmap> {
-    properties.timeoutMS?.let {
-        this.timeout(it)
-    }
+    timeout(properties.timeoutMS ?: DEFAULT_TIMEOUT)
     return this
 }

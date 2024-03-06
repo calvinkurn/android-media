@@ -6,10 +6,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.view.View
 import android.widget.ImageView
-import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.AppWidgetTarget
-import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.media.loader.MediaLoaderApi.setThumbnailUrl
 import com.tokopedia.media.loader.data.Properties
