@@ -67,12 +67,11 @@ internal fun FeedProductHighlight(
                 animationSpec = tween(
                     durationMillis = 600,
                     easing = EaseOut,
-                    delayMillis = 100
                 ),
-            ) + fadeIn(tween(delayMillis = 100)),
+            ) + fadeIn(tween()),
             exit = slideOutVertically(
-                animationSpec = tween(durationMillis = 400, easing = EaseOut, delayMillis = 100),
-                targetOffsetY = { it }) + fadeOut(tween(delayMillis = 200))
+                animationSpec = tween(durationMillis = 400, easing = EaseOut),
+                targetOffsetY = { it }) + fadeOut(tween())
         ) {
             Box(
                 modifier = Modifier
@@ -232,13 +231,6 @@ fun ProductTagItems(
         }
     }
 
-    FeedProductLabel(
-        products = products,
-        totalProducts = totalProducts,
-        isVisible = !isHighlightVisible || highlightedProduct == null,
-        onClick = onProductLabelClick
-    )
-
     if (highlightedProduct != null) {
         FeedProductHighlight(
             product = highlightedProduct,
@@ -251,4 +243,11 @@ fun ProductTagItems(
             onProductClick = onProductClick
         )
     }
+
+    FeedProductLabel(
+        products = products,
+        totalProducts = totalProducts,
+        isVisible = !isHighlightVisible || highlightedProduct == null,
+        onClick = onProductLabelClick
+    )
 }
