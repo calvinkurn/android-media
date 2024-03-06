@@ -38,7 +38,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
  */
 
 @Composable
-fun FeedProductLabel(
+internal fun FeedProductLabel(
     products: List<FeedCardProductModel>,
     totalProducts: Int,
     isVisible: Boolean,

@@ -421,10 +421,10 @@ class FeedPostImageViewHolder(
                         setupProductLabel(
                             listOf(element.products[it.tagging[PRODUCT_COUNT_ZERO].tagIndex]),
                             element.totalProducts,
-                            element.id, isFocused
+                            element.id
                         )
                     } else {
-                        setupProductLabel(element.products, element.totalProducts, element.id, isFocused)
+                        setupProductLabel(element.products, element.totalProducts, element.id)
                     }
                 } else {
                     binding.productTagView.gone()
@@ -516,7 +516,7 @@ class FeedPostImageViewHolder(
             } else {
                 model.products
             }
-        setupProductLabel(products, model.totalProducts, model.id, false)
+        setupProductLabel(products, model.totalProducts, model.id)
         productButtonView.bindData(
             postId = model.id,
             author = model.author,
@@ -703,7 +703,6 @@ class FeedPostImageViewHolder(
         products: List<FeedCardProductModel>,
         totalProducts: Int,
         id: String,
-        isFocused: Boolean,
     ) {
         if (mData == null) return
         binding.productTagView.setContent {

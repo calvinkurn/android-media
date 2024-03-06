@@ -25,7 +25,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
  */
 
 @Composable
-fun NestRibbon(
+internal fun FeedCardRibbon(
     modifier: Modifier = Modifier,
     text: String,
     top: Dp,

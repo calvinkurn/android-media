@@ -50,7 +50,7 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
  * @author by astidhiyaa on 22/01/24
  */
 @Composable
-fun FeedProductHighlight(
+internal fun FeedProductHighlight(
     product: FeedCardProductModel,
     isVisible: Boolean,
     onClose: () -> Unit,
@@ -80,7 +80,7 @@ fun FeedProductHighlight(
                     .padding(horizontal = if (product.isDiscount) 4.dp else 0.dp)
             ) {
                 if (product.isDiscount) {
-                    NestRibbon(
+                    FeedCardRibbon(
                         text = product.discountFmt,
                         top = 8.dp,
                         modifier = Modifier.zIndex(16f)
