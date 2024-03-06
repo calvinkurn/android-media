@@ -7,7 +7,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-object TopChatChatRoomBubbleBackgroundGenerator {
+object TopChatRoomBubbleBackgroundGenerator {
 
     fun generateRightBg(
         view: View?,
