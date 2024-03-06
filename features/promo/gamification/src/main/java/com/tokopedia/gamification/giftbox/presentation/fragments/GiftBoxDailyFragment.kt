@@ -184,7 +184,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
     fun preloadAssets() {
         context?.let {
             val w = directGiftView.dpToPx(56).toInt()
-            (R.drawable.gf_glowing_ovo).imagePreload(it)
+            (R.drawable.gf_glowing_ovo).preloadImage(it)
         }
     }
 

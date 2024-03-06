@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.view.View
 import androidx.core.graphics.drawable.toDrawable
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.AppWidgetTarget
 import com.tokopedia.media.loader.data.Properties
@@ -102,10 +101,10 @@ fun AppWidgetTarget.loadImage(context: Context, resId: Int, properties: Properti
     MediaLoaderTarget.loadImageAWT(context, this,  Properties().apply(properties).setSource(resId))
 }
 
-fun Any.imagePreload(
+fun Any.preloadImage(
     context: Context
 ) {
-    this.imagePreload(context)
+    MediaLoaderTarget.imagePreload(context, this)
 }
 
 fun String.getBitmapImageUrlAsFlow(
