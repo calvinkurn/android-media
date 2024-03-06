@@ -634,5 +634,8 @@ object ConstantTransactionAnalytics {
 
         // beli pakai promo
         const val VIEW_BELI_OCC_PAKAI_PROMO = "49899"
+
+        // Cart - Recent View
+        const val VIEW_PRODUCT_LAST_SEEN = "19738"
     }
 }

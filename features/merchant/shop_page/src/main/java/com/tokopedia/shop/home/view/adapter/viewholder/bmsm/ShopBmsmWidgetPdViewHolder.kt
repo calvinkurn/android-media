@@ -118,10 +118,10 @@ class ShopBmsmWidgetPdViewHolder(
                 if (element.header.colorSchema.listColorSchema.isNotEmpty()) {
                     element.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
                 } else {
-                    ContextCompat.getColor(itemView.context, color.Unify_NN950)
+                    ContextCompat.getColor(itemView.context, color.Unify_NN1000)
                 }
             }
-            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(itemView.context, R.color.dms_static_black)
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(itemView.context, color.Unify_NN1000)
         }
 
         return textColor

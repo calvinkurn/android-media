@@ -3386,11 +3386,7 @@ open class ProductDetailFragment :
         renderVariant(viewModel.variantData)
 
         pdpUiUpdater?.updateDataP1(productInfo, true)
-        pdpUiUpdater?.updateInitialMedia(
-            productInfo.data.media,
-            productInfo.data.containerType,
-            productInfo.data.productMediaRecomBasicInfo
-        )
+
         pdpUiUpdater?.updateInitialAPlusContent(
             productInfo = productInfo,
             userID = viewModel.userId,

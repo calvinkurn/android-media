@@ -13,7 +13,7 @@ import com.tokopedia.tokopedianow.category.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Assert.assertEquals
