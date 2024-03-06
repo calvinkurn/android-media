@@ -3080,6 +3080,10 @@ class ChatbotFragment2 :
         }
     }
 
+    override fun onDynamicStickyButtonRendered() {
+        getViewState()?.removeDynamicStickyButtonAction()
+    }
+
     override fun onButtonActionClicked(bubble: ChatActionBubbleUiModel) {
         val startTime = SendableUiModel.generateStartTime()
         viewModel.sendDynamicAttachmentText(

@@ -449,7 +449,9 @@ class ChatbotViewStateImpl(
 
         if (dynamicStickyButtonUiModel != null && tmpIndex > 0) {
             dynamicStickyButtonUiModel.isShowButtonAction = false
-            adapter.notifyItemChanged(tmpIndex)
+            recyclerView.post {
+                adapter.notifyItemChanged(tmpIndex)
+            }
         }
     }
 

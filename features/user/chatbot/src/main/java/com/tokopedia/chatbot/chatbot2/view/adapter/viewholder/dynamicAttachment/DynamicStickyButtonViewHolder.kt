@@ -61,6 +61,7 @@ class DynamicStickyButtonViewHolder(
                 }
             }
         }
+        dynamicStickyButtonListener.onDynamicStickyButtonRendered()
     }
 
     private fun bindBackground(): Drawable? {
