@@ -9,12 +9,12 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,7 +47,6 @@ import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.delay
 import timber.log.Timber
-import java.lang.Exception
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
@@ -78,7 +77,7 @@ fun FeedProductHighlight(
         ) {
             Box(
                 modifier = Modifier
-                    .wrapContentSize()
+                    .size(276.dp, 88.dp)
                     .padding(horizontal = if (product.isDiscount) 4.dp else 0.dp)
             ) {
                 if (product.isDiscount) {
@@ -90,8 +89,11 @@ fun FeedProductHighlight(
                 }
                 ConstraintLayout(
                     modifier = Modifier
-                        .size(276.dp, 88.dp)
-                        .background(color = Color(0xB22E3137), shape = RoundedCornerShape(12.dp))
+                        .matchParentSize()
+                        .background(
+                            color = Color(0xB22E3137),
+                            shape = RoundedCornerShape(12.dp)
+                        )
                         .padding(8.dp)
                         .clickable {
                             onProductClick(product)
@@ -103,12 +105,12 @@ fun FeedProductHighlight(
                         source = ImageSource.Remote(source = product.coverUrl),
                         type = NestImageType.Rect(12.dp),
                         modifier = Modifier
-                            .size(72.dp)
                             .constrainAs(image) {
                                 top.linkTo(parent.top)
                                 bottom.linkTo(parent.bottom)
                                 start.linkTo(parent.start)
                             }
+                            .size(72.dp)
                     )
                     // Product Title
                     NestTypography(
@@ -118,10 +120,10 @@ fun FeedProductHighlight(
                             color = NestTheme.colors.NN._0
                         ),
                         modifier = Modifier.constrainAs(title) {
-                            width = Dimension.fillToConstraints
                             top.linkTo(image.top)
                             start.linkTo(image.end, 12.dp)
                             end.linkTo(btnClose.start, 4.dp)
+                            width = Dimension.fillToConstraints
                         }
                     )
                     // Product Final Price
@@ -134,10 +136,10 @@ fun FeedProductHighlight(
                             fontWeight = FontWeight.Bold
                         ),
                         modifier = Modifier.constrainAs(ogPrice) {
-                            width = Dimension.fillToConstraints
                             top.linkTo(title.bottom, 4.dp)
                             start.linkTo(title.start)
                             end.linkTo(btnAtc.start, 4.dp)
+                            width = Dimension.fillToConstraints
                         }
                     )
 
@@ -159,11 +161,11 @@ fun FeedProductHighlight(
                             }
                         },
                         modifier = Modifier
-                            .width(48.dp)
                             .constrainAs(btnAtc) {
                                 end.linkTo(parent.end)
                                 bottom.linkTo(parent.bottom)
                             }
+                            .width(48.dp)
                     ) {}
 
                     // Close Button: close show label again
@@ -174,11 +176,11 @@ fun FeedProductHighlight(
                         colorNightEnable = NestTheme.colors.NN._0,
                         colorNightDisable = NestTheme.colors.NN._0,
                         modifier = Modifier
-                            .size(16.dp)
                             .constrainAs(btnClose) {
                                 end.linkTo(parent.end)
                                 top.linkTo(parent.top)
                             }
+                            .size(16.dp)
                             .clickable { onClose() }
                     )
 
@@ -190,10 +192,10 @@ fun FeedProductHighlight(
                                 textDecoration = TextDecoration.LineThrough
                             ),
                             modifier = Modifier.constrainAs(discountedPrice) {
-                                width = Dimension.fillToConstraints
                                 top.linkTo(ogPrice.bottom, 4.dp)
                                 start.linkTo(ogPrice.start)
                                 end.linkTo(btnAtc.start, 4.dp)
+                                width = Dimension.fillToConstraints
                             }
                         )
                     }
@@ -216,12 +218,12 @@ fun ProductTagItems(
     isFocused: MutableState<Boolean>,
 ) {
     var isHighlightVisible by remember { mutableStateOf(false) }
-    val highlightedProduct = products.firstOrNull { it.isHighlight }
+    val highlightedProduct = products.firstOrNull()
 
     if (!isFocused.value) {
         isHighlightVisible = false
     } else {
-        LaunchedEffect(key1 = key) {
+        LaunchedEffect(key1 = key, key3 = isHighlightVisible, key2 = highlightedProduct) {
             try {
                 delay(5000L)
                 isHighlightVisible = true
@@ -232,7 +234,7 @@ fun ProductTagItems(
         }
     }
 
-    Column {
+    Column(verticalArrangement = Arrangement.Bottom) {
         FeedProductLabel(
             products = products,
             totalProducts = totalProducts,
