@@ -78,8 +78,10 @@ class BuyAgainView @JvmOverloads constructor(
         val hasVariant: Boolean,
         val bannerUrl: String,
         val price: String,
+        val priceInt: String,
         val slashPrice: String,
-        val discount: String
+        val discount: String,
+        val variant: String = ""
     )
 
     interface Listener {

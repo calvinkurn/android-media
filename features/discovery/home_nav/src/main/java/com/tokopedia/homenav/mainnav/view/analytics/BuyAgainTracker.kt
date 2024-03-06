@@ -24,26 +24,68 @@ object BuyAgainTracker : BaseTrackerConst() {
         position: Int,
         models: List<BuyAgainModel>,
         pageDetail: BuyAgainCallback.PageDetail?
-    ) = BaseTrackerBuilder().constructBasicPromotionView(
-        event = Event.PRODUCT_VIEW,
-        eventCategory = COMMON_CATEGORY,
-        eventAction = IMPRESSION_ACTION,
-        eventLabel = COMPONENT_NAME,
-        promotions = models.mapIndexed { _, model ->
-            Promotion(
-                id = model.productId,
-                name = model.productName,
-                creative = "", // TODO ??
-                position = position.toString()
-            )
-        }
-    )
-        .appendCurrentSite(CurrentSite.DEFAULT)
-        .appendUserId(userId)
-        .appendBusinessUnit(BusinessUnit.DEFAULT)
-        .appendCustomKeyValue(TrackerId.KEY, IMPRESSION_TRACKER_ID)
-        .appendCustomKeyValue(ItemList.KEY, GLOBAL_MENU_ITEM.format(COMPONENT_NAME))
-        .build()
+    ): Map<String, Any> {
+        val pageSource = pageDetail?.source?.asTrackingPageSource(pageDetail.path)
+
+        return BaseTrackerBuilder().constructBasicPromotionView(
+            event = Event.PRODUCT_VIEW,
+            eventCategory = COMMON_CATEGORY,
+            eventAction = IMPRESSION_ACTION,
+            eventLabel = COMPONENT_NAME,
+            promotions = models.mapIndexed { _, model ->
+                Promotion(
+                    id = model.productId,
+                    name = model.productName,
+                    creative = "", // TODO ??
+                    position = position.toString()
+                )
+            }
+        )
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendUserId(userId)
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCustomKeyValue(TrackerId.KEY, IMPRESSION_TRACKER_ID)
+            .appendCustomKeyValue(ItemList.KEY, GLOBAL_MENU_ITEM.format(COMPONENT_NAME))
+            .build()
+    }
+
+    /**
+     * {
+     *   "event": "view_item_list",
+     *   "eventAction": "product list impression",
+     *   "eventCategory": "global menu",
+     *   "eventLabel": "{component_name}",
+     *   "trackerId": "49873",
+     *   "businessUnit": "home & browse",
+     *   "currentSite": "tokopediamarketplace",
+     *   "item_list": "/global_menu - {component_name}",
+     *   "items": [
+     *     {
+     *       "dimension40": "/global_menu - {component_name}",
+     *       "dimension90": "{page_name/page_title}.{banner_component_name/nav_source}.{banner_name/hard_code}.{category_id/srp_page_id}",
+     *       "index": "{this is integer}",
+     *       "item_brand": "{product_brand}",
+     *       "item_category": "{product_category_id}",
+     *       "item_id": "{product_id}",
+     *       "item_name": "{product_name}",
+     *       "item_variant": "{product_variant}",
+     *       "price": "{this is float}"
+     *     },
+     *     {
+     *       "dimension40": "/global_menu - {component_name}",
+     *       "dimension90": "{page_name/page_title}.{banner_component_name/nav_source}.{banner_name/hard_code}.{category_id/srp_page_id}",
+     *       "index": "{this is integer}",
+     *       "item_brand": "{product_brand}",
+     *       "item_category": "{product_category_id}",
+     *       "item_id": "{product_id}",
+     *       "item_name": "{product_name}",
+     *       "item_variant": "{product_variant}",
+     *       "price": "{this is float}"
+     *     }
+     *   ],
+     *   "userId": "{user_id}"
+     * }
+     */
 
     // @Link: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890 (row: 19)
     private const val PRODUCT_CLICK_ACTION = "click product list"
@@ -108,8 +150,8 @@ object BuyAgainTracker : BaseTrackerConst() {
                     putString("item_category", "")
                     putString("item_id", model.productId)
                     putString("item_name", model.productName)
-                    putString("item_variant", "")
-                    putString("price", model.price)
+                    putString("item_variant", model.variant)
+                    putString("price", model.priceInt)
                     putString("quantity", "1")
                     putString("shop_id", model.shopId)
                     putString("shop_name", model.shopName)

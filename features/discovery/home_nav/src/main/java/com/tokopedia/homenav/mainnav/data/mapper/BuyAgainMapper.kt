@@ -24,6 +24,7 @@ object BuyAgainMapper {
             hasVariant = item.isUseQuantityEditor(),
             bannerUrl = item.imageUrl,
             price = item.price,
+            priceInt = item.priceInt.toString(),
             slashPrice = item.slashedPrice,
             discount = item.discountPercentage
         )
