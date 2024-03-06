@@ -194,11 +194,11 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
 
                 f.view?.let {
 
-                    launch {
+                    setAddonGlobalLayoutListener(it) {
+                        translatorManagerFragment?.startTranslate()
+                    }
 
-                        setAddonGlobalLayoutListener(it) {
-                            translatorManagerFragment?.startTranslate()
-                        }
+                    launch {
 
                         it.viewTreeObserver.onScrollChangedAsFlow().collect {
                             translatorManagerFragment?.startTranslate()
