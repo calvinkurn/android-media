@@ -87,7 +87,6 @@ class ProductItemDataView:
     var parentId: String = DEFAULT_PARENT_ID
     var isPortrait: Boolean = false
     var isImageBlurred: Boolean = false
-    var soldCount: Int = 0 // TODO
     var byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData()
     val byteIOImpressHolder = ImpressHolder()
 
@@ -212,6 +211,7 @@ class ProductItemDataView:
         AppLogSearch.SearchResult(
             imprId = byteIOTrackingData.imprId,
             searchId = byteIOTrackingData.searchId,
+            searchEntrance = byteIOTrackingData.searchEntrance,
             searchResultId = byteIOTrackingSearchResultID(),
             listItemId = null,
             itemRank = null,
@@ -244,6 +244,7 @@ class ProductItemDataView:
         tokenType = if (customVideoURL.isBlank()) GOODS else VIDEO_GOODS,
         rank = getRank(),
         shopID = shopID,
+        searchEntrance = byteIOTrackingData.searchEntrance,
     )
 
     companion object {

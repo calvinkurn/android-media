@@ -41,6 +41,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.discovery.common.analytics.SearchEntrance
 import com.tokopedia.discovery.common.analytics.SearchId
 import com.tokopedia.discovery.common.analytics.SearchSessionId
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -274,6 +275,10 @@ class ProductListFragment :
     @Suppress("LateinitUsage")
     @Inject
     lateinit var reimagineRollence: ReimagineRollence
+
+    @Suppress("LateinitUsage")
+    @Inject
+    lateinit var searchEntrance: SearchEntrance
 
     private var refreshLayout: SwipeRefreshLayout? = null
     private var gridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
@@ -1215,6 +1220,7 @@ class ProductListFragment :
             ecomFilterName = filterValue,
             ecomFilterPosition = position.toString(),
             buttonTypeClick = FILTER_QUICK,
+            searchEntrance = searchEntrance.value,
         ))
     }
 

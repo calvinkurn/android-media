@@ -170,23 +170,15 @@ object AppLogSearch {
         const val SEARCH_RESULT = "search_result"
     }
 
-    fun eventShowSearch(currentPageName: String) {
+    fun eventShowSearch() {
         AppLogAnalytics.send(
             SHOW_SEARCH, JSONObject(
                 mapOf(
-                    SEARCH_ENTRANCE to searchEntrance(),
-                    ENTER_FROM to if (currentPageName == "/") PageName.HOME else "",
+                    SEARCH_ENTRANCE to PageName.HOME,
+                    ENTER_FROM to PageName.HOME,
                 )
             )
         )
-    }
-
-    private fun searchEntrance(): String {
-        val firstPageName =
-            AppLogAnalytics.pageDataList.firstNotNullOfOrNull { it[PAGE_NAME]?.toString() }
-
-        return if (firstPageName == PageName.HOME) firstPageName
-        else ""
     }
 
     data class TrendingWords(
@@ -195,6 +187,7 @@ object AppLogSearch {
         val groupId: String,
         val imprId: String,
         val wordsSource: String,
+        val searchEntrance: String,
     ) {
 
         fun toMap() = mapOf(
@@ -202,7 +195,7 @@ object AppLogSearch {
             WORDS_POSITION to index,
             WORDS_CONTENT to content,
             SEARCH_POSITION to HOMEPAGE,
-            SEARCH_ENTRANCE to searchEntrance(),
+            SEARCH_ENTRANCE to searchEntrance,
             GROUP_ID to groupId,
             IMPR_ID to imprId,
         )
@@ -261,14 +254,18 @@ object AppLogSearch {
         AppLogAnalytics.send(SEARCH, search.json())
     }
 
-    fun eventEnterSearchBlankPage(enterFrom: String, enterMethod: String) {
+    fun eventEnterSearchBlankPage(
+        enterFrom: String,
+        enterMethod: String,
+        searchEntrance: String,
+    ) {
         AppLogAnalytics.send(
             ENTER_SEARCH_BLANKPAGE,
             JSONObject(
                 mapOf(
                     ENTER_FROM to enterFrom,
                     ENTER_METHOD to enterMethod,
-                    SEARCH_ENTRANCE to searchEntrance(),
+                    SEARCH_ENTRANCE to searchEntrance,
                 )
             )
         )
@@ -281,11 +278,12 @@ object AppLogSearch {
         val enterMethod: String,
         val wordsSource: String,
         val wordsNum: Int,
+        val searchEntrance: String,
     ) {
         fun json() = JSONObject(
             mapOf(
                 SEARCH_POSITION to enterFrom(),
-                SEARCH_ENTRANCE to searchEntrance(),
+                SEARCH_ENTRANCE to searchEntrance,
                 IMPR_ID to imprId,
                 NEW_SUG_SESSION_ID to newSugSessionId,
                 RAW_QUERY to rawQuery,
@@ -310,11 +308,12 @@ object AppLogSearch {
         val wordsContent: String,
         val wordsPosition: Int,
         val wordSource: String = SUG,
+        val searchEntrance: String,
     ) {
         fun json() = JSONObject(
             mapOf(
                 SEARCH_POSITION to enterFrom(),
-                SEARCH_ENTRANCE to searchEntrance(),
+                SEARCH_ENTRANCE to searchEntrance,
                 GROUP_ID to groupId,
                 IMPR_ID to imprId,
                 NEW_SUG_SESSION_ID to newSugSessionId,
@@ -345,6 +344,7 @@ object AppLogSearch {
     data class SearchResult(
         val imprId: String,
         val searchId: String,
+        val searchEntrance: String,
         val searchResultId: String,
         val listItemId: String?,
         val itemRank: Int?,
@@ -363,7 +363,7 @@ object AppLogSearch {
             buildMap {
                 put(IMPR_ID, imprId)
                 put(SEARCH_ID, searchId)
-                put(SEARCH_ENTRANCE, searchEntrance())
+                put(SEARCH_ENTRANCE, searchEntrance)
                 put(ENTER_FROM, GOODS_SEARCH)
                 put(SEARCH_RESULT_ID, searchResultId)
                 listItemId?.let { put(LIST_ITEM_ID, it) }
@@ -404,10 +404,11 @@ object AppLogSearch {
         val ecomFilterName: String,
         val ecomFilterPosition: String,
         val buttonTypeClick: String,
+        val searchEntrance: String,
     ) {
 
         fun json() = JSONObject(buildMap {
-            put(SEARCH_ENTRANCE, searchEntrance())
+            put(SEARCH_ENTRANCE, searchEntrance)
             put(SEARCH_ID, searchID)
             put(SEARCH_TYPE, searchType)
             put(SEARCH_KEYWORD, keyword)
@@ -438,6 +439,7 @@ object AppLogSearch {
         val tokenType: String,
         val rank: Int,
         val shopID: String?,
+        val searchEntrance: String,
     ) {
         val sourcePageType: String
             get() = SourcePageType.PRODUCT_CARD
@@ -447,9 +449,6 @@ object AppLogSearch {
 
         val isAdInt: Int
             get() = isAd.intValue
-
-        val searchEntrance: String
-            get() = searchEntrance()
 
         fun json() = JSONObject(buildMap {
             put(ENTRANCE_FORM, entranceForm.str)

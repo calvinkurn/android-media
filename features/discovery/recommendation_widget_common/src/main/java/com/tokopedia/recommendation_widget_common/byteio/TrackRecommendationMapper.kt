@@ -102,6 +102,7 @@ object TrackRecommendationMapper {
         enterMethod: EnterMethod? = null,
     ): AppLogRecommendationCardModel {
         return AppLogRecommendationCardModel.create(
+            cardId = cardId,
             cardName = CardName.REC_VIDEO_CARD,
             tabName = tabName,
             tabPosition = tabIndex,

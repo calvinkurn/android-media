@@ -248,10 +248,6 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         configureBackButtonBasedOnAttribute()
         configureShadowBasedOnAttribute()
         configureToolbarContentTypeBasedOnAttribute()
-
-        layoutSearch.addOnImpressionListener(ImpressHolder()) {
-            AppLogSearch.eventShowSearch(toolbarPageName)
-        }
     }
 
     /**

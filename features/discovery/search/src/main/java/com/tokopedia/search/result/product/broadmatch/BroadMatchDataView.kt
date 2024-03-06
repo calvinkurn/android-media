@@ -81,6 +81,7 @@ data class BroadMatchDataView(
         AppLogSearch.SearchResult(
             imprId = byteIOTrackingData.imprId,
             searchId = byteIOTrackingData.searchId,
+            searchEntrance = byteIOTrackingData.searchEntrance,
             searchResultId = getRank().toString(),
             listItemId = null,
             itemRank = null,

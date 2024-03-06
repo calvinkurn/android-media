@@ -124,6 +124,7 @@ data class InspirationCarouselDataView(
             AppLogSearch.SearchResult(
                 imprId = byteIOTrackingData.imprId,
                 searchId = byteIOTrackingData.searchId,
+                searchEntrance = byteIOTrackingData.searchEntrance,
                 searchResultId = getRank().toString(),
                 listItemId = null,
                 itemRank = null,
@@ -307,6 +308,7 @@ data class InspirationCarouselDataView(
             fun asByteIOSearchResult(aladdinButtonType: String?) = AppLogSearch.SearchResult(
                 imprId = byteIOTrackingData.imprId,
                 searchId = byteIOTrackingData.searchId,
+                searchEntrance = byteIOTrackingData.searchEntrance,
                 searchResultId = getRank().toString(),
                 listItemId = getListItemId(),
                 itemRank = getItemRank(),
@@ -339,6 +341,7 @@ data class InspirationCarouselDataView(
                 tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
                 rank = getRank(),
                 shopID = null,
+                searchEntrance = byteIOTrackingData.searchEntrance,
             )
         }
     }

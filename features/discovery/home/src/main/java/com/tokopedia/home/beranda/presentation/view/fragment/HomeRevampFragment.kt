@@ -170,6 +170,8 @@ import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -178,6 +180,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.AllNotificationListener
@@ -672,6 +675,9 @@ open class HomeRevampFragment :
             }
             it.setIcon(icons)
             it.setupMicroInteraction(navToolbarMicroInteraction)
+            it.addOnImpression1pxListener(ImpressHolder()) {
+                AppLogSearch.eventShowSearch()
+            }
         }
         onChooseAddressUpdated()
         getSearchPlaceHolderHint()
@@ -2123,6 +2129,7 @@ open class HomeRevampFragment :
             groupId = hintData.groupId,
             imprId = hintData.imprId,
             wordsSource = hintData.wordsSource,
+            searchEntrance = PageName.HOME,
         )
 
     private fun hints(data: SearchPlaceholder.Data): List<HintData> {
