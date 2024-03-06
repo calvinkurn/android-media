@@ -45,7 +45,9 @@ object AppLogRecommendation {
 
     fun sendCardClickAppLog(model: AppLogRecommendationCardModel) {
         AppLogAnalytics.send(EventName.CARD_CLICK, model.toShowClickJson())
-        if (model.entranceForm == EntranceForm.PURE_GOODS_CARD.str) {
+        if (model.entranceForm == EntranceForm.PURE_GOODS_CARD.str ||
+            model.entranceForm == EntranceForm.CONTENT_GOODS_CARD.str ||
+            model.entranceForm == EntranceForm.DETAIL_GOODS_CARD.str ) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
         model.setGlobalParams()
