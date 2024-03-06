@@ -60,14 +60,14 @@ class SpecificationValueViewHolder(
             val errorMessage = if (selectedSpecification.errorMessageRes.isZero()) ""
                                else context.getString(selectedSpecification.errorMessageRes)
             val suffix = if (selectedSpecification.required)
-                context.getString(R.string.label_asterisk) else ""
+                context.getString(R.string.label_spec_required) else ""
             val isTextInput = selectedSpecification.isTextInput
 
             editText.isFocusable = isTextInput
             editText.isFocusableInTouchMode = isTextInput
             editText.isClickable = !isTextInput
             icon2.isVisible = !isTextInput && selectedSpecification.data.isEmpty()
-            setLabel(title + suffix)
+            setLabel("$title $suffix")
             setMessage(errorMessage)
             setCounter(MAX_TEXT_INPUT_LENGTH)
             textInputLayout.isCounterEnabled = isTextInput

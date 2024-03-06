@@ -830,7 +830,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun validateSelectedSpecificationList(): Boolean {
         return !hasRequiredSpecification.value.orFalse() || mSelectedSpecificationList.value.orEmpty().any {
-            it.specificationVariant == SIGNAL_STATUS_VARIANT
+            it.required
         }
     }
 

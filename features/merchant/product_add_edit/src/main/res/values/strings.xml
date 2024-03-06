@@ -441,7 +441,7 @@
     <string name="action_specification_counter">, +%1$d lainnya</string>
     <string name="error_specification_required_empty">Spesifikasi ini wajib diisi, ya.</string>
     <string name="error_specification_emoji_input">Nomor tidak dapat menggunakan emoji.</string>
-    <string name="error_specification_signal_status_empty_red"><![CDATA[<font color=\'#D6001C\'>Status sinyal belum terisi.</font>.]]></string>
+    <string name="error_specification_signal_status_empty_red"><![CDATA[<font color=\'#D6001C\'>Ada spesifikasi yang harus kamu isi.</font>]]></string>
     <string name="message_onboarding_postel_number">Untuk produk dari kategori yang dipilih, kamu bisa masukkan nomor Sertifikat Postel, ya.</string>
     <string name="message_onboarding_sni">Untuk produk dari kategori yang dipilih, kamu bisa masukkan nomor SNI, ya.</string>
     <string name="message_onboarding_bpom">Untuk produk dari kategori yang dipilih, kamu bisa masukkan nomor BPOM, ya.</string>
@@ -449,6 +449,7 @@
     <string name="message_onboarding_sni_or_postel">Untuk produk dari kategori yang dipilih, kamu bisa masukkan nomor SNI / Sertifikat Postel, ya.</string>
     <string name="message_onboarding_health">Untuk produk dari kategori yang dipilih, kamu bisa masukkan nomor BPOM / PKRT / NIE, ya.</string>
     <string name="message_onboarding_toaster">Untuk produk dari kategori yang dipilih, kamu bisa masukkan %s, ya.</string>
+    <string name="label_spec_required">(Wajib)</string>
 
 
     <!-- Product Limitation -->
