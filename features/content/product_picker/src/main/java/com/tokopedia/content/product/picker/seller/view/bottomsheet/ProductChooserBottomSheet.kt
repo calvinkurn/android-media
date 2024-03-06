@@ -508,6 +508,7 @@ class ProductChooserBottomSheet @Inject constructor(
         when (event) {
             Event.ExitDialogCancel -> exitConfirmationDialog.dismiss()
             Event.ExitDialogConfirm -> {
+                viewModel.submitAction(ProductSetupAction.ResetSelectedProduct)
                 exitConfirmationDialog.dismiss()
                 mListener?.onSetupCancelled(this@ProductChooserBottomSheet)
             }
@@ -515,6 +516,7 @@ class ProductChooserBottomSheet @Inject constructor(
                 if (saveButtonView.isEnabled()) {
                     exitConfirmationDialog.show()
                 } else {
+                    viewModel.submitAction(ProductSetupAction.ResetSelectedProduct)
                     mListener?.onSetupCancelled(this@ProductChooserBottomSheet)
                 }
             }

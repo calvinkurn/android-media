@@ -199,6 +199,7 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
             ProductSetupAction.RetryFetchProducts -> handleRetryFetchProducts()
             is ProductSetupAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
             is ProductSetupAction.ClickPinProduct -> handleClickPin(action.product)
+            is ProductSetupAction.ResetSelectedProduct -> handleResetSelectedProduct()
         }
     }
 
@@ -468,6 +469,12 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
         }) {
             product.updatePinProduct(isLoading = false, needToReset = true)
             _uiEvent.emit(ProductChooserEvent.FailPinUnPinProduct(it, product.pinStatus.isPinned))
+        }
+    }
+
+    private fun handleResetSelectedProduct() {
+        _selectedProductList.update {
+            _productTagSectionList.value.flatMap { it.products }
         }
     }
 
