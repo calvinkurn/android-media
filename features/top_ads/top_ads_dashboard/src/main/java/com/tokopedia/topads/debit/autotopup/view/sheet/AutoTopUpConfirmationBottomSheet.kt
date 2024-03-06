@@ -139,7 +139,7 @@ class AutoTopUpConfirmationBottomSheet : BottomSheetUnify(), HasComponent<TopAds
             autoTopUpConfirmationUiModel?.let { autoTopupConfirmation ->
                 binding?.btnAutoTopUpConfirmation?.isLoading = true
 
-                viewModel.activateTopAds(
+                viewModel.activateAutoTopUp(
                     true,
                     autoTopupConfirmation.selectedItemId,
                     autoTopupConfirmation.autoTopUpFrequencySelected.toString()

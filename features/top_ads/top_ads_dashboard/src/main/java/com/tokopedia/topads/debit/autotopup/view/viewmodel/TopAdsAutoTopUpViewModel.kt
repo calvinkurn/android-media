@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -24,6 +25,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TopAdsAutoTopUpViewModel @Inject constructor(
@@ -61,9 +63,11 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
                 data.response == null -> {
                     throw Exception("Tidak ada data")
                 }
+
                 data.response.errors.isEmpty() -> {
                     statusSaveSelection.value = ResponseSaving(true, null)
                 }
+
                 else -> {
                     throw ResponseErrorException(data.response.errors)
                 }
@@ -73,24 +77,31 @@ class TopAdsAutoTopUpViewModel @Inject constructor(
         })
     }
 
-    fun activateTopAds(isActive: Boolean, selectedItemId: String, frequency: String = DEFAULT_TOP_UP_FREQUENCY.toString()) {
+    fun activateAutoTopUp(isActive: Boolean, selectedItemId: String, frequency: String = DEFAULT_TOP_UP_FREQUENCY.toString()) {
         saveSelectionUseCase.setParam(isActive, selectedItemId, frequency)
-        saveSelectionUseCase.execute({ data ->
+
+        launchCatchError(block = {
+            val result = withContext(dispatcher.io) {
+                saveSelectionUseCase.executeOnBackground()
+            }
 
             when {
-                data.response == null -> {
+                result.response == null -> {
                     throw Exception("Tidak ada data")
                 }
-                data.response.errors.isEmpty() -> {
+
+                result.response.errors.isEmpty() -> {
                     statusSaveSelection.value = ResponseSaving(true, null)
                 }
+
                 else -> {
-                    throw ResponseErrorException(data.response.errors)
+                    throw ResponseErrorException(result.response.errors)
                 }
             }
-        }, {
+        }, onError = {
             statusSaveSelection.value = ResponseSaving(false, it)
         })
+
     }
 
     @GqlQuery("CategoryList", TKPD_PRODUCT)

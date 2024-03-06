@@ -396,33 +396,54 @@ class TopAdsChooseCreditBottomSheet :
 
     private fun saveAutoTopUp() {
         if (autoTopUpAvailableNominalList.isNotEmpty() && selectedNominalIndex != INVALID_NOMINAL_INDEX) {
-
-            //new approach
-            val autoTopUpNominal = autoTopUpAvailableNominalList.getOrNull(selectedNominalIndex)
-            val nominalConfirmation = if (autoTopUpNominal?.additionalFee?.isNotEmpty() == true) {
-                //after April, 1 2024
-                getNominalConfirmationUpAfterApril(autoTopUpNominal)
+            if (isEnableAutoTopAdsNewFlow()) {
+                submitAutoTopAdsNewFlow()
             } else {
-                //before April, 1 2024
-                getNominalConfirmationBeforeApril(autoTopUpNominal)
+                submitAutoTopAdsOldFlow()
             }
-
-            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-
-            cacheManager?.put(
-                AutoTopUpConfirmationBottomSheet.AUTO_TOP_UP_CONFIRMATION_KEY,
-                nominalConfirmation
-            )
-
-            val bottomSheet = AutoTopUpConfirmationBottomSheet.newInstance(cacheManager?.id.orEmpty())
-            bottomSheet.onSaved = {
-                onSaved?.invoke(true)
-                bottomSheet.dismiss()
-                handleResponseSaving()
-                dismiss()
-            }
-            bottomSheet.show(childFragmentManager)
         }
+    }
+
+    //this objective method is risk mitigation plan if any.
+    private fun isEnableAutoTopAdsNewFlow(): Boolean {
+        return true
+    }
+
+    private fun submitAutoTopAdsOldFlow() {
+        viewModel?.saveSelection(
+            true,
+            autoTopUpAvailableNominalList[selectedNominalIndex],
+            autoTopUpFrequencySelected.toString()
+        )
+    }
+
+    private fun submitAutoTopAdsNewFlow() {
+        //new approach
+        val autoTopUpNominal = autoTopUpAvailableNominalList.getOrNull(selectedNominalIndex)
+        val nominalConfirmation = if (autoTopUpNominal?.additionalFee?.isNotEmpty() == true) {
+            //after April, 1 2024
+            getNominalConfirmationUpAfterApril(autoTopUpNominal)
+        } else {
+            //before April, 1 2024
+            getNominalConfirmationBeforeApril(autoTopUpNominal)
+        }
+
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+
+        cacheManager?.put(
+            AutoTopUpConfirmationBottomSheet.AUTO_TOP_UP_CONFIRMATION_KEY,
+            nominalConfirmation
+        )
+
+        val bottomSheet = AutoTopUpConfirmationBottomSheet.newInstance(cacheManager?.id.orEmpty())
+        bottomSheet.onSaved = {
+            onSaved?.invoke(true)
+            bottomSheet.dismiss()
+            handleResponseSaving()
+            dismiss()
+        }
+
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun getNominalConfirmationBeforeApril(autoTopUpNominal: AutoTopUpItem?): AutoTopUpConfirmationUiModel {
@@ -436,7 +457,7 @@ class TopAdsChooseCreditBottomSheet :
         val subTotalActual = (topAdsValue / TOP_ADS_TAX_VALUE).roundToLong()
         val subTotalActualFmt = StringBuilder("Rp").append(Utils.convertToCurrencyString(subTotalActual)).toString()
 
-        val ppnAmount = (topAdsValue * PPN_PERCENT_FORMULA).roundToLong()
+        val ppnAmount = (subTotalActual * PPN_PERCENT_FORMULA).roundToLong()
         val ppnAmountFmt = Utils.convertToCurrencyString(ppnAmount)
 
         val totalAmount = Utils.convertToCurrencyString(subTotalActual + ppnAmount)
@@ -645,17 +666,20 @@ class TopAdsChooseCreditBottomSheet :
             }
         }
 
-        viewModel?.statusSaveSelection?.observe(viewLifecycleOwner) {
-            when (it) {
-                is ResponseSaving -> {
-                    binding?.saveButton?.isLoading = false
-                    onSaved?.invoke(true)
-                    isAutoTopUpActive = true
-                    handleResponseSaving()
-                    dismiss()
-                }
-                is Loading -> {
-                    binding?.saveButton?.isLoading = true
+        if (!isEnableAutoTopAdsNewFlow()) {
+            viewModel?.statusSaveSelection?.observe(viewLifecycleOwner) {
+                when (it) {
+                    is ResponseSaving -> {
+                        binding?.saveButton?.isLoading = false
+                        onSaved?.invoke(true)
+                        isAutoTopUpActive = true
+                        handleResponseSaving()
+                        dismiss()
+                    }
+
+                    is Loading -> {
+                        binding?.saveButton?.isLoading = true
+                    }
                 }
             }
         }
