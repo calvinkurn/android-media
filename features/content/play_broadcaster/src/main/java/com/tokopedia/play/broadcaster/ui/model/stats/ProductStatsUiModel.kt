@@ -7,9 +7,8 @@ data class ProductStatsUiModel(
     val id: String,
     val name: String,
     val imageUrl: String,
-    val addToCartFmt: String,
-    val paymentVerifiedFmt: String,
-    val visitPdpFmt: String,
-    val productSoldQtyFmt: String,
-    val estimatedIncomeFmt: String,
+    val addToCart: String,
+    val visitPdp: String,
+    val productSoldQty: String,
+    val estimatedIncome: String,
 )

@@ -81,7 +81,7 @@ fun ProductStatsCardView(
 
             ProductStatsSection(
                 label = stringResource(id = R.string.play_broadcaster_live_stats_estimated_income_label),
-                text = productStats.estimatedIncomeFmt,
+                text = productStats.estimatedIncome,
                 modifier = Modifier.constrainAs(estimatedIncomeSection) {
                     top.linkTo(txtProduct.bottom, 16.dp)
                     start.linkTo(txtProduct.start)
@@ -93,7 +93,7 @@ fun ProductStatsCardView(
 
             ProductStatsSection(
                 label = stringResource(id = R.string.play_broadcaster_live_stats_visit_label),
-                text = productStats.visitPdpFmt,
+                text = productStats.visitPdp,
                 modifier = Modifier.constrainAs(visitSection) {
                     top.linkTo(estimatedIncomeSection.top)
                     start.linkTo(estimatedIncomeSection.end)
@@ -105,7 +105,7 @@ fun ProductStatsCardView(
 
             ProductStatsSection(
                 label = stringResource(id = R.string.play_broadcaster_live_stats_add_to_cart_label),
-                text = productStats.addToCartFmt,
+                text = productStats.addToCart,
                 modifier = Modifier.constrainAs(addToCartSection) {
                     top.linkTo(estimatedIncomeSection.bottom, 16.dp)
                     start.linkTo(estimatedIncomeSection.start)
@@ -117,7 +117,7 @@ fun ProductStatsCardView(
 
             ProductStatsSection(
                 label = stringResource(id = R.string.play_broadcaster_live_stats_total_sold_label),
-                text = productStats.productSoldQtyFmt,
+                text = productStats.productSoldQty,
                 modifier = Modifier.constrainAs(soldSection) {
                     top.linkTo(addToCartSection.top)
                     start.linkTo(visitSection.start)
@@ -175,11 +175,10 @@ private fun ProductStatsCardViewPreview() {
                 id = "123",
                 name = "Product Name",
                 imageUrl = "",
-                addToCartFmt = "1",
-                paymentVerifiedFmt = "2",
-                visitPdpFmt = "3",
-                productSoldQtyFmt = "4",
-                estimatedIncomeFmt = "Rp5.000.000",
+                addToCart = "1",
+                visitPdp = "3",
+                productSoldQty = "4",
+                estimatedIncome = "Rp5.000.000",
             )
         )
     }

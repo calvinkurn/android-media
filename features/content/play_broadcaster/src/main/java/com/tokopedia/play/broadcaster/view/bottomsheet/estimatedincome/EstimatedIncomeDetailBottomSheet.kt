@@ -69,11 +69,10 @@ class EstimatedIncomeDetailBottomSheet @Inject constructor(
                                         id = it.toString(),
                                         name = "Product Name $it",
                                         imageUrl = "",
-                                        addToCartFmt = "1",
-                                        paymentVerifiedFmt = "2",
-                                        visitPdpFmt = "3",
-                                        productSoldQtyFmt = "4",
-                                        estimatedIncomeFmt = "Rp5.000.000",
+                                        addToCart = "1",
+                                        visitPdp = "3",
+                                        productSoldQty = "4",
+                                        estimatedIncome = "Rp5.000.000",
                                     )
                                 }
                             )
