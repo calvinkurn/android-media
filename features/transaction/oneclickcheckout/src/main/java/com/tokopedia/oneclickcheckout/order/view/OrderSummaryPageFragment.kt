@@ -33,6 +33,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.checkoutpayment.data.PaymentRequest
+import com.tokopedia.checkoutpayment.list.view.PaymentListingActivity
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.payment.PaymentConstant
@@ -120,7 +121,6 @@ import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerActivit
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerFragment
 import com.tokopedia.oneclickcheckout.payment.creditcard.installment.CreditCardInstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.payment.installment.GoCicilInstallmentDetailBottomSheet
-import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
 import com.tokopedia.promousage.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo

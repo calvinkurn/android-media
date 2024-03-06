@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemCheckoutCostBinding
 import com.tokopedia.checkout.databinding.ItemCheckoutCostDynamicBinding
+import com.tokopedia.checkout.databinding.ItemCheckoutCostPaymentDynamicBinding
 import com.tokopedia.checkout.revamp.view.CheckoutViewModel
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCostModel
@@ -361,7 +362,7 @@ class CheckoutCostViewHolder(
                 binding.tvCheckoutCostOthersValue.isVisible = false
                 binding.llCheckoutCostOthersExpanded.isVisible = true
                 binding.vCheckoutCostOthersExpandedSeparator.isVisible = true
-                binding.icCheckoutCostOthersToggle.setImage(IconUnify.CHEVRON_DOWN)
+                binding.icCheckoutCostOthersToggle.setImage(IconUnify.CHEVRON_UP)
             } else {
                 binding.tvCheckoutCostOthersValue.isVisible = true
                 binding.llCheckoutCostOthersExpanded.isVisible = false
@@ -478,6 +479,101 @@ class CheckoutCostViewHolder(
 
             if ((paymentFees.size + originalPaymentFees.size) > 1) {
                 // render in collapsible
+                binding.llCheckoutCostPaymentsExpanded.removeAllViews()
+                binding.tvCheckoutCostPaymentFeeTitle.isVisible = false
+                binding.icCheckoutCostPaymentFee.isVisible = false
+                binding.tvCheckoutCostPaymentFeeSlashedValue.isVisible = false
+                binding.tvCheckoutCostPaymentFeeValue.isVisible = false
+
+                var totalPaymentFee = 0.0
+
+                for (originalPaymentFee in originalPaymentFees) {
+                    totalPaymentFee += originalPaymentFee.amount
+                    val itemBinding = ItemCheckoutCostPaymentDynamicBinding.inflate(
+                        layoutInflater,
+                        binding.llCheckoutCostPaymentsExpanded,
+                        false
+                    )
+                    itemBinding.tvCheckoutCostPaymentFeeTitle.text = originalPaymentFee.title
+                    itemBinding.icCheckoutCostPaymentFee.isVisible = originalPaymentFee.showTooltip
+                    itemBinding.icCheckoutCostPaymentFee.setOnClickListener {
+                        if (originalPaymentFee.showTooltip) {
+                            listener.showPaymentFeeTooltipInfoBottomSheet(
+                                OrderPaymentFee(
+                                    title = originalPaymentFee.title,
+                                    tooltipInfo = originalPaymentFee.tooltipInfo
+                                )
+                            )
+                        }
+                    }
+                    itemBinding.tvCheckoutCostPaymentFeeSlashedValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPaymentFee.slashedFee, false).removeDecimalSuffix()
+                    itemBinding.tvCheckoutCostPaymentFeeSlashedValue.isVisible = originalPaymentFee.showSlashed
+                    itemBinding.tvCheckoutCostPaymentFeeSlashedValue.paintFlags =
+                        itemBinding.tvCheckoutCostPaymentFeeSlashedValue.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    itemBinding.tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPaymentFee.amount, false).removeDecimalSuffix()
+                    (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                        8.dpToPx(binding.root.context.resources.displayMetrics)
+                    binding.llCheckoutCostPaymentsExpanded.addView(itemBinding.root)
+                }
+                for (paymentFee in paymentFees) {
+                    totalPaymentFee += paymentFee.fee
+                    val itemBinding = ItemCheckoutCostPaymentDynamicBinding.inflate(
+                        layoutInflater,
+                        binding.llCheckoutCostPaymentsExpanded,
+                        false
+                    )
+                    itemBinding.tvCheckoutCostPaymentFeeTitle.text = paymentFee.title
+                    itemBinding.icCheckoutCostPaymentFee.isVisible = paymentFee.showTooltip
+                    itemBinding.icCheckoutCostPaymentFee.setOnClickListener {
+                        if (paymentFee.showTooltip) {
+                            listener.showPaymentFeeTooltipInfoBottomSheet(
+                                OrderPaymentFee(
+                                    title = paymentFee.title,
+                                    tooltipInfo = paymentFee.tooltipInfo
+                                )
+                            )
+                        }
+                    }
+                    itemBinding.tvCheckoutCostPaymentFeeSlashedValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(paymentFee.slashedFee, false).removeDecimalSuffix()
+                    itemBinding.tvCheckoutCostPaymentFeeSlashedValue.isVisible = paymentFee.showSlashed
+                    itemBinding.tvCheckoutCostPaymentFeeSlashedValue.paintFlags =
+                        itemBinding.tvCheckoutCostPaymentFeeSlashedValue.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    itemBinding.tvCheckoutCostPaymentFeeValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(paymentFee.fee, false).removeDecimalSuffix()
+                    (itemBinding.root.layoutParams as? MarginLayoutParams)?.topMargin =
+                        8.dpToPx(binding.root.context.resources.displayMetrics)
+                    binding.llCheckoutCostPaymentsExpanded.addView(itemBinding.root)
+                }
+
+                binding.tvCheckoutCostPaymentsTitle.isVisible = true
+                binding.tvCheckoutCostPaymentsValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPaymentFee, false).removeDecimalSuffix()
+                binding.icCheckoutCostPaymentsToggle.isVisible = true
+                if (cost.isExpandPaymentFee) {
+                    binding.tvCheckoutCostPaymentsValue.isVisible = false
+                    binding.llCheckoutCostPaymentsExpanded.isVisible = true
+                    binding.vCheckoutCostPaymentsExpandedSeparator.isVisible = true
+                    binding.icCheckoutCostPaymentsToggle.setImage(IconUnify.CHEVRON_UP)
+                } else {
+                    binding.tvCheckoutCostPaymentsValue.isVisible = true
+                    binding.llCheckoutCostPaymentsExpanded.isVisible = false
+                    binding.vCheckoutCostPaymentsExpandedSeparator.isVisible = false
+                    binding.icCheckoutCostPaymentsToggle.setImage(IconUnify.CHEVRON_DOWN)
+                }
+
+                binding.icCheckoutCostPaymentsToggle.setOnClickListener {
+                    if (binding.llCheckoutCostPaymentsExpanded.isVisible) {
+                        cost.isExpandPaymentFee = false
+                        binding.llCheckoutCostPaymentsExpanded.isVisible = false
+                        binding.vCheckoutCostPaymentsExpandedSeparator.isVisible = false
+                        binding.tvCheckoutCostPaymentsValue.isVisible = true
+                        binding.icCheckoutCostPaymentsToggle.setImage(IconUnify.CHEVRON_DOWN)
+                    } else {
+                        cost.isExpandPaymentFee = true
+                        binding.llCheckoutCostPaymentsExpanded.isVisible = true
+                        binding.vCheckoutCostPaymentsExpandedSeparator.isVisible = true
+                        binding.tvCheckoutCostPaymentsValue.isVisible = false
+                        binding.icCheckoutCostPaymentsToggle.setImage(IconUnify.CHEVRON_UP)
+                    }
+                }
             } else if (paymentFees.isNotEmpty()) {
                 // render outside
                 val paymentFee = paymentFees.first()

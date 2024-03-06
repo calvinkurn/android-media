@@ -686,7 +686,9 @@ class CheckoutViewModel @Inject constructor(
                         fetchEpharmacyData()
                     }
                     if (checkoutItem is CheckoutPromoModel) {
-                        validatePromo()
+                        if (listData.value.promo()!!.entryPointInfo.messages.isEmpty()) {
+                            validatePromo()
+                        }
                         listPromoExternalAutoApplyCode = emptyList()
                     }
                 }
@@ -891,18 +893,20 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    internal fun calculateTotal(forceGetPaymentWidget: Boolean = false) {
+    internal fun calculateTotal(forceGetPaymentWidget: Boolean = false, skipPaymentFlow: Boolean = false) {
         viewModelScope.launch(dispatchers.immediate) {
             listData.value = calculator.calculateTotalAndUpdateButtonPaymentWithoutPaymentData(
                 listData.value,
                 isTradeInByDropOff,
                 summariesAddOnUiModel
             )
-            val shouldGetPayment = shouldGetPayment(listData.value)
-            if (shouldGetPayment) {
-                getCheckoutPaymentData(forceGetPaymentWidget)
-            } else {
-                getCheckoutPlatformFee()
+            if (!skipPaymentFlow) {
+                val shouldGetPayment = shouldGetPayment(listData.value)
+                if (shouldGetPayment) {
+                    getCheckoutPaymentData(forceGetPaymentWidget)
+                } else {
+                    getCheckoutPlatformFee()
+                }
             }
         }
     }
@@ -1186,7 +1190,7 @@ class CheckoutViewModel @Inject constructor(
                 listData.value.address()!!.recipientAddressModel,
                 listData.value
             )
-            calculateTotal()
+            calculateTotal(skipPaymentFlow = true)
             sendEEStep3()
         }
     }
@@ -1330,7 +1334,7 @@ class CheckoutViewModel @Inject constructor(
                 listData.value.address()!!.recipientAddressModel,
                 listData.value
             )
-            calculateTotal()
+            calculateTotal(skipPaymentFlow = true)
             sendEEStep3()
         }
     }
@@ -1477,7 +1481,7 @@ class CheckoutViewModel @Inject constructor(
                 listData.value.address()!!.recipientAddressModel,
                 listData.value
             )
-            calculateTotal()
+            calculateTotal(skipPaymentFlow = true)
             sendEEStep3()
         }
     }

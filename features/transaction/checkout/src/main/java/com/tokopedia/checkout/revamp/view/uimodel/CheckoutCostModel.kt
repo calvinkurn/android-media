@@ -44,7 +44,8 @@ data class CheckoutCostModel(
     var isExpandOtherFee: Boolean = false,
     val dynamicPaymentFees: List<OrderPaymentFee>? = emptyList(),
     val originalPaymentFees: List<PaymentFeeDetail> = emptyList(),
-    val usePaymentFees: Boolean = false
+    val usePaymentFees: Boolean = false,
+    var isExpandPaymentFee: Boolean = false
 ) : CheckoutItem {
 
     val finalPaymentFee: Double

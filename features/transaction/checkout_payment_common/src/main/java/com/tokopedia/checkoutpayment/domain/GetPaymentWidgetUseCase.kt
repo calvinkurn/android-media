@@ -86,6 +86,14 @@ class GetPaymentWidgetUseCase @Inject constructor(
                         showSlashed = true,
                         slashedFee = 3000,
                         tooltipInfo = "hallo"
+                    ),
+                    PaymentFeeDetailResponse(
+                        title = "testing title2",
+                        amount = 1000.0,
+                        showTooltip = true,
+                        showSlashed = true,
+                        slashedFee = 3000,
+                        tooltipInfo = "hallo"
                     )
                 )
             )
