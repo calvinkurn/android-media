@@ -170,12 +170,12 @@ object AppLogSearch {
         const val SEARCH_RESULT = "search_result"
     }
 
-    fun eventShowSearch(currentPageName: String) {
+    fun eventShowSearch() {
         AppLogAnalytics.send(
             SHOW_SEARCH, JSONObject(
                 mapOf(
-                    SEARCH_ENTRANCE to if (currentPageName == "/") PageName.HOME else "",
-                    ENTER_FROM to if (currentPageName == "/") PageName.HOME else "",
+                    SEARCH_ENTRANCE to PageName.HOME,
+                    ENTER_FROM to PageName.HOME,
                 )
             )
         )
