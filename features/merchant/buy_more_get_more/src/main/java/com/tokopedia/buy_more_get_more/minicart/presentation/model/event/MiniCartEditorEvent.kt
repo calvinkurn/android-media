@@ -17,5 +17,5 @@ sealed interface MiniCartEditorEvent {
 
     object SetCartListCheckboxState : MiniCartEditorEvent
 
-    data class GetCartData(val cartId: String) : MiniCartEditorEvent
+    data class GetCartListData(val cartId: String) : MiniCartEditorEvent
 }

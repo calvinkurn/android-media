@@ -87,7 +87,6 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
-        viewModel.setEvent(MiniCartEditorEvent.GetCartData(param.cartId))
         viewModel.setEvent(MiniCartEditorEvent.FetchData(param))
     }
 
@@ -270,6 +269,9 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
         showSummary(data)
         sendAnalyticImpressionBottomSheet(data)
         sendAnalyticCloseClicked(data)
+
+        // fetching latest cart list data for getting main product purpose
+        viewModel.setEvent(MiniCartEditorEvent.GetCartListData(param.cartId))
     }
 
     private fun sendAnalyticCloseClicked(data: BmgmMiniCartDataUiModel) {

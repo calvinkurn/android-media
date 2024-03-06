@@ -65,7 +65,7 @@ class MiniCartEditorViewModel @Inject constructor(
             is MiniCartEditorEvent.FetchData -> fetchMiniCartData(event.param)
             is MiniCartEditorEvent.AdjustQuantity -> adjustQuantity(event.product, event.newQty)
             is MiniCartEditorEvent.DeleteCart -> deleteCart(event.product)
-            is MiniCartEditorEvent.GetCartData -> getCartData(event.cartId)
+            is MiniCartEditorEvent.GetCartListData -> getCartListData(event.cartId)
         }
     }
 
@@ -182,7 +182,7 @@ class MiniCartEditorViewModel @Inject constructor(
         }
     }
 
-    private fun getCartData(cartId: String) {
+    private fun getCartListData(cartId: String) {
         viewModelScope.launch {
             try {
                 val cartData = getCartRevampV4UseCase(
