@@ -1,73 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pdp_thumbnail_container"
-    android:layout_width="66dp"
-    android:layout_height="88dp">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/variant_card"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="8dp"
-        app:cardElevation="0dp"
-        app:cardMaxElevation="0dp">
+    <!--    cardview - foreground selected
+                framelayout
+                    imageunify
+                    typography -> background overlay
+            typography
+            imageunify -> promo
+    -->
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+    <FrameLayout
+        android:id="@+id/variant_thumbnail_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/variant_thumbnail"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="6dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toTopOf="@+id/variant_title"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:unify_image_corner_radius="12"
-                tools:src="@tools:sample/avatars" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/variant_card"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="8dp"
+            android:foreground="@drawable/pdp_thumbnail_variant_border_default"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:cardMaxElevation="0dp">
 
-            <ImageView
-                android:id="@+id/variant_foreground"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:contentDescription="@null"
-                android:src="@drawable/pdp_thumbnail_variant_border_default"
-                app:layout_constraintBottom_toBottomOf="@id/variant_thumbnail"
-                app:layout_constraintEnd_toEndOf="@id/variant_thumbnail"
-                app:layout_constraintStart_toStartOf="@id/variant_thumbnail"
-                app:layout_constraintTop_toTopOf="@id/variant_thumbnail" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/variant_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="4dp"
-                android:layout_marginBottom="6dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textAlignment="center"
-                android:textColor="@color/Unify_NN600"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:typographyType="small"
-                tools:text="Pohon pinang" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/variant_thumbnail"
+                    android:layout_width="63dp"
+                    android:layout_height="63dp"
+                    android:scaleType="centerCrop"
+                    tools:src="@tools:sample/avatars" />
 
-    </androidx.cardview.widget.CardView>
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/variant_overlay_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/Unify_Overlay_Lvl3"
+                    android:gravity="center"
+                    android:text="Habis"
+                    android:textColor="@color/Unify_NN0"
+                    app:typographyType="small"
+                    app:typographyWeight="bold" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/variant_promo_icon"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_gravity="top|end"
-        android:layout_marginEnd="2dp"
-        app:srcCompat="@drawable/ic_pdp_promo"
-        tools:visibility="visible" />
-</FrameLayout>
+            </FrameLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/variant_promo_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="top|end"
+            android:layout_marginEnd="2dp"
+            app:srcCompat="@drawable/ic_pdp_promo"
+            tools:visibility="visible" />
+
+    </FrameLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/variant_title"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="small"
+        tools:text="Pohon" />
+
+</LinearLayout>
