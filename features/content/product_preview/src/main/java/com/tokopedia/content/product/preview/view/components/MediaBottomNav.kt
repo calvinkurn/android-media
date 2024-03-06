@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
@@ -210,9 +211,9 @@ private fun RenderContent(
         if (product.price is BottomNavUiModel.Price.NettPrice) {
             Row(modifier = Modifier
                 .wrapContentSize()
-                .border(1.dp, NestTheme.colors.RN._50, RoundedCornerShape(5.dp))
+                .border(1.dp, NestTheme.colors.RN._200, RoundedCornerShape(5.dp))
                 .background(
-                    NestTheme.colors.RN._200.copy(alpha = 0.2f),
+                    NestTheme.colors.RN._50.copy(alpha = 0.2f),
                     RoundedCornerShape(5.dp)
                 )
                 .padding(horizontal = 4.dp, vertical = 2.dp)
@@ -225,12 +226,13 @@ private fun RenderContent(
                 Image(
                     painter = painterResource(id = R.drawable.ic_nett_price),
                     contentDescription = "",
+                    modifier = Modifier.size(16.dp)
                 )
                 NestTypography(
                     text = product.price.nettPriceFmt,
                     maxLines = 1,
                     textStyle = NestTheme.typography.heading5.copy(
-                        color = NestTheme.colors.RN._200
+                        color = NestTheme.colors.RN._500
                     ),
                     modifier = Modifier.padding(start = 2.dp)
                 )
