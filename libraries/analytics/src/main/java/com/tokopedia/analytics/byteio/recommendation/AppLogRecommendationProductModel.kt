@@ -1,7 +1,6 @@
 package com.tokopedia.analytics.byteio.recommendation
 
 import com.tokopedia.analytics.byteio.ActionType
-import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterMethod
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
@@ -95,8 +94,8 @@ data class AppLogRecommendationProductModel(
     fun toRecTriggerJson() = JSONObject().apply {
         addPage()
         addEnterFrom()
-        put(AppLogParam.LIST_NAME, listName.underscoredParam())
-        put(AppLogParam.LIST_NUM, listNum.zeroAsEmpty())
+        put(AppLogParam.LIST_NAME, listName)
+        put(AppLogParam.LIST_NUM, listNum)
         put(AppLogParam.ACTION_TYPE, ActionType.CLICK_CARD)
         put(AppLogParam.MODULE_NAME, moduleName)
         put(AppLogParam.GLIDE_DISTANCE, 0)
