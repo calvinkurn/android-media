@@ -79,6 +79,10 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
 
                 if (fragmentSize == 0) {
 
+                    setAddonGlobalLayoutListener(rootView) {
+                        translatorManager?.startTranslate()
+                    }
+
                     rootView.viewTreeObserver
                         .onScrollChangedAsFlow()
                         .collect {
@@ -191,6 +195,10 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                 f.view?.let {
 
                     launch {
+
+                        setAddonGlobalLayoutListener(it) {
+                            translatorManagerFragment?.startTranslate()
+                        }
 
                         it.viewTreeObserver.onScrollChangedAsFlow().collect {
                             translatorManagerFragment?.startTranslate()
