@@ -164,6 +164,10 @@ class WishlistCollectionFragment :
         return true
     }
 
+    override fun isShadow(): Boolean {
+        return true
+    }
+
     override fun initInjector() {
         activity?.let { activity ->
             DaggerWishlistCollectionComponent.builder()
@@ -357,7 +361,6 @@ class WishlistCollectionFragment :
     }
 
     private fun loadRecommendationList(page: Int) {
-        trackEnterPage()
         collectionViewModel.loadRecommendation(page)
     }
 
@@ -398,6 +401,7 @@ class WishlistCollectionFragment :
                 is Success -> {
                     finishRefresh()
                     if (result.data.status == OK) {
+                        trackEnterPage()
                         showRvWishlistCollection()
                         wishlistCollectionPref?.getHasClosed()
                             ?.let { collectionAdapter.setTickerHasClosed(it) }

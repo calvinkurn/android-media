@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.activity;
 
 import static com.tokopedia.analytics.byteio.AppLogParam.ENTER_METHOD;
+import static com.tokopedia.analytics.byteio.AppLogParam.IS_HOME;
 import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_APPLINK_PARAM;
 import static com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.DOWNLOAD_MANAGER_PARAM_TRUE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
@@ -1367,8 +1368,9 @@ public class MainParentActivity extends BaseActivity implements
 
     private void updateAppLogPageData(int position) {
         Fragment fragment = fragmentList.get(position);
-        if (fragment instanceof AppLogInterface appLogInterface) {
-            AppLogAnalytics.INSTANCE.updateCurrentPageData(appLogInterface);
+        if (fragment instanceof AppLogInterface applogInterface) {
+            AppLogAnalytics.INSTANCE.pushPageData(applogInterface);
+            AppLogAnalytics.INSTANCE.putPageData(IS_HOME, true);
         }
     }
 
@@ -1403,7 +1405,6 @@ public class MainParentActivity extends BaseActivity implements
 
     private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
         if (isFirstInit) {
-            updateAppLogPageData(homePosition);
             Object currentEnterMethod = AppLogAnalytics.INSTANCE.getLastData(ENTER_METHOD);
             if (currentEnterMethod == null) {
                 AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
@@ -1537,6 +1538,6 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public boolean isShadow() {
-        return false;
+        return true;
     }
 }

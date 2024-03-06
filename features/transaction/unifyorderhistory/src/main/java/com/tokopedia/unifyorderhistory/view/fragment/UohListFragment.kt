@@ -2024,6 +2024,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         return true
     }
 
+    override fun isShadow(): Boolean {
+        return true
+    }
+
     override fun initInjector() {
         activity?.let { activity ->
             DaggerUohListComponent.builder()

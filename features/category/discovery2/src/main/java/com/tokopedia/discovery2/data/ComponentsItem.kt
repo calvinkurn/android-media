@@ -161,7 +161,6 @@ data class ComponentsItem(
 
     fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = getComponentsItem()?.firstOrNull()?.compAdditionalInfo
 
-    // TODO: Will be used to decide whether fire the ByteIO tracker or not
     fun getSource(): ComponentSourceData {
         return sourceData?.let {
             ComponentSourceData.getByValue(it)

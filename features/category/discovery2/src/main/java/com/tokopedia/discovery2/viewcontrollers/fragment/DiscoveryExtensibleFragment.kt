@@ -87,4 +87,8 @@ class DiscoveryExtensibleFragment : DiscoveryFragment(), AppLogInterface {
     override fun isEnterFromWhitelisted(): Boolean {
         return true
     }
+
+    override fun isShadow(): Boolean {
+        return true
+    }
 }

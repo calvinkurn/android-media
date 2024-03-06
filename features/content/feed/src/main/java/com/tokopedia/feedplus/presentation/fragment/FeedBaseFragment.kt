@@ -309,6 +309,10 @@ class FeedBaseFragment :
         return true
     }
 
+    override fun isShadow(): Boolean {
+        return true
+    }
+
     override fun onCreationNextClicked(data: ContentCreationItemModel) {
         when (data.type) {
             ContentCreationTypeEnum.LIVE -> {
