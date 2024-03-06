@@ -97,7 +97,6 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
             }
         })
         mProductCarouselRecyclerView.addOnScrollListener(getParallaxEffect())
-        mProductCarouselRecyclerView.trackHorizontalScroll()
     }
 
     private fun RecyclerView.trackHorizontalScroll() {
@@ -182,6 +181,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
             mProductCarouselComponentViewModel?.getProductCarouselItemsListData()?.observe(lifecycle) { item ->
                 setupMixLeft(item)
                 mDiscoveryRecycleAdapter.setDataList(item)
+                mProductCarouselRecyclerView.trackHorizontalScroll()
             }
             mProductCarouselComponentViewModel?.getSaleEndDate()?.observe(lifecycle) { endTime ->
                 renderTimer(endTime)
