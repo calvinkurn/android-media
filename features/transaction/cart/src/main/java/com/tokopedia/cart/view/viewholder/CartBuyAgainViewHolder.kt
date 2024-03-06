@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.unifycomponents.UnifyButton
 
 class CartBuyAgainViewHolder(
@@ -31,37 +32,15 @@ class CartBuyAgainViewHolder(
             binding.productCardView.apply {
                 val data = element.buyAgainList[0] as CartBuyAgainItemHolderData
                 setProductModel(
-                    ProductCardModel(
-                        slashedPrice = data.slashedPrice,
-                        productName = data.name,
-                        formattedPrice = data.price,
-                        productImageUrl = data.imageUrl,
-                        isTopAds = data.isTopAds,
-                        discountPercentage = data.discountPercentage,
-                        reviewCount = data.reviewCount,
-                        ratingCount = data.rating,
-                        shopLocation = data.shopLocation,
-                        shopBadgeList = data.badgesUrl.map {
-                            ProductCardModel.ShopBadge(
-                                imageUrl = it
-                            )
-                        },
-                        freeOngkir = ProductCardModel.FreeOngkir(
-                            isActive = data.isFreeOngkirActive,
-                            imageUrl = data.freeOngkirImageUrl
-                        ),
-                        labelGroupList = data.labelGroupList.map { recommendationLabel ->
-                            ProductCardModel.LabelGroup(
-                                position = recommendationLabel.position,
-                                title = recommendationLabel.title,
-                                type = recommendationLabel.type,
-                                imageUrl = recommendationLabel.imageUrl
-                            )
-                        },
-                        hasAddToCartButton = true,
-                        addToCartButtonType = UnifyButton.Type.MAIN
-                    )
+                    data.recommendationItem.toProductCardModel(true, UnifyButton.Type.MAIN)
+                        .copy(isInBackground = true)
                 )
+                setOnClickListener {
+                    listener?.onBuyAgainProductClicked(data)
+                }
+                setAddToCartOnClickListener {
+                    listener?.onBuyAgainButtonAddToCartClicked(data)
+                }
                 visible()
             }
             binding.rvBuyAgain.gone()

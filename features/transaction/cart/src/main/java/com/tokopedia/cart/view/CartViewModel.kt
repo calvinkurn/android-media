@@ -31,7 +31,6 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.helper.CartDataHelper
-import com.tokopedia.cart.view.mapper.BuyAgainMapper
 import com.tokopedia.cart.view.mapper.CartUiModelMapper
 import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.processor.CartCalculator
@@ -85,6 +84,7 @@ import com.tokopedia.cart.view.uimodel.UpdateCartAndGetLastApplyEvent
 import com.tokopedia.cart.view.uimodel.UpdateCartCheckoutState
 import com.tokopedia.cart.view.uimodel.UpdateCartPromoState
 import com.tokopedia.cart.view.util.CartPageAnalyticsUtil
+import com.tokopedia.cart.view.viewholder.CartBuyAgainItemViewHolder
 import com.tokopedia.cartcommon.data.request.checkbox.SetCartlistCheckboxStateRequest
 import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
@@ -989,7 +989,10 @@ class CartViewModel @Inject constructor(
     fun renderBuyAgain(recommendationWidget: RecommendationWidget?) {
         val buyAgainList = mutableListOf<CartBuyAgainItem>()
         if (recommendationWidget != null) {
-            buyAgainList.addAll(BuyAgainMapper.convertToViewHolderModelList(recommendationWidget))
+            val mappedBuyAgainList = recommendationWidget.recommendationItemList.map {
+                CartBuyAgainItemHolderData(it)
+            }
+            buyAgainList.addAll(mappedBuyAgainList)
         } else {
             cartModel.buyAgainList?.let { buyAgainList.addAll(it) }
         }
@@ -1687,11 +1690,11 @@ class CartViewModel @Inject constructor(
                 _cartTrackerEvent.value = CartTrackerEvent.ATCTrackingURLBanner(productModel)
             }
         } else if (productModel is CartBuyAgainItemHolderData) {
-            productId = productModel.id.toLongOrZero()
-            shopId = productModel.shopId.toIntOrZero()
-            productName = productModel.name
-            productPrice = productModel.price
-            quantity = productModel.minOrder
+            productId = productModel.recommendationItem.productId
+            shopId = productModel.recommendationItem.shopId
+            productName = productModel.recommendationItem.name
+            productPrice = productModel.recommendationItem.price
+            quantity = productModel.recommendationItem.minOrder
         }
 
         val addToCartRequestParams = AddToCartRequestParams().apply {

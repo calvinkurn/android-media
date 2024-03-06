@@ -392,8 +392,8 @@ class CartRevampFragment :
         const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
         const val HEIGHT_DIFF_CONSTRAINT = 100
-        const val DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL = 100L
-        const val DELAY_SHOW_SELECTED_AMOUNT_AFTER_SCROLL = 100L
+        const val DELAY_BUY_AGAIN_SHOW_CART_WIDGET = 100L
+        const val DELAY_SHOW_CART_WIDGET = 100L
         const val PROMO_ANIMATION_DURATION = 500L
         const val SELECTED_AMOUNT_ANIMATION_DURATION = 500L
         const val COACHMARK_VISIBLE_DELAY_DURATION = 500L
@@ -996,7 +996,6 @@ class CartRevampFragment :
     ) {
         hideProgressLoading()
         triggerSendEnhancedEcommerceAddToCartSuccess(addToCartData, recommendationItem)
-        resetRecentViewList()
         viewModel.processInitialGetCartData(
             cartId = "0",
             initialLoad = false,
@@ -1824,7 +1823,7 @@ class CartRevampFragment :
                 delayShowBuyAgainButtonJob?.cancel()
                 delayShowBuyAgainButtonJob =
                     viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                        delay(DELAY_BUY_AGAIN_SHOW_CART_WIDGET)
+                        delay(DELAY_SHOW_CART_WIDGET)
                         updateBuyAgainFloatingButtonVisibility(true)
                     }
 
@@ -6091,7 +6090,7 @@ class CartRevampFragment :
         if (list.isNotEmpty()) {
             val buyAgainList = list.filterIsInstance(CartBuyAgainItemHolderData::class.java)
             CartBuyAgainAnalytics.sendImpressionProductOnBuyAgainWidgetEvent(
-                buyAgainList[0].recommendationType,
+                buyAgainList[0].recommendationItem.recommendationType,
                 CartPageAnalyticsUtil.generateBuyAgainDataProductAnalytics(buyAgainList),
                 userSession.userId
             )
@@ -6100,10 +6099,10 @@ class CartRevampFragment :
 
     override fun onBuyAgainProductClicked(product: CartBuyAgainItemHolderData) {
         CartBuyAgainAnalytics.sendClickProductOnBuyAgainWidgetEvent(
-            product.recommendationType,
+            product.recommendationItem.recommendationType,
             CartPageAnalyticsUtil.generateBuyAgainDataProductAnalytics(listOf(product)),
             userSession.userId
         )
-        onProductClicked(product.id)
+        onProductClicked(product.recommendationItem.productId.toString())
     }
 }

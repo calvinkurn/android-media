@@ -6,5 +6,5 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     app:reimagine="true"
-    app:reimagine_template="grid"
+    app:reimagine_template="gridCarousel"
     app:useCompatPadding="true" />

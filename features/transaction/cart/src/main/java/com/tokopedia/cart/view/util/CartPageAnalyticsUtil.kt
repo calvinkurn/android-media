@@ -150,14 +150,14 @@ object CartPageAnalyticsUtil {
         val data = arrayListOf<Map<String, Any>>()
         list.forEachIndexed { index, item ->
             val productDataMap = mapOf(
-                ConstantTransactionAnalytics.Key.DIMENSION40 to "$DIMENSION_40_FORMAT ${item.recommendationType}",
+                ConstantTransactionAnalytics.Key.DIMENSION40 to "$DIMENSION_40_FORMAT ${item.recommendationItem.recommendationType}",
                 ConstantTransactionAnalytics.Key.INDEX to index,
                 ConstantTransactionAnalytics.Key.ITEM_BRAND to String.EMPTY,
-                ConstantTransactionAnalytics.Key.ITEM_CATEGORY to item.categoryBreadcrumbs,
-                ConstantTransactionAnalytics.Key.ITEM_ID to item.id,
-                ConstantTransactionAnalytics.Key.ITEM_NAME to item.name,
+                ConstantTransactionAnalytics.Key.ITEM_CATEGORY to item.recommendationItem.categoryBreadcrumbs,
+                ConstantTransactionAnalytics.Key.ITEM_ID to item.recommendationItem.productId,
+                ConstantTransactionAnalytics.Key.ITEM_NAME to item.recommendationItem.name,
                 ConstantTransactionAnalytics.Key.ITEM_VARIANT to String.EMPTY,
-                ConstantTransactionAnalytics.Key.PRICE to item.price
+                ConstantTransactionAnalytics.Key.PRICE to item.recommendationItem.price
             )
             data.add(productDataMap)
         }
@@ -170,14 +170,14 @@ object CartPageAnalyticsUtil {
         val data = arrayListOf<Map<String, Any>>()
         list.forEachIndexed { index, item ->
             val productDataMap = mapOf(
-                ConstantTransactionAnalytics.Key.DIMENSION40 to "$DIMENSION_40_FORMAT ${item.recommendationType}",
+                ConstantTransactionAnalytics.Key.DIMENSION40 to "$DIMENSION_40_FORMAT ${item.recommendationItem.recommendationType}",
                 ConstantTransactionAnalytics.Key.INDEX to index,
                 ConstantTransactionAnalytics.Key.ITEM_BRAND to String.EMPTY,
-                ConstantTransactionAnalytics.Key.ITEM_CATEGORY to item.categoryBreadcrumbs,
-                ConstantTransactionAnalytics.Key.ITEM_ID to item.id,
-                ConstantTransactionAnalytics.Key.ITEM_NAME to item.name,
+                ConstantTransactionAnalytics.Key.ITEM_CATEGORY to item.recommendationItem.categoryBreadcrumbs,
+                ConstantTransactionAnalytics.Key.ITEM_ID to item.recommendationItem.productId,
+                ConstantTransactionAnalytics.Key.ITEM_NAME to item.recommendationItem.name,
                 ConstantTransactionAnalytics.Key.ITEM_VARIANT to String.EMPTY,
-                ConstantTransactionAnalytics.Key.PRICE to item.price
+                ConstantTransactionAnalytics.Key.PRICE to item.recommendationItem.price
             )
             data.add(productDataMap)
         }

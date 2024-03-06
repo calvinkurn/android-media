@@ -11,7 +11,6 @@ import com.tokopedia.cart.view.uimodel.CartBuyAgainItemHolderData
 import com.tokopedia.cart.view.uimodel.CartBuyAgainViewAllData
 import com.tokopedia.cart.view.viewholder.CartBuyAgainItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartBuyAgainViewAllViewHolder
-import com.tokopedia.cart.view.viewholder.CartRecentViewItemViewHolder
 
 class CartBuyAgainAdapter(val actionListener: ActionListener?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
