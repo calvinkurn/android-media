@@ -66,12 +66,13 @@ fun FeedProductHighlight(
                 initialOffsetY = { it - 60 },
                 animationSpec = tween(
                     durationMillis = 600,
-                    easing = EaseOut
+                    easing = EaseOut,
+                    delayMillis = 100
                 ),
-            ) + fadeIn(),
+            ) + fadeIn(tween(delayMillis = 100)),
             exit = slideOutVertically(
-                animationSpec = tween(durationMillis = 400, easing = EaseOut),
-                targetOffsetY = { it }) + fadeOut()
+                animationSpec = tween(durationMillis = 400, easing = EaseOut, delayMillis = 100),
+                targetOffsetY = { it }) + fadeOut(tween(delayMillis = 200))
         ) {
             Box(
                 modifier = Modifier

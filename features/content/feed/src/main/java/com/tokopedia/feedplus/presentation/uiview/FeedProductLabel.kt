@@ -65,8 +65,8 @@ fun FeedProductLabel(
     }
 
     AnimatedVisibility(
-        visible = isVisible, enter = fadeIn(animationSpec = tween(delayMillis = 300, durationMillis = 600, easing = EaseOut)),
-        exit = slideOutVertically (animationSpec = tween(easing = EaseOut), targetOffsetY = { it } )  + fadeOut(animationSpec = tween(easing = EaseOut)),
+        visible = isVisible, enter = fadeIn(animationSpec = tween(durationMillis = 600, easing = EaseOut)),
+        exit = fadeOut(animationSpec = tween(easing = EaseOut, delayMillis = 200)),
     ) {
         NestTheme(darkTheme = false) {
             Row(
