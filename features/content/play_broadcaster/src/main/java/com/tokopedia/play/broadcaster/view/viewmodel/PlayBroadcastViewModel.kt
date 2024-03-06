@@ -57,6 +57,7 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiMode
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.log.BroadcasterErrorLog
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
+import com.tokopedia.play.broadcaster.ui.model.stats.EstimatedIncomeDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
@@ -240,8 +241,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
     private val _beautificationConfig = MutableStateFlow(BeautificationConfigUiModel.Empty)
-
     private val _tickerBottomSheetConfig = MutableStateFlow(TickerBottomSheetUiModel.Empty)
+
+    private val _estimatedIncomeDetail = MutableStateFlow<NetworkResult<EstimatedIncomeDetailUiModel>>(NetworkResult.Unknown)
+
     val tickerBottomSheetConfig: TickerBottomSheetUiModel
         get() = _tickerBottomSheetConfig.value
 
@@ -418,6 +421,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _beautificationConfig,
         _tickerBottomSheetConfig,
         _liveStatsList,
+        _estimatedIncomeDetail,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -438,7 +442,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         cover,
         beautificationConfig,
         tickerBottomSheetConfig,
-        liveStatsList ->
+        liveStatsList,
+        estimatedIncomeDetail ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -461,6 +466,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             beautificationConfig = beautificationConfig,
             tickerBottomSheetConfig = tickerBottomSheetConfig,
             liveStatsList = liveStatsList,
+            estimatedIncomeDetail = estimatedIncomeDetail,
         )
     }.stateIn(
         viewModelScope,
@@ -593,6 +599,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             is PlayBroadcastAction.SelectPresetOption -> handleSelectPresetOption(event.preset)
             is PlayBroadcastAction.ChangePresetValue -> handleChangePresetValue(event.newValue)
+
+            /** Estimated Income */
+            is PlayBroadcastAction.GetEstimatedIncomeDetail -> handleGetEstimatedIncomeDetail()
 
             /** Log */
             is PlayBroadcastAction.SendErrorLog -> handleSendErrorLog(event.throwable)
@@ -1964,6 +1973,29 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         saveBeautificationConfig()
+    }
+
+    private fun handleGetEstimatedIncomeDetail() {
+        viewModelScope.launchCatchError(block = {
+            if (_estimatedIncomeDetail.value is NetworkResult.Loading) return@launchCatchError
+
+            _estimatedIncomeDetail.update { NetworkResult.Loading }
+
+            val response = repo.getReportProductSummary(
+                channelId = channelId,
+                channelType = selectedAccount.type,
+            )
+
+            _estimatedIncomeDetail.update {
+                NetworkResult.Success(response)
+            }
+        }) { throwable ->
+            _estimatedIncomeDetail.update {
+                NetworkResult.Fail(throwable) {
+                    submitAction(PlayBroadcastAction.GetEstimatedIncomeDetail)
+                }
+            }
+        }
     }
 
     private fun handleSendErrorLog(throwable: Throwable) {

@@ -8,16 +8,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.stats.EstimatedIncomeDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.stats.ProductStatsUiModel
 import com.tokopedia.play.broadcaster.view.compose.estimatedincome.EstimatedIncomeDetailLayout
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -25,8 +30,13 @@ import javax.inject.Inject
  * Created by Jonathan Darwin on 04 March 2024
  */
 class EstimatedIncomeDetailBottomSheet @Inject constructor(
-
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
 ): BottomSheetUnify() {
+
+    private val parentViewModel by activityViewModels<PlayBroadcastViewModel> {
+        parentViewModelFactoryCreator.create(requireActivity())
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupBottomSheet()
@@ -35,9 +45,9 @@ class EstimatedIncomeDetailBottomSheet @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.layoutParams = view.layoutParams.apply {
-            height = (getScreenHeight() * HEIGHT_PERCENTAGE).toInt()
-        }
+        setupBottomSheetHeight(view)
+
+        parentViewModel.submitAction(PlayBroadcastAction.GetEstimatedIncomeDetail)
     }
 
     private fun setupBottomSheet() {
@@ -52,35 +62,10 @@ class EstimatedIncomeDetailBottomSheet @Inject constructor(
                 NestTheme(
                     isOverrideStatusBarColor = false,
                 ) {
-                    /** JOE TODO: remove mock data */
-                    val state by remember {
-//                        mutableStateOf(NetworkResult.Fail(UnknownHostException()))
-//                        mutableStateOf(NetworkResult.Loading)
-                        mutableStateOf(NetworkResult.Success(
-                            EstimatedIncomeDetailUiModel(
-                                totalStatsList = listOf(
-                                    LiveStatsUiModel.EstimatedIncome("Rp5.000.000"),
-                                    LiveStatsUiModel.Visit("1"),
-                                    LiveStatsUiModel.AddToCart("2"),
-                                    LiveStatsUiModel.TotalSold("3"),
-                                ),
-                                productStatsList = List(5) {
-                                    ProductStatsUiModel(
-                                        id = it.toString(),
-                                        name = "Product Name $it",
-                                        imageUrl = "",
-                                        addToCart = "1",
-                                        visitPdp = "3",
-                                        productSoldQty = "4",
-                                        estimatedIncome = "Rp5.000.000",
-                                    )
-                                }
-                            )
-                        ))
-                    }
+                    val uiState by parentViewModel.uiState.collectAsStateWithLifecycle()
 
                     EstimatedIncomeDetailLayout(
-                        estimatedIncomeDetail = state,
+                        estimatedIncomeDetail = uiState.estimatedIncomeDetail,
                         onEstimatedIncomeClicked = {
                             showEstimatedIncomeInfoSheet()
                         }
@@ -90,6 +75,12 @@ class EstimatedIncomeDetailBottomSheet @Inject constructor(
         }
 
         setChild(composeView)
+    }
+
+    private fun setupBottomSheetHeight(view: View) {
+        view.layoutParams = view.layoutParams.apply {
+            height = (getScreenHeight() * HEIGHT_PERCENTAGE).toInt()
+        }
     }
 
     private fun showEstimatedIncomeInfoSheet() {

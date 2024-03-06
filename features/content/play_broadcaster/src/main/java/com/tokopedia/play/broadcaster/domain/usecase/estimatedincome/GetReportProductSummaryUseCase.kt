@@ -9,6 +9,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.play.broadcaster.domain.model.estimatedincome.GetReportProductSummaryRequest
 import com.tokopedia.play.broadcaster.domain.model.estimatedincome.GetReportProductSummaryResponse
+import com.tokopedia.play.broadcaster.domain.usecase.beautification.SetBeautificationConfigUseCase
 import javax.inject.Inject
 
 /**
@@ -29,13 +30,18 @@ class GetReportProductSummaryUseCase @Inject constructor(
     }
 
     companion object {
+        private const val PARAM_CONTENT_ID = "contentID"
+        private const val PARAM_CONTENT_TYPE = "contentType"
+
         const val QUERY_NAME = "GetReportProductSummaryUseCaseQuery"
         const val QUERY = """
             query broadcasterReportReportProductSummary(
-            
+                ${"$${PARAM_CONTENT_ID}"}: String!,
+                ${"$${PARAM_CONTENT_TYPE}"}: String!
             ) {
                 broadcasterReportReportProductSummary(
-                
+                    ${PARAM_CONTENT_ID}: ${"$${PARAM_CONTENT_ID}"},
+                    ${PARAM_CONTENT_TYPE}: ${"$${PARAM_CONTENT_TYPE}"}
                 ) {
                     reportProductAggregate {
                         estimatedIncomeFmt

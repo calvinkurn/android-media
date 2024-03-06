@@ -89,6 +89,9 @@ sealed interface PlayBroadcastAction {
     data class ChangePresetValue(val newValue: Int) : PlayBroadcastAction
     object RemoveBeautificationMenu : PlayBroadcastAction
 
+    /** Estimated Income */
+    object GetEstimatedIncomeDetail : PlayBroadcastAction
+
     data class SendErrorLog(
         val throwable: Throwable,
     ) : PlayBroadcastAction

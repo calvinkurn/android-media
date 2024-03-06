@@ -6,4 +6,12 @@ package com.tokopedia.play.broadcaster.ui.model.stats
 data class EstimatedIncomeDetailUiModel(
     val totalStatsList: List<LiveStatsUiModel>,
     val productStatsList: List<ProductStatsUiModel>
-)
+) {
+    companion object {
+        val Empty: EstimatedIncomeDetailUiModel
+            get() = EstimatedIncomeDetailUiModel(
+                totalStatsList = emptyList(),
+                productStatsList = emptyList(),
+            )
+    }
+}
