@@ -164,7 +164,7 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addSourcePreviousPage() {
-        put(SOURCE_PREVIOUS_PAGE, getLastDataBeforeCurrent(SOURCE_PREVIOUS_PAGE))
+        put(SOURCE_PREVIOUS_PAGE, getLastData(SOURCE_PREVIOUS_PAGE))
     }
 
     internal fun JSONObject.addSourcePageType() {
@@ -337,7 +337,6 @@ object AppLogAnalytics {
         trackId: String? = null,
         sourcePageType: String? = null,
         requestId: String? = null,
-        sourcePreviousPage: String? = null
     ) {
         entranceForm?.let {
             putPageData(ENTRANCE_FORM, entranceForm)
@@ -360,9 +359,6 @@ object AppLogAnalytics {
         requestId?.let {
             putPageData(REQUEST_ID, requestId)
         }
-        sourcePreviousPage?.let {
-            putPageData(SOURCE_PREVIOUS_PAGE, sourcePreviousPage)
-        }
     }
 
     private fun ArrayList<HashMap<String, Any>>.printForLog(): String {
@@ -373,6 +369,7 @@ object AppLogAnalytics {
         return JSONObject().also {
             it.put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
             it.put("buy_type", buyType.code)
+            it.put("os_type", "android")
         }.toString()
     }
 

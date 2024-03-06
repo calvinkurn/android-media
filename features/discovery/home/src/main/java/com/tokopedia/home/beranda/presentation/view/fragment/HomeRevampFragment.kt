@@ -3152,4 +3152,8 @@ open class HomeRevampFragment :
     override fun getDistanceToTop(): Int {
         return scrollPositionY
     }
+
+    override fun isShadow(): Boolean {
+        return true
+    }
 }
