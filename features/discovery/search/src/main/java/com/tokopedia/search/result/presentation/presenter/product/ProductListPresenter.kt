@@ -7,6 +7,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.discovery.common.analytics.SearchEntrance
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE
@@ -179,6 +180,7 @@ class ProductListPresenter @Inject constructor(
     private val lastClickProductIdProvider: LastClickedProductIdProviderImpl,
     private val deduplication: Deduplication,
     private val byteIOTrackingDataFactoryImpl: ByteIOTrackingDataFactoryImpl,
+    private val searchEntrance: SearchEntrance,
 ) : BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,

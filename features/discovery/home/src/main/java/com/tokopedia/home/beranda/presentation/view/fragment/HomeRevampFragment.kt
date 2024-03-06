@@ -2123,6 +2123,7 @@ open class HomeRevampFragment :
             groupId = hintData.groupId,
             imprId = hintData.imprId,
             wordsSource = hintData.wordsSource,
+            searchEntrance = PageName.HOME,
         )
 
     private fun hints(data: SearchPlaceholder.Data): List<HintData> {

@@ -5,4 +5,5 @@ data class ByteIOTrackingData(
     val searchId: String = "",
     val keyword: String = "",
     val isFirstPage: Boolean = false,
+    val searchEntrance: String = "",
 )

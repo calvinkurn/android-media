@@ -46,6 +46,7 @@ data class CpmDataView(
         return AppLogSearch.SearchResult(
             imprId = byteIOTrackingData.imprId,
             searchId = byteIOTrackingData.searchId,
+            searchEntrance = byteIOTrackingData.searchEntrance,
             searchResultId = shopId,
             listItemId = null,
             itemRank = null,
@@ -70,6 +71,7 @@ data class CpmDataView(
         return AppLogSearch.SearchResult(
             imprId = byteIOTrackingData.imprId,
             searchId = byteIOTrackingData.searchId,
+            searchEntrance = byteIOTrackingData.searchEntrance,
             searchResultId = shopId,
             listItemId = shopId,
             itemRank = itemRank,
@@ -95,6 +97,7 @@ data class CpmDataView(
         return AppLogSearch.SearchResult(
             imprId = byteIOTrackingData.imprId,
             searchId = byteIOTrackingData.searchId,
+            searchEntrance = byteIOTrackingData.searchEntrance,
             searchResultId = shopId,
             listItemId = cpmProduct.id,
             itemRank = productPosition,
@@ -130,6 +133,7 @@ data class CpmDataView(
             tokenType = byteIOTokenType(),
             rank = getRank(),
             shopID = shopId,
+            searchEntrance = byteIOTrackingData.searchEntrance,
         )
     }
 
