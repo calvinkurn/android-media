@@ -239,7 +239,10 @@ class ReviewFragment @Inject constructor(
         showLoading(state is ReviewPaging.Load)
 
         when (state) {
-            is ReviewPaging.Success -> reviewAdapter.submitList(data.reviewContent)
+            is ReviewPaging.Success -> {
+                reviewAdapter.submitList(data.reviewContent)
+                scrollListener.updateStateAfterGetData()
+            }
             is ReviewPaging.Error -> showError(state)
             else -> {}
         }
