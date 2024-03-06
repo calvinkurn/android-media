@@ -12,6 +12,8 @@
         android:layout_margin="12dp"
         android:foreground="@drawable/atc_animation_stroke"
         app:cardCornerRadius="24dp"
+        android:transformPivotX="50dp"
+        android:transformPivotY="50dp"
         app:cardElevation="8dp"
         app:contentPadding="4dp">
 

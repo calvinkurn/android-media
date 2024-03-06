@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.setLayoutWidth
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tkpd.atcvariant.R as atcvariantR
 
 
@@ -41,12 +42,10 @@ class AtcAnimation(context: Context) {
         private val PDP_CART_LOCATION_X =
             ACTION_ICON_SIZE * CART_POS_FROM_LEFT_IN_PDP_TOOLBAR - HALF_ACTION_ICON_SIZE + MARGIN_END_CONTAINER_TOOLBAR_ACTION
         private val TOOLBAR_HEIGHT = 56.toPx()
-        private val TARGET_IMAGE_SIZE_AFTER_ANIMATE = 24.toPx()
+        private val TARGET_IMAGE_SIZE_AFTER_ANIMATE = 12.toPx()
         private val STROKE_WIDTH = 4.toPx()
 
-        // animation's attribute
-        private const val DELAY_BETWEEN_SHOW_AND_FLY_ANIMATE = 750L
-        private const val ANIMATE_DURATION = 750L
+        private val NO_LOCATION = Point(-1, -1)
     }
 
     private var mSourceImageView: ImageView? = null
@@ -54,8 +53,8 @@ class AtcAnimation(context: Context) {
         getScreenWidth() - PDP_CART_LOCATION_X,
         TOOLBAR_HEIGHT.div(2)
     )
-    private var mTargetLocation: Point = Point(-1, -1)
-        get() = if (field.x == -1) {
+    private var mTargetLocation: Point = NO_LOCATION
+        get() = if (field.x == NO_LOCATION.x) {
             targetLocationAbsolute
         } else {
             field
@@ -85,7 +84,7 @@ class AtcAnimation(context: Context) {
     }
 
     fun setTargetLocation(point: Point?) {
-        mTargetLocation = point ?: Point(-1, -1)
+        mTargetLocation = point ?: NO_LOCATION
     }
 
     private fun prepare(): Boolean {
@@ -137,7 +136,7 @@ class AtcAnimation(context: Context) {
 
         binding.root.postDelayed({
             flyingAnimation()
-        }, DELAY_BETWEEN_SHOW_AND_FLY_ANIMATE)
+        }, UnifyMotion.T4)
     }
 
     private val animatorListener = object : Animator.AnimatorListener {
@@ -160,7 +159,7 @@ class AtcAnimation(context: Context) {
         val animators = prepareAnimator()
         val animatorSet = AnimatorSet().apply {
             playTogether(animators)
-            duration = ANIMATE_DURATION
+            duration = UnifyMotion.T5
             addListener(animatorListener)
         }
         animatorSet.start()
@@ -169,23 +168,23 @@ class AtcAnimation(context: Context) {
     private fun prepareAnimator(): List<Animator> {
         val targetSize = TARGET_IMAGE_SIZE_AFTER_ANIMATE
 
-        val translateX = currentX.animatePositionTo(to = mTargetLocation.x) { _, value ->
-            currentX = value
+        val translateX = currentX.animatePositionTo(to = mTargetLocation.x) {
+            currentX = it
             transformPosition()
         }
 
-        val translateY = currentY.animatePositionTo(to = mTargetLocation.y) { _, value ->
-            currentY = value
+        val translateY = currentY.animatePositionTo(to = mTargetLocation.y) {
+            currentY = it
             transformPosition()
         }
 
-        val translateWidth = currentWidth.animatePositionTo(to = targetSize) { _, value ->
-            currentWidth = value
+        val translateWidth = currentWidth.animatePositionTo(to = targetSize) {
+            currentWidth = it
             transformSize()
         }
 
-        val translateHeight = currentHeight.animatePositionTo(to = targetSize) { _, value ->
-            currentHeight = value
+        val translateHeight = currentHeight.animatePositionTo(to = targetSize) {
+            currentHeight = it
             transformSize()
         }
 
@@ -197,11 +196,11 @@ class AtcAnimation(context: Context) {
         return listOf(translateX, translateY, translateWidth, translateHeight, alpha)
     }
 
-    private fun Int.animatePositionTo(to: Int, onValueChanged: (ValueAnimator, Int) -> Unit) =
+    private fun Int.animatePositionTo(to: Int, onValueChanged: (Int) -> Unit) =
         ValueAnimator.ofInt(this, to).apply {
             addUpdateListener {
                 val value = it.animatedValue as Int
-                onValueChanged(this, value)
+                onValueChanged(value)
             }
         }
 
@@ -214,13 +213,9 @@ class AtcAnimation(context: Context) {
         }
 
     // update popup-window content size
-    private fun transformSize() {
-        binding.productImage.apply {
-            post {
-                setLayoutWidth(currentWidth)
-                setLayoutHeight(currentHeight)
-            }
-        }
+    private fun transformSize() = with(binding.cardImage) {
+        setLayoutWidth(currentWidth)
+        setLayoutHeight(currentHeight)
     }
 
     // update popup-window location
@@ -234,9 +229,9 @@ class AtcAnimation(context: Context) {
     }
 
     // update popup-window alpha
-    private fun transformAlpha() {
-        if (binding.root.alpha == currentAlpha) return
-        binding.root.alpha = currentAlpha
+    private fun transformAlpha() = with(binding.root) {
+        if (alpha == currentAlpha) return
+        alpha = currentAlpha
     }
 }
 
