@@ -82,7 +82,7 @@ class SpecificationValueViewHolder(
     private fun showCoachmark(anchor: View, isTextInput: Boolean, specificationVariant: String) {
         val coachMarkItem = ArrayList<CoachMark2Item>()
         val coachMark = CoachMark2(itemView.context)
-        val isCoachmarkShown = SharedPreferencesUtil.getFirstTimeSpecificationCertification(itemView.context, specificationVariant)
+        val isCoachmarkShown = SharedPreferencesUtil.getFirstTimeSpecificationCertification(itemView.context)
         if (isTextInput && !isCoachmarkShown) {
             coachMarkItem.add(
                 CoachMark2Item(
@@ -92,7 +92,7 @@ class SpecificationValueViewHolder(
                 )
             )
             coachMark.showCoachMark(coachMarkItem)
-            SharedPreferencesUtil.setFirstTimeSpecificationCertification(itemView.context, specificationVariant)
+            SharedPreferencesUtil.setFirstTimeSpecificationCertification(itemView.context)
         }
     }
 }

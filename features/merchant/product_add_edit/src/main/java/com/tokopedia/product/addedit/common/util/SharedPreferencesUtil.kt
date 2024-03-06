@@ -2,7 +2,6 @@ package com.tokopedia.product.addedit.common.util
 
 import android.app.Activity
 import android.content.Context
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
@@ -103,18 +102,18 @@ object SharedPreferencesUtil {
         }
     }
 
-    fun getFirstTimeSpecificationCertification(context: Context, key: String): Boolean {
+    fun getFirstTimeSpecificationCertification(context: Context): Boolean {
         val sharedPref = context.getSharedPreferences(
-            MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION_CERTIFICATION + key, Context.MODE_PRIVATE)
-        val storedValue = sharedPref.getString(MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION, "")
-        return storedValue?.isNotEmpty().orFalse()
+            MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION_CERTIFICATION, Context.MODE_PRIVATE
+        )
+        return sharedPref.getBoolean(MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION, false)
     }
 
-    fun setFirstTimeSpecificationCertification(context: Context, key: String) {
+    fun setFirstTimeSpecificationCertification(context: Context) {
         val sharedPref = context.getSharedPreferences(
-            MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION_CERTIFICATION + key, Context.MODE_PRIVATE)
+            MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION_CERTIFICATION, Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
-            putString(MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION, key)
+            putBoolean(MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION, true)
             commit()
         }
     }
