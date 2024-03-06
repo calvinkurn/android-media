@@ -5,16 +5,15 @@ import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
-import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFragment
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 
 class ProductViewHolderStub(
     itemView: View?,
     listener: PartialProductItemViewHolder.ProductViewListener,
     bottomSheetListener: PartialProductItemViewHolder.ShareProductBottomSheetListener,
-    addOnListener: BmgmAddOnViewHolder.Listener,
+    addOnListener: AddOnViewHolder.Listener,
     navigator: BuyerOrderDetailNavigator
 ) : ProductViewHolder(itemView, listener, bottomSheetListener, addOnListener, navigator) {
 

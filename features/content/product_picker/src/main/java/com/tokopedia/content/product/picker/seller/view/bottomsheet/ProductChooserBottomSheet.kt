@@ -11,31 +11,32 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.content.common.util.eventbus.EventBus
 import com.tokopedia.content.common.util.throwable.isNetworkError
-import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.content.product.picker.R
+import com.tokopedia.content.product.picker.databinding.BottomSheetSellerProductChooserBinding
 import com.tokopedia.content.product.picker.seller.analytic.manager.ProductChooserAnalyticManager
-import com.tokopedia.content.product.picker.seller.model.uimodel.CampaignAndEtalaseUiModel
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSaveStateUiModel
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupConfig
 import com.tokopedia.content.product.picker.seller.model.ProductListPaging
 import com.tokopedia.content.product.picker.seller.model.etalase.SelectedEtalaseModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.model.result.ContentProductPickerNetworkResult
+import com.tokopedia.content.product.picker.seller.model.result.PageResultState
+import com.tokopedia.content.product.picker.seller.model.sort.SortUiModel
+import com.tokopedia.content.product.picker.seller.model.uimodel.CampaignAndEtalaseUiModel
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSaveStateUiModel
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupConfig
+import com.tokopedia.content.product.picker.seller.util.getCustomErrorMessage
 import com.tokopedia.content.product.picker.seller.view.viewcomponent.EtalaseChipsViewComponent
 import com.tokopedia.content.product.picker.seller.view.viewcomponent.ProductErrorViewComponent
 import com.tokopedia.content.product.picker.seller.view.viewcomponent.ProductListViewComponent
 import com.tokopedia.content.product.picker.seller.view.viewcomponent.SaveButtonViewComponent
 import com.tokopedia.content.product.picker.seller.view.viewcomponent.SearchBarViewComponent
 import com.tokopedia.content.product.picker.seller.view.viewcomponent.SortChipsViewComponent
-import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
-import com.tokopedia.content.product.picker.seller.model.result.ContentProductPickerNetworkResult
-import com.tokopedia.content.product.picker.seller.model.result.PageResultState
-import com.tokopedia.content.product.picker.seller.model.sort.SortUiModel
-import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
-import com.tokopedia.content.product.picker.databinding.BottomSheetSellerProductChooserBinding
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
@@ -53,7 +54,7 @@ class ProductChooserBottomSheet @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val dialogCustomizer: ContentDialogCustomizer,
     private val analyticManager: ProductChooserAnalyticManager,
-    private val router: Router,
+    private val router: Router
 ) : BaseProductSetupBottomSheet(), ProductSortBottomSheet.Listener {
 
     private var _binding: BottomSheetSellerProductChooserBinding? = null
@@ -61,7 +62,7 @@ class ProductChooserBottomSheet @Inject constructor(
         get() = _binding!!
 
     private val eventBus by viewLifecycleBound(
-        creator = { EventBus<Any>() },
+        creator = { EventBus<Any>() }
     )
 
     private val productListView by viewComponent {
@@ -87,7 +88,7 @@ class ProductChooserBottomSheet @Inject constructor(
             DialogUnify(
                 it.requireContext(),
                 DialogUnify.HORIZONTAL_ACTION,
-                DialogUnify.NO_IMAGE,
+                DialogUnify.NO_IMAGE
             ).apply {
                 setTitle(it.getString(R.string.product_chooser_exit_dialog_title))
                 setDescription(it.getString(R.string.product_chooser_exit_dialog_desc))
@@ -111,7 +112,7 @@ class ProductChooserBottomSheet @Inject constructor(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
 
-    //TODO("Need to find a better way to handle this")
+    // TODO("Need to find a better way to handle this")
     private var isSelectedProductsChanged = false
 
     private var mListener: Listener? = null
@@ -176,7 +177,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
     private fun setupBottomSheet() {
         _binding = BottomSheetSellerProductChooserBinding.inflate(
-            LayoutInflater.from(requireContext()),
+            LayoutInflater.from(requireContext())
         )
         clearContentPadding = true
         setChild(binding.root)
@@ -199,7 +200,7 @@ class ProductChooserBottomSheet @Inject constructor(
                     prevState?.focusedProductList,
                     state.focusedProductList,
                     prevState?.selectedProductList,
-                    state.selectedProductList,
+                    state.selectedProductList
                 )
                 renderSortChips(prevState?.loadParam, state.loadParam)
                 renderEtalaseChips(
@@ -250,7 +251,10 @@ class ProductChooserBottomSheet @Inject constructor(
                     is ProductChooserEvent.ShowError -> {
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = getString(R.string.product_chooser_error_save)
+                            customErrMessage = requireContext().getCustomErrorMessage(
+                                throwable = it.error,
+                                defaultMessage = getString(R.string.product_chooser_error_save)
+                            )
                         )
                     }
                     else -> {}
@@ -261,7 +265,7 @@ class ProductChooserBottomSheet @Inject constructor(
         analyticManager.observe(
             viewLifecycleOwner.lifecycleScope,
             eventBus,
-            viewModel.uiState,
+            viewModel.uiState
         )
     }
 
@@ -269,14 +273,17 @@ class ProductChooserBottomSheet @Inject constructor(
         prevProductListPaging: ProductListPaging?,
         productListPaging: ProductListPaging,
         prevSelectedProducts: List<ProductUiModel>?,
-        selectedProducts: List<ProductUiModel>,
+        selectedProducts: List<ProductUiModel>
     ) {
         if (prevProductListPaging == productListPaging &&
-            prevSelectedProducts == selectedProducts) return
+            prevSelectedProducts == selectedProducts
+        ) {
+            return
+        }
 
         when {
             productListPaging.resultState is PageResultState.Fail ||
-                    isProductEmpty(productListPaging) -> {
+                isProductEmpty(productListPaging) -> {
                 productListView.hide()
             }
             else -> productListView.show()
@@ -287,29 +294,34 @@ class ProductChooserBottomSheet @Inject constructor(
                 productList = productListPaging.productList,
                 selectedList = selectedProducts,
                 showLoading = productListPaging.resultState == PageResultState.Loading ||
-                        (productListPaging.resultState is PageResultState.Success &&
-                        productListPaging.resultState.hasNextPage),
+                    (
+                        productListPaging.resultState is PageResultState.Success &&
+                            productListPaging.resultState.hasNextPage
+                        )
             )
         }
     }
 
     private fun renderSortChips(
         prevParam: ProductListPaging.Param?,
-        param: ProductListPaging.Param,
+        param: ProductListPaging.Param
     ) {
         if (prevParam?.sort != param.sort) {
             sortChipsView.setText(param.sort?.text)
         }
 
-        if (param.etalase !is SelectedEtalaseModel.Campaign) sortChipsView.show()
-        else sortChipsView.hide()
+        if (param.etalase !is SelectedEtalaseModel.Campaign) {
+            sortChipsView.show()
+        } else {
+            sortChipsView.hide()
+        }
     }
 
     private fun renderEtalaseChips(
         prevParam: ProductListPaging.Param?,
         param: ProductListPaging.Param,
         prevCampaignAndEtalase: CampaignAndEtalaseUiModel?,
-        campaignAndEtalase: CampaignAndEtalaseUiModel,
+        campaignAndEtalase: CampaignAndEtalaseUiModel
     ) {
         if (prevParam == param && prevCampaignAndEtalase == campaignAndEtalase) return
 
@@ -318,7 +330,8 @@ class ProductChooserBottomSheet @Inject constructor(
             is SelectedEtalaseModel.Etalase -> param.etalase.etalase.title
             SelectedEtalaseModel.None ->
                 if (campaignAndEtalase.campaignList.isNotEmpty() &&
-                    campaignAndEtalase.etalaseList.isNotEmpty()) {
+                    campaignAndEtalase.etalaseList.isNotEmpty()
+                ) {
                     getString(R.string.campaign_and_etalase)
                 } else if (campaignAndEtalase.campaignList.isNotEmpty()) {
                     getString(R.string.campaign)
@@ -335,11 +348,15 @@ class ProductChooserBottomSheet @Inject constructor(
         productList: ProductListPaging,
         campaignAndEtalase: CampaignAndEtalaseUiModel,
         prevConfig: ProductSetupConfig?,
-        config: ProductSetupConfig,
+        config: ProductSetupConfig
     ) {
         if (param.etalase is SelectedEtalaseModel.Campaign ||
-            hasNoProducts(campaignAndEtalase, productList)) searchBarView.hide()
-        else searchBarView.show()
+            hasNoProducts(campaignAndEtalase, productList)
+        ) {
+            searchBarView.hide()
+        } else {
+            searchBarView.show()
+        }
 
         if (prevConfig?.shopName != config.shopName) {
             searchBarView.setPlaceholder(
@@ -352,16 +369,19 @@ class ProductChooserBottomSheet @Inject constructor(
         prevSelectedProducts: List<ProductUiModel>?,
         selectedProducts: List<ProductUiModel>,
         prevConfig: ProductSetupConfig?,
-        config: ProductSetupConfig,
+        config: ProductSetupConfig
     ) {
         if (prevSelectedProducts == selectedProducts &&
-            prevConfig?.maxProduct == config.maxProduct) return
+            prevConfig?.maxProduct == config.maxProduct
+        ) {
+            return
+        }
 
         setTitle(
             getString(
                 R.string.selected_product_title,
                 selectedProducts.size,
-                config.maxProduct,
+                config.maxProduct
             )
         )
     }
@@ -377,19 +397,25 @@ class ProductChooserBottomSheet @Inject constructor(
 
     private fun renderProductError(
         campaignAndEtalase: CampaignAndEtalaseUiModel,
-        productList: ProductListPaging,
+        productList: ProductListPaging
     ) {
         when {
             productList.resultState is PageResultState.Fail -> {
                 val error = productList.resultState.error
-                if (error.isNetworkError) productErrorView.setConnectionError()
-                else productErrorView.setServerError()
+                if (error.isNetworkError) {
+                    productErrorView.setConnectionError()
+                } else {
+                    productErrorView.setServerError()
+                }
 
                 productErrorView.show()
             }
             isProductEmpty(productList) -> {
-                if (isEtalaseEmpty(campaignAndEtalase)) productErrorView.setHasNoProduct()
-                else productErrorView.setProductNotFound()
+                if (isEtalaseEmpty(campaignAndEtalase)) {
+                    productErrorView.setHasNoProduct()
+                } else {
+                    productErrorView.setProductNotFound()
+                }
 
                 productErrorView.show()
             }
@@ -401,11 +427,14 @@ class ProductChooserBottomSheet @Inject constructor(
 
     private fun renderChipsContainer(
         campaignAndEtalase: CampaignAndEtalaseUiModel,
-        productList: ProductListPaging,
+        productList: ProductListPaging
     ) {
         binding.containerChips.visibility =
-            if (hasNoProducts(campaignAndEtalase, productList)) View.GONE
-            else View.VISIBLE
+            if (hasNoProducts(campaignAndEtalase, productList)) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
     }
 
     /**
@@ -417,7 +446,7 @@ class ProductChooserBottomSheet @Inject constructor(
                 ProductSortBottomSheet.getFragment(
                     childFragmentManager,
                     requireActivity().classLoader,
-                    selected = viewModel.uiState.value.loadParam.sort,
+                    selected = viewModel.uiState.value.loadParam.sort
                 ).show(childFragmentManager)
             }
         }
@@ -451,7 +480,7 @@ class ProductChooserBottomSheet @Inject constructor(
                 viewModel.submitAction(ProductSetupAction.SearchProduct(event.keyword))
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -483,14 +512,17 @@ class ProductChooserBottomSheet @Inject constructor(
                 mListener?.onSetupCancelled(this@ProductChooserBottomSheet)
             }
             Event.CloseClicked -> {
-                if (saveButtonView.isEnabled()) exitConfirmationDialog.show()
-                else mListener?.onSetupCancelled(this@ProductChooserBottomSheet)
+                if (saveButtonView.isEnabled()) {
+                    exitConfirmationDialog.show()
+                } else {
+                    mListener?.onSetupCancelled(this@ProductChooserBottomSheet)
+                }
             }
             is Event.SortChosen -> {
                 viewModel.submitAction(ProductSetupAction.SetSort(event.sort))
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -505,18 +537,18 @@ class ProductChooserBottomSheet @Inject constructor(
      */
     private fun isEtalaseEmpty(campaignAndEtalase: CampaignAndEtalaseUiModel): Boolean {
         return campaignAndEtalase.state == ContentProductPickerNetworkResult.Success &&
-                campaignAndEtalase.campaignList.isEmpty() &&
-                campaignAndEtalase.etalaseList.isEmpty()
+            campaignAndEtalase.campaignList.isEmpty() &&
+            campaignAndEtalase.etalaseList.isEmpty()
     }
 
     private fun isProductEmpty(productList: ProductListPaging): Boolean {
         return productList.resultState is PageResultState.Success &&
-                productList.productList.isEmpty()
+            productList.productList.isEmpty()
     }
 
     private fun hasNoProducts(
         campaignAndEtalase: CampaignAndEtalaseUiModel,
-        productList: ProductListPaging,
+        productList: ProductListPaging
     ): Boolean {
         return isEtalaseEmpty(campaignAndEtalase) && isProductEmpty(productList)
     }
@@ -530,8 +562,9 @@ class ProductChooserBottomSheet @Inject constructor(
             classLoader: ClassLoader
         ): ProductChooserBottomSheet {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ProductChooserBottomSheet
-            return if (oldInstance != null) oldInstance
-            else {
+            return if (oldInstance != null) {
+                oldInstance
+            } else {
                 val fragmentFactory = fragmentManager.fragmentFactory
                 fragmentFactory.instantiate(
                     classLoader,

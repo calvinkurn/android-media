@@ -44,6 +44,8 @@ import com.tokopedia.play.broadcaster.util.countup.PlayCountUp
 import com.tokopedia.play.broadcaster.util.countup.PlayCountUpImpl
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.logger.PlayLoggerImpl
+import com.tokopedia.play.broadcaster.util.logger.error.BroadcasterErrorLogger
+import com.tokopedia.play.broadcaster.util.logger.error.BroadcasterErrorLoggerImpl
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import com.tokopedia.play.broadcaster.util.wrapper.PlayBroadcastValueWrapper
@@ -135,9 +137,17 @@ abstract class PlayBroadcastBindModule {
     @ActivityRetainedScope
     abstract fun bindPlayBroadcasterAnalyticSender(analytic: PlayBroadcasterAnalyticSenderImpl): PlayBroadcasterAnalyticSender
 
+
+    /**
+     * Logger
+     */
     @ActivityRetainedScope
     @Binds
     abstract fun bindLogger(logger: PlayLoggerImpl): PlayLogger
+
+    @ActivityRetainedScope
+    @Binds
+    abstract fun bindBroadcasterErrorLogger(logger: BroadcasterErrorLoggerImpl): BroadcasterErrorLogger
 
     /**
      * Pusher

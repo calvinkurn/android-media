@@ -6,18 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.content.product.picker.seller.model.uimodel.CampaignAndEtalaseUiModel
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
-import com.tokopedia.content.product.picker.seller.model.uimodel.PlayBroProductSummaryUiState
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserUiState
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSaveStateUiModel
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupConfig
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductTagSummaryUiModel
-import com.tokopedia.content.product.picker.seller.model.ProductListPaging
 import com.tokopedia.content.product.picker.seller.model.PagingType
+import com.tokopedia.content.product.picker.seller.model.ProductListPaging
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
@@ -26,6 +16,16 @@ import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.model.result.ContentProductPickerNetworkResult
 import com.tokopedia.content.product.picker.seller.model.result.PageResultState
 import com.tokopedia.content.product.picker.seller.model.sort.SortUiModel
+import com.tokopedia.content.product.picker.seller.model.uimodel.CampaignAndEtalaseUiModel
+import com.tokopedia.content.product.picker.seller.model.uimodel.PlayBroProductSummaryUiState
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserUiState
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSaveStateUiModel
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupConfig
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductTagSummaryUiModel
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play_common.util.extension.combine
 import com.tokopedia.play_common.util.extension.switch
 import com.tokopedia.user.session.UserSessionInterface
@@ -75,7 +75,7 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
             savedStateHandle: SavedStateHandle,
             isNumerationShown: Boolean,
             @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
-            @Assisted("fetchCommissionProduct") fetchCommissionProduct: Boolean,
+            @Assisted("fetchCommissionProduct") fetchCommissionProduct: Boolean
         ): ContentProductPickerSellerViewModel
     }
 
@@ -418,7 +418,7 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
     private suspend fun getProductTagSummary() {
         val response = repo.getProductTagSummarySection(
             creationId = creationId,
-            fetchCommission = fetchCommissionProduct,
+            fetchCommission = fetchCommissionProduct
         )
 
         _productTagSectionList.value = response

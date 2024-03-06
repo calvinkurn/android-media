@@ -15,8 +15,6 @@ import com.tokopedia.product.detail.data.model.custom_info_title.CustomInfoTitle
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewUiModel
 import com.tokopedia.product.detail.data.model.dynamic_oneliner_variant.DynamicOneLinerVariantResponse
 import com.tokopedia.product.detail.data.model.dynamiconeliner.DynamicOneLiner
-import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
-import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
 import com.tokopedia.product.detail.data.model.gwp.GWPData
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
@@ -52,8 +50,6 @@ data class ProductInfoP2UiData(
     var nearestWarehouseInfo: Map<String, WarehouseInfo> = mapOf(),
     var upcomingCampaigns: Map<String, ProductUpcomingData> = mapOf(),
     var vouchers: List<MerchantVoucherViewModel> = listOf(),
-    var productFinancingRecommendationData: PDPInstallmentRecommendationData = PDPInstallmentRecommendationData(),
-    var productFinancingCalculationData: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse(),
     var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse(),
     var ratesEstimate: List<P2RatesEstimate> = listOf(),
     var bebasOngkir: BebasOngkir = BebasOngkir(),

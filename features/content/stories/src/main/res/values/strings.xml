@@ -10,7 +10,7 @@
     <string name="stories_content_render_failed">Yaah, gagal memuat konten</string>
     <string name="stories_content_no_network_title">Koneksi internetmu terganggu!</string>
     <string name="stories_content_no_network_description">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
-    <string name="stories_onboard_move_category">Pindah Kategori</string>
+    <string name="stories_onboard_move_category">Pindah Kategori/Toko</string>
     <string name="stories_onboard_back">Balik</string>
     <string name="stories_onboard_next">Lanjut</string>
     <string name="stories_onboard_see_product">Lihat Produk</string>

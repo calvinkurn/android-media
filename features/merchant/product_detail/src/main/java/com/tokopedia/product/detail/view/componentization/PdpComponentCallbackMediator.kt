@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
 import com.tokopedia.product.detail.view.util.PdpUiUpdater
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
@@ -25,6 +26,11 @@ interface PdpComponentCallbackMediator : ComponentCallbackMediator {
     val queueTracker: TrackingQueue
 
     val recyclerViewPool: RecyclerView.RecycledViewPool?
+
+    val pdpRemoteConfig: RemoteConfig
+
+    fun updateUi()
+    fun logException(t: Throwable)
 
     val mvcLauncher: ActivityResultLauncher<Intent>
 }

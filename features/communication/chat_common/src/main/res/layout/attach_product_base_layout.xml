@@ -161,7 +161,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:scaleType="fitStart"
                 android:visibility="gone"
-                tools:src="@drawable/ic_close_default"
+                tools:src="@drawable/imagestate_placeholder"
                 tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.Label
@@ -249,7 +249,7 @@
             android:layout_height="@dimen/chatcommon_14dp"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/spacing_lvl1"
-            tools:srcCompat="@drawable/ic_check" />
+            tools:srcCompat="@drawable/ic_check_green" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/hour"

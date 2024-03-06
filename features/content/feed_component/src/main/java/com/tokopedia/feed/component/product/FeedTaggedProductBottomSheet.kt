@@ -86,23 +86,6 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
                 }
 
                 mAdapter.setItemsAndAnimateChanges(it.data)
-                binding.root.let { view ->
-                    view.viewTreeObserver.addOnGlobalLayoutListener(object :
-                        OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                            view.layoutParams = view.layoutParams.apply {
-                                if (view.measuredHeight > maxHeight) {
-                                    height = maxHeight
-                                } else if (view.measuredHeight < minHeight) {
-                                    height = minHeight
-                                } else if (height != ViewGroup.LayoutParams.WRAP_CONTENT) {
-                                    height = ViewGroup.LayoutParams.WRAP_CONTENT
-                                }
-                            }
-                        }
-                    })
-                }
             }
             is Fail -> {
                 hideLoading()
@@ -135,6 +118,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupView()
         showLoading()
 
         binding.root.layoutParams = binding.root.layoutParams.apply {
@@ -149,6 +133,13 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
         listener?.productListLiveData?.observe(viewLifecycleOwner, productListObserver)
         listener?.mvcLiveData?.observe(viewLifecycleOwner, mvcObserver)
+    }
+
+    private fun setupView() {
+        binding.root.apply {
+            minHeight = this@FeedTaggedProductBottomSheet.minHeight
+            maxHeight = this@FeedTaggedProductBottomSheet.maxHeight
+        }
     }
 
     fun show(

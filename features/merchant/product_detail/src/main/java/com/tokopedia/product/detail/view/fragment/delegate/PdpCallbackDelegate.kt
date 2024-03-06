@@ -17,6 +17,7 @@ interface PdpCallbackDelegate {
     val productPrice: ProductPriceCallback
     val gwp: GWPCallback
     val dynamicOneLiner: DynamicOneLinerCallback
+    val productRecomm: PartialRecommendationManager
 
     fun registerCallback(mediator: PdpComponentCallbackMediator)
 }

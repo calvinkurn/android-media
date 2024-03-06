@@ -24,7 +24,7 @@ sealed class BroadcastInitState {
             get() = "$ERROR, cause: ${cause.message}"
     }
 
-    data class ByteplusInitializationError(val cause: BroadcasterException): BroadcastInitState() {
+    data class ByteplusInitializationError(val cause: Throwable): BroadcastInitState() {
         override val tag: String
             get() = "$ERROR, cause: ${cause.message}"
     }

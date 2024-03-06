@@ -60,6 +60,7 @@ internal class ProductCardRenderer(
     private val offerLabel by view.lazyView<Typography?>(R.id.productCardLabelOffer)
     private val credibilitySection by view.lazyView<LinearLayout?>(R.id.productCardCredibility)
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
+    private val shopNameBadgeText by view.lazyView<Typography?>(R.id.productCardShopNameLocation)
     private val buttonAddToCart by view.lazyView<UnifyButton?>(R.id.productCardAddToCart)
     private val labelBenefitView by view.lazyView<LabelBenefitView?>(R.id.productCardLabelBenefit)
     private val ribbon by view.lazyView<RibbonView?>(R.id.productCardRibbon)
@@ -359,7 +360,8 @@ internal class ProductCardRenderer(
         val credibilityTextColor = ContextCompat.getColor(context, colorMode.soldCountTextColor)
         val discountTextColor = ContextCompat.getColor(context, colorMode.discountTextColor)
         val ratingTextColor = ContextCompat.getColor(context, colorMode.ratingTextColor)
-
+        val shopBadgeTextColor = ContextCompat.getColor(context, colorMode.shopBadgeTextColor)
+        
         cardContainer?.setCardUnifyBackgroundColor(MethodChecker.getColor(context, colorMode.cardBackgroundColor))
 
         nameText?.setTextColor(productNameColor)
@@ -368,6 +370,7 @@ internal class ProductCardRenderer(
         discountText?.setTextColor(discountTextColor)
         credibilityText?.setTextColor(credibilityTextColor)
         ratingText?.setTextColor(ratingTextColor)
+        shopNameBadgeText?.setTextColor(shopBadgeTextColor)
         
         buttonAddToCart?.applyColorMode(colorMode.buttonColorMode)
         

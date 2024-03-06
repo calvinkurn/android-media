@@ -12,6 +12,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 import kotlin.math.roundToLong
 
+@Deprecated("Use coroutine version", replaceWith = ReplaceWith("AddToCartMultiUseCase", imports = ["com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase"]))
 class AddToCartMultiUseCase @Inject constructor(
     private val useCase: GraphqlUseCase<AtcMultiData>,
     private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper
