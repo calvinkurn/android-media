@@ -34,7 +34,8 @@ import com.tokopedia.purchase_platform.common.utils.setOnClickDebounceListener
 fun CheckoutPaymentWidget(
     data: CheckoutPaymentWidgetData,
     modifier: Modifier = Modifier,
-    onRetryClickedListener: () -> Unit = {}
+    onRetryClickedListener: () -> Unit = {},
+    onClickedListener: () -> Unit = {}
 ) {
     if (data.state != CheckoutPaymentWidgetState.None) {
         NestTheme {
@@ -82,7 +83,7 @@ fun CheckoutPaymentWidget(
                                 .fillMaxWidth()
                                 .background(NestTheme.colors.YN._50)
                                 .padding(start = 16.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
-                                .setOnClickDebounceListener {
+                                .setOnClickDebounceListener(showIndication = false) {
                                     onRetryClickedListener()
                                 }
                         ) {
@@ -117,7 +118,10 @@ fun CheckoutPaymentWidget(
                         )
                         Row(
                             modifier = Modifier
-                                .padding(start = 16.dp, end = 28.dp, bottom = 12.dp),
+                                .padding(start = 16.dp, end = 28.dp, bottom = 12.dp)
+                                .setOnClickDebounceListener(showIndication = false) {
+                                    onClickedListener()
+                                },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             NestImage(

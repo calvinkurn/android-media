@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
@@ -61,6 +62,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEpharmacyModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutItem
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageState
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutEpharmacyViewHolder
@@ -72,6 +74,8 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity
 import com.tokopedia.checkout.webview.UpsellWebViewActivity
+import com.tokopedia.checkoutpayment.data.PaymentRequest
+import com.tokopedia.checkoutpayment.list.view.PaymentListingActivity
 import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.checkoutpayment.view.bottomsheet.PaymentFeeInfoBottomSheet
 import com.tokopedia.coachmark.CoachMark2
@@ -171,6 +175,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.time.TimeHelper
+import dagger.Lazy
 import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.logisticcart.R as logisticcartR
@@ -217,6 +222,9 @@ class CheckoutFragment :
 
     @Inject
     lateinit var promoEntryPointAnalytics: PromoUsageEntryPointAnalytics
+
+    @Inject
+    lateinit var gson: Lazy<Gson>
 
     private val viewModel: CheckoutViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[CheckoutViewModel::class.java]
@@ -753,6 +761,10 @@ class CheckoutFragment :
                 onActivityResultFromPromo(resultCode, data)
             }
 
+            REQUEST_CODE_EDIT_PAYMENT -> {
+                onActivityResultFromPaymentListing(resultCode, data)
+            }
+
             PaymentConstant.REQUEST_CODE -> {
                 onResultFromPayment(resultCode, data)
             }
@@ -1044,6 +1056,8 @@ class CheckoutFragment :
         const val REQUEST_CODE_MINI_CONSULTATION = 10022
 
         private const val REQUEST_CODE_PROMO = 954
+
+        const val REQUEST_CODE_EDIT_PAYMENT = 19
 
         private const val SHIPMENT_TRACE = "mp_shipment"
 
@@ -2794,7 +2808,45 @@ class CheckoutFragment :
     }
 
     override fun onRetryGetPayment() {
-        viewModel.calculateTotal()
+        viewModel.calculateTotal(forceGetPaymentWidget = true)
+    }
+
+    override fun onChangePayment(payment: CheckoutPaymentModel) {
+        val intent = Intent(context, PaymentListingActivity::class.java).apply {
+            val paymentWidgetData = payment.data?.paymentWidgetData?.firstOrNull()
+            val address = viewModel.listData.value.address()!!
+            putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, address.recipientAddressModel.id)
+            putExtra(PaymentListingActivity.EXTRA_PAYMENT_PROFILE, paymentWidgetData?.profileCode ?: "")
+            putExtra(PaymentListingActivity.EXTRA_PAYMENT_MERCHANT, paymentWidgetData?.merchantCode ?: "")
+            val orderCost = viewModel.listData.value.cost()!!
+            putExtra(PaymentListingActivity.EXTRA_PAYMENT_AMOUNT, orderCost.totalPrice)
+            putExtra(PaymentListingActivity.EXTRA_PAYMENT_BID, paymentWidgetData?.bid ?: "")
+            val goCicilInstallmentRequest = viewModel.generateGoCicilInstallmentRequest(payment)
+            putExtra(
+                PaymentListingActivity.EXTRA_ORDER_METADATA,
+                goCicilInstallmentRequest.orderMetadata
+            )
+            putExtra(
+                PaymentListingActivity.EXTRA_PROMO_PARAM,
+                goCicilInstallmentRequest.promoParam
+            )
+            putExtra(
+                PaymentListingActivity.EXTRA_CALLBACK_URL,
+                paymentWidgetData?.callbackUrl ?: ""
+            )
+            val paymentRequest = viewModel.generatePaymentRequest(payment)
+            putExtra(PaymentListingActivity.EXTRA_PAYMENT_REQUEST, gson.get().toJson(paymentRequest, PaymentRequest::class.java))
+        }
+        startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
+    }
+
+    private fun onActivityResultFromPaymentListing(resultCode: Int, data: Intent?) {
+        val gateway = data?.getStringExtra(PaymentListingActivity.EXTRA_RESULT_GATEWAY)
+        val metadata = data?.getStringExtra(PaymentListingActivity.EXTRA_RESULT_METADATA)
+        if (gateway != null && metadata != null) {
+//            orderSummaryAnalytics.eventClickSelectedPaymentOption(gateway, userSession.get().userId)
+            viewModel.choosePayment(gateway, metadata)
+        }
     }
 
     override fun showPaymentFeeTooltipInfoBottomSheet(paymentFee: OrderPaymentFee) {

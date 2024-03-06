@@ -697,6 +697,12 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
               payment_level_add_ons {
                 id  
               }
+              additional_features
+              payment_widget {
+                metadata
+                enable
+                error_message
+              }
             }
           }
         }"""

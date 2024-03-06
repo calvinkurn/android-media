@@ -2,11 +2,13 @@ package com.tokopedia.checkout.revamp.view
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartPaymentRequest
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnProductServiceMapper
@@ -53,7 +55,9 @@ import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetRequest
+import com.tokopedia.checkoutpayment.data.GoCicilInstallmentRequest
 import com.tokopedia.checkoutpayment.data.PaymentFeeRequest
+import com.tokopedia.checkoutpayment.data.PaymentRequest
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_CC_TENOR_LIST
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_INSTALLMENT_OPTIONS
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
@@ -887,7 +891,7 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    internal fun calculateTotal() {
+    internal fun calculateTotal(forceGetPaymentWidget: Boolean = false) {
         viewModelScope.launch(dispatchers.immediate) {
             listData.value = calculator.calculateTotalAndUpdateButtonPaymentWithoutPaymentData(
                 listData.value,
@@ -896,7 +900,7 @@ class CheckoutViewModel @Inject constructor(
             )
             val shouldGetPayment = shouldGetPayment(listData.value)
             if (shouldGetPayment) {
-                getCheckoutPaymentData()
+                getCheckoutPaymentData(forceGetPaymentWidget)
             } else {
                 getCheckoutPlatformFee()
             }
@@ -3080,7 +3084,7 @@ class CheckoutViewModel @Inject constructor(
         return hasValidOrder && isPaymentWidgetEnable
     }
 
-    private suspend fun getCheckoutPaymentData() {
+    private suspend fun getCheckoutPaymentData(forceGetPaymentWidget: Boolean) {
         val checkoutItems = listData.value.toMutableList()
         var payment = checkoutItems.payment() ?: return
 
@@ -3092,11 +3096,11 @@ class CheckoutViewModel @Inject constructor(
         var cost = listData.value.cost()!!
         var paymentRequest = paymentProcessor.generatePaymentRequest(checkoutItems, payment)
 
-        if (payment.data == null) {
+        if (payment.data == null || forceGetPaymentWidget) {
             // get payment widget if not yet
             payment = paymentProcessor.getPaymentWidget(
                 GetPaymentWidgetRequest(
-                    paymentRequest = paymentRequest
+                    paymentRequest = Gson().toJson(paymentRequest)
                 ),
                 payment
             )
@@ -3192,6 +3196,34 @@ class CheckoutViewModel @Inject constructor(
         )
         listData.value = paymentProcessor.validatePayment(listData.value)
         listData.value = calculator.updateButtonPaymentWithPaymentData(listData.value, isTradeInByDropOff)
+    }
+
+    fun generatePaymentRequest(payment: CheckoutPaymentModel): PaymentRequest {
+        return paymentProcessor.generatePaymentRequest(listData.value, payment)
+    }
+
+    fun generateGoCicilInstallmentRequest(payment: CheckoutPaymentModel): GoCicilInstallmentRequest {
+        return paymentProcessor.generateInstallmentRequest(payment, payment.data!!.paymentWidgetData.first(), generatePaymentRequest(payment), listData.value, listData.value.cost()!!)
+    }
+
+    fun choosePayment(gatewayCode: String, metadata: String) {
+        viewModelScope.launch(dispatchers.immediate) {
+            pageState.value = CheckoutPageState.Loading
+            val updateCartResult = cartProcessor.updateCart(
+                cartProcessor.generateUpdateCartRequest(listData.value),
+                "",
+                UpdateCartPaymentRequest(
+                    gatewayCode = gatewayCode,
+                    metadata = metadata
+                )
+            )
+            pageState.value = CheckoutPageState.Normal
+            if (!updateCartResult.isSuccess) {
+                toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, updateCartResult.toasterMessage, updateCartResult.throwable))
+                return@launch
+            }
+            calculateTotal(forceGetPaymentWidget = true)
+        }
     }
 
     companion object {

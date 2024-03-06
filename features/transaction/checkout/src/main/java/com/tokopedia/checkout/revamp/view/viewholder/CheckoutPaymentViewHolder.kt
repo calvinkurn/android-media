@@ -14,7 +14,8 @@ class CheckoutPaymentViewHolder(private val binding: ItemCheckoutPaymentBinding,
         binding.root.setContent {
             CheckoutPaymentWidget(
                 payment.widget,
-                onRetryClickedListener = { listener.onRetryGetPayment() }
+                onRetryClickedListener = { listener.onRetryGetPayment() },
+                onClickedListener = { listener.onChangePayment(payment) }
             )
         }
     }

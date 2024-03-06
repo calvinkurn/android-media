@@ -56,7 +56,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
@@ -377,7 +376,6 @@ class CheckoutPaymentProcessor @Inject constructor(
     }
 
     suspend fun getPaymentWidget(param: GetPaymentWidgetRequest, payment: CheckoutPaymentModel): CheckoutPaymentModel {
-        delay(5_000)
         val data = processor.getPaymentWidget(param)
         return payment.copy(
             data = data,
@@ -424,7 +422,7 @@ class CheckoutPaymentProcessor @Inject constructor(
         return payment.copy(tenorList = tenorList)
     }
 
-    private fun generateInstallmentRequest(
+    fun generateInstallmentRequest(
         payment: CheckoutPaymentModel,
         paymentData: PaymentWidgetData,
         paymentRequest: PaymentRequest,

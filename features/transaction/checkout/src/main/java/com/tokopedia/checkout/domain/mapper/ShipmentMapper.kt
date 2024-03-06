@@ -266,8 +266,8 @@ class ShipmentMapper @Inject constructor() {
                         if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else it.errors.joinToString()
                     hasUnblockingError = it.unblockingErrors.isNotEmpty()
                     unblockingErrorMessage = it.unblockingErrors.joinToString()
-//                    shippingId = it.shippingId
-//                    spId = it.spId
+                    shippingId = it.shippingId
+                    spId = it.spId
                     boCode = it.boCode
                     boUniqueId = if (it.boCode.isNotEmpty()) {
                         shipmentAddressFormDataResponse.promoSAFResponse.lastApply.data.voucherOrders.first { voucher -> voucher.code == it.boCode && voucher.cartStringGroup == it.cartString }.uniqueId
@@ -1419,7 +1419,7 @@ class ShipmentMapper @Inject constructor() {
             metadata = response.metadata,
 //            enable = response.enable,
             enable = true,
-            errorMessage = "response.errorMessage"
+            errorMessage = response.errorMessage
         )
     }
 

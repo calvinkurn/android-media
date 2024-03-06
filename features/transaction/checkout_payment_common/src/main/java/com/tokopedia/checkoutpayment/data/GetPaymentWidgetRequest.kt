@@ -12,5 +12,5 @@ data class GetPaymentWidgetRequest(
     @SerializedName("payment_metadata")
     val paymentMetadata: String = "",
     @SerializedName("detail_data")
-    val paymentRequest: PaymentRequest
+    val paymentRequest: String = ""
 )

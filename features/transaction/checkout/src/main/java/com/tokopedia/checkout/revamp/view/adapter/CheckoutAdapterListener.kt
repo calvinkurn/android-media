@@ -5,6 +5,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPaymentModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
@@ -172,6 +173,8 @@ interface CheckoutAdapterListener {
     fun onViewGwpBenefit(benefit: CheckoutProductBenefitModel)
 
     fun onRetryGetPayment()
+
+    fun onChangePayment(payment: CheckoutPaymentModel)
 
     fun showPaymentFeeTooltipInfoBottomSheet(paymentFee: OrderPaymentFee)
 }
