@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopAdvanceCarouselBannerViewholderLayoutBinding
@@ -191,7 +192,12 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
         carouselLayoutManager?.removeOnItemSelectionListener(itemSelectionListener)
         carouselLayoutManager?.addOnItemSelectionListener(itemSelectionListener)
         recyclerView?.apply {
-            layoutParams.height = Int.ZERO
+            val widthRatio = getIndexRatio(uiModel, Int.ZERO).toString()
+            val heightRatio = getIndexRatio(uiModel, Int.ONE).toString()
+            (layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = "$widthRatio:$heightRatio"
+            post {
+                (recyclerView.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ""
+            }
             isNestedScrollingEnabled = false
             (this@apply.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ratio
             this.layoutManager = carouselLayoutManager
@@ -221,6 +227,10 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
             }
         }
         updateRecyclerViewHeightBasedOnFirstChild()
+    }
+
+    private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {
+        return data.header.ratio.split(":").getOrNull(index).toIntOrZero()
     }
 
     private fun setupFlingListener(
