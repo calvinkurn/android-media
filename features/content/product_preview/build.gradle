@@ -26,7 +26,6 @@ android {
 
     buildFeatures {
         viewBinding true
-        buildConfig true
         compose true
     }
 
@@ -46,7 +45,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
 
     implementation projectOrAar(rootProject.ext.features.contentAnalytic)
-    implementation projectOrAar(rootProject.ext.features.contentTest)
     implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.medialoader)
@@ -82,6 +80,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.nestComponents
     implementation rootProject.ext.unifyDependencies.nestPrinciples
 
+    testImplementation projectOrAar(rootProject.ext.features.contentTest)
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
