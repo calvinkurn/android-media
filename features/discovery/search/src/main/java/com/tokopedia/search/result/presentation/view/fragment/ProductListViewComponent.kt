@@ -9,19 +9,18 @@ import com.tokopedia.search.di.module.RecycledViewPoolModule
 import com.tokopedia.search.di.module.ReimagineRollenceModule
 import com.tokopedia.search.di.module.RemoteConfigModule
 import com.tokopedia.search.di.module.SearchContextModule
-import com.tokopedia.search.di.module.SearchEntranceModule
 import com.tokopedia.search.di.module.SearchNavigationListenerModule
 import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule
 import com.tokopedia.search.di.module.TrackingQueueModule
 import com.tokopedia.search.di.module.UserSessionModule
 import com.tokopedia.search.di.scope.SearchScope
-import com.tokopedia.search.result.domain.usecase.searchcoupon.SearchCouponModule
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getinspirationcarouselchips.GetInspirationCarouselChipsProductUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getlocalsearchrecommendation.GetLocalSearchRecommendationUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getpostatccarousel.GetPostATCCarouselUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getproductcount.GetProductCountUseCaseModule
 import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterUseCaseModule
+import com.tokopedia.search.result.domain.usecase.searchcoupon.SearchCouponModule
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule
 import com.tokopedia.search.result.domain.usecase.searchsamesessionrecommendation.SearchSameSessionRecommendationUseCaseModule
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule
@@ -105,7 +104,6 @@ import dagger.Component
     SearchCouponModule::class,
     IrisModule::class,
     ByteIOTrackingDataFactoryModule::class,
-    SearchEntranceModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 

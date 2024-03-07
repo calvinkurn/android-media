@@ -339,7 +339,6 @@ internal open class ProductListPresenterTestFixtures {
             lastClickedProductIdProvider,
             deduplication,
             byteIOTrackingDataFactoryImpl,
-            mockk() { every { value } returns PageName.HOME },
         )
         productListPresenter.attachView(productListView)
 
