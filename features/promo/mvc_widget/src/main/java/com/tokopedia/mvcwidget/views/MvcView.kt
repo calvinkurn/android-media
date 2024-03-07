@@ -157,7 +157,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
             )
         )
         mvcBgImg?.setColorFilter(
-            Color.WHITE,
+            unifyprinciplesR.color.Unify_Static_White,
             PorterDuff.Mode.SRC_IN
         )
 
