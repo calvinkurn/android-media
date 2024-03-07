@@ -16,9 +16,9 @@ class ProductImpressionCoordinator @Inject constructor() {
     private var mIsEntryPoint: Boolean = false
 
     fun setInitialData(
-            analytic: ContentProductTagAnalytic?,
-            source: ProductTagSource,
-            isEntryPoint: Boolean,
+        analytic: ContentProductTagAnalytic?,
+        source: ProductTagSource,
+        isEntryPoint: Boolean,
     ) {
         mAnalytic = analytic
         mTagSource = source
@@ -32,12 +32,11 @@ class ProductImpressionCoordinator @Inject constructor() {
     fun sendProductImpress() {
         val finalProduct = mProductImpress.distinctBy { it.first.id }
 
-        if(finalProduct.isEmpty()) return
+        if (finalProduct.isEmpty()) return
 
-        if(mTagSource == ProductTagSource.Shop) {
+        if (mTagSource == ProductTagSource.Shop) {
             mAnalytic?.impressProductCardOnShop(finalProduct)
-        }
-        else {
+        } else {
             mAnalytic?.impressProductCard(
                 mTagSource,
                 finalProduct,

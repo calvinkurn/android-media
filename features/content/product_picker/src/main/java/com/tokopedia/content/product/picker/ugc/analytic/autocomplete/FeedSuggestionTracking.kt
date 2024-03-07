@@ -10,8 +10,8 @@ import com.tokopedia.iris.Iris
  * Created By : Jonathan Darwin on May 24, 2022
  */
 class FeedSuggestionTracking(
-        iris: Iris,
-        private val analytic: FeedAutoCompleteAnalytic,
+    iris: Iris,
+    private val analytic: FeedAutoCompleteAnalytic,
 ) : SuggestionTracking(iris) {
 
     override fun eventClickShop(
@@ -24,8 +24,8 @@ class FeedSuggestionTracking(
             val appLink = (searchComponentTracking as BaseSuggestionDataView).applink
             val shopId = extractShopId(appLink)
             analytic.clickSuggestionShop(shopId)
+        } catch (_: Exception) {
         }
-        catch (e: Exception) { }
     }
 
     override fun eventClickKeyword(
@@ -50,17 +50,18 @@ class FeedSuggestionTracking(
         super.eventImpressionSuggestion(searchComponentTracking)
         try {
             val data = (searchComponentTracking as BaseSuggestionDataView)
-            if(data.type == "shop") {
+            if (data.type == "shop") {
                 analytic.impressSuggestionShop(extractShopId(data.applink))
             }
+        } catch (e: Exception) {
         }
-        catch (e: Exception) { }
     }
 
     private fun extractShopId(appLink: String): String {
         return try {
             Uri.parse(appLink).lastPathSegment ?: ""
+        } catch (e: Exception) {
+            ""
         }
-        catch (e: Exception) { "" }
     }
 }

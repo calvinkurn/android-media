@@ -32,8 +32,8 @@ fun Set<ProductTagSource>.removeLast(): Set<ProductTagSource> {
 
 internal val Throwable.isNetworkError: Boolean
     get() = this is ConnectException ||
-            this is SocketTimeoutException ||
-            this is UnknownHostException
+        this is SocketTimeoutException ||
+        this is UnknownHostException
 
 
 fun StaggeredGridLayoutManager.getVisibleItems(
@@ -55,8 +55,8 @@ fun StaggeredGridLayoutManager.getVisibleItems(
 }
 
 fun StaggeredGridLayoutManager.getVisibleItems(
-        adapter: MyShopProductAdapter,
-        isMultipleSelectionProduct: Boolean,
+    adapter: MyShopProductAdapter,
+    isMultipleSelectionProduct: Boolean,
 ): List<Pair<ProductUiModel, Int>> {
     val items = adapter.getItems()
     val (start, end) = getVisibleItemsPosition(this, adapter)
@@ -87,7 +87,7 @@ fun LinearLayoutManager.getVisibleItems(adapter: ShopCardAdapter): List<Pair<Sho
     return emptyList()
 }
 
-private fun <T: Any> getVisibleItemsPosition(
+private fun <T : Any> getVisibleItemsPosition(
     layoutManager: StaggeredGridLayoutManager,
     adapter: BaseDiffUtilAdapter<T>,
 ): Pair<Int, Int> {
@@ -106,7 +106,7 @@ private fun <T: Any> getVisibleItemsPosition(
     return Pair(-1, -1)
 }
 
-private fun <T: Any> getVisibleItemsPosition(
+private fun <T : Any> getVisibleItemsPosition(
     layoutManager: LinearLayoutManager,
     adapter: BaseDiffUtilAdapter<T>,
 ): Pair<Int, Int> {
@@ -123,13 +123,13 @@ private fun <T: Any> getVisibleItemsPosition(
 }
 
 private fun List<ProductTagCardAdapter.Model>.getProductUiModel(isMultipleSelectionProduct: Boolean): List<ProductUiModel> {
-    return if(isMultipleSelectionProduct)
+    return if (isMultipleSelectionProduct)
         filterIsInstance<ProductTagCardAdapter.Model.ProductWithCheckbox>().map { it.product }
     else filterIsInstance<ProductTagCardAdapter.Model.Product>().map { it.product }
 }
 
 private fun List<MyShopProductAdapter.Model>.getShopProductUiModel(isMultipleSelectionProduct: Boolean): List<ProductUiModel> {
-    return if(isMultipleSelectionProduct)
+    return if (isMultipleSelectionProduct)
         filterIsInstance<MyShopProductAdapter.Model.ProductWithCheckbox>().map { it.product }
     else filterIsInstance<MyShopProductAdapter.Model.Product>().map { it.product }
 }

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
-        <activity android:name="com.tokopedia.content.product.picker.sample.ContentProductTagSampleActivity"
+        <activity android:name=".sample.ContentProductTagSampleActivity"
             android:launchMode="singleTask"
             android:exported="false"
             >

@@ -21,8 +21,8 @@ import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
-* Created By : Jonathan Darwin on May 10, 2022
-*/
+ * Created By : Jonathan Darwin on May 10, 2022
+ */
 class GlobalSearchFragment @Inject constructor() : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "GlobalSearchFragment"
@@ -60,7 +60,7 @@ class GlobalSearchFragment @Inject constructor() : BaseProductTagChildFragment()
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
-        if(childFragment is BaseProductTagChildFragment) {
+        if (childFragment is BaseProductTagChildFragment) {
             childFragment.createViewModelProvider(viewModelProvider)
             childFragment.setAnalytic(mAnalytic)
         }
@@ -72,7 +72,7 @@ class GlobalSearchFragment @Inject constructor() : BaseProductTagChildFragment()
     }
 
     private fun setupView() {
-        tabAdapter = com.tokopedia.content.product.picker.ugc.view.adapter.GlobalSearchResultPagerAdapter(childFragmentManager, requireActivity().classLoader)
+        tabAdapter = GlobalSearchResultPagerAdapter(childFragmentManager, requireActivity().classLoader)
 
         binding.viewPager.adapter = tabAdapter
         binding.tabLayout.setupWithViewPager(binding.viewPager)
@@ -87,14 +87,15 @@ class GlobalSearchFragment @Inject constructor() : BaseProductTagChildFragment()
                 position: Int,
                 positionOffset: Float,
                 positionOffsetPixels: Int
-            ) { }
+            ) {
+            }
 
             override fun onPageSelected(position: Int) {
-                if(position == 0) mAnalytic?.clickGlobalSearchTab(TYPE_PRODUCT)
+                if (position == 0) mAnalytic?.clickGlobalSearchTab(TYPE_PRODUCT)
                 else mAnalytic?.clickGlobalSearchTab(TYPE_SHOP)
             }
 
-            override fun onPageScrollStateChanged(state: Int) { }
+            override fun onPageScrollStateChanged(state: Int) {}
         })
     }
 
@@ -107,13 +108,15 @@ class GlobalSearchFragment @Inject constructor() : BaseProductTagChildFragment()
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
-                when(it) {
+                when (it) {
                     is ProductTagUiEvent.HitGlobalSearchProductTracker -> {
                         mAnalytic?.trackGlobalSearchProduct(it.header, it.param)
                     }
+
                     is ProductTagUiEvent.HitGlobalSearchShopTracker -> {
                         mAnalytic?.trackGlobalSearchShop(it.header, it.param)
                     }
+
                     else -> {}
                 }
             }
@@ -124,7 +127,7 @@ class GlobalSearchFragment @Inject constructor() : BaseProductTagChildFragment()
         binding.etSearch.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
-                if(query.isEmpty()) unifyprinciplesR.color.Unify_NN600 else unifyprinciplesR.color.Unify_NN950
+                if (query.isEmpty()) unifyprinciplesR.color.Unify_NN600 else unifyprinciplesR.color.Unify_NN950
             )
         )
         binding.etSearch.text = query
@@ -139,7 +142,7 @@ class GlobalSearchFragment @Inject constructor() : BaseProductTagChildFragment()
         fun getFragmentPair(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ) : Pair<BaseProductTagChildFragment, String> {
+        ): Pair<BaseProductTagChildFragment, String> {
             return Pair(getFragment(fragmentManager, classLoader), TAG)
         }
 

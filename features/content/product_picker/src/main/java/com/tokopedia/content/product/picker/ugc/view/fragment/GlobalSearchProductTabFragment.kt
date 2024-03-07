@@ -243,7 +243,7 @@ class GlobalSearchProductTabFragment @Inject constructor(
                     text = getString(R.string.cc_failed_load_product),
                     type = Toaster.TYPE_ERROR,
                     duration = Toaster.LENGTH_LONG,
-                    actionText = getString(contentcommonR.string.feed_content_coba_lagi_text),
+                    actionText = getString(R.string.content_product_picker_retry),
                     clickListener = { viewModel.submitAction(ProductTagAction.LoadGlobalSearchProduct) }
                 ).show()
             }

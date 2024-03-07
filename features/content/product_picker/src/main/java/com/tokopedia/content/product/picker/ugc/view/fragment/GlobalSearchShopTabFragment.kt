@@ -59,7 +59,7 @@ class GlobalSearchShopTabFragment @Inject constructor(
         )
     }
     private lateinit var layoutManager: LinearLayoutManager
-    private val scrollListener = object: RecyclerView.OnScrollListener(){
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) impressShop()
         }
@@ -121,7 +121,7 @@ class GlobalSearchShopTabFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        if(viewModel.globalStateShopStateUnknown)
+        if (viewModel.globalStateShopStateUnknown)
             viewModel.submitAction(ProductTagAction.LoadGlobalSearchShop)
     }
 
@@ -173,7 +173,7 @@ class GlobalSearchShopTabFragment @Inject constructor(
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
-                when(event) {
+                when (event) {
                     is ProductTagUiEvent.OpenShopSortFilterBottomSheet -> {
                         sortFilterBottomSheet.show(
                             childFragmentManager,
@@ -182,16 +182,19 @@ class GlobalSearchShopTabFragment @Inject constructor(
                             sortFilterCallback,
                         )
                     }
+
                     is ProductTagUiEvent.SetShopFilterProductCount -> {
-                        val text = when(event.result) {
+                        val text = when (event.result) {
                             is NetworkResult.Success -> {
                                 getString(R.string.cc_filter_shop_count_template, event.result.data)
                             }
+
                             else -> getString(R.string.cc_filter_shop_count_label)
                         }
 
                         sortFilterBottomSheet.setResultCountText(text)
                     }
+
                     else -> {
                         //no-op
                     }
@@ -201,19 +204,21 @@ class GlobalSearchShopTabFragment @Inject constructor(
     }
 
     private fun renderGlobalSearchShop(prev: GlobalSearchShopUiState?, curr: GlobalSearchShopUiState) {
-        if(prev?.shops == curr.shops &&
+        if (prev?.shops == curr.shops &&
             prev.state == curr.state
         ) return
 
-        when(curr.state) {
+        when (curr.state) {
             is PagedState.Loading -> {
                 updateAdapterData(curr, !binding.swipeRefresh.isRefreshing)
             }
+
             is PagedState.Success -> {
                 binding.swipeRefresh.isRefreshing = false
                 binding.sortFilter.showWithCondition(curr.shops.isNotEmpty() || (curr.shops.isEmpty() && curr.param.hasFilterApplied()))
                 updateAdapterData(curr, curr.state.hasNextPage)
             }
+
             is PagedState.Error -> {
                 binding.swipeRefresh.isRefreshing = false
                 updateAdapterData(curr, false)
@@ -223,16 +228,17 @@ class GlobalSearchShopTabFragment @Inject constructor(
                     text = getString(R.string.cc_failed_load_shop),
                     type = Toaster.TYPE_ERROR,
                     duration = Toaster.LENGTH_LONG,
-                    actionText = getString(contentcommonR.string.feed_content_coba_lagi_text),
+                    actionText = getString(R.string.content_product_picker_retry),
                     clickListener = { viewModel.submitAction(ProductTagAction.LoadGlobalSearchShop) }
                 ).show()
             }
+
             else -> {}
         }
     }
 
     private fun renderQuickFilter(prev: GlobalSearchShopUiState?, curr: GlobalSearchShopUiState) {
-        if(prev?.quickFilters == curr.quickFilters) return
+        if (prev?.quickFilters == curr.quickFilters) return
 
         binding.sortFilter.apply {
             resetAllFilters()
@@ -255,24 +261,24 @@ class GlobalSearchShopTabFragment @Inject constructor(
     @OptIn(ExperimentalStdlibApi::class)
     private fun updateAdapterData(currState: GlobalSearchShopUiState, showLoading: Boolean) {
         val finalShops = buildList {
-            if(currState.shops.isEmpty() && currState.state is PagedState.Success)
+            if (currState.shops.isEmpty() && currState.state is PagedState.Success)
                 add(ShopCardAdapter.Model.EmptyState(currState.param.hasFilterApplied()))
             else
                 addAll(currState.shops.map { ShopCardAdapter.Model.Shop(shop = it) })
 
-            if(showLoading) add(ShopCardAdapter.Model.Loading)
+            if (showLoading) add(ShopCardAdapter.Model.Loading)
         }
 
-        if(binding.rvGlobalSearchShop.isComputingLayout.not())
+        if (binding.rvGlobalSearchShop.isComputingLayout.not())
             adapter.setItemsAndAnimateChanges(finalShops)
 
         impressShop()
     }
 
     private fun impressShop() {
-        if(this::layoutManager.isInitialized) {
+        if (this::layoutManager.isInitialized) {
             val visibleProducts = layoutManager.getVisibleItems(adapter)
-            if(visibleProducts.isNotEmpty())
+            if (visibleProducts.isNotEmpty())
                 impressionCoordinator.saveShopImpress(visibleProducts)
         }
     }

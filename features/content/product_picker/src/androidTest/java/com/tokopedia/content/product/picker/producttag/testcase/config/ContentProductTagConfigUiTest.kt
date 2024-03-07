@@ -30,6 +30,7 @@ import com.tokopedia.content.product.picker.producttag.helper.sourceMyShop
 import com.tokopedia.content.product.picker.producttag.helper.sourceMyShopLabel
 import com.tokopedia.content.product.picker.producttag.helper.sourceTokopedia
 import com.tokopedia.content.product.picker.producttag.helper.testSelectedProductText
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
 import com.tokopedia.content.product.picker.ugc.view.uimodel.SelectedProductUiModel
@@ -55,7 +56,7 @@ class ContentProductTagConfigUiTest {
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     /** Mock */
-    private val mockRepo: com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository = mockk(relaxed = true)
+    private val mockRepo: ProductTagRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
 
     /** Builder */

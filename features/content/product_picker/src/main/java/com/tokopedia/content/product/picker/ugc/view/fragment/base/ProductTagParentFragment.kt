@@ -58,13 +58,13 @@ import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
 
 /**
-* Created By : Jonathan Darwin on April 25, 2022
-*/
+ * Created By : Jonathan Darwin on April 25, 2022
+ */
 class ProductTagParentFragment @Inject constructor(
-        private val userSession: UserSessionInterface,
-        private val viewModelFactoryCreator: ProductTagViewModelFactory.Creator,
-        private val dispatchers: CoroutineDispatchers,
-        private val sharedPref: ProductTagPreference,
+    private val userSession: UserSessionInterface,
+    private val viewModelFactoryCreator: ProductTagViewModelFactory.Creator,
+    private val dispatchers: CoroutineDispatchers,
+    private val sharedPref: ProductTagPreference,
 ) : TkpdBaseV4Fragment() {
 
     override fun getScreenName(): String = "ProductTagParentFragment"
@@ -167,6 +167,7 @@ class ProductTagParentFragment @Inject constructor(
                 ContentProductTagConfig.BackButton.Back -> {
                     IconUnify.ARROW_BACK
                 }
+
                 ContentProductTagConfig.BackButton.Close -> {
                     IconUnify.CLOSE
                 }
@@ -218,28 +219,33 @@ class ProductTagParentFragment @Inject constructor(
                         mAnalytic?.clickSaveProduct(viewModel.selectedTagSource)
                         mListener?.onFinishProductTag(it.products)
                     }
+
                     is ProductTagUiEvent.ShowSourceBottomSheet -> {
                         ProductTagSourceBottomSheet.getFragment(
                             childFragmentManager,
                             requireActivity().classLoader
                         ).showNow(childFragmentManager)
                     }
+
                     is ProductTagUiEvent.OpenAutoCompletePage -> {
                         RouteManager.route(requireContext(), getAutocompleteApplink(it.query, viewModel.appLinkAfterAutocomplete))
                     }
+
                     is ProductTagUiEvent.ShowError -> {
                         Toaster.build(
                             binding.root,
                             text = getString(abstractionR.string.default_request_error_unknown),
                             type = Toaster.TYPE_ERROR,
                             duration = Toaster.LENGTH_LONG,
-                            actionText = if (it.action != null) getString(contentcommonR.string.feed_content_coba_lagi_text) else "",
+                            actionText = if (it.action != null) getString(R.string.content_product_picker_retry) else "",
                             clickListener = { view -> it.action?.invoke() }
                         ).show()
                     }
+
                     ProductTagUiEvent.MaxSelectedProductReached -> {
                         mListener?.onMaxSelectedProductReached()
                     }
+
                     else -> {
                         //no-op
                     }
@@ -254,7 +260,8 @@ class ProductTagParentFragment @Inject constructor(
     ) {
         if (prevState == currState) return
 
-        updateFragmentContent(prevState?.productTagSourceStack ?: emptySet(), currState.productTagSourceStack)
+        updateFragmentContent(prevState?.productTagSourceStack
+            ?: emptySet(), currState.productTagSourceStack)
         updateBreadcrumb(currState.productTagSourceStack)
     }
 
@@ -475,7 +482,7 @@ class ProductTagParentFragment @Inject constructor(
             imgCcProductTagShopBadge1.showWithCondition(isShow)
         }
 
-        if(!isShow) coachmark?.hideCoachMark()
+        if (!isShow) coachmark?.hideCoachMark()
     }
 
     private fun showCoachmarkGlobalTag(isShow: Boolean) {
@@ -574,10 +581,10 @@ class ProductTagParentFragment @Inject constructor(
                     ProductTagParentFragment::class.java.name
                 ) as ProductTagParentFragment
                 ).apply {
-                arguments = Bundle().apply {
-                    putString(EXTRA_QUERY, argumentBuilder.build())
+                    arguments = Bundle().apply {
+                        putString(EXTRA_QUERY, argumentBuilder.build())
+                    }
                 }
-            }
         }
     }
 

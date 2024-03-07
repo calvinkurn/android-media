@@ -56,7 +56,7 @@ class ContentProductTagSampleActivity : BaseActivity() {
     override fun onAttachFragment(fragment: Fragment) {
         super.onAttachFragment(fragment)
 
-        when(fragment) {
+        when (fragment) {
             is ContentProductTagSampleBottomSheet -> {
                 fragment.setDataSource(object : ContentProductTagSampleBottomSheet.DataSource {
                     override fun getProductTagArgumentBuilder(): ContentProductTagArgument.Builder {
@@ -64,6 +64,7 @@ class ContentProductTagSampleActivity : BaseActivity() {
                     }
                 })
             }
+
             is ProductTagParentFragment -> {
                 fragment.setListener(object : ProductTagParentFragment.Listener {
                     override fun onCloseProductTag() {
@@ -120,7 +121,7 @@ class ContentProductTagSampleActivity : BaseActivity() {
             hideKeyboard()
             binding.textFieldMaxSelectedProduct.clearFocus()
 
-            if(validate()) {
+            if (validate()) {
                 setupProductPicker()
             }
         }
@@ -133,13 +134,12 @@ class ContentProductTagSampleActivity : BaseActivity() {
     }
 
     private fun setupProductPicker() {
-        if(isUseBottomSheet()) {
+        if (isUseBottomSheet()) {
             ContentProductTagSampleBottomSheet.getFragment(
-                    supportFragmentManager,
-                    classLoader,
+                supportFragmentManager,
+                classLoader,
             ).showNow(supportFragmentManager)
-        }
-        else {
+        } else {
             supportFragmentManager.beginTransaction()
                 .replace(
                     binding.fragmentContainer.id,
@@ -177,7 +177,7 @@ class ContentProductTagSampleActivity : BaseActivity() {
     }
 
     private fun getAuthorId(): String {
-        return when(binding.rgOpenAs.checkedRadioButtonId) {
+        return when (binding.rgOpenAs.checkedRadioButtonId) {
             binding.rbUser.id -> userSession.userId
             binding.rbSeller.id -> userSession.shopId
             else -> ""
@@ -185,24 +185,24 @@ class ContentProductTagSampleActivity : BaseActivity() {
     }
 
     private fun getAuthorType(): String {
-        return when(binding.rgOpenAs.checkedRadioButtonId) {
+        return when (binding.rgOpenAs.checkedRadioButtonId) {
             binding.rbUser.id -> ContentCommonUserType.TYPE_USER
             binding.rbSeller.id -> ContentCommonUserType.TYPE_SHOP
             else -> ""
         }
     }
 
-    private fun getProductTagSource(): String{
+    private fun getProductTagSource(): String {
         return mutableListOf<String>().apply {
-            if(binding.cbxGlobalSearch.isChecked) {
+            if (binding.cbxGlobalSearch.isChecked) {
                 add("global_search")
             }
 
-            if(binding.cbxLastPurchased.isChecked) {
+            if (binding.cbxLastPurchased.isChecked) {
                 add("last_purchase")
             }
 
-            if(binding.cbxMyShop.isChecked) {
+            if (binding.cbxMyShop.isChecked) {
                 add("own_shop")
             }
         }.joinToString(separator = ",")
@@ -213,7 +213,7 @@ class ContentProductTagSampleActivity : BaseActivity() {
     }
 
     private fun getMaxSelectedProduct(): Int {
-        return if(isMultipleSelectionProduct())
+        return if (isMultipleSelectionProduct())
             binding.textFieldMaxSelectedProduct.editText.text.toString().toIntOrZero()
         else 0
     }
@@ -231,11 +231,10 @@ class ContentProductTagSampleActivity : BaseActivity() {
     }
 
     private fun validate(): Boolean {
-        return if(binding.rbMultipleSelectionProductYes.isChecked && binding.textFieldMaxSelectedProduct.editText.text.isEmpty()) {
+        return if (binding.rbMultipleSelectionProductYes.isChecked && binding.textFieldMaxSelectedProduct.editText.text.isEmpty()) {
             Toast.makeText(this, "Please input Max Selected Product", Toast.LENGTH_SHORT).show()
             false
-        }
-        else true
+        } else true
     }
 
     private fun inject() {

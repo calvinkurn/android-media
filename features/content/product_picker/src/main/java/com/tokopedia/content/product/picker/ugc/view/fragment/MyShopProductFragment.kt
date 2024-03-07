@@ -220,6 +220,7 @@ class MyShopProductFragment @Inject constructor(
                             requireActivity().classLoader
                         ).showNow(childFragmentManager)
                     }
+
                     else -> {
                         //no-op
                     }
@@ -264,6 +265,7 @@ class MyShopProductFragment @Inject constructor(
             is PagedState.Loading -> {
                 updateAdapterData(currProducts, true)
             }
+
             is PagedState.Success -> {
                 if (currProducts.isEmpty()) {
                     binding.rvMyShopProduct.hide()
@@ -272,6 +274,7 @@ class MyShopProductFragment @Inject constructor(
                     updateAdapterData(currProducts, currState.hasNextPage)
                 }
             }
+
             is PagedState.Error -> {
                 updateAdapterData(currProducts, false)
 
@@ -280,10 +283,11 @@ class MyShopProductFragment @Inject constructor(
                     text = getString(R.string.cc_failed_load_product),
                     type = Toaster.TYPE_ERROR,
                     duration = Toaster.LENGTH_LONG,
-                    actionText = getString(contentcommonR.string.feed_content_coba_lagi_text),
+                    actionText = getString(R.string.content_product_picker_retry),
                     clickListener = { viewModel.submitAction(ProductTagAction.LoadMyShopProduct) }
                 ).show()
             }
+
             else -> {}
         }
     }
@@ -293,7 +297,8 @@ class MyShopProductFragment @Inject constructor(
 
         val selectedSort = viewModel.myShopSortList.firstOrNull { it.isSelected }
 
-        binding.chipSort.chipText = selectedSort?.text ?: getString(R.string.cc_product_tag_sort_label)
+        binding.chipSort.chipText = selectedSort?.text
+            ?: getString(R.string.cc_product_tag_sort_label)
         binding.chipSort.chipType = if (selectedSort != null) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
     }
 

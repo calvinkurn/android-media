@@ -16,8 +16,8 @@ class ShopImpressionCoordinator @Inject constructor() {
     private var mTagSource: ProductTagSource = ProductTagSource.Unknown
 
     fun setInitialData(
-            analytic: ContentProductTagAnalytic?,
-            source: ProductTagSource
+        analytic: ContentProductTagAnalytic?,
+        source: ProductTagSource
     ) {
         mAnalytic = analytic
         mTagSource = source
@@ -30,7 +30,7 @@ class ShopImpressionCoordinator @Inject constructor() {
     fun sendShopImpress() {
         val finalShop = mShopImpress.distinctBy { it.first.shopId }
 
-        if(finalShop.isEmpty()) return
+        if (finalShop.isEmpty()) return
 
         mAnalytic?.impressShopCard(mTagSource, finalShop)
         mAnalytic?.sendAll()

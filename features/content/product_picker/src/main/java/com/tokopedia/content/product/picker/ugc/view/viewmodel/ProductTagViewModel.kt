@@ -57,26 +57,26 @@ import kotlinx.coroutines.launch
  * Created By : Jonathan Darwin on April 25, 2022
  */
 class ProductTagViewModel @AssistedInject constructor(
-        @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
-        @Assisted(SHOP_BADGE) val shopBadge: String,
-        @Assisted(AUTHOR_ID) val authorId: String,
-        @Assisted(AUTHOR_TYPE) val authorType: String,
-        @Assisted(INITIAL_SELECTED_PRODUCT) private val initialSelectedProduct: List<SelectedProductUiModel>,
-        @Assisted(PRODUCT_TAG_CONFIG) private val productTagConfig: ContentProductTagConfig,
-        private val repo: ProductTagRepository,
-        private val userSession: UserSessionInterface,
-        private val sharedPref: ProductTagPreference,
-): ViewModel() {
+    @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
+    @Assisted(SHOP_BADGE) val shopBadge: String,
+    @Assisted(AUTHOR_ID) val authorId: String,
+    @Assisted(AUTHOR_TYPE) val authorType: String,
+    @Assisted(INITIAL_SELECTED_PRODUCT) private val initialSelectedProduct: List<SelectedProductUiModel>,
+    @Assisted(PRODUCT_TAG_CONFIG) private val productTagConfig: ContentProductTagConfig,
+    private val repo: ProductTagRepository,
+    private val userSession: UserSessionInterface,
+    private val sharedPref: ProductTagPreference,
+) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
         fun create(
-                @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
-                @Assisted(SHOP_BADGE) shopBadge: String,
-                @Assisted(AUTHOR_ID) authorId: String,
-                @Assisted(AUTHOR_TYPE) authorType: String,
-                @Assisted(INITIAL_SELECTED_PRODUCT) initialSelectedProduct: List<SelectedProductUiModel>,
-                @Assisted(PRODUCT_TAG_CONFIG) productTagConfig: ContentProductTagConfig,
+            @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
+            @Assisted(SHOP_BADGE) shopBadge: String,
+            @Assisted(AUTHOR_ID) authorId: String,
+            @Assisted(AUTHOR_TYPE) authorType: String,
+            @Assisted(INITIAL_SELECTED_PRODUCT) initialSelectedProduct: List<SelectedProductUiModel>,
+            @Assisted(PRODUCT_TAG_CONFIG) productTagConfig: ContentProductTagConfig,
         ): ProductTagViewModel
     }
 
@@ -146,7 +146,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
-    private val _productTagSourceStack = MutableStateFlow(setOf(if(isSeller) ProductTagSource.MyShop else ProductTagSource.LastTagProduct))
+    private val _productTagSourceStack = MutableStateFlow(setOf(if (isSeller) ProductTagSource.MyShop else ProductTagSource.LastTagProduct))
 
     private val _lastTaggedProduct = MutableStateFlow(LastTaggedProductUiModel.Empty)
     private val _lastPurchasedProduct = MutableStateFlow(LastPurchasedProductUiModel.Empty)
@@ -243,8 +243,8 @@ class ProductTagViewModel @AssistedInject constructor(
         _selectedProduct,
         _isSubmitting,
     ) { productTagSource, lastTaggedProduct, lastPurchasedProduct,
-            myShopProduct, globalSearchProduct, globalSearchShop,
-            shopProduct, selectedProduct, isSubmitting ->
+        myShopProduct, globalSearchProduct, globalSearchShop,
+        shopProduct, selectedProduct, isSubmitting ->
         ProductTagUiState(
             productTagSource = productTagSource,
             lastTaggedProduct = lastTaggedProduct,
@@ -278,7 +278,7 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     fun submitAction(action: ProductTagAction) {
-        when(action) {
+        when (action) {
             is ProductTagAction.BackPressed -> handleBackPressed()
             ProductTagAction.ClickBreadcrumb -> handleClickBreadcrumb()
             ProductTagAction.OpenAutoCompletePage -> handleOpenAutoCompletePage()
@@ -342,10 +342,11 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleOpenAutoCompletePage() {
         viewModelScope.launch {
-            when(productTagConfig.isFullPageAutocomplete) {
+            when (productTagConfig.isFullPageAutocomplete) {
                 true -> {
                     _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
                 }
+
                 else -> {
                     _productTagSourceStack.update {
                         val newStack = it.toMutableSet()
@@ -359,7 +360,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleSetDataFromAutoComplete(source: ProductTagSource, query: String, shopId: String, componentId: String) {
         viewModelScope.launchCatchError(block = {
-            when(source) {
+            when (source) {
                 ProductTagSource.GlobalSearch -> {
                     _globalSearchProduct.setValue {
                         val prevParam = _globalSearchProduct.value.param.apply {
@@ -381,6 +382,7 @@ class ProductTagViewModel @AssistedInject constructor(
                         })
                     }
                 }
+
                 ProductTagSource.Shop -> {
                     val shop = repo.getShopInfoByID(listOf(shopId.toLong()))
                     _shopProduct.setValue {
@@ -390,6 +392,7 @@ class ProductTagViewModel @AssistedInject constructor(
                         )
                     }
                 }
+
                 else -> {}
             }
 
@@ -402,7 +405,7 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectProductTagSource(source: ProductTagSource) {
-        val finalSource = if(isNeedToShowDefaultSource(source)) ProductTagSource.LastTagProduct else source
+        val finalSource = if (isNeedToShowDefaultSource(source)) ProductTagSource.LastTagProduct else source
         _productTagSourceStack.setValue { setOf(finalSource) }
     }
 
@@ -410,21 +413,19 @@ class ProductTagViewModel @AssistedInject constructor(
         if (_isSubmitting.value) return
 
         viewModelScope.launch {
-            if(isMultipleSelectionProduct) {
+            if (isMultipleSelectionProduct) {
 
                 val currSelectedProduct = _selectedProduct.value
-                val newSelectedProduct = if(currSelectedProduct.isProductFound(product)) {
+                val newSelectedProduct = if (currSelectedProduct.isProductFound(product)) {
                     currSelectedProduct.filter { it.id != product.id }
-                }
-                else {
+                } else {
                     val currSelectedProductSize = _selectedProduct.value.size
 
-                    if(currSelectedProductSize < maxSelectedProduct) {
+                    if (currSelectedProductSize < maxSelectedProduct) {
                         currSelectedProduct.toMutableList().apply {
                             add(SelectedProductUiModel.createOnlyId(id = product.id))
                         }.toList()
-                    }
-                    else {
+                    } else {
                         _uiEvent.emit(ProductTagUiEvent.MaxSelectedProductReached)
 
                         currSelectedProduct
@@ -432,8 +433,7 @@ class ProductTagViewModel @AssistedInject constructor(
                 }
 
                 _selectedProduct.value = newSelectedProduct
-            }
-            else {
+            } else {
                 _uiEvent.emit(ProductTagUiEvent.FinishProductTag(listOf(product.toSelectedProduct())))
             }
         }
@@ -449,7 +449,7 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val currLastProduct = _lastTaggedProduct.value
 
-            if(currLastProduct.state.isLoading || currLastProduct.state.isNextPage.not()) return@launchCatchError
+            if (currLastProduct.state.isLoading || currLastProduct.state.isNextPage.not()) return@launchCatchError
 
             _lastTaggedProduct.setValue {
                 copy(state = PagedState.Loading)
@@ -484,7 +484,7 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val currLastProduct = _lastPurchasedProduct.value
 
-            if(currLastProduct.state.isLoading) return@launchCatchError
+            if (currLastProduct.state.isLoading) return@launchCatchError
 
             _lastPurchasedProduct.setValue {
                 copy(state = PagedState.Loading)
@@ -509,7 +509,7 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val myShopProduct = _myShopProduct.value
 
-            if(myShopProduct.state.isLoading || myShopProduct.state.isNextPage.not()) return@launchCatchError
+            if (myShopProduct.state.isLoading || myShopProduct.state.isNextPage.not()) return@launchCatchError
 
             _myShopProduct.setValue {
                 copy(state = PagedState.Loading)
@@ -544,7 +544,7 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleSearchMyShopProduct(query: String) {
-        if(_myShopProduct.value.param.query == query) return
+        if (_myShopProduct.value.param.query == query) return
 
         val newParam = _myShopProduct.value.param.apply {
             resetPagination()
@@ -557,7 +557,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleOpenMyShopSortBottomSheet() {
         viewModelScope.launchCatchError(block = {
-            if(_myShopSort.value.isEmpty()) {
+            if (_myShopSort.value.isEmpty()) {
                 val prevParam = _myShopProduct.value.param
                 val param = initParam(prevParam).apply {
                     source = SearchParamUiModel.SOURCE_SEARCH_PRODUCT
@@ -584,7 +584,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleApplyMyShopSort(selectedSort: SortUiModel) {
         val currState = _myShopProduct.value
-        if(currState.param.isParamFound(selectedSort.key, selectedSort.value)) return
+        if (currState.param.isParamFound(selectedSort.key, selectedSort.value)) return
 
         val prevParam = currState.param
         val newParam = initParam(prevParam).apply {
@@ -600,7 +600,7 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val globalSearchProduct = _globalSearchProduct.value
 
-            if(globalSearchProduct.state.isLoading || globalSearchProduct.state.isNextPage.not()) return@launchCatchError
+            if (globalSearchProduct.state.isLoading || globalSearchProduct.state.isNextPage.not()) return@launchCatchError
 
             _globalSearchProduct.setValue {
                 copy(state = PagedState.Loading)
@@ -617,7 +617,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
             val result = repo.searchAceProducts(param = newParam)
 
-            if(newParam.isFirstPage) {
+            if (newParam.isFirstPage) {
                 _uiEvent.emit(ProductTagUiEvent.HitGlobalSearchProductTracker(result.header, newParam))
             }
 
@@ -647,7 +647,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleSuggestionClicked() {
         val suggestionQuery = _globalSearchProduct.value.suggestion.suggestion
-        if(suggestionQuery.isEmpty()) return
+        if (suggestionQuery.isEmpty()) return
 
         _globalSearchProduct.setValue {
             val prevParamProduct = _globalSearchProduct.value.param.apply {
@@ -671,7 +671,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleTickerClicked() {
         val tickerParam = _globalSearchProduct.value.ticker.query
-        if(tickerParam.isEmpty()) return
+        if (tickerParam.isEmpty()) return
 
         val prevParam = _globalSearchProduct.value.param
         val newParam = initParam(prevParam).apply {
@@ -699,7 +699,7 @@ class ProductTagViewModel @AssistedInject constructor(
         val newParam = currState.param.copy().apply {
             resetPagination()
 
-            if(isParamFound(quickFilter.key, quickFilter.value))
+            if (isParamFound(quickFilter.key, quickFilter.value))
                 removeParam(quickFilter.key, quickFilter.value)
             else addParam(quickFilter.key, quickFilter.value)
         }
@@ -720,7 +720,7 @@ class ProductTagViewModel @AssistedInject constructor(
                 source = SearchParamUiModel.SOURCE_SEARCH_PRODUCT
             }
 
-            val sortFilters = if(currState.sortFilters.isEmpty()) {
+            val sortFilters = if (currState.sortFilters.isEmpty()) {
                 repo.getSortFilter(param).also {
                     _globalSearchProduct.setValue { copy(sortFilters = it) }
                 }
@@ -770,7 +770,7 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val globalSearchShop = _globalSearchShop.value
 
-            if(globalSearchShop.state.isLoading || globalSearchShop.state.isNextPage.not()) return@launchCatchError
+            if (globalSearchShop.state.isLoading || globalSearchShop.state.isNextPage.not()) return@launchCatchError
 
             _globalSearchShop.setValue {
                 copy(state = PagedState.Loading)
@@ -788,7 +788,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
             val result = repo.searchAceShops(param = newParam)
 
-            if(newParam.isFirstPage) {
+            if (newParam.isFirstPage) {
                 _uiEvent.emit(ProductTagUiEvent.HitGlobalSearchShopTracker(result.header, newParam))
             }
 
@@ -815,7 +815,7 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleShopSelected(shop: ShopUiModel) {
-        if(shop.isShopAccessible) {
+        if (shop.isShopAccessible) {
             _shopProduct.setValue { ShopProductUiModel.Empty.copy(shop = shop) }
             _productTagSourceStack.setValue { toMutableSet().apply { add(ProductTagSource.Shop) } }
         }
@@ -827,7 +827,7 @@ class ProductTagViewModel @AssistedInject constructor(
         val newParam = currState.param.copy().apply {
             resetPagination()
 
-            if(isParamFound(quickFilter.key, quickFilter.value))
+            if (isParamFound(quickFilter.key, quickFilter.value))
                 removeParam(quickFilter.key, quickFilter.value)
             else addParam(quickFilter.key, quickFilter.value)
         }
@@ -849,7 +849,7 @@ class ProductTagViewModel @AssistedInject constructor(
                 pageSource = SearchParamUiModel.SOURCE_SEARCH_SHOP
             }
 
-            val sortFilters = if(currState.sortFilters.isEmpty()) {
+            val sortFilters = if (currState.sortFilters.isEmpty()) {
                 repo.getSortFilter(param).also {
                     _globalSearchShop.setValue { copy(sortFilters = it) }
                 }
@@ -903,7 +903,7 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val shopProduct = _shopProduct.value
 
-            if(shopProduct.state.isLoading || shopProduct.state.isNextPage.not()) return@launchCatchError
+            if (shopProduct.state.isLoading || shopProduct.state.isNextPage.not()) return@launchCatchError
 
             _shopProduct.setValue {
                 copy(state = PagedState.Loading)
@@ -938,7 +938,7 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleSearchShopProduct(query: String) {
-        if(_shopProduct.value.param.query == query) return
+        if (_shopProduct.value.param.query == query) return
 
         _shopProduct.setValue {
 
