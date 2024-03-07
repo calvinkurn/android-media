@@ -68,7 +68,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
             return
         }
         delay(500)
-        val quitType = if (AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.ACTIVITY_HASH_CODE) == hash) {
+        val quitType = if (AppLogAnalytics.getPreviousHash() == hash) {
             QuitType.NEXT
         } else {
             QuitType.CLOSE
