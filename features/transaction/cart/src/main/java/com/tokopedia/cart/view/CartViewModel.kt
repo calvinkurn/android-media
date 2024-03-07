@@ -965,7 +965,6 @@ class CartViewModel @Inject constructor(
                         pageNumber = 1,
                         xSource = RECENT_VIEW_XSOURCE,
                         pageName = PAGE_NAME_BUY_AGAIN,
-                        productIds = CartDataHelper.getAllCartItemProductId(cartDataList.value),
                         queryParam = "",
                         hasNewProductCardEnabled = true
                     )
