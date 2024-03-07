@@ -128,13 +128,23 @@ class ContentTaggedProductBottomSheetItemView(
         stock: ContentTaggedProductUiModel.Stock,
         price: ContentTaggedProductUiModel.Price
     ) {
-        val isShown = stock is ContentTaggedProductUiModel.Stock.Available
+        val isStockAvailable = stock is ContentTaggedProductUiModel.Stock.Available
         val isMaskedPrice = price is ContentTaggedProductUiModel.CampaignPrice && price.isMasked
 
-        binding.btnProductBuy.isEnabled = isShown
-        binding.btnProductAtc.isEnabled = isShown
-        binding.viewOverlayOos.showWithCondition(!isShown && !isMaskedPrice)
-        binding.labelOutOfStock.showWithCondition(!isShown && !isMaskedPrice)
+        binding.btnProductBuy.isEnabled = isStockAvailable
+        binding.btnProductAtc.isEnabled = isStockAvailable
+
+        if (!isStockAvailable) {
+            binding.labelOutOfStock.setLabel(context.getString(R.string.content_out_of_stock_label_text))
+        } else if (isMaskedPrice) {
+            binding.labelOutOfStock.setLabel(context.getString(R.string.content_soon_label_text))
+        } else {
+            binding.labelOutOfStock.setLabel("")
+        }
+
+        val showLabel = !isStockAvailable || isMaskedPrice
+        binding.viewOverlayOos.showWithCondition(showLabel)
+        binding.labelOutOfStock.showWithCondition(showLabel)
     }
 
     interface Listener {
