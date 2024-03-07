@@ -9,6 +9,7 @@ import kotlinx.parcelize.Parcelize
  * ShareExBottomSheetArg.Builder(pageTypeEnum, defaultUrl, trackerArg)
  *      .withProductId(id) // only put value to the necessary field
  *      .withReviewId(id)
+ *      ..etc
  *      .build()
  */
 @Parcelize
