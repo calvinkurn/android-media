@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_account.explicitprofile.data.QuestionDataModel
 import com.tokopedia.home_account.explicitprofile.data.SaveMultipleAnswersParam
 import com.tokopedia.home_account.explicitprofile.domain.GetQuestionsUseCase
+import com.tokopedia.home_account.explicitprofile.domain.GetRolloutUserVariantUseCase
 import com.tokopedia.home_account.explicitprofile.domain.SaveMultipleAnswersUseCase
 import com.tokopedia.home_account.explicitprofile.personalize.ui.OptionSelected
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -14,6 +15,7 @@ import javax.inject.Inject
 
 class ExplicitPersonalizeViewModel @Inject constructor(
     val getQuestionsUseCase: GetQuestionsUseCase,
+    val getRolloutUserVariantUseCase: GetRolloutUserVariantUseCase,
     val saveMultipleAnswersUseCase: SaveMultipleAnswersUseCase,
     val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
@@ -67,6 +69,13 @@ class ExplicitPersonalizeViewModel @Inject constructor(
 
         launchCatchError (
             block = {
+                val isActivated = getRolloutUserVariantUseCase(listOf(ABTEST_KEY_EXPLICIT_PERSONALIZE))
+
+                if (isActivated.rolloutUserVariant.featureVariants.first().variant != ABTEST_VARIANT_EXPLICIT_PERSONALIZE) {
+                    _stateGetQuestion.value = ExplicitPersonalizeResult.Failed
+                    return@launchCatchError
+                }
+
                 val template = getQuestionsUseCase(GetQuestionsUseCase.QuestionParams(templateName = CATEGORY_PREFERENCE))
                     .explicitProfileQuestionDataModel.template
                 templateId = template.id
@@ -150,6 +159,8 @@ class ExplicitPersonalizeViewModel @Inject constructor(
     }
 
     companion object {
+        private const val ABTEST_KEY_EXPLICIT_PERSONALIZE = "cat_affinity_android"
+        private const val ABTEST_VARIANT_EXPLICIT_PERSONALIZE = "control_variant"
         private const val CATEGORY_PREFERENCE = "category_preference"
         private const val MULTIPLE_ANSWER = "MultipleAnswer"
     }
