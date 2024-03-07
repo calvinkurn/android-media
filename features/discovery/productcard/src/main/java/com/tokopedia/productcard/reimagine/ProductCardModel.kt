@@ -189,7 +189,7 @@ data class ProductCardModel(
      * @property copyWriting text for the main button
      * @property mainButtonVariant variant for the main button, value is UnifyButton.Variant
      * @property mainButtonType type for the main button, value is UnifyButton.Type
-     * @property shoudShowSecondaryCta whether to show secondary CTA or not,
+     * @property shouldShowSecondaryCta whether to show secondary CTA or not,
      * secondary CTA is the smaller left one
      * @property secondaryCtaIconResource icon resource Idl for the secondary CTA
      * @property secondaryCtaIconResourceColorToken colorToken for the secondary CTA icon
@@ -200,7 +200,7 @@ data class ProductCardModel(
         val copyWriting: String? = "",
         val mainButtonVariant: Int = UnifyButton.Variant.GHOST,
         val mainButtonType: Int = UnifyButton.Type.MAIN,
-        val shoudShowSecondaryCta: Boolean = false,
+        val shouldShowSecondaryCta: Boolean = false,
         @IdRes
         val secondaryCtaIconResource: Int? = null,
         val secondaryCtaIconResourceColorToken: Int? = null,
@@ -213,7 +213,7 @@ data class ProductCardModel(
                 return ProductCardGenericCta(
                     copyWriting = productCardGenericCta.copyWriting,
                     mainButtonVariant = productCardGenericCta.mainButtonVariant,
-                    shoudShowSecondaryCta = productCardGenericCta.shoudShowSecondaryCta,
+                    shouldShowSecondaryCta = productCardGenericCta.shouldShowSecondaryCta,
                     secondaryCtaIconResource = productCardGenericCta.secondaryCtaIconResource,
                     secondaryCtaBackgroundColorToken = productCardGenericCta.secondaryCtaBackgroundColorToken,
                     secondaryCtaBorderColorToken = productCardGenericCta.secondaryCtaBorderColorToken

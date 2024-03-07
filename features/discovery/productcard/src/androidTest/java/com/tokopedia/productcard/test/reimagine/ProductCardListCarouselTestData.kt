@@ -246,7 +246,7 @@ private fun genericCta(): ProductCardReimagineMatcher {
 private fun genericCtaWithSecondary(): ProductCardReimagineMatcher {
     val productCardGenericCta = ProductCardModel.ProductCardGenericCta(
         copyWriting = "+ Keranjang",
-        shoudShowSecondaryCta = true
+        shouldShowSecondaryCta = true
     )
     val reimagineProductOffers = labelGroupProductOffers()
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(

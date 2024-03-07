@@ -124,4 +124,13 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
         super.setOnLongClickListener(l)
         productCardStrategy.setOnLongClickListener(l)
     }
+
+    fun  setGenericCtaButtonOnClickListener(onClickListener: OnClickListener) {
+        productCardStrategy.setGenericCtaButtonOnClickListener(onClickListener)
+    }
+
+    fun setGenericCtaSecondaryButtonOnClickListener(onClickListener: OnClickListener) {
+        productCardStrategy.setGenericCtaSecondaryButtonOnClickListener(onClickListener)
+    }
+
 }

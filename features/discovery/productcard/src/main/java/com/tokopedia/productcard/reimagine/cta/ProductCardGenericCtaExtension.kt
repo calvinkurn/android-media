@@ -60,7 +60,7 @@ internal class ProductCardGenericCtaExtension(
 
     private fun renderCtaButtonSecondary(item: ProductCardModel.ProductCardGenericCta) {
         if (productCardCtaSecondaryButton == null) return
-        if (!item.shoudShowSecondaryCta) {
+        if (!item.shouldShowSecondaryCta) {
             productCardCtaSecondaryButton?.visibility = View.GONE
             return
         }
