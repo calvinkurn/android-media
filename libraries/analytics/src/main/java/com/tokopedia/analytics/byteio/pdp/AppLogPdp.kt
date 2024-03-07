@@ -16,6 +16,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePreviousPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastDataBeforeCurrent
+import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
@@ -31,8 +32,11 @@ import com.tokopedia.analytics.byteio.TrackProductDetail
 import com.tokopedia.analytics.byteio.TrackStayProductDetail
 import org.json.JSONObject
 import timber.log.Timber
+import java.util.concurrent.atomic.AtomicBoolean
 
 object AppLogPdp {
+
+    val addToCart = AtomicBoolean(false)
 
     fun sendPDPEnterPage(product: TrackProductDetail?) {
         if (product == null) {
@@ -62,6 +66,7 @@ object AppLogPdp {
         product: TrackStayProductDetail,
         quitType: String
     ) {
+        val isAddToCart = product.isAddCartSelected || addToCart.getAndSet(false)
         AppLogAnalytics.send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
             it.put(PREVIOUS_PAGE, getLastDataBeforeCurrent(PAGE_NAME))
             it.put(PAGE_NAME, PageName.PDP)
@@ -83,7 +88,7 @@ object AppLogPdp {
             it.put("sale_price", product.salePrice)
             it.put("is_single_sku", if (product.isSingleSku) 1 else 0)
             it.put("is_sku_selected", if (product.isSkuSelected) 1 else 0)
-            it.put("is_add_cart", if (product.isAddCartSelected) 1 else 0)
+            it.put("is_add_cart", isAddToCart.intValue)
         })
     }
 
