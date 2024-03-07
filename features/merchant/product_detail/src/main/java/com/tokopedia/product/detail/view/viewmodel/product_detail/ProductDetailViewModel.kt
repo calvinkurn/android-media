@@ -707,7 +707,7 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     private fun sendConfirmCartBytIoTracker() {
-        val data = getProductInfoP1 ?: throw Exception()
+        val data = getProductInfoP1 ?: return
         AppLogPdp.sendConfirmCart(
             TrackConfirmCart(
                 productId = data.parentProductId,
