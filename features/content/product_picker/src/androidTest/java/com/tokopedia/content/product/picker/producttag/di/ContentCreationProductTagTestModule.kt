@@ -12,7 +12,7 @@ import dagger.Provides
  */
 @Module
 class ContentCreationProductTagTestModule(
-        private val mockRepo: ProductTagRepository,
+    private val mockRepo: ProductTagRepository,
 ) {
 
     @Provides
