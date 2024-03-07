@@ -318,7 +318,6 @@ class ProductPreviewFragment @Inject constructor(
     private fun handleAtc(model: BottomNavUiModel) {
         if (model.buttonState == OOS) analytics.onClickRemindMe(pageSource)
         if (model.hasVariant) {
-            analytics.onClickVariantGBVS(pageSource)
             AtcVariantHelper.goToAtcVariant(
                 context = requireContext(),
                 pageSource = VariantPageSource.PRODUCT_PREVIEW_PAGESOURCE,

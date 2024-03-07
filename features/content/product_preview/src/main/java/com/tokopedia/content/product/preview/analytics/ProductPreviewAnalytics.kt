@@ -78,37 +78,31 @@ interface ProductPreviewAnalytics {
     fun onClickBackButton(pageSource: String)
 
     /**
-     * 12. click ATC to global variant bottomsheet
-     * 49607
-     */
-    fun onClickVariantGBVS(pageSource: String)
-
-    /**
-     * 13. click laporkan ulasan in ulasan tab
+     * 12. click laporkan ulasan in ulasan tab
      * 49650
      */
     fun onClickReviewReport()
 
     /**
-     * 14. click mode nonton in ulasan tab
+     * 13. click mode nonton in ulasan tab
      * 49651
      */
     fun onClickReviewWatchMode()
 
     /**
-     * 15. click pause/play in video
+     * 14. click pause/play in video
      * 49845
      */
     fun onClickPauseOrPlayVideo(pageSource: String)
 
     /**
-     * 16. submit report from ulasan tab
+     * 15. submit report from ulasan tab
      * 49850
      */
     fun onClickSubmitReport()
 
     /**
-     * 17. like/unlike content
+     * 16. like/unlike content
      * 49851
      */
     fun onClickLikeOrUnlike()
