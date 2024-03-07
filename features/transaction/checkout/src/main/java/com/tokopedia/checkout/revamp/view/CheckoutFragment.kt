@@ -2811,7 +2811,7 @@ class CheckoutFragment :
     }
 
     override fun onRetryGetPayment() {
-        viewModel.calculateTotal(forceGetPaymentWidget = true)
+        viewModel.calculateTotal()
     }
 
     override fun onChangePayment(payment: CheckoutPaymentModel) {

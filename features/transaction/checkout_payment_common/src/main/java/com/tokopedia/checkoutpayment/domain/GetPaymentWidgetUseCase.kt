@@ -15,6 +15,7 @@ class GetPaymentWidgetUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<GetPaymentWidgetRequest, PaymentWidgetListData>(dispatchers.io) {
+
     override fun graphqlQuery(): String {
         return """
             query getPaymentWidget(${"$"}params: GetPaymentWidgetParams) {

@@ -54,12 +54,15 @@ import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.checkoutpayment.data.GetPaymentWidgetChosenPaymentRequest
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetRequest
 import com.tokopedia.checkoutpayment.data.GoCicilInstallmentRequest
 import com.tokopedia.checkoutpayment.data.PaymentFeeRequest
 import com.tokopedia.checkoutpayment.data.PaymentRequest
+import com.tokopedia.checkoutpayment.domain.PaymentWidgetData
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_CC_TENOR_LIST
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_INSTALLMENT_OPTIONS
+import com.tokopedia.checkoutpayment.domain.PaymentWidgetListData
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
@@ -194,6 +197,8 @@ class CheckoutViewModel @Inject constructor(
 
     var isCartCheckoutRevamp: Boolean = false
     var usePromoEntryPointNewInterface: Boolean = false
+
+    private var cartType: String = ""
 
     fun stopEmbraceTrace() {
         val emptyMap: Map<String, Any> = HashMap()
@@ -387,6 +392,8 @@ class CheckoutViewModel @Inject constructor(
                                 it
                             }
                         }
+
+                        cartType = saf.cartShipmentAddressFormData.cartType
 
                         withContext(dispatchers.main) {
                             listData.value = listOf(
@@ -896,20 +903,22 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    internal fun calculateTotal(forceGetPaymentWidget: Boolean = false, skipPaymentFlow: Boolean = false) {
+    private fun calculateTotalWithoutPayment() {
+        listData.value = calculator.calculateTotalAndUpdateButtonPaymentWithoutPaymentData(
+            listData.value,
+            isTradeInByDropOff,
+            summariesAddOnUiModel
+        )
+    }
+
+    internal fun calculateTotal() {
         viewModelScope.launch(dispatchers.immediate) {
-            listData.value = calculator.calculateTotalAndUpdateButtonPaymentWithoutPaymentData(
-                listData.value,
-                isTradeInByDropOff,
-                summariesAddOnUiModel
-            )
-            if (!skipPaymentFlow) {
-                val shouldGetPayment = shouldGetPayment(listData.value)
-                if (shouldGetPayment) {
-                    getCheckoutPaymentData(forceGetPaymentWidget)
-                } else {
-                    getCheckoutPlatformFee()
-                }
+            calculateTotalWithoutPayment()
+            val shouldGetPayment = shouldGetPayment(listData.value)
+            if (shouldGetPayment) {
+                getCheckoutPaymentData()
+            } else {
+                getCheckoutPlatformFee()
             }
         }
     }
@@ -1193,7 +1202,7 @@ class CheckoutViewModel @Inject constructor(
                 listData.value.address()!!.recipientAddressModel,
                 listData.value
             )
-            calculateTotal(skipPaymentFlow = true)
+            calculateTotalWithoutPayment()
             sendEEStep3()
         }
     }
@@ -1337,7 +1346,7 @@ class CheckoutViewModel @Inject constructor(
                 listData.value.address()!!.recipientAddressModel,
                 listData.value
             )
-            calculateTotal(skipPaymentFlow = true)
+            calculateTotalWithoutPayment()
             sendEEStep3()
         }
     }
@@ -1484,7 +1493,7 @@ class CheckoutViewModel @Inject constructor(
                 listData.value.address()!!.recipientAddressModel,
                 listData.value
             )
-            calculateTotal(skipPaymentFlow = true)
+            calculateTotalWithoutPayment()
             sendEEStep3()
         }
     }
@@ -3091,7 +3100,7 @@ class CheckoutViewModel @Inject constructor(
         return hasValidOrder && isPaymentWidgetEnable
     }
 
-    private suspend fun getCheckoutPaymentData(forceGetPaymentWidget: Boolean) {
+    private suspend fun getCheckoutPaymentData() {
         val checkoutItems = listData.value.toMutableList()
         var payment = checkoutItems.payment() ?: return
 
@@ -3103,10 +3112,18 @@ class CheckoutViewModel @Inject constructor(
         var cost = listData.value.cost()!!
         var paymentRequest = paymentProcessor.generatePaymentRequest(checkoutItems, payment)
 
-        if (payment.data == null || forceGetPaymentWidget) {
+        if (payment.data?.paymentWidgetData?.firstOrNull()?.gatewayName.isNullOrEmpty()) {
             // get payment widget if not yet
+            val chosenPayment = payment.data?.paymentWidgetData?.firstOrNull()
+                ?: PaymentWidgetData()
             payment = paymentProcessor.getPaymentWidget(
                 GetPaymentWidgetRequest(
+                    source = "one-click-checkout",
+                    chosenPayment = GetPaymentWidgetChosenPaymentRequest(
+                        gatewayCode = chosenPayment.gatewayCode,
+                        metadata = chosenPayment.metadata
+                    ),
+                    cartMetadata = payment.metadata,
                     paymentRequest = Gson().toJson(paymentRequest)
                 ),
                 payment
@@ -3229,7 +3246,25 @@ class CheckoutViewModel @Inject constructor(
                 toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, updateCartResult.toasterMessage, updateCartResult.throwable))
                 return@launch
             }
-            calculateTotal(forceGetPaymentWidget = true)
+            val checkoutItems = listData.value.toMutableList()
+            val currentPayment = checkoutItems.payment()!!
+            checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = currentPayment.copy(
+                data = PaymentWidgetListData(
+                    paymentWidgetData = listOf(
+                        PaymentWidgetData(
+                            gatewayCode = gatewayCode,
+                            metadata = metadata
+                        )
+                    )
+                ),
+                tenorList = null,
+                installmentData = null,
+                widget = currentPayment.widget.copy(
+                    state = CheckoutPaymentWidgetState.Loading
+                )
+            )
+            listData.value = checkoutItems
+            calculateTotal()
         }
     }
 

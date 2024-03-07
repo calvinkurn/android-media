@@ -53,7 +53,8 @@ data class CartShipmentAddressFormData(
     var listSummaryAddons: List<ShipmentSummaryAddOnData> = emptyList(),
     var paymentLevelAddOnsPositions: List<Long> = emptyList(),
     var additionalFeature: AdditionalFeature = AdditionalFeature(),
-    var paymentWidget: PaymentWidget = PaymentWidget()
+    var paymentWidget: PaymentWidget = PaymentWidget(),
+    var cartType: String = ""
 ) : Parcelable {
 
     val getAvailablePurchaseProtection: ArrayList<String>

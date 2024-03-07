@@ -703,6 +703,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 enable
                 error_message
               }
+              cart_type
             }
           }
         }"""

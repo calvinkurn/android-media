@@ -83,5 +83,7 @@ data class ShipmentAddressFormDataResponse(
     @SerializedName("additional_features")
     val additionalFeatures: List<String> = emptyList(),
     @SerializedName("payment_widget")
-    val paymentWidget: PaymentWidgetResponse = PaymentWidgetResponse()
+    val paymentWidget: PaymentWidgetResponse = PaymentWidgetResponse(),
+    @SerializedName("cart_type")
+    val cartType: String = ""
 )

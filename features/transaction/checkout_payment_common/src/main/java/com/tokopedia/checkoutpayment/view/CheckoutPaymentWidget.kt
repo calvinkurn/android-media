@@ -118,10 +118,10 @@ fun CheckoutPaymentWidget(
                         )
                         Row(
                             modifier = Modifier
-                                .padding(start = 16.dp, end = 28.dp, bottom = 12.dp)
+                                .padding(bottom = 12.dp)
                                 .setOnClickDebounceListener(showIndication = false) {
                                     onClickedListener()
-                                },
+                                }.padding(start = 16.dp, end = 28.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             NestImage(

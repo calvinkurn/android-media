@@ -198,6 +198,7 @@ class ShipmentMapper @Inject constructor() {
                 mapPaymentLevelAddOns(shipmentAddressFormDataResponse.paymentLevelAddOns)
             additionalFeature = mapAdditionalFeatures(shipmentAddressFormDataResponse.additionalFeatures)
             paymentWidget = mapPaymentWidget(shipmentAddressFormDataResponse.paymentWidget)
+            cartType = shipmentAddressFormDataResponse.cartType
         }
     }
 

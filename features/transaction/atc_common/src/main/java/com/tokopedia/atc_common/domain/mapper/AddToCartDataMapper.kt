@@ -174,7 +174,6 @@ class AddToCartDataMapper @Inject constructor() {
             status = addToCartOccMultiDataModel.status,
             data = mapDataModel(addToCartOccMultiDataModel.data),
             isOccNewCheckoutPage = addToCartOccMultiDataModel.isNewCheckoutPaymentPage()
-//            isOccNewCheckoutPage = true
         )
     }
 
