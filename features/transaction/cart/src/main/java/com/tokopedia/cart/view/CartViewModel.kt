@@ -84,7 +84,6 @@ import com.tokopedia.cart.view.uimodel.UpdateCartAndGetLastApplyEvent
 import com.tokopedia.cart.view.uimodel.UpdateCartCheckoutState
 import com.tokopedia.cart.view.uimodel.UpdateCartPromoState
 import com.tokopedia.cart.view.util.CartPageAnalyticsUtil
-import com.tokopedia.cart.view.viewholder.CartBuyAgainItemViewHolder
 import com.tokopedia.cartcommon.data.request.checkbox.SetCartlistCheckboxStateRequest
 import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
@@ -96,6 +95,7 @@ import com.tokopedia.cartcommon.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -996,10 +996,6 @@ class CartViewModel @Inject constructor(
         } else {
             cartModel.buyAgainList?.let { buyAgainList.addAll(it) }
         }
-        val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
-        cartSectionHeaderHolderData.title = recommendationWidget?.title ?: "Waktunya beli lagi, nih!"
-        cartSectionHeaderHolderData.showAllAppLink = recommendationWidget?.seeMoreAppLink ?: ""
-        cartSectionHeaderHolderData.type = CartSectionHeaderActionType.ICON_BUTTON
 
         val cartBuyAgainHolderData = CartBuyAgainHolderData()
         val isSeeMoreAppLinkExist = recommendationWidget?.seeMoreAppLink?.isNotBlank() == true
@@ -1014,6 +1010,16 @@ class CartViewModel @Inject constructor(
             resultList.add(CartBuyAgainViewAllData(recommendationWidget?.seeMoreAppLink ?: ""))
         }
         cartBuyAgainHolderData.buyAgainList = resultList
+
+        val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
+        cartSectionHeaderHolderData.title = recommendationWidget?.title ?: "Waktunya beli lagi, nih!"
+        cartSectionHeaderHolderData.showAllAppLink = if (buyAgainList.size > BUY_AGAIN_PRODUCTS_LIMIT) {
+            recommendationWidget?.seeMoreAppLink ?: ""
+        } else {
+            String.EMPTY
+        }
+        cartSectionHeaderHolderData.type = CartSectionHeaderActionType.ICON_BUTTON
+
         addCartBuyAgainData(cartSectionHeaderHolderData, cartBuyAgainHolderData)
         cartModel.buyAgainList = buyAgainList.filterIsInstance(CartBuyAgainItemHolderData::class.java)
         cartModel.shouldReloadBuyAgainList = false
