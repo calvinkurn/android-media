@@ -47,7 +47,6 @@ data class CatalogProductListResponse(
             @SerializedName("warehouseID")
             val warehouseID: String?,
             @SerializedName("category")
-            @Expose
             val category: Category?
         ) {
             data class AdditionalService(
