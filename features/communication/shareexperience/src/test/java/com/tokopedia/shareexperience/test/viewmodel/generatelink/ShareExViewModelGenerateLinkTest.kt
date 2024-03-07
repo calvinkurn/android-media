@@ -21,6 +21,7 @@ import com.tokopedia.shareexperience.domain.model.request.shortlink.ShareExShort
 import com.tokopedia.shareexperience.domain.util.ShareExResult
 import com.tokopedia.shareexperience.ui.ShareExAction
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetResultArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
 import com.tokopedia.shareexperience.ui.util.ShareExIntentErrorEnum
@@ -40,11 +41,12 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
     fun `generate affiliate link, get short link`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = dummyIdentifier,
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(""),
+                trackerArg = ShareExTrackerArg("")
+            ).withProductId(dummyIdentifier).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -146,11 +148,12 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
     fun `generate branch link, get short link`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = dummyIdentifier,
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(""),
+                trackerArg = ShareExTrackerArg("")
+            ).withProductId(dummyIdentifier).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -244,11 +247,12 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
     fun `generate affiliate link without image generator, get short link`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = dummyIdentifier,
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(""),
+                trackerArg = ShareExTrackerArg("")
+            ).withProductId(dummyIdentifier).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -335,11 +339,12 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
     fun `generate link without image generator, get short link`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = dummyIdentifier,
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(""),
+                trackerArg = ShareExTrackerArg("")
+            ).withProductId(dummyIdentifier).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -424,11 +429,12 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
     fun `generate link without bottom sheet property and default url, get empty short link or message`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = dummyIdentifier,
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.PDP,
                 defaultUrl = "",
-                trackerArg = ShareExTrackerArg(""),
+                trackerArg = ShareExTrackerArg("")
+            ).withProductId(dummyIdentifier).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
                 bottomSheetModel = ShareExBottomSheetModel(
                     title = "testTitle",
                     subtitle = "testSubtitle",
@@ -466,11 +472,12 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
     fun `generate link from default page, get default url`() {
         runTest {
             // Given
-            viewModel.bottomSheetArgs = ShareExBottomSheetArg(
-                identifier = "",
+            viewModel.bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.OTHERS,
                 defaultUrl = "defaultUrl",
-                trackerArg = ShareExTrackerArg(""),
+                trackerArg = ShareExTrackerArg("")
+            ).build()
+            viewModel.bottomSheetResultArg = ShareExBottomSheetResultArg(
                 throwable = dummyThrowable
             )
 
@@ -526,7 +533,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
                 mimeType = ShareExMimeTypeEnum.TEXT,
                 packageName = ""
             )
-            viewModel.bottomSheetArgs = null
+            viewModel.bottomSheetArg = null
 
             viewModel.channelIntentUiState.test {
                 // When
