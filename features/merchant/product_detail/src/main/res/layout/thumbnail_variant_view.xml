@@ -12,42 +12,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <androidx.cardview.widget.CardView
+        <FrameLayout
             android:id="@+id/variant_card"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
-            android:foreground="@drawable/pdp_thumbnail_variant_border_default"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:cardMaxElevation="0dp">
+            android:foreground="@drawable/pdp_thumbnail_variant_border_default">
 
-            <FrameLayout
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/variant_thumbnail"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:unify_image_corner_radius="13"
+                tools:src="@tools:sample/avatars" />
 
-                <com.tokopedia.unifycomponents.ImageUnify
-                    android:id="@+id/variant_thumbnail"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    tools:src="@tools:sample/avatars" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/variant_overlay_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/pdp_thumbnail_variant_shape_round"
+                android:gravity="center"
+                android:text="@string/variant_thumbnail_empty_state"
+                android:textColor="@color/Unify_NN0"
+                app:typographyType="small"
+                app:typographyWeight="bold" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/variant_overlay_empty"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/Unify_Overlay_Lvl3"
-                    android:gravity="center"
-                    android:text="Habis"
-                    android:textColor="@color/Unify_NN0"
-                    app:typographyType="small"
-                    app:typographyWeight="bold" />
-
-            </FrameLayout>
-
-        </androidx.cardview.widget.CardView>
+        </FrameLayout>
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/variant_promo_icon"

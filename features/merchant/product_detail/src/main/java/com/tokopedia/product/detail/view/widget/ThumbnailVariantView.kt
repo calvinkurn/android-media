@@ -69,7 +69,6 @@ class ThumbnailVariantView(
     fun setSelectedState() {
         setVariantTitleColor(unifyprinciplesR.color.Unify_GN500)
         setVariantTitleWeight(Typography.BOLD)
-        setCardBackground(unifyprinciplesR.color.Unify_NN0)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_selected)
         resetThumbGrayscale()
     }
@@ -84,7 +83,6 @@ class ThumbnailVariantView(
     fun setUnselectedState() {
         setVariantTitleColor(unifyprinciplesR.color.Unify_NN600)
         setVariantTitleWeight(Typography.REGULAR)
-        setCardBackground(unifyprinciplesR.color.Unify_NN0)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_default)
         resetThumbGrayscale()
     }
@@ -92,9 +90,7 @@ class ThumbnailVariantView(
     fun setDisableState() {
         setVariantTitleColor(unifyprinciplesR.color.Unify_NN400)
         setVariantTitleWeight(Typography.REGULAR)
-        setCardBackground(unifyprinciplesR.color.Unify_NN50)
         setCardBorder(R.drawable.pdp_thumbnail_variant_border_disable)
-
         setThumbGrayscale()
     }
 
@@ -127,11 +123,6 @@ class ThumbnailVariantView(
     private fun setCardBorder(resId: Int) {
         val drawable = context.getDrawableChecker(resId)
         binding.variantCard.foreground = drawable
-    }
-
-    private fun setCardBackground(colorId: Int) {
-        val color = context.getColorChecker(colorId)
-        binding.variantCard.setCardBackgroundColor(color)
     }
 
     private fun getColor(resId: Int): Int {
