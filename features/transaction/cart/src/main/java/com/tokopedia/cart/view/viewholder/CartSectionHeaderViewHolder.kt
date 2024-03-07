@@ -8,7 +8,6 @@ import com.tokopedia.cart.databinding.ItemCartSectionHeaderBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartSectionHeaderActionType
 import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.utils.Utils
@@ -61,7 +60,7 @@ class CartSectionHeaderViewHolder(private val binding: ItemCartSectionHeaderBind
                         labelShowAll.gone()
                         icShowAll.gone()
                         flAction.visible()
-                        labelTitle.setType(Typography.HEADING_2)
+                        labelTitle.setType(Typography.DISPLAY_1)
                         val constraintSet = ConstraintSet()
                         constraintSet.clone(clContainer)
                         constraintSet.connect(
