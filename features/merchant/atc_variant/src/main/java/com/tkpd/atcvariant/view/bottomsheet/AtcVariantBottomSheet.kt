@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.ViewStub
 import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -88,11 +89,13 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import kotlinx.coroutines.flow.collectLatest
 import rx.subscriptions.CompositeSubscription
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
 
 /**
  * Created by Yehezkiel on 05/05/21
@@ -359,7 +362,7 @@ class AtcVariantBottomSheet :
     private fun onFailFavoriteShop(t: Throwable) {
         showToasterError(
             getErrorMessage(t),
-            ctaBtn = getString(com.tokopedia.abstraction.R.string.retry_label)
+            ctaBtn = getString(abstractionR.string.retry_label)
         ) {
             onButtonFollowNplClick()
         }
@@ -492,30 +495,37 @@ class AtcVariantBottomSheet :
     }
 
     private fun observeCart() {
-        viewModel.addToCartLiveData.observe(viewLifecycleOwner, {
-            loadingProgressDialog?.dismiss()
-            if (it is Success) {
-                onSuccessTransaction(it.data)
-                dismissAfterAtc()
-            } else if (it is Fail) {
-                it.throwable.run {
-                    trackAtcError(message ?: "")
-                    viewModel.updateActivityResult(atcSuccessMessage = "")
-                    if (this is AkamaiErrorException && message != null) {
-                        showToasterError(
-                            message ?: "",
-                            getString(R.string.atc_variant_oke_label)
-                        )
-                    } else {
-                        showToasterError(
-                            getErrorMessage(this),
-                            getString(R.string.atc_variant_oke_label)
-                        )
+        lifecycleScope.launchWhenStarted {
+            viewModel.addToCartResultState.collectLatest {
+                loadingProgressDialog?.dismiss()
+
+                when (it) {
+                    is Success -> {
+                        onSuccessTransaction(it.data)
+                        dismissAfterAtc()
                     }
-                    logException(this)
+
+                    is Fail -> {
+                        it.throwable.run {
+                            trackAtcError(message ?: "")
+                            viewModel.updateActivityResult(atcSuccessMessage = "")
+                            if (this is AkamaiErrorException && message != null) {
+                                showToasterError(
+                                    message ?: "",
+                                    getString(R.string.atc_variant_oke_label)
+                                )
+                            } else {
+                                showToasterError(
+                                    getErrorMessage(this),
+                                    getString(R.string.atc_variant_oke_label)
+                                )
+                            }
+                            logException(this)
+                        }
+                    }
                 }
             }
-        })
+        }
     }
 
     private fun trackAtcError(message: String) {
@@ -1000,8 +1010,9 @@ class AtcVariantBottomSheet :
 
     private fun showWaitingIndicator(source: String) {
         if (source == VariantPageSource.PDP_PAGESOURCE.source) {
-            atcAnimator.show()
+            atcAnimator.show { viewModel.atcAnimationEnd() }
         } else {
+            viewModel.atcAnimationEnd()
             showProgressDialog {
                 loadingProgressDialog?.dismiss()
             }
@@ -1081,23 +1092,23 @@ class AtcVariantBottomSheet :
             goToTopChat()
         } else {
             openChooseAddressBottomSheet(object :
-                ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
-                override fun onLocalizingAddressServerDown() {
-                }
+                    ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+                    override fun onLocalizingAddressServerDown() {
+                    }
 
-                override fun onAddressDataChanged() {
-                    onSuccessUpdateAddress()
-                }
+                    override fun onAddressDataChanged() {
+                        onSuccessUpdateAddress()
+                    }
 
-                override fun getLocalizingAddressHostSourceBottomSheet(): String =
-                    ProductDetailCommonConstant.KEY_PRODUCT_DETAIL
+                    override fun getLocalizingAddressHostSourceBottomSheet(): String =
+                        ProductDetailCommonConstant.KEY_PRODUCT_DETAIL
 
-                override fun onLocalizingAddressLoginSuccessBottomSheet() {
-                }
+                    override fun onLocalizingAddressLoginSuccessBottomSheet() {
+                    }
 
-                override fun onDismissChooseAddressBottomSheet() {
-                }
-            })
+                    override fun onDismissChooseAddressBottomSheet() {
+                    }
+                })
         }
     }
 
