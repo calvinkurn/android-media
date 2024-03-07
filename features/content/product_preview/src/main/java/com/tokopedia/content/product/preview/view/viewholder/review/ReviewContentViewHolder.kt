@@ -94,7 +94,8 @@ class ReviewContentViewHolder(
         binding.ivReviewMenu,
         binding.ivReviewStar,
         binding.tvReviewDescription,
-        binding.tvReviewDetails
+        binding.tvReviewDetails,
+        binding.ivReviewShare,
     )
 
     private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
