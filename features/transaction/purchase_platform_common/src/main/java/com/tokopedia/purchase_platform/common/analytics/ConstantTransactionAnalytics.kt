@@ -84,6 +84,7 @@ object ConstantTransactionAnalytics {
         const val VIEW_PG_IRIS = "viewPGIris"
         const val CLICK_DIGITAL = "clickDigital"
         const val VIEW_ITEM_LIST = "view_item_list"
+        const val ADD_TO_CART_SNAKE_CASE = "add_to_cart"
     }
 
     object EventCategory {

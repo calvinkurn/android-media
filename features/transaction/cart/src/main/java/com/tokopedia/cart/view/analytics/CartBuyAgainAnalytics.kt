@@ -76,7 +76,7 @@ object CartBuyAgainAnalytics : TransactionAnalytics() {
 
     fun sendClickBeliLagiButtonOnBuyAgainWidgetEvent(items: List<Map<String, Any>>, userId: String) {
         val bundle = bundleOf(
-            ConstantTransactionAnalytics.ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.ADD_TO_CART,
+            ConstantTransactionAnalytics.ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.ADD_TO_CART_SNAKE_CASE,
             ConstantTransactionAnalytics.ExtraKey.EVENT_CATEGORY to ConstantTransactionAnalytics.EventCategory.CART,
             ConstantTransactionAnalytics.ExtraKey.EVENT_ACTION to CLICK_BELI_LAGI_BUTTON_ON_BUY_AGAIN_WIDGET,
             ConstantTransactionAnalytics.ExtraKey.EVENT_LABEL to String.EMPTY,
