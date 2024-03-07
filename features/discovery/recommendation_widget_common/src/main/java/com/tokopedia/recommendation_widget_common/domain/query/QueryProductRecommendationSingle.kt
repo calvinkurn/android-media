@@ -51,6 +51,7 @@ internal object QueryProductRecommendationSingle {
         "                           discountPercentage\n" +
         "                           slashedPrice\n" +
         "                           slashedPriceInt\n" +
+        "                           minOrder\n" +
         "                           shop {\n" +
         "                               id\n" +
         "                               name\n" +

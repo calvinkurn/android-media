@@ -43,6 +43,9 @@ internal object MainVisitableMapper {
             slashPrice = it.originalPrice,
             isSelected = it.isSelected,
             appLink = it.applink,
+            minOrder = it.minOrder,
+            shopId = it.shop.id,
+            warehouseId = it.warehouseID,
             productLayoutType = AVAILABLE_SHOPPING_LIST
         )
     }
@@ -58,7 +61,11 @@ internal object MainVisitableMapper {
             weight = it.getWeight(),
             percentage = it.discountPercentage.toString(),
             slashPrice = it.originalPrice,
+            isSelected = it.isSelected,
             appLink = it.applink,
+            minOrder = it.minOrder,
+            shopId = it.shop.id,
+            warehouseId = it.warehouseID,
             productLayoutType = UNAVAILABLE_SHOPPING_LIST
         )
     }

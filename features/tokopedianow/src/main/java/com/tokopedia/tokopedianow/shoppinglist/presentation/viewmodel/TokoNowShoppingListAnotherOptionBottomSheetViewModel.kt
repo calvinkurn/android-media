@@ -104,11 +104,11 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
         _layoutState.value = Success(getUpdatedLayout())
 
         _toasterData.value = ToasterModel(
-            text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_to_add_product_from_shopping_list),
+            text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_to_add_product_to_shopping_list),
             actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_for_cta),
             type = Toaster.TYPE_NORMAL,
-            product = product,
-            event = ToasterModel.Event.ADD_WISHLIST
+            event = ToasterModel.Event.ADD_WISHLIST,
+            any = product
         )
     }
 
@@ -124,11 +124,11 @@ class TokoNowShoppingListAnotherOptionBottomSheetViewModel @Inject constructor(
         _layoutState.value = Success(getUpdatedLayout())
 
         _toasterData.value = ToasterModel(
-            text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_to_add_product_from_shopping_list),
-            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_for_cta),
+            text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_to_add_product_to_shopping_list),
+            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_for_cta),
             type = Toaster.TYPE_ERROR,
-            product = product,
-            event = ToasterModel.Event.ADD_WISHLIST
+            event = ToasterModel.Event.ADD_WISHLIST,
+            any = product
         )
     }
 

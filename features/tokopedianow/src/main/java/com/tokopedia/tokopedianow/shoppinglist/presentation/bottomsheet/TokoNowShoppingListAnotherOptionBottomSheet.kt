@@ -130,9 +130,9 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
 
     private suspend fun collectToasterErrorShown() {
         viewModel.toasterData.collect { data ->
-            if (data != null && data.event == ToasterModel.Event.ADD_WISHLIST) {
+            if (data?.any != null && data.any is ShoppingListHorizontalProductCardItemUiModel && data.event == ToasterModel.Event.ADD_WISHLIST) {
                 showToaster(data) {
-                    viewModel.addToWishlist(data.product)
+                    viewModel.addToWishlist(data.any)
                 }
             }
         }

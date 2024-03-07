@@ -10,9 +10,9 @@ import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -61,6 +61,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.Shoppin
 import com.tokopedia.tokopedianow.shoppinglist.presentation.bottomsheet.TokoNowShoppingListAnotherOptionBottomSheet
 import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListDecoration
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_MULTI_PRODUCTS_TO_CART
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListExpandCollapseViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListRetryViewHolder
@@ -168,14 +169,17 @@ class TokoNowShoppingListFragment :
 
     override fun onResume() {
         super.onResume()
-        viewModel.onResume()
+        resumeLayout()
     }
 
     override fun getFragmentPage(): Fragment = this@TokoNowShoppingListFragment
 
     override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
 
-    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) = viewModel.setMiniCartData(miniCartSimplifiedData)
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        viewModel.setMiniCartData(miniCartSimplifiedData)
+        binding?.navToolbar?.updateNotification()
+    }
 
     override fun refreshLayoutPage() {  }
 
@@ -197,8 +201,6 @@ class TokoNowShoppingListFragment :
         viewModel.layoutState.collect { uiState ->
             when (uiState) {
                 is UiState.Loading -> {
-                    binding.bottomBulkAtcView.hide()
-                    binding.miniCartWidget.hide()
                     val layout = uiState.data?.layout
                     if (!layout.isNullOrEmpty()) {
                         adapter.submitList(layout)
@@ -275,11 +277,16 @@ class TokoNowShoppingListFragment :
     ) {
         viewModel.bottomBulkAtcData.collect { model ->
             if (model != null) {
-                binding.bottomBulkAtcView.show()
-                binding.bottomBulkAtcView.bind(
-                    counter = model.counter,
-                    priceInt = model.price
-                )
+                binding.apply {
+                    if (!isVisible) {
+                        bottomBulkAtcView.show()
+                        adjustRecyclerViewBottomPadding()
+                    }
+                    binding.bottomBulkAtcView.bind(
+                        counter = model.counter,
+                        priceInt = model.price
+                    )
+                }
             }
         }
     }
@@ -324,18 +331,33 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private suspend fun collectToasterErrorShown() {
+    private suspend fun collectToasterErrorShown(
+        binding: FragmentTokopedianowShoppingListBinding
+    ) {
         viewModel.toasterData.collect { data ->
             if (data != null) {
                 when(data.event) {
                     ADD_WISHLIST -> {
                         showToaster(data) {
-                            viewModel.addToWishlist(data.product)
+                            if (data.any is ShoppingListHorizontalProductCardItemUiModel) {
+                                viewModel.addToWishlist(data.any)
+                            }
                         }
                     }
                     DELETE_WISHLIST -> {
                         showToaster(data) {
-                            viewModel.deleteFromWishlist(data.product)
+                            if (data.any is ShoppingListHorizontalProductCardItemUiModel) {
+                                viewModel.deleteFromWishlist(data.any)
+                            }
+                        }
+                    }
+                    ADD_MULTI_PRODUCTS_TO_CART -> {
+                        showToaster(data) {
+                            viewModel.addMultiProductsToCart()
+                        }
+                        if(data.any != null && data.any is MiniCartSimplifiedData) {
+                            binding.miniCartWidget.updateData(data.any)
+                            binding.navToolbar.updateNotification()
                         }
                     }
                 }
@@ -357,7 +379,7 @@ class TokoNowShoppingListFragment :
 
     private fun showToaster(
         model: ToasterModel,
-        clickListener: () -> Unit
+        clickListener: View.OnClickListener
     ) {
         view?.let { view ->
             if (model.text.isNotBlank()) {
@@ -368,9 +390,7 @@ class TokoNowShoppingListFragment :
                     duration = model.duration,
                     type = model.type,
                     actionText = model.actionText,
-                    clickListener = {
-                        clickListener()
-                    }
+                    clickListener = clickListener
                 ).show()
             }
         }
@@ -384,7 +404,7 @@ class TokoNowShoppingListFragment :
      */
     private fun FragmentTokopedianowShoppingListBinding.collectStateFlow() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            withStarted {
                 /**
                  * Because [collect] is a suspend function, need different coroutines to collect multiple flows in parallel.
                  * The suspending function suspends until the Flow terminates.
@@ -397,12 +417,17 @@ class TokoNowShoppingListFragment :
                 launch { collectProductAvailability(this@collectStateFlow) }
                 launch { collectBottomBulkAtc(this@collectStateFlow) }
                 launch { collectLoaderDialogShown() }
-                launch { collectToasterErrorShown() }
+                launch { collectToasterErrorShown(this@collectStateFlow) }
             }
         }
     }
 
     private fun loadLayout() = viewModel.loadLayout()
+
+    private fun resumeLayout() {
+        viewModel.resumeLayout()
+        binding?.navToolbar?.updateNotification()
+    }
 
     private fun FragmentTokopedianowShoppingListBinding.setupRecyclerView() {
         layoutManager = LinearLayoutManager(context)
@@ -431,7 +456,9 @@ class TokoNowShoppingListFragment :
     }
 
     private fun FragmentTokopedianowShoppingListBinding.setupBottomBulkAtc() {
-        bottomBulkAtcView.onAtcClickListener {}
+        bottomBulkAtcView.onAtcClickListener {
+            viewModel.addMultiProductsToCart()
+        }
     }
 
     private fun FragmentTokopedianowShoppingListBinding.setupMiniCart() {

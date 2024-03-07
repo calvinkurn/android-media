@@ -7,6 +7,7 @@ class ResourceProviderImpl(
     private val context: Context
 ): ResourceProvider {
     override fun getString(resId: Int): String = context.getString(resId)
+    override fun getString(resId: Int, arg: Int): String = context.getString(resId, arg)
     override fun getColor(resId: Int): Int = MethodChecker.getColor(context, resId)
 }
 

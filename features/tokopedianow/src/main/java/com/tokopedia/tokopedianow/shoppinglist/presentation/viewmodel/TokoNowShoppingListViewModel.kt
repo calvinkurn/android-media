@@ -3,6 +3,9 @@ package com.tokopedia.tokopedianow.shoppinglist.presentation.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase.Companion.SUCCESS_STATUS
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -77,6 +80,7 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper
 import com.tokopedia.tokopedianow.shoppinglist.helper.ResourceProvider
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.RecommendationModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_MULTI_PRODUCTS_TO_CART
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_WISHLIST
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.Deferred
@@ -100,6 +104,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     private val addToWishlistUseCase: AddToWishlistV2UseCase,
     private val deleteFromWishlistUseCase: DeleteWishlistV2UseCase,
+    private val addToCartMultiUseCase: AddToCartMultiUseCase,
     private val resourceProvider: ResourceProvider,
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.io) {
@@ -460,6 +465,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     private fun loadLoadingState() {
+        hideBottomWidget()
+
         mutableLayout.clear()
 
         mutableLayout.addLoadingState()
@@ -528,9 +535,13 @@ class TokoNowShoppingListViewModel @Inject constructor(
             _isProductAvailable.value = false
             _miniCartState.value = Success(miniCartData.copy())
         } else {
-            _isProductAvailable.value = false
-            _miniCartState.value = Error(throwable = Throwable())
+            hideBottomWidget()
         }
+    }
+
+    private fun hideBottomWidget() {
+        _isProductAvailable.value = false
+        _miniCartState.value = Error(throwable = Throwable())
     }
 
     private fun updateLayout(
@@ -558,6 +569,111 @@ class TokoNowShoppingListViewModel @Inject constructor(
         _layoutState.value = Success(getUpdatedLayout(isRequiredToScrollUp))
 
         setDataToBottomWidget(mMiniCartData)
+    }
+
+    private fun onSuccessAddingToCart(
+        productListSize: Int
+    ) {
+        getMiniCart {
+            _toasterData.value = ToasterModel(
+                text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_to_add_product_to_cart, productListSize),
+                actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_for_cta),
+                type = Toaster.TYPE_NORMAL,
+                event = ADD_MULTI_PRODUCTS_TO_CART,
+                any = mMiniCartData
+            )
+        }
+    }
+
+    private fun onErrorAddingToCart() {
+        _isLoaderDialogShown.value = false
+
+        _toasterData.value = ToasterModel(
+            text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_to_add_product_to_cart),
+            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_for_cta),
+            type = Toaster.TYPE_ERROR,
+            event = ADD_MULTI_PRODUCTS_TO_CART
+        )
+    }
+
+    private fun onSuccessAddingToWishlist(
+        product: ShoppingListHorizontalProductCardItemUiModel
+    ) {
+        availableProducts
+            .addProduct(
+                product.copy(
+                    productLayoutType = AVAILABLE_SHOPPING_LIST,
+                    isSelected = true,
+                    state = SHOW
+                )
+            )
+
+        recommendedProducts
+            .removeProduct(product.id)
+
+        updateLayout()
+
+        _toasterData.value = ToasterModel(
+            text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_to_add_product_to_shopping_list),
+            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_for_cta),
+            type = Toaster.TYPE_NORMAL,
+            event = ADD_WISHLIST
+        )
+    }
+
+    private fun onErrorAddingToWishlist(
+        product: ShoppingListHorizontalProductCardItemUiModel
+    ) {
+        mutableLayout
+            .modifyProduct(
+                productId = product.id,
+                state = SHOW
+            )
+
+        _layoutState.value = Success(getUpdatedLayout())
+
+        _toasterData.value = ToasterModel(
+            text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_to_add_product_to_shopping_list),
+            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_for_cta),
+            type = Toaster.TYPE_ERROR,
+            event = ADD_WISHLIST,
+            any = product
+        )
+    }
+
+    private fun onSuccessDeletingFromWishlist(
+        product: ShoppingListHorizontalProductCardItemUiModel
+    ) {
+        if (product.productLayoutType == AVAILABLE_SHOPPING_LIST) availableProducts.removeProduct(product.id) else unavailableProducts.removeProduct(product.id)
+
+        updateLayout()
+
+        _toasterData.value = ToasterModel(
+            text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_to_delete_product_from_shopping_list),
+            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_success_for_cta),
+            type = Toaster.TYPE_NORMAL,
+            event = DELETE_WISHLIST
+        )
+    }
+
+    private fun onErrorDeletingFromWishlist(
+        product: ShoppingListHorizontalProductCardItemUiModel
+    ) {
+        mutableLayout
+            .modifyProduct(
+                productId = product.id,
+                state = SHOW
+            )
+
+        _layoutState.value = Success(getUpdatedLayout())
+
+        _toasterData.value = ToasterModel(
+            text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_to_delete_product_from_shopping_list),
+            actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_for_cta),
+            type = Toaster.TYPE_ERROR,
+            event = DELETE_WISHLIST,
+            any = product
+        )
     }
 
     /**
@@ -753,7 +869,9 @@ class TokoNowShoppingListViewModel @Inject constructor(
         }
     }
 
-    fun getMiniCart() {
+    fun getMiniCart(
+        onGetMiniCartSuccess: () -> Unit = {}
+    ) {
         getMiniCartJob?.cancel()
         getMiniCartJob = launchCatchError(block = {
             getMiniCartDeferred().await()
@@ -761,6 +879,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
             updateLayout()
 
             _isLoaderDialogShown.value = false
+
+            onGetMiniCartSuccess.invoke()
         }) {
             _miniCartState.value = Error(throwable = it)
 
@@ -772,11 +892,13 @@ class TokoNowShoppingListViewModel @Inject constructor(
         miniCartData: MiniCartSimplifiedData
     ) {
         mMiniCartData = miniCartData
+
+        updateLayout()
     }
 
     fun getShopId(): Long = addressData.getShopId()
 
-    fun onResume() {
+    fun resumeLayout() {
         if (addressData.isChoosenAddressUpdated()) {
             refreshLayout()
         } else {
@@ -816,38 +938,16 @@ class TokoNowShoppingListViewModel @Inject constructor(
                     productId = product.id,
                     userId = userSession.userId
                 )
-                addToWishlistUseCase.executeOnBackground()
 
-                availableProducts
-                    .addProduct(
-                        product.copy(
-                            productLayoutType = AVAILABLE_SHOPPING_LIST,
-                            isSelected = true,
-                            state = SHOW
-                        )
-                    )
-
-                recommendedProducts
-                    .removeProduct(product.id)
-
-                updateLayout()
+                val response = addToWishlistUseCase.executeOnBackground()
+                if (response is com.tokopedia.usecase.coroutines.Success) {
+                    onSuccessAddingToWishlist(product)
+                } else {
+                    onErrorAddingToWishlist(product)
+                }
             },
             onError = {
-                mutableLayout
-                    .modifyProduct(
-                        productId = product.id,
-                        state = SHOW
-                    )
-
-                _layoutState.value = Success(getUpdatedLayout())
-
-                _toasterData.value = ToasterModel(
-                    text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_to_add_product_from_shopping_list),
-                    actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_for_cta),
-                    type = Toaster.TYPE_ERROR,
-                    product = product,
-                    event = ADD_WISHLIST
-                )
+                onErrorAddingToWishlist(product)
             }
         )
     }
@@ -871,28 +971,51 @@ class TokoNowShoppingListViewModel @Inject constructor(
                     productId = product.id,
                     userId = userSession.userId
                 )
-                deleteFromWishlistUseCase.executeOnBackground()
 
-                if (product.productLayoutType == AVAILABLE_SHOPPING_LIST) availableProducts.removeProduct(product.id) else unavailableProducts.removeProduct(product.id)
-
-                updateLayout()
+                val response = deleteFromWishlistUseCase.executeOnBackground()
+                if (response is com.tokopedia.usecase.coroutines.Success) {
+                    onSuccessDeletingFromWishlist(product)
+                } else {
+                    onErrorDeletingFromWishlist(product)
+                }
             },
             onError = {
-                mutableLayout
-                    .modifyProduct(
-                        productId = product.id,
-                        state = SHOW
-                    )
+                onErrorDeletingFromWishlist(product)
+            }
+        )
+    }
 
-                _layoutState.value = Success(getUpdatedLayout())
+    fun addMultiProductsToCart() {
+        launchCatchError(
+            block = {
+                _toasterData.value = null
+                _isLoaderDialogShown.value = true
 
-                _toasterData.value = ToasterModel(
-                    text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_to_delete_product_from_shopping_list),
-                    actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_failed_for_cta),
-                    type = Toaster.TYPE_ERROR,
-                    product = product,
-                    event = DELETE_WISHLIST
+                val addToCartMultiParams = filteredAvailableProducts
+                    .filter { it.isSelected }
+                    .map { product ->
+                        AddToCartMultiParam(
+                            productId = product.id,
+                            productName = product.name,
+                            productPrice = product.priceInt,
+                            qty = product.minOrder,
+                            shopId = product.shopId,
+                            warehouseId = product.warehouseId
+                        )
+                    }
+
+                val response = addToCartMultiUseCase.invoke(
+                    params = ArrayList(addToCartMultiParams)
                 )
+
+                if (response is com.tokopedia.usecase.coroutines.Success && response.data.atcMulti.buyAgainData.success == SUCCESS_STATUS) {
+                    onSuccessAddingToCart(addToCartMultiParams.size)
+                } else {
+                    onErrorAddingToCart()
+                }
+            },
+            onError = {
+                onErrorAddingToCart()
             }
         )
     }

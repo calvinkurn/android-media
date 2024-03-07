@@ -24,6 +24,9 @@ internal object CommonVisitableMapper {
             percentage = it.discountPercentage,
             slashPrice = it.slashedPrice,
             appLink = it.appUrl,
+            minOrder = it.minOrder,
+            shopId = it.shopId.toString(),
+            warehouseId = it.warehouseId.toString(),
             productLayoutType = PRODUCT_RECOMMENDATION,
             state = SHOW
         )

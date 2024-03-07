@@ -296,12 +296,12 @@
     <string name="tokopedianow_shopping_list_bulk_atc_plus_cart">+ Keranjang</string>
     <string name="tokopedianow_shopping_list_bulk_atc_total">Total</string>
     <string name="tokopedianow_shopping_list_cart_product_widget_see_detail">Lihat Detail</string>
-    <string name="tokopedianow_shopping_list_toaster_text_failed_to_delete_product_from_shopping_list">Oops, ada barang yang sudah tidak tersedia.</string>
-    <string name="tokopedianow_shopping_list_toaster_text_failed_to_add_product_from_shopping_list">Oops, barang gagal disimpan di List Belanja.</string>
-    <string name="tokopedianow_shopping_list_toaster_text_failed_to_add_product_to_cart">Oops, barang gagal ditambahkan ke Keranjang.</string>
-    <string name="tokopedianow_shopping_list_toaster_text_failed_for_cta">Coba Lagi</string>
+    <string name="tokopedianow_shopping_list_toaster_text_error_to_delete_product_from_shopping_list">Oops, barang gagal dihapus.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_error_to_add_product_to_shopping_list">Oops, barang gagal disimpan di List Belanja.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_error_to_add_product_to_cart">Oops, barang gagal ditambahkan ke Keranjang.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_error_for_cta">Coba Lagi</string>
     <string name="tokopedianow_shopping_list_toaster_text_success_to_delete_product_from_shopping_list">1 barang berhasil dihapus dari List Belanja.</string>
-    <string name="tokopedianow_shopping_list_toaster_text_success_to_add_product_from_shopping_list">1 barang berhasil ditambahkan ke list belanja.</string>
-    <string name="tokopedianow_shopping_list_toaster_text_success_to_add_product_to_cart">%1$d barang berhasil ditambahkan ke keranjang.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_success_to_add_product_to_shopping_list">1 barang berhasil ditambahkan ke List belanja.</string>
+    <string name="tokopedianow_shopping_list_toaster_text_success_to_add_product_to_cart">%d barang berhasil ditambahkan ke keranjang.</string>
     <string name="tokopedianow_shopping_list_toaster_text_success_for_cta">Oke</string>
 </resources>
