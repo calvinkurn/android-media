@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.Constants
 import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.gamification.R as gamificationR
@@ -77,6 +77,8 @@ class GiftBoxReminderButton @JvmOverloads constructor(
 
     fun setIcon(isReminderSet: Boolean) {
         val imageSource = if(isReminderSet) bellFilledImageSource else bellImageSource
-        imageBell.loadImage(imageSource)
+        imageSource.getBitmapImageUrl(context) {
+            imageBell.setImageBitmap(it)
+        }
     }
 }

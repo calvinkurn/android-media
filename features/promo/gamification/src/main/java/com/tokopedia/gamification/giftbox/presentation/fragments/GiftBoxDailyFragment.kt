@@ -57,7 +57,7 @@ import com.tokopedia.gamification.pdp.presentation.views.Wishlist
 import com.tokopedia.gamification.taptap.data.entiity.BackButton
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.imagePreload
+import com.tokopedia.media.loader.preloadImage
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
