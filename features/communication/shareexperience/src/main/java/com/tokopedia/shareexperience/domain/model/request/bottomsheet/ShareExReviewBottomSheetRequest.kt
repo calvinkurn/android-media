@@ -7,6 +7,6 @@ data class ShareExReviewBottomSheetRequest(
     val pageType: Int,
     @SerializedName("reviewId")
     val reviewId: String,
-    @SerializedName("productId")
-    val productId: String
+    @SerializedName("attachmentId")
+    val attachmentId: String
 ): ShareExBottomSheetRequest

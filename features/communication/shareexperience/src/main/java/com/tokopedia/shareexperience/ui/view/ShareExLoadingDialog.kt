@@ -122,7 +122,7 @@ class ShareExLoadingDialog(
                 ShareExReviewBottomSheetRequest(
                     pageType = arg.pageTypeEnum.valueInt,
                     reviewId = arg.reviewId,
-                    productId = arg.productId
+                    attachmentId = arg.attachmentId
                 )
             }
             else -> {

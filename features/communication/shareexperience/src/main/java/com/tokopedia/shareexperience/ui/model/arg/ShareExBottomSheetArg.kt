@@ -13,11 +13,19 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 class ShareExBottomSheetArg private constructor(
+    /**
+     * Feature related id
+     */
     val productId: String,
     val reviewId: String,
+    val attachmentId: String,
     val shopId: String,
     val campaignId: String,
     val generalId: String,
+
+    /**
+     * Mandatory field
+     */
     val pageTypeEnum: ShareExPageTypeEnum,
     val defaultUrl: String,
     val trackerArg: ShareExTrackerArg,
@@ -33,6 +41,7 @@ class ShareExBottomSheetArg private constructor(
     ) {
         private var productId: String? = null
         private var reviewId: String? = null
+        private var attachmentId: String? = null
         private var shopId: String? = null
         private var campaignId: String? = null
         private var generalId: String? = null
@@ -44,6 +53,10 @@ class ShareExBottomSheetArg private constructor(
 
         fun withReviewId(reviewId: String) = apply {
             this.reviewId = reviewId
+        }
+
+        fun withAttachmentId(attachmentId: String) = apply {
+            this.attachmentId = attachmentId
         }
 
         fun withShopId(shopId: String) = apply {
@@ -67,11 +80,14 @@ class ShareExBottomSheetArg private constructor(
                 pageTypeEnum = pageTypeEnum,
                 defaultUrl = defaultUrl,
                 trackerArg = trackerArg,
+
                 productId = productId.orEmpty(),
                 reviewId = reviewId.orEmpty(),
+                attachmentId = attachmentId.orEmpty(),
                 shopId = shopId.orEmpty(),
                 campaignId = campaignId.orEmpty(),
                 generalId = generalId.orEmpty(),
+
                 selectedChip = selectedChip.orEmpty()
             )
         }
