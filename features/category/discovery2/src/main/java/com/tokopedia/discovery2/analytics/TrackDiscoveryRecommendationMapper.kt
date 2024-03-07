@@ -17,8 +17,8 @@ object TrackDiscoveryRecommendationMapper {
         return AppLogRecommendationProductModel.create(
             productId = productId.orEmpty(),
             position = itemPosition,
-            tabName = tabName.orEmpty(),
-            tabPosition = tabIndex?.firstOrNull().orZero(),
+            tabName = topLevelTab.name,
+            tabPosition = topLevelTab.index,
             moduleName = getAppLog()?.pageName.orEmpty(),
             isAd = isTopads.orFalse(),
             isUseCache = false,
