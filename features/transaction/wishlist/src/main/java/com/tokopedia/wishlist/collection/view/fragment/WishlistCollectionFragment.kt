@@ -164,10 +164,6 @@ class WishlistCollectionFragment :
         return true
     }
 
-    override fun isShadow(): Boolean {
-        return true
-    }
-
     override fun initInjector() {
         activity?.let { activity ->
             DaggerWishlistCollectionComponent.builder()

@@ -37,6 +37,11 @@ class ContentCardViewHolder constructor(
         binding?.view?.setupView(element)
     }
 
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        binding?.view?.removeListener()
+    }
+
     private fun setRecTriggerObject(model: ContentCardModel) {
         recTriggerObject = RecommendationTriggerObject(
             sessionId = model.appLog.sessionId,
