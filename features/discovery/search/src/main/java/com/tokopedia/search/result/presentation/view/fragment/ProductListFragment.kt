@@ -1185,7 +1185,9 @@ class ProductListFragment :
             isQuickFilterSelectedReversed,
             pageSource
         )
-        trackChooseSearchFilter(option.key, position)
+
+        val filterValue = if (isQuickFilterSelectedReversed) option.key else ""
+        trackChooseSearchFilter(filterValue, position)
     }
 
     private fun setFilterToQuickFilterController(option: Option, isQuickFilterSelected: Boolean) {

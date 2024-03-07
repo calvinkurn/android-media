@@ -225,6 +225,10 @@ class BottomSheetFilterViewDelegate @Inject constructor(
             sortApplyFilter = applySortFilterModel.sortAutoFilterMapParameter,
         )
 
+        trackByteIOApplyFilterAndSort(applySortFilterModel)
+    }
+
+    private fun trackByteIOApplyFilterAndSort(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         val selectedOptionWithIndex = applySortFilterModel.selectedOptionWithIndex
 
         val ecomFilterName =
@@ -233,12 +237,17 @@ class BottomSheetFilterViewDelegate @Inject constructor(
         val ecomFilterPosition =
             selectedOptionWithIndex.joinToString(separator = ",") { it.first.toString() }
 
+        val ecomSortName =
+            if (applySortFilterModel.selectedSortName.isNotBlank())
+                ecomSortName(applySortFilterModel.selectedSortName)
+            else ""
+
         AppLogSearch.eventChooseSearchFilter(
             AppLogSearch.ChooseSearchFilter(
                 searchID = SearchId.value,
                 searchType = GOODS_SEARCH,
                 keyword = queryKey,
-                ecomSortName = ecomSortName(applySortFilterModel.selectedSortName),
+                ecomSortName = ecomSortName,
                 ecomFilterName = ecomFilterName,
                 ecomFilterPosition = ecomFilterPosition,
                 buttonTypeClick = FILTER_PANEL,
