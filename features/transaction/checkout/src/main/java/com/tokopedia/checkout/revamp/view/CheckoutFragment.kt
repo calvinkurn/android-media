@@ -555,6 +555,9 @@ class CheckoutFragment :
                     stopTrace()
                     sendErrorAnalytics()
                     setCampaignTimer()
+                    if (it.cartShipmentAddressFormData.paymentWidget.enable) {
+                        header.tvCheckoutHeaderText.text = getString(R.string.checkout_module_title_activity_checkout_payment)
+                    }
                     viewModel.prepareFullCheckoutPage()
                 }
 

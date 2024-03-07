@@ -370,7 +370,10 @@ class CheckoutViewModel @Inject constructor(
                         val crossSellGroup =
                             CheckoutCrossSellGroupModel(crossSellList = crossSellList)
 
-                        val buttonPayment = CheckoutButtonPaymentModel("")
+                        val buttonPayment = CheckoutButtonPaymentModel(
+                            "",
+                            useDirectPayment = payment.enable
+                        )
 
                         val itemsWithLoadingState = items.map {
                             if (it is CheckoutOrderModel && loadCourierState(
