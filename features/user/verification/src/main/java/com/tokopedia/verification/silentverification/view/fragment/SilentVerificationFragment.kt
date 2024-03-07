@@ -32,10 +32,10 @@ import com.tokopedia.verification.silentverification.domain.model.RequestSilentV
 import com.tokopedia.verification.silentverification.helper.NetworkClientHelper
 import com.tokopedia.verification.silentverification.view.NetworkRequestListener
 import com.tokopedia.verification.silentverification.view.viewmodel.SilentVerificationViewModel
-import com.tokopedia.verification.verification.data.OtpConstant
-import com.tokopedia.verification.verification.data.OtpData
-import com.tokopedia.verification.verification.domain.data.OtpValidateData
-import com.tokopedia.verification.verification.domain.pojo.ModeListData
+import com.tokopedia.verification.otp.data.OtpConstant
+import com.tokopedia.verification.otp.data.OtpData
+import com.tokopedia.verification.otp.domain.data.OtpValidateData
+import com.tokopedia.verification.otp.domain.pojo.ModeListData
 import com.tokopedia.sessioncommon.util.AuthenticityUtils
 import com.tokopedia.sessioncommon.util.ConnectivityUtils
 import com.tokopedia.unifycomponents.Toaster

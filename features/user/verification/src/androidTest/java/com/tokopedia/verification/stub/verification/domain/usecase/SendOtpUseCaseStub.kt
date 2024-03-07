@@ -2,8 +2,8 @@ package com.tokopedia.verification.stub.verification.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.verification.verification.domain.data.OtpRequestPojo
-import com.tokopedia.verification.verification.domain.usecase.SendOtpUseCase
+import com.tokopedia.verification.otp.domain.data.OtpRequestPojo
+import com.tokopedia.verification.otp.domain.usecase.SendOtpUseCase
 
 class SendOtpUseCaseStub(
         graphqlRepository: GraphqlRepository,

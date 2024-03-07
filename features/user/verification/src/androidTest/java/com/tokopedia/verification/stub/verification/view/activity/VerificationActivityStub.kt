@@ -5,12 +5,12 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.verification.common.di.OtpComponent
 import com.tokopedia.verification.stub.common.di.OtpComponentStub
 import com.tokopedia.verification.stub.verification.view.fragment.*
-import com.tokopedia.verification.verification.base.VerificationTest
-import com.tokopedia.verification.verification.data.OtpConstant
-import com.tokopedia.verification.verification.data.OtpData
-import com.tokopedia.verification.verification.domain.pojo.ModeListData
-import com.tokopedia.verification.verification.view.activity.VerificationActivity
-import com.tokopedia.verification.verification.view.fragment.VerificationFragment
+import com.tokopedia.verification.otp.base.VerificationTest
+import com.tokopedia.verification.otp.data.OtpConstant
+import com.tokopedia.verification.otp.data.OtpData
+import com.tokopedia.verification.otp.domain.pojo.ModeListData
+import com.tokopedia.verification.otp.view.activity.VerificationActivity
+import com.tokopedia.verification.otp.view.fragment.VerificationFragment
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 
 class VerificationActivityStub : VerificationActivity() {

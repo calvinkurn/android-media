@@ -2,9 +2,9 @@ package com.tokopedia.verification.stub.common.di
 
 import com.tokopedia.verification.common.utility.AndroidFileUtil
 import com.tokopedia.verification.common.di.OtpScope
-import com.tokopedia.verification.verification.domain.data.OtpRequestPojo
-import com.tokopedia.verification.verification.domain.data.OtpValidatePojo
-import com.tokopedia.verification.verification.domain.pojo.OtpModeListPojo
+import com.tokopedia.verification.otp.domain.data.OtpRequestPojo
+import com.tokopedia.verification.otp.domain.data.OtpValidatePojo
+import com.tokopedia.verification.otp.domain.pojo.OtpModeListPojo
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named

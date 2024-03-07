@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.verification.verification.domain.data.OtpValidatePojo
+import com.tokopedia.verification.otp.domain.data.OtpValidatePojo
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 

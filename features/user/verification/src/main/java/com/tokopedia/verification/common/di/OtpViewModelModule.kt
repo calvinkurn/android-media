@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.verification.notif.viewmodel.NotifViewModel
 import com.tokopedia.verification.qrcode.viewmodel.LoginByQrViewModel
-import com.tokopedia.verification.verification.viewmodel.VerificationViewModel
+import com.tokopedia.verification.otp.viewmodel.VerificationViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

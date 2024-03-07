@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".verification.view.activity.VerificationActivity"
+            android:name=".otp.view.activity.VerificationActivity"
             android:label="@string/title_activity_activation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
@@ -129,7 +129,7 @@
         </activity>
 
         <receiver
-            android:name=".verification.common.util.SmsBroadcastReceiver"
+            android:name=".otp.common.util.SmsBroadcastReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED" />

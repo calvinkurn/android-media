@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.verification.common.di.OtpScope
 import com.tokopedia.verification.stub.verification.domain.usecase.*
-import com.tokopedia.verification.verification.domain.data.OtpRequestPojo
-import com.tokopedia.verification.verification.domain.data.OtpValidatePojo
-import com.tokopedia.verification.verification.domain.pojo.OtpModeListPojo
-import com.tokopedia.verification.verification.domain.usecase.*
+import com.tokopedia.verification.otp.domain.data.OtpRequestPojo
+import com.tokopedia.verification.otp.domain.data.OtpValidatePojo
+import com.tokopedia.verification.otp.domain.pojo.OtpModeListPojo
+import com.tokopedia.verification.otp.domain.usecase.*
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named

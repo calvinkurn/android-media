@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.verification.notif.view.fragment.*
 import com.tokopedia.verification.qrcode.view.fragment.LoginByQrFragment
 import com.tokopedia.verification.qrcode.view.fragment.LoginByQrResultFragment
-import com.tokopedia.verification.verification.view.activity.VerificationActivity
-import com.tokopedia.verification.verification.view.fragment.*
+import com.tokopedia.verification.otp.view.activity.VerificationActivity
+import com.tokopedia.verification.otp.view.fragment.*
 import dagger.Component
 
 /**

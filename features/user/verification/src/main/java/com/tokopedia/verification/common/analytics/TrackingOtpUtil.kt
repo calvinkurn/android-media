@@ -10,8 +10,8 @@ import com.tokopedia.verification.common.analytics.TrackingOtpConstant.EVENT_CUR
 import com.tokopedia.verification.common.analytics.TrackingOtpConstant.EVENT_USER_ID
 import com.tokopedia.verification.common.analytics.TrackingOtpConstant.Event
 import com.tokopedia.verification.common.analytics.TrackingOtpConstant.Label
-import com.tokopedia.verification.verification.data.OtpData
-import com.tokopedia.verification.verification.domain.pojo.ModeListData
+import com.tokopedia.verification.otp.data.OtpData
+import com.tokopedia.verification.otp.domain.pojo.ModeListData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
@@ -807,7 +807,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
 
     /**
      * tracker for default otp method, when clicking footer text 'Pakai Metode SMS'
-     * on [com.tokopedia.verification.verification.view.fragment.VerificationMethodFragment]
+     * on [com.tokopedia.verification.otp.view.fragment.VerificationMethodFragment]
      */
     fun trackClickUseWithOtpSms() {
         val map = TrackAppUtils.gtmData(
@@ -824,7 +824,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
 
     /**
      * tracker for default otp method, when clicking footer text 'Pakai Metode Lain'
-     * on [com.tokopedia.verification.verification.view.fragment.VerificationMethodFragment]
+     * on [com.tokopedia.verification.otp.view.fragment.VerificationMethodFragment]
      */
     fun trackClickUseWithOthersMethod() {
         val map = TrackAppUtils.gtmData(

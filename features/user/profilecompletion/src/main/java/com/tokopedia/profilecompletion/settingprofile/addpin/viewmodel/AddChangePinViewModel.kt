@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.verification.verification.data.OtpConstant
+import com.tokopedia.verification.otp.data.OtpConstant
 import com.tokopedia.profilecompletion.settingprofile.addpin.data.AddChangePinData
 import com.tokopedia.profilecompletion.settingprofile.addpin.data.CheckPinData
 import com.tokopedia.profilecompletion.settingprofile.addpin.data.CreatePinV2Param

@@ -1,7 +1,7 @@
 package com.tokopedia.verification.stub.verification.view.fragment
 
 import android.os.Bundle
-import com.tokopedia.verification.verification.view.fragment.EmailVerificationFragment
+import com.tokopedia.verification.otp.view.fragment.EmailVerificationFragment
 
 class EmailVerificationFragmentStub : EmailVerificationFragment() {
 

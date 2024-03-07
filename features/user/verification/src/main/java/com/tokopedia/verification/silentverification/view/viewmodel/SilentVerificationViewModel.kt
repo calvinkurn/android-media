@@ -10,7 +10,7 @@ import com.tokopedia.verification.silentverification.domain.model.RequestSilentV
 import com.tokopedia.verification.silentverification.domain.usecase.GetEvUrlUseCase
 import com.tokopedia.verification.silentverification.domain.usecase.RequestSilentVerificationOtpUseCase
 import com.tokopedia.verification.silentverification.domain.usecase.ValidateSilentVerificationUseCase
-import com.tokopedia.verification.verification.domain.data.OtpValidateData
+import com.tokopedia.verification.otp.domain.data.OtpValidateData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

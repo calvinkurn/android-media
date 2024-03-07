@@ -9,8 +9,8 @@ import com.tokopedia.verification.silentverification.domain.usecase.GetEvUrlUseC
 import com.tokopedia.verification.silentverification.domain.usecase.RequestSilentVerificationOtpUseCase
 import com.tokopedia.verification.silentverification.domain.usecase.ValidateSilentVerificationUseCase
 import com.tokopedia.verification.silentverification.view.viewmodel.SilentVerificationViewModel
-import com.tokopedia.verification.verification.domain.data.OtpValidateData
-import com.tokopedia.verification.verification.domain.data.OtpValidatePojo
+import com.tokopedia.verification.otp.domain.data.OtpValidateData
+import com.tokopedia.verification.otp.domain.data.OtpValidatePojo
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

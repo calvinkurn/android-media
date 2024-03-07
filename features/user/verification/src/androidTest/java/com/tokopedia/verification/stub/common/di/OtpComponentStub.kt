@@ -4,7 +4,7 @@ import com.tokopedia.verification.common.di.OtpComponent
 import com.tokopedia.verification.common.di.OtpModule
 import com.tokopedia.verification.common.di.OtpScope
 import com.tokopedia.verification.common.di.OtpViewModelModule
-import com.tokopedia.verification.verification.base.VerificationTest
+import com.tokopedia.verification.otp.base.VerificationTest
 import dagger.Component
 
 @OtpScope
