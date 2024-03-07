@@ -13,6 +13,7 @@
         android:supportsRtl="true">
         <activity
             android:name=".view.activity.SellerHomeActivity"
+            android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/SellerHomeTheme"
