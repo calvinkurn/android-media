@@ -141,7 +141,7 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEntranceInfo() {
-        put(ENTRANCE_INFO, generateEntranceInfoJson())
+        put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
     }
 
     internal fun JSONObject.addEntranceInfoCart() {
