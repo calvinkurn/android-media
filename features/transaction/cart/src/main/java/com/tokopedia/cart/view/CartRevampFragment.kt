@@ -3618,7 +3618,8 @@ class CartRevampFragment :
                         if (buyAgainViewHolderIndex != RecyclerView.NO_POSITION) {
                             binding?.rvCart?.smoothSnapToPosition(
                                 position = buyAgainViewHolderIndex,
-                                topOffset = 250.dpToPx(requireContext().resources.displayMetrics)
+                                topOffset = 250.dpToPx(requireContext().resources.displayMetrics),
+                                millisecondsPerInch = 50f
                             )
                         }
                         updateBuyAgainFloatingButtonVisibility(false)
