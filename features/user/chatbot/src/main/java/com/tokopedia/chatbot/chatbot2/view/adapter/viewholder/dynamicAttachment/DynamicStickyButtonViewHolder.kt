@@ -5,7 +5,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
-import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.BaseChatBotViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.DynamicStickyButtonListener
@@ -15,7 +14,6 @@ import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatbotMessageViewHolderB
 import com.tokopedia.chatbot.databinding.ItemChatbotDynamicContentCode105Binding
 import com.tokopedia.chatbot.util.setContainerBackground
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -41,24 +39,21 @@ class DynamicStickyButtonViewHolder(
         ChatbotMessageViewHolderBinder.bindHour(uiModel.replyTime, customChatLayout)
         bindBackground()
 
-        if (uiModel.status != ChatbotConstant.RENDER_TO_UI_BASED_ON_STATUS) {
-            binding?.customChatLayoutContainer?.hide()
-        } else {
-            binding?.apply {
-                binding?.customChatLayoutContainer?.setContainerBackground(bindBackground())
-                chatbotTvMessageContent.message?.text = uiModel.contentText
-                chatbotTvMessageContent.background = null
-                actionButton.text = uiModel.actionBubble.text
-                actionButton.setOnClickListener {
-                    dynamicStickyButtonListener.onButtonActionClicked(
-                        uiModel.actionBubble
-                    )
-                }
-                if (uiModel.isShowButtonAction) {
-                    actionButton.show()
-                } else {
-                    actionButton.gone()
-                }
+        binding?.apply {
+            binding?.customChatLayoutContainer?.setContainerBackground(bindBackground())
+            chatbotTvMessageContent.message?.text = uiModel.contentText
+            chatbotTvMessageContent.background = null
+            actionButton.text = uiModel.actionBubble.text
+            actionButton.setOnClickListener {
+                dynamicStickyButtonListener.onButtonActionClicked(
+                    uiModel.actionBubble
+                )
+            }
+
+            if (!uiModel.isShowButtonAction || uiModel.status == 0) {
+                actionButton.gone()
+            } else {
+                actionButton.show()
             }
         }
         dynamicStickyButtonListener.onDynamicStickyButtonRendered()
