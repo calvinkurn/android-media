@@ -78,18 +78,19 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
 
             launch {
 
-                if (fragmentSize == 0) {
+                setAddonGlobalLayoutListener(rootView) {
+                    translatorManager?.startTranslate()
+                }
 
-                    setAddonGlobalLayoutListener(rootView) {
+                setAddonPreDrawLayoutListener(rootView) {
+                    translatorManager?.startTranslate()
+                }
+
+                rootView.viewTreeObserver
+                    .onScrollChangedAsFlow()
+                    .collect {
                         translatorManager?.startTranslate()
                     }
-
-                    rootView.viewTreeObserver
-                        .onScrollChangedAsFlow()
-                        .collect {
-                            translatorManager?.startTranslate()
-                        }
-                }
 
                 onDestLanguageChangedAsFlow(activity)
                     .collect {
@@ -126,6 +127,20 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                 }
 
                 rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    private fun setAddonPreDrawLayoutListener(rootView: View, startTranslate: suspend () -> Unit) {
+        rootView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+
+            override fun onPreDraw(): Boolean {
+
+                launch {
+                    startTranslate.invoke()
+                }
+
+                return true
             }
         })
     }
@@ -181,12 +196,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         private val translatorManagerFragment = TranslatorManagerFragment.getInstance()
 
         override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
-            val fragment = fm.fragments.filter {
-                it::class.java.simpleName !=
-                    SupportRequestManagerFragment::class.java.simpleName
-            }.find { it.isVisible }
-                ?: return
-            setTranslatorFragment(fragment)
+            setTranslatorFragment(f)
         }
 
         private fun setTranslatorFragment(f: Fragment) {
@@ -197,16 +207,18 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                 val weakFragment = WeakReference<Fragment>(f)
                 TranslatorManagerFragment.setCurrentFragment(weakFragment)
 
-                f.view?.let {
+                if (f is BottomSheetUnify) {
+                    f.view?.let {
 
-                    setAddonGlobalLayoutListener(it) {
-                        translatorManagerFragment?.startTranslate()
-                    }
-
-                    launch {
-
-                        it.viewTreeObserver.onScrollChangedAsFlow().collect {
+                        setAddonPreDrawLayoutListener(it) {
                             translatorManagerFragment?.startTranslate()
+                        }
+
+                        launch {
+
+                            it.viewTreeObserver.onScrollChangedAsFlow().collect {
+                                translatorManagerFragment?.startTranslate()
+                            }
                         }
                     }
                 }
