@@ -585,6 +585,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 icon
                 status
                 chevronPos
+                padding {
+                  t
+                  b
+                }
               }
             }
             gwp {
