@@ -35,7 +35,7 @@ fun HeaderSection(
         NestTypography(
             text = LocalContext.current.getString(
                 R.string.explicit_personalize_subtitle,
-                if (minItemSelected == 0) "1" else minItemSelected.toString()
+                minItemSelected.toString()
             ),
             textStyle = NestTheme.typography.paragraph2.copy(
                 color = NestTheme.colors.NN._600
