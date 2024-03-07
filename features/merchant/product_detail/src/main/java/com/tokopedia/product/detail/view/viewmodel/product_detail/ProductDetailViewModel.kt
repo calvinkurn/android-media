@@ -728,6 +728,7 @@ class ProductDetailViewModel @Inject constructor(
         }
 
         EmbraceMonitoring.stopMoments(EmbraceKey.KEY_ACT_ADD_TO_CART)
+        hasDoneAddToCart = true
         if (result.isStatusError()) {
             val errorMessage = result.getAtcErrorMessage() ?: ""
             if (errorMessage.isNotBlank()) {
@@ -750,7 +751,6 @@ class ProductDetailViewModel @Inject constructor(
                     result.data.notes
                 )
             }
-            hasDoneAddToCart = true
             _addToCartLiveData.value = result.asSuccess()
         }
     }
