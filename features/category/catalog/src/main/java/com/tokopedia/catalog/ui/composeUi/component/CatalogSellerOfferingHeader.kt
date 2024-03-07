@@ -48,7 +48,7 @@ fun CatalogSellerOfferingHeaderPreview(
 
 ) {
     CatalogSellerOfferingHeader(
-        backgroundColor = "FFFFFF".stringHexColorParseToInt(),
+        backgroundColor = android.graphics.Color.WHITE,
         lcaListener = {
 
         }
