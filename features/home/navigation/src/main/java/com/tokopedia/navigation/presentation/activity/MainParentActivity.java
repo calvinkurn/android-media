@@ -152,9 +152,7 @@ public class MainParentActivity extends BaseActivity implements
         ITelemetryActivity,
         InAppCallback,
         HomeCoachmarkListener,
-        HomeBottomNavListener,
-        IAppLogActivity,
-        AppLogInterface {
+        HomeBottomNavListener {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -1370,9 +1368,18 @@ public class MainParentActivity extends BaseActivity implements
     private void updateAppLogPageData(int position) {
         Fragment fragment = fragmentList.get(position);
         if (fragment instanceof AppLogInterface applogInterface) {
-            if(applogInterface.getPageName().equals(AppLogAnalytics.INSTANCE.getCurrentData(PAGE_NAME).toString())) return;
+            Object currentPageName = AppLogAnalytics.INSTANCE.getCurrentData(PAGE_NAME);
+            if (currentPageName != null
+                    && applogInterface.getPageName().equals(currentPageName.toString())) {
+                return;
+            }
             AppLogAnalytics.INSTANCE.pushPageData(applogInterface);
             AppLogAnalytics.INSTANCE.putPageData(IS_MAIN_PARENT, true);
+
+            Object currentEnterMethod = AppLogAnalytics.INSTANCE.getLastData(ENTER_METHOD);
+            if (currentEnterMethod == null) {
+                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
+            }
         }
     }
 
@@ -1407,10 +1414,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
         if (isFirstInit) {
-            Object currentEnterMethod = AppLogAnalytics.INSTANCE.getLastData(ENTER_METHOD);
-            if (currentEnterMethod == null) {
-                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
-            }
+            updateAppLogPageData(homePosition);
             bottomNavigation.setInitialState(homePosition);
         }
     }
@@ -1426,8 +1430,8 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private IconJumper getIconJumper() {
-        if(HomeRollenceController.isIconJumper()) {
-            if(HomeRollenceController.isIconJumperSRE()) {
+        if (HomeRollenceController.isIconJumper()) {
+            if (HomeRollenceController.isIconJumperSRE()) {
                 return getSREIconJumper();
             } else {
                 return getForYouIconJumper();
@@ -1525,21 +1529,5 @@ public class MainParentActivity extends BaseActivity implements
         if (isSameValue)
             return;
         bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeMenu);
-    }
-
-    @NonNull
-    @Override
-    public String getPageName() {
-        return PageName.HOME;
-    }
-
-    @Override
-    public boolean isEnterFromWhitelisted() {
-        return false;
-    }
-
-    @Override
-    public boolean isShadow() {
-        return true;
     }
 }
