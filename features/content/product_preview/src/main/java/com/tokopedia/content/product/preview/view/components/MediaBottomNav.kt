@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
@@ -209,17 +210,20 @@ private fun RenderContent(
         }
 
         if (product.price is BottomNavUiModel.Price.NettPrice) {
-            Row(modifier = Modifier
-                .background(
-                    NestTheme.colors.RN._50)
-                .clip(RoundedCornerShape(5.dp))
-                .border(1.dp, NestTheme.colors.RN._200, RoundedCornerShape(5.dp))
-                .padding(horizontal = 4.dp, vertical = 2.dp)
-                .constrainAs(ogPrice) {
-                    start.linkTo(parent.start)
-                    top.linkTo(title.bottom, 6.dp)
-                    bottom.linkTo(parent.bottom)
-                }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .background(
+                        NestTheme.colors.RN._50
+                    )
+                    .clip(RoundedCornerShape(5.dp))
+                    .border(1.dp, NestTheme.colors.RN._200, RoundedCornerShape(5.dp))
+                    .padding(horizontal = 4.dp, vertical = 2.dp)
+                    .constrainAs(ogPrice) {
+                        start.linkTo(parent.start)
+                        top.linkTo(title.bottom, 6.dp)
+                        bottom.linkTo(parent.bottom)
+                    }
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_nett_price),
