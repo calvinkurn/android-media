@@ -26,7 +26,7 @@ object CartBuyAgainAnalytics : TransactionAnalytics() {
     private const val IMPRESSION_FLOATING_BUTTON_TRACKER_ID = "50167"
     private const val CLICK_FLOATING_BUTTON_TRACKER_ID = "50168"
 
-    private const val ITEM_LIST_FORMAT = "/order list - rekomendasi untuk anda -"
+    private const val ITEM_LIST_FORMAT = "/cart - rekomendasi untuk anda -"
     private const val ITEM_LIST_KEY = "item_list"
 
     fun sendViewBuyAgainWidgetOnCartEvent() {
