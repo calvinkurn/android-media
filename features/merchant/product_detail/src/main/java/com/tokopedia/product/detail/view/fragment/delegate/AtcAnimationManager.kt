@@ -70,6 +70,7 @@ class AtcAnimationManager(
                         yTarget = -y,
                         image = image,
                         onFinishAnimated = {
+                            viewModel.onFinishAnimation()
                         }
                     )
                 }

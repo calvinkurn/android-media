@@ -20,7 +20,6 @@ import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -350,6 +349,7 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import kotlinx.coroutines.flow.collectLatest
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
@@ -792,6 +792,15 @@ open class ProductDetailFragment :
     }
 
     private fun observeOneTimeMethod() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.successAtcAndAnimation.collectLatest {
+                val atcData = viewModel.addToCartLiveData.value as? Success ?: return@collectLatest
+                showAddToCartDoneBottomSheet(
+                    atcData.data.data
+                )
+            }
+        }
+
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.oneTimeMethodState.collect {
                 when (it.event) {
@@ -2888,6 +2897,7 @@ open class ProductDetailFragment :
                     )
                 }
             }, {
+                viewModel.onFinishAtc()
                 ProductDetailTracking.Impression.eventViewErrorWhenAddToCart(
                     it.message.orEmpty(),
                     viewModel.getProductInfoP1?.basic?.productID.orEmpty(),
@@ -3310,7 +3320,8 @@ open class ProductDetailFragment :
 
             ProductDetailCommonConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
-//                showAddToCartDoneBottomSheet(result.data)
+                navToolbar?.updateNotification()
+                viewModel.onFinishAtc()
             }
 
             ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE -> {
@@ -4434,40 +4445,6 @@ open class ProductDetailFragment :
             semalessUrl
         )
         RouteManager.route(context, webViewUrl)
-    }
-
-    private fun onSuccessRemoveWishlist(productId: String?) {
-        view?.showToasterSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
-            ctaListener = { }
-        )
-        if (productId != null) {
-            updateFabIcon(productId, false)
-        }
-    }
-
-    private fun onErrorRemoveWishList(errorMsg: String?) {
-        view?.showToasterError(
-            getErrorMessage(errorMsg),
-            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
-        )
-    }
-
-    private fun onSuccessAddWishlist(productId: String?) {
-        view?.showToasterSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            ctaListener = { goToWishlist() }
-        )
-        productId?.let { updateFabIcon(it, true) }
-    }
-
-    private fun onErrorAddWishList(errorMessage: String?) {
-        view?.showToasterError(
-            getErrorMessage(errorMessage),
-            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
-        )
     }
 
     private fun sendIntentResultWishlistChange(productId: String, isInWishlist: Boolean) {

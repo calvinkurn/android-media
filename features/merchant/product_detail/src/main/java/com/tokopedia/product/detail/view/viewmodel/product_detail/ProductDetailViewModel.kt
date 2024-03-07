@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -120,12 +121,17 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -262,6 +268,24 @@ class ProductDetailViewModel @Inject constructor(
     private val _oneTimeMethod = MutableStateFlow(OneTimeMethodState())
     val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
 
+    private val _finishAnimationAtc = MutableStateFlow(false)
+    private val _finishAtc = MutableStateFlow(false)
+
+    val successAtcAndAnimation: Flow<Boolean> = _finishAnimationAtc.combine(_finishAtc) { a, b ->
+        a && b
+    }.map { bothSuccess ->
+        if (bothSuccess) {
+            _finishAnimationAtc.emit(false)
+            _finishAtc.emit(false)
+        }
+        bothSuccess
+    }.filter {
+        it
+    }.shareIn(
+        viewModelScope,
+        SharingStarted.Lazily
+    )
+
     val bitmapImage: LiveData<Bitmap>
         get() = _bitmapImage
 
@@ -330,6 +354,14 @@ class ProductDetailViewModel @Inject constructor(
 
     init {
         iniQuantityFlow()
+    }
+
+    fun onFinishAnimation() {
+        _finishAnimationAtc.tryEmit(true)
+    }
+
+    fun onFinishAtc() {
+        _finishAtc.tryEmit(true)
     }
 
     fun setBitmapImage(bitmap: Bitmap) {
@@ -686,7 +718,6 @@ class ProductDetailViewModel @Inject constructor(
                     result.data.notes
                 )
             }
-
             _addToCartLiveData.value = result.asSuccess()
         }
     }
@@ -1153,8 +1184,8 @@ class ProductDetailViewModel @Inject constructor(
                 uuid = uuid
             )
         }, onError = {
-            // no op, expect to be handled by Affiliate SDK
-        })
+                // no op, expect to be handled by Affiliate SDK
+            })
     }
 
     private fun updateRecomAtcStatusAndMiniCart(
