@@ -118,12 +118,19 @@
                 android:orientation="vertical"
                 app:layout_constraintTop_toBottomOf="@+id/inputPriceContainer" />
 
+            <View
+                android:id="@+id/separator"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintTop_toBottomOf="@id/rvMyBills"/>
+
             <com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSummaryWidget
                 android:id="@+id/checkoutSummaryWidget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/rvMyBills"
-                android:layout_marginTop="@dimen/spacing_lvl3" />
+                app:layout_constraintTop_toBottomOf="@+id/separator"
+                android:layout_marginTop="4dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

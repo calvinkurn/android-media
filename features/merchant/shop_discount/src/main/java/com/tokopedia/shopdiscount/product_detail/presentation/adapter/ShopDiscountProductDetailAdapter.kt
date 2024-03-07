@@ -74,5 +74,14 @@ class ShopDiscountProductDetailAdapter(
     }
 
     private fun getNewVisitableItems() = visitables.toMutableList()
+    fun anySubsidyProduct(): Boolean {
+        return productListData.any {
+            it.isSubsidy
+        }
+    }
+
+    fun getProductListData(): List<ShopDiscountProductDetailUiModel.ProductDetailData> {
+        return productListData
+    }
 
 }

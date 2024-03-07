@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.order_management_common.presentation.typefactory.BuyMoreGetMoreTypeFactory
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
@@ -30,8 +30,8 @@ import com.tokopedia.sellerorder.detail.presentation.model.SomDetailAddOnOrderLe
 
 class SomDetailAdapterFactoryImpl(
     private val actionListener: ActionListener,
-    private val addOnListener: BmgmAddOnViewHolder.Listener,
-    private val productBenefitListener: BmgmAddOnViewHolder.Listener,
+    private val addOnListener: AddOnViewHolder.Listener,
+    private val productBenefitListener: AddOnViewHolder.Listener,
     private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
 ) : SomDetailAdapterFactory, BaseAdapterTypeFactory(), BuyMoreGetMoreTypeFactory {
     override fun type(typeLayout: String): Int {
@@ -119,13 +119,19 @@ class SomDetailAdapterFactoryImpl(
                 SomDetailPofDataViewHolder(parent)
             }
             BmgmSectionViewHolder.LAYOUT -> {
-                BmgmSectionViewHolder(parent, actionListener, productBenefitListener, recyclerViewSharedPool)
+                BmgmSectionViewHolder(
+                    parent,
+                    recyclerViewSharedPool,
+                    addOnListener,
+                    actionListener,
+                    productBenefitListener
+                )
             }
             SomDetailIncomeViewHolder.LAYOUT -> {
                 SomDetailIncomeViewHolder(actionListener, parent)
             }
             SomDetailAddOnsOrderLevelViewHolder.LAYOUT -> {
-                SomDetailAddOnsOrderLevelViewHolder(actionListener, recyclerViewSharedPool, parent)
+                SomDetailAddOnsOrderLevelViewHolder(addOnListener, recyclerViewSharedPool, parent)
             }
 
             else -> super.createViewHolder(parent, type)
@@ -138,7 +144,7 @@ class SomDetailAdapterFactoryImpl(
         fun onDialPhone(strPhoneNo: String)
         fun onShowInfoLogisticAll(logisticInfoList: List<SomDetailOrder.GetSomDetail.LogisticInfo.All>)
         fun onShowBookingCode(bookingCode: String, bookingType: String)
-        fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.GetSomDetail.Button)
+        fun onShowBuyerRequestCancelRespondBottomSheet()
         fun onSeeInvoice(invoiceUrl: String, invoice: String)
         fun onCopiedInvoice(invoice: String, str: String)
         fun onClickProduct(orderDetailId: Long)

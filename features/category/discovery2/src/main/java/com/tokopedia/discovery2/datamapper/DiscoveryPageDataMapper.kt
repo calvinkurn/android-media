@@ -18,6 +18,7 @@ import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.ErrorState.NetworkErrorState
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.data.automatecoupon.Layout
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -30,6 +31,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.yout
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
@@ -251,12 +253,16 @@ class DiscoveryPageDataMapper(
                 )
             }
 
+            ComponentNames.AutomateCoupon.componentName -> {
+                parseAutomateCoupon(component, listComponents)
+            }
+
             else -> listComponents.add(component)
         }
         return listComponents
     }
 
-    private fun getFiltersFromQuery(component: ComponentsItem) {
+    private fun getFiltersFromQuery(component: ComponentsItem, queryParameterMapWithRpc: Map<String, String>) {
         for ((key, value) in queryParameterMapWithRpc) {
             val adjustedValue = Utils.isRPCFilterApplicableForTab(value, component)
             if (adjustedValue.isNotEmpty()) {
@@ -872,10 +878,12 @@ class DiscoveryPageDataMapper(
     private fun handleQuickFilter(component: ComponentsItem) {
         component.isSticky = component.properties?.chipSize == Constant.ChipSize.LARGE
 
-        if (!component.isSelectedFiltersFromQueryApplied && queryParameterMapWithRpc.isNotEmpty()) {
+        val isQueryParameterAvailable = queryParameterMapWithRpc.isNotEmpty() || queryParameterMapWithoutRpc.isNotEmpty()
+        if (!component.isSelectedFiltersFromQueryApplied && isQueryParameterAvailable) {
             component.isSelectedFiltersFromQueryApplied = true
             getFiltersFromQuery(
-                component
+                component,
+                queryParameterMapWithRpc + queryParameterMapWithoutRpc
             )
         }
 
@@ -906,6 +914,30 @@ class DiscoveryPageDataMapper(
             .construct(query, component.pagePath)
 
         parameter?.run { component.searchParameter = SearchParameter(this) }
+    }
+
+    private fun parseAutomateCoupon(
+        component: ComponentsItem,
+        listComponents: ArrayList<ComponentsItem>
+    ) {
+        val layout = component.data?.firstOrNull()?.couponLayout
+        layout?.let {
+            Layout.valueOf(it.asCamelCase())
+            val componentName = when (Layout.valueOf(it.asCamelCase())) {
+                Layout.Single -> ComponentNames.SingleAutomateCoupon.componentName
+                Layout.Double -> ComponentNames.GridAutomateCoupon.componentName
+                Layout.Carousel -> ComponentNames.CarouselAutomateCoupon.componentName
+            }
+
+            val uniqueId = "${it}_${component.id}"
+            val parsedComponent = component.copy(
+                id = uniqueId,
+                name = componentName,
+                parentComponentName = ComponentNames.AutomateCoupon.componentName
+            )
+            listComponents.add(parsedComponent)
+            setComponent(uniqueId, component.pageEndPoint, parsedComponent)
+        }
     }
 }
 

@@ -43,6 +43,12 @@ class AutomateCouponGridView @JvmOverloads constructor(
         }
     }
 
+    override fun onClick(action: () -> Unit) {
+        binding.root.setOnClickListener {
+            action.invoke()
+        }
+    }
+
     //region private methods
     private fun renderDetails(model: AutomateCouponModel.Grid) {
         with(binding) {
@@ -105,7 +111,7 @@ class AutomateCouponGridView @JvmOverloads constructor(
 
     private fun Typography.render(dynamicColorText: DynamicColorText) {
         text = MethodChecker.fromHtml(dynamicColorText.value)
-        HexColorParser.parse(dynamicColorText.colorHex) {
+        HexColorParser.parse(dynamicColorText.colorHex.orEmpty()) {
             setTextColor(it)
         }
     }

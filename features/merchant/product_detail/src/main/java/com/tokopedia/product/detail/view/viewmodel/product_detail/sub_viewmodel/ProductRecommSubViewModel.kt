@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.library.subviewmodel.SubViewModel
 import com.tokopedia.library.subviewmodel.extension.launch
@@ -14,13 +14,33 @@ import com.tokopedia.product.detail.view.util.ProductRecommendationMapper
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.viewmodel.product_detail.IProductRecommSubViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
+import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ViewState
+import com.tokopedia.product.detail.view.widget.boolean
+import com.tokopedia.product.detail.view.widget.long
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_ENABLE_PDP_RECOMMENDATION_FLOW
+import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_PDP_DEBOUNCE_TIME
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -29,14 +49,12 @@ import javax.inject.Inject
  **/
 
 class ProductRecommSubViewModel @Inject constructor(
+    private val dispatcher: CoroutineDispatchers,
+    remoteConfig: RemoteConfig,
     private val getRecommendationUseCase: dagger.Lazy<GetRecommendationUseCase>,
     private val getProductRecommendationUseCase: dagger.Lazy<GetProductRecommendationUseCase>
 ) : SubViewModel(), IProductRecommSubViewModel {
     private var alreadyHitRecom: MutableList<String> = mutableListOf()
-
-    private val _loadViewToView = MutableLiveData<Result<RecommendationWidget>>()
-    override val loadViewToView: LiveData<Result<RecommendationWidget>>
-        get() = _loadViewToView
 
     private val _verticalRecommendation = MutableLiveData<Result<RecommendationWidget>>()
     override val verticalRecommendation: LiveData<Result<RecommendationWidget>>
@@ -54,44 +72,77 @@ class ProductRecommSubViewModel @Inject constructor(
     override val loadTopAdsProduct: LiveData<Result<RecommendationWidget>>
         get() = _loadTopAdsProduct
 
-    override fun loadViewToView(
-        pageName: String,
-        productId: String,
-        isTokoNow: Boolean,
-        queryParam: String,
-        thematicId: String
-    ) {
-        if (GlobalConfig.isSellerApp()) return
+    private val _recomPageName = MutableSharedFlow<ProductRecommendationEvent.LoadRecommendation>()
 
-        if (!alreadyHitRecom.contains(pageName)) {
-            alreadyHitRecom.add(pageName)
-        } else {
-            return
-        }
+    private val enableRecomFlowRemoteConfig by remoteConfig.boolean(
+        ANDROID_ENABLE_PDP_RECOMMENDATION_FLOW,
+        true
+    )
+    private val recommendationDebounceRemoteConfig by remoteConfig.long(
+        ANDROID_PDP_DEBOUNCE_TIME,
+        150L
+    )
 
-        launch {
-            runCatching {
-                val response = getRecommendationUseCase.get().getData(
-                    GetRecommendationRequestParam(
-                        pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
-                        pageName = pageName,
-                        productIds = arrayListOf(productId),
-                        isTokonow = isTokoNow,
-                        queryParam = queryParam,
-                        criteriaThematicIDs = listOf(thematicId),
-                        hasNewProductCardEnabled = true
-                    )
+    @OptIn(FlowPreview::class)
+    override val productListData by lazy {
+        var initialAccumulator: MutableList<ProductRecommUiState> = mutableListOf()
+        _recomPageName
+            .buffer()
+            .filterNot {
+                GlobalConfig.isSellerApp()
+            }
+            .flatMapMerge {
+                getRecommendation(
+                    pageName = it.pageName,
+                    productId = it.productId,
+                    isTokoNow = it.isTokoNow,
+                    miniCart = it.miniCart,
+                    queryParam = it.queryParam,
+                    thematicId = it.thematicId
                 )
+            }
+            .map {
+                initialAccumulator.add(it)
+                initialAccumulator
+            }
+            .debounce(recommendationDebounceRemoteConfig)
+            .map {
+                initialAccumulator = markRecomAsCollected(initialAccumulator)
+                initialAccumulator
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = mutableListOf()
+            )
+    }
 
-                _loadViewToView.value = if (!response.firstOrNull()?.recommendationItemList.isNullOrEmpty()) {
-                    Success(response.first())
+    private fun markRecomAsCollected(initial: MutableList<ProductRecommUiState>)
+        : MutableList<ProductRecommUiState> {
+        return initial.filterNot {
+            it.alreadyCollected
+        }.map {
+            it.copy(alreadyCollected = true)
+        }.toMutableList()
+    }
+
+    override fun onRecommendationEvent(event: ProductRecommendationEvent) {
+        when (event) {
+            is ProductRecommendationEvent.LoadRecommendation -> {
+                if (enableRecomFlowRemoteConfig) {
+                    viewModelScope.launch(dispatcher.main) {
+                        _recomPageName.emit(event)
+                    }
                 } else {
-                    alreadyHitRecom.remove(pageName)
-                    Fail(MessageErrorException())
+                    loadRecommendation(
+                        pageName = event.pageName,
+                        productId = event.productId,
+                        isTokoNow = event.isTokoNow,
+                        miniCart = event.miniCart,
+                        queryParam = event.queryParam,
+                        thematicId = event.thematicId
+                    )
                 }
-            }.onFailure {
-                alreadyHitRecom.remove(pageName)
-                _loadViewToView.value = Throwable(pageName, it).asFail()
             }
         }
     }
@@ -187,6 +238,46 @@ class ProductRecommSubViewModel @Inject constructor(
         )
     }
 
+    private fun getRecommendation(
+        pageName: String,
+        productId: String,
+        isTokoNow: Boolean,
+        miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?,
+        queryParam: String,
+        thematicId: String
+    ) = flow {
+        runCatching {
+            val response = getProductRecommendationUseCase.get().executeOnBackground(
+                GetProductRecommendationUseCase.createParams(
+                    productId = productId,
+                    pageName = pageName,
+                    isTokoNow = isTokoNow,
+                    miniCartData = miniCart,
+                    queryParam = queryParam,
+                    thematicId = thematicId
+                )
+            )
+
+            emit(
+                ProductRecommUiState(
+                    data = ViewState.RenderSuccess(response),
+                    pageName = pageName
+                )
+            )
+        }.onFailure {
+            emit(
+                ProductRecommUiState(
+                    data = ViewState.RenderFailure(Throwable(pageName)),
+                    pageName = pageName
+                )
+            )
+        }
+    }.flowOn(dispatcher.io)
+
+    /**
+     * This method is retained only for fallback and risk mitigation
+     * will delete soon
+     */
     override fun loadRecommendation(
         pageName: String,
         productId: String,

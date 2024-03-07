@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.home_account.ui.accountsettings.AccountSettingViewModel
-import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentComposeViewModel
+import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentViewModel
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import dagger.Binds
 import dagger.Module
@@ -36,6 +36,6 @@ abstract class HomeAccountUserViewModelModules {
 
     @Binds
     @IntoMap
-    @ViewModelKey(FundsAndInvestmentComposeViewModel::class)
-    internal abstract fun provideFundsAndInvestmentComposeViewModel(viewModel: FundsAndInvestmentComposeViewModel): ViewModel
+    @ViewModelKey(FundsAndInvestmentViewModel::class)
+    internal abstract fun provideFundsAndInvestmentComposeViewModel(viewModel: FundsAndInvestmentViewModel): ViewModel
 }

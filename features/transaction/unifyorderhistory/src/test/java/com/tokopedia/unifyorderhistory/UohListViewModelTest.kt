@@ -8,7 +8,7 @@ import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.common_digital.common.data.model.RechargeSetFailData
@@ -462,11 +462,11 @@ class UohListViewModelTest {
     fun atcMulti_shouldReturnSuccess() {
         // given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any(), any())
+            atcMultiProductsUseCase(any())
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(success = 1))))
 
         // when
-        uohListViewModel.doAtcMulti("", "", arrayListOf(AddToCartMultiParam()), "")
+        uohListViewModel.doAtcMulti(arrayListOf(AddToCartMultiParam()))
 
         // then
         assert(uohListViewModel.atcMultiResult.value is Success)
@@ -477,11 +477,11 @@ class UohListViewModelTest {
     fun atcMulti_shouldReturnFail() {
         // given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any(), any())
+            atcMultiProductsUseCase(any())
         } returns Fail(Throwable())
 
         // when
-        uohListViewModel.doAtcMulti("", "", arrayListOf(), "")
+        uohListViewModel.doAtcMulti(arrayListOf())
 
         // then
         assert(uohListViewModel.atcMultiResult.value is Fail)
@@ -491,11 +491,11 @@ class UohListViewModelTest {
     fun atcMulti_shouldNotReturnEmptyMessage() {
         // given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any(), any())
+            atcMultiProductsUseCase(any())
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(1, listMsg))))
 
         // when
-        uohListViewModel.doAtcMulti("", "", arrayListOf(), "")
+        uohListViewModel.doAtcMulti(arrayListOf())
 
         // then
         assert(uohListViewModel.atcMultiResult.value is Success)
@@ -507,7 +507,7 @@ class UohListViewModelTest {
     fun atcBuyAgain_shouldReturnSuccess() {
         // given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any(), any())
+            atcMultiProductsUseCase(any())
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(success = 1))))
 
         // when
@@ -522,7 +522,7 @@ class UohListViewModelTest {
     fun atcBuyAgain_shouldReturnError() {
         // given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any(), any())
+            atcMultiProductsUseCase(any())
         } returns Fail(Throwable())
 
         // when
@@ -536,7 +536,7 @@ class UohListViewModelTest {
     fun atcBuyAgain_shouldNotReturnEmptyMessage() {
         // given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any(), any())
+            atcMultiProductsUseCase(any())
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(1, listMsg))))
 
         // when

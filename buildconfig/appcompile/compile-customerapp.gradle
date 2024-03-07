@@ -265,6 +265,7 @@ includeIfEnabled("features:communication:topchat")
 includeIfEnabled("features:communication:tokochat")
 includeIfEnabled("features:communication:tokochat_common")
 includeIfEnabled("features:communication:tokochat_config_common")
+includeIfEnabled("features:communication:shareexperience")
 
 includeIfEnabled("features:user:campaign_shake_landing")
 includeIfEnabled("features:user:chatbot")
@@ -302,7 +303,6 @@ includeIfEnabled("features:tokofood")
 
 includeIfEnabled("tkpddesign")
 includeIfEnabled("tkpdabstraction")
-includeIfEnabled("features:scp:auth")
 
 includeIfEnabled("testapp-features:user:logintestapp")
 includeIfEnabled("customerapp")

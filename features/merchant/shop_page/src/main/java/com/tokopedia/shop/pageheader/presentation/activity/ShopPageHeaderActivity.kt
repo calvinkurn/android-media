@@ -241,6 +241,14 @@ class ShopPageHeaderActivity :
         pageLoadTimePerformanceInterface.stopCustomMetric(tag)
     }
 
+    override fun startTraceMonitoring(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface, traceName: String) {
+        pageLoadTimePerformanceInterface.startMonitoring(traceName)
+    }
+
+    override fun stopTraceMonitoring(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
+        pageLoadTimePerformanceInterface.stopMonitoring()
+    }
+
     override fun getParentViewResourceID(): Int {
         return R.id.parent_view
     }
