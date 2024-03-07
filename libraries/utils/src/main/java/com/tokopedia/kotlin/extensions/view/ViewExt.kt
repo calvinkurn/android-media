@@ -48,12 +48,14 @@ fun View.show() {
 }
 
 fun View.showKeyboard() {
-    val imm = context.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    val imm =
+        context.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }
 
 fun View.hideKeyboard() {
-    val imm = context.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    val imm =
+        context.applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(windowToken, 0)
 }
 
@@ -431,16 +433,19 @@ fun View?.generateBackgroundWithShadow(
             shapeDrawablePadding.bottom = elevationValue
             DY = DY_CENTER
         }
+
         Gravity.TOP -> {
             shapeDrawablePadding.top = elevationValue * 2
             shapeDrawablePadding.bottom = elevationValue
             DY = DY_TOP * elevationValue / DY_ELEVATION_DIVIDER
         }
+
         Gravity.BOTTOM -> {
             shapeDrawablePadding.top = elevationValue
             shapeDrawablePadding.bottom = elevationValue * 2
             DY = elevationValue / DY_ELEVATION_DIVIDER
         }
+
         else -> {
             shapeDrawablePadding.top = elevationValue
             shapeDrawablePadding.bottom = elevationValue * 2
@@ -496,5 +501,11 @@ fun View.setOnClickDebounceListener(interval: Int = 750, block: () -> Unit) {
 fun View.getLocationOnScreen(): Point {
     val location = IntArray(2)
     this.getLocationOnScreen(location)
+    return Point(location[0], location[1])
+}
+
+fun View.getLocationInWindow(): Point {
+    val location = IntArray(2)
+    this.getLocationInWindow(location)
     return Point(location[0], location[1])
 }

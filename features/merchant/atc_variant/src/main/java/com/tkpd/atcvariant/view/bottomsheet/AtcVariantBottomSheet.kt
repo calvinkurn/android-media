@@ -1081,23 +1081,23 @@ class AtcVariantBottomSheet :
             goToTopChat()
         } else {
             openChooseAddressBottomSheet(object :
-                    ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
-                    override fun onLocalizingAddressServerDown() {
-                    }
+                ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+                override fun onLocalizingAddressServerDown() {
+                }
 
-                    override fun onAddressDataChanged() {
-                        onSuccessUpdateAddress()
-                    }
+                override fun onAddressDataChanged() {
+                    onSuccessUpdateAddress()
+                }
 
-                    override fun getLocalizingAddressHostSourceBottomSheet(): String =
-                        ProductDetailCommonConstant.KEY_PRODUCT_DETAIL
+                override fun getLocalizingAddressHostSourceBottomSheet(): String =
+                    ProductDetailCommonConstant.KEY_PRODUCT_DETAIL
 
-                    override fun onLocalizingAddressLoginSuccessBottomSheet() {
-                    }
+                override fun onLocalizingAddressLoginSuccessBottomSheet() {
+                }
 
-                    override fun onDismissChooseAddressBottomSheet() {
-                    }
-                })
+                override fun onDismissChooseAddressBottomSheet() {
+                }
+            })
         }
     }
 

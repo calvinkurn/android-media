@@ -2,8 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardImage"
@@ -11,11 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         android:foreground="@drawable/atc_animation_stroke"
+        android:visibility="gone"
         app:cardCornerRadius="24dp"
-        android:transformPivotX="50dp"
-        android:transformPivotY="50dp"
         app:cardElevation="8dp"
-        app:contentPadding="4dp">
+        app:contentPadding="4dp"
+        tools:visibility="visible">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/productImage"
