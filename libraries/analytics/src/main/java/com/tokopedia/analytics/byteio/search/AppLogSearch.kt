@@ -491,8 +491,6 @@ object AppLogSearch {
                 requestId = requestID,
             )
 
-            AppLogAnalytics.putPageData(SEARCH_ENTRANCE, searchEntrance)
-            AppLogAnalytics.putPageData(SEARCH_ID, searchID)
             AppLogAnalytics.putPageData(SEARCH_RESULT_ID, searchResultID)
             listItemId?.let { AppLogAnalytics.putPageData(LIST_ITEM_ID, it) }
         }

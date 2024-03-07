@@ -1,5 +1,8 @@
 package com.tokopedia.search.result.product.byteio
 
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
 import com.tokopedia.discovery.common.analytics.SearchEntrance
 import com.tokopedia.discovery.common.analytics.SearchId
 import com.tokopedia.search.di.scope.SearchScope
@@ -15,7 +18,7 @@ class ByteIOTrackingDataFactoryImpl @Inject constructor(
     var requestId = ""; private set
     var searchId = ""; private set
 
-    val searchEntrance = SearchEntrance()
+    val searchEntrance = AppLogAnalytics.getCurrentData(SEARCH_ENTRANCE)?.toString().orEmpty()
 
     fun renew(requestId: String) {
         update(requestId)
@@ -35,6 +38,6 @@ class ByteIOTrackingDataFactoryImpl @Inject constructor(
             searchId = searchId,
             keyword = queryKey,
             isFirstPage = isFirstPage,
-            searchEntrance = searchEntrance.value,
+            searchEntrance = searchEntrance,
         )
 }

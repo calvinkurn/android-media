@@ -180,7 +180,6 @@ class ProductListPresenter @Inject constructor(
     private val lastClickProductIdProvider: LastClickedProductIdProviderImpl,
     private val deduplication: Deduplication,
     private val byteIOTrackingDataFactoryImpl: ByteIOTrackingDataFactoryImpl,
-    private val searchEntrance: SearchEntrance,
 ) : BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -1607,6 +1606,7 @@ class ProductListPresenter @Inject constructor(
 
     override fun onViewResumed() {
         chooseAddressDelegate.reCheckChooseAddressData(::refreshData)
+        view?.cleanByteIOData()
     }
 
     override fun onLocalizingAddressSelected() {

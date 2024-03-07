@@ -271,6 +271,10 @@ object AppLogAnalytics {
         Timber.d("Put _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
+    fun removePageData(key: String) {
+        _pageDataList.lastOrNull()?.remove(key)
+    }
+
     fun putEnterMethod(enterMethod: EnterMethod) {
         putPageData(ENTER_METHOD, enterMethod.str)
     }
