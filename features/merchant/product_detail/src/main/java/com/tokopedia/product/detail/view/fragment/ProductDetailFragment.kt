@@ -8,7 +8,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
-import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build.VERSION
@@ -21,7 +20,6 @@ import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -92,8 +90,6 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.ifNull
@@ -278,7 +274,6 @@ import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHold
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
-import com.tokopedia.product.detail.view.viewholder.promo_price.ui.AnimatedImageWithAnchor
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.NavigationTab
@@ -337,7 +332,6 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_INDEFINITE
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -557,8 +551,6 @@ open class ProductDetailFragment :
     // Share Experience
     private var shareExInitializer: ShareExInitializer? = null
 
-    private var drawableFirstImage: Drawable? = null
-
     // View
     private lateinit var actionButtonView: PartialButtonActionView
     private var stickyLoginView: StickyLoginView? = null
@@ -648,9 +640,6 @@ open class ProductDetailFragment :
     override val pdpRemoteConfig: RemoteConfig
         get() = remoteConfig
 
-    private var initialXPosition = 0
-    private var initialYPosition = 0
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         productRecomm.init()
@@ -670,17 +659,6 @@ open class ProductDetailFragment :
             )
         }
 
-        binding?.composeAtc?.apply {
-            val locRoot = getLocationOnScreen()
-            val density = resources.displayMetrics.density
-            val pxValue = (218.dp * density).value.toInt()
-
-            val absXRoot = locRoot.x - pxValue / 2
-            val absYRoot = locRoot.y - pxValue / 2
-
-            initialXPosition = absXRoot
-            initialYPosition = absYRoot
-        }
         setPDPDebugMode()
     }
 
@@ -2989,12 +2967,6 @@ open class ProductDetailFragment :
         }
     }
 
-    private fun View.getLocationOnScreen(): Point {
-        val location = IntArray(2)
-        this.getLocationOnScreen(location)
-        return Point(location[0], location[1])
-    }
-
     private fun handleObserverP1Error(error: Throwable) {
         ProductDetailServerLogger.logNewRelicP1Error(error = error)
         logException(error)
@@ -4861,48 +4833,8 @@ open class ProductDetailFragment :
         }
     }
 
-    var asd = false
-    private fun runAtcAnimation() {
-        viewModel.bitmapImage.value?.let { bitmap ->
-            val viewCart = navToolbar?.getCartIconPosition()
-            val centerX = getScreenWidth() / 2
-            val centerY = getScreenHeight() / 2 + getStatusBarHeight(requireContext())
-            viewCart?.post {
-                val location = viewCart.getLocationOnScreen()
-                val absX = location.x + viewCart.width / 2 + 2.toPx()
-                val absY = location.y + viewCart.height / 2 + 2.toPx()
-
-                binding?.composeAtc?.post {
-                    binding?.composeAtc?.apply {
-                        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-
-                        setContent {
-                            asd = !asd
-
-                            println("animnya x: ${viewCart.width.toPx()}")
-                            println("animnya y: ${viewCart.width.toPx()}")
-
-                            println("posisinya x : $centerX ")
-                            println("posisinya y : $centerY")
-
-                            val x = absX - centerX
-                            val y = centerY - absY
-
-                            AnimatedImageWithAnchor(
-                                asd,
-                                x,
-                                -y,
-                                bitmap
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private fun doAtc(buttonAction: Int) {
-        runAtcAnimation()
+        atcAnimation.runAtcAnimation(binding)
         buttonActionType = buttonAction
         context?.let {
             val isVariant = viewModel.getProductInfoP1?.data?.variant?.isVariant ?: false

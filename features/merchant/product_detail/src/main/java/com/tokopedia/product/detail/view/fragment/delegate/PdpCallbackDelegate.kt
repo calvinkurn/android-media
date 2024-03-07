@@ -15,7 +15,9 @@ interface PdpCallbackDelegate {
     val review: ReviewCallback
     val productPrice: ProductPriceCallback
     val gwp: GWPCallback
+
     val productRecomm: PartialRecommendationManager
+    val atcAnimation: AtcAnimationManager
 
     fun registerCallback(mediator: PdpComponentCallbackMediator)
 }

@@ -8,11 +8,13 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
+import android.os.Build
 import android.os.SystemClock
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -25,6 +27,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.utils.R
 import timber.log.Timber
+import kotlin.math.ceil
 
 /**
  * @author by milhamj on 30/11/18.
@@ -483,4 +486,21 @@ fun View.setOnClickDebounceListener(interval: Int = 750, block: () -> Unit) {
         lastClickTime = SystemClock.elapsedRealtime()
         block()
     }
+}
+
+fun Context.getStatusBarHeight(): Int {
+    val resources = resources
+    val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+    return if (resourceId > Int.ZERO) {
+        resources.getDimensionPixelSize(resourceId)
+    } else {
+        ceil(((if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) 24 else 25) * resources.displayMetrics.density).toDouble())
+            .toInt()
+    }
+}
+
+fun View.getLocationOnScreen(): Point {
+    val location = IntArray(2)
+    this.getLocationOnScreen(location)
+    return Point(location[0], location[1])
 }
