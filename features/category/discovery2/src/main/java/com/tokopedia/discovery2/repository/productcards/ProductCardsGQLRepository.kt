@@ -4,20 +4,16 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.analytics.TrackingMapper.setAppLog
+import com.tokopedia.discovery2.analytics.TrackingMapper.setTopLevelTab
 import com.tokopedia.discovery2.data.ComponentAdditionalInfo
-import com.tokopedia.discovery2.data.ComponentSourceData
-import com.tokopedia.discovery2.data.ComponentTracker
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.DataResponse
-import com.tokopedia.discovery2.data.TopLevelTab
-import com.tokopedia.discovery2.data.UnknownTab
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT_QUERY_NAME
 import com.tokopedia.discovery2.data.productcarditem.ProductCardRequest
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -245,44 +241,5 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
             }
         }
         return Pair(list, additionalInfo)
-    }
-
-    private fun List<DataItem>?.setAppLog(
-        tracker: ComponentTracker?,
-        source: ComponentSourceData,
-    ) {
-        tracker?.let { componentTracker ->
-            this?.forEachIndexed { index, dataItem ->
-                dataItem.itemPosition = index
-                dataItem.setAppLog(componentTracker)
-                dataItem.source = source
-            }
-        }
-    }
-
-    private fun List<DataItem>?.setTopLevelTab(componentsItem: ComponentsItem) {
-        this?.forEach { dataItem ->
-            dataItem.topLevelTab = getTopLevelParentComponent(componentsItem)
-        }
-    }
-
-    private fun getTopLevelParentComponent(component: ComponentsItem?): TopLevelTab {
-        if (component == null) return UnknownTab
-
-        val parentComponentId = component.parentComponentId
-        if (parentComponentId.isEmpty()) return component.getSelectedTab()
-
-        val parentComponent = getComponent(parentComponentId, component.pageEndPoint)
-        return getTopLevelParentComponent(parentComponent)
-    }
-
-    private fun ComponentsItem.getSelectedTab(): TopLevelTab {
-        return data?.let { dataItem ->
-            val index = dataItem.indexOfFirst { it.isSelected }
-
-            if (index < 0) return UnknownTab
-
-            return TopLevelTab(dataItem[index].name.orEmpty(), index)
-        } ?: UnknownTab
     }
 }
