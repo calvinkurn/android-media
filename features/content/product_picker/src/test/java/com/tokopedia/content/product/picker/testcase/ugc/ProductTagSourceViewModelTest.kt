@@ -2,8 +2,8 @@ package com.tokopedia.content.product.picker.testcase.ugc
 
 import com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
-import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.content.product.picker.util.ugc.andThen
+import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import org.junit.Rule
 import org.junit.Test

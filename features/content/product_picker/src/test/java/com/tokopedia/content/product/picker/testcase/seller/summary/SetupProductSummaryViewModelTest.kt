@@ -7,9 +7,9 @@ import com.tokopedia.content.product.picker.seller.domain.repository.ContentProd
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductTagSummaryUiModel
-import com.tokopedia.content.product.picker.util.assertEqualTo
-import com.tokopedia.content.product.picker.util.assertFalse
-import com.tokopedia.content.product.picker.util.assertTrue
+import com.tokopedia.content.test.util.assertEqualTo
+import com.tokopedia.content.test.util.assertFalse
+import com.tokopedia.content.test.util.assertTrue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk

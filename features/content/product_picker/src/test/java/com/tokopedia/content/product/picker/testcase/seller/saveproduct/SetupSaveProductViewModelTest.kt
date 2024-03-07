@@ -6,7 +6,7 @@ import com.tokopedia.content.product.picker.robot.ContentProductPickerSellerView
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
-import com.tokopedia.content.product.picker.util.assertEqualTo
+import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk

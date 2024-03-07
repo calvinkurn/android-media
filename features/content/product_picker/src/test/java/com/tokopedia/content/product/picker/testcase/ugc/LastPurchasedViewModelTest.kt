@@ -5,10 +5,10 @@ import com.tokopedia.content.product.picker.builder.ugc.LastPurchasedModelBuilde
 import com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot
 import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.ugc.view.uimodel.action.ProductTagAction
-import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.content.product.picker.util.ugc.andThen
 import com.tokopedia.content.product.picker.util.ugc.assertError
 import com.tokopedia.content.product.picker.util.ugc.isSuccess
+import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk

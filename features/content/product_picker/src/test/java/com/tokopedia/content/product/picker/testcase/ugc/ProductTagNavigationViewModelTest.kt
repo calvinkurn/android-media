@@ -10,9 +10,9 @@ import com.tokopedia.content.product.picker.ugc.util.preference.ProductTagPrefer
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
 import com.tokopedia.content.product.picker.ugc.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.product.picker.ugc.view.uimodel.event.ProductTagUiEvent
-import com.tokopedia.content.product.picker.util.assertEqualTo
-import com.tokopedia.content.product.picker.util.equalTo
 import com.tokopedia.content.product.picker.util.ugc.andThen
+import com.tokopedia.content.test.util.assertEqualTo
+import com.tokopedia.content.test.util.equalTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk

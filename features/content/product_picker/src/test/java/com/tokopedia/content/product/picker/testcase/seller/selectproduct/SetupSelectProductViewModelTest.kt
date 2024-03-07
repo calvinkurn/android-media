@@ -3,13 +3,13 @@ package com.tokopedia.content.product.picker.testcase.seller.selectproduct
 import com.tokopedia.content.product.picker.builder.seller.ProductSetupUiModelBuilder
 import com.tokopedia.content.product.picker.robot.ContentProductPickerSellerViewModelRobot
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.seller.model.OriginalPrice
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
-import com.tokopedia.content.product.picker.util.assertEqualTo
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
+import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.mockk
 import org.junit.Rule

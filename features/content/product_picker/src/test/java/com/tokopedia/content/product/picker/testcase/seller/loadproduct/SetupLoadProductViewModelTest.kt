@@ -5,12 +5,12 @@ import com.tokopedia.content.product.picker.builder.seller.ProductSetupUiModelBu
 import com.tokopedia.content.product.picker.robot.ContentProductPickerSellerViewModelRobot
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.seller.model.PagingType
 import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.seller.model.result.PageResultState
-import com.tokopedia.content.product.picker.util.assertEqualTo
-import com.tokopedia.content.product.picker.util.assertType
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
+import com.tokopedia.content.test.util.assertType
+import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk

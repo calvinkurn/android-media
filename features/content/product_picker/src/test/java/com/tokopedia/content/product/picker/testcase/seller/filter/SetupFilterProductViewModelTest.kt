@@ -3,9 +3,9 @@ package com.tokopedia.content.product.picker.testcase.seller.filter
 import com.tokopedia.content.product.picker.builder.seller.ProductSetupUiModelBuilder
 import com.tokopedia.content.product.picker.robot.ContentProductPickerSellerViewModelRobot
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
-import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.seller.model.etalase.SelectedEtalaseModel
 import com.tokopedia.content.product.picker.seller.model.sort.SortUiModel
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
