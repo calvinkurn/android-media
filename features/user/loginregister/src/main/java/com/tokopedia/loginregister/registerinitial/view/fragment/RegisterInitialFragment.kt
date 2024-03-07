@@ -1391,11 +1391,7 @@ class RegisterInitialFragment :
 
             TkpdFirebaseAnalytics.getInstance(it).setUserId(userSession.userId)
 
-            if (isUsingExplicitPersonalize()) {
-                goToExplicitPersonalize()
-            } else {
-                finishSuccessResult()
-            }
+            goToExplicitPersonalize()
             saveFirstInstallTime()
 
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
@@ -1418,12 +1414,6 @@ class RegisterInitialFragment :
 
     private fun goToExplicitPersonalize() {
         registerInitialRouter.goToExplicitPersonalize(this@RegisterInitialFragment)
-    }
-
-    private fun isUsingExplicitPersonalize() : Boolean {
-        return RemoteConfigInstance.getInstance()
-            .abTestPlatform
-            .getString("cat_affinity_android") == "control_variant"
     }
 
     private fun initTokoChatConnection() {
