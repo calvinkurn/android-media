@@ -89,6 +89,7 @@ interface ProductListSectionContract {
         fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?, pageSource: String)
         fun updateSearchBarNotification()
         fun sendTrackingByteIO()
+        fun cleanByteIOData()
     }
 
     interface Presenter :

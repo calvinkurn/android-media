@@ -23,12 +23,20 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
+import com.tokopedia.analytics.byteio.AppLogParam.ENTRANCE_FORM
+import com.tokopedia.analytics.byteio.AppLogParam.IS_AD
+import com.tokopedia.analytics.byteio.AppLogParam.REQUEST_ID
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PAGE_TYPE
+import com.tokopedia.analytics.byteio.AppLogParam.TRACK_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_FROM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_METHOD
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.ECOM_FILTER_TYPE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.LIST_ITEM_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.NEW_SUG_SESSION_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.PRE_CLICK_ID
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_RESULT_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SUG_TYPE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_FAVORITE_BUTTON
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.CLICK_MORE_BUTTON
@@ -41,7 +49,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.discovery.common.analytics.SearchEntrance
 import com.tokopedia.discovery.common.analytics.SearchId
 import com.tokopedia.discovery.common.analytics.SearchSessionId
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -276,10 +283,6 @@ class ProductListFragment :
     @Inject
     lateinit var reimagineRollence: ReimagineRollence
 
-    @Suppress("LateinitUsage")
-    @Inject
-    lateinit var searchEntrance: SearchEntrance
-
     private var refreshLayout: SwipeRefreshLayout? = null
     private var gridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
@@ -295,6 +298,8 @@ class ProductListFragment :
             val lastEnterFrom = (AppLogAnalytics.getLastDataBeforeCurrent(ENTER_FROM) ?: "").toString()
             return if (lastEnterFrom == HOMEPAGE) HOMEPAGE else ""
         }
+    private val searchEntrance: String
+        get() = AppLogAnalytics.getCurrentData(SEARCH_ENTRANCE)?.toString().orEmpty()
 
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
@@ -1222,7 +1227,7 @@ class ProductListFragment :
             ecomFilterName = filterValue,
             ecomFilterPosition = position.toString(),
             buttonTypeClick = FILTER_QUICK,
-            searchEntrance = searchEntrance.value,
+            searchEntrance = searchEntrance,
         ))
     }
 
@@ -1635,6 +1640,22 @@ class ProductListFragment :
         presenter?.showBottomSheetInappropriate(itemProduct)
     }
 
+    override fun cleanByteIOData() {
+        cleanByteIOProductClickData()
+    }
+
+    private fun cleanByteIOProductClickData() {
+        AppLogAnalytics.run {
+            removePageData(ENTRANCE_FORM)
+            removePageData(IS_AD)
+            removePageData(TRACK_ID)
+            removePageData(SOURCE_PAGE_TYPE)
+            removePageData(REQUEST_ID)
+            removePageData(SEARCH_RESULT_ID)
+            removePageData(LIST_ITEM_ID)
+        }
+    }
+
     override fun sendTrackingByteIO() {
         val durationMs: Long? = performanceMonitoring?.getPltPerformanceData()?.let {
             it.startPageDuration + it.networkRequestDuration
@@ -1665,7 +1686,7 @@ class ProductListFragment :
             )
         )
 
-        AppLogAnalytics.putPageData(ECOM_FILTER_TYPE, "")
+        AppLogAnalytics.removePageData(ECOM_FILTER_TYPE)
     }
 
     private fun ecomSortName(): String? {
