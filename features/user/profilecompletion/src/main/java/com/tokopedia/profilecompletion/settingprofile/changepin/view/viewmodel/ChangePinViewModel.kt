@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
-import com.tokopedia.otp.verification.data.OtpConstant
+import com.tokopedia.verification.verification.data.OtpConstant
 import com.tokopedia.profilecompletion.settingprofile.addpin.data.AddChangePinData
 import com.tokopedia.profilecompletion.settingprofile.addpin.data.CheckPinData
 import com.tokopedia.profilecompletion.settingprofile.addpin.data.ValidatePinData
