@@ -1373,6 +1373,11 @@ public class MainParentActivity extends BaseActivity implements
             if(applogInterface.getPageName().equals(AppLogAnalytics.INSTANCE.getCurrentData(PAGE_NAME).toString())) return;
             AppLogAnalytics.INSTANCE.pushPageData(applogInterface);
             AppLogAnalytics.INSTANCE.putPageData(IS_MAIN_PARENT, true);
+
+            Object currentEnterMethod = AppLogAnalytics.INSTANCE.getLastData(ENTER_METHOD);
+            if (currentEnterMethod == null) {
+                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
+            }
         }
     }
 
@@ -1407,10 +1412,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
         if (isFirstInit) {
-            Object currentEnterMethod = AppLogAnalytics.INSTANCE.getLastData(ENTER_METHOD);
-            if (currentEnterMethod == null) {
-                AppLogAnalytics.INSTANCE.putEnterMethod(EnterMethod.CLICK_APP_ICON);
-            }
+            updateAppLogPageData(homePosition);
             bottomNavigation.setInitialState(homePosition);
         }
     }
