@@ -233,6 +233,11 @@ class ReviewContentViewHolder(
     }
 
     private fun bindDescription(description: ReviewDescriptionUiModel) = with(binding) {
+        if (description.description.isBlank()) {
+            reviewOverlay.gone()
+            tvReviewDescription.gone()
+            return@with
+        }
         val divider = root.context.getString(R.string.circle_dot_divider)
         tvReviewDetails.text = buildString {
             append(description.stars)
