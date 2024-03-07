@@ -28,7 +28,8 @@ fun PersonalizeQuestionScreen(
     listQuestion: List<QuestionDataModel>,
     isLoadingSaveAnswer: Boolean,
     countItemSelected: Int,
-    maxItemSelected: Int?,
+    maxItemSelected: Int,
+    minItemSelected: Int,
     onSave: () -> Unit,
     onSkip: () -> Unit,
     onOptionSelected: (OptionSelected) -> Unit,
@@ -59,7 +60,11 @@ fun PersonalizeQuestionScreen(
             Column(
                 modifier = Modifier.padding(it)
             ) {
-                HeaderSection(countItemSelected = countItemSelected, maxItemSelected = maxItemSelected)
+                HeaderSection(
+                    countItemSelected = countItemSelected,
+                    maxItemSelected = maxItemSelected,
+                    minItemSelected = minItemSelected
+                )
 
                 NestDivider(
                     modifier = Modifier.fillMaxWidth(),
@@ -69,7 +74,11 @@ fun PersonalizeQuestionScreen(
                 ListQuestion(
                     listQuestion = listQuestion,
                     modifier = Modifier.weight(1f),
-                    isMaxOptionsSelected = countItemSelected == maxItemSelected,
+                    isMaxOptionsSelected = if (maxItemSelected == 0) {
+                        false
+                    } else {
+                        countItemSelected == maxItemSelected
+                    },
                     onOptionSelected = { item -> onOptionSelected(item) }
                 )
 
@@ -83,7 +92,11 @@ fun PersonalizeQuestionScreen(
                         .padding(16.dp)
                         .fillMaxWidth(),
                     text = LocalContext.current.getString(R.string.explicit_personalize_save),
-                    isEnabled = countItemSelected.isMoreThanZero(),
+                    isEnabled = if (minItemSelected == 0) {
+                        countItemSelected.isMoreThanZero()
+                    } else {
+                        countItemSelected >= minItemSelected
+                    },
                     onClick = { onSave.invoke() },
                     isLoading = isLoadingSaveAnswer
                 )
@@ -155,7 +168,8 @@ fun PersonalizeScreenPreview() {
             onSave = {},
             onSkip = {},
             onOptionSelected = {},
-            isLoadingSaveAnswer = true
+            isLoadingSaveAnswer = true,
+            minItemSelected = 1
         )
     }
 }

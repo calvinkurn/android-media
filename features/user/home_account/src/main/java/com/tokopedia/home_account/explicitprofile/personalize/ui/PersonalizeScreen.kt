@@ -36,6 +36,7 @@ fun PersonalizeScreen(
                         listQuestion = state.listQuestion,
                         countItemSelected = counterStateObserver,
                         maxItemSelected = state.maxItemSelected,
+                        minItemSelected = state.minItemSelected,
                         onSave = { onSave.invoke() },
                         onSkip = { onSkip.invoke() },
                         onOptionSelected = { onOptionSelected(it) },

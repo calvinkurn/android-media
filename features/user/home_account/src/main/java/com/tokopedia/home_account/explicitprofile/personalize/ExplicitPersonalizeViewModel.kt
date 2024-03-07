@@ -54,7 +54,8 @@ class ExplicitPersonalizeViewModel @Inject constructor(
 
                 _stateGetQuestion.value = ExplicitPersonalizeResult.Success(
                     listQuestion = currentList,
-                    maxItemSelected = state.maxItemSelected
+                    maxItemSelected = state.maxItemSelected,
+                    minItemSelected = state.minItemSelected
                 )
             }
             else -> {}
@@ -70,13 +71,15 @@ class ExplicitPersonalizeViewModel @Inject constructor(
                     .explicitProfileQuestionDataModel.template
                 templateId = template.id
                 val sections = template.sections
-                val maxItemSelected = template.rules.maxAnswer
+                val maxItemSelected = getRuleMinMax(template.rules.maxAnswer)
+                val minItemSelected = getRuleMinMax(template.rules.minAnswer)
                 if (sections.isNotEmpty() && sections.first().layout == MULTIPLE_ANSWER) {
                     sectionId = sections.first().sectionId
                     sectionId = sections.first().sectionId
                     _stateGetQuestion.value = ExplicitPersonalizeResult.Success(
                         listQuestion = sections.first().questions,
-                        maxItemSelected = maxItemSelected
+                        maxItemSelected = maxItemSelected,
+                        minItemSelected = minItemSelected
                     )
                 } else {
                     _stateGetQuestion.value = ExplicitPersonalizeResult.Failed
@@ -86,6 +89,11 @@ class ExplicitPersonalizeViewModel @Inject constructor(
                 _stateGetQuestion.value = ExplicitPersonalizeResult.Failed
             }
         )
+    }
+
+    //value 0. meaning there no rule for min or max
+    private fun getRuleMinMax(rule: Int?): Int {
+        return rule ?: 0
     }
 
     fun saveAnswers() {
@@ -152,7 +160,8 @@ sealed interface ExplicitPersonalizeResult {
     object Loading : ExplicitPersonalizeResult
     data class Success(
         val listQuestion: List<QuestionDataModel>,
-        val maxItemSelected: Int?
+        val maxItemSelected: Int,
+        val minItemSelected: Int,
     ) : ExplicitPersonalizeResult
     object Failed : ExplicitPersonalizeResult
 }

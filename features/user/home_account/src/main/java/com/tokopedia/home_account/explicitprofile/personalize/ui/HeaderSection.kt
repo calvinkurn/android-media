@@ -2,6 +2,7 @@ package com.tokopedia.home_account.explicitprofile.personalize.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -18,10 +19,11 @@ import com.tokopedia.nest.principles.ui.NestTheme
 @Composable
 fun HeaderSection(
     countItemSelected: Int,
-    maxItemSelected: Int?
+    maxItemSelected: Int,
+    minItemSelected: Int,
 ) {
     Column(
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.fillMaxWidth().padding(16.dp)
     ) {
         NestTypography(
             text = LocalContext.current.getString(R.string.explicit_personalize_title),
@@ -31,7 +33,10 @@ fun HeaderSection(
         Spacer(modifier = Modifier.height(4.dp))
 
         NestTypography(
-            text = LocalContext.current.getString(R.string.explicit_personalize_subtitle),
+            text = LocalContext.current.getString(
+                R.string.explicit_personalize_subtitle,
+                if (minItemSelected == 0) "1" else minItemSelected.toString()
+            ),
             textStyle = NestTheme.typography.paragraph2.copy(
                 color = NestTheme.colors.NN._600
             )
@@ -39,22 +44,23 @@ fun HeaderSection(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        if (maxItemSelected != null && maxItemSelected != 0) {
-            NestTypography(
-                text = LocalContext.current.getString(
-                    R.string.explicit_personalize_counter,
-                    countItemSelected.toString(),
-                    maxItemSelected.toString()
-                ),
-                textStyle = NestTheme.typography.paragraph2.copy(
-                    color = if (countItemSelected == 0)
-                        NestTheme.colors.NN._600
-                    else
-                        NestTheme.colors.GN._500
-                ),
-                modifier = Modifier.align(Alignment.End)
-            )
-        }
+        NestTypography(
+            text = LocalContext.current.getString(
+                R.string.explicit_personalize_counter,
+                if (maxItemSelected == 0) {
+                    countItemSelected.toString()
+                } else {
+                    "$countItemSelected/$maxItemSelected"
+                }
+            ),
+            textStyle = NestTheme.typography.paragraph2.copy(
+                color = if (countItemSelected == 0)
+                    NestTheme.colors.NN._600
+                else
+                    NestTheme.colors.GN._500
+            ),
+            modifier = Modifier.align(Alignment.End)
+        )
     }
 }
 
@@ -62,7 +68,7 @@ fun HeaderSection(
 @Composable
 fun HeaderSectionSelectedPreview() {
     NestTheme {
-        HeaderSection(countItemSelected = 2, maxItemSelected = 10)
+        HeaderSection(countItemSelected = 2, maxItemSelected = 10, minItemSelected = 1)
     }
 }
 
@@ -70,7 +76,7 @@ fun HeaderSectionSelectedPreview() {
 @Composable
 fun HeaderSectionUnSelectedPreview() {
     NestTheme {
-        HeaderSection(countItemSelected = 0, maxItemSelected = 10)
+        HeaderSection(countItemSelected = 0, maxItemSelected = 10, minItemSelected = 1)
     }
 }
 
@@ -78,6 +84,6 @@ fun HeaderSectionUnSelectedPreview() {
 @Composable
 fun HeaderSectionNullMaxAnswerPreview() {
     NestTheme {
-        HeaderSection(countItemSelected = 0, maxItemSelected = null)
+        HeaderSection(countItemSelected = 0, maxItemSelected = 0, minItemSelected = 0)
     }
 }
