@@ -11,11 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         android:foreground="@drawable/atc_animation_stroke"
-        android:visibility="gone"
+        android:alpha="0"
         app:cardCornerRadius="24dp"
         app:cardElevation="8dp"
         app:contentPadding="4dp"
-        tools:visibility="visible">
+        tools:alpha="1">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/productImage"

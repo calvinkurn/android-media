@@ -8,7 +8,6 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Point
 import android.view.Gravity
-import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.view.animation.PathInterpolator
 import android.widget.ImageView
@@ -17,13 +16,12 @@ import androidx.core.view.marginStart
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import com.tkpd.atcvariant.databinding.AtcAnimationLayoutBinding
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getLocationOnScreen
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.half
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.UnifyMotion
@@ -36,40 +34,34 @@ import com.tokopedia.unifyprinciples.UnifyMotion
 
 
 class AtcAnimation(private val activity: Activity) {
-    companion object {
-        // refer to [com.tokopedia.searchbar.navigation_component.R.layout.nav_main_toolbar]
-        private val ACTION_ICON_SIZE = 54.toPx()
-        private val HALF_ACTION_ICON_SIZE = ACTION_ICON_SIZE / 2
-        private val MARGIN_END_CONTAINER_TOOLBAR_ACTION = 2.toPx()
-        private const val CART_POS_FROM_LEFT_IN_PDP_TOOLBAR = 2
-        private val PDP_CART_LOCATION_X =
-            ACTION_ICON_SIZE * CART_POS_FROM_LEFT_IN_PDP_TOOLBAR - HALF_ACTION_ICON_SIZE + MARGIN_END_CONTAINER_TOOLBAR_ACTION
-        private val TOOLBAR_HEIGHT = 56.toPx()
-        private val TARGET_IMAGE_SIZE_AFTER_ANIMATE = 12.toPx()
-        private val STROKE_WIDTH = 4.toPx()
 
-        private val NO_LOCATION = Point(-1, -1)
+    companion object {
+        private val STROKE_WIDTH = 4.toPx()
+        private val RADIUS_DEFAULT = 24.toPx().toFloat()
+        private val TARGET_RADIUS = RADIUS_DEFAULT * 4
+        private const val START_SCALE_IN_PLAY = 0.5f
+        private const val END_SCALE_IN_FLY = 0.05f
+
+        private const val PROP_TRANSLATION_X = "translationX"
+        private const val PROP_TRANSLATION_Y = "translationY"
+        private const val PROP_SCALE_X = "scaleX"
+        private const val PROP_SCALE_Y = "scaleY"
+        private const val PROP_ALPHA = "alpha"
+        private const val PROP_RADIUS = "radius"
+
+        private val NO_LOCATION = Point(-Int.ZERO, -Int.ZERO)
     }
 
     private var mSourceImageView: ImageView? = null
-    private val targetLocationAbsolute by lazy {
-        Point(
-            getScreenWidth() - PDP_CART_LOCATION_X,
-            TOOLBAR_HEIGHT.div(2)
-        )
-    }
+
     private var mTargetLocation: Point = NO_LOCATION
-        get() = if (field.x == NO_LOCATION.x) {
-            targetLocationAbsolute
-        } else {
-            field
-        }
 
     private var mSourceLocation: Point = NO_LOCATION
 
     private val binding by lazyThreadSafetyNone {
         AtcAnimationLayoutBinding.inflate(activity.layoutInflater)
     }
+
     private val popupWindow by lazyThreadSafetyNone {
         val matchParent = LayoutParams.MATCH_PARENT
         PopupWindow(binding.root, matchParent, matchParent).apply {
@@ -77,7 +69,9 @@ class AtcAnimation(private val activity: Activity) {
         }
     }
 
-    private val bezier = PathInterpolator(0.63f, 0.01f, 0.29f, 1f)
+    private val bezier by lazy {
+        PathInterpolator(0.63f, 0.01f, 0.29f, 1f)
+    }
 
     private val showAnimatorSet = AnimatorSet().apply {
         interpolator = bezier
@@ -89,17 +83,8 @@ class AtcAnimation(private val activity: Activity) {
         duration = UnifyMotion.T3
     }
 
-    fun setSourceView(view: ImageView): AtcAnimation {
+    fun setSourceView(view: ImageView) {
         mSourceImageView = view
-        setSourceLocation(view = view)
-        return this
-    }
-
-    private fun setSourceLocation(view: View) {
-        view.post {
-            val location = view.getLocationOnScreen()
-            mSourceLocation = Point(location.actualX, location.actualY)
-        }
     }
 
     fun setTargetLocation(point: Point?) {
@@ -107,24 +92,36 @@ class AtcAnimation(private val activity: Activity) {
     }
 
     private fun Context.getStatusBarHeight(): Int {
-        var height = 0
+        var height = Int.ZERO
         val resId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resId > 0) {
+        if (resId > Int.ZERO) {
             height = resources.getDimensionPixelSize(resId)
         }
         return height
     }
 
-    fun show() {
+    fun show(onAnimateEnded: () -> Unit = {}) {
+        cancelPopUpWindow() // cancel popup window if it's showing
+        showPopUpWindow(onAnimateEnded)
+    }
+
+    // cancel all animate and dismiss the popup window
+    private fun cancelPopUpWindow() {
         showAnimatorSet.removeAllListeners()
         flyAnimatorSet.removeAllListeners()
         showAnimatorSet.cancel()
         flyAnimatorSet.cancel()
         popupWindow.dismiss()
+    }
 
-        prepare()
-        resetState()
-        showPopUpWindow()
+    private fun showPopUpWindow(onAnimateEnded: () -> Unit) {
+        val target = mSourceImageView ?: return
+        popupWindow.showAtLocation(target, Gravity.CENTER, Int.ZERO, Int.ZERO)
+        popupWindow.contentView.addOneTimeGlobalLayoutListener {
+            prepare()
+            resetState()
+            animate(onAnimateEnded)
+        }
     }
 
     private fun prepare() {
@@ -132,43 +129,38 @@ class AtcAnimation(private val activity: Activity) {
 
         // set resource as drawable from source
         binding.productImage.setImageDrawable(source.drawable)
+
+        // get source location on screen by actual within popup window
+        val location = source.getLocationOnScreen()
+        mSourceLocation = Point(location.sourceActualX, location.sourceActualY)
     }
 
     private fun resetState() {
-        val width = mSourceImageView?.width ?: 0
-        val height = mSourceImageView?.height ?: 0
-        // set current position from source location
+        val source = mSourceImageView ?: return
         with(binding.cardImage) {
-            hide()
             x = mSourceLocation.x.toFloat()
             y = mSourceLocation.y.toFloat()
             translationX = x
             translationY = y
-            scaleX = 1f
-            scaleY = 1f
-            pivotX = width.half.toFloat()
-            pivotY = height.half.toFloat()
-            radius = 24.toPx().toFloat()
-            alpha = 1f
+            scaleX = Float.ONE
+            scaleY = Float.ONE
+            pivotX = source.width.half.toFloat()
+            pivotY = source.height.half.toFloat()
+            radius = RADIUS_DEFAULT
+            alpha = Float.ZERO
         }
     }
 
-    private fun showPopUpWindow() {
-        val target = mSourceImageView ?: return
-        popupWindow.showAtLocation(target, Gravity.CENTER, Int.ZERO, Int.ZERO)
-        binding.cardImage.show()
-        animate()
-    }
-
-    private fun animate() {
+    private fun animate(onAnimateEnded: () -> Unit) {
         showAnimation(onEnded = {
             flyingAnimation(onEnded = {
                 popupWindow.dismiss()
+                onAnimateEnded()
             })
         })
     }
 
-    private fun showAnimation(onEnded: () -> Unit) = with(binding.cardImage) {
+    private fun showAnimation(onEnded: () -> Unit) = binding.cardImage.postOnAnimation {
         val animations = prepareShowAnimation()
 
         showAnimatorSet.apply {
@@ -183,13 +175,13 @@ class AtcAnimation(private val activity: Activity) {
     }
 
     private fun prepareShowAnimation(): List<Animator> = with(binding.cardImage) {
-        val scaleX = ObjectAnimator.ofFloat(this, "scaleX", 0.5f, 1f)
-        val scaleY = ObjectAnimator.ofFloat(this, "scaleY", 0.5f, 1f)
-        val alpha = ObjectAnimator.ofFloat(this, "alpha", 0f, 1f)
+        val scaleX = ObjectAnimator.ofFloat(this, PROP_SCALE_X, START_SCALE_IN_PLAY, Float.ONE)
+        val scaleY = ObjectAnimator.ofFloat(this, PROP_SCALE_Y, START_SCALE_IN_PLAY, Float.ONE)
+        val alpha = ObjectAnimator.ofFloat(this, PROP_ALPHA, Float.ZERO, Float.ONE)
         return listOf(scaleX, scaleY, alpha)
     }
 
-    private fun flyingAnimation(onEnded: () -> Unit) {
+    private fun flyingAnimation(onEnded: () -> Unit) = binding.cardImage.postOnAnimation {
         val animators = prepareFlyingAnimator()
         flyAnimatorSet.apply {
             addListener(object : AnimatorListenerAdapter() {
@@ -205,40 +197,31 @@ class AtcAnimation(private val activity: Activity) {
     }
 
     private fun prepareFlyingAnimator(): List<Animator> = with(binding.cardImage) {
-        val targetX = mTargetLocation.x - mSourceImageView?.width.orZero().half
-        val targetY =
-            mTargetLocation.y - mSourceImageView?.height.orZero().half - activity.getStatusBarHeight()
-
-        val translateX = ObjectAnimator.ofFloat(
-            this,
-            "translationX",
-            translationX,
-            targetX.toFloat()
-        )
-        val translateY = ObjectAnimator.ofFloat(
-            this,
-            "translationY",
-            translationY,
-            targetY.toFloat()
-        )
-        val scaleX = ObjectAnimator.ofFloat(this, "scaleX", 1f, 0.24f)
-        val scaleY = ObjectAnimator.ofFloat(this, "scaleY", 1f, 0.24f)
-        val alpha = ObjectAnimator.ofFloat(this, "alpha", 1f, 0f)
-        val rounded = ObjectAnimator.ofFloat(
-            this,
-            "radius",
-            radius,
-            radius * 2
-        )
+        val targetX = mTargetLocation.targetActualX
+        val targetY = mTargetLocation.targetActualY
+        val translateX =
+            ObjectAnimator.ofFloat(this, PROP_TRANSLATION_X, translationX, targetX.toFloat())
+        val translateY =
+            ObjectAnimator.ofFloat(this, PROP_TRANSLATION_Y, translationY, targetY.toFloat())
+        val scaleX = ObjectAnimator.ofFloat(this, PROP_SCALE_X, Float.ONE, END_SCALE_IN_FLY)
+        val scaleY = ObjectAnimator.ofFloat(this, PROP_SCALE_Y, Float.ONE, END_SCALE_IN_FLY)
+        val alpha = ObjectAnimator.ofFloat(this, PROP_ALPHA, Float.ONE, Float.ZERO)
+        val rounded = ObjectAnimator.ofFloat(this, PROP_RADIUS, radius, TARGET_RADIUS)
 
         return listOf(translateX, translateY, scaleX, scaleY, rounded, alpha)
     }
 
-    private val Point.actualX
+    private val Point.sourceActualX
         get() = x - STROKE_WIDTH - binding.cardImage.marginStart
 
-    private val Point.actualY
+    private val Point.sourceActualY
         get() = y - STROKE_WIDTH - binding.cardImage.marginTop - activity.getStatusBarHeight()
+
+    private val Point.targetActualX
+        get() = x - mSourceImageView?.width.orZero().half
+
+    private val Point.targetActualY
+        get() = y - mSourceImageView?.height.orZero().half - activity.getStatusBarHeight()
 }
 
 fun Fragment.atcAnimator() = lazy { AtcAnimation(activity = requireActivity()) }
