@@ -8,6 +8,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.EntranceForm
 import com.tokopedia.analytics.byteio.SourcePageType
+import com.tokopedia.analytics.byteio.util.spacelessParam
 import com.tokopedia.analytics.byteio.util.underscoredParam
 import org.json.JSONObject
 
@@ -148,7 +149,7 @@ data class AppLogRecommendationProductModel(
                 enterMethod = enterMethod,
                 authorId = authorId.zeroAsEmpty(),
                 groupId = groupId.zeroAsEmpty(),
-                cardName = getCardName(cardName, isAd)
+                cardName = getCardName(cardName, isAd).spacelessParam()
             )
         }
     }
