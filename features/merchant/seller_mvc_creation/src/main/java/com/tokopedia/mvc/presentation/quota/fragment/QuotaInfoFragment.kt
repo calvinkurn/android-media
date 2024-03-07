@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -165,7 +166,7 @@ class QuotaInfoFragment: BaseDaggerFragment() {
         title = context.getString(R.string.smvc_quota_info_page_title)
         val iconClose = MethodChecker.getDrawable(context,
             com.tokopedia.abstraction.R.drawable.ic_close_default)
-        applyIconUnifyColor(iconClose, com.tokopedia.unifyprinciples.R.color.Unify_NN950 )
+        applyIconUnifyColor(iconClose, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         navigationIcon = iconClose
         setNavigationOnClickListener {
             activity?.finish()
