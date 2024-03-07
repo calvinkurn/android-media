@@ -20,6 +20,7 @@ enum class ShareExPageTypeEnum(val value: String, val valueInt: Int) {
     FEED("feed", 10),
     CATEGORY("category", 11),
     HELP("help", 12),
+    REVIEW("review", 13),
     OTHERS("others", 0);
 
     companion object {

@@ -15,10 +15,12 @@ import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExBot
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExDiscoveryBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExOthersBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExReviewBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExShopBottomSheetRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.domain.util.ShareExResult
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -29,8 +31,7 @@ import javax.inject.Inject
 @SuppressLint("UnifyComponentUsage")
 class ShareExLoadingDialog(
     context: Context,
-    private val id: String,
-    private val pageTypeEnum: ShareExPageTypeEnum,
+    private val arg: ShareExBottomSheetArg,
     private val onResult: (ShareExResult<ShareExBottomSheetModel>) -> Unit
 ) : Dialog(context, R.style.CustomDialogTheme) {
 
@@ -98,30 +99,37 @@ class ShareExLoadingDialog(
     }
 
     private fun getRequest(): ShareExBottomSheetRequest {
-        return when (pageTypeEnum) {
+        return when (arg.pageTypeEnum) {
             ShareExPageTypeEnum.PDP -> {
                 ShareExProductBottomSheetRequest(
-                    pageType = pageTypeEnum.valueInt,
-                    id = id
+                    pageType = arg.pageTypeEnum.valueInt,
+                    productId = arg.productId
                 )
             }
             ShareExPageTypeEnum.SHOP -> {
                 ShareExShopBottomSheetRequest(
-                    pageType = pageTypeEnum.valueInt,
-                    id = id
+                    pageType = arg.pageTypeEnum.valueInt,
+                    shopId = arg.shopId
                 )
             }
             ShareExPageTypeEnum.DISCOVERY -> {
                 ShareExDiscoveryBottomSheetRequest(
-                    pageType = pageTypeEnum.valueInt,
-                    id = id
+                    pageType = arg.pageTypeEnum.valueInt,
+                    campaignId = arg.campaignId
+                )
+            }
+            ShareExPageTypeEnum.REVIEW -> {
+                ShareExReviewBottomSheetRequest(
+                    pageType = arg.pageTypeEnum.valueInt,
+                    reviewId = arg.reviewId,
+                    productId = arg.productId
                 )
             }
             else -> {
                 // Default Others
                 ShareExOthersBottomSheetRequest(
-                    pageType = pageTypeEnum.valueInt,
-                    id = id
+                    pageType = arg.pageTypeEnum.valueInt,
+                    id = arg.generalId
                 )
             }
         }

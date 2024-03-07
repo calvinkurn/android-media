@@ -37,6 +37,7 @@ import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.listener.ShareExErrorListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetResultArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
 import com.tokopedia.shareexperience.ui.util.ShareExIntentErrorEnum
 import com.tokopedia.shareexperience.ui.util.ShareExMediaCleanupStorageWorker
@@ -127,22 +128,26 @@ class ShareExBottomSheet :
 
     @SuppressLint("DeprecatedMethod")
     private fun setupBottomSheetModel() {
-        val args = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable(BOTTOM_SHEET_DATA_KEY, ShareExBottomSheetArg::class.java)
+        val arg: ShareExBottomSheetArg?
+        val resultArg: ShareExBottomSheetResultArg?
+        if (shouldUseNewParcelable()) {
+            arg = arguments?.getParcelable(BOTTOM_SHEET_DATA_KEY, ShareExBottomSheetArg::class.java)
+            resultArg = arguments?.getParcelable(BOTTOM_SHEET_RESULT_KEY, ShareExBottomSheetResultArg::class.java)
         } else {
-            arguments?.getParcelable(BOTTOM_SHEET_DATA_KEY)
+            arg = arguments?.getParcelable(BOTTOM_SHEET_DATA_KEY)
+            resultArg = arguments?.getParcelable(BOTTOM_SHEET_RESULT_KEY)
         }
-        args?.let {
-            viewModel.bottomSheetArgs = args
+        arg?.let {
+            viewModel.bottomSheetArg = arg
             analytics.trackImpressionBottomSheet(
-                identifier = it.identifier,
+                identifier = it.getIdentifier(),
                 pageTypeEnum = it.pageTypeEnum,
                 shareId = getShareId(),
-                label = args.trackerArg.labelImpressionBottomSheet
+                label = arg.trackerArg.labelImpressionBottomSheet
             )
             setCloseClickListener { _ ->
                 analytics.trackActionClickClose(
-                    identifier = it.identifier,
+                    identifier = it.getIdentifier(),
                     pageTypeEnum = it.pageTypeEnum,
                     shareId = getShareId(),
                     label = it.trackerArg.labelActionCloseIcon
@@ -150,6 +155,13 @@ class ShareExBottomSheet :
                 dismiss()
             }
         }
+        resultArg?.let {
+            viewModel.bottomSheetResultArg = resultArg
+        }
+    }
+
+    private fun shouldUseNewParcelable(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
     }
 
     private fun initializeRecyclerView() {
@@ -269,10 +281,10 @@ class ShareExBottomSheet :
         channelEnum: ShareExChannelEnum?,
         imageTypeEnum: ShareExImageTypeEnum
     ) {
-        viewModel.bottomSheetArgs?.let {
+        viewModel.bottomSheetArg?.let {
             if (channelEnum != null) {
                 analytics.trackActionClickChannel(
-                    identifier = it.identifier,
+                    identifier = it.getIdentifier(),
                     pageTypeEnum = it.pageTypeEnum,
                     shareId = getShareId(),
                     channel = channelEnum.trackerName,
@@ -292,9 +304,9 @@ class ShareExBottomSheet :
     }
 
     override fun onImpressionAffiliateRegistrationCard() {
-        viewModel.bottomSheetArgs?.let {
+        viewModel.bottomSheetArg?.let {
             analytics.trackImpressionTickerAffiliate(
-                identifier = it.identifier,
+                identifier = it.getIdentifier(),
                 pageTypeEnum = it.pageTypeEnum,
                 shareId = getShareId(),
                 label = it.trackerArg.labelImpressionAffiliateRegistration
@@ -303,9 +315,9 @@ class ShareExBottomSheet :
     }
 
     override fun onAffiliateRegistrationCardClicked(appLink: String) {
-        viewModel.bottomSheetArgs?.let {
+        viewModel.bottomSheetArg?.let {
             analytics.trackActionClickAffiliateRegistration(
-                identifier = it.identifier,
+                identifier = it.getIdentifier(),
                 pageTypeEnum = it.pageTypeEnum,
                 shareId = getShareId(),
                 label = it.trackerArg.labelActionClickAffiliateRegistration
@@ -391,7 +403,7 @@ class ShareExBottomSheet :
     }
 
     private fun getShareId(): String {
-        return viewModel.bottomSheetArgs
+        return viewModel.bottomSheetResultArg
             ?.bottomSheetModel
             ?.bottomSheetPage
             ?.listShareProperty
@@ -417,11 +429,16 @@ class ShareExBottomSheet :
 
     companion object {
         private const val BOTTOM_SHEET_DATA_KEY = "bottom_sheet_data_key"
+        private const val BOTTOM_SHEET_RESULT_KEY = "bottom_sheet_result_key"
 
-        fun newInstance(bottomSheetArg: ShareExBottomSheetArg): ShareExBottomSheet {
+        fun newInstance(
+            bottomSheetArg: ShareExBottomSheetArg,
+            bottomSheetResultArg: ShareExBottomSheetResultArg
+        ): ShareExBottomSheet {
             val fragment = ShareExBottomSheet()
             val bundle = Bundle().apply {
                 putParcelable(BOTTOM_SHEET_DATA_KEY, bottomSheetArg)
+                putParcelable(BOTTOM_SHEET_RESULT_KEY, bottomSheetResultArg)
             }
             fragment.arguments = bundle
             return fragment

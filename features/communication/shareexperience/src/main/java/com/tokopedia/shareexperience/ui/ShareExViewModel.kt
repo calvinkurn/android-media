@@ -30,6 +30,7 @@ import com.tokopedia.shareexperience.domain.util.ShareExLogger
 import com.tokopedia.shareexperience.domain.util.ShareExResult
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetResultArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExBottomSheetUiState
 import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
@@ -69,8 +70,9 @@ class ShareExViewModel @Inject constructor(
     private val _actionFlow =
         MutableSharedFlow<ShareExAction>(extraBufferCapacity = 16)
 
-    // Cache the args from initializer & fetcher
-    var bottomSheetArgs: ShareExBottomSheetArg? = null
+    // Cache the args from initializer & result from fetch
+    var bottomSheetArg: ShareExBottomSheetArg? = null
+    var bottomSheetResultArg: ShareExBottomSheetResultArg? = null
 
     /**
      * Ui state for bottom sheet views
@@ -122,18 +124,18 @@ class ShareExViewModel @Inject constructor(
     private fun getShareBottomSheetData() {
         viewModelScope.launch {
             try {
-                val bottomSheetArgs = bottomSheetArgs!! // Safe !!
+                val bottomSheetResultArg = bottomSheetResultArg!! // Safe !!
                 when {
-                    (bottomSheetArgs.throwable != null) -> {
+                    (bottomSheetResultArg.throwable != null) -> {
                         getDefaultBottomSheetModel(
-                            bottomSheetArgs.throwable,
-                            bottomSheetArgs.defaultUrl
+                            bottomSheetResultArg.throwable,
+                            bottomSheetArg?.defaultUrl.toEmptyStringIfNull()
                         )
                     }
-                    (bottomSheetArgs.bottomSheetModel != null) -> {
+                    (bottomSheetResultArg.bottomSheetModel != null) -> {
                         handleFirstLoadBottomSheetModel(
-                            bottomSheetArgs.bottomSheetModel,
-                            bottomSheetArgs.selectedChip
+                            bottomSheetResultArg.bottomSheetModel,
+                            bottomSheetArg?.selectedChip.toEmptyStringIfNull()
                         )
                     }
                 }
@@ -168,7 +170,7 @@ class ShareExViewModel @Inject constructor(
 
     private fun getDefaultBottomSheetModel(throwable: Throwable, defaultUrl: String) {
         val defaultShareProperties = getSharePropertiesUseCase.getDefaultData()
-        bottomSheetArgs = bottomSheetArgs?.copy(
+        bottomSheetResultArg = bottomSheetResultArg?.copy(
             bottomSheetModel = defaultShareProperties
         )
         val uiResult = defaultShareProperties.mapError(defaultUrl, throwable)
@@ -184,10 +186,21 @@ class ShareExViewModel @Inject constructor(
         position: Int,
         text: String
     ) {
-        bottomSheetArgs = bottomSheetArgs?.copy(
-            selectedChip = text
-        )
-        bottomSheetArgs?.bottomSheetModel?.let { bottomSheetModel ->
+        bottomSheetArg?.let {
+            bottomSheetArg = ShareExBottomSheetArg.Builder(
+                pageTypeEnum = it.pageTypeEnum,
+                defaultUrl = it.defaultUrl,
+                trackerArg = it.trackerArg
+            )
+            .withProductId(it.productId)
+            .withReviewId(it.reviewId)
+            .withShopId(it.shopId)
+            .withCampaignId(it.campaignId)
+            .withGeneralId(it.generalId)
+            .withSelectedChip(text)
+            .build()
+        }
+        bottomSheetResultArg?.bottomSheetModel?.let { bottomSheetModel ->
             val updatedUiResult = bottomSheetModel.map(position = position)
             updateBottomSheetUiState(
                 title = bottomSheetModel.title,
@@ -225,7 +238,7 @@ class ShareExViewModel @Inject constructor(
 
     private fun handleUpdateShareImage(imageUrl: String) {
         // Each chip might have different source id and args
-        val imageGeneratorProperty = bottomSheetArgs?.bottomSheetModel?.getImageGeneratorProperty(imageUrl)
+        val imageGeneratorProperty = bottomSheetResultArg?.bottomSheetModel?.getImageGeneratorProperty(imageUrl)
         updateImageGeneratorUiState(
             imageUrl = imageUrl,
             sourceId = imageGeneratorProperty?.sourceId,
@@ -251,12 +264,12 @@ class ShareExViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 // Safe !! because of try catch
-                val bottomSheetArgs = bottomSheetArgs!!
-                val bottomSheetModel = bottomSheetArgs.bottomSheetModel!!
+                val bottomSheetArg = bottomSheetArg!!
+                val bottomSheetModel = bottomSheetResultArg!!.bottomSheetModel!!
                 val channelEnum = channelItemModel.channelEnum
-                val chipPosition = bottomSheetModel.getSelectedChipPosition(bottomSheetArgs.selectedChip).orZero()
+                val chipPosition = bottomSheetModel.getSelectedChipPosition(bottomSheetArg.selectedChip).orZero()
                 val shareProperty = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition]
-                val campaign = bottomSheetArgs.trackerArg.utmCampaign.replace(ShareExTrackerArg.SHARE_ID_KEY, shareProperty.shareId.toString())
+                val campaign = bottomSheetArg.trackerArg.utmCampaign.replace(ShareExTrackerArg.SHARE_ID_KEY, shareProperty.shareId.toString())
                 val linkPropertiesWithCampaign = shareProperty.linkProperties.copy(
                     androidUrl = generateUrlWithUTM(shareProperty.linkProperties.androidUrl, channelEnum, campaign),
                     iosUrl = generateUrlWithUTM(shareProperty.linkProperties.iosUrl, channelEnum, campaign),
@@ -270,9 +283,9 @@ class ShareExViewModel @Inject constructor(
                         ogImageUrl = model.imageUrl
                     )
                     val shortLinkRequest = generateShortLinkRequest(
-                        bottomSheetArgs.identifier,
-                        bottomSheetArgs.defaultUrl,
-                        bottomSheetArgs.pageTypeEnum,
+                        bottomSheetArg.getIdentifier(),
+                        bottomSheetArg.defaultUrl,
+                        bottomSheetArg.pageTypeEnum,
                         channelEnum,
                         finalLinkProperties,
                         isAffiliate
@@ -288,7 +301,7 @@ class ShareExViewModel @Inject constructor(
                 )
                 updateIntentUiStateWithDefaultUrl(
                     channelItemModel,
-                    bottomSheetArgs?.defaultUrl.toEmptyStringIfNull(),
+                    bottomSheetArg?.defaultUrl.toEmptyStringIfNull(),
                     throwable,
                     ShareExIntentErrorEnum.DEFAULT_URL_ERROR
                 )
