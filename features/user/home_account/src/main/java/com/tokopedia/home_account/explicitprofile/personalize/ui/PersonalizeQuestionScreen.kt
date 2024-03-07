@@ -93,7 +93,7 @@ fun PersonalizeQuestionScreen(
                         .fillMaxWidth(),
                     text = LocalContext.current.getString(R.string.explicit_personalize_save),
                     isEnabled = if (minItemSelected == 0) {
-                        countItemSelected.isMoreThanZero()
+                        true
                     } else {
                         countItemSelected >= minItemSelected
                     },

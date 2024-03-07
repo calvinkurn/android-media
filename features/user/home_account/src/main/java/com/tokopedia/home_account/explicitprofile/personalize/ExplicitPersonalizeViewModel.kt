@@ -123,14 +123,12 @@ class ExplicitPersonalizeViewModel @Inject constructor(
                                 }
                             }
 
-                            if (answers.isNotEmpty()) {
-                                questions.add(
-                                    SaveMultipleAnswersParam.InputParam.SectionsParam.QuestionsParam(
-                                        questionId = item.questionId,
-                                        answerValueList = answers
-                                    )
+                            questions.add(
+                                SaveMultipleAnswersParam.InputParam.SectionsParam.QuestionsParam(
+                                    questionId = item.questionId,
+                                    answerValueList = answers
                                 )
-                            }
+                            )
                         }
                     }
                     else -> {}
