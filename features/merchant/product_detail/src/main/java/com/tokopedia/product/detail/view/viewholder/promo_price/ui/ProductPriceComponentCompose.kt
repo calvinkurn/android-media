@@ -1,15 +1,8 @@
 package com.tokopedia.product.detail.view.viewholder.promo_price.ui
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,33 +10,25 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import coil.compose.rememberAsyncImagePainter
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.NestImage
@@ -55,10 +40,6 @@ import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifyprinciples.UnifyMotion
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlin.math.roundToInt
 
 private const val NORMAL_PROMO_UI = 1
 private const val EMPTY_PROMO_UI = 0
@@ -358,104 +339,6 @@ val String.color
     } catch (e: Throwable) {
         NestTheme.colors.NN._0
     }
-
-val bezierCustomInterpolators = CubicBezierEasing(
-    0.63F,
-    0.01F,
-    0.29F,
-    1f
-)
-
-@Composable
-fun AnimatedImageWithAnchor(
-    shouldAnimate: Boolean,
-    x: Int,
-    y: Int,
-    imageDrawable: Bitmap
-) {
-    val alphaAnimation = remember(shouldAnimate) { Animatable(0F) }
-    val yAnimation = remember(shouldAnimate) { Animatable(0F) }
-    val xAnimation = remember(shouldAnimate) { Animatable(0F) }
-    val scaleAnimation = remember(shouldAnimate) { Animatable(0F) }
-
-    LaunchedEffect(shouldAnimate) {
-        val initialAlpha = async {
-            alphaAnimation.animateTo(
-                1F,
-                animationSpec = tween(UnifyMotion.T3.toInt(), easing = FastOutSlowInEasing)
-            )
-        }
-
-        val initialSize = async {
-            scaleAnimation.animateTo(
-                1F,
-                animationSpec = tween(UnifyMotion.T3.toInt(), easing = FastOutSlowInEasing)
-            )
-        }
-
-        awaitAll(initialAlpha, initialSize)
-
-        val a = async {
-            yAnimation.animateTo(
-                y.toFloat(),
-                animationSpec = tween(
-                    UnifyMotion.T5.toInt(),
-                    easing = FastOutSlowInEasing
-                )
-            )
-        }
-
-        val b = async {
-            xAnimation.animateTo(
-                x.toFloat(),
-                animationSpec = tween(
-                    UnifyMotion.T5.toInt(),
-                    easing = FastOutSlowInEasing
-                )
-            )
-        }
-
-        val c = async {
-            alphaAnimation.animateTo(
-                0f,
-                animationSpec = tween(
-                    UnifyMotion.T5.toInt(),
-                    easing = FastOutSlowInEasing
-                )
-            )
-        }
-
-        val d = async {
-            scaleAnimation.animateTo(
-                0.05F,
-                animationSpec = tween(
-                    UnifyMotion.T5.toInt(),
-                    easing = FastOutSlowInEasing
-                )
-            )
-        }
-
-        awaitAll(a, b, c, d)
-        // onFinishHere
-    }
-
-    Image(
-        painter = rememberAsyncImagePainter(imageDrawable),
-        contentDescription = null,
-        modifier = Modifier
-            .size(218.dp)
-            .offset {
-                IntOffset(xAnimation.value.roundToInt(), yAnimation.value.roundToInt())
-            }
-            .graphicsLayer {
-                scaleX = scaleAnimation.value
-                scaleY = scaleAnimation.value
-                alpha = alphaAnimation.value
-            }
-            .clip(shape = RoundedCornerShape(24.dp))
-            .border(2.dp, Color.White, RoundedCornerShape(24.dp))
-    )
-}
 
 @SuppressLint("RememberReturnType")
 @Composable
