@@ -153,24 +153,24 @@ class HydraSharedPreferences @Inject constructor(
         )
     }
 
-    fun setDynamicBottomSheetPref(key: String, authorId: String) {
-        val prefKey = "${KEY_DYNAMIC_BOTTOM_SHEET}_$authorId"
+    fun setDynamicBottomSheetPref(key: String, userId: String) {
+        val prefKey = "${KEY_DYNAMIC_BOTTOM_SHEET}_$userId"
         mSharedPrefs.edit().putString(prefKey, key).apply()
     }
 
-    fun getDynamicBottomSheetPref(key: String, authorId: String): Boolean {
-        val prefKey = "${KEY_DYNAMIC_BOTTOM_SHEET}_$authorId"
+    fun getDynamicBottomSheetPref(key: String, userId: String): Boolean {
+        val prefKey = "${KEY_DYNAMIC_BOTTOM_SHEET}_$userId"
         val cachedKey = mSharedPrefs.getString(prefKey, "").orEmpty()
         return cachedKey == key
     }
 
-    fun setDynamicTickerPref(key: String, authorId: String) {
-        val prefKey = "${KEY_DYNAMIC_TICKER}_$authorId"
+    fun setDynamicTickerPref(key: String, userId: String) {
+        val prefKey = "${KEY_DYNAMIC_TICKER}_$userId"
         mSharedPrefs.edit().putString(prefKey, key).apply()
     }
 
-    fun getDynamicTickerPref(key: String, authorId: String): Boolean {
-        val prefKey = "${KEY_DYNAMIC_TICKER}_$authorId"
+    fun getDynamicTickerPref(key: String, userId: String): Boolean {
+        val prefKey = "${KEY_DYNAMIC_TICKER}_$userId"
         val cachedKey = mSharedPrefs.getString(prefKey, "").orEmpty()
         return cachedKey == key
     }

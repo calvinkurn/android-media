@@ -860,13 +860,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 TickerBottomSheetType.BOTTOM_SHEET -> {
                     sharedPref.getDynamicBottomSheetPref(
                         key = cacheKey,
-                        authorId = authorId,
+                        userId = userSession.userId,
                     )
                 }
                 TickerBottomSheetType.TICKER -> {
                     sharedPref.getDynamicTickerPref(
                         key = cacheKey,
-                        authorId = authorId,
+                        userId = userSession.userId,
                     )
                 }
                 TickerBottomSheetType.UNKNOWN -> false
@@ -883,13 +883,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             TickerBottomSheetType.BOTTOM_SHEET -> {
                 sharedPref.setDynamicBottomSheetPref(
                     key = _tickerBottomSheetConfig.value.cacheKey,
-                    authorId = authorId,
+                    userId = userSession.userId,
                 )
             }
             TickerBottomSheetType.TICKER -> {
                 sharedPref.setDynamicTickerPref(
                     key = _tickerBottomSheetConfig.value.cacheKey,
-                    authorId = authorId,
+                    userId = userSession.userId,
                 )
             }
             TickerBottomSheetType.UNKNOWN -> return
