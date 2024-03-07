@@ -858,10 +858,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val cacheKey = response.cacheKey.ifBlank { return@launchCatchError }
             val pref = when (response.type) {
                 TickerBottomSheetType.BOTTOM_SHEET -> {
-                    sharedPref.getDynamicBottomSheetPref(key = cacheKey)
+                    sharedPref.getDynamicBottomSheetPref(
+                        key = cacheKey,
+                        authorId = authorId,
+                    )
                 }
                 TickerBottomSheetType.TICKER -> {
-                    sharedPref.getDynamicTickerPref(key = cacheKey)
+                    sharedPref.getDynamicTickerPref(
+                        key = cacheKey,
+                        authorId = authorId,
+                    )
                 }
                 TickerBottomSheetType.UNKNOWN -> false
             }
@@ -876,12 +882,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         when (type) {
             TickerBottomSheetType.BOTTOM_SHEET -> {
                 sharedPref.setDynamicBottomSheetPref(
-                    key = _tickerBottomSheetConfig.value.cacheKey
+                    key = _tickerBottomSheetConfig.value.cacheKey,
+                    authorId = authorId,
                 )
             }
             TickerBottomSheetType.TICKER -> {
                 sharedPref.setDynamicTickerPref(
-                    key = _tickerBottomSheetConfig.value.cacheKey
+                    key = _tickerBottomSheetConfig.value.cacheKey,
+                    authorId = authorId,
                 )
             }
             TickerBottomSheetType.UNKNOWN -> return
