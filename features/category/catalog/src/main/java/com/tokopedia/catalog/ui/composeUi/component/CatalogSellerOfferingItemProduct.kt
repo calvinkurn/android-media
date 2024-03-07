@@ -123,11 +123,13 @@ fun ItemProduct(
                 Spacer(modifier = Modifier.height(6.dp))
                 ProductPriceRow(catalogProduct.price.text, catalogProduct.price.original)
                 Spacer(modifier = Modifier.height(4.dp))
-                ProductOfferAndBenefit(
-                    productBenefit?.title.orEmpty(),
-                    productOffer?.title.orEmpty()
-                )
-                Spacer(modifier = Modifier.height(6.dp))
+                if (productBenefit?.title.orEmpty().isNotEmpty() || productOffer?.title.orEmpty().isNotEmpty()){
+                    ProductOfferAndBenefit(
+                        productBenefit?.title.orEmpty(),
+                        productOffer?.title.orEmpty()
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                }
                 ShopCredibilityRow(
                     rating = catalogProduct.credibility.rating,
                     ratingCount = catalogProduct.credibility.ratingCount,
