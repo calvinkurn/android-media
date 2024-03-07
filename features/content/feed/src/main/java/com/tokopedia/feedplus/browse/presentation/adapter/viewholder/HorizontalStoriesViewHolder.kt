@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
-import com.tokopedia.feedplus.browse.presentation.adapter.StoryAdapter
+import com.tokopedia.feedplus.browse.presentation.adapter.StoriesAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.HorizontalStoriesItemDecoration
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseHorizontalStoriesBinding
@@ -21,7 +21,7 @@ internal class HorizontalStoriesViewHolder private constructor(
 
     private var mData: FeedBrowseItemListModel.HorizontalStories? = null
 
-    private val adapter = StoryAdapter(object : StoryWidgetViewHolder.Item.Listener {
+    private val adapter = StoriesAdapter(object : StoryWidgetViewHolder.Item.Listener {
         override fun onWidgetImpressed(
             viewHolder: StoryWidgetViewHolder.Item,
             item: StoryNodeModel

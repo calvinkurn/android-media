@@ -9,7 +9,7 @@ import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.StoryWidgetViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.LoadingModel
 
-internal class StoryAdapter(
+internal class StoriesAdapter(
     private val storyListener: StoryWidgetViewHolder.Item.Listener,
 ) : ListAdapter<Any, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<Any>() {
