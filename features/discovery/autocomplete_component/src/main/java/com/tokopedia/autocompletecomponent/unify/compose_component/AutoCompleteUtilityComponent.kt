@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -32,6 +33,7 @@ import com.tokopedia.autocompletecomponent.unify.domain.model.SuggestionUnifyLab
 import com.tokopedia.autocompletecomponent.unify.domain.model.SuggestionUnifyTitle
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.nest.components.NestImage
+import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
@@ -71,6 +73,7 @@ internal fun AutoCompleteLeftIcon(item: SuggestionUnifyImage) {
                 source = ImageSource.Remote(
                     source = item.iconImageUrl
                 ),
+                type = NestImageType.Rect(rounded = 0.dp),
                 modifier = Modifier
                     .size(16.dp)
                     .constrainAs(iconSubtitle) {
@@ -334,20 +337,18 @@ internal fun AutoCompleteRightIconCta(item: SuggestionUnifyCta, onItemClicked: (
 @Composable
 internal fun AutoCompleteRightLabel(
     item: SuggestionUnifyLabel,
-    defaultTextColor: Color = NestTheme.colors.NN._600,
-    defaultBgColor: Color = NestTheme.colors.NN._100,
     onItemClicked: () -> Unit = {}
 ) {
     val textColor: Color = if (item.textColor.isNotBlank()) {
         Color(android.graphics.Color.parseColor(item.textColor))
     } else {
-        defaultTextColor
+        NestTheme.colors.NN._600
     }
 
     val backgroundColor = if (item.bgColor.isNotBlank()) {
         Color(android.graphics.Color.parseColor(item.bgColor))
     } else {
-        defaultBgColor
+        Color.Transparent
     }
 
     Box(

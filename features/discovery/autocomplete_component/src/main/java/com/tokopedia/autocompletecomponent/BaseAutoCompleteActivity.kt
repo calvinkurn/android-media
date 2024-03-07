@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.text.Editable
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
@@ -684,7 +683,6 @@ open class BaseAutoCompleteActivity :
 
     private fun renderSearchBarState(state: SearchBarState) {
         showMps()
-        if (state.isMpsAnimationEnabled) enableMpsIconAnimation() else disableMpsIconAnimation()
         if (state.shouldShowCoachMark) {
             showPlusIconCoachMark()
         }
@@ -711,17 +709,6 @@ open class BaseAutoCompleteActivity :
     private fun showMps() {
         searchBarView.setMPSEnabled(true)
         searchBarView.showAddButton()
-    }
-
-    private fun enableMpsIconAnimation() {
-        searchBarView.setMPSAnimationEnabled(true)
-        searchBarView.startMpsAnimation()
-    }
-
-    private fun disableMpsIconAnimation() {
-        searchBarView.stopMpsAnimation()
-        searchBarView.setMPSAnimationEnabled(false)
-        searchBarView.enableAddButton()
     }
 
     override fun showSuggestionView() {

@@ -109,7 +109,7 @@ internal class AutoCompleteViewModel @Inject constructor(
             createSuggestionTrackerParams(item.domainModel.tracking.trackerUrl)
         suggestionTrackerUseCase.execute(
             param,
-            createEmtpySuggestionTrackerSubscriber()
+            createEmptySuggestionTrackerSubscriber()
         )
     }
 
@@ -119,7 +119,7 @@ internal class AutoCompleteViewModel @Inject constructor(
         userSession.userId
     )
 
-    private fun createEmtpySuggestionTrackerSubscriber() = object : Subscriber<Void?>() {
+    private fun createEmptySuggestionTrackerSubscriber() = object : Subscriber<Void?>() {
         override fun onCompleted() {
         }
 

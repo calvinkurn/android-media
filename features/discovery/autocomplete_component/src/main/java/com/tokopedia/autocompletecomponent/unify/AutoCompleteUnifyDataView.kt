@@ -12,8 +12,7 @@ data class AutoCompleteUnifyDataView(
 ) : SearchComponentTracking by searchComponentTracking(
     trackingOption = domainModel.tracking.trackingOption,
     keyword = searchTerm,
-    valueId = "0",
-    valueName = "${domainModel.title}${if (domainModel.subtitle.text.isNotEmpty()) "|${domainModel.subtitle}" else ""}",
+    valueName = domainModel.title.text,
     componentId = domainModel.tracking.componentId,
     applink = domainModel.applink,
     dimension90 = dimension90

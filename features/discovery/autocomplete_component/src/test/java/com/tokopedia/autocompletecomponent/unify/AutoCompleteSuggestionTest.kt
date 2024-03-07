@@ -35,18 +35,20 @@ class AutoCompleteSuggestionTest : AutoCompleteTestFixtures() {
         )
 
         `When Screen is Initialized`(viewModel)
+        `Then assert contains search parameter`(requestParamsSlot)
+
+        `Then assert is typing is true`(requestParamsSlot)
+    }
+
+    private fun `Then assert is typing is true`(requestParamsSlot: CapturingSlot<RequestParams>) {
+        val requestParams = requestParamsSlot.captured
+        assert(requestParams.getBoolean("is_typing", false))
+    }
+
+    private fun `Then assert contains search parameter`(requestParamsSlot: CapturingSlot<RequestParams>) {
         parameters.forEach {
             assertThat(requestParamsSlot.captured.parameters[it.key], `is`(it.value))
         }
-    }
-
-    private fun `Then Verify Use Case is Called with correct parameter`(
-        requestParamsSlot: CapturingSlot<RequestParams>,
-        params: Map<String, String>
-    ) {
-        verify { suggestionStateUseCase.execute(any(), any(), any()) }
-
-        assertThat(requestParamsSlot.captured.parameters, `is`(params))
     }
 
     private fun `When Screen is Initialized`(

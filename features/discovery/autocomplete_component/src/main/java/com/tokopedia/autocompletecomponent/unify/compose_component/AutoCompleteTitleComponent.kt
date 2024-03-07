@@ -42,7 +42,6 @@ internal fun AutoCompleteTitleComponent(
         if (domainItem.label.text.isNotBlank()) {
             AutoCompleteRightLabel(
                 domainItem.label,
-                defaultBgColor = Color.Transparent
             ) {
                 onItemAction(item.domainModel)
             }

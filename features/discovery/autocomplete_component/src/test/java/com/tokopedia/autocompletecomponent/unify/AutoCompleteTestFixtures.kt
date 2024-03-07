@@ -9,6 +9,7 @@ import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
+import rx.Subscriber
 import com.tokopedia.usecase.UseCase as RxUseCase
 
 const val AutoCompleteInitialStateSuccessJSON = "autocomplete/unify/initial_state.json"
@@ -52,6 +53,15 @@ abstract class AutoCompleteTestFixtures {
         requestParamsSlot: CapturingSlot<RequestParams> = slot()
     ) {
         suggestionStateUseCase.stubExecute(requestParamsSlot) returns model
+    }
+
+    fun `Given Track Url Use Case Is Successful`(
+        requestParamsSlot: CapturingSlot<RequestParams> = slot()
+    ) {
+        every { suggestionTrackerUseCase.execute(capture(requestParamsSlot), any()) }.answers {
+            secondArg<Subscriber<Boolean>>().onStart()
+            secondArg<Subscriber<Boolean>>().onNext(null)
+        }
     }
 
     fun `Given User Session`() {

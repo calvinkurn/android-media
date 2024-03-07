@@ -105,6 +105,7 @@ private fun AutoCompleteItemComponent(
             AutoCompleteTemplateEnum.Education.toString() -> {
                 AutoCompleteEducationComponent(item, onItemClicked = {
                     viewModel.onAutoCompleteItemClick(it)
+                    it.click(analytics)
                 })
             }
 
