@@ -3,6 +3,7 @@ package com.tokopedia.stories.usecase
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.uimodel.StoriesCampaignStatus
 import com.tokopedia.stories.uimodel.StoriesCampaignType
+import com.tokopedia.stories.usecase.response.StoriesProductFormatPriority
 import com.tokopedia.stories.usecase.response.StoriesProductResponse
 import com.tokopedia.stories.view.model.StoriesCampaignUiModel
 import com.tokopedia.utils.date.toDate
@@ -27,20 +28,21 @@ class ProductMapper @Inject constructor() {
                 appLink = product.appLink,
                 title = product.name,
                 imageUrl = product.imageUrl,
-                price = if (campaign.isUpcoming) {
-                    ContentTaggedProductUiModel.CampaignPrice(
+                price = when (StoriesProductFormatPriority.getFormatPriority(product.priceFormatPriority)) {
+                    StoriesProductFormatPriority.Masked -> ContentTaggedProductUiModel.CampaignPrice(
                         formattedPrice = product.priceMaskedFmt,
-                        price = product.priceMasked
+                        price = product.priceMasked,
+                        isMasked = true
                     )
-                } else if (product.isDiscount) {
-                    ContentTaggedProductUiModel.DiscountedPrice(
+
+                    StoriesProductFormatPriority.Discount -> ContentTaggedProductUiModel.DiscountedPrice(
                         discount = product.discount,
                         originalFormattedPrice = product.priceOriginalFmt,
                         formattedPrice = product.priceDiscountFmt,
                         price = product.priceDiscount
                     )
-                } else {
-                    ContentTaggedProductUiModel.NormalPrice(
+
+                    StoriesProductFormatPriority.Original -> ContentTaggedProductUiModel.NormalPrice(
                         formattedPrice = product.priceFmt,
                         price = product.price
                     )
