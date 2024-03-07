@@ -2,11 +2,14 @@ package com.tokopedia.feedplus.presentation.uiview
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -27,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
@@ -69,9 +73,12 @@ internal fun FeedProductHighlight(
                     easing = EaseOut,
                 ),
             ) + fadeIn(tween()),
-            exit = slideOutVertically(
-                animationSpec = tween(durationMillis = 400, easing = EaseOut),
-                targetOffsetY = { it }) + fadeOut(tween())
+            exit = fadeOut(tween(durationMillis = 400, easing = EaseOut)) + shrinkVertically(
+                animationSpec = spring(
+                    stiffness = Spring.DampingRatioNoBouncy,
+                    visibilityThreshold = IntSize.VisibilityThreshold
+                ),
+                targetHeight = { -it })
         ) {
             Box(
                 modifier = Modifier
