@@ -17,6 +17,7 @@ class AnimationCrackCouponUseCase @Inject constructor(graphqlRepository: Graphql
     fun getAnimationCrackCouponData(
         onSuccess: (GamiScratchCardCrack) -> Unit,
         onError: (Throwable) -> Unit,
+        onErrorState: (GamiScratchCardCrack) -> Unit,
         slug: String?
     ) {
         try {
@@ -28,7 +29,7 @@ class AnimationCrackCouponUseCase @Inject constructor(graphqlRepository: Graphql
                     if (result.gamiScratchCardCrack.resultStatus?.code == "200") {
                         onSuccess(result.gamiScratchCardCrack)
                     } else {
-                        onError(Throwable())
+                        onErrorState(result.gamiScratchCardCrack)
                     }
                 }, { error ->
                     onError(error)

@@ -14,8 +14,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
-import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatChatRoomBubbleBackgroundGenerator.generateLeftBg
-import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatChatRoomBubbleBackgroundGenerator.generateRightBg
+import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomBubbleBackgroundGenerator.generateLeftBg
+import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatRoomBubbleBackgroundGenerator.generateRightBg
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel

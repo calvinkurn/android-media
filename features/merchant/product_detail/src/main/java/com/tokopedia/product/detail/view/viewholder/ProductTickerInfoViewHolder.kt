@@ -12,8 +12,8 @@ import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListe
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
-import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.data.util.ProductDetailTracking
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -24,7 +24,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
  */
 class ProductTickerInfoViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) :
     AbstractViewHolder<ProductTickerInfoDataModel>(view) {
 
@@ -138,7 +138,7 @@ class ProductTickerInfoViewHolder(
                 name = tickerTitle + tickerDescription + tickerType,
                 useHolders = listener.isRemoteCacheableActive()
             ) {
-                DynamicProductDetailTracking.Impression.eventTickerImpression(
+                ProductDetailTracking.Impression.eventTickerImpression(
                     tickerTypeInt,
                     tickerTitle,
                     tickerDescription

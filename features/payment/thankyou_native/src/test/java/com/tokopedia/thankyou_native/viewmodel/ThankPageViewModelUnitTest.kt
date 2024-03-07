@@ -25,6 +25,7 @@ import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendati
 import com.tokopedia.thankyou_native.presentation.adapter.model.HeadlineAdsWidgetModel
 import com.tokopedia.thankyou_native.presentation.adapter.model.TokoMemberRequestParam
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
+import com.tokopedia.thankyou_native.presentation.adapter.model.WaitingHeaderUiModel
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.tokomember.model.MembershipRegister
 import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
@@ -36,6 +37,8 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.MatcherAssert
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -438,5 +441,38 @@ class ThankPageViewModelUnitTest {
         verify {
             thankPageUseCaseV2.getThankPageData(any(), any(), any(), any())
         }
+    }
+
+    @Test
+    fun `Thanks page data has ticker`() {
+        val waitingHeaderUiModel = WaitingHeaderUiModel(
+            "",
+            "",
+            0L,
+            "",
+            "",
+            "",
+            "",
+            0L,
+            arrayListOf(),
+            false,
+            "",
+            false,
+            "",
+            false,
+            ""
+        )
+        val tickerData = arrayListOf(TickerData("", 0))
+
+        // given
+        val isV2 = true
+
+        // when
+        viewModel.getThanksPageData("", "", isV2)
+        viewModel.addBottomContentWidget(waitingHeaderUiModel)
+        viewModel.setTicker(tickerData)
+
+        // then
+        Assert.assertEquals((viewModel.bottomContentVisitableList.value?.first() as WaitingHeaderUiModel).tickerData, tickerData)
     }
 }

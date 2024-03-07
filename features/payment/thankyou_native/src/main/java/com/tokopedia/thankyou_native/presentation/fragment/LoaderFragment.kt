@@ -18,7 +18,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
-import com.airbnb.lottie.LottieDrawable
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.LottieTask
 import com.airbnb.lottie.model.KeyPath
@@ -26,8 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.isDeviceAnimationDisabled
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.thankyou_native.R
@@ -177,7 +175,11 @@ class LoaderFragment : BaseDaggerFragment() {
                     lottie.setAnimationTint("white BG", ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Background))
                     lottie.setAnimationTint("White Solid 2", ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Background))
                 }
-                lottie.playAnimation()
+                if (context?.isDeviceAnimationDisabled() == true) {
+                    callback?.onThankYouPageDataLoaded(thanksPageData)
+                } else {
+                    lottie.playAnimation()
+                }
                 lottie.addAnimatorListener(object: AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {
 
@@ -214,20 +216,14 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun showLoaderView() {
-        loaderAnimation.showWithCondition(isV2Enabled)
         if (isV2Enabled) return
 
-        tvWaitForMinute.visible()
         tvProcessingPayment.visible()
-        lottieAnimationView.visible()
         if (lottieTask == null)
             lottieTask = prepareLoaderLottieTask()
-        addLottieAnimationToView()
     }
 
     private fun hideLoaderView() {
-        lottieAnimationView.gone()
-        tvWaitForMinute.hide()
         tvProcessingPayment.hide()
         loaderAnimation.hide()
         triggerHaptics()
@@ -257,17 +253,6 @@ class LoaderFragment : BaseDaggerFragment() {
             LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
         } catch (ignore: IllegalStateException) {
             null
-        }
-    }
-
-    private fun addLottieAnimationToView() {
-        lottieTask?.addListener { result: LottieComposition? ->
-            result?.let {
-                lottieAnimationView?.setComposition(result)
-                lottieAnimationView?.repeatCount = LottieDrawable.INFINITE
-                lottieAnimationView?.repeatMode = LottieDrawable.RESTART
-                lottieAnimationView?.playAnimation()
-            }
         }
     }
 

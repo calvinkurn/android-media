@@ -23,6 +23,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
+import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoPromoPriceUiModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -40,7 +41,7 @@ object AtcCommonMapper {
         actionButtonCart: Int,
         selectedChild: VariantChild?,
         selectedWarehouse: WarehouseInfo?,
-        shopIdInt: Int,
+        shopId: String,
         trackerAttributionPdp: String,
         trackerListNamePdp: String,
         categoryName: String,
@@ -54,7 +55,7 @@ object AtcCommonMapper {
             ProductDetailCommonConstant.OCS_BUTTON -> {
                 AddToCartOcsRequestParams().apply {
                     productId = selectedChild?.productId.toZeroStringIfNull()
-                    shopId = shopIdInt.toString()
+                    this.shopId = shopId
                     quantity = selectedChild?.getFinalMinOrder() ?: 0
                     notes = ""
                     customerId = userId
@@ -75,7 +76,7 @@ object AtcCommonMapper {
                     carts = listOf(
                         AddToCartOccMultiCartParam(
                             productId = selectedChild?.productId ?: "",
-                            shopId = shopIdInt.toString(),
+                            shopId = shopId,
                             quantity = selectedChild?.getFinalMinOrder().toString()
                         ).apply {
                             warehouseId = selectedWarehouse?.id ?: ""
@@ -100,7 +101,7 @@ object AtcCommonMapper {
 
                 AddToCartRequestParams().apply {
                     productId = selectedChild?.productId.toZeroStringIfNull()
-                    shopId = shopIdInt.toString()
+                    this.shopId = shopId
                     quantity = quantityData
                     notes = ""
                     attribution = trackerAttributionPdp
@@ -381,7 +382,8 @@ object AtcCommonMapper {
             isCampaignActive = isCampaignActive,
             productSlashPrice = price.slashPriceFmt,
             productStockFmt = selectedChild?.stock?.stockFmt ?: "",
-            hideGimmick = selectedChild?.campaign?.hideGimmick.orFalse()
+            hideGimmick = selectedChild?.campaign?.hideGimmick.orFalse(),
+            promoPrice = selectedChild?.promoPrice?.mapIntoPromoPriceUiModel(price.slashPriceFmt)
         )
         return productImage to headerData
     }

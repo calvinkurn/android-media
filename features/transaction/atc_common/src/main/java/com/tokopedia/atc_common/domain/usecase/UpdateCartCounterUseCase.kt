@@ -16,6 +16,7 @@ import javax.inject.Named
  * Created by Irfan Khoirul on 2019-08-15.
  */
 
+@Deprecated("Use coroutine version", replaceWith = ReplaceWith("UpdateCartCounterUseCase", imports = ["com.tokopedia.atc_common.domain.usecase.coroutine.UpdateCartCounterUseCase"]))
 class UpdateCartCounterUseCase @Inject constructor(
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER) private val queryString: String
 ) : UseCase<Int>() {

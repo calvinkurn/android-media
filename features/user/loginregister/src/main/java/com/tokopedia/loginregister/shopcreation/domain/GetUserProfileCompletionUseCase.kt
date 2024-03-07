@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.shopcreation.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -12,7 +13,10 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class GetUserProfileCompletionUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository, dispatcher: CoroutineDispatchers) : CoroutineUseCase<Unit, GetUserProfileCompletionPojo>(dispatcher.io) {
+class GetUserProfileCompletionUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<Unit, GetUserProfileCompletionPojo>(dispatcher.io) {
 
     override suspend fun execute(params: Unit): GetUserProfileCompletionPojo {
         return graphqlRepository.request(graphqlQuery(), params)

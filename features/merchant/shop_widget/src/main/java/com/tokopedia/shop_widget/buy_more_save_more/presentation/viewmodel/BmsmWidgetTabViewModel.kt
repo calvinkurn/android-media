@@ -76,6 +76,10 @@ class BmsmWidgetTabViewModel @Inject constructor(
         get() = _miniCartAdd
     private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
 
+    private val _miniCartSimplifiedData = MutableLiveData<MiniCartSimplifiedData>()
+    val miniCartSimplifiedData: LiveData<MiniCartSimplifiedData>
+        get() = _miniCartSimplifiedData
+
     val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
     }
@@ -115,12 +119,6 @@ class BmsmWidgetTabViewModel @Inject constructor(
             _productList.postValue(
                 defaultOfferingData.toProductListUiModel().take(BmsmWidgetTabFragment.PAGE_SIZE)
             )
-        }
-    }
-
-    fun showLoading() {
-        _uiState.update {
-            it.copy(isShowLoading = true)
         }
     }
 
@@ -174,15 +172,15 @@ class BmsmWidgetTabViewModel @Inject constructor(
                             ?: currentState.offeringInfo.offerings.firstOrNull()?.tierList?.firstOrNull()?.tierId
                     it.copy(
                         isShowLoading = false,
+                        isWidgetOnInitialState = false,
                         miniCartData = miniCartSimplifiedData,
                         isUpdateGiftImage = appliedTierId == currentState.currentAppliedId,
                         currentAppliedId = appliedTierId.orZero()
                     )
                 }
+                _miniCartSimplifiedData.postValue(miniCartSimplifiedData)
             },
-            onError =  {
-
-            }
+            onError =  { }
         )
     }
 
@@ -275,7 +273,6 @@ class BmsmWidgetTabViewModel @Inject constructor(
                     addToCartUseCase.setParams(param)
                     val result = addToCartUseCase.executeOnBackground()
                     _miniCartAdd.postValue(Success(result))
-                    getMinicartV3()
                 }
             },
             onError = {

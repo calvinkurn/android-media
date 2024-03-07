@@ -231,6 +231,7 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
         carouselLayoutManager?.removeOnItemSelectionListener(itemSelectListener)
         carouselLayoutManager?.addOnItemSelectionListener(itemSelectListener)
         recyclerViewProductHotspot?.apply {
+            layoutParams.height = Int.ZERO
             isNestedScrollingEnabled = false
             (this@apply.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ratio
             this.layoutManager = carouselLayoutManager

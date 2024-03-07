@@ -5,7 +5,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_VERTICAL_BANNER_ADS
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
+import com.tokopedia.home.beranda.domain.ForYouDataMapper.toModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
 import com.tokopedia.home.databinding.ItemHomeBannerTopadsOldLayoutBinding
 import com.tokopedia.home_component.util.toDpFloat
@@ -15,6 +15,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_HORIZONTAL
 import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
@@ -22,8 +24,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeRecommendationBannerTopAdsOldViewHolder(
     view: View,
-    private val homeRecommendationListener: HomeRecommendationListener
-) : BaseRecommendationForYouViewHolder<HomeRecommendationBannerTopAdsOldDataModel>(
+    private val homeRecommendationListener: GlobalRecomListener
+) : BaseRecommendationViewHolder<HomeRecommendationBannerTopAdsOldDataModel>(
     view,
     HomeRecommendationBannerTopAdsOldDataModel::class.java
 ) {
@@ -47,7 +49,7 @@ class HomeRecommendationBannerTopAdsOldViewHolder(
 
     private fun loadImageTopAdsOldQuery(
         recommendationBannerTopAdsDataModelDataModel: HomeRecommendationBannerTopAdsOldDataModel,
-        listener: HomeRecommendationListener
+        listener: GlobalRecomListener
     ) {
         recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.let { topAdsImageViewModel ->
 
@@ -89,7 +91,7 @@ class HomeRecommendationBannerTopAdsOldViewHolder(
 
     private fun setBannerTopAdsImpressionListener(
         recommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsOldDataModel,
-        listener: HomeRecommendationListener
+        listener: GlobalRecomListener
     ) {
         itemView.addOnImpressionListener(
             recommendationBannerTopAdsDataModel,
@@ -104,7 +106,7 @@ class HomeRecommendationBannerTopAdsOldViewHolder(
                         HOME_RECOM_TAB_BANNER
                     )
                     listener.onBannerTopAdsOldImpress(
-                        recommendationBannerTopAdsDataModel,
+                        recommendationBannerTopAdsDataModel.toModel(),
                         bindingAdapterPosition
                     )
                 }
@@ -122,7 +124,7 @@ class HomeRecommendationBannerTopAdsOldViewHolder(
                 element.topAdsImageViewModel?.imageUrl,
                 HOME_RECOM_TAB_BANNER
             )
-            homeRecommendationListener.onBannerTopAdsOldClick(element, bindingAdapterPosition)
+            homeRecommendationListener.onBannerTopAdsOldClick(element.toModel(), bindingAdapterPosition)
         }
     }
 

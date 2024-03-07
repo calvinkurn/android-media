@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
-import com.tokopedia.homenav.mainnav.data.mapper.BuListMapper
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.order.UohData
 import com.tokopedia.homenav.mainnav.data.pojo.payment.Payment
@@ -13,12 +12,9 @@ import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFiltere
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.data.pojo.wishlist.GetWishlistCollection
-import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
 import dagger.Module
@@ -66,17 +62,6 @@ class MainNavUseCaseModule {
     fun provideGetUohOrdersNavUseCase(graphqlRepository: GraphqlRepository): GetUohOrdersNavUseCase {
         val useCase = GraphqlUseCase<UohData>(graphqlRepository)
         return GetUohOrdersNavUseCase(useCase)
-    }
-
-    @MainNavScope
-    @Provides
-    fun provideGetCategoryGroupUseCase(
-            buListMapper: BuListMapper,
-            graphqlRepository: GraphqlRepository,
-            remoteConfig: RemoteConfig): GetCategoryGroupUseCase {
-        val useCase = GraphqlUseCase<DynamicHomeIconEntity>(graphqlRepository)
-        val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
-        return GetCategoryGroupUseCase(buListMapper, useCase, isUsingV2)
     }
 
     @MainNavScope

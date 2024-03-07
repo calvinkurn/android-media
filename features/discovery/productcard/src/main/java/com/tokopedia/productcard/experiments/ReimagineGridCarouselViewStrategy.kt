@@ -16,12 +16,14 @@ import androidx.core.view.updateLayoutParams
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.CompatPaddingUtils
 import com.tokopedia.productcard.reimagine.ProductCardRenderer
 import com.tokopedia.productcard.reimagine.ProductCardStockInfo
 import com.tokopedia.productcard.reimagine.ProductCardType.GridCarousel
+import com.tokopedia.productcard.reimagine.cart.ProductCardCartExtension
 import com.tokopedia.productcard.reimagine.lazyView
 import com.tokopedia.productcard.utils.getPixel
 import com.tokopedia.unifycomponents.CardUnify2
@@ -41,6 +43,7 @@ internal class ReimagineGridCarouselViewStrategy(
 
     private val renderer = ProductCardRenderer(productCardView, GridCarousel)
     private val stockInfo = ProductCardStockInfo(productCardView)
+    private val cartExtension = ProductCardCartExtension(productCardView, GridCarousel)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
@@ -99,6 +102,8 @@ internal class ReimagineGridCarouselViewStrategy(
 
         stockInfo.render(productCardModel)
 
+        cartExtension.render(productCardModel)
+
         renderContentPadding(productCardModel)
 
         CompatPaddingUtils(productCardView, useCompatPadding, productCardModel).updatePadding()
@@ -142,7 +147,9 @@ internal class ReimagineGridCarouselViewStrategy(
         guidelineBottom?.setGuidelineEnd(paddingBottomGuideline)
     }
 
-    override fun recycle() { }
+    override fun recycle() {
+        cartExtension.clear()
+    }
 
     override fun setImageProductViewHintListener(
         impressHolder: ImpressHolder,
@@ -156,8 +163,10 @@ internal class ReimagineGridCarouselViewStrategy(
     }
 
     override fun setAddToCartOnClickListener(l: View.OnClickListener?) {
-        productCardView
-            .findViewById<View?>(R.id.productCardAddToCart)
-            ?.setOnClickListener(l)
+        cartExtension.addToCartClickListener = { l?.onClick(it) }
+    }
+
+    override fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
+        cartExtension.addToCartNonVariantClickListener = addToCartNonVariantClickListener
     }
 }

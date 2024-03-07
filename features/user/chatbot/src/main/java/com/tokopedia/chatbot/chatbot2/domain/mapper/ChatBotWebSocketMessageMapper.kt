@@ -25,6 +25,8 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UP
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_STICKY_BUTTON
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceSentPojo
+import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
+import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
 import com.tokopedia.chatbot.chatbot2.data.chatactionballoon.ChatActionPojo
 import com.tokopedia.chatbot.chatbot2.data.csatoptionlist.CsatAttributesPojo
 import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachment
@@ -52,6 +54,7 @@ import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.rating.ChatRatingUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.stickyactionbutton.StickyActionButtonUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.videoupload.VideoUploadUiModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 
 /**
@@ -316,6 +319,10 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
                 pojo.attachment?.attributes,
                 CsatAttributesPojo::class.java
             )
+        var dynamicCsatModel: CsatModel? = null
+        if ((csatAttributesPojo.csat?.dynamicCsat?.points?.size ?: 0) > 0) {
+            dynamicCsatModel = convertToDynamicCsatModel(csatAttributesPojo.csat)
+        }
         return CsatOptionsUiModel(
             pojo.msgId,
             pojo.fromUid,
@@ -326,8 +333,33 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
             pojo.message.timeStampUnixNano,
             pojo.message.censoredReply,
             csatAttributesPojo.csat,
-            pojo.source
+            pojo.source,
+            false,
+            dynamicCsatModel
         )
+    }
+
+    private fun convertToDynamicCsatModel(response: CsatAttributesPojo.Csat?): CsatModel? {
+        if (response != null) {
+            return CsatModel(
+                caseId = response.caseId.orEmpty(),
+                caseChatId = response.caseChatId.orEmpty(),
+                title = response.dynamicCsat?.title.orEmpty(),
+                service = response.dynamicCsat?.service.orEmpty(),
+                points = response.dynamicCsat?.points?.map {
+                    PointModel(
+                        score = it.score,
+                        caption = it.caption,
+                        reasonTitle = it.reasonTitle,
+                        otherReasonTitle = it.otherReasonTitle,
+                        reasons = it.reasons
+                    )
+                }?.toMutableList() ?: mutableListOf(),
+                minimumOtherReasonChar = response.dynamicCsat?.minimumOtherReasonChar.orZero()
+            )
+        } else {
+            return null
+        }
     }
 
     private fun convertToChatRating(pojo: ChatSocketPojo): Visitable<*> {

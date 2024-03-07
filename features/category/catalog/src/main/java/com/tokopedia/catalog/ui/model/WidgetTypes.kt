@@ -20,4 +20,6 @@ enum class WidgetTypes(val type: String) {
     CATALOG_REVIEW_BUYER("catalog_review_buyer"),
     CATALOG_VIDEO("catalog_video"),
     CATALOG_CTA_PRICE("catalog_cta_price"),
+    CATALOG_CTA_PRICE_TOP_SELLER("catalog_top_seller_hanging"),
+    CATALOG_CARD_TOP_SELLER("catalog_top_seller_card")
 }

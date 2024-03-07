@@ -13,7 +13,6 @@ import com.tokopedia.applink.DeepLinkChecker.FLIGHT
 import com.tokopedia.applink.DeepLinkChecker.HOT
 import com.tokopedia.applink.DeepLinkChecker.HOTEL
 import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
-import com.tokopedia.applink.DeepLinkChecker.INVOICE
 import com.tokopedia.applink.DeepLinkChecker.LOGIN_BY_QR
 import com.tokopedia.applink.DeepLinkChecker.ORDER_LIST
 import com.tokopedia.applink.DeepLinkChecker.OTHER
@@ -56,7 +55,6 @@ import tokopedia.applink.util.DeepLinkUrlConstant.HELP_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.HOTEL_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.HOT_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.HOT_LIST_LINK_URL
-import tokopedia.applink.util.DeepLinkUrlConstant.INVOICE_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.KUPON_THR_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.LOGIN_BY_QR_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.MERCHANT_KYC_LINK_URL
@@ -113,11 +111,6 @@ class DeepLinkMatcherTest: DeepLinkMatcherTestFixture() {
     @Test
     fun `check link url of sale then should return SALE`() {
         assertEqualsDeepLinkMatcher(SALE, SALE_LINK_URL)
-    }
-
-    @Test
-    fun `check link url of invoice then should return INVOICE`() {
-        assertEqualsDeepLinkMatcher(INVOICE, INVOICE_LINK_URL)
     }
 
     @Test

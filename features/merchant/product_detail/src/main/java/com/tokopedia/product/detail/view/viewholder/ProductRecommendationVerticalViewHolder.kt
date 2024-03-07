@@ -8,13 +8,13 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
 import com.tokopedia.product.detail.databinding.ViewProductRecommendationVerticalBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 class ProductRecommendationVerticalViewHolder(
     view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<ProductRecommendationVerticalDataModel>(view) {
 
     companion object {

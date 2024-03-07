@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderTransactionProductRevampBinding
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
@@ -15,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
-@MePage(MePage.Widget.TRANSACTION)
 class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OrderProductRevampModel>(itemView) {
     private var binding: HolderTransactionProductRevampBinding? by viewBinding()
     companion object {

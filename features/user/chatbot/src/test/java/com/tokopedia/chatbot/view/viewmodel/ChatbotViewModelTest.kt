@@ -2495,7 +2495,7 @@ class ChatbotViewModelTest {
         chatRoomViewModel.listChat.add(
             CsatOptionsUiModel(
                 "", "", "", "", "", "", "",
-                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1, null)
             )
         )
 
@@ -2555,7 +2555,7 @@ class ChatbotViewModelTest {
         chatRoomViewModel.listChat.add(
             CsatOptionsUiModel(
                 "", "", "", "", "", "", "",
-                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1, null)
             )
         )
 
@@ -2638,7 +2638,7 @@ class ChatbotViewModelTest {
         chatRoomViewModel.listChat.add(
             CsatOptionsUiModel(
                 "", "", "", "", "", "", "",
-                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1, null)
             )
         )
 
@@ -2856,7 +2856,7 @@ class ChatbotViewModelTest {
         chatRoomViewModel.listChat.add(
             CsatOptionsUiModel(
                 "", "", "", "", "", "", "",
-                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1, null)
             )
         )
 
@@ -2936,7 +2936,7 @@ class ChatbotViewModelTest {
         chatRoomViewModel.listChat.add(
             CsatOptionsUiModel(
                 "", "", "", "", "", "", "",
-                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1, null)
             )
         )
 
@@ -3071,7 +3071,7 @@ class ChatbotViewModelTest {
         chatRoomViewModel.listChat.add(
             CsatOptionsUiModel(
                 "", "", "", "", "", "", "",
-                "", CsatAttributesPojo.Csat("1", "", emptyList(), "", listOf(), "", "", 123)
+                "", CsatAttributesPojo.Csat("1", "", emptyList(), "", listOf(), "", "", 123, null)
             )
         )
 
@@ -3120,7 +3120,7 @@ class ChatbotViewModelTest {
         chatRoomViewModel.listChat.add(
             CsatOptionsUiModel(
                 "", "", "", "", "", "", "",
-                "", CsatAttributesPojo.Csat("2", "", emptyList(), "", listOf(), "", "", 123), "", true
+                "", CsatAttributesPojo.Csat("2", "", emptyList(), "", listOf(), "", "", 123, null), "", true
             )
         )
 

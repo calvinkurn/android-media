@@ -28,7 +28,9 @@ class BuyerOrderDetailFragmentStub : BuyerOrderDetailFragment() {
             buyerOrderDetailBindRecomWidgetListener = this,
             orderResolutionListener = this,
             recyclerViewSharedPool = recyclerViewSharedPool,
-            courierButtonListener = this
+            courierButtonListener = this,
+            addOnListener = AddOnListener(),
+            productBenefitListener = ProductBenefitListener()
         )
     }
 

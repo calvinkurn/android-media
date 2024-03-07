@@ -35,7 +35,7 @@ import com.tokopedia.tokopedianow.common.view.ToolbarHeaderView
 import com.tokopedia.tokopedianow.common.view.ToolbarHeaderView.RightIcon
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeDetailBinding
-import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.TagViewHolder.TagListener
+import com.tokopedia.tokopedianow.oldrecipebookmark.presentation.viewholder.TagViewHolder.TagListener
 import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics
 import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeMediaSliderAnalytics
 import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeProductAnalytics

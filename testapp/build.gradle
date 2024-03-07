@@ -138,7 +138,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.loginregister)
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
-    implementation project(rootProject.ext.features.scpAuth)
 
     /*
         Do not remove this dependency, because we use it for MQTT

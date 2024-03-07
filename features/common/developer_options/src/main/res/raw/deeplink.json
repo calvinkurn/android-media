@@ -2551,42 +2551,12 @@
      },
      {
           "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "https://*.tokopedia.com/peluang",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "https://*.tokopedia.com/peluang.pl",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "https://*.tokopedia.com/invoice.pl",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
           "deeplink": "http://*.tokopedia.com/topads",
           "deeplink_variable": ""
      },
      {
           "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
           "deeplink": "http://*.tokopedia.com/topads/*",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "http://*.tokopedia.com/peluang",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "http://*.tokopedia.com/peluang.pl",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "http://*.tokopedia.cominvoice.pl",
           "deeplink_variable": ""
      },
      {
@@ -2601,42 +2571,12 @@
      },
      {
           "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "https://tokopedia.com/peluang",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "https://tokopedia.com/peluang.pl",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "https://tokopedia.com/invoice.pl",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
           "deeplink": "http://tokopedia.com/topads",
           "deeplink_variable": ""
      },
      {
           "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
           "deeplink": "http://tokopedia.com/topads/*",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "http://tokopedia.com/peluang",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "http://tokopedia.com/peluang.pl",
-          "deeplink_variable": ""
-     },
-     {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
-          "deeplink": "http://tokopedia.cominvoice.pl",
           "deeplink_variable": ""
      }
 ]

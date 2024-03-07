@@ -6,4 +6,5 @@ interface HeaderListener {
     fun onSeeDetailInvoice()
     fun onPrimaryButtonClick()
     fun onSecondaryButtonClick()
+    fun openApplink(applink: String?)
 }

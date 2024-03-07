@@ -95,6 +95,12 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
     }
 
     override fun setOnItemClickedListener() {
+        val isOfferEnded = MiniCartUtils.checkIsOfferEnded(offerEndDate)
+        if (isOfferEnded) {
+            onOfferEndedCallback?.invoke(true)
+            return
+        }
+
         sendClickUpSellingEvent()
         when (offerType) {
             OfferType.PROGRESSIVE_DISCOUNT -> {
@@ -103,12 +109,6 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
             }
 
             OfferType.GIFT_WITH_PURCHASE -> {
-                val isOfferEnded = MiniCartUtils.checkIsOfferEnded(offerEndDate)
-                if (isOfferEnded) {
-                    onOfferEndedCallback?.invoke(true)
-                    return
-                }
-
                 val intent = RouteManager.getIntent(context, ApplinkConstBmsm.BMGM_MINI_CART_EDITOR)
                 intent.putExtra(BmsmMiniCartDeepLinkMapper.EXTRA_PARAM, param)
                 intent.putExtra(BmsmMiniCartDeepLinkMapper.OFFER_END_DATE, offerEndDate)

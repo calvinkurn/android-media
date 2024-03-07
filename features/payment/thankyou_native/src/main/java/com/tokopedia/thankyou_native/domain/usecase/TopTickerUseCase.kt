@@ -44,6 +44,7 @@ class TopTickerUseCase @Inject constructor() : UseCase<List<TickerData>>() {
                             ThankYouBaseFragment.TICKER_WARNING -> Ticker.TYPE_WARNING
                             ThankYouBaseFragment.TICKER_INFO -> Ticker.TYPE_INFORMATION
                             ThankYouBaseFragment.TICKER_ERROR -> Ticker.TYPE_ERROR
+                            ThankYouBaseFragment.ANNOUNCEMENT -> Ticker.TYPE_ANNOUNCEMENT
                             else -> Ticker.TYPE_INFORMATION
                         }, isFromHtml = it.tickerCTAUrl != null, itemData = it)
             }

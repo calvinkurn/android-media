@@ -4,226 +4,232 @@ package com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data
  * @author anggaprasetiyo on 05/06/18.
  */
 class EnhancedECommerceProductCartMapData {
-    private val Product: MutableMap<String, Any> = HashMap()
+
+    private val product: MutableMap<String, Any> = HashMap()
+
     fun setProductName(name: String?) {
-        Product[KEY_NAME] = if (!name.isNullOrBlank()) name else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_NAME] = if (!name.isNullOrBlank()) name else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setProductID(id: String?) {
-        Product[KEY_ID] = if (!id.isNullOrBlank()) id else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_ID] = if (!id.isNullOrBlank()) id else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setPrice(price: String?) {
-        Product[KEY_PRICE] = if (!price.isNullOrBlank()) price else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_PRICE] = if (!price.isNullOrBlank()) price else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setQty(qty: Int) {
         val qtyString = qty.toString()
-        Product[KEY_QTY] = if (qtyString.isNotBlank()) qtyString else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_QTY] = if (qtyString.isNotBlank()) qtyString else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setCategory(category: String?) {
-        Product[KEY_CAT] = if (!category.isNullOrBlank()) category else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_CAT] = if (!category.isNullOrBlank()) category else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setAttribution(data: String?) {
-        Product[KEY_ATTRIBUTION] = if (!data.isNullOrBlank()) data else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_ATTRIBUTION] = if (!data.isNullOrBlank()) data else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setDimension38(data: String?) {
-        Product[KEY_DIMENSION_38] = if (!data.isNullOrBlank()) data else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_DIMENSION_38] = if (!data.isNullOrBlank()) data else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setDimension83(data: String?) {
-        Product[KEY_DIMENSION_83] = if (!data.isNullOrBlank()) data else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_DIMENSION_83] = if (!data.isNullOrBlank()) data else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setDimension54(isFulfill: Boolean) {
         val data = if (isFulfill) "tokopedia" else "regular"
-        Product[KEY_DIMENSION_54] = data
+        product[KEY_DIMENSION_54] = data
     }
 
     fun setDimension80(data: String?) {
-        Product[KEY_DIMENSION_80] = if (!data.isNullOrBlank()) data else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_DIMENSION_80] = if (!data.isNullOrBlank()) data else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setListName(data: String?) {
-        Product[KEY_LIST] = if (!data.isNullOrBlank()) data else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_LIST] = if (!data.isNullOrBlank()) data else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setDimension40(data: String?) {
-        Product[KEY_DIMENSION_40] = if (!data.isNullOrBlank()) data else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_DIMENSION_40] = if (!data.isNullOrBlank()) data else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setPosition(position: String?) {
-        Product[KEY_POS] = if (!position.isNullOrBlank()) position else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_POS] = if (!position.isNullOrBlank()) position else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setBrand(brand: String?) {
-        Product[KEY_BRAND] = brand ?: DEFAULT_VALUE_NONE_OTHER
+        product[KEY_BRAND] = brand ?: DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setVariant(variant: String?) {
-        Product[KEY_VARIANT] = variant ?: DEFAULT_VALUE_NONE_OTHER
+        product[KEY_VARIANT] = variant ?: DEFAULT_VALUE_NONE_OTHER
     }
 
     fun getProduct(): Map<String, Any> {
-        return Product
+        return product
     }
 
     fun setShopId(shopId: String?) {
-        Product[KEY_SHOP_ID] = if (!shopId.isNullOrBlank()) shopId else DEFAULT_VALUE_NONE_OTHER
-        Product[KEY_SHOP_ID_DIMENSION] = if (!shopId.isNullOrBlank()) shopId else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_SHOP_ID] = if (!shopId.isNullOrBlank()) shopId else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_SHOP_ID_DIMENSION] = if (!shopId.isNullOrBlank()) shopId else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setShopType(shopType: String?) {
-        Product[KEY_SHOP_TYPE] = if (!shopType.isNullOrBlank()) shopType else VALUE_REGULER
-        Product[KEY_SHOP_TYPE_DIMENSION] = if (!shopType.isNullOrBlank()) shopType else VALUE_REGULER
+        product[KEY_SHOP_TYPE] = if (!shopType.isNullOrBlank()) shopType else VALUE_REGULER
+        product[KEY_SHOP_TYPE_DIMENSION] = if (!shopType.isNullOrBlank()) shopType else VALUE_REGULER
     }
 
     fun setShopName(shopName: String?) {
-        Product[KEY_SHOP_NAME] = if (!shopName.isNullOrBlank()) shopName else DEFAULT_VALUE_NONE_OTHER
-        Product[KEY_SHOP_NAME_DIMENSION] = if (!shopName.isNullOrBlank()) shopName else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_SHOP_NAME] = if (!shopName.isNullOrBlank()) shopName else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_SHOP_NAME_DIMENSION] = if (!shopName.isNullOrBlank()) shopName else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setCategoryId(categoryId: String?) {
-        Product[KEY_CATEGORY_ID] = categoryId ?: DEFAULT_VALUE_NONE_OTHER
+        product[KEY_CATEGORY_ID] = categoryId ?: DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setCartId(cartId: String?) {
-        Product[KEY_CART_ID] = if (!cartId.isNullOrBlank()) cartId else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_CART_ID] = if (!cartId.isNullOrBlank()) cartId else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setDimension45(cartId: String?) {
-        Product[KEY_DIMENSION_45] = if (!cartId.isNullOrBlank()) cartId else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_DIMENSION_45] = if (!cartId.isNullOrBlank()) cartId else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setDimension12(shippingCourierPrice: String?) {
-        Product[KEY_DIMENSION_12] = if (!shippingCourierPrice.isNullOrBlank()) shippingCourierPrice else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_DIMENSION_12] = if (!shippingCourierPrice.isNullOrBlank()) shippingCourierPrice else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setWarehouseId(warehouseId: String?) {
-        Product[KEY_WAREHOUSE_ID] = if (!warehouseId.isNullOrBlank()) warehouseId else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_WAREHOUSE_ID] = if (!warehouseId.isNullOrBlank()) warehouseId else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setProductWeight(productWeight: String?) {
-        Product[KEY_PRODUCT_WEIGHT] = if (!productWeight.isNullOrBlank()) productWeight else DEFAULT_VALUE_NONE_OTHER
+        product[KEY_PRODUCT_WEIGHT] = if (!productWeight.isNullOrBlank()) productWeight else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setPromoCode(promoCodes: String?) {
-        Product[KEY_PROMO_CODE] = if (!promoCodes.isNullOrBlank()) promoCodes else ""
+        product[KEY_PROMO_CODE] = if (!promoCodes.isNullOrBlank()) promoCodes else ""
     }
 
     fun setPromoDetails(promoDetails: String?) {
-        Product[KEY_PROMO_DETAILS] = if (!promoDetails.isNullOrBlank()) promoDetails else ""
+        product[KEY_PROMO_DETAILS] = if (!promoDetails.isNullOrBlank()) promoDetails else ""
     }
 
     fun setBuyerAddressId(buyerAddressId: String?) {
-        Product[KEY_BUYER_ADDRESS_ID] = if (!buyerAddressId.isNullOrBlank()) buyerAddressId else ""
+        product[KEY_BUYER_ADDRESS_ID] = if (!buyerAddressId.isNullOrBlank()) buyerAddressId else ""
     }
 
     fun setShippingDuration(shippingDuration: String?) {
-        Product[KEY_SHIPPING_DURATION] = if (!shippingDuration.isNullOrBlank()) shippingDuration else ""
+        product[KEY_SHIPPING_DURATION] = if (!shippingDuration.isNullOrBlank()) shippingDuration else ""
     }
 
     fun setCourier(courier: String?) {
-        Product[KEY_COURIER] = if (!courier.isNullOrBlank()) courier else ""
+        product[KEY_COURIER] = if (!courier.isNullOrBlank()) courier else ""
     }
 
     fun setShippingPrice(shippingPrice: String?) {
-        Product[KEY_SHIPPING_PRICE] = if (!shippingPrice.isNullOrBlank()) shippingPrice else ""
+        product[KEY_SHIPPING_PRICE] = if (!shippingPrice.isNullOrBlank()) shippingPrice else ""
     }
 
     fun setCodFlag(codFlag: String?) {
-        Product[KEY_COD_FLAG] = if (!codFlag.isNullOrBlank()) codFlag else ""
+        product[KEY_COD_FLAG] = if (!codFlag.isNullOrBlank()) codFlag else ""
     }
 
     fun setTokopediaCornerFlag(tokopediaCornerFlag: String?) {
-        Product[KEY_TOKOPEDIA_CORNER_FLAG] = if (!tokopediaCornerFlag.isNullOrBlank()) tokopediaCornerFlag else ""
+        product[KEY_TOKOPEDIA_CORNER_FLAG] = if (!tokopediaCornerFlag.isNullOrBlank()) tokopediaCornerFlag else ""
     }
 
     fun setIsFulfillment(isFulfillment: String?) {
-        Product[KEY_IS_FULFILLMENT] = if (!isFulfillment.isNullOrBlank()) isFulfillment else ""
+        product[KEY_IS_FULFILLMENT] = if (!isFulfillment.isNullOrBlank()) isFulfillment else ""
     }
 
     fun setPicture(picture: String?) {
-        Product[KEY_PICTURE] = if (!picture.isNullOrBlank()) picture else ""
+        product[KEY_PICTURE] = if (!picture.isNullOrBlank()) picture else ""
     }
 
     fun setUrl(url: String?) {
-        Product[KEY_URL] = if (!url.isNullOrBlank()) url else ""
+        product[KEY_URL] = if (!url.isNullOrBlank()) url else ""
     }
 
     fun setDimension52(shopId: String?) {
-        Product[KEY_DIMENSION_52] = if (!shopId.isNullOrBlank()) shopId else ""
+        product[KEY_DIMENSION_52] = if (!shopId.isNullOrBlank()) shopId else ""
     }
 
     fun setDimension53(isDiscountPrice: Boolean) {
-        Product[KEY_DIMENSION_53] = isDiscountPrice.toString()
+        product[KEY_DIMENSION_53] = isDiscountPrice.toString()
     }
 
     fun setDimension56(warehouseId: String?) {
-        Product[KEY_DIMENSION_56] = if (!warehouseId.isNullOrBlank()) warehouseId else ""
+        product[KEY_DIMENSION_56] = if (!warehouseId.isNullOrBlank()) warehouseId else ""
     }
 
     fun setDimension57(shopName: String?) {
-        Product[KEY_DIMENSION_57] = if (!shopName.isNullOrBlank()) shopName else ""
+        product[KEY_DIMENSION_57] = if (!shopName.isNullOrBlank()) shopName else ""
     }
 
     fun setDimension58(isFulfillment: Boolean) {
-        Product[KEY_DIMENSION_58] = isFulfillment.toString()
+        product[KEY_DIMENSION_58] = isFulfillment.toString()
     }
 
     fun setDimension59(shopType: String?) {
-        Product[KEY_DIMENSION_59] = if (!shopType.isNullOrBlank()) shopType else ""
+        product[KEY_DIMENSION_59] = if (!shopType.isNullOrBlank()) shopType else ""
     }
 
     fun setDimension82(categoryId: String?) {
-        Product[KEY_DIMENSION_82] = if (!categoryId.isNullOrBlank()) categoryId else ""
+        product[KEY_DIMENSION_82] = if (!categoryId.isNullOrBlank()) categoryId else ""
     }
 
     fun setDimension73(productTagInfo: String?) {
-        Product[KEY_DIMENSION_73] = if (!productTagInfo.isNullOrBlank()) productTagInfo else ""
+        product[KEY_DIMENSION_73] = if (!productTagInfo.isNullOrBlank()) productTagInfo else ""
     }
 
     fun setDimension77(cartId: String?) {
-        Product[KEY_DIMENSION_77] = if (!cartId.isNullOrBlank()) cartId else ""
+        product[KEY_DIMENSION_77] = if (!cartId.isNullOrBlank()) cartId else ""
     }
 
     fun setCampaignId(campaignId: String) {
-        Product[KEY_CAMPAIGN_ID] = campaignId
+        product[KEY_CAMPAIGN_ID] = campaignId
     }
 
     fun setPageSource(pageSource: String) {
-        Product[KEY_PAGE_SOURCE] = pageSource
+        product[KEY_PAGE_SOURCE] = pageSource
     }
 
     fun setDimension117(bundleType: String) {
-        Product[KEY_DIMENSION117] = bundleType
+        product[KEY_DIMENSION117] = bundleType
     }
 
     fun setDimension118(bundleId: String) {
         if (bundleId == "0") {
-            Product[KEY_DIMENSION118] = ""
+            product[KEY_DIMENSION118] = ""
         } else {
-            Product[KEY_DIMENSION118] = bundleId
+            product[KEY_DIMENSION118] = bundleId
         }
     }
 
     fun setBoAffordability(boAffordabilityValue: String) {
-        Product[KEY_BO_AFFORDABILITY] = boAffordabilityValue
+        product[KEY_BO_AFFORDABILITY] = boAffordabilityValue
     }
 
     fun setDimension136(cartStringGroup: String) {
-        Product[KEY_DIMENSION136] = cartStringGroup
+        product[KEY_DIMENSION136] = cartStringGroup
     }
 
     fun setDimension137(offerId: String) {
-        Product[KEY_DIMENSION137] = offerId
+        product[KEY_DIMENSION137] = offerId
+    }
+
+    fun setDimension98(productLabelType: String) {
+        product[KEY_DIMENSION98] = productLabelType
     }
 
     fun setImpressionAlgorithm(value: String?) {
-        Product[KEY_IMPRESSION_ALGORITHM] = value.orEmpty()
+        product[KEY_IMPRESSION_ALGORITHM] = value.orEmpty()
     }
 
     companion object {
@@ -281,6 +287,7 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_BO_AFFORDABILITY = "dimension119"
         private const val KEY_DIMENSION136 = "dimension136"
         private const val KEY_DIMENSION137 = "dimension137"
+        private const val KEY_DIMENSION98 = "dimension98"
         private const val KEY_IMPRESSION_ALGORITHM = "dimension96"
         const val DEFAULT_VALUE_NONE_OTHER = "none/other"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"

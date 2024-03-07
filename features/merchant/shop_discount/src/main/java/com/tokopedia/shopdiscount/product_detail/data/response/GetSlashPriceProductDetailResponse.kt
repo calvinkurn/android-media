@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
+import com.tokopedia.shopdiscount.subsidy.model.response.SlashPriceProductRule
+import com.tokopedia.shopdiscount.subsidy.model.response.SubsidyInfoResponse
 
 data class GetSlashPriceProductDetailResponse(
     @SerializedName("GetSlashPriceProductDetail")
@@ -69,7 +71,17 @@ data class GetSlashPriceProductDetailResponse(
             @Expose var isExpand: Boolean = false,
             @SerializedName("parent_id")
             @Expose
-            var parentId: String = ""
+            var parentId: String = "",
+            @SerializedName("rule")
+            val rule: SlashPriceProductRule = SlashPriceProductRule(),
+            @SerializedName("subsidy_info")
+            val subsidyInfo: SubsidyInfoResponse = SubsidyInfoResponse(),
+            @SerializedName("join_subsidy")
+            val joinSubsidy: Boolean = false,
+            @SerializedName("subsidy_status_text")
+            val subsidyStatusText: String = "",
+            @SerializedName("parent_info")
+            val parentInfo: ParentInfo = ParentInfo()
         ) {
             data class Price(
                 @SerializedName("min")
@@ -113,7 +125,20 @@ data class GetSlashPriceProductDetailResponse(
                 var discountedPercentage: Int = 0,
                 @SerializedName("original_price")
                 @Expose
-                var originalPrice: Double = 0.0
+                var originalPrice: Double = 0.0,
+                @SerializedName("subsidy_info")
+                val subsidyInfo: SubsidyInfoResponse = SubsidyInfoResponse(),
+                @SerializedName("join_subsidy")
+                val joinSubsidy: Boolean = false,
+            )
+
+            data class ParentInfo(
+                @SerializedName("is_parent")
+                @Expose
+                var isParent: Boolean = false,
+                @SerializedName("name")
+                @Expose
+                var name: String = ""
             )
         }
     }

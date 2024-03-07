@@ -21,6 +21,8 @@ import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.Group
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -95,6 +97,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import com.tokopedia.iconunify.R as iconunifyR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.universal_sharing.R as universal_sharingR
 
 /**
@@ -997,7 +1000,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         socialMediaList.add(
             ShareModel.Twitter().apply {
                 packageName = UniversalShareConst.PackageChannel.PACKAGE_NAME_TWITTER
-                socialMediaName = context?.resources?.getString(R.string.label_twitter)
+                socialMediaName = context?.resources?.getString(R.string.label_x)
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelTwitter
@@ -1005,7 +1008,18 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, UniversalShareConst.OrderingKey.KEY_TWITTER)
                 shareOnlyLink = isImageOnlySharing
                 appIntent = getAppIntent(MimeType.IMAGE, packageName)
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, iconunifyR.drawable.iconunify_twitter) }
+                context?.let { context ->
+                    AppCompatResources.getDrawable(context, iconunifyR.drawable.iconunify_social_x)?.let {
+                        DrawableCompat.setTint(
+                            DrawableCompat.wrap(it),
+                            ContextCompat.getColor(
+                                context,
+                                unifyprinciplesR.color.Unify_NN1000
+                            )
+                        )
+                        socialMediaIcon = it
+                    }
+                }
             }
         )
         socialMediaList.add(
@@ -1089,10 +1103,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 }
             }
         }, onError = {
-            clearLoader()
-            removeHandlerTimeout()
-            it.printStackTrace()
-        })
+                clearLoader()
+                removeHandlerTimeout()
+                it.printStackTrace()
+            })
         handler = Handler(Looper.getMainLooper())
         handler?.postDelayed({
             clearLoader()
@@ -1107,8 +1121,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     private suspend fun executeExtractBranchLink(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): String {
         return try {
-            extractBranchLinkUseCase(generateAffiliateLinkEligibility.banner?.ctaLink
-                ?: "").android_deeplink
+            extractBranchLinkUseCase(
+                generateAffiliateLinkEligibility.banner?.ctaLink
+                    ?: ""
+            ).android_deeplink
         } catch (ignore: Exception) {
             ""
         }
@@ -1159,8 +1175,12 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
             }
             affiliateCommissionTextView?.visibility = View.VISIBLE
-            shareTracker.viewOnAffiliateRegisterTicker(true, affiliateInput?.getIdFactory()
-                ?: "", affiliateInput?.pageType ?: "")
+            shareTracker.viewOnAffiliateRegisterTicker(
+                true,
+                affiliateInput?.getIdFactory()
+                    ?: "",
+                affiliateInput?.pageType ?: ""
+            )
             userType = KEY_AFFILIATE_USER
             return
         }
@@ -1183,8 +1203,12 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             if (banner.title.isBlank() && banner.message.isBlank()) return
 
             affiliateRegisterContainer?.visible()
-            shareTracker.viewOnAffiliateRegisterTicker(false, affiliateInput?.getIdFactory()
-                ?: "", affiliateInput?.pageType ?: "")
+            shareTracker.viewOnAffiliateRegisterTicker(
+                false,
+                affiliateInput?.getIdFactory()
+                    ?: "",
+                affiliateInput?.pageType ?: ""
+            )
 
             val id = affiliateInput?.getIdFactory() ?: ""
             val page = affiliateInput?.pageType ?: ""
@@ -1246,8 +1270,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
             executeImageGeneratorUseCase(listOfParams, shareModel)
         }, onError = {
-            executeSharingFlow(shareModel)
-        })
+                executeSharingFlow(shareModel)
+            })
     }
 
     private fun executePdpContextualImage(shareModel: ShareModel) {
@@ -1267,8 +1291,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
             executeImageGeneratorUseCase(listOfParams, shareModel)
         }, onError = {
-            executeSharingFlow(shareModel)
-        })
+                executeSharingFlow(shareModel)
+            })
     }
 
     private fun executeMediaImageSharingFlow(shareModel: ShareModel, mediaImageUrl: String) {
@@ -1333,9 +1357,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 }
             }
         }, onError = {
-            it.printStackTrace()
-            executeSharingFlow(shareModel)
-        })
+                it.printStackTrace()
+                executeSharingFlow(shareModel)
+            })
     }
 
     private fun generateRemoteConfigSocialMediaOrdering() {

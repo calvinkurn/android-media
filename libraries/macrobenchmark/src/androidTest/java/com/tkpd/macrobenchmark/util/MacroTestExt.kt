@@ -8,6 +8,7 @@ fun MacrobenchmarkRule.measureTokopediaApps(
     packageName: String = MacroIntent.TKPD_PACKAGE_NAME,
     startupMode: StartupMode? = null,
     metrics: List<Metric>,
+    setupBlock: () -> Unit = {},
     measureBlock: (MacrobenchmarkScope) -> Unit
 ) = measureRepeated(
     packageName = packageName,
@@ -15,10 +16,11 @@ fun MacrobenchmarkRule.measureTokopediaApps(
     compilationMode = CompilationMode.Partial(
         BaselineProfileMode.UseIfAvailable,
         3
-        ),
+    ),
     iterations = MacroArgs.getIterations(InstrumentationRegistry.getArguments()),
     startupMode = startupMode,
     setupBlock = {
+        setupBlock.invoke()
         pressHome()
     },
     measureBlock = {

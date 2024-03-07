@@ -70,12 +70,39 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
         trackShare(id, VALUE_EVENT_CLICK, eventCategory, VALUE_ACTION_CLOSE_SHARE, trackerId, currentSite)
     }
 
+    fun trackCloseShare(id: String, eventCategory: String,
+                        trackerId: String,
+                        currentSite: String,
+                        dataMap: HashMap<String, Any>) {
+        trackShare(id, VALUE_EVENT_CLICK, eventCategory, VALUE_ACTION_CLOSE_SHARE,
+            trackerId,
+            currentSite,
+            dataMap)
+    }
+
     fun trackClickShareChannel(id: String, channel: String, imageType: String, eventCategory: String, trackerId: String, currentSite: String) {
         trackShare("$channel - $id - $imageType", VALUE_EVENT_CLICK, eventCategory, VALUE_ACTION_CLICK_CHANNEL, trackerId, currentSite)
     }
 
+    fun trackClickShareChannel(id: String, channel: String, imageType: String,
+                               eventCategory: String, trackerId: String,
+                               currentSite: String,
+                               dataMap: HashMap<String, Any>) {
+        trackShare("$channel - $id - $imageType", VALUE_EVENT_CLICK, eventCategory,
+            VALUE_ACTION_CLICK_CHANNEL,
+            trackerId,
+            currentSite,
+            dataMap)
+    }
+
     fun trackViewShare(id: String, eventCategory: String, trackerId: String, currentSite: String) {
         trackShare(id, VALUE_EVENT_VIEW_COMMUNICATION, eventCategory, VALUE_ACTION_VIEW_SHARE, trackerId, currentSite)
+    }
+
+    fun trackViewShare(id: String, eventCategory: String, trackerId: String, currentSite: String,
+                       dataMap: HashMap<String, Any>) {
+        trackShare(id, VALUE_EVENT_VIEW_COMMUNICATION, eventCategory, VALUE_ACTION_VIEW_SHARE,
+            trackerId, currentSite, dataMap)
     }
 
     private fun trackShare(eventLabel: String, event: String, eventCategory: String, eventAction: String, trackerId: String, currentSite: String) {
@@ -86,6 +113,18 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
             this[TRACKER_ID] = trackerId
         }
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    private fun trackShare(eventLabel: String, event: String, eventCategory: String, eventAction: String,
+                           trackerId: String, currentSite: String, dataMap: HashMap<String, Any>) {
+        val data = TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel)
+        data.apply {
+            this[EVENT_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT
+            this[EVENT_CURRENT_SITE] = currentSite
+            this[TRACKER_ID] = trackerId
+        }
+        val dataCombined = dataMap + data
+        TrackApp.getInstance().gtm.sendGeneralEvent(dataCombined)
     }
 
     fun viewOnAffiliateRegisterTicker(isAffiliate: Boolean, id: String, page: String) {

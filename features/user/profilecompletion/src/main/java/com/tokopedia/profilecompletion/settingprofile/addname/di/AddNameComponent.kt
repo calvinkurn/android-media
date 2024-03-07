@@ -10,7 +10,7 @@ import dagger.Component
  */
 @AddNameScope
 @SessionCommonScope
-@Component(modules = [AddNameModule::class], dependencies = arrayOf(BaseAppComponent::class))
+@Component(modules = [AddNameModule::class, AddNameViewModelModule::class], dependencies = arrayOf(BaseAppComponent::class))
 interface AddNameComponent {
 
     fun inject(fragment: AddNameRegisterPhoneFragment)

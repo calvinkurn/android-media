@@ -63,6 +63,11 @@
             android:name=".chatbot2.view.activity.ChatbotImageActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".chatbot2.csat.view.CsatActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight.Translucent"/>
+
     </application>
 
 </manifest>

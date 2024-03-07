@@ -7,12 +7,12 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofItemDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofItemType
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductMiniSocialProofChipViewHolder(
-        private val view: View,
-        private val listener: DynamicProductDetailListener
+    private val view: View,
+    private val listener: ProductDetailListener
 ) : ProductMiniSocialProofTypeBaseViewHolder(view) {
 
     private val firstSocialProofTxt: Typography? = view.findViewById(R.id.chip_social_proof_title)

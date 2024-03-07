@@ -722,7 +722,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         val existingFragment = childFragmentManager.findFragmentByTag(
             PlayBroadcastSetupCoverBottomSheet.TAG)
         if (existingFragment is PlayBroadcastSetupCoverBottomSheet && existingFragment.isVisible) return
-        getSetupCoverBottomSheet()?.show(childFragmentManager)
+        getSetupCoverBottomSheet().show(childFragmentManager)
     }
 
     private fun getSetupCoverBottomSheet() = PlayBroadcastSetupCoverBottomSheet
@@ -766,7 +766,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     override fun dismissSetupCover(source: Int) {
-        if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
+        if (getSetupCoverBottomSheet().isAdded) getSetupCoverBottomSheet().dismiss()
 
         if (viewModel.uploadedCoverSource == PlayBroadcastSetupCoverBottomSheet.TAB_AUTO_GENERATED && source != PlayBroadcastSetupCoverBottomSheet.TAB_AUTO_GENERATED) {
             toaster.showToaster(getString(R.string.play_setup_cover_upload_image_toaster))

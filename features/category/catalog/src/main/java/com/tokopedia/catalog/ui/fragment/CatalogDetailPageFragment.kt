@@ -97,8 +97,10 @@ import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Compani
 import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_CATEGORY_ID
 import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_COMPARE_CATALOG_ID
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
+import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
+import com.tokopedia.catalog.ui.model.PriceCtaSellerOfferingProperties
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalog.util.CatalogShareUtil
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
@@ -113,6 +115,8 @@ import com.tokopedia.catalogcommon.listener.ColumnedInfoListener
 import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
 import com.tokopedia.catalogcommon.listener.PanelImageListener
+import com.tokopedia.catalogcommon.listener.PriceCtaSellerOfferingListener
+import com.tokopedia.catalogcommon.listener.SellerOfferingListener
 import com.tokopedia.catalogcommon.listener.SliderImageTextListener
 import com.tokopedia.catalogcommon.listener.SupportFeatureListener
 import com.tokopedia.catalogcommon.listener.TextDescriptionListener
@@ -141,8 +145,12 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oldcatalog.usecase.detail.InvalidCatalogComparisonException
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -175,7 +183,9 @@ class CatalogDetailPageFragment :
     SupportFeatureListener,
     SliderImageTextListener,
     CharacteristicListener,
-    PanelImageListener {
+    PanelImageListener,
+    SellerOfferingListener,
+    PriceCtaSellerOfferingListener {
 
     companion object {
         private const val QUERY_CATALOG_ID = "catalog_id"
@@ -222,7 +232,9 @@ class CatalogDetailPageFragment :
                 supportFeatureListener = this,
                 imageTextListener = this,
                 characteristicListener = this,
-                panelImageListener = this
+                panelImageListener = this,
+                sellerOfferingListener = this,
+                priceCtaSellerOfferingListener = this
             )
         )
     }
@@ -271,6 +283,33 @@ class CatalogDetailPageFragment :
             labels = "${carouselItem.catalogName} - $catalogId - feedback_id:${carouselItem.reviewId}",
             trackerId = if (isFromBottomsheet) TRACKER_ID_CLICK_ON_IMAGE_REVIEW_BS else TRACKER_ID_CLICK_ON_IMAGE_REVIEW
         )
+    }
+
+    private fun addToCart(atcModel: CatalogProductAtcUiModel) {
+        if (viewModel.isUserLoggedIn()) {
+            if (atcModel.isVariant) {
+                openVariantBottomSheet(atcModel)
+            } else {
+                viewModel.addProductToCart(atcModel)
+            }
+        } else {
+            goToLoginPage()
+        }
+    }
+
+    private fun openVariantBottomSheet(atcModel: CatalogProductAtcUiModel) {
+        context?.let {
+            AtcVariantHelper.goToAtcVariant(
+                it,
+                atcModel.productId,
+                VariantPageSource.CATALOG_PAGESOURCE,
+                shopId = atcModel.shopId,
+                dismissAfterTransaction = true,
+                startActivitResult = { intent, reqCode ->
+                    startActivityForResult(intent, reqCode)
+                }
+            )
+        }
     }
 
     override fun getScreenName() = CatalogDetailPageFragment::class.java.canonicalName.orEmpty()
@@ -329,8 +368,15 @@ class CatalogDetailPageFragment :
             if (!comparedCatalogId.isNullOrEmpty()) changeComparison(comparedCatalogId)
         }
         if (requestCode == CATALOG_CAMPARE_SWITCHING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val newComparedCatalogId = data?.getStringArrayListExtra(CatalogSwitchingComparisonFragment.ARG_COMPARISON_CATALOG_ID)
+            val newComparedCatalogId =
+                data?.getStringArrayListExtra(CatalogSwitchingComparisonFragment.ARG_COMPARISON_CATALOG_ID)
             if (!newComparedCatalogId.isNullOrEmpty()) changeComparison(newComparedCatalogId)
+        }
+        AtcVariantHelper.onActivityResultAtcVariant(context ?: return, requestCode, data) {
+            if (cartId.isNotEmpty()) {
+                viewModel.refreshNotification()
+                RouteManager.route(context, ApplinkConst.CART)
+            }
         }
     }
 
@@ -388,10 +434,12 @@ class CatalogDetailPageFragment :
                     smoothScroller.targetPosition = newAnchorPosition
                     layoutManager?.startSmoothScroll(smoothScroller)
                 }
+
                 (widgetAdapter.findNavigationCount().dec()) -> {
                     smoothScroller.targetPosition = anchorToPosition
                     layoutManager?.startSmoothScroll(smoothScroller)
                 }
+
                 else -> {
                     smoothScroller.targetPosition = anchorToPosition - POSITION_TWO_IN_WIDGET_LIST
                     layoutManager?.startSmoothScroll(smoothScroller)
@@ -413,6 +461,7 @@ class CatalogDetailPageFragment :
     }
 
     private fun setupObservers(view: View) {
+        observeAddToCartDataModel(view)
         viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
             if (it is Success) {
                 productSortingStatus = it.data.productSortingStatus
@@ -423,6 +472,7 @@ class CatalogDetailPageFragment :
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
                 binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
+                binding?.setupPriceCtaSellerOfferingWidget(it.data.priceCtaSellerOfferingProperties)
                 widgetAdapter.addWidget(it.data.widgets)
                 binding?.stickySingleHeaderView?.stickyPosition =
                     widgetAdapter.findPositionNavigation()
@@ -465,9 +515,11 @@ class CatalogDetailPageFragment :
                 is UnknownHostException -> {
                     getString(R.string.catalog_error_message_no_connection)
                 }
+
                 is InvalidCatalogComparisonException -> {
                     getString(R.string.catalog_error_message_inactive, it.invalidCatalogCount)
                 }
+
                 else -> {
                     ErrorHandler.getErrorMessage(requireView().context, it)
                 }
@@ -502,12 +554,34 @@ class CatalogDetailPageFragment :
                 widgetAdapter.changeComparison(it)
             }
         }
+        viewModel.variantName.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
+            widgetAdapter.displayVariantTextToSellerOffering(it)
+            binding?.icCtaSellerOffering?.ctaAtc?.setVariantText(it)
+        }
 
         CoroutineScope(Dispatchers.Main).launch {
             viewModel.scrollEvents.debounce(300).collect {
                 if (selectNavigationFromScroll) {
                     widgetAdapter.autoSelectNavigation(it)
                 }
+            }
+        }
+    }
+
+    private fun observeAddToCartDataModel(view: View) {
+        viewModel.addToCartDataModel.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
+            if (it.isStatusError()) {
+                Toaster.build(
+                    view,
+                    it.getAtcErrorMessage().orEmpty(),
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_ERROR
+                ).show()
+            } else {
+                RouteManager.route(context, ApplinkConst.CART)
+                viewModel.refreshNotification()
             }
         }
     }
@@ -586,38 +660,26 @@ class CatalogDetailPageFragment :
         binding?.statusBar?.alpha = scrollProgress
     }
 
-    // Call this methods if you want to override the CTA & Price widget's theme
     private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaWidget(properties: PriceCtaProperties) {
-        containerPriceCta.setBackgroundColor(properties.bgColor)
-        tgpCatalogName.setTextColor(properties.textColor)
-        tgpPriceRanges.setTextColor(properties.textColor)
+        icCtaNormal.apply {
+            root.showWithCondition(properties.isVisible)
+            containerPriceCta.setBackgroundColor(properties.bgColor)
+            tgpCatalogName.setTextColor(properties.textColor)
+            tgpPriceRanges.setTextColor(properties.textColor)
 
-        tgpCatalogName.text = properties.productName
-        tgpPriceRanges.text = properties.price
+            tgpCatalogName.text = properties.productName
+            tgpPriceRanges.text = properties.price
 
-        btnProductList.setOnClickListener {
-            val catalogProductList =
-                Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
-                    .buildUpon()
-                    .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
-                    .appendQueryParameter(
-                        QUERY_PRODUCT_SORTING_STATUS,
-                        productSortingStatus.toString()
-                    )
-                    .appendPath(title).toString()
-
-            RouteManager.getIntent(context, catalogProductList).apply {
-                putExtra(EXTRA_CATALOG_URL, catalogUrl)
-                startActivity(this)
+            btnProductList.setOnClickListener {
+                goToProductListPage()
+                CatalogReimagineDetailAnalytics.sendEvent(
+                    event = EVENT_VIEW_CLICK_PG,
+                    action = EVENT_ACTION_SEE_OPTIONS,
+                    category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                    labels = catalogId,
+                    trackerId = TRACKER_ID_CLICK_BUTTON_CHOOSE
+                )
             }
-
-            CatalogReimagineDetailAnalytics.sendEvent(
-                event = EVENT_VIEW_CLICK_PG,
-                action = EVENT_ACTION_SEE_OPTIONS,
-                category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
-                labels = catalogId,
-                trackerId = TRACKER_ID_CLICK_BUTTON_CHOOSE
-            )
         }
 
         CatalogReimagineDetailAnalytics.sendEvent(
@@ -627,6 +689,42 @@ class CatalogDetailPageFragment :
             labels = catalogId,
             trackerId = TRACKER_ID_IMPRESSION_PRICE
         )
+    }
+
+    private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaSellerOfferingWidget(
+        properties: PriceCtaSellerOfferingProperties
+    ) {
+        icCtaSellerOffering.apply {
+            viewModel.atcModel = CatalogProductAtcUiModel(
+                productId = properties.productId,
+                shopId = properties.shopId,
+                warehouseId = properties.warehouseId,
+                isVariant = properties.isVariant
+            )
+            if (properties.isVariant) viewModel.getVariantInfo()
+            root.showWithCondition(properties.isVisible)
+            containerPriceCta.setBackgroundColor(properties.bgColor)
+            ctaAtc.setPrice(properties.price)
+            ctaAtc.setSlashPrice(properties.slashPrice)
+            ctaAtc.setShopName(properties.shopName)
+            ctaAtc.setBadge(properties.badge)
+            ctaAtc.setSold(properties.sold)
+            ctaAtc.setRating(properties.shopRating)
+            ctaAtc.setTheme(properties.isDarkTheme)
+            ctaAtc.setOnClick {
+                addToCart(viewModel.atcModel)
+            }
+            btnProductList.setOnClickListener {
+                goToProductListPage()
+            }
+
+            if (properties.isDarkTheme) {
+                btnProductList.cardType = CardUnify2.TYPE_BORDER
+            } else {
+                btnProductList.cardType = CardUnify2.TYPE_BORDER_ACTIVE
+            }
+            tvOther.setTextColor(MethodChecker.getColor(context, properties.colorBorderButton))
+        }
     }
 
     private fun FragmentCatalogReimagineDetailPageBinding.showPageError(throwable: Throwable) {
@@ -648,6 +746,31 @@ class CatalogDetailPageFragment :
     private fun goToLoginPage() {
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         startActivityForResult(intent, LOGIN_REQUEST_CODE)
+    }
+
+    private fun goToChatPage(shopId: String) {
+        if (viewModel.isUserLoggedIn()) {
+            RouteManager.route(context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId)
+        } else {
+            goToLoginPage()
+        }
+    }
+
+    private fun goToProductListPage() {
+        val catalogProductList =
+            Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
+                .buildUpon()
+                .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
+                .appendQueryParameter(
+                    QUERY_PRODUCT_SORTING_STATUS,
+                    productSortingStatus.toString()
+                )
+                .appendPath(title).toString()
+
+        RouteManager.getIntent(context, catalogProductList).apply {
+            putExtra(EXTRA_CATALOG_URL, catalogUrl)
+            startActivity(this)
+        }
     }
 
     private fun sendOpenPageTracker() {
@@ -716,7 +839,7 @@ class CatalogDetailPageFragment :
             }
 
             BannerCatalogUiModel.Ratio.TWO_BY_ONE.ratioName -> {
-                sendOnTimeImpression(TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE, {
+                sendOnTimeImpression(TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE) {
                     CatalogReimagineDetailAnalytics.sendEvent(
                         event = EVENT_VIEW_PG_IRIS,
                         action = "$EVENT_ACTION_IMPRESSION_BANNER $ratio",
@@ -724,7 +847,7 @@ class CatalogDetailPageFragment :
                         labels = catalogId,
                         trackerId = TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE
                     )
-                })
+                }
             }
 
             BannerCatalogUiModel.Ratio.ONE_BY_ONE.ratioName -> {
@@ -878,7 +1001,10 @@ class CatalogDetailPageFragment :
         }
     }
 
-    override fun onTopFeatureImpression(items: List<TopFeaturesUiModel.ItemTopFeatureUiModel>, widgetName: String) {
+    override fun onTopFeatureImpression(
+        items: List<TopFeaturesUiModel.ItemTopFeatureUiModel>,
+        widgetName: String
+    ) {
         val list = arrayListOf<HashMap<String, String>>()
         for (index in items.indices) {
             val promotions = hashMapOf<String, String>()
@@ -936,7 +1062,10 @@ class CatalogDetailPageFragment :
 
         Intent(activity ?: return, CatalogSwitchingComparisonActivity::class.java).apply {
             putExtra(CatalogSwitchingComparisonFragment.ARG_CATALOG_ID, catalogId)
-            putStringArrayListExtra(CatalogSwitchingComparisonFragment.ARG_COMPARISON_CATALOG_ID, catalogComparedId)
+            putStringArrayListExtra(
+                CatalogSwitchingComparisonFragment.ARG_COMPARISON_CATALOG_ID,
+                catalogComparedId
+            )
             putExtra(CatalogSwitchingComparisonFragment.ARG_EXTRA_CATALOG_BRAND, brand)
             putExtra(CatalogSwitchingComparisonFragment.ARG_EXTRA_CATALOG_CATEGORY_ID, categoryId)
             startActivityForResult(this, CATALOG_CAMPARE_SWITCHING_REQUEST_CODE)
@@ -1027,7 +1156,8 @@ class CatalogDetailPageFragment :
                 promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = catalogTitle
                 promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.inc().toString()
                 promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
-                promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET
+                promotions[CatalogTrackerConstant.KEY_ITEM_NAME] =
+                    EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET
                 list.add(promotions)
             }
         } else {
@@ -1035,7 +1165,8 @@ class CatalogDetailPageFragment :
                 columnedInfoUiModel.widgetContentThreeColumn[index].rowData.forEachIndexed { subindex, pair ->
                     val promotions = hashMapOf<String, String>()
                     promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = catalogTitle
-                    promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = "${index.inc()}.${subindex.inc()}"
+                    promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] =
+                        "${index.inc()}.${subindex.inc()}"
                     promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
                     promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = pair.second
                     list.add(promotions)
@@ -1070,5 +1201,29 @@ class CatalogDetailPageFragment :
 
     override fun onPanelImageImpression(widgetName: String) {
         viewModel.emitScrollEvent(widgetName)
+    }
+
+    override fun onSellerOfferingAtcButtonClicked() {
+        addToCart(viewModel.atcModel)
+    }
+
+    override fun onSellerOfferingChatButtonClicked() {
+        goToChatPage(viewModel.atcModel.shopId)
+    }
+
+    override fun onSellerOfferingProductImageClicked(productId: String) {
+        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
+    }
+
+    override fun onSellerOfferingVariantArrowClicked(productId: String) {
+        addToCart(viewModel.atcModel)
+    }
+
+    override fun onSellerOfferingProductInfo(productId: String) {
+        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
+    }
+
+    override fun onSellerOfferingButtonRightClicked() {
+        goToProductListPage()
     }
 }

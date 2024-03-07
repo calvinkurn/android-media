@@ -5,14 +5,14 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.SDUIDataModel
 import com.tokopedia.product.detail.databinding.ItemSduiContainerBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.sdui.SDUIManager
 import com.tokopedia.sdui.interfaces.SDUITrackingInterface
 import org.json.JSONObject
 
 class SDUIViewHolder(
     view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<SDUIDataModel>(view) {
 
     companion object {
@@ -73,7 +73,7 @@ class SDUIViewHolder(
 
             override fun onViewClick(trackerPayload: JSONObject?) {
                 val element = element ?: return
-                listener.onClickDynamicOneLiner("", getComponentTrackData(element))
+                listener.onClickDynamicOneLiner("", "", component = getComponentTrackData(element))
             }
 
             override fun onViewVisible(trackerPayload: JSONObject?) {

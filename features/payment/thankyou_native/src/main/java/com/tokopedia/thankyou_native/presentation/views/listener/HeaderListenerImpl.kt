@@ -2,6 +2,7 @@ package com.tokopedia.thankyou_native.presentation.views.listener
 
 import android.content.Context
 import android.view.View
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.SPACE
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
@@ -77,6 +78,14 @@ class HeaderListenerImpl(
             onDialogRedirectListener.openHowToPay()
         } else {
             onDialogRedirectListener.refreshThanksPageData()
+        }
+    }
+
+    override fun openApplink(applink: String?) {
+        applink?.let {
+            context?.apply {
+                RouteManager.route(this, applink)
+            }
         }
     }
 

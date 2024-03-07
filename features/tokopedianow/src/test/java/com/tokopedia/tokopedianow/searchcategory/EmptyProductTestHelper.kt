@@ -4,26 +4,24 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
-//import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
-import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.usecase.RequestParams
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.nullValue
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class EmptyProductTestHelper(
-        private val baseViewModel: BaseSearchCategoryViewModel,
-        private val callback: Callback,
+    private val baseViewModel: BaseSearchCategoryViewModel,
+    private val callback: Callback
 ) {
 
-    fun `empty product list with feedback widget active should show feedback view`(){
+    fun `empty product list with feedback widget active should show feedback view`() {
         callback.`Given first page product list is empty`(true)
         `When view created`()
         `Then asset empty result visitable list with feedback widget`()
@@ -36,6 +34,7 @@ class EmptyProductTestHelper(
 
         `Then assert empty result visitable list`()
         `Then assert header background is hidden`()
+        `Then assert isEmptyResult true`()
     }
 
     private fun `When view created`() {
@@ -51,7 +50,7 @@ class EmptyProductTestHelper(
         callback.`Then assert empty result visitable list`(visitableList)
     }
 
-    private fun `Then asset empty result visitable list with feedback widget`(){
+    private fun `Then asset empty result visitable list with feedback widget`() {
         val visitableList = baseViewModel.visitableListLiveData.value!!
         visitableList.first().assertChooseAddressDataView()
         visitableList[1].assertEmptyProductDataView()
@@ -66,6 +65,10 @@ class EmptyProductTestHelper(
 
     private fun `Then assert header background is hidden`() {
         assertThat(baseViewModel.isHeaderBackgroundVisibleLiveData.value, shouldBe(false))
+    }
+
+    private fun `Then assert isEmptyResult true`() {
+        assertThat(baseViewModel.isEmptyResult, shouldBe(true))
     }
 
     fun `empty product list because of filter should show filter list`() {
@@ -84,8 +87,8 @@ class EmptyProductTestHelper(
 
         `Then assert empty result visitable list`()
         `Then assert chosen quick filter is in empty state data view`(
-                newVisitableList,
-                listOf(chosenQuickFilter.firstOption),
+            newVisitableList,
+            listOf(chosenQuickFilter.firstOption)
         )
     }
 
@@ -98,8 +101,8 @@ class EmptyProductTestHelper(
     }
 
     private fun `Then assert chosen quick filter is in empty state data view`(
-            visitableList: List<Visitable<*>>,
-            expectedOptionList: List<Option?>,
+        visitableList: List<Visitable<*>>,
+        expectedOptionList: List<Option?>
     ) {
         val emptyStateDataView = visitableList.filterIsInstance<TokoNowEmptyStateNoResultUiModel>().first()
 
@@ -137,8 +140,8 @@ class EmptyProductTestHelper(
     }
 
     private fun `Then assert request params does not contain removed filter`(
-            requestParams: RequestParams,
-            removedOption: Option,
+        requestParams: RequestParams,
+        removedOption: Option
     ) {
         val tokonowQueryParam = getTokonowQueryParam(requestParams)
 
@@ -168,8 +171,8 @@ class EmptyProductTestHelper(
     }
 
     private fun `Then verify request params does not contain param with exclude_ prefix`(
-            requestParams: RequestParams,
-            removedOption: Option,
+        requestParams: RequestParams,
+        removedOption: Option
     ) {
         val tokonowQueryParam = getTokonowQueryParam(requestParams)
         val removedOptionKey = removedOption.key.removePrefix(OptionHelper.EXCLUDE_PREFIX)
@@ -182,11 +185,11 @@ class EmptyProductTestHelper(
     }
 
     interface Callback {
-        fun `Given first page product list is empty`(feedbackFieldToggle:Boolean)
+        fun `Given first page product list is empty`(feedbackFieldToggle: Boolean)
         fun `Given first page product list will be successful`()
         fun `Then verify first page API is called`(
-                count: Int,
-                requestParamsSlot: MutableList<RequestParams>,
+            count: Int,
+            requestParamsSlot: MutableList<RequestParams>
         )
         fun `Then assert empty result visitable list`(visitableList: List<Visitable<*>>)
     }

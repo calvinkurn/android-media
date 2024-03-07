@@ -3,31 +3,28 @@ package com.tokopedia.order_management_common.presentation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewStub
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.order_management_common.R
 import com.tokopedia.order_management_common.constants.OrderManagementConstants
 import com.tokopedia.order_management_common.databinding.ItemOrderProductBmgmListItemBinding
-import com.tokopedia.order_management_common.databinding.PartialBmgmAddOnSummaryBinding
 import com.tokopedia.order_management_common.presentation.adapter.diffutil.ProductBmgmItemDiffUtilCallback
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
-import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnSummaryViewHolder
-import com.tokopedia.order_management_common.presentation.viewholder.BmgmAddOnViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnSummaryViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.order_management_common.util.composeItalicNote
 import com.tokopedia.order_management_common.util.mapButtonType
 import com.tokopedia.order_management_common.util.mapButtonVariant
 
 class ProductBmgmItemAdapter(
-    private val listener: ViewHolder.Listener,
+    private val productListener: ViewHolder.Listener,
+    private val addOnListener: AddOnViewHolder.Listener,
     private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
 ) : RecyclerView.Adapter<ProductBmgmItemAdapter.ViewHolder>() {
 
@@ -39,7 +36,7 @@ class ProductBmgmItemAdapter(
             parent,
             false
         )
-        return ViewHolder(binding, listener, recyclerViewSharedPool)
+        return ViewHolder(binding, productListener, addOnListener, recyclerViewSharedPool)
     }
 
     override fun getItemCount(): Int = itemList.size
@@ -77,15 +74,30 @@ class ProductBmgmItemAdapter(
 
     class ViewHolder(
         private val binding: ItemOrderProductBmgmListItemBinding,
-        private val listener: Listener,
+        private val productListener: Listener,
+        private val addOnListener: AddOnViewHolder.Listener,
         private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
-    ) : RecyclerView.ViewHolder(binding.root), BmgmAddOnViewHolder.Listener {
+    ) : RecyclerView.ViewHolder(binding.root),
+        AddOnSummaryViewHolder.Delegate.Mediator,
+        AddOnSummaryViewHolder.Delegate by AddOnSummaryViewHolder.Delegate.Impl() {
 
         private var element: ProductBmgmSectionUiModel.ProductUiModel? = null
 
-        private var addOnSummaryViewHolder: BmgmAddOnSummaryViewHolder? = null
+        init {
+            registerAddOnSummaryDelegate(this)
+        }
 
-        private var partialBmgmAddonSummaryBinding: PartialBmgmAddOnSummaryBinding? = null
+        override fun getAddOnSummaryLayout(): View? {
+            return itemView.findViewById(R.id.itemBmgmAddonViewStub)
+        }
+
+        override fun getRecycleViewSharedPool(): RecyclerView.RecycledViewPool? {
+            return recyclerViewSharedPool
+        }
+
+        override fun getAddOnSummaryListener(): AddOnViewHolder.Listener {
+            return addOnListener
+        }
 
         fun bind(model: ProductBmgmSectionUiModel.ProductUiModel?) {
             model?.let {
@@ -95,7 +107,7 @@ class ProductBmgmItemAdapter(
                 setBmgmItemProductName(it.productName)
                 setBmgmItemProductPriceQuantity(it.quantity, it.productPriceText)
                 setupBmgmItemProductNote(it.productNote)
-                setupAddonSection(it.addOnSummaryUiModel)
+                bindAddonSummary(it.addOnSummaryUiModel)
                 setItemOnClickListener(it)
                 setupBmgmItemButton(it.button, it.isProcessing == true)
                 setupImpressionListener(it)
@@ -104,7 +116,7 @@ class ProductBmgmItemAdapter(
 
         private fun setupImpressionListener(model: ProductBmgmSectionUiModel.ProductUiModel) {
             itemView.addOnImpressionListener(model.impressHolder) {
-                listener.onBmgmItemImpressed(model)
+                productListener.onBmgmItemImpressed(model)
             }
         }
 
@@ -122,32 +134,6 @@ class ProductBmgmItemAdapter(
                         onItemActionClicked(actionButton.key)
                     }
                 }
-            }
-        }
-
-        private fun setupAddonSection(addOnSummaryUiModel: AddOnSummaryUiModel?) {
-            val addonsViewStub: View = itemView.findViewById(R.id.itemBmgmAddonViewStub)
-            if (addOnSummaryUiModel?.addonItemList?.isNotEmpty() == true) {
-                if (addonsViewStub is ViewStub) addonsViewStub.inflate() else addonsViewStub.show()
-                setupAddonsBinding()
-                addOnSummaryViewHolder =
-                    partialBmgmAddonSummaryBinding?.let {
-                        BmgmAddOnSummaryViewHolder(
-                            this,
-                            it,
-                            recyclerViewSharedPool
-                        )
-                    }
-                addOnSummaryViewHolder?.bind(addOnSummaryUiModel)
-            } else {
-                addonsViewStub.hide()
-            }
-        }
-
-        private fun setupAddonsBinding() {
-            if (partialBmgmAddonSummaryBinding == null) {
-                partialBmgmAddonSummaryBinding =
-                    PartialBmgmAddOnSummaryBinding.bind(this.itemView.findViewById(R.id.itemBmgmAddonViewStub))
             }
         }
 
@@ -196,7 +182,7 @@ class ProductBmgmItemAdapter(
             item: ProductBmgmSectionUiModel.ProductUiModel
         ) {
             binding.containerProductInfo.setOnClickListener {
-                listener.onBmgmItemClicked(item)
+                productListener.onBmgmItemClicked(item)
             }
         }
 
@@ -204,37 +190,20 @@ class ProductBmgmItemAdapter(
             element?.let {
                 when (key) {
                     OrderManagementConstants.OrderDetailActionButtonKey.BUY_AGAIN -> {
-                        listener.onBmgmItemAddToCart(it)
+                        productListener.onBmgmItemAddToCart(it)
                     }
                     OrderManagementConstants.OrderDetailActionButtonKey.SEE_SIMILAR_PRODUCTS -> {
-                        listener.onBmgmItemSeeSimilarProducts(it)
+                        productListener.onBmgmItemSeeSimilarProducts(it)
                     }
                     OrderManagementConstants.OrderDetailActionButtonKey.WARRANTY_CLAIM -> {
-                        listener.onBmgmItemWarrantyClaim(it)
+                        productListener.onBmgmItemWarrantyClaim(it)
                     }
                     else -> {}
                 }
             }
         }
 
-        override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
-            listener.onCopyAddOnDescription(label, description)
-        }
-
-        override fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String) {
-            listener.onAddOnsBmgmExpand(isExpand, addOnsIdentifier)
-        }
-
-        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
-            listener.onAddOnsInfoLinkClicked(infoLink, type)
-        }
-
-        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {}
-
         interface Listener {
-            fun onAddOnsInfoLinkClicked(infoLink: String, type: String)
-            fun onAddOnsBmgmExpand(isExpand:Boolean, addOnsIdentifier: String)
-            fun onCopyAddOnDescription(label: String, description: CharSequence)
             fun onBmgmItemClicked(item: ProductBmgmSectionUiModel.ProductUiModel)
             fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel)
             fun onBmgmItemSeeSimilarProducts(uiModel: ProductBmgmSectionUiModel.ProductUiModel)

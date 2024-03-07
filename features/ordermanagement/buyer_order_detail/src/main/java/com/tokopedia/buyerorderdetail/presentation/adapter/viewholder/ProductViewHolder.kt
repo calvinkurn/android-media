@@ -2,18 +2,18 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
 import android.view.ViewStub
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
-import com.tokopedia.buyerorderdetail.databinding.PartialItemBuyerOrderDetailAddonsBinding
-import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.imageassets.utils.loadProductImage
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnSummaryViewHolder
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.order_management_common.util.setupCardDarkMode
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -23,35 +23,29 @@ open class ProductViewHolder(
     itemView: View?,
     private val listener: PartialProductItemViewHolder.ProductViewListener,
     private val bottomSheetListener: PartialProductItemViewHolder.ShareProductBottomSheetListener,
-    private val navigator: BuyerOrderDetailNavigator
-) : BaseToasterViewHolder<ProductListUiModel.ProductUiModel>(itemView) {
+    private val addOnListener: AddOnViewHolder.Listener,
+    private val navigator: BuyerOrderDetailNavigator,
+) : BaseToasterViewHolder<ProductListUiModel.ProductUiModel>(itemView),
+    AddOnSummaryViewHolder.Delegate.Mediator,
+    AddOnSummaryViewHolder.Delegate by AddOnSummaryViewHolder.Delegate.Impl() {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_product_list_item
     }
 
     private var ivBuyerOrderDetailProductThumbnail: ImageUnify? = null
-
-    protected var btnBuyerOrderDetailBuyProductAgain: UnifyButton? = null
-
     private var element: ProductListUiModel.ProductUiModel? = null
-
     private var partialProductItemViewHolder: PartialProductItemViewHolder? = null
-
-    private var partialProductAddonViewHolder: PartialProductAddonViewHolder? = null
-
     private var partialProductItemViewStub: View? = null
-
-    private var partialItemBuyerOrderDetailAddonsBinding: PartialItemBuyerOrderDetailAddonsBinding? =
-        null
-
     private val cardContainer: CardUnify? = itemView?.findViewById(R.id.cardBuyerOrderDetailProduct)
+    protected var btnBuyerOrderDetailBuyProductAgain: UnifyButton? = null
 
     override fun bind(element: ProductListUiModel.ProductUiModel?) {
         element?.let {
             this.element = it
             setupProductList(it)
-            setupAddonSection(it.addonsListUiModel)
+            registerAddOnSummaryDelegate(this)
+            bindAddonSummary(it.addOnSummaryUiModel)
             cardContainer?.setupCardDarkMode()
         }
     }
@@ -68,14 +62,27 @@ open class ProductViewHolder(
                     if (oldItem.button != newItem.button || oldItem.isProcessing != newItem.isProcessing) {
                         setupButton(newItem.button, newItem.isProcessing)
                     }
-                    if (oldItem.addonsListUiModel != newItem.addonsListUiModel) {
-                        setupAddonSection(newItem.addonsListUiModel)
+                    if (oldItem.addOnSummaryUiModel != newItem.addOnSummaryUiModel) {
+                        registerAddOnSummaryDelegate(this)
+                        bindAddonSummary(newItem.addOnSummaryUiModel)
                     }
                     return
                 }
             }
         }
         super.bind(element, payloads)
+    }
+
+    override fun getAddOnSummaryLayout(): View? {
+        return itemView.findViewById(R.id.layout_bom_detail_product_add_on)
+    }
+
+    override fun getRecycleViewSharedPool(): RecyclerView.RecycledViewPool? {
+        return null
+    }
+
+    override fun getAddOnSummaryListener(): AddOnViewHolder.Listener {
+        return addOnListener
     }
 
     private fun setupProductList(item: ProductListUiModel.ProductUiModel) {
@@ -102,27 +109,6 @@ open class ProductViewHolder(
                 partialProductItemViewStub?.findViewById(R.id.btnBuyerOrderDetailBuyProductAgain)
         } else {
             productListViewStub.show()
-        }
-    }
-
-    private fun setupAddonSection(addonsListUiModel: AddonsListUiModel?) {
-        val addonsViewStub: View = itemView.findViewById(R.id.itemBomDetailAddonsViewStub)
-        if (addonsListUiModel?.addonsItemList?.isNotEmpty() == true) {
-            if (addonsViewStub is ViewStub) addonsViewStub.inflate() else addonsViewStub.show()
-            setupAddonsBinding()
-            partialProductAddonViewHolder = partialItemBuyerOrderDetailAddonsBinding?.let {
-                PartialProductAddonViewHolder(listener, it)
-            }
-            partialProductAddonViewHolder?.bindViews(addonsListUiModel)
-        } else {
-            addonsViewStub.hide()
-        }
-    }
-
-    private fun setupAddonsBinding() {
-        if (partialItemBuyerOrderDetailAddonsBinding == null) {
-            partialItemBuyerOrderDetailAddonsBinding =
-                PartialItemBuyerOrderDetailAddonsBinding.bind(this.itemView.findViewById(R.id.itemBomDetailAddonsViewStub))
         }
     }
 

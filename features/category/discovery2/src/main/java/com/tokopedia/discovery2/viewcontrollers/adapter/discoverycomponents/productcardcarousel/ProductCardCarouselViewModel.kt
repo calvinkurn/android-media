@@ -259,10 +259,10 @@ class ProductCardCarouselViewModel(
         }
         productLoadState.addAll(productDataList)
 
-        val nextPageComponent = if (Utils.nextPageAvailable(components, PRODUCT_PER_PAGE)) {
-            constructLoadMoreComponent()
-        } else if (shouldShowViewAllCard()) {
+        val nextPageComponent = if (shouldShowViewAllCard()) {
             constructViewAllCard()
+        } else if (Utils.nextPageAvailable(components, PRODUCT_PER_PAGE)) {
+            constructLoadMoreComponent()
         } else {
             return productLoadState
         }

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.view.View
 import androidx.core.graphics.drawable.toDrawable
+import com.tokopedia.media.loader.data.BitmapFlowResult
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.AppWidgetTarget
 import com.tokopedia.media.loader.data.Properties
@@ -110,20 +111,26 @@ fun Any.preloadImage(
 fun String.getBitmapImageUrlAsFlow(
     context: Context,
     properties: Properties.() -> Unit = {}
-): Flow<Bitmap> {
+): Flow<BitmapFlowResult> {
     val url = this
     return callbackFlow {
-        MediaLoaderTarget.loadImage(
-            context,
-            Properties()
-                .apply(properties)
-                .setSource(url),
-            MediaBitmapEmptyTarget(
-                onReady = {
-                    trySend(it)
+        Properties().apply(properties).setSource(url).let {
+            it.listener(
+                onError = { e ->
+                    trySend(BitmapFlowResult.Failed(e))
                 }
             )
-        )
+
+            MediaLoaderTarget.loadImage(
+                context,
+                it,
+                MediaBitmapEmptyTarget(
+                    onReady = { bitmapResult ->
+                        trySend(BitmapFlowResult.Success(bitmapResult))
+                    }
+                )
+            )
+        }
 
         awaitClose { channel.close() }
     }

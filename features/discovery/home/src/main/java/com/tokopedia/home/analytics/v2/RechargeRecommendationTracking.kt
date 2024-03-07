@@ -8,7 +8,7 @@ import java.util.*
 
 object RechargeRecommendationTracking : BaseTracking() {
     private const val RECHARGE_RECOMMENDATION_NAME = "digital bills"
-    private const val RECHARGE_RECOMMENDATION_EVENT_CATEGORY = "homepage-digital"
+    private const val RECHARGE_RECOMMENDATION_EVENT_CATEGORY = "homepage - digital"
     private const val RECHARGE_RECOMMENDATION_CLICK_EVENT = "clickHomepage"
     private const val CLICK_CLOSE_ON = "click close on %s"
     private const val LABEL_FORMAT = "%s - %s - %s"
