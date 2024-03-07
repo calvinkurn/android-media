@@ -2,6 +2,8 @@ package com.tokopedia.content.product.picker.testcase.ugc
 
 import com.tokopedia.content.product.picker.builder.ugc.CommonModelBuilder
 import com.tokopedia.content.product.picker.builder.ugc.LastPurchasedModelBuilder
+import com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.ugc.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.content.product.picker.util.ugc.andThen
@@ -22,7 +24,7 @@ class LastPurchasedViewModelTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
-    private val mockRepo: com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository = mockk(relaxed = true)
+    private val mockRepo: ProductTagRepository = mockk(relaxed = true)
 
     private val commonModelBuilder = CommonModelBuilder()
     private val modelBuilder = LastPurchasedModelBuilder()
@@ -37,7 +39,7 @@ class LastPurchasedViewModelTest {
 
         coEvery { mockRepo.getLastPurchasedProducts(any(), any()) } returns pagedData
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
         )
@@ -58,7 +60,7 @@ class LastPurchasedViewModelTest {
     fun `when user load last purchased product & failed, it should emit failed state`() {
         coEvery { mockRepo.getLastPurchasedProducts(any(), any()) } throws mockException
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
         )

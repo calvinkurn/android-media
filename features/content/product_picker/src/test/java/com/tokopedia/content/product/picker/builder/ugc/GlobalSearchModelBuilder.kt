@@ -28,46 +28,46 @@ class GlobalSearchModelBuilder {
         ticker: TickerUiModel = TickerUiModel(),
     ): PagedGlobalSearchProductResponse {
         return PagedGlobalSearchProductResponse(
-                pagedData = PagedDataUiModel(
-                        dataList = List(size) {
-                            ProductUiModel(
-                                    id = it.toString(),
-                                    shopID = it.toString(),
-                                    shopName = "Shop $it",
-                                    shopBadge = listOf(),
-                                    name = "Product $it",
-                                    coverURL = "",
-                                    webLink = "",
-                                    appLink = "",
-                                    star = (it % 5).toString(),
-                                    price = (it * 10000).toDouble(),
-                                    priceFmt = "Rp ${(it * 10000)}",
-                                    isDiscount = true,
-                                    discount = 5.0,
-                                    discountFmt = "5%",
-                                    priceOriginal = (it * 10000).toDouble(),
-                                    priceOriginalFmt = "Rp ${(it * 10000).toDouble()}",
-                                    priceDiscount = (it * 10000).toDouble(),
-                                    priceDiscountFmt = "Rp ${(it * 10000).toDouble()}",
-                                    totalSold = it,
-                                    totalSoldFmt = it.toString(),
-                                    isBebasOngkir = false,
-                                    bebasOngkirStatus = "",
-                                    bebasOngkirURL = "",
-                            )
-                        },
-                        nextCursor = nextCursor,
-                        hasNextPage = hasNextPage
-                ),
-                header = SearchHeaderUiModel(
-                        totalDataText = "$size",
-                        totalData = size,
-                        responseCode = 200,
-                        keywordProcess = "",
-                        componentId = "",
-                ),
-                suggestion = suggestion,
-                ticker = ticker,
+            pagedData = PagedDataUiModel(
+                dataList = List(size) {
+                    ProductUiModel(
+                        id = it.toString(),
+                        shopID = it.toString(),
+                        shopName = "Shop $it",
+                        shopBadge = listOf(),
+                        name = "Product $it",
+                        coverURL = "",
+                        webLink = "",
+                        appLink = "",
+                        star = (it % 5).toString(),
+                        price = (it * 10000).toDouble(),
+                        priceFmt = "Rp ${(it * 10000)}",
+                        isDiscount = true,
+                        discount = 5.0,
+                        discountFmt = "5%",
+                        priceOriginal = (it * 10000).toDouble(),
+                        priceOriginalFmt = "Rp ${(it * 10000).toDouble()}",
+                        priceDiscount = (it * 10000).toDouble(),
+                        priceDiscountFmt = "Rp ${(it * 10000).toDouble()}",
+                        totalSold = it,
+                        totalSoldFmt = it.toString(),
+                        isBebasOngkir = false,
+                        bebasOngkirStatus = "",
+                        bebasOngkirURL = "",
+                    )
+                },
+                nextCursor = nextCursor,
+                hasNextPage = hasNextPage
+            ),
+            header = SearchHeaderUiModel(
+                totalDataText = "$size",
+                totalData = size,
+                responseCode = 200,
+                keywordProcess = "",
+                componentId = "",
+            ),
+            suggestion = suggestion,
+            ticker = ticker,
         )
     }
 
@@ -76,24 +76,24 @@ class GlobalSearchModelBuilder {
         hasNextPage: Boolean = true,
         nextCursor: String = "1",
     ) = PagedGlobalSearchShopResponse(
-            totalShop = size,
-            pagedData = PagedDataUiModel(
-                    dataList = List(size) {
-                        ShopUiModel(
-                                shopId = it.toString(),
-                                shopName = "Shop $it",
-                        )
-                    },
-                    hasNextPage = hasNextPage,
-                    nextCursor = nextCursor,
-            ),
-            header = SearchHeaderUiModel(
-                    totalDataText = "$size",
-                    totalData = size,
-                    responseCode = 200,
-                    keywordProcess = "",
-                    componentId = "",
-            ),
+        totalShop = size,
+        pagedData = PagedDataUiModel(
+            dataList = List(size) {
+                ShopUiModel(
+                    shopId = it.toString(),
+                    shopName = "Shop $it",
+                )
+            },
+            hasNextPage = hasNextPage,
+            nextCursor = nextCursor,
+        ),
+        header = SearchHeaderUiModel(
+            totalDataText = "$size",
+            totalData = size,
+            responseCode = 200,
+            keywordProcess = "",
+            componentId = "",
+        ),
     )
 
     fun buildSortFilterResponseModel(
@@ -167,7 +167,7 @@ class GlobalSearchModelBuilder {
 
     fun buildSortFilterModel(
         size: Int = 2,
-    ) : Map<String, String> {
+    ): Map<String, String> {
         val result = mutableMapOf<String, String>()
 
         repeat(size) {

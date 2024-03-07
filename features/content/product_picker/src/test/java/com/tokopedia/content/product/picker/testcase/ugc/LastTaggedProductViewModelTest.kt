@@ -2,6 +2,8 @@ package com.tokopedia.content.product.picker.testcase.ugc
 
 import com.tokopedia.content.product.picker.builder.ugc.CommonModelBuilder
 import com.tokopedia.content.product.picker.builder.ugc.LastTaggedModelBuilder
+import com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.ugc.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.content.product.picker.util.ugc.andThen
@@ -22,7 +24,7 @@ class LastTaggedProductViewModelTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
-    private val mockRepo: com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository = mockk(relaxed = true)
+    private val mockRepo: ProductTagRepository = mockk(relaxed = true)
 
     private val commonModelBuilder = CommonModelBuilder()
     private val modelBuilder = LastTaggedModelBuilder()
@@ -36,7 +38,7 @@ class LastTaggedProductViewModelTest {
 
         coEvery { mockRepo.getLastTaggedProducts(any(), any(), any(), any()) } returns pagedData
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
         )
@@ -56,7 +58,7 @@ class LastTaggedProductViewModelTest {
     fun `when user load last tagged product & failed, it should emit failed state`() {
         coEvery { mockRepo.getLastTaggedProducts(any(), any(), any(), any()) } throws mockException
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
         )
@@ -78,7 +80,7 @@ class LastTaggedProductViewModelTest {
         val nextCursor2 = "3"
         val pagedData2 = modelBuilder.buildPagedDataModel(nextCursor = nextCursor2)
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
         )
@@ -115,7 +117,7 @@ class LastTaggedProductViewModelTest {
 
         coEvery { mockRepo.getLastTaggedProducts(any(), any(), any(), any()) } returns pagedData
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
         )

@@ -3,7 +3,10 @@ package com.tokopedia.content.product.picker.testcase.ugc
 import com.tokopedia.content.product.picker.builder.ugc.CommonModelBuilder
 import com.tokopedia.content.product.picker.builder.ugc.ConfigModelBuilder
 import com.tokopedia.content.product.picker.builder.ugc.ShopModelBuilder
+import com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.ugc.util.extension.currentSource
+import com.tokopedia.content.product.picker.ugc.util.preference.ProductTagPreference
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
 import com.tokopedia.content.product.picker.ugc.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.product.picker.ugc.view.uimodel.event.ProductTagUiEvent
@@ -27,8 +30,8 @@ class ProductTagNavigationViewModelTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
-    private val mockRepo: com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository = mockk(relaxed = true)
-    private val mockSharedPref: com.tokopedia.content.product.picker.ugc.util.preference.ProductTagPreference = mockk(relaxed = true)
+    private val mockRepo: ProductTagRepository = mockk(relaxed = true)
+    private val mockSharedPref: ProductTagPreference = mockk(relaxed = true)
 
     private val commonModelBuilder = CommonModelBuilder()
     private val shopModelBuilder = ShopModelBuilder()
@@ -42,7 +45,7 @@ class ProductTagNavigationViewModelTest {
     fun `when user press back press, it should remove the most top fragment from stack`() {
         val selectedShop = shopModelBuilder.buildUiModel()
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
             productTagConfig = feedConfig,
@@ -75,7 +78,7 @@ class ProductTagNavigationViewModelTest {
 
     @Test
     fun `when user click breadcrumb, it should emit event to open bottomsheet`() {
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
@@ -87,7 +90,7 @@ class ProductTagNavigationViewModelTest {
                 submitAction(ProductTagAction.ClickBreadcrumb)
             }.andThen {
                 last().assertEqualTo(ProductTagUiEvent.ShowSourceBottomSheet)
-                verify{ mockSharedPref.setNotFirstGlobalTag() }
+                verify { mockSharedPref.setNotFirstGlobalTag() }
             }
         }
     }
@@ -96,7 +99,7 @@ class ProductTagNavigationViewModelTest {
     fun `when user click breadcrumb but the stack is more than 1, it should still open select product tag source bottomsheet`() {
         val selectedShop = shopModelBuilder.buildUiModel()
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
@@ -124,7 +127,7 @@ class ProductTagNavigationViewModelTest {
     fun `when user wants to open autocomplete page, it should emit event to open autocomplete and pass the current query`() {
         val query = "pokemon"
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
@@ -149,7 +152,7 @@ class ProductTagNavigationViewModelTest {
     @Test
     fun `open autocomplete page & isFullPageAutocomplete false - add autocomplete source to stack`() {
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
@@ -172,7 +175,7 @@ class ProductTagNavigationViewModelTest {
         val query = "pokemon"
         val source = ProductTagSource.GlobalSearch
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
@@ -198,7 +201,7 @@ class ProductTagNavigationViewModelTest {
 
         coEvery { mockRepo.getShopInfoByID(listOf(shopId)) } returns mockResponse
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
@@ -223,7 +226,7 @@ class ProductTagNavigationViewModelTest {
 
         coEvery { mockRepo.getShopInfoByID(listOf(shopId)) } throws mockException
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
@@ -235,10 +238,9 @@ class ProductTagNavigationViewModelTest {
                 submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId.toString(), ""))
             }.andThen {
                 val lastEvent = last()
-                if(lastEvent is ProductTagUiEvent.ShowError) {
+                if (lastEvent is ProductTagUiEvent.ShowError) {
                     lastEvent.throwable.assertEqualTo(mockException)
-                }
-                else {
+                } else {
                     fail("Event should be ProductTagUiEvent.ShowError")
                 }
             }
@@ -247,7 +249,7 @@ class ProductTagNavigationViewModelTest {
 
     @Test
     fun `when user select product tag source, it should emit new state of stack`() {
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
@@ -273,7 +275,7 @@ class ProductTagNavigationViewModelTest {
 
     @Test
     fun `when user try forcing to open global search without query, it should emit last tagged fragment`() {
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
@@ -294,7 +296,7 @@ class ProductTagNavigationViewModelTest {
         val product = commonModelBuilder.buildProduct()
         val selectedProduct = product.toSelectedProduct()
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
@@ -320,7 +322,7 @@ class ProductTagNavigationViewModelTest {
             commonModelBuilder.buildSelectedProduct(id = it.id)
         }
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,

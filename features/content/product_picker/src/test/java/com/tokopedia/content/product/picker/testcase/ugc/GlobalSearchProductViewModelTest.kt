@@ -2,6 +2,7 @@ package com.tokopedia.content.product.picker.testcase.ugc
 
 import com.tokopedia.content.product.picker.builder.ugc.CommonModelBuilder
 import com.tokopedia.content.product.picker.builder.ugc.GlobalSearchModelBuilder
+import com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot
 import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.ugc.view.uimodel.NetworkResult
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
@@ -41,14 +42,14 @@ class GlobalSearchProductViewModelTest {
     private val mockQuickFilter = globalSearchModelBuilder.buildQuickFilterList()
     private val mockException = commonModelBuilder.buildException()
 
-    private lateinit var robot: com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot
+    private lateinit var robot: ProductTagViewModelRobot
     private val query = "pokemon"
 
     @Before
     fun setUp() {
         coEvery { mockRepo.getQuickFilter(any(), any()) } returns mockQuickFilter
 
-        robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
         )
@@ -399,11 +400,10 @@ class GlobalSearchProductViewModelTest {
                 state.globalSearchProduct.sortFilters.assertEqualTo(mockSortFilter)
                 val lastEvent = events.last()
 
-                if(lastEvent is ProductTagUiEvent.OpenProductSortFilterBottomSheet) {
+                if (lastEvent is ProductTagUiEvent.OpenProductSortFilterBottomSheet) {
                     lastEvent.param.assertEqualTo(state.globalSearchProduct.param)
                     lastEvent.data.assertEqualTo(mockSortFilter)
-                }
-                else {
+                } else {
                     fail("Event should be OpenProductSortFilterBottomSheet")
                 }
             }
@@ -419,11 +419,10 @@ class GlobalSearchProductViewModelTest {
                 state.globalSearchProduct.sortFilters.assertEqualTo(mockSortFilter)
                 val lastEvent = events.last()
 
-                if(lastEvent is ProductTagUiEvent.OpenProductSortFilterBottomSheet) {
+                if (lastEvent is ProductTagUiEvent.OpenProductSortFilterBottomSheet) {
                     lastEvent.param.assertEqualTo(state.globalSearchProduct.param)
                     lastEvent.data.assertEqualTo(state.globalSearchProduct.sortFilters)
-                }
-                else {
+                } else {
                     fail("Event should be OpenProductSortFilterBottomSheet")
                 }
             }

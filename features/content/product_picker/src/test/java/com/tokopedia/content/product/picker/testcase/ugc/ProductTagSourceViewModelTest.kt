@@ -1,5 +1,6 @@
 package com.tokopedia.content.product.picker.testcase.ugc
 
+import com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
 import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.content.product.picker.util.ugc.andThen
@@ -24,13 +25,13 @@ class ProductTagSourceViewModelTest {
             ProductTagSource.LastPurchase,
             ProductTagSource.MyShop,
         )
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
-                productTagSourceRaw = sources.joinToString(separator = ",") { it.tag },
-                dispatcher = testDispatcher,
+        val robot = ProductTagViewModelRobot(
+            productTagSourceRaw = sources.joinToString(separator = ",") { it.tag },
+            dispatcher = testDispatcher,
         )
 
         robot.use {
-            robot.recordState {  }.andThen {
+            robot.recordState { }.andThen {
                 productTagSource.productTagSourceList.forEachIndexed { index, e ->
                     e.assertEqualTo(sources[index])
                 }
@@ -40,13 +41,13 @@ class ProductTagSourceViewModelTest {
 
     @Test
     fun `when there is no product tag source raw, the list of source should be unknown`() {
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
-                productTagSourceRaw = "",
-                dispatcher = testDispatcher,
+        val robot = ProductTagViewModelRobot(
+            productTagSourceRaw = "",
+            dispatcher = testDispatcher,
         )
 
         robot.use {
-            robot.recordState {  }.andThen {
+            robot.recordState { }.andThen {
                 productTagSource.productTagSourceList[0].assertEqualTo(ProductTagSource.Unknown)
             }
         }
@@ -54,13 +55,13 @@ class ProductTagSourceViewModelTest {
 
     @Test
     fun `when there is unknown product tag source raw, the list of source should be unknown`() {
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
-                productTagSourceRaw = "random_source",
-                dispatcher = testDispatcher,
+        val robot = ProductTagViewModelRobot(
+            productTagSourceRaw = "random_source",
+            dispatcher = testDispatcher,
         )
 
         robot.use {
-            robot.recordState {  }.andThen {
+            robot.recordState { }.andThen {
                 productTagSource.productTagSourceList[0].assertEqualTo(ProductTagSource.Unknown)
             }
         }

@@ -21,26 +21,26 @@ import dagger.assisted.AssistedInject
  * Created By : Jonathan Darwin on April 26, 2022
  */
 class ProductTagViewModelFactory @AssistedInject constructor(
-        @Assisted owner: SavedStateRegistryOwner,
-        @Assisted(PRODUCT_TAG_SOURCE_RAW) private val productTagSourceRaw: String,
-        @Assisted(SHOP_BADGE) private val shopBadge: String,
-        @Assisted(AUTHOR_ID) private val authorId: String,
-        @Assisted(AUTHOR_TYPE) private val authorType: String,
-        @Assisted(INITIAL_SELECTED_PRODUCT) private val initialSelectedProduct: List<SelectedProductUiModel>,
-        @Assisted(PRODUCT_TAG_CONFIG) private val productTagConfig: ContentProductTagConfig,
-        private val productTagViewModelFactory: ProductTagViewModel.Factory,
+    @Assisted owner: SavedStateRegistryOwner,
+    @Assisted(PRODUCT_TAG_SOURCE_RAW) private val productTagSourceRaw: String,
+    @Assisted(SHOP_BADGE) private val shopBadge: String,
+    @Assisted(AUTHOR_ID) private val authorId: String,
+    @Assisted(AUTHOR_TYPE) private val authorType: String,
+    @Assisted(INITIAL_SELECTED_PRODUCT) private val initialSelectedProduct: List<SelectedProductUiModel>,
+    @Assisted(PRODUCT_TAG_CONFIG) private val productTagConfig: ContentProductTagConfig,
+    private val productTagViewModelFactory: ProductTagViewModel.Factory,
 ) : AbstractSavedStateViewModelFactory(owner, null) {
 
     @AssistedFactory
     interface Creator {
         fun create(
-                owner: SavedStateRegistryOwner,
-                @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
-                @Assisted(SHOP_BADGE) shopBadge: String,
-                @Assisted(AUTHOR_ID) authorId: String,
-                @Assisted(AUTHOR_TYPE) authorType: String,
-                @Assisted(INITIAL_SELECTED_PRODUCT) initialSelectedProduct: List<SelectedProductUiModel>,
-                @Assisted(PRODUCT_TAG_CONFIG) productTagConfig: ContentProductTagConfig,
+            owner: SavedStateRegistryOwner,
+            @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
+            @Assisted(SHOP_BADGE) shopBadge: String,
+            @Assisted(AUTHOR_ID) authorId: String,
+            @Assisted(AUTHOR_TYPE) authorType: String,
+            @Assisted(INITIAL_SELECTED_PRODUCT) initialSelectedProduct: List<SelectedProductUiModel>,
+            @Assisted(PRODUCT_TAG_CONFIG) productTagConfig: ContentProductTagConfig,
         ): ProductTagViewModelFactory
     }
 

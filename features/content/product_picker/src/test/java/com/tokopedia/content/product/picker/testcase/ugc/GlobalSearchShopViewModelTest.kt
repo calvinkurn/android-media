@@ -2,6 +2,8 @@ package com.tokopedia.content.product.picker.testcase.ugc
 
 import com.tokopedia.content.product.picker.builder.ugc.CommonModelBuilder
 import com.tokopedia.content.product.picker.builder.ugc.GlobalSearchModelBuilder
+import com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.ugc.view.uimodel.NetworkResult
 import com.tokopedia.content.product.picker.ugc.view.uimodel.ProductTagSource
 import com.tokopedia.content.product.picker.ugc.view.uimodel.action.ProductTagAction
@@ -31,7 +33,7 @@ class GlobalSearchShopViewModelTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
-    private val mockRepo: com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository = mockk(relaxed = true)
+    private val mockRepo: ProductTagRepository = mockk(relaxed = true)
 
     private val commonModelBuilder = CommonModelBuilder()
     private val globalSearchModelBuilder = GlobalSearchModelBuilder()
@@ -39,14 +41,14 @@ class GlobalSearchShopViewModelTest {
     private val mockQuickFilter = globalSearchModelBuilder.buildQuickFilterList()
     private val mockException = commonModelBuilder.buildException()
 
-    private lateinit var robot: com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot
+    private lateinit var robot: ProductTagViewModelRobot
     private val query = "pokemon"
 
     @Before
     fun setUp() {
         coEvery { mockRepo.getQuickFilter(any(), any()) } returns mockQuickFilter
 
-        robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
         )
@@ -241,11 +243,10 @@ class GlobalSearchShopViewModelTest {
                 state.globalSearchShop.sortFilters.assertEqualTo(mockSortFilter)
                 val lastEvent = events.last()
 
-                if(lastEvent is ProductTagUiEvent.OpenShopSortFilterBottomSheet) {
+                if (lastEvent is ProductTagUiEvent.OpenShopSortFilterBottomSheet) {
                     lastEvent.param.assertEqualTo(state.globalSearchShop.param)
                     lastEvent.data.assertEqualTo(mockSortFilter)
-                }
-                else {
+                } else {
                     Assert.fail("Event should be OpenShopSortFilterBottomSheet")
                 }
             }
@@ -261,11 +262,10 @@ class GlobalSearchShopViewModelTest {
                 state.globalSearchShop.sortFilters.assertEqualTo(mockSortFilter)
                 val lastEvent = events.last()
 
-                if(lastEvent is ProductTagUiEvent.OpenShopSortFilterBottomSheet) {
+                if (lastEvent is ProductTagUiEvent.OpenShopSortFilterBottomSheet) {
                     lastEvent.param.assertEqualTo(state.globalSearchShop.param)
                     lastEvent.data.assertEqualTo(state.globalSearchShop.sortFilters)
-                }
-                else {
+                } else {
                     Assert.fail("Event should be OpenShopSortFilterBottomSheet")
                 }
             }

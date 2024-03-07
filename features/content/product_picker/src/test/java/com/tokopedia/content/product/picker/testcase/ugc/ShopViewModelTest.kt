@@ -2,6 +2,8 @@ package com.tokopedia.content.product.picker.testcase.ugc
 
 import com.tokopedia.content.product.picker.builder.ugc.CommonModelBuilder
 import com.tokopedia.content.product.picker.builder.ugc.GlobalSearchModelBuilder
+import com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot
+import com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.ugc.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.content.product.picker.util.ugc.andThen
@@ -22,7 +24,7 @@ class ShopViewModelTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
-    private val mockRepo: com.tokopedia.content.product.picker.ugc.domain.repository.ProductTagRepository = mockk(relaxed = true)
+    private val mockRepo: ProductTagRepository = mockk(relaxed = true)
 
     private val commonModelBuilder = CommonModelBuilder()
     private val globalSearchModelBuilder = GlobalSearchModelBuilder()
@@ -56,7 +58,7 @@ class ShopViewModelTest {
     fun `when user load shop product & failed, it should emit failed state`() {
         coEvery { mockRepo.searchAceProducts(any()) } throws mockException
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
         )
@@ -78,7 +80,7 @@ class ShopViewModelTest {
         val nextCursor2 = "3"
         val response2 = globalSearchModelBuilder.buildResponseModel(nextCursor = nextCursor2)
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
         )
@@ -115,7 +117,7 @@ class ShopViewModelTest {
 
         coEvery { mockRepo.searchAceProducts(any()) } returns response
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
         )
@@ -147,7 +149,7 @@ class ShopViewModelTest {
         val response2 = globalSearchModelBuilder.buildResponseModel(size = 5, nextCursor = nextCursor)
         val response3 = globalSearchModelBuilder.buildResponseModel(size = 3, nextCursor = nextCursor)
 
-        val robot = com.tokopedia.content.product.picker.robot.ProductTagViewModelRobot(
+        val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
         )
