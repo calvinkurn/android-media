@@ -51,7 +51,7 @@ class SectionUseCase @Inject constructor(
                     comp.tabPosition = it.tabPosition
                     comp.data.apply {
                         setAppLog(comp.compAdditionalInfo?.tracker, comp.getSource())
-                        setTopLevelTab(comp)
+                        setTopLevelTab(it)
                     }
                     val productListData = when (comp.name) {
                         ComponentNames.ProductCardRevamp.componentName -> {

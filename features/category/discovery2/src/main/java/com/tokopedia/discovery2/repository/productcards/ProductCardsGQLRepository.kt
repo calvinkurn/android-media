@@ -42,10 +42,12 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
         val additionalInfo = response.data.component?.compAdditionalInfo
         val componentItem = getComponent(requestParams.componentId, requestParams.pageEndpoint)
 
-        val componentData = response.data.component?.let {
-            it.data.apply {
-                setAppLog(additionalInfo?.tracker, it.getSource())
-                setTopLevelTab(it)
+        val componentData = response.data.component?.let { componentFromResponse ->
+            componentFromResponse.data.apply {
+                setAppLog(additionalInfo?.tracker, componentFromResponse.getSource())
+                componentItem?.let {
+                    setTopLevelTab(it)
+                }
             }
         }
 
