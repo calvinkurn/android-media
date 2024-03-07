@@ -49,6 +49,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPromoModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerErrorModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutTickerModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
+import com.tokopedia.checkout.revamp.view.uimodel.OriginalCheckoutPaymentData
 import com.tokopedia.checkout.revamp.view.uimodel.ShippingComponents
 import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.checkout.view.CheckoutLogger
@@ -59,10 +60,8 @@ import com.tokopedia.checkoutpayment.data.GetPaymentWidgetRequest
 import com.tokopedia.checkoutpayment.data.GoCicilInstallmentRequest
 import com.tokopedia.checkoutpayment.data.PaymentFeeRequest
 import com.tokopedia.checkoutpayment.data.PaymentRequest
-import com.tokopedia.checkoutpayment.domain.PaymentWidgetData
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_CC_TENOR_LIST
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_INSTALLMENT_OPTIONS
-import com.tokopedia.checkoutpayment.domain.PaymentWidgetListData
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
@@ -208,7 +207,9 @@ class CheckoutViewModel @Inject constructor(
     fun loadSAF(
         isReloadData: Boolean,
         skipUpdateOnboardingState: Boolean,
-        isReloadAfterPriceChangeHigher: Boolean
+        isReloadAfterPriceChangeHigher: Boolean,
+        gatewayCode: String = "",
+        tenor: Int = 0
     ) {
         promoProcessor.isCartCheckoutRevamp = isCartCheckoutRevamp
         viewModelScope.launch(dispatchers.io) {
@@ -316,7 +317,13 @@ class CheckoutViewModel @Inject constructor(
                             ),
                             metadata = saf.cartShipmentAddressFormData.paymentWidget.metadata,
                             enable = saf.cartShipmentAddressFormData.paymentWidget.enable,
-                            defaultErrorMessage = saf.cartShipmentAddressFormData.paymentWidget.errorMessage
+                            defaultErrorMessage = saf.cartShipmentAddressFormData.paymentWidget.errorMessage,
+                            originalData = OriginalCheckoutPaymentData(
+                                gatewayCode = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.gatewayCode,
+                                tenureType = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.tenureType,
+                                optionId = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.optionId,
+                                metadata = saf.cartShipmentAddressFormData.paymentWidget.chosenPayment.metadata
+                            )
                         )
 
                         val cost = CheckoutCostModel()
@@ -3112,10 +3119,9 @@ class CheckoutViewModel @Inject constructor(
         var cost = listData.value.cost()!!
         var paymentRequest = paymentProcessor.generatePaymentRequest(checkoutItems, payment)
 
-        if (payment.data?.paymentWidgetData?.firstOrNull()?.gatewayName.isNullOrEmpty()) {
+        if (payment.data == null) {
             // get payment widget if not yet
-            val chosenPayment = payment.data?.paymentWidgetData?.firstOrNull()
-                ?: PaymentWidgetData()
+            val chosenPayment = payment.originalData
             payment = paymentProcessor.getPaymentWidget(
                 GetPaymentWidgetRequest(
                     source = "one-click-checkout",
@@ -3249,18 +3255,15 @@ class CheckoutViewModel @Inject constructor(
             val checkoutItems = listData.value.toMutableList()
             val currentPayment = checkoutItems.payment()!!
             checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = currentPayment.copy(
-                data = PaymentWidgetListData(
-                    paymentWidgetData = listOf(
-                        PaymentWidgetData(
-                            gatewayCode = gatewayCode,
-                            metadata = metadata
-                        )
-                    )
-                ),
+                data = null,
                 tenorList = null,
                 installmentData = null,
                 widget = currentPayment.widget.copy(
                     state = CheckoutPaymentWidgetState.Loading
+                ),
+                originalData = OriginalCheckoutPaymentData(
+                    gatewayCode = gatewayCode,
+                    metadata = metadata
                 )
             )
             listData.value = checkoutItems

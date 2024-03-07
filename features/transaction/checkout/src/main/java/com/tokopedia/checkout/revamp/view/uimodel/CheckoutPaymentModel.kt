@@ -11,7 +11,15 @@ data class CheckoutPaymentModel(
     val metadata: String = "",
     val enable: Boolean = false,
     val defaultErrorMessage: String = "",
+    val originalData: OriginalCheckoutPaymentData = OriginalCheckoutPaymentData(),
     val data: PaymentWidgetListData? = null,
     val tenorList: List<TenorListData>? = null,
     val installmentData: GoCicilInstallmentData? = null
 ) : CheckoutItem
+
+data class OriginalCheckoutPaymentData(
+    val gatewayCode: String = "",
+    val tenureType: Int = 0,
+    val optionId: String = "",
+    val metadata: String = ""
+)

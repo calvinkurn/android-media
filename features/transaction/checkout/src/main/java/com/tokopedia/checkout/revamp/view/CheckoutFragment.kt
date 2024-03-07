@@ -91,6 +91,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.fingerprint.FingerprintUtil
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.showToast
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -442,12 +443,17 @@ class CheckoutFragment :
         viewModel.listPromoExternalAutoApplyCode = promos
         observeData()
 
-        showAtcOccMessageIfAny()
-        viewModel.loadSAF(
-            skipUpdateOnboardingState = true,
-            isReloadData = false,
-            isReloadAfterPriceChangeHigher = false
-        )
+        if (viewModel.listData.value.isEmpty()) {
+            // first load
+            showAtcOccMessageIfAny()
+            viewModel.loadSAF(
+                skipUpdateOnboardingState = true,
+                isReloadData = false,
+                isReloadAfterPriceChangeHigher = false,
+                gatewayCode = arguments?.getString(QUERY_GATEWAY_CODE, "") ?: "",
+                tenor = arguments?.getString(QUERY_TENURE_TYPE, "").toIntOrZero()
+            )
+        }
     }
 
     private fun showAtcOccMessageIfAny() {
@@ -1069,12 +1075,19 @@ class CheckoutFragment :
 
         private const val ARG_PROMOS = "promos"
 
+        const val QUERY_SOURCE = "source"
+        const val QUERY_GATEWAY_CODE = "gateway_code"
+        const val QUERY_TENURE_TYPE = "tenure_type"
+
         fun newInstance(
             isOneClickShipment: Boolean,
             leasingId: String,
             pageSource: String,
             isPlusSelected: Boolean,
             promos: ArrayList<PromoExternalAutoApply>,
+            gatewayCode: String?,
+            tenureType: String?,
+            source: String?,
             bundle: Bundle?
         ): CheckoutFragment {
             val b = bundle ?: Bundle()
@@ -1087,6 +1100,9 @@ class CheckoutFragment :
             b.putString(ShipmentFragment.ARG_CHECKOUT_PAGE_SOURCE, pageSource)
             b.putBoolean(ShipmentFragment.ARG_IS_PLUS_SELECTED, isPlusSelected)
             b.putParcelableArrayList(ARG_PROMOS, promos)
+            b.putString(QUERY_GATEWAY_CODE, gatewayCode)
+            b.putString(QUERY_TENURE_TYPE, tenureType)
+            b.putString(QUERY_SOURCE, source)
             val checkoutFragment = CheckoutFragment()
             checkoutFragment.arguments = b
             return checkoutFragment

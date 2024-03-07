@@ -49,6 +49,9 @@ open class ShipmentActivity :
                 pageSource,
                 isPlusSelected,
                 ArrayList(promos),
+                intent?.data?.getQueryParameter(CheckoutFragment.QUERY_GATEWAY_CODE),
+                intent?.data?.getQueryParameter(CheckoutFragment.QUERY_TENURE_TYPE),
+                intent?.data?.getQueryParameter(CheckoutFragment.QUERY_SOURCE),
                 bundle
             )
             return checkoutFragment

@@ -7,7 +7,9 @@ import com.tokopedia.checkoutpayment.data.GetPaymentWidgetResponse
 import com.tokopedia.checkoutpayment.data.PaymentAmountValidationResponse
 import com.tokopedia.checkoutpayment.data.PaymentFeeDetailResponse
 import com.tokopedia.checkoutpayment.data.PaymentWidgetDataResponse
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
@@ -43,7 +45,7 @@ class GetPaymentWidgetUseCase @Inject constructor(
                       selected_tenure
                       error_message_invalid_tenure
                       error_message_unavailable_tenure
-                      error_message_top_limit\
+                      error_message_top_limit
                       error_message_bottom_limit
                     }
                     wallet_data {
@@ -65,7 +67,7 @@ class GetPaymentWidgetUseCase @Inject constructor(
     }
 
     override suspend fun execute(params: GetPaymentWidgetRequest): PaymentWidgetListData {
-//        return mapResponse(repository.response(listOf(GraphqlRequest(graphqlQuery(), GetPaymentWidgetResponse::class.java, mapOf("params" to params)))).getSuccessData())
+        mapResponse(repository.response(listOf(GraphqlRequest(graphqlQuery(), GetPaymentWidgetResponse::class.java, mapOf("params" to params)))).getSuccessData())
         return mapResponse(
             GetPaymentWidgetResponse(
                 paymentWidgetData = listOf(

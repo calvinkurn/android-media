@@ -358,6 +358,8 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                         product_cat_id
                         product_catalog_id
                         product_category
+                        last_level_category
+                        category_identifier
                         purchase_protection_plan_data {
                           protection_available
                           protection_type_id

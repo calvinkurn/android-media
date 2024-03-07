@@ -1,6 +1,5 @@
 package com.tokopedia.applink.internal
 
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.TokopediaNow
 import com.tokopedia.applink.constant.DeeplinkConstant
 
@@ -33,6 +32,10 @@ object ApplinkConstInternalMarketplace {
 
     // ShipmentActivity
     const val CHECKOUT = "$INTERNAL_MARKETPLACE/checkout"
+    const val CHECKOUT_WITH_SPECIFIC_PAYMENT = "$INTERNAL_MARKETPLACE/checkout?" +
+        "gateway_code={gateway_code}&" +
+        "tenure_type={tenure_type}&" +
+        "source={source}"
 
     // OrderSummaryPageActivity
     const val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"

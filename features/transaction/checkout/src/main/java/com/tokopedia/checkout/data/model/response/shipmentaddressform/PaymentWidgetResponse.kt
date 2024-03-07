@@ -8,5 +8,7 @@ data class PaymentWidgetResponse(
     @SerializedName("enable")
     val enable: Boolean = false,
     @SerializedName("error_message")
-    val errorMessage: String = ""
+    val errorMessage: String = "",
+    @SerializedName("chosen_payment")
+    val chosenPayment: ChosenPaymentResponse = ChosenPaymentResponse()
 )
