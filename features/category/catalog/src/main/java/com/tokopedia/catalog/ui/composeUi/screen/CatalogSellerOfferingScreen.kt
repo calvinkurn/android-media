@@ -23,6 +23,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
@@ -155,19 +156,14 @@ fun CatalogSellerOfferingScreen(
                     listState, listener, background, lcaListener, sortFilter,
                     onClickMoreFilter, onClickAtc, onClickItemProduct,
                     productListState, countFilter, hasNextPage, throwable, onErrorRefresh,
-                    onImpressionProduct, clickFilter, resetFilter
+                    onImpressionProduct, clickFilter, resetFilter, isRefreshing, pullRefreshState
                 )
             }
-            PullRefreshIndicator(
-                refreshing = isRefreshing,
-                state = pullRefreshState,
-                modifier = Modifier.align(Alignment.TopCenter)
-            )
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun CatalogSellerOfferingBody(
     listState: LazyListState,
@@ -185,7 +181,9 @@ fun CatalogSellerOfferingBody(
     onErrorRefresh: () -> Unit,
     onImpressionProduct: (CatalogProductListUiModel.CatalogProductUiModel, Int) -> Unit,
     filterClick: Boolean,
-    resetFilter: () -> Unit
+    resetFilter: () -> Unit,
+    isRefreshing: Boolean,
+    pullRefreshState: PullRefreshState
 ) {
     LazyColumn(state = listState, modifier = Modifier.fillMaxSize(), content = {
         item {
@@ -194,6 +192,11 @@ fun CatalogSellerOfferingBody(
                     listener = listener,
                     background,
                     lcaListener
+                )
+                PullRefreshIndicator(
+                    refreshing = isRefreshing,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter)
                 )
             }
         }
