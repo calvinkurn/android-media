@@ -56,29 +56,33 @@ class AtcAnimation(private val context: Context) {
 
     private var mSourceLocation: Point = NO_LOCATION
 
-    private val binding by lazyThreadSafetyNone {
+    private val mBinding by lazyThreadSafetyNone {
         AtcAnimationLayoutBinding.inflate(LayoutInflater.from(context))
     }
 
-    private val popupWindow by lazyThreadSafetyNone {
+    private val mPopupWindow by lazyThreadSafetyNone {
         val matchParent = LayoutParams.MATCH_PARENT
-        PopupWindow(binding.root, matchParent, matchParent).apply {
+        PopupWindow(mBinding.root, matchParent, matchParent).apply {
             isTouchable = false
         }
     }
 
-    private val bezier by lazy {
+    private val mBezierPath by lazyThreadSafetyNone {
         PathInterpolator(0.63f, 0.01f, 0.29f, 1f)
     }
 
-    private val showAnimatorSet = AnimatorSet().apply {
-        interpolator = bezier
-        duration = UnifyMotion.T3
+    private val mShowAnimatorSet by lazyThreadSafetyNone {
+        AnimatorSet().apply {
+            interpolator = mBezierPath
+            duration = UnifyMotion.T3
+        }
     }
 
-    private val flyAnimatorSet = AnimatorSet().apply {
-        interpolator = bezier
-        duration = UnifyMotion.T3
+    private val mFlyAnimatorSet by lazyThreadSafetyNone {
+        AnimatorSet().apply {
+            interpolator = mBezierPath
+            duration = UnifyMotion.T3
+        }
     }
 
     fun setSourceView(view: ImageView) {
@@ -96,17 +100,17 @@ class AtcAnimation(private val context: Context) {
 
     // cancel all animate and dismiss the popup window
     private fun cancelPopUpWindow() {
-        showAnimatorSet.removeAllListeners()
-        flyAnimatorSet.removeAllListeners()
-        showAnimatorSet.cancel()
-        flyAnimatorSet.cancel()
-        popupWindow.dismiss()
+        mShowAnimatorSet.removeAllListeners()
+        mFlyAnimatorSet.removeAllListeners()
+        mShowAnimatorSet.cancel()
+        mFlyAnimatorSet.cancel()
+        mPopupWindow.dismiss()
     }
 
     private fun showPopUpWindow(onAnimateEnded: () -> Unit) {
         val target = mSourceImageView ?: return
-        popupWindow.showAtLocation(target, Gravity.CENTER, Int.ZERO, Int.ZERO)
-        popupWindow.contentView.addOneTimeGlobalLayoutListener {
+        mPopupWindow.showAtLocation(target, Gravity.CENTER, Int.ZERO, Int.ZERO)
+        mPopupWindow.contentView.addOneTimeGlobalLayoutListener {
             prepare()
             resetState()
             animate(onAnimateEnded)
@@ -117,7 +121,7 @@ class AtcAnimation(private val context: Context) {
         val source = mSourceImageView ?: throw IllegalStateException("SourceView not defined")
 
         // set resource as drawable from source
-        binding.productImage.setImageDrawable(source.drawable)
+        mBinding.productImage.setImageDrawable(source.drawable)
 
         // get source location on screen by actual within popup window
         val location = source.getLocationOnScreen()
@@ -126,7 +130,7 @@ class AtcAnimation(private val context: Context) {
 
     private fun resetState() {
         val source = mSourceImageView ?: return
-        with(binding.cardImage) {
+        with(mBinding.cardImage) {
             x = mSourceLocation.x.toFloat()
             y = mSourceLocation.y.toFloat()
             translationX = x
@@ -143,19 +147,19 @@ class AtcAnimation(private val context: Context) {
     private fun animate(onAnimateEnded: () -> Unit) {
         showAnimation(onEnded = {
             flyingAnimation(onEnded = {
-                popupWindow.dismiss()
+                mPopupWindow.dismiss()
                 onAnimateEnded()
             })
         })
     }
 
-    private fun showAnimation(onEnded: () -> Unit) = binding.cardImage.postOnAnimation {
+    private fun showAnimation(onEnded: () -> Unit) = mBinding.cardImage.postOnAnimation {
         val animations = prepareShowAnimation()
 
-        showAnimatorSet.apply {
+        mShowAnimatorSet.apply {
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    showAnimatorSet.removeListener(this)
+                    mShowAnimatorSet.removeListener(this)
                     onEnded()
                 }
             })
@@ -163,19 +167,19 @@ class AtcAnimation(private val context: Context) {
         }.start()
     }
 
-    private fun prepareShowAnimation(): List<Animator> = with(binding.cardImage) {
+    private fun prepareShowAnimation(): List<Animator> = with(mBinding.cardImage) {
         val scaleX = ObjectAnimator.ofFloat(this, PROP_SCALE_X, START_SCALE_IN_PLAY, Float.ONE)
         val scaleY = ObjectAnimator.ofFloat(this, PROP_SCALE_Y, START_SCALE_IN_PLAY, Float.ONE)
         val alpha = ObjectAnimator.ofFloat(this, PROP_ALPHA, Float.ZERO, Float.ONE)
         return listOf(scaleX, scaleY, alpha)
     }
 
-    private fun flyingAnimation(onEnded: () -> Unit) = binding.cardImage.postOnAnimation {
+    private fun flyingAnimation(onEnded: () -> Unit) = mBinding.cardImage.postOnAnimation {
         val animators = prepareFlyingAnimator()
-        flyAnimatorSet.apply {
+        mFlyAnimatorSet.apply {
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    showAnimatorSet.removeListener(this)
+                    mShowAnimatorSet.removeListener(this)
                     onEnded()
                 }
             })
@@ -185,7 +189,7 @@ class AtcAnimation(private val context: Context) {
         }.start()
     }
 
-    private fun prepareFlyingAnimator(): List<Animator> = with(binding.cardImage) {
+    private fun prepareFlyingAnimator(): List<Animator> = with(mBinding.cardImage) {
         val targetX = mTargetLocation.targetXActual
         val targetY = mTargetLocation.targetYActual
         val translateX =
@@ -201,10 +205,10 @@ class AtcAnimation(private val context: Context) {
     }
 
     private val Point.sourceXActual
-        get() = x - STROKE_WIDTH - binding.cardImage.marginStart
+        get() = x - STROKE_WIDTH - mBinding.cardImage.marginStart
 
     private val Point.sourceYActual
-        get() = y - STROKE_WIDTH - binding.cardImage.marginTop - context.getStatusBarHeight()
+        get() = y - STROKE_WIDTH - mBinding.cardImage.marginTop - context.getStatusBarHeight()
 
     private val Point.targetXActual
         get() = x - mSourceImageView?.width.orZero().half
