@@ -178,8 +178,8 @@ fun HeaderSellerOffering() {
     ) {
         NestImage(
             source = ImageSource.Remote(CATALOG_SELLER_OFFERING_PRODUCT_LIST_ICON), modifier = Modifier
-                .height(56.dp)
-                .width(56.dp)
+                .height(66.dp)
+                .width(66.dp)
                 .padding(6.dp)
         )
 

@@ -240,13 +240,14 @@ private fun ProductVisualWithStock(
             Box {
                 NestImage(
                     source = ImageSource.Remote(productImage),
-                    type = NestImageType.Rect(12.dp),
+                    type = NestImageType.Rect(0.dp),
                     modifier = Modifier
                         .height(90.dp)
                         .width(90.dp)
                         .clip(
                             RoundedCornerShape(
-                                12.dp
+                                topStart = 12.dp,
+                                topEnd = 12.dp
                             )
                         )
                 )
@@ -264,11 +265,6 @@ private fun ProductVisualWithStock(
                                 )
                             )
                             .align(Alignment.BottomStart)
-                            .clip(
-                                RoundedCornerShape(
-                                    bottomStart = 12.dp
-                                )
-                            )
                     )
                 }
             }
@@ -406,11 +402,13 @@ private fun ProductOfferAndBenefit(productBenefit: String, productOffer: String)
             Box(
                 modifier = Modifier
                     .border(
-                        2.dp,
+                        1.dp,
                         colorResource(id = R.color.catalog_dms_pastel_pink),
-                        RoundedCornerShape(4.dp)
+                        RoundedCornerShape(5.dp)
                     )
-                    .padding(horizontal = 5.dp, vertical = 4.dp)
+                    .clip(
+                        RoundedCornerShape(5.dp)
+                    )
                     .background(colorResource(id = R.color.catalog_dms_whispering_white))
             ) {
                 NestTypography(
@@ -420,7 +418,8 @@ private fun ProductOfferAndBenefit(productBenefit: String, productOffer: String)
                             id = R.color.catalog_dms_coral_red
                         ),
                         fontWeight = FontWeight.ExtraBold
-                    )
+                    ),
+                    modifier = Modifier.padding(horizontal = 5.dp, vertical = 4.dp)
                 )
             }
         }
@@ -554,7 +553,8 @@ private fun ShippingInfo(eta: String, courierType: String, additionalService: St
                         id = R.color.catalog_dms_light_color_text_common
                     ),
                     fontWeight = FontWeight.Normal
-                )
+                ),
+                maxLines = 1
             )
         }
         if (eta.isNotEmpty() && additionalService.isNotEmpty() && courierType.isNotEmpty()) {
@@ -580,7 +580,8 @@ private fun ShippingInfo(eta: String, courierType: String, additionalService: St
                         id = R.color.catalog_dms_light_color_text_common
                     ),
                     fontWeight = FontWeight.Normal
-                )
+                ),
+                maxLines = 1
             )
         }
     }

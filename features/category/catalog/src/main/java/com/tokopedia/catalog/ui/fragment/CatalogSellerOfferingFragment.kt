@@ -314,10 +314,7 @@ class CatalogSellerOfferingFragment :
                         productListState.value.data?.size.orZero() != it.data.header.totalData
                     productList.addAll(it.data.products)
                     productListState.value = CatalogProductListState.Success(productList)
-                    lifecycleScope.launch {
-                        delay(2000)
-                        refreshState.value = false
-                    }
+                    refreshState.value = false
                 }
 
                 is Fail -> {
