@@ -73,6 +73,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.FragmentListener
+import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -81,10 +82,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.play_common.util.extension.withCache
-import kotlinx.coroutines.flow.filterNotNull
 import com.tokopedia.creation.common.R as creationcommonR
 
 /**
@@ -306,10 +306,6 @@ class FeedBaseFragment :
     }
 
     override fun isEnterFromWhitelisted(): Boolean {
-        return true
-    }
-
-    override fun isShadow(): Boolean {
         return true
     }
 
