@@ -4326,8 +4326,6 @@ class CartRevampFragment :
             return
         }
 
-        setBuyAgainFloatingButton()
-
         context?.let { ctx ->
             if (cartData.onboardingBottomSheet.shouldShowOnBoardingBottomSheet() && !CoachMarkPreference.hasShown(
                     ctx,
@@ -4337,6 +4335,7 @@ class CartRevampFragment :
                 showOnboardingBottomSheet(cartData)
             } else {
                 setMainFlowCoachMark(cartData)
+                setBuyAgainFloatingButton()
                 setPlusCoachMark()
             }
         }
@@ -5022,6 +5021,7 @@ class CartRevampFragment :
             CartOnBoardingBottomSheet.newInstance(cartData.onboardingBottomSheet.getBottomSheetOnBoardingData())
         bottomSheet.setOnDismissListener {
             showMainFlowCoachMark(cartData)
+            setBuyAgainFloatingButton()
             showPlusCoachMark()
         }
         bottomSheet.show(childFragmentManager)
