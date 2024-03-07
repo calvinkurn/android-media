@@ -34,8 +34,14 @@ class PersonalizeQuestionFragment: BaseDaggerFragment() {
                     PersonalizeScreen(
                         uiState = viewModel.stateGetQuestion,
                         counterState = viewModel.counterState,
-                        onSave = { viewModel.saveAnswers() },
-                        onSkip = { finishResultOk() },
+                        onSave = {
+                            ExplicitPersonalizeAnalytics.sendClickOnSimpanEvent()
+                            viewModel.saveAnswers()
+                        },
+                        onSkip = {
+                            ExplicitPersonalizeAnalytics.sendClickOnNantiSajaEvent()
+                            finishResultOk()
+                        },
                         onOptionSelected = { viewModel.itemSelected(it) },
                         saveAnswerState = viewModel.stateSaveAnswer
                     )
@@ -63,8 +69,14 @@ class PersonalizeQuestionFragment: BaseDaggerFragment() {
         }
 
         viewModel.stateGetQuestion.observe(viewLifecycleOwner) {
-            if (it is ExplicitPersonalizeResult.Failed) {
-                finishResultOk()
+            when (it) {
+                is ExplicitPersonalizeResult.Success -> {
+                    ExplicitPersonalizeAnalytics.sendViewOnExplicitPageEvent()
+                }
+                is ExplicitPersonalizeResult.Failed -> {
+                    finishResultOk()
+                }
+                else -> {}
             }
         }
     }
