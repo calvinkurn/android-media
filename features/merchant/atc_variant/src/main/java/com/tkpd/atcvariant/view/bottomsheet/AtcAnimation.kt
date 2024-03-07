@@ -4,10 +4,10 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.app.Activity
 import android.content.Context
 import android.graphics.Point
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.ViewGroup.LayoutParams
 import android.view.animation.PathInterpolator
 import android.widget.ImageView
@@ -20,20 +20,18 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getLocationOnScreen
+import com.tokopedia.kotlin.extensions.view.getStatusBarHeight
 import com.tokopedia.kotlin.extensions.view.half
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.UnifyMotion
 
-
 /**
  * Created by yovi.putra on 3/4/24.
  * Copyright (c) 2024 android-tokopedia-core All rights reserved.
  */
-
-
-class AtcAnimation(private val activity: Activity) {
+class AtcAnimation(private val context: Context) {
 
     companion object {
         private val STROKE_WIDTH = 4.toPx()
@@ -59,7 +57,7 @@ class AtcAnimation(private val activity: Activity) {
     private var mSourceLocation: Point = NO_LOCATION
 
     private val binding by lazyThreadSafetyNone {
-        AtcAnimationLayoutBinding.inflate(activity.layoutInflater)
+        AtcAnimationLayoutBinding.inflate(LayoutInflater.from(context))
     }
 
     private val popupWindow by lazyThreadSafetyNone {
@@ -89,15 +87,6 @@ class AtcAnimation(private val activity: Activity) {
 
     fun setTargetLocation(point: Point?) {
         mTargetLocation = point ?: NO_LOCATION
-    }
-
-    private fun Context.getStatusBarHeight(): Int {
-        var height = Int.ZERO
-        val resId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resId > Int.ZERO) {
-            height = resources.getDimensionPixelSize(resId)
-        }
-        return height
     }
 
     fun show(onAnimateEnded: () -> Unit = {}) {
@@ -132,7 +121,7 @@ class AtcAnimation(private val activity: Activity) {
 
         // get source location on screen by actual within popup window
         val location = source.getLocationOnScreen()
-        mSourceLocation = Point(location.sourceActualX, location.sourceActualY)
+        mSourceLocation = Point(location.sourceXActual, location.sourceYActual)
     }
 
     private fun resetState() {
@@ -197,8 +186,8 @@ class AtcAnimation(private val activity: Activity) {
     }
 
     private fun prepareFlyingAnimator(): List<Animator> = with(binding.cardImage) {
-        val targetX = mTargetLocation.targetActualX
-        val targetY = mTargetLocation.targetActualY
+        val targetX = mTargetLocation.targetXActual
+        val targetY = mTargetLocation.targetYActual
         val translateX =
             ObjectAnimator.ofFloat(this, PROP_TRANSLATION_X, translationX, targetX.toFloat())
         val translateY =
@@ -211,17 +200,17 @@ class AtcAnimation(private val activity: Activity) {
         return listOf(translateX, translateY, scaleX, scaleY, rounded, alpha)
     }
 
-    private val Point.sourceActualX
+    private val Point.sourceXActual
         get() = x - STROKE_WIDTH - binding.cardImage.marginStart
 
-    private val Point.sourceActualY
-        get() = y - STROKE_WIDTH - binding.cardImage.marginTop - activity.getStatusBarHeight()
+    private val Point.sourceYActual
+        get() = y - STROKE_WIDTH - binding.cardImage.marginTop - context.getStatusBarHeight()
 
-    private val Point.targetActualX
+    private val Point.targetXActual
         get() = x - mSourceImageView?.width.orZero().half
 
-    private val Point.targetActualY
-        get() = y - mSourceImageView?.height.orZero().half - activity.getStatusBarHeight()
+    private val Point.targetYActual
+        get() = y - mSourceImageView?.height.orZero().half - context.getStatusBarHeight()
 }
 
-fun Fragment.atcAnimator() = lazy { AtcAnimation(activity = requireActivity()) }
+fun Fragment.atcAnimator() = lazy { AtcAnimation(context = requireContext()) }
