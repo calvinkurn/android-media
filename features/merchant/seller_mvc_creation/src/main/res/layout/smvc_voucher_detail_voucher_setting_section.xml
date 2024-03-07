@@ -317,7 +317,7 @@
                 android:id="@+id/tpg_voucher_quota_subsidy_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/grey_550"
+                android:textColor="@color/Unify_NN600"
                 app:typographyType="display_3"
                 app:typographyWeight="reguler"
                 android:visibility="gone"

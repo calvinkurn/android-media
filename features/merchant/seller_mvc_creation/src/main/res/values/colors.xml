@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="mvc_dms_toolbar_color">#FFE0FFEE</color>
+    <color name="mvc_dms_divider_color">#E5E7E9</color>
 </resources>
