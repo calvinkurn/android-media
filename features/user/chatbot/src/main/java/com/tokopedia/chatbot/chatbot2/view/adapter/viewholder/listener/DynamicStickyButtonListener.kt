@@ -4,6 +4,6 @@ import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionBu
 
 interface DynamicStickyButtonListener {
 
-    fun onDynamicStickyButtonRendered()
+    fun onValidateCtaVisibility()
     fun onButtonActionClicked(bubble: ChatActionBubbleUiModel)
 }

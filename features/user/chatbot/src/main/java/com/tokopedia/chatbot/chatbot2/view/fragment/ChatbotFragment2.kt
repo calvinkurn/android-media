@@ -3080,7 +3080,7 @@ class ChatbotFragment2 :
         }
     }
 
-    override fun onDynamicStickyButtonRendered() {
+    override fun onValidateCtaVisibility() {
         getViewState()?.removeDynamicStickyButtonAction()
     }
 

@@ -54,9 +54,9 @@ class DynamicStickyButtonViewHolder(
                 actionButton.gone()
             } else {
                 actionButton.show()
+                dynamicStickyButtonListener.onValidateCtaVisibility()
             }
         }
-        dynamicStickyButtonListener.onDynamicStickyButtonRendered()
     }
 
     private fun bindBackground(): Drawable? {
