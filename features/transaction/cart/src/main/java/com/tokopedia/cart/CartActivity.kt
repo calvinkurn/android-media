@@ -3,7 +3,6 @@ package com.tokopedia.cart
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.analytics.byteio.AppLogInterface
-import com.tokopedia.analytics.byteio.IAppLogActivity
 import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.cart.view.CartRevampFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
