@@ -180,8 +180,8 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         private val translatorManagerFragment = TranslatorManagerFragment.getInstance()
 
         override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
-            super.onFragmentResumed(fm, f)
-            setTranslatorFragment(f)
+            val fragment = fm.fragments.find { it.isVisible } ?: return
+            setTranslatorFragment(fragment)
         }
 
         private fun setTranslatorFragment(f: Fragment) {
