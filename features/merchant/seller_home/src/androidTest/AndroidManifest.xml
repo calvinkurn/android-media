@@ -9,6 +9,7 @@
 
         <activity
             android:name="com.tokopedia.sellerhome.stub.features.home.presentation.SellerHomeActivityStub"
+            android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/SellerHomeTheme"
