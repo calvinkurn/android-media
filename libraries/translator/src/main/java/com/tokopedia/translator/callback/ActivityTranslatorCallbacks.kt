@@ -25,6 +25,7 @@ import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import com.bumptech.glide.manager.SupportRequestManagerFragment
 import com.tokopedia.translator.manager.TranslatorManager
 import com.tokopedia.translator.manager.TranslatorManagerFragment
 import com.tokopedia.translator.ui.SharedPrefsUtils
@@ -180,7 +181,11 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         private val translatorManagerFragment = TranslatorManagerFragment.getInstance()
 
         override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
-            val fragment = fm.fragments.find { it.isVisible } ?: return
+            val fragment = fm.fragments.filter {
+                it::class.java.simpleName !=
+                    SupportRequestManagerFragment::class.java.simpleName
+            }.find { it.isVisible }
+                ?: return
             setTranslatorFragment(fragment)
         }
 
