@@ -239,16 +239,6 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--                <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify-->
-<!--                    android:id="@+id/fab_buy_again"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    app:fbType="group"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintBottom_toTopOf="@id/ll_promo_checkout"-->
-<!--                    />-->
-
                 <androidx.compose.ui.platform.ComposeView
                     android:id="@+id/fab_buy_again"
                     android:layout_width="wrap_content"
