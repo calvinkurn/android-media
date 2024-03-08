@@ -293,9 +293,9 @@ class ProductDetailViewModel @Inject constructor(
      * These variable are for storing appLog stay-analytics data
      * */
     private var isLoadData: Boolean = false
-    var hasDoneAddToCart: Boolean = false
-    var mainPhotoViewed: MutableSet<Int> = mutableSetOf()
-    var skuPhotoViewed: MutableSet<Int> = mutableSetOf()
+    private var hasDoneAddToCart: Boolean = false
+    val mainPhotoViewed: MutableSet<Int> = mutableSetOf()
+    val skuPhotoViewed: MutableSet<Int> = mutableSetOf()
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
