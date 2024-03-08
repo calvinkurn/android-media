@@ -125,7 +125,10 @@ sealed interface LoadWishlistV2State {
 
 sealed interface RemoveFromWishlistEvent {
 
-    data class RemoveWishlistFromCartSuccess(val position: Int) : RemoveFromWishlistEvent
+    data class RemoveWishlistFromCartSuccess(
+        val position: Int,
+        val message: String,
+    ) : RemoveFromWishlistEvent
 
     data class RemoveWishlistFromCartFailed(
         val throwable: Throwable
