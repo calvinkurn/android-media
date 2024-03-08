@@ -182,6 +182,7 @@ class MiniCartListBottomSheet @Inject constructor(
                 resetObserver()
                 Toaster.onCTAClick = View.OnClickListener { }
                 if (!viewBinding.totalAmount.isTotalAmountLoading && adapter?.isLoading == false) {
+                    // only call listener if not loading
                     bottomSheetListener?.onMiniCartListBottomSheetDismissed()
                 }
                 this@MiniCartListBottomSheet.viewBinding = null
