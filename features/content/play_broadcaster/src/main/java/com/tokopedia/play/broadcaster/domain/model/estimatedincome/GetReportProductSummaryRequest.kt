@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.domain.model.estimatedincome
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam
+import com.tokopedia.play.broadcaster.domain.model.ContentType
 
 /**
  * Created by Jonathan Darwin on 06 March 2024
@@ -21,7 +22,7 @@ data class GetReportProductSummaryRequest(
     companion object {
         fun create(
             contentId: String,
-            contentType: Type,
+            contentType: ContentType,
         ): GetReportProductSummaryRequest {
             return GetReportProductSummaryRequest(
                 req = Data(
@@ -30,10 +31,5 @@ data class GetReportProductSummaryRequest(
                 )
             )
         }
-    }
-
-    enum class Type(val value: String) {
-        Story("story"),
-        Play("play"),
     }
 }
