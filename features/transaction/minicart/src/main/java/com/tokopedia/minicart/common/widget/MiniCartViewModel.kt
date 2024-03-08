@@ -1,6 +1,5 @@
 package com.tokopedia.minicart.common.widget
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -185,13 +184,11 @@ class MiniCartViewModel @Inject constructor(
 
     private fun updateVisitables(visitables: MutableList<Visitable<*>>) {
         miniCartListBottomSheetUiModel.value?.visitables = visitables
-        Log.i("qwerty", "trigger visitable", Throwable())
         _miniCartListBottomSheetUiModel.value = miniCartListBottomSheetUiModel.value
     }
 
     private fun updateVisitablesBackgroundState(visitables: MutableList<Visitable<*>>) {
         miniCartListBottomSheetUiModel.value?.visitables = visitables
-        Log.i("qwerty", "trigger visitable background", Throwable())
         _miniCartListBottomSheetUiModel.postValue(miniCartListBottomSheetUiModel.value)
     }
 
@@ -439,7 +436,6 @@ class MiniCartViewModel @Inject constructor(
             tmpMiniCartChatListUiModel.isFirstLoad = isFirstLoad
             tmpMiniCartListUiModel.needToCalculateAfterLoad = true
 
-            Log.i("qwerty", "trigger success", Throwable())
             _miniCartListBottomSheetUiModel.value = tmpMiniCartListUiModel
             _miniCartChatListBottomSheetUiModel.value = tmpMiniCartChatListUiModel
         }

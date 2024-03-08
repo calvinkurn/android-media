@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -196,13 +195,11 @@ class MiniCartListBottomSheet @Inject constructor(
     private fun initializeCartData(viewBinding: LayoutBottomsheetMiniCartListBinding, viewModel: MiniCartViewModel) {
         adapter?.clearAllElements()
         bottomSheet?.setTitle("")
-        Log.i("qwerty", "initialize cart")
+        // cancel calculation to prevent racing condition
         calculationDebounceJob?.cancel()
         showLoading()
         setTotalAmountLoading(viewBinding, true)
-        Log.i("qwerty", "done show load")
         viewModel.getCartList(isFirstLoad = true)
-        Log.i("qwerty", "do get)")
     }
 
     private fun initializeView(context: Context, viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager) {
@@ -576,7 +573,6 @@ class MiniCartListBottomSheet @Inject constructor(
     private fun initializeBottomSheetUiModelObserver(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager, viewModel: MiniCartViewModel, lifecycleOwner: LifecycleOwner) {
         bottomSheetUiModelObserver = Observer<MiniCartListUiModel> {
             if (it == null) return@Observer
-            Log.i("qwerty", "do trigger observe ${it.needToCalculateAfterLoad}")
 
             if (it.miniCartWidgetUiModel.totalProductCount == 0 && it.miniCartWidgetUiModel.totalProductError == 0) {
                 dismiss()
@@ -617,7 +613,6 @@ class MiniCartListBottomSheet @Inject constructor(
                 miniCartChatListBottomSheet.show(context = viewBinding.totalAmount.context, fragmentManager = fragmentManager, lifecycleOwner = lifecycleOwner, viewModel = viewModel)
                 dismiss()
             }
-            Log.i("qwerty", "done trigger observe")
         }
     }
 
@@ -709,7 +704,6 @@ class MiniCartListBottomSheet @Inject constructor(
     private fun observeMiniCartListUiModel(viewModel: MiniCartViewModel, lifecycleOwner: LifecycleOwner) {
         bottomSheetUiModelObserver?.let {
             viewModel.miniCartListBottomSheetUiModel.observe(lifecycleOwner, it)
-            Log.i("qwerty", "done observe")
         }
     }
 
