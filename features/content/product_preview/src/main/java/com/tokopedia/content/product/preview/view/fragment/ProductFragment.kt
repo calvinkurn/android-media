@@ -285,6 +285,10 @@ class ProductFragment @Inject constructor(
         return videoPlayerManager.occupy(id)
     }
 
+    override fun onPauseResumeVideo() {
+        analytics.onClickPauseOrPlayVideo(TAB_PRODUCT_NAME)
+    }
+
     override fun pauseVideo(id: String) {
         videoPlayerManager.pause(id)
     }

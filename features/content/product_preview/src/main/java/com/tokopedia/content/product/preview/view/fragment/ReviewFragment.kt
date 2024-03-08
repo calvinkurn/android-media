@@ -306,12 +306,12 @@ class ReviewFragment @Inject constructor(
     override fun onReviewMediaScrolled() {
         analytics.onSwipeContentAndTab(
             tabName = TAB_REVIEW_NAME,
-            isTabChanged = false,
+            isTabChanged = false
         )
     }
 
     override fun onPauseResumeVideo() {
-        analytics.onClickPauseOrPlayVideo(ProductPreviewTabUiModel.TAB_REVIEW_KEY)
+        analytics.onClickPauseOrPlayVideo(TAB_REVIEW_NAME)
     }
 
     override fun onImpressedImage() {
