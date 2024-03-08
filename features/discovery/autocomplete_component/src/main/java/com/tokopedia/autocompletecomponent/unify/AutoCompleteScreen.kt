@@ -16,14 +16,23 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_FROM
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.BLANKPAGE_ENTER_METHOD
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.NEW_SUG_SESSION_ID
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.RECOM_SEARCH
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_HISTORY
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SEARCH_SUG
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SUG_RECOM
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteEducationComponent
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteMasterComponent
 import com.tokopedia.autocompletecomponent.unify.compose_component.AutoCompleteTitleComponent
 import com.tokopedia.autocompletecomponent.util.AutoCompleteNavigate
 import com.tokopedia.autocompletecomponent.util.AutoCompleteTemplateEnum
+import com.tokopedia.autocompletecomponent.util.FEATURE_ID_CURATED
+import com.tokopedia.autocompletecomponent.util.FEATURE_ID_KEYWORD
+import com.tokopedia.autocompletecomponent.util.FEATURE_ID_POPULAR_CURATED
+import com.tokopedia.autocompletecomponent.util.FEATURE_ID_POPULAR_RELATED
+import com.tokopedia.autocompletecomponent.util.FEATURE_ID_RECENT_KEYWORD
+import com.tokopedia.autocompletecomponent.util.FEATURE_ID_RECENT_SEARCH
+import com.tokopedia.autocompletecomponent.util.FEATURE_ID_RELATED_KEYWORD
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
 import com.tokopedia.iris.Iris
 import com.tokopedia.nest.principles.utils.tag
@@ -160,7 +169,7 @@ private fun EvaluateNavigation(
             val modifiedApplink = getModifiedApplink(
                 navigate.applink,
                 viewModel.stateValue.parameter,
-                enterMethod(viewModel),
+                enterMethod(navigate.featureId),
             )
 
             AppLogAnalytics.putPageData(AppLogParam.IS_SHADOW, true)
@@ -172,10 +181,14 @@ private fun EvaluateNavigation(
     }
 }
 
-private fun enterMethod(viewModel: AutoCompleteViewModel) =
-    if (viewModel.isInitialState) SEARCH_HISTORY
-    else if (viewModel.isSuggestion) SEARCH_SUG
-    else ""
+private fun enterMethod(featureId: String?) =
+    when (featureId) {
+        FEATURE_ID_RECENT_SEARCH, FEATURE_ID_RECENT_KEYWORD -> SEARCH_HISTORY
+        FEATURE_ID_POPULAR_CURATED, FEATURE_ID_POPULAR_RELATED -> RECOM_SEARCH
+        FEATURE_ID_KEYWORD -> SEARCH_SUG
+        FEATURE_ID_CURATED, FEATURE_ID_RELATED_KEYWORD -> SUG_RECOM
+        else -> ""
+    }
 
 @Composable
 private fun EvaluateActionReplace(

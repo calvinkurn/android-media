@@ -108,7 +108,12 @@ internal class AutoCompleteViewModel @Inject constructor(
     }
 
     fun onAutoCompleteItemClick(item: AutoCompleteUnifyDataView) {
-        _stateFlow.value = stateValue.updateNavigate(AutoCompleteNavigate(item.domainModel.applink))
+        _stateFlow.value = stateValue.updateNavigate(
+            AutoCompleteNavigate(
+                applink = item.domainModel.applink,
+                featureId = item.domainModel.featureId,
+            )
+        )
     }
 
     fun onNavigated() {
