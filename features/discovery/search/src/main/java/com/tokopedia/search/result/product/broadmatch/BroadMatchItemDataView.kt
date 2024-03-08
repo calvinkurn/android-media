@@ -2,6 +2,7 @@ package com.tokopedia.search.result.product.broadmatch
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
@@ -124,6 +125,7 @@ data class BroadMatchItemDataView(
         rank = getRank(),
         shopID = shopId,
         searchEntrance = byteIOTrackingData.searchEntrance,
+        sourcePageType = SourcePageType.PRODUCT_CARD,
     )
 
     companion object {
