@@ -12,7 +12,6 @@ import com.tokopedia.cart.view.uimodel.CartBuyAgainItemHolderData
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.unifycomponents.UnifyButton
 
