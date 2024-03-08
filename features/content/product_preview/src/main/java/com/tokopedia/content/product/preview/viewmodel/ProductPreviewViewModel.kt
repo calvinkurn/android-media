@@ -380,7 +380,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun getMediaSourcePosition(review: List<ReviewContentUiModel>): Int {
         val mediaPosition = review.first().medias.indexOfFirst { it.mediaId == attachmentSourceId }
-        return if (mediaPosition < 0) 0 else mediaPosition
+        return mediaPosition.coerceAtLeast(0)
     }
 
     private fun addToCart(model: BottomNavUiModel) {
