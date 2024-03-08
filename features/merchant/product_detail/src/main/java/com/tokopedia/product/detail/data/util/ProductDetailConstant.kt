@@ -79,7 +79,6 @@ object ProductDetailConstant {
     const val PRODUCT_DYNAMIC_ONELINER = "dynamic_oneliner"
     const val PRODUCT_DYNAMIC_ONELINER_PROMO = "oneliner_promo"
     const val PRODUCT_SHOP_ADDITIONAL = "shop_additional"
-    const val PRODUCT_INSTALLMENT_INFO = "installment"
     const val PRODUCT_INSTALLMENT_PAYLATER_INFO = "installment_paylater"
     const val PRODUCT_SHIPPING_INFO = "shipping"
     const val ORDER_PRIORITY = "order_prio"

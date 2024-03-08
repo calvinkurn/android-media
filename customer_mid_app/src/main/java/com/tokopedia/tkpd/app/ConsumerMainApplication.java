@@ -223,7 +223,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
         showDevOptNotification();
-        initGotoSDK();
         initByteIOPlatform();
         if (RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)) {
             PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
@@ -238,10 +237,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             TTNetHelper.initTTNet(this);
             LibraAbTest.init(this);
         }
-    }
-
-    private void initGotoSDK() {
-        GotoSdk.init(this);
     }
 
     private void initializeAppPerformanceTrace() {
