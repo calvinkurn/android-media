@@ -23,6 +23,8 @@ class CartBuyAgainItemViewHolder(
                 element.recommendationItem.toProductCardModel(
                     true,
                     UnifyButton.Type.MAIN
+                ).copy(
+                    shopBadgeList = emptyList()
                 )
             )
             setOnClickListener {
