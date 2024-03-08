@@ -189,19 +189,6 @@ object AppLogAnalytics {
         put(ENTER_METHOD, getLastDataBeforeCurrent(ENTER_METHOD))
     }
 
-//    private fun currentPageName(): String {
-//        return synchronized(lock) {
-//            pageNames.findLast { it.first == currentActivityName }?.second ?: ""
-//        }
-//    }
-//
-//    internal fun previousPageName(skip: Int = 1): String {
-//        return synchronized(lock) {
-//            (pageNames.getOrNull(pageNames.indexOf(pageNames.findLast { it.first == currentActivityName }) - skip)?.second)
-//                ?: ""
-//        }
-//    }
-
     fun getPreviousHash(): Int {
         return pageNames.getOrNull(pageNames.size - 2)?.second.orZero()
     }
@@ -377,6 +364,16 @@ object AppLogAnalytics {
         requestId?.let {
             putPageData(REQUEST_ID, requestId)
         }
+    }
+
+    fun removeGlobalParam() {
+        _pageDataList.lastOrNull()?.remove(ENTRANCE_FORM)
+        _pageDataList.lastOrNull()?.remove(ENTER_METHOD)
+        _pageDataList.lastOrNull()?.remove(SOURCE_MODULE)
+        _pageDataList.lastOrNull()?.remove(IS_AD)
+        _pageDataList.lastOrNull()?.remove(TRACK_ID)
+        _pageDataList.lastOrNull()?.remove(SOURCE_PAGE_TYPE)
+        _pageDataList.lastOrNull()?.remove(REQUEST_ID)
     }
 
     private fun ArrayList<HashMap<String, Any>>.printForLog(): String {
