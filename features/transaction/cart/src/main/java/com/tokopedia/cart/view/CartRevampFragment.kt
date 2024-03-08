@@ -90,6 +90,7 @@ import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
 import com.tokopedia.cart.view.pref.CartOnBoardingPreferences
 import com.tokopedia.cart.view.pref.CartPreferences
+import com.tokopedia.cart.view.rollence.CartBuyAgainRollenceManager
 import com.tokopedia.cart.view.uimodel.AddCartToWishlistV2Event
 import com.tokopedia.cart.view.uimodel.AddToCartEvent
 import com.tokopedia.cart.view.uimodel.AddToCartExternalEvent
@@ -5848,6 +5849,14 @@ class CartRevampFragment :
     }
 
     private fun validateRenderBuyAgain() {
+        val isBuyAgainEnabled = CartBuyAgainRollenceManager(
+            RemoteConfigInstance.getInstance().abTestPlatform
+        ).isBuyAgainCartEnabled()
+
+        if (!isBuyAgainEnabled) {
+            return
+        }
+
         if (viewModel.cartModel.buyAgainList == null || viewModel.cartModel.shouldReloadBuyAgainList) {
             viewModel.processGetBuyAgainData()
         } else {
