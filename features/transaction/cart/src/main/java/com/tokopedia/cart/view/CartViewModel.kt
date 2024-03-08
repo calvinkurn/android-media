@@ -302,7 +302,7 @@ class CartViewModel @Inject constructor(
         const val PAGE_NAME_RECOMMENDATION_TEST = "cart_test_2" // FOR TESTING ONLY, REVERT THIS BEFORE MERGE!!!
         const val RECOMMENDATION_XSOURCE = "recom_widget"
         const val BUY_AGAIN_WORDING = "Waktunya beli lagi!"
-        private const val PAGE_NAME_BUY_AGAIN = "buy_it_again_cart"
+        const val PAGE_NAME_BUY_AGAIN = "buy_it_again_cart"
 
         private const val QUERY_APP_CLIENT_ID = "{app_client_id}"
         private val REGEX_NUMBER = "[^0-9]".toRegex()
