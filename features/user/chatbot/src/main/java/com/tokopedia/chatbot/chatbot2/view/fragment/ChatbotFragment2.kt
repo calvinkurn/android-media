@@ -3085,6 +3085,7 @@ class ChatbotFragment2 :
     }
 
     override fun onButtonActionClicked(bubble: ChatActionBubbleUiModel) {
+        getViewState()?.removeDynamicStickyButtonAction(true)
         val startTime = SendableUiModel.generateStartTime()
         viewModel.sendDynamicAttachmentText(
             messageId,
@@ -3092,7 +3093,6 @@ class ChatbotFragment2 :
             startTime,
             opponentId
         )
-        getViewState()?.removeDynamicStickyButtonAction()
         getViewState()?.scrollToBottom()
     }
 

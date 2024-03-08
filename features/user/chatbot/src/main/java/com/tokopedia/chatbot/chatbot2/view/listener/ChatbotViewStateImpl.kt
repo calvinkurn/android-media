@@ -422,7 +422,7 @@ class ChatbotViewStateImpl(
         }
     }
 
-    override fun removeDynamicStickyButtonAction() {
+    override fun removeDynamicStickyButtonAction(isForceUpdate: Boolean) {
         var dynamicStickyButtonUiModel: DynamicStickyButtonUiModel? = null
         var tmpIndex = 0
         for ((index, data) in adapter.list.withIndex()) {
@@ -433,7 +433,7 @@ class ChatbotViewStateImpl(
             }
         }
 
-        if (dynamicStickyButtonUiModel != null && tmpIndex > 0) {
+        if (dynamicStickyButtonUiModel != null && (tmpIndex > 0 || isForceUpdate)) {
             dynamicStickyButtonUiModel.isShowButtonAction = false
             recyclerView.post {
                 adapter.notifyItemChanged(tmpIndex)
