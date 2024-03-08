@@ -152,6 +152,15 @@ object DeeplinkMapperTokopediaNow {
         return ApplinkConstInternalTokopediaNow.RECIPE_AUTO_COMPLETE + queryString
     }
 
+    fun getRegisteredNavigationTokopediaNowAllAnnotation(deeplink: String): String {
+        val uri = Uri.parse(deeplink)
+
+        val query = uri.encodedQuery
+        val queryString = if (query.isNullOrEmpty()) "" else "?" + uri.encodedQuery
+
+        return ApplinkConstInternalTokopediaNow.ALL_ANNOTATION + queryString
+    }
+
     private fun isRecipeSlug(string: String): Boolean {
         return string.matches(Regex("^([a-zA-Z0-9]*-[a-zA-Z0-9]*)+"))
     }

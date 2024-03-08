@@ -18,7 +18,8 @@ interface InspirationCarouselPresenter {
 
     suspend fun getInspirationCouponData(
         visitableList: MutableList<Visitable<*>>,
-        dataView: CouponDataView
+        dataView: CouponDataView,
+        isDarkMode: Boolean,
     ): List<Visitable<*>>
 
     fun ctaCoupon(dataView: CouponDataView, item: SearchCouponModel.CouponListWidget)

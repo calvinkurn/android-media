@@ -582,7 +582,7 @@ class SummaryFragment :
     }
 
     private fun onTypeCouponBtnChangeClicked(configuration: VoucherConfiguration) {
-        val isAdding = viewModel.checkIsAdding(configuration) && !enableDuplicateVoucher
+        val isAdding = viewModel.checkIsAdding(configuration)
         val sectionName = binding?.layoutType?.tpgProductListTitle?.text.toString()
         val selectedProducts = viewModel.products.value.orEmpty()
         redirectionHelper.redirectToVoucherTypePage(this, configuration, selectedProducts, isAdding)
@@ -592,7 +592,7 @@ class SummaryFragment :
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         val sectionName = binding?.layoutInfo?.tpgVoucherInfoTitle?.text.toString()
-        val isAdding = viewModel.checkIsAdding(configuration) && !enableDuplicateVoucher
+        val isAdding = viewModel.checkIsAdding(configuration)
         val selectedProducts = viewModel.products.value.orEmpty()
         redirectionHelper.redirectToCouponInfoPage(this, configuration, selectedProducts, isAdding)
         tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
@@ -600,7 +600,7 @@ class SummaryFragment :
 
     private fun onConfigurationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
         val sectionName = binding?.layoutSetting?.tpgVoucherSettingTitle?.text.toString()
-        val isAdding = viewModel.checkIsAdding(configuration) && !enableDuplicateVoucher
+        val isAdding = viewModel.checkIsAdding(configuration)
         val selectedProducts = viewModel.products.value.orEmpty()
         redirectionHelper.redirectToCouponConfigurationPage(this, configuration, selectedProducts, isAdding)
         tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)

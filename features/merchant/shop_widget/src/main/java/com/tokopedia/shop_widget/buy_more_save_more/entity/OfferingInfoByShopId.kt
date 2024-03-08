@@ -19,7 +19,8 @@ data class OfferingInfoByShopIdUiModel(
     val redirectOfferApplink: String = "",
     val offerBanner: GetOfferingInfoByShopIDResponseBanner = GetOfferingInfoByShopIDResponseBanner(),
     val offeringDetail: OfferingDetail = OfferingDetail(),
-    val products: List<Product> = emptyList()
+    val products: List<Product> = emptyList(),
+    val totalProduct: Int = 0
 ) : Parcelable {
     fun toOfferingInfoForBuyerUiModel(): OfferingInfoForBuyerUiModel {
         return OfferingInfoForBuyerUiModel(
@@ -86,7 +87,7 @@ data class OfferingInfoByShopIdUiModel(
                     discountedPrice = product.discountedPrice,
                     discountedPercentage = product.discountedPercentage.toIntOrZero()
                 ),
-                totalProduct = products.count()
+                totalProduct = totalProduct
             )
         }
     }

@@ -7,6 +7,7 @@ object ShopPageConstant {
     const val START_PAGE = 1
     const val DEFAULT_PER_PAGE_NON_TABLET = 10
     const val DEFAULT_PER_PAGE_TABLET = 20
+    const val DEFAULT_PER_FOR_SHARE_PURPOSE = 6
     const val SHOP_PRODUCT_EMPTY_STATE_LIMIT = 20
     const val ETALASE_HIGHLIGHT_COUNT = 5
     const val SHOP_SHARE_DEFAULT_CHANNEL = "default"
