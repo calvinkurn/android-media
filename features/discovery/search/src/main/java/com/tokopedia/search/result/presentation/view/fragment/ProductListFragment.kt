@@ -1667,7 +1667,7 @@ class ProductListFragment :
         AppLogSearch.eventSearch(
             AppLogSearch.Search(
                 imprId = SearchId.value,
-                enterFrom = enterFrom,
+                enterFrom = AppLogAnalytics.getCurrentData(SEARCH_ENTRANCE)?.toString().orEmpty(),
                 searchType = GOODS_SEARCH,
                 enterMethod = enterMethod,
                 searchKeyword = queryKey,
