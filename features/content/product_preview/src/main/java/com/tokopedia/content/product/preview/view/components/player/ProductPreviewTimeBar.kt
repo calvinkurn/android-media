@@ -131,16 +131,16 @@ class ProductPreviewTimeBar : View, TimeBar {
     }
 
     override fun setDuration(duration: Long) {
-        if (mDuration == duration) return;
+        if (mDuration == duration) return
 
-        mDuration = duration;
-        if (scrubbing && duration == C.TIME_UNSET) stopScrubbing(/* canceled= */ true)
+        mDuration = duration
+        if (scrubbing && duration == C.TIME_UNSET) stopScrubbing(true)
         update()
     }
 
     override fun getPreferredUpdateDelay(): Long {
         val timeBarWidthDp: Int = pxToDp(density, progressBar.width())
-        return if (timeBarWidthDp == 0 || mDuration == 0L || mDuration == C.TIME_UNSET) {
+        return if (timeBarWidthDp == 0 && (mDuration == 0L || mDuration == C.TIME_UNSET)) {
             Long.MAX_VALUE
         } else {
             mDuration / timeBarWidthDp
@@ -148,7 +148,6 @@ class ProductPreviewTimeBar : View, TimeBar {
     }
 
     override fun setAdGroupTimesMs(p0: LongArray?, p1: BooleanArray?, p2: Int) {
-
     }
 
     private fun getPositionIncrement(): Long {
@@ -186,7 +185,7 @@ class ProductPreviewTimeBar : View, TimeBar {
             seekBounds.left + scrubberPadding,
             progressBarY,
             seekBounds.right - scrubberPadding,
-            progressBarY + barHeight,
+            progressBarY + barHeight
         )
         if (Util.SDK_INT >= 29) {
             setSystemGestureExclusionRectsV29(width, height)
@@ -212,7 +211,7 @@ class ProductPreviewTimeBar : View, TimeBar {
                     return true
                 }
                 KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> if (scrubbing) {
-                    stopScrubbing( /* canceled= */false)
+                    stopScrubbing(false)
                     return true
                 }
                 else -> {}
@@ -222,11 +221,13 @@ class ProductPreviewTimeBar : View, TimeBar {
     }
 
     override fun onFocusChanged(
-        gainFocus: Boolean, direction: Int, @Nullable previouslyFocusedRect: Rect?
+        gainFocus: Boolean,
+        direction: Int,
+        @Nullable previouslyFocusedRect: Rect?
     ) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
         if (scrubbing && !gainFocus) {
-            stopScrubbing( /* canceled= */false)
+            stopScrubbing(false)
         }
     }
 
@@ -277,7 +278,7 @@ class ProductPreviewTimeBar : View, TimeBar {
                 return true
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> if (scrubbing) {
-                stopScrubbing( /* canceled= */event.action == MotionEvent.ACTION_CANCEL)
+                stopScrubbing(event.action == MotionEvent.ACTION_CANCEL)
                 return true
             }
             else -> {}
@@ -316,11 +317,11 @@ class ProductPreviewTimeBar : View, TimeBar {
         }
         if (action == AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD) {
             if (scrubIncrementally(-getPositionIncrement())) {
-                stopScrubbing( /* canceled= */false)
+                stopScrubbing(false)
             }
         } else if (action == AccessibilityNodeInfo.ACTION_SCROLL_FORWARD) {
             if (scrubIncrementally(getPositionIncrement())) {
-                stopScrubbing( /* canceled= */false)
+                stopScrubbing(false)
             }
         } else {
             return false
@@ -405,7 +406,10 @@ class ProductPreviewTimeBar : View, TimeBar {
         if (mDuration <= 0) {
             canvas.drawRect(
                 progressBar.left.toFloat(),
-                barTop.toFloat(), progressBar.right.toFloat(), barBottom.toFloat(), unPlayedPaint
+                barTop.toFloat(),
+                progressBar.right.toFloat(),
+                barBottom.toFloat(),
+                unPlayedPaint
             )
             return
         }
@@ -415,20 +419,29 @@ class ProductPreviewTimeBar : View, TimeBar {
         if (progressLeft < progressBar.right) {
             canvas.drawRect(
                 progressLeft.toFloat(),
-                barTop.toFloat(), progressBar.right.toFloat(), barBottom.toFloat(), unPlayedPaint
+                barTop.toFloat(),
+                progressBar.right.toFloat(),
+                barBottom.toFloat(),
+                unPlayedPaint
             )
         }
         bufferedLeft = Math.max(bufferedLeft, scrubberBar.right)
         if (bufferedRight > bufferedLeft) {
             canvas.drawRect(
                 bufferedLeft.toFloat(),
-                barTop.toFloat(), bufferedRight.toFloat(), barBottom.toFloat(), bufferedPaint
+                barTop.toFloat(),
+                bufferedRight.toFloat(),
+                barBottom.toFloat(),
+                bufferedPaint
             )
         }
         if (scrubberBar.width() > 0) {
             canvas.drawRect(
                 scrubberBar.left.toFloat(),
-                barTop.toFloat(), scrubberBar.right.toFloat(), barBottom.toFloat(), playedPaint
+                barTop.toFloat(),
+                scrubberBar.right.toFloat(),
+                barBottom.toFloat(),
+                playedPaint
             )
         }
     }
@@ -452,9 +465,13 @@ class ProductPreviewTimeBar : View, TimeBar {
     }
 
     private fun getScrubberPosition(): Long {
-        return if (progressBar.width() <= 0 || mDuration == C.TIME_UNSET) {
+        return if (progressBar.width() <= 0) {
             0
-        } else scrubberBar.width() * mDuration / progressBar.width()
+        } else if (mDuration == C.TIME_UNSET) {
+            0
+        } else {
+            scrubberBar.width() * mDuration / progressBar.width()
+        }
     }
 
     private fun resolveRelativeTouchPosition(motionEvent: MotionEvent): Point {
@@ -471,6 +488,7 @@ class ProductPreviewTimeBar : View, TimeBar {
     }
 
     private fun pxToDp(density: Float, px: Int): Int {
+        if (density == 0F) return 0
         return (px / density).toInt()
     }
 
@@ -478,7 +496,7 @@ class ProductPreviewTimeBar : View, TimeBar {
         scrubberBar.right = Util.constrainValue(
             xPosition.toInt(),
             progressBar.left,
-            progressBar.right,
+            progressBar.right
         )
     }
 
@@ -492,7 +510,7 @@ class ProductPreviewTimeBar : View, TimeBar {
             // Allocating inside onLayout is considered a DrawAllocation lint error, so avoid if possible.
             return
         }
-        this.lastExclusionRectangle = Rect( 0, 0, width, height)
+        this.lastExclusionRectangle = Rect(0, 0, width, height)
         systemGestureExclusionRects = Collections.singletonList(lastExclusionRectangle)
     }
 
