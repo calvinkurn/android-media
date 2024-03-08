@@ -6,6 +6,7 @@ import com.tokopedia.atc_common.data.model.response.ocs.AddToCartOcsGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOcsUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
@@ -45,24 +46,30 @@ open class AddToCartOcsUseCase @Inject constructor(
         private const val PARAM_UC_UT = "uc_ut_param"
         private const val PARAM_IS_TRADE_IN = "is_trade_in"
         private const val PARAM_SHIPPING_PRICE = "shipping_price"
+        private const val PARAM_ATC_FROM_EXTERNAL_SOURCE = "atc_from_external_source"
     }
 
     private fun getParams(ocsRequestParams: AddToCartOcsRequestParams): Map<String, Any?> {
+        val atcParam = mutableMapOf(
+            PARAM_PRODUCT_ID to ocsRequestParams.productId,
+            PARAM_SHOP_ID to ocsRequestParams.shopId,
+            PARAM_QUANTITY to ocsRequestParams.quantity,
+            PARAM_NOTES to ocsRequestParams.notes,
+            PARAM_WAREHOUSE_ID to ocsRequestParams.warehouseId,
+            PARAM_CUSTOMER_ID to ocsRequestParams.customerId,
+            PARAM_TRACKER_ATTRIBUTION to ocsRequestParams.trackerAttribution,
+            PARAM_TRACKER_LIST_NAME to ocsRequestParams.trackerListName,
+            PARAM_UC_UT to ocsRequestParams.utParam,
+            PARAM_IS_TRADE_IN to ocsRequestParams.isTradeIn,
+            PARAM_SHIPPING_PRICE to ocsRequestParams.shippingPrice.roundToLong(),
+            KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+        )
+        val atcFromExternalSource = ocsRequestParams.atcFromExternalSource
+        if (atcFromExternalSource != null) {
+            atcParam[PARAM_ATC_FROM_EXTERNAL_SOURCE] = atcFromExternalSource
+        }
         return mapOf(
-            PARAM_ATC to mapOf(
-                PARAM_PRODUCT_ID to ocsRequestParams.productId,
-                PARAM_SHOP_ID to ocsRequestParams.shopId,
-                PARAM_QUANTITY to ocsRequestParams.quantity,
-                PARAM_NOTES to ocsRequestParams.notes,
-                PARAM_WAREHOUSE_ID to ocsRequestParams.warehouseId,
-                PARAM_CUSTOMER_ID to ocsRequestParams.customerId,
-                PARAM_TRACKER_ATTRIBUTION to ocsRequestParams.trackerAttribution,
-                PARAM_TRACKER_LIST_NAME to ocsRequestParams.trackerListName,
-                PARAM_UC_UT to ocsRequestParams.utParam,
-                PARAM_IS_TRADE_IN to ocsRequestParams.isTradeIn,
-                PARAM_SHIPPING_PRICE to ocsRequestParams.shippingPrice.roundToLong(),
-                KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
-            )
+            PARAM_ATC to atcParam
         )
     }
 
