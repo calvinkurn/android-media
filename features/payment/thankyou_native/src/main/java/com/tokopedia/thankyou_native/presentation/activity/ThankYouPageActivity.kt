@@ -27,6 +27,7 @@ import com.tokopedia.nps.helper.InAppReviewHelper
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_ENABLE_PURCHASE_INFO
 import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_ENABLE_THANKYOUPAGE_V2
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -213,7 +214,8 @@ class ThankYouPageActivity :
                     bundle,
                     thanksPageData,
                     isWidgetOrderingEnabled(),
-                    isV2Enabled()
+                    isV2Enabled(),
+                    isPurchaseInfoEnabled()
                 ),
                 ""
             )
@@ -460,6 +462,15 @@ class ThankYouPageActivity :
         return try {
             val remoteConfig = FirebaseRemoteConfigImpl(this)
             return remoteConfig.getBoolean(ANDROID_ENABLE_THANKYOUPAGE_V2, true)
+        } catch (ignore: Exception) {
+            false
+        }
+    }
+
+    private fun isPurchaseInfoEnabled(): Boolean {
+        return try {
+            val remoteConfig = FirebaseRemoteConfigImpl(this)
+            return remoteConfig.getBoolean(ANDROID_ENABLE_PURCHASE_INFO, true)
         } catch (ignore: Exception) {
             false
         }

@@ -7,10 +7,11 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 
 data class CartModel(
     var wishlists: List<CartWishlistItemHolderData>? = null,
-    var recentViewList: List<CartRecentViewItemHolderData>? = null,
+    var recommendationWidgetMetadata: RecommendationWidgetMetadata = RecommendationWidgetMetadata(),
     var isLastApplyResponseStillValid: Boolean = true,
     var lastValidateUseRequest: ValidateUsePromoRequest? = null,
     var lastValidateUseResponse: ValidateUsePromoRevampUiModel? = null,

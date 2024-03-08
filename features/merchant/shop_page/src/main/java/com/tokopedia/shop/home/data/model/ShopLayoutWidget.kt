@@ -227,6 +227,8 @@ data class ShopLayoutWidget(
             val bmsmListProduct: List<Product> = listOf(),
             @SerializedName("OfferDetail")
             val offeringDetail: OfferingDetail = OfferingDetail(),
+            @SerializedName("TotalProduct")
+            val bmsmTotalProduct: Int = 0,
             @SerializedName("recommendationPageName")
             val recommendationPageName: String = "",
             @SerializedName("recParam")

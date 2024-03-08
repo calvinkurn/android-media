@@ -31,5 +31,7 @@ data class BannerRecommendationModel(
         return this == other
     }
 
-    override fun type(typeFactory: ForYouRecommendationTypeFactory) = Int.MIN_VALUE
+    override fun type(typeFactory: ForYouRecommendationTypeFactory): Int {
+        return typeFactory.type(this)
+    }
 }
