@@ -155,7 +155,7 @@ class SearchActivity :
         searchViewModel?.getThematic()
 
         SearchSessionId.update()
-        AppLogAnalytics.putPageData(SEARCH_ENTRANCE, SearchEntrance().value)
+        AppLogAnalytics.putPageData(SEARCH_ENTRANCE, SearchEntrance.value())
     }
 
     private fun observeSearchState() {
