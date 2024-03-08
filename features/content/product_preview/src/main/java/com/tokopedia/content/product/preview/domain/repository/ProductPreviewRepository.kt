@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.preview.data.repository
+package com.tokopedia.content.product.preview.domain.repository
 
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState

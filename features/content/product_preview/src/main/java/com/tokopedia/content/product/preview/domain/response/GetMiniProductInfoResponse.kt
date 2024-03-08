@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.preview.data.response
+package com.tokopedia.content.product.preview.domain.response
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName

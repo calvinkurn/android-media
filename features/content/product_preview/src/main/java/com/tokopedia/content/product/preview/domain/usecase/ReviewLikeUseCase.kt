@@ -1,9 +1,9 @@
-package com.tokopedia.content.product.preview.data.usecase
+package com.tokopedia.content.product.preview.domain.usecase
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.product.preview.data.response.LikeReviewResponse
+import com.tokopedia.content.product.preview.domain.response.LikeReviewResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request

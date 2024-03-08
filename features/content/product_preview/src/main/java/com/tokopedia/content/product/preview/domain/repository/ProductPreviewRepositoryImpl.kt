@@ -1,15 +1,15 @@
-package com.tokopedia.content.product.preview.data.repository
+package com.tokopedia.content.product.preview.domain.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.product.preview.data.mapper.ProductPreviewMapper
-import com.tokopedia.content.product.preview.data.usecase.MediaReviewUseCase
-import com.tokopedia.content.product.preview.data.usecase.ProductMiniInfoUseCase
-import com.tokopedia.content.product.preview.data.usecase.RemindMeUseCase
-import com.tokopedia.content.product.preview.data.usecase.ReviewByIdsUseCase
-import com.tokopedia.content.product.preview.data.usecase.ReviewLikeUseCase
-import com.tokopedia.content.product.preview.data.usecase.SubmitReportUseCase
+import com.tokopedia.content.product.preview.domain.usecase.MediaReviewUseCase
+import com.tokopedia.content.product.preview.domain.usecase.ProductMiniInfoUseCase
+import com.tokopedia.content.product.preview.domain.usecase.RemindMeUseCase
+import com.tokopedia.content.product.preview.domain.usecase.ReviewByIdsUseCase
+import com.tokopedia.content.product.preview.domain.usecase.ReviewLikeUseCase
+import com.tokopedia.content.product.preview.domain.usecase.SubmitReportUseCase
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState.ReviewLikeStatus.Companion.switch

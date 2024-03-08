@@ -2,7 +2,7 @@ package com.tokopedia.product.preview
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.content.product.preview.data.mock.ProductPreviewMockData
-import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
+import com.tokopedia.content.product.preview.domain.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreference
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
@@ -48,7 +48,7 @@ class ProductPreviewUnitTest {
             source = sourceModel,
             repository = mockRepository,
             userSession = mockUserSession,
-            sharedPref = mockSharedPref,
+            sharedPref = mockSharedPref
         )
     }
 
@@ -324,10 +324,13 @@ class ProductPreviewUnitTest {
                 robot.reviewContentScrollingState(scrolledPosition, true)
             }.also { state ->
                 state.reviewUiModel.reviewContent.mapIndexed { index, reviewContentUiModel ->
-                    if (index == scrolledPosition) reviewContentUiModel.isScrolling.assertEqualTo(
-                        isScrolling
-                    )
-                    else reviewContentUiModel.isScrolling.assertFalse()
+                    if (index == scrolledPosition) {
+                        reviewContentUiModel.isScrolling.assertEqualTo(
+                            isScrolling
+                        )
+                    } else {
+                        reviewContentUiModel.isScrolling.assertFalse()
+                    }
                 }
             }
         }
@@ -351,12 +354,15 @@ class ProductPreviewUnitTest {
                     .medias.indexOfFirst { it.selected }
                 selectedMedia.assertEqualTo(mediaSelectedPosition)
                 state.reviewUiModel.reviewContent.mapIndexed { index, reviewContentUiModel ->
-                    if (index == reviewPosition) reviewContentUiModel.mediaSelectedPosition.assertEqualTo(
-                        mediaSelectedPosition
-                    )
-                    else reviewContentUiModel.mediaSelectedPosition.assertNotEqualTo(
-                        mediaSelectedPosition
-                    )
+                    if (index == reviewPosition) {
+                        reviewContentUiModel.mediaSelectedPosition.assertEqualTo(
+                            mediaSelectedPosition
+                        )
+                    } else {
+                        reviewContentUiModel.mediaSelectedPosition.assertNotEqualTo(
+                            mediaSelectedPosition
+                        )
+                    }
                 }
             }
         }
@@ -392,7 +398,7 @@ class ProductPreviewUnitTest {
         val sourceModel = mockDataSource.mockSourceProduct(productId)
         val expectedData = mockDataSource.mockProductMiniInfo(
             hasVariant = true,
-            buttonState = BottomNavUiModel.ButtonState.Active,
+            buttonState = BottomNavUiModel.ButtonState.Active
         )
 
         coEvery { mockUserSession.isLoggedIn } returns false
@@ -412,7 +418,7 @@ class ProductPreviewUnitTest {
         val sourceModel = mockDataSource.mockSourceProduct(productId)
         val expectedData = mockDataSource.mockProductMiniInfo(
             hasVariant = true,
-            buttonState = BottomNavUiModel.ButtonState.Active,
+            buttonState = BottomNavUiModel.ButtonState.Active
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -445,7 +451,7 @@ class ProductPreviewUnitTest {
         val sourceModel = mockDataSource.mockSourceProduct(productId)
         val expectedData = mockDataSource.mockProductMiniInfo(
             hasVariant = true,
-            buttonState = BottomNavUiModel.ButtonState.Active,
+            buttonState = BottomNavUiModel.ButtonState.Active
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -474,7 +480,7 @@ class ProductPreviewUnitTest {
         val sourceModel = mockDataSource.mockSourceProduct(productId)
         val expectedData = mockDataSource.mockProductMiniInfo(
             hasVariant = false,
-            buttonState = BottomNavUiModel.ButtonState.OOS,
+            buttonState = BottomNavUiModel.ButtonState.OOS
         )
 
         coEvery { mockUserSession.isLoggedIn } returns false
@@ -494,7 +500,7 @@ class ProductPreviewUnitTest {
         val sourceModel = mockDataSource.mockSourceProduct(productId)
         val expectedData = mockDataSource.mockProductMiniInfo(
             hasVariant = false,
-            buttonState = BottomNavUiModel.ButtonState.OOS,
+            buttonState = BottomNavUiModel.ButtonState.OOS
         )
         val expectedResult = BottomNavUiModel.RemindMeUiModel(true, "success")
 
@@ -521,7 +527,7 @@ class ProductPreviewUnitTest {
         val sourceModel = mockDataSource.mockSourceProduct(productId)
         val expectedData = mockDataSource.mockProductMiniInfo(
             hasVariant = false,
-            buttonState = BottomNavUiModel.ButtonState.OOS,
+            buttonState = BottomNavUiModel.ButtonState.OOS
         )
         val expectedResult = BottomNavUiModel.RemindMeUiModel(false, "not success")
 
@@ -760,9 +766,11 @@ class ProductPreviewUnitTest {
                 robot.likeFromResultTestCase(isDoubleTap)
             }.also { state ->
                 state.reviewUiModel.reviewContent.mapIndexed { index, reviewContentUiModel ->
-                    if (index == reviewPosition) reviewContentUiModel.likeState.withAnimation.assertEqualTo(
-                        isDoubleTap
-                    )
+                    if (index == reviewPosition) {
+                        reviewContentUiModel.likeState.withAnimation.assertEqualTo(
+                            isDoubleTap
+                        )
+                    }
                 }
             }
         }
@@ -828,5 +836,4 @@ class ProductPreviewUnitTest {
             robot.hasVisit.assertTrue()
         }
     }
-
 }

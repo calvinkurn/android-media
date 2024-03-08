@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.preview.data.usecase
+package com.tokopedia.content.product.preview.domain.usecase
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
