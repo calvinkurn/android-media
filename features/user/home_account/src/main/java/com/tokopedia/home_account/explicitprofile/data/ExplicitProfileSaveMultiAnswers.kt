@@ -10,7 +10,9 @@ data class ExplicitProfileSaveMultiAnswers(
 ) {
     data class ResponseMutlipleAnswerDataModel(
         @SerializedName("message")
-        val message: String = ""
+        val message: String = "",
+        @SerializedName("isSuccess")
+        val isSuccess: Boolean = false
     )
 }
 

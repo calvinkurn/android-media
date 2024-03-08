@@ -147,8 +147,13 @@ class ExplicitPersonalizeViewModel @Inject constructor(
                     )
                 )
 
-                saveMultipleAnswersUseCase(mutableListOf(parameter))
-                _stateSaveAnswer.postValue(PersonalizeSaveAnswerResult.Success)
+                val response = saveMultipleAnswersUseCase(mutableListOf(parameter))
+                if (response.response.isSuccess) {
+                    _stateSaveAnswer.postValue(PersonalizeSaveAnswerResult.Success)
+                } else {
+                    val message = response.response.message
+                    _stateSaveAnswer.postValue(PersonalizeSaveAnswerResult.Failed(Throwable(message)))
+                }
             },
             onError = {
                 _stateSaveAnswer.postValue(PersonalizeSaveAnswerResult.Failed(it))
