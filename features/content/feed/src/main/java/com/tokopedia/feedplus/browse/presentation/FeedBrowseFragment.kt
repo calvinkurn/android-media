@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.calculateWindowSizeClass
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
+import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseImpressionManager
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTrackerImpl
@@ -30,6 +31,7 @@ import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHo
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalAuthorsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.HorizontalStoriesViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
@@ -186,7 +188,7 @@ internal class FeedBrowseFragment @Inject constructor(
             item: AuthorWidgetModel,
             authorWidgetPosition: Int
         ) {
-            tracker.clickChannelCard(item, widgetModel.slotInfo, authorWidgetPosition)
+            tracker.clickAuthorChannelCard(item, widgetModel.slotInfo, authorWidgetPosition)
             router.route(context, item.contentAppLink)
         }
 
@@ -201,6 +203,27 @@ internal class FeedBrowseFragment @Inject constructor(
         }
     }
 
+    private val storyListener = object : HorizontalStoriesViewHolder.Listener {
+        override fun onWidgetImpressed(
+            viewHolder: HorizontalStoriesViewHolder,
+            widgetModel: FeedBrowseItemListModel.HorizontalStories,
+            item: StoryNodeModel,
+            storyWidgetPosition: Int
+        ) {
+            tracker.viewStoryWidget(item, widgetModel.slotInfo, storyWidgetPosition)
+        }
+
+        override fun onClicked(
+            viewHolder: HorizontalStoriesViewHolder,
+            widgetModel: FeedBrowseItemListModel.HorizontalStories,
+            item: StoryNodeModel,
+            storyWidgetPosition: Int
+        ) {
+            tracker.clickStoryWidget(item, widgetModel.slotInfo, storyWidgetPosition)
+            router.route(context, item.appLink)
+        }
+    }
+
     private val adapter by viewLifecycleBound(
         {
             FeedBrowseAdapter(
@@ -209,7 +232,8 @@ internal class FeedBrowseFragment @Inject constructor(
                 chipsListener,
                 bannerListener,
                 channelListener,
-                creatorListener
+                creatorListener,
+                storyListener
             )
         }
     )
@@ -254,6 +278,11 @@ internal class FeedBrowseFragment @Inject constructor(
 
     override fun getScreenName(): String {
         return ""
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onAction(FeedBrowseAction.UpdateStoriesStatus)
     }
 
     override fun onDestroyView() {

@@ -26,6 +26,8 @@ data class StoriesDetailsResponseModel(
             val author: Author = Author(),
             @SerializedName("category")
             val category: String = "",
+            @SerializedName("categoryName")
+            val categoryName: String = "",
             @SerializedName("publishedAt")
             val publishedAt: String = "",
             @SerializedName("id")
