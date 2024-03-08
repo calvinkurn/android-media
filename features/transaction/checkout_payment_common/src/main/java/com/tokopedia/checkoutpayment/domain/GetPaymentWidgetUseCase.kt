@@ -77,7 +77,9 @@ class GetPaymentWidgetUseCase @Inject constructor(
                         imageUrl = "https://images.tokopedia.net/img/toppay/payment-logo/alfamart.png",
                         amountValidation = PaymentAmountValidationResponse(
                             minimumAmount = 10000,
-                            maximumAmount = 5000000
+                            maximumAmount = 50000,
+                            minimumAmountErrorMessage = "too low",
+                            maximumAmountErrorMessage = "too high"
                         )
                     )
                 ),

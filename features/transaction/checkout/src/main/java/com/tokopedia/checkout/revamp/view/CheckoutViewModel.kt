@@ -2061,6 +2061,7 @@ class CheckoutViewModel @Inject constructor(
             var productSuccessPrescriptionCount = 0
             val checkoutEpharmacy = items.epharmacy()
             var hasInvalidPayment = false
+            var hasNoPayment = false
             items.forEachIndexed { index, checkoutItem ->
                 if (checkoutItem is CheckoutOrderModel) {
                     if (!checkoutItem.isError && checkoutItem.shipment.courierItemData == null) {
@@ -2113,6 +2114,8 @@ class CheckoutViewModel @Inject constructor(
                 }
                 if (checkoutItem is CheckoutPaymentModel) {
                     if (checkoutItem.enable && (!checkoutItem.widget.isValidStateToCheckout || checkoutItem.data == null)) {
+                        hasNoPayment = true
+                    } else if (checkoutItem.enable && !checkoutItem.widget.isValidToCheckout) {
                         hasInvalidPayment = true
                     }
                 }
@@ -2147,7 +2150,7 @@ class CheckoutViewModel @Inject constructor(
                 pageState.value = CheckoutPageState.Normal
                 return@launch
             }
-            if (hasInvalidPayment) {
+            if (hasNoPayment || hasInvalidPayment) {
                 pageState.value = CheckoutPageState.Normal
                 commonToaster.emit(
                     CheckoutPageToaster(

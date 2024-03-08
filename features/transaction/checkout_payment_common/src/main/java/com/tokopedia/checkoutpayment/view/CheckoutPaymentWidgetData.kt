@@ -20,6 +20,11 @@ data class CheckoutPaymentWidgetData(
         get() {
             return state == CheckoutPaymentWidgetState.None || state == CheckoutPaymentWidgetState.Normal
         }
+
+    val isValidToCheckout: Boolean
+        get() {
+            return !isTitleRed && !isDescriptionRed
+        }
 }
 
 sealed class CheckoutPaymentWidgetState {

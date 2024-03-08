@@ -152,19 +152,22 @@ class PaymentProcessor @Inject constructor(
         return when (validationReport) {
             PaymentValidationReport.MaximumAmountError -> {
                 latestWidget.copy(
-                    errorMessage = currentData.amountValidation.maximumAmountErrorMessage
+                    description = currentData.amountValidation.maximumAmountErrorMessage,
+                    isDescriptionRed = true
                 )
             }
 
             PaymentValidationReport.MinimumAmountError -> {
                 latestWidget.copy(
-                    errorMessage = currentData.amountValidation.minimumAmountErrorMessage
+                    description = currentData.amountValidation.minimumAmountErrorMessage,
+                    isDescriptionRed = true
                 )
             }
 
             PaymentValidationReport.MissingPhoneNumberError -> {
                 latestWidget.copy(
-                    errorMessage = currentData.walletData.phoneNumberRegistration.errorMessage
+                    description = currentData.walletData.phoneNumberRegistration.errorMessage,
+                    isDescriptionRed = true
                 )
             }
 
@@ -186,7 +189,9 @@ class PaymentProcessor @Inject constructor(
             }
 
             PaymentValidationReport.Valid -> {
-                latestWidget
+                latestWidget.copy(
+                    isDescriptionRed = false
+                )
             }
 
             PaymentValidationReport.WalletActivationError -> {
