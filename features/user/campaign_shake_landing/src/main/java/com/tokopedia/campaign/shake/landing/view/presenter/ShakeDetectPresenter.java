@@ -133,14 +133,11 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     }
 
     public void addLocationParameterBeforeRequest(Activity activity) {
-        LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
-                permissionCheckerHelper,
-                LocationServices.getFusedLocationProviderClient(activity
-                        .getApplicationContext()),
-                activity.getApplicationContext());
+        LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(activity.getApplicationContext());
         locationDetectorHelper.getLocation(onGetLocation(), activity,
                 LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
                 RequestLocationType.APPROXIMATE_OR_PRECISE,
+                permissionCheckerHelper,
                 activity.getString(R.string.shake_landing_rationale_need_location_for_promotion));
 
     }

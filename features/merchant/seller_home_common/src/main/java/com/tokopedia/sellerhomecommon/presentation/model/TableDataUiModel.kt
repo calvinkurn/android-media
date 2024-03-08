@@ -1,9 +1,12 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.presentation.adapter.factory.TableItemFactory
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created By @ilhamsuaib on 10/06/20
@@ -81,7 +84,8 @@ sealed class TableRowsUiModel(
         override val width: Int = 0,
         override val meta: Meta = Meta(),
         val isLeftAlign: Boolean = false,
-        var colorInt: Int? = null
+        var colorInt: Int? = null,
+        var additionalValueString: String = String.EMPTY
     ) : TableRowsUiModel(valueStr, width, meta) {
 
         override fun type(typeFactory: TableItemFactory): Int {
@@ -101,6 +105,35 @@ sealed class TableRowsUiModel(
         override fun type(typeFactory: TableItemFactory): Int {
             return typeFactory.type(this)
         }
+    }
+
+    data class RowColumnHtmlWithMeta(
+        override val valueStr: String = "",
+        override val width: Int = 0,
+        val htmlMeta: HtmlMeta? = null,
+        val isLeftAlign: Boolean = false
+    ) : TableRowsUiModel(valueStr, width) {
+        override fun type(typeFactory: TableItemFactory): Int {
+            return typeFactory.type(this)
+        }
+
+        @Parcelize
+        data class HtmlMeta(
+            @SerializedName("label")
+            val label: String = String.EMPTY,
+            @SerializedName("labelColor")
+            val labelColor: String = String.EMPTY,
+            @SerializedName("title")
+            val title: String = String.EMPTY,
+            @SerializedName("value")
+            val value: String = String.EMPTY,
+            @SerializedName("cta")
+            val cta: String = String.EMPTY,
+            @SerializedName("url")
+            val url: String = String.EMPTY,
+            @SerializedName("productID")
+            val productId: String = String.EMPTY
+        ): Parcelable
     }
 
     data class Meta(

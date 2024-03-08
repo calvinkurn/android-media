@@ -3,12 +3,11 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home.R
+import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class FlashSaleViewHolder (view: View,
@@ -16,11 +15,11 @@ class FlashSaleViewHolder (view: View,
         AbstractViewHolder<FlashSaleDataModel>(view) {
 
     companion object{
-        val LAYOUT = R.layout.home_banner_item_flashsale_carousel
+        val LAYOUT = home_componentR.layout.home_banner_item_flashsale_carousel
         private const val className = "com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.viewHolder.FlashSaleViewHolder"
     }
 
-    private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.productCardView) }
+    private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(home_componentR.id.productCardView) }
     override fun bind(element: FlashSaleDataModel) {
         setLayout(itemView.context, element)
     }

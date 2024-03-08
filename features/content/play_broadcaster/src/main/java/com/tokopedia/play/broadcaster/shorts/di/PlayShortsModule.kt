@@ -39,6 +39,7 @@ import com.tokopedia.content.product.picker.seller.analytic.ContentProductPicker
 import com.tokopedia.play.broadcaster.util.helper.DefaultUriParser
 import com.tokopedia.play.broadcaster.util.helper.UriParser
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
+import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -103,6 +104,12 @@ class PlayShortsModule(
                     Util.getUserAgent(activityContext, "Tokopedia Android")
                 )
             )
+    }
+
+    @Provides
+    @PlayShortsScope
+    fun providePlayVideoWrapper(context: Context): PlayVideoWrapper {
+        return PlayVideoWrapper.Builder(context).build()
     }
 
     /** Play Broadcaster Analytic */

@@ -16,6 +16,7 @@
     <string name="bmgm_description_error_ended_promo">tapi tenang, kamu masih bisa beli barang di halaman ini tanpa promo.</string>
     <string name="bmgm_cta_text_error_ended_promo">Ke Halaman Sebelumnya</string>
 
+    <string name="bmgm_title_error_gift_out_of_stock">Hadiah untuk promosi ini sudah habis</string>
     <string name="bmgm_title_error_out_of_stock">Oops, barang di halaman ini sudah habis</string>
     <string name="bmgm_description_error_out_of_stock">Kamu bisa cek promosi atau barang lain di halaman toko</string>
     <string name="bmgm_cta_text_error_out_of_stock">Ke Halaman Sebelumnya</string>
@@ -35,4 +36,10 @@
     <string name="bmgm_empty_state_product_list_title">Sering dibeli bareng belanjaanmu</string>
     <string name="bmgm_dari_label">Dari</string>
 
+    <string name="bmgm_mini_cart_bmgm_bottom_sheet_title">Barang yang Dipilih</string>
+    <string name="bmgm_mini_cart_widget_label_total_price_unavailable_default">-</string>
+    <string name="bmsm_check_cart">Cek Keranjang</string>
+    <string name="bmsm_mini_cart_error_title">Oops. halaman ini gagal dimuat</string>
+    <string name="bmsm_mini_cart_error_message">Klik Tombol di bawah ini untuk refresh halaman ini, ya!</string>
+    <string name="bmsm_gift_label">Hadiah</string>
 </resources>

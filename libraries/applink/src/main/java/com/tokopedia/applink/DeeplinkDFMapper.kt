@@ -49,7 +49,6 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_MERCHANT_NONLOGIN = "df_merchant_nonlogin"
     const val DF_MERCHANT_PRODUCT_AR = "df_merchant_product_ar"
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
-    const val DF_SALAM_UMRAH = "df_salam_umrah"
     const val DF_TRAVEL = "df_travel"
     const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
@@ -166,7 +165,8 @@ object DeeplinkDFMapper : CoroutineScope {
                     DYNAMIC_FEATURE_INSTALL,
                     moduleId,
                     Uri.encode(deeplink).toString(),
-                    if (fallbackUrl.isNullOrEmpty()) {
+                    if (fallbackUrl
+                .isNullOrEmpty()) {
                         getDefaultFallbackUrl(deeplink)
                     } else {
                         fallbackUrl

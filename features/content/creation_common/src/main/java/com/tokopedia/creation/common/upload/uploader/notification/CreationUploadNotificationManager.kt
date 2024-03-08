@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
+import com.tokopedia.creation.common.upload.model.CreationUploadSuccessData
 import com.tokopedia.creation.common.upload.uploader.receiver.CreationUploadReceiver
 import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.coroutines.withContext
@@ -60,7 +61,7 @@ abstract class CreationUploadNotificationManager(
 
     abstract val uploadNotificationText: CreationUploadNotificationText
 
-    abstract fun generateSuccessPendingIntent(): PendingIntent?
+    abstract fun generateSuccessPendingIntent(successData: CreationUploadSuccessData): PendingIntent?
 
     private fun generatePendingIntentToReceiver(action: CreationUploadReceiver.Action): PendingIntent {
         val intent = CreationUploadReceiver.getIntent(
@@ -132,8 +133,8 @@ abstract class CreationUploadNotificationManager(
         return ForegroundInfo(notificationId, notification)
     }
 
-    fun onSuccess(): ForegroundInfo {
-        val successPendingIntent = generateSuccessPendingIntent()
+    fun onSuccess(successData: CreationUploadSuccessData): ForegroundInfo {
+        val successPendingIntent = generateSuccessPendingIntent(successData)
 
         val notification = notificationBuilder
             .setProgress(0, 0, false)

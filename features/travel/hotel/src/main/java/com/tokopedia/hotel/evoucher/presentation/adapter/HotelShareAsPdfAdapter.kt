@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
-import kotlinx.android.synthetic.main.item_hotel_share_as_pdf.view.*
+import com.tokopedia.hotel.databinding.ItemHotelShareAsPdfBinding
 
 /**
  * @author by furqan on 17/05/19
@@ -28,10 +28,12 @@ class HotelShareAsPdfAdapter(private var emailList: List<String>, private var li
 
     class HotelShareAsPdfViewHolder(val view: View, val listener: ShareAsPdfListener) : RecyclerView.ViewHolder(view) {
 
+        private val binding = ItemHotelShareAsPdfBinding.bind(view)
+
         fun bind(element: String) {
-            with(itemView) {
-                tv_email.text = element
-                iv_delete.setOnClickListener {
+            with(binding) {
+                tvEmail.text = element
+                ivDelete.setOnClickListener {
                     listener.onDelete(element)
                 }
             }

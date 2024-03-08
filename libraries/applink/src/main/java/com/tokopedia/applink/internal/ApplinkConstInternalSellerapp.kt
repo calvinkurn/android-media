@@ -106,6 +106,8 @@ object ApplinkConstInternalSellerapp {
 
     // SellerMenuActivity
     const val SELLER_MENU = "$INTERNAL_SELLERAPP/seller-menu"
+    // SellerMenuComposeActivity
+    const val SELLER_MENU_COMPOSE = "$INTERNAL_SELLERAPP/seller-menu-compose"
 
     // SellerSettingsActivity
     const val SELLER_SETTINGS = "$INTERNAL_SELLERAPP/seller-settings"

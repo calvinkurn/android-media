@@ -7,10 +7,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.TextView;
-
-import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.datepicker.range.view.util.DateLabelUtils;
 import com.tokopedia.datepicker.range.R;
+import com.tokopedia.unifycomponents.BaseCustomView;
 
 /**
  * Created by zulfikarrahman on 12/29/16.

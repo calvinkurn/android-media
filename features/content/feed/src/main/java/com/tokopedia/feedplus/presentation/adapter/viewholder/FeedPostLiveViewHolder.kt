@@ -168,7 +168,17 @@ class FeedPostLiveViewHolder(
         }
     }
 
+    private fun handleResumeLiveVideo(element: FeedCardLivePreviewContentModel) {
+        if (element.isLive && listener.isAllowedToPlayVideo()) {
+            mVideoPlayer?.resume(shouldReset = false)
+            hideLiveEndView()
+        } else if (!element.isLive) {
+            showLiveEndView()
+        }
+    }
+
     private fun onSelected(element: FeedCardLivePreviewContentModel) {
+        listener.checkLiveStatus(element.playChannelId)
         listener.onPostImpression(
             trackerDataModel ?: trackerMapper.transformLiveContentToTrackerModel(
                 element
@@ -178,7 +188,7 @@ class FeedPostLiveViewHolder(
         )
 
         mVideoPlayer?.toggleVideoVolume(listener.isMuted())
-        if (listener.isAllowedToPlayVideo()) mVideoPlayer?.resume(shouldReset = false)
+        handleResumeLiveVideo(element)
         onScrolling(false)
     }
 
@@ -196,7 +206,13 @@ class FeedPostLiveViewHolder(
     }
 
     private fun bindAuthor(data: FeedCardLivePreviewContentModel) {
-        authorView.bindData(data.author, true, !data.followers.isFollowed, trackerDataModel, null)
+        authorView.bindData(
+            data.author,
+            data.isLive,
+            !data.followers.isFollowed,
+            trackerDataModel,
+            null
+        )
     }
 
     private fun bindCaption(data: FeedCardLivePreviewContentModel) {
@@ -214,7 +230,7 @@ class FeedPostLiveViewHolder(
             }
 
             override fun onBuffering() {
-                showLoading()
+                if (element.isLive) showLoading()
             }
 
             override fun onVideoReadyToPlay(isPlaying: Boolean) {
@@ -225,26 +241,49 @@ class FeedPostLiveViewHolder(
             }
 
             override fun onBehindLiveWindow(playWhenReady: Boolean) {
-                videoPlayer.start(
-                    element.videoUrl,
-                    false,
+                startVideo(
+                    videoPlayer = videoPlayer,
+                    videoUrl = element.videoUrl,
+                    isMute = false,
                     playWhenReady = playWhenReady,
-                    isLive = true
+                    isLiveContent = true,
+                    stillLive = element.isLive
                 )
             }
         })
 
         binding.playerFeedVideo.player = videoPlayer.getExoPlayer()
-        videoPlayer.start(
-            element.videoUrl,
-            false,
+        startVideo(
+            videoPlayer = videoPlayer,
+            videoUrl = element.videoUrl,
+            isMute = false,
             playWhenReady = false,
-            isLive = true
+            isLiveContent = true,
+            stillLive = element.isLive
         )
+    }
+
+    private fun startVideo(
+        videoPlayer: FeedExoPlayer,
+        videoUrl: String,
+        isMute: Boolean,
+        playWhenReady: Boolean,
+        isLiveContent: Boolean,
+        stillLive: Boolean
+    ) {
+        if (stillLive) {
+            videoPlayer.start(
+                videoUrl,
+                isMute = isMute,
+                playWhenReady = playWhenReady,
+                isLive = isLiveContent
+            )
+        }
     }
 
     private fun showLoading() {
         binding.loaderFeedVideo.show()
+        binding.containerFeedLiveEnd.root.hide()
         if (mVideoPlayer?.getExoPlayer()?.currentPosition == 0L) {
             binding.playerFeedVideo.hide()
         }
@@ -261,6 +300,23 @@ class FeedPostLiveViewHolder(
             alphaAnimator.animateToAlpha(startAlpha)
         } else {
             alphaAnimator.animateToOpaque(startAlpha)
+        }
+    }
+
+    private fun showLiveEndView() {
+        with(binding) {
+            containerFeedLiveEnd.root.show()
+            playerFeedVideo.hide()
+            feedLiveWaveLabel.hide()
+            loaderFeedVideo.hide()
+        }
+    }
+
+    private fun hideLiveEndView() {
+        with(binding) {
+            containerFeedLiveEnd.root.hide()
+            playerFeedVideo.show()
+            feedLiveWaveLabel.show()
         }
     }
 

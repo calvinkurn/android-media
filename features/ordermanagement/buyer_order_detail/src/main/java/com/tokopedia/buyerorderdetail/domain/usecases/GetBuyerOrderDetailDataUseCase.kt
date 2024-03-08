@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class GetBuyerOrderDetailDataUseCase @Inject constructor(
@@ -34,11 +36,7 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
     ): Flow<GetBuyerOrderDetailDataRequestState> = flow {
         when (p0DataRequestState) {
             is GetP0DataRequestState.Requesting -> {
-                emit(
-                    GetBuyerOrderDetailDataRequestState.Requesting(
-                        p0DataRequestState, GetP1DataRequestState.Requesting()
-                    )
-                )
+                emit(GetBuyerOrderDetailDataRequestState.Requesting(p0DataRequestState, GetP1DataRequestState.Requesting()))
             }
             is GetP0DataRequestState.Complete -> {
                 val getBuyerOrderDetailRequestState = p0DataRequestState
@@ -73,18 +71,10 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
             flow {
                 when (p1DataRequestState) {
                     is GetP1DataRequestState.Requesting -> {
-                        emit(
-                            GetBuyerOrderDetailDataRequestState.Requesting(
-                                p0DataRequestState, p1DataRequestState
-                            )
-                        )
+                        emit(GetBuyerOrderDetailDataRequestState.Requesting(p0DataRequestState, p1DataRequestState))
                     }
                     is GetP1DataRequestState.Complete -> {
-                        emit(
-                            GetBuyerOrderDetailDataRequestState.Complete(
-                                p0DataRequestState, p1DataRequestState
-                            )
-                        )
+                        emit(GetBuyerOrderDetailDataRequestState.Complete(p0DataRequestState, p1DataRequestState))
                     }
                 }
             }
@@ -95,9 +85,7 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
     ) = getP0DataUseCase(
         GetP0DataParams(params.cart, params.orderId, params.paymentId, params.shouldCheckCache)
     ).flatMapConcat { p0DataRequestState ->
-        mapGetP0DataRequestStateToGetAllDataRequestState(
-            p0DataRequestState, params.shouldCheckCache
-        )
+        mapGetP0DataRequestStateToGetAllDataRequestState(p0DataRequestState, params.shouldCheckCache)
     }.catch {
         emit(
             GetBuyerOrderDetailDataRequestState.Complete(
@@ -108,5 +96,17 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
                 )
             )
         )
+    }.onCompletion {
+        logCompletionBreadcrumb(params, it)
+    }
+
+    private fun logCompletionBreadcrumb(params: GetBuyerOrderDetailDataParams, throwable: Throwable?) {
+        runCatching {
+            if (throwable == null) {
+                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailDataUseCase - Success: $params")
+            } else {
+                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailDataUseCase - Error: ${throwable.stackTraceToString()}")
+            }
+        }
     }
 }

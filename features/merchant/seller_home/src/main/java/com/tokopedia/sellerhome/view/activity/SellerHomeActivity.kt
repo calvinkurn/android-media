@@ -61,6 +61,7 @@ import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.databinding.ActivitySahSellerHomeBinding
 import com.tokopedia.sellerhome.di.component.DaggerHomeDashboardComponent
 import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
+import com.tokopedia.sellerhome.di.module.SellerHomeModule
 import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
@@ -174,6 +175,7 @@ open class SellerHomeActivity :
     override fun getComponent(): HomeDashboardComponent {
         return DaggerHomeDashboardComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .sellerHomeModule(SellerHomeModule(this))
             .build()
     }
 

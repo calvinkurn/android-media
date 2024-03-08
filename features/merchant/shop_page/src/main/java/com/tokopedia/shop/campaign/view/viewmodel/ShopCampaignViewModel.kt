@@ -214,14 +214,16 @@ class ShopCampaignViewModel @Inject constructor(
         shopId: String,
         extParam: String,
         locData: LocalCacheModel,
-        tabName: String
+        tabName: String,
+        connectionType: String
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             val shopHomeWidgetData = getShopDynamicHomeTabWidgetData(
                 shopId,
                 extParam,
                 locData,
-                tabName
+                tabName,
+                connectionType
             )
             _latestShopCampaignWidgetLayoutData.postValue(Success(shopHomeWidgetData))
         }) {
@@ -235,7 +237,8 @@ class ShopCampaignViewModel @Inject constructor(
         shopId: String,
         extParam: String,
         locData: LocalCacheModel,
-        tabName: String
+        tabName: String,
+        connectionType: String
     ): ShopPageLayoutUiModel {
         getShopDynamicTabUseCase.isFromCacheFirst = false
         getShopDynamicTabUseCase.setRequestParams(
@@ -246,7 +249,8 @@ class ShopCampaignViewModel @Inject constructor(
                 locData.city_id,
                 locData.lat,
                 locData.long,
-                tabName
+                tabName,
+                connectionType
             ).parameters
         )
         val layoutData = getShopDynamicTabUseCase.executeOnBackground().shopPageGetDynamicTab.tabData.firstOrNull {

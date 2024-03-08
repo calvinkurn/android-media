@@ -1,6 +1,7 @@
 package com.tokopedia.app.common;
 
 import android.content.SharedPreferences;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
@@ -13,17 +14,20 @@ import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.UserData;
+import com.tokopedia.locationmanager.LocationDetectorHelper;
+import com.tokopedia.locationmanager.RequestLocationType;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.unifycomponents.ImageUnify;
+import com.tokopedia.unifycomponents.ImageUrlLoader;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -33,6 +37,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 
 import javax.net.ssl.SSLContext;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 
 
 public abstract class MainApplication extends CoreNetworkApplication {
@@ -59,7 +66,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
         return userSession;
     }
 
-    public void initFileDirConfig(){
+    public void initFileDirConfig() {
         GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
         GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
         File extCacheDir = this.getExternalCacheDir();
@@ -90,7 +97,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
         registerActivityLifecycleCallbacks(new AppActivityLifecycleCallback());
     }
 
-    private void createAndCallBgWork(){
+    private void createAndCallBgWork() {
         WeaveInterface executeBgWorkWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -103,13 +110,15 @@ public abstract class MainApplication extends CoreNetworkApplication {
     }
 
     @NotNull
-    private Boolean executeInBackground(){
-        new LocationUtils(MainApplication.this).initLocationBackground();
+    private Boolean executeInBackground() {
+        ImageUnifyInit.setImageCallback();
+        new LocationDetectorHelper(MainApplication.this).getLocation(null,
+                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                RequestLocationType.APPROXIMATE_OR_PRECISE);
         upgradeSecurityProvider();
         return true;
     }
 
-    @NotNull
     private boolean fetchRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(this);
         remoteConfig.fetch(getRemoteConfigListener());
@@ -177,16 +186,16 @@ public abstract class MainApplication extends CoreNetworkApplication {
 
     //this method needs to be called from here in case of migration get it tested from CM team
     @NotNull
-    private Boolean initBranch(){
+    private Boolean initBranch() {
         LinkerManager.initLinkerManager(getApplicationContext());
-        if(remoteConfig.getBoolean(MAINAPP_ADDGAIDTO_BRANCH, false)){
+        if (remoteConfig.getBoolean(MAINAPP_ADDGAIDTO_BRANCH, false)) {
             LinkerManager.getInstance().setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         }
         WeaveInterface branchUserIdentityWeave = new WeaveInterface() {
             @NotNull
             @Override
             public Object execute() {
-                if(userSession.isLoggedIn()) {
+                if (userSession.isLoggedIn()) {
                     UserData userData = new UserData();
                     userData.setUserId(userSession.getUserId());
                     LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,

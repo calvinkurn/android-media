@@ -2,5 +2,6 @@
 <resources>
     <declare-styleable name="ComparisonWidgetView">
         <attr name="clickableAnchor" format="boolean" />
+        <attr name="useReimagine" format="boolean" />
     </declare-styleable>
 </resources>

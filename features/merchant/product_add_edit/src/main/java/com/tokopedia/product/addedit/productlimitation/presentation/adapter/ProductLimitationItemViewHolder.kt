@@ -3,8 +3,9 @@ package com.tokopedia.product.addedit.productlimitation.presentation.adapter
 import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationActionItemModel
 import com.tokopedia.unifyprinciples.Typography
@@ -19,7 +20,7 @@ class ProductLimitationItemViewHolder(itemView: View) :
 
     fun bindData(data: ProductLimitationActionItemModel) {
         val drawableIcon = MethodChecker.getDrawable(itemView.context, com.tokopedia.list.R.drawable.listitem_chevron)
-        loadImageFitCenter(itemView.context, ivCard, data.imageUrl)
+        ivCard.loadImageFitCenter(data.imageUrl)
         tvTitle.text = data.title
         tvDescription.text = data.description
         tvAction.text = data.actionText

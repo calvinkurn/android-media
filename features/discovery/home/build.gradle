@@ -83,6 +83,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.fintechHomeWidget)
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.homeComponentHeader)
+    implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
+    implementation projectOrAar(rootProject.ext.features.discoveryComponent)
 
     // Library
     implementation projectOrAar(rootProject.ext.libraries.analytics)
@@ -104,7 +106,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.libraries.logger)
-
+    implementation projectOrAar(rootProject.ext.libraries.sdui)
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime

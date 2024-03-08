@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -20,4 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout="@layout/widget_campaign_ribbon_type_3_layout"/>
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/campaign_ribbon_compose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visibility"/>
 </FrameLayout>

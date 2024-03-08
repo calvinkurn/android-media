@@ -1,9 +1,11 @@
 package com.tokopedia.topupbills.telco.common.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.prefix_select.*
+import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -11,8 +13,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -29,14 +35,17 @@ class SharedTelcoViewModelTest {
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
 
+    @RelaxedMockK
+    lateinit var contactDataSource: ContactDataSource
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        telcoViewModel = SharedTelcoViewModel(graphqlRepository, Dispatchers.Unconfined)
+        telcoViewModel = SharedTelcoViewModel(graphqlRepository, contactDataSource, Dispatchers.Unconfined)
     }
 
     @Test
-    fun setPromoImpression(){
+    fun setPromoImpression() {
         // given
 
         // when
@@ -47,7 +56,7 @@ class SharedTelcoViewModelTest {
     }
 
     @Test
-    fun setRecentsImpression(){
+    fun setRecentsImpression() {
         // given
 
         // when
@@ -59,49 +68,49 @@ class SharedTelcoViewModelTest {
 
     @Test
     fun setRecommendationTelco_dataValid() {
-        //given
+        // given
         val listRecommendation = ArrayList<TopupBillsRecommendation>()
         listRecommendation.add(TopupBillsRecommendation(clientNumber = "0875343243434"))
-        //when
+        // when
         telcoViewModel.setRecommendationTelco(listRecommendation)
-        //then
+        // then
         assertEquals(listRecommendation[0].clientNumber, telcoViewModel.recommendations.value?.get(0)?.clientNumber)
     }
 
     @Test
     fun setPromoTelco_dataValid() {
-        //given
+        // given
         val listPromo = ArrayList<TopupBillsPromo>()
         listPromo.add(TopupBillsPromo(title = "test promo telco"))
-        //when
+        // when
         telcoViewModel.setPromoTelco(listPromo)
-        //then
+        // then
         assertEquals(listPromo[0].title, telcoViewModel.promos.value?.get(0)?.title)
     }
 
     @Test
     fun setSelectedRecentNumber_dataValid() {
-        //given
+        // given
         val selectedRecent = TopupBillsRecommendation(clientNumber = "0875343243434")
-        //when
+        // when
         telcoViewModel.setSelectedRecentNumber(selectedRecent)
-        //then
+        // then
         assertEquals(selectedRecent.clientNumber, telcoViewModel.selectedRecentNumber.value?.clientNumber)
     }
 
     @Test
     fun setTitleMenu_dataValid() {
-        //given
+        // given
         val showMenu = true
-        //when
+        // when
         telcoViewModel.setTitleMenu(showMenu)
-        //then
+        // then
         assertEquals(showMenu, telcoViewModel.titleMenu.value)
     }
 
     @Test
     fun getPrefixOperator_DataValid_SuccessGetData() {
-        //given
+        // given
         val listPrefixes = mutableListOf<RechargePrefix>()
         listPrefixes.add(RechargePrefix(operator = TelcoOperator(attributes = TelcoAttributesOperator(name = "simpati"))))
         val catalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect(prefixes = listPrefixes))
@@ -111,11 +120,11 @@ class SharedTelcoViewModelTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
-        //when
+        // when
         telcoViewModel.getPrefixOperator("", 2)
         Thread.sleep(1000)
 
-        //then
+        // then
         val actualData = telcoViewModel.catalogPrefixSelect.value
         assertNotNull(actualData)
         assert(actualData is Success)
@@ -125,7 +134,7 @@ class SharedTelcoViewModelTest {
 
     @Test
     fun getPrefixOperator_DataValid_FailedGetData() {
-        //given
+        // given
         val errorGql = GraphqlError()
         errorGql.message = "Error gql"
 
@@ -134,14 +143,30 @@ class SharedTelcoViewModelTest {
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
-        //when
+        // when
         telcoViewModel.getPrefixOperator("", 2)
 
-        //then
+        // then
         val actualData = telcoViewModel.catalogPrefixSelect.value
         assertNotNull(actualData)
         assert(actualData is Fail)
         val error = (actualData as Fail).throwable
         assertEquals(errorGql.message, error.message)
+    }
+
+    @Test
+    fun getContactList_returnsCorrectContactData() {
+        val fakeContacts = mutableListOf(
+            TopupBillsContact("Tokopedia", "081234567890"),
+            TopupBillsContact("GoTo", "085600001111")
+        )
+
+        every { contactDataSource.getContactList() } returns fakeContacts
+
+        val actualContacts = telcoViewModel.getContactList()
+
+        verify { contactDataSource.getContactList() }
+
+        Assert.assertEquals(fakeContacts, actualContacts)
     }
 }

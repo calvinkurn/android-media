@@ -2,10 +2,10 @@ package com.tokopedia.stories.creation.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.model.stories.StoriesStatus
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.creation.common.util.StoriesAppLinkBuilder
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -37,6 +36,9 @@ class StoriesCreationViewModel @Inject constructor(
 
     private val _uiEvent = MutableSharedFlow<StoriesCreationUiEvent>()
     val uiEvent: Flow<StoriesCreationUiEvent> = _uiEvent
+
+    val mediaFilePath: String
+        get() = _uiState.value.media.filePath
 
     val maxStoriesConfig: StoriesCreationConfiguration.MaxStoriesConfig
         get() = _uiState.value.config.maxStoriesConfig
@@ -120,8 +122,13 @@ class StoriesCreationViewModel @Inject constructor(
     }
 
     private fun handleClickUpload() {
-        viewModelScope.launch {
+        viewModelScope.launchCatchError(block = {
             val state = _uiState.value
+
+            repo.updateStoryStatus(
+                storyId = state.config.storiesId,
+                status = StoriesStatus.Queue,
+            )
 
             val data = CreationUploadData.buildForStories(
                 creationId = state.config.storiesId,
@@ -141,6 +148,8 @@ class StoriesCreationViewModel @Inject constructor(
             creationUploader.upload(data)
 
             _uiEvent.emit(StoriesCreationUiEvent.StoriesUploadQueued)
+        }) { throwable ->
+            _uiEvent.emit(StoriesCreationUiEvent.ShowError(throwable))
         }
     }
 }

@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import com.tokopedia.fingerprint.view.FingerPrintDialog
 import com.tokopedia.payment.R
 import java.text.SimpleDateFormat
 import java.util.*

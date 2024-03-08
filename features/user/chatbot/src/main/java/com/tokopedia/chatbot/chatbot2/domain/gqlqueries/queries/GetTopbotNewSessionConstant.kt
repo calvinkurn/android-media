@@ -5,5 +5,7 @@ const val GQL_GET_TOP_BOT_NEW_SESSION =
     topbotGetNewSession(msgID: ${'$'}msgId, userID: ${'$'}userId) {
         isNewSession
         isTypingBlocked
+        isSlowMode
+        slowModeDurationInSeconds
   }
 }"""

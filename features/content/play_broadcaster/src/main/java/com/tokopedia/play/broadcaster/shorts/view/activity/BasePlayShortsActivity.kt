@@ -29,10 +29,10 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.bottomsheet.ShortsAccountNotEligibleBottomSheet
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparationFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsSummaryFragment
+import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsVideoPreviewFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play_common.util.extension.withCache
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -202,6 +202,9 @@ abstract class BasePlayShortsActivity : BaseActivity() {
                     is PlayShortsUiEvent.GoToSummary -> {
                         openSummaryFragment()
                     }
+                    is PlayShortsUiEvent.GoToVideoPreview -> {
+                        openVideoPreviewFragment()
+                    }
                     else -> {}
                 }
             }
@@ -261,6 +264,19 @@ abstract class BasePlayShortsActivity : BaseActivity() {
             .replace(
                 binding.container.id,
                 PlayShortsSummaryFragment.getFragment(
+                    supportFragmentManager,
+                    classLoader
+                )
+            )
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun openVideoPreviewFragment() {
+        supportFragmentManager.beginTransaction()
+            .replace(
+                binding.container.id,
+                PlayShortsVideoPreviewFragment.getFragment(
                     supportFragmentManager,
                     classLoader
                 )

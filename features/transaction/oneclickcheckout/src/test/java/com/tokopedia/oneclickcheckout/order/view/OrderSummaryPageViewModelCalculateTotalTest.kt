@@ -32,11 +32,13 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletAdditio
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletErrorData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.AdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel
@@ -71,6 +73,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderShipment.value =
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -96,6 +108,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         )
         orderSummaryPageViewModel.orderProfile.value =
             helper.preference.copy(address = OrderProfileAddress())
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -124,6 +146,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderShipment.value =
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -151,6 +183,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderShipment.value =
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -182,6 +224,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             serviceErrorMessage = "error"
         )
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -208,6 +260,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = OrderShipment()
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -235,6 +297,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderShipment.value =
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -273,6 +345,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderShipment.value =
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -320,6 +402,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderShipment.value =
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -367,6 +459,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderShipment.value =
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -405,6 +507,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderShipment.value =
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -443,6 +555,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value =
             OrderPayment(isEnable = true, minimumAmount = 10000)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -490,6 +603,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value =
             OrderPayment(isEnable = true, maximumAmount = 10)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -537,6 +660,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value =
             OrderPayment(isEnable = true, minimumAmount = 10000, isOvoOnlyCampaign = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -578,6 +711,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             isEnable = true,
             minimumAmount = 10000,
             specificGatewayCampaignOnlyType = 2
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
         )
 
         // When
@@ -623,6 +766,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(errorMessageBottomLimit = errorBelowMinimum)
+            )
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
             )
         )
 
@@ -677,6 +830,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 goCicilData = OrderPaymentGoCicilData(errorMessageBottomLimit = errorBelowMinimum)
             )
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
@@ -721,6 +884,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value =
             OrderPayment(isEnable = true, maximumAmount = 10, isOvoOnlyCampaign = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -760,6 +933,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value =
             OrderPayment(isEnable = true, maximumAmount = 10, specificGatewayCampaignOnlyType = 2)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -804,6 +987,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(errorMessageTopLimit = errorAboveMaximum)
+            )
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
             )
         )
 
@@ -860,6 +1053,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(errorMessageTopLimit = errorAboveMaximum)
+            )
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
             )
         )
 
@@ -922,6 +1125,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             ovoData = orderPaymentOvoAdditionalData
         )
         orderSummaryPageViewModel.orderPayment.value = orderPayment
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -982,6 +1195,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         val orderPayment =
             OrderPayment(isEnable = true, walletAmount = 10, walletData = walletAdditionalData)
         orderSummaryPageViewModel.orderPayment.value = orderPayment
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1045,6 +1268,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             ovoData = orderPaymentOvoAdditionalData
         )
         orderSummaryPageViewModel.orderPayment.value = orderPayment
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1107,6 +1340,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             walletAmount = 10,
             specificGatewayCampaignOnlyType = 2,
             walletData = walletAdditionalData
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
         )
         orderSummaryPageViewModel.orderPayment.value = orderPayment
 
@@ -1175,6 +1418,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             ovoData = orderPaymentOvoAdditionalData
         )
         orderSummaryPageViewModel.orderPayment.value = orderPayment
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1235,6 +1488,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         val orderPayment =
             OrderPayment(isEnable = true, walletAmount = 10, walletData = walletAdditionalData)
         orderSummaryPageViewModel.orderPayment.value = orderPayment
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1301,6 +1564,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             ovoData = orderPaymentOvoAdditionalData
         )
         orderSummaryPageViewModel.orderPayment.value = orderPayment
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1365,6 +1638,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             walletData = walletAdditionalData
         )
         orderSummaryPageViewModel.orderPayment.value = orderPayment
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1435,6 +1718,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             ovoData = orderPaymentOvoAdditionalData
         )
         orderSummaryPageViewModel.orderPayment.value = orderPayment
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1503,6 +1796,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         val orderPayment =
             OrderPayment(isEnable = true, walletAmount = 10, walletData = walletAdditionalData)
         orderSummaryPageViewModel.orderPayment.value = orderPayment
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1562,6 +1865,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(errorMessageTopLimit = errorAboveLimit)
+            )
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
             )
         )
 
@@ -1626,6 +1939,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             ovoData = orderPaymentOvoAdditionalData
         )
         orderSummaryPageViewModel.orderPayment.value = orderPayment
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1698,6 +2021,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             walletData = walletAdditionalData
         )
         orderSummaryPageViewModel.orderPayment.value = orderPayment
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1760,6 +2093,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 goCicilData = OrderPaymentGoCicilData(errorMessageTopLimit = errorAboveLimit)
             )
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
@@ -1807,6 +2150,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             walletAmount = 10000,
             gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -1848,6 +2201,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             isEnable = true,
             walletAmount = 10000,
             walletData = OrderPaymentWalletAdditionalData(enableWalletAmountValidation = true)
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
         )
 
         // When
@@ -1900,6 +2263,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 )
             )
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
@@ -1948,6 +2321,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             revampErrorMessage = OrderPaymentRevampErrorMessage(
                 message = message,
                 button = OrderPaymentRevampErrorMessageButton(text = button, action = action)
+            )
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
             )
         )
 
@@ -2001,6 +2384,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 button = OrderPaymentRevampErrorMessageButton(text = button, action = action)
             ),
             isDisablePayButton = true
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
         )
 
         // When
@@ -2057,6 +2450,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 button = OrderPaymentErrorMessageButton(text = "cc button")
             )
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -2111,6 +2514,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                     ),
                     errorMessageUnavailableTenures = errorUnavailableTenures
                 )
+            )
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
             )
         )
 
@@ -2210,6 +2623,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             serviceName = "service"
         )
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -2294,6 +2717,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                     mdrSubsidize = 0.5f,
                     minAmount = 100
                 )
+            )
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
             )
         )
 
@@ -2415,6 +2848,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 )
             )
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -2517,6 +2960,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 )
             )
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -2586,6 +3039,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 )
             )
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -2643,6 +3106,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderShipment.value =
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -2686,6 +3159,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderShipment.value =
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = helper.orderPromo
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -2729,6 +3203,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderShipment.value =
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -2771,6 +3255,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderShipment.value =
             OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -2821,6 +3315,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                     ),
                     selectedTerm = OrderPaymentGoCicilTerms(isActive = false)
                 )
+            )
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
             )
         )
 
@@ -2876,6 +3380,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 )
             )
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
@@ -2926,6 +3440,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 )
             )
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
@@ -2969,6 +3493,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             maximumAmount = 100000,
             walletAmount = 100000,
             originalPaymentFees = helper.paymentFeeDetails
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
         )
 
         // When
@@ -3024,6 +3558,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 )
             ),
             originalPaymentFees = helper.paymentFeeDetails
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
         )
 
         // When
@@ -3095,6 +3639,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             ),
             originalPaymentFees = helper.paymentFeeDetails
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
@@ -3140,6 +3694,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             maximumAmount = 100000,
             walletAmount = 100000,
             originalPaymentFees = helper.paymentFeeDetails
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
         )
 
         val orderPaymentFee = OrderPaymentFee(
@@ -3193,6 +3757,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             originalPaymentFees = helper.paymentFeeDetails
         )
         coEvery { dynamicPaymentFeeUseCase.invoke(any()) } throws IOException()
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -3240,6 +3814,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             )
         )
         coEvery { dynamicPaymentFeeUseCase.invoke(any()) } throws IOException()
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -3290,6 +3874,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             originalPaymentFees = helper.paymentFeeDetails
         )
         coEvery { dynamicPaymentFeeUseCase.invoke(any()) } throws IOException()
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -3361,6 +3955,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 option1,
                 option2,
                 option3
+            )
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
             )
         )
 
@@ -3439,6 +4043,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             fee = 5000.0
         )
         coEvery { dynamicPaymentFeeUseCase.invoke(any()) } returns listOf(orderPaymentFee)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         // When
         orderSummaryPageViewModel.calculateTotal()

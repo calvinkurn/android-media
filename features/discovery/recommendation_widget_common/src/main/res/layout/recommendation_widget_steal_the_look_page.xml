@@ -14,7 +14,7 @@
         android:id="@+id/stl_item_left_grid"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="@string/steal_the_look_left_image_ratio"
+        app:layout_constraintDimensionRatio="@string/steal_the_look_left_item_ratio"
         app:layout_constraintHorizontal_weight="@integer/steal_the_look_left_item_horizontal_weight"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintTop_toTopOf="parent"

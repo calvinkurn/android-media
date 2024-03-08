@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithPlaceholder
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
 import com.tokopedia.merchantvoucher.common.model.*
@@ -68,12 +68,7 @@ class LogisticVoucherView : CustomVoucherView {
         tvVoucherTitle?.text = title
         tvVoucherSubtitle?.text = subtitle
         tvVoucherDesc?.text = desc
-        ImageHandler.loadImage(
-                context,
-                ivVoucherType,
-                DELIVERY_VOUCHER_IMAGE_URL,
-            com.tokopedia.design.R.drawable.ic_loading_image
-        )
+        ivVoucherType?.loadImageWithPlaceholder(DELIVERY_VOUCHER_IMAGE_URL, R.drawable.ic_loading_image)
         btnUseVoucher?.isEnabled = !isApplied
         btnUseVoucher?.text = if (isApplied) context.getString(R.string.applied) else
             context.getString(R.string.use_promo)

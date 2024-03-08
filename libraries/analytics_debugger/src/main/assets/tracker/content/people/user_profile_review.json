@@ -1,6 +1,6 @@
 {
   "readme": "User Profile Review - Analytics",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "event": "clickContent",

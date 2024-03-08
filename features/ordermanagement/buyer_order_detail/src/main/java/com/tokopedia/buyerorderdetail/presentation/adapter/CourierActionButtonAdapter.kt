@@ -4,6 +4,7 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.buyerorderdetail.R
@@ -49,6 +50,10 @@ class CourierActionButtonAdapter(
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val binding: ItemBuyerOrderDetailCourierDriverIconBinding? by viewBinding()
+
+        init {
+            revertParentsClip()
+        }
 
         fun bind(button: ShipmentInfoUiModel.CourierDriverInfoUiModel.Button?) {
             setButtonIcon(button)
@@ -163,6 +168,17 @@ class CourierActionButtonAdapter(
                     queryParams[1],
                     getStringCounter(counter)
                 )
+            }
+        }
+
+        private fun revertParentsClip() {
+            binding?.btnIconActionDriver?.doOnLayout {
+                var view: Any? = binding?.root?.parent
+                while (view is ViewGroup) {
+                    view.clipChildren = true
+                    view = view.parent
+                }
+                revertParentsClip()
             }
         }
 

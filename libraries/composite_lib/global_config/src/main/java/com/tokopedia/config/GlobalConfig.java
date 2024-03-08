@@ -44,6 +44,11 @@ public class GlobalConfig {
     /**
      * This field is used to pass the list of  trace names for which tracing need to be recorded if debug trace is enabled
      */
+
+    /**
+     * This field is used to enable nakama version. Used by App Distribution
+     */
+    public static Boolean IS_NAKAMA_VERSION = false;
     public static String[] DEBUG_TRACE_NAME = {};
 
     // use to set default root Activity for incoming deeplink

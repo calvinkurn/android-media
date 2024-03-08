@@ -129,7 +129,7 @@ class RechargeGeneralLoginInstrumentTest {
             .perform(click())
         Thread.sleep(1000)
         onView(withText("111111111111")).check(matches(isDisplayed()))
-        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(ViewMatchers.isEnabled()))
+        onView(withId(R.id.recharge_general_enquiry_button_compose)).check(matches(ViewMatchers.isEnabled()))
 
         // Stub manual typed number
         stubSearchNumber()

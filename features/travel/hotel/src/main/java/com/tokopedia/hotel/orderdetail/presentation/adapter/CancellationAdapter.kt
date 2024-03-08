@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.databinding.ItemOrderDetailCancellationPoliciesBinding
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
-import kotlinx.android.synthetic.main.item_order_detail_cancellation_policies.view.*
 
 /**
  * @author by jessica on 13/05/19
@@ -31,8 +31,10 @@ class CancellationAdapter(val list: List<HotelTransportDetail.Cancellation.Cance
 
     inner class ViewHolder(val itemview: View): RecyclerView.ViewHolder(itemview) {
 
+        private val binding = ItemOrderDetailCancellationPoliciesBinding.bind(itemview)
+
         fun bind(data: HotelTransportDetail.Cancellation.CancellationPolicy) {
-            with(itemview) {
+            with(binding) {
                 title.text = data.longTitle
                 text.text = data.longDesc
             }

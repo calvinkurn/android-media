@@ -1,9 +1,13 @@
 package com.tokopedia.mvc.presentation.creation.step2
 
+import android.content.Context
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -20,7 +24,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -310,6 +313,18 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             viewVoucherName.setOnInflateListener { _, view ->
                 voucherNameSectionBinding =
                     SmvcVoucherCreationStepTwoVoucherNameSectionBinding.bind(view)
+                voucherNameSectionBinding?.tfVoucherName?.run {
+                    editText.setOnEditorActionListener { _, actionId, event ->
+                        if (actionId == EditorInfo.IME_ACTION_DONE || event != null &&
+                            event.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER
+                        ) {
+                            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(windowToken, 0)
+                            return@setOnEditorActionListener true
+                        }
+                        return@setOnEditorActionListener false
+                    }
+                }
             }
             viewVoucherCode.setOnInflateListener { _, view ->
                 voucherCodeSectionBinding =

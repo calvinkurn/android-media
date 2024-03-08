@@ -34,7 +34,7 @@ class DoubleBannerViewHolder(
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = DoubleImageAdapter(element.imageUrls.zipWithNext().filterIndexed { index, _ -> index.isEven() })
         }
-        doubleBannerListener?.onDoubleBannerImpression()
+        doubleBannerListener?.onDoubleBannerImpression(element.widgetName)
     }
 
     class DoubleImageAdapter(

@@ -67,6 +67,7 @@ data class Product(
     var isBmgmItem: Boolean = false,
     var bmgmIconUrl: String = "",
     var bmgmOfferId: Long = 0,
+    var bmgmOfferTypeId: Long = 0,
     var bmgmOfferName: String = "",
     var bmgmOfferMessage: List<String> = emptyList(),
     var bmgmOfferStatus: Int = 0,

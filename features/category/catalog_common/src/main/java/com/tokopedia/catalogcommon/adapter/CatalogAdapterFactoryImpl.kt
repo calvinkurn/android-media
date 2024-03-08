@@ -5,9 +5,15 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.listener.AccordionListener
 import com.tokopedia.catalogcommon.listener.BannerListener
+import com.tokopedia.catalogcommon.listener.CharacteristicListener
 import com.tokopedia.catalogcommon.listener.ColumnedInfoListener
 import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
+import com.tokopedia.catalogcommon.listener.PanelImageListener
+import com.tokopedia.catalogcommon.listener.PriceCtaSellerOfferingListener
+import com.tokopedia.catalogcommon.listener.SellerOfferingListener
+import com.tokopedia.catalogcommon.listener.SliderImageTextListener
+import com.tokopedia.catalogcommon.listener.SupportFeatureListener
 import com.tokopedia.catalogcommon.listener.TextDescriptionListener
 import com.tokopedia.catalogcommon.listener.TopFeatureListener
 import com.tokopedia.catalogcommon.listener.TrustMakerListener
@@ -16,6 +22,7 @@ import com.tokopedia.catalogcommon.listener.VideoListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
+import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
 import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
@@ -23,6 +30,8 @@ import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
+import com.tokopedia.catalogcommon.uimodel.PriceCtaSellerOfferingUiModel
+import com.tokopedia.catalogcommon.uimodel.SellerOfferingUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.uimodel.SupportFeaturesUiModel
@@ -33,6 +42,7 @@ import com.tokopedia.catalogcommon.uimodel.VideoUiModel
 import com.tokopedia.catalogcommon.viewholder.AccordionInformationViewHolder
 import com.tokopedia.catalogcommon.viewholder.BannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.BlankViewHolder
+import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
 import com.tokopedia.catalogcommon.viewholder.CharacteristicViewHolder
 import com.tokopedia.catalogcommon.viewholder.ColumnedInfoViewHolder
 import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
@@ -40,6 +50,8 @@ import com.tokopedia.catalogcommon.viewholder.DoubleBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.ExpertReviewViewHolder
 import com.tokopedia.catalogcommon.viewholder.HeroBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.PanelImageViewHolder
+import com.tokopedia.catalogcommon.viewholder.PriceCtaSellerOfferingViewHolder
+import com.tokopedia.catalogcommon.viewholder.SellerOfferingViewHolder
 import com.tokopedia.catalogcommon.viewholder.SliderImageTextViewHolder
 import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
@@ -64,17 +76,24 @@ class CatalogAdapterFactoryImpl(
     private val comparisonItemListener: ComparisonViewHolder.ComparisonItemListener? = null,
     private val videoListener: VideoListener? = null,
     private val columnedInfoListener: ColumnedInfoListener? = null,
-    private val isDisplayingTopSpec: Boolean = true
+    private val isDisplayingTopSpec: Boolean = true,
+    private val buyerReviewListener: BuyerReviewViewHolder.BuyerReviewListener? = null,
+    private val supportFeatureListener: SupportFeatureListener? = null,
+    private val imageTextListener: SliderImageTextListener? = null,
+    private val characteristicListener: CharacteristicListener? = null,
+    private val panelImageListener: PanelImageListener? = null,
+    private val sellerOfferingListener: SellerOfferingListener? = null,
+    private val priceCtaSellerOfferingListener: PriceCtaSellerOfferingListener? = null
 ) : BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             TopFeatureViewHolder.LAYOUT -> TopFeatureViewHolder(view, topFeatureListener)
-            CharacteristicViewHolder.LAYOUT -> CharacteristicViewHolder(view)
+            CharacteristicViewHolder.LAYOUT -> CharacteristicViewHolder(view, characteristicListener)
             HeroBannerViewHolder.LAYOUT -> HeroBannerViewHolder(view, heroBannerListener)
             StickyTabNavigationViewHolder.LAYOUT -> StickyTabNavigationViewHolder(view, navListener)
-            SliderImageTextViewHolder.LAYOUT -> SliderImageTextViewHolder(view)
-            PanelImageViewHolder.LAYOUT -> PanelImageViewHolder(view)
+            SliderImageTextViewHolder.LAYOUT -> SliderImageTextViewHolder(view, imageTextListener)
+            PanelImageViewHolder.LAYOUT -> PanelImageViewHolder(view, panelImageListener)
             TrustmakerViewHolder.LAYOUT -> TrustmakerViewHolder(view, trustMakerListener)
             BannerRevampViewHolder.LAYOUT -> BannerRevampViewHolder(view, null)
             AccordionInformationViewHolder.LAYOUT -> AccordionInformationViewHolder(view, accordionListener)
@@ -82,10 +101,13 @@ class CatalogAdapterFactoryImpl(
             BannerViewHolder.LAYOUT -> BannerViewHolder(view, bannerListener)
             DoubleBannerViewHolder.LAYOUT -> DoubleBannerViewHolder(view, doubleBannerListener)
             ExpertReviewViewHolder.LAYOUT -> ExpertReviewViewHolder(view, videoExpertListener)
-            SupportFeatureViewHolder.LAYOUT -> SupportFeatureViewHolder(view)
+            SupportFeatureViewHolder.LAYOUT -> SupportFeatureViewHolder(view, supportFeatureListener)
             ComparisonViewHolder.LAYOUT -> ComparisonViewHolder(view, comparisonItemListener, isDisplayingTopSpec)
             VideoViewHolder.LAYOUT -> VideoViewHolder(view, videoListener)
             ColumnedInfoViewHolder.LAYOUT -> ColumnedInfoViewHolder(view, columnedInfoListener)
+            BuyerReviewViewHolder.LAYOUT -> BuyerReviewViewHolder(view, buyerReviewListener)
+            SellerOfferingViewHolder.LAYOUT -> SellerOfferingViewHolder(view, sellerOfferingListener)
+            PriceCtaSellerOfferingViewHolder.LAYOUT -> PriceCtaSellerOfferingViewHolder(view, priceCtaSellerOfferingListener)
             BlankViewHolder.LAYOUT -> BlankViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
@@ -157,5 +179,17 @@ class CatalogAdapterFactoryImpl(
 
     override fun type(uiModel: ColumnedInfoUiModel): Int {
         return ColumnedInfoViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: BuyerReviewUiModel): Int {
+        return BuyerReviewViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: SellerOfferingUiModel): Int {
+        return SellerOfferingViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: PriceCtaSellerOfferingUiModel): Int {
+        return PriceCtaSellerOfferingViewHolder.LAYOUT
     }
 }

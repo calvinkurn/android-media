@@ -1,7 +1,6 @@
 package com.tokopedia.home_account.view.adapter.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.CommonDataView
@@ -9,6 +8,7 @@ import com.tokopedia.home_account.databinding.HomeAccountItemCommonBinding
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageCenterCrop
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -28,11 +28,7 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener) :
             binding?.accountUserItemCommonIcon?.setImage(common.icon)
         }
         if (common.urlIcon.isNotEmpty()) {
-            ImageHandler.loadImageFit2(
-                binding?.accountUserItemCommonIcon?.context,
-                binding?.accountUserItemCommonIcon,
-                common.urlIcon
-            )
+            binding?.accountUserItemCommonIcon?.loadImageCenterCrop(common.urlIcon)
         }
 
         binding?.root?.setOnClickListener {

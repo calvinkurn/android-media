@@ -59,8 +59,7 @@ import com.tokopedia.cachemanager.repository.SaveInstanceCacheRepository
  */
 class SaveInstanceCacheManager : CacheManager {
 
-    override fun createRepository(context: Context) =
-            SaveInstanceCacheRepository(context)
+    override fun createRepository(context: Context) = SaveInstanceCacheRepository.create(context)
 
     constructor(context: Context, savedInstanceState: Bundle?) : super(context) {
         if (savedInstanceState == null) {

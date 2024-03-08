@@ -5,7 +5,7 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant.PDP.EVENT_CLI
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.CURRENT_SITE
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_CURRENT_SITE
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.TrackingUtil
 import com.tokopedia.product.detail.tracking.TrackingConstant.Hit.TRACKER_ID
@@ -26,7 +26,7 @@ object OneLinersTracking {
 
     fun clickInformationButton(
         component: ComponentTrackDataModel,
-        productInfo: DynamicProductInfoP1?,
+        productInfo: ProductInfoP1?,
         eventLabel: String
     ) {
         val action = "click - information button on oneliner component"
@@ -56,7 +56,7 @@ object OneLinersTracking {
     fun onImpression(
         trackingQueue: TrackingQueue?,
         componentTrackDataModel: ComponentTrackDataModel,
-        productInfo: DynamicProductInfoP1?,
+        productInfo: ProductInfoP1?,
         userId: String,
         lcaWarehouseId: String,
         label: String

@@ -81,7 +81,6 @@ class EmoneyPdpActivityLoginTest {
         clickRecentNumber()
         clickPromoTabAndSalinPromo()
         clickScanNfcCard()
-        clickCameraIconOnInputView()
         clickOnFavNumberOnInputView()
         clickProductAndSeeProductDetail()
 
@@ -139,18 +138,6 @@ class EmoneyPdpActivityLoginTest {
         Espresso.onView(AllOf.allOf(withText("8768 5678 9101 2344"), withId(R.id.emoneyHeaderViewCardNumber))).check(matches(isDisplayed()))
         Espresso.onView(AllOf.allOf(withText("Rp 65.000"), withId(R.id.emoneyHeaderViewCardBalance))).check(matches(isDisplayed()))
         Espresso.onView(AllOf.allOf(withText("8768 5678 9101 2344"), withId(unifycomponentsR.id.text_field_input))).check(matches(isDisplayed()))
-    }
-
-    private fun clickCameraIconOnInputView() {
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(createCameraOcrPageResponse())
-        Espresso.onView(withId(R.id.emoneyPdpCardCameraIcon)).perform(click())
-        Thread.sleep(2000)
-
-        Espresso.onView(withText("1234 5678")).check(matches(isDisplayed()))
-        Espresso.onView(withId(unifycomponentsR.id.text_field_icon_2)).check(matches(isDisplayed()))
-        Espresso.onView(withId(unifycomponentsR.id.text_field_icon_2)).perform(click())
-        Thread.sleep(1000)
     }
 
     private fun clickPromoTabAndSalinPromo() {

@@ -40,6 +40,8 @@ data class AddToCartOcsRequestParams(
     @SerializedName("shipping_price")
     var shippingPrice: Double = 0.0,
 
+    var atcFromExternalSource: String? = null, // see AtcFromExternalSource
+
     // analytics data
     var productName: String = "",
     var category: String = "",
@@ -50,5 +52,6 @@ data class AddToCartOcsRequestParams(
     var categoryLevel2Id: String = "",
     var categoryLevel2Name: String = "",
     var categoryLevel3Id: String = "",
-    var categoryLevel3Name: String = ""
+    var categoryLevel3Name: String = "",
+    var shopName: String = ""
 )

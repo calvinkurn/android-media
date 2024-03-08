@@ -9,7 +9,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.extensions.view.generateBackgroundWithShadow
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.util.loadLeftDrawable
@@ -107,9 +107,9 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
 
         followersImageAsset?.run {
             if (iconUrl.isNotEmpty()) {
-                ImageHandler.loadImageWithoutPlaceholderAndError(this, iconUrl)
+                this.loadImage(iconUrl)
             } else {
-                ImageHandler.loadImageWithoutPlaceholderAndError(this, SHOP_FOLLOWERS_IMG_ASSET)
+                this.loadImage(SHOP_FOLLOWERS_IMG_ASSET)
             }
         }
 

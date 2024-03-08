@@ -133,7 +133,7 @@ class CheckoutOrderViewHolder(
                         // label
                         logPromoDesc = courierItemData.logPromoDesc ?: "",
                         voucherLogisticExists = !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty(),
-                        isHasShownCourierError = false, // todo: analytics
+                        isHasShownCourierError = order.shipment.isHasShownCourierError,
 
                         // CourierItemData.name
                         courierName = courierItemData.name ?: "",
@@ -167,7 +167,7 @@ class CheckoutOrderViewHolder(
                         // label
                         logPromoDesc = courierItemData.logPromoDesc ?: "",
                         voucherLogisticExists = !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty(),
-                        isHasShownCourierError = false,
+                        isHasShownCourierError = order.shipment.isHasShownCourierError,
 
                         // CourierItemData.name
                         courierName = courierItemData.name ?: "",
@@ -387,6 +387,9 @@ class CheckoutOrderViewHolder(
     }
 
     override fun onViewErrorInCourierSection(logPromoDesc: String) {
+        order?.let {
+            it.shipment.isHasShownCourierError = true
+        }
         listener.onViewErrorInCourierSection(logPromoDesc)
     }
 

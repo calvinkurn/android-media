@@ -7,10 +7,10 @@ import kotlinx.coroutines.*
  * Created by jegul on 21/10/20
  */
 class PlayWidgetAutoRefreshCoordinator(
-        private val scope: CoroutineScope,
-        mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
-        private val workCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Default,
-        private val listener: Listener
+    private val scope: CoroutineScope,
+    mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
+    private val workCoroutineDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val listener: Listener
 ) {
 
     private var timerJob: Job? = null

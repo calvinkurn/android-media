@@ -3,27 +3,65 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.con
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 
 class ContentCardViewHolder(itemView: View, private val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    private var mContentCardViewModel: ContentCardViewModel? = null
+    private var viewModel: ContentCardViewModel? = null
+
+    companion object {
+        private const val GRID_SPAN_COUNT = 2
+    }
+
+    private val discoveryAdapter: DiscoveryRecycleAdapter
+        by lazy {
+            DiscoveryRecycleAdapter(fragment)
+        }
+
+    private val gridLayoutManager: GridLayoutManager
+        by lazy {
+            GridLayoutManager(
+                itemView.context,
+                GRID_SPAN_COUNT,
+                GridLayoutManager.VERTICAL,
+                false
+            )
+        }
+
+    private val contentCardRv = itemView.findViewById<RecyclerView>(R.id.rvContentCard)
+
+    init {
+        setupRecyclerView()
+    }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-        mContentCardViewModel = discoveryBaseViewModel as ContentCardViewModel
-        mContentCardViewModel?.checkForDarkMode(itemView.context)
-        mContentCardViewModel?.let { getSubComponent().inject(it) }
+        viewModel = discoveryBaseViewModel as ContentCardViewModel
+        viewModel?.checkForDarkMode(itemView.context)
+        viewModel?.apply {
+            getSubComponent().inject(this)
+
+            loadContentCard()
+        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         lifecycleOwner?.let {
-            mContentCardViewModel?.getSyncPageLiveData()?.observe(it) { needResync ->
-                if (needResync) {
-                    (fragment as DiscoveryFragment).reSync()
+            viewModel?.contentCardList?.observe(it) { result ->
+                when (result) {
+                    is Success -> showWidget(result.data)
+                    is Fail -> hideWidget()
                 }
             }
         }
@@ -32,7 +70,24 @@ class ContentCardViewHolder(itemView: View, private val fragment: Fragment) :
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            mContentCardViewModel?.getSyncPageLiveData()?.removeObservers(it)
+            viewModel?.contentCardList?.removeObservers(it)
         }
     }
+
+    private fun setupRecyclerView() {
+        contentCardRv.apply {
+            adapter = discoveryAdapter
+            layoutManager = gridLayoutManager
+        }
+    }
+
+    private fun showWidget(items: ArrayList<ComponentsItem>?) {
+        contentCardRv.show()
+        discoveryAdapter.setDataList(items)
+    }
+
+    private fun hideWidget() {
+        contentCardRv.hide()
+    }
+
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="120dp"
+    android:layout_height="275dp"
+    tools:layout_margin="16dp"
+    >
+
+    <com.tokopedia.play_common.view.RoundedFrameLayout
+        android:id="@+id/cv_author"
+        android:layout_width="120dp"
+        android:layout_height="213dp"
+        android:background="@color/feed_dms_browse_placeholder_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rfl_cornerRadius="8dp"
+        />
+
+    <com.tokopedia.play_common.view.RoundedFrameLayout
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/Unify_NN0"
+        android:translationY="-28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cv_author"
+        app:rfl_cornerRadius="28dp"
+        >
+
+        <com.tokopedia.play_common.view.RoundedFrameLayout
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_margin="2dp"
+            android:background="@color/feed_dms_browse_placeholder_bg"
+            app:rfl_cornerRadius="26dp"
+            />
+
+    </com.tokopedia.play_common.view.RoundedFrameLayout>
+
+    <com.tokopedia.play_common.view.RoundedFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:layout_margin="12dp"
+        app:rfl_cornerRadius="8dp"
+        android:background="@color/feed_dms_browse_placeholder_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <com.tokopedia.play_common.view.RoundedFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_rounded_gray_corner"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

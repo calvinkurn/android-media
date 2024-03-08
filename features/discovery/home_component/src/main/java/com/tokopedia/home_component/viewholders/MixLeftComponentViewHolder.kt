@@ -44,6 +44,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.math.abs
+import com.tokopedia.productcard.R as productcardR
 
 /**
  * @author by yoasfs on 2020-03-05
@@ -158,20 +159,22 @@ class MixLeftComponentViewHolder (itemView: View,
             parallaxBackground.setBackgroundColor(
                     ContextCompat.getColor(itemView.context, android.R.color.transparent)
             )
-            image.loadImageWithoutPlaceholder(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
-                override fun successLoad(view: ImageView?) {
-                    parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
+            image.loadImageWithoutPlaceholder(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageLoaderStateListener{
+                override fun successLoad(view: ImageView) {
+                    parallaxBackground.setGradientBackgroundIfAny(channel.channelBanner.gradientColor)
                     loadingBackground.hide()
                     image.show()
                 }
 
-                override fun failedLoad(view: ImageView?) {
-                    parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
+                override fun failedLoad(view: ImageView) {
+                    parallaxBackground.setGradientBackgroundIfAny(channel.channelBanner.gradientColor)
                     loadingBackground.hide()
                     image.show()
                 }
             })
         } else {
+            image.invisible()
+            parallaxBackground.setGradientBackgroundIfAny(channel.channelBanner.gradientColor)
             loadingBackground.hide()
         }
     }
@@ -253,7 +256,11 @@ class MixLeftComponentViewHolder (itemView: View,
         val list :MutableList<CarouselProductCardDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
             list.add(CarouselProductCardDataModel(
-                    ChannelModelMapper.mapToProductCardModel(element, cardInteraction),
+                    ChannelModelMapper.mapToProductCardModel(
+                        element,
+                        cardInteraction,
+                        isInBackground = channel.channelBanner.gradientColor.hasGradientBackground(itemView.context)
+                    ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
@@ -280,8 +287,14 @@ class MixLeftComponentViewHolder (itemView: View,
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
-        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(productcardR.dimen.product_card_flashsale_width)
+        return productCardModelList.getMaxHeightForGridView(
+            itemView.context,
+            Dispatchers.Default,
+            productCardWidth,
+            isReimagine = true,
+            useCompatPadding = true,
+        )
     }
 
     private fun setHeaderComponent(element: MixLeftDataModel) {

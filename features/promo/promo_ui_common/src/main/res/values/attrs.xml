@@ -11,4 +11,8 @@
         <attr name="promo_round_radius" format="dimension" />
     </declare-styleable>
 
+    <declare-styleable name="CouponImageView">
+        <attr name="corner_radius" format="dimension" />
+    </declare-styleable>
+
 </resources>

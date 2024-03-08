@@ -29,12 +29,15 @@ import com.tokopedia.hotel.databinding.FragmentHotelCancellationConfirmationBind
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.globalerror.R as globalerrorR
 
 /**
  * @author by jessica on 08/05/20
@@ -139,8 +142,8 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
             if (cancellationSubmitModel.success) {
                 (activity as HotelCancellationConfirmationActivity).setPageTitle(context.resources.getString(R.string.hotel_cancellation_success))
             } else {
-                if (isOrderNotFound) binding?.hotelCancellationConfirmationIv?.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_404)
-                else binding?.hotelCancellationConfirmationIv?.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
+                if (isOrderNotFound) binding?.hotelCancellationConfirmationIv?.loadImageDrawable(globalerrorR.drawable.unify_globalerrors_404)
+                else binding?.hotelCancellationConfirmationIv?.loadImageDrawable(globalerrorR.drawable.unify_globalerrors_500)
                 (activity as HotelCancellationConfirmationActivity).setPageTitle(context.resources.getString(R.string.hotel_cancellation_failed))
             }
 
@@ -159,7 +162,9 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
         button.tag = actionButton.label
         button.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT)
-        button.setMargin(0, 0, 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1))
+        context?.let {
+            button.setMargin(0, 0, 0, it.resources.getDimensionPixelOffset(unifyprinciplesR.dimen.layout_lvl1))
+        }
         button.setOnClickListener {
             trackingHotelUtil.clickOnCancellationStatusActionButton(requireContext(), actionButton.label, HOTEL_ORDER_STATUS_RESULT_SCREEN_NAME)
             if (actionButton.uri == RETRY_SUBMISSION) {
@@ -183,6 +188,14 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
                 )
             }
         }
+    }
+
+    private fun showLoadingState() {
+        binding?.containerLoadingState?.mainLoading?.show()
+    }
+
+    private fun hideLoadingState() {
+        binding?.containerLoadingState?.mainLoading?.hide()
     }
 
     companion object {

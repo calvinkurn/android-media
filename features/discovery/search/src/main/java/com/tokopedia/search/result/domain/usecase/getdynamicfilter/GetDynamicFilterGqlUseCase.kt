@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.result.data.response.GqlDynamicFilterResponse
+import com.tokopedia.search.result.domain.usecase.searchproduct.sreParams
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -38,6 +39,6 @@ internal class GetDynamicFilterGqlUseCase(
 
     private fun createParametersForQuery(parameters: Map<String?, Any?>): Map<String, Any> =
         mapOf(
-            GQL.KEY_PARAMS to UrlParamUtils.generateUrlParamString(parameters)
+            GQL.KEY_PARAMS to UrlParamUtils.generateUrlParamString(parameters) + sreParams()
         )
 }

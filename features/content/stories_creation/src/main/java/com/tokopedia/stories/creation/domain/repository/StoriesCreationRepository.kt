@@ -1,6 +1,7 @@
 package com.tokopedia.stories.creation.domain.repository
 
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.creation.common.upload.model.stories.StoriesStatus
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 
 /**
@@ -17,4 +18,9 @@ interface StoriesCreationRepository {
     suspend fun createStory(
         account: ContentAccountUiModel
     ): String
+
+    suspend fun updateStoryStatus(
+        storyId: String,
+        status: StoriesStatus
+    )
 }

@@ -50,7 +50,10 @@ data class CartGroupHolderData(
     var isPo: Boolean = false,
     var boCode: String = "",
     var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
-    var enablerLabel: String = ""
+    var enablerLabel: String = "",
+    var isFirstItem: Boolean = false,
+    var isPreviousHasSelectedAmountWidget: Boolean = false,
+    var cartGroupBmGmHolderData: CartGroupBmGmHolderData = CartGroupBmGmHolderData()
 ) : ImpressHolder() {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
@@ -64,59 +67,14 @@ data class CartGroupHolderData(
     val shop: CartShopHolderData
         get() = productUiModelList.getOrNull(0)?.shopHolderData ?: CartShopHolderData()
 
-    fun deepCopy(): CartGroupHolderData {
-        return CartGroupHolderData(
-            groupType = this.groupType,
-            uiGroupType = this.uiGroupType,
-            cartString = this.cartString,
-            groupName = this.groupName,
-            groupBadge = this.groupBadge,
-            groupAppLink = this.groupAppLink,
-            isFulfillment = this.isFulfillment,
-            fulfillmentName = this.fulfillmentName,
-            fulfillmentBadgeUrl = this.fulfillmentBadgeUrl,
-            estimatedTimeArrival = this.estimatedTimeArrival,
-            productUiModelList = this.productUiModelList.toMutableList(),
-            isShowPin = this.isShowPin,
-            pinCoachmarkMessage = this.pinCoachmarkMessage,
-            isTokoNow = this.isTokoNow,
-            preOrderInfo = this.preOrderInfo,
-            incidentInfo = this.incidentInfo,
-            isFreeShippingExtra = this.isFreeShippingExtra,
-            freeShippingBadgeUrl = this.freeShippingBadgeUrl,
-            maximumWeightWording = this.maximumWeightWording,
-            maximumShippingWeight = this.maximumShippingWeight,
-            totalWeight = this.totalWeight,
-            isAllSelected = this.isAllSelected,
-            isPartialSelected = this.isPartialSelected,
-            isCollapsible = this.isCollapsible,
-            isCollapsed = this.isCollapsed,
-            clickedCollapsedProductIndex = this.clickedCollapsedProductIndex,
-            isError = this.isError,
-            promoCodes = this.promoCodes.toMutableList(),
-            shopShipments = this.shopShipments.toMutableList(),
-            districtId = this.districtId,
-            postalCode = this.postalCode,
-            latitude = this.latitude,
-            longitude = this.longitude,
-            boMetadata = this.boMetadata,
-            cartShopGroupTicker = this.cartShopGroupTicker,
-            addOnText = this.addOnText,
-            addOnImgUrl = this.addOnImgUrl,
-            addOnId = this.addOnId,
-            warehouseId = this.warehouseId,
-            isPo = this.isPo,
-            boCode = this.boCode
-        )
-    }
+    val extraWeight: Double
+        get() = (totalWeight - maximumShippingWeight) / 1000
 
     fun isUsingOWOCDesign(): Boolean = uiGroupType == UI_GROUP_TYPE_OWOC
 
     fun isTypeOWOC(): Boolean = groupType == GROUP_TYPE_OWOC
 
     companion object {
-        const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
-
         const val ADD_ON_GIFTING = 1
         const val ADD_ON_EPHARMACY = 2
 
@@ -148,6 +106,9 @@ data class CartShopGroupTickerData(
     var cartIds: String = "",
     var hasSeenTicker: Boolean = false
 ) {
+    fun needToShowLoading(): Boolean {
+        return state == CartShopGroupTickerState.SUCCESS_AFFORD || state == CartShopGroupTickerState.SUCCESS_NOT_AFFORD
+    }
 
     companion object {
         const val ACTION_REDIRECT_PAGE = "redirect_page"

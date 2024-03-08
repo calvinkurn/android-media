@@ -5,6 +5,9 @@ import com.tokopedia.content.common.model.FeedXHeaderRequestFields
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
+import com.tokopedia.creation.common.upload.domain.usecase.stories.StoriesUpdateStoryUseCase
+import com.tokopedia.creation.common.upload.model.dto.stories.StoriesUpdateStoryRequest
+import com.tokopedia.creation.common.upload.model.stories.StoriesStatus
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
 import com.tokopedia.stories.creation.domain.usecase.CreateStoryUseCase
 import com.tokopedia.stories.creation.domain.usecase.GetStoryPreparationInfoUseCase
@@ -23,6 +26,7 @@ class StoriesCreationRepositoryImpl @Inject constructor(
     private val feedXHeaderUseCase: FeedXHeaderUseCase,
     private val getStoryPreparationInfoUseCase: GetStoryPreparationInfoUseCase,
     private val createStoryUseCase: CreateStoryUseCase,
+    private val updateStoryUseCase: StoriesUpdateStoryUseCase,
     private val mapper: StoriesCreationUiMapper,
 ) : StoriesCreationRepository {
 
@@ -61,6 +65,21 @@ class StoriesCreationRepositoryImpl @Inject constructor(
             )
 
             response.data.storyId
+        }
+    }
+
+    override suspend fun updateStoryStatus(
+        storyId: String,
+        status: StoriesStatus
+    ) {
+        return withContext(dispatchers.io) {
+            updateStoryUseCase(
+                StoriesUpdateStoryRequest.create(
+                    storyId = storyId,
+                    activeMediaId = "0",
+                    status = status
+                )
+            )
         }
     }
 }

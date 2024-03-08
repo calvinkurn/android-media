@@ -7,13 +7,19 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_VERTICAL_BANNER_ADS
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
+import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BaseHomeRecommendationVisitable
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationButtonRetryUiModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationEmpty
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationError
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationHeadlineTopAdsDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationLoadMore
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationLoading
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.isFullSpan
 import com.tokopedia.home.beranda.presentation.view.adapter.diffutil.HomeRecommendationDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationPlayWidgetViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.RecomEntityCardViewHolder
 
 class HomeRecommendationAdapter(
     private val adapterTypeFactory: HomeRecommendationTypeFactoryImpl
@@ -43,7 +49,7 @@ class HomeRecommendationAdapter(
 
             is HomeRecommendationBannerTopAdsOldDataModel ->
                 layout.isFullSpan =
-                    item.bannerType != TYPE_VERTICAL_BANNER_ADS
+                    item.bannerType != HomeRecommendationMapper.TYPE_VERTICAL_BANNER_ADS
 
             is HomeRecommendationButtonRetryUiModel -> layout.isFullSpan = true
 
@@ -70,44 +76,3 @@ class HomeRecommendationAdapter(
     }
 }
 
-interface HomeRecommendationListener : RecomEntityCardViewHolder.Listener, HomeRecommendationPlayWidgetViewHolder.Listener {
-    fun onProductImpression(
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
-        position: Int
-    )
-
-    fun onProductClick(
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
-        position: Int
-    )
-
-    fun onProductThreeDotsClick(
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
-        position: Int
-    )
-
-    fun onBannerImpression(bannerRecommendationDataModel: BannerRecommendationDataModel)
-    fun onBannerTopAdsOldClick(
-        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsOldDataModel,
-        position: Int
-    )
-
-    fun onBannerTopAdsOldImpress(
-        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsOldDataModel,
-        position: Int
-    )
-
-    fun onBannerTopAdsClick(
-        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsUiModel,
-        position: Int
-    )
-
-    fun onBannerTopAdsImpress(
-        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsUiModel,
-        position: Int
-    )
-
-    fun onRetryGetProductRecommendationData()
-
-    fun onRetryGetNextProductRecommendationData()
-}

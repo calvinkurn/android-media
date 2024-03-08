@@ -22,7 +22,17 @@ class UniversalInboxTopAdsTest : BaseUniversalInboxTest() {
 
         // Then
         topAdsResult {
-            assertHeadline(47)
+            assertHeadline(48)
+        }
+
+        // When
+        generalRobot {
+            scrollToPosition(65) // Scroll to 2nd Headline
+        }
+
+        // Then
+        topAdsResult {
+            assertHeadline(62)
         }
     }
 

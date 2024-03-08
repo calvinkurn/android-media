@@ -78,9 +78,11 @@ dependencies {
     implementation project(rootProject.ext.features.playWidget)
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.contentCommon)
+    implementation project(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.reviewCommon)
     implementation projectOrAar(rootProject.ext.features.searchbar)
+    implementation projectOrAar(rootProject.ext.features.contentAnalytic)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

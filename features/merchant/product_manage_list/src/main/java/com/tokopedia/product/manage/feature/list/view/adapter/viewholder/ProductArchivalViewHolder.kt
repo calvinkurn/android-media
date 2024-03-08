@@ -4,7 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
@@ -53,7 +54,7 @@ class ProductArchivalViewHolder(
 
     private fun showProductImage(product: ProductUiModel) {
         binding?.imageProduct?.let {
-            ImageHandler.loadImageFitCenter(itemView.context, it, product.imageUrl)
+            it?.loadImageFitCenter(product.imageUrl)
         }
     }
 

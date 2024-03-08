@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import android.os.Bundle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
@@ -25,6 +26,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
 import com.tokopedia.digital_product_detail.presentation.webview.RechargeCheckBalanceWebViewActivity
 import com.tokopedia.digital_product_detail.utils.CustomViewAction
@@ -47,7 +49,12 @@ abstract class BaseDigitalPDPPulsaTest {
     var mActivityRule: IntentsTestRule<DigitalPDPPulsaActivity> = object : IntentsTestRule<DigitalPDPPulsaActivity>(DigitalPDPPulsaActivity::class.java) {
         override fun getActivityIntent(): Intent {
             val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-            return RouteManager.getIntent(targetContext, getApplink())
+            return Intent(targetContext, DigitalPDPPulsaActivityStub::class.java).apply {
+                val extras = Bundle()
+                extras.putString(DigitalPDPConstant.PARAM_MENU_ID, "289")
+                extras.putString(DigitalPDPConstant.PARAM_CATEGORY_ID, "1")
+                putExtras(extras)
+            }
         }
 
         override fun beforeActivityLaunched() {
@@ -201,8 +208,6 @@ abstract class BaseDigitalPDPPulsaTest {
     protected fun checkBalanceBottomSheet_clickCloseIcon() {
         onView(withId(unifycomponentsR.id.bottom_sheet_close)).perform(click())
     }
-
-    abstract fun getApplink(): String
 
     abstract fun getMockModelConfig(): MockModelConfig
 }

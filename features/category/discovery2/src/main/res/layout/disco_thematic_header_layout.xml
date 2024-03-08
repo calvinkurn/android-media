@@ -62,13 +62,4 @@
         app:typographyType="display_2"
         tools:text="50.000+ promo buat {First Name}!" />
 
-    <ImageView
-        android:id="@+id/balance_widget_view"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:contentDescription="@null"
-        app:srcCompat="@drawable/disco_bg_rounded_header"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

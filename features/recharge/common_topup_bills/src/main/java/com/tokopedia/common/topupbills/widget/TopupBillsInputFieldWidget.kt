@@ -20,7 +20,6 @@ import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.databinding.ViewTopupBillsInputFieldBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.view_topup_bills_input_field.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

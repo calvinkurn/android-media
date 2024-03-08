@@ -1,0 +1,48 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+android {
+    namespace 'com.tokopedia.sdui'
+    testNamespace 'com.tokopedia.sdui.test'
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+
+
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation projectOrAar(rootProject.ext.libraries.network)
+
+    implementation rootProject.ext.networkDependencies.glide
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation rootProject.ext.unifyDependencies.principles
+
+    implementation rootProject.ext.sduiDependencies.divcore
+    implementation rootProject.ext.sduiDependencies.div
+    implementation rootProject.ext.sduiDependencies.divjson
+    implementation rootProject.ext.sduiDependencies.divlottie
+    implementation rootProject.ext.sduiDependencies.divutils
+}
+
+project.ext {
+    artifactId = 'sdui'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.1"
+    artifactName = "sdui-release"
+}
+
+apply from: '../../publish_local.gradle'

@@ -9,13 +9,13 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
@@ -27,6 +27,7 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistLogin
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistNonLogin
@@ -46,24 +47,27 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeEggListener
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsOldDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationPlayWidgetUiModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder.Companion.LAYOUT
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.listener.ImpressionRecommendationItemListener
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationVideoWidgetManager
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationCardState
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.widget.ui.PlayVideoWidgetView
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
+import com.tokopedia.recommendation_widget_common.infinite.foryou.banner.BannerRecommendationModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayVideoWidgetManager
+import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerOldTopAdsModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
@@ -79,8 +83,9 @@ import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
 
 class HomeRecommendationFragment :
-    Fragment(),
-    HomeRecommendationListener,
+    BaseRecommendationFragment(),
+    GlobalRecomListener,
+    ImpressionRecommendationItemListener,
     TopAdsBannerClickListener {
 
     @Inject
@@ -98,15 +103,22 @@ class HomeRecommendationFragment :
 
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
 
-    private val adapterFactory by lazy(LazyThreadSafetyMode.NONE) {
-        HomeRecommendationTypeFactoryImpl(
-            this,
-            this,
-            HomeRecommendationVideoWidgetManager(recyclerView, viewLifecycleOwner)
-        )
+    private val playVideoWidgetViewListener by lazy {
+        object : PlayVideoWidgetView.Listener {
+            override fun onVideoFinishedPlaying(view: PlayVideoWidgetView) = Unit
+            override fun onVideoError(view: PlayVideoWidgetView, error: ExoPlaybackException) = Unit
+        }
     }
 
-    private val adapter by lazy { HomeRecommendationAdapter(adapterFactory) }
+    private val adapter by lazy {
+        val factory = HomeRecommendationTypeFactoryImpl(
+            this,
+            this,
+            PlayVideoWidgetManager(recyclerView, viewLifecycleOwner)
+        )
+
+        HomeRecommendationAdapter(factory)
+    }
 
     private val staggeredGridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         StaggeredGridLayoutManager(
@@ -409,19 +421,16 @@ class HomeRecommendationFragment :
             }
     }
 
-    override fun onProductImpression(
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
-        position: Int
-    ) {
+    override fun onProductCardImpressed(model: HomeRecommendationItemDataModel, position: Int) {
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
-        if (homeRecommendationItemDataModel.recommendationProductItem.isTopAds) {
+        if (model.recommendationProductItem.isTopAds) {
             context?.let {
                 TopAdsUrlHitter(className).hitImpressionUrl(
                     it,
-                    homeRecommendationItemDataModel.recommendationProductItem.trackerImageUrl,
-                    homeRecommendationItemDataModel.recommendationProductItem.id,
-                    homeRecommendationItemDataModel.recommendationProductItem.name,
-                    homeRecommendationItemDataModel.recommendationProductItem.imageUrl,
+                    model.recommendationProductItem.trackerImageUrl,
+                    model.recommendationProductItem.id,
+                    model.recommendationProductItem.name,
+                    model.recommendationProductItem.imageUrl,
                     HOME_RECOMMENDATION_FRAGMENT
                 )
             }
@@ -429,14 +438,14 @@ class HomeRecommendationFragment :
                 trackingQueue.putEETracking(
                     getRecommendationProductViewLoginTopAds(
                         tabNameLowerCase,
-                        homeRecommendationItemDataModel
+                        model
                     ) as HashMap<String, Any>
                 )
             } else {
                 trackingQueue.putEETracking(
                     getRecommendationProductViewNonLoginTopAds(
                         tabNameLowerCase,
-                        homeRecommendationItemDataModel
+                        model
                     ) as HashMap<String, Any>
                 )
             }
@@ -445,33 +454,77 @@ class HomeRecommendationFragment :
                 trackingQueue.putEETracking(
                     getRecommendationProductViewLogin(
                         tabNameLowerCase,
-                        homeRecommendationItemDataModel
+                        model
                     ) as HashMap<String, Any>
                 )
             } else {
                 trackingQueue.putEETracking(
                     getRecommendationProductViewNonLogin(
                         tabNameLowerCase,
-                        homeRecommendationItemDataModel
+                        model
                     ) as HashMap<String, Any>
                 )
             }
         }
     }
 
-    override fun onProductClick(
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
-        position: Int
-    ) {
+    override fun onProductCardImpressed(model: RecommendationCardModel, position: Int) {
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
-        if (homeRecommendationItemDataModel.recommendationProductItem.isTopAds) {
+        if (model.recommendationProductItem.isTopAds) {
+            context?.let {
+                TopAdsUrlHitter(className).hitImpressionUrl(
+                    it,
+                    model.recommendationProductItem.trackerImageUrl,
+                    model.recommendationProductItem.id,
+                    model.recommendationProductItem.name,
+                    model.recommendationProductItem.imageUrl,
+                    HOME_RECOMMENDATION_FRAGMENT
+                )
+            }
+            if (userSessionInterface.isLoggedIn) {
+                trackingQueue.putEETracking(
+                    getRecommendationProductViewLoginTopAds(
+                        tabNameLowerCase,
+                        model
+                    ) as HashMap<String, Any>
+                )
+            } else {
+                trackingQueue.putEETracking(
+                    getRecommendationProductViewNonLoginTopAds(
+                        tabNameLowerCase,
+                        model
+                    ) as HashMap<String, Any>
+                )
+            }
+        } else {
+            if (userSessionInterface.isLoggedIn) {
+                trackingQueue.putEETracking(
+                    getRecommendationProductViewLogin(
+                        tabNameLowerCase,
+                        model
+                    ) as HashMap<String, Any>
+                )
+            } else {
+                trackingQueue.putEETracking(
+                    getRecommendationProductViewNonLogin(
+                        tabNameLowerCase,
+                        model
+                    ) as HashMap<String, Any>
+                )
+            }
+        }
+    }
+
+    override fun onProductCardClicked(model: RecommendationCardModel, position: Int) {
+        val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
+        if (model.recommendationProductItem.isTopAds) {
             context?.let {
                 TopAdsUrlHitter(className).hitClickUrl(
                     it,
-                    homeRecommendationItemDataModel.recommendationProductItem.clickUrl,
-                    homeRecommendationItemDataModel.recommendationProductItem.id,
-                    homeRecommendationItemDataModel.recommendationProductItem.name,
-                    homeRecommendationItemDataModel.recommendationProductItem.imageUrl,
+                    model.recommendationProductItem.clickUrl,
+                    model.recommendationProductItem.id,
+                    model.recommendationProductItem.name,
+                    model.recommendationProductItem.imageUrl,
                     HOME_RECOMMENDATION_FRAGMENT
                 )
             }
@@ -479,14 +532,14 @@ class HomeRecommendationFragment :
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                     getRecommendationProductClickLoginTopAds(
                         tabNameLowerCase,
-                        homeRecommendationItemDataModel
+                        model
                     )
                 )
             } else {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                     getRecommendationProductClickNonLoginTopAds(
                         tabNameLowerCase,
-                        homeRecommendationItemDataModel
+                        model
                     )
                 )
             }
@@ -495,46 +548,38 @@ class HomeRecommendationFragment :
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                     getRecommendationProductClickLogin(
                         tabNameLowerCase,
-                        homeRecommendationItemDataModel
+                        model
                     )
                 )
             } else {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                     getRecommendationProductClickNonLogin(
                         tabNameLowerCase,
-                        homeRecommendationItemDataModel
+                        model
                     )
                 )
             }
         }
-        goToProductDetail(homeRecommendationItemDataModel.recommendationProductItem.id, position)
+        goToProductDetail(model.recommendationProductItem.id, position)
     }
 
-    override fun onProductThreeDotsClick(
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
-        position: Int
-    ) {
+    override fun onProductCardThreeDotsClicked(model: RecommendationCardModel, position: Int) {
         showProductCardOptions(
             this,
-            createProductCardOptionsModel(homeRecommendationItemDataModel, position)
+            createProductCardOptionsModel(model, position)
         )
     }
 
-    override fun onBannerImpression(bannerRecommendationDataModel: BannerRecommendationDataModel) {
+    override fun onBannerImpressed(model: BannerRecommendationModel) {
         trackingQueue.putEETracking(
-            HomeRecommendationTracking.getBannerRecommendation(
-                bannerRecommendationDataModel
-            ) as HashMap<String, Any>
+            HomeRecommendationTracking.getBannerRecommendation(model) as HashMap<String, Any>
         )
     }
 
-    override fun onBannerTopAdsOldClick(
-        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsOldDataModel,
-        position: Int
-    ) {
+    override fun onBannerTopAdsOldClick(model: BannerOldTopAdsModel, position: Int) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
-                homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel,
+                model.topAdsImageViewModel,
                 tabIndex,
                 position
             )
@@ -543,40 +588,31 @@ class HomeRecommendationFragment :
         val rvContext = recyclerView?.context
 
         rvContext?.let {
-            RouteManager.route(
-                it,
-                homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel?.applink
-            )
+            RouteManager.route(it, model.topAdsImageViewModel?.applink)
         }
     }
 
-    override fun onBannerTopAdsOldImpress(
-        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsOldDataModel,
-        position: Int
-    ) {
+    override fun onBannerTopAdsOldImpress(model: BannerOldTopAdsModel, position: Int) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel,
+                model.topAdsImageViewModel,
                 tabIndex,
                 position
             ) as HashMap<String, Any>
         )
     }
 
-    override fun onBannerTopAdsClick(
-        homeTopAdsRecommendationBannerDataUiModel: HomeRecommendationBannerTopAdsUiModel,
-        position: Int
-    ) {
+    override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
-                homeTopAdsRecommendationBannerDataUiModel.topAdsImageViewModel,
+                model.topAdsImageViewModel,
                 tabIndex,
                 position
             )
         )
 
         HomeRecommendationTracking.sendClickBannerTopAdsTracking(
-            homeTopAdsRecommendationBannerDataUiModel,
+            model,
             position,
             userSessionInterface.userId
         )
@@ -585,18 +621,15 @@ class HomeRecommendationFragment :
         rvContext?.let {
             RouteManager.route(
                 it,
-                homeTopAdsRecommendationBannerDataUiModel.topAdsImageViewModel?.applink
+                model.topAdsImageViewModel?.applink
             )
         }
     }
 
-    override fun onBannerTopAdsImpress(
-        homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsUiModel,
-        position: Int
-    ) {
+    override fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel,
+                model.topAdsImageViewModel,
                 tabIndex,
                 position
             ) as HashMap<String, Any>
@@ -604,17 +637,14 @@ class HomeRecommendationFragment :
 
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressBannerTopAdsTracking(
-                homeTopAdsRecommendationBannerDataModelDataModel,
+                model,
                 position,
                 userSessionInterface.userId
             ) as HashMap<String, Any>
         )
     }
 
-    override fun onEntityCardImpressionListener(
-        item: RecomEntityCardUiModel,
-        position: Int
-    ) {
+    override fun onContentCardImpressed(item: ContentCardModel, position: Int) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressEntityCardTracking(
                 item,
@@ -624,7 +654,7 @@ class HomeRecommendationFragment :
         )
     }
 
-    override fun onEntityCardClickListener(item: RecomEntityCardUiModel, position: Int) {
+    override fun onContentCardClicked(item: ContentCardModel, position: Int) {
         HomeRecommendationTracking.sendClickEntityCardTracking(
             item,
             position,
@@ -636,10 +666,7 @@ class HomeRecommendationFragment :
         }
     }
 
-    override fun onPlayVideoWidgetClick(
-        element: HomeRecommendationPlayWidgetUiModel,
-        position: Int
-    ) {
+    override fun onPlayCardClicked(element: PlayCardModel, position: Int) {
         HomeRecommendationTracking.sendClickVideoRecommendationCardTracking(
             element,
             position,
@@ -651,10 +678,7 @@ class HomeRecommendationFragment :
         }
     }
 
-    override fun onPlayVideoWidgetImpress(
-        element: HomeRecommendationPlayWidgetUiModel,
-        position: Int
-    ) {
+    override fun onPlayCardImpressed(element: PlayCardModel, position: Int) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressPlayVideoWidgetTracking(
                 element,
@@ -662,6 +686,19 @@ class HomeRecommendationFragment :
                 userSessionInterface.userId
             )
         )
+    }
+
+    override fun onVideoFinishedPlaying(view: PlayVideoWidgetView) {
+        playVideoWidgetViewListener.onVideoFinishedPlaying(view)
+    }
+
+    override fun onVideoError(view: PlayVideoWidgetView, error: ExoPlaybackException) {
+        playVideoWidgetViewListener.onVideoError(view, error)
+    }
+
+    override fun onBannerClicked(model: BannerRecommendationModel) {
+        HomePageTracking.eventClickOnBannerFeed(model, model.tabName)
+        RouteManager.route(requireContext(), model.applink)
     }
 
     override fun onRetryGetProductRecommendationData() {
@@ -751,7 +788,7 @@ class HomeRecommendationFragment :
         }
     }
 
-    fun scrollToTop() {
+    override fun scrollToTop() {
         if (view == null) {
             return
         }
@@ -767,25 +804,25 @@ class HomeRecommendationFragment :
     }
 
     private fun createProductCardOptionsModel(
-        homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
+        model: RecommendationCardModel,
         position: Int
     ): ProductCardOptionsModel {
         val productCardOptionsModel = ProductCardOptionsModel()
         productCardOptionsModel.hasWishlist = true
         productCardOptionsModel.isWishlisted =
-            homeRecommendationItemDataModel.recommendationProductItem.isWishlist
+            model.recommendationProductItem.isWishlist
         productCardOptionsModel.productId =
-            homeRecommendationItemDataModel.recommendationProductItem.id
+            model.recommendationProductItem.id
         productCardOptionsModel.isTopAds =
-            homeRecommendationItemDataModel.recommendationProductItem.isTopAds
+            model.recommendationProductItem.isTopAds
         productCardOptionsModel.topAdsWishlistUrl =
-            homeRecommendationItemDataModel.recommendationProductItem.wishListUrl
+            model.recommendationProductItem.wishListUrl
         productCardOptionsModel.topAdsClickUrl =
-            homeRecommendationItemDataModel.recommendationProductItem.clickUrl
+            model.recommendationProductItem.clickUrl
         productCardOptionsModel.productName =
-            homeRecommendationItemDataModel.recommendationProductItem.name
+            model.recommendationProductItem.name
         productCardOptionsModel.productImageUrl =
-            homeRecommendationItemDataModel.recommendationProductItem.imageUrl
+            model.recommendationProductItem.imageUrl
         productCardOptionsModel.productPosition = position
         return productCardOptionsModel
     }

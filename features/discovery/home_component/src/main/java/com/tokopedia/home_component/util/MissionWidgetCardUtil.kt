@@ -9,7 +9,15 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by frenzel
  */
 class MissionWidgetCardUtil: MissionWidgetUtil() {
-    override fun findMaxTitleHeight(data: MissionWidgetListDataModel, context: Context): Int {
+    override fun getWidth(context: Context): Int {
+        return context.resources.getDimensionPixelSize(R.dimen.home_mission_widget_card_image_size)
+    }
+
+    override fun findMaxTitleHeight(
+        data: MissionWidgetListDataModel,
+        width: Int,
+        context: Context
+    ): Int {
         var maxHeight = 0
         var titleWidth = context.resources.getDimensionPixelSize(R.dimen.home_mission_widget_card_image_size)
 
@@ -32,6 +40,7 @@ class MissionWidgetCardUtil: MissionWidgetUtil() {
 
     override fun findMaxSubtitleHeight(
         data: MissionWidgetListDataModel,
+        width: Int,
         context: Context
     ): Int {
         var maxHeight = 0

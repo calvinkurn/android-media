@@ -5,7 +5,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.BannedProductAttachmentUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
@@ -91,7 +91,7 @@ open class BannedProductAttachmentViewHolder(itemView: View?, val listener: Prod
     private fun bindImage(uiModel: BannedProductAttachmentUiModel) {
         image?.let {
             val imageUrl = uiModel.productImage
-            ImageHandler.loadImageRounded2(itemView.context, it, imageUrl, 8.toPx().toFloat())
+            it?.loadImageRounded(imageUrl, 8.toPx().toFloat())
         }
     }
 

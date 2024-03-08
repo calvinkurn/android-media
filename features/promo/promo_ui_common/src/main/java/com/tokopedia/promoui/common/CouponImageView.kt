@@ -25,6 +25,7 @@ class CouponImageView @JvmOverloads constructor(
         paint.isAntiAlias = true
         circleRadius = dpToPx(12)
         cornerRadius = dpToPx(8)
+        readDataFromAttrs(attrs)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -56,5 +57,17 @@ class CouponImageView @JvmOverloads constructor(
         clipPath.addRoundRect(clipRectF, radii, Path.Direction.CW)
 
         canvas.clipPath(clipPath)
+    }
+
+    fun readDataFromAttrs(attrs: AttributeSet?) {
+        if (attrs != null) {
+            val typedArray = context.obtainStyledAttributes(attrs, R.styleable.CouponImageView, 0, 0)
+            try {
+                val cornerRadiusValue = typedArray.getDimension(R.styleable.CouponImageView_corner_radius, 8.0F).toInt()
+                cornerRadius = dpToPx(cornerRadiusValue)
+            } finally {
+                typedArray.recycle();
+            }
+        }
     }
 }

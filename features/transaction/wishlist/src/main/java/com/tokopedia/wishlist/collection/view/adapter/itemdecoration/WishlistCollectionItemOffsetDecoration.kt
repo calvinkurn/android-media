@@ -7,6 +7,11 @@ import androidx.annotation.DimenRes
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.tokopedia.wishlist.collection.view.adapter.WishlistCollectionAdapter
+import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollectionItemViewHolder
+import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollectionLoaderItemViewHolder
+import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollectionRecommendationItemViewHolder
+import com.tokopedia.wishlist.detail.util.WishlistConsts
 
 class WishlistCollectionItemOffsetDecoration(private val mItemOffset: Int) : ItemDecoration() {
     constructor(
@@ -20,12 +25,43 @@ class WishlistCollectionItemOffsetDecoration(private val mItemOffset: Int) : Ite
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        super.getItemOffsets(outRect, view, parent, state)
-        val position = parent.getChildAdapterPosition(view)
-        if (position % 2 == 0) {
-            outRect.set(0, 0, mItemOffset, 0)
-        } else {
-            outRect.set(mItemOffset, 0, 0, 0)
+        val viewPosition = parent.getChildAdapterPosition(view)
+        val viewHolder = parent.getChildViewHolder(view)
+        if (viewPosition > RecyclerView.NO_POSITION) {
+            when (viewHolder) {
+                is WishlistCollectionItemViewHolder,
+                is WishlistCollectionLoaderItemViewHolder -> {
+                    if (viewPosition % 2 == 0) {
+                        outRect.set(0, 0, mItemOffset, 0)
+                    } else {
+                        outRect.set(mItemOffset, 0, 0, 0)
+                    }
+                }
+
+                is WishlistCollectionRecommendationItemViewHolder -> {
+                    val preRecommendationItemCount =
+                        (parent.adapter as? WishlistCollectionAdapter)
+                            ?.getItems()
+                            ?.count { it.typeLayout != WishlistConsts.TYPE_RECOMMENDATION_LIST } ?: 0
+                    if (preRecommendationItemCount % 2 == 0) {
+                        if (viewPosition % 2 == 0) {
+                            outRect.set(0, 0, mItemOffset, 0)
+                        } else {
+                            outRect.set(mItemOffset, 0, 0, 0)
+                        }
+                    } else {
+                        if (viewPosition % 2 == 0) {
+                            outRect.set(mItemOffset, 0, 0, 0)
+                        } else {
+                            outRect.set(0, 0, mItemOffset, 0)
+                        }
+                    }
+                }
+
+                else -> {
+                    // no-op
+                }
+            }
         }
     }
 }

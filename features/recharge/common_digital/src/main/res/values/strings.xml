@@ -11,4 +11,6 @@
     <string name="digital_common_recom_empty_state_title">Belum ada transaksi, nih!</string>
     <string name="digital_common_recom_empty_state_desc">Yuk, bayar tagihan kartu kreditmu hanya di Tokopedia.</string>
     <string name="digital_common_dppo_consent">Pengelolaan data pengguna</string>
+    <string name="recharge_pdp_emoney_max_limit_title">Saldo hampir mencapai limit maksimum</string>
+    <string name="recharge_pdp_emoney_max_limit_desc">Kartu bisa menyimpan saldo hingga maks. Rp2 juta.</string>
 </resources>

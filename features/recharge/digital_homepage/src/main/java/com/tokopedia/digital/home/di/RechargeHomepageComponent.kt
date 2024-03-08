@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.digital.home.presentation.fragment.DigitalHomePageSearchFragment
 import com.tokopedia.digital.home.presentation.fragment.RechargeHomepageFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.digital.home.presentation.monitoring.activity.RechargeHomepageTestSetupActivity
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 
@@ -23,4 +24,7 @@ interface RechargeHomepageComponent {
     fun inject(digitalHomePageSearchFragment: DigitalHomePageSearchFragment)
 
     fun inject(rechargeHomepageFragment: RechargeHomepageFragment)
+
+    //Macrobenchmark
+    fun inject(activity: RechargeHomepageTestSetupActivity)
 }

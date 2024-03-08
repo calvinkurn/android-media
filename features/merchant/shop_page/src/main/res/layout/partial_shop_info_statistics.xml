@@ -73,7 +73,7 @@
         android:layout_height="0.5dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/bg_line_separator_thin"/>
+        android:background="@drawable/bg_shop_line_separator_thin"/>
 
     <com.tokopedia.shop_widget.common.customview.ShopPageLabelView
         android:id="@+id/labelViewDiscussion"
@@ -112,7 +112,7 @@
         android:layout_height="0.5dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/bg_line_separator_thin"/>
+        android:background="@drawable/bg_shop_line_separator_thin"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -153,7 +153,7 @@
         android:layout_height="0.5dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/bg_line_separator_thin"/>
+        android:background="@drawable/bg_shop_line_separator_thin"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -183,7 +183,7 @@
                     android:id="@+id/image_view_smiley_good"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    app:srcCompat="@drawable/ic_smiley_good" />
+                    app:srcCompat="@drawable/ic_shop_smiley_good" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/textViewScoreGood"
@@ -205,7 +205,7 @@
                     android:id="@+id/image_view_smiley_neutral"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    app:srcCompat="@drawable/ic_smiley_neutral" />
+                    app:srcCompat="@drawable/ic_shop_smiley_neutral" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/textViewScoreNeutral"
@@ -228,7 +228,7 @@
                     android:id="@+id/image_view_smiley_bad"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    app:srcCompat="@drawable/ic_smiley_bad" />
+                    app:srcCompat="@drawable/ic_shop_smiley_bad" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/textViewScoreBad"
@@ -248,6 +248,6 @@
         android:layout_height="0.5dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/bg_line_separator_thin"/>
+        android:background="@drawable/bg_shop_line_separator_thin"/>
 
 </LinearLayout>

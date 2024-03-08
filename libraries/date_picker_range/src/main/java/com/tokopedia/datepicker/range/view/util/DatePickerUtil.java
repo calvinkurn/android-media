@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.view.Window;
 import android.widget.DatePicker;
-
 import com.tokopedia.datepicker.range.R;
 
 import java.util.Calendar;
@@ -33,7 +32,7 @@ public class DatePickerUtil {
         context = Context;
         dialog = new Dialog(context);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(com.tokopedia.design.R.layout.dialog_calendar);
+        dialog.setContentView(R.layout.dialog_calendar);
         Year = year;
         Month = month;
         Day = day;

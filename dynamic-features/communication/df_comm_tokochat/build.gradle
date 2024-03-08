@@ -24,6 +24,12 @@ android {
         }
     }
 
+    buildTypes {
+        release {
+            debuggable = rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true"
+        }
+    }
+
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {

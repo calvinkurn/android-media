@@ -1,5 +1,6 @@
 package com.tokopedia.analytics.performance.fpi
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.Context
@@ -32,6 +33,9 @@ class FrameMetricsMonitoring @JvmOverloads constructor(
         private const val PREF_KEY = "fpi_monitoring_popup"
 
         private const val JANKY_LEVEL_MS = 17f
+
+        @SuppressLint("StaticFieldLeak")
+        var perfWindow: FrameMetricsPopupWindow? = null
     }
 
     private val frameMetricAvailableListener by lazyThreadSafetyNone {
@@ -47,7 +51,8 @@ class FrameMetricsMonitoring @JvmOverloads constructor(
     }
 
     private val frameMetricsPopupWindow by lazyThreadSafetyNone {
-        FrameMetricsPopupWindow(applicationContext)
+        perfWindow = FrameMetricsPopupWindow(applicationContext)
+        perfWindow
     }
 
     init {
@@ -57,7 +62,7 @@ class FrameMetricsMonitoring @JvmOverloads constructor(
     override fun onActivityResumed(activity: Activity) {
         if (isActive()) {
             start(activity)
-            frameMetricsPopupWindow.show(activity) {
+            frameMetricsPopupWindow?.show(activity) {
                 reset()
             }
         }
@@ -99,19 +104,20 @@ class FrameMetricsMonitoring @JvmOverloads constructor(
             fpiData.incrementJankyFrames()
         }
 
-        frameMetricsPopupWindow.updateInfo(fpiData = fpiData)
+        frameMetricsPopupWindow?.updateInfo(fpiData = fpiData)
     }
 
     private fun reset() {
         fpiData.reset()
-        frameMetricsPopupWindow.updateInfo(fpiData)
+        frameMetricsPopupWindow?.updateInfo(fpiData)
     }
 
     private fun isActive(): Boolean =
         GlobalConfig.isAllowDebuggingTools() && applicationContext.isFpiMonitoringEnable()
 
     private fun Context.isFpiMonitoringEnable(): Boolean = getSharedPreferences(
-        PREF_KEY, MODE_PRIVATE
+        PREF_KEY,
+        MODE_PRIVATE
     ).getBoolean(PREF_KEY, forceEnable)
 
     private fun Context.setForceConfig() {

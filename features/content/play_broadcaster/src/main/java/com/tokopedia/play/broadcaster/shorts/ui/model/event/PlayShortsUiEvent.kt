@@ -30,7 +30,13 @@ sealed interface PlayShortsUiEvent {
 
     object GoToSummary : PlayShortsUiEvent
 
+    object GoToVideoPreview : PlayShortsUiEvent
+
     data class ErrorUploadMedia(
+        val throwable: Throwable
+    ) : PlayShortsUiEvent
+
+    data class ErrorCheckInterspersing(
         val throwable: Throwable
     ) : PlayShortsUiEvent
 
@@ -42,6 +48,7 @@ sealed interface PlayShortsUiEvent {
         val isToasterUpdate: Boolean
     ) : PlayShortsUiEvent
 
-    object ResetForm: PlayShortsUiEvent
+    object ResetForm : PlayShortsUiEvent
 
+    object ShowInterspersingConfirmation : PlayShortsUiEvent
 }

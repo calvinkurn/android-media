@@ -16,11 +16,12 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationTokonow
  * This class extends from [BaseAdapterTypeFactory] and implement from [HomeRecommendationTypeFactory]
  */
 class HomeRecommendationTypeFactoryImpl(
-        private val recommendationListener: RecommendationListener,
-        private val titleListener: TitleListener?,
-        private val recommendationErrorListener: RecommendationErrorListener,
-        private val productInfoListener: ProductInfoViewHolder.ProductInfoListener?,
-        private val tokonowListener: RecommendationTokonowListener? = null
+    private val recommendationListener: RecommendationListener,
+    private val titleListener: TitleListener?,
+    private val recommendationErrorListener: RecommendationErrorListener,
+    private val productInfoListener: ProductInfoViewHolder.ProductInfoListener?,
+    private val tokonowListener: RecommendationTokonowListener? = null,
+    private val isReimagine: Boolean = false,
 ) : BaseAdapterTypeFactory(), HomeRecommendationTypeFactory {
     /**
      * This override function from [HomeRecommendationTypeFactory]
@@ -37,7 +38,7 @@ class HomeRecommendationTypeFactoryImpl(
      * @param dataModel dataModel for [RecommendationItemViewHolder]
      */
     override fun type(dataModel: RecommendationItemDataModel): Int {
-        return RecommendationItemDataModel.LAYOUT
+        return RecommendationItemDataModel.layout(isReimagine)
     }
 
     /**
@@ -102,7 +103,7 @@ class HomeRecommendationTypeFactoryImpl(
      */
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            RecommendationItemDataModel.LAYOUT -> RecommendationItemViewHolder(view, recommendationListener, tokonowListener)
+            RecommendationItemDataModel.layout(isReimagine) -> RecommendationItemViewHolder(view, recommendationListener, tokonowListener)
             ProductInfoDataModel.LAYOUT -> ProductInfoViewHolder(view, productInfoListener)
             RecommendationCarouselDataModel.LAYOUT -> RecommendationCarouselViewHolder(view, recommendationListener)
             TitleDataModel.LAYOUT -> TitleViewHolder(view, titleListener)

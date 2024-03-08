@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -22,6 +22,9 @@ data class ProductRecommendationDataModel(
     var position: Int = -1
 ) : DynamicPdpDataModel {
 
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     val isRecomenDataEmpty: Boolean
@@ -29,7 +32,7 @@ data class ProductRecommendationDataModel(
 
     override fun type(): String = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
 

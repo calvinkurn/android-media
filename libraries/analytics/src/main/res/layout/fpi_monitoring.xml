@@ -1,66 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/popup_container"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/Unify_NN0_68"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/fpiPercentage"
-        android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/popup_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minWidth="40dp"
-        android:gravity="end"
-        android:padding="2dp"
-        android:textSize="10sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:ignore="SmallSp"
-        tools:text="100%" />
+        android:background="@color/Unify_NN0_68"
+        android:orientation="vertical">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/fpiRenderTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="60dp"
-        android:gravity="end"
-        android:textSize="10sp"
-        android:padding="2dp"
-        app:layout_constraintStart_toEndOf="@+id/fpiPercentage"
-        app:layout_constraintTop_toTopOf="@+id/fpiPercentage"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:ignore="SmallSp"
-        tools:text="99.99ms" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/activityName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="40dp"
+            android:gravity="start"
+            android:padding="2dp"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:ignore="SmallSp"
+            tools:text="debug_debug_debug_debug_MainParentActivity (home_perf_trace)" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/fpiFps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="42dp"
-        android:gravity="end"
-        android:padding="2dp"
-        android:textSize="10sp"
-        app:layout_constraintEnd_toStartOf="@+id/reload"
-        app:layout_constraintStart_toEndOf="@+id/fpiRenderTime"
-        app:layout_constraintTop_toTopOf="@+id/fpiRenderTime"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:ignore="SmallSp"
-        tools:text="60fps" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/launchTimeTTFL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="40dp"
+            android:gravity="start"
+            android:padding="2dp"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:ignore="SmallSp"
+            tools:text="TTFL: 100ms" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/launchTimeTTIL"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="40dp"
+            android:gravity="start"
+            android:padding="2dp"
+            tools:ignore="SmallSp"
+            tools:text="TTIL: 400ms" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/frameCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:padding="2dp"
+            android:textSize="10sp"
+            tools:ignore="SmallSp"
+            tools:text="Frame Count: 10" />
+
+        <FrameLayout
+            android:background="@color/Unify_NN100"
+            android:id="@+id/btn_expand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_expand"
+                android:padding="2dp"
+                android:textSize="9sp"
+                android:text="View Summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_expand"
+                android:layout_gravity="end"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                app:icon_name="CHEVRON_DOWN"
+                />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/group_summary"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/fpiPercentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:padding="2dp"
+                android:textSize="10sp"
+                tools:ignore="SmallSp"
+                tools:text="100%" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/fpiRenderTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:textSize="10sp"
+                android:padding="2dp"
+                tools:ignore="SmallSp"
+                tools:text="99.99ms" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/fpiFps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:padding="2dp"
+                android:textSize="10sp"
+                tools:ignore="SmallSp"
+                tools:text="60fps" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/perf_notes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:padding="2dp"
+                android:textSize="10sp"
+                tools:ignore="SmallSp"
+                android:textColor="@color/Unify_NN700"
+                tools:text="dwioajdiwoajdioawj" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/reload"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:padding="2dp"
+                app:icon_name="RELOAD"/>
+        </LinearLayout>
+    </LinearLayout>
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/reload"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:background="@color/Unify_NN100"
+        app:icon_color_light_enable="@color/Unify_NN950"
+        android:id="@+id/icon_close"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:padding="2dp"
-        app:icon_name="RELOAD"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        app:icon_name="CLOSE"
+        android:layout_gravity="end"
+        />
+</FrameLayout>

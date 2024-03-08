@@ -5,6 +5,7 @@ import com.tokopedia.encryption.security.AESEncryptorECB
 import com.tokopedia.encryption.utils.RSAKeys
 import com.tokopedia.logger.LogManager.Companion.init
 import com.tokopedia.logger.LoggerProxy
+import com.tokopedia.logger.repository.InternalLoggerInterface
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerapp.BuildConfig
 import dagger.hilt.android.HiltAndroidApp
@@ -53,6 +54,9 @@ class SellerApp : Application() {
 
                 override val activityName: String
                     get() = ""
+
+                override val internalLogger: InternalLoggerInterface?
+                    get() = null
 
                 override val scalyrToken: String
                     get() = com.tokopedia.keys.Keys.AUTH_SCALYR_API_KEY

@@ -21,6 +21,7 @@ android {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.features.basemvvm)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -30,6 +31,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
 
+
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewModel
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
@@ -43,6 +47,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.design
@@ -66,6 +71,9 @@ dependencies {
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.searchbar)
+    implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
+
 
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -77,6 +85,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

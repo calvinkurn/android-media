@@ -8,6 +8,7 @@ import com.tokopedia.play_common.R
 
 /**
  * Created by jegul on 30/06/21
+ * Important! to set background color, at least transparent.
  */
 open class RoundedFrameLayout : FrameLayout {
 
@@ -75,6 +76,22 @@ open class RoundedFrameLayout : FrameLayout {
 
     fun setCornerRadius(cornerRadius: Float) {
         roundedHelper.setCornerRadius(cornerRadius)
+        invalidate()
+        requestLayout()
+    }
+
+    fun setCornerRadius(
+        topLeft: Float,
+        topRight: Float,
+        bottomLeft: Float,
+        bottomRight: Float
+    ) {
+        roundedHelper.setCornerRadius(
+            topLeft = topLeft,
+            topRight = topRight,
+            bottomLeft = bottomLeft,
+            bottomRight = bottomRight,
+        )
         invalidate()
         requestLayout()
     }

@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.pms.R
 import com.tokopedia.pms.analytics.PmsAnalytics
 import com.tokopedia.pms.analytics.PmsEvents
 import com.tokopedia.pms.bankaccount.data.model.BankListModel
@@ -23,14 +22,16 @@ import com.tokopedia.pms.bankaccount.domain.BankListDataUseCase
 import com.tokopedia.pms.bankaccount.view.activity.ChangeBankAccountActivity.Companion.PAYMENT_LIST_MODEL_EXTRA
 import com.tokopedia.pms.bankaccount.view.activity.ChangeBankListener
 import com.tokopedia.pms.bankaccount.viewmodel.ChangeBankAccountViewModel
+import com.tokopedia.pms.databinding.FragmentChangeBankAccountBinding
 import com.tokopedia.pms.paymentlist.di.PmsComponent
 import com.tokopedia.pms.paymentlist.domain.data.BankTransferPaymentModel
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_change_bank_account.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * Created by zulfikarrahman on 6/25/18.
@@ -44,6 +45,8 @@ class ChangeBankAccountFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var pmsAnalytics: dagger.Lazy<PmsAnalytics>
+
+    private var binding by autoClearedNullable<FragmentChangeBankAccountBinding>()
 
     private val viewModel: ChangeBankAccountViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -71,7 +74,10 @@ class ChangeBankAccountFragment : BaseDaggerFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_change_bank_account, container, false)
+    ): View? {
+        binding = FragmentChangeBankAccountBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -79,38 +85,45 @@ class ChangeBankAccountFragment : BaseDaggerFragment() {
             bankList = bankListDataUseCase.bankList
             initializeTextFields()
         }
-        button_use.setOnClickListener(View.OnClickListener {
-            changeBankAccountDetails()
-        })
-        viewModel.saveDetailLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onResultEditDetailAccount(it.data.isSuccess, it.data.message)
-                is Fail -> onErrorEditDetailAccount(it.throwable)
+        binding?.buttonUse?.setOnClickListener(
+            View.OnClickListener {
+                changeBankAccountDetails()
             }
-        })
+        )
+        viewModel.saveDetailLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> onResultEditDetailAccount(it.data.isSuccess, it.data.message)
+                    is Fail -> onErrorEditDetailAccount(it.throwable)
+                }
+            }
+        )
     }
 
     private fun initializeTextFields() {
-        input_dest_bank_account.textAreaInput.apply {
-            isClickable = false
-            isFocusable = false
-            isSingleLine = true
-            setTextSize(
-                TypedValue.COMPLEX_UNIT_PX,
-                getDimens(com.tokopedia.unifycomponents.R.dimen.unify_font_16).toFloat()
-            )
-            setOnClickListener { openBankListForSelection() }
+        binding?.run {
+            inputDestBankAccount.textAreaInput.apply {
+                isClickable = false
+                isFocusable = false
+                isSingleLine = true
+                setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    getDimens(unifycomponentsR.dimen.unify_font_16).toFloat()
+                )
+                setOnClickListener { openBankListForSelection() }
+            }
+
+            inputNoteOptional.textAreaInput.minLines = 5
+            inputNoteOptional.textAreaInput.gravity = Gravity.TOP
+
+            inputAccountNumber.textFieldInput.setText(paymentListModel!!.senderBankInfo.accountNumber)
+            inputAccountName.textFieldInput.setText(paymentListModel!!.senderBankInfo.accountName)
+
+            val bankName =
+                bankListDataUseCase.getBankNameFromBankId(paymentListModel!!.senderBankInfo.bankId)
+            inputDestBankAccount.textAreaInput.setText(bankName)
         }
-
-        input_note_optional.textAreaInput.minLines = 5
-        input_note_optional.textAreaInput.gravity = Gravity.TOP
-
-        input_account_number.textFieldInput.setText(paymentListModel!!.senderBankInfo.accountNumber)
-        input_account_name.textFieldInput.setText(paymentListModel!!.senderBankInfo.accountName)
-
-        val bankName =
-            bankListDataUseCase.getBankNameFromBankId(paymentListModel!!.senderBankInfo.bankId)
-        input_dest_bank_account.textAreaInput.setText(bankName)
     }
 
     private fun openBankListForSelection() {
@@ -118,26 +131,29 @@ class ChangeBankAccountFragment : BaseDaggerFragment() {
     }
 
     fun onBankSelected(bankListModel: BankListModel) {
-        input_dest_bank_account?.textAreaInput?.setText(bankListModel.bankName)
+        binding?.inputDestBankAccount?.textAreaInput?.setText(bankListModel.bankName)
     }
 
     fun changeBankAccountDetails() {
         pmsAnalytics.get().sendPmsAnalyticsEvent(PmsEvents.ConfirmAccountDetailsEvent(10))
         showLoadingDialog()
-        viewModel.saveDetailAccount(
-            transactionId = paymentListModel?.transactionId ?: "",
-            merchantCode = paymentListModel?.merchantCode ?: "",
-            accountName = input_account_name?.getEditableValue().toString(),
-            accountNumber = input_account_number?.getEditableValue().toString(),
-            notes = input_note_optional?.textAreaInput?.text.toString(),
-            destinationBankId = bankListDataUseCase.getBankIdFromBankName(input_dest_bank_account?.textAreaInput?.text.toString())
-        )
+        binding?.run {
+            viewModel.saveDetailAccount(
+                transactionId = paymentListModel?.transactionId ?: "",
+                merchantCode = paymentListModel?.merchantCode ?: "",
+                accountName = inputAccountName.getEditableValue().toString(),
+                accountNumber = inputAccountNumber.getEditableValue().toString(),
+                notes = inputNoteOptional.textAreaInput.text.toString(),
+                destinationBankId = bankListDataUseCase.getBankIdFromBankName(
+                    inputDestBankAccount.textAreaInput.text.toString()
+                )
+            )
+        }
     }
 
     private fun onErrorEditDetailAccount(e: Throwable) {
         hideLoadingDialog()
         showToaster(ErrorHandler.getErrorMessage(context, e), Toaster.TYPE_ERROR)
-
     }
 
     private fun onResultEditDetailAccount(success: Boolean, message: String) {

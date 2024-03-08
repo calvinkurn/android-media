@@ -97,8 +97,9 @@ class RechargeHomepageViewModel @Inject constructor(
                 mapParamsWithSectionNames
             )
             val data = withContext(dispatcher.io) {
-                graphqlRepository.response(listOf(graphqlRequest))
-            }.getSuccessData<RechargeHomepageSections.Response>().response
+                    graphqlRepository.response(listOf(graphqlRequest))
+                }.getSuccessData<RechargeHomepageSections.Response>().response
+
             data.requestIDs = requestIDs
 
             /*

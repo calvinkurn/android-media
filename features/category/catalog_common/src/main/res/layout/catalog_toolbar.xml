@@ -33,7 +33,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_NN600"
-            android:visibility="gone"
             app:typographyType="display_3"
             app:typographyWeight="reguler"
             tools:text="subtitel" />
@@ -50,6 +49,22 @@
         app:icon_color_night_enable="@color/Unify_Static_Black"
         app:icon_enable_state="true"
         app:icon_name="MENU_HAMBURGER"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/reload_option"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginEnd="8dp"
+        app:icon_color_light_disabled="@color/Unify_Static_Black"
+        app:icon_color_light_enable="@color/Unify_Static_Black"
+        app:icon_color_night_disabled="@color/Unify_Static_Black"
+        app:icon_color_night_enable="@color/Unify_Static_Black"
+        app:icon_enable_state="true"
+        app:icon_name="RELOAD"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -112,6 +127,22 @@
         app:icon_name="SEARCH"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/share"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/edit"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginEnd="8dp"
+        app:icon_color_light_disabled="@color/Unify_Static_Black"
+        app:icon_color_light_enable="@color/Unify_Static_Black"
+        app:icon_color_night_disabled="@color/Unify_Static_Black"
+        app:icon_color_night_enable="@color/Unify_Static_Black"
+        app:icon_enable_state="true"
+        app:icon_name="EDIT"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/search"
         app:layout_constraintTop_toTopOf="parent" />
 
 

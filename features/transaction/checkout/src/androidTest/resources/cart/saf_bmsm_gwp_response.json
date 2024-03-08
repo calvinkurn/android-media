@@ -1,0 +1,1053 @@
+[
+  {
+    "data": {
+      "shipment_address_form_v4": {
+        "status": "OK",
+        "error_message": [],
+        "data": {
+          "coachmark": {
+            "Plus": {
+              "is_shown": false,
+              "title": "",
+              "content": ""
+            }
+          },
+          "errors": [],
+          "error_code": 0,
+          "kero_token": "Tokopedia+Kero:XqBkVqwxnc6BPGys3TFye6q5bTU\u003d",
+          "kero_discom_token": "Tokopedia+Kero:TpJD8XguAjj5QVFyLPlR59Wxqvw\u003d",
+          "kero_unix_time": 1699237450,
+          "is_robinhood": 1,
+          "is_hide_courier_name": false,
+          "is_show_onboarding": false,
+          "is_ineligible_promo_dialog_enabled": true,
+          "disabled_features": [],
+          "donation_checkbox_status": false,
+          "image_upload": {
+            "show_image_upload": false,
+            "text": "Lampirkan Resep Dokter",
+            "left_icon_url": "https://images.tokopedia.net/img/cartapp/icons/doctor_receipt.png",
+            "right_icon_url": "https://images.tokopedia.net/img/cartapp/chevron_right.png",
+            "checkout_id": "d41d8cd98f00b204e9800998ecf8427e",
+            "front_end_validation": true,
+            "consultation_flow": false,
+            "rejected_wording": "Produk berikut tidak bisa diproses karena pembeliannya tidak disetujui dokter."
+          },
+          "open_prerequisite_site": false,
+          "eligible_new_shipping_experience": true,
+          "pop_up_message": "",
+          "pop_up": {
+            "title": "",
+            "description": "",
+            "button": {
+              "text": ""
+            }
+          },
+          "error_ticker": "",
+          "group_address": [
+            {
+              "errors": [],
+              "user_address": {
+                "address_id": 4701371,
+                "address_name": "Rumah kakklaslkd 12312313 lasdkfasjdfklsdf 123123123 halllloooo",
+                "address": "Tokopedia Tower, Jl. Prof. DR. Satrio, Setia Budi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta, 12950 [Tokopedia Note: tototo]",
+                "postal_code": "12950",
+                "phone": "6287889005019",
+                "receiver_name": "Hansen Staging hallo hallo asdfasdf asdf asdf234234234",
+                "status": 2,
+                "country": "Indonesia",
+                "province_id": 13,
+                "province_name": "DKI Jakarta",
+                "city_id": 175,
+                "city_name": "Jakarta Selatan",
+                "district_id": 2270,
+                "district_name": "Setiabudi",
+                "address_2": "-6.221316300000001,106.8194445",
+                "latitude": "-6.221316300000001",
+                "longitude": "106.8194445",
+                "corner_id": 0,
+                "is_corner": false,
+                "state": 101,
+                "state_detail": "chosen_address_match",
+                "tokonow": {
+                  "is_modified": false,
+                  "shop_id": 480552,
+                  "warehouse_id": 343353,
+                  "warehouses": [
+                    {
+                      "warehouse_id": 343353,
+                      "service_type": "2h"
+                    },
+                    {
+                      "warehouse_id": 343352,
+                      "service_type": "15m"
+                    }
+                  ],
+                  "service_type": "2h"
+                }
+              },
+              "group_shop": [
+                {
+                  "subtotal_add_ons": [
+                    {
+                      "wording": "Jasa Pasang ({{qty}} Barang)",
+                      "type": 3
+                    },
+                    {
+                      "wording": "Biaya Proteksi ({{qty}} Barang)",
+                      "type": 4
+                    }
+                  ],
+                  "group_type": 1,
+                  "ui_group_type": 0,
+                  "group_information": {
+                    "name": "KilatanCahayas",
+                    "badge_url": "https://images.tokopedia.net/img/official_store/badge_os.png",
+                    "description": "",
+                    "description_badge_url": ""
+                  },
+                  "add_ons": {
+                    "status": 0,
+                    "add_on_data": [],
+                    "add_on_button": {
+                      "title": "",
+                      "description": "",
+                      "left_icon_url": "",
+                      "right_icon_url": "",
+                      "action": 0
+                    },
+                    "add_on_bottomsheet": {
+                      "header_title": "",
+                      "description": "",
+                      "products": [],
+                      "ticker": {
+                        "text": ""
+                      }
+                    }
+                  },
+                  "errors": [],
+                  "errors_unblocking": [],
+                  "shipping_id": 0,
+                  "sp_id": 0,
+                  "scheduled_delivery": {
+                    "timeslot_id": 0,
+                    "schedule_date": "",
+                    "validation_metadata": "",
+                    "start_date": "",
+                    "is_recommend": false
+                  },
+                  "rates_validation_flow": false,
+                  "bo_code": "",
+                  "is_insurance": false,
+                  "is_fulfillment_service": false,
+                  "toko_cabang": {
+                    "message": "Dilayani Tokopedia",
+                    "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+                  },
+                  "cart_string": "6552061-0-342370-4701371-1-342370-0",
+                  "has_promo_list": false,
+                  "shipment_information": {
+                    "shop_location": "Kota Tangerang Selatan",
+                    "estimation": "",
+                    "free_shipping": {
+                      "eligible": true,
+                      "badge_url": ""
+                    },
+                    "free_shipping_extra": {
+                      "eligible": false,
+                      "badge_url": ""
+                    },
+                    "free_shipping_general": {
+                      "bo_name": "bebas ongkir",
+                      "bo_type": 1,
+                      "badge_url": ""
+                    },
+                    "preorder": {
+                      "is_preorder": false,
+                      "duration": ""
+                    }
+                  },
+                  "is_disable_change_courier": false,
+                  "auto_courier_selection": false,
+                  "courier_selection_error": {
+                    "title": "",
+                    "description": ""
+                  },
+                  "bo_metadata": {
+                    "bo_type": 1,
+                    "bo_eligibilities": [
+                      {
+                        "key": "is_bo_reg",
+                        "value": "true"
+                      },
+                      {
+                        "key": "bo_type",
+                        "value": "1"
+                      },
+                      {
+                        "key": "campaign_ids",
+                        "value": "848,847"
+                      }
+                    ]
+                  },
+                  "save_state_flag": false,
+                  "promo_codes": [],
+                  "vehicle_leasing": {
+                    "booking_fee": 0,
+                    "is_leasing_product": false
+                  },
+                  "group_shop_v2_saf": [
+                    {
+                      "cart_string_order": "6552061-0-342370-4701371-1-342370-0",
+                      "shop": {
+                        "shop_id": 6552061,
+                        "shop_name": "KilatanCahayas",
+                        "postal_code": "15414",
+                        "latitude": "-6.320544334851704",
+                        "longitude": "106.7167382021749",
+                        "district_id": 1596,
+                        "shop_alert_message": "",
+                        "is_tokonow": false,
+                        "is_gold": 1,
+                        "is_official": 1,
+                        "shop_ticker": "",
+                        "shop_ticker_title": "",
+                        "shop_type_info": {
+                          "shop_tier": 2,
+                          "shop_grade": 0,
+                          "badge": "https://images.tokopedia.net/img/official_store/badge_os.png",
+                          "badge_svg": "https://images.tokopedia.net/img/official_store/badge_official.svg",
+                          "title": "Official Store"
+                        },
+                        "enabler_data": {
+                          "label_name": "",
+                          "show_label": false
+                        }
+                      },
+                      "cart_details": [
+                        {
+                          "errors": [],
+                          "bundle_detail": {
+                            "bundle_group_id": "",
+                            "bundle_id": 0,
+                            "bundle_name": "",
+                            "bundle_original_price": 0,
+                            "bundle_price": 0,
+                            "bundle_qty": 0,
+                            "bundle_type": "",
+                            "slash_price_label": "",
+                            "bundle_icon_url": ""
+                          },
+                          "cart_detail_info": {
+                            "cart_detail_type": "BMGM",
+                            "bmgm": {
+                              "offer_id": 992,
+                              "offer_type_id": 2,
+                              "offer_name": "BMTH1",
+                              "offer_icon": "https://images.tokopedia.net/img/bmgm/buy-more-save-more-icon.png",
+                              "offer_message": [
+                                "\u003cb\u003ePotongan Rp20rb\u003c/b\u003e",
+                                "BMTH1"
+                              ],
+                              "offer_status": 1,
+                              "offer_landing_page_link": "tokopedia://buymoresavemore/992?warehouse_ids\u003d342370\u0026shop_ids\u003d6552061",
+                              "total_discount": 20000,
+                              "offer_json_data": "{\"OfferID\":992,\"OfferTypeID\":1,\"OfferName\":\"BMTH1\",\"FlippingText\":[\"Beli 2 Diskon 50%\"],\"OfferWording\":\"Beli 2 diskon 50%\",\"StartDate\":\"2023-10-10 13:00:00\",\"EndDate\":\"2023-11-09 13:00:00\",\"MaxAppliedTier\":5,\"OfferLandingPageLink\":\"\",\"TierList\":[{\"TierID\":1642,\"Level\":1,\"TierWording\":\"Beli 2 Diskon 50%\",\"Attributes\":\"{\\\"offer_tier_rule\\\":[{\\\"offer_tier_rule_type\\\":{\\\"rule_type_id\\\":1,\\\"rule_type_name\\\":\\\"\\\"},\\\"operation\\\":\\\"\u003d\\\",\\\"value\\\":2}],\\\"offer_tier_benefit\\\":[{\\\"offer_tier_benefit_type\\\":{\\\"benefit_type_id\\\":1,\\\"benefit_type_name\\\":\\\"\\\"},\\\"value\\\":50}]}\",\"OfferTierAttribute\":{\"offer_tier_rule\":[{\"TypeID\":1,\"Value\":2,\"Operation\":\"\u003d\"}],\"offer_tier_benefit\":[{\"TypeID\":1,\"Value\":50}]}}],\"OfferStatus\":0,\"OfferIcon\":\"https://images.tokopedia.net/img/bmgm/buy-more-save-more-icon.png\"}",
+                              "is_tier_achieved": true,
+                              "tier_product": [
+                                {
+                                  "tier_id": 1642,
+                                  "tier_name": "Beli 2 Diskon 50%",
+                                  "tier_message": "Potongan \u003cb\u003eRp20rb\u003c/b\u003e dari BMTH1",
+                                  "tier_discount_text": "Diskon 50%",
+                                  "tier_discount_amount": 20000,
+                                  "price_before_benefit": 40000,
+                                  "price_after_benefit": 20000,
+                                  "list_product": [
+                                    {
+                                      "product_id": 2151037745,
+                                      "warehouse_id": 342370,
+                                      "quantity": 1,
+                                      "price_before_benefit": 10000,
+                                      "price_after_benefit": 5000,
+                                      "cart_id": "2166716864"
+                                    },
+                                    {
+                                      "product_id": 2151037742,
+                                      "warehouse_id": 342370,
+                                      "quantity": 1,
+                                      "price_before_benefit": 30000,
+                                      "price_after_benefit": 15000,
+                                      "cart_id": "2166719791"
+                                    }
+                                  ],
+                                  "benefit_wording": "hello",
+                                  "action_wording": "",
+                                  "benefit_quantity": 2,
+                                  "products_benefit": [
+                                    {
+                                      "product_id": 2151037742,
+                                      "quantity": 1,
+                                      "product_name": "gift 1 nih",
+                                      "product_cache_image_url": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/9/4/435e2e3e-34b1-46a0-a6dc-1bc9481d4a2a.jpg",
+                                      "original_price": 10000,
+                                      "final_price": 0
+                                    },
+                                    {
+                                      "product_id": 2151037743,
+                                      "quantity": 2,
+                                      "product_name": "gift 2 nih",
+                                      "product_cache_image_url": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/9/4/435e2e3e-34b1-46a0-a6dc-1bc9481d4a2a.jpg",
+                                      "original_price": 10000,
+                                      "final_price": 0
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          "products": [
+                            {
+                              "origin_warehouse_ids": [],
+                              "add_ons_product": {
+                                "icon_url": "",
+                                "title": "",
+                                "bottomsheet": {
+                                  "title": "",
+                                  "applink": "",
+                                  "is_shown": false
+                                },
+                                "data": []
+                              },
+                              "add_ons": {
+                                "status": 0,
+                                "add_on_data": [],
+                                "add_on_button": {
+                                  "title": "",
+                                  "description": "",
+                                  "left_icon_url": "",
+                                  "right_icon_url": "",
+                                  "action": 0
+                                },
+                                "add_on_bottomsheet": {
+                                  "header_title": "",
+                                  "description": "",
+                                  "products": [],
+                                  "ticker": {
+                                    "text": ""
+                                  }
+                                }
+                              },
+                              "errors": [],
+                              "cart_id": "2166719791",
+                              "product_id": 2151037742,
+                              "product_name": "Keyboard_Gaming_Tier3",
+                              "product_price": 30000,
+                              "product_original_price": 0,
+                              "product_wholesale_price": 30000,
+                              "product_weight_fmt": "100gr",
+                              "product_weight": 100,
+                              "product_weight_actual": 100,
+                              "product_is_free_returns": 0,
+                              "product_is_preorder": 0,
+                              "product_cashback": "",
+                              "product_price_currency": 1,
+                              "product_image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/9/4/435e2e3e-34b1-46a0-a6dc-1bc9481d4a2a.jpg",
+                              "product_notes": "",
+                              "product_quantity": 1,
+                              "product_menu_id": 1456675,
+                              "product_finsurance": 0,
+                              "product_fcancel_partial": 0,
+                              "product_cat_id": 4011,
+                              "product_catalog_id": 0,
+                              "product_category": "CLP L2L3 Revamp / Big Query Sort / Mouse Gaming",
+                              "purchase_protection_plan_data": {
+                                "protection_available": false,
+                                "protection_type_id": 0,
+                                "protection_price_per_product": 0,
+                                "protection_price": 0,
+                                "protection_title": "",
+                                "protection_subtitle": "",
+                                "protection_link_text": "",
+                                "protection_link_url": "",
+                                "protection_opt_in": false,
+                                "protection_checkbox_disabled": false
+                              },
+                              "product_variants": {
+                                "parent_id": 0
+                              },
+                              "product_tracker_data": {
+                                "attribution": "none/other",
+                                "tracker_list_name": "none/other"
+                              },
+                              "product_preorder": {
+                                "duration_text": "",
+                                "duration_day": "0"
+                              },
+                              "trade_in_info": {
+                                "is_valid_trade_in": false,
+                                "new_device_price": 0,
+                                "new_device_price_fmt": "",
+                                "old_device_price": 0,
+                                "old_device_price_fmt": "",
+                                "drop_off_enable": false,
+                                "device_model": "",
+                                "diagnostic_id": 0
+                              },
+                              "free_shipping": {
+                                "eligible": true,
+                                "badge_url": "https://images.tokopedia.net/img/bo-reg-0k.png"
+                              },
+                              "free_shipping_extra": {
+                                "eligible": false,
+                                "badge_url": ""
+                              },
+                              "free_shipping_general": {
+                                "bo_name": "bebas ongkir",
+                                "bo_type": 1,
+                                "badge_url": "https://images.tokopedia.net/img/bo-reg-0k.png"
+                              },
+                              "product_ticker": {
+                                "show_ticker": false,
+                                "message": ""
+                              },
+                              "variant_description_detail": {
+                                "variant_description": ""
+                              },
+                              "product_alert_message": "",
+                              "product_information": [],
+                              "campaign_id": 0,
+                              "ethical_drug": {
+                                "need_prescription": false,
+                                "icon_url": "https://images.tokopedia.net/img/cartapp/icons/obat_keras_g.png",
+                                "text": "Upload Resep di Pengiriman"
+                              }
+                            },
+                            {
+                              "origin_warehouse_ids": [],
+                              "add_ons_product": {
+                                "icon_url": "",
+                                "title": "",
+                                "bottomsheet": {
+                                  "title": "",
+                                  "applink": "",
+                                  "is_shown": false
+                                },
+                                "data": []
+                              },
+                              "add_ons": {
+                                "status": 0,
+                                "add_on_data": [],
+                                "add_on_button": {
+                                  "title": "",
+                                  "description": "",
+                                  "left_icon_url": "",
+                                  "right_icon_url": "",
+                                  "action": 0
+                                },
+                                "add_on_bottomsheet": {
+                                  "header_title": "",
+                                  "description": "",
+                                  "products": [],
+                                  "ticker": {
+                                    "text": ""
+                                  }
+                                }
+                              },
+                              "errors": [],
+                              "cart_id": "2166716864",
+                              "product_id": 2151037745,
+                              "product_name": "Keyboard_Putih_Tier3",
+                              "product_price": 10000,
+                              "product_original_price": 0,
+                              "product_wholesale_price": 10000,
+                              "product_weight_fmt": "100gr",
+                              "product_weight": 100,
+                              "product_weight_actual": 100,
+                              "product_is_free_returns": 0,
+                              "product_is_preorder": 0,
+                              "product_cashback": "",
+                              "product_price_currency": 1,
+                              "product_image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/9/4/772e95f9-0634-4485-b54c-090c3a529f2b.png",
+                              "product_notes": "",
+                              "product_quantity": 1,
+                              "product_menu_id": 1456675,
+                              "product_finsurance": 0,
+                              "product_fcancel_partial": 0,
+                              "product_cat_id": 4011,
+                              "product_catalog_id": 0,
+                              "product_category": "CLP L2L3 Revamp / Big Query Sort / Mouse Gaming",
+                              "purchase_protection_plan_data": {
+                                "protection_available": false,
+                                "protection_type_id": 0,
+                                "protection_price_per_product": 0,
+                                "protection_price": 0,
+                                "protection_title": "",
+                                "protection_subtitle": "",
+                                "protection_link_text": "",
+                                "protection_link_url": "",
+                                "protection_opt_in": false,
+                                "protection_checkbox_disabled": false
+                              },
+                              "product_variants": {
+                                "parent_id": 0
+                              },
+                              "product_tracker_data": {
+                                "attribution": "none/other",
+                                "tracker_list_name": "none/other"
+                              },
+                              "product_preorder": {
+                                "duration_text": "",
+                                "duration_day": "0"
+                              },
+                              "trade_in_info": {
+                                "is_valid_trade_in": false,
+                                "new_device_price": 0,
+                                "new_device_price_fmt": "",
+                                "old_device_price": 0,
+                                "old_device_price_fmt": "",
+                                "drop_off_enable": false,
+                                "device_model": "",
+                                "diagnostic_id": 0
+                              },
+                              "free_shipping": {
+                                "eligible": true,
+                                "badge_url": "https://images.tokopedia.net/img/bo-reg-0k.png"
+                              },
+                              "free_shipping_extra": {
+                                "eligible": false,
+                                "badge_url": ""
+                              },
+                              "free_shipping_general": {
+                                "bo_name": "bebas ongkir",
+                                "bo_type": 1,
+                                "badge_url": "https://images.tokopedia.net/img/bo-reg-0k.png"
+                              },
+                              "product_ticker": {
+                                "show_ticker": false,
+                                "message": ""
+                              },
+                              "variant_description_detail": {
+                                "variant_description": ""
+                              },
+                              "product_alert_message": "",
+                              "product_information": [],
+                              "campaign_id": 0,
+                              "ethical_drug": {
+                                "need_prescription": false,
+                                "icon_url": "https://images.tokopedia.net/img/cartapp/icons/obat_keras_g.png",
+                                "text": "Upload Resep di Pengiriman"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "shop_shipments": [
+                    {
+                      "ship_id": 1,
+                      "ship_name": "JNE",
+                      "ship_code": "jne",
+                      "ship_logo": "https://images.tokopedia.net/img/kurir-jne.png",
+                      "is_dropship_enabled": 1,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 1,
+                          "ship_prod_name": "Reguler",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        },
+                        {
+                          "ship_prod_id": 2,
+                          "ship_prod_name": "OKE",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        },
+                        {
+                          "ship_prod_id": 6,
+                          "ship_prod_name": "YES",
+                          "ship_group_name": "nextday",
+                          "ship_group_id": 1003,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        },
+                        {
+                          "ship_prod_id": 22,
+                          "ship_prod_name": "Trucking",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    },
+                    {
+                      "ship_id": 2,
+                      "ship_name": "TIKI",
+                      "ship_code": "tiki",
+                      "ship_logo": "https://images.tokopedia.net/img/kurir-tiki.png",
+                      "is_dropship_enabled": 1,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 3,
+                          "ship_prod_name": "Reguler",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        },
+                        {
+                          "ship_prod_id": 16,
+                          "ship_prod_name": "Over Night Service",
+                          "ship_group_name": "nextday",
+                          "ship_group_id": 1003,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    },
+                    {
+                      "ship_id": 6,
+                      "ship_name": "Wahana",
+                      "ship_code": "wahana",
+                      "ship_logo": "https://images.tokopedia.net/img/kurir-wahana.png",
+                      "is_dropship_enabled": 1,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 8,
+                          "ship_prod_name": "Service Normal",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    },
+                    {
+                      "ship_id": 10,
+                      "ship_name": "GoSend",
+                      "ship_code": "gojek",
+                      "ship_logo": "https://images.tokopedia.net/img/kurir-gosend.png",
+                      "is_dropship_enabled": 0,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 20,
+                          "ship_prod_name": "Same Day 8 Jam",
+                          "ship_group_name": "sameday",
+                          "ship_group_id": 1002,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    },
+                    {
+                      "ship_id": 11,
+                      "ship_name": "SiCepat",
+                      "ship_code": "sicepat",
+                      "ship_logo": "https://images.tokopedia.net/img/kurir-sicepat.png",
+                      "is_dropship_enabled": 1,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 18,
+                          "ship_prod_name": "Regular Package",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        },
+                        {
+                          "ship_prod_id": 33,
+                          "ship_prod_name": "BEST",
+                          "ship_group_name": "nextday",
+                          "ship_group_id": 1003,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        },
+                        {
+                          "ship_prod_id": 51,
+                          "ship_prod_name": "HALU",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        },
+                        {
+                          "ship_prod_id": 43,
+                          "ship_prod_name": "GOKIL",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        },
+                        {
+                          "ship_prod_id": 44,
+                          "ship_prod_name": "REG",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    },
+                    {
+                      "ship_id": 12,
+                      "ship_name": "Ninja Xpress",
+                      "ship_code": "ninja",
+                      "ship_logo": "https://images.tokopedia.net/img/kurir-ninja.png",
+                      "is_dropship_enabled": 0,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 25,
+                          "ship_prod_name": "Reguler",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    },
+                    {
+                      "ship_id": 13,
+                      "ship_name": "GrabExpress",
+                      "ship_code": "grab",
+                      "ship_logo": "https://images.tokopedia.net/img/kurir-grab.png",
+                      "is_dropship_enabled": 0,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 24,
+                          "ship_prod_name": "Same Day 8 Jam",
+                          "ship_group_name": "sameday",
+                          "ship_group_id": 1002,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        },
+                        {
+                          "ship_prod_id": 37,
+                          "ship_prod_name": "Instant 3 Jam",
+                          "ship_group_name": "instant",
+                          "ship_group_id": 1000,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    },
+                    {
+                      "ship_id": 14,
+                      "ship_name": "J\u0026T",
+                      "ship_code": "jnt",
+                      "ship_logo": "https://images.tokopedia.net/img/kurir-jnt.png",
+                      "is_dropship_enabled": 1,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 27,
+                          "ship_prod_name": "Reguler",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    },
+                    {
+                      "ship_id": 16,
+                      "ship_name": "REX",
+                      "ship_code": "rex",
+                      "ship_logo": "https://images.tokopedia.net/img/kurir-rex.png",
+                      "is_dropship_enabled": 0,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 32,
+                          "ship_prod_name": "REX-10",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    },
+                    {
+                      "ship_id": 23,
+                      "ship_name": "AnterAja",
+                      "ship_code": "anteraja",
+                      "ship_logo": "https://images.tokopedia.net/img/kurir-anteraja.png",
+                      "is_dropship_enabled": 1,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 45,
+                          "ship_prod_name": "Reguler",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        },
+                        {
+                          "ship_prod_id": 55,
+                          "ship_prod_name": "Economy",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        },
+                        {
+                          "ship_prod_id": 46,
+                          "ship_prod_name": "Next Day",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    },
+                    {
+                      "ship_id": 24,
+                      "ship_name": "Lion Parcel",
+                      "ship_code": "lion",
+                      "ship_logo": "https://images.tokopedia.net/img/kurir-lionparcel.png",
+                      "is_dropship_enabled": 1,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 47,
+                          "ship_prod_name": "Reguler",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    },
+                    {
+                      "ship_id": 25,
+                      "ship_name": "Indo Paket",
+                      "ship_code": "indopkt",
+                      "ship_logo": "https://images.tokopedia.net/img/kurir-indopaket.png",
+                      "is_dropship_enabled": 1,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 48,
+                          "ship_prod_name": "reguler",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    },
+                    {
+                      "ship_id": 999,
+                      "ship_name": "Custom Logistik",
+                      "ship_code": "custom_6552061_6552061",
+                      "ship_logo": "https://images.tokopedia.net/img/kurir-custom.png",
+                      "is_dropship_enabled": 1,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 999,
+                          "ship_prod_name": "Service Normal",
+                          "ship_group_name": "custom",
+                          "ship_group_id": 999,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    }
+                  ],
+                  "shipment_action": [],
+                  "dropshipper": {
+                    "name": "",
+                    "telp_no": ""
+                  },
+                  "warehouse": {
+                    "warehouse_id": 342370,
+                    "city_name": "Kota Tangerang Selatan"
+                  }
+                }
+              ]
+            }
+          ],
+          "donation": {
+            "Title": "Donasi Rp5000 Bantu Pendidikan Adik Panti !",
+            "Nominal": 1000,
+            "Description": "Bantu adik-adik panti dan prasejahtera untuk akses pelatihan bahasa inggris dan pelatihan keterampilan lainnya bersama BenihBaik.com",
+            "icon_url": "https://images.tokopedia.net/img/cartapp/icons/donation.png"
+          },
+          "cod": {
+            "is_cod": false,
+            "counter_cod": -2
+          },
+          "message": {
+            "message_info": "",
+            "message_link": "",
+            "message_logo": ""
+          },
+          "egold_attributes": {
+            "icon_url": "https://images.tokopedia.net/img/cartapp/icons/egold.png",
+            "eligible": true,
+            "is_tiering": true,
+            "is_opt_in": false,
+            "range": {
+              "min": 2000,
+              "max": 5999
+            },
+            "message": {
+              "title_text": "Bulatkan dengan \u003cu\u003enabung emas\u003c/u\u003e",
+              "sub_text": "",
+              "ticker_text": "",
+              "tooltip_text": "Setiap belanja, kamu bisa beli emas untuk ditabung di Tokopedia Emas by Pluang. Jumlahnya otomatis dihitung untuk bulatkan total belanja kamu.",
+              "tooltip_title_text": "Nabung di Tokopedia Emas, yuk!"
+            },
+            "tier_data": [
+              {
+                "minimum_total_amount": 500,
+                "minimum_amount": 2000,
+                "maximum_amount": 3999,
+                "basis_amount": 2000
+              },
+              {
+                "minimum_total_amount": 48001,
+                "minimum_amount": 5000,
+                "maximum_amount": 9999,
+                "basis_amount": 5000
+              },
+              {
+                "minimum_total_amount": 995001,
+                "minimum_amount": 10000,
+                "maximum_amount": 39999,
+                "basis_amount": 25000
+              }
+            ],
+            "hyperlink_text": {
+              "text": "",
+              "url": "",
+              "is_show": false
+            }
+          },
+          "tickers": [],
+          "campaign_timer": {
+            "description": "",
+            "show_timer": false,
+            "expired_timer_message": {
+              "Button": "",
+              "description": "",
+              "title": ""
+            },
+            "timer_detail": {
+              "deduct_time": "",
+              "expire_duration": 0,
+              "expired_time": "",
+              "server_time": ""
+            }
+          },
+          "addresses": {
+            "active": "",
+            "disable_tabs": [],
+            "data": []
+          },
+          "promo": {
+            "error_default": {
+              "title": "",
+              "description": ""
+            },
+            "last_apply": {
+              "code": "200000",
+              "data": {
+                "codes": [],
+                "promo_code_id": 0,
+                "success": true,
+                "voucher_orders": [],
+                "tracking_details": [],
+                "message": {
+                  "color": "",
+                  "state": "",
+                  "text": ""
+                },
+                "additional_info": {
+                  "sp_ids": [],
+                  "usage_summaries": [],
+                  "message_info": {
+                    "message": "Makin hemat pakai promo",
+                    "detail": ""
+                  },
+                  "error_detail": {
+                    "message": ""
+                  },
+                  "empty_cart_info": {
+                    "image_url": "",
+                    "detail": "",
+                    "message": ""
+                  },
+                  "promo_sp_ids": [],
+                  "poml_auto_applied": false,
+                  "bebas_ongkir_info": {
+                    "is_bo_unstack_enabled": true,
+                    "is_use_bebas_ongkir_only": false
+                  }
+                },
+                "user_group_metadata": [
+                  {
+                    "key": "promo_revamp_ab_test_user_group",
+                    "value": ""
+                  }
+                ]
+              }
+            }
+          },
+          "cross_sell": [],
+          "add_on_wording": {
+            "packaging_and_greeting_card": "{{qty}} barang akan dibungkus dalam 1 kemasan dan hanya dapat 1 kartu ucapan",
+            "only_greeting_card": "{{qty}} barang hanya dapat 1 kartu ucapan",
+            "invoice_not_sent_to_recipient": "Invoice tidak dikirim ke penerima pesanan"
+          },
+          "upsell": {
+            "is_show": false,
+            "title": "",
+            "description": "",
+            "app_link": "",
+            "image": ""
+          },
+          "cart_data": "{\"data\":{\"codes\":[],\"grand_total\":20000,\"book\":false,\"service_id\":731644293353960,\"secret_key\":\"9136a5d48e5883ffbe731e1b322cd5b7dfb4f6a6\",\"user_data\":{\"user_id\":9067919,\"email\":\"hansen.wijaya+occstaging@tokopedia.com\",\"msisdn\":\"6287889005019\",\"msisdn_verified\":true,\"is_qc_acc\":true,\"app_version\":\"4.01\",\"ip_address\":\"117.54.140.18, 34.120.68.143\",\"user_agent\":\"TkpdConsumer/4.01 (Android 12;)\",\"advertisement_id\":\"3e424f4d-121e-451d-8417-5c2e57a8ab75\",\"device_type\":\"android\",\"device_id\":\"ca8w4oDETCqZrK-f1MZ-X_:APA91bH8IysFNlmWuHRKugXWRc2m6BaBvn8lMJlzemb6N6Ia0q-ZsOP2VbQcUmSjYTF0pII2vZlA4OajLwhboRW3Vv2rQBdWAU59OfOsnMSou8wlicq00JRROvybFQYbMnEH-OEsHO_C\"},\"meta_data\":{\"orders\":[{\"shop_id\":6552061,\"shop_name\":\"KilatanCahayas\",\"codes\":[],\"unique_id\":\"6552061-0-342370-4701371-1-342370-0\",\"is_po\":false,\"duration\":\"0\",\"warehouse_id\":342370,\"address_id\":4701371,\"fulfill_by\":0}]},\"state\":\"checkout\"}}",
+          "add_ons_summary": [
+            {
+              "wording": "Total Jasa Pasang ({{qty}} Jasa)",
+              "type": 3
+            },
+            {
+              "wording": "Total Biaya Proteksi ({{qty}} Polis)",
+              "type": 4
+            }
+          ],
+          "upsell_v2": {
+            "is_show": false,
+            "is_selected": false,
+            "price": 0,
+            "price_fmt": "",
+            "duration": "",
+            "description": "",
+            "summary_info": "",
+            "image": "",
+            "app_link": "",
+            "button": {
+              "text": ""
+            },
+            "id": 0,
+            "additional_vertical_id": 0,
+            "transaction_type": ""
+          },
+          "dynamic_data_passing": {
+            "is_ddp": false,
+            "dynamic_data": "{\"payment_level\":{\"donation\":{\"validation\":false,\"predefined\":null,\"data\":{\"is_donation\":false,\"id\":1,\"description\":\"Bantu adik-adik panti dan prasejahtera untuk akses pelatihan bahasa inggris dan pelatihan keterampilan lainnya bersama BenihBaik.com\",\"title\":\"Donasi Rp5000 Bantu Pendidikan Adik Panti !\",\"amount\":1000}},\"cross_sell\":{\"validation\":false,\"predefined\":null,\"data\":{\"main_vertical_id\":1,\"items\":[{\"id\":26468,\"price\":90000,\"transaction_type\":\"PLUS\",\"additional_vertical_id\":6,\"info\":{\"client_number\":\"9067919\",\"quota_id\":78,\"pct_tokopedia_subsidy\":100,\"pct_external_subsidy\":0},\"metadata\":\"{\\\"operator_name\\\":\\\"PLUS\\\",\\\"fintech_partner_amount\\\":0,\\\"client_number_type\\\":\\\"registered\\\",\\\"integration_data\\\":{\\\"is_temporary\\\":\\\"false\\\",\\\"period\\\":\\\"bulan\\\",\\\"plus_background\\\":\\\"https://images.tokopedia.net/img/plus/upsell-checkout/background/Upsell_Plus_Supergraphic.png\\\",\\\"plus_button\\\":\\\"{\\\\\\\"text\\\\\\\":\\\\\\\"Langganan\\\\\\\",\\\\\\\"url\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"url_mobile\\\\\\\":\\\\\\\"https://staging.tokopedia.com/gotoplus?source\u003dpg_checkout_v2\\\\\\\",\\\\\\\"app_link\\\\\\\":\\\\\\\"tokopedia://webview?url\u003dhttps%3A%2F%2Fstaging.tokopedia.com%2Fgotoplus%3Fsource%3Dpg_checkout_v2\\\\\\\",\\\\\\\"type\\\\\\\":\\\\\\\"Button\\\\\\\",\\\\\\\"is_shown\\\\\\\":true,\\\\\\\"is_disabled\\\\\\\":false,\\\\\\\"position\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"json_metadata\\\\\\\":\\\\\\\"\\\\\\\"}\\\",\\\"plus_icon\\\":\\\"https://images.tokopedia.net/img/plus/upsell-checkout/icon/Plus_Logo_for_Upsells.png\\\",\\\"price\\\":\\\"15.000\\\",\\\"subtitle\\\":\\\"Langganan PLUS bisa puas belanja pakai \\\\u003cb\\\\u003eBebas Ongkir tanpa batas!\\\\u003c/b\\\\u003e\\\",\\\"title\\\":\\\"Langganan GoTo Plus\\\"},\\\"enquiry_log_id\\\":780562}\",\"disable\":false,\"error_blocking\":false}]}}},\"order_level\":[]}"
+          },
+          "platform_fee": {
+            "enable": true,
+            "profile_code": "TKPD_DEFAULT",
+            "additional_data": "{\"order_metadata\":\"{\\\"order_data\\\":null}\",\"is_plus\":false}",
+            "error_wording": "Biaya jasa aplikasi gagal dimuat. Cek Total Tagihan di Pembayaran atau \u003ca href\u003d\"refresh\"\u003eMuat Ulang\u003c/a\u003e."
+          }
+        }
+      }
+    }
+  }
+]

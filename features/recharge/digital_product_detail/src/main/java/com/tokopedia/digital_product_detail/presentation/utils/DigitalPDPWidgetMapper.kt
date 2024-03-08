@@ -1,5 +1,7 @@
 package com.tokopedia.digital_product_detail.presentation.utils
 
+import android.annotation.SuppressLint
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
@@ -27,6 +29,16 @@ object DigitalPDPWidgetMapper {
             RechargeClientNumberAutoCompleteModel(
                 clientName = autoComplete.clientName,
                 clientNumber = autoComplete.clientNumber
+            )
+        }
+    }
+
+    @SuppressLint("PII Data Exposure")
+    fun mapContactToWidgetModels(contacts: MutableList<TopupBillsContact>): List<RechargeClientNumberAutoCompleteModel> {
+        return contacts.map { contact ->
+            RechargeClientNumberAutoCompleteModel(
+                clientName = contact.name,
+                clientNumber = contact.phoneNumber
             )
         }
     }

@@ -2,11 +2,10 @@ package com.tokopedia.buyerorderdetail.presentation.model
 
 import android.content.Context
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocProductListTypeFactoryImpl
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 
 data class OwocAddonsListUiModel(
-    val addonsLogoUrl: String,
-    val addonsTitle: String,
-    val addonsItemList: List<AddonsListUiModel.AddonItemUiModel>,
+    val addOnSummaryUiModel: AddOnSummaryUiModel?
 ) : BaseOwocVisitableUiModel {
 
     override fun type(typeFactory: OwocProductListTypeFactoryImpl): Int {
@@ -14,6 +13,7 @@ data class OwocAddonsListUiModel(
     }
 
     override fun shouldShow(context: Context?): Boolean {
-        return addonsLogoUrl.isNotBlank() && addonsTitle.isNotBlank()
+        return addOnSummaryUiModel != null && addOnSummaryUiModel.addonsLogoUrl.isNotBlank()
+                && addOnSummaryUiModel.addonsTitle.isNotBlank()
     }
 }

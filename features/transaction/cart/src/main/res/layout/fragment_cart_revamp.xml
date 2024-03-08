@@ -55,7 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.tokopedia.cartrevamp.view.compoundview.CartRecyclerView
+                <com.tokopedia.cart.view.compoundview.CartRecyclerView
                     android:id="@+id/rv_cart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

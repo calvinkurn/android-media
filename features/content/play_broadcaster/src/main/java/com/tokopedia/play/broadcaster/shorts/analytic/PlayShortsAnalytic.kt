@@ -2,5 +2,6 @@ package com.tokopedia.play.broadcaster.shorts.analytic
 
 import com.tokopedia.play.broadcaster.shorts.analytic.affiliate.PlayShortsAffiliateAnalytic
 import com.tokopedia.play.broadcaster.shorts.analytic.general.PlayShortsGeneralAnalytic
+import com.tokopedia.play.broadcaster.shorts.analytic.interspersing.PlayShortsInterspersingAnalytic
 
-interface PlayShortsAnalytic: PlayShortsGeneralAnalytic, PlayShortsAffiliateAnalytic
+interface PlayShortsAnalytic: PlayShortsGeneralAnalytic, PlayShortsAffiliateAnalytic, PlayShortsInterspersingAnalytic

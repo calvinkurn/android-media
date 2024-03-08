@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifyprinciples.Typography xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/infinite_title"
-    android:layout_width="match_parent"
+<com.tokopedia.home_component_header.view.HomeComponentHeaderView
+    android:id="@+id/recommendation_header_view"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginVertical="12dp"
-    app:typographyType="heading_5"
-    tools:text="Pilihan fashion lainnya buatmu" />
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />

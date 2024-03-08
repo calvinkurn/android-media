@@ -1,51 +1,31 @@
 package com.tokopedia.recharge_credit_card.widget
 
 import android.content.Context
-import android.text.Editable
-import android.text.InputFilter
-import android.text.TextWatcher
+import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
-import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imageassets.TokopediaImageUrl.CC_IMG_VERIFIED
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
-import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberAutoCompleteModel
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
-import com.tokopedia.recharge_component.widget.AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET
-import com.tokopedia.recharge_component.widget.AUTOCOMPLETE_THRESHOLD
-import com.tokopedia.recharge_component.widget.clearErrorField
-import com.tokopedia.recharge_component.widget.hideClearIconUnify
-import com.tokopedia.recharge_component.widget.isNumeric
-import com.tokopedia.recharge_component.widget.onClickClearIconUnify
 import com.tokopedia.recharge_component.widget.setMainPadding
-import com.tokopedia.recharge_component.widget.showClearIconUnify
-import com.tokopedia.recharge_component.widget.validateContactName
 import com.tokopedia.recharge_credit_card.R
 import com.tokopedia.recharge_credit_card.databinding.WidgetClientNumberWidgetCcBinding
-import com.tokopedia.recharge_credit_card.toEditable
-import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DEFAULT_MAX_SYMBOLS_LENGTH
-import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DIVIDER
-import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DIVIDER_MODULO
-import com.tokopedia.recharge_credit_card.util.RechargeCCConst.TOTAL_DIGITS
-import com.tokopedia.recharge_credit_card.util.RechargeCCConst.TOTAL_SYMBOLS
-import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
+import com.tokopedia.recharge_credit_card.pcidss.model.PcidssAutoCompleteNumberModel
+import com.tokopedia.recharge_credit_card.pcidss.model.PcidssPrefixValidatorModel
+import com.tokopedia.recharge_credit_card.pcidss.widgets.PcidssInputFieldWidget
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -54,10 +34,7 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import org.jetbrains.annotations.NotNull
-import kotlin.math.abs
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.common.topupbills.R as commontopupbillsR
-import com.tokopedia.recharge_component.R as recharge_componentR
 
 /**
  * @author by misael on 14/06/22
@@ -74,41 +51,24 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
         this
     )
 
-    private var mInputFieldListener: ClientNumberInputFieldListener? = null
-    private var mAutoCompleteListener: ClientNumberAutoCompleteListener? = null
     private var mFilterChipListener: ClientNumberFilterChipListener? = null
-
-    private var autoCompleteAdapter: TopupBillsAutoCompleteAdapter? = null
-
-    private var textFieldStaticLabel: String = ""
     private var inputFieldType: InputFieldType? = null
 
     /* Credit Card */
     private var mCreditCardActionListener: CreditCardActionListener? = null
 
     init {
-        initInputField()
         initSortFilterChip()
         initPrimaryButton()
         initTickerView()
         initCCLogoVerified()
     }
 
-    private fun initInputField() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.run {
-            clearIconView.setOnClickListener {
-                this.onClickClearIconUnify(textFieldStaticLabel, { onClickClearIcon() })
-            }
-            editText.imeOptions = EditorInfo.IME_ACTION_DONE
-        }
-        setLengthMaxTextField()
-    }
-
     private fun initPrimaryButton() {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetButton.run {
             visibility = VISIBLE
             setOnClickListener {
-                mCreditCardActionListener?.onClickNextButton(getInputNumber())
+                mCreditCardActionListener?.onClickNextButton()
             }
         }
     }
@@ -118,114 +78,13 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
     }
 
     private fun initSortFilterChip() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.setMainPadding()
-    }
-
-    private fun initAutoComplete() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.run {
-            editText.run {
-                threshold = AUTOCOMPLETE_THRESHOLD
-                dropDownVerticalOffset = AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET
-
-                addTextChangedListener(object : TextWatcher {
-                    override fun afterTextChanged(input: Editable?) {
-                        input?.let {
-                            if (input.toString().isNumeric() && it.length <= TOTAL_SYMBOLS) {
-                                if (!RechargeCCUtil.isInputCorrect(it, TOTAL_SYMBOLS, DIVIDER_MODULO, DIVIDER)) {
-                                    removeTextChangedListener(this)
-                                    it.replace(
-                                        0,
-                                        it.length,
-                                        RechargeCCUtil.concatStringWith16D(
-                                            RechargeCCUtil.getDigitArray(input, TOTAL_DIGITS),
-                                            DIVIDER
-                                        )
-                                    )
-                                    addTextChangedListener(this)
-                                }
-                            }
-
-                            if (input.length == TOTAL_SYMBOLS) {
-                                dismissDropDown()
-                            }
-                        }
-                    }
-
-                    override fun beforeTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        count: Int,
-                        after: Int
-                    ) {
-                    }
-
-                    override fun onTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        before: Int,
-                        count: Int
-                    ) {
-                        if (s?.isEmpty() == true) hideClearIcon() else showClearIcon()
-                        // if manual input
-                        var isManualInput = false
-                        if (abs(before - count) == 1 && mInputFieldListener?.isKeyboardShown() == true) {
-                            isManualInput = true
-                            mCreditCardActionListener?.onManualInput()
-                        }
-                        setLoading(s?.toString()?.isNotEmpty() == true)
-                        disablePrimaryButton()
-                        mInputFieldListener?.onRenderOperator(true, isManualInput)
-                    }
-                })
-
-                setOnEditorActionListener { _, actionId, keyEvent ->
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        clearFocus()
-                        hideSoftKeyboard()
-                    }
-                    true
-                }
-
-                setOnItemClickListener { _, _, position, _ ->
-                    val item = autoCompleteAdapter?.getItem(position)
-                    if (item is TopupBillsAutoCompleteContactModel) {
-                        hideSoftKeyboard()
-                        setContactName(item.name)
-                        mAutoCompleteListener?.onClickAutoComplete(item)
-                    }
-                }
-            }
-        }
-
-        val emptyStateUnitRes = when (inputFieldType) {
-            InputFieldType.Listrik -> commontopupbillsR.string.common_topup_autocomplete_unit_nomor_meter
-            InputFieldType.Telco -> commontopupbillsR.string.common_topup_autocomplete_unit_nomor_hp
-            InputFieldType.CreditCard -> commontopupbillsR.string.common_topup_autocomplete_unit_nomor_kartu
-            else -> commontopupbillsR.string.common_topup_autocomplete_unit_nomor_hp
-        }
-
-        autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
-            context,
-            recharge_componentR.layout.item_recharge_client_number_auto_complete,
-            mutableListOf(),
-            context.getString(emptyStateUnitRes),
-            object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
-                override fun getFilterText(): String {
-                    return binding.clientNumberWidgetMainLayout.clientNumberWidgetBase
-                        .clientNumberWidgetInputField.editText.text.toString()
-                }
-            }
-        )
-
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.editText.run {
-            setAdapter(autoCompleteAdapter)
-        }
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetSortFilter.setMainPadding()
     }
 
     private fun setSortFilterChip(favnum: List<RechargeClientNumberChipModel>) {
         val sortFilter = arrayListOf<SortFilterItem>()
 
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSeeAll.run {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetSeeAll.run {
             if (favnum.isNotEmpty()) {
                 chip_text.hide()
                 chipType = ChipsUnify.TYPE_ALTERNATE
@@ -257,7 +116,6 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
                 clearErrorState()
                 hideSoftKeyboard()
                 setContactName(number.clientName)
-                setInputNumber(number.clientNumber)
 
                 if (number.clientName.isEmpty()) {
                     mFilterChipListener?.onClickFilterChip(false, number)
@@ -269,13 +127,47 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
             sortFilter.add(sortFilterItem)
         }
 
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.addItem(sortFilter)
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetSortFilter.addItem(sortFilter)
     }
 
-    private fun onClickClearIcon() {
-        clearErrorState()
-        hideOperatorIcon()
-        mInputFieldListener?.onClearInput()
+    fun submitInstantCheckout(
+        headers: HashMap<String, String>,
+        clientNumber: String,
+        operatorId: String,
+        productId: String,
+        userId: String,
+        signature: String,
+        token: String
+    ) {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.pcidssInstantCheckout(
+            headers,
+            clientNumber,
+            operatorId,
+            productId,
+            userId,
+            signature,
+            token
+        )
+    }
+
+    fun showDialogConfirmation() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.pcidssDialogConfirmation()
+    }
+
+    fun submitCheckout(
+        headers: HashMap<String, String>,
+        operatorId: String,
+        productId: String,
+        signature: String,
+        userId: String
+    ) {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.submitCreditCard(
+            headers,
+            signature,
+            operatorId,
+            productId,
+            userId
+        )
     }
 
     fun setFavoriteNumber(favoriteChips: List<RechargeClientNumberChipModel>) {
@@ -283,39 +175,42 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
     }
 
     fun setAutoCompleteList(suggestions: List<RechargeClientNumberAutoCompleteModel>) {
-        autoCompleteAdapter?.updateItems(
-            suggestions.map {
-                TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber, it.token)
-            }.toMutableList()
-        )
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss
+            .setInputFieldAutoCompleteList(
+                suggestions.map {
+                    PcidssAutoCompleteNumberModel(
+                        it.clientName,
+                        it.clientNumber,
+                        it.operatorName,
+                        it.token
+                    )
+                }
+            )
     }
 
     fun setInputFieldType(type: InputFieldType, enableGoogleAutofill: Boolean = false) {
         with(binding) {
             inputFieldType = type
-            clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.run {
-                editText.inputType = type.inputType
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && enableGoogleAutofill) {
-                    editText.setAutofillHints(View.AUTOFILL_HINT_CREDIT_CARD_NUMBER)
+            clientNumberWidgetMainLayout.clientNumberWidgetPcidss.run {
+                setInputType(type.inputType)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    setInputAutofillHints(View.AUTOFILL_HINT_CREDIT_CARD_NUMBER, enableGoogleAutofill)
                 }
             }
         }
-        initAutoComplete()
     }
 
     fun setInputFieldStaticLabel(label: String) {
-        textFieldStaticLabel = label
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase
-            .clientNumberWidgetInputField.textInputLayout.hint = textFieldStaticLabel
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss
+            .setInputFieldStaticLabel(label)
     }
 
-    fun setInputNumber(inputNumber: String) {
-        val formattedInputNumber = RechargeCCUtil.concatStringWith16D(
-            RechargeCCUtil.getDigitArray(inputNumber.toEditable(), TOTAL_DIGITS),
-            DIVIDER
-        )
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.editText
-            .setText(formattedInputNumber)
+    fun setInputNumber(inputNumber: String, token: String = "") {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.setInputNumber(inputNumber, token)
+    }
+
+    fun isInputFieldEmpty(): Boolean {
+        return binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.isInputFieldEmpty()
     }
 
     private fun initTickerView() {
@@ -346,48 +241,29 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
         }
     }
 
-    fun getInputNumber(): String {
-        return binding.clientNumberWidgetMainLayout.clientNumberWidgetBase
-            .clientNumberWidgetInputField.editText.text.toString().replace(" ", "")
-    }
-
-    fun getFormattedInputNumber(): String {
-        return binding.clientNumberWidgetMainLayout.clientNumberWidgetBase
-            .clientNumberWidgetInputField.editText.text.toString()
-    }
-
     fun setContactName(contactName: String, needValidation: Boolean = true) {
-        val label = if (needValidation) validateContactName(textFieldStaticLabel, contactName) else contactName
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.textInputLayout.hint = label
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.setInputFieldHint(contactName, needValidation)
     }
 
     fun resetContactName() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.textInputLayout.hint =
-            textFieldStaticLabel
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.resetInputFieldHint()
     }
 
     fun setLoading(isLoading: Boolean) {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.isLoading = isLoading
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.setLoading(isLoading)
     }
 
-    fun isErrorMessageShown(): Boolean = binding.clientNumberWidgetMainLayout.clientNumberWidgetBase
-        .clientNumberWidgetInputField.isInputError
-
-    fun isInputFieldEmpty(): Boolean = binding.clientNumberWidgetMainLayout.clientNumberWidgetBase
-        .clientNumberWidgetInputField.editText.text.isEmpty()
+    fun setPrefixValidator(data: PcidssPrefixValidatorModel) {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.setCreditCardPrefixValidator(data)
+    }
 
     fun setErrorInputField(errorMessage: String) {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.run {
-            val temp = textInputLayout.helperText.toString()
-            if (temp != errorMessage && getInputNumber().isNotEmpty()) {
-                setMessage(errorMessage)
-                isInputError = true
-            }
-        }
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss
+            .setErrorInputField(errorMessage)
     }
 
     fun setFilterChipShimmer(show: Boolean, shouldHideChip: Boolean = false) {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.run {
+        binding.clientNumberWidgetMainLayout.run {
             if (show) {
                 clientNumberWidgetSortFilter.hide()
                 clientNumberWidgetSortFilterShimmer.show()
@@ -399,18 +275,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
     }
 
     fun clearErrorState() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase
-            .clientNumberWidgetInputField.clearErrorField()
-    }
-
-    fun showClearIcon() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase
-            .clientNumberWidgetInputField.clearIconView.showClearIconUnify()
-    }
-
-    fun hideClearIcon() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase
-            .clientNumberWidgetInputField.clearIconView.hideClearIconUnify()
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.clearErrorState()
     }
 
     fun showOperatorIcon(url: String) {
@@ -427,8 +292,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
     }
 
     fun clearFocusAutoComplete() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase
-            .clientNumberWidgetInputField.editText.clearFocus()
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.clearFocusAutoComplete()
     }
 
     fun hideSoftKeyboard() {
@@ -436,12 +300,9 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
         imm?.hideSoftInputFromWindow(this.windowToken, 0)
     }
 
-    fun setInputFieldListener(inputFieldListener: ClientNumberInputFieldListener) {
-        mInputFieldListener = inputFieldListener
-    }
-
-    fun setAutoCompleteListener(autoCompleteListener: ClientNumberAutoCompleteListener) {
-        mAutoCompleteListener = autoCompleteListener
+    fun setInputFieldListener(pcidssInputFieldListener: PcidssInputFieldWidget.PcidssInputFieldWidgetListener) {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss
+            .setPcidssInputFieldWidgetListener(pcidssInputFieldListener)
     }
 
     fun setFilterChipListener(filterChipListener: ClientNumberFilterChipListener) {
@@ -460,16 +321,8 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
         binding.clientNumberWidgetMainLayout.clientNumberWidgetButton.isEnabled = false
     }
 
-    private fun setLengthMaxTextField() {
-        val filterArray = arrayOfNulls<InputFilter>(1)
-        filterArray[Int.ZERO] = InputFilter.LengthFilter(DEFAULT_MAX_SYMBOLS_LENGTH)
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase
-            .clientNumberWidgetInputField.editText.filters = filterArray
-    }
-
     interface CreditCardActionListener {
-        fun onClickNextButton(clientNumber: String)
-        fun onManualInput()
+        fun onClickNextButton()
         fun onNavigateTokoCardWebView()
     }
 

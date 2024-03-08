@@ -4,24 +4,22 @@ import android.util.Base64
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.encryption.security.RsaUtils
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverPojo
 import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.common.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.common.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
+import com.tokopedia.loginregister.registerinitial.domain.RegisterRequestV2UseCase
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestErrorData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestV2
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -64,8 +62,7 @@ class RegisterInitialViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    val registerCheckUseCase = mockk<GraphqlUseCase<RegisterCheckPojo>>(relaxed = true)
-    val registerRequestUseCase = mockk<GraphqlUseCase<RegisterRequestPojo>>(relaxed = true)
+    val registerCheckUseCase = mockk<RegisterCheckUseCase>(relaxed = true)
     val activateUserUseCase = mockk<ActivateUserUseCase>(relaxed = true)
     val discoverUseCase = mockk<DiscoverUseCase>(relaxed = true)
     val loginTokenUseCase = mockk<LoginTokenUseCase>(relaxed = true)
@@ -74,10 +71,6 @@ class RegisterInitialViewModelTest {
     val dynamicBannerUseCase = mockk<DynamicBannerUseCase>(relaxed = true)
 
     val userSession = mockk<UserSessionInterface>(relaxed = true)
-    val rawQueries = mapOf(
-        RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK to "test2",
-        RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST to "test"
-    )
 
     private var registerCheckObserver = mockk<Observer<Result<RegisterCheckData>>>(relaxed = true)
     private var registerRequestObserver = mockk<Observer<Result<RegisterRequestData>>>(relaxed = true)
@@ -102,7 +95,7 @@ class RegisterInitialViewModelTest {
     val messageException = MessageErrorException("error bro")
 
     private var generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
-    private var registerV2UseCase = mockk<GraphqlUseCase<RegisterRequestV2>>(relaxed = true)
+    private var registerV2UseCase = mockk<RegisterRequestV2UseCase>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -112,7 +105,6 @@ class RegisterInitialViewModelTest {
 
         viewModel = RegisterInitialViewModel(
             registerCheckUseCase,
-            registerRequestUseCase,
             registerV2UseCase,
             activateUserUseCase,
             discoverUseCase,
@@ -122,7 +114,6 @@ class RegisterInitialViewModelTest {
             dynamicBannerUseCase,
             generatePublicKeyUseCase,
             userSession,
-            rawQueries,
             CoroutineTestDispatchersProvider
         )
         viewModel.idlingResourceProvider = null
@@ -152,7 +143,7 @@ class RegisterInitialViewModelTest {
         val responseData = RegisterCheckData()
         val response = RegisterCheckPojo(data = responseData)
 
-        coEvery { registerCheckUseCase.executeOnBackground() } returns response
+        coEvery { registerCheckUseCase(any()) } returns response
 
         viewModel.registerCheck(testId)
 
@@ -169,7 +160,7 @@ class RegisterInitialViewModelTest {
         val responseData = RegisterCheckData(errors = errors)
         val response = RegisterCheckPojo(data = responseData)
 
-        coEvery { registerCheckUseCase.executeOnBackground() } returns response
+        coEvery { registerCheckUseCase(any()) } returns response
 
         viewModel.registerCheck(testId)
 
@@ -187,7 +178,7 @@ class RegisterInitialViewModelTest {
         val responseData = RegisterCheckData(errors = errors)
         val response = RegisterCheckPojo(data = responseData)
 
-        coEvery { registerCheckUseCase.executeOnBackground() } returns response
+        coEvery { registerCheckUseCase(any()) } returns response
 
         viewModel.registerCheck(testId)
 
@@ -200,101 +191,12 @@ class RegisterInitialViewModelTest {
     fun `on Failed Register Check`() {
         val testId = "123456"
 
-        coEvery { registerCheckUseCase.executeOnBackground() } throws throwable
+        coEvery { registerCheckUseCase(any()) } throws throwable
 
         viewModel.registerCheck(testId)
 
         /* Then */
         verify { registerCheckObserver.onChanged(Fail(throwable)) }
-    }
-
-    @Test
-    fun `on Success Register Request`() {
-        /* When */
-        val responseData = RegisterRequestData(accessToken = "asda", refreshToken = "asdasd", tokenType = "kfkfk")
-        val response = RegisterRequestPojo(data = responseData)
-
-        coEvery { registerRequestUseCase.executeOnBackground() } returns response
-
-        viewModel.registerRequest("", "", "", "")
-
-        /* Then */
-        verify { registerRequestObserver.onChanged(Success(responseData)) }
-    }
-
-    @Test
-    fun `on Success Register Request - unknown errors`() {
-        /* When */
-        val responseData = RegisterRequestData(accessToken = "", refreshToken = "", tokenType = "", errors = arrayListOf())
-        val response = RegisterRequestPojo(data = responseData)
-
-        coEvery { registerRequestUseCase.executeOnBackground() } returns response
-
-        viewModel.registerRequest("", "", "", "")
-
-        /* Then */
-        assertThat(viewModel.registerRequestResponse.value, instanceOf(Fail::class.java))
-        assertThat((viewModel.registerRequestResponse.value as Fail).throwable, instanceOf(RuntimeException::class.java))
-    }
-
-    @Test
-    fun `on Error Register Request has errors`() {
-        /* When */
-        val errors = arrayListOf(RegisterRequestErrorData(name = "errors", message = "error happen"))
-        val responseData = RegisterRequestData(accessToken = "", refreshToken = "", tokenType = "", errors = errors)
-        val response = RegisterRequestPojo(data = responseData)
-
-        coEvery { registerRequestUseCase.executeOnBackground() } returns response
-
-        viewModel.registerRequest("", "", "", "")
-
-        /* Then */
-        assertThat(viewModel.registerRequestResponse.value, instanceOf(Fail::class.java))
-        assertThat((viewModel.registerRequestResponse.value as Fail).throwable, instanceOf(com.tokopedia.network.exception.MessageErrorException::class.java))
-    }
-
-    @Test
-    fun `on Error Register Request has errors but empty`() {
-        /* When */
-        val errors = arrayListOf(RegisterRequestErrorData(name = "", message = ""))
-        val responseData = RegisterRequestData(accessToken = "", refreshToken = "", tokenType = "", errors = errors)
-        val response = RegisterRequestPojo(data = responseData)
-
-        every { registerRequestUseCase.execute(any(), any()) } answers {
-            firstArg<(RegisterRequestPojo) -> Unit>().invoke(response)
-        }
-
-        viewModel.registerRequest("", "", "", "")
-
-        /* Then */
-        assertThat(viewModel.registerRequestResponse.value, instanceOf(Fail::class.java))
-        assertThat((viewModel.registerRequestResponse.value as Fail).throwable, instanceOf(RuntimeException::class.java))
-    }
-
-    @Test
-    fun `on Error Register Request had another errors`() {
-        /* When */
-        val responseData = RegisterRequestData(accessToken = "", refreshToken = "", tokenType = "")
-        val response = RegisterRequestPojo(data = responseData)
-
-        every { registerRequestUseCase.execute(any(), any()) } answers {
-            firstArg<(RegisterRequestPojo) -> Unit>().invoke(response)
-        }
-
-        viewModel.registerRequest("", "", "", "")
-
-        /* Then */
-        assertThat(viewModel.registerRequestResponse.value, instanceOf(Fail::class.java))
-    }
-
-    @Test
-    fun `on Failed Register Request`() {
-        coEvery { registerRequestUseCase.executeOnBackground() } throws throwable
-
-        viewModel.registerRequest("", "", "", "")
-
-        /* Then */
-        verify { registerRequestObserver.onChanged(Fail(throwable)) }
     }
 
     @Test
@@ -314,7 +216,7 @@ class RegisterInitialViewModelTest {
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
 
         coEvery { generatePublicKeyUseCase() } returns keyPojo
-        coEvery { registerV2UseCase.executeOnBackground() } returns response
+        coEvery { registerV2UseCase(any()) } returns response
 
         viewModel.registerRequestV2("yoris.prayogo@tokopedia.com", "123456", "Yoris", "asd")
 
@@ -765,8 +667,6 @@ class RegisterInitialViewModelTest {
     fun `clear task`() {
         viewModel.clearBackgroundTask()
         verify {
-            registerRequestUseCase.cancelJobs()
-            registerCheckUseCase.cancelJobs()
             loginTokenUseCase.unsubscribe()
             getProfileUseCase.unsubscribe()
         }

@@ -20,6 +20,4 @@ object LivenessConstants {
     const val KYC_LIVENESS_FILE_NOT_FOUND = -11
 
     const val ARG_FAILED_TYPE = "failed_type"
-
-    const val REMOTE_CONFIG_KEY_LIVENESS_RANDOM_DETECTION = "android_user_random_detection_liveness"
 }

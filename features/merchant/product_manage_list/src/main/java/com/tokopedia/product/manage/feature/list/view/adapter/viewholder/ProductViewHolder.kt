@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -16,6 +15,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
@@ -247,7 +248,7 @@ class ProductViewHolder(
 
     private fun showProductImage(product: ProductUiModel) {
         binding?.imageProduct?.let {
-            loadImageFitCenter(itemView.context, it, product.imageUrl)
+            it.loadImageFitCenter(product.imageUrl)
         }
     }
 

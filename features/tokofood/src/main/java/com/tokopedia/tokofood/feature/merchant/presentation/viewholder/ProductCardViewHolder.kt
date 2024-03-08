@@ -21,11 +21,13 @@ import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.tokofood.R as tokofoodR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ProductCardViewHolder(
     private val binding: TokofoodProductCardLayoutBinding,
-    private val clickListener: OnProductCardItemClickListener,
-    private val tokofoodScrollChangedListener: TokofoodScrollChangedListener
+    private var clickListener: OnProductCardItemClickListener?,
+    private var tokofoodScrollChangedListener: TokofoodScrollChangedListener?
 ) : RecyclerView.ViewHolder(binding.root) {
 
     interface OnProductCardItemClickListener {
@@ -48,36 +50,36 @@ class ProductCardViewHolder(
         context = binding.root.context
         binding.root.setOnClickListener {
             // open product bottom sheet
-            val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
+            val dataSetPosition = binding.root.getTag(tokofoodR.id.dataset_position) as Int
             productListItem?.let { productListItem ->
-                clickListener.onProductCardClicked(
+                clickListener?.onProductCardClicked(
                     productListItem = productListItem,
                     cardPositions = Pair(dataSetPosition, adapterPosition)
                 )
             }
         }
         binding.atcButton.setOnClickListener {
-            val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
+            val dataSetPosition = binding.root.getTag(tokofoodR.id.dataset_position) as Int
             productListItem?.let { productListItem ->
-                clickListener.onAtcButtonClicked(
+                clickListener?.onAtcButtonClicked(
                     productListItem = productListItem,
                     cardPositions = Pair(dataSetPosition, adapterPosition)
                 )
             }
         }
         binding.addCatatanButton.setOnClickListener {
-            val productUiModel = binding.root.getTag(com.tokopedia.tokofood.R.id.product_ui_model) as ProductUiModel
-            val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
-            clickListener.onAddNoteButtonClicked(
+            val productUiModel = binding.root.getTag(tokofoodR.id.product_ui_model) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(tokofoodR.id.dataset_position) as Int
+            clickListener?.onAddNoteButtonClicked(
                 productId = productUiModel.id,
                 orderNote = productUiModel.orderNote,
                 cardPositions = Pair(dataSetPosition, adapterPosition)
             )
         }
         binding.removeProductFromCartButton.setOnClickListener {
-            val productUiModel = binding.root.getTag(com.tokopedia.tokofood.R.id.product_ui_model) as ProductUiModel
-            val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
-            clickListener.onDeleteButtonClicked(
+            val productUiModel = binding.root.getTag(tokofoodR.id.product_ui_model) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(tokofoodR.id.dataset_position) as Int
+            clickListener?.onDeleteButtonClicked(
                 cartId = productUiModel.cartId,
                 productId = productUiModel.id,
                 cardPositions = Pair(dataSetPosition, adapterPosition)
@@ -91,12 +93,12 @@ class ProductCardViewHolder(
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val productUiModel = binding.root.getTag(com.tokopedia.tokofood.R.id.product_ui_model) as ProductUiModel
-                val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
+                val productUiModel = binding.root.getTag(tokofoodR.id.product_ui_model) as ProductUiModel
+                val dataSetPosition = binding.root.getTag(tokofoodR.id.dataset_position) as Int
                 val quantity = binding.qeuProductQtyEditor.getValue().orZero()
                 if (quantity != productUiModel.orderQty && quantity >= Int.ONE) {
                     if (canUpdateQuantity) {
-                        clickListener.onUpdateProductQty(
+                        clickListener?.onUpdateProductQty(
                             productId = productUiModel.id,
                             quantity = quantity,
                             cardPositions = Pair(dataSetPosition, adapterPosition)
@@ -110,24 +112,24 @@ class ProductCardViewHolder(
         })
 
         binding.qeuProductQtyEditor.setAddClickListener {
-            val productUiModel = binding.root.getTag(com.tokopedia.tokofood.R.id.product_ui_model) as ProductUiModel
-            val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
+            val productUiModel = binding.root.getTag(tokofoodR.id.product_ui_model) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(tokofoodR.id.dataset_position) as Int
             val quantity = binding.qeuProductQtyEditor.getValue()
-            clickListener.onIncreaseQtyButtonClicked(
+            clickListener?.onIncreaseQtyButtonClicked(
                 productId = productUiModel.id,
                 quantity = quantity,
                 cardPositions = Pair(dataSetPosition, adapterPosition)
             )
         }
         binding.qeuProductQtyEditor.setSubstractListener {
-            val productUiModel = binding.root.getTag(com.tokopedia.tokofood.R.id.product_ui_model) as ProductUiModel
-            val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
+            val productUiModel = binding.root.getTag(tokofoodR.id.product_ui_model) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(tokofoodR.id.dataset_position) as Int
             val quantity = binding.qeuProductQtyEditor.getValue()
             binding.qeuProductQtyEditor.subtractButton.isEnabled = quantity != Int.ONE
-            clickListener.onDecreaseQtyButtonClicked(
-                    productId = productUiModel.id,
-                    quantity = quantity,
-                    cardPositions = Pair(dataSetPosition, adapterPosition)
+            clickListener?.onDecreaseQtyButtonClicked(
+                productId = productUiModel.id,
+                quantity = quantity,
+                cardPositions = Pair(dataSetPosition, adapterPosition)
             )
         }
     }
@@ -137,8 +139,8 @@ class ProductCardViewHolder(
         canUpdateQuantity = false
         this.productListItem = productListItem
         bindImpressionProductListener(productListItem, dataSetPosition)
-        binding.root.setTag(com.tokopedia.tokofood.R.id.product_ui_model, productUiModel)
-        binding.root.setTag(com.tokopedia.tokofood.R.id.dataset_position, dataSetPosition)
+        binding.root.setTag(tokofoodR.id.product_ui_model, productUiModel)
+        binding.root.setTag(tokofoodR.id.dataset_position, dataSetPosition)
 
         // disable atc button if product is out of stock
         binding.atcButton.isEnabled = !productUiModel.isOutOfStock
@@ -146,7 +148,7 @@ class ProductCardViewHolder(
         context?.run {
             // disabled condition
             if (productUiModel.isShopClosed) {
-                val greyColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+                val greyColor = ContextCompat.getColor(this, unifyprinciplesR.color.Unify_NN400)
                 binding.productName.setTextColor(greyColor)
                 binding.productSummary.setTextColor(greyColor)
                 binding.productPrice.setTextColor(greyColor)
@@ -196,10 +198,10 @@ class ProductCardViewHolder(
         if (!productUiModel.isCustomizable && productUiModel.isAtc) {
             context?.run {
                 if (productUiModel.orderNote.isBlank()) {
-                    val addNoteIcon = ContextCompat.getDrawable(this, com.tokopedia.tokofood.R.drawable.ic_add_note)
+                    val addNoteIcon = ContextCompat.getDrawable(this, tokofoodR.drawable.ic_add_note)
                     binding.iuAddNote.setImageDrawable(addNoteIcon)
                 } else {
-                    val addNoteIcon = ContextCompat.getDrawable(this, com.tokopedia.tokofood.R.drawable.ic_edit_note)
+                    val addNoteIcon = ContextCompat.getDrawable(this, tokofoodR.drawable.ic_edit_note)
                     binding.iuAddNote.setImageDrawable(addNoteIcon)
                 }
             }
@@ -212,9 +214,9 @@ class ProductCardViewHolder(
         val customOrderCount = productUiModel.customOrderDetails.size
         if (customOrderCount.isMoreThanZero() && productUiModel.isCustomizable) {
             val orderCount = customOrderCount.toString()
-            binding.atcButton.text = context?.run { this.getString(com.tokopedia.tokofood.R.string.text_orders, orderCount) }
+            binding.atcButton.text = context?.run { this.getString(tokofoodR.string.text_orders, orderCount) }
         } else {
-            binding.atcButton.text = context?.run { getString(com.tokopedia.tokofood.R.string.action_order) }
+            binding.atcButton.text = context?.run { getString(tokofoodR.string.action_order) }
         }
     }
 
@@ -222,9 +224,10 @@ class ProductCardViewHolder(
         productListItem: ProductListItem,
         dataSetPosition: Int
     ) {
-        binding.root.addAndReturnImpressionListener(productListItem, tokofoodScrollChangedListener) {
-            clickListener.onImpressProductCard(productListItem, dataSetPosition)
+        tokofoodScrollChangedListener?.let { scrollListener ->
+            binding.root.addAndReturnImpressionListener(productListItem, scrollListener) {
+                clickListener?.onImpressProductCard(productListItem, dataSetPosition)
+            }
         }
     }
-
 }

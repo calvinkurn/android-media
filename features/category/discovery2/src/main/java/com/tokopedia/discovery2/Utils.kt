@@ -13,8 +13,11 @@ import android.text.Html
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewOutlineProvider
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.atcvariant.BuildConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -28,10 +31,13 @@ import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.domain.data.*
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -45,6 +51,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.floor
+
 
 const val LABEL_PRODUCT_STATUS = "status"
 const val LABEL_PRICE = "price"
@@ -83,6 +90,8 @@ class Utils {
         const val DEVICE_VALUE = "Android"
         const val FILTERS = "filters"
         const val VERSION = "version"
+        const val SRE_IDENTIFIER = "l_name"
+        const val SRE_VALUE = "sre"
         const val SECTION_ID = "section_id"
         private const val COUNT_ONLY = "count_only"
         private const val RPC_USER_ID = "rpc_UserID"
@@ -521,9 +530,9 @@ class Utils {
                 componentsItem.data?.firstOrNull()?.let { dataItem ->
                     if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(
                             MiniCartItemKey(
-                                    dataItem.parentProductId ?: "",
-                                    type = MiniCartItemType.PARENT
-                                )
+                                dataItem.parentProductId ?: "",
+                                type = MiniCartItemType.PARENT
+                            )
                         )
                     ) {
                         map.getMiniCartItemParentProduct(
@@ -770,7 +779,7 @@ class Utils {
             isReverse: Boolean,
             isFromHtml: Boolean
         ): ValueAnimator {
-            val totalHeight = if(isFromHtml) {
+            val totalHeight = if (isFromHtml) {
                 lineCount * lineHeight + (lineCount * lineHeight * 0.058).toInt()
             } else {
                 lineCount * lineHeight
@@ -788,6 +797,50 @@ class Utils {
                 scrollTo(0, animatedValue)
             }
             return animator
+        }
+
+        internal fun ShapeableImageView.verticalScrollAnimation(
+            duration: Long,
+            isReverse: Boolean,
+        ): ValueAnimator {
+            val animator = if (isReverse) {
+                ValueAnimator.ofInt(height, 0)
+            } else {
+                ValueAnimator.ofInt(0, height)
+            }
+            val newDuration = duration / 5
+            animator.startDelay = newDuration * 3
+            animator.duration = newDuration * 2
+            animator.addUpdateListener { animation ->
+                val animatedValue = animation.animatedValue as Int
+                scrollTo(0, animatedValue)
+            }
+            return animator
+        }
+
+        internal fun View.flipImage(
+            imageView: ShapeableImageView,
+            imageTier: String
+        ) {
+            val animOut: Animation = AnimationUtils.loadAnimation(this.context, R.anim.bmsm_slide_up_out)
+            val animIn: Animation = AnimationUtils.loadAnimation(this.context, R.anim.bmsm_slide_up_in)
+            animOut.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation?) {}
+                override fun onAnimationRepeat(animation: Animation?) {}
+                override fun onAnimationEnd(animation: Animation?) {
+                    this@flipImage.invisible()
+                    imageView.loadImage(imageTier)
+                    animIn.setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationStart(animation: Animation?) {
+                            this@flipImage.visible()
+                        }
+                        override fun onAnimationRepeat(animation: Animation?) {}
+                        override fun onAnimationEnd(animation: Animation?) {}
+                    })
+                    this@flipImage.startAnimation(animIn)
+                }
+            })
+            this.startAnimation(animOut)
         }
     }
 }

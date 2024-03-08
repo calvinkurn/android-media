@@ -1,9 +1,14 @@
 package com.tokopedia.webview
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager.NameNotFoundException
 import android.content.pm.ResolveInfo
 import android.net.Uri
+import android.os.Build
+import android.os.Build.VERSION
 import android.text.TextUtils
 import android.util.Base64
 import android.webkit.WebView
@@ -29,6 +34,7 @@ import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
+
 
 /**
  * Created by Ade Fulki on 2019-06-21.
@@ -435,7 +441,11 @@ object WebViewHelper {
         }
     }
 
-    fun getMediaPickerIntent(context: Context, hasVideo: Boolean = false, disableGallery: Boolean = false): Intent {
+    fun getMediaPickerIntent(
+        context: Context,
+        hasVideo: Boolean = false,
+        disableGallery: Boolean = false
+    ): Intent {
         return MediaPicker.intent(context) {
             pageSource(PageSource.WebView)
             modeType(if (hasVideo) ModeType.COMMON else ModeType.IMAGE_ONLY)
@@ -454,7 +464,8 @@ object WebViewHelper {
     private fun getWhitelistFintechPrefixUrl(context: Context) {
         try {
             val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
-            val whitelistedFintechPrefixes = remoteConfig.getString(RemoteConfigKey.FINTECH_WEBVIEW_HIDE_TOOLBAR)
+            val whitelistedFintechPrefixes =
+                remoteConfig.getString(RemoteConfigKey.FINTECH_WEBVIEW_HIDE_TOOLBAR)
             if (whitelistedFintechPrefixes.isNotBlank()) {
                 whiteListedFintechPath = Gson().fromJson(
                     whitelistedFintechPrefixes,
@@ -480,7 +491,8 @@ object WebViewHelper {
         try {
             context?.let {
                 val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it.applicationContext)
-                val whiteListedScpDomains = firebaseRemoteConfig.getString(APP_SCP_WHITELISTED_ROUTES)
+                val whiteListedScpDomains =
+                    firebaseRemoteConfig.getString(APP_SCP_WHITELISTED_ROUTES)
                 if (!TextUtils.isEmpty(whiteListedScpDomains)) {
                     val domainArray = JSONArray(whiteListedScpDomains)
                     if (domainArray.length() > 0 && !TextUtils.isEmpty(url)) {
@@ -506,8 +518,8 @@ object WebViewHelper {
         if (imageBase64 != null && docType != null) {
             val script = String.format(
                 "var event = new CustomEvent('cameraTriggered'," +
-                    "{ detail: {document: '%s', image: 'data:image/jpeg;base64,%s'}});" +
-                    "window.dispatchEvent(event);",
+                        "{ detail: {document: '%s', image: 'data:image/jpeg;base64,%s'}});" +
+                        "window.dispatchEvent(event);",
                 docType,
                 imageBase64
             )
@@ -543,7 +555,8 @@ object WebViewHelper {
     private fun getWhitelistDisableGalleryPicker(context: Context) {
         try {
             val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
-            val data = remoteConfig.getString(RemoteConfigKey.FINTECH_WEBVIEW_DISABLE_GALLERY_PICKER)
+            val data =
+                remoteConfig.getString(RemoteConfigKey.FINTECH_WEBVIEW_DISABLE_GALLERY_PICKER)
             if (data.isNotBlank()) {
                 whiteListedDisableGalleryPickerUrl = Gson().fromJson(
                     data,
@@ -580,7 +593,8 @@ object WebViewHelper {
             try {
                 val remoteConfig: RemoteConfig =
                     FirebaseRemoteConfigImpl(context.applicationContext)
-                val data = remoteConfig.getString(RemoteConfigKey.CONTACT_US_DISABLE_FORCE_RELOAD_URLS)
+                val data =
+                    remoteConfig.getString(RemoteConfigKey.CONTACT_US_DISABLE_FORCE_RELOAD_URLS)
                 if (data.isNotBlank()) {
                     contactUsForceReloadUrl = Gson().fromJson(
                         data,
@@ -604,4 +618,63 @@ object WebViewHelper {
 
         return false
     }
+
+    // https://stackoverflow.com/questions/41234678/determine-webview-implementation-system-webview-or-chrome
+    @JvmStatic
+    fun getCurrentWebViewPackage(context: Context?): PackageInfo? {
+        return getCurrentLoadedWebViewPackage() ?: getNotYetLoadedWebViewPackageInfo(context)
+    }
+
+    @SuppressLint("WebViewApiAvailability")
+    private fun getCurrentLoadedWebViewPackage(): PackageInfo? {
+        return if (VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                WebView.getCurrentWebViewPackage()
+            } catch (ex: Exception) {
+                null
+            }
+        } else {
+            getLoadedWebViewPackageInfo()
+        }
+    }
+
+    @SuppressLint("PrivateApi")
+    private fun getLoadedWebViewPackageInfo(): PackageInfo? {
+        return try {
+            val webViewFactoryClass = Class.forName("android.webkit.WebViewFactory")
+            return webViewFactoryClass.getMethod("getLoadedPackageInfo")
+                .invoke(null as Any?) as PackageInfo
+        } catch (ignored: Exception) {
+            null
+        }
+    }
+
+    @SuppressLint("PrivateApi", "DeprecatedMethod")
+    private fun getNotYetLoadedWebViewPackageInfo(context: Context?): PackageInfo? {
+        val webviewPackageName: String
+        try {
+            val webviewUpdateServiceClass: Class<*>
+            if (VERSION.SDK_INT <= 23) {
+                webviewUpdateServiceClass = Class.forName("android.webkit.WebViewFactory")
+                webviewPackageName = webviewUpdateServiceClass.getMethod("getWebViewPackageName")
+                    .invoke(null as Any?) as String
+            } else {
+                webviewUpdateServiceClass = Class.forName("android.webkit.WebViewUpdateService")
+                webviewPackageName =
+                    webviewUpdateServiceClass.getMethod("getCurrentWebViewPackageName")
+                        .invoke(null as Any?) as String
+            }
+        } catch (exception: Exception) {
+            return null
+        }
+        return run {
+            val pm = context?.packageManager
+            try {
+                pm?.getPackageInfo(webviewPackageName, 0)
+            } catch (var4: NameNotFoundException) {
+                null
+            }
+        }
+    }
+
 }

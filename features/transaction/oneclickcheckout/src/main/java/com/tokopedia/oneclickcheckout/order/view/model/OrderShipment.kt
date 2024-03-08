@@ -96,6 +96,30 @@ data class OrderShipment(
         }
     }
 
+    fun getRealServiceName(): String {
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.title
+        } else {
+            serviceName ?: ""
+        }
+    }
+
+    fun getRealShipperName(): String {
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.shipperName
+        } else {
+            shipperName ?: ""
+        }
+    }
+
+    fun getRealServiceEta(): String {
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.etaData.textEta
+        } else {
+            shippingEta ?: ""
+        }
+    }
+
     val promoCode: String
         get() {
             return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) logisticPromoViewModel.promoCode else ""

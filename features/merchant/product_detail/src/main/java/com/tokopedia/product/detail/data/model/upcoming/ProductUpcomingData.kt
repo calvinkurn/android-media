@@ -20,6 +20,10 @@ data class ProductUpcomingData(
         @Expose
         val campaignTypeName: String? = "",
 
+        @SerializedName("campaignLogo")
+        @Expose
+        val campaignLogo: String? = "",
+
         @SerializedName("startDate")
         @Expose
         val startDate: String? = "",

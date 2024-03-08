@@ -77,4 +77,13 @@
     <string name="shc_cancel_timer">Batalkan (%1$d detik)</string>
     <string name="shc_n_info_deleted">%1$d info terhapus</string>
     <string name="shc_rich_list_last_updated">Update terakhir %1$s WIB</string>
+    <string name="shc_milestone_reward_detail_title">Detail hadiah</string>
+    <string name="shc_milestone_reward_detail_benefit">Keuntungan</string>
+    <string name="shc_milestone_reward_detail_tnc">Syarat &amp; Ketentuan</string>
+    <string name="shc_milestone_reward_detail_tnc_first_point">1.&#160;</string>
+    <string name="shc_milestone_reward_detail_tnc_second_point">2.&#160;</string>
+    <string name="shc_milestone_reward_detail_tnc_third_point">3.&#160;</string>
+    <string name="shc_milestone_reward_detail_tnc_first_detail">Pengguna setuju untuk sewaktu-waktu dihubungi oleh Tokopedia untuk memberikan informasi yang diperlukan oleh Tokopedia sehubungan dengan data atau akun Pengguna.</string>
+    <string name="shc_milestone_reward_detail_tnc_second_detail">Syarat dan Ketentuan ini dapat diubah sewaktu-waktu tanpa pemberitahuan kepada Pengguna dan dengan terus menggunakan Rewards, Pengguna dianggap telah menyetujui setiap perubahan tersebut.</string>
+    <string name="shc_milestone_reward_detail_tnc_third_detail">Untuk hal-hal yang tidak diatur secara khusus dalam Syarat dan Ketentuan ini, Pengguna menyatakan untuk tunduk pada setiap ketentuan dan prosedur operasional yang diberlakukan oleh Tokopedia sebagaimana tertuang dalam Ketentuan Situs, baik yang berlaku sekarang atau perubahannya dari waktu ke waktu.</string>
 </resources>

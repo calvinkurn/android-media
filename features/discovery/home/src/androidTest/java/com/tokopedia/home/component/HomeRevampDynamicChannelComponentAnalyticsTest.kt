@@ -30,6 +30,7 @@ import com.tokopedia.home.util.ViewVisibilityIdlingResource
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
+import com.tokopedia.home_component.widget.lego3auto.Lego3AutoViewHolder
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.test.application.annotations.CassavaTest
@@ -215,7 +216,8 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
             doActivityTest(
                 listOf(
                     DynamicLegoBannerViewHolder::class.simpleName!!,
-                    DynamicLegoBannerSixAutoViewHolder::class.simpleName!!
+                    DynamicLegoBannerSixAutoViewHolder::class.simpleName!!,
+                    Lego3AutoViewHolder::class.simpleName!!
                 )
             ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 clickOnLegoBannerSection(viewHolder, i)

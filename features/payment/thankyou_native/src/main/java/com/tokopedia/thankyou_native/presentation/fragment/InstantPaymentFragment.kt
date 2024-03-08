@@ -315,9 +315,10 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     private fun checkCreditCardRegisteredForRBA(context: Context) {
         val paymentType = PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)
-        if (paymentType == CashOnDelivery) {
+        if (paymentType == CashOnDelivery || thanksPageData.whitelistedRBA) {
             return
         }
+
         if (::dialogUnify.isInitialized) {
             dialogUnify.cancel()
         }

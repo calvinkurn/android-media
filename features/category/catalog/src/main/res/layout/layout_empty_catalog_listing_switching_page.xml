@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ilEmpty"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="paragraph_1"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginTop="26dp"
+        android:layout_marginStart="12dp"
+        app:typographyWeight="bold"
+        android:text="@string/catalog_switching_catalong_not_found"
+        app:layout_constraintTop_toTopOf="@id/ilEmpty"
+        app:layout_constraintStart_toEndOf="@id/ilEmpty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tvSubTitle"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSubTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="paragraph_3"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginBottom="26dp"
+        android:layout_marginStart="12dp"
+        android:text="@string/catalog_switching_catalong_not_found_sub_title"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:layout_constraintStart_toEndOf="@id/ilEmpty"
+        app:layout_constraintBottom_toBottomOf="@id/ilEmpty"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

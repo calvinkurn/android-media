@@ -2,6 +2,8 @@ package com.tokopedia.video_widget
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -97,6 +99,10 @@ class VideoPlayerController(
         helper.removeExoPlayer()
     }
 
+    companion object {
+        fun empty() = VideoPlayerController(null, 0, 0)
+    }
+
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
     }
 
@@ -116,12 +122,22 @@ class VideoPlayerController(
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        if (videoView?.context == activity) {
+        val ownerActivity = rootView?.context?.getActivity()
+
+        if (ownerActivity == activity) {
             helper.onActivityDestroy()
-            unregisterActivityLifecycleCallback()
             rootView = null
             videoView = null
             imageView = null
+            unregisterActivityLifecycleCallback()
+        }
+    }
+
+    private fun Context.getActivity(): Activity? {
+        return when(this) {
+            is Activity -> this
+            is ContextWrapper -> this.baseContext.getActivity()
+            else -> null
         }
     }
 }

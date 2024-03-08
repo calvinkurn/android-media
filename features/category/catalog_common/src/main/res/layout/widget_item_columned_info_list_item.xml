@@ -7,27 +7,33 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tfTitle"
-        android:layout_width="128dp"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layoutContent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:typographyType="display_3"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="RAM" />
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tfValue"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tfTitle"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_3"
-        tools:text="4 GB, 5GB" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tfTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:typographyType="display_3"
+            android:textColor="@color/Unify_NN600"
+            tools:text="RAM" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tfValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="display_3"
+            tools:text="4 GB, 5GB" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <View
         android:id="@+id/divItem"
@@ -36,6 +42,6 @@
         android:layout_marginTop="8dp"
         android:background="@color/dms_static_divider"
         android:alpha="0.2"
-        app:layout_constraintTop_toBottomOf="@+id/tfValue" />
+        app:layout_constraintTop_toBottomOf="@+id/layoutContent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

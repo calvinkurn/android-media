@@ -102,14 +102,14 @@
                     tools:listitem="@layout/item_chatbot_quick_reply"
                     tools:visibility="visible" />
 
-                <com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
+                <com.tokopedia.chatbot.chatbot2.view.customview.chatroom.replybox.SmallReplyBox
                     android:id="@+id/small_reply_box"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="visible"
                     tools:visibility="visible" />
 
-                <com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBox
+                <com.tokopedia.chatbot.chatbot2.view.customview.chatroom.replybox.BigReplyBox
                     android:id="@+id/big_reply_box"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

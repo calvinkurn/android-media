@@ -23,7 +23,9 @@ data class StoriesGroupHeader(
 data class StoriesGroupItem(
     val groupId: String = "",
     val groupName: String = "",
-    val detail: StoriesDetail = StoriesDetail()
+    val detail: StoriesDetail = StoriesDetail(),
+    val author: StoryAuthor = StoryAuthor.Unknown,
+    val type: StoriesType = StoriesType.Category
 )
 
 data class StoriesDetail(
@@ -33,12 +35,13 @@ data class StoriesDetail(
     val detailItems: List<StoriesDetailItem> = emptyList()
 ) {
     companion object {
-        val EmptyDetail get() = StoriesDetail(
-            selectedGroupId = "",
-            selectedDetailPosition = 0,
-            selectedDetailPositionCached = 0,
-            detailItems = listOf(StoriesDetailItem.Empty)
-        )
+        val EmptyDetail
+            get() = StoriesDetail(
+                selectedGroupId = "",
+                selectedDetailPosition = 0,
+                selectedDetailPositionCached = 0,
+                detailItems = listOf(StoriesDetailItem.Empty)
+            )
     }
 }
 
@@ -52,13 +55,29 @@ data class StoriesDetailItem(
     val productCount: String = "",
     val author: StoryAuthor = StoryAuthor.Unknown,
     val category: StoryCategory = StoryCategory.ASGC,
+    val categoryName: String = "",
     val publishedAt: String = "",
     val menus: List<ContentMenuItem> = emptyList(),
     val share: Sharing = Sharing.Empty,
-    val status: StoryStatus = StoryStatus.Unknown,
+    val status: StoryStatus = StoryStatus.Unknown
 ) {
+
+    val storyType: String
+        get() = when (this.category) {
+            StoriesDetailItem.StoryCategory.Manual -> TYPE_ORGANIC
+            else -> TYPE_AUTOMATIC
+        }
+
     companion object {
-        val Empty get() = StoriesDetailItem(event = StoriesDetailItemUiEvent.RESUME, content = StoriesItemContent(duration = 3000), resetValue = 0)
+        private const val TYPE_ORGANIC = "organic"
+        private const val TYPE_AUTOMATIC = "asgc"
+
+        val Empty
+            get() = StoriesDetailItem(
+                event = StoriesDetailItemUiEvent.RESUME,
+                content = StoriesItemContent(duration = 3000),
+                resetValue = 0
+            )
     }
 
     data class Meta(
@@ -90,7 +109,7 @@ data class StoriesDetailItem(
                 get() = Sharing(
                     isShareable = false,
                     shareText = "",
-                    metadata = StoriesLinkPropertiesProvider.get(),
+                    metadata = StoriesLinkPropertiesProvider.get()
                 )
         }
     }
@@ -123,5 +142,22 @@ data class StoriesDetailItem(
         }
     }
 
-    val isProductAvailable: Boolean = productCount.isNotEmpty() && productCount != "0" && status == StoryStatus.Active
+    val isProductAvailable: Boolean =
+        productCount.isNotEmpty() && productCount != "0" && status == StoryStatus.Active
+}
+
+enum class StoriesType(val value: String) {
+    Category("category"),
+    Author("author");
+
+    companion object {
+        private val values = values()
+
+        fun get(value: String): StoriesType {
+            values.forEach {
+                if (value == it.value) return it
+            }
+            return Category
+        }
+    }
 }

@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
@@ -134,7 +134,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     @SuppressLint("SetJavaScriptEnabled")
     override fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel?) {
         promoCheckoutDetailModel?.let {
-            ImageHandler.LoadImage(imageBannerPromo, it.imageUrlMobile)
+            imageBannerPromo?.loadImageFitCenter(it.imageUrlMobile)
             view?.titlePeriod?.text = it.usage.text
             view?.titleMinTrans?.text = it.minimumUsageLabel
             if (TextUtils.isEmpty(it.minimumUsage)) {

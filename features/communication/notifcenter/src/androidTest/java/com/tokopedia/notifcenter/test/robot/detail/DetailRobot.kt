@@ -60,4 +60,11 @@ object DetailRobot {
             )
         ).perform(click())
     }
+
+    fun clickToggleHistory(position: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.notifcenter_tv_toggle_history)
+        ).perform(click())
+    }
 }

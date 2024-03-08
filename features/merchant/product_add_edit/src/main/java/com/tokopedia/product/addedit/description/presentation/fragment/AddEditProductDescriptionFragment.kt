@@ -657,7 +657,9 @@ class AddEditProductDescriptionFragment :
 
     private fun applyEditMode() {
         val description = descriptionViewModel.descriptionInputModel?.productDescription ?: ""
-        val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList?.toMutableList()
+        val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList?.map {
+            it.copy() // deep copy all object to prevent change at current productInputModel
+        }.orEmpty()
 
         textFieldDescription?.setText(description.fromHtmlWithSpaceAndLinebreak())
         if (!videoLinks.isNullOrEmpty()) {

@@ -25,6 +25,7 @@ class StoriesCreationModelBuilder {
 
     fun buildStoriesInfo(
         storiesId: String = "123",
+        storiesApplinkTemplate: String = "asdf",
     ) = StoriesCreationConfiguration(
         storiesId = storiesId,
         maxProductTag = 30,
@@ -34,5 +35,6 @@ class StoriesCreationModelBuilder {
         imageSourceId = "asdf",
         videoSourceId = "asdf",
         maxStoriesConfig = StoriesCreationConfiguration.MaxStoriesConfig.Empty,
+        storiesApplinkTemplate = storiesApplinkTemplate,
     )
 }

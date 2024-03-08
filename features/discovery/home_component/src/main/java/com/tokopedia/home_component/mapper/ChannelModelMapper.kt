@@ -16,6 +16,7 @@ object ChannelModelMapper {
         productCardListType: ProductCardModel.ProductListType = ProductCardModel.ProductListType.CONTROL,
         excludeShop: Boolean = false,
         excludeLabelGroup: List<String> = emptyList(),
+        isInBackground: Boolean = false,
     ): ProductCardModel {
         val productCardAnimate = if(cardInteration == true) ANIMATE_OVERLAY_BOUNCE else animateOnPress
         return ProductCardModel(
@@ -30,7 +31,7 @@ object ChannelModelMapper {
             stockBarPercentage = channelGrid.soldPercentage,
             shopLocation = channelGrid.shop.shopLocation.takeIf { !excludeShop }.orEmpty(),
             shopBadgeList = channelGrid.badges.map {
-                ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+                ProductCardModel.ShopBadge(title = it.title, imageUrl = it.imageUrl)
             }.takeIf { !excludeShop }.orEmpty(),
             labelGroupList = channelGrid.labelGroup.filterNot { label ->
                 excludeLabelGroup.any {
@@ -41,7 +42,13 @@ object ChannelModelMapper {
                     position = it.position,
                     title = it.title,
                     type = it.type,
-                    imageUrl = it.url
+                    imageUrl = it.url,
+                    styleList = it.styles.map {  style ->
+                        ProductCardModel.LabelGroup.Style(
+                            style.key,
+                            style.value
+                        )
+                    }
                 )
             },
             freeOngkir = ProductCardModel.FreeOngkir(
@@ -55,7 +62,9 @@ object ChannelModelMapper {
             animateOnPress = productCardAnimate,
             isTopStockBar = isTopStockbar,
             cardType = cardType,
-            productListType = productCardListType
+            productListType = productCardListType,
+            hasAddToCartButton = channelGrid.hasBuyButton,
+            isInBackground = isInBackground,
         )
     }
 }

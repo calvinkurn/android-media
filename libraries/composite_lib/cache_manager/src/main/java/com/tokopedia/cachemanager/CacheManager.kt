@@ -3,6 +3,8 @@ package com.tokopedia.cachemanager
 import android.content.Context
 import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.cachemanager.repository.ICacheRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.lang.reflect.Type
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -34,33 +36,50 @@ abstract class CacheManager(val context: Context) {
 
     abstract fun createRepository(context: Context): ICacheRepository
 
-    fun generateUniqueRandomNumber() = System.currentTimeMillis().toString() + Random().nextInt(RANDOM_RANGE)
+    fun generateUniqueRandomNumber() =
+        System.currentTimeMillis().toString() + Random().nextInt(RANDOM_RANGE)
 
     @JvmOverloads
     fun <T> get(customId: String, type: Type, defaultValue: T? = null): T? {
-        try {
+        return try {
             val jsonString: String? = cacheRepository.get(id + customId)
             if (jsonString.isNullOrEmpty()) {
-                return defaultValue
+                defaultValue
             } else {
-                return GsonSingleton.instance.fromJson(jsonString, type)
+                GsonSingleton.instance.fromJson(jsonString, type)
             }
         } catch (e: Throwable) {
-            return defaultValue
+            defaultValue
         }
     }
 
     @JvmOverloads
+    fun <T> getFlow(customId: String, type: Type, defaultValue: T? = null): Flow<T?> {
+        return cacheRepository.getFlow(id + customId).map {
+            val jsonString: String? = it
+            if (jsonString.isNullOrEmpty()) {
+                defaultValue
+            } else {
+                GsonSingleton.instance.fromJson(jsonString, type)
+            }
+        }
+    }
+
+    fun getFlow(customId: String): Flow<String?> {
+        return cacheRepository.getFlow(id + customId)
+    }
+
+    @JvmOverloads
     fun getString(customId: String, defaultString: String? = ""): String? {
-        try {
+        return try {
             val value: String? = cacheRepository.get(id + customId)
             if (value.isNullOrEmpty()) {
-                return defaultString
+                defaultString
             } else {
-                return value
+                value
             }
         } catch (e: Throwable) {
-            return defaultString
+            defaultString
         }
     }
 
@@ -70,9 +89,11 @@ abstract class CacheManager(val context: Context) {
             return
         }
         try {
-            cacheRepository.put(id + customId,
+            cacheRepository.put(
+                id + customId,
                 GsonSingleton.instance.toJson(objectToPut),
-                cacheDuration)
+                cacheDuration
+            )
         } catch (e: Throwable) {
             return
         }
@@ -84,15 +105,17 @@ abstract class CacheManager(val context: Context) {
             return
         }
         try {
-            cacheRepository.put(id + customId,
+            cacheRepository.put(
+                id + customId,
                 objectToPut,
-                cacheDuration)
+                cacheDuration
+            )
         } catch (e: Throwable) {
             return
         }
     }
 
-    fun isExpired(key:String) = cacheRepository.get(key)?.isEmpty() ?: true
+    fun isExpired(key: String) = cacheRepository.get(key)?.isEmpty() ?: true
 
     fun deleteExpiredRecords() {
         cacheRepository.deleteExpiredRecords()

@@ -7,13 +7,14 @@ import com.tokopedia.home.beranda.di.module.query.QueryDynamicChannelV2.DYNAMIC_
 @GqlQuery(DYNAMIC_CHANNEL_V2_QUERY_NAME, DYNAMIC_CHANNEL_V2_QUERY)
 internal object QueryDynamicChannelV2 {
     const val DYNAMIC_CHANNEL_V2_QUERY_NAME = "DynamicChannelQueryV2"
-    const val DYNAMIC_CHANNEL_V2_QUERY = "query getDynamicChannelV2(\$groupIDs: String!, \$channelIDs: String!, \$param: String!, \$location: String){\n" +
-        "  getHomeChannelV2(groupIDs: \$groupIDs, channelIDs: \$channelIDs, param: \$param, location: \$location) {\n" +
+    const val DYNAMIC_CHANNEL_V2_QUERY = "query getDynamicChannelV2(\$groupIDs: String!, \$channelIDs: String!, \$param: String!, \$location: String, \$productCardVersion: String!){\n" +
+        "  getHomeChannelV2(groupIDs: \$groupIDs, channelIDs: \$channelIDs, param: \$param, location: \$location, productCardVersion: \$productCardVersion) {\n" +
         "    channels {\n" +
         "      id\n" +
         "      name\n" +
         "      type\n" +
         "      token\n" +
+        "      origami\n" +
         "      grids {\n" +
         "        id\n" +
         "        url\n" +
@@ -44,6 +45,12 @@ internal object QueryDynamicChannelV2 {
         "        }\n" +
         "        discount\n" +
         "        imageUrl\n" +
+        "        imageList {\n" +
+        "          type\n" +
+        "          imageUrl\n" +
+        "          leftPadding\n" +
+        "          rightPadding\n" +
+        "        }" +
         "        cashback\n" +
         "        isTopads\n" +
         "        minOrder\n" +
@@ -61,6 +68,10 @@ internal object QueryDynamicChannelV2 {
         "          type\n" +
         "          title\n" +
         "          position\n" +
+        "          styles {\n" +
+        "           key\n" +
+        "           value\n" +
+        "          }\n" +
         "        }\n" +
         "        attribution\n" +
         "        warehouseID\n" +

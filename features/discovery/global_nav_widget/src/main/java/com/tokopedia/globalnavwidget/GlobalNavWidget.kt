@@ -8,9 +8,10 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COUNT
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.NAV_TEMPLATE_PILL
@@ -19,6 +20,7 @@ import com.tokopedia.globalnavwidget.catalog.GlobalNavWidgetCatalogAdapter
 import com.tokopedia.globalnavwidget.catalog.GlobalNavWidgetCatalogItemDecoration
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
@@ -143,7 +145,11 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun setBackgroundFromModel(backgroundImgUrl: String) {
         globalNavContainerLayout?.let {
-            ImageHandler.loadBackgroundImage(it, backgroundImgUrl)
+            backgroundImgUrl.getBitmapImageUrl(it.context) { bitmapResult ->
+                try {
+                    it.background = bitmapResult.toDrawable(it.resources)
+                } catch (_: Exception) {}
+            }
         }
     }
 
@@ -195,7 +201,7 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun AppCompatImageView.setSingleGlobalNavIconImageWithUrl(url: String, hiddenView: AppCompatImageView?) {
         shouldShowWithAction(url.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(context, it, url)
+            it?.loadImageFitCenter(url)
             hiddenView?.visibility = View.GONE
         }
     }

@@ -7,6 +7,13 @@ import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
+import com.tokopedia.oneclickcheckout.order.data.payment.AdditionalInfoData
+import com.tokopedia.oneclickcheckout.order.data.payment.BenefitSummaryInfoData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartDetail
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentData
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
+import com.tokopedia.oneclickcheckout.order.data.payment.PromoDetail
 import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.SAVE_ADD_ON_STATE_QUANTITY
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccData
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccPaymentParameter
@@ -26,6 +33,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import com.tokopedia.oneclickcheckout.utils.TestUtil.getPrivateField
 import com.tokopedia.oneclickcheckout.utils.TestUtil.mockPrivateField
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_UNCHECK
 import com.tokopedia.purchase_platform.common.feature.addons.data.response.AddOnDataResponse
@@ -122,11 +130,11 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
         val expectedTotalPrice = orderProduct.addOnsProductData.data.filter { it.status == ADD_ON_PRODUCT_STATUS_CHECK }.sumOf { it.price * it.productQuantity }.toDouble() + orderProduct.orderQuantity * orderProduct.productPrice
         Assert.assertEquals(
             expectedGlobalEvent,
-            orderSummaryPageViewModel.globalEvent.value,
+            orderSummaryPageViewModel.globalEvent.value
         )
         Assert.assertEquals(
             expectedOrderProducts,
-            orderSummaryPageViewModel.orderProducts.value,
+            orderSummaryPageViewModel.orderProducts.value
         )
         Assert.assertEquals(
             expectedTotalPrice,
@@ -237,11 +245,11 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
 
         Assert.assertEquals(
             expectedGlobalEvent,
-            orderSummaryPageViewModel.globalEvent.value,
+            orderSummaryPageViewModel.globalEvent.value
         )
         Assert.assertEquals(
             expectedOrderProducts,
-            orderSummaryPageViewModel.orderProducts.value,
+            orderSummaryPageViewModel.orderProducts.value
         )
         Assert.assertEquals(
             expectedTotalPrice,
@@ -340,11 +348,11 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
 
         Assert.assertEquals(
             expectedGlobalEvent,
-            orderSummaryPageViewModel.globalEvent.value,
+            orderSummaryPageViewModel.globalEvent.value
         )
         Assert.assertEquals(
             expectedOrderProducts,
-            orderSummaryPageViewModel.orderProducts.value,
+            orderSummaryPageViewModel.orderProducts.value
         )
         Assert.assertEquals(
             expectedTotalPrice,
@@ -456,11 +464,11 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
         val expectedTotalPrice = orderProduct.addOnsProductData.data.filter { it.status == ADD_ON_PRODUCT_STATUS_CHECK }.sumOf { it.price * it.productQuantity }.toDouble() + orderProduct.orderQuantity * orderProduct.productPrice
         Assert.assertEquals(
             expectedGlobalEvent,
-            orderSummaryPageViewModel.globalEvent.value,
+            orderSummaryPageViewModel.globalEvent.value
         )
         Assert.assertEquals(
             expectedOrderProducts,
-            orderSummaryPageViewModel.orderProducts.value,
+            orderSummaryPageViewModel.orderProducts.value
         )
         Assert.assertEquals(
             expectedTotalPrice,
@@ -571,7 +579,7 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
         )
         Assert.assertEquals(
             expectedOrderProducts,
-            orderSummaryPageViewModel.orderProducts.value,
+            orderSummaryPageViewModel.orderProducts.value
         )
     }
 
@@ -641,7 +649,7 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
         )
         Assert.assertEquals(
             expectedOrderProducts,
-            orderSummaryPageViewModel.orderProducts.value,
+            orderSummaryPageViewModel.orderProducts.value
         )
     }
 
@@ -709,7 +717,7 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
         )
         Assert.assertEquals(
             expectedGlobalEvent,
-            orderSummaryPageViewModel.globalEvent.value,
+            orderSummaryPageViewModel.globalEvent.value
         )
     }
 
@@ -777,6 +785,15 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
                         shopType,
                         paymentAmount
                     )
+                ),
+                detailData = PaymentRequest(
+                    payment = PaymentData(),
+                    cartDetail = CartDetail(cart = CartData(data = emptyList())),
+                    promoDetail = PromoDetail(
+                        benefitSummaryInfo = BenefitSummaryInfoData(),
+                        voucherOrders = emptyList(),
+                        additionalInfo = AdditionalInfoData()
+                    )
                 )
             )
         )
@@ -806,7 +823,8 @@ class OrderSummaryPageViewModelSaveAddOnTest : BaseOrderSummaryPageViewModelTest
             orderProduct
         )
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(
-            state = OccButtonState.NORMAL
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
         )
 
         every {

@@ -13,6 +13,7 @@ import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInbox
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationWidgetViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsBannerViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsHeadlineViewHolder
+import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsVerticalBannerViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxWidgetMetaViewHolder
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxWidgetListener
@@ -22,6 +23,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendat
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsVerticalBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -58,6 +60,10 @@ class UniversalInboxTypeFactoryImpl(
         return UniversalInboxTopAdsBannerViewHolder.LAYOUT
     }
 
+    override fun type(uiModel: UniversalInboxTopAdsVerticalBannerUiModel): Int {
+        return UniversalInboxTopAdsVerticalBannerViewHolder.LAYOUT
+    }
+
     override fun type(uiModel: UniversalInboxTopadsHeadlineUiModel): Int {
         return UniversalInboxTopAdsHeadlineViewHolder.LAYOUT
     }
@@ -92,6 +98,12 @@ class UniversalInboxTypeFactoryImpl(
                 UniversalInboxTopAdsBannerViewHolder(
                     parent,
                     tdnBannerResponseListener,
+                    topAdsClickListener
+                )
+            }
+            UniversalInboxTopAdsVerticalBannerViewHolder.LAYOUT -> {
+                UniversalInboxTopAdsVerticalBannerViewHolder(
+                    parent,
                     topAdsClickListener
                 )
             }

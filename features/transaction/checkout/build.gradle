@@ -50,7 +50,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
-    implementation projectOrAar(rootProject.ext.libraries.fingerprint)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.libraries.iris)

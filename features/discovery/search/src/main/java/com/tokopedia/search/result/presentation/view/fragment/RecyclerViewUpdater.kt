@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.reimagine.Search2Component
@@ -22,6 +23,7 @@ import com.tokopedia.search.result.product.performancemonitoring.PerformanceMoni
 import com.tokopedia.search.result.product.performancemonitoring.stopPerformanceMonitoring
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -31,7 +33,7 @@ class RecyclerViewUpdater @Inject constructor(
     private val reimagineRollence: ReimagineRollence,
     performanceMonitoringProvider: PerformanceMonitoringProvider,
     @SearchContext
-    context: Context,
+    context: Context
 ) : ViewUpdater,
     LifecycleObserver,
     ContextProvider by WeakReferenceContextProvider(context) {
@@ -60,7 +62,7 @@ class RecyclerViewUpdater @Inject constructor(
         rvLayoutManager: RecyclerView.LayoutManager?,
         onScrollListenerList: List<RecyclerView.OnScrollListener?>,
         productListTypeFactory: ProductListTypeFactory,
-        viewLifecycleOwner: LifecycleOwner,
+        viewLifecycleOwner: LifecycleOwner
     ) {
         this.recyclerView = recyclerView
         this.productListAdapter = ProductListAdapter(productListTypeFactory)
@@ -73,7 +75,7 @@ class RecyclerViewUpdater @Inject constructor(
     fun changeLayoutManager(
         layoutManager: RecyclerView.LayoutManager,
         removedScrollListeners: List<RecyclerView.OnScrollListener?>,
-        addedScrollListeners: List<RecyclerView.OnScrollListener?>,
+        addedScrollListeners: List<RecyclerView.OnScrollListener?>
     ) {
         recyclerView?.apply {
             this.layoutManager = layoutManager
@@ -84,7 +86,7 @@ class RecyclerViewUpdater @Inject constructor(
 
     private fun setupRecyclerView(
         rvLayoutManager: RecyclerView.LayoutManager?,
-        onScrollListenerList: List<RecyclerView.OnScrollListener?>,
+        onScrollListenerList: List<RecyclerView.OnScrollListener?>
     ) {
         rvLayoutManager ?: return
 
@@ -92,8 +94,9 @@ class RecyclerViewUpdater @Inject constructor(
             layoutManager = rvLayoutManager
             adapter = productListAdapter
             addItemDecoration(ProductItemDecoration(getSpacing(), productListAdapter, isReimagineProductCard))
-            if(!isReimagineSearchComponent && !isReimagineProductCard)
+            if (!isReimagineSearchComponent && !isReimagineProductCard) {
                 addItemDecoration(SeparatorItemDecoration(context, productListAdapter))
+            }
             addItemDecoration(ProductListViewItemDecoration(context, productListAdapter))
             onScrollListenerList.filterNotNull().forEach(::addOnScrollListener)
         }
@@ -131,6 +134,10 @@ class RecyclerViewUpdater @Inject constructor(
         productListAdapter?.refreshItemAtIndex(index)
     }
 
+    override fun refreshItemAtIndex(index: Int, refreshItem: Visitable<*>) {
+        productListAdapter?.refreshItemAtIndex(index, refreshItem)
+    }
+
     override fun addLoading() {
         productListAdapter?.addLoading()
     }
@@ -161,6 +168,17 @@ class RecyclerViewUpdater @Inject constructor(
 
     override fun unBlurItem() {
         productListAdapter?.unBlurItem()
+    }
+
+    override fun couponRedeemToaster(message: String) {
+        recyclerView?.let {
+            Toaster.build(
+                it,
+                message,
+                Snackbar.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL
+            ).show()
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

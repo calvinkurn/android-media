@@ -70,6 +70,7 @@ class InspirationCarouselProductDataViewMapper {
                 trackingOption = trackingOption,
                 stockBarDataView = StockBarDataView.create(product.stockBar),
                 warehouseID = product.warehouseIdDefault,
+                categoryID = product.categoryId
             )
         }
     }

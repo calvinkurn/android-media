@@ -48,8 +48,9 @@ class NotificationAdapter constructor(
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
     private val orderWidgetCarouselState: ArrayMap<String, Parcelable> = ArrayMap()
     private val carouselViewPool = RecyclerView.RecycledViewPool()
-    private val widgetTimeline = RecyclerView.RecycledViewPool()
-    private val orderWidgetPool = RecyclerView.RecycledViewPool()
+    private val widgetOrderTimelineViewPool = RecyclerView.RecycledViewPool()
+    private val widgetFeedTimelineViewPool = RecyclerView.RecycledViewPool()
+    private val orderFilterViewPool = RecyclerView.RecycledViewPool()
     private var recommendationTitlePosition: Int? = null
     var shopAdsWidgetAdded = false
     var affiliateBannerPair: Pair<Int, NotificationAffiliateEducationUiModel>? = null
@@ -70,12 +71,16 @@ class NotificationAdapter constructor(
         return carouselViewPool
     }
 
-    override fun getWidgetTimelineViewPool(): RecyclerView.RecycledViewPool {
-        return widgetTimeline
+    override fun getWidgetOrderTimelineViewPool(): RecyclerView.RecycledViewPool {
+        return widgetOrderTimelineViewPool
     }
 
-    override fun getNotificationOrderViewPool(): RecyclerView.RecycledViewPool? {
-        return orderWidgetPool
+    override fun getWidgetFeedTimelineViewPool(): RecyclerView.RecycledViewPool {
+        return widgetFeedTimelineViewPool
+    }
+
+    override fun getNotificationOrderFilterViewPool(): RecyclerView.RecycledViewPool? {
+        return orderFilterViewPool
     }
 
     override fun isPreviousItemNotification(adapterPosition: Int): Boolean {

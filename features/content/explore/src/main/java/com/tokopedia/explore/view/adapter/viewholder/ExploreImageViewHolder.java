@@ -6,12 +6,12 @@ import android.widget.ImageView;
 import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.view.adapter.ExploreCategoryAdapter;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
 import com.tokopedia.explore.view.uimodel.ExploreImageViewModel;
 import com.tokopedia.kotlin.extensions.view.ViewExtKt;
+import com.tokopedia.media.loader.JvmMediaLoader;
 
 /**
  * @author by milhamj on 24/07/18.
@@ -35,12 +35,12 @@ public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewM
 
     @Override
     public void bind(ExploreImageViewModel element) {
-        ImageHandler.LoadImage(image, element.getImageUrl());
+        JvmMediaLoader.loadImage(image, element.getImageUrl());
 
         int badgeId = getBadgeId(element);
         if (badgeId != 0) {
             badge.setVisibility(View.VISIBLE);
-            ImageHandler.loadImageWithId(badge, badgeId);
+            JvmMediaLoader.loadImage(badge, badgeId);
         } else {
             badge.setVisibility(View.GONE);
         }

@@ -14,7 +14,6 @@ class CommentAdapter internal constructor(
 
     init {
         delegatesManager.addDelegate(CommentAdapterDelegate.Item(commentListener))
-        delegatesManager.addDelegate(CommentAdapterDelegate.Empty())
         delegatesManager.addDelegate(CommentAdapterDelegate.Shimmering())
         delegatesManager.addDelegate(CommentAdapterDelegate.Expandable(expandListener))
     }

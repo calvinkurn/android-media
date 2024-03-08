@@ -16,8 +16,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.rule.GrantPermissionRule
+import com.tokopedia.cart.CartActivity
 import com.tokopedia.cart.R
-import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.test.application.annotations.TopAdsTest
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion

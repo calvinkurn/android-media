@@ -7,19 +7,24 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
+import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
+import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
+import com.tokopedia.analytics.performance.perf.performanceTracing.trace.Error;
+import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
+import kotlin.jvm.functions.Function1;
 
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.FirebaseApp;
-import com.scp.auth.GotoSdk;
-import com.scp.auth.common.utils.ScpRefreshHelper;
-import com.scp.auth.common.utils.ScpUtils;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
+import com.tokopedia.analytics.performance.perf.performanceTracing.AppPerformanceTrace;
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.DebugAppPerformanceConfig;
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.DefaultAppPerformanceConfig;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -45,7 +50,6 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.network.data.model.ScpTokenModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.tkpd.BuildConfig;
@@ -60,6 +64,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import okhttp3.Response;
 import timber.log.Timber;
 
@@ -102,6 +108,7 @@ public class MyApplication extends BaseMainApplication
 
         GraphqlClient.init(this, getAuthenticator());
         GraphqlClient.setContextData(getApplicationContext());
+        
 
         NetworkClient.init(this);
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
@@ -125,6 +132,59 @@ public class MyApplication extends BaseMainApplication
                     })
                     .setLocalRootPath("tracker")
                     .initialize();
+            AppPerformanceTrace.Companion.init(
+                    this,
+                    new DebugAppPerformanceConfig(),
+                    new Function1<Activity, Unit>() {
+                        @Override
+                        public Unit invoke(Activity activity) {
+                            if (activity != null && activity instanceof TouchListenerActivity) {
+                                ((TouchListenerActivity) activity).addListener(
+                                        new DispatchTouchListener() {
+                                            @Override
+                    
+                                            public void onDispatchTouch(MotionEvent ev) {
+                                                AppPerformanceTrace.Companion.cancelPerformanceTracing(
+                                                        new Error("err: User Touch. Performance trace cancelled"),
+                                                        activity
+                                                );
+                                            }
+                                        }
+                                );
+                            }
+                            if (FrameMetricsMonitoring.Companion.getPerfWindow() != null) {
+                                FrameMetricsMonitoring.Companion.getPerfWindow().updatePerformanceInfo();
+                            }
+                            return null;
+                        }
+                    },
+                    new Function0<Unit>() {
+                        @Override
+                        public Unit invoke() {
+                            if (FrameMetricsMonitoring.Companion.getPerfWindow() != null) {
+                                FrameMetricsMonitoring.Companion.getPerfWindow().updatePerformanceInfo();
+                            }
+                            return null;
+                        }
+                    }
+            );
+        } else {
+            AppPerformanceTrace.Companion.init(
+                    this,
+                    new DefaultAppPerformanceConfig(),
+                    new Function1<Activity, Unit>() {
+                        @Override
+                        public Unit invoke(Activity activity) {
+                            return null;
+                        }
+                    },
+                    new Function0<Unit>() {
+                        @Override
+                        public Unit invoke() {
+                            return null;
+                        }
+                    }
+            );
         }
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -156,12 +216,6 @@ public class MyApplication extends BaseMainApplication
         TokoChatConnection.init(this, false);
 
         UserSession userSession = new UserSession(this);
-
-        GotoSdk.init(this);
-
-        if (userSession.isLoggedIn() && Objects.requireNonNull(GotoSdk.LSDKINSTANCE).getAccessToken().isEmpty()) {
-            GotoSdk.LSDKINSTANCE.save(userSession.getAccessToken(), userSession.getFreshToken());
-        }
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -482,15 +536,5 @@ public class MyApplication extends BaseMainApplication
     @Override
     public void onRefreshCM(String token) {
         refreshFCMFromInstantIdService(token);
-    }
-
-    @Override
-    public boolean isGotoAuthSdkEnabled() {
-        return ScpUtils.INSTANCE.isGotoLoginEnabled();
-    }
-
-    @Override
-    public ScpTokenModel onNewRefreshToken() {
-        return new ScpRefreshHelper(this).refreshToken();
     }
 }

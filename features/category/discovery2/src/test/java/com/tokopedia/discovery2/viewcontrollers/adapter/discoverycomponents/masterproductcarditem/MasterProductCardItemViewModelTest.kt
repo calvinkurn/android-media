@@ -21,7 +21,8 @@ import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -29,13 +30,14 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class MasterProductCardItemViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
     private val application: Application = mockk()
     private var viewModel: MasterProductCardItemViewModel = spyk(MasterProductCardItemViewModel(application, componentsItem, 99))
-    private var context:Context = mockk()
+    private var context: Context = mockk()
 
     private val productCardItemUseCase: ProductCardItemUseCase by lazy {
         mockk()
@@ -52,14 +54,13 @@ class MasterProductCardItemViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        Dispatchers.setMain(TestCoroutineDispatcher())
+        Dispatchers.setMain(UnconfinedTestDispatcher())
 
         mockkStatic(::getComponent)
         mockkConstructor(UserSession::class)
         mockkConstructor(URLParser::class)
         every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
         every { application.applicationContext } returns context
-
     }
 
     @After
@@ -71,23 +72,23 @@ class MasterProductCardItemViewModelTest {
     }
 
     @Test
-    fun `test for components`(){
+    fun `test for components`() {
         assert(viewModel.components === componentsItem)
     }
 
     @Test
-    fun `test for position`(){
+    fun `test for position`() {
         assert(viewModel.position == 99)
     }
 
     @Test
-    fun `test for application`(){
+    fun `test for application`() {
         assert(viewModel.application === application)
     }
 
     /**************************** test for component position *******************************************/
     @Test
-    fun `test for component position`(){
+    fun `test for component position`() {
         viewModel.onAttachToViewHolder()
 
         assert(viewModel.getComponentPosition().value == viewModel.position)
@@ -95,7 +96,7 @@ class MasterProductCardItemViewModelTest {
 
     /**************************** test for onAttachToViewHolder *******************************************/
     @Test
-    fun `test for onAttachToViewHolder when campaignSoldCount is 0`(){
+    fun `test for onAttachToViewHolder when campaignSoldCount is 0`() {
         val list = ArrayList<DataItem>()
         val item = DataItem(campaignSoldCount = "0", threshold = "20", customStock = "10")
         list.add(item)
@@ -110,7 +111,7 @@ class MasterProductCardItemViewModelTest {
     }
 
     @Test
-    fun `test for onAttachToViewHolder when customStock is 0`(){
+    fun `test for onAttachToViewHolder when customStock is 0`() {
         val list = ArrayList<DataItem>()
         val item = DataItem(campaignSoldCount = "50", threshold = "20", customStock = "0")
         list.add(item)
@@ -125,7 +126,7 @@ class MasterProductCardItemViewModelTest {
     }
 
     @Test
-    fun `test for onAttachToViewHolder when customStock is 1`(){
+    fun `test for onAttachToViewHolder when customStock is 1`() {
         val list = ArrayList<DataItem>()
         val item = DataItem(campaignSoldCount = "50", threshold = "20", customStock = "1")
         list.add(item)
@@ -140,7 +141,7 @@ class MasterProductCardItemViewModelTest {
     }
 
     @Test
-    fun `test for onAttachToViewHolder when customStock is smaller than threshold`(){
+    fun `test for onAttachToViewHolder when customStock is smaller than threshold`() {
         val list = ArrayList<DataItem>()
         val item = DataItem(campaignSoldCount = "50", threshold = "20", customStock = "10")
         list.add(item)
@@ -155,7 +156,7 @@ class MasterProductCardItemViewModelTest {
     }
 
     @Test
-    fun `test for onAttachToViewHolder when customStock is greater than threshold`(){
+    fun `test for onAttachToViewHolder when customStock is greater than threshold`() {
         val list = ArrayList<DataItem>()
         val item = DataItem(campaignSoldCount = "50", threshold = "20", customStock = "30")
         list.add(item)
@@ -170,7 +171,7 @@ class MasterProductCardItemViewModelTest {
     }
 
     @Test
-    fun `test for onAttachToViewHolder when stockWording color is empty`(){
+    fun `test for onAttachToViewHolder when stockWording color is empty`() {
         val list = ArrayList<DataItem>()
         val tempStockWording = StockWording(color = "", title = "xyz")
         val item = DataItem(stockWording = tempStockWording)
@@ -196,12 +197,12 @@ class MasterProductCardItemViewModelTest {
         every { componentsItem.data } returns list
         val resource: Resources = mockk(relaxed = true)
         every { application.resources } returns resource
-        every { discoveryTopAdsTrackingUseCase.hitImpressions(any(),any(),any(),any(),any()) } just runs
+        every { discoveryTopAdsTrackingUseCase.hitImpressions(any(), any(), any(), any(), any()) } just runs
 
         viewModel.onAttachToViewHolder()
         viewModel.sendTopAdsView()
 
-        verify { discoveryTopAdsTrackingUseCase.hitImpressions(any(),any(),any(),any(),any()) }
+        verify { discoveryTopAdsTrackingUseCase.hitImpressions(any(), any(), any(), any(), any()) }
     }
 
     /**************************** test for sendTopAdsClick *******************************************/
@@ -214,12 +215,12 @@ class MasterProductCardItemViewModelTest {
         every { componentsItem.data } returns list
         val resource: Resources = mockk(relaxed = true)
         every { application.resources } returns resource
-        every { discoveryTopAdsTrackingUseCase.hitClick(any(),any(),any(),any(),any()) } just runs
+        every { discoveryTopAdsTrackingUseCase.hitClick(any(), any(), any(), any(), any()) } just runs
 
         viewModel.onAttachToViewHolder()
         viewModel.sendTopAdsClick()
 
-        verify { discoveryTopAdsTrackingUseCase.hitClick(any(),any(),any(),any(),any()) }
+        verify { discoveryTopAdsTrackingUseCase.hitClick(any(), any(), any(), any(), any()) }
     }
 
     /**************************** test for Login *******************************************/
@@ -229,6 +230,7 @@ class MasterProductCardItemViewModelTest {
 
         assert(!viewModel.isUserLoggedIn())
     }
+
     @Test
     fun `isUser Logged in when isLoggedIn is true`() {
         every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
@@ -259,8 +261,8 @@ class MasterProductCardItemViewModelTest {
         every { componentsItem.data } returns null
 
         assert(viewModel.getProductDataItem() == null)
-
     }
+
     @Test
     fun `get product data item when list is empty`() {
         val list = ArrayList<DataItem>()
@@ -268,21 +270,21 @@ class MasterProductCardItemViewModelTest {
 
         assert(viewModel.getProductDataItem() == null)
     }
+
     @Test
     fun `get product data item when list is not empty`() {
         val list = ArrayList<DataItem>()
         every { componentsItem.data } returns list
-        val item:DataItem = mockk()
+        val item: DataItem = mockk()
         list.add(item)
 
         assert(viewModel.getProductDataItem() === item)
-
     }
     /**************************** end of getProductDataItem() *******************************************/
 
     /**************************** test for updateProductQuantity() *******************************************/
     @Test
-    fun `update quantity confirmation test`(){
+    fun `update quantity confirmation test`() {
         val list = ArrayList<DataItem>()
         every { componentsItem.data } returns list
         val item = DataItem()
@@ -295,7 +297,7 @@ class MasterProductCardItemViewModelTest {
 
     /**************************** test for handleATCFailed() *******************************************/
     @Test
-    fun `handle ATCFailed quantity recheck and reload`(){
+    fun `handle ATCFailed quantity recheck and reload`() {
         val viewmodel = spyk(MasterProductCardItemViewModel(application, componentsItem, 99))
         every { viewmodel.onAttachToViewHolder() } just Runs
         val list = ArrayList<DataItem>()
@@ -387,7 +389,7 @@ class MasterProductCardItemViewModelTest {
         TestCase.assertEquals(tempViewModel.getTemplateType(), GRID)
     }
 
-    fun initLoggedInCallback(){
+    private fun initLoggedInCallback() {
         viewModel.campaignNotifyUserCase = campaignNotifyUserCase
         viewModel.productCardItemUseCase = productCardItemUseCase
         val resource: Resources = mockk(relaxed = true)
@@ -410,7 +412,7 @@ class MasterProductCardItemViewModelTest {
             campaignNotifyUserCase.subscribeToCampaignNotifyMe(any())
         } returns campaignNotifyMeResponse
         coEvery {
-            productCardItemUseCase.notifyProductComponentUpdate(any(),any())
+            productCardItemUseCase.notifyProductComponentUpdate(any(), any())
         } returns true
 
         viewModel.onAttachToViewHolder()
@@ -433,7 +435,7 @@ class MasterProductCardItemViewModelTest {
             campaignNotifyUserCase.subscribeToCampaignNotifyMe(any())
         } returns campaignNotifyMeResponse
         coEvery {
-            productCardItemUseCase.notifyProductComponentUpdate(any(),any())
+            productCardItemUseCase.notifyProductComponentUpdate(any(), any())
         } returns true
 
         viewModel.onAttachToViewHolder()
@@ -456,7 +458,7 @@ class MasterProductCardItemViewModelTest {
             campaignNotifyUserCase.subscribeToCampaignNotifyMe(any())
         } returns campaignNotifyMeResponse
         coEvery {
-            productCardItemUseCase.notifyProductComponentUpdate(any(),any())
+            productCardItemUseCase.notifyProductComponentUpdate(any(), any())
         } returns true
 
         viewModel.onAttachToViewHolder()
@@ -524,11 +526,34 @@ class MasterProductCardItemViewModelTest {
         TestCase.assertEquals(viewModel.getParentPositionForCarousel(), -1)
     }
 
+    @Test
+    fun `test for getParentPositionForCarousel when component part of festive section`() {
+        val tempComponentsItem: ComponentsItem = spyk(
+            ComponentsItem(
+                isBackgroundPresent = true,
+                parentSectionId = "56",
+                position = 3,
+                parentComponentPosition = 2
+            )
+        )
+        val componentName = listOf(
+            ComponentNames.ProductCardSprintSaleCarouselItem.componentName,
+            ComponentNames.ProductCardCarouselItem.componentName,
+            ComponentNames.ShopOfferHeroBrandProductItem.componentName
+        ).random()
+
+        every { componentsItem.name } returns componentName
+        every { getComponent(componentsItem.id, componentsItem.pageEndPoint) } returns tempComponentsItem
+
+        viewModel.getParentPositionForCarousel()
+
+        TestCase.assertEquals(viewModel.getParentPositionForCarousel(), tempComponentsItem.parentComponentPosition)
+    }
+
     /**************************** test for scrollToTargetSimilarProducts() *******************************************/
 
-
     @Test
-    fun `test for scrollToTargetSimilarProducts when data is null`(){
+    fun `test for scrollToTargetSimilarProducts when data is null`() {
         val componentsItem: ComponentsItem = mockk(relaxed = true)
         val viewModel = spyk(MasterProductCardItemViewModel(application, componentsItem, 99))
         every { componentsItem.data } returns null
@@ -537,10 +562,10 @@ class MasterProductCardItemViewModelTest {
     }
 
     @Test
-    fun `test for scrollToTargetSimilarProducts when data is present but targetId is not`(){
+    fun `test for scrollToTargetSimilarProducts when data is present but targetId is not`() {
         val componentsItem: ComponentsItem = mockk(relaxed = true)
         val viewModel = spyk(MasterProductCardItemViewModel(application, componentsItem, 99))
-        val dataItem : DataItem = spyk()
+        val dataItem: DataItem = spyk()
         every { componentsItem.data } returns listOf(dataItem)
         every { dataItem.targetComponentId } returns null
         viewModel.scrollToTargetSimilarProducts()
@@ -548,10 +573,10 @@ class MasterProductCardItemViewModelTest {
     }
 
     @Test
-    fun `test for scrollToTargetSimilarProducts when data is present but targetId is empty`(){
+    fun `test for scrollToTargetSimilarProducts when data is present but targetId is empty`() {
         val componentsItem: ComponentsItem = mockk(relaxed = true)
         val viewModel = spyk(MasterProductCardItemViewModel(application, componentsItem, 99))
-        val dataItem : DataItem = spyk()
+        val dataItem: DataItem = spyk()
         every { componentsItem.data } returns listOf(dataItem)
         every { dataItem.targetComponentId } returns ""
         viewModel.scrollToTargetSimilarProducts()
@@ -559,15 +584,13 @@ class MasterProductCardItemViewModelTest {
     }
 
     @Test
-    fun `test for scrollToTargetSimilarProducts when data is present but targetId is present`(){
+    fun `test for scrollToTargetSimilarProducts when data is present but targetId is present`() {
         val componentsItem: ComponentsItem = mockk(relaxed = true)
         val viewModel = spyk(MasterProductCardItemViewModel(application, componentsItem, 99))
-        val dataItem : DataItem = spyk()
+        val dataItem: DataItem = spyk()
         every { componentsItem.data } returns listOf(dataItem)
         every { dataItem.targetComponentId } returns "3"
         viewModel.scrollToTargetSimilarProducts()
         assert(viewModel.getScrollSimilarProductComponentID().value == "3")
     }
-
-
 }

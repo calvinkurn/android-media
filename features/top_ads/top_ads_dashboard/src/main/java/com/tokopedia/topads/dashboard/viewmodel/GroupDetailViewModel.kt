@@ -27,12 +27,19 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.common.data.model.CountDataItem
+import com.tokopedia.topads.common.domain.model.GetVariantByIdResponse
+import com.tokopedia.topads.common.domain.model.TopadsShopInfoV2Model
+import com.tokopedia.topads.common.domain.usecase.GetVariantByIdUseCase
+import com.tokopedia.topads.common.domain.usecase.TopadsGetShopInfoUseCase
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGetInsightCountByAdGroupIDResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsBatchGetInsightCountByAdGroupIDUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -57,11 +64,21 @@ class GroupDetailViewModel @Inject constructor(
     private val bidInfoUseCase: BidInfoUseCase,
     private val topAdsCreateUseCase: TopAdsCreateUseCase,
     private val topAdsBatchGetInsightCountByAdGroupIDUseCase: TopAdsBatchGetInsightCountByAdGroupIDUseCase,
+    private val getVariantByIdUseCase: GetVariantByIdUseCase,
+    private val getShopInfoUseCase: TopadsGetShopInfoUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher.main) {
 
     private var _groupInsightCount: MutableLiveData<TopAdsListAllInsightState<TopAdsBatchGetInsightCountByAdGroupIDResponse>> = MutableLiveData()
     val groupInsightCount: LiveData<TopAdsListAllInsightState<TopAdsBatchGetInsightCountByAdGroupIDResponse>> = _groupInsightCount
+
+    private val _shopVariant = MutableLiveData<List<GetVariantByIdResponse.GetVariantById.ExperimentVariant>>()
+    val shopVariant: LiveData<List<GetVariantByIdResponse.GetVariantById.ExperimentVariant>>
+        get() = _shopVariant
+
+    private val _shopInfoResult:MutableLiveData<Result<TopadsShopInfoV2Model>> = MutableLiveData()
+    val shopInfoResult:LiveData<Result<TopadsShopInfoV2Model>> = _shopInfoResult
+
 
     fun getGroupProductData(
         page: Int,
@@ -418,6 +435,27 @@ class GroupDetailViewModel @Inject constructor(
             onError = {
                 _groupInsightCount.value = TopAdsListAllInsightState.Fail(it)
             })
+    }
+
+    fun getVariantById() {
+        launchCatchError(dispatcher.io, {
+            val data = getVariantByIdUseCase()
+            _shopVariant.postValue(data.getVariantById.shopIdVariants)
+        }, {
+            _shopVariant.postValue(listOf())
+        })
+    }
+
+    fun getShopInfo(){
+        getShopInfoUseCase.getShopInfo(
+            {
+                _shopInfoResult.value = Success(it)
+            },
+            {
+                _shopInfoResult.value = Fail(it)
+            },
+            userSession.shopId
+        )
     }
 
     public override fun onCleared() {

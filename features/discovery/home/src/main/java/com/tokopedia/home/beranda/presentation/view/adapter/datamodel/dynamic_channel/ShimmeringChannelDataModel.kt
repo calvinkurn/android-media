@@ -1,8 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
 import android.os.Bundle
-import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
-import com.tokopedia.analytics.performance.perf.LoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder

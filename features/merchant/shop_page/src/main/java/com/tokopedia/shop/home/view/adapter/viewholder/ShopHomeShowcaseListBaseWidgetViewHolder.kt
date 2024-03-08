@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeBaseEtalaseListWidgetBinding
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.ShopHomeShowcaseListWidgetAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
@@ -28,7 +29,8 @@ class ShopHomeShowcaseListBaseWidgetViewHolder(
     itemView: View,
     private var childWidgetAdapter: ShopHomeShowcaseListWidgetAdapter,
     private var layoutManagerType: Int,
-    private var gridColumnSize: Int
+    private var gridColumnSize: Int,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopHomeShowcaseListSliderUiModel>(itemView) {
 
     companion object {
@@ -142,6 +144,7 @@ class ShopHomeShowcaseListBaseWidgetViewHolder(
                 else -> LinearLayoutManager(context, layoutManagerType, false)
             }
             adapter = childWidgetAdapter
+            setRecycledViewPool(recyclerviewPoolListener.parentPool)
         }
     }
 }

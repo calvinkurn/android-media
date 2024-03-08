@@ -9,6 +9,7 @@
     <string name="snapshot_condition_baru">Baru</string>
     <string name="snapshot_condition_bekas">Bekas</string>
     <string name="btn_snapshot_to_pdp_label">Lihat Halaman Produk</string>
+    <string name="btn_snapshot_non_sellable">Produk Tidak Dijual</string>
     <string name="snapshot_error_common">Terjadi kesalahan, mohon dicoba kembali</string>
     <string name="snapshot_ticker_info">
         <![CDATA[

@@ -50,6 +50,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_CITY_NAME
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_DISTRICT_NAME
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY
@@ -130,6 +132,12 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 extra.getString(EXTRA_ADDRESS_STATE, AddressUiState.PinpointOnly.name)
             }
 
+            val isPositiveFlow = if (extra.containsKey(EXTRA_IS_POSITIVE_FLOW)) {
+                extra.getBoolean(EXTRA_IS_POSITIVE_FLOW)
+            } else {
+                null
+            }
+
             return PinpointFragment().apply {
                 arguments = Bundle().apply {
                     // general
@@ -139,7 +147,9 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     putString(EXTRA_ADDRESS_STATE, state)
 
                     // from address form
-                    putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
+                    if (isPositiveFlow != null) {
+                        putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+                    }
                     putString(EXTRA_ADDRESS_ID, extra.getString(EXTRA_ADDRESS_ID))
                     putLong(EXTRA_DISTRICT_ID, extra.getLong(EXTRA_DISTRICT_ID))
 
@@ -201,6 +211,12 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     locationResult.lastLocation.latitude,
                     locationResult.lastLocation.longitude
                 )
+                context?.let { ctx ->
+                    LocationDetectorHelper(ctx).saveToCache(
+                        locationResult.lastLocation.latitude,
+                        locationResult.lastLocation.longitude
+                    )
+                }
             }
         }
 
@@ -324,12 +340,12 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = false
 
-        activity?.let { MapsInitializer.initialize(activity) }
+        activity?.let { MapsInitializer.initialize(it) }
 
         moveMap(
             getLatLng(viewModel.uiModel.lat, viewModel.uiModel.long)
@@ -634,6 +650,11 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
             if (data != null) {
                 moveMap(getLatLng(data.latitude, data.longitude))
                 viewModel.getDistrictData(data.latitude, data.longitude)
+                context?.let { ctx ->
+                    LocationDetectorHelper(ctx).saveToCache(
+                        data.latitude, data.longitude
+                    )
+                }
             } else {
                 fusedLocationClient?.requestLocationUpdates(
                     AddNewAddressUtils.getLocationRequest(),
@@ -830,12 +851,12 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
                         AddressUiState.AddAddress -> {
                             if (viewModel.isPositiveFlow) {
+                                LogisticAddAddressAnalytics.onClickPilihLokasiPositive(userSession.userId)
+                            } else {
                                 LogisticAddAddressAnalytics.onClickPilihLokasiNegative(
                                     userSession.userId,
                                     if (state.buttonPrimary.success) SUCCESS else NOT_SUCCESS
                                 )
-                            } else {
-                                LogisticAddAddressAnalytics.onClickPilihLokasiPositive(userSession.userId)
                             }
                         }
 

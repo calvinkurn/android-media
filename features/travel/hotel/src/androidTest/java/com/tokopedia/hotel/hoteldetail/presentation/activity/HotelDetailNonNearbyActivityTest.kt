@@ -1,13 +1,14 @@
 package com.tokopedia.hotel.hoteldetail.presentation.activity
 
 import android.content.Intent
+import androidx.core.widget.NestedScrollView
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.presentation.activity.mock.HotelDetailMockResponseConfig
-import com.tokopedia.hotel.test.R
+import com.tokopedia.hotel.test.R as hoteltestR
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import org.junit.*
 
 /**
@@ -25,7 +26,7 @@ class HotelDetailNonNearbyActivityTest: BaseHotelPDPTest() {
                     HotelDetailMockResponseConfig.KEY_QUERY_GET_HOTEL_DETAIL,
                     InstrumentationMockHelper.getRawString(
                         context,
-                        R.raw.response_mock_property_detail
+                        hoteltestR.raw.response_mock_property_detail
                     ),
                     MockModelConfig.FIND_BY_CONTAINS
                 )
@@ -34,7 +35,7 @@ class HotelDetailNonNearbyActivityTest: BaseHotelPDPTest() {
                     HotelDetailMockResponseConfig.KEY_QUERY_GET_HOTEL_ROOM,
                     InstrumentationMockHelper.getRawString(
                         context,
-                        R.raw.response_mock_get_room_list
+                        hoteltestR.raw.response_mock_get_room_list
                     ),
                     MockModelConfig.FIND_BY_CONTAINS
                 )
@@ -43,7 +44,7 @@ class HotelDetailNonNearbyActivityTest: BaseHotelPDPTest() {
                     HotelDetailMockResponseConfig.KEY_QUERY_GET_PROPERTY_REVIEW,
                     InstrumentationMockHelper.getRawString(
                         context,
-                        R.raw.response_mock_property_review
+                        hoteltestR.raw.response_mock_property_review
                     ),
                     MockModelConfig.FIND_BY_CONTAINS
                 )
@@ -60,6 +61,7 @@ class HotelDetailNonNearbyActivityTest: BaseHotelPDPTest() {
     override fun getTrackerFile(): String = "tracker/travel/hotel/hotel_pdp_non_nearby.json"
 
     override fun scrollView() {
-        activityRule.activity.hotelDetailNestedScrollView.scrollTo(0,100)
+        activityRule.activity.findViewById<NestedScrollView>(R.id.hotelDetailNestedScrollView)
+            .scrollTo(0, 100)
     }
 }

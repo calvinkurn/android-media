@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chatbot.chatbot2.data.csatoptionlist.CsatAttributesPojo
 import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotTypeFactory
+import com.tokopedia.csat_rating.dynamiccsat.domain.model.CsatModel
 
 class CsatOptionsUiModel(
     messageId: String = "",
@@ -16,7 +17,8 @@ class CsatOptionsUiModel(
     message: String = "",
     var csat: CsatAttributesPojo.Csat?,
     source: String = "",
-    var isSubmited: Boolean = false
+    var isSubmited: Boolean = false,
+    var dynamicCsat: CsatModel? = null
 ) : BaseChatUiModel(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message, source),
     Visitable<ChatbotTypeFactory> {
 

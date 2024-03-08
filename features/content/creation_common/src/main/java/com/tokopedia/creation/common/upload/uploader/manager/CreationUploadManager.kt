@@ -3,6 +3,7 @@ package com.tokopedia.creation.common.upload.uploader.manager
 import androidx.work.ForegroundInfo
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadStatus
+import com.tokopedia.creation.common.upload.model.CreationUploadSuccessData
 import com.tokopedia.creation.common.upload.uploader.notification.CreationUploadNotificationManager
 
 /**
@@ -46,9 +47,12 @@ abstract class CreationUploadManager(
         }
     }
 
-    protected fun broadcastComplete(uploadData: CreationUploadData) {
+    protected fun broadcastComplete(
+        uploadData: CreationUploadData,
+        successData: CreationUploadSuccessData = CreationUploadSuccessData.Empty,
+    ) {
         broadcastProgress(uploadData, CreationUploadStatus.Success)
-        notificationManager?.onSuccess()
+        notificationManager?.onSuccess(successData)
     }
 
     protected fun broadcastFail(uploadData: CreationUploadData) {
@@ -64,6 +68,12 @@ abstract class CreationUploadManager(
         mListener?.setProgress(uploadData, progress, uploadStatus)
     }
 
+    protected fun broadcastUpdateData(
+        uploadData: CreationUploadData,
+    ) {
+        mListener?.updateData(uploadData)
+    }
+
     companion object {
         const val MAX_UPLOAD_PROGRESS = 100
     }
@@ -77,6 +87,10 @@ interface CreationUploadManagerListener {
         uploadData: CreationUploadData,
         progress: Int,
         uploadStatus: CreationUploadStatus,
+    )
+
+    fun updateData(
+        uploadData: CreationUploadData,
     )
 }
 

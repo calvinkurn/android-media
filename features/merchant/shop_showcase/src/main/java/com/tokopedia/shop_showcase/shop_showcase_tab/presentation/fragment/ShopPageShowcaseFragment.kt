@@ -77,7 +77,6 @@ class ShopPageShowcaseFragment :
         private const val KEY_IS_OS = "IS_OS"
         private const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
         private const val KEY_FORCE_LIGHT_MODE = "force_light_mode"
-        private const val KEY_COLOR_SCHEME = "color_scheme"
         private const val DEFAULT_SHOP_ID = "0"
         private const val SHOWCASE_REQUEST_CODE = 201
         const val SHOP_SRP_EXTRA_SHOP_REF = "EXTRA_SHOP_REF"
@@ -135,7 +134,6 @@ class ShopPageShowcaseFragment :
     private var isOfficialStore: Boolean = false
     private var isGoldMerchant: Boolean = false
     private var shouldForceToLightMode: Boolean = false
-    private var colorScheme: ShopPageColorSchema? = null
     private var maxShowcaseList: Int = 0
     private var shopSharingInShowCaseUiModel: ShopSharingInShowCaseUiModel? = null
 
@@ -323,7 +321,7 @@ class ShopPageShowcaseFragment :
     }
 
     private fun initRecyclerView() {
-        featuredShowcaseAdapter = ShopPageFeaturedShowcaseAdapter(shouldForceToLightMode, colorScheme ?: return, this)
+        featuredShowcaseAdapter = ShopPageFeaturedShowcaseAdapter(shouldForceToLightMode, this)
         allShowcaseListAdapter = ShopPageShowcaseListAdapter(this, this)
 
         val featuredShowcaseLayoutManager = LinearLayoutManager(
@@ -362,7 +360,6 @@ class ShopPageShowcaseFragment :
             isGoldMerchant = args.getBoolean(KEY_IS_GOLD_MERCHANT, false)
             shopSharingInShowCaseUiModel = args.getParcelable(SHOP_SHARING_FOR_SHOW_CASE)
             shouldForceToLightMode = args.getBoolean(KEY_FORCE_LIGHT_MODE, false)
-            colorScheme = args.getParcelable(KEY_COLOR_SCHEME) as? ShopPageColorSchema 
         }
     }
 

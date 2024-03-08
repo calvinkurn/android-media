@@ -5,10 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.databinding.LayoutHotelHomepagePopularCityViewHolderBinding
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.homepage.presentation.widget.HotelHomepagePopularCitiesWidget
 import com.tokopedia.media.loader.loadImage
-import kotlinx.android.synthetic.main.layout_hotel_homepage_popular_city_view_holder.view.*
 import kotlin.math.min
 
 /**
@@ -42,13 +42,16 @@ class HotelHomepagePopularCitiesAdapter(private val popularCities: List<PopularS
     }
 
     class ViewHolder(view: View, val listener: HotelHomepagePopularCitiesWidget.ActionListener?) : RecyclerView.ViewHolder(view) {
-        fun bind(popularSearch: PopularSearch) {
-            with(itemView) {
-                iv_hotel_popular_city.loadImage(popularSearch.image)
-                tv_hotel_popular_city_title.text = popularSearch.name
-                tv_hotel_popular_city_subtitle.text = popularSearch.metaDescription
 
-                setOnClickListener {
+        private val binding = LayoutHotelHomepagePopularCityViewHolderBinding.bind(view)
+
+        fun bind(popularSearch: PopularSearch) {
+            with(binding) {
+                ivHotelPopularCity.loadImage(popularSearch.image)
+                tvHotelPopularCityTitle.text = popularSearch.name
+                tvHotelPopularCitySubtitle.text = popularSearch.metaDescription
+
+                root.setOnClickListener {
                     listener?.onPopularCityClicked(popularSearch)
                 }
             }

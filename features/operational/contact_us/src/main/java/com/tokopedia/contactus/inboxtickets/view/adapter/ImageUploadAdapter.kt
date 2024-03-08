@@ -7,12 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxtickets.data.ImageUpload
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import java.io.File
 
 private const val DUMMY_IMAGE_RESOURCE_FOR_LOCAL_FILE = -1
@@ -73,7 +74,7 @@ class ImageUploadAdapter(
                 deleteImage.hide()
                 selectedImage.setOnClickListener { onSelectImageClick.onClick() }
             } else {
-                ImageHandler.loadImageFromFile(context, selectedImage, File(image.fileLoc.orEmpty()))
+                selectedImage.loadImage(File(image.fileLoc.orEmpty()).toUri())
                 selectedImage.setOnClickListener(null)
                 deleteImage.show()
             }

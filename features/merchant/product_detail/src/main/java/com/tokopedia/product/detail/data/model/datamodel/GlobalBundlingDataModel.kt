@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 import com.tokopedia.productbundlewidget.model.WidgetType
 
 data class GlobalBundlingDataModel(
@@ -13,6 +13,9 @@ data class GlobalBundlingDataModel(
     var shouldRefresh: Boolean = true
 ) : DynamicPdpDataModel {
 
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
+
     companion object {
         val DEFAULT_WIDGET_TYPE = WidgetType.TYPE_2.typeCode
     }
@@ -21,7 +24,7 @@ data class GlobalBundlingDataModel(
     override fun name() = name
     override fun newInstance() = this.copy()
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? = null
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory) = typeFactory.type(this)
+    override fun type(typeFactory: ProductDetailAdapterFactory) = typeFactory.type(this)
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return newData is GlobalBundlingDataModel &&

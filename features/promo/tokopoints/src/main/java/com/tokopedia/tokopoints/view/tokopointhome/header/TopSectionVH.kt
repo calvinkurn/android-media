@@ -23,18 +23,20 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.notification.model.popupnotif.PopupNotif
 import com.tokopedia.tokopoints.view.customview.*
@@ -211,7 +213,7 @@ class TopSectionVH(
             mTextMembershipValue?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
         }
 
-        ImageHandler.loadImageCircle2(itemView.context, mImgEgg, data?.tier?.imageURL)
+        mImgEgg?.loadImageCircle(data?.tier?.imageURL)
         data?.backgroundImageURLMobileV2?.let { mImgBackground?.loadImage(it) }
         if (data?.tier != null) {
             mTextMembershipValue?.text = data.tier.nameDesc
@@ -375,7 +377,11 @@ class TopSectionVH(
             (savingDesc as TextView).text = spannable
         }
         if (!userSavingInfo.backgroundImageURL.isNullOrEmpty()) {
-            ImageHandler.loadBackgroundImage(cardContainer, userSavingInfo.backgroundImageURL)
+            cardContainer?.let {
+                userSavingInfo.backgroundImageURL.getBitmapImageUrl(it.context) { bitmapResult ->
+                    it.background = bitmapResult.toDrawable(it.context.resources)
+                }
+            }
         }
         cardContainer?.setOnClickListener {
             RouteManager.route(itemView.context, CommonConstant.WebLink.USERSAVING)

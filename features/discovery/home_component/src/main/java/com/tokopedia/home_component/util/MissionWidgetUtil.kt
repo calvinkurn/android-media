@@ -9,14 +9,17 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by frenzel
  */
 abstract class MissionWidgetUtil {
+    abstract fun getWidth(context: Context): Int
 
     abstract fun findMaxTitleHeight(
         data: MissionWidgetListDataModel,
+        width: Int,
         context: Context
     ): Int
 
     abstract fun findMaxSubtitleHeight(
         data: MissionWidgetListDataModel,
+        width: Int,
         context: Context
     ): Int
 

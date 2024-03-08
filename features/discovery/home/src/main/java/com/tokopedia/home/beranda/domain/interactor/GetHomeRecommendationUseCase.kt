@@ -7,6 +7,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.di.module.query.HomeFeedV2Query
 import com.tokopedia.home.beranda.domain.gql.feed.GetHomeRecommendationContent
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -38,6 +39,12 @@ class GetHomeRecommendationUseCase @Inject constructor(
         params.putString(PARAM_LOCATION, location)
         params.putString(PARAM_SOURCE_TYPE, sourceType)
         params.putInt(PARAM_PRODUCT_PAGE, page)
+        params.putString(PRODUCT_CARD_VERSION, getProductCardVersion())
+    }
+
+    private fun getProductCardVersion(): String {
+        val isReimagine = ProductCardExperiment.isReimagine()
+        return if(isReimagine) PRODUCT_CARD_VERSION_V5 else ""
     }
 
     companion object {
@@ -45,5 +52,7 @@ class GetHomeRecommendationUseCase @Inject constructor(
         private const val PARAM_LOCATION = "location"
         private const val PARAM_SOURCE_TYPE = "sourceType"
         private const val PARAM_PRODUCT_PAGE = "productPage"
+        private const val PRODUCT_CARD_VERSION = "productCardVersion"
+        private const val PRODUCT_CARD_VERSION_V5 = "v5"
     }
 }

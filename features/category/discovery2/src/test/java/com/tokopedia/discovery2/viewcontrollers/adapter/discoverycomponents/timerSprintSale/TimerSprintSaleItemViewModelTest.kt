@@ -3,7 +3,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tim
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.utils.URLParser
-import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -11,18 +10,20 @@ import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.*
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class TimerSprintSaleItemViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
     private val application: Application = mockk()
-    private val mockedDataItem:DataItem = mockk(relaxed = true)
+    private val mockedDataItem: DataItem = mockk(relaxed = true)
     private val list = ArrayList<DataItem>()
 
     private val viewModel: TimerSprintSaleItemViewModel by lazy {
@@ -35,7 +36,7 @@ class TimerSprintSaleItemViewModelTest {
         mockkObject(Utils)
         mockkStatic(::getComponent)
         mockkConstructor(URLParser::class)
-        Dispatchers.setMain(TestCoroutineDispatcher())
+        Dispatchers.setMain(UnconfinedTestDispatcher())
     }
 
 //    Doubt- are these methods testable? :
@@ -50,32 +51,42 @@ class TimerSprintSaleItemViewModelTest {
 
         viewModel.handleSaleEndSates()
 
-        Assert.assertEquals(viewModel.syncData.value,null)
+        Assert.assertEquals(viewModel.syncData.value, null)
     }
 
     @Test
     fun `handleSaleEndSates when isFutureSaleOngoing is true`() {
         every { Utils.isFutureSale(any()) } returns true
-        every { Utils.isFutureSaleOngoing(any(),any()) } returns true
+        every { Utils.isFutureSaleOngoing(any(), any()) } returns true
 
         viewModel.handleSaleEndSates()
 
-        Assert.assertEquals(viewModel.syncData.value,null)
+        Assert.assertEquals(viewModel.syncData.value, null)
+    }
+
+    @Test
+    fun `should do nothing if auto refresh is disable when handleSaleEndSates`() {
+        every { componentsItem.properties?.shouldAutoRefresh } returns false
+
+        viewModel.handleSaleEndSates()
+
+        Assert.assertEquals(viewModel.syncData.value, null)
     }
 
     @Test
     fun `handleSaleEndSates when isSaleOver is true`() {
+        every { componentsItem.properties?.shouldAutoRefresh } returns true
         every { Utils.isFutureSale(any()) } returns false
-        every { Utils.isFutureSaleOngoing(any(),any()) } returns false
+        every { Utils.isFutureSaleOngoing(any(), any()) } returns false
         every { Utils.isSaleOver(any()) } returns true
 
         viewModel.handleSaleEndSates()
 
-        Assert.assertEquals(viewModel.syncData.value,true)
+        Assert.assertEquals(viewModel.syncData.value, true)
     }
 
     @Test
-    fun `checkUpcomingSaleTimer`() {
+    fun checkUpcomingSaleTimer() {
         val list = ArrayList<DataItem>()
         list.add(mockk(relaxed = true))
         coEvery { componentsItem.data } returns list
@@ -84,7 +95,7 @@ class TimerSprintSaleItemViewModelTest {
 
         viewModel.checkUpcomingSaleTimer()
 
-        Assert.assertEquals(viewModel.timerWithBannerCounter,null)
+        Assert.assertEquals(viewModel.timerWithBannerCounter, null)
     }
 
     @Test
@@ -96,7 +107,7 @@ class TimerSprintSaleItemViewModelTest {
 
         viewModel.startTimer(timerUnify)
 
-        Assert.assertEquals(viewModel.timerWithBannerCounter != null,false)
+        Assert.assertEquals(viewModel.timerWithBannerCounter != null, false)
     }
 
     @Test
@@ -108,7 +119,7 @@ class TimerSprintSaleItemViewModelTest {
 
         viewModel.startTimer(timerUnify)
 
-        Assert.assertEquals(viewModel.timerWithBannerCounter != null,false)
+        Assert.assertEquals(viewModel.timerWithBannerCounter != null, false)
     }
 
     @Test
@@ -120,9 +131,8 @@ class TimerSprintSaleItemViewModelTest {
 
         viewModel.startTimer(timerUnify)
 
-        Assert.assertEquals(viewModel.timerWithBannerCounter != null,false)
+        Assert.assertEquals(viewModel.timerWithBannerCounter != null, false)
     }
-
 
     @Test
     fun `start Date if no data present`() {
@@ -135,12 +145,13 @@ class TimerSprintSaleItemViewModelTest {
         every { mockedDataItem.startDate } returns null
         Assert.assertEquals(viewModel.getStartDate(), "")
     }
+
     @Test
     fun `start Date if data is present`() {
         list.clear()
         list.add(mockedDataItem)
         every { componentsItem.data } returns list
-        every { mockedDataItem.startDate  } returns "test date"
+        every { mockedDataItem.startDate } returns "test date"
         Assert.assertEquals(viewModel.getStartDate(), "test date")
     }
 
@@ -164,17 +175,18 @@ class TimerSprintSaleItemViewModelTest {
         every { mockedDataItem.endDate } returns "test date"
         Assert.assertEquals(viewModel.getEndDate(), "test date")
     }
+
     @Test
     fun `get timer variant `() {
-        every { componentsItem.properties?.timerStyle  } returns null
+        every { componentsItem.properties?.timerStyle } returns null
         Assert.assertEquals(viewModel.getTimerVariant(), TimerUnifySingle.VARIANT_MAIN)
-        every { componentsItem.properties?.timerStyle  } returns "main"
+        every { componentsItem.properties?.timerStyle } returns "main"
         Assert.assertEquals(viewModel.getTimerVariant(), TimerUnifySingle.VARIANT_MAIN)
-        every { componentsItem.properties?.timerStyle  } returns "any"
+        every { componentsItem.properties?.timerStyle } returns "any"
         Assert.assertEquals(viewModel.getTimerVariant(), TimerUnifySingle.VARIANT_MAIN)
-        every { componentsItem.properties?.timerStyle  } returns "informative"
+        every { componentsItem.properties?.timerStyle } returns "informative"
         Assert.assertEquals(viewModel.getTimerVariant(), TimerUnifySingle.VARIANT_INFORMATIVE)
-        every { componentsItem.properties?.timerStyle  } returns "inverted"
+        every { componentsItem.properties?.timerStyle } returns "inverted"
         Assert.assertEquals(viewModel.getTimerVariant(), TimerUnifySingle.VARIANT_ALTERNATE)
     }
 

@@ -1,25 +1,24 @@
 package com.tokopedia.deals.search
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.google.gson.Gson
 import com.tokopedia.deals.DealsJsonMapper
-import com.tokopedia.deals.common.domain.DealsSearchUseCase
 import com.tokopedia.deals.common.model.response.SearchData
+import com.tokopedia.deals.domain.DealsSearchUseCase
+import com.tokopedia.deals.ui.location_picker.model.response.Location
+import com.tokopedia.deals.ui.search.domain.usecase.DealsSearchInitialLoadUseCase
+import com.tokopedia.deals.ui.search.domain.viewmodel.DealsSearchViewModel
+import com.tokopedia.deals.ui.search.model.response.InitialLoadData
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.deals.location_picker.model.response.Location
-import com.tokopedia.deals.search.domain.usecase.DealsSearchInitialLoadUseCase
-import com.tokopedia.deals.search.domain.viewmodel.DealsSearchViewModel
-import com.tokopedia.deals.search.model.response.InitialLoadData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.verify
-import io.mockk.mockk
 import io.mockk.just
+import io.mockk.mockk
 import io.mockk.runs
+import io.mockk.verify
 import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -44,16 +43,16 @@ class DealsSearchViewModelTest {
     fun setup() {
         viewModel = DealsSearchViewModel(loadInitialDataUseCase, searchUseCase, dispatcher)
         mockSearchLoadMore = Gson().fromJson(
-                DealsJsonMapper.getJson("search_load_more.json"),
-                SearchData::class.java
+            DealsJsonMapper.getJson("search_load_more.json"),
+            SearchData::class.java
         )
         mockInitialLoadData = Gson().fromJson(
-                DealsJsonMapper.getJson("search_initial_load.json"),
-                InitialLoadData::class.java
+            DealsJsonMapper.getJson("search_initial_load.json"),
+            InitialLoadData::class.java
         )
         mockEventSearchData = Gson().fromJson(
-                DealsJsonMapper.getJson("event_search.json"),
-                SearchData::class.java
+            DealsJsonMapper.getJson("event_search.json"),
+            SearchData::class.java
         )
         mockThrowable = Throwable("Fetch failed")
     }
@@ -63,7 +62,11 @@ class DealsSearchViewModelTest {
         // given
         coEvery {
             loadInitialDataUseCase.getDealsInitialLoadResult(
-                    any(), any(), any(), any(), any()
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
             )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
@@ -81,7 +84,11 @@ class DealsSearchViewModelTest {
         // given
         coEvery {
             loadInitialDataUseCase.getDealsInitialLoadResult(
-                    any(), any(), any(), any(), any()
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
             )
         } coAnswers {
             firstArg<(InitialLoadData) -> Unit>().invoke(mockInitialLoadData)
@@ -99,7 +106,7 @@ class DealsSearchViewModelTest {
         // given
         coEvery {
             searchUseCase.getDealsSearchResult(
-                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
@@ -117,7 +124,7 @@ class DealsSearchViewModelTest {
         // given
         coEvery {
             searchUseCase.getDealsSearchResult(
-                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             firstArg<(SearchData) -> Unit>().invoke(mockSearchLoadMore)
@@ -135,7 +142,7 @@ class DealsSearchViewModelTest {
         // given
         coEvery {
             searchUseCase.getDealsSearchResult(
-                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
@@ -153,7 +160,7 @@ class DealsSearchViewModelTest {
         // given
         coEvery {
             searchUseCase.getDealsSearchResult(
-                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             firstArg<(SearchData) -> Unit>().invoke(mockEventSearchData)
@@ -171,7 +178,11 @@ class DealsSearchViewModelTest {
         // given
         coEvery {
             loadInitialDataUseCase.getDealsInitialLoadResult(
-                    any(), any(), any(), any(), any()
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
             )
         } coAnswers {
             firstArg<(InitialLoadData) -> Unit>().invoke(mockInitialLoadData)
@@ -189,7 +200,11 @@ class DealsSearchViewModelTest {
         // given
         coEvery {
             loadInitialDataUseCase.getDealsInitialLoadResult(
-                    any(), any(), any(), any(), any()
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
             )
         } coAnswers {
             firstArg<(InitialLoadData) -> Unit>().invoke(mockInitialLoadData)
@@ -203,7 +218,7 @@ class DealsSearchViewModelTest {
     }
 
     @Test
-    fun onClearedViewModel(){
+    fun onClearedViewModel() {
         every { loadInitialDataUseCase.cancelJobs() } just runs
         every { searchUseCase.cancelJobs() } just runs
 

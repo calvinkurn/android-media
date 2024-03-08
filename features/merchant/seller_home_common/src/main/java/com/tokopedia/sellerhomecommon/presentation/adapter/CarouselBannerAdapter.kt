@@ -3,10 +3,10 @@ package com.tokopedia.sellerhomecommon.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.sellerhomecommon.databinding.ShcBannerItemLayoutBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.CarouselViewHolder
@@ -39,12 +39,7 @@ class CarouselBannerAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: CarouselItemUiModel) = with(binding) {
-            ImageHandler.loadImageRounded2(
-                root.context,
-                imgCarouselBanner,
-                item.featuredMediaURL,
-                root.context.dpToPx(8)
-            )
+            imgCarouselBanner.loadImageRounded(item.featuredMediaURL, root.context.dpToPx(8))
 
             imgCarouselBanner.setOnClickListener {
                 if (RouteManager.route(root.context, item.appLink)) {

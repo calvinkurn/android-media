@@ -10,6 +10,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermenu.SellerMenuDeeplinkMapper
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -56,7 +57,10 @@ fun Fragment.initializeSellerMigrationAccountSettingTicker(ticker: Ticker?) {
             setHtmlDescription(requireContext().getString(AccountSettingData.descRes))
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalSellerapp.SELLER_MENU)
+                    val intent = RouteManager.getIntent(
+                        requireContext(),
+                        SellerMenuDeeplinkMapper.getInternalApplinkSellerMenu(context)
+                    )
                     intent.putExtra(SellerMigrationConstants.SELLER_MIGRATION_KEY_AUTO_ANCHOR_ACCOUNT_SHOP, true)
                     startActivity(intent)
                 }

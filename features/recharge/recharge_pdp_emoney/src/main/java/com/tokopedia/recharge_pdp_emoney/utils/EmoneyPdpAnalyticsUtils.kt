@@ -59,18 +59,6 @@ object EmoneyPdpAnalyticsUtils {
         ))
     }
 
-    fun clickCameraIcon(userId: String, issuerName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
-                TrackAppUtils.EVENT, EmoneyPdpAnalyticsConst.Event.CLICK_EMONEY,
-                TrackAppUtils.EVENT_CATEGORY, EmoneyPdpAnalyticsConst.Category.DIGITAL_NATIVE,
-                TrackAppUtils.EVENT_ACTION, EmoneyPdpAnalyticsConst.Action.CLICK_CAMERA_ICON,
-                TrackAppUtils.EVENT_LABEL, issuerName,
-                BUSINESS_UNIT, RECHARGE_BU,
-                CURRENTSITE, RECHARGE_SITE,
-                USER_ID, userId
-        ))
-    }
-
     fun clickChangeCardNumber(cardNumber: String, userId: String, issuerName: String) {
         if (cardNumber.isNotEmpty()) {
             TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(

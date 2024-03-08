@@ -54,6 +54,7 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
         private const val KEY_LATITUDE = "latitude"
         private const val KEY_LONGITUDE = "longitude"
         private const val KEY_TAB_NAME = "tabName"
+        private const val KEY_CONNECTION_TYPE = "network"
 
         @JvmStatic
         fun createParams(
@@ -63,7 +64,8 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
             cityId: String,
             latitude: String,
             longitude: String,
-            tabName: String = ""
+            tabName: String = "",
+            connectionType: String = ""
         ): RequestParams =
             RequestParams.create().apply {
                 putObject(PARAM_SHOP_ID, shopId)
@@ -73,6 +75,7 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                 putObject(KEY_LATITUDE, latitude)
                 putObject(KEY_LONGITUDE, longitude)
                 putObject(KEY_TAB_NAME, tabName)
+                putObject(KEY_CONNECTION_TYPE, connectionType)
             }
 
         const val QUERY = """

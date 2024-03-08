@@ -8,6 +8,7 @@
     <activity
         android:name=".view.activity.TopAdsOnBoardingActivity"
         android:screenOrientation="portrait"
+        android:label="@string/topads_onboarding_title"
         android:theme="@style/Theme.White"
         android:windowSoftInputMode="adjustPan"
         android:exported="false">
@@ -16,7 +17,6 @@
 
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
-
             <data
                 android:host="@string/host_topads"
                 android:path="@string/path_topads_on_boarding"

@@ -4,7 +4,6 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.search.analytics.SearchEventTracking
-import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.analytics.SearchTrackingConstant
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option.Product

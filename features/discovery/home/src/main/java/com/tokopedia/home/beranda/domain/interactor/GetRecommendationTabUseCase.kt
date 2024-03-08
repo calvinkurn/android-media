@@ -31,14 +31,15 @@ class GetRecommendationTabUseCase(
         }
     }
 
-    fun setParams(locationParams: String = "") {
+    fun setParams(location: String = "", page: String = "") {
         val requestParams: RequestParams = RequestParams.EMPTY
-        requestParams.putString(LOCATION, locationParams)
+        requestParams.putString(LOCATION, location)
+        requestParams.putString(PAGE, page)
         graphqlUseCase.setRequestParams(requestParams.parameters)
     }
 
     companion object {
-
         private const val LOCATION = "location"
+        private const val PAGE = "page"
     }
 }

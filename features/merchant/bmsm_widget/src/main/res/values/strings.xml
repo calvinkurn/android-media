@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gwp_gift_widgget_error_message">Ups, gagal menampilkan hadiah</string>
+    <string name="gwp_reload">Muat Ulang</string>
+    <string name="gwp_gift_list">Daftar hadiah</string>
+    <string name="gwp_gift_image">Gift image</string>
+    <string name="gwp_gift_out_of_stock">Habis</string>
+    <string name="gwp_gift_ribbon_text_selected">Terpilih</string>
+</resources>

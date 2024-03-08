@@ -8,6 +8,14 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.CarouselAutomateCouponItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.CarouselAutomateCouponViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.GridAutomateCouponItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.GridAutomateCouponViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.ListAutomateCouponViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.ListAutomateCouponItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.SingleAutomateCouponViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.automatecoupon.SingleAutomateCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannedview.BannedViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.BannerCarouselItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.BannerCarouselItemViewModel
@@ -80,6 +88,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleReimagineViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.producthighlight.ProductHighlightViewHolder
@@ -113,6 +122,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spac
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemIconViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemIconViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemImageViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemImageViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
@@ -230,6 +241,16 @@ class DiscoveryHomeFactory {
                 ::TabsItemIconViewModel
             )
             initializeComponent(
+                ComponentsList.TabsImage,
+                ::TabsViewHolder,
+                ::TabsViewModel
+            )
+            initializeComponent(
+                ComponentsList.TabsImageItem,
+                ::TabsItemImageViewHolder,
+                ::TabsItemImageViewModel
+            )
+            initializeComponent(
                 ComponentsList.TimerSprintSale,
                 ::TimerSprintSaleItemViewHolder,
                 ::TimerSprintSaleItemViewModel
@@ -278,6 +299,16 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
             )
+            initializeComponent(
+                ComponentsList.MasterProductCardReimagine,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
+            initializeComponent(
+                ComponentsList.MasterProductCardListReimagine,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
 
             // Product Card Horizontal Carousel
             initializeComponent(
@@ -295,6 +326,16 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
             )
+            initializeComponent(
+                ComponentsList.ProductCardCarouselItemReimagine,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
+            initializeComponent(
+                ComponentsList.ProductCardCarouselItemListReimagine,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
 
             // Product Card Sprint Sale
             initializeComponent(
@@ -307,6 +348,11 @@ class DiscoveryHomeFactory {
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
             )
+            initializeComponent(
+                ComponentsList.ProductCardSprintSaleItemReimagine,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
 
             // Product Card Horizontal Sprint Sale
             initializeComponent(
@@ -316,6 +362,11 @@ class DiscoveryHomeFactory {
             )
             initializeComponent(
                 ComponentsList.ProductCardSprintSaleCarouselItem,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
+            initializeComponent(
+                ComponentsList.ProductCardSprintSaleCarouselItemReimagine,
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
             )
@@ -357,6 +408,17 @@ class DiscoveryHomeFactory {
             )
             initializeComponent(
                 ComponentsList.ProductCardSingleItem,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.ProductCardSingleReimagine,
+                ::ProductCardSingleReimagineViewHolder,
+                ::ProductCardSingleViewModel
+            )
+            initializeComponent(
+                ComponentsList.ProductCardSingleItemReimagine,
                 ::MasterProductCardItemViewHolder,
                 ::MasterProductCardItemViewModel
             )
@@ -612,6 +674,36 @@ class DiscoveryHomeFactory {
                 ComponentsList.ShopOfferSupportingBrandItem,
                 ::ShopOfferSupportingBrandItemViewHolder,
                 ::ShopOfferSupportingBrandItemViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.SingleAutomateCoupon,
+                ::SingleAutomateCouponViewHolder,
+                ::SingleAutomateCouponViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.GridAutomateCoupon,
+                ::GridAutomateCouponViewHolder,
+                ::ListAutomateCouponViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.GridAutomateCouponItem,
+                ::GridAutomateCouponItemViewHolder,
+                ::ListAutomateCouponItemViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.CarouselAutomateCoupon,
+                ::CarouselAutomateCouponViewHolder,
+                ::ListAutomateCouponViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.CarouselAutomateCouponItem,
+                ::CarouselAutomateCouponItemViewHolder,
+                ::ListAutomateCouponItemViewModel
             )
         }
 

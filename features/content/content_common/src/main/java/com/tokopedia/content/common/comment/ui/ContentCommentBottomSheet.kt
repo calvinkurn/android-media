@@ -88,10 +88,6 @@ class ContentCommentBottomSheet @Inject constructor(
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
     }
 
-    private val keyboardThreshold by lazyThreadSafetyNone {
-        (getScreenHeight() * KEYBOARD_HEIGHT_PERCENT).roundToInt().plus(16.toPx())
-    }
-
     private var mSource: EntrySource? = null
 
     private val viewModel: ContentCommentViewModel by viewModels {
@@ -273,13 +269,8 @@ class ContentCommentBottomSheet @Inject constructor(
                     ResultState.Success -> {
                         showError(false)
                         scrollListener.updateStateAfterGetData()
-                        commentAdapter.setItemsAndAnimateChanges(
-                            it.list.ifEmpty {
-                                listOf(
-                                    CommentUiModel.Empty
-                                )
-                            }
-                        )
+                        commentAdapter.setItemsAndAnimateChanges(it.list)
+                        binding.vCommentEmpty.root.showWithCondition(it.list.isEmpty())
                     }
                     ResultState.Loading -> {
                         showError(false)

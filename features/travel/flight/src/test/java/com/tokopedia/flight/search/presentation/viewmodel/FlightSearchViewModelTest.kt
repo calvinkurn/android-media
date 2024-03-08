@@ -27,6 +27,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -1235,4 +1236,79 @@ class FlightSearchViewModelTest {
         verify { flightAnalytics.eventFlightPromotionClick(position + 1, airlinePrice, flightSearchViewModel.flightSearchPassData,
                 FlightAnalyticsScreenName.SEARCH, any(), isReturn) }
     }
+
+    @Test
+    fun searchNotFoundTrack_Sent() {
+        // given
+        coEvery { flightSearchUseCase.execute(any(), any(), any(), any()) } returnsMany listOf(META_MODEL_NEED_REFRESH, META_MODEL_NOT_NEED_REFRESH)
+        coEvery { flightSortAndFilterUseCase.execute(any(), any()) } returns JOURNEY_LIST_DATA.toList()
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "dummy user id"
+        // when
+        flightSearchViewModel.fetchSearchDataCloud(false)
+        flightSearchViewModel.sendProductNotFoundTrack()
+
+        // then
+        flightSearchViewModel.flightAirportCombine.airlines.size shouldBe 3
+        flightSearchViewModel.flightSearchPassData.searchRequestId shouldBe "asdasd"
+        flightSearchViewModel.flightAirportCombine.isNeedRefresh shouldBe false
+        flightSearchViewModel.progress.value shouldBe 100
+    }
+
+    @Test
+    fun getQuickFilterItemSize_Size4() {
+        // given
+        flightSearchViewModel.filterModel = FlightFilterModel(
+            canFilterFreeRapidTest = false,
+            canFilterSeatDistancing = false
+        )
+        val resultSize = 4
+        // when
+        val result = flightSearchViewModel.getQuickFilterItemSize()
+        // then
+        Assert.assertEquals(result, resultSize)
+    }
+
+    @Test
+    fun getQuickFilterItemSize_Size5_FreeRapidTest() {
+        // given
+        flightSearchViewModel.filterModel = FlightFilterModel(
+            canFilterFreeRapidTest = true,
+            canFilterSeatDistancing = false
+        )
+        val resultSize = 5
+        // when
+        val result = flightSearchViewModel.getQuickFilterItemSize()
+        // then
+        Assert.assertEquals(result, resultSize)
+    }
+
+    @Test
+    fun getQuickFilterItemSize_Size5_SeatDistancing() {
+        // given
+        flightSearchViewModel.filterModel = FlightFilterModel(
+            canFilterFreeRapidTest = false,
+            canFilterSeatDistancing = true
+        )
+        val resultSize = 5
+        // when
+        val result = flightSearchViewModel.getQuickFilterItemSize()
+        // then
+        Assert.assertEquals(result, resultSize)
+    }
+
+    @Test
+    fun getQuickFilterItemSize_Size6() {
+        // given
+        flightSearchViewModel.filterModel = FlightFilterModel(
+            canFilterFreeRapidTest = true,
+            canFilterSeatDistancing = true
+        )
+        val resultSize = 6
+        // when
+        val result = flightSearchViewModel.getQuickFilterItemSize()
+        // then
+        Assert.assertEquals(result, resultSize)
+    }
+
 }

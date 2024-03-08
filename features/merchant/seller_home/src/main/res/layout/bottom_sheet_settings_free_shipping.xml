@@ -13,13 +13,13 @@
         app:typographyWeight="reguler"/>
 
     <FrameLayout
-        android:id="@+id/btnFreeShippingDetail"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Unify_NN0">
         <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnFreeShippingDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/settings_free_shipping_detail"

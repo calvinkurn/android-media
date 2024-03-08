@@ -29,8 +29,7 @@ public class NotificationSubscriber extends Subscriber<NotificationEntity> {
             this.mainParentView.renderNotification(
                 NotificationRequestMapper.notificationMapper(
                         notificationEntity.getNotifications(),
-                        notificationEntity.getNotifcenterUnread(),
-                        notificationEntity.getFeed()
+                        notificationEntity.getNotifcenterUnread()
                 )
             );
     }

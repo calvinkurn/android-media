@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailParams
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
@@ -9,6 +10,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class GetInsuranceDetailUseCase @Inject constructor(
@@ -23,6 +25,18 @@ class GetInsuranceDetailUseCase @Inject constructor(
         emit(GetInsuranceDetailRequestState.Complete.Success(sendRequest(params).ppGetInsuranceDetail?.data))
     }.catch {
         emit(GetInsuranceDetailRequestState.Complete.Error(it))
+    }.onCompletion {
+        logCompletionBreadcrumb(params, it)
+    }
+
+    private fun logCompletionBreadcrumb(params: GetInsuranceDetailParams, throwable: Throwable?) {
+        runCatching {
+            if (throwable == null) {
+                EmbraceMonitoring.logBreadcrumb("GetInsuranceDetailUseCase - Success: $params")
+            } else {
+                EmbraceMonitoring.logBreadcrumb("GetInsuranceDetailUseCase - Error: ${throwable.stackTraceToString()}")
+            }
+        }
     }
 
     private fun createRequestParam(params: GetInsuranceDetailParams): Map<String, Any> {

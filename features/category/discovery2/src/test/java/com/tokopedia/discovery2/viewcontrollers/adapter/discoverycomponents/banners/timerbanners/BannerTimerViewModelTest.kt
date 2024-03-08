@@ -10,6 +10,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.text.SimpleDateFormat
 import java.util.*
 
 class BannerTimerViewModelTest {
@@ -44,16 +45,15 @@ class BannerTimerViewModelTest {
     /**************************** startTimer() *******************************************/
     @Test
     fun startTimer() {
-        var timeDiff : Long = 0
-        every { Utils.getElapsedTime(any()) } returns timeDiff
+        every { Utils.getElapsedTime(any()) } returns 0
 
         viewModel.startTimer(mockk())
 
         assertEquals(viewModel.syncData.value, true)
 
-        timeDiff = 1
-        val date = Date(2022,1,20)
-        every { Utils.getElapsedTime(any()) } returns timeDiff
+        val format = SimpleDateFormat("yyyy-MM-dd")
+        val date = format.parse("2022-01-20")
+        every { Utils.getElapsedTime(any()) } returns 1
         every { Utils.parseData(any(), any()) } returns date
 
         viewModel.startTimer(mockk(relaxed = true))
@@ -134,45 +134,73 @@ class BannerTimerViewModelTest {
     /**************************** checkTimerEnd() *******************************************/
 
     @Test
-    fun `checkTimerEnd when timeDiff is 1`() {
-        val timeDiff: Long = 1
-        every { Utils.isFutureSaleOngoing(any(),any(), Utils.TIMER_DATE_FORMAT) } returns true
+    fun `checkTimerEnd when auto refresh is disabled`() {
+        withDisableAutoRefresh {
+            viewModel.checkTimerEnd()
 
-        viewModel.checkTimerEnd()
+            assertEquals(viewModel.syncData.value, null)
+        }
+    }
 
-        assertEquals(viewModel.syncData.value, true)
+    @Test
+    fun `checkTimerEnd when isFutureSaleOngoing is true`() {
+        withEnableAutoRefresh {
+            every { Utils.isFutureSaleOngoing(any(), any(), Utils.TIMER_DATE_FORMAT) } returns true
+
+            viewModel.checkTimerEnd()
+
+            assertEquals(viewModel.syncData.value, true)
+        }
     }
 
     @Test
     fun `checkTimerEnd when timeDiff is 1 and isFutureSaleOngoing is false`() {
-        val timeDiff: Long = 1
-        every { Utils.isFutureSaleOngoing(any(),any(), Utils.TIMER_DATE_FORMAT) } returns false
-        every { Utils.getElapsedTime(any()) } returns timeDiff
+        withEnableAutoRefresh {
+            val timeDiff: Long = 1
+            every { Utils.isFutureSaleOngoing(any(), any(), Utils.TIMER_DATE_FORMAT) } returns false
+            every { Utils.getElapsedTime(any()) } returns timeDiff
 
-        viewModel.checkTimerEnd()
+            viewModel.checkTimerEnd()
 
-        assertEquals(viewModel.syncData.value, null)
+            assertEquals(viewModel.syncData.value, null)
+        }
     }
 
     @Test
     fun `checkTimerEnd when timeDiff is 0 and isFutureSaleOngoing is false`() {
-        val timeDiff: Long = 0
-        every { Utils.isFutureSaleOngoing(any(),any(), Utils.TIMER_DATE_FORMAT) } returns false
-        every { Utils.getElapsedTime(any()) } returns timeDiff
+        withEnableAutoRefresh {
+            val timeDiff: Long = 0
+            every { Utils.isFutureSaleOngoing(any(), any(), Utils.TIMER_DATE_FORMAT) } returns false
+            every { Utils.getElapsedTime(any()) } returns timeDiff
 
-        viewModel.checkTimerEnd()
+            viewModel.checkTimerEnd()
 
-        assertEquals(viewModel.syncData.value, true)
+            assertEquals(viewModel.syncData.value, true)
+        }
     }
 
     @Test
     fun `checkTimerEnd when timeDiff is 0`() {
-        val timeDiff: Long = 0
-        every { Utils.getElapsedTime(any()) } returns timeDiff
+        withEnableAutoRefresh {
+            val timeDiff: Long = 0
+            every { Utils.getElapsedTime(any()) } returns timeDiff
 
-        viewModel.checkTimerEnd()
+            viewModel.checkTimerEnd()
 
-        assertEquals(viewModel.syncData.value, true)
+            assertEquals(viewModel.syncData.value, true)
+        }
+    }
+
+    private fun withDisableAutoRefresh(scenario: () -> Unit) {
+        every { componentsItem.properties?.shouldAutoRefresh } returns false
+
+        scenario.invoke()
+    }
+
+    private fun withEnableAutoRefresh(scenario: () -> Unit) {
+        every { componentsItem.properties?.shouldAutoRefresh } returns true
+
+        scenario.invoke()
     }
 
     /**************************** checkTimerEnd() *******************************************/
@@ -206,5 +234,4 @@ class BannerTimerViewModelTest {
     }
 
     /**************************** getTimerVariant() *******************************************/
-
 }

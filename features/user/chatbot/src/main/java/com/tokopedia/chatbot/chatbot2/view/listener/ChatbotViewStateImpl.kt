@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -42,8 +41,10 @@ import com.tokopedia.chatbot.chatbot2.view.uimodel.videoupload.VideoUploadUiMode
 import com.tokopedia.chatbot.chatbot2.view.util.helper.toQuickReplyUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.chat_common.R as chat_commonR
 
 /**
  * @author by nisie on 07/12/18.
@@ -160,12 +161,11 @@ class ChatbotViewStateImpl(
 
     override fun loadAvatar(avatarUrl: String) {
         val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
-        ImageHandler.loadImageCircle2(
-            avatar.context,
-            avatar,
-            avatarUrl,
-            R.drawable.chatbot_avatar
-        )
+        if (avatarUrl.isEmpty()) {
+            avatar.loadImageCircle(R.drawable.chatbot_avatar)
+        } else {
+            avatar.loadImageCircle(avatarUrl)
+        }
     }
 
     override fun clearChatOnLoadChatHistory() {
@@ -414,7 +414,7 @@ class ChatbotViewStateImpl(
         val action = notifier.findViewById<View>(R.id.action)
         if (isWebSocketError) {
             notifier.show()
-            title.setText(com.tokopedia.chat_common.R.string.error_no_connection_retrying)
+            title.setText(chat_commonR.string.error_no_connection_retrying)
             action.show()
         } else {
             action.hide()
@@ -422,17 +422,22 @@ class ChatbotViewStateImpl(
         }
     }
 
-    override fun removeDynamicStickyButton() {
-        var item: DynamicStickyButtonUiModel? = null
-        for (it in adapter.list) {
-            if (it is DynamicStickyButtonUiModel) {
-                item = it
+    override fun removeDynamicStickyButtonAction(isForceUpdate: Boolean) {
+        var dynamicStickyButtonUiModel: DynamicStickyButtonUiModel? = null
+        var tmpIndex = 0
+        for ((index, data) in adapter.list.withIndex()) {
+            if (data is DynamicStickyButtonUiModel) {
+                dynamicStickyButtonUiModel = data
+                tmpIndex = index
                 break
             }
         }
 
-        if (item != null && adapter.list.isNotEmpty()) {
-            adapter.clearElement(item)
+        if (dynamicStickyButtonUiModel != null && (tmpIndex > 0 || isForceUpdate)) {
+            dynamicStickyButtonUiModel.isShowButtonAction = false
+            recyclerView.post {
+                adapter.notifyItemChanged(tmpIndex)
+            }
         }
     }
 

@@ -41,7 +41,8 @@ class HomeListCarouselUseCase @Inject constructor(
                                 shopId = grid.shopId,
                                 warehouseId = grid.warehouseId,
                                 productName = grid.name,
-                                price = grid.price
+                                price = grid.price,
+                                shopName = grid.shop.shopName
                         )
                 ),
                 userId = userId

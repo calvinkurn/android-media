@@ -3,5 +3,15 @@
     <declare-styleable name="ProductCardView">
         <attr name="fixedHeight" format="boolean" />
         <attr name="useViewStub" format="boolean" />
+        <attr name="forceWidth" format="dimension" />
+
+        <attr name="reimagine" format="boolean" />
+        <attr name="reimagine_template">
+            <enum name="grid" value="1" />
+            <enum name="gridCarousel" value="2" />
+            <enum name="list" value="3" />
+            <enum name="listCarousel" value="4" />
+        </attr>
+        <attr name="useCompatPadding" format="boolean" />
     </declare-styleable>
 </resources>

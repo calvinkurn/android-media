@@ -3,6 +3,7 @@ package com.tokopedia.common.topupbills
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.topupbills.favoritepage.domain.usecase.ModifyRechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.favoritepage.domain.usecase.RechargeFavoriteNumberUseCase
+import com.tokopedia.common.topupbills.favoritepage.view.listener.FavoriteNumberDeletionListener
 import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberActionType
 import com.tokopedia.common.topupbills.favoritepage.view.viewmodel.TopupBillsFavNumberViewModel
 import com.tokopedia.common.topupbills.favoritepage.view.viewmodel.TopupBillsFavNumberViewModel.Companion.ERROR_FETCH_AFTER_DELETE
@@ -16,7 +17,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
+import io.mockk.verify
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertTrue
@@ -52,10 +56,9 @@ class TopupBillsFavNumberViewModelTest {
         topupBillsFavNumberViewModel = TopupBillsFavNumberViewModel(
             rechargeFavoriteNumberUseCase,
             modifyRechargeFavoriteNumberUseCase,
-            testCoroutineRule.dispatchers,
+            testCoroutineRule.dispatchers
         )
     }
-
 
     @Test
     fun getPersoFavoriteNumber_returnSuccessData() {
@@ -103,7 +106,11 @@ class TopupBillsFavNumberViewModelTest {
 
         // When
         topupBillsFavNumberViewModel.getPersoFavoriteNumbers(
-            listOf(), listOf(), true, FavoriteNumberActionType.UPDATE)
+            listOf(),
+            listOf(),
+            true,
+            FavoriteNumberActionType.UPDATE
+        )
 
         // Then
         val actualData = topupBillsFavNumberViewModel.persoFavNumberData.value
@@ -122,7 +129,11 @@ class TopupBillsFavNumberViewModelTest {
 
         // When
         topupBillsFavNumberViewModel.getPersoFavoriteNumbers(
-            listOf(), listOf(), true, FavoriteNumberActionType.DELETE)
+            listOf(),
+            listOf(),
+            true,
+            FavoriteNumberActionType.DELETE
+        )
 
         // Then
         val actualData = topupBillsFavNumberViewModel.persoFavNumberData.value
@@ -141,7 +152,11 @@ class TopupBillsFavNumberViewModelTest {
 
         // When
         topupBillsFavNumberViewModel.getPersoFavoriteNumbers(
-            listOf(), listOf(), true, FavoriteNumberActionType.UNDO_DELETE)
+            listOf(),
+            listOf(),
+            true,
+            FavoriteNumberActionType.UNDO_DELETE
+        )
 
         // Then
         val actualData = topupBillsFavNumberViewModel.persoFavNumberData.value
@@ -151,7 +166,6 @@ class TopupBillsFavNumberViewModelTest {
         val error = (actualData as Fail).throwable
         assertEquals(ERROR_FETCH_AFTER_UNDO_DELETE, error.message)
     }
-
 
     @Test
     fun updateSeamlessFavoriteNumber_returnSuccessResponse() {
@@ -218,6 +232,43 @@ class TopupBillsFavNumberViewModelTest {
     fun deleteSeamlessFavoriteNumber_returnSuccessResponse() {
         // Given
         val favoriteNumber = CommonTopupbillsDummyData.modifySeamlessFavoriteNumberSuccess()
+        val mockCallback = mockk<FavoriteNumberDeletionListener>(relaxed = true)
+        val operatorName = "test"
+
+        coEvery { modifyRechargeFavoriteNumberUseCase.executeOnBackground() } returns favoriteNumber
+        every { mockCallback.onSuccessDelete(any()) } returns Unit
+
+        // When
+        topupBillsFavNumberViewModel.modifySeamlessFavoriteNumber(
+            0,
+            0,
+            "",
+            "",
+            0,
+            "",
+            true,
+            "",
+            FavoriteNumberActionType.DELETE,
+            operatorName,
+            mockCallback
+        )
+
+        // Then
+        val actualData = topupBillsFavNumberViewModel.seamlessFavNumberDeleteData.value
+        assertNotNull(actualData)
+        assert(actualData is Success)
+
+        val resultData = (actualData as Success).data
+        assertNotNull(resultData)
+
+        assertThat(resultData == favoriteNumber.updateFavoriteDetail)
+        verify { mockCallback.onSuccessDelete(operatorName) }
+    }
+
+    @Test
+    fun deleteSeamlessFavoriteNumber_nullCallback_returnSuccessResponse() {
+        // Given
+        val favoriteNumber = CommonTopupbillsDummyData.modifySeamlessFavoriteNumberSuccess()
 
         coEvery { modifyRechargeFavoriteNumberUseCase.executeOnBackground() } returns favoriteNumber
 
@@ -232,7 +283,8 @@ class TopupBillsFavNumberViewModelTest {
             true,
             "",
             FavoriteNumberActionType.DELETE,
-            ""
+            "",
+            null
         )
 
         // Then
@@ -250,6 +302,42 @@ class TopupBillsFavNumberViewModelTest {
     fun deleteSeamlessFavoriteNumber_returnFailResponse() {
         // Given
         val exception = MessageErrorException("error")
+        val mockCallback = mockk<FavoriteNumberDeletionListener>(relaxed = true)
+        val operatorName = "test"
+
+        coEvery { modifyRechargeFavoriteNumberUseCase.executeOnBackground() } throws exception
+        every { mockCallback.onFailedDelete() } returns Unit
+
+        // When
+        topupBillsFavNumberViewModel.modifySeamlessFavoriteNumber(
+            0,
+            0,
+            "",
+            "",
+            0,
+            "",
+            true,
+            "",
+            FavoriteNumberActionType.DELETE,
+            operatorName,
+            mockCallback
+        )
+
+        // Then
+        val actualData = topupBillsFavNumberViewModel.seamlessFavNumberDeleteData.value
+        assertNotNull(actualData)
+        assert(actualData is Fail)
+
+        val error = (actualData as Fail).throwable
+        org.junit.Assert.assertEquals(exception.message, error.message)
+        verify { mockCallback.onFailedDelete() }
+    }
+
+    @Test
+    fun deleteSeamlessFavoriteNumber_nullCallback_returnFailResponse() {
+        // Given
+        val exception = MessageErrorException("error")
+
         coEvery { modifyRechargeFavoriteNumberUseCase.executeOnBackground() } throws exception
 
         // When
@@ -290,7 +378,7 @@ class TopupBillsFavNumberViewModelTest {
             "",
             0,
             "",
-            true,
+            false,
             "",
             FavoriteNumberActionType.UNDO_DELETE,
             ""
@@ -321,7 +409,7 @@ class TopupBillsFavNumberViewModelTest {
             "",
             0,
             "",
-            true,
+            false,
             "",
             FavoriteNumberActionType.UNDO_DELETE,
             ""
@@ -341,9 +429,9 @@ class TopupBillsFavNumberViewModelTest {
         val topupBillsFavNumberViewModel = TopupBillsFavNumberViewModel(
             rechargeFavoriteNumberUseCase,
             ModifyRechargeFavoriteNumberUseCase(graphqlRepository),
-            testCoroutineRule.dispatchers,
+            testCoroutineRule.dispatchers
         )
-        val categoryIds = listOf(1,2,20)
+        val categoryIds = listOf(1, 2, 20)
         val output = topupBillsFavNumberViewModel.createSourceParam(categoryIds)
 
         assertTrue(output == "digital-personalization1,2,20")
@@ -352,10 +440,10 @@ class TopupBillsFavNumberViewModelTest {
     @Test
     fun createParamSource_singleCategory_returnCorrectOutput() {
         val topupBillsFavNumberViewModel = TopupBillsFavNumberViewModel(
-                rechargeFavoriteNumberUseCase,
-                ModifyRechargeFavoriteNumberUseCase(graphqlRepository),
-                testCoroutineRule.dispatchers,
-            )
+            rechargeFavoriteNumberUseCase,
+            ModifyRechargeFavoriteNumberUseCase(graphqlRepository),
+            testCoroutineRule.dispatchers
+        )
         val categoryIds = listOf(26)
         val output = topupBillsFavNumberViewModel.createSourceParam(categoryIds)
 

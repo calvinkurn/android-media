@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.databinding.ItemHotelEVoucherCancellationPoliciesBinding
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
-import kotlinx.android.synthetic.main.item_hotel_e_voucher_cancellation_policies.view.*
 
 /**
  * @author by furqan on 17/05/19
@@ -25,11 +25,13 @@ class HotelEVoucherCancellationPoliciesAdapter(private var cancellationPolicies:
 
     class HotelEVoucherCancellationPoliciesViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val binding = ItemHotelEVoucherCancellationPoliciesBinding.bind(view)
+
         fun bind(element: HotelTransportDetail.Cancellation.CancellationPolicy) {
-            with(itemView) {
-                itv_cancellation_policy.setTitleAndDescription(element.longTitle, element.longDesc)
-                itv_cancellation_policy.truncateDescription = false
-                itv_cancellation_policy.buildView()
+            with(binding) {
+                itvCancellationPolicy.setTitleAndDescription(element.longTitle, element.longDesc)
+                itvCancellationPolicy.truncateDescription = false
+                itvCancellationPolicy.buildView()
             }
         }
 

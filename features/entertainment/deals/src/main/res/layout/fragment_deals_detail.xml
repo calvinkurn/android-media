@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.tokopedia.deals.pdp.widget.WidgetDealsPDPCarousel
+                <com.tokopedia.deals.ui.pdp.widget.WidgetDealsPDPCarousel
                     android:id="@+id/carousel_deals_pdp"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"

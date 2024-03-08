@@ -21,6 +21,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isNumeric
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -32,6 +33,8 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.toPx
 import org.jetbrains.annotations.NotNull
+import com.tokopedia.common.topupbills.R as commontopupbillsR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by nabillasabbaha on 25/04/19.
@@ -87,7 +90,11 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
     }
 
     open fun formatClientNumberInput(clientNumber: String): String {
-        return CommonTopupBillsUtil.formatPrefixClientNumber(clientNumber)
+        return if (clientNumber.isNumeric()) {
+            CommonTopupBillsUtil.formatPrefixClientNumber(clientNumber)
+        } else {
+            clientNumber
+        }
     }
 
     private fun initListener() {
@@ -151,7 +158,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
                 val item = autoCompleteAdapter.getItem(position)
                 if (item is TopupBillsAutoCompleteContactModel) {
                     setContactName(item.name)
-                    listener.onClickAutoComplete(item.name.isNotEmpty())
+                    listener.onClickAutoComplete(item.isFavoriteNumber)
                 }
             }
         }
@@ -178,7 +185,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
                 chipImageResource = getIconUnifyDrawable(
                     context,
                     IconUnify.VIEW_LIST,
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                    ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
                 )
                 setOnClickListener {
                     listener.onNavigateToContact(true)
@@ -256,10 +263,15 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
         }
     }
 
-    fun setAutoCompleteList(suggestions: List<TopupBillsSeamlessFavNumberItem>) {
+    fun setAutoCompleteList(
+        favoriteSuggestions: List<TopupBillsSeamlessFavNumberItem>,
+        contactSuggestions: List<TopupBillsSeamlessFavNumberItem>
+    ) {
         autoCompleteAdapter.updateItems(
             CommonTopupBillsDataMapper
-                .mapSeamlessFavNumberItemToContactDataView(suggestions).toMutableList()
+                .mapSeamlessFavNumberItemToContactDataView(favoriteSuggestions, isFavoriteNumber = true).toMutableList(),
+            CommonTopupBillsDataMapper
+                .mapSeamlessFavNumberItemToContactDataView(contactSuggestions, isFavoriteNumber = false).toMutableList()
         )
     }
 
@@ -268,7 +280,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
     }
 
     fun getInputNumber(): String {
-        return CommonTopupBillsUtil.formatPrefixClientNumber(inputNumberField.editText.text.toString())
+        return formatClientNumberInput(inputNumberField.editText.text.toString())
     }
 
     fun setContactName(contactName: String) {
@@ -308,9 +320,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
     private fun initClientNumberAutoComplete(context: Context) {
         autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
             context,
-            com.tokopedia.common.topupbills.R.layout.item_topup_bills_autocomplete_number,
+            commontopupbillsR.layout.item_topup_bills_autocomplete_number,
             mutableListOf(),
-            context.getString(com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_hp),
+            mutableListOf(),
+            context.getString(commontopupbillsR.string.common_topup_autocomplete_unit_nomor_hp),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
                     return inputNumberField.editText.text.toString()
@@ -347,7 +360,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
         fun onClickClearInput()
         fun onShowFilterChip(isLabeled: Boolean)
         fun onClickFilterChip(isLabeled: Boolean)
-        fun onClickAutoComplete(isFavoriteContact: Boolean)
+        fun onClickAutoComplete(isFavoriteNumber: Boolean)
         fun onUserManualType()
     }
 

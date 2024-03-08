@@ -1,7 +1,7 @@
 package com.tokopedia.minicart.cartlist.viewholder
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
@@ -39,7 +39,7 @@ class MiniCartShopViewHolder(private val viewBinding: ItemMiniCartShopBinding) :
     private fun renderShopBadge(element: MiniCartShopUiModel) {
         viewBinding.iuImageFulfill.let {
             if (element.shopBadgeUrl.isNotBlank()) {
-                ImageHandler.loadImageWithoutPlaceholder(it, element.shopBadgeUrl)
+                it.loadImage(element.shopBadgeUrl)
                 it.show()
             } else {
                 it.gone()

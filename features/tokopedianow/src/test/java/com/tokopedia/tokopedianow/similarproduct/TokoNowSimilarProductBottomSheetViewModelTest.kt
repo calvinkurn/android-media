@@ -91,9 +91,9 @@ class TokoNowSimilarProductBottomSheetViewModelTest {
             "",
             "",
             "",
-            ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem.Shop("", "", 0),
+            ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem.Shop("", "", "0"),
             "",
-            0,
+            "0",
             0,
             "",
             true,
@@ -106,8 +106,7 @@ class TokoNowSimilarProductBottomSheetViewModelTest {
             "",
             0F,
             0,0,"","","", "",
-            0,"","",0,
-            listOf(ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem.WholesalePriceItem(0, 0, 0, "")),0
+            "0","","",0
         )
 
         val response = ProductRecommendationResponse(productRecommendationWidgetSingle = ProductRecommendationResponse.ProductRecommendationWidgetSingle(data = ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data(recommendation = listOf(recommendationItem))))

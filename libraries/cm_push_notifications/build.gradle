@@ -46,6 +46,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.bubbles)
+    implementation projectOrAar(rootProject.ext.features.promoUiCommon)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -56,12 +57,13 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.miscDependencies.lottie
     implementation (rootProject.ext.playServicesDependencies.ads){
         exclude group: 'com.android.support'
     }

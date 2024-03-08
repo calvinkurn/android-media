@@ -3,11 +3,12 @@ package com.tokopedia.product.detail.data.model.datamodel
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
-import com.tokopedia.analytics.performance.perf.LoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.viewholder.media.model.LiveIndicatorUiModel
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 data class ProductMediaDataModel(
@@ -20,6 +21,7 @@ data class ProductMediaDataModel(
     var shouldAnimateLabel: Boolean = true,
     var containerType: MediaContainerType = MediaContainerType.Square,
     var recommendation: ProductMediaRecomData = ProductMediaRecomData(),
+    var liveIndicator: LiveIndicatorUiModel = LiveIndicatorUiModel(),
     var isPrefetch: Boolean = false
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
@@ -30,6 +32,9 @@ data class ProductMediaDataModel(
         const val VIDEO_TYPE = "video"
         const val IMAGE_TYPE = "image"
     }
+
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
 
     fun isMediaContainsVideo(): Boolean = listOfMedia.any { it.type == VIDEO_TYPE }
 
@@ -63,7 +68,7 @@ data class ProductMediaDataModel(
 
     override fun type(): String = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
 
@@ -71,7 +76,8 @@ data class ProductMediaDataModel(
         return if (newData is ProductMediaDataModel) {
             listOfMedia.hashCode() == newData.listOfMedia.hashCode() &&
                 initialScrollPosition == newData.initialScrollPosition &&
-                variantOptionIdScrollAnchor == newData.variantOptionIdScrollAnchor
+                variantOptionIdScrollAnchor == newData.variantOptionIdScrollAnchor &&
+                liveIndicator == newData.liveIndicator
         } else {
             false
         }
@@ -89,7 +95,12 @@ data class ProductMediaDataModel(
                     ProductDetailConstant.DIFFUTIL_PAYLOAD,
                     ProductDetailConstant.PAYLOAD_MEDIA_UPDATE
                 )
-            } else if (newData.variantOptionIdScrollAnchor.isNotEmpty() && variantOptionIdScrollAnchor != newData.variantOptionIdScrollAnchor) {
+            } else if (newData.variantOptionIdScrollAnchor.isEmpty()) {
+                bundle.putInt(
+                    ProductDetailConstant.DIFFUTIL_PAYLOAD,
+                    ProductDetailConstant.PAYLOAD_DO_NOTHING
+                )
+            } else if (variantOptionIdScrollAnchor != newData.variantOptionIdScrollAnchor) {
                 bundle.putInt(
                     ProductDetailConstant.DIFFUTIL_PAYLOAD,
                     ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT
@@ -112,17 +123,12 @@ data class MediaDataModel(
     val videoUrl: String = "",
     val isAutoPlay: Boolean = false,
     val variantOptionId: String = "",
-    val isPrefetch: Boolean = false
+    val isPrefetch: Boolean = false,
+    val isLive: Boolean = false
 ) {
     var prefetchResource: Drawable? = null
     fun isVideoType(): Boolean = type == ProductMediaDataModel.VIDEO_TYPE
 }
-
-data class ThumbnailDataModel(
-    val media: MediaDataModel = MediaDataModel(),
-    val isSelected: Boolean = false,
-    val impressHolder: ImpressHolder = ImpressHolder()
-)
 
 sealed class MediaContainerType(val type: String, val ratio: String) {
     object Square : MediaContainerType(type = "square", "H,1:1")

@@ -6,6 +6,7 @@ import com.tokopedia.cachemanager.db.SaveInstanceCacheDatabase
 import com.tokopedia.cachemanager.db.dao.SaveInstanceCacheDatabaseDao
 import com.tokopedia.cachemanager.db.model.SaveInstanceCacheDbModel
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 
 class SaveInstanceCacheDataSource(context: Context) :
         CacheDataSource<SaveInstanceCacheDbModel, SaveInstanceCacheDatabaseDao>(context) {
@@ -31,6 +32,10 @@ class SaveInstanceCacheDataSource(context: Context) :
             delete(key)
             data
         }
+    }
+
+    override fun getFlow(key: String): Flow<SaveInstanceCacheDbModel?> {
+        return cacheDatabaseDao.getCacheModelFlow(key)
     }
 
     override fun deleteExpired() {

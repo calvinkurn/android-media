@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.data.SingleProductRecommendationEntity
 import com.tokopedia.recommendation_widget_common.ext.toQueryParam
@@ -42,21 +43,36 @@ constructor(
     fun getRecomParams(
         pageNumber: Int,
         productIds: List<String>,
-        queryParam: String = ""
+        queryParam: String = "",
+        hasNewProductCardEnabled: Boolean = false,
     ): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
-        val newQueryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(queryParam) ?: queryParam
+        val reimagineCardParam = getProductCardReimagineVersion(hasNewProductCardEnabled)
+        val newQueryParam = ChooseAddressUtils
+            .getLocalizingAddressData(context)
+            .toQueryParam(queryParam)
+
         if (userSession.isLoggedIn) {
             params.putInt(USER_ID, userSession.userId.toIntOrZero())
         } else {
             params.putInt(USER_ID, 0)
         }
+
         params.putInt(PAGE_NUMBER, pageNumber)
         params.putString(PRODUCT_IDS, productIdsString)
         params.putString(QUERY_PARAM, newQueryParam)
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
+        params.putInt(PARAM_CARD_REIMAGINE, reimagineCardParam)
         return params
+    }
+
+    private fun getProductCardReimagineVersion(hasNewProductCardEnabled: Boolean): Int {
+        return if (ProductCardExperiment.isReimagine() && hasNewProductCardEnabled) {
+            CARD_REIMAGINE_VERSION
+        } else {
+            CARD_REVERT_VERSION
+        }
     }
 
     companion object {
@@ -66,5 +82,9 @@ constructor(
         const val QUERY_PARAM = "queryParam"
         const val DEFAULT_VALUE_X_DEVICE = "android"
         const val PRODUCT_IDS = "productIDs"
+        private const val PARAM_CARD_REIMAGINE = "productCardVersion"
+
+        private const val CARD_REIMAGINE_VERSION = 5
+        private const val CARD_REVERT_VERSION = 0
     }
 }

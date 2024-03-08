@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Category
 
@@ -57,7 +57,7 @@ class CategoryParentAdapter(private val clickListener: OnItemClickListener, var 
         fun bindData(position: Int) {
             val category = categories[position]
             this.categoryName?.text = category.name
-            ImageHandler.LoadImage(this.categoryIcon, category.iconImageUrl)
+            this.categoryIcon?.loadImageFitCenter(category.iconImageUrl)
             if (category.id.equals(activeId)) {
                 this.categoryContainer?.isSelected = true
                 activePosition = position

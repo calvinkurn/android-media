@@ -1191,9 +1191,11 @@ class HotelSearchMapFragment :
                         .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)
                         .draggable(false)
                 )
-                marker.tag = markerCounter
-                allMarker.add(marker)
-                markerCounter++
+                marker?.run {
+                    tag = markerCounter
+                    allMarker.add(this)
+                    markerCounter++
+                }
             }
         }
     }
@@ -1207,7 +1209,7 @@ class HotelSearchMapFragment :
                         createCustomMarker(
                             requireContext(),
                             HOTEL_PRICE_ACTIVE_PIN,
-                            allMarker[position].title
+                            allMarker[position].title.orEmpty()
                         )
                     )
                     putPriceMarkerOnTop(position)
@@ -1248,7 +1250,7 @@ class HotelSearchMapFragment :
     private fun resetMarkerState() {
         if (!allMarker.isNullOrEmpty()) {
             allMarker.forEach {
-                it.setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_INACTIVE_PIN, it.title))
+                it.setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_INACTIVE_PIN, it.title.orEmpty()))
             }
         }
     }
@@ -1701,11 +1703,7 @@ class HotelSearchMapFragment :
     }
 
     private fun getCurrentLocation() {
-        val locationDetectorHelper = LocationDetectorHelper(
-            permissionCheckerHelper,
-            fusedLocationClient,
-            requireActivity().applicationContext
-        )
+        val locationDetectorHelper = LocationDetectorHelper(requireActivity().applicationContext)
 
         activity?.let {
             permissionCheckerHelper.checkPermission(
@@ -1726,6 +1724,7 @@ class HotelSearchMapFragment :
                             requireActivity(),
                             LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
                             RequestLocationType.APPROXIMATE,
+                            permissionCheckerHelper,
                             requireActivity().getString(R.string.hotel_destination_need_permission)
                         )
                     }

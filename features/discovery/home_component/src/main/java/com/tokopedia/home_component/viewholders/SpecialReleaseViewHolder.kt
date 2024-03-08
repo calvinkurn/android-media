@@ -26,7 +26,7 @@ import com.tokopedia.home_component.productcardgridcarousel.viewHolder.SpecialRe
 import com.tokopedia.home_component.util.ChannelStyleUtil
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.GravitySnapHelper
-import com.tokopedia.home_component.util.getGradientBackgroundViewAllWhite
+import com.tokopedia.home_component.util.hasGradientBackground
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.SpecialReleaseAdapter
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
@@ -92,11 +92,7 @@ class SpecialReleaseViewHolder(
 
     private fun setBackground(element: SpecialReleaseDataModel) {
         val bannerItem = element.channelModel.channelBanner
-        if (bannerItem.gradientColor.isEmpty() || getGradientBackgroundViewAllWhite(
-                bannerItem.gradientColor,
-                itemView.context
-            ) || isUsingPadding
-        ) {
+        if (!element.channelModel.channelBanner.gradientColor.hasGradientBackground(itemView.context) || isUsingPadding) {
             val specialReleaseRvPaddingStyleBottom = itemView.resources.getDimensionPixelSize(home_componentR.dimen.home_component_padding_bottom_with_compat_padding_translated)
             binding?.homeComponentSpecialReleaseRv?.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_component_card_compat_padding_translation_y).toFloat()
             binding?.homeComponentSpecialReleaseRv?.setPadding(

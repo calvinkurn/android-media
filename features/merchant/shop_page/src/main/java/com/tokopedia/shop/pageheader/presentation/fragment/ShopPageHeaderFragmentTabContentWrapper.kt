@@ -10,6 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.marginTop
+import androidx.core.view.updateMargins
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
@@ -28,13 +32,17 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.content.common.util.doOnApplyWindowInsets
+import com.tokopedia.content.common.util.marginLp
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
@@ -60,6 +68,7 @@ import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.home.view.fragment.ShopPagePrefetchFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel.Companion.mapperForShopShowCase
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageHeaderComponent
@@ -94,7 +103,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_REF = "SHOP_REF"
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
         private const val FRAGMENT_SHOWCASE_KEY_FORCE_LIGHT_MODE = "force_light_mode"
-        private const val FRAGMENT_SHOWCASE_KEY_COLOR_SCHEME = "color_scheme"
         private const val FRAGMENT_SHOWCASE_KEY_IS_OS = "IS_OS"
         private const val FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
         private const val FRAGMENT_SHOWCASE_KEY_FOR_SHARE = "shop_header_for_sharing"
@@ -192,6 +200,19 @@ class ShopPageHeaderFragmentTabContentWrapper :
             chooseAddressWidgetListener
         )
         mainLayout?.requestFocus()
+
+        setupInsets()
+    }
+
+    private fun setupInsets() {
+        val initialNavToolbarPaddingTop = navToolbar?.paddingTop.orZero()
+        val initialHeaderTopAnchorMarginTop = viewBinding?.headerTopAnchor?.marginTop.orZero()
+
+        mainLayout?.doOnApplyWindowInsets { _, insets, _, _ ->
+            val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            navToolbar?.updatePadding(top = statusBarInsets.top)
+            viewBinding?.headerTopAnchor?.marginLp?.updateMargins(top = initialHeaderTopAnchorMarginTop + statusBarInsets.top - initialNavToolbarPaddingTop)
+        }
     }
 
     private fun getPlayHeaderListener(): ShopPageHeaderPlayWidgetViewHolder.Listener? {
@@ -226,11 +247,11 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 if (appbarOffsetRatio < Int.ONE.toFloat()) {
                     resumeHeaderVideo()
                     setToolbarColorFromHeaderConfig()
-                    setStatusBarColor(getShopHeaderConfig()?.patternColorType.orEmpty())
+                    setStatusBarColor(getShopHeaderConfig()?.getFinalPatternColorType(context?.isDarkMode().orFalse()).orEmpty())
                 } else {
                     pauseHeaderVideo()
                     setToolbarColorFromBodyConfig()
-                    setStatusBarColor(getShopBodyConfig()?.patternColorType.orEmpty())
+                    setStatusBarColor(getShopBodyConfig()?.getFinalPatternColorType(context?.isDarkMode().orFalse()).orEmpty())
                 }
             }
         }
@@ -241,7 +262,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             val intColor = getShopBodyConfig()?.colorSchema?.getColorIntValue(
                 ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR
             ).orZero()
-            val patternColorType = getShopBodyConfig()?.patternColorType
+            val patternColorType = getShopBodyConfig()?.getFinalPatternColorType(context?.isDarkMode().orFalse())
             configToolbarColor(it, intColor, patternColorType)
         }
     }
@@ -251,14 +272,14 @@ class ShopPageHeaderFragmentTabContentWrapper :
             val intColor = getShopHeaderConfig()?.colorSchema?.getColorIntValue(
                 ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR
             ).orZero()
-            val patternColorType = getShopHeaderConfig()?.patternColorType
+            val patternColorType = getShopHeaderConfig()?.getFinalPatternColorType(context?.isDarkMode().orFalse())
             configToolbarColor(it, intColor, patternColorType)
         }
     }
 
     private fun setNavToolbarScrollColorTransition(verticalOffset: Int) {
         val bodyBackgroundColor = getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
-        val endColor = if (shopHeaderLayoutData.isOverrideTheme) {
+        val endColor = if (shopHeaderLayoutData.isOverrideTheme && bodyBackgroundColor.isNotEmpty()) {
             ShopUtil.parseColorFromHexString(bodyBackgroundColor)
         } else {
             MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0)
@@ -318,7 +339,8 @@ class ShopPageHeaderFragmentTabContentWrapper :
             shopPagePageHeaderWidgetList,
             shopFollowButtonUiModel,
             getShopHeaderConfig(),
-            shopHeaderLayoutData.isOverrideTheme
+            shopHeaderLayoutData.isOverrideTheme,
+            shopPageHeaderDataModel
         )
     }
 
@@ -409,7 +431,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 )?.value.orEmpty()
                 setupSearchBarWithStaticLightModeColor()
                 val color = ShopUtil.parseColorFromHexString(hexIconColor)
-                val patternColorType = getShopHeaderConfig()?.patternColorType
+                val patternColorType = getShopHeaderConfig()?.getFinalPatternColorType(context?.isDarkMode().orFalse())
                 configToolbarColor(this, color, patternColorType)
             }
             setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
@@ -513,7 +535,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private fun renderPageAfterOnViewCreated() {
         if (isLoadInitialData) {
             appBarLayout?.show()
-            setStatusBarColor(getShopHeaderConfig()?.patternColorType.orEmpty())
+            setStatusBarColor(getShopHeaderConfig()?.getFinalPatternColorType(context?.isDarkMode().orFalse()).orEmpty())
             setupToolbar()
             setupAppBarLayout()
             setupChooseAddressWidget()
@@ -575,9 +597,14 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     private fun setupFragmentBackgroundColor() {
-        if (shopHeaderLayoutData.isOverrideTheme) {
-            val fragmentBackgroundColor = getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty()
-            viewBinding?.tabFragment?.background = ColorDrawable(ShopUtil.parseColorFromHexString(fragmentBackgroundColor))
+        context?.let {
+            if (shopHeaderLayoutData.isOverrideTheme) {
+                val defaultFragmentBackgroundColorStringHex = ShopUtil.getColorHexString(it,unifyprinciplesR.color.Unify_NN0)
+                val fragmentBackgroundColor = getShopBodyConfig()?.listBackgroundColor?.firstOrNull().orEmpty().takeIf {
+                    it.isNotEmpty()
+                } ?: defaultFragmentBackgroundColorStringHex
+                viewBinding?.tabFragment?.background = ColorDrawable(ShopUtil.parseColorFromHexString(fragmentBackgroundColor))
+            }
         }
     }
 
@@ -610,6 +637,9 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private fun createContentFragment(): Fragment? {
         return tabData?.let {
             when (it.name) {
+                ShopPageHeaderTabName.PRE_FETCH_DATA -> {
+                    ShopPagePrefetchFragment.newInstance()
+                }
                 ShopPageHeaderTabName.HOME -> {
                     ShopPageHomeFragment.createInstance(
                         shopId,
@@ -665,10 +695,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                             putBoolean(
                                 FRAGMENT_SHOWCASE_KEY_FORCE_LIGHT_MODE,
                                 shopHeaderLayoutData.isOverrideTheme
-                            )
-                            putParcelable(
-                                FRAGMENT_SHOWCASE_KEY_COLOR_SCHEME,
-                                getShopBodyConfig()?.colorSchema
                             )
                         }
                     )
@@ -731,6 +757,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
         }
     }
 
+    
     fun setShopPageHeaderP1Data(
         shopPageHeaderP1Data: ShopPageHeaderP1HeaderData,
         isEnableDirectPurchase: Boolean,
@@ -749,6 +776,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             avatar = shopPageHeaderP1Data.shopAvatar
             listDynamicTabData = shopPageHeaderP1Data.listDynamicTabData
             this.isEnableDirectPurchase = isEnableDirectPurchase
+            this.shopBadge = shopPageHeaderP1Data.shopBadge
         }
         shopPagePageHeaderWidgetList = shopPageHeaderP1Data.listShopPageHeaderWidget
         shopHeaderLayoutData = shopPageHeaderP1Data.shopHeaderLayoutData

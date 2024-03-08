@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toTopOf="@+id/btnBuyerOrderDetailSecondaryActions"
+        app:layout_constraintBottom_toTopOf="@+id/btnBuyerOrderDetailPrimaryActions"
         android:background="@drawable/buyer_order_detail_sticky_action_buttons_shadow"
         app:layout_constraintTop_toBottomOf="@+id/savingWidgetBuyerOrderDetail" />
 
@@ -32,7 +32,6 @@
         tools:visibility="visible"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        app:layout_constraintTop_toBottomOf="@+id/shadow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/iconunify_menu_kebab_horizontal"

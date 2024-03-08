@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="start"
+    android:padding="4dp">
+
+    <FrameLayout
+        android:id="@+id/productCardContainerHeightCalculator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.productcard.reimagine.ProductCardListCarouselView
+            android:id="@+id/productCardReimagineListCarouselView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/productCardReimagineTestDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:maxLines="5"
+        app:typographyType="body_3"
+        tools:text="test descriptions" />
+
+    <View
+        android:id="@+id/productCardTestDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/Unify_NN500"
+        android:layout_marginTop="4dp" />
+
+</LinearLayout>

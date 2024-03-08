@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
@@ -103,7 +103,7 @@ class ProductListHeaderViewHolder(
 
     private fun showShopBadge(url: String) {
         icBuyerOrderDetailSeeShopBadge?.let {
-            ImageHandler.loadImage2(it, url, com.tokopedia.utils.R.drawable.ic_loading_error)
+            it.loadImageWithError(url, com.tokopedia.utils.R.drawable.ic_loading_error)
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.cart.view.viewmodel
 
-import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
+import com.tokopedia.cart.view.uimodel.CartGlobalEvent
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest

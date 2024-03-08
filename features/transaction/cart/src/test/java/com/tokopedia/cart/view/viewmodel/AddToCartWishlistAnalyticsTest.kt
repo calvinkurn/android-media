@@ -1,7 +1,7 @@
 package com.tokopedia.cart.view.viewmodel
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.cartrevamp.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData

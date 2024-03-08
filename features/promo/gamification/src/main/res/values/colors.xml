@@ -2,6 +2,7 @@
 <resources>
 
     <color name="gamification_dms_black_transparent">#00000000</color>
+    <color name="gamification_dms_black">#000000</color>
     <color name="gamification_dms_box_orange_1">#FB8255</color>
     <color name="gamification_dms_box_orange_2">#FA591D</color>
     <color name="gamification_dms_box_green_1">#41D19D</color>

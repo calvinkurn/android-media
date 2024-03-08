@@ -13,11 +13,13 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  * @param productItem the pojo of product recommendation from the network
  */
 data class RecommendationItemDataModel(
-        var productItem: RecommendationItem
+    var productItem: RecommendationItem
 ) : HomeRecommendationDataModel {
 
     companion object {
-        val LAYOUT = R.layout.fragment_recommendation_item
+        fun layout(isReimagine: Boolean) =
+            if (isReimagine) R.layout.fragment_recommendation_reimagine_item
+            else R.layout.fragment_recommendation_item
     }
 
     override fun type(typeFactory: HomeRecommendationTypeFactory): Int = typeFactory.type(this)
@@ -27,7 +29,7 @@ data class RecommendationItemDataModel(
     override fun equalsWith(newData: HomeRecommendationDataModel): Boolean {
         return if (newData is RecommendationItemDataModel) {
             productItem == newData.productItem &&
-                    areRecomQtyItemTheSame(newData.productItem)
+                areRecomQtyItemTheSame(newData.productItem)
         } else {
             false
         }

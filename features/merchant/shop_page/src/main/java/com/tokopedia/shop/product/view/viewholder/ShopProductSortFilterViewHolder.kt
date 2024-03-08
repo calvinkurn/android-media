@@ -1,12 +1,10 @@
 package com.tokopedia.shop.product.view.viewholder
 
-import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopProductSortFilterBinding
@@ -14,10 +12,8 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -71,7 +67,6 @@ class ShopProductSortFilterViewHolder(
             }
             sortFilterWidget?.textView?.text = itemView.context.getString(R.string.shop_sort_filter_chips_name)
             sortFilterWidget?.indicatorCounter = shopProductSortFilterUiModel?.filterIndicatorCounter.orZero()
-            setSortFilterPrefixChipBackground()
         } else {
             sortFilterWidget?.filterType = SortFilter.TYPE_QUICK
             sortFilterWidget?.filterRelationship = SortFilter.RELATIONSHIP_OR
@@ -128,35 +123,6 @@ class ShopProductSortFilterViewHolder(
         }
         itemView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
         shopProductSortFilterViewHolderListener?.setSortFilterMeasureHeight(itemView.measuredHeight)
-    }
-
-    /**
-     * TODO Temporary fix for transparant prefix chip, will be deleted when the proper fix
-     * already deployed from unify
-     */
-    private fun setSortFilterPrefixChipBackground() {
-        val chipBackground: GradientDrawable
-        val background = GradientDrawable()
-        background.shape = GradientDrawable.RECTANGLE
-        chipBackground = background
-        val radius = 10.toPx().toFloat()
-        chipBackground.cornerRadius = radius
-        chipBackground.setColor(
-            MethodChecker.getColor(
-                itemView.context,
-                unifycomponentsR.color.chipsunify_background_enable
-            )
-        )
-        chipBackground.setStroke(
-            itemView.resources.getDimension(
-                unifycomponentsR.dimen.chip_border_width
-            ).toInt(),
-            MethodChecker.getColor(
-                itemView.context,
-                unifycomponentsR.color.chipsunify_border_enable
-            )
-        )
-        sortFilterWidget?.sortFilterPrefix?.background = chipBackground
     }
 
     private fun overrideWidgetContentTheme(isOverrideTheme: Boolean) {

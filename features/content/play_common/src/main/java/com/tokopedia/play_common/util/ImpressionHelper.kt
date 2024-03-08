@@ -3,35 +3,47 @@ package com.tokopedia.play_common.util
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewTreeObserver
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.play_common.R as play_commonR
 
 /**
  * Created by kenny.hadisaputra on 24/08/22
  */
 fun View.addImpressionListener(onView: () -> Unit): ImpressionListener {
+    val prevListener = getTag(play_commonR.id.impression_listener) as? ImpressionListener
+    if (prevListener != null) removeImpressionListener(prevListener)
+
     val vto = viewTreeObserver
     val scrollListener = ViewTreeObserver.OnScrollChangedListener {
         if (viewIsVisible(this@addImpressionListener)) onView()
     }
     vto.addOnScrollChangedListener(scrollListener)
 
+    fun removeScrollListener() {
+        if (vto.isAlive) vto.removeOnScrollChangedListener(scrollListener)
+        if (viewTreeObserver.isAlive) viewTreeObserver.removeOnScrollChangedListener(scrollListener)
+    }
+
     val attachStateListener = object : View.OnAttachStateChangeListener {
         override fun onViewAttachedToWindow(v: View) {
+            removeScrollListener()
+            viewTreeObserver.addOnScrollChangedListener(scrollListener)
         }
 
         override fun onViewDetachedFromWindow(v: View) {
-            if (vto.isAlive) vto.removeOnScrollChangedListener(scrollListener)
-            if (viewTreeObserver.isAlive) viewTreeObserver.removeOnScrollChangedListener(scrollListener)
-            v.removeOnAttachStateChangeListener(this)
+            removeScrollListener()
         }
     }
     addOnAttachStateChangeListener(attachStateListener)
 
-    if (viewIsVisible(this)) onView()
+    addOneTimeGlobalLayoutListener { if (viewIsVisible(this)) onView() }
 
-    return ImpressionListener(scrollListener, attachStateListener)
+    return ImpressionListener(scrollListener, attachStateListener).also {
+        setTag(play_commonR.id.impression_listener, it)
+    }
 }
 
 fun View.addImpressionListener(

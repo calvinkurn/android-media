@@ -6,5 +6,6 @@ data class PaymentListingParamRequest(
     val callbackUrl: String,
     val addressId: String,
     val version: String,
-    val bid: String
+    val bid: String,
+    val paymentRequest: String
 )

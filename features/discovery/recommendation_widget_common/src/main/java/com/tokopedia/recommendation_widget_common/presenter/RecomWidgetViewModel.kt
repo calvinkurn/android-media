@@ -132,6 +132,7 @@ open class RecomWidgetViewModel @Inject constructor(
                         xDevice = xDevice,
                         keywords = keywords,
                         isTokonow = isTokonow,
+                        hasNewProductCardEnabled = true
                     ))
                 if (result.isNotEmpty()) {
                     val recomWidget = result[0].copy(recommendationFilterChips = recomFilterList)
@@ -168,6 +169,7 @@ open class RecomWidgetViewModel @Inject constructor(
                         categoryIds = recomWidgetMetadata.categoryIds,
                         keywords = listOf(recomWidgetMetadata.keyword),
                         isTokonow = recomWidgetMetadata.isTokonow,
+                        hasNewProductCardEnabled = true
                 ))
                 if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
                     val newRecommendation = recomData.first()

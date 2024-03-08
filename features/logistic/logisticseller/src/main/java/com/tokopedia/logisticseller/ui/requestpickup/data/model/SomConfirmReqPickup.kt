@@ -60,10 +60,40 @@ data class SomConfirmReqPickup(
                 @Expose
                 val ticker: Ticker = Ticker(),
 
-                @SerializedName("ticker_unification_targets")
-                val tickerUnificationTargets: List<TickerUnificationTargets> = listOf()
+                @SerializedName("ticker_unification_params")
+                val tickerUnificationParams: TickerUnificationParams = TickerUnificationParams()
 
             ) : Parcelable {
+
+                @Parcelize
+                data class TickerUnificationParams(
+                    @SerializedName("page")
+                    val page: String = "",
+
+                    @SerializedName("target")
+                    val target: List<TickerUnificationTargets> = listOf(),
+
+                    @SerializedName("template")
+                    val template: Template = Template()
+
+                ) : Parcelable {
+
+                    @Parcelize
+                    data class Template(
+                        @SerializedName("contents")
+                        val contents: List<Content> = listOf()
+                    ) : Parcelable {
+
+                        @Parcelize
+                        data class Content(
+                            @SerializedName("key")
+                            val key: String = "",
+
+                            @SerializedName("value")
+                            val value: String = ""
+                        ) : Parcelable
+                    }
+                }
 
                 @Parcelize
                 data class PickupLocation(

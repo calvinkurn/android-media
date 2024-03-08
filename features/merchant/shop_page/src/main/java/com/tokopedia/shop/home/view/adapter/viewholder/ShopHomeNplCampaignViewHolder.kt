@@ -28,6 +28,7 @@ import com.tokopedia.shop.databinding.ItemShopHomeNewProductLaunchCampaignBindin
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.util.DateHelper.SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT
 import com.tokopedia.shop.home.util.DateHelper.millisecondsToDays
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapter
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
@@ -59,7 +60,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeNplCampaignViewHolder(
     itemView: View,
-    private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener
+    private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopHomeNewProductLaunchCampaignUiModel>(itemView), CoroutineScope {
 
     private val viewBinding: ItemShopHomeNewProductLaunchCampaignBinding? by viewBinding()
@@ -271,6 +273,7 @@ class ShopHomeNplCampaignViewHolder(
                     productListCampaignAdapter?.addElement(productList)
                     isNestedScrollingEnabled = false
                     adapter = productListCampaignAdapter
+                    setRecycledViewPool(recyclerviewPoolListener.parentPool)
                     setHeightBasedOnProductCardMaxHeight(
                         productList.map {
                             ShopPageHomeMapper.mapToProductCardCampaignModel(

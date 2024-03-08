@@ -8,8 +8,8 @@ import com.tokopedia.home.beranda.di.module.query.QueryRecommendationTabV2.RECOM
 internal object QueryRecommendationTabV2 {
     const val RECOMMENDATION_TAB_V2_QUERY_NAME = "RecommendationTabV2Query"
     const val RECOMMENDATION_TAB_V2_QUERY: String =
-        "query getHomeRecommendationTabV2(\$location: String) {\n" +
-            "  getHomeRecommendationTabV2(location: \$location) {\n" +
+        "query getHomeRecommendationTabV2(\$location: String, \$page: String) {\n" +
+            "  getHomeRecommendationTabV2(location: \$location, page: \$page) {\n" +
             "    tabs {\n" +
             "      id\n" +
             "      name\n" +

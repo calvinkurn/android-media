@@ -51,6 +51,7 @@ const val SAF_OWOC_DEFAULT_RESPONSE_PATH = "cart/saf_owoc_default_response.json"
 const val SAF_EGOLD_DONASI_RESPONSE_PATH = "cart/saf_egold_donasi_response.json"
 const val SAF_FREE_ADDONS_RESPONSE_PATH = "cart/saf_free_addons_response.json"
 const val SAF_BMSM_DISCOUNT_RESPONSE_PATH = "cart/saf_bmsm_discount_response.json"
+const val SAF_BMSM_GWP_RESPONSE_PATH = "cart/saf_bmsm_gwp_response.json"
 
 const val SAVE_SHIPMENT_DEFAULT_RESPONSE_PATH = "cart/save_shipment_default_response.json"
 

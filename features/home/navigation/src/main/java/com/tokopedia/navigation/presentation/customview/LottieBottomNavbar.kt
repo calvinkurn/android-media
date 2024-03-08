@@ -21,6 +21,8 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.DrawableRes
+import androidx.annotation.RawRes
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
@@ -357,15 +359,15 @@ class LottieBottomNavbar : LinearLayout {
             if (!isDeviceAnimationDisabled()) {
                 animName?.let {
                     icon.setAnimation(animName)
-                    icon.speed = bottomMenu.animSpeed
+                    icon.speed = bottomMenu.animActiveSpeed
                 }
             } else {
-                bottomMenu.imageEnabledName?.let {
+                bottomMenu.imageInactive?.let {
                     icon.setImageResource(it)
                 }
             }
             if (animName == null) {
-                bottomMenu.imageName?.let {
+                bottomMenu.imageActive?.let {
                     icon.setImageResource(it)
                 }
             }
@@ -408,13 +410,13 @@ class LottieBottomNavbar : LinearLayout {
 
                         val animNameSelected = getNewAnimationName(index, bottomMenuSelected)
 
-                        bottomMenuSelected.imageEnabledName?.let {
+                        bottomMenuSelected.imageInactive?.let {
                             iconPlaceholder.setImageResource(it)
                         }
 
                         animNameSelected?.let {
                             iconSelected.setAnimation(it)
-                            iconSelected.speed = bottomMenuSelected.animSpeed
+                            iconSelected.speed = bottomMenuSelected.animActiveSpeed
                         }
                     } else {
                         val bottomMenuSelected = bottomMenu
@@ -429,7 +431,7 @@ class LottieBottomNavbar : LinearLayout {
 
                         animToEnabledNameSelected?.let {
                             iconSelected.setAnimation(it)
-                            iconSelected.speed = bottomMenuSelected.animToEnabledSpeed
+                            iconSelected.speed = bottomMenuSelected.animInactiveSpeed
                         }
                     }
 
@@ -598,7 +600,7 @@ class LottieBottomNavbar : LinearLayout {
                 getOldAnimationName(bottomMenu)
             } else {
                 if (selectedItem == Int.ZERO) {
-                    bottomMenu.homeForYou?.animThumbIdleName
+                    bottomMenu.iconJumper?.idleAnimName
                 } else {
                     getOldAnimationName(bottomMenu)
                 }
@@ -611,12 +613,12 @@ class LottieBottomNavbar : LinearLayout {
     private fun getIconTitle(index: Int, bottomMenu: BottomMenu): String? {
         return if (HomeRollenceController.isIconJumper() && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
-                bottomMenu.homeForYou?.homeTitle
+                bottomMenu.title
             } else {
                 if (selectedItem == Int.ZERO) {
-                    bottomMenu.homeForYou?.forYouTitle
+                    bottomMenu.iconJumper?.jumperTitle
                 } else {
-                    bottomMenu.homeForYou?.homeTitle
+                    bottomMenu.title
                 }
             }
         } else {
@@ -630,7 +632,7 @@ class LottieBottomNavbar : LinearLayout {
                 getOldAnimationToEnabledName(bottomMenu)
             } else {
                 if (selectedItem == Int.ZERO) {
-                    bottomMenu.homeForYou?.animThumbIdleName
+                    bottomMenu.iconJumper?.idleAnimName
                 } else {
                     getOldAnimationToEnabledName(bottomMenu)
                 }
@@ -643,9 +645,9 @@ class LottieBottomNavbar : LinearLayout {
     private fun getNewImageName(index: Int, bottomMenu: BottomMenu): Int? {
         return if (HomeRollenceController.isIconJumper() && index == Int.ZERO) {
             if (isForYouToHomeSelected) {
-                bottomMenu.homeForYou?.homeImageName
+                bottomMenu.imageActive
             } else {
-                bottomMenu.homeForYou?.forYouImageName
+                bottomMenu.iconJumper?.jumperImageName
             }
         } else {
             getOldImageName(bottomMenu)
@@ -653,15 +655,15 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun getOldImageName(bottomMenu: BottomMenu): Int? {
-        return bottomMenu.imageName
+        return bottomMenu.imageActive
     }
 
     private fun getOldAnimationName(bottomMenu: BottomMenu): Int? {
-        return if (!isDarkMode) bottomMenu.animName else bottomMenu.animDarkName
+        return if (!isDarkMode) bottomMenu.animActive else bottomMenu.animActiveDark
     }
 
     private fun getOldAnimationToEnabledName(bottomMenu: BottomMenu): Int? {
-        return if (!isDarkMode) bottomMenu.animToEnabledName else bottomMenu.animDarkToEnabledName
+        return if (!isDarkMode) bottomMenu.animInactive else bottomMenu.animInactiveDark
     }
 
     private fun layoutContent() {
@@ -702,22 +704,14 @@ class LottieBottomNavbar : LinearLayout {
 
             // update title based on home header or for you section
             titleList[position].text = if (isForYouToHomeSelected) {
-                menu[position].homeForYou?.homeTitle.orEmpty()
+                menu[position].title.orEmpty()
             } else {
-                menu[position].homeForYou?.forYouTitle.orEmpty()
+                menu[position].iconJumper?.jumperTitle.orEmpty()
             }
             titleList[position].invalidate()
 
             if (isDeviceAnimationDisabled()) {
-                val pairSelectedItem = iconList[selectedItem ?: 0]
-                menu[selectedItem ?: 0].imageEnabledName?.let {
-                    pairSelectedItem.first.setImageResource(it)
-                }
-
-                val pairNewItem = iconList[position]
-                menu[position].imageName?.let {
-                    pairNewItem.first.setImageResource(it)
-                }
+                setIconWhenAnimationDisabled(selectedItem, position)
                 return
             }
 
@@ -726,14 +720,14 @@ class LottieBottomNavbar : LinearLayout {
 
             // update animation based on home header or for you section
             val animTransitionName = if (isForYouToHomeSelected) {
-                menu[position].homeForYou?.animThumbToHomeName
+                menu[position].iconJumper?.jumperToInitialAnimName
             } else {
-                menu[position].homeForYou?.animHomeToThumbName
+                menu[position].iconJumper?.initialToJumperAnimName
             }
 
             animTransitionName?.let {
                 selectedIcon.setAnimation(it)
-                selectedIcon.speed = menu[position].animToEnabledSpeed
+                selectedIcon.speed = menu[position].animInactiveSpeed
                 iconPlaceHolder.visibility = View.INVISIBLE
                 selectedIcon.visibility = View.VISIBLE
                 selectedIcon.playAnimation()
@@ -762,15 +756,7 @@ class LottieBottomNavbar : LinearLayout {
         // when device animation disabled, only use image resource to prevent stackoverflow error
         // https://github.com/airbnb/lottie-android/issues/1534
         if (isDeviceAnimationDisabled()) {
-            val pairSelectedItem = iconList[selectedItem ?: 0]
-            menu[selectedItem ?: 0].imageEnabledName?.let {
-                pairSelectedItem.first.setImageResource(it)
-            }
-
-            val pairNewItem = iconList[newPosition ?: 0]
-            menu[newPosition ?: 0].imageName?.let {
-                pairNewItem.first.setImageResource(it)
-            }
+            setIconWhenAnimationDisabled(selectedItem, newPosition)
             return
         }
 
@@ -781,13 +767,13 @@ class LottieBottomNavbar : LinearLayout {
             oldSelectedItem.cancelAnimation()
 
             val animToEnabledName = if (!isDarkMode) {
-                menu[selectedItem ?: 0].animToEnabledName
+                menu[selectedItem ?: 0].animInactive
             } else {
-                menu[selectedItem ?: 0].animDarkToEnabledName
+                menu[selectedItem ?: 0].animInactiveDark
             }
             animToEnabledName?.let {
                 oldSelectedItem.setAnimation(it)
-                oldSelectedItem.speed = menu[selectedItem ?: 0].animToEnabledSpeed
+                oldSelectedItem.speed = menu[selectedItem ?: 0].animInactiveSpeed
             }
 
             iconList[selectedItem ?: 0] = Pair(pair.first, false)
@@ -805,7 +791,7 @@ class LottieBottomNavbar : LinearLayout {
                 selectedIcon.cancelAnimation()
 
                 // this approach to avoid race condition if using the setAnimation
-                menu[it].imageEnabledName?.let { imageEnabled ->
+                menu[it].imageInactive?.let { imageEnabled ->
                     selectedIcon.visibility = View.INVISIBLE
                     placeholderSelectedIcon.setImageResource(imageEnabled)
                     placeholderSelectedIcon.visibility = View.VISIBLE
@@ -834,9 +820,9 @@ class LottieBottomNavbar : LinearLayout {
         val isNewForYouState = isForYouSelectedByPosition(newPosition)
 
         if (isNewForYouState) {
-            menu[newPosition].homeForYou?.animThumbIdleName?.let { thumbIdle ->
+            menu[newPosition].iconJumper?.idleAnimName?.let { thumbIdle ->
                 newSelectedItem.setAnimation(thumbIdle)
-                newSelectedItem.speed = menu[newPosition].animSpeed
+                newSelectedItem.speed = menu[newPosition].animActiveSpeed
             }
         }
 
@@ -854,19 +840,47 @@ class LottieBottomNavbar : LinearLayout {
         selectedItem = newPosition
     }
 
+    private fun setIconWhenAnimationDisabled(
+        selectedItem: Int?,
+        newPosition: Int,
+    ) {
+        selectedItem?.let { selectedPos ->
+            val pairSelectedItem = iconList[selectedPos]
+            val menu = menu[selectedPos]
+            menu.imageInactive?.let {
+                pairSelectedItem.first.setImageResource(it)
+            }
+            titleList[selectedPos].setTextColor(buttonColor)
+        }
+
+        newPosition.let { newPos ->
+            val pairNewItem = iconList[newPos]
+            val menu = menu[newPos]
+            val image = if(isForYouToHomeSelected) {
+                menu.imageActive
+            } else menu.getImageJumperIfAny()
+            image?.let {
+                pairNewItem.first.setImageResource(it)
+            }
+            val activeColor =
+                ContextCompat.getColor(modeAwareContext, menu.activeButtonColor)
+            titleList[newPos].setTextColor(activeColor)
+        }
+    }
+
     private fun setTitleIconHomeOrForYou(newPosition: Int) {
         if (HomeRollenceController.isIconJumper()) {
             val textIcon = titleList.getOrNull(Int.ZERO)
             val iconTitle = when {
                 newPosition == Int.ZERO -> {
                     if (isForYouToHomeSelected) {
-                        menu.getOrNull(newPosition)?.homeForYou?.homeTitle
+                        menu.getOrNull(newPosition)?.title
                     } else {
-                        menu.getOrNull(newPosition)?.homeForYou?.forYouTitle
+                        menu.getOrNull(newPosition)?.iconJumper?.jumperTitle
                     }
                 }
 
-                selectedItem == Int.ZERO -> menu.getOrNull(selectedItem.orZero())?.homeForYou?.homeTitle
+                selectedItem == Int.ZERO -> menu.getOrNull(selectedItem.orZero())?.title
                 else -> return
             }
 
@@ -951,28 +965,29 @@ class LottieBottomNavbar : LinearLayout {
 data class BottomMenu(
     val id: Int,
     val title: String,
-    val homeForYou: HomeForYouMenu? = null,
-    val animName: Int? = null,
-    val animToEnabledName: Int? = null,
-    val animDarkName: Int? = null,
-    val animDarkToEnabledName: Int? = null,
-    val imageName: Int? = null,
-    val imageEnabledName: Int? = null,
+    val iconJumper: IconJumper? = null,
+    @RawRes val animActive: Int? = null,
+    @RawRes val animInactive: Int? = null,
+    @RawRes val animActiveDark: Int? = null,
+    @RawRes val animInactiveDark: Int? = null,
+    @DrawableRes val imageActive: Int? = null,
+    @DrawableRes val imageInactive: Int? = null,
     val activeButtonColor: Int,
     val useBadge: Boolean = true,
-    val animSpeed: Float = 1f,
-    val animToEnabledSpeed: Float = 1f
-)
+    val animActiveSpeed: Float = 1f,
+    val animInactiveSpeed: Float = 1f
+) {
+    fun getImageJumperIfAny(): Int? {
+        return iconJumper?.jumperImageName ?: imageActive
+    }
+}
 
-data class HomeForYouMenu(
-    val homeTitle: String,
-    val forYouTitle: String,
-    val homeImageName: Int? = null,
-    val forYouImageName: Int? = null,
-    val animHomeName: Int? = null,
-    val animThumbIdleName: Int? = null,
-    val animHomeToThumbName: Int? = null,
-    val animThumbToHomeName: Int? = null
+data class IconJumper(
+    val jumperTitle: String,
+    val jumperImageName: Int? = null,
+    val initialToJumperAnimName: Int? = null,
+    val idleAnimName: Int? = null,
+    val jumperToInitialAnimName: Int? = null
 )
 
 interface IBottomClickListener {

@@ -20,23 +20,26 @@ import org.junit.runners.Parameterized
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
-class SearchResultStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
+class SearchResultStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(startupMode) {
     override fun setupMock() {
         MacroDevOps.setupEnvironment(MacroIntent.Mock.getSearchMockIntent())
     }
 
     override fun setupEnvironment() {
+        MacroDevOps.setupLoginFlow(
+            "pbs-hidayatullah+prod7@tokopedia.com",
+            "Prod1234"
+        )
     }
 
     override fun getIntent() = MacroIntent.SearchResult.getSearchResultIntent()
 
     override fun waitUntil() {
         MacroInteration.waitForRecyclerViewContent(
-                MacroIntent.SearchResult.PACKAGE_NAME,
-                MacroIntent.SearchResult.RV_RESOURCE_ID,
+            MacroIntent.SearchResult.PACKAGE_NAME,
+            MacroIntent.SearchResult.RV_RESOURCE_ID
         )
     }
 
     override fun traceName() = "search_result_trace"
-
 }

@@ -10,7 +10,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.profilecompletion.addphone.view.activity.NewAddPhoneActivity
+import com.tokopedia.profilecompletion.settingprofile.addphone.view.activity.NewAddPhoneActivity
 import com.tokopedia.profilecompletion.common.helper.checkResultCode
 import com.tokopedia.profilecompletion.common.helper.respondWithFailed
 import com.tokopedia.profilecompletion.common.helper.respondWithOk

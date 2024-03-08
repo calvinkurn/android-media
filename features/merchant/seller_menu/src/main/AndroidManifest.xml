@@ -21,6 +21,24 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".presentation.activity.SellerMenuComposeActivity"
+            android:exported="false"
+            android:label="@string/title_seller_menu"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_seller_menu_compose"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".presentation.activity.SellerSettingsActivity"
             android:label="@string/title_seller_settings"
             android:launchMode="singleTask"

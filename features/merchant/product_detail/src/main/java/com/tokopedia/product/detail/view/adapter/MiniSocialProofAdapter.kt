@@ -7,7 +7,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofItemDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofItemType
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofChipViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofTextDividerViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofTextViewHolder
@@ -15,7 +15,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofTypeBa
 import com.tokopedia.unifycomponents.toPx
 
 class MiniSocialProofAdapter(
-        private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : RecyclerView.Adapter<ProductMiniSocialProofTypeBaseViewHolder>() {
 
     companion object {

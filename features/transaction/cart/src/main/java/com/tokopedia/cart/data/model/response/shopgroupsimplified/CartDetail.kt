@@ -1,8 +1,6 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.purchase_platform.common.feature.bmgm.data.response.BmGmCartDetailInfo
-import java.util.*
 
 data class CartDetail(
     @SerializedName("bundle_detail")

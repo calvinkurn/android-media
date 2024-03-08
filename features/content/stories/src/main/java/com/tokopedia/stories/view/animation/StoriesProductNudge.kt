@@ -37,7 +37,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  * @author by astidhiyaa on 18/08/23
  */
 @Composable
-fun StoriesProductNudge(productCount: String, onClick: () -> Unit) {
+fun StoriesProductNudge(productCount: String, isShown: Boolean, onClick: () -> Unit) {
+    if (isShown.not()) return
     NestTheme(darkTheme = true) {
         Box(
             Modifier.fillMaxSize(),

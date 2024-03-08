@@ -8,8 +8,6 @@ import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProduct
 import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.stories.creation.analytic.product.seller.StoriesCreationPinnedProductAnalytic
 import com.tokopedia.stories.creation.analytic.product.seller.StoriesCreationProductSellerAnalytic
-import com.tokopedia.stories.creation.analytic.sender.StoriesCreationAnalyticSender
-import com.tokopedia.stories.creation.analytic.sender.StoriesCreationAnalyticSenderImpl
 import dagger.Binds
 import dagger.Module
 
@@ -34,7 +32,4 @@ abstract class ProductPickerBindTestModule {
     @Binds
     @ProductPickerTestScope
     abstract fun bindNavigationBarColorDialogCustomizer(customizer: NavigationBarColorDialogCustomizer): ContentDialogCustomizer
-
-    @Binds
-    abstract fun bindStoriesCreationAnalyticSender(storiesCreationAnalyticSender: StoriesCreationAnalyticSenderImpl): StoriesCreationAnalyticSender
 }

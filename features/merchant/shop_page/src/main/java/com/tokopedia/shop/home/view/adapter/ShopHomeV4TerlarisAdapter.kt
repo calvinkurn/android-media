@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -124,7 +124,7 @@ class ShopHomeV4TerlarisAdapter(
                         )
                     )
                 }
-                ImageHandler.loadImageRounded2(itemView.context, productImg1, productListData[0].imageUrl.orEmpty(), 8.toPx().toFloat())
+                productImg1?.loadImageRounded(productListData[0].imageUrl.orEmpty(), 8.toPx().toFloat())
                 productName1?.text = productListData[0].name
                 productPrice1?.text = productListData[0].displayedPrice
                 productRank1?.text = rank[0].toString()
@@ -150,7 +150,7 @@ class ShopHomeV4TerlarisAdapter(
                         )
                     )
                 }
-                ImageHandler.loadImageRounded2(itemView.context, productImg2, productListData[1].imageUrl.orEmpty(), 8.toPx().toFloat())
+                productImg2?.loadImageRounded(productListData[1].imageUrl.orEmpty(), 8.toPx().toFloat())
                 productName2?.text = productListData[1].name
                 productPrice2?.text = productListData[1].displayedPrice
                 productRank2?.text = rank[1].toString()
@@ -176,7 +176,7 @@ class ShopHomeV4TerlarisAdapter(
                         )
                     )
                 }
-                ImageHandler.loadImageRounded2(itemView.context, productImg3, productListData[2].imageUrl.orEmpty(), 8.toPx().toFloat())
+                productImg3?.loadImageRounded(productListData[2].imageUrl.orEmpty(), 8.toPx().toFloat())
                 productName3?.text = productListData[2].name
                 productPrice3?.text = productListData[2].displayedPrice
                 productRank3?.text = rank[2].toString()

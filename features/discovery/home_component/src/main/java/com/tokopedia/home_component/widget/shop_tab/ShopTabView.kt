@@ -76,4 +76,8 @@ class ShopTabView : LinearLayout, ShopTabListener {
             listener?.onShopTabClick(element)
         }
     }
+
+    override fun onShopTabImpressed(element: ShopTabDataModel) {
+        listener?.onShopTabImpressed(element)
+    }
 }

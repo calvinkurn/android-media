@@ -17,7 +17,9 @@ class TokoChatListUiMapper@Inject constructor(
         val rawResult = listChannel.mapNotNull {
             val serviceType = it.metadata?.orderInfo?.serviceType ?: 0
             // Check if service type is Tokofood or rollence logistic is on
-            if (isChatTokofood(serviceType) || isTokoChatLogisticEnabled(abTestPlatform)) {
+            if ((isChatTokofood(serviceType) || isTokoChatLogisticEnabled(abTestPlatform)) &&
+                it.metadata?.orderInfo?.status?.contains(STATUS_CANCELLED, true) == false
+            ) {
                 mapToChatListItem(it)
             } else {
                 // Skip chat list item when service type is not tokofood && rollence off
@@ -58,5 +60,9 @@ class TokoChatListUiMapper@Inject constructor(
             }
         }
         return result
+    }
+
+    companion object {
+        private const val STATUS_CANCELLED = "cancelled"
     }
 }

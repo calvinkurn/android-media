@@ -1,5 +1,6 @@
 package com.tokopedia.productcard.compact.productcard.presentation.uimodel
 
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 data class ProductCardCompactUiModel(
@@ -40,11 +41,12 @@ data class ProductCardCompactUiModel(
     private fun getBestSellerLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isBestSellerPosition() }
     private fun isBestSellerLabelAvailable(): Boolean = getBestSellerLabelGroup() != null
 
-    fun getOosLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { availableStock < minOrder && it.isStatusPosition() && it.isTransparentBlackColor() }
+    fun getOosLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { (availableStock < minOrder || availableStock == Int.ZERO) && (it.isStatusPosition() && it.isTransparentBlackColor()) }
     fun getAssignedValueLabelGroup(): LabelGroup? = if (isBestSellerLabelAvailable()) getBestSellerLabelGroup() else getNewProductLabelGroup()
     fun getPriceLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isPricePosition() && it.isLightGreenColor() }
     fun getWeightLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isWeightPosition() }
     fun getImageBrightness(): Float = if (isOos()) OOS_BRIGHTNESS else NORMAL_BRIGHTNESS
+    fun getNowUSPLabelGroup(): LabelGroup? = labelGroupList.firstOrNull { it.isNowUSPPosition() && it.isTextDarkGreyColor() }
 
     fun isOos() = getOosLabelGroup() != null
     fun isFlashSale() = progressBarLabel.isNotBlank() && !isOos()
@@ -63,10 +65,12 @@ data class ProductCardCompactUiModel(
         fun isNewProductLabelPosition() = position == LABEL_GIMMICK
         fun isPricePosition() = position == LABEL_PRICE
         fun isWeightPosition() = position == LABEL_WEIGHT
+        fun isNowUSPPosition() = position == LABEL_NOW_USP
 
         fun isTransparentBlackColor() = type == TRANSPARENT_BLACK
         fun isTextDarkOrangeColor() = type == TEXT_DARK_ORANGE
         fun isLightGreenColor() = type == LIGHT_GREEN
+        fun isTextDarkGreyColor() = type == TEXT_DARK_GREY
     }
 }
 
@@ -78,6 +82,7 @@ internal const val LABEL_PRICE = "price"
 internal const val LABEL_GIMMICK = "gimmick"
 internal const val LABEL_BEST_SELLER = "best_seller"
 internal const val LABEL_WEIGHT = "weight"
+internal const val LABEL_NOW_USP = "now_usp"
 
 /**
  * Background Color
@@ -88,6 +93,7 @@ internal const val TRANSPARENT_BLACK = "transparentBlack"
  * Text Color
  */
 internal const val TEXT_DARK_ORANGE = "textDarkOrange"
+internal const val TEXT_DARK_GREY = "textDarkGrey"
 
 /**
  * Label Type

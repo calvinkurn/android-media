@@ -1,6 +1,6 @@
 package com.tokopedia.cart.view.viewmodel
 
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import org.junit.Assert

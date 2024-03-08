@@ -12,6 +12,7 @@ import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
 import com.tokopedia.sellerhome.domain.usecase.*
 import com.tokopedia.sellerhomecommon.domain.usecase.GetNewPromotionUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTopAdsAutoAdsUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTopAdsShopInfoUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.unit.test.rule.StandardTestRule
@@ -78,6 +79,9 @@ abstract class OtherMenuViewModelTestFixture {
     @RelaxedMockK
     lateinit var getTopAdsShopInfoUseCase: GetTopAdsShopInfoUseCase
 
+    @RelaxedMockK
+    lateinit var getTopAdsAutoAdsUseCase: GetTopAdsAutoAdsUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -106,6 +110,7 @@ abstract class OtherMenuViewModelTestFixture {
                 shopShareInfoUseCase,
                 getNewPromotionUseCase,
                 getTopAdsShopInfoUseCase,
+                getTopAdsAutoAdsUseCase,
                 userSession,
                 remoteConfig
             )

@@ -76,7 +76,7 @@ fun ProductInfoDataModel.mapToRecommendationTracking(): RecommendationItem{
             pageName = "",
             minOrder = productDetailData?.minOrder ?: -1,
             location = "",
-            badgesUrl = listOf(),
+            badges = listOf(),
             type = "",
             isFreeOngkirActive = false,
             freeOngkirImageUrl = "",

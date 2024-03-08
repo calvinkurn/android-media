@@ -8,6 +8,7 @@ import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.common.domain.usecase.GetVariantByIdUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
@@ -40,6 +41,7 @@ class SummaryViewModelTest {
     private var topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase = mockk(relaxed = true)
     private val validGroupUseCase: TopAdsGroupValidateNameUseCase = mockk(relaxed = true)
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
+    private val getVariantByIdUseCase: GetVariantByIdUseCase = mockk(relaxed = true)
 
 
     @Before
@@ -49,7 +51,8 @@ class SummaryViewModelTest {
         viewModel = spyk(SummaryViewModel(rule.dispatchers,
             validGroupUseCase,
             topAdsGetShopDepositUseCase,
-            topAdsCreateUseCase))
+            topAdsCreateUseCase,
+            getVariantByIdUseCase))
         mockkObject(RequestHelper)
         every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
         every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)

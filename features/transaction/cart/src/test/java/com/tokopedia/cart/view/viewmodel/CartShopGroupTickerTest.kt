@@ -6,12 +6,15 @@ import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopG
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorGqlResponse
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorResponse
 import com.tokopedia.cart.data.model.response.cartshoptickeraggregator.CartShopGroupTickerAggregatorTicker
-import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
-import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
-import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerData
-import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerState
+import com.tokopedia.cart.view.uimodel.CartAddOnData
+import com.tokopedia.cart.view.uimodel.CartAddOnProductData
+import com.tokopedia.cart.view.uimodel.CartAddOnWidgetData
+import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartGlobalEvent
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
+import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -105,6 +108,33 @@ class CartShopGroupTickerTest : BaseCartViewModelTest() {
             bundleIds = emptyList(),
             quantity = 1,
             productWeight = 1
+        )
+
+        fun selectedProductWithAddons() = CartItemHolderData(
+            productId = "999",
+            cartId = "999",
+            isSelected = true,
+            quantity = 4,
+            productPrice = 9000.0,
+            productWeight = 1,
+            addOnsProduct = CartAddOnData(
+                arrayListOf(
+                    CartAddOnProductData(
+                        id = "5932",
+                        uniqueId = "P1T3ID5932",
+                        status = 1,
+                        type = 3,
+                        price = 10000.0,
+                        fixedQuantity = false
+                    )
+                ),
+                widget = CartAddOnWidgetData(
+                    title = "Pembolongan (Rp40.000)",
+                    leftIconUrl = "https://images.tokopedia.net/img/cartapp/icons/check_big.png",
+                    rightIconUrl = "https://images.tokopedia.net/img/cartapp/chevron_right.png",
+                    price = "40000"
+                )
+            )
         )
     }
 
@@ -777,5 +807,39 @@ class CartShopGroupTickerTest : BaseCartViewModelTest() {
 
         // Then
         assertFalse(enableBundleCrossSell)
+    }
+
+    @Test
+    fun `WHEN get bo affordability with addons THEN calculate without addons price`() {
+        // GIVEN
+        val cartString = "123-123-123"
+        val cartGroupHolderData = CartGroupHolderData(
+            cartShopGroupTicker = CartShopGroupTickerData(enableBoAffordability = true),
+            cartString = cartString,
+            productUiModelList = arrayListOf(selectedProductWithAddons()),
+            isAllSelected = true
+        )
+        val ticker = "+ Rp14.000 lagi untuk dapat bebas ongkir"
+
+        val slotParam = slot<CartShopGroupTickerAggregatorParam>()
+        coEvery {
+            cartShopGroupTickerAggregatorUseCase(capture(slotParam))
+        } returns CartShopGroupTickerAggregatorGqlResponse(
+            CartShopGroupTickerAggregatorResponse(
+                CartShopGroupTickerAggregatorData(
+                    minTransaction = 50_000L,
+                    ticker = CartShopGroupTickerAggregatorTicker(
+                        text = ticker
+                    )
+                )
+            )
+        )
+
+        // WHEN
+        cartViewModel.checkCartShopGroupTicker(cartGroupHolderData)
+        coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
+
+        // THEN
+        assertEquals("36000", slotParam.captured.ratesParam.order_value)
     }
 }

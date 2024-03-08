@@ -2,10 +2,11 @@ package com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3
 
 import android.view.View
 import androidx.annotation.StringRes
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.Ratio
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
@@ -35,7 +36,7 @@ class BannerNotificationViewHolder(
 
     override fun onViewRecycled() {
         countDown?.timer?.cancel()
-        ImageHandler.clearImage(banner)
+        banner.clearImage()
     }
 
     private fun bindBannerImage(element: NotificationUiModel) {
@@ -44,9 +45,7 @@ class BannerNotificationViewHolder(
         banner?.layout(0, 0, 0, 0)
         val imageRatio = element.imageMetaData.getOrNull(0)?.ratio ?: Ratio()
         banner?.ratio = (imageRatio.y / imageRatio.x)
-        ImageHandler.loadImageRounded(
-                itemView.context, banner, element.dataNotification.infoThumbnailUrl, bannerRadius
-        )
+        banner?.loadImageRounded(element.dataNotification.infoThumbnailUrl, bannerRadius)
     }
 
     private fun bindFooterTimeStatus(element: NotificationUiModel) {

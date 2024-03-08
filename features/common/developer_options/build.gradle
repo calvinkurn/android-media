@@ -27,7 +27,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
-    implementation projectOrAar(rootProject.ext.features.scpAuth)
 
     implementation projectOrAar(rootProject.ext.features.fcm_common)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
@@ -65,6 +64,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.miscDependencies.influxInteractor
 
     implementation rootProject.ext.firebase.messaging
     

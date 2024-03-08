@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.graphql.data.stampprogress.ActionButton
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipQuests
@@ -128,7 +128,7 @@ class MembershipStampView : FrameLayout {
     }
 
     private fun renderCircleImageStamp(imageView: ImageView, iconUrl: String) {
-        ImageHandler.loadImageCircle2(context, imageView, iconUrl)
+        imageView.loadImageCircle(iconUrl)
     }
 
     private fun init(attrs: AttributeSet? = null) {

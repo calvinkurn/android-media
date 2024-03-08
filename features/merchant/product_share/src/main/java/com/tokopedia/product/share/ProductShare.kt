@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
@@ -24,6 +24,8 @@ import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.media.loader.getBitmapImageUrl
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.product.share.ekstensions.getShareContent
 import com.tokopedia.product.share.ekstensions.getTextDescriptionDisc
 import com.tokopedia.product.share.ekstensions.getTextDescriptionNonDisc
@@ -120,8 +122,9 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
         if (mode == MODE_IMAGE) {
             preBuildImage()
-            val target = object : CustomTarget<Bitmap>(DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT) {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+            data.productImageUrl?.getBitmapImageUrl(activity, target = MediaBitmapEmptyTarget(
+                onCleared = {},
+                onReady = { resource ->
                     val timeResourceEnd = System.currentTimeMillis()
                     resourceReady = timeResourceEnd - timeStartShare
                     val sticker = ProductImageSticker(activity, resource, data)
@@ -142,10 +145,8 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                     } finally {
                         postBuildImage()
                     }
-                }
-
-                override fun onLoadFailed(errorDrawable: Drawable?) {
-                    super.onLoadFailed(errorDrawable)
+                },
+                onFailed = {
                     try {
                         generateBranchLink(null, data, isLog = isLog)
                     } catch (t: Throwable) {
@@ -153,13 +154,14 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                     } finally {
                         postBuildImage()
                     }
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {
-                }
-            }
-
-            ImageHandler.loadImageWithTargetCenterCrop(activity, data.productImageUrl, target)
+                },
+                width = DEFAULT_IMAGE_WIDTH,
+                height = DEFAULT_IMAGE_HEIGHT
+            ), properties = {
+                fitCenter()
+                centerCrop()
+                isAnimate(false)
+            })
         } else {
             preBuildImage.invoke()
             generateBranchLink(null, data, postBuildImage, isLog = isLog)

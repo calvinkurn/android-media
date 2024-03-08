@@ -2,7 +2,7 @@ package com.tokopedia.cart.view.viewmodel
 
 import com.tokopedia.cartcommon.data.response.undodeletecart.Data
 import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
-import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
+import com.tokopedia.cart.view.uimodel.UndoDeleteEvent
 import com.tokopedia.network.exception.ResponseErrorException
 import io.mockk.Runs
 import io.mockk.coEvery

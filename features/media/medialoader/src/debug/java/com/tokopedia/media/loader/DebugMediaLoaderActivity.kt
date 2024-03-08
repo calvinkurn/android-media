@@ -1,16 +1,16 @@
 package com.tokopedia.media.loader
 
 import android.os.Bundle
+import android.os.Handler
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.data.FailureType
-import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.unifycomponents.Label
 
 /** @suppress */
@@ -46,26 +46,34 @@ open class DebugMediaLoaderActivity : AppCompatActivity() {
 
         btnShow.setOnClickListener {
             val url = edtUrl.text.toString().trim()
-            var isArchived = false
-            val roundedRadius = 80f
+            var isArchived: FailureType? = null
 
-            url.getBitmapImageUrl(
-                context = applicationContext,
-                properties = {
-                    setRoundedRadius(roundedRadius) // sample rounded
-                    shouldTrackNetworkResponse(true)
-                    networkResponse { _, type ->
-                        isArchived = type == FailureType.NotFound || type == FailureType.Gone
+
+            imgSample.loadImage(url) {
+                setRoundedRadius(roundedRadius) // sample rounded
+                shouldTrackNetworkResponse(true)
+                networkResponse { _, type ->
+                    isArchived = type
+                }
+                listener(
+                    onSuccess = { _, _ ->
+                        checkMediaFailure(isArchived)
+                    },
+                    onError = {
+                        checkMediaFailure(isArchived)
                     }
-                }
-            ) {
-                if (isArchived) {
-                    val archivalUrl = "https://images.tokopedia.net/img/android/order_management/img_product_archived_small.png"
-                    imgSample.loadImageRounded(archivalUrl, roundedRadius)
-                } else {
-                    imgSample.loadImageRounded(it, roundedRadius)
-                }
+                )
             }
+        }
+    }
+
+    private fun checkMediaFailure(failureType: FailureType?) {
+        if (failureType != null) {
+            Handler().postDelayed({
+                val archivalUrl = "https://images.tokopedia.net/img/android/order_management/img_product_archived_small.png"
+                imgSample.loadImage(archivalUrl)
+                Toast.makeText(this, "Failure = ${failureType.value}", Toast.LENGTH_LONG).show()
+            },1000)
         }
     }
 }

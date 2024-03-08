@@ -55,7 +55,7 @@ class MiniCartV2ViewModelTest {
     fun `WHEN fetch last widget state success THEN data should be initialized`() {
         // given
         val mockResponse = DataProvider.provideGetMiniCartBundleSimplifiedSuccessAllAvailable()
-        coEvery { getMiniCartWidgetUseCase.invoke(any()) } returns mockResponse
+        coEvery { getMiniCartWidgetUseCase.invoke(any()).toSimplifiedData() } returns mockResponse
 
         // when
         viewModel.getLatestWidgetState(
@@ -73,7 +73,7 @@ class MiniCartV2ViewModelTest {
     fun `WHEN fetch last widget state success THEN ab test should be initialized`() {
         // given
         val mockResponse = DataProvider.provideGetMiniCartBundleSimplifiedSuccessAllAvailable()
-        coEvery { getMiniCartWidgetUseCase.invoke(any()) } returns mockResponse
+        coEvery { getMiniCartWidgetUseCase.invoke(any()).toSimplifiedData() } returns mockResponse
 
         // when
         viewModel.getLatestWidgetState(

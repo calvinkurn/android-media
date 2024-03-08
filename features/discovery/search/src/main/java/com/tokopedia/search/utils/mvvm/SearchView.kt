@@ -31,7 +31,9 @@ interface SearchView: LifecycleOwner {
 
     fun <S: SearchUiState> SearchViewModel<S>.observeState() =
         launchRepeatOnLifecycleStarted {
-            stateFlow.collectLatest { refresh() }
+            stateFlow.collectLatest {
+                refresh()
+            }
         }
 
     fun <VM: SearchViewModel<S>, S: SearchUiState> withState(

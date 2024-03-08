@@ -15,15 +15,16 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shopdiscount.R
+import com.tokopedia.shopdiscount.common.ShopDiscountTickerUtil
 import com.tokopedia.shopdiscount.databinding.FragmentDiscountedProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSellerInfoBottomSheet
@@ -35,9 +36,13 @@ import com.tokopedia.shopdiscount.utils.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
+import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -45,8 +50,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
-
 
 class DiscountedProductManageFragment : BaseDaggerFragment() {
 
@@ -103,6 +108,9 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
     @Inject
     lateinit var preferenceDataStore: SharedPreferenceDataStore
 
+    @Inject
+    lateinit var tracker: ShopDiscountTracker
+
     private var listener: TabChangeListener? = null
     private var remoteConfig: RemoteConfig? = null
 
@@ -134,7 +142,58 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
         setupViews()
         observeProductsMeta()
         observeSellerEligibility()
+        observeTargetedTickerData()
         checkSellerEligibility()
+    }
+
+    private fun observeTargetedTickerData() {
+        viewModel.targetedTickerData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    renderTicker(it.data)
+                }
+                is Fail -> {
+                    binding?.ticker?.gone()
+                }
+            }
+        }
+    }
+
+    private fun renderTicker(tickers: List<RemoteTicker>) {
+        binding?.run {
+            ticker.visible()
+            val remoteTickers = tickers.map { remoteTicker ->
+                TickerData(
+                    title = remoteTicker.title,
+                    description = remoteTicker.description + " <a href='${remoteTicker.actionAppUrl}'>${remoteTicker.actionLabel}</a>",
+                    isFromHtml = true,
+                    type = ShopDiscountTickerUtil.getTickerType(remoteTicker.type)
+                )
+            }
+
+            val tickerAdapter = TickerPagerAdapter(activity ?: return, remoteTickers)
+            tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    sendClickEduArticleProductListTickerTracker()
+                    routeToUrl(linkUrl.toString())
+                }
+            })
+
+            ticker.addPagerView(tickerAdapter, remoteTickers)
+            ticker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    sendClickEduArticleProductListTickerTracker()
+                    routeToUrl(linkUrl.toString())
+                }
+
+                override fun onDismiss() {
+                }
+            })
+        }
+    }
+
+    private fun sendClickEduArticleProductListTickerTracker() {
+        tracker.sendClickEduArticleProductListTickerEvent()
     }
 
     private fun setupViews() {
@@ -148,7 +207,6 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
         ) ?: NOT_SET
     }
 
-
     private fun setupTabs() {
         binding?.run {
             viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -161,23 +219,8 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun displayTicker() {
-        val isPreviouslyDismissed = preferenceDataStore.isTickerDismissed()
-
-        binding?.run {
-            ticker.isVisible = !isPreviouslyDismissed
-            ticker.setHtmlDescription(getString(R.string.sd_ticker_announcement_wording))
-            ticker.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    showSellerInfoBottomSheet()
-                }
-
-                override fun onDismiss() {
-                    preferenceDataStore.markTickerAsDismissed()
-                }
-
-            })
-        }
+    private fun getTargetedTickerData() {
+        viewModel.getTargetedTickerData()
     }
 
     private fun setupHeader() {
@@ -198,7 +241,7 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
         viewModel.productsMeta.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    displayTicker()
+                    getTargetedTickerData()
                     binding?.shimmer?.content?.gone()
                     binding?.groupContent?.visible()
                     binding?.globalError?.gone()
@@ -212,7 +255,7 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
                     binding?.groupContent?.gone()
                     binding?.globalError?.gone()
 
-                    displayError(it.throwable){
+                    displayError(it.throwable) {
                         getTabsMetadata()
                     }
                 }
@@ -224,20 +267,19 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
         viewModel.sellerEligibility.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    if(it.data.hasBenefitPackage) {
+                    if (it.data.hasBenefitPackage) {
                         hideErrorEligibleView()
                         addShopInfoIcon()
                         getTabsMetadata()
-                    }
-                    else {
+                    } else {
                         binding?.ticker?.gone()
                         binding?.shimmer?.content?.gone()
                         binding?.groupContent?.gone()
                         binding?.globalError?.gone()
-                        if(!it.data.hasBenefitPackage && !it.data.isAuthorize) {
+                        if (!it.data.hasBenefitPackage && !it.data.isAuthorize) {
                             showRbacBottomSheet()
                             showErrorEligibleView()
-                        } else if(!it.data.hasBenefitPackage){
+                        } else if (!it.data.hasBenefitPackage) {
                             showErrorEligibleView()
                         }
                     }
@@ -248,7 +290,7 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
                     binding?.groupContent?.gone()
                     binding?.globalError?.gone()
                     hideErrorEligibleView()
-                    displayError(it.throwable){
+                    displayError(it.throwable) {
                         checkSellerEligibility()
                     }
                 }
@@ -268,9 +310,12 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
 
     private fun redirectToNonEligibleSellerEdu() {
         RouteManager.route(
-            context, String.format(
+            context,
+            String.format(
+                Locale.getDefault(),
                 "%s?url=%s",
-                ApplinkConst.WEBVIEW, UrlConstant.SELLER_NON_ELIGIBLE_EDU_URL
+                ApplinkConst.WEBVIEW,
+                UrlConstant.SELLER_NON_ELIGIBLE_EDU_URL
             )
         )
     }
@@ -296,8 +341,9 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
         super.onResume()
         viewModel.setSelectedTabPosition(getCurrentTabPosition())
         (viewModel.sellerEligibility.value as? Success)?.data?.let {
-            if(it.hasBenefitPackage)
+            if (it.hasBenefitPackage) {
                 getTabsMetadata()
+            }
         }
     }
 
@@ -328,7 +374,7 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
         previouslySelectedPosition: Int,
         currentlyRenderedTabPosition: Int
     ) {
-        //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
+        // Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
         CoroutineScope(Dispatchers.Main).launch {
             delay(DELAY_IN_MILLIS)
             if (previouslySelectedPosition == currentlyRenderedTabPosition) {
@@ -338,7 +384,7 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
     }
 
     private fun focusTo(discountStatusId: Int) {
-        //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
+        // Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
         CoroutineScope(Dispatchers.Main).launch {
             delay(DELAY_IN_MILLIS)
 
@@ -400,7 +446,6 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
         return tabLayout?.selectedTabPosition.orZero()
     }
 
-
     private fun getTabsMetadata() {
         binding?.shimmer?.content?.visible()
         binding?.groupContent?.gone()
@@ -408,22 +453,12 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
         viewModel.getSlashPriceProductsMeta()
     }
 
-
     private fun checkSellerEligibility() {
-        if (isEnableShopDiscount()) {
-            binding?.shimmer?.content?.visible()
-            binding?.groupContent?.gone()
-            binding?.globalError?.gone()
-            hideErrorNoAccess()
-            viewModel.checkSellerEligibility()
-        } else {
-            binding?.shimmer?.content?.gone()
-            showErrorNoAccess()
-        }
-    }
-
-    private fun isEnableShopDiscount(): Boolean {
-        return remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_SHOP_DISCOUNT, true).orFalse()
+        binding?.shimmer?.content?.visible()
+        binding?.groupContent?.gone()
+        binding?.globalError?.gone()
+        hideErrorNoAccess()
+        viewModel.checkSellerEligibility()
     }
 
     private fun showErrorNoAccess() {

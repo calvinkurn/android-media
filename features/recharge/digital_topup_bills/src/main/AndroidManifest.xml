@@ -21,5 +21,11 @@
                     android:path="@string/path_telco_postpaid" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.tokopedia.topupbills.postpaid.TelcoPostpaidActivityStub"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"/>
     </application>
 </manifest>

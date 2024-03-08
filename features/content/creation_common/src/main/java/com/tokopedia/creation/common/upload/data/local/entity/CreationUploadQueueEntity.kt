@@ -60,6 +60,9 @@ data class CreationUploadQueueEntity(
     data class Post(
         @SerializedName("draft_id")
         val draftId: String = "",
+
+        @SerializedName("activity_id")
+        val activityId: String = "",
     )
 
     data class Shorts(
@@ -68,6 +71,9 @@ data class CreationUploadQueueEntity(
 
         @SerializedName("source_id")
         val sourceId: String = "",
+
+        @SerializedName("is_interspersed")
+        val isInterspersed: Boolean = false,
     )
 
     data class Stories(

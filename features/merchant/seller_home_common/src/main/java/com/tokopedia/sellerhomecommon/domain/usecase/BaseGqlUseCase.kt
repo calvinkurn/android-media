@@ -14,6 +14,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 abstract class BaseGqlUseCase<T : Any> : UseCase<T>() {
 
     var params: RequestParams = RequestParams.create()
+    var customExtras: Map<String, Any?> = mutableMapOf()
     var isFirstLoad: Boolean = true
     protected var cacheStrategy: GraphqlCacheStrategy = getAlwaysCloudCacheStrategy()
 

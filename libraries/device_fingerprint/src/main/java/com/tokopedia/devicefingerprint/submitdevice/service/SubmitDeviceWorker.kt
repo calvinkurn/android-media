@@ -5,6 +5,7 @@ import androidx.work.*
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
 import com.tokopedia.devicefingerprint.submitdevice.usecase.SubmitDeviceInfoUseCase
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -13,19 +14,24 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class SubmitDeviceWorker(val appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
+class SubmitDeviceWorker(val appContext: Context, params: WorkerParameters) :
+    CoroutineWorker(appContext, params) {
 
     @Inject
     lateinit var useCase: SubmitDeviceInfoUseCase
 
     init {
         DaggerDeviceFingerprintComponent.builder()
-                .deviceFingerprintModule(DeviceFingerprintModule(appContext))
-                .build()
-                .inject(this)
+            .deviceFingerprintModule(DeviceFingerprintModule(appContext))
+            .build()
+            .inject(this)
     }
 
     override suspend fun doWork(): Result {
+        if (UserSession(appContext).userId.isEmpty()) {
+            // wait until user login
+            return Result.success()
+        }
         if (runAttemptCount > MAX_RUN_ATTEMPT) {
             return Result.failure()
         }
@@ -83,15 +89,18 @@ class SubmitDeviceWorker(val appContext: Context, params: WorkerParameters) : Co
 
         private fun runWorker(context: Context) {
             WorkManager.getInstance(context).enqueueUniqueWork(
-                    WORKER_NAME,
-                    ExistingWorkPolicy.REPLACE,
-                    OneTimeWorkRequest
-                            .Builder(SubmitDeviceWorker::class.java)
-                            .setConstraints(Constraints.Builder()
-                                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                                    .build())
-                            .setInitialDelay(DELAY_WORKER, TimeUnit.SECONDS)
-                            .build())
+                WORKER_NAME,
+                ExistingWorkPolicy.REPLACE,
+                OneTimeWorkRequest
+                    .Builder(SubmitDeviceWorker::class.java)
+                    .setConstraints(
+                        Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.CONNECTED)
+                            .build()
+                    )
+                    .setInitialDelay(DELAY_WORKER, TimeUnit.SECONDS)
+                    .build()
+            )
         }
     }
 

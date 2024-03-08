@@ -8,7 +8,8 @@ import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
@@ -280,7 +281,7 @@ class OrderPreferenceCard(
 
         binding.apply {
             ivPayment.let {
-                ImageHandler.loadImageFitCenter(binding.root.context, it, paymentModel.image)
+                it?.loadImageFitCenter(paymentModel.image)
             }
             tvPaymentName.text = paymentModel.gatewayName
             val description = paymentModel.description

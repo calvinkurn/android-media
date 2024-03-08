@@ -1,0 +1,675 @@
+[
+  {
+    "data": {
+      "status": "OK",
+      "mini_cart_v3": {
+        "error_message": [],
+        "status": "OK",
+        "data": {
+          "errors": [],
+          "beli_button_config": {
+            "button_type": 1,
+            "button_wording": "Beli"
+          },
+          "bottom_bar": {
+            "text": "",
+            "is_shop_active": false,
+            "total_price_fmt": ""
+          },
+          "total_product_count": 9,
+          "total_product_error": 7,
+          "total_product_price": 39400,
+          "simplified_shopping_summary": {
+            "text": "",
+            "sections": []
+          },
+          "available_section": {
+            "available_group": [
+              {
+                "cart_string": "480552-0-343353-4701371",
+                "shop": {
+                  "shop_id": 480552,
+                  "shop_name": "TokoMart",
+                  "shop_type_info": {
+                    "title_fmt": "official_store"
+                  }
+                },
+                "shipment_information": {
+                  "free_shipping": {
+                    "eligible": false
+                  },
+                  "free_shipping_extra": {
+                    "eligible": false
+                  }
+                },
+                "cart_details": [
+                  {
+                    "cart_detail_info": {
+                      "cart_detail_type": "",
+                      "bmgm": {
+                        "offer_id": 0,
+                        "offer_name": "",
+                        "offer_message": [],
+                        "total_discount": 0,
+                        "offer_json_data": "",
+                        "offer_status": 0,
+                        "tier_product": []
+                      }
+                    },
+                    "bundle_detail": {
+                      "bundle_id": 41614,
+                      "bundle_name": "test bundling5all",
+                      "bundle_type": "MULTIPLE",
+                      "bundle_status": "ACTIVE",
+                      "bundle_description": "",
+                      "bundle_price": 16500,
+                      "bundle_price_fmt": "Rp16.500",
+                      "bundle_original_price": 22000,
+                      "bundle_original_price_fmt": "Rp22.000",
+                      "bundle_min_order": 1,
+                      "bundle_max_order": 30000,
+                      "bundle_quota": -1,
+                      "edit_app_link": "tokopedia://product-bundle/0?source\u003dminicart\u0026viewType\u003dbottomsheet\u0026bundleId\u003d41614\u0026selectedProductIds\u003d2150355153,2150355156\u0026cartIds\u003d2166719794,2166719795",
+                      "bundle_qty": 1,
+                      "bundle_group_id": "bid:41614-pid:0-pid1:2150355153-pid2:2150355156",
+                      "slash_price_label": "25%",
+                      "bundle_grayscale_icon_url": ""
+                    },
+                    "products": [
+                      {
+                        "cart_id": 2166719795,
+                        "parent_id": 0,
+                        "product_id": 2150355156,
+                        "product_quantity": 1,
+                        "product_notes": "",
+                        "campaign_id": 0,
+                        "product_tracker_data": {
+                          "attribution": ""
+                        },
+                        "product_weight": 250,
+                        "slash_price_label": "25%",
+                        "warehouse_id": 343353,
+                        "category_id": 3193,
+                        "category": "TokoNow Makanan",
+                        "product_name": "Pisang_Nugget",
+                        "variant_description_detail": {
+                          "variant_name": []
+                        },
+                        "free_shipping_general": {
+                          "bo_name": "",
+                          "bo_type": 0,
+                          "badge_url": ""
+                        },
+                        "product_price": 15000,
+                        "product_invenage_value": 92,
+                        "product_switch_invenage": 1
+                      },
+                      {
+                        "cart_id": 2166719794,
+                        "parent_id": 0,
+                        "product_id": 2150355153,
+                        "product_quantity": 1,
+                        "product_notes": "",
+                        "campaign_id": 0,
+                        "product_tracker_data": {
+                          "attribution": ""
+                        },
+                        "product_weight": 200,
+                        "slash_price_label": "25%",
+                        "warehouse_id": 343353,
+                        "category_id": 3194,
+                        "category": "",
+                        "product_name": "Donat_Kentang",
+                        "variant_description_detail": {
+                          "variant_name": []
+                        },
+                        "free_shipping_general": {
+                          "bo_name": "",
+                          "bo_type": 0,
+                          "badge_url": ""
+                        },
+                        "product_price": 1500,
+                        "product_invenage_value": 100,
+                        "product_switch_invenage": 1
+                      }
+                    ]
+                  },
+                  {
+                    "cart_detail_info": {
+                      "cart_detail_type": "",
+                      "bmgm": {
+                        "offer_id": 0,
+                        "offer_name": "",
+                        "offer_message": [],
+                        "total_discount": 0,
+                        "offer_json_data": "",
+                        "offer_status": 0,
+                        "tier_product": []
+                      }
+                    },
+                    "bundle_detail": {
+                      "bundle_id": 0,
+                      "bundle_name": "",
+                      "bundle_type": "",
+                      "bundle_status": "",
+                      "bundle_description": "",
+                      "bundle_price": 0,
+                      "bundle_price_fmt": "",
+                      "bundle_original_price": 0,
+                      "bundle_original_price_fmt": "",
+                      "bundle_min_order": 0,
+                      "bundle_max_order": 0,
+                      "bundle_quota": 0,
+                      "edit_app_link": "",
+                      "bundle_qty": 0,
+                      "bundle_group_id": "",
+                      "slash_price_label": "",
+                      "bundle_grayscale_icon_url": ""
+                    },
+                    "products": [
+                      {
+                        "cart_id": 2166683544,
+                        "parent_id": 2147829593,
+                        "product_id": 2147829596,
+                        "product_quantity": 2,
+                        "product_notes": "",
+                        "campaign_id": 0,
+                        "product_tracker_data": {
+                          "attribution": ""
+                        },
+                        "product_weight": 100,
+                        "slash_price_label": "",
+                        "warehouse_id": 343353,
+                        "category_id": 3224,
+                        "category": "",
+                        "product_name": "t0k0n0w 127 - 100 gram",
+                        "variant_description_detail": {
+                          "variant_name": [
+                            "100 gram"
+                          ]
+                        },
+                        "free_shipping_general": {
+                          "bo_name": "",
+                          "bo_type": 0,
+                          "badge_url": ""
+                        },
+                        "product_price": 150,
+                        "product_invenage_value": 10,
+                        "product_switch_invenage": 1
+                      },
+                      {
+                        "cart_id": 2166683543,
+                        "parent_id": 0,
+                        "product_id": 2150321374,
+                        "product_quantity": 1,
+                        "product_notes": "",
+                        "campaign_id": 0,
+                        "product_tracker_data": {
+                          "attribution": ""
+                        },
+                        "product_weight": 100,
+                        "slash_price_label": "",
+                        "warehouse_id": 343353,
+                        "category_id": 3225,
+                        "category": "",
+                        "product_name": "Affiliate_Tempe",
+                        "variant_description_detail": {
+                          "variant_name": []
+                        },
+                        "free_shipping_general": {
+                          "bo_name": "",
+                          "bo_type": 0,
+                          "badge_url": ""
+                        },
+                        "product_price": 150,
+                        "product_invenage_value": 49,
+                        "product_switch_invenage": 1
+                      },
+                      {
+                        "cart_id": 2166683538,
+                        "parent_id": 2148499601,
+                        "product_id": 2148499602,
+                        "product_quantity": 1,
+                        "product_notes": "",
+                        "campaign_id": 0,
+                        "product_tracker_data": {
+                          "attribution": ""
+                        },
+                        "product_weight": 1000,
+                        "slash_price_label": "",
+                        "warehouse_id": 343353,
+                        "category_id": 3223,
+                        "category": "",
+                        "product_name": "single_toge - 1 kg",
+                        "variant_description_detail": {
+                          "variant_name": [
+                            "1 kg"
+                          ]
+                        },
+                        "free_shipping_general": {
+                          "bo_name": "",
+                          "bo_type": 0,
+                          "badge_url": ""
+                        },
+                        "product_price": 2000,
+                        "product_invenage_value": 100,
+                        "product_switch_invenage": 1
+                      },
+                      {
+                        "cart_id": 2166683536,
+                        "parent_id": 2148499293,
+                        "product_id": 2148499294,
+                        "product_quantity": 1,
+                        "product_notes": "",
+                        "campaign_id": 0,
+                        "product_tracker_data": {
+                          "attribution": ""
+                        },
+                        "product_weight": 100,
+                        "slash_price_label": "",
+                        "warehouse_id": 343353,
+                        "category_id": 3223,
+                        "category": "",
+                        "product_name": "single_bayam - 100 gram",
+                        "variant_description_detail": {
+                          "variant_name": [
+                            "100 gram"
+                          ]
+                        },
+                        "free_shipping_general": {
+                          "bo_name": "",
+                          "bo_type": 0,
+                          "badge_url": ""
+                        },
+                        "product_price": 150,
+                        "product_invenage_value": 100,
+                        "product_switch_invenage": 1
+                      },
+                      {
+                        "cart_id": 2166683535,
+                        "parent_id": 0,
+                        "product_id": 2148479138,
+                        "product_quantity": 1,
+                        "product_notes": "",
+                        "campaign_id": 0,
+                        "product_tracker_data": {
+                          "attribution": ""
+                        },
+                        "product_weight": 100,
+                        "slash_price_label": "",
+                        "warehouse_id": 343353,
+                        "category_id": 3225,
+                        "category": "",
+                        "product_name": "multiple_tahu",
+                        "variant_description_detail": {
+                          "variant_name": []
+                        },
+                        "free_shipping_general": {
+                          "bo_name": "",
+                          "bo_type": 0,
+                          "badge_url": ""
+                        },
+                        "product_price": 150,
+                        "product_invenage_value": 100,
+                        "product_switch_invenage": 1
+                      },
+                      {
+                        "cart_id": 2166683530,
+                        "parent_id": 0,
+                        "product_id": 2150355156,
+                        "product_quantity": 1,
+                        "product_notes": "",
+                        "campaign_id": 0,
+                        "product_tracker_data": {
+                          "attribution": ""
+                        },
+                        "product_weight": 250,
+                        "slash_price_label": "",
+                        "warehouse_id": 343353,
+                        "category_id": 3193,
+                        "category": "TokoNow Makanan",
+                        "product_name": "Pisang_Nugget",
+                        "variant_description_detail": {
+                          "variant_name": []
+                        },
+                        "free_shipping_general": {
+                          "bo_name": "",
+                          "bo_type": 0,
+                          "badge_url": ""
+                        },
+                        "product_price": 20000,
+                        "product_invenage_value": 92,
+                        "product_switch_invenage": 1
+                      },
+                      {
+                        "cart_id": 2166683529,
+                        "parent_id": 2148348131,
+                        "product_id": 2148348132,
+                        "product_quantity": 1,
+                        "product_notes": "",
+                        "campaign_id": 0,
+                        "product_tracker_data": {
+                          "attribution": ""
+                        },
+                        "product_weight": 100,
+                        "slash_price_label": "",
+                        "warehouse_id": 343353,
+                        "category_id": 3168,
+                        "category": "",
+                        "product_name": "sosis bakar varian keju - 2",
+                        "variant_description_detail": {
+                          "variant_name": [
+                            "2"
+                          ]
+                        },
+                        "free_shipping_general": {
+                          "bo_name": "",
+                          "bo_type": 0,
+                          "badge_url": ""
+                        },
+                        "product_price": 150,
+                        "product_invenage_value": 100,
+                        "product_switch_invenage": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "unavailable_section": [
+            {
+              "unavailable_group": [
+                {
+                  "shop": {
+                    "shop_id": 480552,
+                    "shop_name": "TokoMart",
+                    "shop_type_info": {
+                      "title_fmt": "official_store"
+                    }
+                  },
+                  "shipment_information": {
+                    "free_shipping": {
+                      "eligible": false
+                    },
+                    "free_shipping_extra": {
+                      "eligible": false
+                    }
+                  },
+                  "cart_details": [
+                    {
+                      "cart_id": "0",
+                      "bundle_detail": {
+                        "bundle_id": 0,
+                        "bundle_name": "",
+                        "bundle_type": "",
+                        "bundle_status": "",
+                        "bundle_description": "",
+                        "bundle_price": 0,
+                        "bundle_price_fmt": "",
+                        "bundle_original_price": 0,
+                        "bundle_original_price_fmt": "",
+                        "bundle_min_order": 0,
+                        "bundle_max_order": 0,
+                        "bundle_quota": 0,
+                        "edit_app_link": "",
+                        "bundle_qty": 0,
+                        "bundle_group_id": "",
+                        "slash_price_label": "",
+                        "bundle_grayscale_icon_url": ""
+                      },
+                      "products": [
+                        {
+                          "cart_id": 2166396402,
+                          "parent_id": 0,
+                          "product_id": 2148479139,
+                          "product_quantity": 1,
+                          "product_notes": "test 123",
+                          "campaign_id": 0,
+                          "product_tracker_data": {
+                            "attribution": ""
+                          },
+                          "product_weight": 100,
+                          "slash_price_label": "",
+                          "warehouse_id": 0,
+                          "category_id": 3223,
+                          "category": "",
+                          "product_name": "multiple_apel",
+                          "variant_description_detail": {
+                            "variant_name": []
+                          },
+                          "product_price": 0
+                        }
+                      ]
+                    },
+                    {
+                      "cart_id": "0",
+                      "bundle_detail": {
+                        "bundle_id": 41607,
+                        "bundle_name": "test bundling 5cgk",
+                        "bundle_type": "MULTIPLE",
+                        "bundle_status": "ACTIVE",
+                        "bundle_description": "",
+                        "bundle_price": 35000,
+                        "bundle_price_fmt": "Rp35.000",
+                        "bundle_original_price": 35000,
+                        "bundle_original_price_fmt": "Rp35.000",
+                        "bundle_min_order": 1,
+                        "bundle_max_order": 30000,
+                        "bundle_quota": -1,
+                        "edit_app_link": "tokopedia://product-bundle/0?source\u003dminicart\u0026viewType\u003dbottomsheet\u0026bundleId\u003d41607\u0026selectedProductIds\u003d2150355154,2150355156\u0026cartIds\u003d2166719793,2166719792",
+                        "bundle_qty": 1,
+                        "bundle_group_id": "bid:41607-pid:0-pid1:2150355154-pid2:2150355156",
+                        "slash_price_label": "0%",
+                        "bundle_grayscale_icon_url": ""
+                      },
+                      "products": [
+                        {
+                          "cart_id": 2166719793,
+                          "parent_id": 0,
+                          "product_id": 2150355156,
+                          "product_quantity": 1,
+                          "product_notes": "",
+                          "campaign_id": 0,
+                          "product_tracker_data": {
+                            "attribution": ""
+                          },
+                          "product_weight": 250,
+                          "slash_price_label": "",
+                          "warehouse_id": 343353,
+                          "category_id": 3193,
+                          "category": "TokoNow Makanan",
+                          "product_name": "Pisang_Nugget",
+                          "variant_description_detail": {
+                            "variant_name": []
+                          },
+                          "product_price": 20000
+                        },
+                        {
+                          "cart_id": 2166719792,
+                          "parent_id": 0,
+                          "product_id": 2150355154,
+                          "product_quantity": 1,
+                          "product_notes": "",
+                          "campaign_id": 0,
+                          "product_tracker_data": {
+                            "attribution": ""
+                          },
+                          "product_weight": 250,
+                          "slash_price_label": "",
+                          "warehouse_id": 343353,
+                          "category_id": 3194,
+                          "category": "",
+                          "product_name": "Keripik_Tempe",
+                          "variant_description_detail": {
+                            "variant_name": []
+                          },
+                          "product_price": 15000
+                        }
+                      ]
+                    },
+                    {
+                      "cart_id": "0",
+                      "bundle_detail": {
+                        "bundle_id": 0,
+                        "bundle_name": "",
+                        "bundle_type": "",
+                        "bundle_status": "",
+                        "bundle_description": "",
+                        "bundle_price": 0,
+                        "bundle_price_fmt": "",
+                        "bundle_original_price": 0,
+                        "bundle_original_price_fmt": "",
+                        "bundle_min_order": 0,
+                        "bundle_max_order": 0,
+                        "bundle_quota": 0,
+                        "edit_app_link": "",
+                        "bundle_qty": 0,
+                        "bundle_group_id": "",
+                        "slash_price_label": "",
+                        "bundle_grayscale_icon_url": ""
+                      },
+                      "products": [
+                        {
+                          "cart_id": 2166716773,
+                          "parent_id": 0,
+                          "product_id": 2151093857,
+                          "product_quantity": 1,
+                          "product_notes": "",
+                          "campaign_id": 0,
+                          "product_tracker_data": {
+                            "attribution": ""
+                          },
+                          "product_weight": 100,
+                          "slash_price_label": "",
+                          "warehouse_id": 343353,
+                          "category_id": 3213,
+                          "category": "",
+                          "product_name": "RE_sarden_cabai_0001",
+                          "variant_description_detail": {
+                            "variant_name": []
+                          },
+                          "product_price": 25000
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "unavailable_group": [
+                {
+                  "shop": {
+                    "shop_id": 480552,
+                    "shop_name": "TokoMart",
+                    "shop_type_info": {
+                      "title_fmt": "official_store"
+                    }
+                  },
+                  "shipment_information": {
+                    "free_shipping": {
+                      "eligible": false
+                    },
+                    "free_shipping_extra": {
+                      "eligible": false
+                    }
+                  },
+                  "cart_details": [
+                    {
+                      "cart_id": "0",
+                      "bundle_detail": {
+                        "bundle_id": 36085,
+                        "bundle_name": "paket 3 multi",
+                        "bundle_type": "MULTIPLE",
+                        "bundle_status": "CANCELLED",
+                        "bundle_description": "",
+                        "bundle_price": 0,
+                        "bundle_price_fmt": "Rp0",
+                        "bundle_original_price": 0,
+                        "bundle_original_price_fmt": "Rp0",
+                        "bundle_min_order": 1,
+                        "bundle_max_order": 30000,
+                        "bundle_quota": 0,
+                        "edit_app_link": "tokopedia://product-bundle/0?source\u003dminicart\u0026viewType\u003dbottomsheet\u0026bundleId\u003d36085\u0026selectedProductIds\u003d2148479133,2148479137,2148479139\u0026cartIds\u003d2166380373,2166380372,2166380371",
+                        "bundle_qty": 1,
+                        "bundle_group_id": "bid:36085-pid:0-pid1:2148479133-pid2:2148479137-pid3:2148479139",
+                        "slash_price_label": "",
+                        "bundle_grayscale_icon_url": ""
+                      },
+                      "products": [
+                        {
+                          "cart_id": 2166380373,
+                          "parent_id": 0,
+                          "product_id": 2148479139,
+                          "product_quantity": 1,
+                          "product_notes": "",
+                          "campaign_id": 0,
+                          "product_tracker_data": {
+                            "attribution": ""
+                          },
+                          "product_weight": 100,
+                          "slash_price_label": "",
+                          "warehouse_id": 0,
+                          "category_id": 3223,
+                          "category": "",
+                          "product_name": "multiple_apel",
+                          "variant_description_detail": {
+                            "variant_name": []
+                          },
+                          "product_price": 0
+                        },
+                        {
+                          "cart_id": 2166380372,
+                          "parent_id": 0,
+                          "product_id": 2148479137,
+                          "product_quantity": 1,
+                          "product_notes": "",
+                          "campaign_id": 0,
+                          "product_tracker_data": {
+                            "attribution": ""
+                          },
+                          "product_weight": 100,
+                          "slash_price_label": "",
+                          "warehouse_id": 0,
+                          "category_id": 3223,
+                          "category": "",
+                          "product_name": "multiple_jeruk",
+                          "variant_description_detail": {
+                            "variant_name": []
+                          },
+                          "product_price": 0
+                        },
+                        {
+                          "cart_id": 2166380371,
+                          "parent_id": 0,
+                          "product_id": 2148479133,
+                          "product_quantity": 1,
+                          "product_notes": "",
+                          "campaign_id": 0,
+                          "product_tracker_data": {
+                            "attribution": ""
+                          },
+                          "product_weight": 100,
+                          "slash_price_label": "",
+                          "warehouse_id": 0,
+                          "category_id": 3223,
+                          "category": "",
+                          "product_name": "multiple_pisang",
+                          "variant_description_detail": {
+                            "variant_name": []
+                          },
+                          "product_price": 0
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+]

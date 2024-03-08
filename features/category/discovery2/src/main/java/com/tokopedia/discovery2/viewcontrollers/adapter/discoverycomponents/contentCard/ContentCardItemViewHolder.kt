@@ -8,6 +8,7 @@ import com.tokopedia.discovery2.TIME_DISPLAY_FORMAT
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.databinding.DiscoContentCardItemBinding
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -20,17 +21,22 @@ import com.tokopedia.media.loader.loadImage
 class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val binding: DiscoContentCardItemBinding = DiscoContentCardItemBinding.bind(itemView)
-    private var contentCardItemViewModel: ContentCardItemViewModel? = null
+    private var viewModel: ContentCardItemViewModel? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-        contentCardItemViewModel = discoveryBaseViewModel as ContentCardItemViewModel
+        viewModel = discoveryBaseViewModel as ContentCardItemViewModel
+
+        viewModel?.let {
+            getSubComponent().inject(it)
+        }
+
         onClick()
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
-            contentCardItemViewModel?.getComponentLiveData()
+            viewModel?.getComponentLiveData()
                 ?.observe(fragment.viewLifecycleOwner) { componentItem ->
                     componentItem.data?.let {
                         if (it.isNotEmpty()) {
@@ -39,7 +45,7 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
                         }
                     }
                 }
-            contentCardItemViewModel?.getTimerData()?.observe(it) { timerData ->
+            viewModel?.getTimerData()?.observe(it) { timerData ->
                 if (timerData.days > 0) {
                     binding.hoursLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.days)
                     binding.minutesLayout.text = itemView.context?.getString(R.string.hari_small)
@@ -57,7 +63,7 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
                     binding.secondsLayout.show()
                 }
             }
-            contentCardItemViewModel?.getTimerText()?.observe(it) {
+            viewModel?.getTimerText()?.observe(it) {
                 binding.titleTv.text = it
             }
         }
@@ -66,10 +72,10 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            contentCardItemViewModel?.getComponentLiveData()?.removeObservers(it)
-            contentCardItemViewModel?.stopTimer()
-            contentCardItemViewModel?.getTimerText()?.removeObservers(it)
-            contentCardItemViewModel?.getTimerData()?.removeObservers(it)
+            viewModel?.getComponentLiveData()?.removeObservers(it)
+            viewModel?.stopTimer()
+            viewModel?.getTimerText()?.removeObservers(it)
+            viewModel?.getTimerData()?.removeObservers(it)
         }
     }
 
@@ -87,9 +93,9 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     private fun setupData(itemData: DataItem) {
         with(binding) {
-            contentCardTitle.text = itemData.title ?: ""
+            contentCardTitle.text = itemData.title.orEmpty()
             contentCardHeaderSubtitle.text = itemData.totalItem?.itemCountWording ?: ""
-            contentCardBenefit.text = itemData.benefit ?: ""
+            contentCardBenefit.text = itemData.benefit.orEmpty()
 
             if (!itemData.startDate.isNullOrEmpty() || !itemData.endDate.isNullOrEmpty()) {
                 contentCardHeaderSubtitle.gone()
@@ -103,8 +109,8 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
-        contentCardItemViewModel?.startTimer()
-        contentCardItemViewModel?.components?.let { componentItem ->
+        viewModel?.startTimer()
+        viewModel?.components?.let { componentItem ->
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
                 ?.trackContentCardImpression(
                     componentItem,
@@ -115,10 +121,10 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     private fun onClick() {
         itemView.setOnClickListener {
-            contentCardItemViewModel?.getNavigationAction()?.let { moveAction ->
+            viewModel?.getNavigationAction()?.let { moveAction ->
                 Utils.routingBasedOnMoveAction(moveAction, fragment)
             }
-            contentCardItemViewModel?.components?.let { componentItem ->
+            viewModel?.components?.let { componentItem ->
                 (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
                     ?.trackContentCardClick(
                         componentItem,

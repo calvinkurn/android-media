@@ -81,6 +81,10 @@ object TopAdsQuery {
                             type
                             title
                             url
+                            style {
+                                key
+                                value
+                            }
                         }
                         customvideo_url
                         parent_id

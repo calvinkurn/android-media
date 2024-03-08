@@ -7,9 +7,6 @@ import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataMod
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ErrorStateReviewDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ShimmerWishlistDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 
 interface MainNavTypeFactory {
 
@@ -19,7 +16,6 @@ interface MainNavTypeFactory {
 
     fun type(transactionListItemDataModel: TransactionListItemDataModel) : Int
 
-    fun type(wishlistDataModel: WishlistDataModel): Int
 
     fun type(reviewListDataModel: ReviewListDataModel): Int
 
@@ -31,15 +27,9 @@ interface MainNavTypeFactory {
 
     fun type(initialShimmerTransactionDataModel: InitialShimmerTransactionDataModel) : Int
 
-    fun type(shimmerWishlistDataModel: ShimmerWishlistDataModel) : Int
-
     fun type(shimmerReviewDataModel: ShimmerReviewDataModel) : Int
 
-    fun type(errorStateBuDataModel: ErrorStateBuDataModel): Int
-
     fun type(errorStateOngoingTransactionModel: ErrorStateOngoingTransactionModel): Int
-
-    fun type(errorStateWishlistDataModel: ErrorStateWishlistDataModel): Int
 
     fun type(errorStateReviewDataModel: ErrorStateReviewDataModel): Int
 

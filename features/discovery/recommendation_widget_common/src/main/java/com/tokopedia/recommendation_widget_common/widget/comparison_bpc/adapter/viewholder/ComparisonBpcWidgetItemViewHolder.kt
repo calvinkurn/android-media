@@ -30,10 +30,7 @@ class ComparisonBpcWidgetItemViewHolder(
     override fun bind(element: ComparisonBpcItemModel) {
         binding?.run {
             productCardView.applyCarousel()
-            val productCardLayoutParams = productCardView.layoutParams
-            productCardLayoutParams.width = element.productCardWidth
-            productCardLayoutParams.height = element.productCardHeight
-            productCardView.layoutParams = productCardLayoutParams
+            setLayoutParams(element)
 
             bpcSpecsView.setSpecsInfo(element.specsModel)
             productCardView.setProductModel(element.productCardModel)
@@ -64,5 +61,11 @@ class ComparisonBpcWidgetItemViewHolder(
                 listener.onProductCardImpressed(element.recommendationItem, element.trackingModel, element.anchorProductId, element.widgetTitle)
             }
         }
+    }
+
+    private fun setLayoutParams(element: ComparisonBpcItemModel) {
+        val productCardLayoutParams = binding?.productCardView?.layoutParams
+        productCardLayoutParams?.height = element.productCardHeight
+        binding?.productCardView?.layoutParams = productCardLayoutParams
     }
 }

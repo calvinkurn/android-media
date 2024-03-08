@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.detail
 
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
+import com.tokopedia.order_management_common.domain.data.ProductBenefit
 import com.tokopedia.sellerorder.common.SomOrderBaseViewModelTest
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.domain.usecase.*
@@ -117,6 +118,36 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
                                 priceText = "Rp 75.000",
                                 quantity = 2
                             )
+                        ),
+                        productBenefit = ProductBenefit(
+                            iconUrl = "https://www.tokopedia.com/img/patrick.png",
+                            label = "Hadiah",
+                            orderDetail = listOf(
+                                ProductBenefit.OrderDetail(
+                                    orderDetailId = 1234567890,
+                                    productId = 987654321,
+                                    productName = "Bahan Bakar",
+                                    thumbnail = "https://www.tokopedia.com/img/patrick_terbakar.png",
+                                    totalPriceText = "Rp0",
+                                    quantity = 1
+                                ),
+                                ProductBenefit.OrderDetail(
+                                    orderDetailId = 1234567891,
+                                    productId = 987654322,
+                                    productName = "Bahan Goreng",
+                                    thumbnail = "https://www.tokopedia.com/img/patrick_tergoreng.png",
+                                    totalPriceText = "Rp0",
+                                    quantity = 1
+                                ),
+                                ProductBenefit.OrderDetail(
+                                    orderDetailId = 1234567892,
+                                    productId = 987654323,
+                                    productName = "Bahan Rebus",
+                                    thumbnail = "https://www.tokopedia.com/img/patrick_terrebus.png",
+                                    totalPriceText = "Rp0",
+                                    quantity = 1
+                                )
+                            )
                         )
                     )
                 )
@@ -164,6 +195,8 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
             assertEquals(product.thumbnail, productActual.thumbnail)
             assertEquals(product.note, productActual.note)
         }
+
+        assertEquals(bmgmDetailsResponse.bmgms!!.first().productBenefit, detailsActual.bmgms!!.first().productBenefit)
     }
 
     @Test
@@ -218,6 +251,36 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
                                 price = 75000.00,
                                 priceText = "Rp 75.000",
                                 quantity = 2
+                            )
+                        ),
+                        productBenefit = ProductBenefit(
+                            iconUrl = "https://www.tokopedia.com/img/patrick.png",
+                            label = "Hadiah",
+                            orderDetail = listOf(
+                                ProductBenefit.OrderDetail(
+                                    orderDetailId = 1234567890,
+                                    productId = 987654321,
+                                    productName = "Bahan Bakar",
+                                    thumbnail = "https://www.tokopedia.com/img/patrick_terbakar.png",
+                                    totalPriceText = "Rp0",
+                                    quantity = 1
+                                ),
+                                ProductBenefit.OrderDetail(
+                                    orderDetailId = 1234567891,
+                                    productId = 987654322,
+                                    productName = "Bahan Goreng",
+                                    thumbnail = "https://www.tokopedia.com/img/patrick_tergoreng.png",
+                                    totalPriceText = "Rp0",
+                                    quantity = 1
+                                ),
+                                ProductBenefit.OrderDetail(
+                                    orderDetailId = 1234567892,
+                                    productId = 987654323,
+                                    productName = "Bahan Rebus",
+                                    thumbnail = "https://www.tokopedia.com/img/patrick_terrebus.png",
+                                    totalPriceText = "Rp0",
+                                    quantity = 1
+                                )
                             )
                         )
                     )
@@ -281,6 +344,8 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
             assertEquals(product.thumbnail, productActual.thumbnail)
             assertEquals(product.note, productActual.note)
         }
+
+        assertEquals(expectedResponse.bmgms!!.first().productBenefit, detailsActual.bmgms!!.first().productBenefit)
     }
 
     @Test

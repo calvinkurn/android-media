@@ -8,15 +8,15 @@ labels:
 ---
 
 <!--left header table-->
-| **Status** | <!--start status:GREEN-->RELEASE<!--end status--> |
-| --- | --- |
-| **Project Lead** | [Muh Isfhani Ghiath](https://tokopedia.atlassian.net/wiki/people/5c5b988f0551865e5bc7986c?ref=confluence)  |
-| Product Manager | [Gilbert .](https://tokopedia.atlassian.net/wiki/people/612c2c400f8ff40068adbfae?ref=confluence)  |
-| Team | [Minion Kevin](https://tokopedia.atlassian.net/people/team/153506bb-d29a-494d-8c56-5ebcc53c2dc7)  |
-| Release date | 15 Apr 2021 / <!--start status:GREY-->MA-3.124<!--end status--> <!--start status:GREY-->SA-2.54<!--end status-->  |
-| Module type | <!--start status:PURPLE-->INTERNAL-LIBRARY<!--end status-->  |
+| **Status** | <!--start status:GREEN-->RELEASE<!--end status-->                                                                   |
+| --- |---------------------------------------------------------------------------------------------------------------------|
+| **Project Lead** | [Muh Isfhani Ghiath](https://tokopedia.atlassian.net/wiki/people/5c5b988f0551865e5bc7986c?ref=confluence)           |
+| Product Manager | [Gilbert .](https://tokopedia.atlassian.net/wiki/people/612c2c400f8ff40068adbfae?ref=confluence)                    |
+| Team | [Minion Jerry]                    |
+| Release date | 15 Apr 2021 / <!--start status:GREY-->MA-3.124<!--end status--> <!--start status:GREY-->SA-2.54<!--end status-->    |
+| Module type | <!--start status:PURPLE-->INTERNAL-LIBRARY<!--end status-->                                                         |
 | Product PRD | [Link](https://docs.google.com/document/d/1H__V7uGXLQhlTVRyb5VkHCrcQtM010BLxYP6P-PbIdA/edit#heading=h.9g857dqjo1if) |
-| Module Location | `features.medialoader` | `features/media/medialoader` |
+| Module Location | `features.medialoader`                                                                                              | `features/media/medialoader` |
 
 ## Table of Contents
 

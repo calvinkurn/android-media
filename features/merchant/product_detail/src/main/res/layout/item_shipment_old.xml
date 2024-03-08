@@ -32,5 +32,4 @@
         android:layout_height="wrap_content"
         android:layout="@layout/view_shipment_error_old"
         tools:visibility="visible" />
-
 </LinearLayout>

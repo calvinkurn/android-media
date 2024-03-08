@@ -46,6 +46,7 @@ class ViewToViewViewModel @Inject constructor(
         launchCatchError(block = {
             val requestParam = GetRecommendationRequestParam(
                 queryParam = queryParams,
+                hasNewProductCardEnabled = true
             )
             _viewToViewRecommendationLiveData.postValue(Success(ViewToViewRecommendationResult.Loading(hasAtcButton)))
             val recommendation = getRecommendationUseCase.get().getData(requestParam)

@@ -58,16 +58,4 @@ class HomeAccountCassavaTest {
             assertClickTrackerAtPengaturanAkun(cassavaTestRule)
         }
     }
-
-    @Test
-    fun clickTrackerPengaturanAplikasi() {
-        activityTestRule.launchActivity(Intent())
-
-        homeAccountRobot {
-            scrollToPengaturanAplikasi()
-            switchShakeShake()
-            switchShakeShake()
-            assertClickTracketAtPengaturanAplikasi(cassavaTestRule)
-        }
-    }
 }

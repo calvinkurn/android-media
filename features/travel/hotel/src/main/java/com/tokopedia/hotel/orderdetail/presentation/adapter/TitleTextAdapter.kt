@@ -1,12 +1,14 @@
 package com.tokopedia.hotel.orderdetail.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.hotel.R
+import androidx.viewbinding.ViewBinding
+import com.tokopedia.hotel.databinding.ItemHotelDetailTitleTextBinding
+import com.tokopedia.hotel.databinding.ItemHotelDetailTitleTextHorizontalLeftBinding
+import com.tokopedia.hotel.databinding.ItemHotelDetailTitleTextHorizontalOrangeBinding
+import com.tokopedia.hotel.databinding.ItemHotelDetailTitleTextVerticalBinding
 import com.tokopedia.hotel.orderdetail.data.model.TitleContent
-import kotlinx.android.synthetic.main.item_hotel_detail_title_text.view.*
 
 /**
  * @author by jessica on 13/05/19
@@ -14,15 +16,14 @@ import kotlinx.android.synthetic.main.item_hotel_detail_title_text.view.*
 
 class TitleTextAdapter(val type: Int): RecyclerView.Adapter<TitleTextAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        lateinit var itemView: View
-        when (type) {
-            HORIZONTAL_LAYOUT -> itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel_detail_title_text, parent, false)
-            HORIZONTAL_LEFT_LAYOUT -> itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel_detail_title_text_horizontal_left, parent, false)
-            VERTICAL_LAYOUT -> itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel_detail_title_text_vertical, parent, false)
-            HORIZONTAL_LAYOUT_ORANGE -> itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel_detail_title_text_horizontal_orange, parent, false)
-            else -> itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel_detail_title_text, parent, false)
+        var binding: ViewBinding = when (type) {
+            HORIZONTAL_LAYOUT -> ItemHotelDetailTitleTextBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            HORIZONTAL_LEFT_LAYOUT -> ItemHotelDetailTitleTextHorizontalLeftBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            VERTICAL_LAYOUT -> ItemHotelDetailTitleTextVerticalBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            HORIZONTAL_LAYOUT_ORANGE -> ItemHotelDetailTitleTextHorizontalOrangeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            else -> ItemHotelDetailTitleTextBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         }
-        return ViewHolder(itemView)
+        return ViewHolder(binding)
     }
 
     var titleTextList: MutableList<TitleContent> = arrayListOf()
@@ -44,12 +45,26 @@ class TitleTextAdapter(val type: Int): RecyclerView.Adapter<TitleTextAdapter.Vie
         return titleTextList.size
     }
 
-    inner class ViewHolder(val itemview: View): RecyclerView.ViewHolder(itemview) {
+    inner class ViewHolder(val binding: ViewBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(data: TitleContent, position: Int) {
-            with(itemview) {
-                title.text = data.title
-                text.text = data.content
+            when(binding) {
+                is ItemHotelDetailTitleTextBinding -> {
+                    binding.title.text = data.title
+                    binding.text.text = data.content
+                }
+                is ItemHotelDetailTitleTextHorizontalLeftBinding -> {
+                    binding.title.text = data.title
+                    binding.text.text = data.content
+                }
+                is ItemHotelDetailTitleTextVerticalBinding -> {
+                    binding.title.text = data.title
+                    binding.text.text = data.content
+                }
+                is ItemHotelDetailTitleTextHorizontalOrangeBinding -> {
+                    binding.title.text = data.title
+                    binding.text.text = data.content
+                }
             }
         }
     }

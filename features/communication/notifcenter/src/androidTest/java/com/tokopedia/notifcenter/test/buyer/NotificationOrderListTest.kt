@@ -1,7 +1,6 @@
 package com.tokopedia.notifcenter.test.buyer
 
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.filters.FlakyTest
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.stub.common.NotificationCacheManagerStub
@@ -87,7 +86,6 @@ class NotificationOrderListTest : BaseNotificationTest() {
     }
 
     @Test
-    @FlakyTest
     fun should_retain_last_position_when_user_scrolled_down_and_back_to_it() {
         // Given
         gqlResponseStub.notificationOrderListResponse.editAndGetResponseObject {
@@ -103,7 +101,7 @@ class NotificationOrderListTest : BaseNotificationTest() {
         // When
         launchActivity()
         filterRobot {
-            smoothScrollOrderWidgetTo(14)
+            smoothScrollOrderWidgetTo(5)
         }
         generalRobot {
             smoothScrollNotificationTo(14)
@@ -113,7 +111,7 @@ class NotificationOrderListTest : BaseNotificationTest() {
         // Then
         filterResult {
             assertOrderWidgetCardAt(
-                14,
+                4,
                 isDisplayed()
             )
         }

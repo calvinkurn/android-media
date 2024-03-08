@@ -95,6 +95,7 @@ class FeedXHeaderUseCase @Inject constructor(
             type
             title
             key
+            newContentExists
             __typename
           }
           meta {

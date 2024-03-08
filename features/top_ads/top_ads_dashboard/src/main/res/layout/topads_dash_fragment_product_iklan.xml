@@ -37,6 +37,13 @@
                 android:layout_height="match_parent"
                 android:visibility="gone" />
 
+            <include
+                android:id="@+id/empty_view_autops"
+                layout="@layout/topads_autops_iklan_produk_empty_screen"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
             <LinearLayout
                 android:id="@+id/progressView"
                 android:layout_width="match_parent"

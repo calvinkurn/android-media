@@ -7,19 +7,28 @@ import androidx.lifecycle.Observer
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.bmsm_widget.domain.entity.TierGifts
+import com.tokopedia.buy_more_get_more.minicart.domain.usecase.GetMiniCartUseCase
+import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartDataUiModel
+import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartVisitable
+import com.tokopedia.buy_more_get_more.olp.data.mapper.GetOfferInfoForBuyerMapper
+import com.tokopedia.buy_more_get_more.olp.data.mapper.GetOfferProductListMapper
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
-import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.Tier
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpUiState
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
+import com.tokopedia.buy_more_get_more.olp.domain.entity.SelectedTierData
 import com.tokopedia.buy_more_get_more.olp.domain.entity.SharingDataByOfferIdUiModel
-import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
-import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUseCase
-import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetSharingDataByOfferIDUseCase
 import com.tokopedia.buy_more_get_more.olp.presentation.OfferLandingPageViewModel
 import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil
+import com.tokopedia.campaign.data.response.OfferInfoForBuyerResponse
+import com.tokopedia.campaign.data.response.OfferInfoForBuyerResponse.Offering
+import com.tokopedia.campaign.data.response.OfferProductListResponse
+import com.tokopedia.campaign.usecase.GetOfferInfoForBuyerUseCase
+import com.tokopedia.campaign.usecase.GetOfferProductListUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.network.exception.MessageErrorException
@@ -72,10 +81,19 @@ class OfferLandingPageViewModelTest {
     lateinit var addToCartUseCase: AddToCartUseCase
 
     @RelaxedMockK
+    lateinit var getMiniCartUseCase: GetMiniCartUseCase
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
-    lateinit var offeringInfoObserver: Observer<in OfferInfoForBuyerUiModel>
+    lateinit var getOfferingInfoForBuyerMapper: GetOfferInfoForBuyerMapper
+
+    @RelaxedMockK
+    lateinit var getOfferProductListMapper: GetOfferProductListMapper
+
+    @RelaxedMockK
+    lateinit var offeringInfoObserver: Observer<in Result<OfferInfoForBuyerUiModel>>
 
     @RelaxedMockK
     lateinit var productListObserver: Observer<in OfferProductListUiModel>
@@ -88,6 +106,9 @@ class OfferLandingPageViewModelTest {
 
     @RelaxedMockK
     lateinit var cartObserver: Observer<in Result<AddToCartDataModel>>
+
+    @RelaxedMockK
+    lateinit var tierGiftObserver: Observer<in Result<SelectedTierData>>
 
     @RelaxedMockK
     lateinit var errorObserver: Observer<in Throwable>
@@ -107,8 +128,11 @@ class OfferLandingPageViewModelTest {
             getOfferProductListUseCase,
             getSharingDataByOfferIDUseCase,
             getNotificationUseCase,
+            getMiniCartUseCase,
             addToCartUseCase,
-            userSession
+            userSession,
+            getOfferingInfoForBuyerMapper,
+            getOfferProductListMapper
         )
         with(viewModel) {
             offeringInfo.observeForever(offeringInfoObserver)
@@ -116,6 +140,7 @@ class OfferLandingPageViewModelTest {
             sharingData.observeForever(sharingDataObserver)
             navNotificationLiveData.observeForever(notificationObserver)
             miniCartAdd.observeForever(cartObserver)
+            tierGifts.observeForever(tierGiftObserver)
             error.observeForever(errorObserver)
         }
     }
@@ -128,6 +153,7 @@ class OfferLandingPageViewModelTest {
             sharingData.removeObserver(sharingDataObserver)
             navNotificationLiveData.removeObserver(notificationObserver)
             miniCartAdd.removeObserver(cartObserver)
+            tierGifts.removeObserver(tierGiftObserver)
             error.removeObserver(errorObserver)
         }
     }
@@ -179,7 +205,8 @@ class OfferLandingPageViewModelTest {
     fun `when getOfferingInfo is called, should set uiState data accordingly`() {
         runBlockingTest {
             // Given
-            val expected = getDummyOfferingInfoResponse()
+            val expected =
+                Success(getOfferingInfoForBuyerMapper.map(getDummyOfferingInfoResponse()))
             mockGetOfferingInfoForBuyerGqlCall()
 
             // When
@@ -195,15 +222,14 @@ class OfferLandingPageViewModelTest {
     fun `when getOfferingInfo is returning error, should get error message accordingly`() {
         runBlockingTest {
             // Given
-            val expected = MessageErrorException("Server Error")
             mockErrorGetOfferingInfoForBuyerGqlCall()
 
             // When
             viewModel.processEvent(OlpEvent.GetOfferingInfo)
 
             // Then
-            val actual = viewModel.error.getOrAwaitValue()
-            assertEquals(expected.message, actual.message)
+            val actual = viewModel.offeringInfo.getOrAwaitValue()
+            assert(actual is Fail)
         }
     }
 
@@ -211,7 +237,7 @@ class OfferLandingPageViewModelTest {
     fun `when getOfferingProductList is called, should get product list data accordingly`() {
         runBlockingTest {
             // Given
-            val expected = OfferProductListUiModel()
+            val expected = getOfferProductListMapper.map(OfferProductListResponse())
             mockGetOfferingProductListGqlCall()
 
             // When
@@ -410,6 +436,51 @@ class OfferLandingPageViewModelTest {
             assertEquals(expected, actual)
 
             job.cancel()
+        }
+    }
+
+    @Test
+    fun `when handleTapTier is called, should get minicartData and map it to tier gift list accordingly`() {
+        runBlockingTest {
+            //Given
+            val selectedTier = Tier()
+            val offerInfo = OfferInfoForBuyerUiModel()
+            val tierGifts = listOf(
+                TierGifts(
+                    gifts = listOf(
+                        TierGifts.GiftProduct(
+                            productId = 982480,
+                            quantity = 100
+                        )
+                    ), tierId = 0
+                )
+            )
+            val expected = Success(SelectedTierData(selectedTier, offerInfo, tierGifts))
+            mockGetMiniCartUseCaseGqlCall()
+
+            //When
+            viewModel.processEvent(OlpEvent.TapTier(selectedTier, offerInfo))
+
+            //Then
+            val actual = viewModel.tierGifts.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun `when handleTapTier is returning error, should set error data accordingly`() {
+        runBlockingTest {
+            //Given
+            val selectedTier = Tier()
+            val offerInfo = OfferInfoForBuyerUiModel()
+            mockErrorGetMiniCartUseCaseGqlCall()
+
+            //When
+            viewModel.processEvent(OlpEvent.TapTier(selectedTier, offerInfo))
+
+            //Then
+            val actual = viewModel.tierGifts.getOrAwaitValue()
+            assert(actual is Fail)
         }
     }
 
@@ -625,7 +696,10 @@ class OfferLandingPageViewModelTest {
         val mockTransition = mockk<Transition<in Bitmap>>()
         mockkObject(BmgmUtil)
         every { BmgmUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
-            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
+            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(
+                mockBitmap,
+                mockTransition
+            )
         }
 
         mockkStatic(ImageProcessingUtil::class)
@@ -645,7 +719,10 @@ class OfferLandingPageViewModelTest {
         val mockTransition = mockk<Transition<in Bitmap>>()
         mockkObject(BmgmUtil)
         every { BmgmUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
-            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
+            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(
+                mockBitmap,
+                mockTransition
+            )
         }
 
         mockkStatic(ImageProcessingUtil::class)
@@ -676,12 +753,12 @@ class OfferLandingPageViewModelTest {
     }
 
     private fun mockErrorGetOfferingInfoForBuyerGqlCall() {
-        val error = MessageErrorException("Server Error")
-        coEvery { getOfferInfoForBuyerUseCase.execute(any()) } throws error
+        val error = Fail(MessageErrorException("Server Error"))
+        coEvery { getOfferInfoForBuyerUseCase.execute(any()) } throws error.throwable
     }
 
     private fun mockGetOfferingProductListGqlCall() {
-        val offeringProductListResponse = OfferProductListUiModel()
+        val offeringProductListResponse = OfferProductListResponse()
         coEvery { getOfferProductListUseCase.execute(any()) } returns offeringProductListResponse
     }
 
@@ -705,18 +782,41 @@ class OfferLandingPageViewModelTest {
         coEvery { getSharingDataByOfferIDUseCase.execute(any()) } returns sharingDataResponse
     }
 
-    private fun getDummyOfferingInfoResponse(): OfferInfoForBuyerUiModel =
-        OfferInfoForBuyerUiModel(
-            responseHeader = OfferInfoForBuyerUiModel.ResponseHeader(
-                success = true,
-                status = Status.SUCCESS
+    private fun mockGetMiniCartUseCaseGqlCall() {
+        val miniCartDataResponse = BmgmMiniCartDataUiModel(
+            tiers = listOf(
+                BmgmMiniCartVisitable.TierUiModel(
+                    productsBenefit = listOf(
+                        BmgmMiniCartVisitable.ProductUiModel(
+                            productId = "982480",
+                            quantity = 100
+                        )
+                    )
+                )
             ),
-            offerings = listOf(
-                Offering(
-                    id = 0,
-                    offerName = "BMSM",
-                    startDate = "",
-                    endDate = ""
+            isTierAchieved = true
+        )
+        coEvery { getMiniCartUseCase(any()) } returns miniCartDataResponse
+    }
+
+    private fun mockErrorGetMiniCartUseCaseGqlCall() {
+        val error = MessageErrorException("Server Error")
+        coEvery { getMiniCartUseCase(any()) } throws error
+    }
+
+    private fun getDummyOfferingInfoResponse(): OfferInfoForBuyerResponse =
+        OfferInfoForBuyerResponse(
+            offeringInforBuyer = OfferInfoForBuyerResponse.OfferInfoForBuyer(
+                responseHeader = OfferInfoForBuyerResponse.ResponseHeader(
+                    success = true
+                ),
+                offerings = listOf(
+                    Offering(
+                        id = 0,
+                        offerName = "BMSM",
+                        startDate = "",
+                        endDate = ""
+                    )
                 )
             )
         )

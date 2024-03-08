@@ -5,6 +5,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutCrossSellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutDonationModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutEgoldModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductBenefitModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
@@ -164,4 +165,6 @@ interface CheckoutAdapterListener {
     fun setValidationDropshipPhone(phone: String, isValid: Boolean, position: Int)
 
     fun onSendImpressionDropshipWidgetAnalytics()
+
+    fun onViewGwpBenefit(benefit: CheckoutProductBenefitModel)
 }

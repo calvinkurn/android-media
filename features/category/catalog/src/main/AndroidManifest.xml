@@ -4,6 +4,9 @@
 
     <application>
         <activity
+            android:name=".ui.activity.CatalogSwitchingComparisonActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.CatalogComparisonDetailActivity"
             android:exported="false" />
         <activity
@@ -40,6 +43,10 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.tokopedia.catalog.ui.activity.CatalogImagePreviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name="com.tokopedia.oldcatalog.ui.activity.CatalogDetailPageActivity"
             android:exported="false"

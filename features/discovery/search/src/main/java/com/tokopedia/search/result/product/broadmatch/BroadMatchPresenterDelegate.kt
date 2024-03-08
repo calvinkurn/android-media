@@ -175,7 +175,7 @@ class BroadMatchPresenterDelegate @Inject constructor(
                 )
         }
 
-        broadMatchView.openLink(broadMatchItemDataView.applink, broadMatchItemDataView.url)
+        broadMatchView.openLink(broadMatchItemDataView)
 
         if (broadMatchItemDataView.isOrganicAds)
             sendTrackingClickBroadMatchAds(broadMatchItemDataView)

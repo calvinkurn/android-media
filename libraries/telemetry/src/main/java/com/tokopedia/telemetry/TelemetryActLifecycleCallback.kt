@@ -218,7 +218,7 @@ class TelemetryActLifecycleCallback(
             val elapsedDiff = Telemetry.getElapsedDiff()
             if (elapsedDiff < (SECTION_TELEMETRY_DURATION - STOP_THRES)) {
                 // timer to stop after telemetry duration
-                activity.lifecycleScope.launch(Dispatchers.Default) {
+                activity.lifecycleScope.launch(Dispatchers.IO) {
                     try {
                         registerTelemetryListener(activity)
                         val remainingDurr = SECTION_TELEMETRY_DURATION - elapsedDiff
@@ -241,7 +241,7 @@ class TelemetryActLifecycleCallback(
         Telemetry.addStopTime(sectionName)
 
         // timer to stop after telemetry duration
-        activity.lifecycleScope.launch(Dispatchers.Default) {
+        activity.lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val telConfig = fetchConfig(activity)
                 yield()

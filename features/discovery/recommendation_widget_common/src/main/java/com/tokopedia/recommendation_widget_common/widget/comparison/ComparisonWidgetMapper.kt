@@ -17,6 +17,7 @@ object ComparisonWidgetMapper {
         context: Context,
         isAnchorClickable: Boolean,
         comparisonColorConfig: ComparisonColorConfig,
+        shouldReimagineCardEnabled: Boolean
     ): ComparisonListModel {
         val recommendationItems = recommendationWidget.recommendationItemList
         val specsConfig = buildSpecsConfig(recommendationItems, context)
@@ -26,7 +27,9 @@ object ComparisonWidgetMapper {
         val productCardHeight = listOfProductCardModel.getMaxHeightForGridView(
             context,
             Dispatchers.IO,
-            context.resources.getDimensionPixelSize(R.dimen.comparison_widget_product_card_width)
+            context.resources.getDimensionPixelSize(R.dimen.comparison_widget_product_card_width),
+            shouldReimagineCardEnabled,
+            true
         )
         val collapsedHeight = productCardHeight + getCollapsedSpecsHeight(specsConfig.heightPositionMap)
         return ComparisonListModel(

@@ -6,7 +6,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.shopscore.ShopScoreDeepLinkMapper
+import com.tokopedia.applink.sellermenu.SellerMenuDeeplinkMapper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -32,7 +32,7 @@ object PowerMerchantDeepLinkMapper {
      * stay : Tetap Jadi Power Merchant
      * agreed : Saya Mengerti
      * */
-    fun getInternalAppLinkPmProInterrupt(appLink: String): String {
+    fun getInternalAppLinkPmProInterrupt(context: Context, appLink: String): String {
         val uri = Uri.parse(appLink)
         val state = uri.getQueryParameter(QUERY_PARAM_STATE) ?: ""
         val params = mapOf<String, Any>(QUERY_PARAM_STATE to state)
@@ -40,7 +40,7 @@ object PowerMerchantDeepLinkMapper {
         val applink = if (GlobalConfig.isSellerApp()) {
             ApplinkConstInternalSellerapp.SELLER_HOME
         } else {
-            ApplinkConstInternalSellerapp.SELLER_MENU
+            SellerMenuDeeplinkMapper.getInternalApplinkSellerMenu(context)
         }
 
         return UriUtil.buildUriAppendParams(applink, params)

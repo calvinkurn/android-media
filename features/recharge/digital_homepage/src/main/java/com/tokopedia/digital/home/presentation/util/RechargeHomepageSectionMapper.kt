@@ -53,6 +53,7 @@ import com.tokopedia.home_component.util.DateHelper.isExpired
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -109,8 +110,10 @@ object RechargeHomepageSectionMapper {
                           newData: RechargeHomepageSections.Section): List<RechargeHomepageSections.Section> {
         val sections = oldData.toMutableList()
         val index = sections.indexOfFirst { it.id == newData.id}
-        sections.removeAt(index)
-        sections.add(index, newData)
+        if (index >= Int.ZERO) {
+            sections.removeAt(index)
+            sections.add(index, newData)
+        }
         return sections.toList()
     }
 

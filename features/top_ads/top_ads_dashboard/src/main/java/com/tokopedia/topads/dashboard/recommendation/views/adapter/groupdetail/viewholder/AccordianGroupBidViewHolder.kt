@@ -13,7 +13,8 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.response.GroupEditInput
-import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.R as topadsdashboardR
+import com.tokopedia.topads.common.R as topadscommonR
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_EDIT_PARAM
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_GROUP_BID_MAX_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_MULTIPLIER
@@ -26,16 +27,16 @@ class AccordianGroupBidViewHolder(
 ) :
     AbstractViewHolder<AccordianGroupBidUiModel>(itemView) {
 
-    private val searchCheckBox: com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(R.id.searchCheckbox)
-    private val recommendationCheckBox: com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(R.id.recommendation_checkbox)
-    private val searchCurrentCost : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.search_current_cost_value)
-    private val recommendationCurrentCost : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.recommendation_current_cost_value)
-    private val searchPotential : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.search_potential_value)
-    private val recommendationPotential : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.recommendation_potential_value)
-    private val searchCost : com.tokopedia.unifycomponents.TextFieldUnify2 = itemView.findViewById(R.id.search_cost)
-    private val recommendationCost : com.tokopedia.unifycomponents.TextFieldUnify2 = itemView.findViewById(R.id.recommendation_cost)
-    private val searchGroup: Group = itemView.findViewById(R.id.searchGroup)
-    private val recommendationGroup: Group = itemView.findViewById(R.id.recommendationGroup)
+    private val searchCheckBox: com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(topadsdashboardR.id.searchCheckbox)
+    private val recommendationCheckBox: com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(topadsdashboardR.id.recommendation_checkbox)
+    private val searchCurrentCost : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(topadsdashboardR.id.search_current_cost_value)
+    private val recommendationCurrentCost : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(topadsdashboardR.id.recommendation_current_cost_value)
+    private val searchPotential : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(topadsdashboardR.id.search_potential_value)
+    private val recommendationPotential : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(topadsdashboardR.id.recommendation_potential_value)
+    private val searchCost : com.tokopedia.unifycomponents.TextFieldUnify2 = itemView.findViewById(topadsdashboardR.id.search_cost)
+    private val recommendationCost : com.tokopedia.unifycomponents.TextFieldUnify2 = itemView.findViewById(topadsdashboardR.id.recommendation_cost)
+    private val searchGroup: Group = itemView.findViewById(topadsdashboardR.id.searchGroup)
+    private val recommendationGroup: Group = itemView.findViewById(topadsdashboardR.id.recommendationGroup)
 
     override fun bind(element: AccordianGroupBidUiModel?) {
         createDefaultInputModel(element)
@@ -126,7 +127,7 @@ class AccordianGroupBidViewHolder(
                 if (errorMsg.isEmpty()) {
                     searchCost.isInputError = false
                     if (text.toString().toIntOrZero() == getSearchTypeSuggestionBid(element)) {
-                        searchCost.setMessage(getString(R.string.biaya_optimal))
+                        searchCost.setMessage(getString(topadsdashboardR.string.biaya_optimal))
                     } else {
                         attachClickableSpan(searchCost, getSearchTypeSuggestionBid(element))
                     }
@@ -150,7 +151,7 @@ class AccordianGroupBidViewHolder(
                 if(errorMsg.isEmpty()){
                     recommendationCost.isInputError = false
                     if (text.toString().toIntOrZero() == getBrowseTypeSuggestionBid(element)) {
-                        recommendationCost.setMessage(getString(R.string.biaya_optimal))
+                        recommendationCost.setMessage(getString(topadsdashboardR.string.biaya_optimal))
                     }
                     else {
                         attachClickableSpan(recommendationCost, getBrowseTypeSuggestionBid(element))
@@ -194,14 +195,14 @@ class AccordianGroupBidViewHolder(
 
     private fun validateInput(inputBid: Int, currentBid: Int): String {
         return if (inputBid < currentBid)
-            String.format(getString(R.string.topads_insight_min_bid_error_msg_format), currentBid)
+            String.format(getString(topadscommonR.string.topads_min_bid_error_msg_format), currentBid)
         else if (inputBid > INSIGHT_GROUP_BID_MAX_BID)
             String.format(
-                getString(R.string.topads_insight_max_bid_error_msg_format),
+                getString(topadscommonR.string.topads_max_bid_error_msg_format),
                 INSIGHT_GROUP_BID_MAX_BID
             )
         else if (inputBid % INSIGHT_MULTIPLIER != 0)
-            getString(R.string.error_bid_not_multiple_50)
+            getString(topadsdashboardR.string.error_bid_not_multiple_50)
         else String.EMPTY
     }
 
@@ -236,7 +237,7 @@ class AccordianGroupBidViewHolder(
         suggestionBid: Int
     ) {
         val msg = String.format(
-            getString(R.string.topads_insight_recommended_bid_apply),
+            getString(topadsdashboardR.string.topads_insight_recommended_bid_apply),
             suggestionBid
         )
         val ss = SpannableString(msg)
@@ -264,6 +265,6 @@ class AccordianGroupBidViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.top_ads_accordian_group_bid_layout
+        val LAYOUT = topadsdashboardR.layout.top_ads_accordian_group_bid_layout
     }
 }

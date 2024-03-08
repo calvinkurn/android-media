@@ -35,7 +35,7 @@
                     tools:visibility="visible"
                     android:visibility="gone">
 
-                    <com.tokopedia.unifycomponents.ticker.Ticker
+                    <com.tokopedia.targetedticker.ui.TargetedTickerWidget
                         android:id="@+id/ticker_shipper_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

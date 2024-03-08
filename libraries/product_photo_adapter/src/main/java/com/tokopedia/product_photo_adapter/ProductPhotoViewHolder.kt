@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCenterCrop
 
 class ProductPhotoViewHolder(itemView: View,
                              private val onDeleteButtonClickListener: OnDeleteButtonClickListener,
@@ -93,7 +93,7 @@ class ProductPhotoViewHolder(itemView: View,
 
     private fun loadProductPhotoToImageView(context: Context, productPhotoView: AppCompatImageView?, productPhotoPath: String) {
         productPhotoView?.let {
-            ImageHandler.loadImageFit2(context, productPhotoView, productPhotoPath)
+            productPhotoView.loadImageCenterCrop(productPhotoPath)
         }
     }
 }

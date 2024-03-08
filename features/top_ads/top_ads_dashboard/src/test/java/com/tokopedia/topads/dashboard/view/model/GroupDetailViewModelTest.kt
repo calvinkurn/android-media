@@ -23,6 +23,8 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.topads.common.data.model.TotalProductKeyResponse
+import com.tokopedia.topads.common.domain.usecase.GetVariantByIdUseCase
+import com.tokopedia.topads.common.domain.usecase.TopadsGetShopInfoUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsBatchGetInsightCountByAdGroupIDUseCase
 import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
@@ -67,6 +69,8 @@ class GroupDetailViewModelTest {
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
     private val headlineInfoUseCase: GetHeadlineInfoUseCase = mockk(relaxed = true)
     private val topAdsBatchGetInsightCountByAdGroupIDUseCase: TopAdsBatchGetInsightCountByAdGroupIDUseCase = mockk(relaxed = true)
+    private val getVariantByIdUseCase: GetVariantByIdUseCase = mockk(relaxed = true)
+    private val getShopInfoUseCase: TopadsGetShopInfoUseCase = mockk(relaxed = true)
     private val res: Resources = mockk(relaxed = true)
     private val throwable: Throwable = mockk(relaxed = true)
     private val params: RequestParams = mockk(relaxed = true)
@@ -87,6 +91,8 @@ class GroupDetailViewModelTest {
             bidInfoUseCase,
             topAdsCreateUseCase,
             topAdsBatchGetInsightCountByAdGroupIDUseCase,
+            getVariantByIdUseCase,
+            getShopInfoUseCase,
             userSession)
     }
 

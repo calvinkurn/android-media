@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.sellerorder.SomComponentInstance
+import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.databinding.BottomsheetTransparencyFeeBinding
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailTransparencyFeeComponent
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailTransparencyFeeAdapter
@@ -88,6 +89,7 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
     }
 
     override fun onClickNoteLink(url: String) {
+        SomAnalytics.eventNoteLinkClicked()
         RouteManager.route(context, url)
     }
 

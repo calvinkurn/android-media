@@ -237,6 +237,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                         cart_detail_type
                         bmgm {
                           offer_id
+                          offer_type_id
                           offer_name
                           offer_icon
                           offer_message
@@ -244,6 +245,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                           offer_landing_page_link
                           total_discount
                           offer_json_data
+                          is_tier_achieved
                           tier_product {
                             tier_id
                             tier_name
@@ -259,6 +261,19 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                               price_before_benefit
                               price_after_benefit
                               cart_id
+                            }
+                            benefit_wording
+                            action_wording
+                            benefit_quantity
+                            products_benefit {
+                                product_id
+                                quantity
+                                product_name
+                                product_cache_image_url
+                                original_price
+                                final_price
+                                weight
+                                actual_weight
                             }
                           }
                         }

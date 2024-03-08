@@ -16,7 +16,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
@@ -39,7 +39,6 @@ import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberD
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
@@ -140,7 +139,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
                 override fun onCloseCoachMark() {
                     commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
-                        categoryName, loyaltyStatus
+                        categoryName,
+                        loyaltyStatus
                     )
                 }
             }
@@ -420,6 +420,10 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     fun sendImpressionRecents() {
         viewModel.setRecentsImpression()
+    }
+
+    fun getContactList(): MutableList<TopupBillsContact> {
+        return viewModel.getContactList()
     }
 
     override fun onMenuDetailError(error: Throwable) {

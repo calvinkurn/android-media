@@ -11,6 +11,7 @@ import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
 import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
 import com.tokopedia.home_account.data.model.CentralizedUserAssetDataModel
 import com.tokopedia.home_account.data.model.CoBrandCCBalanceDataModel
+import com.tokopedia.home_account.data.model.OfferInterruptData
 import com.tokopedia.home_account.data.model.OfferInterruptResponse
 import com.tokopedia.home_account.data.model.ProfileDataView
 import com.tokopedia.home_account.data.model.RecommendationWidgetWithTDN
@@ -19,6 +20,7 @@ import com.tokopedia.home_account.data.model.SaldoBalanceDataModel
 import com.tokopedia.home_account.data.model.SetUserProfileSetting
 import com.tokopedia.home_account.data.model.SetUserProfileSettingResponse
 import com.tokopedia.home_account.data.model.ShortcutResponse
+import com.tokopedia.home_account.data.model.TierData
 import com.tokopedia.home_account.data.model.TokopointsBalanceDataModel
 import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
@@ -34,7 +36,7 @@ import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
 import com.tokopedia.home_account.domain.usecase.OfferInterruptUseCase
 import com.tokopedia.home_account.domain.usecase.SaveAttributeOnLocalUseCase
 import com.tokopedia.home_account.domain.usecase.UpdateSafeModeUseCase
-import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
+import com.tokopedia.home_account.data.model.LinkStatusResponse
 import com.tokopedia.home_account.view.mapper.ProfileWithDataStoreMapper
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
@@ -830,6 +832,8 @@ class HomeAccountUserViewModelTest {
         coVerify(exactly = 1) {
             refreshProfileUseCase(Unit)
         }
+
+        assertEquals(null, viewModel.refreshAndUpdateLayoutProfile.value)
     }
 
     @Test
@@ -839,6 +843,97 @@ class HomeAccountUserViewModelTest {
         } throws Exception()
 
         viewModel.refreshUserProfile()
+
+        assertEquals(null, viewModel.refreshAndUpdateLayoutProfile.value)
+    }
+
+    @Test
+    fun `when refresh profile then success`() {
+        /* When */
+        val profileDataView = ProfileDataView(
+            name = "Habibi Habibi",
+            phone = "0987654321",
+            email = "habibi.habibi+1@tokopedia.com",
+            avatar = "https://www.tokopedia.com/a-321",
+            isLinked = true,
+            isShowLinkStatus = false,
+            memberStatus = TierData(),
+            isSuccessGetTokopediaPlusData = true,
+            tokopediaPlusWidget = TokopediaPlusDataModel(),
+            offerInterruptData = OfferInterruptData()
+        )
+        val newProfile = ProfilePojo(
+            ProfileInfo(
+                fullName = "Habibi",
+                phone = "1234567890",
+                email = "habibi+1@tokopedia.com",
+                profilePicture = "https://www.tokopedia.com/a-123"
+            )
+        )
+        val expectedNewProfile = ProfileDataView(
+            name = "Habibi",
+            phone = "1234567890",
+            email = "habibi+1@tokopedia.com",
+            avatar = "https://www.tokopedia.com/a-123",
+            isLinked = true,
+            isShowLinkStatus = false,
+            memberStatus = TierData(),
+            isSuccessGetTokopediaPlusData = true,
+            tokopediaPlusWidget = TokopediaPlusDataModel(),
+            offerInterruptData = OfferInterruptData()
+        )
+
+        coEvery { homeAccountUserUsecase(Unit) } returns responseResult
+        coEvery { homeAccountShortcutUseCase(Unit) } returns shortcut
+        coEvery { offerInterruptUseCase.invoke(any()) } returns offerInterruptResponse
+        coEvery { dataStoreMapper.invoke(any()) } returns profileDataView
+        coEvery { refreshProfileUseCase(Unit) } returns Success(newProfile)
+
+        viewModel.getBuyerData()
+        viewModel.refreshUserProfile(isUpdateLayout = true)
+
+        val buyerAccount = viewModel.buyerAccountDataData.getOrAwaitValue()
+        val refreshProfile = viewModel.refreshAndUpdateLayoutProfile.getOrAwaitValue()
+        assertEquals(buyerAccount, Success(profileDataView))
+        assertEquals(refreshProfile, expectedNewProfile)
+    }
+
+    @Test
+    fun `when refresh profile then failed get buyer data`() {
+        /* When */
+        val exception = Exception("error")
+        val newProfile = ProfilePojo()
+        coEvery { homeAccountUserUsecase.invoke(Unit) } throws exception
+        coEvery { offerInterruptUseCase.invoke(any()) } returns offerInterruptResponse
+        coEvery { refreshProfileUseCase(Unit) } returns Success(newProfile)
+
+        viewModel.getBuyerData()
+        viewModel.refreshUserProfile(isUpdateLayout = true)
+        val actual = viewModel.buyerAccountDataData.getOrAwaitValue()
+
+        val buyerAccount = viewModel.buyerAccountDataData.getOrAwaitValue()
+        assertTrue(buyerAccount is Fail)
+        assertEquals((actual as Fail).throwable.message, exception.message)
+        assertTrue(viewModel.refreshAndUpdateLayoutProfile.value == null)
+    }
+
+    @Test
+    fun `when refresh profile then failed get profile`() {
+        /* When */
+        val profileDataView = ProfileDataView()
+
+        coEvery { homeAccountUserUsecase(Unit) } returns responseResult
+        coEvery { homeAccountShortcutUseCase(Unit) } returns shortcut
+        coEvery { offerInterruptUseCase.invoke(any()) } returns offerInterruptResponse
+        coEvery { dataStoreMapper.invoke(any()) } returns profileDataView
+        coEvery { refreshProfileUseCase(Unit) } returns Fail(Throwable())
+
+        viewModel.getBuyerData()
+        viewModel.refreshUserProfile(isUpdateLayout = true)
+
+        val buyerAccount = viewModel.buyerAccountDataData.getOrAwaitValue()
+        assertEquals(buyerAccount, Success(profileDataView))
+        assertEquals(null, viewModel.refreshAndUpdateLayoutProfile.value)
     }
 
     @Test

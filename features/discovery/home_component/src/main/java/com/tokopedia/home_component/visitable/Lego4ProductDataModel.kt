@@ -10,7 +10,11 @@ import com.tokopedia.home_component.model.ChannelModel
 data class Lego4ProductDataModel(
         val channelModel: ChannelModel,
         val isCache: Boolean = false
-): HomeComponentVisitable {
+): HomeComponentVisitable, HasChannelModel {
+
+    override val model: ChannelModel
+        get() = channelModel
+
     override fun visitableId(): String? {
         return channelModel.id
     }

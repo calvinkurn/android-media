@@ -6,6 +6,6 @@ interface VideoListener {
 
     fun onClickVideoExpert()
 
-    fun onVideoImpression(itemHasSaw:List<VideoUiModel.ItemVideoUiModel>)
+    fun onVideoImpression(itemHasSaw: List<VideoUiModel.ItemVideoUiModel>, widgetName: String)
 
 }

@@ -10,6 +10,10 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by fwidjaja on 2019-11-15.
+ *
+ * this used for
+ * - confirm shipping
+ * - change courier
  */
 class ConfirmShippingActivity : BaseSimpleActivity() {
 

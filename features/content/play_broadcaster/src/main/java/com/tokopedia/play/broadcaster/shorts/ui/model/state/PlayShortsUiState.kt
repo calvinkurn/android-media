@@ -6,6 +6,8 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsInterspersingConfigUiModel
+import com.tokopedia.play.broadcaster.shorts.ui.model.ProductVideoUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -29,7 +31,31 @@ data class PlayShortsUiState(
     val uploadState: PlayShortsUploadUiState,
     val isAffiliate: Boolean,
     val bannerPreparation: List<PlayBroadcastPreparationBannerModel>,
-)
+
+    val interspersingConfig: PlayShortsInterspersingConfigUiModel,
+    val productVideo: ProductVideoUiModel,
+) {
+    companion object {
+        val Empty: PlayShortsUiState
+            get() = PlayShortsUiState(
+                globalLoader = false,
+                config = PlayShortsConfigUiModel.Empty,
+                media = PlayShortsMediaUiModel.Empty,
+                accountList = emptyList(),
+                selectedAccount = ContentAccountUiModel.Empty,
+                menuList = emptyList(),
+                titleForm = PlayShortsTitleFormUiState.Empty,
+                coverForm = PlayShortsCoverFormUiState.Empty,
+                productSectionList = emptyList(),
+                tags = NetworkResult.Unknown,
+                uploadState = PlayShortsUploadUiState.Unknown,
+                isAffiliate = false,
+                bannerPreparation = emptyList(),
+                interspersingConfig = PlayShortsInterspersingConfigUiModel.Empty,
+                productVideo = ProductVideoUiModel.Empty,
+            )
+    }
+}
 
 data class PlayShortsTitleFormUiState(
     val title: String,

@@ -2,17 +2,17 @@ package com.tokopedia.deals.common
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.tokopedia.deals.category.domain.GetChipsCategoryUseCase
+import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.common.ui.viewmodel.DealsBrandCategoryActivityViewModel
+import com.tokopedia.deals.data.entity.CuratedData
+import com.tokopedia.deals.domain.GetChipsCategoryUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.deals.search.model.response.CuratedData
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.tokopedia.deals.DealsJsonMapper
-import org.junit.Assert.assertEquals
 
 class DealsBrandCategoryActivityViewModelTest {
 
@@ -31,12 +31,10 @@ class DealsBrandCategoryActivityViewModelTest {
     @Test
     fun getCategoryCombindedData_fetchFailed_shouldShowErrorMessage() {
         // given
-        val mockThrowable = Throwable("Error failed")
+        val mockThrowable = Exception("Error failed")
         coEvery {
-            useCase.execute(any(), any())
-        } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+            useCase.invoke(Unit)
+        } throws mockThrowable
 
         // when
         viewModel.getCategoryCombindedData()
@@ -49,12 +47,11 @@ class DealsBrandCategoryActivityViewModelTest {
     @Test
     fun getCategoryCombindedData_fetchSuccess_shouldShowCuratedData() {
         // given
-        val mockCuratedData = Gson().fromJson(DealsJsonMapper.getJson("curateddata.json"), CuratedData::class.java)
+        val mockCuratedData =
+            Gson().fromJson(DealsJsonMapper.getJson("curateddata.json"), CuratedData::class.java)
         coEvery {
-            useCase.execute(any(), any())
-        } coAnswers {
-            firstArg<(CuratedData) -> Unit>().invoke(mockCuratedData)
-        }
+            useCase.invoke(Unit)
+        } returns mockCuratedData
 
         // when
         viewModel.getCategoryCombindedData()

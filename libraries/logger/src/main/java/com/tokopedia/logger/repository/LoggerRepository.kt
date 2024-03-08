@@ -19,7 +19,13 @@ import com.tokopedia.logger.model.scalyr.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.LoggerReporting
 import com.tokopedia.logger.utils.addValue
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import kotlin.coroutines.CoroutineContext
 
@@ -33,10 +39,12 @@ class LoggerRepository(
     private val scalyrConfigs: List<ScalyrConfig>,
     private val encrypt: ((String) -> (String))? = null,
     val decrypt: ((String) -> (String))? = null,
-    private val decryptNrKey: ((String) -> (String))? = null
+    private val decryptNrKey: ((String) -> (String))? = null,
+    val internalLogger: InternalLoggerInterface? = null
 ) : LoggerRepositoryContract, CoroutineScope {
 
     override suspend fun insert(logger: Logger) {
+        internalLogger?.putServerLoggerEvent(logger)
         var encryptedLogger = logger
         if (encrypt != null) {
             encryptedLogger = logger.copy(message = encrypt.invoke(logger.message))

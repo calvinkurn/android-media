@@ -3,6 +3,7 @@ package com.tokopedia.cart.view.mapper
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
+import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData

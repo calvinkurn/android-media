@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -16,10 +18,11 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
+import com.tokopedia.play.broadcaster.shorts.view.bottomsheet.InterspersingConfirmationBottomSheet
+import com.tokopedia.play.broadcaster.shorts.view.compose.PlayShortsSummaryConfigLayout
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
-import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -27,8 +30,9 @@ import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.flow.collect
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
+import com.tokopedia.play.broadcaster.R
 import javax.inject.Inject
 
 /**
@@ -69,6 +73,11 @@ class PlayShortsSummaryFragment @Inject constructor(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setAttachedFragment()
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -79,6 +88,36 @@ class PlayShortsSummaryFragment @Inject constructor(
             container,
             false
         )
+
+        binding.layoutSummaryConfig.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+
+            setContent {
+
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle(PlayShortsUiState.Empty)
+
+                PlayShortsSummaryConfigLayout(
+                    tagsState = uiState.tags,
+                    isInterspersingVideoAllowed = uiState.interspersingConfig.isInterspersingAllowed,
+                    isInterspersing = uiState.interspersingConfig.isInterspersing,
+                    onRefreshTag = {
+                        analytic.clickRefreshContentTag(viewModel.selectedAccount)
+
+                        viewModel.submitAction(PlayShortsAction.LoadTag)
+                    },
+                    onTagClick = { item ->
+                        analytic.clickContentTag(item.tag, viewModel.selectedAccount)
+
+                        viewModel.submitAction(PlayShortsAction.SelectTag(item))
+                    },
+                    onInterspersingChanged = { isActive ->
+                        analytic.clickInterspersingToggle(viewModel.selectedAccount, viewModel.shortsId, isActive)
+                        viewModel.submitAction(PlayShortsAction.SwitchInterspersing)
+                    }
+                )
+            }
+        }
+
         return _binding?.root
     }
 
@@ -87,7 +126,6 @@ class PlayShortsSummaryFragment @Inject constructor(
 
         analytic.openScreenSummaryPage(viewModel.selectedAccount)
 
-        setupView()
         setupListener()
         setupObserver()
 
@@ -99,8 +137,38 @@ class PlayShortsSummaryFragment @Inject constructor(
         _binding = null
     }
 
-    private fun setupView() {
-        /** TODO: setup cover, name, pict, title here */
+    private fun setAttachedFragment() {
+        childFragmentManager.addFragmentOnAttachListener { _, childFragment ->
+            when (childFragment) {
+                is InterspersingConfirmationBottomSheet -> {
+                    childFragment.data = InterspersingConfirmationBottomSheet.Data(
+                        newCoverUri = viewModel.coverUri,
+                        oldCoverUri = viewModel.productVideo.coverUrl,
+                        needSnapNewCover = !viewModel.isCoverSelected
+                    )
+
+                    childFragment.listener = object : InterspersingConfirmationBottomSheet.Listener {
+                        override fun clickPdpVideo() {
+                            analytic.clickVideoPdpCard(viewModel.selectedAccount, viewModel.shortsId)
+                            viewModel.submitAction(PlayShortsAction.ClickVideoPreview)
+                        }
+
+                        override fun clickNext() {
+                            analytic.clickNextInterspersingConfirmation(viewModel.selectedAccount, viewModel.shortsId)
+                            viewModel.submitAction(PlayShortsAction.UploadVideo(needCheckInterspersing = false))
+                        }
+
+                        override fun clickClose() {
+                            analytic.clickCloseInterspersingConfirmation(viewModel.selectedAccount, viewModel.shortsId)
+                        }
+
+                        override fun clickBack() {
+                            analytic.clickBackInterspersingConfirmation(viewModel.selectedAccount, viewModel.shortsId)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setupListener() {
@@ -113,7 +181,7 @@ class PlayShortsSummaryFragment @Inject constructor(
         binding.btnUploadVideo.setOnClickListener {
             analytic.clickUploadVideo(viewModel.shortsId, viewModel.selectedAccount)
 
-            viewModel.submitAction(PlayShortsAction.ClickUploadVideo)
+            viewModel.submitAction(PlayShortsAction.UploadVideo(needCheckInterspersing = true))
         }
     }
 
@@ -131,10 +199,20 @@ class PlayShortsSummaryFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when(event) {
                     is PlayShortsUiEvent.ErrorUploadMedia -> {
-                        toaster.showError(
-                            event.throwable,
-                            duration = Toaster.LENGTH_SHORT
-                        )
+                        showErrorToaster(event.throwable)
+                    }
+                    is PlayShortsUiEvent.ErrorCheckInterspersing -> {
+                        analytic.impressInterspersingError(viewModel.selectedAccount, viewModel.shortsId)
+                        showErrorToaster(
+                            throwable = event.throwable,
+                            customErrMessage = getString(R.string.play_shorts_interspersing_video_failed_check_pdp_video),
+                            actionLabel = getString(R.string.play_broadcast_try_again),
+                        ) {
+                            viewModel.submitAction(PlayShortsAction.UploadVideo(needCheckInterspersing = true))
+                        }
+                    }
+                    is PlayShortsUiEvent.ShowInterspersingConfirmation -> {
+                        showInterspersingConfirmation()
                     }
                     else -> {}
                 }
@@ -148,11 +226,7 @@ class PlayShortsSummaryFragment @Inject constructor(
     ) {
         if (prev?.coverForm == curr.coverForm) return
 
-        if (curr.coverForm.coverUri.isEmpty()) {
-            binding.ivCover.setImageUrl(curr.media.mediaUri)
-        } else {
-            binding.ivCover.setImageUrl(curr.coverForm.coverUri)
-        }
+        binding.ivCover.setImageUrl(viewModel.coverUri)
     }
 
     private fun renderSummaryInfo(
@@ -223,6 +297,27 @@ class PlayShortsSummaryFragment @Inject constructor(
                 binding.btnUploadVideo.isEnabled = isButtonEnabled
             }
         }
+    }
+
+    private fun showErrorToaster(
+        throwable: Throwable,
+        customErrMessage: String? = null,
+        actionLabel: String = "",
+        actionListener: () -> Unit = {},
+    ) {
+        toaster.showError(
+            throwable,
+            customErrMessage = customErrMessage,
+            duration = Toaster.LENGTH_LONG,
+            actionLabel = actionLabel,
+            actionListener = { actionListener() },
+        )
+    }
+
+    private fun showInterspersingConfirmation() {
+        InterspersingConfirmationBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
     }
 
     companion object {

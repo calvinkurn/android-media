@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/viewRewardDetailHeader"
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            android:background="@drawable/bg_shc_reward_detail_header"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvRewardDetailHeaderTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:lines="3"
+            android:ellipsize="end"
+            android:textColor="@color/Unify_Static_White"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="@id/viewRewardDetailHeader"
+            app:layout_constraintTop_toTopOf="@id/viewRewardDetailHeader"
+            app:layout_constraintEnd_toStartOf="@id/ivRewardDetailHeader"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="Selesaikan misi dan dapatkan Paket [Waktu Indonesia Belanja] senilai Rp200.000!"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvRewardDetailHeaderDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/Unify_Static_White"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintTop_toBottomOf="@id/tvRewardDetailHeaderTitle"
+            app:layout_constraintStart_toStartOf="@id/tvRewardDetailHeaderTitle"
+            app:layout_constraintBottom_toBottomOf="@id/viewRewardDetailHeader"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            tools:text="Hanya untuk 999 orang tercepat."/>
+        
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivRewardDetailIllustration"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+        
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivRewardDetailHeader"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="22dp"
+            android:layout_marginTop="21dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvRewardDetailBenefit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/Unify_NN950"
+            android:text="@string/shc_milestone_reward_detail_benefit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/viewRewardDetailHeader"
+            app:typographyType="display_1"
+            app:typographyWeight="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRewardDetailBenefit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tvRewardDetailBenefit"
+            tools:listitem="@layout/shc_item_reward_detail"
+            tools:itemCount="10"/>
+        
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/dividerRewardDetail"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintTop_toBottomOf="@id/rvRewardDetailBenefit"
+            android:layout_marginTop="24dp"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvRewardDetailTnc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/shc_milestone_reward_detail_tnc"
+            android:textColor="@color/Unify_NN950"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/dividerRewardDetail"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"/>
+        
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvRewardDetailTncFirstPoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/shc_milestone_reward_detail_tnc_first_point"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintTop_toBottomOf="@id/tvRewardDetailTnc"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="paragraph_2"
+            app:typographyWeight="reguler"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvRewardDetailTncFirstDetail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/shc_milestone_reward_detail_tnc_first_detail"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintTop_toBottomOf="@id/tvRewardDetailTnc"
+            app:layout_constraintStart_toEndOf="@id/tvRewardDetailTncFirstPoint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="paragraph_2"
+            app:typographyWeight="reguler"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvRewardDetailTncSecondPoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shc_milestone_reward_detail_tnc_second_point"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintTop_toBottomOf="@id/tvRewardDetailTncFirstDetail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="paragraph_2"
+            app:typographyWeight="reguler"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvRewardDetailTncSecondDetail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/shc_milestone_reward_detail_tnc_second_detail"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintTop_toBottomOf="@id/tvRewardDetailTncFirstDetail"
+            app:layout_constraintStart_toEndOf="@id/tvRewardDetailTncSecondPoint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="paragraph_2"
+            app:typographyWeight="reguler"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvRewardDetailTncThirdPoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shc_milestone_reward_detail_tnc_third_point"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintTop_toBottomOf="@id/tvRewardDetailTncSecondDetail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="paragraph_2"
+            app:typographyWeight="reguler"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvRewardDetailTncThirdDetail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/shc_milestone_reward_detail_tnc_third_detail"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintTop_toBottomOf="@id/tvRewardDetailTncSecondDetail"
+            app:layout_constraintStart_toEndOf="@id/tvRewardDetailTncThirdPoint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="paragraph_2"
+            app:typographyWeight="reguler"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

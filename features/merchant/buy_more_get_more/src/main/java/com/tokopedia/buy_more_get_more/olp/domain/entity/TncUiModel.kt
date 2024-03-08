@@ -5,3 +5,4 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class TncUiModel(
     val tnc: String
 ) : ImpressHolder()
+

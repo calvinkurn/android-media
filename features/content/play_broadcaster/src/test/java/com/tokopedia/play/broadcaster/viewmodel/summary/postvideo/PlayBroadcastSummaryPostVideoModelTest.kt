@@ -83,7 +83,7 @@ class PlayBroadcastSummaryPostVideoModelTest {
         coEvery { mockGetInteractiveSummaryLivestreamUseCase.executeOnBackground() } returns GetInteractiveSummaryLivestreamResponse()
     }
 
-//    @Test
+    @Test
     fun `when save video success, it should return success state`() {
         coEvery { mockSetChannelTagUseCase.executeOnBackground() } returns mockSetChannelTagResponse
         coEvery { mockUpdateChannelUseCase.executeOnBackground() } returns mockUpdateChannelStatusResponse
@@ -105,7 +105,7 @@ class PlayBroadcastSummaryPostVideoModelTest {
         }
     }
 
-//    @Test
+    @Test
     fun `when save video & save tag failed, it should return fail state`() {
         coEvery { mockSetChannelTagUseCase.executeOnBackground() } throws mockException
         coEvery { mockUpdateChannelUseCase.executeOnBackground() } returns mockUpdateChannelStatusResponse
@@ -131,7 +131,7 @@ class PlayBroadcastSummaryPostVideoModelTest {
         }
     }
 
-//    @Test
+    @Test
     fun `when save video & save tag returns failed, it should return fail state`() {
         coEvery { mockSetChannelTagUseCase.executeOnBackground() } returns mockSetChannelTagsResponseFail
         coEvery { mockUpdateChannelUseCase.executeOnBackground() } returns mockUpdateChannelStatusResponse
@@ -157,7 +157,7 @@ class PlayBroadcastSummaryPostVideoModelTest {
         }
     }
 
-//    @Test
+    @Test
     fun `when save video & update channel status failed, it should return fail state`() {
         coEvery { mockSetChannelTagUseCase.executeOnBackground() } returns mockSetChannelTagResponse
         coEvery { mockUpdateChannelUseCase.executeOnBackground() } throws mockException

@@ -18,6 +18,7 @@ import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isLessThanHoursOf
 import com.tokopedia.mediauploader.common.util.slice
+import com.tokopedia.mediauploader.common.util.clearFileSliceStorage
 import com.tokopedia.mediauploader.common.util.trimLastZero
 import com.tokopedia.mediauploader.video.data.entity.LargeUploader
 import com.tokopedia.mediauploader.video.data.entity.VideoPolicy
@@ -38,6 +39,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import kotlin.math.ceil
+import kotlin.math.min
 
 class LargeUploaderManager @Inject constructor(
     @UploaderQualifier private val policyManager: SourcePolicyManager,
@@ -59,7 +61,14 @@ class LargeUploaderManager @Inject constructor(
     private var progressUploader: ProgressUploader? = null
     private var requestId = ""
 
+    // used by recursive upload as flag, set as 1 since upload first is outside the recursive flow
+    private var partUploadProgress = 1
+    private var threadLimit: Int = 0
+
     suspend operator fun invoke(param: VideoParam): UploadResult {
+        threadLimit = 0
+        partUploadProgress = 1
+
         val base = param.base as BaseParam
 
         val policy = policyManager.get()
@@ -135,10 +144,19 @@ class LargeUploaderManager @Inject constructor(
 
         while (true) {
             if (maxRetryTranscoding >= maxRetry) {
-                return UploadResult.Error(TRANSCODING_FAILED).also { resetUpload() }
+                // transcode timeout
+                return getTranscodeError()
             }
 
-            if (transcodingUseCase(mUploadId).isCompleted()) break
+            val transcodeStatus = transcodingUseCase(mUploadId)
+
+            // transcode success
+            if (transcodeStatus.isCompleted()) break
+
+            // transcode failed
+            if (transcodeStatus.requestId().isNotEmpty() || transcodeStatus.isFailed()) {
+                return getTranscodeError(transcodeStatus.requestId())
+            }
 
             maxRetryTranscoding++
             delay(policy.retryIntervalInSec())
@@ -147,24 +165,33 @@ class LargeUploaderManager @Inject constructor(
         return null
     }
 
+    private fun getTranscodeError(requestId: String? = null): UploadResult.Error {
+        return UploadResult.Error(TRANSCODING_FAILED, requestId ?: TRANSCODE_FAILED_CODE).also { resetUpload() }
+    }
+
     private suspend fun uploadFirstPart(
         file: File,
         sizePerChunk: Int,
         sourceId: String,
         policy: SourcePolicy
     ): Boolean {
-        if (partUploaded[UPLOAD_PART_START] == true) return true
+        val maxUploadChunk = policy.videoPolicy?.largeMaxConcurrent ?: 1
+        threadLimit = min(maxUploadChunk, chunkTotal)
 
-        file.slice(UPLOAD_PART_START, sizePerChunk)?.let { byteArrayToSend ->
-            return chunkUpload(
-                sourceId,
-                file,
-                byteArrayToSend,
-                policy.timeOut,
-                UPLOAD_PART_START
-            ).also {
-                updateProgressValue()
-            }
+        if (partUploaded[UPLOAD_FIRST_INDEX] == true) return true
+
+        file.slice(UPLOAD_FIRST_INDEX, sizePerChunk, reuseSlot = null, slotSize = threadLimit)?.let { (_, byteArrayToSend) ->
+            return byteArrayToSend?.let {
+                return chunkUpload(
+                    sourceId,
+                    file,
+                    it,
+                    policy.timeOut,
+                    UPLOAD_FIRST_INDEX
+                ).also {
+                    updateProgressValue()
+                }
+            } ?: false
         } ?: return false
     }
 
@@ -176,34 +203,69 @@ class LargeUploaderManager @Inject constructor(
     ) = withContext(dispatchers.io) {
         val jobList = mutableListOf<Job>()
 
-        for (part in UPLOAD_PART_START..chunkTotal) {
+        for (part in UPLOAD_PART_INDEX..chunkTotal) {
             if (partUploaded[part] == true) continue
             if (requestId.isNotEmpty()) error(UNKNOWN_ERROR)
 
-            file.slice(part, sizePerChunk)?.let {
-                val byteArrayToSend = it
+            // stop job creation if job number is already on thread limit
+            if (jobList.size >= threadLimit) break
 
-                // trim zero byte from last for the last of part
-                if (part == chunkTotal) byteArrayToSend.trimLastZero()
+            jobList.add(launch {
+                recursivePartUpload(
+                    file, sizePerChunk, sourceId, policy
+                )
+            })
+        }
 
-                jobList.add(
-                    launch {
+        jobList.forEach {
+            it.join()
+        }
+    }
+
+    private suspend fun recursivePartUpload(
+        file: File,
+        sizePerChunk: Int,
+        sourceId: String,
+        policy: SourcePolicy,
+        reuseSlot: Int? = null
+    ) {
+        partUploadProgress++
+        val part = partUploadProgress
+
+        withContext(dispatchers.io) {
+            if (partUploaded[part] == true) return@withContext
+            if (partUploadProgress > chunkTotal) {
+                clearFileSliceStorage()
+                return@withContext
+            }
+
+            var job: Job? = null
+
+            file.slice(part, sizePerChunk, reuseSlot = reuseSlot, slotSize = threadLimit)?.let { (slotIndex, byteArrayToSend) ->
+                byteArrayToSend?.let {
+                    // trim zero byte from last for the last of part
+                    if (part == chunkTotal) {
+                        byteArrayToSend.trimLastZero()
+                    }
+
+                    job = launch {
                         chunkUpload(
                             sourceId,
                             file,
                             byteArrayToSend,
                             policy.timeOut,
-                            part
+                            partNumber = part
                         )
 
                         updateProgressValue()
+                        recursivePartUpload(
+                            file, sizePerChunk, sourceId, policy, reuseSlot = slotIndex
+                        )
                     }
-                )
+                }
             }
-        }
 
-        jobList.forEach { job ->
-            job.join()
+            job?.join()
         }
     }
 
@@ -384,7 +446,11 @@ class LargeUploaderManager @Inject constructor(
         private const val MAX_PROGRESS_LOADER = 100
 
         private const val MAX_RETRY_COUNT = 5
-        private const val UPLOAD_PART_START = 1
         private const val THRESHOLD_REQUEST_MAX_TIME = 2 // hours
+
+        private const val UPLOAD_FIRST_INDEX = 1
+        private const val UPLOAD_PART_INDEX = 2
+
+        private const val TRANSCODE_FAILED_CODE = "-2"
     }
 }

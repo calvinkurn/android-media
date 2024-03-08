@@ -46,12 +46,12 @@ public class ScaleGestureDetector {
     private int activeId1;
     private boolean active0MostRecent;
 
-    ScaleGestureDetector(OnScaleGestureListener listener) {
+    public ScaleGestureDetector(OnScaleGestureListener listener) {
         this.listener = listener;
         currSpanVector = new Vector2D();
     }
 
-    boolean onTouchEvent(View view, MotionEvent event) {
+    public boolean onTouchEvent(View view, MotionEvent event) {
         final int action = event.getActionMasked();
 
         if (action == MotionEvent.ACTION_DOWN) {
@@ -299,7 +299,7 @@ public class ScaleGestureDetector {
      *
      * @return {@code true} if a scale gesture is in progress, {@code false} otherwise.
      */
-    boolean isInProgress() {
+    public boolean isInProgress() {
         return gestureInProgress;
     }
 

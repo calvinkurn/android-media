@@ -10,4 +10,5 @@
 
     <string name="stories_creation_add_product_test_tag">stories_creation_add_product_test_tag</string>
     <string name="stories_creation_upload_test_tag">stories_creation_upload_test_tag</string>
+    <string name="stories_creation_default_error_message">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 </resources>

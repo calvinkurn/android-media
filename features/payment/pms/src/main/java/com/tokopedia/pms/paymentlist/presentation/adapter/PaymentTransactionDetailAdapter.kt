@@ -5,16 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.pms.R
+import com.tokopedia.pms.databinding.ItemTransactionDetailItemBinding
 import com.tokopedia.pms.paymentlist.domain.data.VaTransactionItem
 import com.tokopedia.pms.paymentlist.presentation.bottomsheet.PaymentTransactionDetailSheet
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.android.synthetic.main.item_transaction_detail_item.view.*
 
 class PaymentTransactionDetailAdapter(
     private var transactionList: ArrayList<VaTransactionItem>,
     private val clickListener: (Int, String?, VaTransactionItem) -> Unit
-) :
-    RecyclerView.Adapter<PaymentTransactionDetailAdapter.PaymentTransactionDetailViewHolder>() {
+) : RecyclerView.Adapter<PaymentTransactionDetailAdapter.PaymentTransactionDetailViewHolder>() {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -22,7 +21,8 @@ class PaymentTransactionDetailAdapter(
     ): PaymentTransactionDetailViewHolder {
         return PaymentTransactionDetailViewHolder(
             LayoutInflater.from(parent.context)
-                .inflate(LAYOUT_ID, parent, false), clickListener
+                .inflate(LAYOUT_ID, parent, false),
+            clickListener
         )
     }
 
@@ -35,22 +35,25 @@ class PaymentTransactionDetailAdapter(
     class PaymentTransactionDetailViewHolder(
         val view: View,
         val clickListener: (Int, String?, VaTransactionItem) -> Unit
-    ) :
-        RecyclerView.ViewHolder(view) {
+    ) : RecyclerView.ViewHolder(view) {
+
+        private val binding = ItemTransactionDetailItemBinding.bind(view)
+
         fun bind(vaTransactionItem: VaTransactionItem, position: Int) {
-            view.apply {
-                tvTransactionTitle.text = context.getString(
+            binding.run {
+                tvTransactionTitle.text = root.context.getString(
                     R.string.pms_payment_item_heading,
                     position + 1,
                     vaTransactionItem.productName
                 )
                 tvTransactionAmount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    vaTransactionItem.amount, false
+                    vaTransactionItem.amount,
+                    false
                 )
                 tvCancelTransaction.setOnClickListener {
                     clickListener(
                         PaymentTransactionDetailSheet.CANCEL_TRANSACTION,
-                        context.getString(
+                        root.context.getString(
                             R.string.pms_payment_item_heading,
                             position + 1,
                             vaTransactionItem.productName

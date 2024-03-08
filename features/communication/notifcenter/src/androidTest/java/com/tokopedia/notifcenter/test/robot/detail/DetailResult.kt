@@ -6,6 +6,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.stub.common.matchesBackgroundColor
@@ -16,7 +17,9 @@ import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.EmptyNo
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.EmptyNotificationWithRecomViewHolder
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.NormalNotificationViewHolder
+import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.NotifcenterTimelineHistoryViewHolder
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.SectionTitleViewHolder
+import com.tokopedia.test.application.matcher.hasTotalItemOf
 import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
 import com.tokopedia.test.application.matcher.hasViewHolderOf
 import org.hamcrest.CoreMatchers
@@ -270,5 +273,57 @@ object DetailResult {
             withRecyclerView(R.id.recycler_view)
                 .atPositionOnView(position, R.id.lb_product_label)
         ).check(matches(withText(text)))
+    }
+
+    fun assertNotificationWidgetFeed(position: Int, title: String, description: String) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.txt_notification_title)
+        ).check(matches(withText(title)))
+
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.notifcenter_tv_feed_description)
+        ).check(matches(withText(description)))
+    }
+
+    fun assertWidgetFeedSingle(position: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.notifcenter_iv_feed_rect_single)
+        ).check(matches(isDisplayed()))
+    }
+
+    fun assertWidgetFeedMultiple(position: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.notifcenter_iv_feed_circle_one)
+        ).check(matches(isDisplayed()))
+
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.notifcenter_iv_feed_circle_one)
+        ).check(matches(isDisplayed()))
+    }
+
+    fun assertWidgetNoImage(position: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.notifcenter_cl_feed_images)
+        ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
+    }
+
+    fun assertWidgetFeedToggleButton(position: Int, visibility: ViewMatchers.Visibility) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.notifcenter_tv_toggle_history)
+        ).check(matches(withEffectiveVisibility(visibility)))
+    }
+
+    fun assertWidgetFeedRv(position: Int, size: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.notifcenter_rv_feed_history)
+        ).check(matches(hasTotalItemOf(size, NotifcenterTimelineHistoryViewHolder::class.java)))
     }
 }

@@ -2,7 +2,6 @@ package com.tokopedia.unifyorderhistory.analytics.data.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.unifyorderhistory.util.UohConsts
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -21,7 +20,7 @@ data class ECommerceClick(
     @Parcelize
     data class ActionField(
         @SerializedName("list")
-        var list: String = "/order list - ${UohConsts.BUSINESS_UNIT_REPLACEE}"
+        var list: String = ""
     ) : Parcelable
 
     @Parcelize

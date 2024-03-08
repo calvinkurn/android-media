@@ -8,17 +8,16 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
+import com.tokopedia.product.manage.common.util.ProductManageConfig
+import com.tokopedia.product.manage.databinding.BottomSheetProductManageBinding
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductMenuAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder.ProductMenuListener
 import com.tokopedia.product.manage.feature.list.view.model.ProductItemDivider
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
-import com.tokopedia.product.manage.common.util.ProductManageConfig
-import com.tokopedia.product.manage.databinding.BottomSheetProductManageBinding
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -87,7 +86,6 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         productMenuListener: ProductMenuListener,
         sellerFeatureCarouselListener: SellerFeatureCarousel.SellerFeatureClickListener
     ) {
-
         this.menuAdapterListener = productMenuListener
         this.sellerFeatureCarouselListener = sellerFeatureCarouselListener
     }
@@ -217,7 +215,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                         add(CreateBroadcastChat(product))
                     }
 
-                    if(isFeatured && isPowerMerchantOrOfficialStore && setFeatured) {
+                    if (isFeatured && isPowerMerchantOrOfficialStore && setFeatured) {
                         add(RemoveFeaturedProduct(product))
                     }
 

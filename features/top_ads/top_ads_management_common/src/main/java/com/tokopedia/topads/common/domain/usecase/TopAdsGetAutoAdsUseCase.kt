@@ -19,9 +19,15 @@ class TopAdsGetAutoAdsUseCase @Inject constructor(
 
     var params: RequestParams = RequestParams.create()
 
+    private var source: String = ""
+
+    fun setSource(source: String){
+        this.source = source
+    }
+
     override suspend fun executeOnBackground(): AutoAdsResponse.TopAdsGetAutoAds {
         params.putString(SHOPID, userSession.shopId)
-        params.putString(SOURCE, "android.see_ads_performance")
+        params.putString(SOURCE, source)
         val gqlRequest = GraphqlRequest(
             GetAutoAdsV2,
             AutoAdsResponse::class.java,

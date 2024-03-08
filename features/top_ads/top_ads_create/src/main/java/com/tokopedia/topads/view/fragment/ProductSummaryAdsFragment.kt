@@ -1,6 +1,7 @@
 package com.tokopedia.topads.view.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.EXACT_POSITIVE
@@ -38,7 +40,9 @@ import com.tokopedia.topads.common.view.sheet.CreateEditAdGroupNameBottomSheet
 import com.tokopedia.topads.common.view.sheet.TopAdsOutofCreditSheet
 import com.tokopedia.topads.common.view.sheet.TopAdsSuccessSheet
 import com.tokopedia.topads.create.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants
+import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
@@ -65,7 +69,7 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
     private var strategies: MutableList<String> = mutableListOf()
     private var bidTypeData: ArrayList<TopAdsBidSettingsModel>? = arrayListOf()
     private var isDailyBudgetOn: Boolean = false
-
+    private var isAutoPsWhitelisted: Boolean = false
 
     @JvmField
     @Inject
@@ -377,14 +381,25 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
         }
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel?.getVariantById()
+        attachObservers()
         setDailyBudget()
         setUpView()
         setInitialNameCounter()
         checkForAutoFillGroupName()
         setUpClicksOnViews()
+    }
+
+    private fun attachObservers() {
+        viewModel?.shopVariant?.observe(viewLifecycleOwner) { shopVariants ->
+            isAutoPsWhitelisted = shopVariants.isNotEmpty() && shopVariants.filter {
+                it.experiment == TopAdsCommonConstant.AUTOPS_EXPERIMENT &&
+                    it.variant == TopAdsCommonConstant.AUTOPS_VARIANT
+            }
+                .isNotEmpty()
+        }
     }
 
     private fun setInitialNameCounter() {
@@ -457,10 +472,20 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
         keywordsList.add(key)
     }
 
-
-    private fun onSuccessActivation() {
+    private fun onSuccessActivation(groupId: String) {
         binding?.createLoading?.hide()
-        viewModel?.getTopAdsDeposit(this::onSuccess, this::errorResponse)
+        if(isAutoPsWhitelisted){
+            val source = activity?.intent?.extras?.getString(TopAdsCommonConstant.SOURCE_PACKAGE)
+            val intent = Intent(context, TopAdsGroupDetailViewActivity::class.java)
+            intent.putExtra(TopAdsCommonConstant.GROUP_ID_PARAM, groupId)
+            if(!source.isNullOrEmpty()){
+                intent.putExtra(TopAdsCommonConstant.SOURCE_PACKAGE,source)
+            }
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        } else {
+            viewModel?.getTopAdsDeposit(this::onSuccess, this::errorResponse)
+        }
     }
 
     private fun onSuccess(data: DepositAmount) {

@@ -348,22 +348,21 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
     }
 
     private fun initUiState(savedInstanceState: Bundle?) {
-        viewModel.setDefaultReviewItemRating(appLinkHandler.getRating().toIntOrNull() ?: BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING)
         if (savedInstanceState == null) {
-            viewModel.getData(appLinkHandler.getInvoiceNumber(), appLinkHandler.getUtmSource())
+            setupInitialState()
         } else {
             val cacheManagerId = savedInstanceState.getString(BULK_REVIEW_KEY_CACHE_MANAGER_ID).orEmpty()
             val cacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
             viewModel.onRestoreInstanceState(
                 saveInstanceCacheManager = cacheManager,
-                onFailedRestoreState = {
-                    viewModel.getData(
-                        appLinkHandler.getInvoiceNumber(),
-                        appLinkHandler.getUtmSource()
-                    )
-                }
+                onFailedRestoreState = ::setupInitialState
             )
         }
+    }
+
+    private fun setupInitialState() {
+        viewModel.setDefaultReviewItemRating(appLinkHandler.getRating().toIntOrNull() ?: BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING)
+        viewModel.getData(appLinkHandler.getInvoiceNumber(), appLinkHandler.getUtmSource())
     }
 
     private fun collectBulkReviewPageUiState() {

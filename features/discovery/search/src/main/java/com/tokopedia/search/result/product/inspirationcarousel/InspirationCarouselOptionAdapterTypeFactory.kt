@@ -44,7 +44,6 @@ class InspirationCarouselOptionAdapterTypeFactory(
                 InspirationCarouselOptionGridReimagineViewHolder(
                     parent,
                     listener,
-                    reimagineSearch2Component.hasMultilineProductName(),
                 )
             else -> super.createViewHolder(parent, type)
         }

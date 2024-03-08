@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="is_downloading_title">Sedang download..</string>
+    <string name="is_downloading_desc">Setelah selesai download, kamu bisa langsung eksplor dan cobain fitur terbaru!</string>
+    <string name="is_downloading_cancel_text">Batal</string>
+
+    <string name="dialog_file_manager_title">Untuk install, buka folder %s di HP-mu</string>
+    <string name="dialog_file_manager_desc"><![CDATA[Pastikan kamu pilih &amp; install aplikasi <b>%s</b> untuk update ke versi terbaru.]]></string>
+    <string name="dialog_file_manager_btn_primary">Buka Folder</string>
+    <string name="dialog_file_manager_btn_secondary">Nanti Aja</string>
+
+    <!--Nakama Version -->
+    <string name="dialog_update_app_version_title">Update app ke versi terbaru</string>
+    <string name="dialog_update_app_version_desc"><![CDATA[Yuk, download &amp; install aplikasi Tokopedia <b>v%s</b> untuk cobain fitur-fitur terbaru!]]></string>
+    <string name="dialog_update_app_version_btn_primary">Download</string>
+    <string name="dialog_update_app_version_btn_secondary">Nanti Aja</string>
+    
+    <string name="app_download_error_network_message">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
+    <string name="app_download_error_insufficient_message">Perangkat ini tidak memiliki cukup ruang. Coba  atur ruang penyimpanan dan coba lagi.</string>
+    <string name="app_download_try_again">Coba Lagi</string>
+
+    <string name="app_download_error_insufficient_space_title">Ruang penyimpanan penuh</string>
+    <string name="app_download_error_insufficient_space_desc">Perangkat ini tidak memiliki cukup ruang. Coba  atur ruang penyimpanan dan coba lagi.</string>
+    <string name="app_download_error_insufficient_button_primary">Lihat Penyimpanan</string>
+
+    <string name="update_app_version_toaster_install">Cek notifikasi HP kamu untuk monitor proses download, ya.</string>
+    <string name="update_app_version_toaster_oke">Oke</string>
+
+
+</resources>

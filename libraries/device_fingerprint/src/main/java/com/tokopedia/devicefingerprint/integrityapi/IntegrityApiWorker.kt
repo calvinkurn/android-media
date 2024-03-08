@@ -2,7 +2,14 @@ package com.tokopedia.devicefingerprint.integrityapi
 
 import android.content.Context
 import android.util.Base64
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.CoroutineWorker
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import com.google.android.play.core.integrity.IntegrityManager
 import com.google.android.play.core.integrity.IntegrityManagerFactory
 import com.google.android.play.core.integrity.IntegrityServiceException
@@ -13,7 +20,6 @@ import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
 import com.tokopedia.devicefingerprint.integrityapi.model.IntegrityParam
 import com.tokopedia.devicefingerprint.integrityapi.usecase.SubmitIntegrityUseCase
 import com.tokopedia.encryption.security.AESEncryptorGCM
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -102,21 +108,9 @@ class IntegrityApiWorker(val appContext: Context, val params: WorkerParameters) 
         private const val EVENT_PARAM = "event_param"
         private const val MAX_RETRY = 3
 
-        private const val CONFIG_INTEGRITY = "and_play_integrity"
-        private const val SELLER_CONFIG_INTEGRITY = "sel_play_integrity"
-
-        fun isEnable(): Boolean {
-            val rollence = if(GlobalConfig.isSellerApp()) {
-                RemoteConfigInstance.getInstance().abTestPlatform.getString(SELLER_CONFIG_INTEGRITY, "")
-            } else {
-                RemoteConfigInstance.getInstance().abTestPlatform.getString(CONFIG_INTEGRITY, "")
-            }
-            return rollence.isNotEmpty()
-        }
-
         @JvmStatic
         fun scheduleWorker(context: Context, event: String) {
-            if (isEnable()) {
+            if (!GlobalConfig.isSellerApp()) {
                 try {
                     val data = Data.Builder().apply { putString(EVENT_PARAM, event) }.build()
                     val periodicWorker = OneTimeWorkRequest

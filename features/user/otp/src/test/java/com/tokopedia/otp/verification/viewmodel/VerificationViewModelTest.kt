@@ -1023,8 +1023,6 @@ class VerificationViewModelTest {
         val modeList = arrayListOf(
             ModeListData(modeCode = 1, modeText = OtpConstant.OtpMode.SMS),
             ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA),
-            ModeListData(modeCode = 3, modeText = OtpConstant.OtpMode.MISCALL)
-
         )
 
         val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = defaultBehaviourMode, linkType = linkType)
@@ -1104,25 +1102,6 @@ class VerificationViewModelTest {
     }
 
     @Test
-    fun `getOtpModeListForDefaultOtp behavior 3`() {
-        val modeCode = 1
-        val modeList = arrayListOf(
-            ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS),
-            ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA),
-            ModeListData(modeCode = 3, modeText = OtpConstant.OtpMode.MISCALL)
-        )
-
-        val mockData = OtpModeListData(success = true, defaultMode = modeCode, modeList = modeList, defaultBehaviorMode = 3)
-        coEvery { getOtpModeList(any()) } returns mockData
-
-        viewmodel.getOtpModeListForDefaultOtp("", "", "", "", "", "")
-
-        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerClickableSpan == SPAN_USE_OTHER_METHODS)
-        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().footerText == spanFactory(SPAN_USE_OTHER_METHODS, mockData.linkType))
-        assert(viewmodel.defaultOtpUiModel.getOrAwaitValue().originalOtpModeList.size == modeList.size)
-    }
-
-    @Test
     fun `getOtpModeListForDefaultOtp behavior 1`() {
         val modeCode = 0
         val modeList = arrayListOf(
@@ -1170,7 +1149,6 @@ class VerificationViewModelTest {
         val modeList = arrayListOf(
             ModeListData(modeCode = modeCode, modeText = OtpConstant.OtpMode.SMS),
             ModeListData(modeCode = 2, modeText = OtpConstant.OtpMode.WA),
-            ModeListData(modeCode = 3, modeText = OtpConstant.OtpMode.MISCALL)
         )
 
         val mockData = DefaultOtpUiModel(

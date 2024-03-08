@@ -269,6 +269,7 @@ class ProductHighlightViewModelTest {
         every { dataItem.productName } returns "ProductName#1"
         every { dataItem.category } returns ""
         every { dataItem.price } returns "Rp15.000"
+        every { dataItem.shopName } returns ""
 
         coEvery {
             atcUseCase.createObservable(capture(slot)).toBlocking().single()
@@ -300,6 +301,7 @@ class ProductHighlightViewModelTest {
         every { dataItem.productName } returns "ProductName#1"
         every { dataItem.category } returns ""
         every { dataItem.price } returns "Rp15.000"
+        every { dataItem.shopName } returns ""
 
         coEvery {
             atcUseCase.createObservable(any()).toBlocking().single()
@@ -322,6 +324,7 @@ class ProductHighlightViewModelTest {
         every { dataItem.productName } returns "ProductName#1"
         every { dataItem.category } returns ""
         every { dataItem.price } returns "Rp15.000"
+        every { dataItem.shopName } returns ""
 
         coEvery {
             atcUseCase.createObservable(any()).toBlocking().single()

@@ -64,6 +64,7 @@ public interface SearchConstant {
         String GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE = "get_local_search_recommendation_use_case";
         String SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
         String SEARCH_SAME_SESSION_RECOMMENDATION_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
+        String GET_POST_ATC_CAROUSEL_USE_CASE = "get_post_atc_carousel_use_case";
         String SEARCH_PRODUCT_PARAMS = "params";
         String SEARCH_PRODUCT_SKIP_PRODUCT_ADS = "skip_product_ads";
         String SEARCH_PRODUCT_SKIP_HEADLINE_ADS = "skip_headline_ads";
@@ -201,5 +202,10 @@ public interface SearchConstant {
         String ETA = "eta";
         String LIST_VIEW = "listview";
         String FIXED_GRID = "fixedgrid";
+    }
+
+    interface SearchCoupon {
+        String SEARCH_COUPON_USE_CASE = "search_coupon_use_case";
+        String SEARCH_COUPON_REDEEM_USE_CASE = "search_coupon_redeem_use_case";
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.product.usecase
 
+import android.content.SharedPreferences
 import com.google.gson.JsonObject
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
@@ -65,15 +66,18 @@ class GetPdpLayoutUseCaseTest {
     @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
 
+    @RelaxedMockK
+    lateinit var componentFilterSharedPref: SharedPreferences
+
     @get:Rule
     val testRule = UnconfinedTestRule()
 
     private val useCaseTest by lazy {
-        GetPdpLayoutUseCase(gqlUseCase, "", remoteConfig, CoroutineTestDispatchersProvider)
+        GetPdpLayoutUseCase(gqlUseCase, "", remoteConfig, CoroutineTestDispatchersProvider, componentFilterSharedPref)
     }
 
     private val useCaseTestLayoutId by lazy {
-        GetPdpLayoutUseCase(gqlUseCase, "56", remoteConfig, CoroutineTestDispatchersProvider)
+        GetPdpLayoutUseCase(gqlUseCase, "56", remoteConfig, CoroutineTestDispatchersProvider, componentFilterSharedPref)
     }
 
     @Before

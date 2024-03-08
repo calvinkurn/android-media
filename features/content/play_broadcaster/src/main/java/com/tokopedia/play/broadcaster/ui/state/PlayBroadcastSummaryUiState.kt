@@ -20,10 +20,9 @@ data class ChannelSummaryUiState(
     val coverUrl: String,
     val date: String,
     val duration: String,
-    val isEligiblePostVideo: Boolean,
     val author: ContentAccountUiModel,
 ) {
-    fun isEmpty() = title.isEmpty() && coverUrl.isEmpty() && date.isEmpty() && duration.isEmpty() && !isEligiblePostVideo
+    fun isEmpty() = title.isEmpty() && coverUrl.isEmpty() && date.isEmpty() && duration.isEmpty()
 
     companion object {
         fun empty() = ChannelSummaryUiState(
@@ -31,7 +30,6 @@ data class ChannelSummaryUiState(
             coverUrl = "",
             date = "",
             duration = "",
-            isEligiblePostVideo = false,
             author = ContentAccountUiModel.Empty,
         )
     }

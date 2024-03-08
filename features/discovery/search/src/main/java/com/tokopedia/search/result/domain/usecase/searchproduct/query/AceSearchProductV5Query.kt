@@ -82,6 +82,10 @@ object AceSearchProductV5Query {
                       title
                       type
                       url
+                      styles {
+                        key
+                        value
+                      }
                     }
                     rating
                     wishlist
@@ -162,6 +166,10 @@ object AceSearchProductV5Query {
                   title
                   type
                   url
+                  styles {
+                    key
+                    value
+                  }
                 }
                 labelGroupsVariant {
                   title

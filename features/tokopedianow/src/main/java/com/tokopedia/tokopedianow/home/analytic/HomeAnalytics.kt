@@ -96,6 +96,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CART_BUTTON
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CATEGORY_ON_CATEGORY
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CHECK_DETAIL_RECEIVER_REFERRAL_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CHEVRON_BUTTON_PAST_PURCHASE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CLAIM_COUPON
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CLOSE_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_COUPON_DETAIL
@@ -152,6 +153,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CAT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_ATC_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_LEGO_4
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_CLAIM_COUPON_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_CLICK_CHEVRON_BUTTON_PAST_PURCHASE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_COUPON_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_MULTIPLE_BUNDLE_WIDGET_BUTTON
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_MULTIPLE_BUNDLE_WIDGET_PRODUCT
@@ -283,6 +285,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val EVENT_ACTION_CLICK_SINGLE_BUNDLE_PACKAGE_VARIANT = "click - single bundling widget - package variant"
         const val EVENT_ACTION_CLICK_SINGLE_BUNDLE_PRODUCT = "click - single bundling widget - product"
         const val EVENT_ACTION_CLICK_SINGLE_BUNDLE_BUTTON = "click - single bundling widget - lihat paket on bundling component"
+        const val EVENT_ACTION_CLICK_CHEVRON_BUTTON_PAST_PURCHASE = "click chevron button on past purchase widget"
     }
 
     object VALUE {
@@ -328,6 +331,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val ID_CLICK_SINGLE_BUNDLE_WIDGET_PACKAGE_VARIANT = "42082"
         const val ID_CLICK_SINGLE_BUNDLE_WIDGET_PRODUCT = "42083"
         const val ID_CLICK_SINGLE_BUNDLE_WIDGET_BUTTON = "42084"
+        const val ID_CLICK_CLICK_CHEVRON_BUTTON_PAST_PURCHASE = "45608"
     }
 
     fun onClickSearchBar() {
@@ -764,54 +768,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
     }
 
-    fun onImpressRepurchase(
-        position: Int,
-        data: TokoNowProductCardUiModel
-    ) {
-        val items = arrayListOf(
-            productCardItemDataLayer(
-                position = position.toString(),
-                id = data.productId,
-                name = data.product.productName,
-                price = data.product.formattedPrice
-            )
-        )
-
-        val eventLabel = getProductCardLabel(data)
-        val dataLayer = getProductDataLayer(
-            event = EVENT_VIEW_ITEM_LIST,
-            action = EVENT_ACTION_IMPRESSION_PAST_PURCHASE,
-            category = EVENT_CATEGORY_HOME_PAGE,
-            label = eventLabel,
-            items = items,
-            itemList = "/ - p$position - past purchase - carousel - ${data.headerName}"
-        )
-        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
-    }
-
-    fun onClickRepurchase(position: Int, data: TokoNowProductCardUiModel) {
-        val items = arrayListOf(
-            productCardItemDataLayer(
-                position = position.toString(),
-                id = data.productId,
-                name = data.product.productName,
-                price = data.product.formattedPrice
-            )
-        )
-
-        val eventLabel = getProductCardLabel(data)
-
-        val dataLayer = getProductDataLayer(
-            event = EVENT_SELECT_CONTENT,
-            action = EVENT_ACTION_CLICK_PAST_PURCHASE,
-            category = EVENT_CATEGORY_HOME_PAGE,
-            label = eventLabel,
-            items = items,
-            itemList = "/ - p$position - past purchase - carousel - ${data.headerName}"
-        )
-        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
-    }
-
     fun onRepurchaseAddToCart(quantity: Int, data: TokoNowProductCardUiModel) {
         val items = arrayListOf(
             productCardItemDataLayer(
@@ -836,6 +792,19 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             items = items
         )
         getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
+    }
+
+    fun trackClickChevronButtonOnPastPurchaseWidget() {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_GROCERIES)
+            .setEventAction(EVENT_ACTION_CLICK_CHEVRON_BUTTON_PAST_PURCHASE)
+            .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
+            .setEventLabel(String.EMPTY)
+            .setCustomProperty(KEY_TRACKER_ID, ID_CLICK_CLICK_CHEVRON_BUTTON_PAST_PURCHASE)
+            .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
+            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
+            .build()
+            .send()
     }
 
     fun trackImpressionLeftCarousel(channelId: String, channelHeaderName: String) {

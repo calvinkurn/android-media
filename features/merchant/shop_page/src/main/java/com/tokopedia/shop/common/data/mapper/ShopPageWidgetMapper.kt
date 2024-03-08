@@ -18,6 +18,7 @@ import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGrou
 import com.tokopedia.shop.home.view.customview.directpurchase.Etalase
 import com.tokopedia.shop.home.view.customview.directpurchase.Title
 import com.tokopedia.shop.home.view.customview.directpurchase.WidgetData
+import com.tokopedia.shop.home.view.model.ShopBmsmWidgetGwpUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel

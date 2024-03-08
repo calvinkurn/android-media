@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
@@ -83,6 +84,7 @@ import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
 import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.databinding.FragmentOrderSummaryPageBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
@@ -120,10 +122,10 @@ import com.tokopedia.oneclickcheckout.payment.creditcard.installment.CreditCardI
 import com.tokopedia.oneclickcheckout.payment.installment.GoCicilInstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
+import com.tokopedia.promousage.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.list.PromoItem
-import com.tokopedia.promousage.util.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
@@ -160,6 +162,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUp
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -213,6 +216,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
 
     @Inject
     lateinit var promoEntryPointAnalytics: PromoUsageEntryPointAnalytics
+
+    @Inject
+    lateinit var gson: Lazy<Gson>
 
     private val viewModel: OrderSummaryPageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
@@ -539,6 +545,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
 
         // first load
         if (viewModel.orderProducts.value.isEmpty()) {
+            checkPromoFromPdp()
             val productIds = arguments?.getString(QUERY_PRODUCT_ID)
             if (productIds.isNullOrBlank() || savedInstanceState?.getBoolean(SAVE_HAS_DONE_ATC) == true) {
                 setSourceFromPDP()
@@ -691,7 +698,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                         handleError(failure.throwable)
                     }
                 }
-                is OccState.FirstLoad -> showMainContent(it.data)
+                is OccState.FirstLoad -> {
+                    showMainContent(it.data)
+                }
                 is OccState.Success -> showMainContent(it.data)
             }
         }
@@ -1723,6 +1732,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     PaymentListingActivity.EXTRA_CALLBACK_URL,
                     payment.creditCard.additionalData.callbackUrl
                 )
+                val paymentRequest = viewModel.generatePaymentRequest(orderCost)
+                putExtra(PaymentListingActivity.EXTRA_PAYMENT_REQUEST, gson.get().toJson(paymentRequest, PaymentRequest::class.java))
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
@@ -1735,6 +1746,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     payment,
                     viewModel.orderCart,
                     orderTotal.orderCost,
+                    viewModel.generatePaymentRequest(orderTotal.orderCost),
                     userSession.get().userId,
                     object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                         override fun onSelectInstallment(selectedInstallment: OrderPaymentInstallmentTerm, installmentList: List<OrderPaymentInstallmentTerm>) {
@@ -2215,6 +2227,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         }
     }
 
+    private fun checkPromoFromPdp() {
+        val listPromoAutoApply = arguments?.getParcelableArrayList<PromoExternalAutoApply>(QUERY_LIST_PROMO_AUTO_APPLY)
+        if (listPromoAutoApply?.isNotEmpty() == true) {
+            viewModel.listPromoExternalAutoApplyCode = listPromoAutoApply
+        }
+    }
+
     companion object {
         const val REQUEST_CODE_COURIER_PINPOINT = 13
 
@@ -2246,6 +2265,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         const val QUERY_SOURCE = "source"
         const val QUERY_GATEWAY_CODE = "gateway_code"
         const val QUERY_TENURE_TYPE = "tenure_type"
+        const val QUERY_LIST_PROMO_AUTO_APPLY = "list_promo_auto_apply"
 
         private const val NO_ADDRESS_IMAGE = TokopediaImageUrl.NO_ADDRESS_IMAGE
 
@@ -2268,7 +2288,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
             productId: String?,
             gatewayCode: String?,
             tenureType: String?,
-            source: String?
+            source: String?,
+            listPromoAutoApply: ArrayList<PromoExternalAutoApply>
         ): OrderSummaryPageFragment {
             return OrderSummaryPageFragment().apply {
                 arguments = Bundle().apply {
@@ -2276,6 +2297,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     putString(QUERY_GATEWAY_CODE, gatewayCode)
                     putString(QUERY_TENURE_TYPE, tenureType)
                     putString(QUERY_SOURCE, source)
+                    putParcelableArrayList(QUERY_LIST_PROMO_AUTO_APPLY, listPromoAutoApply)
                 }
             }
         }

@@ -641,7 +641,7 @@ open class TokoChatFragment @Inject constructor(
 
                         // If the ticker is not in list, manually add ticker
                         if (adapter.getItems().getOrNull(adapter.itemCount - Int.ONE)
-                                !is TokoChatReminderTickerUiModel
+                            !is TokoChatReminderTickerUiModel
                         ) {
                             adapter.addItem(adapter.itemCount, ticker)
                             adapter.notifyItemInserted(adapter.itemCount)
@@ -834,8 +834,14 @@ open class TokoChatFragment @Inject constructor(
     private fun observeLiveChannel() {
         viewModel.getLiveChannel(viewModel.channelId)?.observe(viewLifecycleOwner) {
             it?.let { channel ->
-                expiresAt = channel.expiresAt
-                readModeStartsAt = channel.readModeStartsAt ?: 0
+                if (channel.expiresAt > 0) {
+                    expiresAt = channel.expiresAt
+                }
+                channel.readModeStartsAt?.let { readModeTime ->
+                    if (readModeTime > 0) {
+                        readModeStartsAt = readModeTime
+                    }
+                }
                 updateReplySectionView()
             }
         }

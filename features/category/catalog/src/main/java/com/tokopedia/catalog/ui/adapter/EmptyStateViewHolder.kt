@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.databinding.CatalogProductListEmptyStateBinding
 import com.tokopedia.catalog.ui.model.CatalogProductListEmptyModel
@@ -23,7 +23,7 @@ class EmptyStateViewHolder(itemView: View, val listener: EmptyStateFilterListene
     override fun bind(data: CatalogProductListEmptyModel) {
         binding?.title?.text = data.title
         binding?.image?.let { iv ->
-            ImageHandler.LoadImage(iv, data.urlRes)
+            iv?.loadImageFitCenter(data.urlRes)
         }
         binding?.desc?.text = data.description
         binding?.btnResetFilter?.setOnClickListener {

@@ -4,8 +4,6 @@ import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.stories.creation.analytic.StoriesCreationAnalytic
 import com.tokopedia.stories.creation.analytic.StoriesCreationAnalyticImpl
-import com.tokopedia.stories.creation.analytic.sender.StoriesCreationAnalyticSender
-import com.tokopedia.stories.creation.analytic.sender.StoriesCreationAnalyticSenderImpl
 import dagger.Binds
 import dagger.Module
 
@@ -18,10 +16,6 @@ abstract class StoriesCreationBindTestModule {
     @Binds
     @StoriesCreationTestScope
     abstract fun bindStoriesCreationAnalytic(storiesCreationAnalytic: StoriesCreationAnalyticImpl): StoriesCreationAnalytic
-
-    @Binds
-    @StoriesCreationTestScope
-    abstract fun bindStoriesCreationAnalyticSender(storiesCreationAnalyticSender: StoriesCreationAnalyticSenderImpl): StoriesCreationAnalyticSender
 
     @Binds
     @StoriesCreationTestScope

@@ -123,6 +123,7 @@ class ProductHighlightViewModel(
                 productName = dataItem.productName.orEmpty()
                 category = dataItem.category.orEmpty()
                 price = dataItem.price.orEmpty()
+                shopName = dataItem.shopName.orEmpty()
             }
 
         launchCatchError(block = {

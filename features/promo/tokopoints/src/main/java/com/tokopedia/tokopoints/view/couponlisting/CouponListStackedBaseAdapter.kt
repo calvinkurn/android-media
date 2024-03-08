@@ -18,7 +18,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -137,7 +138,7 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
 
     private fun setData(holder: ViewHolder, item: CouponValueEntity) {
         val itemContext = holder.itemView.context
-        ImageHandler.loadImageFitCenter(holder.imgBanner.context, holder.imgBanner, item.imageUrlMobile)
+        holder.imgBanner?.loadImageFitCenter(item.imageUrlMobile)
 
         if (item.isNewCoupon) {
             holder.itemView.setBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_GN100))

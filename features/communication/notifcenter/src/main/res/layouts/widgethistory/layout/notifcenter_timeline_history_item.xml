@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/notifcenter_history_top_line"
+        android:layout_width="1dp"
+        android:layout_height="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/notifcenter_iv_history_circle"
+        app:layout_constraintEnd_toEndOf="@id/notifcenter_iv_history_circle"
+        app:layout_constraintBottom_toTopOf="@id/notifcenter_iv_history_circle"
+        android:background="@color/Unify_NN200"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/notifcenter_iv_history_circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="22dp"
+        android:contentDescription="@null"
+        app:srcCompat="@drawable/notifcenter_ic_gray_circle_history" />
+
+    <View
+        android:id="@+id/notifcenter_history_bottom_line"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/notifcenter_iv_history_circle"
+        app:layout_constraintStart_toStartOf="@id/notifcenter_iv_history_circle"
+        app:layout_constraintEnd_toEndOf="@id/notifcenter_iv_history_circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/Unify_NN200" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/notifcenter_tv_history_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/notifcenter_iv_history_circle"
+        app:layout_constraintStart_toEndOf="@id/notifcenter_iv_history_circle"
+        app:layout_constraintBottom_toBottomOf="@id/notifcenter_iv_history_circle"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="12dp"
+        app:typographyType="body_3"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="Lorem mengomentari postinganmu." />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/notifcenter_tv_history_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/notifcenter_tv_history_title"
+        app:layout_constraintStart_toStartOf="@id/notifcenter_tv_history_title"
+        app:layout_constraintEnd_toEndOf="@id/notifcenter_tv_history_title"
+        android:textColor="@color/Unify_NN950_68"
+        app:typographyType="display_3"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="“ada paket bundling gak?”" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/notifcenter_tv_history_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/notifcenter_tv_history_description"
+        app:layout_constraintStart_toStartOf="@id/notifcenter_tv_history_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_goneMarginTop="2dp"
+        app:typographyType="small"
+        android:textColor="@color/Unify_NN950_68"
+        tools:text="3 mnt" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

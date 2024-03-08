@@ -93,7 +93,7 @@ class RechargeGeneralInstrumentTest {
 
     fun validate_manual_input_token() {
         onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed()))
-        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(not(isEnabled())))
+        onView(withId(R.id.recharge_general_enquiry_button_compose)).check(matches(not(isEnabled())))
 
 
         onView(withId(R.id.rv_digital_product)).perform(
@@ -141,9 +141,9 @@ class RechargeGeneralInstrumentTest {
     }
 
     fun validate_enquiry_button_enabled_after_delayed() {
-        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(not(isEnabled())))
+        onView(withId(R.id.recharge_general_enquiry_button_compose)).check(matches(not(isEnabled())))
         Thread.sleep(1000)
-        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(isEnabled()))
+        onView(withId(R.id.recharge_general_enquiry_button_compose)).check(matches(isEnabled()))
     }
 
 
@@ -163,7 +163,7 @@ class RechargeGeneralInstrumentTest {
 
     fun validate_manual_input_tagihan() {
         onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed()))
-        onView(withId(R.id.recharge_general_enquiry_button)).check(matches(not(isEnabled())))
+        onView(withId(R.id.recharge_general_enquiry_button_compose)).check(matches(not(isEnabled())))
 
         onView(withId(R.id.rv_digital_product)).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(

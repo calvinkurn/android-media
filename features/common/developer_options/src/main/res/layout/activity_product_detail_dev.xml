@@ -206,5 +206,87 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/pdp_border_vbs"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:padding="10dp">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Filter Component (Beta)"
+                app:typographyType="heading_3"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/pdp_component_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                app:text_field_input_type="text"
+                app:text_field_label="Type / Name"
+                app:text_field_label_static="true"
+                app:text_field_placeholder="shipment_v3" />
+
+            <RadioGroup
+                android:id="@+id/pdp_component_group_condition"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:layout_width="wrap_content"
+                    android:id="@+id/pdp_component_condition_filter"
+                    android:text="Filter Out"
+                    android:checked="true"
+                    android:layout_height="wrap_content"/>
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:layout_width="wrap_content"
+                    android:id="@+id/pdp_component_condition_only"
+                    android:text="Show Only"
+                    android:layout_height="wrap_content"/>
+
+            </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/pdp_component_group_filter"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:layout_width="wrap_content"
+                    android:id="@+id/pdp_component_filter_type"
+                    android:text="Type"
+                    android:checked="true"
+                    android:layout_height="wrap_content"/>
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:layout_width="wrap_content"
+                    android:id="@+id/pdp_component_filter_name"
+                    android:text="Name"
+                    android:layout_height="wrap_content"/>
+
+            </RadioGroup>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/pdp_component_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:gravity="center"
+                android:padding="@dimen/spacing_lvl3"
+                android:text="Apply"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
     </LinearLayout>
 </ScrollView>

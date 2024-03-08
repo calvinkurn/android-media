@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.extension
 
+import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
@@ -30,6 +31,14 @@ fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel()
 fun RecommendationEntity.RecommendationData.toRecommendationWidget(): RecommendationWidget {
     return RecommendationWidget(
         recommendationItemList = recommendation.mapIndexed { index, recommendation ->
+            val badges = if (isTokonow()) emptyList()
+            else recommendation.badges.map {
+                RecommendationItem.Badge(
+                    title = it.title,
+                    imageUrl = it.imageUrl
+                )
+            }
+
             RecommendationItem(
                 productId = recommendation.id,
                 name = recommendation.name,
@@ -64,12 +73,23 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 minOrder = recommendation.minOrder,
                 maxOrder = recommendation.maxOrder,
                 location = if (isTokonow()) "" else recommendation.shop.city,
-                badgesUrl = if (isTokonow()) listOf<String>() else recommendation.badges.map { it.imageUrl },
+                badges = badges,
                 type = layoutType,
                 isFreeOngkirActive = if (isTokonow()) false else recommendation.freeOngkirInformation.isActive,
                 freeOngkirImageUrl = if (isTokonow()) "" else recommendation.freeOngkirInformation.imageUrl,
                 labelGroupList = recommendation.labelGroups.map {
-                    RecommendationLabel(title = it.title, type = it.type, position = it.position, imageUrl = it.imageUrl)
+                    RecommendationLabel(
+                        title = it.title,
+                        type = it.type,
+                        position = it.position,
+                        imageUrl = it.imageUrl,
+                        styles = it.styles.map { style ->
+                            RecommendationLabel.Style(
+                                key = style.key,
+                                value = style.value
+                            )
+                        }
+                    )
                 },
                 isGold = recommendation.shop.isGold,
                 isOfficial = recommendation.shop.isOfficial,
@@ -154,15 +174,29 @@ fun RecommendationItem.toProductCardModel(
         ratingCount = rating,
         shopLocation = location,
         countSoldRating = ratingAverage,
-        shopBadgeList = badgesUrl.map {
-            ProductCardModel.ShopBadge(imageUrl = it)
+        shopBadgeList = badges.map {
+            ProductCardModel.ShopBadge(
+                title = it.title,
+                imageUrl = it.imageUrl
+            )
         },
         freeOngkir = ProductCardModel.FreeOngkir(
             isActive = isFreeOngkirActive,
             imageUrl = freeOngkirImageUrl
         ),
         labelGroupList = labelGroupList.map {
-            ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl = it.imageUrl)
+            ProductCardModel.LabelGroup(
+                position = it.position,
+                title = it.title,
+                type = it.type,
+                imageUrl = it.imageUrl,
+                styleList = it.styles.map { style ->
+                    ProductCardModel.LabelGroup.Style(
+                        key = style.key,
+                        value = style.value
+                    )
+                }
+            )
         },
         hasAddToCartButton = when (addToCartType) {
             RecommendationItem.AddToCartType.None -> hasAddToCartButton
@@ -200,6 +234,7 @@ const val LABEL_FULFILLMENT: String = "fulfillment"
 const val LAYOUTTYPE_HORIZONTAL_ATC: String = "horizontal-atc"
 const val LAYOUTTYPE_INFINITE_ATC: String = "infinite-atc"
 const val PAGENAME_IDENTIFIER_RECOM_ATC: String = "hatc"
+const val PAGENAME_PREFIX_CART: String = "cart"
 const val DEFAULT_QTY_0: Int = 0
 const val DEFAULT_QTY_1: Int = 1
 
@@ -225,6 +260,7 @@ fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean {
 
 private fun RecommendationEntity.RecommendationData.getAtcType(): RecommendationItem.AddToCartType {
     return if (hasQuantityEditor()) RecommendationItem.AddToCartType.QuantityEditor
+    else if(hasDirectAtc()) RecommendationItem.AddToCartType.DirectAtc
     else RecommendationItem.AddToCartType.None
 }
 
@@ -239,6 +275,9 @@ private fun RecommendationEntity.Recommendation.getGridPosition(): Recommendatio
 
 private fun RecommendationEntity.RecommendationData.hasQuantityEditor() =
     isTokonow() || pageName.contains(PAGENAME_IDENTIFIER_RECOM_ATC)
+
+private fun RecommendationEntity.RecommendationData.hasDirectAtc() =
+    pageName.startsWith(PAGENAME_PREFIX_CART)
 
 fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): RecommendationBanner? {
     assets?.banner?.let {
@@ -269,4 +308,18 @@ fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget, miniC
         recomItemList.add(item)
     }
     recomWidget.recommendationItemList = recomItemList
+}
+
+fun RecommendationWidget.mapToChannelHeader(): ChannelHeader {
+    return ChannelHeader(
+        name = title,
+        subtitle = subtitle,
+        expiredTime = expiredTime,
+        serverTimeUnix = serverTimeUnix,
+        applink = seeMoreAppLink,
+        backColor = headerBackColor,
+        backImage = headerBackImage,
+        textColor = titleColor,
+        channelId = channelId
+    )
 }

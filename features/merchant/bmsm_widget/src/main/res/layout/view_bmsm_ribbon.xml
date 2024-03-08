@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBmsmGiftCount"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:gravity="center_vertical"
+        android:paddingStart="8dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="2dp"
+        android:textColor="@color/Unify_Static_White"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        android:background="@drawable/bmsm_gift_ribbon_background"
+        tools:text="Hadiah" />
+
+    <View
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:background="@drawable/bmsm_gift_ribbon_shadow" />
+</LinearLayout>

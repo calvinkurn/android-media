@@ -14,9 +14,12 @@ object CommonTopupBillsDataMapper {
         }
     }
 
-    fun mapSeamlessFavNumberItemToContactDataView(clientNumbers: List<TopupBillsSeamlessFavNumberItem>): List<TopupBillsAutoComplete> {
+    fun mapSeamlessFavNumberItemToContactDataView(
+        clientNumbers: List<TopupBillsSeamlessFavNumberItem>,
+        isFavoriteNumber: Boolean
+    ): List<TopupBillsAutoComplete> {
         return clientNumbers.map {
-            TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber)
+            TopupBillsAutoCompleteContactModel(it.clientName, it.clientNumber, isFavoriteNumber = isFavoriteNumber)
         }
     }
 }

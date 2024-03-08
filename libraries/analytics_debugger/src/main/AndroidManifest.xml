@@ -38,6 +38,14 @@
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".debugger.ui.activity.ServerLogDebuggerActivity"
+            android:label="Analytics Debugger - Server log"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.tokopedia.analytics.task"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name=".debugger.ui.activity.FpmDebuggerDetailActivity"
             android:theme="@style/Theme.Green" />

@@ -1,21 +1,21 @@
 package com.tokopedia.cart.view.viewmodel
 
-import com.tokopedia.cartrevamp.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
-import com.tokopedia.cartrevamp.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
-import com.tokopedia.cartrevamp.view.uimodel.CartBmGmTickerData
-import com.tokopedia.cartrevamp.view.uimodel.CartDetailInfo
-import com.tokopedia.cartrevamp.view.uimodel.CartGroupBmGmHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartSelectedAmountHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartTopAdsHeadlineData
-import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
-import com.tokopedia.cartrevamp.view.uimodel.GetBmGmGroupProductTickerState
+import com.tokopedia.cart.view.uimodel.CartBmGmTickerData
+import com.tokopedia.cart.view.uimodel.CartDetailInfo
+import com.tokopedia.cart.view.uimodel.CartGroupBmGmHolderData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartSelectedAmountHolderData
+import com.tokopedia.cart.view.uimodel.CartTopAdsHeadlineData
+import com.tokopedia.cart.view.uimodel.CartWishlistHolderData
+import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
+import com.tokopedia.cart.view.uimodel.GetBmGmGroupProductTickerState
+import com.tokopedia.cartcommon.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
+import com.tokopedia.cartcommon.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import io.mockk.coEvery
@@ -27,6 +27,43 @@ class CartBmGmTest : BaseCartViewModelTest() {
 
     @Test
     fun `WHEN getBmGmGroupProductTicker success THEN should render ticker success`() {
+        // GIVEN
+        val valueOfferId = 1L
+        val cartItemHolderData = CartItemHolderData(
+            cartStringOrder = "cart-string-order",
+            cartBmGmTickerData = CartBmGmTickerData(
+                bmGmCartInfoData = CartDetailInfo(
+                    bmGmData = CartDetailInfo.BmGmData(
+                        offerId = 1L
+                    )
+                )
+            )
+        )
+        val bmGmData = BmGmGetGroupProductTickerResponse(
+            BmGmGetGroupProductTickerResponse.GetGroupProductTicker(
+                data = BmGmGetGroupProductTickerResponse.GetGroupProductTicker.Data(
+                    multipleData = listOf(
+                        BmGmGetGroupProductTickerResponse.GetGroupProductTicker.Data.MultipleData()
+                    )
+                )
+            )
+        )
+        cartViewModel.cartModel.lastOfferId = "1L-cart-string-order"
+
+        coEvery { bmGmGetGroupProductTickerUseCase(any()) } returns bmGmData
+
+        // WHEN
+        cartViewModel.getBmGmGroupProductTicker(
+            cartItemHolderData = cartItemHolderData,
+            params = BmGmGetGroupProductTickerParams()
+        )
+
+        // THEN
+        assertEquals(GetBmGmGroupProductTickerState.Success(Pair(cartItemHolderData, bmGmData)), cartViewModel.bmGmGroupProductTickerState.value)
+    }
+
+    @Test
+    fun `WHEN getBmGmGroupProductTicker success with empty data THEN should render ticker error`() {
         // GIVEN
         val valueOfferId = 1L
         val cartItemHolderData = CartItemHolderData(
@@ -51,7 +88,7 @@ class CartBmGmTest : BaseCartViewModelTest() {
         )
 
         // THEN
-        assertEquals(GetBmGmGroupProductTickerState.Success(Pair(cartItemHolderData, bmGmData)), cartViewModel.bmGmGroupProductTickerState.value)
+        assertEquals(true, cartViewModel.bmGmGroupProductTickerState.value is GetBmGmGroupProductTickerState.Failed)
     }
 
     @Test

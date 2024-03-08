@@ -266,6 +266,9 @@
 -dontwarn com.jsoniter.output.DynamicCodegen
 -dontwarn com.jsoniter.DynamicCodegen
 
+-dontwarn dagger.internal.QualifierMetadata
+-dontwarn dagger.internal.ScopeMetadata
+
 # View Binding
 -keep class * implements androidx.viewbinding.ViewBinding {
     public static *** bind(android.view.View);
@@ -351,3 +354,7 @@ public static com.tokopedia.stability.ChangeDelegate *;
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 -dontwarn org.slf4j.impl.StaticMDCBinder
 -dontwarn com.gojek.onekyc.R$drawable
+-dontwarn sun.nio.ch.DirectBuffer
+
+-dontwarn com.yandex.div.core.util.Assert
+-dontwarn com.yandex.div.core.util.KAssert

@@ -16,7 +16,7 @@
     <declare-styleable name="SpannedGridLayoutManager">
         <attr name="android:orientation" />
         <attr name="spanCount" />
-        <attr name="aspectRatio" format="string" />
+        <attr name="aspectRatioCustom" format="string" />
     </declare-styleable>
 
 </resources>

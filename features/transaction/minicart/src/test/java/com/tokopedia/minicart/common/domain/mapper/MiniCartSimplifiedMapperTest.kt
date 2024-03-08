@@ -1,7 +1,6 @@
 package com.tokopedia.minicart.common.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.minicart.bmgm.domain.mapper.BmgmMiniCartDataMapper
 import com.tokopedia.minicart.common.data.response.minicartlist.AvailableGroup
 import com.tokopedia.minicart.common.data.response.minicartlist.AvailableSection
 import com.tokopedia.minicart.common.data.response.minicartlist.BundleDetail
@@ -25,7 +24,7 @@ import org.junit.Test
 
 class MiniCartSimplifiedMapperTest {
 
-    private var mapper: MiniCartSimplifiedMapper = MiniCartSimplifiedMapper(BmgmMiniCartDataMapper())
+    private var mapper: MiniCartSimplifiedMapper = MiniCartSimplifiedMapper
 
     @Test
     fun `WHEN map mini cart data without parent THEN should return exact same count`() {

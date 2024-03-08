@@ -41,7 +41,10 @@
             android:translationY="@dimen/home_component_card_compat_padding_translation_y"
             android:layout_marginStart="@dimen/home_component_padding_bottom_with_compat_padding"
             android:layout_marginEnd="@dimen/home_component_padding_bottom_with_compat_padding"
-            app:layout_constraintTop_toBottomOf="@+id/home_component_header_view" />
+            app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
+            app:reimagine="true"
+            app:reimagine_template="list"
+            app:useCompatPadding="true" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <com.tokopedia.unifycomponents.DividerUnify

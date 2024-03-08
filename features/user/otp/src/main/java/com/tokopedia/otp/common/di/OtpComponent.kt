@@ -6,8 +6,6 @@ import com.tokopedia.otp.qrcode.view.fragment.LoginByQrFragment
 import com.tokopedia.otp.qrcode.view.fragment.LoginByQrResultFragment
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.fragment.*
-import com.tokopedia.otp.verification.view.fragment.miscalll.MisscallVerificationFragment
-import com.tokopedia.otp.verification.view.fragment.miscalll.OnboardingMiscallFragment
 import dagger.Component
 
 /**
@@ -22,9 +20,7 @@ import dagger.Component
 interface OtpComponent {
     fun inject(activity: VerificationActivity)
     fun inject(fragment: VerificationFragment)
-    fun inject(fragment: MisscallVerificationFragment)
     fun inject(fragment: SmsVerificationFragment)
-    fun inject(fragment: OnboardingMiscallFragment)
     fun inject(fragment: VerificationMethodFragment)
     fun inject(fragment: ReceiverNotifFragment)
     fun inject(fragment: SettingNotifFragment)

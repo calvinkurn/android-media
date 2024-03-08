@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_NN0"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/rvCatalogSelection"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" >
+
+        <include
+            layout="@layout/item_loader_catalog_selection"/>
+
+        <include
+            layout="@layout/item_loader_catalog_selection"/>
+
+        <include
+            layout="@layout/item_loader_catalog_selection"/>
+        <include
+            layout="@layout/item_loader_catalog_selection"/>
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        app:layout_constraintTop_toBottomOf="@id/rvCatalogSelection"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clSearch"
+        android:layout_width="0dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            android:text="@string/catalog_text_title_catalog_listing"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/sbCatalog"
+            app:layout_constraintHorizontal_weight="1"/>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/sbCatalog"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            app:search_bar_show_icon="false"
+            app:loader_type="rect"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvTitle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_weight="1.5"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/rvCatalogList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_marginTop="12dp"
+        android:paddingHorizontal="16dp"
+        app:layout_constraintTop_toBottomOf="@id/clSearch"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="8dp">
+        <include
+            layout="@layout/layout_loading_load_more_catalog_listing"/>
+        <include
+            layout="@layout/layout_loading_load_more_catalog_listing"/>
+        <include
+            layout="@layout/layout_loading_load_more_catalog_listing"/>
+        <include
+            layout="@layout/layout_loading_load_more_catalog_listing"/>
+        <include
+            layout="@layout/layout_loading_load_more_catalog_listing"/>
+        <include
+            layout="@layout/layout_loading_load_more_catalog_listing"/>
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,9 +2,8 @@ package com.tokopedia.discovery.common.reimagine
 
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.RollenceKey.SEARCH_1_INST_AUTO
-import com.tokopedia.remoteconfig.RollenceKey.SEARCH_2_COMPONENT
-import com.tokopedia.remoteconfig.RollenceKey.SEARCH_3_PRODUCT_CARD
 import javax.inject.Inject
 
 class ReimagineRollence @Inject constructor() {
@@ -19,8 +18,8 @@ class ReimagineRollence @Inject constructor() {
         Search1InstAuto.fromVariant(getVariant(SEARCH_1_INST_AUTO))
 
     fun search2Component(): Search2Component =
-        Search2Component.fromVariant(getVariant(SEARCH_2_COMPONENT))
+        Search2Component.fromVariant(getVariant(RollenceKey.PRODUCT_CARD_SRE_2024))
 
     fun search3ProductCard(): Search3ProductCard =
-        Search3ProductCard.fromVariant(getVariant(SEARCH_3_PRODUCT_CARD))
+        Search3ProductCard.fromVariant(getVariant(RollenceKey.PRODUCT_CARD_SRE_2024))
 }

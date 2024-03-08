@@ -11,6 +11,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.di.module.SellerHomeModule
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.webview.BaseSessionWebViewFragment
@@ -44,6 +45,7 @@ class SellerEduWebviewFragment : BaseSessionWebViewFragment() {
     override fun initInjector() {
         DaggerSellerHomeComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .sellerHomeModule(SellerHomeModule(requireContext()))
             .build()
             .inject(this)
     }

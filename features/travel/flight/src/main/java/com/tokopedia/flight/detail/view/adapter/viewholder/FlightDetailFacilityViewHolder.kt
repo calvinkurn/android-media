@@ -4,11 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.flight.R
 import com.tokopedia.flight.databinding.ItemFlightDetailFacilityAmenityBinding
 import com.tokopedia.flight.databinding.ItemFlightDetailFacilityBinding
@@ -16,6 +14,7 @@ import com.tokopedia.flight.databinding.ItemFlightDetailFacilityInfoBinding
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoModel
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel
 import com.tokopedia.flight.search.data.cloud.single.Amenity
+import com.tokopedia.media.loader.loadImageWithError
 import java.util.*
 
 /**
@@ -43,9 +42,7 @@ class FlightDetailFacilityViewHolder(val binding: ItemFlightDetailFacilityBindin
         setDefaultAmenities(route)
         binding.headerDetailFlight.airlineName.text = route.airlineName
         binding.headerDetailFlight.airlineCode.text = String.format("%s-%s", route.airlineCode, route.flightNumber)
-        ImageHandler.loadImageWithoutPlaceholder(binding.headerDetailFlight.airlineIcon, route.airlineLogo,
-                ContextCompat.getDrawable(itemView.context, R.drawable.flight_ic_airline_default)
-        )
+        binding.headerDetailFlight.airlineIcon.loadImageWithError(route.airlineLogo, R.drawable.flight_ic_airline_default)
     }
 
     private fun setDefaultAmenities(flightDetailRouteViewModel: FlightDetailRouteModel) {

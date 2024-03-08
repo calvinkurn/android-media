@@ -7,6 +7,7 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -15,10 +16,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.google.android.material.tabs.TabLayout;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.media.loader.JvmMediaLoader;
+import com.tokopedia.media.loader.listener.MediaListener;
+import com.tokopedia.media.loader.wrapper.MediaDataSource;
 import com.tokopedia.unifycomponents.CardUnify2;
 
 import java.util.ArrayList;
@@ -338,15 +344,15 @@ public class CollapsingTabLayout extends TabLayout {
         lastTabCollapseFraction = tabCollapseFraction;
     }
 
-    private View getTabView(Context context, int position, TabLayout.Tab tab, boolean cardInteraction) {
+    private View getTabView(Context context, int position, Tab tab, boolean cardInteraction) {
         View rootView = LayoutInflater.from(context).inflate(R.layout.tab_home_feed_layout, null);
         CardUnify2 card = rootView.findViewById(R.id.card_tab);
-        if(cardInteraction){
+        if (cardInteraction) {
             card.setAnimateOnPress(CardUnify2.Companion.getANIMATE_OVERLAY_BOUNCE());
         } else {
             card.setAnimateOnPress(CardUnify2.Companion.getANIMATE_OVERLAY());
         }
-        card.setRadius((int)(TAB_CORNER_RADIUS * Resources.getSystem().getDisplayMetrics().density));
+        card.setRadius((int) (TAB_CORNER_RADIUS * Resources.getSystem().getDisplayMetrics().density));
         card.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -358,17 +364,18 @@ public class CollapsingTabLayout extends TabLayout {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.tabBackgroundImage);
         View shimmeringView = (View) rootView.findViewById(R.id.tabShimmeringView);
         shimmeringView.setVisibility(View.VISIBLE);
-        ImageHandler.loadImageWithoutPlaceholder(imageView, tabItemDataList.get(position).getImageUrl(), new ImageHandler.ImageLoaderStateListener() {
-            @Override
-            public void successLoad() {
-                shimmeringView.setVisibility(View.GONE);
-            }
 
-            @Override
-            public void failedLoad() {
-                shimmeringView.setVisibility(View.VISIBLE);
-            }
-        });
+        JvmMediaLoader.loadImage(imageView, tabItemDataList.get(position).getImageUrl(),
+                (bitmap, mediaDataSource) -> {
+                    // on loaded
+                    shimmeringView.setVisibility(View.GONE);
+                    return null;
+                },
+                (mediaException) -> {
+                    // on failed
+                    shimmeringView.setVisibility(View.VISIBLE);
+                    return null;
+                });
         return rootView;
     }
 

@@ -21,7 +21,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 open class ProfileFollowingAdapter(
     val viewModel: FollowerFollowingViewModel,
     callback: AdapterCallback,
-    private val listener: UserFollowListener,
+    private val listener: UserFollowListener
 ) : BaseAdapter<PeopleUiModel>(callback) {
 
     var lastCursor: String = ""
@@ -48,8 +48,8 @@ open class ProfileFollowingAdapter(
                 val firstVisibleItemPosition =
                     (recyclerView.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition().orZero()
                 if (!isLoading && !isLastPage) {
-                    if (visibleItemCount + firstVisibleItemPosition >= totalItemCount
-                        && firstVisibleItemPosition >= 0
+                    if (visibleItemCount + firstVisibleItemPosition >= totalItemCount &&
+                        firstVisibleItemPosition >= 0
                     ) {
                         startDataLoading("")
                     }
@@ -61,7 +61,7 @@ open class ProfileFollowingAdapter(
     override fun getItemViewHolder(
         parent: ViewGroup,
         inflater: LayoutInflater,
-        viewType: Int,
+        viewType: Int
     ): BaseVH {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.up_item_followers, parent, false)
@@ -74,17 +74,23 @@ open class ProfileFollowingAdapter(
         viewModel.getFollowings(lastCursor, PAGE_COUNT)
     }
 
-    fun updateFollowUnfollow(position: Int, isFollowed: Boolean) {
-        if (position >= 0 && position < items.size) {
-            when(val item = items[position]) {
-                is PeopleUiModel.UserUiModel -> {
-                    items[position] = item.copy(isFollowed = isFollowed)
-                }
-                is PeopleUiModel.ShopUiModel -> {
-                    items[position] = item.copy(isFollowed = isFollowed)
-                }
-            }
-            notifyItemChanged(position)
+    fun updateFollowUnfollowUser(userId: String, isFollowed: Boolean) {
+        items.mapIndexed { index, peopleUiModel ->
+            val data = peopleUiModel as? PeopleUiModel.UserUiModel ?: return@mapIndexed
+            if (data.id != userId) return@mapIndexed
+            items[index] = data.copy(isFollowed = isFollowed)
+            notifyItemChanged(index)
+            return
+        }
+    }
+
+    fun updateFollowUnfollowShop(shopId: String, isFollowed: Boolean) {
+        items.mapIndexed { index, peopleUiModel ->
+            val data = peopleUiModel as? PeopleUiModel.ShopUiModel ?: return
+            if (data.id != shopId) return
+            items[index] = data.copy(isFollowed = isFollowed)
+            notifyItemChanged(index)
+            return@mapIndexed
         }
     }
 

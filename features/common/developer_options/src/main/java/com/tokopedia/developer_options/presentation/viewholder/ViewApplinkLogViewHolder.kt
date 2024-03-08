@@ -6,12 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.ViewApplinkLogUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.UnifyButton
 
 class ViewApplinkLogViewHolder(
     itemView: View
-): AbstractViewHolder<ViewApplinkLogUiModel>(itemView)
-{
+) : AbstractViewHolder<ViewApplinkLogUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_view_applink_log
@@ -20,6 +21,7 @@ class ViewApplinkLogViewHolder(
     override fun bind(element: ViewApplinkLogUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.view_applink_log_btn)
         btn.setOnClickListener {
+            DevOpsTracker.trackEntryEvent(DevopsFeature.VIEW_APPLINK_LOG)
             ApplinkLogger.getInstance(itemView.context).openActivity()
         }
     }

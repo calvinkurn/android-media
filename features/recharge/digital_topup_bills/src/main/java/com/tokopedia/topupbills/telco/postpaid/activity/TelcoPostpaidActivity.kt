@@ -17,7 +17,7 @@ import com.tokopedia.topupbills.telco.postpaid.fragment.DigitalTelcoPostpaidFrag
  * RouteManager.route(this, ApplinkConsInternalDigital.PRODUCT_TEMPLATE, 17, 3, telcopost)
  */
 
-class TelcoPostpaidActivity : BaseTelcoActivity(), HasComponent<DigitalTelcoComponent> {
+open class TelcoPostpaidActivity : BaseTelcoActivity(), HasComponent<DigitalTelcoComponent> {
 
     var categoryId = ""
 

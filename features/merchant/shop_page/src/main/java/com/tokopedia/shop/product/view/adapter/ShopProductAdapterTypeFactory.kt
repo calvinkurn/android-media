@@ -163,9 +163,9 @@ class ShopProductAdapterTypeFactory(
                 null
             )
             ShopProductEtalaseHighlightViewHolder.LAYOUT -> return ShopProductEtalaseHighlightViewHolder(parent, deviceWidth, shopProductClickedListener, shopProductImpressionListener, shopCarouselSeeAllClickedListener)
-            ShopProductViewHolder.GRID_LAYOUT -> return ShopProductViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, !isGridSquareLayout, deviceWidth, shopTrackType, type, isShowTripleDot, isOverrideTheme)
-            ShopProductItemListViewHolder.LAYOUT -> return ShopProductItemListViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot, isOverrideTheme)
-            ShopProductItemBigGridViewHolder.LAYOUT -> return ShopProductItemBigGridViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot, isOverrideTheme)
+            ShopProductViewHolder.GRID_LAYOUT -> return ShopProductViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, !isGridSquareLayout, deviceWidth, shopTrackType, type, isShowTripleDot, shopProductTabInterface)
+            ShopProductItemListViewHolder.LAYOUT -> return ShopProductItemListViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot, shopProductTabInterface)
+            ShopProductItemBigGridViewHolder.LAYOUT -> return ShopProductItemBigGridViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot, shopProductTabInterface)
             MembershipStampProgressViewHolder.LAYOUT -> return MembershipStampProgressViewHolder(parent, membershipStampAdapterListener)
             ShopProductChangeGridSectionViewHolder.LAYOUT -> return ShopProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener, shopProductTabInterface)
             ShopProductSearchResultSuggestionViewHolder.LAYOUT -> return ShopProductSearchResultSuggestionViewHolder(parent, shopProductSearchSuggestionListener)

@@ -28,6 +28,7 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
     private var slideImpressionListener: ((position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit)? =
         null
     private var htmlClickListener: ((url: String, text: String, meta: TableRowsUiModel.Meta, isEmpty: Boolean) -> Unit)? = null
+    private var metaLabelClickListener: ((meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) -> Unit)? = null
     private val mTablePageAdapter by lazy { TablePageAdapter() }
     private var isPageIndicatorEnabled: Boolean = true
     private var alreadyAttachToSnapHelper = false
@@ -83,6 +84,9 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
             htmlClickListener?.let { onHtmlClick ->
                 mTablePageAdapter.addOnClickHtmlListener(onHtmlClick)
             }
+            metaLabelClickListener?.let { onMetaLabelClick ->
+                mTablePageAdapter.addOnClickLabelMetaListener(onMetaLabelClick)
+            }
         }
     }
 
@@ -96,6 +100,10 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
 
     fun addOnHtmlClickListener(onClick: (url: String, text: String, meta: TableRowsUiModel.Meta, isEmpty: Boolean) -> Unit) {
         this.htmlClickListener = onClick
+    }
+
+    fun addOnMetaLabelClickListener(onClick: (meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) -> Unit) {
+        this.metaLabelClickListener = onClick
     }
 
     fun setPageIndicatorEnabled(isEnabled: Boolean) {

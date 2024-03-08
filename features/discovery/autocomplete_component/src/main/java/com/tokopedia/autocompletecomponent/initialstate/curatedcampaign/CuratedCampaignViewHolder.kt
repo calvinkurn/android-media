@@ -3,13 +3,14 @@ package com.tokopedia.autocompletecomponent.initialstate.curatedcampaign
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteCuratedCampaignCardBinding
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CuratedCampaignViewHolder(
@@ -35,11 +36,7 @@ class CuratedCampaignViewHolder(
         val image = binding?.autocompleteCuratedCampaignImage ?: return
 
         image.shouldShowWithAction(element.imageUrl.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(
-                itemView.context,
-                image,
-                element.imageUrl
-            )
+            image.loadImageFitCenter(element.imageUrl)
         }
     }
 

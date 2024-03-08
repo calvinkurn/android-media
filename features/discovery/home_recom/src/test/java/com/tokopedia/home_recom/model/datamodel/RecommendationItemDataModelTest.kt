@@ -19,6 +19,6 @@ class RecommendationItemDataModelTest{
         //given
         val layout = recommendationItemDataModelFactory(mockk(), mockk()).type(visitor)
         //then
-        assertEquals(layout, RecommendationItemDataModel.LAYOUT)
+        assertEquals(layout, RecommendationItemDataModel.layout(false))
     }
 }

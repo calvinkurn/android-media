@@ -20,7 +20,6 @@ class TextDescriptionViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_text_description
-        private const val LAYOUT_4TH_VERSION = 4
     }
 
     private val binding by viewBinding<ItemTextDescriptionBinding>()
@@ -41,7 +40,7 @@ class TextDescriptionViewHolder(
             }
         }
         overrideWidgetTheme(element)
-        listener?.onTextDescriptionImpression()
+        listener?.onTextDescriptionImpression(element.widgetName)
     }
 
     private fun overrideWidgetTheme(element: TextDescriptionUiModel) {

@@ -64,7 +64,8 @@ class AddToCartOccMultiExternalUseCase @Inject constructor(
                     it.productId, it.productName, it.price.toString(),
                     it.quantity.toString(), it.category, "",
                     "", "", "",
-                    "", "", userId
+                    "", "", userId,
+                    it.shopName
                 )
             }
         }

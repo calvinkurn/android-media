@@ -1,5 +1,6 @@
 package com.tokopedia.productcard.reimagine
 
+import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.ColorRes
@@ -80,3 +81,10 @@ internal fun ConstraintLayout?.applyConstraintSet(configure: ConstraintSet.() ->
     constraintSet.configure()
     constraintSet.applyTo(constraintLayout)
 }
+
+internal fun Context.getColorAsHexString(@ColorRes id: Int): String =
+    try {
+        "#${Integer.toHexString(ContextCompat.getColor(this, id))}"
+    } catch (_: Throwable) {
+        ""
+    }

@@ -6,7 +6,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,6 +16,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,7 +29,6 @@ import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.QUERY_PARAM_SEARCH
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
@@ -62,9 +61,12 @@ import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
+import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestCancelRespondBottomSheetManagerImpl
+import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestCancelRespondListenerImpl
+import com.tokopedia.sellerorder.buyer_request_cancel.presentation.IBuyerRequestCancelRespondBottomSheetManager
+import com.tokopedia.sellerorder.buyer_request_cancel.presentation.IBuyerRequestCancelRespondListener
 import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
-import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourierPage
@@ -76,10 +78,10 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetai
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomConfirmShippingBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
-import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
+import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_ORDER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
@@ -163,10 +165,12 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.sellerorder.R as sellerorderR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 open class SomListFragment :
     BaseListFragment<Visitable<SomListAdapterTypeFactory>,
-        SomListAdapterTypeFactory>(),
+    SomListAdapterTypeFactory>(),
     SomListSortFilterTab.SomListSortFilterTabClickListener,
     TickerCallback,
     TickerPagerCallback,
@@ -179,7 +183,11 @@ open class SomListFragment :
     SomListBulkPrintDialog.SomListBulkPrintDialogClickListener,
     SellerHomeFragmentListener,
     SomListOrderStatusFilterTab.Listener,
-    SomListOrderMultiSelectSectionViewHolder.Listener {
+    SomListOrderMultiSelectSectionViewHolder.Listener,
+    IBuyerRequestCancelRespondListener.Mediator,
+    IBuyerRequestCancelRespondListener by BuyerRequestCancelRespondListenerImpl(),
+    IBuyerRequestCancelRespondBottomSheetManager.Mediator,
+    IBuyerRequestCancelRespondBottomSheetManager by BuyerRequestCancelRespondBottomSheetManagerImpl() {
 
     companion object {
         private const val DELAY_SEARCH = 500L
@@ -249,7 +257,6 @@ open class SomListFragment :
     private var canMultiAcceptOrder = false
     private var somOrderHasCancellationRequestDialog: SomOrderHasRequestCancellationDialog? = null
     private var somListBulkProcessOrderBottomSheet: SomListBulkProcessOrderBottomSheet? = null
-    private var orderRequestCancelBottomSheet: SomOrderRequestCancelBottomSheet? = null
     private var somOrderEditAwbBottomSheet: SomOrderEditAwbBottomSheet? = null
     private var bulkAcceptOrderDialog: SomListBulkAcceptOrderDialog? = null
     private var bulkRequestPickupDialog: SomListBulkRequestPickupDialog? = null
@@ -281,7 +288,7 @@ open class SomListFragment :
 
     protected var somListBinding by autoClearedNullable<FragmentSomListBinding> {
         somListBulkProcessOrderBottomSheet?.clearViewBinding()
-        orderRequestCancelBottomSheet?.clearViewBinding()
+        bottomSheetBuyerRequestCancelRespond?.clearViewBinding()
         somOrderEditAwbBottomSheet?.clearViewBinding()
     }
 
@@ -626,11 +633,19 @@ open class SomListFragment :
         toggleBulkActionButtonVisibility()
     }
 
-    override fun onCheckBoxClickedWhenDisabled() {
+    override fun onCheckBoxClickedWhenDisabled(message: String?) {
+        val toasterMessage = message?.takeIf { it.isNotBlank() }
+            ?: context?.resources?.getString(R.string.som_list_order_cannot_be_selected).orEmpty()
+        val toasterType =
+            if (message == null) {
+                Toaster.TYPE_ERROR
+            } else {
+                Toaster.TYPE_NORMAL
+            }
         showCommonToaster(
             view,
-            context?.resources?.getString(R.string.som_list_order_cannot_be_selected).orEmpty(),
-            Toaster.TYPE_ERROR
+            toasterMessage,
+            toasterType
         )
     }
 
@@ -685,12 +700,12 @@ open class SomListFragment :
         getSwipeRefreshLayout(view)?.isRefreshing = true
         if (!skipValidateOrder) {
             pendingAction = SomPendingAction(actionName, orderId) {
-                val invoice = getOrderBy(orderId)
+                val invoice = getOrderInvoiceBy(orderId)
                 viewModel.acceptOrder(orderId, invoice)
             }
             viewModel.validateOrders(listOf(orderId))
         } else {
-            val invoice = getOrderBy(orderId)
+            val invoice = getOrderInvoiceBy(orderId)
             viewModel.acceptOrder(orderId, invoice)
         }
     }
@@ -714,20 +729,13 @@ open class SomListFragment :
     }
 
     override fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel) {
-        view?.let {
-            if (it is ViewGroup) {
-                selectedOrderId = order.orderId
-                orderRequestCancelBottomSheet = orderRequestCancelBottomSheet?.apply {
-                    setupBuyerRequestCancelBottomSheet(this, order)
-                } ?: SomOrderRequestCancelBottomSheet(it.context).apply {
-                    setupBuyerRequestCancelBottomSheet(this, order)
-                }
-                orderRequestCancelBottomSheet?.init(it)
-                orderRequestCancelBottomSheet?.show()
-                return
-            }
-        }
-        showCommonToaster(view, "Terjadi kesalahan, silahkan coba lagi.")
+        selectedOrderId = order.orderId
+        registerBuyerRequestCancelRespondBottomSheet(
+            bottomSheetManagerMediator = this,
+            bottomSheetListenerMediator = this,
+            bottomSheetListener = this
+        )
+        showBuyerRequestCancelRespondBottomSheet()
     }
 
     override fun onViewComplaintButtonClicked(order: SomListOrderUiModel) {
@@ -842,48 +850,6 @@ open class SomListFragment :
         toggleBulkActionButtonVisibility()
     }
 
-    private fun setupBuyerRequestCancelBottomSheet(
-        somOrderRequestCancelBottomSheet: SomOrderRequestCancelBottomSheet,
-        order: SomListOrderUiModel
-    ) {
-        somOrderRequestCancelBottomSheet.apply {
-            setListener(object :
-                    SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
-                    override fun onAcceptOrder(actionName: String) {
-                        onAcceptOrderButtonClicked(actionName, selectedOrderId, true)
-                    }
-
-                    override fun onRejectOrder(reasonBuyer: String) {
-                        SomAnalytics.eventClickButtonTolakPesananPopup(
-                            "${order.orderStatusId}",
-                            order.status
-                        )
-                        val orderRejectRequest = SomRejectRequestParam(
-                            orderId = selectedOrderId,
-                            rCode = Int.ZERO.toString(),
-                            reason = reasonBuyer
-                        )
-                        rejectOrder(orderRejectRequest)
-                    }
-
-                    override fun onRejectCancelRequest() {
-                        SomAnalytics.eventClickButtonTolakPesananPopup(
-                            "${order.orderStatusId}",
-                            order.status
-                        )
-                        rejectCancelOrder(selectedOrderId)
-                    }
-                })
-            init(
-                order.buttons.firstOrNull()?.popUp ?: PopUp(),
-                order.cancelRequestOriginNote,
-                order.orderStatusId
-            )
-            hideKnob()
-            showCloseButton()
-        }
-    }
-
     private fun setupSomOrderEditAwbBottomSheet(
         somOrderEditAwbBottomSheet: SomOrderEditAwbBottomSheet,
         orderId: String
@@ -891,7 +857,7 @@ open class SomListFragment :
         somOrderEditAwbBottomSheet.apply {
             setListener(object : SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
                 override fun onEditAwbButtonClicked(cancelNotes: String) {
-                    val invoice = getOrderBy(orderId)
+                    val invoice = getOrderInvoiceBy(orderId)
                     viewModel.editAwb(orderId, cancelNotes, invoice)
                 }
             })
@@ -905,7 +871,7 @@ open class SomListFragment :
         bulkAcceptButtonLeaveAnimation = null
         somOrderHasCancellationRequestDialog = null
         somListBulkProcessOrderBottomSheet = null
-        orderRequestCancelBottomSheet = null
+        bottomSheetBuyerRequestCancelRespond = null
         somOrderEditAwbBottomSheet = null
         bulkAcceptOrderDialog = null
         bulkRequestPickupDialog = null
@@ -922,12 +888,8 @@ open class SomListFragment :
         viewModel.setSortOrderBy(SomFilterUtil.getDefaultSortBy(viewModel.getTabActive()))
     }
 
-    private fun getOrderBy(orderId: String): String {
-        return (
-            adapter.data.firstOrNull {
-                it is SomListOrderUiModel && it.orderId == orderId
-            } as? SomListOrderUiModel
-            )?.orderResi.orEmpty()
+    private fun getOrderInvoiceBy(orderId: String): String {
+        return getSelectedOrder(orderId)?.orderResi.orEmpty()
     }
 
     private fun showBulkAcceptOrderDialog(orderCount: Int) {
@@ -964,10 +926,7 @@ open class SomListFragment :
 
     private fun setupViews() {
         activity?.window?.decorView?.setBackgroundColor(
-            ContextCompat.getColor(
-                requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_Background
-            )
+            ContextCompat.getColor(requireContext(), unifyprinciplesR.color.Unify_Background)
         )
         showPlusOrderListMenuShimmer()
         showWaitingPaymentOrderListMenuShimmer()
@@ -1821,7 +1780,7 @@ open class SomListFragment :
     protected open fun onActionCompleted(refreshOrder: Boolean, orderId: String) {
         if (!viewModel.isRefreshingAllOrder()) {
             if (refreshOrder) {
-                val invoice = getOrderBy(orderId)
+                val invoice = getOrderInvoiceBy(orderId)
                 if (invoice.isNotEmpty()) {
                     getSwipeRefreshLayout(view)?.apply {
                         isEnabled = true
@@ -2328,7 +2287,7 @@ open class SomListFragment :
                     .orEmpty(),
                 buttonText = context?.resources?.getString(R.string.btn_cek_peluang_non_topads)
                     .orEmpty(),
-                buttonAppLink = ApplinkConstInternalTopAds.TOPADS_CREATE_ADS,
+                buttonAppLink = ApplinkConst.SellerApp.TOPADS_CREATE_ADS,
                 showButton = true
             )
         } else if (isNonStatusOrderFilterApplied || isSearchQueryApplied) {
@@ -2437,20 +2396,6 @@ open class SomListFragment :
                 isEnabled = true
                 isRefreshing = true
             }
-        }
-    }
-
-    private fun rejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
-        activity?.resources?.let {
-            val invoice = getOrderBy(orderRejectRequestParam.orderId)
-            viewModel.rejectOrder(orderRejectRequestParam, invoice)
-        }
-    }
-
-    private fun rejectCancelOrder(orderId: String) {
-        if (orderId.isNotBlank()) {
-            val invoice = getOrderBy(orderId)
-            viewModel.rejectCancelOrder(orderId, invoice)
         }
     }
 
@@ -2589,19 +2534,6 @@ open class SomListFragment :
             context?.resources?.getString(R.string.som_error_message_server_fault).orEmpty(),
             canRetry = false
         )
-    }
-
-    private fun getVisiblePercent(v: View): Int {
-        if (v.isShown) {
-            val r = Rect()
-            val isVisible = v.getGlobalVisibleRect(r)
-            return if (isVisible) {
-                0
-            } else {
-                -1
-            }
-        }
-        return -1
     }
 
     private fun shouldReloadOrderListImmediately(): Boolean =
@@ -2914,10 +2846,8 @@ open class SomListFragment :
                 bottomSheetDismissed = true
             }
         }
-        bottomSheetDismissed =
-            somListBulkProcessOrderBottomSheet?.dismiss() == true || bottomSheetDismissed
-        bottomSheetDismissed =
-            orderRequestCancelBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = somListBulkProcessOrderBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = bottomSheetBuyerRequestCancelRespond?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = somOrderEditAwbBottomSheet?.dismiss() == true || bottomSheetDismissed
         return bottomSheetDismissed
     }
@@ -3022,14 +2952,60 @@ open class SomListFragment :
     private fun getCoachMarkMessageAutoTabbing(context: Context, highLightStatusKey: String): String {
         return when (highLightStatusKey) {
             STATUS_NEW_ORDER -> {
-                context.getString(com.tokopedia.sellerorder.R.string.som_operational_guideline_new_order_tooltip_text)
+                context.getString(sellerorderR.string.som_operational_guideline_new_order_tooltip_text)
                     .orEmpty()
             }
             KEY_CONFIRM_SHIPPING -> {
-                context.getString(com.tokopedia.sellerorder.R.string.som_operational_guideline_confirm_shipping_tooltip_text)
+                context.getString(sellerorderR.string.som_operational_guideline_confirm_shipping_tooltip_text)
                     .orEmpty()
             }
             else -> String.EMPTY
         }
+    }
+
+    override fun getBottomSheetContainer(): CoordinatorLayout? {
+        return view as? CoordinatorLayout
+    }
+
+    override fun getBuyerRequestCancelRespondOrderId(): String {
+        return selectedOrderId
+    }
+
+    override fun getBuyerRequestCancelRespondOrderInvoice(): String {
+        return getOrderInvoiceBy(selectedOrderId)
+    }
+
+    override fun getBuyerRequestCancelRespondOrderStatusCode(): Int {
+        return getSelectedOrder()?.orderStatusId.orZero()
+    }
+
+    override fun getBuyerRequestCancelRespondOrderStatusText(): String {
+        return getSelectedOrder()?.status.orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondL2CancellationReason(): String {
+        return getSelectedOrder()?.cancelRequestOriginNote.orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondDescription(): String {
+        return (getSelectedOrder()?.buttons?.firstOrNull()?.popUp ?: PopUp()).body
+    }
+
+    override fun getBuyerRequestCancelRespondPrimaryTextButton(): String {
+        return (getSelectedOrder()?.buttons?.firstOrNull()?.popUp ?: PopUp()).getPrimaryButton()?.displayName.orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondSecondaryTextButton(): String {
+        return (getSelectedOrder()?.buttons?.firstOrNull()?.popUp ?: PopUp()).getSecondaryButton()?.displayName.orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondViewModel(): SomOrderBaseViewModel {
+        return viewModel
+    }
+
+    private fun getSelectedOrder(orderId: String = selectedOrderId): SomListOrderUiModel? {
+        return adapter.data.firstOrNull {
+            it is SomListOrderUiModel && it.orderId == orderId
+        } as? SomListOrderUiModel
     }
 }

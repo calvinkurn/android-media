@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailProductListToggleBinding
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.StringRes
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 
 class ProductListToggleViewHolder(
     itemView: View,
@@ -29,7 +29,7 @@ class ProductListToggleViewHolder(
     private var animation: ViewPropertyAnimator? = null
 
     private fun bindToggleText(text: StringRes) = with(binding) {
-        tvBuyerOrderDetailProductListToggle.text = text.getStringValueWithDefaultParam(root.context)
+        tvBuyerOrderDetailProductListToggle.text = text.getString(root.context)
     }
 
     private fun bindToggleIcon(collapsed: Boolean, animate: Boolean) = with(binding) {

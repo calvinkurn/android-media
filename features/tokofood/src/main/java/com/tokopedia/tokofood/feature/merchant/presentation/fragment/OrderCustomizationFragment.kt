@@ -50,10 +50,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.tokofood.R as tokofoodR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class OrderCustomizationFragment : BaseMultiFragment(),
+class OrderCustomizationFragment :
+    BaseMultiFragment(),
     ProductAddOnViewHolder.OnAddOnSelectListener,
     OrderNoteInputViewHolder.OnNoteTextChangeListener,
     PhoneNumberVerificationBottomSheet.OnButtonCtaClickListener {
@@ -159,9 +162,10 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding?.rvCustomList?.adapter = null
         binding = null
+        customListAdapter?.removeListeners()
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupBackgroundColor()
@@ -175,7 +179,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         source = arguments?.getString(BUNDLE_KEY_SOURCE) ?: SOURCE
 
         context?.run {
-            if (cartId.isNotBlank()) binding?.atcButton?.text = getString(com.tokopedia.tokofood.R.string.action_update)
+            if (cartId.isNotBlank()) binding?.atcButton?.text = getString(tokofoodR.string.action_update)
         }
 
         productUiModel?.apply {
@@ -196,9 +200,9 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             } else {
                 customOrderDetails.firstOrNull { it.cartId == cartId }?.let { customOrderDetail ->
                     val subTotalPrice = viewModel.calculateSubtotalPrice(
-                            baseProductPrice = viewModel.baseProductPrice,
-                            quantity = customOrderDetail.qty,
-                            addOnUiModels = customOrderDetail.customListItems.map { it.addOnUiModel }
+                        baseProductPrice = viewModel.baseProductPrice,
+                        quantity = customOrderDetail.qty,
+                        addOnUiModels = customOrderDetail.customListItems.map { it.addOnUiModel }
                     )
                     binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
                 }
@@ -232,7 +236,6 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             // setup atc button click listener
             binding?.atcButton?.setOnClickListener {
                 customListAdapter?.getCustomListItems()?.run {
-
                     val validationResult = viewModel.validateCustomOrderInput(this)
                     val isError = validationResult.first
                     if (isError) {
@@ -270,7 +273,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                                 source = source
                             )
                         }
-                        //hit trackers
+                        // hit trackers
                         merchantPageAnalytics.clickOnOrderVariantPage(
                             variantWrapperUiModel?.productListItem,
                             variantWrapperUiModel?.merchantId.orEmpty(),
@@ -286,7 +289,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     private fun setupBackgroundColor() {
         activity?.let {
             it.window.decorView.setBackgroundColor(
-                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+                ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Background)
             )
         }
     }
@@ -296,7 +299,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             (it as? AppCompatActivity)?.apply {
                 binding?.toolbarOrderCustomization?.run {
                     title = foodName
-                    subtitle = it.getString(com.tokopedia.tokofood.R.string.text_header_order_custom)
+                    subtitle = it.getString(tokofoodR.string.text_header_order_custom)
                     setNavigationOnClickListener {
                         onBackPressed()
                     }
@@ -371,7 +374,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     }
 
     private fun showErrorMessage() {
-        val message =  getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection)
+        val message = getString(tokofoodR.string.text_error_product_custom_selection)
         view?.let { view ->
             Toaster.build(
                 view = view,
@@ -414,9 +417,9 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
     private fun updateSubtotalPriceLabel(addOnUiModels: List<AddOnUiModel?>?, quantity: Int) {
         val subTotalPrice = viewModel.calculateSubtotalPrice(
-                baseProductPrice = viewModel.baseProductPrice,
-                quantity = quantity,
-                addOnUiModels = addOnUiModels ?: listOf()
+            baseProductPrice = viewModel.baseProductPrice,
+            quantity = quantity,
+            addOnUiModels = addOnUiModels ?: listOf()
         )
         binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
     }

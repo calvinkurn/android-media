@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.list.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
 
@@ -126,7 +127,9 @@ data class SomListOrderListResponse(
                 val bundleDetail: BundleDetail? = BundleDetail(),
                 @Expose
                 @SerializedName("plus_data")
-                val plusData: PlusData? = null
+                val plusData: PlusData? = null,
+                @SerializedName("bulk_action")
+                val bulkAction: BulkAction = BulkAction()
             ) {
 
                 data class BundleDetail(
@@ -187,6 +190,14 @@ data class SomListOrderListResponse(
                     @SerializedName("logo_url")
                     @Expose
                     val logoUrl: String? = null
+                )
+
+                data class BulkAction(
+                    // Set default to true because on existing logic, this field is unused
+                    @SerializedName("selectable")
+                    val selectable: Boolean = true,
+                    @SerializedName("message")
+                    val message: String = String.EMPTY
                 )
             }
         }

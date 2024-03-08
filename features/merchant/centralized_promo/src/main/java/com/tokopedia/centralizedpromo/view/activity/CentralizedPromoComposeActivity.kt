@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -66,6 +65,7 @@ class CentralizedPromoComposeActivity : AppCompatActivity() {
                 val alreadyShowCoachMark = remember(Unit) {
                     viewModel.getCoachmarkSharedPref(PAGE_ID_SHOP_COUPON)
                 }
+                val hasUpdatedFilter = uiState.hasUpdatedFilter
 
                 CentralizedPromoScreenViewed()
                 ShowToaster(viewModel)
@@ -78,7 +78,8 @@ class CentralizedPromoComposeActivity : AppCompatActivity() {
                     },
                     coachMarkAnchor = { anchor, key ->
                         coachMarkAnchor.value = CoachMarkAnchorWithKey(
-                            anchor, key
+                            anchor,
+                            key
                         )
                     },
                     enableCoachMark = !alreadyShowCoachMark,
@@ -88,7 +89,7 @@ class CentralizedPromoComposeActivity : AppCompatActivity() {
                 )
 
                 if (!alreadyShowCoachMark) {
-                    CentralizePromoCoachMark(coachMarkAnchor)
+                    CentralizePromoCoachMark(coachMarkAnchor, hasUpdatedFilter)
                 }
             }
         }
@@ -96,7 +97,8 @@ class CentralizedPromoComposeActivity : AppCompatActivity() {
 
     @Composable
     private fun CentralizePromoCoachMark(
-        coachMarkAnchor: MutableState<CoachMarkAnchorWithKey>
+        coachMarkAnchor: MutableState<CoachMarkAnchorWithKey>,
+        hasUpdatedFilter: Boolean
     ) {
         val coachMarkVisible by remember { derivedStateOf { coachMarkAnchor.value.anchor.y > 0 } }
 
@@ -107,7 +109,7 @@ class CentralizedPromoComposeActivity : AppCompatActivity() {
         }
 
         NestCoachMark(
-            visible = coachMarkVisible,
+            visible = coachMarkVisible && !hasUpdatedFilter,
             item = CoachMarkItem(
                 stringResource(string.centralize_promo_flash_sale_title_coachmark),
                 stringResource(string.centralize_promo_flash_sale_desc_coachmark),
@@ -128,5 +130,4 @@ class CentralizedPromoComposeActivity : AppCompatActivity() {
             )
         }
     }
-
 }

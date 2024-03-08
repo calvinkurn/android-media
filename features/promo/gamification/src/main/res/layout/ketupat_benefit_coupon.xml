@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/coupon_banner_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/coupon_lihat_semua"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="20dp"
+            android:text="Lihat Semua"
+            android:textColor="@color/Unify_GN500"
+            app:layout_constraintBottom_toBottomOf="@id/coupon_banner_subtitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/coupon_banner_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintEnd_toStartOf="@id/coupon_lihat_semua"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/coupon_banner_title"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_benefit_coupon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/coupon_banner_subtitle"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/ketupat_benefit_coupon_item" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_benefit_coupon"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

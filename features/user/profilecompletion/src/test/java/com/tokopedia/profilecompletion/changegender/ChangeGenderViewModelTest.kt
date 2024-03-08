@@ -2,9 +2,9 @@ package com.tokopedia.profilecompletion.changegender
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.profilecompletion.changegender.data.ChangeGenderPojo
-import com.tokopedia.profilecompletion.changegender.data.ChangeGenderResult
-import com.tokopedia.profilecompletion.changegender.viewmodel.ChangeGenderViewModel
+import com.tokopedia.profilecompletion.settingprofile.changegender.data.ChangeGenderPojo
+import com.tokopedia.profilecompletion.settingprofile.changegender.data.ChangeGenderResult
+import com.tokopedia.profilecompletion.settingprofile.changegender.viewmodel.ChangeGenderViewModel
 import com.tokopedia.profilecompletion.domain.ChangeGenderUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/productCardButtonDeleteCart"
+        android:layout_width="24dp"
+        android:layout_height="@dimen/product_card_button_delete_cart_height"
+        app:icon_name="DELETE"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/productCardQuantityEditor"
+        app:layout_constraintBottom_toBottomOf="@id/productCardQuantityEditor" />
+
+    <com.tokopedia.unifycomponents.QuantityEditorUnify
+        android:id="@+id/productCardQuantityEditor"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/product_card_reimagine_button_atc_height"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="@dimen/product_card_reimagine_button_atc_margin_top"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/productCardButtonDeleteCart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</merge>

@@ -46,7 +46,7 @@ class InstallReferral {
                                             executeInstallReferrerCallback(installReferrer)
                                         }
                                     }
-                                    InstallUtils.sendIrisInstallEvent(applicationContext)
+                                    InstallUtils.sendIrisInstallEvent(applicationContext, response?.installReferrer)
                                     updateReferralCache()
                                     executeInstallReferrerCallback("")
                                 }

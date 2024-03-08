@@ -1,0 +1,2 @@
+-keep class com.tokopedia.buyerorderdetail.presentation.uistate.** { *; }
+-keep class com.tokopedia.buyerorderdetail.domain.models.** { *; }

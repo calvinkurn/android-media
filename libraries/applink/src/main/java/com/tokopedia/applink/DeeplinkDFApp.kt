@@ -82,6 +82,7 @@ import com.tokopedia.applink.model.DFPHost
 import com.tokopedia.applink.model.DFPPath
 import com.tokopedia.applink.model.DFPSchemeToDF
 import com.tokopedia.applink.model.PathType
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
@@ -178,7 +179,7 @@ object DeeplinkDFApp {
         DF_TRAVEL to getDfTravel(),
         DF_USER_LIVENESS to getDfUserLiveness(),
         DF_USER_SETTINGS to getDfUserSettings(),
-        DF_STORIES_CREATION to getDfStoriesCreationMainApp(),
+        DF_STORIES_CREATION to getDfStoriesCreationMainApp()
     )
 
     fun getDfSellerappMap() = mapOf(
@@ -191,7 +192,7 @@ object DeeplinkDFApp {
         DF_SELLER_TALK to getDfSellerTalk(),
         DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp(),
         DF_SELLER_PDP to getDfSellerPdp(),
-        DF_STORIES_CREATION to getDfStoriesCreationSellerApp(),
+        DF_STORIES_CREATION to getDfStoriesCreationSellerApp()
     )
 
     private fun Map<String, List<DFP>>?.filteredOnDF(context: Context): Map<String, List<DFP>> {
@@ -400,7 +401,6 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_TOPADS, PathType.PATTERN, "/dashboard", TOP_ADS_DASHBOARD),
         DFP(SCHEME_SELLERAPP, HOST_TOPADS, PathType.PATH, "/buy"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/buy"),
-        DFP(SCHEME_SELLERAPP, HOST_TOPADS, PathType.PATH, "/add-credit"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/add-credit"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/headline-ad-detail"),
         DFP(INTERNAL, HOST_TOPADS, PathType.PATH, "/history-credit"),
@@ -424,6 +424,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/cancellationrequest", SELLER_ORDER),
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/order", SELLER_ORDER),
         DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/$PATH_SELLER_PARTIAL_ORDER_FULFILLMENT", SELLER_ORDER),
+        DFP(INTERNAL, HOST_SELLER, PathType.PATH, "/${DeeplinkMapperOrder.BuyerRequestCancelRespond.PATH}", SELLER_ORDER),
 
         // editshipping
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-settings-shipping"),
@@ -436,6 +437,7 @@ object DeeplinkDFApp {
 
         // seller_menu
         DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "/seller-menu"),
+        DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "/seller-menu-compose"),
         DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "/seller-settings"),
 
         // shop_admin
@@ -497,6 +499,15 @@ object DeeplinkDFApp {
             DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT
         ),
 
+        // Dynamic CSAT
+        DFP(
+            INTERNAL,
+            HOST_TICKET,
+            PathType.PATH,
+            "/csat",
+            OPERATIONAL_CONTACT_US
+        ),
+
         // telephony_masking
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/telephony-masking")
     )
@@ -512,7 +523,8 @@ object DeeplinkDFApp {
     private fun getDfPromoGamification() = mutableListOf(
         // gamification
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification_gift_daily"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification_gift_60s")
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification_gift_60s"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATTERN, "/gamification/ketupat_rewards_landing_page")
     )
 
     private fun getDfPromoTokopoints() = mutableListOf(
@@ -567,7 +579,8 @@ object DeeplinkDFApp {
             PathType.PATTERN,
             "/recipe/similar-product-bottomsheet"
         ),
-        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/buyer-communication")
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/buyer-communication"),
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/all-annotation")
     )
 
     private fun getDfTravel() = mutableListOf(
@@ -609,7 +622,6 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/change-name", USER_PROFILE_SETTINGS),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/profile-completion", USER_PROFILE_SETTINGS),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/edit-profile-info", USER_PROFILE_SETTINGS),
-        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/profile-management", USER_PROFILE_SETTINGS),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/webview-kyc", USER_PROFILE_SETTINGS),
 
         // settingbank
@@ -718,7 +730,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
         // mediaeditor
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-editor"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor")
     )
 
     private fun getDfStoriesCreationSellerApp() = mutableListOf(
@@ -729,7 +741,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
         // mediaeditor
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor")
     )
 
     fun Map<String, List<DFP>>.mapDF(): MutableList<DFPSchemeToDF> {

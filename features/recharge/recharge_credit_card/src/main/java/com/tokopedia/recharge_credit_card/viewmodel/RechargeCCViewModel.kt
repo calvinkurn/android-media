@@ -9,14 +9,15 @@ import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.repository.RechargeFavoriteNumberRepository
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.network.authentication.HEADER_X_TKPD_APP_VERSION
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankList
@@ -25,15 +26,10 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCCCatalogPrefix
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCDppoConsentUimodel
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetail
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
-import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
-import com.tokopedia.recharge_credit_card.isMasked
-import com.tokopedia.recharge_credit_card.util.RechargeCCConst
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -50,18 +46,14 @@ class RechargeCCViewModel @Inject constructor(
     val rechargeCCBankList = MutableLiveData<RechargeCCBankList>()
     val errorCCBankList = MutableLiveData<Throwable>()
 
-    private val _rechargeCreditCard = MutableLiveData<RechargeCreditCard>()
     private val _prefixSelect = MutableLiveData<RechargeNetworkResult<RechargeCCCatalogPrefix>>()
-    private val _prefixValidation = MutableLiveData<Boolean>()
     private val _favoriteChipsData = MutableLiveData<RechargeNetworkResult<List<FavoriteChipModel>>>()
     private val _autoCompleteData = MutableLiveData<RechargeNetworkResult<List<AutoCompleteModel>>>()
     private val _prefillData = MutableLiveData<RechargeNetworkResult<PrefillModel>>()
     private val _menuDetail = MutableLiveData<RechargeNetworkResult<RechargeCCMenuDetail>>()
     private val _dppoConsent = MutableLiveData<Result<RechargeCCDppoConsentUimodel>>()
 
-    val creditCardSelected: LiveData<RechargeCreditCard> = _rechargeCreditCard
     val prefixSelect: LiveData<RechargeNetworkResult<RechargeCCCatalogPrefix>> = _prefixSelect
-    val prefixValidation: LiveData<Boolean> = _prefixValidation
     val favoriteChipsData: LiveData<RechargeNetworkResult<List<FavoriteChipModel>>> = _favoriteChipsData
     val autoCompleteData: LiveData<RechargeNetworkResult<List<AutoCompleteModel>>> = _autoCompleteData
     val prefillData: LiveData<RechargeNetworkResult<PrefillModel>> = _prefillData
@@ -71,72 +63,76 @@ class RechargeCCViewModel @Inject constructor(
     var categoryName: String = ""
     var loyaltyStatus: String = ""
 
-    var validatorJob: Job? = null
-
     fun getMenuDetail(rawQuery: String, menuId: String) {
-        launchCatchError(block = {
-            val mapParam = mutableMapOf<String, Any>()
-            mapParam[MENU_ID] = menuId.toIntSafely()
+        launch {
+            runCatching {
+                val mapParam = mutableMapOf<String, Any>()
+                mapParam[MENU_ID] = menuId.toIntSafely()
 
-            val data = withContext(dispatcher) {
-                val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCMenuDetailResponse::class.java, mapParam)
-                graphqlRepository.response(
-                    listOf(graphqlRequest),
-                    GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_MENU_DETAIL).build()
-                )
-            }.getSuccessData<RechargeCCMenuDetailResponse>()
+                val data = withContext(dispatcher) {
+                    val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCMenuDetailResponse::class.java, mapParam)
+                    graphqlRepository.response(
+                        listOf(graphqlRequest),
+                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_MENU_DETAIL).build()
+                    )
+                }.getSuccessData<RechargeCCMenuDetailResponse>()
 
-            categoryName = data.menuDetail.menuName
-            loyaltyStatus = data.menuDetail.userPerso.loyaltyStatus
+                categoryName = data.menuDetail.menuName
+                loyaltyStatus = data.menuDetail.userPerso.loyaltyStatus
 
-            _menuDetail.postValue(RechargeNetworkResult.Success(data.menuDetail))
-        }) {
-            _menuDetail.postValue(RechargeNetworkResult.Fail(it))
+                _menuDetail.postValue(RechargeNetworkResult.Success(data.menuDetail))
+            }.onFailure {
+                _menuDetail.postValue(RechargeNetworkResult.Fail(it))
+            }
         }
     }
 
     fun getListBank(rawQuery: String, categoryId: Int) {
-        launchCatchError(block = {
-            val mapParam = mutableMapOf<String, Any>()
-            mapParam[CATEGORY_ID] = categoryId
+        launch {
+            runCatching {
+                val mapParam = mutableMapOf<String, Any>()
+                mapParam[CATEGORY_ID] = categoryId
 
-            val data = withContext(dispatcher) {
-                val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCBankListReponse::class.java, mapParam)
-                graphqlRepository.response(
-                    listOf(graphqlRequest),
-                    GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_LIST_BANK).build()
-                )
-            }.getSuccessData<RechargeCCBankListReponse>()
+                val data = withContext(dispatcher) {
+                    val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCBankListReponse::class.java, mapParam)
+                    graphqlRepository.response(
+                        listOf(graphqlRequest),
+                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_LIST_BANK).build()
+                    )
+                }.getSuccessData<RechargeCCBankListReponse>()
 
-            if (data.rechargeCCBankList.messageError.isEmpty()) {
-                rechargeCCBankList.postValue(data.rechargeCCBankList)
-            } else {
-                errorCCBankList.postValue(MessageErrorException(data.rechargeCCBankList.messageError))
+                if (data.rechargeCCBankList.messageError.isEmpty()) {
+                    rechargeCCBankList.postValue(data.rechargeCCBankList)
+                } else {
+                    errorCCBankList.postValue(MessageErrorException(data.rechargeCCBankList.messageError))
+                }
+            }.onFailure {
+                errorCCBankList.postValue(it)
             }
-        }) {
-            errorCCBankList.postValue(it)
         }
     }
 
     fun getPrefixes(rawQuery: String, menuId: String) {
-        launchCatchError(block = {
-            val mapParam = mutableMapOf<String, Any>()
-            mapParam[MENU_ID] = menuId.toIntSafely()
+        launch {
+            runCatching {
+                val mapParam = mutableMapOf<String, Any>()
+                mapParam[MENU_ID] = menuId.toIntSafely()
 
-            prefixData = withContext(dispatcher) {
-                val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCCatalogPrefix::class.java, mapParam)
-                graphqlRepository.response(
-                    listOf(graphqlRequest),
-                    GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_PREFIX).build()
-                )
-            }.getSuccessData()
+                prefixData = withContext(dispatcher) {
+                    val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCCatalogPrefix::class.java, mapParam)
+                    graphqlRepository.response(
+                        listOf(graphqlRequest),
+                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * CACHE_MINUTES_GET_PREFIX).build()
+                    )
+                }.getSuccessData()
 
-            _prefixSelect.postValue(RechargeNetworkResult.Success(prefixData))
-        }) {
-            _prefixSelect.postValue(RechargeNetworkResult.Fail(it))
+                _prefixSelect.postValue(RechargeNetworkResult.Success(prefixData))
+            }.onFailure {
+                _prefixSelect.postValue(RechargeNetworkResult.Fail(it))
+            }
         }
     }
 
@@ -164,60 +160,27 @@ class RechargeCCViewModel @Inject constructor(
     }
 
     fun getDppoConsent(categoryId: Int) {
-        launchCatchError(block = {
-            val data = getDppoConsentUseCase.execute(categoryId)
-            val uiData = RechargeCCDppoConsentUimodel(
-                description = if (data.persoData.items.isNotEmpty()) {
-                    data.persoData.items[0].title
-                } else {
-                    ""
-                }
-            )
-            _dppoConsent.postValue(Success(uiData))
-        }) {
-            _dppoConsent.postValue(Fail(it))
-        }
-    }
-
-    fun checkPrefixNumber(creditCard: String) {
-        var isPrefixFound = false
-        if (prefixData.prefixSelect.prefixes.isNotEmpty()) {
-            prefixData.prefixSelect.prefixes.map {
-                if (creditCard.startsWith(it.value)) {
-                    isPrefixFound = true
-                    _rechargeCreditCard.postValue(
-                        RechargeCreditCard(
-                            it.operator.id,
-                            it.operator.attribute.defaultProductId,
-                            it.operator.attribute.imageUrl,
-                            it.operator.attribute.name
-                        )
-                    )
-                }
+        launch {
+            runCatching {
+                val data = getDppoConsentUseCase.execute(categoryId)
+                val uiData = RechargeCCDppoConsentUimodel(
+                    description = if (data.persoData.items.isNotEmpty()) {
+                        data.persoData.items[0].title
+                    } else {
+                        ""
+                    }
+                )
+                _dppoConsent.postValue(Success(uiData))
+            }.onFailure {
+                _dppoConsent.postValue(Fail(it))
             }
         }
-        if (!isPrefixFound) {
-            _rechargeCreditCard.postValue(RechargeCreditCard())
-        }
     }
 
-    fun cancelValidatorJob() {
-        validatorJob?.cancel()
-    }
-
-    fun validateCCNumber(creditCard: String) {
-        validatorJob = launch {
-            if (creditCard.isMasked()) {
-                _prefixValidation.postValue(true)
-            } else {
-                var isValid = false
-                prefixData.prefixSelect.validations.forEach { validation ->
-                    isValid = creditCard.matches(validation.rule.toRegex())
-                }
-                delay(RechargeCCConst.VALIDATOR_DELAY_TIME)
-                _prefixValidation.postValue(isValid)
-            }
-        }
+    fun getPcidssCustomHeaders(): HashMap<String, String> {
+        val headers = HashMap<String, String>()
+        headers[HEADER_X_TKPD_APP_VERSION] = "android-" + GlobalConfig.VERSION_NAME
+        return headers
     }
 
     companion object {

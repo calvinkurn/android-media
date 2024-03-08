@@ -1,19 +1,18 @@
 package com.tokopedia.iris.data.db.mapper
 
+import android.content.Context
 import android.os.Build
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceInfo
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iris.IrisPerformanceData
 import com.tokopedia.iris.data.db.table.PerformanceTracking
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.util.*
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.track.TrackApp
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.lang.Exception
 import java.util.*
 
 /**
@@ -22,6 +21,7 @@ import java.util.*
 class TrackingMapper {
 
     fun transformSingleEvent(
+        context: Context,
         track: String,
         sessionId: String,
         userId: String,
@@ -33,7 +33,7 @@ class TrackingMapper {
         val row = JSONObject()
         val event = JSONArray()
 
-        event.put(reformatEvent(track, sessionId, cache))
+        event.put(reformatEvent(track, sessionId, cache, context))
 
         row.put(DEVICE_ID, deviceId)
         row.put(USER_ID, userId)
@@ -156,6 +156,12 @@ class TrackingMapper {
 
     companion object {
 
+        const val IRIS = "iris"
+        const val IRIS_SDK_VERSION = "6.0.0"
+        const val ANDROID = "Android"
+        const val MOBILE = "Mobile"
+        const val TABLET = "Tablet"
+
         const val DEVICE_ID = "device_id"
         const val USER_ID = "user_id"
         const val EVENT_DATA = "event_data"
@@ -174,7 +180,18 @@ class TrackingMapper {
         const val EVENT_OPEN_SCREEN = "openScreen"
         const val KEY_NEW_VISIT = "newVisit"
 
-        fun reformatEvent(event: String, sessionId: String, cache: Cache): JSONObject {
+        // device info
+        const val KEY_DEVICE_BROWSER = "device_browser"
+        const val KEY_DEVICE_BROWSER_VERSION = "device_browserVersion"
+        const val KEY_DEVICE_OS_VERSION = "device_osVersion"
+        const val KEY_OPERATING_SYSTEM_VERSION_NAME = "operating_system_version_name"
+        const val KEY_DEVICE_MOBILE_BRANDING = "device_mobileDeviceBranding"
+        const val KEY_DEVICE_MOBILE_DEVICE_MODEL = "device_mobileDeviceModel"
+        const val KEY_DEVICE_CATEGORY_NAME = "device_category_name"
+        const val KEY_DEVICE_SCREEN_RESOLUTION = "device_screenResolution"
+        const val KEY_DEVICE_LANGUAGE_NAME = "device_language"
+
+        fun reformatEvent(event: String, sessionId: String, cache: Cache, context: Context): JSONObject {
             return try {
                 val valueEvent = if (GlobalConfig.isSellerApp()) {
                     VALUE_EVENT_SELLERAPP
@@ -182,8 +199,27 @@ class TrackingMapper {
                     VALUE_EVENT_MAINAPP
                 }
                 val item = JSONObject(event)
+
                 if (item.has(KEY_EVENT)) {
                     val eventName = item.get(KEY_EVENT)
+
+                    if (eventName == EVENT_OPEN_SCREEN) {
+                        item.put(KEY_DEVICE_BROWSER, IRIS)
+                        item.put(KEY_DEVICE_BROWSER_VERSION, IRIS_SDK_VERSION)
+                        item.put(KEY_OPERATING_SYSTEM_VERSION_NAME, ANDROID)
+                        item.put(KEY_DEVICE_OS_VERSION, Build.VERSION.RELEASE)
+                        item.put(KEY_DEVICE_MOBILE_BRANDING, Build.BRAND)
+                        item.put(KEY_DEVICE_MOBILE_DEVICE_MODEL, Build.MODEL)
+                        item.put(KEY_DEVICE_LANGUAGE_NAME, Locale.getDefault().toString())
+
+                        val screenWidth = DeviceScreenInfo.getScreenWidth(context)
+                        val screenHeight = DeviceScreenInfo.getScreenHeight(context)
+                        item.put(KEY_DEVICE_SCREEN_RESOLUTION, "${screenWidth}x$screenHeight")
+
+                        val categoryName = if (DeviceScreenInfo.isTablet(context)) TABLET else MOBILE
+                        item.put(KEY_DEVICE_CATEGORY_NAME, categoryName)
+                    }
+
                     if (!cache.hasVisit() && eventName == EVENT_OPEN_SCREEN) {
                         item.put(KEY_NEW_VISIT, "1")
                         cache.setVisit()

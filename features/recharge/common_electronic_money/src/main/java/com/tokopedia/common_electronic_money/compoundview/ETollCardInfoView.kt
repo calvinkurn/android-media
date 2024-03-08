@@ -10,8 +10,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.common_digital.common.constant.EmoneyConstant
 import com.tokopedia.common_electronic_money.R
 import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.kotlin.extensions.view.hide
@@ -21,13 +20,17 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.jetbrains.annotations.NotNull
 import java.text.SimpleDateFormat
 import java.util.Date
 import com.tokopedia.common_electronic_money.R as common_electronic_moneyR
+import com.tokopedia.common_digital.R as common_digitalR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Rizky on 15/05/18.
@@ -98,13 +101,13 @@ class ETollCardInfoView @JvmOverloads constructor(
 
         textLabelCardNumber.text = resources.getString(R.string.emoney_nfc_card_info_label_card_number)
         textCardNumber.text = attributesEmoneyInquiry.formattedCardNumber
-        textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+        textCardNumber.setTextColor(resources.getColor(unifyprinciplesR.color.Unify_NN950))
         textCardNumber.setTypeface(textCardNumber.typeface, Typeface.BOLD)
 
         textLabelBalance.text = resources.getString(R.string.emoney_nfc_card_info_label_card_balance)
         textRemainingBalance.text = CurrencyFormatUtil
             .convertPriceValueToIdrFormat(attributesEmoneyInquiry.lastBalance, true)
-        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
+        textRemainingBalance.setTextColor(resources.getColor(unifyprinciplesR.color.Unify_NN950_96))
 
         val simpleDateFormat = SimpleDateFormat(
             "dd MMM yyyy, HH:mm",
@@ -113,11 +116,8 @@ class ETollCardInfoView @JvmOverloads constructor(
         val date = Date()
         val result = String.format("(%s)", simpleDateFormat.format(date))
         textDate.text = result
-        if (attributesEmoneyInquiry.extraPendingBalance) {
-            showTickerInfo()
-        } else {
-            hideTickerInfo()
-        }
+        processTickerInfo(attributesEmoneyInquiry.extraPendingBalance, attributesEmoneyInquiry.issuer_id.toString(),
+            attributesEmoneyInquiry.lastBalance)
         if (attributesEmoneyInquiry.showAdditionalBalance &&
             attributesEmoneyInquiry.pendingBalance.isMoreThanZero()) {
             showAdditionalBalanceInfo(attributesEmoneyInquiry.pendingBalance)
@@ -126,16 +126,44 @@ class ETollCardInfoView @JvmOverloads constructor(
         }
     }
 
-    private fun showTickerInfo() {
-        tickerExtraPendingBalance.show()
-        tickerExtraPendingBalance.setHtmlDescription(resources.getString(R.string.emoney_nfc_bca_stacking_layout))
-        tickerExtraPendingBalance.setDescriptionClickEvent(object : TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                listener.onClickExtraPendingBalance()
-            }
+    private fun processTickerInfo(extraPendingBalance: Boolean, issuerId: String, balance: Int) {
+        val tickers = mutableListOf<TickerData>()
+        if (extraPendingBalance) {
+            tickers.add(
+                TickerData(
+                    "",
+                    resources.getString(R.string.emoney_nfc_bca_stacking_layout),
+                    Ticker.TYPE_ANNOUNCEMENT,
+                    true
+                ))
+        }
 
-            override fun onDismiss() {}
-        })
+        if ((issuerId != ISSUER_ID_TAPCASH && balance >= EmoneyConstant.MAX_NON_TAPCASH) ||
+            (issuerId == ISSUER_ID_TAPCASH && balance >= EmoneyConstant.MAX_TAPCASH)) {
+            tickers.add(
+                TickerData(
+                    resources.getString(common_digitalR.string.recharge_pdp_emoney_max_limit_title),
+                    resources.getString(common_digitalR.string.recharge_pdp_emoney_max_limit_desc),
+                    Ticker.TYPE_WARNING,
+                    true
+                )
+            )
+        }
+
+        if (tickers.isEmpty()) {
+            tickerExtraPendingBalance.hide()
+        } else {
+            tickerExtraPendingBalance.show()
+            context?.let { context ->
+                val tickerAdapter = TickerPagerAdapter(context, tickers)
+                tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                        listener.onClickExtraPendingBalance()
+                    }
+                })
+                tickerExtraPendingBalance.addPagerView(tickerAdapter, tickers)
+            }
+        }
     }
 
     private fun hideTickerInfo() {
@@ -182,11 +210,11 @@ class ETollCardInfoView @JvmOverloads constructor(
         viewVisible()
         textLabelCardNumber.text = resources.getString(R.string.emoney_nfc_card_info_label_card_number)
         textCardNumber.text = resources.getString(R.string.emoney_nfc_card_info_is_not_available_yet)
-        textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+        textCardNumber.setTextColor(resources.getColor(unifyprinciplesR.color.Unify_NN950))
         textCardNumber.typeface = Typeface.DEFAULT
         textLabelBalance.text = resources.getString(R.string.emoney_nfc_card_info_label_card_balance)
         textRemainingBalance.text = resources.getString(R.string.emoney_nfc_card_info_is_not_available_yet)
-        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+        textRemainingBalance.setTextColor(resources.getColor(unifyprinciplesR.color.Unify_NN950))
         textDate.text = ""
         imageIssuer.setImageDrawable(null)
     }
@@ -240,5 +268,9 @@ class ETollCardInfoView @JvmOverloads constructor(
 
     interface OnClickCardInfoListener {
         fun onClickExtraPendingBalance()
+    }
+
+    companion object {
+        private const val ISSUER_ID_TAPCASH = "3"
     }
 }

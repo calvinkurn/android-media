@@ -2,6 +2,7 @@ package com.tokopedia.hotel.roomlist.presentation.adapter.viewholder
 
 import android.graphics.Paint
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
@@ -10,10 +11,12 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomInfo
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import kotlin.math.min
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * @author by jessica on 25/03/19
@@ -26,20 +29,21 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
             val roomListModel = mapToRoomListModel(hotelRoom)
 
             if (roomListModel.available) {
-
                 roomDescriptionLayout.visibility = View.VISIBLE
                 roomFullLayout.root.visibility = View.GONE
 
                 setImageViewPager(roomListModel.images, hotelRoom)
                 roomNameTextView.text = roomListModel.roomName
                 maxOccupancyTextView.text = roomListModel.occupancyText
-                bedInfoTextView.text = itemView.context.getString(R.string.hotel_room_list_room_description,
-                        roomListModel.roomSize,
-                        roomListModel.bedInfo)
+                bedInfoTextView.text = itemView.context.getString(
+                    R.string.hotel_room_list_room_description,
+                    roomListModel.roomSize,
+                    roomListModel.bedInfo
+                )
                 roomPriceTextView.text = roomListModel.price
                 payHotelLayout.visibility = if (roomListModel.payInHotel) View.VISIBLE else View.GONE
                 payHotelTextView.text = roomListModel.payInHotelString
-                roomLeftTextView.visibility = if (roomListModel.roomLeft <= 2) View.VISIBLE else View.GONE
+                roomLeftTextView.visibility = if (roomListModel.roomLeft <= THRESHOLD_ROOM_LEFT_SIZE) View.VISIBLE else View.GONE
                 roomLeftTextView.text = getString(R.string.hotel_room_room_left_text, roomListModel.roomLeft.toString())
                 ccNotRequiredTextView.text = roomListModel.creditCardHeader
                 initRoomFacility(roomListModel.breakfastInfo, roomListModel.refundInfo, roomListModel.roomFacility)
@@ -47,24 +51,26 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
                 chooseRoomButton.setOnClickListener { listener.onClickBookListener(hotelRoom) }
                 chooseRoomButton.text = getString(R.string.hotel_room_list_choose_room_button, "")
 
-
                 if (roomListModel.slashPrice.isNotEmpty()) {
                     roomListSlashPriceTv.show()
                     roomListSlashPriceTv.paintFlags = roomListSlashPriceTv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     roomListSlashPriceTv.text = roomListModel.slashPrice
-                } else roomListSlashPriceTv.hide()
+                } else {
+                    roomListSlashPriceTv.hide()
+                }
 
                 if (roomListModel.tagging.isNotEmpty()) {
                     roomListTaggingTv.show()
                     roomListTaggingTv.text = roomListModel.tagging
-                } else roomListTaggingTv.hide()
-
+                } else {
+                    roomListTaggingTv.hide()
+                }
             } else {
                 roomDescriptionLayout.visibility = View.GONE
                 roomFullLayout.root.visibility = View.VISIBLE
                 if (roomListModel.images.isNotEmpty()) {
-                    roomFullLayout.roomListRoomFullImageView.loadImage(roomListModel.images.first()){
-                        setPlaceHolder(com.tokopedia.unifycomponents.R.drawable.imagestate_placeholder)
+                    roomFullLayout.roomListRoomFullImageView.loadImage(roomListModel.images.first()) {
+                        setPlaceHolder(unifycomponentsR.drawable.imagestate_placeholder)
                     }
                 }
                 roomFullLayout.roomFullRoomNameTextView.text = roomListModel.roomName
@@ -98,11 +104,16 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
 
     private fun setImageViewPager(imageUrls: List<String>, room: HotelRoom) {
         with(binding) {
-            if (imageUrls.size >= 5) roomImageViewPager.setImages(imageUrls.subList(0, 5))
-            else roomImageViewPager.setImages(imageUrls)
+            if (imageUrls.size >= MAX_IMG_URLS_SIZE) {
+                roomImageViewPager.setImages(
+                    imageUrls.subList(Int.ZERO, MAX_IMG_URLS_SIZE)
+                )
+            } else {
+                roomImageViewPager.setImages(imageUrls)
+            }
             roomImageViewPager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
-                override fun onImageClicked(position: Int) {
-                    listener.onPhotoClickListener(room, imageUrls, position)
+                override fun onImageClicked(imageView: ImageView, position: Int) {
+                    listener.onPhotoClickListener(imageView, room, imageUrls, position)
                 }
             }
             roomImageViewPager.buildView()
@@ -111,6 +122,8 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
 
     companion object {
         val LAYOUT = R.layout.item_hotel_room_list
+        private const val MAX_IMG_URLS_SIZE = 5
+        private const val THRESHOLD_ROOM_LEFT_SIZE = 2
     }
 
     private fun mapToRoomListModel(hotelRoom: HotelRoom): RoomListModel {
@@ -145,7 +158,6 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
 
     interface OnClickBookListener {
         fun onClickBookListener(room: HotelRoom)
-        fun onPhotoClickListener(room: HotelRoom, imageUrls: List<String>, position: Int)
+        fun onPhotoClickListener(imageView: ImageView, room: HotelRoom, imageUrls: List<String>, position: Int)
     }
-
 }

@@ -1,11 +1,11 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
-import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
-import com.tokopedia.analytics.performance.perf.LoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 
 /**
  * Created by Yehezkiel on 19/05/20
@@ -20,13 +20,16 @@ data class ProductMiniSocialProofDataModel(
         customBlocksName = "ProductMiniSocialProofDataModel"
     ) {
 
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name
 
     override fun type(): String = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
 

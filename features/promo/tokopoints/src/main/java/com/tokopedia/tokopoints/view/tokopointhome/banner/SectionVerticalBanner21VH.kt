@@ -6,10 +6,13 @@ import android.webkit.URLUtil
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
@@ -23,7 +26,9 @@ class SectionVerticalBanner21VH(val view: View) : RecyclerView.ViewHolder(view) 
             view.visibility = View.GONE
             return
         }
-        ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
+        content.backgroundImgURLMobile.getBitmapImageUrl(view.context) {
+            view.background = it.toDrawable(view.context.resources)
+        }
 
         if (content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty){
             CustomConstraintProvider.setCustomConstraint(view, R.id.parent_layout, R.id.text_see_all, R.id.text_title, ConstraintSet.BASELINE)
@@ -50,7 +55,7 @@ class SectionVerticalBanner21VH(val view: View) : RecyclerView.ViewHolder(view) 
                 && URLUtil.isValidUrl(content.layoutBannerAttr.imageList[0].imageURLMobile)) {
             val imgBanner = view.findViewById<ImageView>(R.id.img_banner)
             val data = content.layoutBannerAttr.imageList[0]
-            ImageHandler.loadImageFitCenter(imgBanner.context, imgBanner, data.imageURLMobile)
+            imgBanner?.loadImageFitCenter(data.imageURLMobile)
             imgBanner.setOnClickListener {
                 handledClick(data.redirectAppLink, data.redirectURL, "", "")
                 if (!TextUtils.isEmpty(content.sectionTitle)) sendBannerClick(content.sectionTitle)

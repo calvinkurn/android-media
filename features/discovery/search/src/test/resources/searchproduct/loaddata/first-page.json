@@ -637,12 +637,40 @@
             {
               "position": "offers",
               "type": "lightGrey",
-              "title": "Grosir"
+              "title": "Grosir",
+              "style": [
+                {
+                  "key": "background-color",
+                  "value": "#F0F3F7"
+                },
+                {
+                  "key": "background-opacity",
+                  "value": "1"
+                },
+                {
+                  "key": "text-color",
+                  "value": "#212121"
+                }
+              ]
             },
             {
               "position": "price",
               "type": "lightGreen",
-              "title": "Grosir"
+              "title": "Grosir",
+              "style": [
+                {
+                  "key": "background-color",
+                  "value": "#F0F3F7"
+                },
+                {
+                  "key": "background-opacity",
+                  "value": "1"
+                },
+                {
+                  "key": "text-color",
+                  "value": "#212121"
+                }
+              ]
             }
           ],
           "customvideo_url" : "https://vod.tokopedia.com/view/adaptive.m3u8?id=6a96e88795f140e4bbaa9d67831d9444"
@@ -806,12 +834,32 @@
             {
               "position": "promo",
               "type": "lightGreen",
-              "title": "Cashback"
+              "title": "Cashback",
+              "style": [
+                {
+                  "key": "background-opacity",
+                  "value": "1"
+                },
+                {
+                  "key": "text-color",
+                  "value": "#212121"
+                }
+              ]
             },
             {
               "position": "credibility",
               "type": "lightBlue",
-              "title": "Terbaru"
+              "title": "Terbaru",
+              "style": [
+                {
+                  "key": "background-color",
+                  "value": "#F0F3F7"
+                },
+                {
+                  "key": "background-opacity",
+                  "value": "1"
+                }
+              ]
             },
             {
               "position": "gimmick",

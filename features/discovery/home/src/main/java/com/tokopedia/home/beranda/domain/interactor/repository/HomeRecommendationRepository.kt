@@ -34,7 +34,8 @@ class HomeRecommendationRepository @Inject constructor(
                 GetRecommendationRequestParam(
                         pageName = pageName,
                         queryParam = queryParam,
-                        shopIds = shopIds
+                        shopIds = shopIds,
+                        hasNewProductCardEnabled = true,
                 )
         )
     }

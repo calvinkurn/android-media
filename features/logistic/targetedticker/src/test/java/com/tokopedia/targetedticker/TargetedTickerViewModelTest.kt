@@ -135,12 +135,7 @@ class TargetedTickerViewModelTest {
         // when
         val param = TargetedTickerParamModel(
             page = TargetedTickerPage.TRACKING_PAGE,
-            listOf(
-                TargetedTickerParamModel.Target(
-                    "type1",
-                    listOf("111")
-                )
-            )
+            template = TargetedTickerParamModel.Template()
         )
         targetedTickerViewModel.getTargetedTicker(param)
 

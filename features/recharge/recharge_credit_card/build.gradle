@@ -101,6 +101,7 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 
+    implementation rootProject.ext.miscDependencies.rechargePcidss
 }
 
 project.ext {

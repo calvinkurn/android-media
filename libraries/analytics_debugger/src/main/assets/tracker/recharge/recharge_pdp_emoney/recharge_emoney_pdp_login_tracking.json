@@ -58,16 +58,6 @@
     },
     {
       "businessUnit": "recharge",
-      "eventCategory": "digital - native",
-      "currentSite": "tokopediadigitalRecharge",
-      "event": "clickEmoney",
-      "userId": ".+",
-      "eventAction": "click camera icon",
-      "sessionIris": ".+",
-      "eventLabel": ".*"
-    },
-    {
-      "businessUnit": "recharge",
       "eventCategory": "digital - Uang Elektronik",
       "currentSite": "tokopediadigitalRecharge",
       "event": "clickEmoney",

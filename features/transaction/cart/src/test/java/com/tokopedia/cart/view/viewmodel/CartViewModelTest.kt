@@ -2,32 +2,33 @@ package com.tokopedia.cart.view.viewmodel
 
 import androidx.lifecycle.Observer
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
-import com.tokopedia.cartrevamp.view.uimodel.AddCartToWishlistV2Event
-import com.tokopedia.cartrevamp.view.uimodel.CartAddOnData
-import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
-import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
-import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
-import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartLoadingHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartSelectedAmountHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartTopAdsHeadlineData
-import com.tokopedia.cartrevamp.view.uimodel.CartWishlistHolderData
-import com.tokopedia.cartrevamp.view.uimodel.CartWishlistItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DisabledCollapsedHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
-import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
-import com.tokopedia.cartrevamp.view.uimodel.RemoveFromWishlistEvent
-import com.tokopedia.cartrevamp.view.uimodel.SubTotalState
+import com.tokopedia.cart.view.CartViewModel
+import com.tokopedia.cart.view.uimodel.AddCartToWishlistV2Event
+import com.tokopedia.cart.view.uimodel.CartAddOnData
+import com.tokopedia.cart.view.uimodel.CartAddOnProductData
+import com.tokopedia.cart.view.uimodel.CartCheckoutButtonState
+import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
+import com.tokopedia.cart.view.uimodel.CartGlobalEvent
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartLoadingHolderData
+import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
+import com.tokopedia.cart.view.uimodel.CartSelectedAmountHolderData
+import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
+import com.tokopedia.cart.view.uimodel.CartTopAdsHeadlineData
+import com.tokopedia.cart.view.uimodel.CartWishlistHolderData
+import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cart.view.uimodel.DisabledCollapsedHolderData
+import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
+import com.tokopedia.cart.view.uimodel.RemoveFromWishlistEvent
+import com.tokopedia.cart.view.uimodel.SubTotalState
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -36,6 +37,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
@@ -649,17 +651,19 @@ class CartViewModelTest : BaseCartViewModelTest() {
             DisabledAccordionHolderData()
         )
         var index = cartViewModel.cartDataList.value.lastIndex
-        val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
-        val cartRecentViewHolderData = CartRecentViewHolderData()
+        val cartRecentViewHolderData = CartRecentViewHolderData(
+            recommendationWidgetMetadata = RecommendationWidgetMetadata(
+                pageNumber = 1,
+                pageName = CartViewModel.PAGE_NAME_RECENT_VIEW_TEST,
+                xSource = CartViewModel.RECENT_VIEW_XSOURCE,
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECENT_VIEW
+            )
+        )
 
         // WHEN
-        cartViewModel.addCartRecentViewData(cartSectionHeaderHolderData, cartRecentViewHolderData)
+        cartViewModel.addCartRecentViewData()
 
         // THEN
-        assertEquals(
-            cartSectionHeaderHolderData,
-            cartViewModel.cartDataList.value[++index]
-        )
         assertEquals(
             cartRecentViewHolderData,
             cartViewModel.cartDataList.value[++index]
@@ -1095,56 +1099,6 @@ class CartViewModelTest : BaseCartViewModelTest() {
             cartViewModel.cartModel.isLastApplyResponseStillValid
         )
         assertTrue(cartViewModel.cartModel.lastValidateUseResponse?.code?.isEmpty() == true)
-    }
-    // endregion
-
-    // region updateRecentViewData
-    @Test
-    fun `WHEN updateRecentViewData THEN recent view data in cartDataList should be updated`() {
-        // GIVEN
-        cartViewModel.cartDataList.value = arrayListOf(
-            CartGroupHolderData(),
-            CartItemHolderData(),
-            CartItemHolderData(),
-            CartRecentViewHolderData(
-                recentViewList = listOf(
-                    CartRecentViewItemHolderData(id = "123")
-                )
-            )
-        )
-        cartViewModel.cartDataList.observeForever(cartDataListObserver)
-        val productId = "123"
-        val isWishlist = true
-
-        // WHEN
-        cartViewModel.updateRecentViewData(productId, isWishlist)
-
-        // THEN
-        verify {
-            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(0))
-        }
-    }
-
-    @Test
-    fun `WHEN updateRecentViewData with empty recentViewList THEN recent view data in cartDataList should not be updated`() {
-        // GIVEN
-        cartViewModel.cartDataList.value = arrayListOf(
-            CartGroupHolderData(),
-            CartItemHolderData(),
-            CartItemHolderData(),
-            CartRecentViewHolderData(recentViewList = emptyList())
-        )
-        cartViewModel.cartDataList.observeForever(cartDataListObserver)
-        val productId = "123"
-        val isWishlist = true
-
-        // WHEN
-        cartViewModel.updateRecentViewData(productId, isWishlist)
-
-        // THEN
-        verify(inverse = true) {
-            cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(0))
-        }
     }
     // endregion
 
@@ -2234,6 +2188,25 @@ class CartViewModelTest : BaseCartViewModelTest() {
 
         // THEN
         assertEquals(3, cartViewModel.cartModel.availableCartItemImpressionList.size)
+    }
+    // endregion
+
+    // region updateCartCounter
+    @Test
+    fun `WHEN updateCartCounter then updateCartCounterUseCase should called`() {
+        // GIVEN
+        val resultExpected = 3
+        coEvery { updateCartCounterUseCase(Unit) } returns resultExpected
+
+        // WHEN
+        cartViewModel.processUpdateCartCounter()
+
+        // THEN
+        assertEquals(
+            CartGlobalEvent.CartCounterUpdated(resultExpected),
+            cartViewModel.globalEvent.value
+        )
+        // assertTrue(cartViewModel.globalEvent.value is CartGlobalEvent.CartCounterUpdated)
     }
     // endregion
 

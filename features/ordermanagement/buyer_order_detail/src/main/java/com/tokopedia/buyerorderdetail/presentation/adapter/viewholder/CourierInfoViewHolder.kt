@@ -3,7 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 import android.animation.LayoutTransition
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailShipmentInfoCourierBinding
@@ -69,7 +69,7 @@ class CourierInfoViewHolder(
 
     private fun setupFreeShippingBadge(freeShipping: Boolean, boBadgeUrl: String) {
         binding?.ivBuyerOrderDetailFreeShipmentBadge?.apply {
-            ImageHandler.loadImage2(this, boBadgeUrl, com.tokopedia.utils.R.drawable.ic_loading_error)
+            this.loadImageWithError(boBadgeUrl, com.tokopedia.utils.R.drawable.ic_loading_error)
             showWithCondition(freeShipping)
         }
     }

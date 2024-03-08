@@ -6,12 +6,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
@@ -244,11 +245,7 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindProductImage(product: ProductData) {
-        ImageHandler.loadImage2(
-            thumbnail,
-            product.imageUrl,
-            R.drawable.ic_notifcenter_loading_toped
-        )
+        thumbnail?.loadImageWithError(product.imageUrl, R.drawable.ic_notifcenter_loading_toped)
     }
 
     private fun bindProductCampaign(product: ProductData) {

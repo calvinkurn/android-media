@@ -3,7 +3,8 @@ package com.tokopedia.globalnavwidget
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.globalnavwidget.databinding.GlobalNavWidgetPillItemLayoutBinding
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.utils.view.binding.viewBinding
@@ -26,7 +27,7 @@ internal class GlobalNavWidgetPillViewHolder(
         }
 
         binding?.globalNavPillItemImage?.let {
-            ImageHandler.loadImageFitCenter(context, it, item.imageUrl)
+            it?.loadImageFitCenter(item.imageUrl)
         }
 
         binding?.globalNavPillItemName?.shouldShowWithAction(item.name.isNotEmpty()) {

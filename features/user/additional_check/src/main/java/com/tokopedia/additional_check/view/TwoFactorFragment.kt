@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.additional_check.R
 import com.tokopedia.additional_check.common.ADD_PHONE_NUMBER_PAGE
 import com.tokopedia.additional_check.common.ADD_PIN_PAGE
@@ -107,7 +107,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
             binding.bodyTwoFactor.text = getString(R.string.add_pin_body)
             binding.btnTwoFactor.text = getString(R.string.add_pin_button_title)
             binding.imgViewTwoFactor.run {
-                ImageHandler.LoadImage(this, PIN_ONBOARDING_IMG)
+                this?.loadImageFitCenter(PIN_ONBOARDING_IMG)
             }
             binding.btnTwoFactor.setOnClickListener {
                 twoFactorTracker.clickButtonPageAddPin()
@@ -129,7 +129,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
             binding.bodyTwoFactor.text = getString(R.string.add_phone_body)
             binding.btnTwoFactor.text = getString(R.string.add_phone_button_title)
             binding.imgViewTwoFactor.run {
-                ImageHandler.LoadImage(this, PHONE_ONBOARDING_IMG)
+                this?.loadImageFitCenter(PHONE_ONBOARDING_IMG)
             }
             binding.btnTwoFactor.setOnClickListener {
                 twoFactorTracker.clickButtonPageAddPhoneNumber()
@@ -144,7 +144,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
             binding.bodyTwoFactor.text = getString(R.string.add_pin_success_body)
             binding.btnTwoFactor.text = getString(R.string.add_pin_success_button_title)
             binding.imgViewTwoFactor.run {
-                ImageHandler.LoadImage(this, PIN_SUCCESS_IMG)
+                this?.loadImageFitCenter(PIN_SUCCESS_IMG)
             }
             binding.btnTwoFactor.setOnClickListener {
                 if(additionalCheckPreference.getNextOffer().isNotEmpty() && activity != null) {

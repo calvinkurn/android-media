@@ -7,19 +7,22 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
+import com.tokopedia.hotel.databinding.ActivityHotelDestinationBinding
 import com.tokopedia.hotel.destination.di.DaggerHotelDestinationComponent
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.hotel.destination.view.fragment.HotelSearchDestinationFragment
 import com.tokopedia.hotel.destination.view.widget.HotelSearchInputView
-import kotlinx.android.synthetic.main.activity_hotel_destination.*
 import kotlinx.coroutines.*
+import com.tokopedia.common.travel.R as commontravelR
 
 /**
  * @author by jessica on 25/03/19
  */
 
 class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinationComponent>, HotelSearchInputView.ActionListener {
+
+    private var binding: ActivityHotelDestinationBinding? = null
 
     var isSearching: Boolean = false
 
@@ -44,6 +47,8 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityHotelDestinationBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
         updateTitle(getString(R.string.hotel_destination_toolbar_title))
 
         initInjector()
@@ -55,12 +60,18 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
     }
 
     private fun initEditText() {
-        search_input_view.actionListener = this
-        search_input_view.buildView()
+        binding?.run {
+            searchInputView.actionListener = this@HotelDestinationActivity
+            searchInputView.buildView()
+        }
     }
 
     fun initInjector() {
         component.inject(this)
+    }
+
+    fun getFilterText(): String {
+        return binding?.searchInputView?.searchBarEditText?.text?.toString() ?: ""
     }
 
     private fun showSearchDestinationResult() {
@@ -109,8 +120,8 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
     override fun onBackPressed() {
         finish()
         overridePendingTransition(
-            com.tokopedia.common.travel.R.anim.travel_anim_stay,
-            com.tokopedia.common.travel.R.anim.travel_slide_out_up
+            commontravelR.anim.travel_anim_stay,
+            commontravelR.anim.travel_slide_out_up
         )
     }
 

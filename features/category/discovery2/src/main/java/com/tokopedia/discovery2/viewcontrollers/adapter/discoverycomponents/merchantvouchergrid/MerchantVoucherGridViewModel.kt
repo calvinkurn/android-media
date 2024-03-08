@@ -30,11 +30,12 @@ class MerchantVoucherGridViewModel(
 ) : DiscoveryBaseViewModel(), CoroutineScope {
     companion object {
         const val ERROR_MESSAGE_EMPTY_DATA = "empty data"
+        const val ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE = "unavailable next page"
         const val SHIMMER_COMPONENT_HEIGHT = 300
     }
 
     private val _couponList: MutableLiveData<Result<ArrayList<ComponentsItem>>> = MutableLiveData()
-    private val _seeMore: MutableLiveData<Redirection> = MutableLiveData()
+    private val _seeMore: MutableLiveData<Result<Redirection>> = MutableLiveData()
     private val _noMorePages: MutableLiveData<Unit> = MutableLiveData()
 
     private val layout: ArrayList<ComponentsItem> = arrayListOf()
@@ -42,7 +43,7 @@ class MerchantVoucherGridViewModel(
 
     val couponList: LiveData<Result<ArrayList<ComponentsItem>>>
         get() = _couponList
-    val seeMore: LiveData<Redirection>
+    val seeMore: LiveData<Result<Redirection>>
         get() = _seeMore
     val noMorePages: LiveData<Unit>
         get() = _noMorePages
@@ -62,11 +63,11 @@ class MerchantVoucherGridViewModel(
 
     private fun setVoucherList(
         redirection: Redirection?,
-        onEventAfterVoucherListSet: () -> Unit,
+        onEventAfterVoucherListSet: () -> Unit
     ) {
         val components = component.getComponentsItem()
         if (!components.isNullOrEmpty()) {
-            if (hasNextPage() && redirection?.ctaText.isNullOrBlank()) {
+            if (hasNextPage() && !redirection.isAvailable()) {
                 layout.addVoucherList(components)
                 layout.addShimmer()
             } else {
@@ -79,6 +80,9 @@ class MerchantVoucherGridViewModel(
         }
     }
 
+    private fun Redirection?.isAvailable(): Boolean =
+        !this?.ctaText.isNullOrBlank() && !this?.applink.isNullOrBlank()
+
     private fun getComponentAdditionalInfo(): ComponentAdditionalInfo? = component.getComponentAdditionalInfo()
 
     fun loadFirstPageCoupon() {
@@ -86,16 +90,20 @@ class MerchantVoucherGridViewModel(
 
         launchCatchError(
             block = {
-                if (useCase?.loadFirstPageComponents(componentId = component.id, pageEndPoint = component.pageEndPoint) == true) {
-                    val redirection = getComponentAdditionalInfo()?.redirection
-                    setVoucherList(
-                        redirection = redirection,
-                        onEventAfterVoucherListSet = {
-                            this@MerchantVoucherGridViewModel._seeMore.value = redirection
-                            _noMorePages.value = Unit
-                        }
-                    )
-                }
+                useCase?.loadFirstPageComponents(
+                    componentId = component.id,
+                    pageEndPoint = component.pageEndPoint
+                )
+
+                val redirection = getComponentAdditionalInfo()?.redirection
+                setVoucherList(
+                    redirection = redirection,
+                    onEventAfterVoucherListSet = {
+                        setLoadMoreButton(redirection)
+                        _noMorePages.value = Unit
+                    }
+                )
+
                 isLoading = false
             },
             onError = {
@@ -104,6 +112,18 @@ class MerchantVoucherGridViewModel(
                 isLoading = false
             }
         )
+    }
+
+    private fun setLoadMoreButton(redirection: Redirection?) {
+        val result = redirection?.let {
+            if (it.isAvailable()) {
+                Success(redirection)
+            } else {
+                Fail(Throwable(ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE))
+            }
+        } ?: Fail(Throwable(ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE))
+
+        this@MerchantVoucherGridViewModel._seeMore.value = result
     }
 
     fun loadMore(

@@ -9,8 +9,10 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelShop
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.home_component.R as home_componentR
@@ -97,6 +99,22 @@ class SpecialReleaseRevampItemViewHolder(
     private fun HomeComponentSpecialReleaseRevampItemBinding.renderProduct(element: SpecialReleaseRevampItemDataModel) {
         setProductListener(element)
         productCard.setProductModel(element.productCardModel)
+        if(ProductCardExperiment.isReimagine()) {
+            val padding = itemView.context.resources.getDimensionPixelSize(
+                home_componentR.dimen.home_special_release_revamp_product_padding
+            )
+            productCard.setMargins(padding)
+        } else {
+            productCard.clearMargins()
+        }
+    }
+
+    private fun View.setMargins(margin: Int) {
+        setMargin(margin, margin, margin, margin)
+    }
+
+    private fun View.clearMargins() {
+        setMargin(0, 0, 0, 0)
     }
 
     private fun HomeComponentSpecialReleaseRevampItemBinding.setProductListener(element: SpecialReleaseRevampItemDataModel) {
@@ -117,7 +135,6 @@ class SpecialReleaseRevampItemViewHolder(
                 element.grid.applink
             )
         }
-        productLayout.setOnClickListener(productClickListener)
         productCard.run {
             setOnClickListener(productClickListener)
             addOnImpressionListener(element.productImpressHolder) {

@@ -24,6 +24,8 @@ public interface QrScannerContract {
 
         void showErrorNetwork(Throwable throwable);
 
+        void openActivity(String url);
+
         Activity getActivity();
 
         void goToPaymentPage(String imeiNumber, JsonObject barcodeData);

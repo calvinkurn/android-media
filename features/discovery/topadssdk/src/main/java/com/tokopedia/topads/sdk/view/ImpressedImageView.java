@@ -13,7 +13,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.kotlin.model.ImpressHolder;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.CpmImage;
@@ -185,7 +185,7 @@ public class ImpressedImageView extends AppCompatImageView {
                     ContextCompat.getColor(getContext(), R.color
                             .topads_gray_default_bg));
         } else {
-            ImageHandler.loadImageThumbs(getContext(), this, image.getImageUrl());
+            JvmMediaLoader.loadImage(this, image.getImageUrl());
         }
     }
 
@@ -201,7 +201,7 @@ public class ImpressedImageView extends AppCompatImageView {
                     ContextCompat.getColor(getContext(), R.color
                             .topads_gray_default_bg));
         } else {
-            ImageHandler.loadImageThumbs(getContext(), this, image.getFullEcs());
+            JvmMediaLoader.loadImage(this, image.getFullEcs());
         }
     }
 

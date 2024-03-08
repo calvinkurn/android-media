@@ -46,9 +46,7 @@ class SimpleUploaderManager @Inject constructor(
         if (param.withTranscode && uploadId.isEmpty().not()) {
             while (true) {
                 if (maxRetryTranscoding >= MAX_RETRY_TRANSCODING) {
-                    return UploadResult.Error(TRANSCODING_FAILED).also {
-                        resetUpload()
-                    }
+                    return getTranscodeError()
                 }
 
                 if (uploader.uploadId != null) {
@@ -58,8 +56,8 @@ class SimpleUploaderManager @Inject constructor(
                     if (transcode.isCompleted()) break
 
                     // transcoding failed
-                    if (transcode.requestId().isNotEmpty()) {
-                        return UploadResult.Error(TRANSCODING_FAILED, transcode.requestId())
+                    if (transcode.requestId().isNotEmpty() || transcode.isFailed()) {
+                        return getTranscodeError(transcode.requestId())
                     }
                 }
 
@@ -87,6 +85,10 @@ class SimpleUploaderManager @Inject constructor(
         simpleUploaderUseCase.progressUploader = progressUploader
     }
 
+    private fun getTranscodeError(requestId: String? = null): UploadResult.Error {
+        return UploadResult.Error(TRANSCODING_FAILED, requestId ?: TRANSCODE_FAILED_CODE).also { resetUpload() }
+    }
+
     private fun resetUpload() {
         maxRetryTranscoding = 0
     }
@@ -94,5 +96,7 @@ class SimpleUploaderManager @Inject constructor(
     companion object {
         private const val MAX_RETRY_TRANSCODING = 24
         private const val DELAYED_TO_RETRY = 5_000L // 5sec
+
+        private const val TRANSCODE_FAILED_CODE = "-2"
     }
 }

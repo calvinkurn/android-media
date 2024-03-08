@@ -11,8 +11,8 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.unifycomponents.toPx
 
 class SomListOrderViewHolder(
-        itemView: View,
-        listener: SomListOrderItemListener
+    itemView: View,
+    listener: SomListOrderItemListener
 ) : com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderViewHolder(itemView, listener) {
 
     companion object {
@@ -47,7 +47,9 @@ class SomListOrderViewHolder(
 
     override fun setupOrderCard(element: SomListOrderUiModel) {
         binding?.run {
-            if ((element.multiSelectEnabled && element.cancelRequest != 0 && element.cancelRequestStatus != 0)) {
+            val isCancelRequest = element.cancelRequest != 0 && element.cancelRequestStatus != 0
+            val isBulkSelectable = element.isBulkSelectable && !isCancelRequest
+            if ((element.multiSelectEnabled && isBulkSelectable)) {
                 cardSomOrder.animateFadeOut()
             } else {
                 cardSomOrder.animateFadeIn()
@@ -58,8 +60,11 @@ class SomListOrderViewHolder(
                 somOrderListOpenIndicator?.gone()
             }
             root.setOnClickListener {
-                if (element.multiSelectEnabled) touchCheckBox(element)
-                else listener.onOrderClicked(element)
+                if (element.multiSelectEnabled) {
+                    touchCheckBox(element)
+                } else {
+                    listener.onOrderClicked(element)
+                }
             }
             binding?.cardSomOrder?.setMargin(
                 Int.ZERO,

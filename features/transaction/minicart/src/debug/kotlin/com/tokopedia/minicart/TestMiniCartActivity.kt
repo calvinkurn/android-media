@@ -30,7 +30,11 @@ class TestMiniCartActivity : AppCompatActivity() {
                     showChevron = true,
                     showOriginalTotalPrice = true,
                     overridePrimaryButtonWording = "apa ini",
-                    additionalButton = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500))
+                    additionalButton = getIconUnifyDrawable(
+                        context,
+                        IconUnify.CHAT,
+                        ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
+                    )
                 ),
                 getMiniCartV2WidgetListener()
             )
@@ -40,7 +44,25 @@ class TestMiniCartActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         findViewById<MiniCartV2Widget>(R.id.test_mini_cart).apply {
-            refresh(GetMiniCartParam(listOf("480552"), MiniCartSource.MiniCartBottomSheet.value))
+            // tokonow
+//            refresh(GetMiniCartParam(listOf("480552"), MiniCartSource.MiniCartBottomSheet.value))
+
+            // BMGM
+            refresh(
+                GetMiniCartParam(
+                    listOf("6552061"),
+                    MiniCartSource.DiscoOfferPage.value,
+                    bmgm = GetMiniCartParam.GetMiniCartBmgmParam(
+                        offerIds = listOf(
+                            1739
+                        ),
+                        offerJsonData = "",
+                        warehouseIds = listOf(
+                            342370
+                        )
+                    )
+                )
+            )
         }
     }
 
@@ -66,5 +88,10 @@ class TestMiniCartActivity : AppCompatActivity() {
                 super.onFailedToLoadMiniCartWidget()
             }
         }
+    }
+
+    companion object {
+        const val SHOP_ID_NOW_STAGING = "480552"
+        const val SHOP_ID_NOW_PROD = "11515028"
     }
 }

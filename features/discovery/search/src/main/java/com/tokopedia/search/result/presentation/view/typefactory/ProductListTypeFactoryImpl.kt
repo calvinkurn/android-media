@@ -9,6 +9,7 @@ import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.discovery.common.reimagine.Search3ProductCard
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
+import com.tokopedia.search.result.presentation.model.CouponDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
@@ -40,6 +41,8 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchViewHolder
 import com.tokopedia.search.result.product.changeview.ChangeViewListener
 import com.tokopedia.search.result.product.changeview.ViewType
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
+import com.tokopedia.search.result.product.coupon.CouponGridViewHolder
+import com.tokopedia.search.result.product.coupon.CouponListener
 import com.tokopedia.search.result.product.cpm.BannerAdsListener
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.cpm.CpmReimagineViewHolder
@@ -61,6 +64,9 @@ import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarous
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListener
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcViewHolder
+import com.tokopedia.search.result.product.inspirationlistatc.postatccarousel.InspirationListPostAtcDataView
+import com.tokopedia.search.result.product.inspirationlistatc.postatccarousel.InspirationListPostAtcListener
+import com.tokopedia.search.result.product.inspirationlistatc.postatccarousel.InspirationListPostAtcViewHolder
 import com.tokopedia.search.result.product.inspirationwidget.card.BigGridInspirationCardViewHolder
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
@@ -129,6 +135,7 @@ class ProductListTypeFactoryImpl(
     private val videoCarouselListener: InspirationVideoCarouselListener,
     private val inspirationBundleListener: InspirationBundleListener,
     private val inspirationListAtcListener: InspirationListAtcListener,
+    private val inspirationListPostAtcListener: InspirationListPostAtcListener,
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
     private val networkMonitor: NetworkMonitor,
     private val isUsingViewStub: Boolean = false,
@@ -137,6 +144,7 @@ class ProductListTypeFactoryImpl(
     private val isSneakPeekEnabled: Boolean = false,
     private val inspirationKeywordListener: InspirationKeywordListener,
     private val inspirationProductListener: InspirationProductListener,
+    private val couponListener: CouponListener,
     private val reimagineSearch2Component: Search2Component = Search2Component.CONTROL,
     private val reimagineSearch3ProductCard: Search3ProductCard = Search3ProductCard.CONTROL,
     ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
@@ -260,6 +268,9 @@ class ProductListTypeFactoryImpl(
     override fun type(inspirationListAtcDataView: InspirationListAtcDataView): Int =
         InspirationListAtcViewHolder.LAYOUT
 
+    override fun type(postAtcCarouselDataView: InspirationListPostAtcDataView): Int =
+        InspirationListPostAtcViewHolder.LAYOUT
+
     override fun type(adsLowOrganicTitleDataView: AdsLowOrganicTitleDataView): Int =
         AdsLowOrganicTitleViewHolder.LAYOUT
 
@@ -288,6 +299,10 @@ class ProductListTypeFactoryImpl(
 
     override fun type(separatorDataView: VerticalSeparatorDataView): Int =
         VerticalSeparatorViewHolder.LAYOUT
+
+    override fun type(couponDataView: CouponDataView): Int {
+        return CouponGridViewHolder.LAYOUT
+    }
 
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -376,6 +391,15 @@ class ProductListTypeFactoryImpl(
                     recycledViewPool,
                     reimagineSearch2Component
                 )
+            InspirationListPostAtcViewHolder.LAYOUT ->
+                InspirationListPostAtcViewHolder(
+                    view,
+                    inspirationListPostAtcListener,
+                    recycledViewPool,
+                    reimagineSearch2Component,
+                    !reimagineSearch2Component.isReimagineCarousel()
+                        && !reimagineSearch3ProductCard.isReimagineProductCard(),
+                )
             AdsLowOrganicTitleViewHolder.LAYOUT ->
                 AdsLowOrganicTitleViewHolder(view)
             InspirationKeywordViewHolder.LAYOUT ->
@@ -397,6 +421,7 @@ class ProductListTypeFactoryImpl(
                 view,
                 reimagineSearch3ProductCard.isReimagineProductCard(),
             )
+            CouponGridViewHolder.LAYOUT -> CouponGridViewHolder(view, couponListener)
 
             else -> super.createViewHolder(view, type)
         }

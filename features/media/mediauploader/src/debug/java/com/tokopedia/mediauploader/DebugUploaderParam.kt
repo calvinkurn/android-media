@@ -10,7 +10,7 @@ data class DebugUploaderParam(
         fun default(): DebugUploaderParam {
             return DebugUploaderParam(
                 sourceId = "exwbZW", // video upload
-                shouldCompress = true,
+                shouldCompress = false,
                 withTranscode = false
             )
         }

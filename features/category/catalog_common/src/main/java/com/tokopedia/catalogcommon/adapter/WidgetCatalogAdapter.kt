@@ -10,6 +10,7 @@ import com.tokopedia.catalogcommon.OnStickySingleHeaderListener
 import com.tokopedia.catalogcommon.StickySingleHeaderView
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
+import com.tokopedia.catalogcommon.uimodel.SellerOfferingUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
 import com.tokopedia.kotlin.extensions.orFalse
@@ -18,7 +19,8 @@ class WidgetCatalogAdapter(
     private val baseListAdapterTypeFactory: CatalogAdapterFactoryImpl
 ) : BaseAdapter<CatalogAdapterFactoryImpl>(
     baseListAdapterTypeFactory
-), StickySingleHeaderView.OnStickySingleHeaderAdapter {
+),
+    StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
     private var recyclerView: RecyclerView? = null
     private val differ = CatalogDifferImpl()
@@ -36,6 +38,15 @@ class WidgetCatalogAdapter(
         visitables.forEachIndexed { index, visitable ->
             if (visitable is ComparisonUiModel) {
                 visitables[index] = comparison
+                notifyItemChanged(index)
+            }
+        }
+    }
+
+    fun displayVariantTextToSellerOffering(variantText: String) {
+        visitables.forEachIndexed { index, visitable ->
+            if (visitable is SellerOfferingUiModel) {
+                (visitables[index] as SellerOfferingUiModel).variantsName = variantText
                 notifyItemChanged(index)
             }
         }
@@ -112,6 +123,22 @@ class WidgetCatalogAdapter(
         }
     }
 
+    fun autoSelectNavigation(currentWidgetName: String) {
+        val indexNavigation = visitables.indexOfFirst {
+            it is StickyNavigationUiModel
+        }
+
+        val navigation = visitables.getOrNull(indexNavigation) as? StickyNavigationUiModel
+
+        navigation?.let { stickyNav ->
+            val indexPartOfNavigation = stickyNav.content.indexOfFirst {
+                it.anchorWidgets.contains(currentWidgetName)
+            }
+
+            changeNavigationTabActive(indexPartOfNavigation)
+        }
+    }
+
     fun changeNavigationTabActive(
         tabPosition: Int
     ) {
@@ -127,7 +154,7 @@ class WidgetCatalogAdapter(
             if (!onStickySingleHeaderViewListener?.isStickyShowed.orFalse()) {
                 notifyItemChanged(indexNavigation)
             } else {
-                Handler().post{
+                Handler().post {
                     notifyItemChanged(indexNavigation)
                 }
                 refreshSticky()
@@ -153,9 +180,9 @@ class WidgetCatalogAdapter(
         val index = visitables.indexOfFirst {
             it is StickyNavigationUiModel
         }
-        if (index != -1){
+        if (index != -1) {
             val nav = visitables[index] as StickyNavigationUiModel
-            return  nav.content.size
+            return nav.content.size
         }
         return index
     }
@@ -164,5 +191,4 @@ class WidgetCatalogAdapter(
         return (visitables.getOrNull(findPositionNavigation()) as? StickyNavigationUiModel)?.currentSelectTab
             ?: -1
     }
-
 }

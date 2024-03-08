@@ -23,9 +23,9 @@
 
     //Ad Create Auto
     <string name="tip_title">Tips anggaran harian</string>
-    <string name="tip_desc_1">Semakin tinggi anggaran harian, semakin besar potensi produkmu jangkau lebih banyak pembeli.</string>
-    <string name="tip_desc_2">Anggaran harian hanya akan mengiklankan produk-produkmu yang berpotensi laku.</string>
-    <string name="tip_desc_3">Kamu dapat atur atau hentikan anggaran harian kapan saja!</string>
+    <string name="tip_desc_1">Semakin tinggi anggaran harian, semakin tinggi potensi produkmu diklik atau tokomu dilihat oleh pembeli.</string>
+    <string name="tip_desc_2">Semakin tinggi anggaran harian, semakin banyak produk yang akan diiklankan.</string>
+    <string name="tip_desc_3">Kamu dapat kelola anggaran harian dan menghentikan Iklan Otomatis kapan saja.</string>
     <string name="more_info">https://seller.tokopedia.com/edu/cara-topads-mendeteksi-klik-tampil-yang-tidak-valid/</string>
     <string name="range_start">Rp%d</string>
     <string name="range_end">Rp%d</string>
@@ -34,12 +34,24 @@
     <string name="iklankan">Iklankan</string>
     <string name="budget_range">Anggaran Harian</string>
     <string name="auto_ads_creation">Buat Iklan Otomatis</string>
+    <string name="auto_ads_ps_creation">Waktu yang tepat untuk buat iklan!</string>
     <string name="info_text">Sistem TopAds melindungi iklanmu dari klik yang tidak valid. Info Selengkapnya</string>
     <string name="confirmation_switch_manual_description">Dengan Iklan Otomatis, pasti lebih mudah dan cepat untuk promosikan produkmu di halaman teratas.</string>
     <string name="confirmation_switch_manual">Yakin beralih dari Iklan Otomatis?</string>
     <string name="gunakan_iklan_manual">Mulai Iklan Manual</string>
     <string name="cancel_btn">Batalkan</string>
-
+    <string name="topads_auto_ps_set_daily_budget_title">Berapa banyak anggaran harian untuk iklanmu?</string>
+    <string name="topads_auto_ps_set_manual_ads_title">Mau atur iklan dengan strategimu sendiri?</string>
+    <string name="topads_auto_ps_set_auto_ads_title">Nonaktifkan pengaturan Iklan Otomatis?</string>
+    <string name="topads_auto_ps_set_manual_ads_cta">Atur Iklan Manual</string>
+    <string name="topads_auto_ps_set_auto_ads_cta_desc">Iklanmu sedang dimaksimalkan untuk mencapai algoritma terbaik.</string>
+    <string name="topads_auto_ps_set_auto_ads_cta">Nonaktifkan Sekarang</string>
+    <string name="topads_auto_ps_info_text">Sistem TopAds melindungi iklanmu dari klik yang tidak valid.</string>
+    <string name="topads_auto_ps_info_text_cta">Pelajari Selengkapnya</string>
+    <string name="topads_auto_ps_manual_confirmation_title">Yakin ingin nonaktifkan Iklan Produk dan Iklan Tokomu?</string>
+    <string name="topads_auto_ps_manual_confirmation_desc">Jika dinonaktifkan, iklan yang sudah dibuat tidak akan tayang lagi, lho.</string>
+    <string name="topads_auto_ps_dailog_cancel_cta">Tetap Gunakan</string>
+    <string name="topads_auto_ps_dailog_submit_cta">Ya, Nonaktifkan</string>
 
     <!--Auto ads Onboarding-->
     <string name="autoads_lottie_title1">Semakin mudah beriklan</string>
@@ -51,5 +63,14 @@
     <string name="autoads_selanjutnya">Selanjutnya</string>
     <string name="autoads_coba_iklan">Coba Iklan Otomatis</string>
     <string name="autoads_skip">"Skip</string>
+    <string name="autops_feedback_form_title">Sebelum menonaktifkan, bantu tingkatkan layanan Iklan Otomatis, yuk!</string>
+    <string name="autops_feedback_form_what_is_your_exp">Gimana pengalamanmu pakai Iklan Otomatis?</string>
+    <string name="autops_feedback_form_what_made_you_turn_off_autops">Apa yang membuatmu menonaktifkan Iklan Otomatis?</string>
+    <string name="autops_feedback_form_review_item_1">Saya tidak merasakan efek TopAds ke toko dan penjualan saya</string>
+    <string name="autops_feedback_form_review_item_2">Biaya iklan yang terlalu berat untuk toko saya</string>
+    <string name="autops_feedback_form_review_item_3">Penjualan toko sudah cukup tanpa menggunakan TopAds</string>
+    <string name="autops_feedback_form_review_item_4">Saya ingin melihat efek tanpa TopAds ke toko saya</string>
+    <string name="autops_feedback_form_review_item_5">Saya ingin beriklan dengan pengaturan saya sendiri</string>
+    <string name="autops_feedback_form_do_you_have_any_suggestions">Adakah saran atau kritik untuk Iklan Otomatis?</string>
 
 </resources>

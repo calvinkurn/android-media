@@ -2,9 +2,9 @@ package com.tokopedia.profilecompletion.changename
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNamePojo
-import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNameResult
-import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
+import com.tokopedia.profilecompletion.settingprofile.changename.domain.pojo.ChangeNamePojo
+import com.tokopedia.profilecompletion.settingprofile.changename.domain.pojo.ChangeNameResult
+import com.tokopedia.profilecompletion.settingprofile.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.profilecompletion.domain.ChangeNameUseCase
 import com.tokopedia.profilecompletion.domain.UserProfileRuleUseCase
 import com.tokopedia.profilecompletion.profilecompletion.data.ProfileRoleData

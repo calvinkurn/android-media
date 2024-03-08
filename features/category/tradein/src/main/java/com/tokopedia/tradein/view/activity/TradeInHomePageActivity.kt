@@ -297,6 +297,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
                 category = data.categoryName ?: ""
                 price = finalPrice
                 userId = viewModel.userId
+                shopName = data.shopName ?: ""
             }
             viewModel.getAddToCartOcsUseCase(addToCartOcsRequestParams)
         }

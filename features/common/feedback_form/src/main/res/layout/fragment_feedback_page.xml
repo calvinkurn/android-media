@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp"
-    android:enabled="false"
     android:background="@color/Unify_Background"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:enabled="false"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/svFeedbackForm"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/frame_button"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -25,13 +27,13 @@
                 android:id="@+id/rvImageFeedback"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:visibility="visible"
                 tools:listitem="@layout/item_image_chooser_feedback" />
 
             <RelativeLayout
@@ -46,11 +48,11 @@
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@id/tokopedia_separator"
                     android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_toLeftOf="@id/tokopedia_separator"
+                    android:hint="@string/email"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:hint="@string/email">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/email"
@@ -62,7 +64,7 @@
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -70,13 +72,13 @@
                     android:id="@+id/tokopedia_separator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignBottom="@id/et_email_wrapper"
                     android:layout_alignTop="@id/et_email_wrapper"
+                    android:layout_alignBottom="@id/et_email_wrapper"
+                    android:layout_alignParentEnd="true"
                     android:layout_marginTop="20dp"
-                    android:textSize="16sp"
                     android:text="@string/tokopedia_email"
-                    app:typographyType="body_3"/>
+                    android:textSize="16sp"
+                    app:typographyType="body_3" />
 
             </RelativeLayout>
 
@@ -85,18 +87,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@id/email_layout"
-                app:layout_constraintStart_toStartOf="parent"
-                android:textColor="@color/Unify_NN950_68"
                 android:text="Type of report"
-                app:typographyType="body_3"/>
+                android:textColor="@color/Unify_NN950_68"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/email_layout"
+                app:typographyType="body_3" />
 
             <LinearLayout
                 android:id="@+id/filterReport"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginTop="10dp"
+                android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_type_report">
 
@@ -123,21 +125,21 @@
                 android:id="@+id/bugsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/filterReport"
-                app:layout_constraintStart_toStartOf="parent"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/filterReport">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_bug_type"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginTop="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/filterReport"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:text="@string/category"
                     android:textColor="@color/Unify_NN950_68"
-                    app:typographyType="body_3"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/filterReport"
+                    app:typographyType="body_3" />
 
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -145,16 +147,16 @@
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/tv_bug_type"
+                    android:hint="@string/category"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:hint="@string/category">
+                    app:layout_constraintTop_toBottomOf="@id/tv_bug_type">
 
                     <Spinner
                         android:id="@+id/bugType"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="left"
-                        android:layout_weight="0" />
+                        android:layout_weight="0"
+                        android:gravity="left" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -165,7 +167,7 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/page"
                     android:textColor="@color/Unify_NN950_68"
-                    app:typographyType="body_3"/>
+                    app:typographyType="body_3" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/et_affected_page_wrapper"
@@ -178,15 +180,15 @@
                         android:id="@+id/page"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:hint="Tell us in which page the bug occured*"
                         android:imeOptions="actionDone"
                         android:inputType="text"
                         android:maxLines="1"
-                        android:focusable="false"
-                        android:hint="Tell us in which page the bug occured*"
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -197,7 +199,7 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/bugs_detail"
                     android:textColor="@color/Unify_NN950_68"
-                    app:typographyType="body_3"/>
+                    app:typographyType="body_3" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/et_str_wrapper"
@@ -210,14 +212,14 @@
                         android:id="@+id/journey"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="Explain how you encountered the bug*"
                         android:imeOptions="actionDone"
                         android:inputType="textMultiLine"
                         android:maxLines="10"
-                        android:hint="Explain how you encountered the bug*"
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -225,11 +227,11 @@
                     android:id="@+id/tv_journey_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_str_wrapper"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:text="@string/tv_journey"
                     android:textColor="@color/Unify_NN950_68"
-                    app:typographyType="body_3"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_str_wrapper"
+                    app:typographyType="body_3" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_expected"
@@ -238,7 +240,7 @@
                     android:layout_marginTop="16dp"
                     android:text="@string/expected_behavior"
                     android:textColor="@color/Unify_NN950_68"
-                    app:typographyType="body_3"/>
+                    app:typographyType="body_3" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/et_expected_result_wrapper"
@@ -251,14 +253,14 @@
                         android:id="@+id/expectedResult"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="Tell us the expected behavior"
                         android:imeOptions="actionDone"
                         android:inputType="textMultiLine"
                         android:maxLines="10"
-                        android:hint="Tell us the expected behavior"
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -269,10 +271,10 @@
                 android:id="@+id/feedbackLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/filterReport"
-                app:layout_constraintStart_toStartOf="parent"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/filterReport">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_feedback"
@@ -281,7 +283,7 @@
                     android:layout_marginTop="16dp"
                     android:text="@string/feedback"
                     android:textColor="@color/Unify_NN950_68"
-                    app:typographyType="body_3"/>
+                    app:typographyType="body_3" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/et_feedback_wrapper"
@@ -294,14 +296,14 @@
                         android:id="@+id/feedback"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="Tell us what to improve"
                         android:imeOptions="actionDone"
                         android:inputType="textMultiLine"
                         android:maxLines="10"
-                        android:hint="Tell us what to improve"
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -316,7 +318,9 @@
         android:id="@+id/frame_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/submitButton"
@@ -327,6 +331,22 @@
             android:text="Submit"
             android:textSize="16sp"
             android:textStyle="bold" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLoader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_Background"
+        android:visibility="visible"
+        tools:visibility="gone">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loaderUnify"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            app:loader_type="circular" />
     </FrameLayout>
 
 </RelativeLayout>

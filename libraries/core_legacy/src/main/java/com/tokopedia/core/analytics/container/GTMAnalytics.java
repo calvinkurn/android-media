@@ -98,8 +98,6 @@ public class GTMAnalytics extends ContextAnalytics {
     // have status that describe pending.
     private static final String CHECKOUT_PROGRESS = "checkout_progress";
     private static final String PROMOCLICK = "promoclick";
-
-    private static int prevCampaignHash = 0;
     public static String[] GENERAL_EVENT_KEYS = new String[]{KEY_ACTION, KEY_CATEGORY, KEY_LABEL, KEY_EVENT};
     private static final String ECOMMERCE = "ecommerce";
     private final Iris iris;
@@ -116,6 +114,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private static final String GTM_SIZE_LOG_REMOTE_CONFIG_KEY = "android_gtm_size_log";
     private static final String ANDROID_GA_EVENT_LOGGING = "android_ga_event_logging";
+    private static final String ANDROID_CACHE_CLIENT_ID = "android_cache_client_id";
     private static final long GTM_SIZE_LOG_THRESHOLD_DEFAULT = 6000;
     private static long gtmSizeThresholdLog = 0;
     private static final String EMBRACE_BREADCRUMB_FORMAT = "%s, %s";
@@ -784,6 +783,27 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public String getClientIDString() {
+        if (remoteConfig.getBoolean(ANDROID_CACHE_CLIENT_ID, false)) {
+            return getClientIDStringCache();
+        } else {
+            return getClientIDStringLegacy();
+        }
+    }
+
+    public String getClientIDStringLegacy() {
+        try {
+            if (TextUtils.isEmpty(clientIdString)) {
+                Bundle bundle = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
+                clientIdString = GoogleAnalytics.getInstance(getContext()).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
+            }
+            return clientIdString;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "NO_GA_ID";
+        }
+    }
+
+    public String getClientIDStringCache() {
         if (needGetGAId()) {
             String clientIdFromLib = getClientIdFromLib();
             if (isClientIdValid(clientIdFromLib)) {
@@ -1091,15 +1111,6 @@ public class GTMAnalytics extends ContextAnalytics {
     public void sendCampaign(Map<String, Object> param) {
         if (!TrackingUtils.isValidCampaign(param)) return;
 
-        // this is to prevent double campaign sent
-        // we check the campaign hash with param. If the hash is same, we conclude that the campaign is the same campaign.
-        int hashCodeTrack = hashCodeTrack(param);
-        if (sameCampaignWithPrevCampaignSent(hashCodeTrack)) {
-            return;
-        } else {
-            saveCampaignHash(hashCodeTrack);
-        }
-
         Bundle bundle = new Bundle();
         String afUniqueId = getAfUniqueId(context);
 
@@ -1140,25 +1151,6 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle = wrapWithSessionIris(bundle);
 
         pushEventV5("campaignTrack", bundle, context);
-    }
-
-    private int hashCodeTrack(Map<String, Object> param) {
-        int hashCode = 0;
-        for (Map.Entry<String, Object> entry : param.entrySet()) {
-            if (AppEventTracking.GTM.SCREEN_NAME.equals(entry.getKey())) {
-                continue;
-            }
-            hashCode += entry.getValue().hashCode();
-        }
-        return hashCode;
-    }
-
-    private Boolean sameCampaignWithPrevCampaignSent(int hashCodeTrack) {
-        return hashCodeTrack == prevCampaignHash;
-    }
-
-    private void saveCampaignHash(int hashCodeTrack) {
-        prevCampaignHash = hashCodeTrack;
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {

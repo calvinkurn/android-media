@@ -17,7 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermenu.SellerMenuDeeplinkMapper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -247,7 +247,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         if (GlobalConfig.isSellerApp()) {
             RouteManager.route(activity, ApplinkConst.SellerApp.SELLER_APP_HOME)
         } else {
-            RouteManager.route(activity, ApplinkConstInternalSellerapp.SELLER_MENU)
+            RouteManager.route(activity, SellerMenuDeeplinkMapper.getInternalApplinkSellerMenu(context))
         }
     }
 

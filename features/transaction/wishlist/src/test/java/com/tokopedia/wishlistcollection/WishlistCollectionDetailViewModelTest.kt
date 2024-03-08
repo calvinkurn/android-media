@@ -296,13 +296,14 @@ class WishlistCollectionDetailViewModelTest {
 
     private val listProductCardModel = listOf(productCardModel1, productCardModel2, productCardModel3)
 
-    private val badgesUrl: List<String> = arrayListOf()
+    private val badges = arrayListOf<RecommendationItem.Badge>()
 
     private val listRecommLabel: List<RecommendationLabel> = arrayListOf()
 
-    val recommItem1 = RecommendationItem(name = "recomm1", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
-    val recommItem2 = RecommendationItem(name = "recomm2", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
-    val recommItem3 = RecommendationItem(name = "recomm3", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
+    val recommItem1 = RecommendationItem(name = "recomm1", badges = badges, labelGroupList = listRecommLabel)
+    val recommItem2 = RecommendationItem(name = "recomm2", badges = badges, labelGroupList = listRecommLabel)
+    val recommItem3 = RecommendationItem(name = "recomm3", badges = badges, labelGroupList = listRecommLabel)
+
     private val listRecommendationItem = listOf(recommItem1, recommItem2, recommItem3)
     private val wishlistRecommendation = WishlistRecommendationDataModel(listProductCardModel, listRecommendationItem, "TitleRecommendation")
     private val recommendationWidget = RecommendationWidget(

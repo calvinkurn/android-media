@@ -2,57 +2,74 @@ package com.tokopedia.discovery2.usecase.supportingbrand
 
 import android.annotation.SuppressLint
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.datamapper.getMapWithoutRpc
 import com.tokopedia.discovery2.repository.supportingbrand.SupportingBrandRepository
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import javax.inject.Inject
 
 class SupportingBrandUseCase @Inject constructor(private val repository: SupportingBrandRepository) {
 
     companion object {
-        private const val BRAND_PER_PAGE = 10
-        private const val PAGE_START = 1
-        private const val PAGE_LOADED_2 = 2
+        const val BRAND_PER_PAGE = 10
     }
 
-    suspend fun loadFirstPageComponents(
+    suspend fun loadPageComponents(
         componentId: String,
         pageEndPoint: String,
         limit: Int = BRAND_PER_PAGE
-    ): Boolean {
+    ): SupportingBrandLoadState {
         val component = getComponent(componentId, pageEndPoint)
         val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
-        if (component?.noOfPagesLoaded == PAGE_START) return false
-
         component?.let {
+            it.properties?.let { properties ->
+                if (properties.limitProduct && properties.limitNumber.toIntOrZero() ==
+                    it.getComponentsItem()?.size
+                ) {
+                    return SupportingBrandLoadState.FAILED
+                }
+            }
             val isDynamic = it.properties?.dynamic ?: false
             val formattedComponentId =
-                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
-                    component.dynamicOriginalId!! else componentId
+                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) {
+                    component.dynamicOriginalId!!
+                } else {
+                    componentId
+                }
             val (shopCardListData, nextPage) = repository.getData(
                 formattedComponentId,
                 pageEndPoint,
                 getQueryParameterMap(
-                    PAGE_START,
+                    it.pageLoadedCounter,
                     limit,
                     it.nextPageKey,
                     it.userAddressData,
                     it.selectedFilters,
                     it.selectedSort,
-                    paramWithoutRpc,
+                    paramWithoutRpc
                 )
             )
-            it.showVerticalLoader = shopCardListData.isNotEmpty()
-            it.setComponentsItem(shopCardListData, component.tabName)
-            it.noOfPagesLoaded = PAGE_START
+            it.setComponentsItem(
+                listComponents = it.appendNextPageData(shopCardListData),
+                tabName = component.tabName
+            )
+
+            it.noOfPagesLoaded = it.pageLoadedCounter
             it.nextPageKey = nextPage
-            if (shopCardListData.isEmpty()) return true
-            it.pageLoadedCounter = PAGE_LOADED_2
-            it.verticalProductFailState = false
-            return true
+            if (shopCardListData.isEmpty()) return SupportingBrandLoadState.REACH_END_OF_PAGE else it.pageLoadedCounter += 1
+            return SupportingBrandLoadState.LOAD_MORE
         }
-        return false
+        return SupportingBrandLoadState.FAILED
+    }
+
+    private fun ComponentsItem.appendNextPageData(
+        data: List<ComponentsItem>
+    ): List<ComponentsItem> {
+        val existing = this.getComponentsItem() ?: emptyList()
+
+        return existing + data
     }
 
     @SuppressLint("PII Data Exposure")

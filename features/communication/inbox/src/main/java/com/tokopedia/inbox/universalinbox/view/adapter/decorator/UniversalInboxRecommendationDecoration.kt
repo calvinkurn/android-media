@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationProductViewHolder
+import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsVerticalBannerViewHolder
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.unifycomponents.toPx
 
@@ -24,8 +25,11 @@ class UniversalInboxRecommendationDecoration : RecyclerView.ItemDecoration() {
 
     private fun isRecommendation(view: View, parent: RecyclerView): Boolean {
         val position = parent.getChildLayoutPosition(view)
-        return (parent.adapter as? UniversalInboxAdapter)?.getItemViewType(position) ==
-            UniversalInboxRecommendationProductViewHolder.LAYOUT
+        return when ((parent.adapter as? UniversalInboxAdapter)?.getItemViewType(position)) {
+            UniversalInboxRecommendationProductViewHolder.LAYOUT,
+            UniversalInboxTopAdsVerticalBannerViewHolder.LAYOUT -> true
+            else -> false
+        }
     }
 
     companion object {

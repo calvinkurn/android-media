@@ -8,7 +8,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithPlaceholder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kategori.R
 import com.tokopedia.kategori.analytics.CategoryAnalytics.Companion.categoryAnalytics
@@ -73,10 +73,10 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
             categoryAnalytics.eventSideBarCategoryClick(categoryList[position], position)
         }
         if (item.isSelected) {
-            ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, item.iconImageUrl, R.drawable.square_shimmer)
+            holder.categoryImage?.loadImageWithPlaceholder(item.iconImageUrl, R.drawable.square_shimmer)
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
         } else {
-            ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, item.iconImageUrlGray, R.drawable.square_shimmer)
+            holder.categoryImage?.loadImageWithPlaceholder(item.iconImageUrlGray, R.drawable.square_shimmer)
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50_68))
         }
 

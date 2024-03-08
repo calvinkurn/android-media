@@ -120,7 +120,8 @@ class UniversalInboxWidgetMetaMapper @Inject constructor(
                     it.ownerType == driver
                 }
                 if ((channel.expiresAt > System.currentTimeMillis() || channel.expiresAt == 0L) && // Expires At should not be 0, If 0 then SDK initialize the chat and the data is still being fetch
-                    driverMember != null
+                    driverMember != null &&
+                    channel.metadata?.orderInfo?.status?.contains(STATUS_CANCELLED, true) == false
                 ) {
                     val serviceType = channel.metadata?.orderInfo?.serviceType ?: 0
                     if (isChatTokofood(serviceType) || isTokoChatLogisticEnabled()) {
@@ -156,5 +157,6 @@ class UniversalInboxWidgetMetaMapper @Inject constructor(
         private const val GOSEND_INSTANT_SERVICE_TYPE = 14
         private const val GOSEND_SAMEDAY_SERVICE_TYPE = 23
         private const val TOKOFOOD_SERVICE_TYPE = 5
+        private const val STATUS_CANCELLED = "cancelled"
     }
 }

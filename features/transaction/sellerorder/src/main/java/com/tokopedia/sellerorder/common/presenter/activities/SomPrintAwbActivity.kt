@@ -37,6 +37,11 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
     private var printJob: PrintJob? = null
     private var webView: TkpdWebView? = null
 
+    override fun onDestroy() {
+        super.onDestroy()
+        removeWebView()
+    }
+
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         configureWebView()
         val result = super.onPrepareOptionsMenu(menu)
@@ -96,6 +101,16 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
     private fun showToaster(message: String) {
         webView?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
+    private fun removeWebView() {
+        try {
+            webView?.clearHistory()
+            webView?.destroy()
+            webView = null
+        } catch (ignored: Exception) {
+            // NO-OP
         }
     }
 

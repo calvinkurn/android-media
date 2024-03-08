@@ -328,4 +328,27 @@ public interface CMConstant {
         String KEY_DEVICE_PUSHPERMISSION_LATESTSTATUS = "devicepushpermissionstatus";
     }
 
+    interface AnimationGtmTrackerEvents {
+        String VALUE_IMPRESSION_POPUP_EVENT_ACTION = "impress pop up";
+        String VALUE_EVENT_CATEGORY_REWARD_POPUP = "direct reward pop up homepage";
+        String VALUE_IMPRESSION_TRACKER_ID = "49393";
+        String VALUE_INTERACTION_POPUP_EVENT_ACTION = "click pop up";
+        String VALUE_INTERACTION_TRACKER_ID = "49394";
+        String VALUE_CLOSE_POPUP_EVENT_ACTION = "close pop up";
+        String VALUE_CLOSE_TRACKER_ID = "49395";
+        String VALUE_IMPRESSION_COUPON_EVENT_ACTION = "impress coupon post click";
+        String VALUE_IMPRESSION_COUPON_TRACKER_ID = "49396";
+        String VALUE_IMPRESSION_CTA_BUTTON_EVENT_ACTION = "impress cta button";
+        String VALUE_IMPRESSION_CTA_BUTTON_TRACKER_ID = "49397";
+        String VALUE_CLICK_CTA_BUTTON_EVENT_ACTION = "click cta button";
+        String VALUE_CLICK_CTA_BUTTON_TRACKER_ID = "49398";
+        String VALUE_IMPRESSION_ERROR_EVENT_ACTION = "impress retryable error state";
+        String VALUE_IMPRESSION_ERROR_TRACKER_ID = "49418";
+        String VALUE_CLICK_RETRY_BUTTON_EVENT_ACTION = "click retry button on retryable error state";
+        String VALUE_CLICK_RETRY_BUTTON_TRACKER_ID = "49419";
+        String VALUE_IMPRESSION_UNRETRY_ERROR_EVENT_ACTION = "impress unretryable error state";
+        String VALUE_IMPRESSION_UNRETRY_ERROR_TRACKER_ID = "49420";
+
+    }
+
 }

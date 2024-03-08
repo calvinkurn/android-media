@@ -20,9 +20,14 @@ import com.tokopedia.usecase.RequestParams
 
 @GqlQuery("GetLayoutGqlQuery", GetLayoutUseCase.QUERY)
 class GetLayoutUseCase(
-    gqlRepository: GraphqlRepository, mapper: LayoutMapper, dispatchers: CoroutineDispatchers
+    gqlRepository: GraphqlRepository,
+    mapper: LayoutMapper,
+    dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetLayoutResponse, WidgetLayoutUiModel>(
-    gqlRepository, mapper, dispatchers, GetLayoutGqlQuery()
+    gqlRepository,
+    mapper,
+    dispatchers,
+    GetLayoutGqlQuery()
 ) {
 
     override val classType: Class<GetLayoutResponse>
@@ -35,7 +40,8 @@ class GetLayoutUseCase(
     override suspend fun executeOnBackground(): WidgetLayoutUiModel {
         val gqlRequest = GraphqlRequest(graphqlQuery, classType, params.parameters)
         val gqlResponse: GraphqlResponse = graphqlRepository.response(
-            listOf(gqlRequest), cacheStrategy
+            listOf(gqlRequest),
+            cacheStrategy
         )
 
         val errors: List<GraphqlError>? = gqlResponse.getError(classType)
@@ -43,7 +49,15 @@ class GetLayoutUseCase(
             val data = gqlResponse.getData<GetLayoutResponse>(GetLayoutResponse::class.java)
             val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
             val filterPage = params.parameters[KEY_PAGE]
-            return mapper.mapRemoteDataToUiData(data, isFromCache, KEY_PAGE to filterPage)
+            val tableSort = customExtras[KEY_TABLE_SORT]
+            return mapper.mapRemoteDataToUiData(
+                data,
+                isFromCache,
+                mapOf(
+                    KEY_PAGE to filterPage,
+                    KEY_TABLE_SORT to tableSort
+                )
+            )
         } else {
             throw RuntimeException(errors.firstOrNull()?.message.orEmpty())
         }
@@ -110,10 +124,13 @@ class GetLayoutUseCase(
         """
         private const val KEY_SHOP_ID = "shopID"
         const val KEY_PAGE = "page"
+        const val KEY_TABLE_SORT = "table_sort"
         private const val KEY_EVENT = "event"
 
         fun getRequestParams(
-            shopId: String, pageName: String, trigger: String = String.EMPTY
+            shopId: String,
+            pageName: String,
+            trigger: String = String.EMPTY
         ): RequestParams {
             return RequestParams.create().apply {
                 putLong(KEY_SHOP_ID, shopId.toLongOrZero())

@@ -7,14 +7,13 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.flight.R
 import com.tokopedia.flight.databinding.ItemFlightDetailBinding
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapterTypeFactory.OnFlightDetailListener
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel
 import com.tokopedia.flight.search.presentation.util.FlightSearchCache
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.utils.date.DateUtil
 
 /**
@@ -57,10 +56,7 @@ class FlightDetailViewHolder(val binding: ItemFlightDetailBinding,
             )
             setArrivalInfo(route)
             setPNR(route.pnr)
-            ImageHandler.loadImageWithoutPlaceholder(
-                headerDetailFlight.airlineIcon, route.airlineLogo,
-                ContextCompat.getDrawable(itemView.context, R.drawable.flight_ic_airline_default)
-            )
+            headerDetailFlight.airlineIcon.loadImageWithError(route.airlineLogo, R.drawable.flight_ic_airline_default)
             if (onFlightDetailListener != null) {
                 bindLastPosition(onFlightDetailListener.getItemCount() == adapterPosition)
                 bindTransitInfo(onFlightDetailListener.getItemCount())

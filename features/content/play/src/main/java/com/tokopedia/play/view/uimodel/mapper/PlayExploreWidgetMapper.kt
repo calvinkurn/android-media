@@ -29,7 +29,7 @@ class PlayExploreWidgetMapper @Inject constructor() {
                     else -> {}
                 }
             }
-            with(widgetSlot.playGetContentSlot.playGetContentSlot) {
+            with(widgetSlot.playGetContentSlot.meta) {
                 add(PageConfig(isAutoPlay = this.isAutoplay, cursor = this.nextCursor))
             }
         }
@@ -85,7 +85,7 @@ class PlayExploreWidgetMapper @Inject constructor() {
                             type = PartnerType.getTypeByValue(it.partner.name),
                             avatarUrl = it.partner.thumbnailUrl,
                             badgeUrl = it.partner.badgeUrl,
-                            appLink = it.partner.appLink,
+                            appLink = it.partner.appLink
                         ),
                         video = PlayWidgetVideoUiModel(it.video.id, it.isLive, it.coverUrl, it.video.streamUrl),
                         channelType = channelType,
@@ -98,7 +98,7 @@ class PlayExploreWidgetMapper @Inject constructor() {
                         shouldShowPerformanceDashboard = false,
                         channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Unknown, PlayWidgetChannelType.Unknown),
                         gridType = PlayGridType.Medium,
-                        products = emptyList(),
+                        products = emptyList()
                     )
                 }
             )

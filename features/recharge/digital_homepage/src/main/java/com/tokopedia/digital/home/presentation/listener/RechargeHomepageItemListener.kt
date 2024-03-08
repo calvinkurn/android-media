@@ -17,6 +17,8 @@ interface RechargeHomepageItemListener {
     fun onRechargeProductBannerClosed(section: RechargeHomepageSections.Section)
 
     fun onRechargeSectionItemImpression(element: RechargeHomepageSections.Section)
+
+    fun onEndPerformanceMonitoring(element: RechargeHomepageSections.Section)
     fun onRechargeBannerImpression(element: RechargeHomepageSections.Section)
     fun onRechargeReminderWidgetImpression(sectionID: String)
     fun onRechargeLegoBannerImpression(sectionID: String)

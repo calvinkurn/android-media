@@ -22,7 +22,6 @@ import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
 import com.tokopedia.onboarding.di.OnboardingComponent
-import com.tokopedia.onboarding.di.module.DynamicOnboardingQueryModule
 import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.view.fragment.DynamicOnboardingFragment
 import com.tokopedia.onboarding.view.fragment.OnboardingFragment
@@ -85,7 +84,6 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
 
     override fun getComponent(): OnboardingComponent = DaggerOnboardingComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .dynamicOnboardingQueryModule(DynamicOnboardingQueryModule(this))
             .build()
 
     override fun onCreate(savedInstanceState: Bundle?) {

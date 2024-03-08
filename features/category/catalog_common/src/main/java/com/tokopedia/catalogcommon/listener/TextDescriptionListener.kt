@@ -1,5 +1,5 @@
 package com.tokopedia.catalogcommon.listener
 
 interface TextDescriptionListener {
-    fun onTextDescriptionImpression()
+    fun onTextDescriptionImpression(widgetName: String)
 }

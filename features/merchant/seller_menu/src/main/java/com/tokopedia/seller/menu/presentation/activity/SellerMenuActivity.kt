@@ -30,8 +30,8 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
 
     private fun initInjector() {
         DaggerSellerMenuComponent.builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 }

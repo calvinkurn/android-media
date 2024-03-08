@@ -20,5 +20,7 @@ interface TableItemFactory {
 
     fun type(column: TableRowsUiModel.RowColumnHtmlWithIcon): Int
 
+    fun type(column: TableRowsUiModel.RowColumnHtmlWithMeta): Int
+
     fun type(divider: TableItemDivider): Int
 }

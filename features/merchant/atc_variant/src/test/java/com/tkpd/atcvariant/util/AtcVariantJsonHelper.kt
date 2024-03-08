@@ -1,11 +1,9 @@
 package com.tkpd.atcvariant.util
 
 import com.tokopedia.graphql.CommonUtils
-import com.tokopedia.minicart.bmgm.domain.mapper.BmgmMiniCartDataMapper
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
-import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregator
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorResponse
@@ -89,8 +87,7 @@ object AtcVariantJsonHelper {
         )
 
         val variantAggregator = mapVariantAggregator(variantAggregatorResponse.response)
-        val miniCart =
-            MiniCartSimplifiedMapper(BmgmMiniCartDataMapper()).mapMiniCartSimplifiedData(miniCartResponse.miniCart)
+        val miniCart = miniCartResponse.miniCart.toSimplifiedData()
 
         return variantAggregator to miniCart
     }

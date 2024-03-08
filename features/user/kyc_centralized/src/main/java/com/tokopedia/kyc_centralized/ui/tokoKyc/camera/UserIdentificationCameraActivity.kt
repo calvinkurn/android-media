@@ -32,17 +32,11 @@ class UserIdentificationCameraActivity : BaseSimpleActivity(), HasComponent<User
     }
 
     override fun getNewFragment(): Fragment? {
-        return if (viewMode == PARAM_VIEW_MODE_KTP && isUseCropAndCompression()) {
+        return if (viewMode == PARAM_VIEW_MODE_KTP) {
             intent.extras?.let { CameraKtpFragment.createInstance(it) }
         } else {
             UserIdentificationCameraFragment.createInstance(viewMode, projectId)
         }
-    }
-
-    private fun isUseCropAndCompression(): Boolean {
-        return getAbTestPlatform()
-                .getString(CROP_AND_COMPRESSION_ROLLOUT)
-                .contains(CROP_AND_COMPRESSION_ROLLOUT)
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
@@ -56,7 +50,6 @@ class UserIdentificationCameraActivity : BaseSimpleActivity(), HasComponent<User
     companion object {
         private const val EXTRA_VIEW_MODE = "view_mode"
         private const val PARAM_VIEW_MODE_KTP = 1
-        private const val CROP_AND_COMPRESSION_ROLLOUT = "new_rollout_kyccrop"
 
         @JvmStatic
         fun createIntent(

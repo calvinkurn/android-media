@@ -14,12 +14,11 @@ object ProductRecommendationResponseMapper {
                 product.imageUrl?.let { imageUrl ->
                     product.categoryBreadcrumbs?.let { categoryName ->
                         val parentID = product.parentID
-
                         ProductCardCompactSimilarProductUiModel(
-                            id = product.id.toString(),
-                            shopId = product.shop?.id.toString(),
-                            shopName = product.shop?.name.toString(),
-                            name = product.name.toString(),
+                            id = product.id.orEmpty(),
+                            shopId = product.shop?.id.orEmpty(),
+                            shopName = product.shop?.name.orEmpty(),
+                            name = product.name.orEmpty(),
                             stock = stock,
                             isVariant = isVariant(parentID),
                             minOrder = product.minOrder,
@@ -28,7 +27,7 @@ object ProductRecommendationResponseMapper {
                             imageUrl = imageUrl,
                             slashedPrice = product.slashedPrice.orEmpty(),
                             discountPercentage = formatFloatToString(product.discountPercentage),
-                            categoryId = product.departmentId.toString(),
+                            categoryId = product.departmentId.orEmpty(),
                             categoryName = categoryName,
                             position = position,
                             warehouseIds = product.warehouseId.orEmpty()

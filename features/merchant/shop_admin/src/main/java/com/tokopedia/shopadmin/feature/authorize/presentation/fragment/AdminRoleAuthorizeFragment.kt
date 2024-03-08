@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithCacheData
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -150,7 +150,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
     }
 
     private fun GlobalError.showAdminIneligible() {
-        ImageHandler.loadImageAndCache(errorIllustration, SellerBaseUrl.ADMIN_ERROR_ILLUSTRATION)
+        errorIllustration.loadImageWithCacheData(SellerBaseUrl.ADMIN_ERROR_ILLUSTRATION)
         getNoPermissionText(adminFeature).let { (title, desc) ->
             errorTitle.text = title
             errorDescription.text = desc

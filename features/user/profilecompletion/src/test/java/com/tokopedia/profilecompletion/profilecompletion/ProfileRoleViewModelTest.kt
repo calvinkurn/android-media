@@ -2,8 +2,8 @@ package com.tokopedia.profilecompletion.profilecompletion
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.profilecompletion.profilecompletion.viewmodel.ProfileRoleViewModel
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileRoleResponse
-import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileRoleUseCase
+import com.tokopedia.profilecompletion.settingprofile.profileinfo.data.ProfileRoleResponse
+import com.tokopedia.profilecompletion.settingprofile.profileinfo.usecase.ProfileRoleUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail

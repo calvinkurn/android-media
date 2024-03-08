@@ -1,13 +1,12 @@
 package com.tokopedia.buy_more_get_more.olp.data.mapper
 
-import com.tokopedia.buy_more_get_more.olp.data.response.OfferInfoForBuyerResponse
-import com.tokopedia.buy_more_get_more.olp.data.response.OfferInfoForBuyerResponse.ResponseHeader
-import com.tokopedia.buy_more_get_more.olp.data.response.OfferInfoForBuyerResponse.Offering
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.Tier
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.Tier.Rule
 import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
+import com.tokopedia.campaign.data.response.OfferInfoForBuyerResponse
+import com.tokopedia.campaign.data.response.OfferInfoForBuyerResponse.Offering
 import javax.inject.Inject
 
 class GetOfferInfoForBuyerMapper @Inject constructor() {
@@ -21,7 +20,7 @@ class GetOfferInfoForBuyerMapper @Inject constructor() {
         )
     }
 
-    private fun ResponseHeader.toResponseHeaderModel(): OfferInfoForBuyerUiModel.ResponseHeader {
+    private fun OfferInfoForBuyerResponse.ResponseHeader.toResponseHeaderModel(): OfferInfoForBuyerUiModel.ResponseHeader {
         return OfferInfoForBuyerUiModel.ResponseHeader(
             success = success,
             status = Status.values().firstOrNull { value ->
@@ -63,7 +62,8 @@ class GetOfferInfoForBuyerMapper @Inject constructor() {
                 tierWording = it.tierWording,
                 rules = it.rules.toRuleListUiModel(),
                 benefits = it.benefits.toBenefitListUiModel(),
-                attributes = it.attributes
+                attributes = it.attributes,
+                isOOS = it.isOOS
             )
         }
     }
@@ -79,10 +79,17 @@ class GetOfferInfoForBuyerMapper @Inject constructor() {
     }
 
     private fun List<Offering.Tier.Benefit>.toBenefitListUiModel(): List<Tier.Benefit> {
-        return map {
+        return map { benefit ->
             Tier.Benefit(
-                typeId = it.typeId,
-                value = it.value
+                typeId = benefit.typeId,
+                value = benefit.value,
+                products = benefit.products.map { product ->
+                    Tier.Benefit.ProductBenefit(
+                        productId = product.productId,
+                        image = product.image,
+                        priority = product.priority
+                    )
+                }
             )
         }
     }

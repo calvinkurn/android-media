@@ -49,8 +49,4 @@ query Notification($cursor: String, $input: NotificationRequest) {
   notifcenter_unread {
     notif_unread
   }
-
-  feed_last_feeds(cursor:$cursor){
-      newFeeds
-    }
 }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <View
+        android:id="@+id/shareex_bg_channel"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@drawable/shareex_bg_circle_gray"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/shareex_icon_channel"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintTop_toTopOf="@id/shareex_bg_channel"
+        app:layout_constraintLeft_toLeftOf="@id/shareex_bg_channel"
+        app:layout_constraintRight_toRightOf="@id/shareex_bg_channel"
+        app:layout_constraintBottom_toBottomOf="@id/shareex_bg_channel"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shareex_tv_channel_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/shareex_bg_channel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:typographyType="body_3"
+        android:layout_marginTop="4dp"
+        tools:text="WhatsApp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

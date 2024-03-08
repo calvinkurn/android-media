@@ -11,7 +11,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
@@ -21,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListActionListener
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
@@ -252,7 +251,7 @@ class MiniCartProductViewHolder(
         with(viewBinding) {
             imageProduct.let {
                 if (element.productImageUrl.isNotBlank()) {
-                    ImageHandler.loadImageWithoutPlaceholder(it, element.productImageUrl)
+                    it.loadImage(element.productImageUrl)
                 }
             }
             imageProduct.setOnClickListener(productInfoClickListener(element))

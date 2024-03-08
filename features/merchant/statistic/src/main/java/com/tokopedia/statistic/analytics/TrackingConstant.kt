@@ -6,7 +6,7 @@ package com.tokopedia.statistic.analytics
 
 object TrackingConstant {
 
-    //key
+    // key
     const val EVENT = "event"
     const val EVENT_CATEGORY = "eventCategory"
     const val EVENT_ACTION = "eventAction"
@@ -15,8 +15,9 @@ object TrackingConstant {
     const val BUSINESS_UNIT = "businessUnit"
     const val CURRENT_SITE = "currentSite"
     const val TRACKER_ID = "trackerId"
+    const val PRODUCT_ID = "productId"
 
-    //event
+    // event
     const val VIEW_SELLER_WIDGET = "viewSellerWidget"
     const val CLICK_SHOP_INSIGHT = "clickShopInsight"
     const val VIEW_STATISTIC_IRIS = "viewStatistikIris"
@@ -26,7 +27,7 @@ object TrackingConstant {
     const val VIEW_PRODUCT_INSIGHT_IRIS = "viewProductInsightIris"
     const val CLICK_HOMEPAGE = "clickHomepage"
 
-    //category
+    // category
     const val SHOP_INSIGHT = "shop insight"
     const val SELLER_APP = "seller app"
     const val SELLER_APP_STATISTIC = "seller app - statistik"
@@ -35,7 +36,7 @@ object TrackingConstant {
     const val SELLER_APP_PRODUCT_INSIGHT = "seller app - wawasan produk"
     const val STATISTIC_FIREWALL = "statistics firewall"
 
-    //action
+    // action
     const val CLICK_MULTI_COMPONENT_TAB = "click plus and bo performance tab"
     const val VIEW_MULTI_COMPONENT_TAB = "impression plus and bo performance tab"
     const val CLICK_WIDGET_CARD = "click widget card"
@@ -60,6 +61,9 @@ object TrackingConstant {
     const val CLICK_TOP_ADS_CROSS_SELLING = "click topads cross selling"
     const val CLICK_TABLE_WIDGET_SORT = "click widget accordion table - sort"
     const val CLICK_TABLE_SWIPE = "click widget advance table - slide"
+    const val CLICK_KVI_LVI_LABEL = "click kvi lvi label"
+    const val CLICK_MORE_KVI_LVI_BOTTOM_SHEET = "click pelajari selengkapnya button on kvi lvi bottom sheet"
+    const val CLICK_CLOSE_KVI_LVI_BOTTOM_SHEET = "click close button on kvi lvi bottom sheet"
     const val IMPRESSION_WIDGET_CARD = "impression widget card"
     const val IMPRESSION_WIDGET_LINE_GRAPH = "impression widget trend line"
     const val IMPRESSION_WIDGET_DESCRIPTION = "impression widget description"
@@ -82,7 +86,7 @@ object TrackingConstant {
     const val IMPRESSION_EXPLANATION_TOOLTIP = "impression explanation tooltip"
     const val SEE_MORE = "see more"
 
-    //other
+    // other
     const val EMPTY = "empty"
     const val NOT_EMPTY = "not empty"
     const val SHOP_OS = "OS"
@@ -100,4 +104,8 @@ object TrackingConstant {
     const val CATEGORY_TRAFFIC_INSIGHT = "traffic insight"
     const val CATEGORY_OPERATIONAL_INSIGHT = "operational insight"
     const val CATEGORY_BUYER_INSIGHT = "buyer insight"
+
+    const val TRACKER_ID_49470 = "49470"
+    const val TRACKER_ID_49471 = "49471"
+    const val TRACKER_ID_49472 = "49472"
 }

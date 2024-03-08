@@ -60,18 +60,10 @@ class VerificationActivityStub : VerificationActivity() {
             OtpConstant.OtpMode.PIN -> {
                 PinVerificationFragmentStub.createInstance(bundle)
             }
-            OtpConstant.OtpMode.MISCALL -> {
-                MisscallVerificationFragmentStub.createInstance(bundle)
-            }
             else -> {
                 VerificationFragmentStub.createInstance(bundle)
             }
         }
-    }
-
-    override fun goToOnboardingMiscallPage(modeListData: ModeListData) {
-        val fragment = OnboardingMiscallFragmentStub.createInstance(createBundle(modeListData))
-        doFragmentTransaction(fragment, TAG_OTP_MISCALL, false)
     }
 
     override fun goToMethodPageResetPin(otpData: OtpData) {

@@ -32,6 +32,10 @@ data class DataResponse(
     @Expose
     val shopId: String = "",
 
+    @SerializedName("shop_name")
+    @Expose
+    val shopName: String = "",
+
     @SerializedName("customer_id")
     @Expose
     val customerId: String = "",

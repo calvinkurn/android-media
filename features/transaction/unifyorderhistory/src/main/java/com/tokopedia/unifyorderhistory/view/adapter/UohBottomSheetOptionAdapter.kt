@@ -10,9 +10,6 @@ import com.tokopedia.unifyorderhistory.databinding.BottomsheetOptionUohItemBindi
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.view.bottomsheet.UohFilterOptionsBottomSheet
 
-/**
- * Created by fwidjaja on 05/07/20.
- */
 class UohBottomSheetOptionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: UohFilterOptionsBottomSheet.UohFilterOptionBottomSheetListener? = null
     var filterBundleList = arrayListOf<UohFilterBundle>()

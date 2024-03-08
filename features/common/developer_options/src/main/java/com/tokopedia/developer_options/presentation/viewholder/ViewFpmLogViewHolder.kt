@@ -6,12 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.ViewFpmLogUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.UnifyButton
 
 class ViewFpmLogViewHolder(
     itemView: View
-): AbstractViewHolder<ViewFpmLogUiModel>(itemView)
-{
+) : AbstractViewHolder<ViewFpmLogUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_view_fpm_log
@@ -20,6 +21,7 @@ class ViewFpmLogViewHolder(
     override fun bind(element: ViewFpmLogUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.view_fpm_log_btn)
         btn.setOnClickListener {
+            DevOpsTracker.trackEntryEvent(DevopsFeature.VIEW_FPM_LOG)
             FpmLogger.getInstance()?.openActivity()
         }
     }

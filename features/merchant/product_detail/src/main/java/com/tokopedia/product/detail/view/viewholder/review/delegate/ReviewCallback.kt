@@ -26,24 +26,26 @@ class ReviewCallback(
 
     // region rating keyword
     private fun onKeywordImpressed(event: ReviewComponentEvent.OnKeywordImpressed) {
-        val tracker = event.trackerData.asCommonTracker() ?: return
+        val commonTracker = getCommonTracker() ?: return
         ReviewTracker.onKeywordImpressed(
             queueTracker = queueTracker,
-            trackerData = tracker,
+            commonTracker = commonTracker,
+            componentTracker = event.trackerData,
             count = event.keywordAmount
         )
     }
 
     private fun onKeywordClicked(event: ReviewComponentEvent.OnKeywordClicked) {
         // action
-        val pid = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty()
+        val pid = viewModel.getProductInfoP1?.basic?.productID.orEmpty()
         goToReviewDetail(productId = pid, keyword = event.keyword)
 
         // tracker
-        val tracker = event.trackerData.asCommonTracker() ?: return
+        val commonTracker = getCommonTracker() ?: return
         ReviewTracker.onKeywordClicked(
             queueTracker = queueTracker,
-            trackerData = tracker,
+            commonTracker = commonTracker,
+            componentTracker = event.trackerData,
             count = event.keywordAmount
         )
     }

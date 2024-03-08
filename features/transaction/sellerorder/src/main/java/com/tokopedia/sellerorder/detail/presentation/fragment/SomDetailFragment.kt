@@ -19,6 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,11 +53,16 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+import com.tokopedia.order_management_common.presentation.uimodel.AddOnSummaryUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
+import com.tokopedia.order_management_common.presentation.viewholder.AddOnViewHolder
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
+import com.tokopedia.sellerorder.buyer_request_cancel.presentation.BuyerRequestCancelRespondListenerImpl
+import com.tokopedia.sellerorder.buyer_request_cancel.presentation.IBuyerRequestCancelRespondBottomSheetManager
+import com.tokopedia.sellerorder.buyer_request_cancel.presentation.IBuyerRequestCancelRespondListener
 import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomEditRefNumResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
@@ -68,13 +74,19 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippi
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToReschedulePickupPage
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomConfirmShippingBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
-import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasOnGoingPofDialog
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
 import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
+import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
+import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_ACCEPTING_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_EDIT_AWB
+import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_GET_ORDER_DETAIL
+import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_GET_ORDER_REJECT_REASONS
+import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_REJECT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_WHEN_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
@@ -106,6 +118,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_SET_DELIVERED
+import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.DialogAcceptOrderFreeShippingSomBinding
@@ -123,7 +136,6 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCo
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailAddOnViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailIncomeViewHolder
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.BottomSheetManager
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBaseRejectOrderBottomSheet
@@ -138,8 +150,8 @@ import com.tokopedia.sellerorder.detail.presentation.model.SomDetailIncomeUiMode
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
-import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_INITIAL
+import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -170,7 +182,9 @@ open class SomDetailFragment :
     SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener,
     SomBottomSheetSetDelivered.SomBottomSheetSetDeliveredListener,
     SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener,
-    SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
+    IBuyerRequestCancelRespondListener.Mediator,
+    IBuyerRequestCancelRespondListener by BuyerRequestCancelRespondListenerImpl(),
+    IBuyerRequestCancelRespondBottomSheetManager.Mediator {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -214,8 +228,17 @@ open class SomDetailFragment :
         ViewModelProvider(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
     protected val bottomSheetManager by lazy {
-        view?.let { if (it is ViewGroup) BottomSheetManager(it, childFragmentManager) else null }
+        view?.let {
+            if (it is ViewGroup) {
+                BottomSheetManager(view = it, fragmentManager = childFragmentManager)
+            } else {
+                null
+            }
+        }
     }
+
+    private val addOnsExpandableState = mutableListOf<String>()
+    private val bmgmProductBenefitExpandableState = mutableListOf<String>()
 
     private fun createChatIcon(context: Context): IconUnify {
         return IconUnify(requireContext(), IconUnify.CHAT).apply {
@@ -250,13 +273,6 @@ open class SomDetailFragment :
     }
 
     companion object {
-
-        private const val ERROR_GET_ORDER_DETAIL = "Error when get order detail."
-        private const val ERROR_ACCEPTING_ORDER = "Error when accepting order."
-        private const val ERROR_GET_ORDER_REJECT_REASONS = "Error when get order reject reasons."
-        private const val ERROR_WHEN_SET_DELIVERED = "Error when set order status to delivered."
-        private const val ERROR_EDIT_AWB = "Error when edit AWB."
-        private const val ERROR_REJECT_ORDER = "Error when rejecting order."
         private const val PAGE_NAME = "seller order detail page."
 
         private const val SHARED_PREF_DETAIL_TRANSPARENCY_FEE_COACH_MARK =
@@ -343,6 +359,7 @@ open class SomDetailFragment :
         setupBackgroundColor()
         setupToolbar()
         prepareLayout()
+        setupMediators()
         observingDetail()
         observingAcceptOrder()
         observingRejectReasons()
@@ -369,8 +386,8 @@ open class SomDetailFragment :
         return bottomSheetManager?.dismissBottomSheets().orFalse()
     }
 
-    override fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.GetSomDetail.Button) {
-        bottomSheetManager?.showSomOrderRequestCancelBottomSheet(it, detailResponse, this)
+    override fun onShowBuyerRequestCancelRespondBottomSheet() {
+        bottomSheetManager?.showBuyerRequestCancelRespondBottomSheet()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -384,31 +401,6 @@ open class SomDetailFragment :
 
     override fun onEditAwbButtonClicked(cancelNotes: String) {
         doEditAwb(cancelNotes)
-    }
-
-    override fun onAcceptOrder(actionName: String) {
-        setActionAcceptOrder(actionName, orderId, true)
-    }
-
-    override fun onRejectOrder(reasonBuyer: String) {
-        SomAnalytics.eventClickButtonTolakPesananPopup(
-            "${detailResponse?.statusCode.orZero()}",
-            detailResponse?.statusText.orEmpty()
-        )
-        val orderRejectRequest = SomRejectRequestParam(
-            orderId = detailResponse?.orderId.orEmpty(),
-            rCode = "0",
-            reason = reasonBuyer
-        )
-        doRejectOrder(orderRejectRequest)
-    }
-
-    override fun onRejectCancelRequest() {
-        SomAnalytics.eventClickButtonTolakPesananPopup(
-            "${detailResponse?.statusCode.orZero()}",
-            detailResponse?.statusText.orEmpty()
-        )
-        rejectCancelOrder()
     }
 
     private fun checkUserRole() {
@@ -434,10 +426,6 @@ open class SomDetailFragment :
                 checkUserRole()
             }
         }
-        recyclerViewSharedPool.setMaxRecycledViews(
-            SomDetailAddOnViewHolder.RES_LAYOUT,
-            SomDetailAddOnViewHolder.MAX_RECYCLED_VIEWS
-        )
     }
 
     protected open fun loadDetail() {
@@ -456,6 +444,14 @@ open class SomDetailFragment :
 
     override fun initInjector() {
         getComponent(SomDetailComponent::class.java).inject(this)
+    }
+
+    private fun setupMediators() {
+        bottomSheetManager?.registerBuyerRequestCancelRespondBottomSheet(
+            bottomSheetManagerMediator = this,
+            bottomSheetListenerMediator = this,
+            bottomSheetListener = this
+        )
     }
 
     private fun observingDetail() {
@@ -658,7 +654,9 @@ open class SomDetailFragment :
             SomDetailMapper.mapSomGetOrderDetailResponseToVisitableList(
                 somDetail,
                 somDynamicPriceResponse,
-                resolutionTicketStatusResponse
+                resolutionTicketStatusResponse,
+                addOnsExpandableState,
+                bmgmProductBenefitExpandableState
             )
         )
         transparencyFeeCoachMarkHandler.attach()
@@ -719,7 +717,7 @@ open class SomDetailFragment :
                             buttonResp.key.equals(
                                 KEY_RESPOND_TO_CANCELLATION,
                                 true
-                            ) -> onShowBuyerRequestCancelReasonBottomSheet(buttonResp)
+                            ) -> onShowBuyerRequestCancelRespondBottomSheet()
 
                             buttonResp.key.equals(
                                 KEY_UBAH_NO_RESI,
@@ -833,12 +831,6 @@ open class SomDetailFragment :
     private fun skipOrderValidation(): Boolean {
         val hasOngoingBuyerRequestCancel = detailResponse?.buyerRequestCancel?.isRequestCancel == true && detailResponse?.buyerRequestCancel?.status == 0
         return !hasOngoingBuyerRequestCancel
-    }
-
-    private fun rejectCancelOrder() {
-        if (orderId.isNotBlank()) {
-            somDetailViewModel.rejectCancelOrder(orderId)
-        }
     }
 
     private fun setLoadingIndicator(active: Boolean) {
@@ -974,54 +966,81 @@ open class SomDetailFragment :
                         userSession.shopId
                     )
                     when {
-                        key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackShipmentPage(it)
-                        key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
-                        key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
                         key.equals(
-                            KEY_UBAH_NO_RESI,
-                            true
-                        ) -> bottomSheetManager?.showSomOrderEditAwbBottomSheet(this)
-
-                        key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
-                        key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
-                        key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(
-                            it.displayName,
-                            orderId,
-                            skipOrderValidation()
-                        )
-
-                        key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
+                            other = KEY_TRACK_SELLER,
+                            ignoreCase = true
+                        ) -> setActionGoToTrackShipmentPage(it)
                         key.equals(
-                            KEY_SET_DELIVERED,
-                            true
-                        ) -> bottomSheetManager?.showSomBottomSheetSetDelivered(this)
-
-                        key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(
-                            activity,
-                            view,
-                            listOf(detailResponse?.orderId.orEmpty()),
-                            true
-                        )
-                        key.equals(KEY_ORDER_EXTENSION_REQUEST, true) -> setActionRequestExtension()
-                        key.equals(KEY_RESCHEDULE_PICKUP, true) -> goToReschedulePickupPage(
-                            this,
-                            orderId
-                        )
-
+                            other = KEY_REJECT_ORDER,
+                            ignoreCase = true
+                        ) -> setActionRejectOrder()
                         key.equals(
-                            KEY_RETURN_TO_SHIPPER,
-                            true
-                        ) -> SomNavigator.goToReturnToShipper(this@SomDetailFragment, orderId)
-
-                        key.equals(KEY_SEARCH_NEW_DRIVER, true) -> SomNavigator.goToFindNewDriver(
-                            this,
-                            orderId,
-                            detailResponse?.invoice
+                            other = KEY_BATALKAN_PESANAN,
+                            ignoreCase = true
+                        ) -> setActionRejectOrder()
+                        key.equals(
+                            other = KEY_UBAH_NO_RESI,
+                            ignoreCase = true
+                        ) -> bottomSheetManager?.showSomOrderEditAwbBottomSheet(listener = this)
+                        key.equals(
+                            other = KEY_UPLOAD_AWB,
+                            ignoreCase = true
+                        ) -> setActionUploadAwb(it)
+                        key.equals(
+                            other = KEY_CHANGE_COURIER,
+                            ignoreCase = true
+                        ) -> setActionChangeCourier()
+                        key.equals(
+                            other = KEY_ACCEPT_ORDER,
+                            ignoreCase = true
+                        ) -> setActionAcceptOrder(it.displayName, orderId, skipOrderValidation())
+                        key.equals(
+                            other = KEY_ASK_BUYER,
+                            ignoreCase = true
+                        ) -> goToAskBuyer()
+                        key.equals(
+                            other = KEY_SET_DELIVERED,
+                            ignoreCase = true
+                        ) -> bottomSheetManager?.showSomBottomSheetSetDelivered(listener = this)
+                        key.equals(
+                            other = KEY_PRINT_AWB,
+                            ignoreCase = true
+                        ) -> SomNavigator.goToPrintAwb(
+                            activity = activity,
+                            view = view,
+                            orderIds = listOf(detailResponse?.orderId.orEmpty()),
+                            markAsPrinted = true
                         )
-                        key.equals(KEY_POF, true) -> SomNavigator.goToPofPage(
-                            this,
-                            detailResponse?.orderId.toZeroStringIfNull(),
-                            detailResponse?.pofData?.pofStatus ?: STATUS_INITIAL
+                        key.equals(
+                            other = KEY_ORDER_EXTENSION_REQUEST,
+                            ignoreCase = true
+                        ) -> setActionRequestExtension()
+                        key.equals(
+                            other = KEY_RESCHEDULE_PICKUP,
+                            ignoreCase = true
+                        ) -> goToReschedulePickupPage(fragment = this, orderId = orderId)
+                        key.equals(
+                            other = KEY_RETURN_TO_SHIPPER,
+                            ignoreCase = true
+                        ) -> SomNavigator.goToReturnToShipper(
+                            fragment = this@SomDetailFragment,
+                            orderId = orderId
+                        )
+                        key.equals(
+                            other = KEY_SEARCH_NEW_DRIVER,
+                            ignoreCase = true
+                        ) -> SomNavigator.goToFindNewDriver(
+                            fragment = this,
+                            orderId = orderId,
+                            invoice = detailResponse?.invoice
+                        )
+                        key.equals(
+                            other = KEY_POF,
+                            ignoreCase = true
+                        ) -> SomNavigator.goToPofPage(
+                            fragment = this,
+                            orderId = detailResponse?.orderId.toZeroStringIfNull(),
+                            pofStatus = detailResponse?.pofData?.pofStatus ?: STATUS_INITIAL
                         )
                     }
                 }
@@ -1097,43 +1116,39 @@ open class SomDetailFragment :
             when (rejectReason.reasonCode) {
                 SomBottomSheetRejectReasonsAdapter.REJECT_REASON_PRODUCT_EMPTY -> {
                     bottomSheetManager?.showSomBottomSheetProductEmpty(
-                        rejectReason,
-                        detailResponse,
-                        orderId,
-                        this
+                        rejectReason = rejectReason,
+                        orderDetail = detailResponse,
+                        orderId = orderId,
+                        listener = this
                     )
                 }
-
                 SomBottomSheetRejectReasonsAdapter.REJECT_REASON_SHOP_CLOSED -> {
                     bottomSheetManager?.showSomBottomSheetShopClosed(
-                        rejectReason,
-                        orderId,
-                        this,
-                        childFragmentManager
+                        rejectReason = rejectReason,
+                        orderId = orderId,
+                        listener = this,
+                        fragmentManager = childFragmentManager
                     )
                 }
-
                 SomBottomSheetRejectReasonsAdapter.REJECT_REASON_COURIER_PROBLEMS -> {
                     bottomSheetManager?.showSomBottomSheetCourierProblem(
-                        rejectReason,
-                        orderId,
-                        this
+                        rejectReason = rejectReason,
+                        orderId = orderId,
+                        listener = this
                     )
                 }
-
                 SomBottomSheetRejectReasonsAdapter.REJECT_REASON_BUYER_NO_RESPONSE -> {
                     bottomSheetManager?.showSomBottomSheetBuyerNoResponse(
-                        rejectReason,
-                        orderId,
-                        this
+                        rejectReason = rejectReason,
+                        orderId = orderId,
+                        listener = this
                     )
                 }
-
                 SomBottomSheetRejectReasonsAdapter.REJECT_REASON_OTHER_REASON -> {
                     bottomSheetManager?.showSomBottomSheetBuyerOtherReason(
-                        rejectReason,
-                        orderId,
-                        this
+                        rejectReason = rejectReason,
+                        orderId = orderId,
+                        listener = this
                     )
                 }
             }
@@ -1180,13 +1195,6 @@ open class SomDetailFragment :
         showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
     }
 
-    override fun onCopyAddOnDescription(label: String, description: CharSequence) {
-        val clipboardManager =
-            context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, description))
-        showCommonToaster(getString(R.string.som_detail_add_on_description_copied_message))
-    }
-
     override fun onResoClicked(redirectPath: String) {
         SomNavigator.openAppLink(context, redirectPath)
         SomAnalytics.sendClickOnResolutionWidgetEvent(userSession.userId)
@@ -1217,6 +1225,7 @@ open class SomDetailFragment :
     }
 
     override fun onDetailIncomeClicked() {
+        SomAnalytics.eventDetailIncomeClicked()
         val somDetailTransparencyFeeBottomSheet =
             SomDetailTransparencyFeeBottomSheet.newInstance(orderId)
         somDetailTransparencyFeeBottomSheet.show(childFragmentManager)
@@ -1625,8 +1634,9 @@ open class SomDetailFragment :
     }
 
     private fun getOrderIdExtra(): String {
-        return arguments?.getString(PARAM_ORDER_ID)?.takeIf { it.isNotBlank() }
-            ?: SomConsts.DEFAULT_INVALID_ORDER_ID
+        return arguments?.getString(PARAM_ORDER_ID)?.takeIf {
+            it.isNotBlank()
+        } ?: SomConsts.DEFAULT_INVALID_ORDER_ID
     }
 
     protected open fun onGoToOrderDetailButtonClicked() {
@@ -1645,6 +1655,7 @@ open class SomDetailFragment :
 
     protected open fun onSuccessRejectCancelOrder() {
         loadDetail()
+        bottomSheetManager?.bottomSheetBuyerRequestCancelRespond?.dismiss()
     }
 
     protected open fun onSuccessEditAwb() {
@@ -1709,7 +1720,28 @@ open class SomDetailFragment :
     }
 
     protected fun getAdapterTypeFactory(): SomDetailAdapterFactoryImpl {
-        return SomDetailAdapterFactoryImpl(this, recyclerViewSharedPool)
+        return SomDetailAdapterFactoryImpl(
+            actionListener = this,
+            addOnListener = AddOnListener(),
+            productBenefitListener = ProductBenefitListener(),
+            recyclerViewSharedPool = recyclerViewSharedPool
+        )
+    }
+
+    private fun expandCollapseAddOn(addOnIdentifier: String, isExpand: Boolean) {
+        if (isExpand) {
+            addOnsExpandableState.remove(addOnIdentifier)
+        } else {
+            addOnsExpandableState.add(addOnIdentifier)
+        }
+    }
+
+    private fun expandCollapseBmgmProductBenefit(identifier: String, isExpand: Boolean) {
+        if (isExpand) {
+            bmgmProductBenefitExpandableState.remove(identifier)
+        } else {
+            bmgmProductBenefitExpandableState.add(identifier)
+        }
     }
 
     inner class TransparencyFeeCoachMarkHandler : RecyclerView.OnScrollListener() {
@@ -1800,6 +1832,84 @@ open class SomDetailFragment :
                 onDismissListener = {}
                 dismissCoachMark()
             }
+        }
+    }
+
+    override fun getBottomSheetContainer(): CoordinatorLayout? {
+        return view as? CoordinatorLayout
+    }
+
+    override fun getBuyerRequestCancelRespondOrderId(): String {
+        return orderId
+    }
+
+    override fun getBuyerRequestCancelRespondOrderInvoice(): String {
+        return String.EMPTY
+    }
+
+    override fun getBuyerRequestCancelRespondOrderStatusCode(): Int {
+        return detailResponse?.statusCode.orZero()
+    }
+
+    override fun getBuyerRequestCancelRespondOrderStatusText(): String {
+        return detailResponse?.statusText.orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondL2CancellationReason(): String {
+        return Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty())
+    }
+
+    override fun getBuyerRequestCancelRespondDescription(): String {
+        return detailResponse?.getBuyerRequestCancelRespondButton()?.popUp?.body.orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondPrimaryTextButton(): String {
+        return detailResponse?.getBuyerRequestCancelRespondButton()?.popUp?.getPrimaryButton()?.displayName.orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondSecondaryTextButton(): String {
+        return detailResponse?.getBuyerRequestCancelRespondButton()?.popUp?.getSecondaryButton()?.displayName.orEmpty()
+    }
+
+    override fun getBuyerRequestCancelRespondViewModel(): SomOrderBaseViewModel {
+        return somDetailViewModel
+    }
+
+    private inner class AddOnListener : AddOnViewHolder.Listener {
+        override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
+            val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            clipboardManager.setPrimaryClip(ClipData.newPlainText(label, description))
+            showCommonToaster(getString(R.string.som_detail_add_on_description_copied_message))
+        }
+
+        override fun onAddOnsExpand(isExpand: Boolean, addOnsIdentifier: String) {
+            expandCollapseAddOn(addOnsIdentifier, isExpand)
+        }
+
+        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+            SomNavigator.openAppLink(context, infoLink)
+        }
+
+        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+            // noop, add on is not clickable
+        }
+    }
+
+    private inner class ProductBenefitListener : AddOnViewHolder.Listener {
+        override fun onCopyAddOnDescriptionClicked(label: String, description: CharSequence) {
+            // noop, product benefit doesn't have copyable description
+        }
+
+        override fun onAddOnsExpand(isExpand: Boolean, addOnsIdentifier: String) {
+            expandCollapseBmgmProductBenefit(addOnsIdentifier, isExpand)
+        }
+
+        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
+            // noop, product benefit doesn't have info link
+        }
+
+        override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {
+            onClickProduct(addOn.orderDetailId.toLongOrZero())
         }
     }
 }

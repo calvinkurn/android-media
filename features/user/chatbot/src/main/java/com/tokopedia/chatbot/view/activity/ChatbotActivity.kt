@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.view.activity
 
-import RemoteConfigHelper
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -8,17 +7,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.fragment.ChatbotFragment2
+import com.tokopedia.chatbot.chatbot2.view.util.view.isInDarkMode
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
-import com.tokopedia.chatbot.view.fragment.ChatbotFragment
-import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.pushnotif.PushNotification
 import com.tokopedia.pushnotif.data.constant.Constant
 
@@ -51,20 +51,9 @@ class ChatbotActivity : BaseChatToolbarActivity() {
             bundle.putString(MESSAGE_ID, list[0])
         }
 
-        val state = remoteConfigForChatbotMVVM()
-        return if (state) {
-            val fragment = ChatbotFragment2()
-            fragment.arguments = bundle
-            fragment
-        } else {
-            val fragment = ChatbotFragment()
-            fragment.arguments = bundle
-            fragment
-        }
-    }
-
-    private fun remoteConfigForChatbotMVVM(): Boolean {
-        return RemoteConfigHelper.isRemoteConfigForMVVM(this)
+        val fragment = ChatbotFragment2()
+        fragment.arguments = bundle
+        return fragment
     }
 
     companion object {
@@ -105,14 +94,18 @@ class ChatbotActivity : BaseChatToolbarActivity() {
     }
 
     fun upadateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?) {
-        profileImage?.let { ImageHandler.loadImageCircle2(this, findViewById(R.id.user_avatar), it) }
+        profileImage?.let { findViewById<ImageView>(R.id.user_avatar).loadImageCircle(it) }
         (findViewById<TextView>(R.id.title)).text = profileName
         val badge = findViewById<ImageView>(R.id.chatbotHeaderBadge)
         if (badgeImage?.light.isNullOrEmpty()) {
             badge.hide()
         } else {
             badge.show()
-            ImageHandler.loadImageFitCenter(this, badge, badgeImage?.light)
+            badge.loadImageFitCenter(badgeImage?.light) {
+                setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                isAnimate(false)
+                fitCenter()
+            }
         }
     }
 

@@ -151,18 +151,30 @@ data class RecommendationEntity(
             }
         }
 
-        class LabelGroup {
+        data class LabelGroup(
             @SerializedName("position")
-            val position: String = "0"
+            val position: String = "0",
 
             @SerializedName("title")
-            val title: String = ""
+            val title: String = "",
 
             @SerializedName("type")
-            val type: String = ""
+            val type: String = "",
 
             @SerializedName("url")
-            val imageUrl: String = ""
+            val imageUrl: String = "",
+
+            @SerializedName("styles")
+            val styles: List<Style> = listOf()
+        ) {
+
+            data class Style(
+                @SerializedName("key")
+                val key: String = "",
+
+                @SerializedName("value")
+                val value: String = "",
+            )
         }
 
         class Shop {
@@ -184,6 +196,9 @@ data class RecommendationEntity(
         }
 
         class Badges {
+
+            @SerializedName("title")
+            val title: String = ""
 
             @SerializedName("imageUrl")
             val imageUrl: String = ""

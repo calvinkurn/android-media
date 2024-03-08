@@ -50,5 +50,23 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"></activity>
+        <activity
+            android:name=".pdp.presentation.activities.KetupatLandingActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+            <intent-filter>
+            <action android:name="com.tokopedia.internal.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data
+                android:scheme="@string/internal_scheme"
+                android:host="@string/host_global"
+                android:path="@string/path_ketupat_landing_page" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

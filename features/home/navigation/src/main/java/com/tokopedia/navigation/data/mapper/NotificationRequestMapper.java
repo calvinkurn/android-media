@@ -1,19 +1,18 @@
 package com.tokopedia.navigation.data.mapper;
 
+import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99;
+import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99_NUMBER;
+
 import android.text.TextUtils;
 
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.util.IntegerUtil;
-import com.tokopedia.navigation_common.model.FeedModel;
 import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 
 import rx.functions.Func1;
-
-import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99;
-import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99_NUMBER;
 
 /**
  * Created by meta on 25/07/18.
@@ -28,8 +27,7 @@ public class NotificationRequestMapper implements Func1<GraphqlResponse, Notific
     }
 
     public static Notification notificationMapper(NotificationsModel entity,
-                                                  NotifcenterUnread unread,
-                                                  FeedModel feedModel) {
+                                                  NotifcenterUnread unread) {
         Notification data = new Notification();
         try {
             data.totalNewInbox = entity.getTotalNewInbox();
@@ -37,7 +35,6 @@ public class NotificationRequestMapper implements Func1<GraphqlResponse, Notific
             data.setTotalCart(IntegerUtil.tryParseInt(entity.getTotalCart()));
             data.setTotalInbox(totalInbox(entity));
             data.setTotalNotif(totalNotif(entity, unread));
-            data.setHaveNewFeed(feedModel.getNewFeeds());
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }

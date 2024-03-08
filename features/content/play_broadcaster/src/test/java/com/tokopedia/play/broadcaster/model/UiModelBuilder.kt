@@ -6,13 +6,14 @@ import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.product.picker.seller.model.PriceUnknown
+import com.tokopedia.content.product.picker.seller.model.ProductPrice
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
-import com.tokopedia.content.product.picker.seller.model.PriceUnknown
-import com.tokopedia.content.product.picker.seller.model.ProductPrice
+import com.tokopedia.play.broadcaster.shorts.ui.model.ProductVideoUiModel
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleConfigUiModel
@@ -287,6 +288,7 @@ class UiModelBuilder {
     )
 
     fun buildTickerBottomSheetResponse(
+        cacheKey: String,
         page: TickerBottomSheetPage = TickerBottomSheetPage.UNKNOWN,
         type: TickerBottomSheetType = TickerBottomSheetType.UNKNOWN,
     ): TickerBottomSheetUiModel {
@@ -306,6 +308,7 @@ class UiModelBuilder {
             ),
             page = page,
             type = type,
+            cacheKey = cacheKey,
             imageURL = "tokopedia.com",
             bottomText = TickerBottomSheetUiModel.BottomText(
                 action = listOf(
@@ -357,6 +360,8 @@ class UiModelBuilder {
         maxTitleCharacter: Int = 24,
         maxTaggedProduct: Int = 30,
         shortsVideoSourceId: String = "asdf",
+        eligibleInterspersing: Boolean = true,
+        productCountForInterspersing: Int = 1,
     ) = PlayShortsConfigUiModel(
         shortsId = shortsId,
         shortsAllowed = shortsAllowed,
@@ -366,6 +371,8 @@ class UiModelBuilder {
         maxTaggedProduct = maxTaggedProduct,
         shortsVideoSourceId = shortsVideoSourceId,
         hasContent = hasContent,
+        eligibleInterspersing = eligibleInterspersing,
+        productCountForInterspersing = productCountForInterspersing,
     )
 
     fun buildSubmitOnboardAffiliate(
@@ -379,4 +386,12 @@ class UiModelBuilder {
         affiliateName = affiliateName,
         isAffiliate = isAffiliate,
     )
+
+    fun buildHasPdpVideo() = ProductVideoUiModel(
+        hasVideo = true,
+        videoUrl = "videoUrl",
+        coverUrl = "coverUrl",
+    )
+
+    fun buildHasNoPdpVideo() = ProductVideoUiModel.Empty
 }

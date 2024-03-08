@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.data.source.ContactDataSource
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
@@ -49,6 +51,7 @@ import javax.inject.Inject
 
 class DigitalPDPPulsaViewModel @Inject constructor(
     val repo: DigitalPDPTelcoRepository,
+    private val contactDataSource: ContactDataSource,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -421,6 +424,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
 
     fun setAtcMultiCheckoutParam() {
         atcMultiCheckoutParam = PARAM_ATC_MULTICHECKOUT
+    }
+
+    fun getContactList(): MutableList<TopupBillsContact> {
+        return contactDataSource.getContactList()
     }
 
     private fun resetAtcMultiCheckoutParam() {

@@ -60,7 +60,6 @@ class TopAdsOutofCreditSheet : BottomSheetUnify() {
                 "")
             val intent =
                 RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT)
-            activity?.finish()
             startActivity(intent)
         }
         contentView?.findViewById<UnifyButton>(R.id.dismissBS)?.setOnClickListener {

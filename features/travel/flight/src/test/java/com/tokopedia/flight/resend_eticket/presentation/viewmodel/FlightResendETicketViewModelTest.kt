@@ -3,12 +3,15 @@ package com.tokopedia.flight.resend_eticket.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.core.util.PatternsCompat
 import com.tokopedia.flight.resend_eticket.domain.FlightOrderResendEmailUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -144,5 +147,54 @@ class FlightResendETicketViewModelTest {
         assert((viewModel.emailValidation.value as Success).data)
     }
 
+    @Test
+    fun sendTicket_Success() {
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
+        every { PatternsCompat.EMAIL_ADDRESS.matcher(any()).matches() } returns true
 
+        assert(viewModel.userEmail == "")
+        assert(viewModel.invoiceId == "")
+
+        //given
+        val email = "firman@gmail.com"
+        val invoiceId = "1234"
+        val result = true
+        viewModel.userEmail = email
+        viewModel.invoiceId = invoiceId
+        coEvery {
+            resendEmailUseCase.executeResendETicket(invoiceId, email)
+        } returns result
+
+        //when
+        viewModel.sendEticket(email)
+
+        //then
+        assertEquals((viewModel.resendETicketStatus.value as Success).data, result)
+    }
+
+    @Test
+    fun sendTicket_Fail() {
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
+        every { PatternsCompat.EMAIL_ADDRESS.matcher(any()).matches() } returns true
+
+        assert(viewModel.userEmail == "")
+        assert(viewModel.invoiceId == "")
+
+        //given
+        val email = "firman@gmail.com"
+        val invoiceId = "1234"
+        val ERROR = "ERROR MESSAGE"
+        val result = true
+        viewModel.userEmail = email
+        viewModel.invoiceId = invoiceId
+        coEvery {
+            resendEmailUseCase.executeResendETicket(invoiceId, email)
+        } throws MessageErrorException(ERROR)
+
+        //when
+        viewModel.sendEticket(email)
+
+        //then
+        assertEquals((viewModel.resendETicketStatus.value as Fail).throwable.message, ERROR)
+    }
 }

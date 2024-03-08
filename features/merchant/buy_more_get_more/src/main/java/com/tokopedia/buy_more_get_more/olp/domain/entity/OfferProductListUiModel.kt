@@ -7,7 +7,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class OfferProductListUiModel(
     val responseHeader: ResponseHeader = ResponseHeader(),
     val productList: List<Product> = emptyList(),
-    val totalProduct: Int = 0
+    val totalProduct: Int = 0,
+    val pagination: Pagination = Pagination()
 ) {
     data class ResponseHeader(
         val success: Boolean = true,
@@ -51,4 +52,11 @@ data class OfferProductListUiModel(
             return typeFactory.type(this)
         }
     }
+
+    data class Pagination(
+        val currentPage: Int = 0,
+        val nextPage: Int = 0,
+        val prevPage: Int = 0,
+        val hasNext: Boolean = false
+    )
 }

@@ -4,9 +4,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.cart.CartActivity
 import com.tokopedia.cart.robot.cartPage
-import com.tokopedia.cart.test.R
-import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -16,6 +15,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.tokopedia.cart.test.R as carttestR
 
 @UiTest
 class CartBoAffordabilityTest {
@@ -38,7 +38,7 @@ class CartBoAffordabilityTest {
                 GET_CART_LIST_KEY,
                 InstrumentationMockHelper.getRawString(
                     context,
-                    R.raw.cart_bo_affordability_response
+                    carttestR.raw.cart_bo_affordability_response
                 ),
                 MockModelConfig.FIND_BY_CONTAINS
             )
@@ -46,7 +46,7 @@ class CartBoAffordabilityTest {
                 CART_SHOP_GROUP_TICKER_AGGREGATOR_KEY,
                 InstrumentationMockHelper.getRawString(
                     context,
-                    R.raw.cart_shop_group_ticker_aggregator_bo_afford_success_response
+                    carttestR.raw.cart_shop_group_ticker_aggregator_bo_afford_success_response
                 ),
                 MockModelConfig.FIND_BY_CONTAINS
             )
@@ -57,24 +57,24 @@ class CartBoAffordabilityTest {
     fun tickerVisibilityTest() {
         activityRule.launchActivity(null)
 
-        val cartRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_cart)
+        val cartRecyclerView = activityRule.activity.findViewById<RecyclerView>(carttestR.id.rv_cart)
 
         cartPage {
             waitForData()
 
             assertMainContent()
 
-            assertCartShopBottomViewHolderOnPosition(6) {
+            assertCartShopBottomViewHolderOnPosition(2) {
                 // given checked shop & enable bo affordability, then should show ticker
                 assertShowCartShopGroupTicker()
             }
-            scrollRecyclerViewToPosition(cartRecyclerView, 9)
-            assertCartShopBottomViewHolderOnPosition(9) {
+            scrollRecyclerViewToPosition(cartRecyclerView, 6)
+            assertCartShopBottomViewHolderOnPosition(6) {
                 // given unchecked shop & enable bo affordability, then should not show ticker
                 assertNotShowCartShopGroupTicker()
             }
-            scrollRecyclerViewToPosition(cartRecyclerView, 12)
-            assertCartShopBottomViewHolderOnPosition(12) {
+            scrollRecyclerViewToPosition(cartRecyclerView, 9)
+            assertCartShopBottomViewHolderOnPosition(9) {
                 // given checked shop & disable bo affordability, then should not show ticker
                 assertNotShowCartShopGroupTicker()
             }

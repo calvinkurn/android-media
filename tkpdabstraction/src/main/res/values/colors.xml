@@ -19,6 +19,7 @@
     <color name="green_300">#42bd41</color>
     <color name="green_500">#259b24</color>
     <color name="bg_button_green_border_outline">#03AC0E</color>
+    <color name="green_ketupat_timer">#00AA5B</color>
 
     <color name="font_black_primary_70">#B3000000</color>
     <color name="font_black_secondary_54">#8a000000</color>

@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.flight.R
+import com.tokopedia.media.loader.loadImage
 import java.util.*
 
 /**
@@ -42,9 +42,9 @@ class FlightMultiAirlineView @JvmOverloads constructor(context: Context, attrs: 
         } else if (airlineLogoList!!.size == 1) {
             val view = LayoutInflater.from(context).inflate(R.layout.view_airline_logo, this, false)
             val ivAirline = view.findViewById<ImageView>(R.id.iv_airline_logo)
-            ImageHandler.loadImageWithoutPlaceholder(ivAirline, airlineLogoList!![0],
-                    ContextCompat.getDrawable(context, R.drawable.flight_ic_airline_default)
-            )
+            ivAirline.loadImage(airlineLogoList!![0]) {
+                setErrorDrawable(R.drawable.flight_ic_airline_default)
+            }
             addView(view)
         }
     }

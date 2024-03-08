@@ -3,10 +3,14 @@ package com.tokopedia.hotel.common.presentation.widget
 import android.content.Context
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.databinding.WidgetInfoTextViewBinding
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 
 /**
  * @author by resakemal on 29/04/19
@@ -15,13 +19,19 @@ import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 class InfoTextView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0):
         BaseCustomView(context, attrs, defStyleAttr) {
 
+    private val binding = WidgetInfoTextViewBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
+
     var descriptionLineCount = INFO_DESC_DEFAULT_LINE_COUNT
     var truncateDescription = true
 
     var infoViewListener: InfoViewListener? = null
     set(value) {
         field = value
-        infoViewListener?.let { listener -> info_more.setOnClickListener{ listener.onMoreClicked() } }
+        infoViewListener?.let { listener -> binding.infoMore.setOnClickListener{ listener.onMoreClicked() } }
     }
 
     init {
@@ -30,20 +40,22 @@ class InfoTextView @JvmOverloads constructor(context: Context, attrs: AttributeS
         attrs?.let {
             val styledAttributes = context.obtainStyledAttributes(it, R.styleable.InfoTextView)
             try {
-                info_title.text = styledAttributes.getString(R.styleable.InfoTextView_titleText) ?: ""
-                info_desc.text = styledAttributes.getString(R.styleable.InfoTextView_descriptionText) ?: ""
-                truncateDescription = styledAttributes.getBoolean(R.styleable.InfoTextView_truncateDescription, false)
+                with(binding) {
+                    infoTitle.text = styledAttributes.getString(R.styleable.InfoTextView_titleText) ?: ""
+                    infoDesc.text = styledAttributes.getString(R.styleable.InfoTextView_descriptionText) ?: ""
+                    truncateDescription = styledAttributes.getBoolean(R.styleable.InfoTextView_truncateDescription, false)
 
-                if (truncateDescription) {
-                    info_desc.post {
-                        if (info_desc.lineCount > descriptionLineCount) {
-                            info_desc.ellipsize = TextUtils.TruncateAt.END
-                            info_desc.maxLines = descriptionLineCount
-                            info_more.visibility = View.VISIBLE
+                    if (truncateDescription) {
+                        infoDesc.post {
+                            if (infoDesc.lineCount > descriptionLineCount) {
+                                infoDesc.ellipsize = TextUtils.TruncateAt.END
+                                infoDesc.maxLines = descriptionLineCount
+                                infoMore.visibility = View.VISIBLE
+                            }
                         }
+                    } else {
+                        resetMaxLineCount()
                     }
-                } else {
-                    resetMaxLineCount()
                 }
             } finally {
                 styledAttributes.recycle()
@@ -63,11 +75,11 @@ class InfoTextView @JvmOverloads constructor(context: Context, attrs: AttributeS
     }
 
     fun setTitle(title: CharSequence) {
-        info_title.text = title
+        binding.infoTitle.text = title
     }
 
     fun setDescription(desc: CharSequence) {
-        info_desc.text = desc
+        binding.infoDesc.text = desc
     }
 
     fun setTitleAndDescription(title: CharSequence, desc: CharSequence) {
@@ -79,20 +91,48 @@ class InfoTextView @JvmOverloads constructor(context: Context, attrs: AttributeS
         visibility = View.VISIBLE
 
         if (truncateDescription) {
-            info_desc.post {
-                if (info_desc.lineCount > descriptionLineCount) {
-                    info_desc.ellipsize = TextUtils.TruncateAt.END
-                    info_desc.maxLines = descriptionLineCount
-                    info_more.visibility = View.VISIBLE
+            with(binding) {
+                infoDesc.post {
+                    if (infoDesc.lineCount > descriptionLineCount) {
+                        infoDesc.ellipsize = TextUtils.TruncateAt.END
+                        infoDesc.maxLines = descriptionLineCount
+                        infoMore.visibility = View.VISIBLE
+                    }
                 }
             }
         }
     }
 
     fun resetMaxLineCount() {
-        info_desc.ellipsize = null
-        info_desc.maxLines = Integer.MAX_VALUE
-        info_more.visibility = View.GONE
+        with(binding) {
+            infoDesc.ellipsize = null
+            infoDesc.maxLines = Integer.MAX_VALUE
+            infoMore.visibility = View.GONE
+        }
+    }
+
+    fun setInfoTitleTextSize(titleSize: Float) {
+        binding.infoTitle.setTextSize(
+            TypedValue.COMPLEX_UNIT_SP,
+            titleSize
+        )
+    }
+
+    fun setInfoContainerMargin(
+        left: Int,
+        top: Int,
+        right: Int,
+        bottom: Int
+    ) {
+        binding.infoContainer.setMargin(left, top, right, bottom)
+    }
+
+    fun setInfoMoreVisible() {
+        binding.infoMore.show()
+    }
+
+    fun setInfoDescription(text: String) {
+        binding.infoDesc.text = text
     }
 
     companion object {

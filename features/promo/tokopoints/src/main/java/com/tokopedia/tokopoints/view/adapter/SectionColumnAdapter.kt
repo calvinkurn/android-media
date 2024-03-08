@@ -9,7 +9,8 @@ import android.webkit.URLUtil
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
@@ -52,7 +53,7 @@ class SectionColumnAdapter(private val mItems: List<ImageList>?, private val mTy
                 return
             }
             if (URLUtil.isValidUrl(item.imageURLMobile)) {
-                ImageHandler.loadImageFitCenter(context, ivCol, item.imageURLMobile)
+                ivCol?.loadImageFitCenter(item.imageURLMobile)
             }
             bnrTitle.text = item.inBannerTitle
             bnrSubTitle.text = item.inBannerSubTitle

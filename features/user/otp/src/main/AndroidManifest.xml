@@ -1,10 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.otp">
-
-    <uses-permission
-        android:name="android.permission.READ_CALL_LOG"
-        tools:node="merge" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
@@ -137,13 +133,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".verification.common.util.PhoneCallBroadcastReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
     </application>

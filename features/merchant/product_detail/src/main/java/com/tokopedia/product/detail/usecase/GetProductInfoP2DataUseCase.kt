@@ -61,6 +61,14 @@ class GetProductInfoP2DataUseCase @Inject constructor(
               Message
               DevMessage
             }
+            promoPriceStyle {
+              iconURL
+              productID
+              color
+              background
+              superGraphicURL
+              separatorColor
+            }
             ppGetItemDetailPage{
               program{
                 protectionAvailable
@@ -207,76 +215,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 geolocation
               }
             }
-            installmentRecommendation {
-              data {
-                monthly_price
-                os_monthly_price
-                partner_code
-                subtitle
-              }
-            }
-            installmentCalculation {
-              message
-              data {
-                credit_card {
-                  partner_code
-                  partner_name
-                  partner_icon
-                  partner_url
-                  tnc_id
-                  installment_list {
-                    term
-                    mdr_value
-                    mdr_type
-                    interest_rate
-                    minimum_amount
-                    maximum_amount
-                    monthly_price
-                    os_monthly_price
-                    partner_code
-                    partner_name
-                    partner_icon
-                  }
-                  instruction_list {
-                    order
-                    description
-                    ins_image_url
-                  }
-                }
-                non_credit_card {
-                  partner_code
-                  partner_name
-                  partner_icon
-                  partner_url
-                  tnc_id
-                  installment_list {
-                    term
-                    mdr_value
-                    mdr_type
-                    interest_rate
-                    minimum_amount
-                    maximum_amount
-                    monthly_price
-                    os_monthly_price
-                    partner_code
-                    partner_name
-                    partner_icon
-                  }
-                  instruction_list {
-                    order
-                    description
-                    ins_image_url
-                  }
-                }
-                tnc {
-                  tnc_id
-                  tnc_list {
-                    order
-                    description
-                  }
-                }
-              }
-            }
             validateTradeIn {
               isEligible
               usedPrice
@@ -319,6 +257,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                campaignID
                campaignType
                campaignTypeName
+               campaignLogo
                startDate
                endDate
                notifyMe
@@ -630,6 +569,35 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 }
                 contents {
                   imageUrl
+                }
+                loadMoreText
+                productIDs
+                offerID
+              }
+            }
+            gwp {
+              separator
+              data {
+                backgroundColor
+                titleColor
+                iconUrl
+                title
+                action {
+                  type
+                  link
+                }
+                cards {
+                  title
+                  productName
+                  subtitle
+                  action {
+                    type
+                    link
+                  }
+                  contents {
+                    imageUrl
+                    loadMoreText
+                  }
                 }
                 loadMoreText
                 productIDs

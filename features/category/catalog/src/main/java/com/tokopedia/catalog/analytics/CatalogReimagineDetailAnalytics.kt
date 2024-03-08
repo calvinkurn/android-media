@@ -131,6 +131,26 @@ object CatalogReimagineDetailAnalytics {
         }
     }
 
+    fun sendEventPG(
+        event: String = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
+        category: String,
+        action: String,
+        labels: String,
+        trackerId: String = ""
+    ) {
+        HashMap<String, Any>().apply {
+            put(KEY_EVENT, event)
+            put(KEY_EVENT_CATEGORY, category)
+            put(KEY_EVENT_ACTION, action)
+            put(KEY_EVENT_LABEL, labels)
+            put(KEY_TRACKER_ID, trackerId)
+            put(KEY_BUSINESS_UNIT, BUSINESS_UNITS)
+            put(KEY_CURRENT_SITE, CURRENT_SITE)
+        }.also {
+            getTracker().sendGeneralEvent(it)
+        }
+    }
+
     fun sendEventOpenScreen(
         screenName: String,
         trackerId: String = "",

@@ -125,7 +125,14 @@ For the data, please use `com.tokopedia.productcard.reimagine.ProductCardModel`.
 Similar as before, you can use function `setProductModel` to set the Product Card data.
 1. Some property names in `ProductCardModel` are simplified, such as `productImageUrl` to `imageUrl`, and `productName` to `name`. Please refer to the Description above for more details.
 2. Shop Badge is now a single instance instead of a List. Please refer here for more details on rendering [Shop Badge](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2369978785/Reimagine#Shop-Badge).
+3. Add new property `List<Style>` into `LabelGroup`. `Style` contains `key` and `value` that is used by Product Card Reimagine Labels to determine the style such as background color, opacity, text color, etc.   
 
+###Color Mode
+What is `colorMode` property on ProductCardModel.kt? 
+A property to override the appearance of product card content color regardless of the selected device theme
+
+How to use Color Mode?
+Implement ProductCardColor interface on your module and implement its properties to suit product card color according to your page color design then pass the instance to `colorMode` property of ProductCardModel.kt
 
 ## Action Items
 

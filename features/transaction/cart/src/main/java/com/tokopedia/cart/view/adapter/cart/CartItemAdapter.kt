@@ -1,79 +1,24 @@
 package com.tokopedia.cart.view.adapter.cart
 
 import android.widget.ImageView
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
+import com.tokopedia.cart.view.uimodel.CartDetailInfo
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.iconunify.IconUnify
 
-class CartItemAdapter/*(private val actionListener: ActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ViewHolderListener*/ {
-
-    /*private val cartItemHolderDataList: MutableList<CartItemHolderData> = mutableListOf()
-
-    override fun getItemViewType(position: Int): Int {
-        return TYPE_VIEW_ITEM_CART
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding = ItemCartProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CartItemViewHolder(binding, actionListener)
-    }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val holderView = holder as CartItemViewHolder
-        val data = cartItemHolderDataList[position]
-        holderView.bindData(data, this, cartItemHolderDataList.size)
-    }
-
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        super.onViewRecycled(holder)
-        (holder as CartItemViewHolder).clear()
-    }
-
-    override fun getItemCount(): Int {
-        return cartItemHolderDataList.size
-    }
-
-    fun addDataList(cartItemHolderDataList: MutableList<CartItemHolderData>?) {
-        this.cartItemHolderDataList.clear()
-        this.cartItemHolderDataList.addAll(cartItemHolderDataList ?: emptyList())
-        notifyDataSetChanged()
-    }
-
-    override fun onNeedToRefreshSingleProduct(childPosition: Int) {
-        notifyItemChanged(childPosition)
-        actionListener.onNeedToRecalculate()
-    }
-
-    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData) {
-        actionListener.onNeedToRecalculate()
-        actionListener.onNeedToRefreshSingleShop(cartItemHolderData)
-    }
-
-    override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {
-        actionListener.onNeedToRecalculate()
-        actionListener.onNeedToRefreshWeight(cartItemHolderData)
-    }
-
-    override fun onNeedToRefreshBoAffordability(cartItemHolderData: CartItemHolderData) {
-        actionListener.onNeedToRefreshWeight(cartItemHolderData)
-    }
-
-    override fun onNeedToRefreshAllShop() {
-        actionListener.onNeedToRefreshMultipleShop()
-        actionListener.onNeedToRecalculate()
-    }*/
-
+class CartItemAdapter {
     interface ActionListener {
-        fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData)
+        fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData, deleteSource: CartDeleteButtonSource)
         fun onCartItemQuantityPlusButtonClicked()
         fun onCartItemQuantityMinusButtonClicked()
-
-//        fun onCartItemQuantityReseted(position: Int, cartItemHolderData: CartItemHolderData)
         fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData)
         fun onCartItemQuantityInputFormClicked(qty: String)
-        fun onCartItemLabelInputRemarkClicked()
         fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData)
         fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData)
-        fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView, isError: Boolean, errorType: String)
+        fun onWishlistCheckChanged(cartItemHolderData: CartItemHolderData, wishlistIcon: IconUnify, animatedWishlistImage: ImageView, position: Int)
+        fun onNoteClicked(cartItemHolderData: CartItemHolderData, noteIcon: ImageView, noteLottieIcon: LottieAnimationView, position: Int)
         fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int)
         fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
         fun onNeedToRecalculate()
@@ -88,12 +33,26 @@ class CartItemAdapter/*(private val actionListener: ActionListener) : RecyclerVi
         fun onFollowShopClicked(shopId: String, errorType: String)
         fun onVerificationClicked(applink: String)
         fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)
-        fun onProductAddOnClicked(addOnId: CartItemHolderData)
-
+        fun onProductAddOnClicked(cartItemData: CartItemHolderData)
         fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String)
-
         fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String)
-
+        fun sendRemoveCartFromSubtractButtonAnalytic(cartItemHolderData: CartItemHolderData)
         fun onAvailableCartItemImpression(availableCartItems: List<CartItemHolderData>)
+        fun onBmGmChevronRightClicked(offerLandingPageLink: String, offerId: Long, widgetCaption: String, shopId: String)
+        fun onBmGmTickerReloadClicked()
+        fun onCartItemCheckboxClickChanged(position: Int, cartItemHolderData: CartItemHolderData, isChecked: Boolean)
+        fun onCartViewBmGmTicker(offerId: Long, widgetCaption: String, shopId: String)
+        fun onSwipeToDeleteClosed(productId: String)
+        fun clearAllFocus()
+        fun onViewPurchaseBenefit(
+            item: CartItemHolderData,
+            cartDetailInfo: CartDetailInfo,
+            tierProductData: CartDetailInfo.BmGmTierProductData
+        )
+        fun onClickPurchaseBenefitActionListener(
+            item: CartItemHolderData,
+            cartDetailInfo: CartDetailInfo,
+            tierProductData: CartDetailInfo.BmGmTierProductData
+        )
     }
 }

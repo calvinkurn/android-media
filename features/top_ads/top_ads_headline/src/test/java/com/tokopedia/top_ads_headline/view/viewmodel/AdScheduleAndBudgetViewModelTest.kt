@@ -5,6 +5,8 @@ import com.tokopedia.topads.common.domain.usecase.CreateHeadlineAdsUseCase
 import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.domain.model.createheadline.TopadsManageHeadlineAdResponse
 import com.tokopedia.topads.common.data.response.Error
+import com.tokopedia.topads.common.domain.usecase.GetVariantByIdUseCase
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*
 import org.junit.Assert.*
@@ -19,10 +21,14 @@ class AdScheduleAndBudgetViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
+    val rule = CoroutineTestRule()
+
+    @get:Rule
     val testCoroutineRule = UnconfinedTestRule()
 
     private var createHeadlineAdsUseCase: CreateHeadlineAdsUseCase = mockk(relaxed = true)
-    private var viewModel = spyk(AdScheduleAndBudgetViewModel(createHeadlineAdsUseCase))
+    private val getVariantByIdUseCase: GetVariantByIdUseCase = mockk(relaxed = true)
+    private var viewModel = spyk(AdScheduleAndBudgetViewModel(createHeadlineAdsUseCase,rule.dispatchers,getVariantByIdUseCase))
 
     @After
     fun tearDown() {

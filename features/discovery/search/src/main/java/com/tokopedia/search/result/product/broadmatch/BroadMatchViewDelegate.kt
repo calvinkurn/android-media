@@ -1,7 +1,10 @@
 package com.tokopedia.search.result.product.broadmatch
 
 import android.content.Context
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.iris.Iris
+import com.tokopedia.product.detail.common.ProductDetailPrefetch
+import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.QueryKeyProvider
@@ -77,5 +80,47 @@ class BroadMatchViewDelegate @Inject constructor(
             openApplink(context, applink.decodeQueryParameter())
         else
             openApplink(context, url)
+    }
+
+    override fun openLink(broadMatchItemDataView: BroadMatchItemDataView) {
+        val finalLink = generateFinalLink(broadMatchItemDataView)
+        openApplink(context, finalLink)
+    }
+
+    private fun generateFinalLink(broadMatchItemDataView: BroadMatchItemDataView): String {
+        val appLink = broadMatchItemDataView.applink
+        return if (appLink.isNotEmpty()) {
+            val isPrefetch = ProductDetailPrefetch.validateAppLink(appLink)
+            val finalAppLink = if (isPrefetch)
+                generatePrefetchAppLink(broadMatchItemDataView)
+            else appLink
+            finalAppLink.decodeQueryParameter()
+        } else broadMatchItemDataView.url
+    }
+
+    private fun generatePrefetchAppLink(broadMatchItemDataView: BroadMatchItemDataView): String {
+        val data = broadMatchItemDataView.toPrefetchData()
+        return ProductDetailPrefetch.process(
+            context,
+            broadMatchItemDataView.applink,
+            data
+        )
+    }
+
+    private fun BroadMatchItemDataView.toPrefetchData(): ProductDetailPrefetch.Data {
+        val integrity = labelGroupDataList.find {
+            it.position == LABEL_REIMAGINE_CREDIBILITY ||
+                it.position == SearchConstant.ProductCardLabel.LABEL_INTEGRITY
+        }?.title ?: ""
+        return ProductDetailPrefetch.Data(
+            image = imageUrl,
+            name = name,
+            price = price.toDouble(),
+            slashPrice = originalPrice,
+            discount = discountPercentage,
+            freeShippingLogo = freeOngkirDataView.imageUrl,
+            rating = ratingAverage,
+            integrity = integrity
+        )
     }
 }

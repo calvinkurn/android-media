@@ -37,6 +37,7 @@ class PostUserReportUseCase @Inject constructor(
         partnerId: Long,
         partnerType: PartnerType,
         reporterId: Long,
+        source: ReportSource = ReportSource.UNKNOWN
     ): RequestParams {
         val param = mutableMapOf(
             REPORTER_ID_PARAM to reporterId,
@@ -44,10 +45,17 @@ class PostUserReportUseCase @Inject constructor(
             MEDIA_URL_PARAM to mediaUrl,
             REASON_ID_PARAM to reasonId,
             TIMESTAMP_PARAM to timestamp,
-            DESCRIPTION_PARAM to reportDesc,
+            DESCRIPTION_PARAM to reportDesc
         ).apply {
-            if (partnerType == PartnerType.User) put(USER_ID_PARAM, partnerId)
-            else put(SHOP_ID_PARAM, partnerId)
+            if (partnerType == PartnerType.User) {
+                put(USER_ID_PARAM, partnerId)
+            } else {
+                put(SHOP_ID_PARAM, partnerId)
+            }
+
+            if (source.value.isNotEmpty()) {
+                put(SOURCE_PARAM, source.value)
+            }
         }
 
         return RequestParams.create().apply {
@@ -65,6 +73,7 @@ class PostUserReportUseCase @Inject constructor(
         private const val SHOP_ID_PARAM = "shop_id"
         private const val INPUT = "input"
         private const val USER_ID_PARAM = "user_id"
+        private const val SOURCE_PARAM = "source"
 
         const val QUERY_NAME = "PostUserReportUseCaseQuery"
         const val QUERY = """
@@ -91,5 +100,12 @@ class PostUserReportUseCase @Inject constructor(
                     else -> Unknown
                 }
         }
+    }
+
+    enum class ReportSource(val value: String) {
+        STORY_STAGING_IMAGE("pVWHVh"),
+        STORY_PROD_IMAGE("ymnjtE"),
+        STORY_VIDEO("ZbQlUU"),
+        UNKNOWN("");
     }
 }

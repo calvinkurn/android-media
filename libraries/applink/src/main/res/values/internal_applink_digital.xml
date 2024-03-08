@@ -15,6 +15,7 @@
     <string name="path_telco_postpaid" translatable="false">/telcopost</string>
     <string name="path_digital_checkout" translatable="false">/checkout</string>
     <string name="path_dynamic_home" translatable="false">/home/dynamic</string>
+    <string name="path_dynamic_home_macrobenchmark" translatable="false">/home/dynamic_macrobenchmark</string>
     <string name="title_digital_subhomepage"><![CDATA[Top-up & Tagihan]]></string>
     <string name="path_voucher_game" translatable="false">/vouchergame</string>
     <string name="path_general_template" translatable="false">/general</string>
@@ -22,6 +23,7 @@
     <string name="path_cc_native" translatable="false">/cc</string>
     <string name="path_digital_pdp_pulsa">/pdp_pulsa</string>
     <string name="path_digital_pdp_pulsa_macrobenchmark">/pdp_pulsa_macrobenchmark</string>
+    <string name="path_digital_pdp_data_plan_macrobenchmark">/pdp_data_plan_macrobenchmark</string>
     <string name="path_digital_pdp_data_plan">/pdp_paket_data</string>
     <string name="path_digital_pdp_roaming">/roaming</string>
     <string name="path_digital_pdp_token_listrik">/pdp_token_listrik</string>
@@ -33,8 +35,6 @@
     <string name="path_electronicmoney" translatable="false">/electronicmoney</string>
     <string name="path_digital_search_number" translatable="false">/searchnumber</string>
     <string name="path_digital_favorite_number" translatable="false">/favoritenumber</string>
-
-    <string name="path_camera_ocr" translatable="false">/ocr</string>
 
     <string name="path_deals_home" translatable="false">/deals</string>
     <string name="path_deals_detail" translatable="false">/deals/{slug}</string>

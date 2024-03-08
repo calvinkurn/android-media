@@ -1,6 +1,8 @@
 package com.tokopedia.content.common.ui.model
 
 import android.os.Parcelable
+import com.tokopedia.content.analytic.Value
+import com.tokopedia.content.analytic.model.ContentAnalyticAuthor
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
@@ -32,6 +34,15 @@ data class ContentAccountUiModel(
 
     val isUserPostEligible: Boolean
         get() = isUser && enable
+
+    fun toAnalyticModel() = ContentAnalyticAuthor(
+        id = id,
+        type = when {
+            isShop -> Value.seller
+            isUser -> Value.user
+            else -> ""
+        }
+    )
 
     companion object {
         val Empty = ContentAccountUiModel(

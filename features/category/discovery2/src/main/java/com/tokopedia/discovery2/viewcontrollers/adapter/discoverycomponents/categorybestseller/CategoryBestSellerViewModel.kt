@@ -87,7 +87,13 @@ class CategoryBestSellerViewModel(val application: Application, val components: 
         list.forEach {
             it.data?.firstOrNull()?.let { dataItem ->
                 dataItem.hasNotifyMe = (dataItem.notifyMe != null)
-                productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem, components.name))
+                productCardModelArray.add(
+                    DiscoveryDataMapper().mapDataItemToProductCardModel(
+                        dataItem,
+                        components.name,
+                        components.properties?.cardType
+                    )
+                )
             }
         }
         val productImageWidth = application.applicationContext.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)

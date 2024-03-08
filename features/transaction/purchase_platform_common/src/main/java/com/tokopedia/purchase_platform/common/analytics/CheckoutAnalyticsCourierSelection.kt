@@ -1105,4 +1105,34 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
             .build()
             .send()
     }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4448
+    // Tracker ID: 49760
+    fun eventImpressionGwp(
+        offerId: Long,
+        sumProductQuantity: Int,
+        sumBenefitQuantity: Int,
+        shopId: String,
+        userId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.VIEW_PG_IRIS)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.IMPRESSION_GWP_BENEFIT)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION)
+            .setEventLabel("$offerId - $sumProductQuantity - $sumBenefitQuantity")
+            .setCustomProperty(
+                ExtraKey.TRACKER_ID,
+                ConstantTransactionAnalytics.TrackerId.VIEW_GWP_BENEFIT
+            )
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setCustomProperty(
+                ExtraKey.SESSION_IRIS,
+                ConstantTransactionAnalytics.CustomDimension.DIMENSION_SESSION_IRIS
+            )
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
 }

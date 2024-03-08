@@ -11,9 +11,6 @@ import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetKebabMenuAdapter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-/**
- * Created by fwidjaja on 01/10/21.
- */
 class UohKebabMenuBottomSheet : BottomSheetUnify() {
     private var listener: UohKebabMenuBottomSheetListener? = null
     private var adapter: UohBottomSheetKebabMenuAdapter? = null

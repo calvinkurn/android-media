@@ -9,7 +9,6 @@ import com.tokopedia.product.manage.common.feature.list.data.model.filter.Produc
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
-import com.tokopedia.seller.menu.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingFail
@@ -17,12 +16,16 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.Partia
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
-import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
 import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse
-import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse.*
+import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse.Inbox
+import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse.NotifCenterTotalUnread
+import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse.Notifications
+import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse.SellerOrderStatus
 import com.tokopedia.seller.menu.domain.query.ShopScoreLevelResponse
+import com.tokopedia.seller.menu.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
 import com.tokopedia.seller.menu.domain.usecase.GetShopScoreLevelUseCase
+import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery

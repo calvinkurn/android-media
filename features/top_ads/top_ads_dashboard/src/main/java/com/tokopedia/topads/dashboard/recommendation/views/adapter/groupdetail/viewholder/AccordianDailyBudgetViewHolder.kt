@@ -94,7 +94,13 @@ class AccordianDailyBudgetViewHolder(
         topadsManagePromoGroupProductInput?.groupInput = GroupEditInput(
             action = ACTION_EDIT_PARAM,
             group = GroupEditInput.Group(
-                dailyBudget = dailyBudgetBid
+                dailyBudget = dailyBudgetBid,
+                adOperations = null,
+                name = null,
+                bidSettings = null,
+                suggestionBidSettings = null,
+                strategies = null,
+                status = null,
             )
         )
     }

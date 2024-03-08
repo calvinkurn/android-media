@@ -12,12 +12,12 @@ import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
+import com.tokopedia.productcard.reimagine.ProductCardModel.Companion as ProductCardModelReimagine
 
 class BannerShopProductReimagineViewHolder(
     container: View,
     private val topAdsBannerClickListener: TopAdsBannerClickListener?,
     private val impressionListener: TopAdsItemImpressionListener?,
-    private val hasMultilineProductName: Boolean = false
 ) : AbstractViewHolder<BannerShopProductUiModel?>(container) {
     private val productCardGridViewA: ProductCardGridCarouselView =
         itemView.findViewById(R.id.topAdsProductItem)
@@ -30,7 +30,7 @@ class BannerShopProductReimagineViewHolder(
             val productCardViewModel = model.product
             val cpmData = model.cpmData
             productCardGridViewA.run {
-                setProductModel(mapperToProductModelReimagine(productCardViewModel, cpmData))
+                setProductModel(ProductCardModelReimagine.from(productCardViewModel))
 
                 addOnImpressionListener(element) {
                     impressionListener?.onImpressionProductAdsItem(
@@ -51,33 +51,6 @@ class BannerShopProductReimagineViewHolder(
                 }
             }
         }
-    }
-
-    private fun mapperToProductModelReimagine(item: ProductCardModel, cpmData: CpmData): com.tokopedia.productcard.reimagine.ProductCardModel {
-        return com.tokopedia.productcard.reimagine.ProductCardModel(
-            imageUrl = item.productImageUrl,
-            isAds = item.isTopAds,
-            name = item.productName,
-            price = item.formattedPrice,
-            slashedPrice = item.slashedPrice,
-            discountPercentage = getDiscountProduct(item),
-            labelGroupList = item.labelGroupList.map { labelGroup ->
-                com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup(
-                    title = labelGroup.title,
-                    position = labelGroup.position,
-                    type = labelGroup.type,
-                    imageUrl = labelGroup.imageUrl
-                )
-            },
-            rating = item.ratingString,
-            freeShipping = com.tokopedia.productcard.reimagine.ProductCardModel.FreeShipping(item.freeOngkir.imageUrl),
-            hasMultilineName = hasMultilineProductName
-        )
-    }
-
-    private fun getDiscountProduct(item: ProductCardModel): Int {
-        val discount = item.discountPercentage.removeSuffix("%")
-        return discount.toIntOrZero()
     }
 
     companion object {

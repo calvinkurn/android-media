@@ -16,6 +16,7 @@ enum class PlayChannelStatusType(val value: String) {
     Transcoding("6"),
     TranscodingFailed("7"),
     ScheduledLive("8"),
+    Queue("10"),
     Unknown("-2");
 
     companion object {

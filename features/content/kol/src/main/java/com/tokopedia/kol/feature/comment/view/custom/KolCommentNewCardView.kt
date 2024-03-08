@@ -14,7 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -93,7 +93,7 @@ class KolCommentNewCardView : LinearLayout {
     }
 
     fun setModel(element: KolCommentNewModel, canComment: Boolean) {
-        ImageHandler.loadImageCircle2(avatar.context, avatar, element.avatarUrl)
+        avatar.loadImageCircle(element.avatarUrl)
         element.time?.let {
             if (it == context.getString(com.tokopedia.content.common.R.string.post_time_just_now))
                 time.text =
@@ -113,7 +113,7 @@ class KolCommentNewCardView : LinearLayout {
         badge.visibility = View.GONE
         if (!TextUtils.isEmpty(element.userBadges)) {
             badge.visibility = View.VISIBLE
-            ImageHandler.loadImageCircle2(badge.context, badge, element.userBadges)
+            badge.loadImageCircle(element.userBadges)
         }
 
         if (canComment) btnReply.visible() else btnReply.gone()

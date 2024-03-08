@@ -30,7 +30,7 @@ class GetScheduledDeliveryRatesUseCase @Inject constructor(
                 origin = request.origin ?: "",
                 destination = request.destination,
                 warehouseId = request.warehouseId.toLongOrZero(),
-                weight = request.productWeight.toString(),
+                weight = request.getWeightRequest().toString(),
                 shopId = request.shopId.toLongOrZero(),
                 uniqueId = uniqueId,
                 productMetadata = request.productMetadata,

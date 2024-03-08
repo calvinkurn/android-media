@@ -1,7 +1,7 @@
 package com.tokopedia.cart.view.viewmodel
 
 import androidx.lifecycle.Observer
-import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
+import com.tokopedia.cart.view.uimodel.LoadWishlistV2State
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.Fail

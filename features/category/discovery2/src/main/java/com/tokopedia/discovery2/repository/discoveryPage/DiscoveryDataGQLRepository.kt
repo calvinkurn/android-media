@@ -4,7 +4,6 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.USER_ADDRESS_KEY
 import com.tokopedia.discovery2.Constant.QueryParamConstants.QUERY_PARAMS_KEY
-import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.DiscoveryResponse
@@ -20,14 +19,19 @@ private const val ACCEPT_SECTION = "accept_section"
 
 class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> String) : BaseRepository(), DiscoveryPageRepository {
     lateinit var userSession: UserSession
-    override suspend fun getDiscoveryPageData(pageIdentifier: String,extraParams:Map<String,Any>?): DiscoveryResponse {
-        return (getGQLData(queryDiscoveryData,
-                DataResponse::class.java, getQueryMap(pageIdentifier,extraParams),
-                "discoveryPageInfo") as DataResponse).data
+    override suspend fun getDiscoveryPageData(pageIdentifier: String, extraParams: Map<String, Any>?): DiscoveryResponse {
+        return (
+            getGQLData(
+                queryDiscoveryData,
+                DataResponse::class.java,
+                getQueryMap(pageIdentifier, extraParams),
+                "discoveryPageInfo"
+            ) as DataResponse
+            ).data
     }
 
-    private fun getQueryMap(pageIdentifier: String,extraParams:Map<String,Any>?): Map<String, Any> {
-        val queryMap =  mutableMapOf(
+    private fun getQueryMap(pageIdentifier: String, extraParams: Map<String, Any>?): Map<String, Any> {
+        val queryMap = mutableMapOf(
             IDENTIFIER to pageIdentifier,
             VERSION to GlobalConfig.VERSION_NAME,
             DEVICE to DEVICE_VALUE
@@ -36,10 +40,11 @@ class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> 
             val localCacheModel = it[USER_ADDRESS_KEY] as? LocalCacheModel
             val addMap: MutableMap<String, Any>? =
                 (Utils.addAddressQueryMapWithWareHouse(localCacheModel) as? MutableMap<String, Any>)
-            val filterMap = addMap?: mutableMapOf()
+            val filterMap = addMap ?: mutableMapOf()
             filterMap[ACCEPT_SECTION] = true
+            filterMap[Utils.SRE_IDENTIFIER] = Utils.SRE_VALUE
             var finalQueryString = Utils.getQueryString(filterMap)
-            if(it.containsKey(QUERY_PARAMS_KEY) && !(it[QUERY_PARAMS_KEY] as? String).isNullOrEmpty()){
+            if (it.containsKey(QUERY_PARAMS_KEY) && !(it[QUERY_PARAMS_KEY] as? String).isNullOrEmpty()) {
                 finalQueryString = finalQueryString + "&" + it[QUERY_PARAMS_KEY] as String
             }
             queryMap[Utils.FILTERS] = finalQueryString
@@ -75,9 +80,6 @@ class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> 
       additional_info
     }
   }
-}""".trimIndent()
 }
-
-
-
-
+    """.trimIndent()
+}

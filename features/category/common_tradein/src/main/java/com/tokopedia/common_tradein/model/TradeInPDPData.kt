@@ -10,11 +10,10 @@ class TradeInPDPData(
     var productName: String? = null,
     var productImage: String? = null,
     var minOrder: Int = 0,
-    val selectedWarehouseId: Int = 0,
+    val selectedWarehouseId: String = "",
     val trackerAttributionPdp: String? = null,
     val trackerListNamePdp: String? = null,
     val shippingMinimumPrice: Double = 0.0,
     val getProductName: String? = null,
     val categoryName: String? = null
-) {
-}
+)

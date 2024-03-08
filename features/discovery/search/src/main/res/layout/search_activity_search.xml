@@ -1,80 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootSearchResult"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.searchbar.navigation_component.NavToolbar
-        android:id="@+id/searchNavigationToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:toolbarAlwaysShowShadow="false"
-        app:toolbarBackButton="back"
-        app:toolbarContentType="typeSearchbar"
-        app:toolbarInitialTheme="light"
-        app:toolbarInvertSearchBarColor="true" />
-
     <androidx.constraintlayout.motion.widget.MotionLayout
         android:id="@+id/container"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:ignore="MotionLayoutInvalidSceneFileReference"
-        app:layout_constraintTop_toBottomOf="@+id/searchNavigationToolbar"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MotionLayoutInvalidSceneFileReference">
+
+        <FrameLayout
+            android:id="@+id/thematic_container"
+            android:layout_width="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="0dp"
+            android:clipToPadding="true"
+            app:layout_constraintBottom_toBottomOf="@id/tabs"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.search.utils.TopCropImageView
+                android:id="@+id/thematic_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="matrix" />
+
+            <com.tokopedia.search.utils.TopCropImageView
+                android:id="@+id/thematic_foreground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:scaleType="matrix" />
+        </FrameLayout>
+
+        <com.tokopedia.searchbar.navigation_component.NavToolbar
+            android:id="@+id/searchNavigationToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:toolbarAlwaysShowShadow="false"
+            app:toolbarBackButton="back"
+            app:toolbarContentType="typeSearchbar"
+            app:toolbarInitialTheme="light"
+            app:toolbarInvertSearchBarColor="true" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            app:tabMode="fixed"
-            app:tabMaxWidth="0dp"
-            app:tabGravity="fill"
-            app:tabSelectedTextColor="@color/Unify_GN500"
-            app:tabTextColor="@color/Unify_NN950_32"
-            app:tabTextAppearance="@style/SearchTabLayoutTextStyle"
-            app:tabIndicatorColor="@color/Unify_GN500"
-            app:tabPaddingBottom="12dp"
             android:theme="@style/ThemeOverlay.AppCompat.Light"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/searchNavigationToolbar"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/Unify_GN500"
+            app:tabMaxWidth="0dp"
+            app:tabMode="fixed"
+            app:tabPaddingBottom="12dp"
+            app:tabSelectedTextColor="@color/Unify_GN500"
+            app:tabTextAppearance="@style/SearchTabLayoutTextStyle"
+            app:tabTextColor="@color/Unify_NN950_32" />
 
         <View
             android:id="@+id/search_top_bar_shadow"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:background="@drawable/top_bar_shadow"
-            app:layout_constraintTop_toBottomOf="@id/tabs"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/tabs" />
 
         <View
             android:id="@+id/search_quick_filter_top_padding"
             android:layout_width="match_parent"
             android:layout_height="8dp"
-            app:layout_constraintTop_toBottomOf="@id/search_top_bar_shadow"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/Unify_NN0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/search_top_bar_shadow" />
 
         <com.tokopedia.search.result.presentation.widget.NonSwipeableViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/search_quick_filter_top_padding"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/Unify_NN0"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/search_quick_filter_top_padding" />
 
     </androidx.constraintlayout.motion.widget.MotionLayout>
 

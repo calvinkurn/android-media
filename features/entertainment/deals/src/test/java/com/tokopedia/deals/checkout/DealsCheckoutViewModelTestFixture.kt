@@ -3,9 +3,9 @@ package com.tokopedia.deals.checkout
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common_entertainment.data.DealsCheckoutInstantResponse
 import com.tokopedia.common_entertainment.data.DealsCheckoutResponse
-import com.tokopedia.deals.checkout.domain.DealsCheckoutGeneralV2InstantUseCase
-import com.tokopedia.deals.checkout.domain.DealsCheckoutGeneralV2UseCase
-import com.tokopedia.deals.checkout.ui.viewmodel.DealsCheckoutViewModel
+import com.tokopedia.deals.ui.checkout.domain.DealsCheckoutGeneralV2InstantUseCase
+import com.tokopedia.deals.ui.checkout.domain.DealsCheckoutGeneralV2UseCase
+import com.tokopedia.deals.ui.checkout.ui.viewmodel.DealsCheckoutViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

@@ -3,9 +3,9 @@ package com.tokopedia.deals.common.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.deals.category.domain.GetChipsCategoryUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.deals.search.model.response.CuratedData
+import com.tokopedia.deals.data.entity.CuratedData
+import com.tokopedia.deals.domain.GetChipsCategoryUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,8 +14,8 @@ import javax.inject.Inject
  */
 
 class DealsBrandCategoryActivityViewModel @Inject constructor(
-        private val chipsCategoryUseCase: GetChipsCategoryUseCase,
-        dispatcher: CoroutineDispatchers
+    private val chipsCategoryCoroutine: GetChipsCategoryUseCase,
+    dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val privateCuratedData = MutableLiveData<CuratedData>()
@@ -27,9 +27,13 @@ class DealsBrandCategoryActivityViewModel @Inject constructor(
         get() = privateErrorMessage
 
     fun getCategoryCombindedData() {
-        launch { chipsCategoryUseCase.execute(onGetCategorySuccess(), onErrorGetCategory()) }
+        launch {
+            runCatching {
+                val result = chipsCategoryCoroutine(Unit)
+                privateCuratedData.value = result
+            }.onFailure {
+                privateErrorMessage.value = it
+            }
+        }
     }
-
-    private fun onGetCategorySuccess(): (CuratedData) -> Unit = { privateCuratedData.value = it }
-    private fun onErrorGetCategory(): (Throwable) -> Unit = { privateErrorMessage.value = it }
 }

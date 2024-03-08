@@ -1,8 +1,6 @@
 package com.tokopedia.onboarding.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.onboarding.di.module.DynamicOnboardingQueryModule
-import com.tokopedia.onboarding.di.module.DynamicOnboardingUseCaseModule
 import com.tokopedia.onboarding.di.module.DynamicOnboardingViewModelModule
 import com.tokopedia.onboarding.di.module.OnboardingModule
 import com.tokopedia.onboarding.view.activity.OnboardingActivity
@@ -18,9 +16,7 @@ import dagger.Component
 @OnboardingScope
 @Component(modules = [
     OnboardingModule::class,
-    DynamicOnboardingUseCaseModule::class,
-    DynamicOnboardingViewModelModule::class,
-    DynamicOnboardingQueryModule::class
+    DynamicOnboardingViewModelModule::class
 ], dependencies = [BaseAppComponent::class])
 interface OnboardingComponent {
     fun inject(activity: OnboardingActivity)

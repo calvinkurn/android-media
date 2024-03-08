@@ -8,8 +8,10 @@ import com.tokopedia.tokofood.databinding.TokofoodItemAddOnItemLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
 
-class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBinding,
-                              private val listener: Listener) : RecyclerView.ViewHolder(binding.root) {
+class ProductOptionViewHolder(
+    private val binding: TokofoodItemAddOnItemLayoutBinding,
+    private val listener: Listener?
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bindData(uiModel: OptionUiModel, index: Int) {
         setTitle(uiModel.name)
@@ -25,8 +27,10 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
         binding.tvTokofoodAddOnItemTitle.text = title
     }
 
-    private fun setDescription(description: String?,
-                               isOutOfStock: Boolean) {
+    private fun setDescription(
+        description: String?,
+        isOutOfStock: Boolean
+    ) {
         if (isOutOfStock) {
             binding.tvTokofoodAddOnItemDesc.invisible()
             binding.tvTokofoodAddOnItemOutOfStock.visible()
@@ -41,8 +45,10 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
         }
     }
 
-    private fun setSelectionType(isSelected: Boolean,
-                                 type: SelectionControlType) {
+    private fun setSelectionType(
+        isSelected: Boolean,
+        type: SelectionControlType
+    ) {
         if (type == SelectionControlType.SINGLE_SELECTION) {
             binding.radioTokofoodAddOnItem.run {
                 visible()
@@ -58,8 +64,10 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
         }
     }
 
-    private fun setEnabled(isOutOfStock: Boolean,
-                           canBeSelected: Boolean) {
+    private fun setEnabled(
+        isOutOfStock: Boolean,
+        canBeSelected: Boolean
+    ) {
         val isItemEnabled = !isOutOfStock && canBeSelected
         binding.root.isEnabled = isItemEnabled
         binding.checkboxTokofoodAddOnItem.run {
@@ -72,8 +80,10 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
         }
     }
 
-    private fun setOnClickAction(type: SelectionControlType,
-                                 isOutOfStock: Boolean) {
+    private fun setOnClickAction(
+        type: SelectionControlType,
+        isOutOfStock: Boolean
+    ) {
         val onClickAction: () -> Unit =
             when {
                 isOutOfStock -> {
@@ -98,27 +108,31 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
         }
     }
 
-    private fun setSelectionClickListener(price: Double,
-                                          index: Int,
-                                          dataSetPosition: Int,
-                                          isOutOfStock: Boolean) {
+    private fun setSelectionClickListener(
+        price: Double,
+        index: Int,
+        dataSetPosition: Int,
+        isOutOfStock: Boolean
+    ) {
         binding.radioTokofoodAddOnItem.setOnClickListener {
             if (!isOutOfStock) {
                 binding.radioTokofoodAddOnItem.isChecked = true
                 val isChecked = binding.radioTokofoodAddOnItem.isChecked
-                listener.onRadioButtonClicked(isChecked, price, index, dataSetPosition)
+                listener?.onRadioButtonClicked(isChecked, price, index, dataSetPosition)
             }
         }
         binding.checkboxTokofoodAddOnItem.setOnClickListener {
             if (!isOutOfStock) {
                 val isChecked = binding.checkboxTokofoodAddOnItem.isChecked
-                listener.onCheckboxClicked(isChecked, price, index, dataSetPosition)
+                listener?.onCheckboxClicked(isChecked, price, index, dataSetPosition)
             }
         }
     }
 
-    private fun renderAlpha(isOutOfStock: Boolean,
-                            canBeSelected: Boolean) {
+    private fun renderAlpha(
+        isOutOfStock: Boolean,
+        canBeSelected: Boolean
+    ) {
         val alpha =
             if (isOutOfStock || !canBeSelected) {
                 DISABLED_ALPHA
@@ -140,5 +154,4 @@ class ProductOptionViewHolder(private val binding: TokofoodItemAddOnItemLayoutBi
         private const val ENABLED_ALPHA = 1.0f
         private const val DISABLED_ALPHA = 0.5f
     }
-
 }

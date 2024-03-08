@@ -12,4 +12,6 @@ object Value {
     const val follow = "follow"
     const val unfollow = "unfollow"
 
+    const val on = "on"
+    const val off = "off"
 }

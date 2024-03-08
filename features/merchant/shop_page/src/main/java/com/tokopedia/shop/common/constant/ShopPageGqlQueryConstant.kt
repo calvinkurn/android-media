@@ -67,15 +67,24 @@ object ShopPageGqlQueryConstant {
                     isActive
                     imgURL
                   }
+                  badge {
+                    title
+                    image_url
+                  }
                   label_groups {
                     position
                     type
                     title
                     url
+                    styles {
+                      key
+                      value
+                    }
                   }
                   hasVariant
                   parent_id
                   show_stockbar
+                  warehouse_id
                 }
                 suggestion {
                   text

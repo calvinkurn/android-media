@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.review.ReviewImage
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.viewholder.review.ui.ReviewRatingUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 
@@ -12,6 +12,9 @@ data class ProductMostHelpfulReviewUiModel(
     val type: String = "",
     val name: String = ""
 ) : DynamicPdpDataModel {
+
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.BOTTOM
 
     var review: Review? = null
         private set
@@ -28,7 +31,7 @@ data class ProductMostHelpfulReviewUiModel(
 
     override fun type(): String = type
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
 

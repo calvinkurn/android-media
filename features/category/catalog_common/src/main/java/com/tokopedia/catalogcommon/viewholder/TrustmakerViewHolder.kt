@@ -41,7 +41,7 @@ class TrustmakerViewHolder(
                 )
             )
         }
-        listener?.onTrustMakerImpression(element.items)
+        listener?.onTrustMakerImpression(element.items, element.widgetName)
 
         // TODO: Implement this when iOS ready
         /*binding?.rvItems?.addOnScrollListener(object : RecyclerView.OnScrollListener() {

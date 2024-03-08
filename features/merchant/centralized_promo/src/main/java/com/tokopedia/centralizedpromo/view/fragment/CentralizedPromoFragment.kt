@@ -1,11 +1,14 @@
 package com.tokopedia.centralizedpromo.view.fragment
 
 import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.NestedScrollView
+import androidx.core.widget.NestedScrollView.OnScrollChangeListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -113,6 +116,7 @@ class CentralizedPromoFragment :
     private var isErrorToastShown: Boolean = false
     private var isCoachMarkShowed: Boolean = false
     private var currentFilterTab = FilterPromoUiModel()
+    private var coachMarkAnchoredView: View? = null
 
     override fun getScreenName(): String = this::class.java.simpleName
 
@@ -153,6 +157,12 @@ class CentralizedPromoFragment :
         observeGetLayoutDataResult()
         refreshLayout()
         CentralizedPromoTracking.sendOpenScreenEvent(userSession.isLoggedIn, userSession.userId)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coachMarkAnchoredView = null
+        binding?.centralizedNestedScrollview?.setOnScrollChangeListener(null as? OnScrollChangeListener?)
     }
 
     override fun onRefreshButtonClicked() {
@@ -200,6 +210,7 @@ class CentralizedPromoFragment :
                     true
                 ),
                 onSelectedFilter = { filter ->
+                    hidePromoCreationCoachmark(filter)
                     currentFilterTab = filter
                     CentralizedPromoTracking.sendClickFilter(filter.id)
                     partialViews[LayoutType.PROMO_CREATION]?.renderLoading(LoadingType.PROMO_LIST)
@@ -217,6 +228,25 @@ class CentralizedPromoFragment :
     private fun setupView() {
         binding?.swipeRefreshLayout?.setOnRefreshListener {
             refreshLayout()
+        }
+        setupScrollViewListener()
+    }
+
+    private fun setupScrollViewListener() {
+        binding?.centralizedNestedScrollview?.setOnScrollChangeListener(
+            NestedScrollView.OnScrollChangeListener { _, _, _, _, _ ->
+                dismissCoachMarkIfNotShown()
+            }
+        )
+    }
+
+    private fun dismissCoachMarkIfNotShown() {
+        val scrollBounds = Rect()
+        binding?.centralizedNestedScrollview?.getHitRect(scrollBounds)
+        if (coachMarkAnchoredView?.getLocalVisibleRect(scrollBounds) == false) {
+            view?.post {
+                coachMark2?.dismissCoachMark()
+            }
         }
     }
 
@@ -289,6 +319,10 @@ class CentralizedPromoFragment :
 
         if (pageId == PromoCreationUiModel.PAGE_ID_SHOP_COUPON) {
             val alreadyShow = sharedPref.getBoolean(key, false)
+
+            if (coachMarkAnchoredView == null) {
+                coachMarkAnchoredView = view
+            }
 
             if (!alreadyShow) {
                 coachMarkList.add(
@@ -438,6 +472,14 @@ class CentralizedPromoFragment :
             ApplinkConst.WEBVIEW,
             PLAY_PERFORMANCE_URL
         )
+    }
+
+    private fun hidePromoCreationCoachmark(selectedFilter: FilterPromoUiModel) {
+        if (selectedFilter != currentFilterTab && coachMark2?.isDismissed != true) {
+            view?.post {
+                coachMark2?.dismissCoachMark()
+            }
+        }
     }
 }
 

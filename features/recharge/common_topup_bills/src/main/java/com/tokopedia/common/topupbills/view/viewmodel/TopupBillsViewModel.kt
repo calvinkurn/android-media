@@ -87,31 +87,33 @@ class TopupBillsViewModel @Inject constructor(
     private var checkVoucherJob: Job? = null
 
     fun getEnquiry(rawQuery: String, mapParam: List<TopupBillsEnquiryQuery>) {
-        val params = mapOf(PARAM_FIELDS to mapParam)
-        launchCatchError(block = {
-            val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsEnquiryData::class.java, params)
-            var data: TopupBillsEnquiryData
-            do {
-                data = withContext(dispatcher.io) {
-                    graphqlRepository.response(listOf(graphqlRequest))
-                }.getSuccessData()
+        launch {
+            val params = mapOf(PARAM_FIELDS to mapParam)
+            runCatching {
+                val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsEnquiryData::class.java, params)
+                var data: TopupBillsEnquiryData
+                do {
+                    data = withContext(dispatcher.io) {
+                        graphqlRepository.response(listOf(graphqlRequest))
+                    }.getSuccessData()
 
-                // If data is pending delay query call
-                with(data.enquiry) {
-                    if (status == STATUS_PENDING && retryDuration > RETRY_DURATION) {
-                        delay((retryDuration.toLong()) * MS_TO_S_DURATION)
+                    // If data is pending delay query call
+                    with(data.enquiry) {
+                        if (status == STATUS_PENDING && retryDuration > RETRY_DURATION) {
+                            delay((retryDuration.toLong()) * MS_TO_S_DURATION)
+                        }
                     }
-                }
-            } while (data.enquiry.status != STATUS_DONE)
+                } while (data.enquiry.status != STATUS_DONE)
 
-            val result = if (data.enquiry.attributes != null) {
-                Success(data)
-            } else {
-                Fail(MessageErrorException(NULL_RESPONSE))
+                val result = if (data.enquiry.attributes != null) {
+                    Success(data)
+                } else {
+                    Fail(MessageErrorException(NULL_RESPONSE))
+                }
+                _enquiryData.postValue(result)
+            }.onFailure {
+                _enquiryData.postValue(Fail(it))
             }
-            _enquiryData.postValue(result)
-        }) {
-            _enquiryData.postValue(Fail(it))
         }
     }
 
@@ -120,55 +122,61 @@ class TopupBillsViewModel @Inject constructor(
         mapParam: Map<String, Any>,
         isLoadFromCloud: Boolean = false
     ) {
-        launchCatchError(block = {
-            val data = withContext(dispatcher.io) {
-                val graphqlRequest =
-                    GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
-                val graphqlCacheStrategy =
-                    GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * FIVE_MINS_CACHE_DURATION).build()
-                graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
-            }.getSuccessData<TelcoCatalogMenuDetailData>()
+        launch {
+            runCatching {
+                val data = withContext(dispatcher.io) {
+                    val graphqlRequest =
+                        GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
+                    val graphqlCacheStrategy =
+                        GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
+                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * FIVE_MINS_CACHE_DURATION).build()
+                    graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
+                }.getSuccessData<TelcoCatalogMenuDetailData>()
 
-            _menuDetailData.postValue(Success(data.catalogMenuDetailData))
-        }) {
-            _menuDetailData.postValue(Fail(it))
+                _menuDetailData.postValue(Success(data.catalogMenuDetailData))
+            }.onFailure {
+                _menuDetailData.postValue(Fail(it))
+            }
         }
     }
 
     fun getCatalogPluginData(rawQuery: String, mapParam: Map<String, Any>) {
-        launchCatchError(block = {
-            val data = withContext(dispatcher.io) {
-                val graphqlRequest =
-                    GraphqlRequest(rawQuery, RechargeCatalogPlugin.Response::class.java, mapParam)
-                graphqlRepository.response(listOf(graphqlRequest))
-            }.getSuccessData<RechargeCatalogPlugin.Response>().response
+        launch {
+            runCatching {
+                val data = withContext(dispatcher.io) {
+                    val graphqlRequest =
+                        GraphqlRequest(rawQuery, RechargeCatalogPlugin.Response::class.java, mapParam)
+                    graphqlRepository.response(listOf(graphqlRequest))
+                }.getSuccessData<RechargeCatalogPlugin.Response>().response
 
-            if (data != null) {
-                _catalogPluginData.postValue(Success(data))
-            } else {
-                _catalogPluginData.postValue(Fail(MessageErrorException(NULL_RESPONSE)))
+                if (data != null) {
+                    _catalogPluginData.postValue(Success(data))
+                } else {
+                    _catalogPluginData.postValue(Fail(MessageErrorException(NULL_RESPONSE)))
+                }
+            }.onFailure {
+                _catalogPluginData.postValue(Fail(it))
             }
-        }) {
-            _catalogPluginData.postValue(Fail(it))
         }
     }
 
     fun getFavoriteNumbers(
         categoryIds: List<Int>
     ) {
-        launchCatchError(block = {
-            val favoriteNumber = rechargeFavoriteNumberUseCase.apply {
-                setRequestParams(categoryIds, emptyList(), CHANNEL_FAVORITE_NUMBER_LIST)
-            }.executeOnBackground()
-            _favNumberData.postValue(
-                Success(
-                    FavoriteNumberDataMapper
-                        .mapPersoFavNumberItemToSearchDataView(favoriteNumber.persoFavoriteNumber.items)
+        launch {
+            runCatching {
+                val favoriteNumber = rechargeFavoriteNumberUseCase.apply {
+                    setRequestParams(categoryIds, emptyList(), CHANNEL_FAVORITE_NUMBER_LIST)
+                }.executeOnBackground()
+                _favNumberData.postValue(
+                    Success(
+                        FavoriteNumberDataMapper
+                            .mapPersoFavNumberItemToSearchDataView(favoriteNumber.persoFavoriteNumber.items)
+                    )
                 )
-            )
-        }) {
-            _favNumberData.postValue(Fail(Throwable(it.message)))
+            }.onFailure {
+                _favNumberData.postValue(Fail(Throwable(it.message)))
+            }
         }
     }
 
@@ -178,22 +186,24 @@ class TopupBillsViewModel @Inject constructor(
         shouldRefreshInputNumber: Boolean = true,
         prevActionType: FavoriteNumberActionType? = null
     ) {
-        launchCatchError(block = {
-            val data = withContext(dispatcher.io) {
-                val graphqlRequest =
-                    GraphqlRequest(rawQuery, TopupBillsSeamlessFavNumberData::class.java, mapParam)
-                graphqlRepository.response(listOf(graphqlRequest))
-            }.getSuccessData<TopupBillsSeamlessFavNumberData>()
+        launch {
+            runCatching {
+                val data = withContext(dispatcher.io) {
+                    val graphqlRequest =
+                        GraphqlRequest(rawQuery, TopupBillsSeamlessFavNumberData::class.java, mapParam)
+                    graphqlRepository.response(listOf(graphqlRequest))
+                }.getSuccessData<TopupBillsSeamlessFavNumberData>()
 
-            _seamlessFavNumberData.postValue(Success(data.seamlessFavoriteNumber to shouldRefreshInputNumber))
-        }) {
-            val errMsg = when (prevActionType) {
-                FavoriteNumberActionType.UPDATE -> ERROR_FETCH_AFTER_UPDATE
-                FavoriteNumberActionType.DELETE -> ERROR_FETCH_AFTER_DELETE
-                FavoriteNumberActionType.UNDO_DELETE -> ERROR_FETCH_AFTER_UNDO_DELETE
-                else -> it.message
+                _seamlessFavNumberData.postValue(Success(data.seamlessFavoriteNumber to shouldRefreshInputNumber))
+            }.onFailure {
+                val errMsg = when (prevActionType) {
+                    FavoriteNumberActionType.UPDATE -> ERROR_FETCH_AFTER_UPDATE
+                    FavoriteNumberActionType.DELETE -> ERROR_FETCH_AFTER_DELETE
+                    FavoriteNumberActionType.UNDO_DELETE -> ERROR_FETCH_AFTER_UNDO_DELETE
+                    else -> it.message
+                }
+                _seamlessFavNumberData.postValue(Fail(Throwable(errMsg)))
             }
-            _seamlessFavNumberData.postValue(Fail(Throwable(errMsg)))
         }
     }
 

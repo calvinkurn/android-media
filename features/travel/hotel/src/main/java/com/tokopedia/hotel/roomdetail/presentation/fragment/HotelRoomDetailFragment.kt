@@ -14,6 +14,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -21,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
@@ -52,10 +52,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.layout_hotel_image_slider.*
-import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
+import com.tokopedia.resources.common.R as resourcescommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by resakemal on 23/04/19
@@ -128,7 +128,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                         ErrorHandlerHotel.isEmailNotVerifiedError(it.throwable) -> navigateToAddEmailPage()
                         else -> view?.let { v ->
                             Toaster.build(v, ErrorHandler.getErrorMessage(activity, it.throwable), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                                    getString(resourcescommonR.string.general_label_ok)).show()
                         }
                     }
                 }
@@ -186,7 +186,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         (activity as HotelRoomDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navIcon = binding?.roomDetailDetailToolbar?.navigationIcon
-        navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0), PorterDuff.Mode.SRC_ATOP)
+        navIcon?.setColorFilter(getColor(unifyprinciplesR.color.Unify_NN0), PorterDuff.Mode.SRC_ATOP)
         (activity as HotelRoomDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         binding?.roomDetailCollapsingToolbar?.title = ""
@@ -200,11 +200,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 }
                 if (scrollRange + verticalOffset == 0) {
                     binding?.roomDetailCollapsingToolbar?.title = hotelRoom.roomInfo.name
-                    navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_96), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(getColor(unifyprinciplesR.color.Unify_NN950_96), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
                     binding?.roomDetailCollapsingToolbar?.title = " "
-                    navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(getColor(unifyprinciplesR.color.Unify_NN0), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
             }
@@ -221,12 +221,20 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             if (roomImageUrls300.size >= ROOM_IMAGE_URL_MIN_SIZE) binding?.roomDetailImages?.setImages(roomImageUrls300.subList(0, ROOM_IMAGE_URL_MIN_SIZE))
             else binding?.roomDetailImages?.setImages(roomImageUrls300)
 
-            binding?.roomDetailImages?.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
-                override fun onImageClicked(position: Int) {
-                    trackingHotelUtil.hotelClickRoomDetailsPhoto(context, hotelRoom.additionalPropertyInfo.propertyId,
+            binding?.roomDetailImages?.run {
+                imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
+                    override fun onImageClicked(imageView: ImageView, position: Int) {
+                        trackingHotelUtil.hotelClickRoomDetailsPhoto(context, hotelRoom.additionalPropertyInfo.propertyId,
                             hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.roundToLong().toString(), ROOM_DETAIL_SCREEN_NAME)
-                    if (imagePreviewViewer == null) imagePreviewViewer = ImagePreviewViewer()
-                    imagePreviewViewer?.startImagePreviewViewer(hotelRoom.roomInfo.name, image_banner, roomImageUrls, requireContext(), position)
+                        if (imagePreviewViewer == null) imagePreviewViewer = ImagePreviewViewer()
+                        imagePreviewViewer?.startImagePreviewViewer(
+                            hotelRoom.roomInfo.name,
+                            imageView,
+                            roomImageUrls,
+                            requireContext(),
+                            position
+                        )
+                    }
                 }
             }
         }
@@ -333,10 +341,10 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
             binding?.let {
                 it.roomDetailFacilities.setTitleAndDescription(getString(R.string.hotel_room_detail_facilities), previewFacilitiesString)
-                it.roomDetailFacilities.info_more.visibility = View.VISIBLE
+                it.roomDetailFacilities.setInfoMoreVisible()
                 it.roomDetailFacilities.infoViewListener = object : InfoTextView.InfoViewListener {
                     override fun onMoreClicked() {
-                        it.roomDetailFacilities.info_desc.text = fullFacilitiesString
+                        it.roomDetailFacilities.setInfoDescription(fullFacilitiesString)
                         it.roomDetailFacilities.resetMaxLineCount()
                         it.roomDetailFacilities.invalidate()
                     }

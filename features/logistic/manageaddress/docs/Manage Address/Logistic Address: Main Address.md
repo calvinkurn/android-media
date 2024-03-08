@@ -34,7 +34,8 @@ There are several entry points to show address list, for details entry point see
 
 ## Flow Diagram
 
-![](https://docs-android.tokopedia.net/images/docs/manageaddress/mainaddress/main_address_drawio.png)## How-to
+![](https://docs-android.tokopedia.net/images/docs/manageaddress/mainaddress/main_address_drawio.png)
+## How-to
 
 Go to main address page you can call `ApplinkConstInternalLogistic.MANAGE_ADDRESS` 
 

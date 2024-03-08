@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.gamification.pdp.data.di.scopes.GamificationPdpScope
+import com.tokopedia.gamification.pdp.presentation.viewmodels.KetupatLandingViewModel
 import com.tokopedia.gamification.pdp.presentation.viewmodels.PdpDialogViewModel
 import dagger.Binds
 import dagger.Module
@@ -23,4 +24,9 @@ abstract class ViewModelModule {
     @ViewModelKey(PdpDialogViewModel::class)
     internal abstract fun PdpDialogVM(viewModel: PdpDialogViewModel): ViewModel
 
+    @GamificationPdpScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(KetupatLandingViewModel::class)
+    internal abstract fun KetupatLandingVM(viewModel: KetupatLandingViewModel): ViewModel
 }

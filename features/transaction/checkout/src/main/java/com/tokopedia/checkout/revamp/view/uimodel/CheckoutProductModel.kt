@@ -87,6 +87,7 @@ data class CheckoutProductModel(
     // bmgm data
     val isBMGMItem: Boolean = false,
     val bmgmOfferId: Long = 0,
+    val bmgmOfferTypeId: Long = 0,
     val bmgmOfferName: String = "",
     val bmgmOfferMessage: List<String> = emptyList(),
     val bmgmOfferStatus: Int = 0,
@@ -118,4 +119,14 @@ data class CheckoutProductModel(
     var hasSeenFreeShippingBadge: Boolean = false, // flag for tracker
     val shopLocation: String = "",
     val shouldShowGroupInfo: Boolean = false
-) : CheckoutItem
+) : CheckoutItem {
+
+    val shouldShowBmgmInfoIcon: Boolean
+        get() {
+            return shouldShowBmgmInfo && bmgmOfferTypeId != OFFER_TYPE_ID_GWP
+        }
+
+    companion object {
+        private const val OFFER_TYPE_ID_GWP: Long = 2L
+    }
+}

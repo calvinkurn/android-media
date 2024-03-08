@@ -3,7 +3,7 @@ package com.tokopedia.report.view.adapter
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.report.R
 import com.tokopedia.report.data.util.MerchantReportTracking
@@ -71,7 +71,7 @@ class UploadPhotoAdapter (var type: String,
         }
 
         fun bind(photoUri: String){
-            ImageHandler.LoadImage(binding.attachedImage, photoUri)
+            binding.attachedImage?.loadImageFitCenter(photoUri)
         }
     }
 

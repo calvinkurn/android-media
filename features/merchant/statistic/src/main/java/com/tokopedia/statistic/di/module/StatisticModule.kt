@@ -4,10 +4,11 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPref
-import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.sellerhomecommon.common.di.annotation.ActivityContext
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPref
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.statistic.di.StatisticScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -19,7 +20,12 @@ import dagger.Provides
  */
 
 @Module
-class StatisticModule {
+class StatisticModule(private val context: Context) {
+
+    @StatisticScope
+    @Provides
+    @ActivityContext
+    fun providesActivityContext() = context
 
     @StatisticScope
     @Provides

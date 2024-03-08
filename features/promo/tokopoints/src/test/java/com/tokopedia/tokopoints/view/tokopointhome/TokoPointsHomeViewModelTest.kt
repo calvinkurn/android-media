@@ -421,8 +421,11 @@ class TokoPointsHomeViewModelTest {
             shopRating = element.ratingAverage,
             isShopRatingYellow = true,
             shopLocation = element.location,
-            shopBadgeList = element.badgesUrl.map {
-                ProductCardModel.ShopBadge(imageUrl = it)
+            shopBadgeList = element.badges.map {
+                ProductCardModel.ShopBadge(
+                    title = it.title,
+                    imageUrl = it.imageUrl
+                )
             },
             freeOngkir = ProductCardModel.FreeOngkir(
                 isActive = element.isFreeOngkirActive,

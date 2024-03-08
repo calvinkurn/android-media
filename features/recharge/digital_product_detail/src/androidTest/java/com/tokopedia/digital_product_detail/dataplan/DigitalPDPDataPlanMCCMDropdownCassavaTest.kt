@@ -16,8 +16,6 @@ import org.junit.Test
 
 class DigitalPDPDataPlanMCCMDropdownCassavaTest : BaseDigitalPDPDataPlanTest() {
 
-    override fun getApplink(): String  = APPLINK
-
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 

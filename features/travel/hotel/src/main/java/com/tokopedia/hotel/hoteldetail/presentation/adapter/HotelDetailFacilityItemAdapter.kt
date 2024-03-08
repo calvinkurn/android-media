@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.databinding.SimpleTextViewCompatItemBinding
 import com.tokopedia.hotel.hoteldetail.data.entity.FacilityItem
-import kotlinx.android.synthetic.main.simple_text_view_compat_item.view.*
 
 /**
  * @author by furqan on 07/05/19
@@ -24,9 +24,11 @@ class HotelDetailFacilityItemAdapter(private var viewModels: List<FacilityItem>)
 
     class HotelDetailFacilityItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val binding = SimpleTextViewCompatItemBinding.bind(view)
+
         fun bind(element: FacilityItem) {
-            with(itemView) {
-                text_view.text = element.name
+            with(binding) {
+                textView.text = element.name
             }
         }
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/gwp_product_image_view"
+    android:layout_marginEnd="4dp"
+    android:layout_width="64dp"
+    android:layout_height="64dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/gwp_product_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:unify_image_corner_radius="12"
+        android:background="@null"
+        tools:src="@tools:sample/avatars" />
+
+    <ViewStub
+        android:id="@+id/gwp_product_image_show_more_stub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inflatedId="@+id/gwp_product_image_show_more"
+        android:layout="@layout/gwp_product_image_count" />
+
+</FrameLayout>

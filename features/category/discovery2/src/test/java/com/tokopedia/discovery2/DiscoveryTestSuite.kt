@@ -22,7 +22,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.clai
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.comingsoonview.ComingSoonViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentcard.ContentCardItemModelTest
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentcard.ContentCardModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentcard.ContentCardViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModelTest
@@ -129,7 +129,7 @@ import org.junit.runners.Suite
     ProductBundlingViewModelTest::class,
     DefaultComponentViewModelTest::class,
     ThematicHeaderViewModelTest::class,
-    ContentCardModelTest::class,
+    ContentCardViewModelTest::class,
     ContentCardItemModelTest::class,
     DiscoveryListViewModelTest::class,
     ProductHighlightViewModelTest::class

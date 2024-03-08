@@ -328,7 +328,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
-    fun `onRatingChanged should not bad rating category bottom sheet when change rating to bad rating from bad rating`() =
+    fun `onRatingChanged should show bad rating category bottom sheet when change rating to bad rating from bad rating`() =
         runCollectingBulkReviewPageUiState {
             runCollectingBulkReviewBadRatingCategoryBottomSheetUiState { uiStates ->
                 val reviewItem = getFirstReviewItem()
@@ -351,9 +351,9 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                 assertTrue(uiStates.last() is BulkReviewBadRatingCategoryBottomSheetUiState.Dismissed)
 
                 // change review item rating to other bad rating and verify that bad rating category
-                // bottom sheet is still dismissed
+                // bottom sheet is showing again
                 viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING.dec())
-                assertTrue(uiStates.last() is BulkReviewBadRatingCategoryBottomSheetUiState.Dismissed)
+                assertTrue(uiStates.last() is BulkReviewBadRatingCategoryBottomSheetUiState.Showing)
             }
         }
 
@@ -779,6 +779,38 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                         (badRatingCategoriesUiState as BulkReviewBadRatingCategoryUiState.Showing)
                             .badRatingCategory
                             .all { (it.id == badRatingCategory.id && it.selected) || (it.id != badRatingCategory.id && !it.selected) }
+                    }
+            )
+        }
+
+    @Test
+    fun `onApplyBadRatingCategory should apply bad rating category to all review items`() =
+        runCollectingBulkReviewPageUiState { uiStates ->
+            val badRatingCategory = getBadRatingCategory()
+
+            doSuccessGetInitialData()
+            // change rating to bad rating to show the bad rating category bottom sheet
+            viewModel.setDefaultReviewItemRating(Constant.BAD_RATING)
+            viewModel.onBadRatingCategorySelectionChanged(
+                position = Int.ZERO,
+                badRatingCategoryID = badRatingCategory.id,
+                reason = badRatingCategory.description,
+                selected = true
+            )
+
+            viewModel.onApplyBadRatingCategory()
+            assertTrue(
+                (uiStates.last() as BulkReviewPageUiState.Showing)
+                    .items
+                    .filterIsInstance<BulkReviewItemUiModel>()
+                    .all { reviewItem ->
+                        reviewItem.uiState.badRatingCategoriesUiState.let { badRatingCategoriesUiState ->
+                            (badRatingCategoriesUiState as BulkReviewBadRatingCategoryUiState.Showing)
+                                .badRatingCategory
+                                .all {
+                                    (it.id == badRatingCategory.id && it.selected) || (it.id != badRatingCategory.id && !it.selected)
+                                }
+                        }
                     }
             )
         }
@@ -2508,4 +2540,36 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
                 }
             }
         }
+
+    @Test
+    fun `should apply user typed bad rating other reason to all review items`() {
+        runCollectingBulkReviewPageUiState { uiStates ->
+            runCollectingBulkReviewBadRatingCategoryBottomSheetUiState {
+                runCollectingBulkReviewExpandedTextAreaBottomSheetUiState {
+                    val badRatingCategory = getOtherBadRatingCategory()
+                    val userTypedReason = "The item is broken"
+
+                    doSuccessGetInitialData()
+                    viewModel.setDefaultReviewItemRating(Constant.BAD_RATING)
+                    viewModel.onBadRatingCategorySelectionChanged(
+                        position = Int.ZERO,
+                        badRatingCategoryID = badRatingCategory.id,
+                        reason = badRatingCategory.description,
+                        selected = true
+                    )
+                    viewModel.onDismissExpandedTextAreaBottomSheet(userTypedReason)
+                    assertTrue(
+                        (uiStates.last() as BulkReviewPageUiState.Showing)
+                            .items
+                            .filterIsInstance<BulkReviewItemUiModel>()
+                            .all { reviewItem ->
+                                reviewItem.uiState.textAreaUiState.let { textAreaUiState ->
+                                    (textAreaUiState as BulkReviewTextAreaUiState.Showing).text == userTypedReason
+                                }
+                            }
+                    )
+                }
+            }
+        }
+    }
 }

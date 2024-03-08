@@ -18,12 +18,13 @@ import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActi
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.Companion.PREF_KEY_HOME_COACHMARK_INBOX
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.Companion.PREF_KEY_HOME_COACHMARK_NAV
 import com.tokopedia.developer_options.presentation.model.ResetOnBoardingNavigationUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.UnifyButton
 
 class ResetOnBoardingNavigationViewHolder(
     itemView: View
-): AbstractViewHolder<ResetOnBoardingNavigationUiModel>(itemView)
-{
+) : AbstractViewHolder<ResetOnBoardingNavigationUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_reset_onboarding_navigation
@@ -54,6 +55,7 @@ class ResetOnBoardingNavigationViewHolder(
                     .apply()
 
                 Toast.makeText(itemView.context, "Onboarding and home coachmark reset ssuccessfully!", Toast.LENGTH_SHORT).show()
+                DevOpsTracker.trackEntryEvent(DevopsFeature.RESET_ONBOARDING)
             }
         }
     }

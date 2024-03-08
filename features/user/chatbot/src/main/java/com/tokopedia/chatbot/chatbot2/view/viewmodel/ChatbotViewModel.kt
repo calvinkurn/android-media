@@ -45,6 +45,7 @@ import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListRespo
 import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.chatbot2.data.resolink.ResoLinkResponse
+import com.tokopedia.chatbot.chatbot2.data.slowmode.DynamicAttachmentSlowMode
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatResponse
 import com.tokopedia.chatbot.chatbot2.data.uploadsecure.CheckUploadSecureResponse
@@ -237,6 +238,9 @@ class ChatbotViewModel @Inject constructor(
     private val _dynamicAttachmentNewChatbotSession = MutableLiveData<Boolean>()
     val dynamicAttachmentNewChatbotSession: LiveData<Boolean>
         get() = _dynamicAttachmentNewChatbotSession
+    private val _dynamicAttachmentSlowMode = MutableLiveData<DynamicAttachmentSlowMode>()
+    val dynamicAttachmentSlowMode: LiveData<DynamicAttachmentSlowMode>
+        get() = _dynamicAttachmentSlowMode
 
     // Video Upload Related
     @VisibleForTesting
@@ -252,6 +256,9 @@ class ChatbotViewModel @Inject constructor(
     private var autoRetryJob: Job? = null
     var socketJob: Job? = null
     private var chatResponse: ChatSocketPojo? = null
+    private val _sendWebsocketMessageEvent = MutableLiveData<Boolean>()
+    val sendWebsocketMessageEvent: LiveData<Boolean>
+        get() = _sendWebsocketMessageEvent
 
     // Bot or Agent
     private val _receiverModeAgent = MutableLiveData<Boolean>()
@@ -892,6 +899,7 @@ class ChatbotViewModel @Inject constructor(
             ),
             listInterceptor
         )
+        _sendWebsocketMessageEvent.postValue(true)
     }
 
     fun cancelVideoUpload(file: String, sourceId: String) {
@@ -986,6 +994,7 @@ class ChatbotViewModel @Inject constructor(
             ChatbotSendableWebSocketParam.getReadMessageWebSocket(messageId),
             listInterceptor
         )
+        _sendWebsocketMessageEvent.postValue(false)
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -1170,6 +1179,9 @@ class ChatbotViewModel @Inject constructor(
                 ChatbotConstant.DynamicAttachment.DYNAMIC_NEW_CHATBOT_SESSION -> {
                     convertToDynamicAttachmentNewChatbotSession(dynamicAttachmentAttribute.dynamicContent)
                 }
+                ChatbotConstant.DynamicAttachment.DYNAMIC_SLOW_MODE -> {
+                    convertToDynamicAttachmentSlowMode(dynamicAttachmentAttribute.dynamicContent)
+                }
                 else -> {
                     // need to show fallback message
                     mapToVisitable(pojo)
@@ -1234,6 +1246,15 @@ class ChatbotViewModel @Inject constructor(
         handleDynamicAttachmentNewChatbotSession(newChatbotSession.isNewChatbotSession)
     }
 
+    private fun convertToDynamicAttachmentSlowMode(dynamicContent: String?) {
+        if (dynamicContent == null) {
+            return
+        }
+
+        val slowModeData = Gson().fromJson(dynamicContent, DynamicAttachmentSlowMode::class.java)
+        handleDynamicAttachmentSlowMode(slowModeData)
+    }
+
     private fun handleMediaButtonWS(mediaButtonToggleContent: MediaButtonAttribute) {
         if (mediaButtonToggleContent.isMediaButtonEnabled) {
             _dynamicAttachmentMediaUploadState.postValue(
@@ -1256,6 +1277,10 @@ class ChatbotViewModel @Inject constructor(
 
     fun handleDynamicAttachmentNewChatbotSession(isNewChatbotSession: Boolean) {
         _dynamicAttachmentNewChatbotSession.postValue(isNewChatbotSession)
+    }
+
+    fun handleDynamicAttachmentSlowMode(slowModeData: DynamicAttachmentSlowMode) {
+        _dynamicAttachmentSlowMode.postValue(slowModeData)
     }
 
     fun handleDynamicAttachmentRejectReasons(rejectReasonData: DynamicAttachmentRejectReasons) {
@@ -1348,6 +1373,7 @@ class ChatbotViewModel @Inject constructor(
             ),
             listInterceptor
         )
+        _sendWebsocketMessageEvent.postValue(true)
     }
 
     fun destroyWebSocket() {
@@ -1389,6 +1415,7 @@ class ChatbotViewModel @Inject constructor(
                 listInterceptor
             )
         }
+        _sendWebsocketMessageEvent.postValue(true)
     }
 
     fun sendQuickReply(
@@ -1408,6 +1435,7 @@ class ChatbotViewModel @Inject constructor(
             ),
             listInterceptor
         )
+        _sendWebsocketMessageEvent.postValue(true)
     }
 
     fun sendQuickReplyInvoice(
@@ -1430,6 +1458,7 @@ class ChatbotViewModel @Inject constructor(
             ),
             listInterceptor
         )
+        _sendWebsocketMessageEvent.postValue(true)
     }
 
     fun sendMessageWithWebsocket(
@@ -1447,6 +1476,7 @@ class ChatbotViewModel @Inject constructor(
             ),
             listInterceptor
         )
+        _sendWebsocketMessageEvent.postValue(true)
     }
 
     fun sendDynamicAttachmentText(
@@ -1464,6 +1494,7 @@ class ChatbotViewModel @Inject constructor(
             ),
             listInterceptor
         )
+        _sendWebsocketMessageEvent.postValue(true)
     }
 
     private fun isValidReply(message: String) = message.isNotBlank()
@@ -1491,6 +1522,7 @@ class ChatbotViewModel @Inject constructor(
             ),
             listInterceptor
         )
+        _sendWebsocketMessageEvent.postValue(true)
     }
 
     fun sendDynamicAttachment108ForAcknowledgement(
@@ -1512,6 +1544,7 @@ class ChatbotViewModel @Inject constructor(
             ),
             listInterceptor
         )
+        _sendWebsocketMessageEvent.postValue(true)
     }
 
     fun sendMessage(
@@ -1545,6 +1578,7 @@ class ChatbotViewModel @Inject constructor(
                     listInterceptor
                 )
             }
+            _sendWebsocketMessageEvent.postValue(true)
         }
     }
 
@@ -1598,6 +1632,7 @@ class ChatbotViewModel @Inject constructor(
         interceptors.add(tkpdAuthInterceptor)
         interceptors.add(fingerprintInterceptor)
         chatbotWebSocket.send(json, interceptors)
+        _sendWebsocketMessageEvent.postValue(true)
     }
 
     private fun sendNewRelicLogRelatedToCsat(pojo: ChatSocketPojo, messageId: String) {

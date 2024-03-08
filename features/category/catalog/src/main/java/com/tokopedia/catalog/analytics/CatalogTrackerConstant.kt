@@ -41,6 +41,8 @@ object CatalogTrackerConstant {
     const val EVENT_ACTION_IMPRESSION_EXPERT_REVIEW = "impress expert review"
     const val EVENT_ACTION_IMPRESSION_NAVIGATION = "impress navigation"
     const val EVENT_ACTION_CLICK_NAVIGATION = "click navigation"
+    const val EVENT_ACTION_CLICK_SEE_MORE_SPECIFICATION = "click lihat semua on specification"
+
     const val EVENT_ACTION_IMPRESSION_BANNER = "impress banner"
     const val EVENT_ACTION_IMPRESSION_TEXT_DESCRIPTION = "impress text description"
     const val EVENT_ACTION_CLICK_VIDEO_EXPERT_REVIEW = "click tonton review on expert review"
@@ -68,8 +70,13 @@ object CatalogTrackerConstant {
     const val EVENT_CLICK_CHANGE_COMPARISON_DETAIL = "click change catalog"
     const val EVENT_IMPRESSION_VIDEO_WIDGET = "impression video widget"
     const val EVENT_IMPRESSION_VIDEO_BANNER_WIDGET = "video banner impression"
-    const val EVENT_IMPRESSION_COLUMN_INFO_WIDGET = "impression specification"
+    const val EVENT_IMPRESSION_COLUMN_INFO_WIDGET = "impress specification"
     const val EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET = "specification banner impression"
+    const val EVENT_CLICK_CLOSE_ON_IMAGE_REVIEW = "click close on image review"
+    const val EVENT_CLICK_ON_IMAGE_REVIEW_BS = "click image on list review"
+    const val EVENT_CLICK_ON_IMAGE_REVIEW = "click image on review"
+    const val EVENT_CLICK_ON_SELENGKAPNYA_REVIEW = "click selengkapnya on review"
+    const val EVENT_IMPRESSION_REVIEW_WIDGET = "impression review widget"
 
     const val EVENT_CATEGORY_CATALOG_PAGE = "catalog page"
     const val EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE = "catalog page reimagined - main page"
@@ -103,7 +110,9 @@ object CatalogTrackerConstant {
     const val TRACKER_ID_CLICK_ADD_TO_CART_CATALOG_PRODUCT_LIST = "46993"
     const val TRACKER_ID_IMPRESSION_PRODUCT = "46994"
     const val TRACKER_ID_IMPRESSION_VIDEO = "30119"
-    const val TRACKER_ID_IMPRESSION_COLUMN_INFO = "30120"
+    const val TRACKER_ID_CLICK_SEE_MORE_COLUMN_INFO = "46983"
+
+    const val TRACKER_ID_IMPRESSION_COLUMN_INFO = "46981"
 
     const val TRACKER_ID_CLICK_SEE_MORE_COMPARISON = "47977"
     const val TRACKER_ID_IMPRESSION_COMPARISON = "47715"
@@ -116,6 +125,12 @@ object CatalogTrackerConstant {
     const val TRACKER_ID_OPEN_PAGE_CATALOG_DETAIL = "48753"
     const val TRACKER_ID_OPEN_PAGE_CATALOG_PRODUCT_LIST = "48754"
     const val TRACKER_ID_OPEN_PAGE_CATALOG_COMPARISON = "48752"
+
+    const val TRACKER_ID_CLICK_CLOSE_ON_IMAGE_REVIEW = "26906"
+    const val TRACKER_ID_CLICK_ON_IMAGE_REVIEW_BS = "26899"
+    const val TRACKER_ID_CLICK_ON_IMAGE_REVIEW = "26901"
+    const val TRACKER_ID_CLICK_ON_SELENGKAPNYA_REVIEW = "26894"
+    const val TRACKER_ID_IMPRESSION_REVIEW_WIDGET = "30117"
 
     const val BUSINESS_UNITS = "Physical Goods"
     const val CURRENT_SITE = "tokopediamarketplace"

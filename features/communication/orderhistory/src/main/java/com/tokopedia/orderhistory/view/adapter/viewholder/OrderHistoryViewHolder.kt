@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
@@ -47,12 +47,7 @@ class OrderHistoryViewHolder(
     }
 
     private fun bindImage(product: Product) {
-        ImageHandler.loadImageRounded2(
-                itemView.context,
-                binding?.ivThumbnail,
-                product.imageUrl,
-                8f.toPx()
-        )
+        binding?.ivThumbnail?.loadImageRounded(product.imageUrl, 8f.toPx())
     }
 
     private fun bindEmptyStockLabel(product: Product) {
@@ -104,7 +99,7 @@ class OrderHistoryViewHolder(
     private fun bindFreeShipping(product: Product) {
         if (product.hasFreeShipping) {
             binding?.ivFreeShipping?.show()
-            ImageHandler.loadImageRounded2(itemView.context, binding?.ivFreeShipping, product.freeShipping.imageUrl)
+            binding?.ivFreeShipping?.loadImageRounded(product.freeShipping.imageUrl)
         } else {
             binding?.ivFreeShipping?.hide()
         }

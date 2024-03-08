@@ -959,9 +959,11 @@ class PlayBroadcastActivity :
     override fun onBroadcastInitStateChanged(state: BroadcastInitState) {
         when (state) {
             is BroadcastInitState.Error -> {
+                viewModel.submitAction(PlayBroadcastAction.SendErrorLog(state.cause))
                 showDialogWhenUnSupportedDevices()
             }
             is BroadcastInitState.ByteplusInitializationError -> {
+                viewModel.submitAction(PlayBroadcastAction.SendErrorLog(state.cause))
                 viewModel.submitAction(PlayBroadcastAction.RemoveBeautificationMenu)
             }
             else -> {}

@@ -20,22 +20,26 @@ import com.tokopedia.pms.analytics.PmsEvents
 import com.tokopedia.pms.clickbca.view.ChangeClickBcaActivity.Companion.MERCHANT_CODE
 import com.tokopedia.pms.clickbca.view.ChangeClickBcaActivity.Companion.TRANSACTION_ID
 import com.tokopedia.pms.clickbca.view.ChangeClickBcaActivity.Companion.USER_ID_KLIK_BCA
+import com.tokopedia.pms.databinding.FragmentChangeClickBcaBinding
 import com.tokopedia.pms.paymentlist.di.PmsComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_change_click_bca.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
  * Created by zulfikarrahman on 6/25/18.
  */
 class ChangeClickBcaFragment : BaseDaggerFragment() {
+
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
     @Inject
     lateinit var pmsAnalytics: dagger.Lazy<PmsAnalytics>
+
+    private var binding by autoClearedNullable<FragmentChangeClickBcaBinding>()
 
     private val viewModel: ChangeClickBcaViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -63,63 +67,75 @@ class ChangeClickBcaFragment : BaseDaggerFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) = inflater.inflate(R.layout.fragment_change_click_bca, container, false)
-
+    ): View? {
+        binding = FragmentChangeClickBcaBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        input_layout_click_bca_user_id.apply {
-            textFieldInput.setText(userIdKlikBca)
-            setMessage(
-                getString(
-                    R.string.payment_label_helper_change_click_bca,
-                    userIdKlikBca
+        binding?.run {
+            inputLayoutClickBcaUserId.apply {
+                textFieldInput.setText(userIdKlikBca)
+                setMessage(
+                    getString(
+                        R.string.payment_label_helper_change_click_bca,
+                        userIdKlikBca
+                    )
                 )
-            )
-        }
-        button_use.setOnClickListener {
-            pmsAnalytics.get().sendPmsAnalyticsEvent(PmsEvents.ConfirmEditBcaUserIdEvent(8))
-            val userId = input_layout_click_bca_user_id.textFieldInput.text.toString()
-            if (TextUtils.isEmpty(userId)) {
-                NetworkErrorHelper.showRedCloseSnackbar(
-                    activity,
-                    getString(R.string.payment_label_error_empty_user_id)
+            }
+
+            buttonUse.setOnClickListener {
+                pmsAnalytics.get().sendPmsAnalyticsEvent(PmsEvents.ConfirmEditBcaUserIdEvent(8))
+                val userId = inputLayoutClickBcaUserId.textFieldInput.text.toString()
+                if (TextUtils.isEmpty(userId)) {
+                    NetworkErrorHelper.showRedCloseSnackbar(
+                        activity,
+                        getString(R.string.payment_label_error_empty_user_id)
+                    )
+                    return@setOnClickListener
+                }
+                showLoadingDialog()
+                viewModel.changeClickBcaUserId(
+                    transactionId,
+                    merchantCode,
+                    userId
                 )
-                return@setOnClickListener
             }
-            showLoadingDialog()
-            viewModel.changeClickBcaUserId(
-                transactionId,
-                merchantCode,
-                userId
-            )
         }
-        viewModel.editResultLiveData.observe(viewLifecycleOwner, Observer {
-            hideLoadingDialog()
-            when (it) {
-                is Success -> onResultChangeClickBcaUserId(it.data.isSuccess, it.data.message)
-                is Fail -> onErrorChangeClickBcaUserID(it.throwable)
+        viewModel.editResultLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                hideLoadingDialog()
+                when (it) {
+                    is Success -> onResultChangeClickBcaUserId(it.data.isSuccess, it.data.message)
+                    is Fail -> onErrorChangeClickBcaUserID(it.throwable)
+                }
             }
-        })
+        )
     }
 
     private fun onErrorChangeClickBcaUserID(e: Throwable) {
-        Toaster.make(
-            button_use,
-            ErrorHandler.getErrorMessage(context, e),
-            Toaster.LENGTH_LONG,
-            Toaster.TYPE_ERROR
-        )
+        binding?.run {
+            Toaster.make(
+                buttonUse,
+                ErrorHandler.getErrorMessage(context, e),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            )
+        }
     }
 
     private fun onResultChangeClickBcaUserId(isSuccess: Boolean, message: String) {
         activity?.let {
-            if (isSuccess) {
-                Toaster.make(button_use, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
-                it.setResult(Activity.RESULT_OK)
-                it.finish()
-            } else {
-                Toaster.make(button_use, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            binding?.run {
+                if (isSuccess) {
+                    Toaster.make(buttonUse, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                    it.setResult(Activity.RESULT_OK)
+                    it.finish()
+                } else {
+                    Toaster.make(buttonUse, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                }
             }
         }
     }

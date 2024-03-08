@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
-import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.adapter.factory.ProductDetailAdapterFactory
 
 /**
  * Created by Yehezkiel on 08/06/20
@@ -14,10 +14,13 @@ data class ProductTickerInfoDataModel(
         var tickerDataResponse: List<TickerDataResponse> = listOf()
 ) : DynamicPdpDataModel {
 
+    override val tabletSectionPosition: TabletPosition
+        get() = TabletPosition.LEFT
+
     override fun type(): String = type
     override fun name(): String = name
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
+    override fun type(typeFactory: ProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
 

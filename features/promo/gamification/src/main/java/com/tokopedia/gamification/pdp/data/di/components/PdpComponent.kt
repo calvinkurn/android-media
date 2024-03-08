@@ -3,6 +3,8 @@ package com.tokopedia.gamification.pdp.data.di.components
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.gamification.pdp.data.di.modules.*
 import com.tokopedia.gamification.pdp.data.di.scopes.GamificationPdpScope
+import com.tokopedia.gamification.pdp.presentation.activities.KetupatLandingActivity
+import com.tokopedia.gamification.pdp.presentation.fragments.KetupatLandingFragment
 import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
 import dagger.Component
 
@@ -14,4 +16,8 @@ import dagger.Component
 interface PdpComponent {
 
     fun inject(view: PdpGamificationView)
+
+    fun injectKetupatLandingFragment(ketupatLandingFragment: KetupatLandingFragment)
+
+    fun injectKetupatLandingActivity(ketupatLandingActivity: KetupatLandingActivity)
 }

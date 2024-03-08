@@ -1,19 +1,19 @@
 package com.tokopedia.home_account.utils
 
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.tokopedia.home_account.main.HomeAccountUiTest
 
-class KeamananAkunRobot {
+class KeamananAkunRobot(private val rule: ComposeTestRule) {
 
     init {
         Thread.sleep(1000)
     }
 
     fun assertKeamananAkunPage() {
-        onView(withText("Keamanan Akun")).check(matches(isDisplayed()))
+        rule.onNodeWithText("Keamanan Akun").assertIsDisplayed()
     }
 
     fun back() {
@@ -21,4 +21,5 @@ class KeamananAkunRobot {
     }
 }
 
-fun keamananAkunRobot(func: KeamananAkunRobot.() -> Unit) = KeamananAkunRobot().apply(func)
+fun HomeAccountUiTest.keamananAkunRobot(func: KeamananAkunRobot.() -> Unit) =
+    KeamananAkunRobot(composeTestRule).apply(func)

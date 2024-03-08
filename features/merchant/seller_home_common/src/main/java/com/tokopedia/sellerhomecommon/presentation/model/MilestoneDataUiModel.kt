@@ -1,7 +1,9 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.sellerhomecommon.presentation.adapter.factory.MilestoneAdapterTypeFactory
 import java.util.*
 
 data class MilestoneDataUiModel(
@@ -17,7 +19,7 @@ data class MilestoneDataUiModel(
     val showNumber: Boolean = false,
     val isError: Boolean = false,
     val milestoneProgress: MilestoneProgressbarUiModel = MilestoneProgressbarUiModel(),
-    val milestoneMissions: List<BaseMilestoneMissionUiModel> = emptyList(),
+    val milestoneMissions: List<Visitable<MilestoneAdapterTypeFactory>> = emptyList(),
     val milestoneCta: MilestoneCtaUiModel = MilestoneCtaUiModel(),
     val deadlineMillis: Long = 0L
 ) : BaseDataUiModel, LastUpdatedDataInterface {
@@ -40,21 +42,26 @@ data class MilestoneProgressbarUiModel(
     val totalTask: Int = 0
 )
 
-interface BaseMilestoneMissionUiModel {
+abstract class BaseMilestoneMissionUiModel: Visitable<MilestoneAdapterTypeFactory> {
 
-    val itemMissionKey: String
-    val imageUrl: String
-    val title: String
-    val subTitle: String
-    val missionCompletionStatus: Boolean
-    val missionButton: MissionButtonUiModel
-    val impressHolder: ImpressHolder
+    abstract val itemMissionKey: String
+    abstract val imageUrl: String
+    abstract val title: String
+    abstract val subTitle: String
+    abstract val missionCompletionStatus: Boolean
+    abstract val showNumber: Boolean
+    abstract val missionButton: MissionButtonUiModel
+    abstract val impressHolder: ImpressHolder
 
     companion object {
         const val MISSION_KEY = "mission"
         const val FINISH_MISSION_KEY = "finishMission"
         const val TYPE_URL_REDIRECT = 1
         const val TYPE_URL_SHARING = 3
+    }
+
+    override fun type(typeFactory: MilestoneAdapterTypeFactory): Int {
+        return typeFactory.type(this)
     }
 
     enum class UrlType(val urlType: Int) {
@@ -75,15 +82,20 @@ data class MissionButtonUiModel(
 )
 
 data class MilestoneMissionUiModel(
-    override val itemMissionKey: String = BaseMilestoneMissionUiModel.MISSION_KEY,
+    override val itemMissionKey: String = MISSION_KEY,
     override val imageUrl: String = "",
     override val title: String = "",
     override val subTitle: String = "",
     override val missionCompletionStatus: Boolean = false,
+    override val showNumber: Boolean = false,
     override val missionButton: MissionButtonUiModel = MissionButtonUiModel(),
     override val impressHolder: ImpressHolder = ImpressHolder(),
     val missionProgress: MissionProgressUiModel = MissionProgressUiModel()
-) : BaseMilestoneMissionUiModel {
+) : BaseMilestoneMissionUiModel() {
+
+    override fun type(typeFactory: MilestoneAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
 
     fun isProgressAvailable(): Boolean {
         return missionProgress.target.isNotBlank() && missionProgress.completed.isNotBlank()
@@ -91,17 +103,22 @@ data class MilestoneMissionUiModel(
 }
 
 data class MilestoneFinishMissionUiModel(
-    override val itemMissionKey: String = BaseMilestoneMissionUiModel.FINISH_MISSION_KEY,
+    override val itemMissionKey: String = FINISH_MISSION_KEY,
     override val imageUrl: String = "",
     override val title: String = "",
     override val subTitle: String = "",
     override val missionCompletionStatus: Boolean = false,
+    override val showNumber: Boolean = false,
     override val missionButton: MissionButtonUiModel = MissionButtonUiModel(),
     override val impressHolder: ImpressHolder = ImpressHolder()
-) : BaseMilestoneMissionUiModel {
+) : BaseMilestoneMissionUiModel() {
 
     companion object {
         private const val WEB_VIEW_FORMAT = "%s?url=%s"
+    }
+
+    override fun type(typeFactory: MilestoneAdapterTypeFactory): Int {
+        return typeFactory.type(this)
     }
 
     fun getWebViewAppLink(): String {

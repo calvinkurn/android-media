@@ -24,15 +24,21 @@ import io.mockk.verifyOrder
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import rx.Subscriber
 import com.tokopedia.filter.quick.SortFilterItem as SortFilterItemReimagine
 
-private const val searchProductModelWithQuickFilter = "searchproduct/quickfilter/with-quick-filter.json"
-private const val searchProductModelWithQuickFilterReimagine = "searchproduct/quickfilter/with-quick-filter-reimagine.json"
+private const val searchProductModelWithQuickFilter =
+    "searchproduct/quickfilter/with-quick-filter.json"
+private const val searchProductModelWithQuickFilterReimagine =
+    "searchproduct/quickfilter/with-quick-filter-reimagine.json"
 private const val searchProductModelNoQuickFilter = "searchproduct/quickfilter/no-quick-filter.json"
-private const val searchProductModelWithMultipleOptionQuickFilter = "searchproduct/quickfilter/with-multiple-option-quick-filter.json"
+private const val searchProductModelWithMultipleOptionQuickFilter =
+    "searchproduct/quickfilter/with-multiple-option-quick-filter.json"
+private const val searchProductModelWithImgActiveInactive =
+    "searchproduct/quickfilter/with-image-active-inactive.json"
 
 internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixtures() {
     private val requestParamsSlot = slot<RequestParams>()
@@ -43,7 +49,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     @Test
     fun `Search Product initialize filter`() {
-        val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+        val searchProductModel =
+            searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
         `When Load Data`()
@@ -80,7 +87,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     private fun `Then verify initialize filter interactions`(
         quickFilterModel: DataValue,
-        backendFiltersToggle: String,
+        backendFiltersToggle: String
     ) {
         `Then verify initialize filter is interactions`()
 
@@ -142,7 +149,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     @Test
     fun `Search Product initialize filter for reimagine product card`() {
-        val searchProductModel = searchProductModelWithQuickFilterReimagine.jsonToObject<SearchProductModel>()
+        val searchProductModel =
+            searchProductModelWithQuickFilterReimagine.jsonToObject<SearchProductModel>()
         `Given search reimagine rollence product card will return non control variant`()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
@@ -169,7 +177,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     @Test
     fun `Search Product should not init quick filter after opening filter page`() {
-        val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+        val searchProductModel =
+            searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
         val dynamicFilterModel =
             "searchproduct/dynamicfilter/dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
@@ -208,7 +217,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     @Test
     fun `Search Product has Multiple Option Quick Filter`() {
-        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+        val searchProductModel =
+            searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
         `When Load Data`()
@@ -221,7 +231,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     @Test
     fun `Open Dropdown Quick Filter`() {
-        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+        val searchProductModel =
+            searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
         val selectedFilterIndex = 0
         val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex]
         `Given Search Product API will return SearchProductModel`(searchProductModel)
@@ -235,7 +246,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     @Test
     fun `Open Dropdown Quick Filter Using Chevron`() {
-        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+        val searchProductModel =
+            searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
         val selectedFilterIndex = 0
         val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex]
 
@@ -250,7 +262,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     @Test
     fun `Click Quick Filter with Single Option`() {
-        val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+        val searchProductModel =
+            searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
         val selectedFilterIndex = 0
         val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex]
 
@@ -265,7 +278,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     @Test
     fun `Quick Filter Item Type Is Selected When There Is Active Filter`() {
-        val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+        val searchProductModel =
+            searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
         val selectedFilterIndex = 0
         val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex]
         val selectedFilterOption = selectedFilter.options[0]
@@ -278,14 +292,15 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
         `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(
             selectedFilterIndex,
-            selectedFilterOption.name,
+            selectedFilterOption.name
         )
         `Then Assert Quick Filter That Has Active Option Will Have Icon`(selectedFilterIndex)
     }
 
     @Test
     fun `Quick Filter Item Type Is Selected When There Is Active Filter And Has Icon`() {
-        val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+        val searchProductModel =
+            searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
         val selectedFilterIndex = searchProductModel.quickFilterModel.filter.indexOfFirst {
             it.options.all { it.iconUrl.isNotEmpty() }
         }
@@ -302,14 +317,18 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
         `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(
             selectedFilterIndex,
-            expectedChipName,
+            expectedChipName
         )
-        `Then Assert Quick Filter That Has Active Option Will Have Icon`(selectedFilterIndex, expectedChipIconUrl)
+        `Then Assert Quick Filter That Has Active Option Will Have Icon`(
+            selectedFilterIndex,
+            expectedChipIconUrl
+        )
     }
 
     @Test
     fun `Quick Filter Item Type Is Selected When There Is Multiple Active Options In A Single Filter`() {
-        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+        val searchProductModel =
+            searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
         val selectedFilterIndex = 0
         val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex]
         val firstSelectedFilterOption = selectedFilter.options[0]
@@ -325,14 +344,15 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
         `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(
             selectedFilterIndex,
-            expectedChipName,
+            expectedChipName
         )
         `Then Assert Quick Filter That Has Active Option Will Have Icon`(selectedFilterIndex)
     }
 
     @Test
     fun `Quick Filter Item Type Is Selected When There Is One Active Option In A Single Filter with Multiple Options`() {
-        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+        val searchProductModel =
+            searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
         val selectedFilterIndex = 0
         val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex]
         val firstSelectedFilterOption = selectedFilter.options[0]
@@ -347,14 +367,17 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
         `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(
             selectedFilterIndex,
-            expectedChipName,
+            expectedChipName
         )
-        `Then Assert Quick Filter That Has Active Option Will Have Icon`(selectedFilterIndex, expectedChipIconUrl)
+        `Then Assert Quick Filter That Has Active Option Will Have Icon`(
+            selectedFilterIndex,
+            expectedChipIconUrl
+        )
     }
 
     private fun `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(
         selectedFilterIndex: Int,
-        expectedChipName: String,
+        expectedChipName: String
     ) {
         val sortFilterItemList = listItemSlot.captured
 
@@ -364,7 +387,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     private fun `Then Assert Quick Filter That Has Active Option Will Have Icon`(
         selectedFilterIndex: Int,
-        iconUrl: String = "",
+        iconUrl: String = ""
     ) {
         val sortFilterItemList = listItemSlot.captured
         assertEquals(iconUrl, sortFilterItemList[selectedFilterIndex].initIconUrl)
@@ -416,7 +439,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     @Test
     fun `Open Dropdown Quick Filter and Apply Option`() {
-        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+        val searchProductModel =
+            searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
         val selectedQuickFilterIndex = 0
         val selectedFilter = searchProductModel.quickFilterModel.filter[selectedQuickFilterIndex]
 
@@ -434,7 +458,9 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         productListPresenter.onApplyDropdownQuickFilter(optionList)
     }
 
-    private fun `Then verify dropdown quick filter bottomsheet has applied and track sent`(optionList: List<Option>) {
+    private fun `Then verify dropdown quick filter bottomsheet has applied and track sent`(
+        optionList: List<Option>
+    ) {
         verify {
             productListView.applyDropdownQuickFilter(optionList)
             productListView.trackEventApplyDropdownQuickFilter(optionList, any())
@@ -443,9 +469,10 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     @Test
     fun `Search Product initialize quick filter reimagine`() {
-        val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+        val searchProductModel =
+            searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
 
-        every { reimagineRollence.search2Component() } returns Search2Component.QF_VAR
+        every { reimagineRollence.search2Component() } returns Search2Component.PRODUCT_CARD_SRE_2024
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
@@ -470,9 +497,10 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
     @Test
     fun `Drop down quick filter reimagine hasChevron is true`() {
-        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+        val searchProductModel =
+            searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
 
-        every { reimagineRollence.search2Component() } returns Search2Component.QF_VAR
+        every { reimagineRollence.search2Component() } returns Search2Component.PRODUCT_CARD_SRE_2024
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
@@ -485,5 +513,45 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         assertTrue(
             sortFilterItemList.find { it.title == "Jenis Toko Chip Name" }?.hasChevron == true
         )
+    }
+
+    @Test
+    fun `Result contains image_url_active and img_url_inactive filter item should show image`() {
+        val searchProductModel =
+            searchProductModelWithImgActiveInactive.jsonToObject<SearchProductModel>()
+
+        every { reimagineRollence.search2Component() } returns Search2Component.PRODUCT_CARD_SRE_2024
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then verify setQuickFilterReimagine is called`()
+        `Then verify SortFilterItemReimagine list`(searchProductModel.quickFilterModel)
+        val activeImageUrl =
+            "https://images-staging.tokopedia.net/img/jbZAUJ/2024/1/9/b44d0a75-9637-4b36-976c-8e62caf4e84c.png?width=77"
+        val sortFilterItemList = listItemReimagineSlot.captured
+        assertTrue(
+            sortFilterItemList.find { it.imageUrlActive == activeImageUrl }?.shouldShowImage == true
+        )
+    }
+
+    @Test
+    fun `Result doesnt contain image url should not show image filter`() {
+        val searchProductModel =
+            searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+
+        every { reimagineRollence.search2Component() } returns Search2Component.PRODUCT_CARD_SRE_2024
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then verify setQuickFilterReimagine is called`()
+        `Then verify SortFilterItemReimagine list`(searchProductModel.quickFilterModel)
+        val sortFilterItemList = listItemReimagineSlot.captured
+        sortFilterItemList.forEach {
+            assertFalse(it.shouldShowImage)
+        }
     }
 }

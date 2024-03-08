@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.webkit.WebView
 import androidx.fragment.app.Fragment
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
+import com.tokopedia.profilecompletion.settingprofile.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.webview.BaseWebViewFragment
 import javax.inject.Inject
 

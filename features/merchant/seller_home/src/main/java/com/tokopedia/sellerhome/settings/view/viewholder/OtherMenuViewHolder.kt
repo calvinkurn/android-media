@@ -20,12 +20,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadImageWithoutPlaceholderAndError
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
 import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
@@ -50,6 +52,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class OtherMenuViewHolder(
     private val view: View?,
@@ -121,9 +124,9 @@ class OtherMenuViewHolder(
     fun setIsTopadsAutoTopup(isAutoTopup: Boolean) {
         val color =
             if (isAutoTopup) {
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                unifyprinciplesR.color.Unify_GN500
             } else {
-                com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                unifyprinciplesR.color.Unify_NN500
             }
         topadsAutoTopupIcon?.run {
             setImage(
@@ -236,6 +239,10 @@ class OtherMenuViewHolder(
 
     fun setTopAdsShop(isUsed: Boolean) {
         otherMenuAdapter?.addIklanTopadsMenu(isUsed)
+    }
+
+    fun setTopAdsAutoPsStatus(autoPsStatus: Int) {
+        otherMenuAdapter?.setTopAdsAutoPsStatus(autoPsStatus)
     }
 
     private fun initView() {
@@ -476,26 +483,27 @@ class OtherMenuViewHolder(
     }
 
     private fun setShopStatus() {
-        val imageResource: Int
+        val imageResource: String
         val headerBackgroundResource: Int
 
         when {
             userSession.isShopOfficialStore -> {
-                imageResource = R.drawable.bg_sah_new_other_curved_header_os
+                imageResource = TokopediaImageUrl.SRE_OTHER_MENU_OS_BACKDROP
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_os
             }
             userSession.isGoldMerchant -> {
-                imageResource = R.drawable.bg_sah_new_other_curved_header_pm
+                imageResource = TokopediaImageUrl.SRE_OTHER_MENU_PM_BACKDROP
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_pm
             }
             else -> {
-                imageResource = R.drawable.bg_sah_new_other_curved_header_rm
+                imageResource = TokopediaImageUrl.SRE_OTHER_MENU_RM_BACKDROP
                 headerBackgroundResource = R.drawable.bg_sah_new_other_header_rm
             }
         }
 
-        shopStatusCurvedImage?.setImageResource(imageResource)
-
+        shopStatusCurvedImage?.loadImageWithoutPlaceholderAndError(imageResource) {
+            setRoundedRadius(0f)
+        }
         otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
     }
 

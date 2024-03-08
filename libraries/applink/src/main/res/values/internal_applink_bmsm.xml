@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_bmsm" translatable="false">buymoresavemore</string>
+    <string name="path_bmsm_mini_cart_detail" translatable="false">/mini-cart-detail</string>
+    <string name="path_bmsm_mini_cart_editor" translatable="false">/mini-cart-editor</string>
+</resources>

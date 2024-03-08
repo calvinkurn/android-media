@@ -5,12 +5,13 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationCardMapper
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommendationCardResponse
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
-    query GetHomeRecommendationCard(${'$'}productPage: Int!, ${'$'}layouts: String!, ${'$'}param: String!, ${'$'}location: String!) {
-        getHomeRecommendationCard(productPage: ${'$'}productPage, layouts: ${'$'}layouts, param: ${'$'}param, location: ${'$'}location) {
+    query GetHomeRecommendationCard(${'$'}productPage: Int!, ${'$'}layouts: String!, ${'$'}param: String!, ${'$'}location: String!, , ${'$'}productCardVersion: String!) {
+        getHomeRecommendationCard(productPage: ${'$'}productPage, layouts: ${'$'}layouts, param: ${'$'}param, location: ${'$'}location, productCardVersion: ${'$'}productCardVersion) {
             pageName
             layoutName
             hasNextPage
@@ -73,6 +74,10 @@ const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
                 type
                 title
                 position
+                styles {
+                 key
+                 value
+                }
               }
             }
       }
@@ -114,7 +119,13 @@ class GetHomeRecommendationCardUseCase @Inject constructor(
             putString(PARAM_LAYOUTS, LAYOUTS_VALUE)
             putString(PARAM_SOURCE_TYPE, paramSource)
             putString(PARAM_LOCATION, location)
+            putString(PRODUCT_CARD_VERSION, getProductCardVersion())
         }.parameters
+    }
+
+    private fun getProductCardVersion(): String {
+        val isReimagine = ProductCardExperiment.isReimagine()
+        return if(isReimagine) PRODUCT_CARD_VERSION_V5 else ""
     }
 
     companion object {
@@ -122,6 +133,8 @@ class GetHomeRecommendationCardUseCase @Inject constructor(
         private const val PARAM_SOURCE_TYPE = "param"
         private const val PARAM_PRODUCT_PAGE = "productPage"
         private const val PARAM_LAYOUTS = "layouts"
+        private const val PRODUCT_CARD_VERSION = "productCardVersion"
+        private const val PRODUCT_CARD_VERSION_V5 = "v5"
 
         private const val LAYOUTS_VALUE = "product,recom_card,banner_ads,video"
     }

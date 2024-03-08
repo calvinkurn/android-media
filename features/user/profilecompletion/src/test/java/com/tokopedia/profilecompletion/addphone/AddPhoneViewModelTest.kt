@@ -2,12 +2,12 @@ package com.tokopedia.profilecompletion.addphone
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
-import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
-import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
-import com.tokopedia.profilecompletion.addphone.domain.UserProfileUpdateUseCase
-import com.tokopedia.profilecompletion.addphone.domain.UserProfileValidateUseCase
-import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
+import com.tokopedia.profilecompletion.settingprofile.addphone.data.AddPhonePojo
+import com.tokopedia.profilecompletion.settingprofile.addphone.data.AddPhoneResult
+import com.tokopedia.profilecompletion.settingprofile.addphone.data.UserValidatePojo
+import com.tokopedia.profilecompletion.settingprofile.addphone.domain.UserProfileUpdateUseCase
+import com.tokopedia.profilecompletion.settingprofile.addphone.domain.UserProfileValidateUseCase
+import com.tokopedia.profilecompletion.settingprofile.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail

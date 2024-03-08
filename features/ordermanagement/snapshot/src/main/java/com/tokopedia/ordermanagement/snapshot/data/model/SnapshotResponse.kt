@@ -80,7 +80,15 @@ data class GetOrderSnapshot(
 
     @Expose
     @field:SerializedName("campaign_data")
-    val campaignData: CampaignData = CampaignData()
+    val campaignData: CampaignData = CampaignData(),
+
+    @Expose
+    @SerializedName("is_sellable")
+    val sellable: Boolean = true,
+
+    @Expose
+    @SerializedName("offering")
+    val offering: Offering = Offering()
 )
 
 data class ShopSummary(
@@ -261,4 +269,13 @@ data class Campaign(
     @Expose
     @field:SerializedName("discounted_price")
     val discountedPrice: String = ""
+)
+
+data class Offering(
+    @Expose
+    @SerializedName("label")
+    val label: String = "",
+    @Expose
+    @SerializedName("icon_url")
+    val iconUrl: String = ""
 )

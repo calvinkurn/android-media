@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_NN0">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/reply_box"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintEnd_toStartOf="@id/send_but"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_reply_bubble"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+
+        <com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
+            android:id="@+id/reply_bubble_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_compose_background"
+            android:paddingBottom="20dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.TextAreaUnify2
+            android:id="@+id/new_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginEnd="1dp"
+            android:textColorHint="@color/chatbot_dms_compose_msg_hint"
+            app:layout_constraintEnd_toEndOf="@id/reply_bubble_container"
+            app:layout_constraintStart_toStartOf="@id/reply_bubble_container"
+            app:layout_constraintTop_toBottomOf="@id/reply_bubble_container"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_text_field_append_drawable_icon_1="@drawable/ic_add_attachment_chatbot"
+            app:unify_text_field_label_static="true">
+
+        </com.tokopedia.unifycomponents.TextAreaUnify2>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.chatbot.chatbot2.view.customview.chatroom.SlowModeSendButton
+        android:id="@+id/send_but"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

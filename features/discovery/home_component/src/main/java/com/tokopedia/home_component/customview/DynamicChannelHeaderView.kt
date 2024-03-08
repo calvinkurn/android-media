@@ -12,7 +12,9 @@ import com.tokopedia.home_component.customview.header.HeaderLayoutStrategy
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.convertDpToPixel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
@@ -111,6 +113,7 @@ class DynamicChannelHeaderView : FrameLayout {
         } else {
             headerContainer?.hide()
         }
+        listener?.onVisibilityChanged(headerContainer?.isVisible.orFalse())
     }
 
     private fun handleSubtitle(subtitle: String?, channel: ChannelModel) {

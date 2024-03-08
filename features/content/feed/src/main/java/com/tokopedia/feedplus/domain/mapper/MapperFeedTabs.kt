@@ -45,6 +45,7 @@ class MapperFeedTabs @Inject constructor() {
                             position = it.position,
                             isActive = it.isActive,
                             isSelected = false,
+                            hasNewContent = it.hasNewContent,
                         )
                     },
                 activeTabSource = activeTabSource.copy(

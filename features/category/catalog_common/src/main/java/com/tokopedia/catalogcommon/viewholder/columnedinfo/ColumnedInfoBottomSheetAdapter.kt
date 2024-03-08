@@ -3,6 +3,7 @@ package com.tokopedia.catalogcommon.viewholder.columnedinfo
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
+import com.tokopedia.kotlin.extensions.view.ONE
 
 class ColumnedInfoBottomSheetAdapter(
     private val items: List<ColumnedInfoUiModel.ColumnData> = emptyList()
@@ -10,7 +11,7 @@ class ColumnedInfoBottomSheetAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColumnedInfoBottomSheetViewHolder {
         val rootView = ColumnedInfoBottomSheetViewHolder.createRootView(parent)
-        return ColumnedInfoBottomSheetViewHolder(rootView)
+        return ColumnedInfoBottomSheetViewHolder(rootView, itemCount > Int.ONE)
     }
 
     override fun onBindViewHolder(holder: ColumnedInfoBottomSheetViewHolder, position: Int) {

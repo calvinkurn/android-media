@@ -195,7 +195,7 @@ object PaymentInfoUiStateMapper {
 
     private fun mapStringRes(
         @StringRes resId: Int
-    ): com.tokopedia.buyerorderdetail.presentation.model.StringRes {
-        return com.tokopedia.buyerorderdetail.presentation.model.StringRes(resId)
+    ): com.tokopedia.order_management_common.presentation.uimodel.StringRes {
+        return com.tokopedia.order_management_common.presentation.uimodel.StringRes(resId)
     }
 }

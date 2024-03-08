@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.productcard.reimagine.ProductCardModel
+import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselOptionGridReimagineBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -11,7 +12,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 class InspirationCarouselOptionGridReimagineViewHolder(
     itemView: View,
     private val inspirationCarouselListener: InspirationCarouselListener,
-    private val hasMultilineName: Boolean,
 ): AbstractViewHolder<InspirationCarouselDataView.Option.Product>(itemView) {
 
     private val binding: SearchInspirationCarouselOptionGridReimagineBinding? by viewBinding()
@@ -44,18 +44,20 @@ class InspirationCarouselOptionGridReimagineViewHolder(
             slashedPrice = product.originalPrice,
             discountPercentage = product.discountPercentage,
             labelGroupList = product.labelGroupDataList.map { labelGroup ->
-                ProductCardModel.LabelGroup(
+                LabelGroup(
                     title = labelGroup.title,
                     position = labelGroup.position,
                     type = labelGroup.type,
                     imageUrl = labelGroup.imageUrl,
+                    styles = labelGroup.styleList.map { item ->
+                        LabelGroup.Style(item.key, item.value)
+                    }
                 )
             },
             shopBadge = ProductCardModel.ShopBadge(
                 title = shopBadge?.title ?: "",
                 imageUrl = shopBadge?.imageUrl ?: "",
             ),
-            hasMultilineName = hasMultilineName,
         )
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.cart.view.mapper
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
+import com.tokopedia.cart.view.mapper.PromoRequestMapper
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -106,7 +107,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         etaText = "",
                         shopId = 1
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             getLastApplyPromoRequest
         )
@@ -222,7 +224,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         etaText = "",
                         shopId = 1
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             getLastApplyPromoRequest
         )
@@ -349,7 +352,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         poDuration = 0,
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             getLastApplyPromoRequest
         )
@@ -489,7 +493,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         poDuration = 0,
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             getLastApplyPromoRequest
         )
@@ -642,7 +647,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         poDuration = 0,
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             getLastApplyPromoRequest
         )
@@ -808,7 +814,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         poDuration = 0,
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             getLastApplyPromoRequest
         )
@@ -934,7 +941,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         etaText = "",
                         shopId = 1
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             getLastApplyPromoRequest
         )
@@ -1070,7 +1078,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         poDuration = 0,
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             getLastApplyPromoRequest
         )
@@ -1225,7 +1234,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         poDuration = 0,
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             getLastApplyPromoRequest
         )
@@ -1379,7 +1389,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         poDuration = 0,
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             getLastApplyPromoRequest
         )
@@ -1557,7 +1568,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         poDuration = 0,
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
-                )
+                ),
+                isCartCheckoutRevamp = true
             ),
             getLastApplyPromoRequest
         )

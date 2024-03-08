@@ -5,11 +5,14 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.order_management_common.presentation.factory.AddOnAdapterFactory
 
 data class AddOnSummaryUiModel(
-    val totalPriceText: String,
+    val addOnIdentifier: String,
+    val totalPriceText: StringRes,
     val addonsLogoUrl: String,
     val addonsTitle: String,
-    val addonItemList: List<AddonItemUiModel>
+    val addonItemList: List<AddonItemUiModel>,
+    val canExpandCollapse: Boolean
 ) {
+    var isExpand: Boolean = true
 
     data class AddonItemUiModel(
         val priceText: String,
@@ -23,7 +26,13 @@ data class AddOnSummaryUiModel(
         val message: String,
         var descriptionExpanded: Boolean = false,
         val noteCopyable: Boolean,
-        val providedByShopItself: Boolean
+        val providedByShopItself: Boolean,
+        val infoLink: String,
+        val tips: String,
+        //region Product Benefit Data
+        val orderId: String,
+        val orderDetailId: String
+        //endregion Product Benefit Data
     ) : Visitable<AddOnAdapterFactory> {
 
         override fun type(typeFactory: AddOnAdapterFactory): Int {

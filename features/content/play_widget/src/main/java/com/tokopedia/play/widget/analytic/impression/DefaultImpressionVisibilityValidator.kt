@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenWidth
  * Created by jegul on 28/10/20
  */
 class DefaultImpressionVisibilityValidator(
-        private val offset: Int = 100
+    private val offset: Int = 100
 ) : ImpressionVisibilityValidator {
 
     override fun isViewVisibleForImpression(view: View): Boolean {
@@ -20,6 +20,6 @@ class DefaultImpressionVisibilityValidator(
         val X = location[0] + offset
         val Y = location[1] + offset
         return screen.top <= Y && screen.bottom >= Y &&
-                screen.left <= X && screen.right >= X
+            screen.left <= X && screen.right >= X
     }
 }

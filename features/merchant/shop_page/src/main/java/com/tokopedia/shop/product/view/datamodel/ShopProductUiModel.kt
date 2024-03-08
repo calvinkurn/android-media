@@ -35,6 +35,7 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
     var freeOngkirPromoIcon: String? = null
     var etalaseId = ""
     var labelGroupList: List<LabelGroupUiModel> = listOf()
+    var badge: List<ShopBadgeUiModel> = emptyList()
     var pdpViewCount: String = ""
     var stockLabel: String = ""
     var stockBarPercentage: Int = 0
@@ -50,6 +51,8 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
     var maximumOrder: Int = 0
     var parentId: String = ""
     var averageRating: String = ""
+    var isFulfillment: Boolean? = null
+    var warehouseId: String? = null
 
     override fun type(typeFactory: ShopProductAdapterTypeFactory?): Int {
         return typeFactory?.type(this).orZero()

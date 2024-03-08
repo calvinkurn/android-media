@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_gift_tier"
+    android:layout_width="220dp"
+    android:layout_height="68dp"
+    android:layout_marginEnd="-4dp"
+    app:card_background_color="@color/olp_tier_list_dms_text_color">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/wrapper_gift_tier"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_gift_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_gift_tier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:textColor="@color/Unify_TN500"
+                app:typographyType="display_3" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/white_oos_overlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/dms_white_transparent"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpg_oos_gift"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_transparent_black"
+            android:padding="4dp"
+            android:text="Hadiah habis"
+            android:textColor="@color/dms_static_white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="small"
+            android:visibility="gone"
+            app:typographyWeight="bold" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

@@ -39,6 +39,7 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleManager
+import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
@@ -129,6 +130,12 @@ class PlayShortsTestModule(
                     Util.getUserAgent(activityContext, "Tokopedia Android")
                 )
             )
+    }
+
+    @Provides
+    @PlayShortsScope
+    fun providePlayVideoWrapper(context: Context): PlayVideoWrapper {
+        return PlayVideoWrapper.Builder(context).build()
     }
 
     @Provides

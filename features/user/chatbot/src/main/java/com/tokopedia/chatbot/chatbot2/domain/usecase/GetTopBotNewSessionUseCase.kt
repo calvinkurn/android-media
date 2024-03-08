@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.chatbot2.domain.usecase
 
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.chatbot.chatbot2.data.newsession.TopBotNewSessionResponse
+import com.tokopedia.chatbot.chatbot2.domain.gqlqueries.GetTopBotNewSessionQuery
 import com.tokopedia.chatbot.chatbot2.domain.gqlqueries.queries.GQL_GET_TOP_BOT_NEW_SESSION
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -25,7 +26,7 @@ class GetTopBotNewSessionUseCase @Inject constructor(
         try {
             this.setTypeClass(TopBotNewSessionResponse::class.java)
             this.setRequestParams(createParams(msgId))
-            this.setGraphqlQuery(com.tokopedia.chatbot.chatbot2.domain.gqlqueries.GetTopBotNewSessionQuery())
+            this.setGraphqlQuery(GetTopBotNewSessionQuery())
 
             this.execute(
                 { result ->

@@ -15,8 +15,8 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderNote
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductAddOnViewHolder
 
 class CustomListAdapter(
-        private val selectListener: ProductAddOnViewHolder.OnAddOnSelectListener,
-        private val textChangeListener: OrderNoteInputViewHolder.OnNoteTextChangeListener
+    private var selectListener: ProductAddOnViewHolder.OnAddOnSelectListener?,
+    private var textChangeListener: OrderNoteInputViewHolder.OnNoteTextChangeListener?
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var customListItems: MutableList<CustomListItem> = mutableListOf()
@@ -32,12 +32,12 @@ class CustomListAdapter(
         return when (values().first { it.type == viewType }) {
             PRODUCT_ADD_ON -> {
                 val binding = TokofoodItemAddOnLayoutBinding
-                        .inflate(LayoutInflater.from(parent.context), parent, false)
+                    .inflate(LayoutInflater.from(parent.context), parent, false)
                 ProductAddOnViewHolder(binding, selectListener)
             }
             else -> {
                 val binding = TokofoodItemOrderNoteLayoutBinding
-                        .inflate(LayoutInflater.from(parent.context), parent, false)
+                    .inflate(LayoutInflater.from(parent.context), parent, false)
                 OrderNoteInputViewHolder(binding, textChangeListener)
             }
         }
@@ -86,7 +86,12 @@ class CustomListAdapter(
             isSelected || customListItems[dataSetPosition].addOnUiModel?.options?.any { it.isSelected } == true
     }
 
-    fun updateOrderNote(orderNote:String, dataSetPosition: Int) {
+    fun updateOrderNote(orderNote: String, dataSetPosition: Int) {
         customListItems.getOrNull(dataSetPosition)?.orderNote = orderNote
+    }
+
+    fun removeListeners() {
+        selectListener = null
+        textChangeListener = null
     }
 }

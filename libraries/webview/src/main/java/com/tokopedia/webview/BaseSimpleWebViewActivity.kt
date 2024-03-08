@@ -71,15 +71,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             needLogin = uri.getQueryParameter(KEY_NEED_LOGIN)?.toBoolean() ?: needLogin
             pullToRefresh = uri.getQueryParameter(KEY_PULL_TO_REFRESH)?.toBoolean() ?: pullToRefresh
             webViewTitle = uri.getQueryParameter(KEY_TITLE) ?: webViewTitle
-
-            trackCampaign(uri)
         }
         logWebViewApplink()
-    }
-
-    // track campaign in case there is utm/gclid in url
-    fun trackCampaign(uri: Uri) {
-        TrackApp.getInstance().gtm.sendCampaign(this, uri.toString(), screenName, false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

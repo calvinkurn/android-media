@@ -17,13 +17,11 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_RE_IMAGINED
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
+import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_FOR_SHARE_PURPOSE
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_PAGE_NON_TABLET
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_PAGE_TABLET
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
@@ -35,6 +33,7 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.SHOP_NAME_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.TYPE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.USER_ID_KEY
+import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -42,9 +41,9 @@ object ShopUtil {
     var isFoldableAndHorizontalScreen: Boolean = false
     var isFoldable: Boolean = true
 
-    fun getProductPerPage(context: Context?): Int{
-        return context?.let{
-            if(DeviceScreenInfo.isTablet(context)){
+    fun getProductPerPage(context: Context?, isShare: Boolean = false): Int {
+        return context?.let {
+            if (DeviceScreenInfo.isTablet(context)) {
                 DEFAULT_PER_PAGE_TABLET
             } else {
                 DEFAULT_PER_PAGE_NON_TABLET
@@ -101,12 +100,6 @@ object ShopUtil {
         }
     }
 
-    fun getShopFollowButtonAbTestVariant(): String? {
-        return RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-            AB_TEST_SHOP_FOLLOW_BUTTON_KEY,
-            AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
-        )
-    }
 
     fun <E> MutableList<E>.setElement(index: Int, element: E) {
         if (index in 0 until size) {
@@ -159,9 +152,18 @@ object ShopUtil {
         return try {
             Color.parseColor(colorHex)
         } catch (e: Exception) {
-            //TODO need to add default color from unify, but need to pass context on param
+            // TODO need to add default color from unify, but need to pass context on param
             FirebaseCrashlytics.getInstance().recordException(e)
             Int.ZERO
+        }
+    }
+    
+    fun parseColorOrFallback(hexColor: String, fallbackColor: Int): Int {
+        return try {
+            Color.parseColor(hexColor)
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            fallbackColor
         }
     }
 
@@ -182,5 +184,13 @@ object ShopUtil {
             RemoteConfigKey.ENABLE_SHOP_PAGE_REIMAGINED,
             true
         )
+    }
+
+    fun isFulfillmentByGroupLabel(labelGroupList: List<LabelGroup>): Boolean? {
+        return if (labelGroupList.isEmpty()) {
+            null
+        } else {
+            labelGroupList.any { it.position == ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT }
+        }
     }
 }

@@ -25,7 +25,6 @@ import com.tokopedia.videoTabComponent.domain.model.data.PlayPagingProperties
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlot
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotItems
 import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
-import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetJumboUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetLargeUiModel
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetMediumUiModel
 import com.tokopedia.videoTabComponent.util.PlayFeedDateTimeFormatter
@@ -33,7 +32,7 @@ import com.tokopedia.videoTabComponent.util.PlayFeedDateTimeFormatter
 private const val FEED_TYPE_PINNED_FEEDS = "pinnedFeeds"
 const val FEED_TYPE_CHANNEL_BLOCK = "channelBlock"
 const val FEED_TYPE_TAB_MENU = "tabMenu"
-private const val FEED_TYPE_CHANNEL_RECOM = "channelRecom"
+const val FEED_TYPE_CHANNEL_RECOM = "channelRecom"
 private const val FEED_TYPE_CHANNEL_HIGHLIGHT = "channelHighlight"
 private const val WIDGET_LIVE = "live"
 const val WIDGET_UPCOMING = "upcoming"
@@ -64,13 +63,6 @@ object FeedPlayVideoTabMapper {
 
         playSlotList.forEach { playSlot ->
             when (playSlot.type) {
-                FEED_TYPE_PINNED_FEEDS -> {
-                    list.add(
-                        PlayWidgetJumboUiModel(
-                            getWidgetUiModel(playSlot, meta, shopId, playWidgetPreference)
-                        )
-                    )
-                }
                 FEED_TYPE_CHANNEL_BLOCK -> {
                     list.add(
                         PlayWidgetLargeUiModel(

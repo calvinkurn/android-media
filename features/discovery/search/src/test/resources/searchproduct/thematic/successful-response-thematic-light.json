@@ -1,0 +1,13 @@
+{
+  "getHomeThematic": {
+    "thematic": {
+      "isShown": true,
+      "colorMode": "light",
+      "heightPercentage": 40,
+      "backgroundImageURL": "https://images.tokopedia.net/img/metesI/2023/10/6/9a5497e3-0090-4b5e-8a48-a9f1b93808ee.png",
+      "foregroundImageURL": "https://images.tokopedia.net/img/cache/400/metesI/2023/10/5/ee621656-60dd-4b12-b379-7971804fb27f.png.webp",
+      "foregroundImageWidthRatio": 3,
+      "foregroundImageHeightRatio": 1
+    }
+  }
+}

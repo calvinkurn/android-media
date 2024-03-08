@@ -13,7 +13,14 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.oneclickcheckout.order.data.get.CartDetailsResponse
+import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartData
+import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartResponse
+import com.tokopedia.oneclickcheckout.order.data.get.GroupShopOccResponse
+import com.tokopedia.oneclickcheckout.order.data.get.ProductDataResponse
+import com.tokopedia.oneclickcheckout.order.data.get.ShopDataResponse
 import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
@@ -22,8 +29,10 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
@@ -31,6 +40,10 @@ import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.U
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.LastApply
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.VoucherOrdersItem
 
 class OrderSummaryPageViewModelTestHelper {
 
@@ -198,6 +211,40 @@ class OrderSummaryPageViewModelTestHelper {
         preference = preference
     )
 
+    val getOccCartDataWithLastApply = GetOccCartResponse(
+        status = "OK",
+        data = GetOccCartData(
+            promo = PromoSAFResponse(
+                lastApply = LastApply(
+                    data = Data(
+                        codes = listOf("BOCODE"),
+                        voucherOrders = listOf(VoucherOrdersItem("MVCODE"))
+                    )
+                )
+            ),
+            groupShop = listOf(
+                GroupShopOccResponse(
+                    cartString = "CART_STRING",
+                    paymentProfile = "PAYMENT_PROFILE",
+                    groupMetadata = "GROUP_METADATA",
+                    shop = ShopDataResponse(
+                        shopId = "01",
+                        shopName = "SHOP_NAME"
+                    ),
+                    cartDetails = listOf(
+                        CartDetailsResponse(
+                            products = listOf(
+                                ProductDataResponse(
+                                    productId = "123456789"
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+
     val saveAddOnStateShopLevelResult = SaveAddOnStateResult(
         addOns = listOf(
             AddOnResult(
@@ -294,5 +341,12 @@ class OrderSummaryPageViewModelTestHelper {
         isError = false,
         frontEndValidation = imageUploadDataModel.frontEndValidation,
         isOcc = true
+    )
+
+    val orderPromo = OrderPromo(
+        state = OccButtonState.NORMAL,
+        entryPointInfo = PromoEntryPointInfo(
+            isSuccess = true
+        )
     )
 }

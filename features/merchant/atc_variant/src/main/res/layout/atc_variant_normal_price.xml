@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_header_main_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Rp150.000"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/lbl_header_cashback_percentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:visibility="gone"
+        app:labelType="general_light_green"
+        app:layout_constraintStart_toStartOf="@+id/txt_header_main_price"
+        app:layout_constraintTop_toBottomOf="@+id/txt_header_main_price"
+        tools:text="Cashback 5%"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_header_slash_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/lbl_header_discounted_percentage"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/lbl_header_cashback_percentage"
+        app:layout_constraintTop_toBottomOf="@+id/txt_header_main_price"
+        app:layout_goneMarginStart="0dp"
+        app:layout_goneMarginTop="6dp"
+        app:typographyType="body_3"
+        tools:text="Rp300.000 Rp300.000  Rp300.000  Rp300.000  Rp300.000  Rp300.000 Rp300.000  Rp300.000  Rp300.000 "
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/lbl_header_discounted_percentage"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/Unify_RN500"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_header_slash_price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/txt_header_slash_price"
+        app:layout_constraintTop_toTopOf="@+id/txt_header_slash_price"
+        app:layout_goneMarginStart="0dp"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="50%"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

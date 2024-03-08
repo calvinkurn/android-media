@@ -6,7 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.profilecompletion.addphone.view.activity.NewAddPhoneActivity
+import com.tokopedia.profilecompletion.settingprofile.addphone.view.activity.NewAddPhoneActivity
 import com.tokopedia.profilecompletion.common.ViewIdGenerator
 import com.tokopedia.profilecompletion.common.stub.di.createProfileCompletionComponent
 import com.tokopedia.test.application.annotations.UiTest

@@ -12,10 +12,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.coupondetail.CouponDetailActivity.Companion.getCouponDetail
 import com.tokopedia.tokopoints.view.model.CouponValueEntity
@@ -91,11 +92,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
             val item = mItems[position - 1]
             if (pHolder is ViewHolder) {
                 val holder = pHolder
-                ImageHandler.loadImageFitCenter(
-                    holder.imgBanner.context,
-                    holder.imgBanner,
-                    if (TextUtils.isEmpty(item.thumbnailUrlMobile)) item.imageUrlMobile else item.thumbnailUrlMobile
-                )
+                holder.imgBanner.loadImageFitCenter(if (TextUtils.isEmpty(item.thumbnailUrlMobile)) item.imageUrlMobile else item.thumbnailUrlMobile)
                 if (item.usage != null) {
                     holder.label.visibility = View.VISIBLE
                     holder.value.visibility = View.VISIBLE

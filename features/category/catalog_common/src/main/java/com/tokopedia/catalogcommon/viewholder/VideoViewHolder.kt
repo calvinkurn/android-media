@@ -62,7 +62,7 @@ class VideoViewHolder(
             }
             activeIndex = Int.ZERO
 
-            listener?.onVideoImpression(element.content)
+            listener?.onVideoImpression(element.content, element.widgetName)
             onceCreateCarousel = true
         }
     }

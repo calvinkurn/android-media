@@ -3,6 +3,7 @@ package com.tokopedia.stories.creation.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.content.common.di.ContentCoachMarkSharedPrefModule
 import com.tokopedia.content.common.di.ContentFragmentFactoryModule
+import com.tokopedia.content.product.picker.seller.di.ProductPickerBindModule
 import com.tokopedia.content.product.picker.seller.di.ProductPickerFragmentModule
 import dagger.Component
 
@@ -15,6 +16,7 @@ import dagger.Component
         StoriesCreationBindTestModule::class,
         StoriesCreationViewModelModule::class,
         ProductPickerFragmentModule::class,
+        ProductPickerBindModule::class,
         ContentFragmentFactoryModule::class,
         ContentCoachMarkSharedPrefModule::class,
     ],

@@ -78,7 +78,6 @@ import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.item_network_error_view.*
 import java.lang.ref.WeakReference
 import java.util.*
 import javax.inject.Inject
@@ -86,6 +85,9 @@ import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.round
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.iconunify.R as iconunifyR
 
 /**
  * @author by furqan on 22/04/19
@@ -402,13 +404,15 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             }
 
             context?.run {
-                ErrorHandlerHotel.getErrorUnify(
-                    this,
-                    error,
-                    { onErrorRetryClicked() },
-                    global_error,
-                    { (activity as HotelDetailActivity).onBackPressed() }
-                )
+                binding?.containerError?.globalError?.let {
+                    ErrorHandlerHotel.getErrorUnify(
+                        this,
+                        error,
+                        { onErrorRetryClicked() },
+                        it,
+                        { (activity as HotelDetailActivity).onBackPressed() }
+                    )
+                }
             }
         }
     }
@@ -424,7 +428,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         hideLoadingLayout()
         (activity as HotelDetailActivity).setSupportActionBar(binding?.detailToolbar)
         (activity as HotelDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding?.detailToolbar?.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0), PorterDuff.Mode.SRC_ATOP)
+        binding?.detailToolbar?.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), unifyprinciplesR.color.Unify_NN0), PorterDuff.Mode.SRC_ATOP)
 
         binding?.collapsingToolbar?.setExpandedTitleTextAppearance(R.style.hotelPdpExpandedToolbarLayoutTitleColor)
         binding?.collapsingToolbar?.setCollapsedTitleTextAppearance(R.style.hotelPdpCollapsingToolbarLayoutTitleColor)
@@ -434,13 +438,13 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
                 if (abs(verticalOffset) >= appBarLayout.totalScrollRange && !isScrolled) {
                     if (isTickerValid) binding?.hotelDetailTicker?.hide()
-                    binding?.detailToolbar?.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_96), PorterDuff.Mode.SRC_ATOP)
-                    (activity as HotelDetailActivity).optionMenu?.setIcon(com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
+                    binding?.detailToolbar?.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), unifyprinciplesR.color.Unify_NN950_96), PorterDuff.Mode.SRC_ATOP)
+                    (activity as HotelDetailActivity).optionMenu?.setIcon(abstractionR.drawable.ic_toolbar_overflow_level_two_black)
                     isScrolled = true
                 } else if (abs(verticalOffset) == 0 && isScrolled) {
                     if (isTickerValid) binding?.hotelDetailTicker?.show()
-                    binding?.detailToolbar?.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN0), PorterDuff.Mode.SRC_ATOP)
-                    (activity as HotelDetailActivity).optionMenu?.setIcon(com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
+                    binding?.detailToolbar?.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), unifyprinciplesR.color.Unify_NN0), PorterDuff.Mode.SRC_ATOP)
+                    (activity as HotelDetailActivity).optionMenu?.setIcon(abstractionR.drawable.ic_toolbar_overflow_level_two_white)
                     isScrolled = false
                 }
             }
@@ -455,11 +459,11 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             val textView = Typography(requireContext())
             textView.apply {
                 background = ContextCompat.getDrawable(context, R.drawable.bg_search_destination_tag)
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
+                setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN500))
                 text = data.property.typeName
                 setType(Typography.BODY_3)
                 setWeight(Typography.BOLD)
-                setPadding(getDimens(R.dimen.hotel_6dp), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1), getDimens(R.dimen.hotel_6dp), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1))
+                setPadding(getDimens(R.dimen.hotel_6dp), getDimens(unifyprinciplesR.dimen.spacing_lvl1), getDimens(R.dimen.hotel_6dp), getDimens(unifyprinciplesR.dimen.spacing_lvl1))
                 val params: LinearLayout.LayoutParams =
                     LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 params.setMargins(IMAGE_COUNTER_ZERO, IMAGE_COUNTER_ZERO, getDimens(R.dimen.hotel_6dp), IMAGE_COUNTER_ZERO)
@@ -577,7 +581,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
                 IMAGE_COUNTER_FIRST -> {
                     binding?.ivFirstPhotoPreview?.loadImage(getImageUrl(context, item.urlOriginal, item.urlMax300)) {
-                        setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+                        setPlaceHolder(iconunifyR.drawable.iconunify_image_broken)
                     }
                     binding?.ivFirstPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
@@ -587,7 +591,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
                 IMAGE_COUNTER_SECOND -> {
                     binding?.ivSecondPhotoPreview?.loadImage(getImageUrl(context, item.urlOriginal, item.urlMax300)) {
-                        setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+                        setPlaceHolder(iconunifyR.drawable.iconunify_image_broken)
                     }
                     binding?.ivSecondPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
@@ -597,7 +601,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
                 IMAGE_COUNTER_THIRD -> {
                     binding?.ivThirdPhotoPreview?.loadImage(getImageUrl(context, item.urlOriginal, item.urlMax300)) {
-                        setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+                        setPlaceHolder(iconunifyR.drawable.iconunify_image_broken)
                     }
                     binding?.ivThirdPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
@@ -608,7 +612,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             }
             if (item.mainPhoto) {
                 binding?.ivMainPhotoPreview?.loadImage(getImageUrl(context, item.urlOriginal, item.urlMax300)) {
-                    setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+                    setPlaceHolder(iconunifyR.drawable.iconunify_image_broken)
                 }
                 binding?.ivMainPhotoPreview?.setOnClickListener {
                     onPhotoClicked()

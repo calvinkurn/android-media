@@ -2,24 +2,23 @@ package com.tokopedia.profilecompletion.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
-import com.tokopedia.profilecompletion.addbod.view.fragment.AddBodFragment
-import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
-import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
-import com.tokopedia.profilecompletion.addphone.view.fragment.NewAddPhoneFragment
-import com.tokopedia.profilecompletion.addpin.view.fragment.AddPinFragment
-import com.tokopedia.profilecompletion.addpin.view.fragment.PinCompleteFragment
-import com.tokopedia.profilecompletion.addpin.view.fragment.PinOnboardingFragment
-import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameFragment
-import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
-import com.tokopedia.profilecompletion.changename.view.ChangeNameFragment
-import com.tokopedia.profilecompletion.changepin.view.fragment.ChangePinFragment
 import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewFragment
 import com.tokopedia.profilecompletion.profilecompletion.view.fragment.ProfileCompletionDateFragment
 import com.tokopedia.profilecompletion.profilecompletion.view.fragment.ProfileCompletionFragment
 import com.tokopedia.profilecompletion.profilecompletion.view.fragment.ProfileCompletionGenderFragment
-import com.tokopedia.profilecompletion.profileinfo.view.bottomsheet.CloseAccountBottomSheet
-import com.tokopedia.profilecompletion.profileinfo.view.fragment.ProfileInfoFragment
-import com.tokopedia.profilecompletion.profilemanagement.ProfileManagementActivity
+import com.tokopedia.profilecompletion.settingprofile.addbod.view.fragment.AddBodFragment
+import com.tokopedia.profilecompletion.settingprofile.addemail.view.fragment.AddEmailFragment
+import com.tokopedia.profilecompletion.settingprofile.addphone.view.fragment.AddPhoneFragment
+import com.tokopedia.profilecompletion.settingprofile.addphone.view.fragment.NewAddPhoneFragment
+import com.tokopedia.profilecompletion.settingprofile.addpin.view.fragment.AddPinFragment
+import com.tokopedia.profilecompletion.settingprofile.addpin.view.fragment.PinCompleteFragment
+import com.tokopedia.profilecompletion.settingprofile.addpin.view.fragment.PinOnboardingFragment
+import com.tokopedia.profilecompletion.settingprofile.changebiousername.view.ChangeBioUsernameFragment
+import com.tokopedia.profilecompletion.settingprofile.changegender.view.ChangeGenderFragment
+import com.tokopedia.profilecompletion.settingprofile.changename.view.ChangeNameFragment
+import com.tokopedia.profilecompletion.settingprofile.changepin.view.fragment.ChangePinFragment
+import com.tokopedia.profilecompletion.settingprofile.profileinfo.view.bottomsheet.CloseAccountBottomSheet
+import com.tokopedia.profilecompletion.settingprofile.profileinfo.view.fragment.ProfileInfoFragment
 import dagger.Component
 
 
@@ -50,5 +49,4 @@ interface ProfileCompletionSettingComponent {
     fun inject(fragment: ChangeBioUsernameFragment)
     fun inject(fragment: ProfileSettingWebViewFragment)
     fun inject(bottomSheet: CloseAccountBottomSheet)
-    fun inject(activity: ProfileManagementActivity)
 }

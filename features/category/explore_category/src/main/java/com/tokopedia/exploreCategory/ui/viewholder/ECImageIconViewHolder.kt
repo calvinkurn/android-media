@@ -5,11 +5,11 @@ import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.exploreCategory.ECAnalytics
 import com.tokopedia.exploreCategory.R
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.ECImageIconVHViewModel
+import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.unifyprinciples.Typography
 
 class ECImageIconViewHolder(itemView: View) : AbstractViewHolder<ECImageIconVHViewModel>(itemView) {
@@ -27,8 +27,7 @@ class ECImageIconViewHolder(itemView: View) : AbstractViewHolder<ECImageIconVHVi
 
     override fun bind(element: ECImageIconVHViewModel?) {
         ecTypographyIconTitle?.text = element?.categoryRow?.name
-        ImageHandler.loadImageWithoutPlaceholder(ecImageBg, element?.categoryRow?.imageUrl,
-                com.tokopedia.abstraction.R.drawable.status_no_result)
+        ecImageBg.loadImageWithError(element?.categoryRow?.imageUrl, com.tokopedia.abstraction.R.drawable.status_no_result)
         itemView.setOnClickListener {
             ECAnalytics.trackEventClickIcon(element?.categoryTitle, element?.categoryId?.toString(), element?.categoryRow, adapterPosition)
             RouteManager.routeNoFallbackCheck(itemView.context, element?.categoryRow?.applinks, element?.categoryRow?.url)

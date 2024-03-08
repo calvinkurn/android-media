@@ -9,11 +9,15 @@ import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
+import com.tokopedia.logger.repository.InternalLoggerInterface
 import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.LogWorker
-import com.tokopedia.logger.utils.*
+import com.tokopedia.logger.utils.DataLogConfig
+import com.tokopedia.logger.utils.LoggerReporting
 import com.tokopedia.logger.utils.LoggerUtils.getLogSession
 import com.tokopedia.logger.utils.LoggerUtils.getPartDeviceId
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.logger.utils.globalScopeLaunch
 
 /**
  * Class to wrap the mechanism to send the logging message to server.
@@ -33,8 +37,9 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             loggerReporting.partDeviceId = getPartDeviceId(application)
             loggerReporting.versionName = loggerProxy.versionName
             loggerReporting.versionCode = loggerProxy.versionCode
-            val installer: String = application.packageManager.getInstallerPackageName(application.packageName)
-                ?: ""
+            val installer: String =
+                application.packageManager.getInstallerPackageName(application.packageName)
+                    ?: ""
             loggerReporting.installer = installer
             loggerReporting.packageName = application.packageName
             loggerReporting.debug = loggerProxy.isDebug
@@ -51,7 +56,8 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             val logNewRelicConfigString: String = loggerProxy.newRelicConfig
             val logEmbraceConfigString: String = loggerProxy.embraceConfig
             if (logScalyrConfigString.isNotEmpty()) {
-                val dataLogConfigScalyr = Gson().fromJson(logScalyrConfigString, DataLogConfig::class.java)
+                val dataLogConfigScalyr =
+                    Gson().fromJson(logScalyrConfigString, DataLogConfig::class.java)
                 if (dataLogConfigScalyr != null && dataLogConfigScalyr.isEnabled && loggerProxy.versionCode >= dataLogConfigScalyr.appVersionMin && dataLogConfigScalyr.tags != null) {
                     val queryLimit = dataLogConfigScalyr.queryLimits
                     if (queryLimit != null) {
@@ -61,7 +67,8 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
                 }
             }
             if (logNewRelicConfigString.isNotEmpty()) {
-                val dataLogConfigNewRelic = Gson().fromJson(logNewRelicConfigString, DataLogConfig::class.java)
+                val dataLogConfigNewRelic =
+                    Gson().fromJson(logNewRelicConfigString, DataLogConfig::class.java)
                 if (dataLogConfigNewRelic != null && dataLogConfigNewRelic.tags != null &&
                     dataLogConfigNewRelic.isEnabled && loggerProxy.versionCode >= dataLogConfigNewRelic.appVersionMin
                 ) {
@@ -83,7 +90,8 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             }
 
             if (logEmbraceConfigString.isNotEmpty()) {
-                val dataLogConfigEmbrace = Gson().fromJson(logEmbraceConfigString, DataLogConfig::class.java)
+                val dataLogConfigEmbrace =
+                    Gson().fromJson(logEmbraceConfigString, DataLogConfig::class.java)
                 if (dataLogConfigEmbrace != null && dataLogConfigEmbrace.tags != null &&
                     dataLogConfigEmbrace.isEnabled && loggerProxy.versionCode >= dataLogConfigEmbrace.appVersionMin
                 ) {
@@ -119,7 +127,8 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
                 getScalyrConfigList(context),
                 loggerProxy.encrypt,
                 loggerProxy.decrypt,
-                loggerProxy.decryptNrKey
+                loggerProxy.decryptNrKey,
+                loggerProxy.internalLogger
             )
             loggerRepository = loggerRepoNew
             return loggerRepoNew
@@ -202,4 +211,5 @@ interface LoggerProxy {
     val decrypt: ((String) -> (String))?
     val decryptNrKey: ((String) -> (String))?
     val activityName: String
+    val internalLogger: InternalLoggerInterface?
 }

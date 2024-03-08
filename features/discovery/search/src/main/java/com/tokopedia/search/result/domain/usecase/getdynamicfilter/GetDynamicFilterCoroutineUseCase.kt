@@ -5,6 +5,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.helper.FilterSortProduct
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.search.result.data.response.GqlDynamicFilterResponse
+import com.tokopedia.search.result.domain.usecase.searchproduct.sreParams
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.coroutines.UseCase
 
@@ -22,6 +23,6 @@ class GetDynamicFilterCoroutineUseCase (
 
     private fun createRequestParams(): Map<String, Any> =
         mapOf(
-            KEY_PARAMS to UrlParamUtils.generateUrlParamString(useCaseRequestParams.parameters)
+            KEY_PARAMS to UrlParamUtils.generateUrlParamString(useCaseRequestParams.parameters) + sreParams()
         )
 }

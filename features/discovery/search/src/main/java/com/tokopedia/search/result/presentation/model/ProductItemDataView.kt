@@ -254,7 +254,11 @@ class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable 
         private fun mapLabelGroupList(labelGroupList: List<LabelGroup>): List<LabelGroupDataView> {
             return labelGroupList.map { labelGroup ->
                 LabelGroupDataView(
-                    labelGroup.position, labelGroup.type, labelGroup.title, labelGroup.imageUrl
+                    labelGroup.position,
+                    labelGroup.type,
+                    labelGroup.title,
+                    labelGroup.imageUrl,
+                    labelGroup.styleList.map(StyleDataView::create)
                 )
             }
         }

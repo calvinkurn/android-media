@@ -1,6 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
 
+import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.ImageView
@@ -9,6 +11,7 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import com.tokopedia.home.beranda.domain.ForYouDataMapper.toModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -16,8 +19,11 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntityCardBinding
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.modeAware
@@ -26,8 +32,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class RecomEntityCardViewHolder(
     view: View,
-    private val listener: Listener
-) : BaseRecommendationForYouViewHolder<RecomEntityCardUiModel>(
+    private val listener: GlobalRecomListener
+) : BaseRecommendationViewHolder<RecomEntityCardUiModel>(
     view,
     RecomEntityCardUiModel::class.java
 ) {
@@ -66,7 +72,7 @@ class RecomEntityCardViewHolder(
 
     private fun setOnCardClickListener(element: RecomEntityCardUiModel) {
         binding.entryPointCard.setOnClickListener {
-            listener.onEntityCardClickListener(element, bindingAdapterPosition)
+            listener.onContentCardClicked(element.toModel(), bindingAdapterPosition)
         }
     }
 
@@ -75,7 +81,7 @@ class RecomEntityCardViewHolder(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    listener.onEntityCardImpressionListener(element, bindingAdapterPosition)
+                    listener.onContentCardImpressed(element.toModel(), bindingAdapterPosition)
                 }
             }
         )
@@ -104,8 +110,19 @@ class RecomEntityCardViewHolder(
         return ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN950)
     }
 
+    @SuppressLint("ResourcePackage")
     private fun setProductImageUrl(productImageUrl: String) {
-        binding.imgEntryPointCard.loadImage(productImageUrl)
+        binding.imgEntryPointCard.apply {
+            loadImage(productImageUrl)
+
+            setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    productcardR.color.dms_product_card_reimagine_image_overlay,
+                ),
+                PorterDuff.Mode.SRC_OVER
+            )
+        }
     }
 
     private fun setLabelTitle(labelState: RecomEntityCardUiModel.LabelState) {
@@ -178,10 +195,5 @@ class RecomEntityCardViewHolder(
             configureConstraintSet(constraintSet)
             constraintSet.applyTo(it)
         }
-    }
-
-    interface Listener {
-        fun onEntityCardImpressionListener(item: RecomEntityCardUiModel, position: Int)
-        fun onEntityCardClickListener(item: RecomEntityCardUiModel, position: Int)
     }
 }

@@ -1,13 +1,11 @@
 package com.tokopedia.mvc.presentation.download
 
-import android.Manifest
-import android.content.pm.PackageManager
+import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresPermission
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,7 +31,6 @@ import com.tokopedia.mvc.util.tracker.DownloadVoucherImageTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
@@ -42,7 +39,6 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
         private const val BANNER_URL = "banner_url"
         private const val SQUARE_URL = "square_url"
         private const val PORTRAIT_URL = "portrait_url"
-
 
         @JvmStatic
         fun newInstance(
@@ -88,7 +84,7 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<SmvcBottomsheetDownloadVoucherImageBinding>()
     private var onDownloadSuccess: () -> Unit = {}
-    private var onDownloadError : () -> Unit = {}
+    private var onDownloadError: () -> Unit = {}
 
     private fun setupDependencyInjection() {
         DaggerMerchantVoucherCreationComponent.builder()
@@ -179,7 +175,6 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
         }
     }
 
-
     private fun handleUiState(uiState: VoucherImageUiState) {
         renderList(uiState.voucherImages)
         renderButton(uiState.selectedImageUrls.count())
@@ -188,9 +183,17 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
     private fun handleEffect(effect: VoucherImageEffect) {
         when (effect) {
             is VoucherImageEffect.DownloadImages -> {
-                checkDownloadPermission(effect.selectedImageUrls)
+                handleDownloadImages(effect.selectedImageUrls)
                 sendDownloadVoucherTracker(effect.voucherId, effect.selectedImageUrls)
             }
+        }
+    }
+
+    private fun handleDownloadImages(selectedImageUrls: List<VoucherImageUiModel>) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            checkDownloadPermission(selectedImageUrls)
+        } else {
+            selectedImageUrls.forEach { downloadFile(it.imageUrl) }
         }
     }
 
@@ -202,7 +205,7 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
         binding?.btnDownload?.isEnabled = selectedImageCount.isMoreThanZero()
     }
 
-    private fun renderList(voucherImages : List<VoucherImageUiModel>) {
+    private fun renderList(voucherImages: List<VoucherImageUiModel>) {
         voucherImageAdapter.submit(voucherImages)
     }
 
@@ -225,14 +228,13 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
                 permissionCheckerHelper.onNeverAskAgain(requireActivity(), permissionText)
             }
 
+            @SuppressLint("MissingPermission")
+            /**
+             * This callback only invoked after the permission dialog already displayed via checkPermission function and permission is granted by user.
+             * Need to suppress the permission, otherwise the file download won't work.
+             */
             override fun onPermissionGranted() {
-                if (ActivityCompat.checkSelfPermission(
-                        requireActivity(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) {
-                    imageUrls.forEach { downloadFile(it.imageUrl) }
-                }
+                imageUrls.forEach { downloadFile(it.imageUrl) }
             }
         }
 
@@ -241,10 +243,8 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
             permission = PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
             listener = listener
         )
-
     }
 
-    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private fun downloadFile(uri: String) {
         val downloadCompleteListener = object : DownloadHelper.DownloadHelperListener {
             override fun onDownloadComplete() {
@@ -310,5 +310,4 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
 
         return voucherImages
     }
-
 }

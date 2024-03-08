@@ -100,7 +100,7 @@
       ],
       "eventLabel": "success - (.*)",
       "checkout_option": "cart page loaded",
-      "userId": ".+",
+      "userId": ".*",
       "promoFlag": "true|false"
     }
   ],

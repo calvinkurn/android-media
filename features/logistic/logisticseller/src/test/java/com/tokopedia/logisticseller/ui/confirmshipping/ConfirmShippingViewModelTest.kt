@@ -68,44 +68,44 @@ class ConfirmShippingViewModelTest {
     // confirm_shipping_result
     @Test
     fun getConfirmShippingData_shouldReturnSuccess() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somGetConfirmShippingResultUseCase.execute(any(), any())
         } returns SomConfirmShipping.Data.MpLogisticConfirmShipping(listMsg)
 
-        //when
+        // when
         confirmShippingViewModel.confirmShipping("", "")
 
-        //then
+        // then
         assert(confirmShippingViewModel.confirmShippingResult.value is Success)
         assert((confirmShippingViewModel.confirmShippingResult.value as Success<SomConfirmShipping.Data.MpLogisticConfirmShipping>).data.listMessage.first() == "Ok1")
     }
 
     @Test
     fun getConfirmShippingData_shouldReturnFail() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somGetConfirmShippingResultUseCase.execute(any(), any())
         } throws Throwable()
 
-        //when
+        // when
         confirmShippingViewModel.confirmShipping("", "")
 
-        //then
+        // then
         assert(confirmShippingViewModel.confirmShippingResult.value is Fail)
     }
 
     @Test
     fun getConfirmShippingData_shouldNotReturnEmpty() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somGetConfirmShippingResultUseCase.execute(any(), any())
         } returns SomConfirmShipping.Data.MpLogisticConfirmShipping(listMsg)
 
-        //when
+        // when
         confirmShippingViewModel.confirmShipping("", "")
 
-        //then
+        // then
         assert(confirmShippingViewModel.confirmShippingResult.value is Success)
         assert((confirmShippingViewModel.confirmShippingResult.value as Success<SomConfirmShipping.Data.MpLogisticConfirmShipping>).data.listMessage.isNotEmpty())
     }
@@ -113,89 +113,93 @@ class ConfirmShippingViewModelTest {
     // courier_list
     @Test
     fun getCourierListData_shouldReturnSuccess() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
-            somGetCourierListUseCase.execute()
-        } returns SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier).listShipment.toMutableList()
+            somGetCourierListUseCase.execute("")
+        } returns SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier)
 
-        //when
-        confirmShippingViewModel.getCourierList()
+        // when
+        confirmShippingViewModel.getCourierList("")
 
-        //then
+        // then
         assert(confirmShippingViewModel.courierListResult.value is Success)
-        assert((confirmShippingViewModel.courierListResult.value as Success<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>).data.first().shipmentId == "123")
+        assert((confirmShippingViewModel.courierListResult.value as Success<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment>).data.listShipment.first().shipmentId == "123")
     }
 
     @Test
     fun getCourierListData_shouldReturnFail() = coroutineTestRule.runTest {
-        //given
+        val deliveryId = "123"
+
+        // given
         coEvery {
-            somGetCourierListUseCase.execute()
+            somGetCourierListUseCase.execute(deliveryId)
         } throws Throwable()
 
-        //when
-        confirmShippingViewModel.getCourierList()
+        // when
+        confirmShippingViewModel.getCourierList(deliveryId)
 
-        //then
+        // then
         assert(confirmShippingViewModel.courierListResult.value is Fail)
     }
 
     @Test
     fun getCourierListData_shouldNotReturnEmpty() = coroutineTestRule.runTest {
-        //given
+        val deliveryId = "123"
+
+        // given
         coEvery {
-            somGetCourierListUseCase.execute()
-        } returns SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier).listShipment.toMutableList()
+            somGetCourierListUseCase.execute(deliveryId)
+        } returns SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier)
 
-        //when
-        confirmShippingViewModel.getCourierList()
+        // when
+        confirmShippingViewModel.getCourierList(deliveryId)
 
-        //then
+        // then
         assert(confirmShippingViewModel.courierListResult.value is Success)
-        assert((confirmShippingViewModel.courierListResult.value as Success<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>).data.size > 0)
+        assert((confirmShippingViewModel.courierListResult.value as Success<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment>).data.listShipment.isNotEmpty())
     }
 
     // change_courier
     @Test
     fun getChangeCourierData_shouldReturnSuccess() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somChangeCourierUseCase.execute(any(), any(), any(), any())
         } returns SomChangeCourier.Data(SomChangeCourier.Data.MpLogisticChangeCourier(listMsg))
 
-        //when
+        // when
         confirmShippingViewModel.changeCourier("", "", 0, 0)
 
-        //then
+        // then
         assert(confirmShippingViewModel.changeCourierResult.value is Success)
         assert((confirmShippingViewModel.changeCourierResult.value as Success<SomChangeCourier.Data>).data.mpLogisticChangeCourier.listMessage.first() == "Ok1")
     }
 
     @Test
     fun getChangeCourierData_shouldReturnFail() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somChangeCourierUseCase.execute(any(), any(), any(), any())
         } throws Throwable()
 
-        //when
+        // when
         confirmShippingViewModel.changeCourier("", "", 0, 0)
 
-        //then
+        // then
         assert(confirmShippingViewModel.changeCourierResult.value is Fail)
     }
 
     @Test
     fun getChangeCourierData_shouldNotReturnEmpty() = coroutineTestRule.runTest {
-        //given
+        // given
         coEvery {
             somChangeCourierUseCase.execute(any(), any(), any(), any())
         } returns SomChangeCourier.Data(SomChangeCourier.Data.MpLogisticChangeCourier(listMsg))
 
-        //when
+        // when
         confirmShippingViewModel.changeCourier("", "", 0, 0)
 
-        //then
+        // then
         assert(confirmShippingViewModel.changeCourierResult.value is Success)
         assert((confirmShippingViewModel.changeCourierResult.value as Success<SomChangeCourier.Data>).data.mpLogisticChangeCourier.listMessage.isNotEmpty())
     }

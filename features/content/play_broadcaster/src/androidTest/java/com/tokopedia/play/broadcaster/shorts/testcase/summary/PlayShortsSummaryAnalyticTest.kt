@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.testcase.summary
 
+import android.content.Intent
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -11,11 +12,13 @@ import com.tokopedia.content.product.picker.seller.domain.repository.ProductPick
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
+import com.tokopedia.play.broadcaster.shorts.container.PlayShortsTestActivity
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsTestComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.test.application.compose.createAndroidIntentComposeRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -32,11 +35,14 @@ class PlayShortsSummaryAnalyticTest {
     @get:Rule
     var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
 
+    @get:Rule
+    val composeActivityTestRule = createAndroidIntentComposeRule<PlayShortsTestActivity> { context ->
+        Intent(context, PlayShortsTestActivity::class.java)
+    }
+
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val cassavaValidator = PlayBroadcastCassavaValidator.buildForShorts(cassavaTestRule)
-
-    private val launcher = PlayShortsLauncher(targetContext)
 
     private val mockShortsRepo: PlayShortsRepository = mockk(relaxed = true)
     private val mockBroRepo: PlayBroadcastRepository = mockk(relaxed = true)
@@ -55,6 +61,7 @@ class PlayShortsSummaryAnalyticTest {
     private val mockProductTagSection = uiModelBuilder.buildProductTagSectionList()
     private val mockEtalaseProducts = uiModelBuilder.buildEtalaseProducts()
     private val mockTags = uiModelBuilder.buildTags()
+    private val mockFirstTagText = mockTags.tags.first().tag
     private val mockException = Exception("Network Error")
 
     init {
@@ -97,9 +104,7 @@ class PlayShortsSummaryAnalyticTest {
     }
 
     private fun setupSummaryFlow(setupMock: () -> Unit) {
-        launcher.launchActivity {
-            setupMock()
-        }
+        setupMock()
 
         completeMandatoryMenu()
 
@@ -123,7 +128,7 @@ class PlayShortsSummaryAnalyticTest {
             coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
         }
 
-        clickContentTag()
+        composeActivityTestRule.clickContentTag(mockFirstTagText)
 
         cassavaValidator.verify("click - content tag")
     }
@@ -134,7 +139,7 @@ class PlayShortsSummaryAnalyticTest {
             coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
         }
 
-        clickContentTag()
+        composeActivityTestRule.clickContentTag(mockFirstTagText)
         clickUploadVideo()
 
         cassavaValidator.verify("click - upload video")
@@ -155,7 +160,7 @@ class PlayShortsSummaryAnalyticTest {
             coEvery { mockShortsRepo.getTagRecommendation(any()) } throws mockException
         }
 
-        clickRefreshContentTag()
+        composeActivityTestRule.clickRefreshContentTag()
 
         cassavaValidator.verify("click - refresh content tags")
     }

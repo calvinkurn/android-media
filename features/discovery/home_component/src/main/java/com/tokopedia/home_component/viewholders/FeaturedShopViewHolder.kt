@@ -1,9 +1,7 @@
 package com.tokopedia.home_component.viewholders
 
-import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
@@ -19,7 +17,7 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSe
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
-import com.tokopedia.home_component.util.getGradientBackgroundViewAllWhite
+import com.tokopedia.home_component.util.hasGradientBackground
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.viewholders.adapter.FeaturedShopAdapter
@@ -111,10 +109,10 @@ class FeaturedShopViewHolder(
     }
 
     private fun setHeaderComponent(element: FeaturedShopDataModel) {
-        if(getGradientBackgroundViewAllWhite(element.channelModel.channelBanner.gradientColor, itemView.context)) {
-            binding?.featuredShopBackground?.invisible()
-        } else {
+        if(element.channelModel.channelBanner.gradientColor.hasGradientBackground(itemView.context)) {
             binding?.featuredShopBackground?.setGradientBackground(element.channelModel.channelBanner.gradientColor)
+        } else {
+            binding?.featuredShopBackground?.invisible()
         }
         binding?.featuredShopBackground?.setOnClickListener {
             listener.onFeaturedShopBannerBackgroundClicked(element.channelModel)

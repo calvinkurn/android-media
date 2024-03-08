@@ -16,8 +16,6 @@ import org.junit.Test
 
 class DigitalPDPPulsaIndosatOTPCassavaTest : BaseDigitalPDPPulsaTest() {
 
-    override fun getApplink(): String = APPLINK
-
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
@@ -58,7 +56,6 @@ class DigitalPDPPulsaIndosatOTPCassavaTest : BaseDigitalPDPPulsaTest() {
     }
 
     companion object {
-        const val APPLINK = "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2"
         const val PATH_ANALYTICS = "tracker/recharge/digital_product_detail/digital_pdp_pulsa_check_balance.json"
     }
 }

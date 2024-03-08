@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promonoteligible
 
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.R
@@ -17,7 +17,7 @@ class PromoNotEligibleViewHolder(private val binding: ItemPromoRedStateBinding) 
         if (model.showShopSection) {
             binding.imageMerchant.show()
             if (model.shopBadge.isNotBlank()) {
-                ImageHandler.loadImageWithoutPlaceholder(binding.imageMerchant, model.shopBadge)
+                binding.imageMerchant.loadImage(model.shopBadge)
             } else if (model.iconType == NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL) {
                 binding.imageMerchant.setImageResource(R.drawable.ic_promo_global)
             } else {

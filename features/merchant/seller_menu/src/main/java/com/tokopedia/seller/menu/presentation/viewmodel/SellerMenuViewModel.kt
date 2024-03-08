@@ -3,21 +3,21 @@ package com.tokopedia.seller.menu.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
-import com.tokopedia.seller.menu.domain.usecase.GetAllShopInfoUseCase
-import com.tokopedia.seller.menu.presentation.uimodel.ShopProductUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
-import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
+import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
+import com.tokopedia.seller.menu.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
 import com.tokopedia.seller.menu.domain.usecase.GetShopScoreLevelUseCase
 import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.presentation.util.SellerUiModelMapper.mapToNotificationUiModel
 import com.tokopedia.seller.menu.presentation.util.SellerUiModelMapper.mapToProductUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -78,8 +78,8 @@ class SellerMenuViewModel @Inject constructor(
             }
             _shopAccountInfo.postValue(Success(data))
         }, onError = {
-            _shopAccountInfo.postValue(Fail(it))
-        })
+                _shopAccountInfo.postValue(Fail(it))
+            })
     }
 
     fun getAllSettingShopInfo(isToasterRetry: Boolean = false, shopAge: Long) {
@@ -94,15 +94,15 @@ class SellerMenuViewModel @Inject constructor(
             val response = withContext(dispatchers.io) {
                 getProductListMetaUseCase.setParams(userSession.shopId)
                 getProductListMetaUseCase.executeOnBackground()
-                        .productListMetaWrapper
-                        .productListMetaData
-                        .tabs
+                    .productListMetaWrapper
+                    .productListMetaData
+                    .tabs
             }
 
             _shopProductLiveData.value = Success(mapToProductUiModel(response, userSession.isShopOwner))
         }, onError = {
-            _shopProductLiveData.value = Fail(it)
-        })
+                _shopProductLiveData.value = Fail(it)
+            })
     }
 
     fun getNotifications() {
@@ -114,8 +114,8 @@ class SellerMenuViewModel @Inject constructor(
 
             _sellerMenuNotification.value = Success(data)
         }, onError = {
-            _sellerMenuNotification.value = Fail(it)
-        })
+                _sellerMenuNotification.value = Fail(it)
+            })
     }
 
     private fun getAllShopInfoData(shopAge: Long) {
@@ -146,8 +146,8 @@ class SellerMenuViewModel @Inject constructor(
 
             _settingShopInfoLiveData.value = Success(data)
         }, onError = {
-            _settingShopInfoLiveData.value = Fail(it)
-        })
+                _settingShopInfoLiveData.value = Fail(it)
+            })
     }
 
     private fun checkDelayErrorResponseTrigger() {

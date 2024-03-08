@@ -1,7 +1,7 @@
 package com.tokopedia.minicart.chatlist.viewholder
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
@@ -78,7 +78,7 @@ class MiniCartChatProductViewHolder(
     private fun setImage(element: MiniCartChatProductUiModel) {
         with(viewBinding) {
             if (element.productImageUrl.isNotBlank()) {
-                ImageHandler.loadImageWithoutPlaceholder(iuProduct, element.productImageUrl)
+                iuProduct.loadImage(element.productImageUrl)
             }
         }
     }

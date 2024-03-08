@@ -14,7 +14,7 @@ import javax.inject.Inject
 class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterface) {
 
     enum class Page {
-        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE, DISCOVERY_PAGE, RECOMMENDATION_INFINITE, MVC_PAGE, SHOP_PAGE
+        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE, DISCOVERY_PAGE, RECOMMENDATION_INFINITE, MVC_PAGE, SHOP_PAGE, BMSM_OLP_PAGE
     }
 
     companion object {

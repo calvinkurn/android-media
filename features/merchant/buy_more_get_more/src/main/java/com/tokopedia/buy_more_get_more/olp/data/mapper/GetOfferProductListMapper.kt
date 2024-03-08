@@ -1,7 +1,7 @@
 package com.tokopedia.buy_more_get_more.olp.data.mapper
 
-import com.tokopedia.buy_more_get_more.olp.data.response.OfferProductListResponse
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
+import com.tokopedia.campaign.data.response.OfferProductListResponse
 import javax.inject.Inject
 
 class GetOfferProductListMapper @Inject constructor() {
@@ -10,7 +10,8 @@ class GetOfferProductListMapper @Inject constructor() {
         return OfferProductListUiModel(
             responseHeader = response.offeringProductList.responseHeader.toResponseHeaderModel(),
             productList = response.offeringProductList.productList.toProductListModel(),
-            totalProduct = response.offeringProductList.totalProduct
+            totalProduct = response.offeringProductList.totalProduct,
+            pagination = response.offeringProductList.pagination.toPaginationUiModel()
         )
     }
 
@@ -62,5 +63,14 @@ class GetOfferProductListMapper @Inject constructor() {
                 url = it.url
             )
         }
+    }
+
+    private fun OfferProductListResponse.Pagination.toPaginationUiModel(): OfferProductListUiModel.Pagination {
+        return OfferProductListUiModel.Pagination(
+            currentPage = currentPage,
+            nextPage = nextPage,
+            prevPage = prevPage,
+            hasNext = hasNext
+        )
     }
 }

@@ -21,20 +21,18 @@ class CartGroupViewHolderRobot(private val view: View) {
 
     fun assertShowFreeShippingImage() {
         assertEquals(View.VISIBLE, view.findViewById<View>(R.id.img_free_shipping).visibility)
-        assertEquals(View.VISIBLE, view.findViewById<View>(R.id.separator_free_shipping).visibility)
     }
 
     fun assertNotShowFreeShippingImage() {
         assertEquals(View.GONE, view.findViewById<View>(R.id.img_free_shipping).visibility)
-        assertEquals(View.GONE, view.findViewById<View>(R.id.separator_free_shipping).visibility)
     }
 
     // Cart Shop Group Ticker
     fun assertShowCartShopGroupTicker() {
-        assertEquals(View.VISIBLE, view.findViewById<View>(R.id.layout_cart_shop_ticker).visibility)
+        assertEquals(View.VISIBLE, view.findViewById<View>(R.id.item_cart_basket_building).visibility)
     }
 
     fun assertNotShowCartShopGroupTicker() {
-        assertEquals(View.GONE, view.findViewById<View>(R.id.layout_cart_shop_ticker).visibility)
+        assertEquals(View.GONE, view.findViewById<View>(R.id.item_cart_basket_building).visibility)
     }
 }

@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -51,14 +50,8 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
-import com.tokopedia.wishlist.detail.data.model.response.DeleteWishlistProgressResponse
-import com.tokopedia.wishlist.databinding.FragmentCollectionWishlistBinding
-import com.tokopedia.wishlist.detail.util.WishlistAnalytics
-import com.tokopedia.wishlist.detail.util.WishlistConsts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
-import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter.Companion.LAYOUT_RECOMMENDATION_TITLE
 import com.tokopedia.wishlist.collection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionCarouselEmptyStateData
-import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlist.collection.data.response.CreateWishlistCollectionResponse
 import com.tokopedia.wishlist.collection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlist.collection.di.DaggerWishlistCollectionComponent
@@ -72,6 +65,7 @@ import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.REQUEST_C
 import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.TYPE_COLLECTION_SHARE
 import com.tokopedia.wishlist.collection.util.WishlistCollectionPrefs
 import com.tokopedia.wishlist.collection.util.WishlistCollectionSharingUtils
+import com.tokopedia.wishlist.collection.util.WishlistEndlessScrollListener
 import com.tokopedia.wishlist.collection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlist.collection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_DIVIDER
 import com.tokopedia.wishlist.collection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_LOADER
@@ -83,21 +77,29 @@ import com.tokopedia.wishlist.collection.view.bottomsheet.BottomSheetUpdateWishl
 import com.tokopedia.wishlist.collection.view.bottomsheet.BottomSheetWishlistAffiliateOnBoarding
 import com.tokopedia.wishlist.collection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 import com.tokopedia.wishlist.collection.view.viewmodel.WishlistCollectionViewModel
+import com.tokopedia.wishlist.databinding.FragmentCollectionWishlistBinding
+import com.tokopedia.wishlist.detail.data.model.WishlistCollectionState
+import com.tokopedia.wishlist.detail.data.model.response.DeleteWishlistProgressResponse
+import com.tokopedia.wishlist.detail.util.WishlistAnalytics
+import com.tokopedia.wishlist.detail.util.WishlistConsts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
+import com.tokopedia.wishlist.detail.view.adapter.WishlistAdapter.Companion.LAYOUT_RECOMMENDATION_TITLE
+import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.roundToInt
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.wishlist.R as wishlistR
 
 @Keep
 class WishlistCollectionFragment :
     BaseDaggerFragment(),
-        IWishlistCollectionFragment,
+    IWishlistCollectionFragment,
     WishlistCollectionAdapter.ActionListener,
     BottomSheetUpdateWishlistCollectionName.ActionListener,
     BottomSheetOnboardingWishlistCollection.ActionListener,
-        ActionListenerBottomSheetMenu {
+    ActionListenerBottomSheetMenu {
     private var onlyAllCollection: Boolean = false
     private var binding by autoClearedNullable<FragmentCollectionWishlistBinding>()
     private lateinit var collectionAdapter: WishlistCollectionAdapter
@@ -114,10 +116,7 @@ class WishlistCollectionFragment :
     private var _firstActionsCollection: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action> = emptyList()
     private var _firstCollectionIndicatorTitle: String = ""
     private lateinit var trackingQueue: TrackingQueue
-    private lateinit var rvScrollListener: EndlessRecyclerViewScrollListener
-    private var onLoadMore = false
-    private var isFetchRecommendation = false
-    private var currRecommendationListPage = 1
+    private var rvScrollListener: WishlistEndlessScrollListener? = null
     private var hitCountDeletion = false
     private var isOnProgressDeleteWishlist = false
     private var _collectionIdShared = ""
@@ -200,7 +199,8 @@ class WishlistCollectionFragment :
             getWishlistCollections()
         } else {
             startActivityForResult(
-                RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN
+                RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
             )
         }
     }
@@ -312,14 +312,9 @@ class WishlistCollectionFragment :
             }
         }
 
-        rvScrollListener = object : EndlessRecyclerViewScrollListener(glm) {
-
+        rvScrollListener = object : WishlistEndlessScrollListener(glm) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                currentPage += 1
-                onLoadMore = true
-                if (isFetchRecommendation) {
-                    loadRecommendationList()
-                }
+                loadRecommendationList(page)
             }
         }
 
@@ -333,14 +328,13 @@ class WishlistCollectionFragment :
                 layoutManager = glm
                 adapter = collectionAdapter
                 addItemDecoration(WishlistCollectionItemOffsetDecoration(requireContext(), abstractionR.dimen.dp_8))
-                addOnScrollListener(rvScrollListener)
+                rvScrollListener?.let { addOnScrollListener(it) }
             }
         }
     }
 
-    private fun loadRecommendationList() {
-        currRecommendationListPage += 1
-        collectionViewModel.loadRecommendation(currRecommendationListPage)
+    private fun loadRecommendationList(page: Int) {
+        collectionViewModel.loadRecommendation(page)
     }
 
     private fun setToolbarTitle(title: String) {
@@ -360,18 +354,15 @@ class WishlistCollectionFragment :
     }
 
     private fun doRefresh() {
-        onLoadMore = false
-        isFetchRecommendation = false
-        currRecommendationListPage = 1
         getWishlistCollections()
     }
 
     private fun getWishlistCollections() {
+        rvScrollListener?.resetState()
         collectionViewModel.getWishlistCollections()
     }
 
     private fun observingWishlistCollections() {
-        showLoader()
         collectionViewModel.collections.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
@@ -565,11 +556,25 @@ class WishlistCollectionFragment :
     private fun observingWishlistData() {
         collectionViewModel.collectionData.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is Success -> {
-                    collectionAdapter.addList(result.data)
+                is WishlistCollectionState.InitialLoading -> {
+                    collectionAdapter.showLoader()
+                    binding?.wishlistCollectionStickyProgressDeletionWidget?.rlDeletionProgress?.gone()
                 }
-                else -> {
-                    //no-op
+
+                is WishlistCollectionState.Set -> {
+                    collectionAdapter.set(result.items)
+                    if (result.shouldUpdateRecommendationScrollState) {
+                        rvScrollListener?.updateStateAfterGetData()
+                    }
+                }
+
+                is WishlistCollectionState.Update -> {
+                    collectionAdapter.add(result.items)
+                    rvScrollListener?.updateStateAfterGetData()
+                }
+
+                is WishlistCollectionState.Error -> {
+                    rvScrollListener?.setLoading(false)
                 }
             }
         }
@@ -589,7 +594,7 @@ class WishlistCollectionFragment :
                         } else if (result.data.data.message.isNotEmpty()) {
                             result.data.data.message
                         } else {
-                            getString(com.tokopedia.wishlist.R.string.wishlist_v2_common_error_msg)
+                            getString(wishlistR.string.wishlist_v2_common_error_msg)
                         }
                         showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
                     }
@@ -656,7 +661,7 @@ class WishlistCollectionFragment :
                     } else {
                         val errorMessage = result.data.errorMessage.first().ifEmpty {
                             context?.getString(
-                                com.tokopedia.wishlist.R.string.wishlist_v2_common_error_msg
+                                wishlistR.string.wishlist_v2_common_error_msg
                             )
                         }
                         errorMessage?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
@@ -714,10 +719,10 @@ class WishlistCollectionFragment :
     }
 
     override fun onKebabMenuClicked(
-            collectionId: String,
-            collectionName: String,
-            actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
-            collectionIndicatorTitle: String
+        collectionId: String,
+        collectionName: String,
+        actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
+        collectionIndicatorTitle: String
     ) {
         showBottomSheetKebabMenu(collectionId, collectionName, actions, collectionIndicatorTitle)
         WishlistCollectionAnalytics.sendClickThreeDotsOnCollectionFolderEvent()
@@ -736,10 +741,10 @@ class WishlistCollectionFragment :
     }
 
     private fun showBottomSheetKebabMenu(
-            collectionId: String,
-            collectionName: String,
-            actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
-            collectionIndicatorTitle: String
+        collectionId: String,
+        collectionName: String,
+        actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
+        collectionIndicatorTitle: String
     ) {
         bottomSheetKebabMenu =
             BottomSheetKebabMenuWishlistCollection.newInstance(collectionName, collectionId, actions, collectionIndicatorTitle)
@@ -860,11 +865,11 @@ class WishlistCollectionFragment :
     }
 
     override fun onFirstCollectionItemBind(
-            anchorKebabMenuView: View,
-            collectionId: String,
-            collectionName: String,
-            actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
-            collectionIndicatorTitle: String
+        anchorKebabMenuView: View,
+        collectionId: String,
+        collectionName: String,
+        actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
+        collectionIndicatorTitle: String
     ) {
         _firstAnchorKebabMenuView = anchorKebabMenuView
         _firstCollectionId = collectionId
@@ -889,11 +894,11 @@ class WishlistCollectionFragment :
     }
 
     private fun showWishlistCollectionSharingCoachMark(
-            anchorKebabMenuView: View,
-            collectionId: String,
-            collectionName: String,
-            actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
-            collectionIndicatorTitle: String
+        anchorKebabMenuView: View,
+        collectionId: String,
+        collectionName: String,
+        actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>,
+        collectionIndicatorTitle: String
     ) {
         if (coachMarkItemSharing1.isEmpty()) {
             coachMarkItemSharing1.add(
@@ -1132,13 +1137,6 @@ class WishlistCollectionFragment :
                 )
             }
             startActivityForResult(intent, REQUEST_CODE_COLLECTION_DETAIL)
-        }
-    }
-
-    private fun showLoader() {
-        collectionAdapter.showLoader()
-        binding?.run {
-            wishlistCollectionStickyProgressDeletionWidget.rlDeletionProgress.gone()
         }
     }
 

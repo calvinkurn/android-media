@@ -55,7 +55,7 @@ class GiftBoxDailyViewModel @Inject constructor(
     }
 
     fun getRewards() {
-        if (rewardJob == null || rewardJob!!.isCompleted && campaignSlug != null) {
+        if ((rewardJob == null || rewardJob!!.isCompleted) && campaignSlug != null) {
             rewardJob = launchCatchError(block = {
                 val response: GiftBoxRewardEntity
                 val params = giftBoxDailyRewardUseCase.getRequestParams(campaignSlug!!, uniqueCode)
@@ -96,26 +96,22 @@ class GiftBoxDailyViewModel @Inject constructor(
         }
     }
 
-    suspend fun composeApi(giftBoxRewardEntity: GiftBoxRewardEntity): CouponDetailResponse? {
-        suspend fun getCatalogDetail(ids: List<String>): CouponDetailResponse {
-            return couponDetailUseCase.getResponse(ids)
-        }
-
-        fun mapperGratificationResponseToCouponIds(response: GiftBoxRewardEntity): List<String> {
-            var ids = arrayListOf<String>()
-            response.gamiCrack.benefits?.forEach {
-                if (!it.referenceID.isNullOrEmpty() && it.displayType == DisplayType.CATALOG) {
-                    ids.add(it.referenceID)
-                }
-            }
-            return ids
-        }
-
+    private suspend fun composeApi(giftBoxRewardEntity: GiftBoxRewardEntity): CouponDetailResponse? {
         val ids = mapperGratificationResponseToCouponIds(giftBoxRewardEntity)
         if (ids.isEmpty()) {
             return null
         }
-        return getCatalogDetail(ids)
+        return couponDetailUseCase.getResponse(ids)
+    }
+
+    fun mapperGratificationResponseToCouponIds(response: GiftBoxRewardEntity): List<String> {
+        val ids = arrayListOf<String>()
+        response.gamiCrack.benefits?.forEach {
+            if (!it.referenceID.isNullOrEmpty() && it.displayType == DisplayType.CATALOG) {
+                ids.add(it.referenceID)
+            }
+        }
+        return ids
     }
 
     fun autoApply(code: String) {

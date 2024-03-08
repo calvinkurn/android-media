@@ -22,6 +22,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparat
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsVerticalBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import timber.log.Timber
@@ -90,12 +91,14 @@ class UniversalInboxAdapter(
         }
     }
 
-    fun getProductRecommendationFirstPosition(): Int? {
+    fun getProductRecommendationFirstPosition(
+        list: List<Visitable<in UniversalInboxTypeFactory>> = visitables
+    ): Int? {
         return if (checkCachedRecommendationFirstPosition()) {
             recommendationFirstPosition
         } else {
             // get first index or -1
-            visitables.indexOfFirst {
+            list.indexOfFirst {
                 it is UniversalInboxRecommendationUiModel
             }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
                 recommendationFirstPosition = it
@@ -129,6 +132,12 @@ class UniversalInboxAdapter(
     fun addProductRecommendationLoader() {
         if (getFirstLoadingPosition() != null) return
         tryAddItemAtPosition(itemCount, loaderUiModel)
+    }
+
+    fun removeProductRecommendationLoader() {
+        getFirstLoadingPosition()?.let {
+            tryRemoveItemAtPosition(it)
+        }
     }
 
     private fun getRecommendationTitlePosition(): Int? {
@@ -225,34 +234,40 @@ class UniversalInboxAdapter(
             getFirstLoadingPosition()
     }
 
-    fun tryUpdateProductRecommendations(
+    fun tryAddProductRecommendation(
         title: String,
         newList: List<Visitable<in UniversalInboxTypeFactory>>
     ) {
         try {
             val editedList = visitables.toMutableList()
+            // Add title if not exist yet
             if (getRecommendationTitlePosition() == null && title.isNotBlank()) {
-                editedList.add(
-                    UniversalInboxRecommendationTitleUiModel(title)
-                )
+                editedList.add(UniversalInboxRecommendationTitleUiModel(title))
             }
-            val productRecommendationFirstPosition = getProductRecommendationFirstPosition()
-            if (productRecommendationFirstPosition != null) {
-                editedList.subList(
-                    fromIndex = productRecommendationFirstPosition,
-                    toIndex = itemCount
-                ).apply {
-                    clear()
-                    addAll(newList) // replace the sublist
-                }
-            } else {
-                editedList.addAll(newList)
-            }
-            editedList.remove(loaderUiModel) // Remove loader if any
+            // Add Vertical Banner to the list
+            val productListWithVerticalBanner = addVerticalBannerToProductList(newList)
+            // Update RV
+            editedList.addAll(productListWithVerticalBanner)
             updateItems(editedList)
         } catch (throwable: Throwable) {
             Timber.d(throwable)
         }
+    }
+
+    private fun addVerticalBannerToProductList(
+        productList: List<Visitable<in UniversalInboxTypeFactory>>
+    ): List<Visitable<in UniversalInboxTypeFactory>> {
+        val interval = 7 // For every 8th position, add vertical banner
+        val listWithVerticalBanner = mutableListOf<Visitable<in UniversalInboxTypeFactory>>()
+
+        for ((index, item) in productList.withIndex()) {
+            if (index == interval) {
+                listWithVerticalBanner.add(UniversalInboxTopAdsVerticalBannerUiModel())
+            }
+            // Add the current item
+            listWithVerticalBanner.add(item)
+        }
+        return listWithVerticalBanner
     }
 
     fun tryUpdateWidgetMeta(item: UniversalInboxWidgetMetaUiModel) {

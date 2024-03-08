@@ -29,7 +29,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 
-
 /**
  * @author okasurya on 10/25/18.
  */
@@ -66,8 +65,11 @@ class TrackingRepository private constructor(
         withContext(Dispatchers.IO) {
             try {
                 val tracking = Tracking(
-                    data, userSession.userId, userSession.deviceId,
-                    Calendar.getInstance().timeInMillis, GlobalConfig.VERSION_NAME
+                    data,
+                    userSession.userId,
+                    userSession.deviceId,
+                    Calendar.getInstance().timeInMillis,
+                    GlobalConfig.VERSION_NAME
                 )
                 trackingDao.insert(tracking)
                 IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
@@ -112,9 +114,13 @@ class TrackingRepository private constructor(
         withContext(Dispatchers.IO) {
             try {
                 val tracking = PerformanceTracking(
-                    data, userSession.userId, userSession.deviceId,
-                    Calendar.getInstance().timeInMillis, GlobalConfig.VERSION_NAME,
-                    DeviceConnectionInfo.getCarrierName(context), isPowerSaveMode(context)
+                    data,
+                    userSession.userId,
+                    userSession.deviceId,
+                    Calendar.getInstance().timeInMillis,
+                    GlobalConfig.VERSION_NAME,
+                    DeviceConnectionInfo.getCarrierName(context),
+                    isPowerSaveMode(context)
                 )
                 trackingPerfDao.insert(tracking)
                 IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
@@ -218,8 +224,11 @@ class TrackingRepository private constructor(
     suspend fun sendSingleEvent(data: String, session: Session, eventName: String?): Boolean {
         try {
             val dataRequest = TrackingMapper().transformSingleEvent(
-                data, session.getSessionId(),
-                userSession.userId, userSession.deviceId,
+                context,
+                data,
+                session.getSessionId(),
+                userSession.userId,
+                userSession.deviceId,
                 cache
             )
             val requestBody = ApiService.parse(dataRequest)
@@ -236,7 +245,9 @@ class TrackingRepository private constructor(
             return isSuccessFul
         } catch (e: Exception) {
             ServerLogger.log(
-                Priority.P1, "IRIS_REALTIME_ERROR", mapOf(
+                Priority.P1,
+                "IRIS_REALTIME_ERROR",
+                mapOf(
                     "type" to "exception",
                     "data" to data.take(ERROR_MAX_LENGTH).trim(),
                     "err" to Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()
@@ -252,13 +263,15 @@ class TrackingRepository private constructor(
             eventName?.let {
                 if (CM_REALTIME_EVENT_LIST.contains(it)) {
                     val transformedEvent =
-                        TrackingMapper.reformatEvent(data, session.getSessionId(), cache).toString()
+                        TrackingMapper.reformatEvent(data, session.getSessionId(), cache, context).toString()
                     saveEvent(transformedEvent)
                 }
             }
         } catch (e: Exception) {
             ServerLogger.log(
-                Priority.P1, "IRIS_REALTIME_ERROR", mapOf(
+                Priority.P1,
+                "IRIS_REALTIME_ERROR",
+                mapOf(
                     "type" to "transform_exception",
                     "data" to data.take(ERROR_MAX_LENGTH).trim(),
                     "err" to Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()
@@ -267,15 +280,15 @@ class TrackingRepository private constructor(
         }
     }
 
-
     /**
      * @return data size that has been successfully send to server
      * -1 if the data is failed to send or cache is disabled
      * 0 if no data send because it is already empty
      */
     suspend fun sendRemainingEvent(maxRow: Int): Int {
-        if (!cache.isEnabled())
+        if (!cache.isEnabled()) {
             return -1
+        }
 
         var counterLoop = 0
         val maxLoop = getBatchPerPeriod()
@@ -310,7 +323,9 @@ class TrackingRepository private constructor(
             } else {
                 lastSuccessSent = false
                 ServerLogger.log(
-                    Priority.P1, "IRIS", mapOf(
+                    Priority.P1,
+                    "IRIS",
+                    mapOf(
                         "type" to "failedSendData",
                         "data" to request.take(ERROR_MAX_LENGTH).trim()
                     )
@@ -326,8 +341,9 @@ class TrackingRepository private constructor(
     }
 
     suspend fun sendRemainingPerfEvent(maxRow: Int): Int {
-        if (!cache.isPerformanceEnabled())
+        if (!cache.isPerformanceEnabled()) {
             return -1
+        }
 
         var counterLoop = 0
         val maxLoop = getBatchPerPeriod()
@@ -362,7 +378,9 @@ class TrackingRepository private constructor(
             } else {
                 lastSuccessSent = false
                 ServerLogger.log(
-                    Priority.P1, "IRIS", mapOf(
+                    Priority.P1,
+                    "IRIS",
+                    mapOf(
                         "type" to "failedSendDataPerf",
                         "data" to request.take(ERROR_MAX_LENGTH).trim()
                     )

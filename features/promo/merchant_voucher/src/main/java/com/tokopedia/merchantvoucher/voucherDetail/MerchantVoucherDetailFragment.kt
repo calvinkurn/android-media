@@ -19,14 +19,15 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageWithCacheData
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.analytic.MerchantVoucherTracking
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
@@ -39,6 +40,8 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by hendry on 21/09/18.
@@ -92,9 +95,9 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        voucherId = arguments!!.getInt(EXTRA_VOUCHER_ID)
-        merchantVoucherViewModel = arguments!!.getParcelable(EXTRA_VOUCHER)
-        voucherShopId = arguments!!.getString(EXTRA_SHOP_ID)
+        voucherId = requireArguments().getInt(EXTRA_VOUCHER_ID)
+        merchantVoucherViewModel = requireArguments().getParcelable(EXTRA_VOUCHER)
+        voucherShopId = requireArguments().getString(EXTRA_SHOP_ID)
         super.onCreate(savedInstanceState)
         activity?.run {
             merchantVoucherTracking = MerchantVoucherTracking()
@@ -124,8 +127,8 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         loadVoucherDetail()
         tvSeeCart?.setOnClickListener {
-            if (RouteManager.isSupportApplink(context!!, ApplinkConst.CART)) {
-                val intent = RouteManager.getIntent(context!!, ApplinkConst.CART)
+            if (RouteManager.isSupportApplink(requireContext(), ApplinkConst.CART)) {
+                val intent = RouteManager.getIntent(requireContext(), ApplinkConst.CART)
                 intent?.run {
                     startActivity(intent)
                 }
@@ -151,8 +154,8 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 copyVoucherCodeToClipboard()
                 val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
                         Snackbar.LENGTH_LONG)
-                snackbar.setAction(activity!!.getString(com.tokopedia.design.R.string.close)) { snackbar.dismiss() }
-                snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+                snackbar.setAction(requireActivity().getString(R.string.mvc_label_close)) { snackbar.dismiss() }
+                snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(this, unifyprinciplesR.color.Unify_NN0))
                 snackbar.show()
             }
         }
@@ -178,13 +181,11 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
             onSuccessGetMerchantVoucherDetail(this)
         }
         activity?.let { it ->
-            Dialog(it, Dialog.Type.PROMINANCE).apply {
+            DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(useMerchantVoucherQueryResult.errorMessageTitle)
-                setDesc(useMerchantVoucherQueryResult.errorMessage)
-                setBtnOk(getString(com.tokopedia.design.R.string.label_close))
-                setOnOkClickListener {
-                    dismiss()
-                }
+                setDescription(useMerchantVoucherQueryResult.errorMessage.toBlankOrString())
+                setPrimaryCTAText(getString(R.string.mvc_label_close))
+                setPrimaryCTAClickListener { dismiss() }
                 show()
             }
         }
@@ -219,10 +220,10 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
         if (merchantVoucherViewModel.bannerUrl.isNullOrEmpty()) {
             ivVoucherBanner?.visibility = View.GONE
         } else {
-            ImageHandler.loadImageAndCache(ivVoucherBanner, merchantVoucherViewModel.bannerUrl)
+            ivVoucherBanner?.loadImageWithCacheData(merchantVoucherViewModel.bannerUrl)
             ivVoucherBanner?.visibility = View.VISIBLE
         }
-        val voucherString = merchantVoucherViewModel.getTypeString(context!!) + " " +
+        val voucherString = merchantVoucherViewModel.getTypeString(requireContext()) + " " +
                 merchantVoucherViewModel.getAmountString()
         tvVoucherTitle?.text = voucherString
         if (merchantVoucherViewModel.minimumSpend <= 0) {
@@ -252,7 +253,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
         } else {
             vgVoucherStatus?.visibility = View.VISIBLE
             tvSeeCart?.visibility = View.GONE
-            tvVoucherStatus?.text = merchantVoucherViewModel.getStatusString(context!!)
+            tvVoucherStatus?.text = merchantVoucherViewModel.getStatusString(requireContext())
             btnContainer?.visibility = View.GONE
         }
         if (merchantVoucherViewModel.tnc.isNullOrEmpty()) {
@@ -273,7 +274,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
         if (loadingUseMerchantVoucher == null) {
             loadingUseMerchantVoucher = ProgressDialog(activity)
             loadingUseMerchantVoucher!!.setCancelable(false)
-            loadingUseMerchantVoucher!!.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
+            loadingUseMerchantVoucher!!.setMessage(getString(abstractionR.string.title_loading))
         }
         if (loadingUseMerchantVoucher!!.isShowing()) {
             loadingUseMerchantVoucher!!.dismiss()

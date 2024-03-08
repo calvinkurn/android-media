@@ -29,8 +29,8 @@ open class CopyableKeyValueViewHolder<T : BaseCopyableKeyValueUiModel>(itemView:
     override fun bind(element: T?) {
         element?.let {
             this.element = it
-            setupLabel(it.label.getStringValue(itemView.context))
-            setupTriggerCopyArea(it.copyLabel.getStringValue(itemView.context))
+            setupLabel(it.label.getString(itemView.context))
+            setupTriggerCopyArea(it.copyLabel.getString(itemView.context))
             setupTextToShow(it.copyableText)
         }
     }
@@ -70,10 +70,10 @@ open class CopyableKeyValueViewHolder<T : BaseCopyableKeyValueUiModel>(itemView:
         element?.let {
             Utils.copyText(
                 itemView.context,
-                it.copyLabel.getStringValue(itemView.context),
+                it.copyLabel.getString(itemView.context),
                 MethodChecker.fromHtmlWithoutExtraSpace(it.copyableText)
             )
-            showToaster(it.copyMessage.getStringValue(itemView.context))
+            showToaster(it.copyMessage.getString(itemView.context))
         }
     }
 }

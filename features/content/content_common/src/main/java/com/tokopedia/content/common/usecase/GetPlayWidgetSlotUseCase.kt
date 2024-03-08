@@ -26,25 +26,6 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
         return graphqlRepository.request(queryObject, params)
     }
 
-    suspend fun executeOnBackground(
-        group: String,
-        cursor: String,
-        sourceType: String,
-        sourceId: String,
-        isWifi: Boolean
-    ): WidgetSlot {
-        val param = Param(
-            Param.Request(
-                group = group,
-                cursor = cursor,
-                sourceType = sourceType,
-                sourceId = sourceId,
-                isWifi = isWifi
-            )
-        )
-        return execute(param)
-    }
-
     companion object {
         private const val KEY_REQ = "req"
 
@@ -118,7 +99,9 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
                           id
                           name
                           type
+                          badge_url
                           thumbnail_url
+                          app_link
                         }
                         app_link
                         web_link

@@ -9,12 +9,12 @@ import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationAnalytic
@@ -102,12 +102,7 @@ open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
             val imageRatio = notification?.imageMetaData?.getOrNull(0)?.ratio ?: Ratio()
             banner?.show()
             banner?.ratio = (imageRatio.y / imageRatio.x)
-            ImageHandler.loadImageRounded(
-                    context,
-                    banner,
-                    notification?.dataNotification?.infoThumbnailUrl,
-                    bannerRadius
-            )
+            banner?.loadImageRounded(notification?.dataNotification?.infoThumbnailUrl, bannerRadius)
         } else {
             banner?.hide()
         }

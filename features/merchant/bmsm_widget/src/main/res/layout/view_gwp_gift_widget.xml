@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvGiftList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:background="@drawable/bg_gwp_gift_widget"
+        android:overScrollMode="never"
+        android:paddingStart="1dp"
+        android:paddingEnd="1dp"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_product_gift"
+        tools:orientation="horizontal" />
+
+    <com.tokopedia.bmsm_widget.presentation.customview.BmsmRibbonView
+        android:id="@+id/giftRibbonView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="4dp" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/giftWidgetCta"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textColor="@color/Unify_GN500"
+        android:visibility="gone"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Lihat"
+        tools:visibility="visible" />
+
+    <include
+        android:id="@+id/giftLoadingState"
+        layout="@layout/item_loading_state"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/giftErrorState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:background="@drawable/bg_gwp_gift_widget"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:visibility="gone">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/gwp_gift_widgget_error_message"
+            android:textColor="@color/Unify_RN500"
+            app:typographyType="small" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvReloadGift"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="@string/gwp_reload"
+            android:textColor="@color/Unify_GN500"
+            app:typographyType="small"
+            app:typographyWeight="bold" />
+    </LinearLayout>
+</RelativeLayout>

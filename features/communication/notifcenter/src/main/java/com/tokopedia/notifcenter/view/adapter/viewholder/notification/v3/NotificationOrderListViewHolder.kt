@@ -19,6 +19,7 @@ import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.util.Or
 import com.tokopedia.notifcenter.view.customview.ShadowGenerator
 import com.tokopedia.notifcenter.view.customview.widget.ItemOrderListLinearLayout
 import com.tokopedia.notifcenter.view.listener.NotificationItemListener
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class NotificationOrderListViewHolder constructor(
     itemView: View?,
@@ -48,7 +49,7 @@ class NotificationOrderListViewHolder constructor(
     private fun initRecyclerView() {
         rv?.apply {
             setHasFixedSize(true)
-            setRecycledViewPool(adapterListener?.getNotificationOrderViewPool())
+            setRecycledViewPool(adapterListener?.getNotificationOrderFilterViewPool())
             itemAnimator = null
             layoutManager = rvLm
             adapter = rvAdapter
@@ -146,20 +147,20 @@ class NotificationOrderListViewHolder constructor(
         private val card: ItemOrderListLinearLayout? = itemView?.findViewById(R.id.ll_card_uoh)
         private val bg = ShadowGenerator.generateBackgroundWithShadow(
             card,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background,
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+            unifyprinciplesR.color.Unify_Background,
+            unifyprinciplesR.dimen.unify_space_8,
+            unifyprinciplesR.dimen.unify_space_8,
+            unifyprinciplesR.dimen.unify_space_8,
+            unifyprinciplesR.dimen.unify_space_8,
             R.color.notifcenter_dms_order_list_card_shadow,
             R.dimen.notif_dp_6,
             R.dimen.notif_dp_6
         )
         private val titleWithIconMargin = itemView?.context?.resources?.getDimension(
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_4
+            unifyprinciplesR.dimen.unify_space_4
         )
         private val titleWithoutIconMargin = itemView?.context?.resources?.getDimension(
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8
+            unifyprinciplesR.dimen.unify_space_8
         )
 
         override fun bind(element: OrderWidgetUiModel) {

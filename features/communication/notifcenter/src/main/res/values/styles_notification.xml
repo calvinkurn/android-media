@@ -40,6 +40,9 @@
         <item name="android:layout_marginEnd">@dimen/spacing_lvl4</item>
         <item name="android:textColor">@color/Unify_NN950_96</item>
         <item name="typographyType">body_2</item>
+    </style>
+
+    <style name="BaseNotification_Title_Bold" parent="BaseNotification_Title">
         <item name="typographyWeight">bold</item>
     </style>
 

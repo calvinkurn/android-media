@@ -127,7 +127,13 @@ data class Properties(
     val header: Header? = null,
 
     @SerializedName("warehouse_tco")
-    val warehouseTco: String? = null
+    val warehouseTco: String? = null,
+
+    @SerializedName("auto_refresh")
+    val shouldAutoRefresh: Boolean = false,
+
+    @SerializedName("card_type")
+    val cardType: String? = null,
 ) {
     data class Header(
         @SerializedName("applink")
@@ -138,6 +144,10 @@ data class Properties(
         val offerName: String? = null,
         @SerializedName("offer_tiers")
         val offerTiers: List<OfferTier>? = null,
+        @SerializedName("atc_wording")
+        val atcWording: String? = null,
+        @SerializedName("offer_type")
+        val offerType: String? = null,
         @SerializedName("shop_badge")
         val shopBadge: String? = null,
         @SerializedName("shop_icon")
@@ -147,13 +157,17 @@ data class Properties(
         @SerializedName("shop_name")
         val shopName: String? = null,
         @SerializedName("url")
-        val url: String? = null
+        val url: String? = null,
+        @SerializedName("text_color_mode")
+        val colorMode: String? = ""
     ) {
         data class OfferTier(
             @SerializedName("tier_level")
             val tierLevel: Int? = null,
             @SerializedName("tier_wording")
-            val tierWording: String? = null
+            val tierWording: String? = null,
+            @SerializedName("image")
+            val image: String? = null
         )
     }
 }

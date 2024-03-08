@@ -16,7 +16,7 @@ class FakeVideoFlattenRepository : VideoFlattenRepository {
         isFlattenOngoing = value
     }
 
-    override fun flatten(param: FlattenParam) = flow
+    override fun flatten(param: FlattenParam, fileNameAppendix: String) = flow
 
     override fun isFlattenOngoing() = isFlattenOngoing
 

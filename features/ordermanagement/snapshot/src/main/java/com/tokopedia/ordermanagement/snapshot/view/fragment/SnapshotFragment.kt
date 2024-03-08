@@ -180,7 +180,8 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener,
                     snapshotAdapter.showContent()
                     btnSnapshotToPdp?.apply {
                         visible()
-                        text = getString(R.string.btn_snapshot_to_pdp_label)
+                        text = getButtonText(result.data.sellable)
+                        isEnabled = result.data.sellable
                         setOnClickListener {
                             RouteManager.route(
                                 context,
@@ -260,5 +261,13 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener,
 
     override fun onRefresh(view: View?) {
         initialLoad()
+    }
+
+    private fun getButtonText(sellable: Boolean): String {
+        return if (sellable) {
+            getString(R.string.btn_snapshot_to_pdp_label)
+        } else {
+            getString(R.string.btn_snapshot_non_sellable)
+        }
     }
 }

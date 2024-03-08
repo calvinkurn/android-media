@@ -10,7 +10,7 @@ import com.tokopedia.profilecompletion.profilecompletion.data.SaveProfilePicture
 import com.tokopedia.profilecompletion.profilecompletion.data.SaveProfilePictureResponse
 import com.tokopedia.profilecompletion.profilecompletion.data.UserProfileInfoData
 import com.tokopedia.profilecompletion.profilecompletion.viewmodel.ProfileInfoViewModel
-import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase
+import com.tokopedia.profilecompletion.settingprofile.profileinfo.usecase.SaveProfilePictureUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail

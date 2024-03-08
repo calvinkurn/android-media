@@ -3,6 +3,8 @@ package com.tokopedia.test.application.espresso_component
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -66,6 +68,57 @@ object CommonActions {
             }
         }
         childRecyclerView.contentDescription = tempStoreDesc
+    }
+
+    /**
+     * Click on each item recyclerview actions.
+     *
+     * Most likely similar with [clickOnEachItemRecyclerView] above with the additional the implementation
+     * of idling resource handler, makes the invocation run through organically.
+     *
+     * @param view view object in your espresso test
+     * @param recyclerViewId id of recyclerview
+     * @param fixedItemPositionLimit position limit when your recyclerview is endless recyclerview
+     */
+    fun clickOnEachItemRecyclerViewWithIdle(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
+        val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
+
+        val tempStoreDesc = childRecyclerView.contentDescription
+        childRecyclerView.contentDescription = UNDER_TEST_TAG
+
+        var childItemCount = childRecyclerView.adapter!!.itemCount
+        if (fixedItemPositionLimit > 0) {
+            childItemCount = fixedItemPositionLimit
+        }
+
+        val idlingResource = RecyclerViewItemCountIdlingResource(
+            childRecyclerView.adapter!!,
+            fixedItemPositionLimit
+        )
+
+        try {
+            IdlingRegistry.getInstance().register(idlingResource)
+
+            for (i in 0 until childItemCount) {
+                try {
+                    Espresso.onView(
+                        allOf(
+                            ViewMatchers.withId(recyclerViewId),
+                            ViewMatchers.withContentDescription(UNDER_TEST_TAG)
+                        )
+                    )
+                        .perform(
+                            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                                i,
+                                ViewActions.click()
+                            )
+                        )
+                } catch (_: PerformException) {}
+            }
+        } finally {
+            IdlingRegistry.getInstance().unregister(idlingResource)
+            childRecyclerView.contentDescription = tempStoreDesc
+        }
     }
 
     /**
@@ -328,6 +381,43 @@ object CommonActions {
                         }
                     })
             )
+        }
+    }
+
+    /**
+     * Idling the RecyclerView view item invocation.
+     *
+     * In some cases, [clickOnEachItemRecyclerView] quitely irrelevant with certain requirements.
+     * Such, click a multiple items in single recyclerView with large data set. One of the issues is
+     * related to race condition, and it might be related to the asynchronous nature of RecyclerView
+     * and Espresso interactions.
+     *
+     * To address that kind of issue, we can use [RecyclerViewItemCountIdlingResource] to synchronize-
+     * our test actions. Hence the click action of the recyclerView's data set could be organically.
+     *
+     * Please find the [clickOnEachItemRecyclerViewWithIdle] for the sample usage.
+     */
+    internal class RecyclerViewItemCountIdlingResource constructor(
+        private val adapter: RecyclerView.Adapter<*>,
+        private val itemCount: Int
+    ) : IdlingResource {
+
+        private var resourceCallback: IdlingResource.ResourceCallback? = null
+
+        override fun getName(): String {
+            return RecyclerViewItemCountIdlingResource::class.java.simpleName
+        }
+
+        override fun isIdleNow(): Boolean {
+            val idle = adapter.itemCount >= itemCount
+            if (idle && resourceCallback != null) {
+                resourceCallback!!.onTransitionToIdle()
+            }
+            return idle
+        }
+
+        override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback?) {
+            resourceCallback = callback
         }
     }
 }

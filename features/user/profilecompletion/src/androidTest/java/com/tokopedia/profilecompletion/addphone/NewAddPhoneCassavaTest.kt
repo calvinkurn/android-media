@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.profilecompletion.addphone.view.activity.NewAddPhoneActivity
+import com.tokopedia.profilecompletion.settingprofile.addphone.view.activity.NewAddPhoneActivity
 import com.tokopedia.profilecompletion.common.helper.respondWithOk
 import com.tokopedia.profilecompletion.common.stub.di.createProfileCompletionComponent
 import com.tokopedia.test.application.annotations.CassavaTest

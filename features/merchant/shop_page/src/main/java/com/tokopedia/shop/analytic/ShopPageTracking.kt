@@ -284,7 +284,7 @@ open class ShopPageTracking(
         )
     }
 
-    fun impressBmgmBanner(
+    fun impressBmsmWidget(
         offerId: String,
         widgetHorizontalPosition: String,
         widgetVerticalPosition: String,
@@ -292,17 +292,17 @@ open class ShopPageTracking(
         userId: String
     ) {
         val eventLabel = String.format(
-            ShopPageTrackingConstant.LABEL_BMGM_BANNER,
+            ShopPageTrackingConstant.LABEL_BMSM_WIDGET,
             offerId,
             widgetHorizontalPosition,
             widgetVerticalPosition
         )
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.VIEW_PG_IRIS,
-            ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.IMPRESSION_BMGM_BANNER,
+            ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.IMPRESSION_GWP_WIDGET,
             ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE_BUYER,
             ShopPageTrackingConstant.EVENT_LABEL to eventLabel,
-            ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESS_BMGM_BANNER,
+            ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESS_BMGM_WIDGET,
             ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.PHYSICAL_GOODS,
             ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
             ShopPageTrackingConstant.SHOP_ID to shopId,
@@ -311,25 +311,108 @@ open class ShopPageTracking(
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
-    fun clickBmgmBanner(
+    fun selectTabBmsmWidget(
         offerId: String,
+        offerType: String,
         widgetHorizontalPosition: String,
         widgetVerticalPosition: String,
         shopId: String,
         userId: String
     ) {
         val eventLabel = String.format(
-            ShopPageTrackingConstant.LABEL_BMGM_BANNER,
-            offerId,
+            ShopPageTrackingConstant.LABEL_BMSM_WIDGET,
+            "$offerId - $offerType",
             widgetHorizontalPosition,
             widgetVerticalPosition
         )
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_PG,
-            ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_BMGM_BANNER,
+            ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_BMGM_WIDGET_TAB,
             ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE_BUYER,
             ShopPageTrackingConstant.EVENT_LABEL to eventLabel,
-            ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_BMGM_BANNER,
+            ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_BMGM_WIDGET_TAB,
+            ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.PHYSICAL_GOODS,
+            ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
+            ShopPageTrackingConstant.SHOP_ID to shopId,
+            ShopPageTrackingConstant.USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun clickSeeAllBmsmWidget(
+        offerId: String,
+        offerType: String,
+        widgetHorizontalPosition: String,
+        widgetVerticalPosition: String,
+        shopId: String,
+        userId: String
+    ) {
+        val eventLabel = String.format(
+            ShopPageTrackingConstant.LABEL_BMSM_WIDGET,
+            "$offerId - $offerType",
+            widgetHorizontalPosition,
+            widgetVerticalPosition
+        )
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+            ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_PG,
+            ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_SEE_ALL_BMGM_WIDGET,
+            ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE_BUYER,
+            ShopPageTrackingConstant.EVENT_LABEL to eventLabel,
+            ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SEE_ALL_BMGM_WIDGET,
+            ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.PHYSICAL_GOODS,
+            ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
+            ShopPageTrackingConstant.SHOP_ID to shopId,
+            ShopPageTrackingConstant.USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun clickProductBmsmWidget(
+        offerId: String,
+        offerType: String,
+        productId: String,
+        shopId: String,
+        userId: String
+    ) {
+        val eventLabel = String.format(
+            ShopPageTrackingConstant.LABEL_BMSM_WIDGET,
+            offerId,
+            offerType,
+            productId
+        )
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+            ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.PRODUCT_CLICK,
+            ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_PRODUCT_BMGM_WIDGET,
+            ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE_BUYER,
+            ShopPageTrackingConstant.EVENT_LABEL to eventLabel,
+            ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PRODUCT_BMGM_WIDGET,
+            ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.PHYSICAL_GOODS,
+            ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
+            ShopPageTrackingConstant.SHOP_ID to shopId,
+            ShopPageTrackingConstant.USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun clickAtcBmsmWidget(
+        offerId: String,
+        offerType: String,
+        productId: String,
+        shopId: String,
+        userId: String
+    ) {
+        val eventLabel = String.format(
+            ShopPageTrackingConstant.LABEL_BMSM_WIDGET,
+            offerId,
+            offerType,
+            productId
+        )
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+            ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.ADD_TO_CART,
+            ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_ADD_TO_CART_BMGM_WIDGET,
+            ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE_BUYER,
+            ShopPageTrackingConstant.EVENT_LABEL to eventLabel,
+            ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_ATC_BMGM_WIDGET,
             ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.PHYSICAL_GOODS,
             ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
             ShopPageTrackingConstant.SHOP_ID to shopId,

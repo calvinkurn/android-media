@@ -1,7 +1,7 @@
 package com.tokopedia.home_component.util
 
 import android.content.Context
-import com.tokopedia.home_component.R
+import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.unifyprinciples.Typography
 
@@ -9,15 +9,24 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by frenzel
  */
 class MissionWidgetClearUtil: MissionWidgetUtil() {
-    override fun findMaxTitleHeight(data: MissionWidgetListDataModel, context: Context): Int {
+    override fun getWidth(context: Context): Int {
+        return if(HomeComponentFeatureFlag.isMissionExpVariant()) {
+            context.resources.getDimensionPixelSize(home_componentR.dimen.home_mission_widget_clear_big_image_size)
+        } else context.resources.getDimensionPixelSize(home_componentR.dimen.home_mission_widget_clear_small_image_size)
+    }
+
+    override fun findMaxTitleHeight(
+        data: MissionWidgetListDataModel,
+        width: Int,
+        context: Context
+    ): Int {
         var maxHeight = 0
-        val titleWidth = context.resources.getDimensionPixelSize(R.dimen.home_mission_widget_clear_image_size)
 
         for (missionWidget in data.missionWidgetList) {
             val heightText = measureTextHeight(
                 context = context,
-                text = missionWidget.subTitle,
-                textWidth = titleWidth,
+                text = missionWidget.title,
+                textWidth = width,
                 typographyType = Typography.DISPLAY_3,
                 typographyWeight = Typography.REGULAR,
                 maxLines = MAX_LINES,
@@ -30,16 +39,16 @@ class MissionWidgetClearUtil: MissionWidgetUtil() {
 
     override fun findMaxSubtitleHeight(
         data: MissionWidgetListDataModel,
+        width: Int,
         context: Context
     ): Int {
         var maxHeight = 0
-        val subtitleWidth = context.resources.getDimensionPixelSize(R.dimen.home_mission_widget_clear_image_size)
 
         for (missionWidget in data.missionWidgetList) {
             val heightText = measureTextHeight(
                 context = context,
                 text = missionWidget.subTitle,
-                textWidth = subtitleWidth,
+                textWidth = width,
                 typographyType = Typography.SMALL,
                 typographyWeight = Typography.REGULAR,
                 maxLines = MAX_LINES,

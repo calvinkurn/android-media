@@ -6,11 +6,11 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
+import com.tokopedia.play_common.view.ImageLoaderStateListener
 import com.tokopedia.play_common.view.loadImage
 
 /**
@@ -32,7 +32,7 @@ class PlayMetricBubble : ConstraintLayout {
         tvMetricDetail = view.findViewById(R.id.tv_metric_detail)
     }
 
-    private val imageListener = object : ImageHandler.ImageLoaderStateListener {
+    private val imageListener = object : ImageLoaderStateListener {
         override fun successLoad() {
             ivIcon.visible()
         }

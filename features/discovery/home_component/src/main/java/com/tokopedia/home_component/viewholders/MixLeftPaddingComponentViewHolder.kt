@@ -38,6 +38,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import com.tokopedia.productcard.R as productcardR
 
 /**
  * Created by dhaba
@@ -228,11 +229,13 @@ class MixLeftPaddingComponentViewHolder(
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth =
-            itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
+            itemView.context.resources.getDimensionPixelSize(productcardR.dimen.product_card_flashsale_width)
         return productCardModelList.getMaxHeightForGridView(
             itemView.context,
             Dispatchers.Default,
-            productCardWidth
+            productCardWidth,
+            isReimagine = true,
+            useCompatPadding = true,
         )
     }
 

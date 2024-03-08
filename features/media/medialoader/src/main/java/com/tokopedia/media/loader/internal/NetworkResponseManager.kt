@@ -50,7 +50,7 @@ class NetworkResponseManager(context: Context) {
      * data from Map doesn't exist, then fetch from shared preferences.
      */
     fun header(url: String): List<Header> {
-        val header = caches[url] ?: editor.getString(url, "") ?: return emptyList()
+        val header = caches[url] ?: editor.getString(url, null) ?: return emptyList()
 
         return try {
             header.toModel()

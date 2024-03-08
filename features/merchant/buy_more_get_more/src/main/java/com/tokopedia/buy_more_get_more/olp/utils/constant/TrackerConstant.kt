@@ -9,7 +9,7 @@ object TrackerConstant {
     const val EVENT_VIEW_ITEM_LIST = "view_item_list"
     const val EVENT_SELECT_CONTENT = "select_content"
     const val EVENT_ADD_TO_CART = "add_to_cart"
-    const val EVENT_CATEGORY_OLP_BMGM = "olp bmsm"
+    const val EVENT_CATEGORY_OLP_BMGM = "olp bmgm"
     const val EVENT_CATEGORY_BMSM_PAGE = "bmsm page"
     const val TRACKER_ID = "trackerId"
     const val BUSINESS_UNIT_OLP_BMGM = "physical goods"

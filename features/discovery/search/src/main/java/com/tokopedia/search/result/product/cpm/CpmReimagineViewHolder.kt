@@ -51,7 +51,7 @@ class CpmReimagineViewHolder(
 
     override fun bind(element: CpmDataView) {
         adjustMargin(reimagineSearch2Component.isReimagineShopAds(), element)
-        binding?.adsBanner?.displayHeadlineAds(element.cpmModel, hasMultilineProductName = reimagineSearch2Component.hasMultilineProductName())
+        binding?.adsBanner?.displayHeadlineAds(element.cpmModel)
     }
 
     private fun adjustMargin(isReimagine: Boolean, itemCPM: CpmDataView) {

@@ -19,8 +19,6 @@ import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneE
 import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhonePinVerificationFragment
 import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneSmsVerificationFragment
 import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneVerificationMethodFragment
-import com.tokopedia.otp.verification.view.fragment.miscalll.MisscallVerificationFragment
-import com.tokopedia.otp.verification.view.fragment.miscalll.OnboardingMiscallFragment
 import com.tokopedia.otp.verification.view.uimodel.DefaultOtpUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -202,9 +200,6 @@ open class VerificationActivity : BaseOtpActivity() {
             OtpConstant.OtpMode.PIN -> {
                 PinVerificationFragment.createInstance(bundle)
             }
-            OtpConstant.OtpMode.MISCALL -> {
-                MisscallVerificationFragment.createInstance(bundle)
-            }
             else -> {
                 VerificationFragment.createInstance(bundle)
             }
@@ -226,11 +221,6 @@ open class VerificationActivity : BaseOtpActivity() {
                 VerificationFragment.createInstance(bundle)
             }
         }
-    }
-
-    open fun goToOnboardingMiscallPage(modeListData: ModeListData) {
-        val fragment = OnboardingMiscallFragment.createInstance(createBundle(modeListData))
-        doFragmentTransaction(fragment, TAG_OTP_MISCALL, false)
     }
 
     open fun goToSilentVerificationpage(modeListData: ModeListData) {
@@ -262,7 +252,6 @@ open class VerificationActivity : BaseOtpActivity() {
 
         const val TAG_OTP_MODE = "otpMode"
         const val TAG_OTP_VALIDATOR = "otpValidator"
-        const val TAG_OTP_MISCALL = "otpMiscall"
         const val TAG_OTP_WA_NOT_REGISTERED = "otpWaNotRegistered"
         const val REQUEST_SILENT_VERIF = 1122
 

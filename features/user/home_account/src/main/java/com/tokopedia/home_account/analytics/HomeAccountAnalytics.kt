@@ -172,26 +172,6 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
         )
     }
 
-    fun eventClickToggleOnGeolocation() {
-        val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(
-            EVENT_CLICK_HOME_PAGE,
-            CATEGORY_HOMEPAGE,
-            ACTION_CLICK_TOGGLE_ON_GEOLOCATION,
-            LABEL_EMPTY
-        )
-    }
-
-    fun eventClickToggleOffGeolocation() {
-        val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(
-            EVENT_CLICK_HOME_PAGE,
-            CATEGORY_HOMEPAGE,
-            ACTION_CLICK_TOGGLE_ON_GEOLOCATION,
-            LABEL_EMPTY
-        )
-    }
-
     fun eventAccountProductView(trackingQueue: TrackingQueue, recommendationItem: RecommendationItem, position: Int) {
         val map: Map<String, Any> = DataLayer.mapOf(
             EVENT, EVENT_PRODUCT_VIEW,
@@ -285,12 +265,12 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4103
     // Tracker ID: 45930
-    fun sendViewOnAkunSayaPageEvent (eventLabel: String) {
+    fun sendViewOnAkunSayaPageEvent () {
         Tracker.Builder()
             .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_VIEW_ON_ACCOUNT_SAYA_PAGE)
             .setEventCategory(CATEGORY_ACCOUNT_BUYER)
-            .setEventLabel(eventLabel)
+            .setEventLabel("")
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_45930)
             .setBusinessUnit(USER_PLATFORM_UNIT)
             .setCurrentSite(TOKOPEDIA_MARKETPLACE_SITE)
@@ -298,13 +278,13 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
             .send()
     }
 
-    fun eventClickProfile(label: String) {
+    fun eventClickProfile() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
             EVENT_CLICK_ACCOUNT,
             CATEGORY_ACCOUNT_BUYER,
             ACTION_CLICK_PROFILE,
-            label
+            ""
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
@@ -522,20 +502,6 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
         analytics.sendGeneralEvent(map)
     }
 
-    fun eventClickAppSettingShake(enable: Boolean) {
-        val analytics: Analytics = TrackApp.getInstance().gtm
-        val map = TrackAppUtils.gtmData(
-            EVENT_CLICK_ACCOUNT,
-            CATEGORY_ACCOUNT_BUYER,
-            ACTION_CLICK_APP_SETTING_SECTION,
-            String.format(Locale.getDefault(), "%s - %s", LABEL_SHAKE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
-        )
-        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
-        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
-        map[EVENT_USER_ID] = userSession.userId
-        analytics.sendGeneralEvent(map)
-    }
-
     fun eventClickAppSettingGeolocation(enable: Boolean) {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
@@ -730,17 +696,6 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
         map[EVENT_USER_ID] = userSession.userId
         analytics.sendGeneralEvent(map)
-    }
-
-    fun trackClickBackLinkAccount() {
-        track(
-            TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK,
-                ACTION_CLICK_BACK,
-                ""
-            )
-        )
     }
 
     fun trackClickHubungkanLinkAccountPage() {

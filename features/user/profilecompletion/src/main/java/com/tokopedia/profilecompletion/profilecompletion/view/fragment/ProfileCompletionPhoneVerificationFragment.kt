@@ -7,10 +7,10 @@ import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
-import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
 import com.tokopedia.profilecompletion.profilecompletion.ProfileCompletionNewConstants
 import com.tokopedia.profilecompletion.profilecompletion.data.ProfileCompletionDataView
+import com.tokopedia.profilecompletion.settingprofile.addphone.data.AddPhoneResult
+import com.tokopedia.profilecompletion.settingprofile.addphone.view.fragment.AddPhoneFragment
 
 /**
  * Created by nisie on 2/22/17.

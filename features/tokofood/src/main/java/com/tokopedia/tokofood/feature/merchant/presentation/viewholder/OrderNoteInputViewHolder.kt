@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokofood.databinding.TokofoodItemOrderNoteLayoutBinding
 
 class OrderNoteInputViewHolder(
-        private val binding: TokofoodItemOrderNoteLayoutBinding,
-        private val textChangeListener: OnNoteTextChangeListener
+    private val binding: TokofoodItemOrderNoteLayoutBinding,
+    private var textChangeListener: OnNoteTextChangeListener?
 ) : RecyclerView.ViewHolder(binding.root) {
 
     interface OnNoteTextChangeListener {
@@ -18,16 +18,15 @@ class OrderNoteInputViewHolder(
 
     init {
         context = binding.root.context
-        binding.catatanInput
     }
 
     fun bindData(orderNote: String, dataSetPosition: Int) {
         binding.catatanInput.editText.setText(orderNote)
         binding.catatanInput.editText.doAfterTextChanged {
             it?.run {
-                textChangeListener.onNoteTextChanged(
-                        orderNote = this.toString(),
-                        dataSetPosition = dataSetPosition
+                textChangeListener?.onNoteTextChanged(
+                    orderNote = this.toString(),
+                    dataSetPosition = dataSetPosition
                 )
             }
         }

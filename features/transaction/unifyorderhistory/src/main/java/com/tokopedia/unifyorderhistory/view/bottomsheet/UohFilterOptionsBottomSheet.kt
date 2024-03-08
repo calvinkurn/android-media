@@ -15,9 +15,6 @@ import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 
-/**
- * Created by fwidjaja on 02/10/21.
- */
 class UohFilterOptionsBottomSheet : BottomSheetUnify() {
     private var listener: UohFilterOptionBottomSheetListener? = null
     private var adapterOptionBottomSheet: UohBottomSheetOptionAdapter? = null

@@ -4,9 +4,9 @@ import com.tokopedia.cart.data.model.response.promo.CartPromoData
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cartrevamp.view.helper.CartDataHelper
-import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
-import com.tokopedia.cartrevamp.view.uimodel.EntryPointInfoEvent
+import com.tokopedia.cart.view.helper.CartDataHelper
+import com.tokopedia.cart.view.mapper.CartUiModelMapper
+import com.tokopedia.cart.view.uimodel.EntryPointInfoEvent
 import com.tokopedia.promousage.data.response.EntryPointInfo
 import com.tokopedia.promousage.data.response.GetPromoListRecommendationEntryPointResponse
 import com.tokopedia.promousage.data.response.GetPromoListRecommendationResponseData
@@ -21,7 +21,6 @@ import io.mockk.coEvery
 import io.mockk.every
 import org.junit.Assert
 import org.junit.Test
-import rx.Observable
 
 class PromoEntryPointTest : BaseCartViewModelTest() {
 
@@ -45,9 +44,7 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
         coEvery {
             getCartRevampV4UseCase(any())
         } returns cartData
-        every {
-            updateCartCounterUseCase.createObservable(any())
-        } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // when
         cartViewModel.processInitialGetCartData(
@@ -81,9 +78,7 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
         coEvery {
             getCartRevampV4UseCase(any())
         } returns cartData
-        every {
-            updateCartCounterUseCase.createObservable(any())
-        } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // when
         cartViewModel.processInitialGetCartData(
@@ -117,9 +112,7 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
         coEvery {
             getCartRevampV4UseCase(any())
         } returns cartData
-        every {
-            updateCartCounterUseCase.createObservable(any())
-        } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // when
         cartViewModel.processInitialGetCartData(
@@ -165,9 +158,7 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
         coEvery {
             getCartRevampV4UseCase(any())
         } returns cartData
-        every {
-            updateCartCounterUseCase.createObservable(any())
-        } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         every { CartDataHelper.hasSelectedCartItem(any()) } returns true
         val entryPointInfoResponse = GetPromoListRecommendationEntryPointResponse(
             promoListRecommendation = GetPromoListRecommendationResponseData(
@@ -245,9 +236,7 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
         coEvery {
             getCartRevampV4UseCase(any())
         } returns cartData
-        every {
-            updateCartCounterUseCase.createObservable(any())
-        } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         every { CartDataHelper.hasSelectedCartItem(any()) } returns true
         coEvery {
             getPromoListRecommendationEntryPointUseCase(any())
@@ -301,9 +290,7 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
         coEvery {
             getCartRevampV4UseCase(any())
         } returns cartData
-        every {
-            updateCartCounterUseCase.createObservable(any())
-        } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         every { CartDataHelper.hasSelectedCartItem(any()) } returns true
         val entryPointInfoResponse = GetPromoListRecommendationEntryPointResponse(
             promoListRecommendation = GetPromoListRecommendationResponseData(
@@ -379,9 +366,7 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
         coEvery {
             getCartRevampV4UseCase(any())
         } returns cartData
-        every {
-            updateCartCounterUseCase.createObservable(any())
-        } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
         every { CartDataHelper.hasSelectedCartItem(any()) } returns true
         coEvery {
             getPromoListRecommendationEntryPointUseCase(any())

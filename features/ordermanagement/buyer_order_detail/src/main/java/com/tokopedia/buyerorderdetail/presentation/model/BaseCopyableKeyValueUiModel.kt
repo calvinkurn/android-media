@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.presentation.model
 
 import android.content.Context
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
+import com.tokopedia.order_management_common.presentation.uimodel.StringRes
 
 abstract class BaseCopyableKeyValueUiModel : BaseVisitableUiModel {
 

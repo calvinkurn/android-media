@@ -43,7 +43,10 @@ class OrderDetailViewModelTest{
     private val omsDetailUseCase: Lazy<OmsDetailUseCase> = mockk()
     private val actionButtonUseCase: Lazy<RevampActionButtonUseCase> = mockk()
     private val sendNotificationUseCase: Lazy<SendEventNotificationUseCase> = mockk(relaxed = true)
-    private val gson: Lazy<Gson> = mockk(relaxed = true)
+    private val gson = Gson()
+    private val lazyGson = Lazy<Gson> {
+        gson
+    }
 
     private lateinit var viewModel: OrderDetailViewModel
 
@@ -53,7 +56,7 @@ class OrderDetailViewModelTest{
             omsDetailUseCase,
             actionButtonUseCase,
             sendNotificationUseCase,
-            gson,
+            lazyGson,
             dispatcher.io,
         )
     }
@@ -297,4 +300,26 @@ class OrderDetailViewModelTest{
         verify { sendNotificationUseCase.get().execute(any()) }
     }
 
+    @Test
+    fun `send event notification when getting errorBody not null should be fail`(){
+        //Given
+        val errorMessage = "ERROR MESSAGE"
+        val message = "{ \"data\": { \"message\": \"$errorMessage\" } }"
+        val response = RestResponse(SendEventEmail(data = DataEmail(message = errorMessage)), 500, false)
+        response.errorBody = message
+
+        val responseMap = mapOf<Type, RestResponse>(SendEventEmail::class.java to response)
+        every { sendNotificationUseCase.get().execute(any()) } answers {
+            firstArg<Subscriber<Map<Type, RestResponse>>>().onStart()
+            firstArg<Subscriber<Map<Type, RestResponse>>>().onCompleted()
+            firstArg<Subscriber<Map<Type, RestResponse>>>().onNext(responseMap)
+        }
+
+        //When
+        viewModel.sendEventEmail(ActionButton(), "")
+
+        //Then
+        val result = viewModel.eventEmail.value as UiEvent.Fail
+        assertEquals(errorMessage, result.error.message)
+    }
 }

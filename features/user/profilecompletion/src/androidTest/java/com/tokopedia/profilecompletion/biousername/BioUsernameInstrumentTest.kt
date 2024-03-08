@@ -9,7 +9,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameActivity
+import com.tokopedia.profilecompletion.settingprofile.changebiousername.view.ChangeBioUsernameActivity
 import com.tokopedia.profilecompletion.common.helper.checkMessageText
 import com.tokopedia.profilecompletion.common.helper.checkResultCode
 import com.tokopedia.profilecompletion.common.helper.checkTextOnEditText

@@ -3,11 +3,11 @@ package com.tokopedia.seller.menu.presentation.viewmodel
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
-import com.tokopedia.seller.menu.presentation.uimodel.ShopOrderUiModel
-import com.tokopedia.seller.menu.presentation.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingFail
 import com.tokopedia.seller.menu.domain.query.ShopScoreLevelResponse
 import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopOrderUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopProductUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

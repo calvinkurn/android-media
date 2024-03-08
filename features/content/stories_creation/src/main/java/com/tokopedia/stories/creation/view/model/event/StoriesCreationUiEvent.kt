@@ -12,4 +12,8 @@ sealed interface StoriesCreationUiEvent {
     object ShowTooManyStoriesReminder : StoriesCreationUiEvent
 
     object StoriesUploadQueued : StoriesCreationUiEvent
+
+    data class ShowError(
+        val throwable: Throwable
+    ) : StoriesCreationUiEvent
 }

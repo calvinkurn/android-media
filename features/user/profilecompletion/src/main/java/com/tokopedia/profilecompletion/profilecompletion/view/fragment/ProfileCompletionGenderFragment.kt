@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.changegender.viewmodel.ChangeGenderViewModel
+import com.tokopedia.profilecompletion.settingprofile.changegender.viewmodel.ChangeGenderViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profilecompletion.ProfileCompletionNewConstants
 import com.tokopedia.usecase.coroutines.Fail

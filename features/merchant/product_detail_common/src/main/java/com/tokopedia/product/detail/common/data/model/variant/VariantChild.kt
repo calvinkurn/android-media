@@ -5,6 +5,8 @@ import androidx.collection.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.VariantConstant.DEFAULT_MAX_ORDER
+import com.tokopedia.product.detail.common.data.model.pdplayout.PromoPriceResponse
+import com.tokopedia.product.detail.common.data.model.pdplayout.LabelIcons
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 
 /**
@@ -56,6 +58,10 @@ data class VariantChild(
     @Expose
     val name: String = "",
 
+    @SerializedName("labelIcons")
+    @Expose
+    val labelIcons: List<LabelIcons> = emptyList(),
+
     @SerializedName("productURL")
     @Expose
     val url: String? = null,
@@ -86,7 +92,15 @@ data class VariantChild(
     // if subText is empty: use default logic from FE to show subtext (e.g.: 5 warna, 2 ukuran)
     @SerializedName("subText")
     @Expose
-    val subText: String = ""
+    val subText: String = "",
+
+    @SerializedName("componentPriceType")
+    @Expose
+    val componentPriceType: Int = 0,
+
+    @SerializedName("promo")
+    @Expose
+    val promoPrice: PromoPriceResponse = PromoPriceResponse(),
 ) {
     val finalMainPrice: Double
         get() {
@@ -293,5 +307,9 @@ data class VariantCampaign(
     val campaignIdentifier: Int = 0,
 
     @SerializedName("background")
-    val background: String = ""
+    val background: String = "",
+
+    @SerializedName("campaignLogo")
+    @Expose
+    val campaignLogo: String = ""
 )

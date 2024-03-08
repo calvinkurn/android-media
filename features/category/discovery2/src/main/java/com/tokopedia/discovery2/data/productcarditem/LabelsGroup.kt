@@ -16,5 +16,17 @@ data class LabelsGroup(
     val url: String = "",
 
     @SerializedName("colors")
-    val colors: ArrayList<String> = arrayListOf()
+    val colors: ArrayList<String> = arrayListOf(),
+
+    @SerializedName("styles")
+    var styles: List<StylesGroup>? = listOf(),
+
+    )
+
+data class StylesGroup(
+    @SerializedName("key")
+    var key: String = "",
+
+    @SerializedName("value")
+    val value: String = "",
 )

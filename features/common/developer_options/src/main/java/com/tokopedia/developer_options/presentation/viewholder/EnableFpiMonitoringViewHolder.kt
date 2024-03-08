@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
 import com.tokopedia.developer_options.presentation.model.FpiMonitoringUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
 class EnableFpiMonitoringViewHolder(
@@ -24,6 +26,7 @@ class EnableFpiMonitoringViewHolder(
         val context = cb.context
         cb.isChecked = context.isFpiMonitoringEnable()
         cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
+            DevOpsTracker.trackEntryEvent(DevopsFeature.ENABLE_FPI_MONITORING)
             context.setFpiMonitoringState(state)
         }
     }
@@ -44,5 +47,4 @@ class EnableFpiMonitoringViewHolder(
         DeveloperOptionActivity.PREF_KEY_FPI_MONITORING_POPUP,
         MODE_PRIVATE
     ).getBoolean(DeveloperOptionActivity.PREF_KEY_FPI_MONITORING_POPUP, false)
-
 }

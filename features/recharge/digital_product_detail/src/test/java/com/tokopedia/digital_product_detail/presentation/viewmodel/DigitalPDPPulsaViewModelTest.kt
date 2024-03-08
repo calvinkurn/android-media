@@ -1,5 +1,6 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
+import com.tokopedia.common.topupbills.data.TopupBillsContact
 import com.tokopedia.common.topupbills.favoritepdp.data.mapper.FavoritePersoMapper
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
@@ -14,6 +15,8 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
+import io.mockk.every
+import io.mockk.verify
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -786,6 +789,22 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         val actualResult = viewModel.isCheckBalanceFailedMoreThanThreeTimes()
         Assert.assertTrue(viewModel.checkBalanceFailCounter == 3)
         Assert.assertTrue(actualResult)
+    }
+
+    @Test
+    fun `when getContactList should return valid contact data`() {
+        val fakeContacts = mutableListOf(
+            TopupBillsContact("Tokopedia", "081234567890"),
+            TopupBillsContact("GoTo", "085600001111")
+        )
+
+        every { contactDataSource.getContactList() } returns fakeContacts
+
+        val actualContacts = viewModel.getContactList()
+
+        verify { contactDataSource.getContactList() }
+
+        Assert.assertEquals(fakeContacts, actualContacts)
     }
 
     companion object {

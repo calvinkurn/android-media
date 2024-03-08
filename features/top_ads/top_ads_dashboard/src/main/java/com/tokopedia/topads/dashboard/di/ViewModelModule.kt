@@ -12,6 +12,7 @@ import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsDashboardViewModel
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsEducationViewModel
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsInsightViewModel
+import com.tokopedia.topads.dashboard.viewmodel.TopAdsTypeSelectionViewModel
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
 import dagger.Binds
 import dagger.Module
@@ -73,4 +74,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ProductRecommendationViewModel::class)
     internal abstract fun bindsProductRecommendationViewModel(viewModel: ProductRecommendationViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TopAdsTypeSelectionViewModel::class)
+    internal abstract fun bindsTopAdsTypeSelectionViewModel(viewModel: TopAdsTypeSelectionViewModel): ViewModel
 }

@@ -3,10 +3,9 @@ package com.tokopedia.payment.fingerprint.view
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
-import com.tokopedia.fingerprint.view.FingerPrintDialog
-import com.tokopedia.payment.R
 import java.text.SimpleDateFormat
 import java.util.*
+import com.tokopedia.payment.R as paymentR
 
 /**
  * Created by zulfikarrahman on 4/5/18.
@@ -45,14 +44,14 @@ class FingerprintDialogRegister : FingerPrintDialog(), FingerPrintDialog.Callbac
 
     override fun initView(view: View) {
         super.initView(view)
-        updateDesc(getString(R.string.fingerprint_label_register_fingerprint))
+        updateDesc(getString(paymentR.string.fingerprint_label_register_fingerprint))
     }
 
     private fun updateCounterError(): Boolean {
         if (isResumed) {
             counterError++
-            updateDesc(getString(com.tokopedia.fingerprint.R.string.fingerprint_label_desc_default))
-            updateTitle(getString(R.string.fingerprint_label_try_again))
+            updateDesc(getString(paymentR.string.fingerprint_label_desc_default))
+            updateTitle(getString(paymentR.string.fingerprint_label_try_again))
             if (counterError > MAX_ERROR) {
                 stopListening()
                 listenerRegister?.showErrorRegisterSnackbar()

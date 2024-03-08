@@ -37,7 +37,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -64,6 +63,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImageWithCacheData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
@@ -1294,10 +1294,7 @@ open class ProductManageFragment :
 
     private fun setupNoAccessPage() {
         noAccessPage?.run {
-            ImageHandler.loadImageAndCache(
-                errorIllustration,
-                ProductManageUrl.ILLUSTRATION_NO_ACCESS
-            )
+            errorIllustration.loadImageWithCacheData(ProductManageUrl.ILLUSTRATION_NO_ACCESS)
             errorTitle.text = context?.getString(R.string.product_manage_no_access_title)
             errorDescription.text =
                 context?.getString(R.string.product_manage_no_access_description)
@@ -1467,9 +1464,9 @@ open class ProductManageFragment :
         var sortOption = selectedFilter?.sortOption
 
         filterTab?.getSelectedFilter()?.let {
-            if (it.name == FilterTabUiModel.FilterId.isProductArchival.name){
+            if (it.name == FilterTabUiModel.FilterId.isProductArchival.name) {
                 filterOptions.add(FilterByCondition.ProductArchival)
-            }else{
+            } else {
                 filterOptions.add(FilterByStatus(it))
             }
         }
@@ -2124,7 +2121,7 @@ open class ProductManageFragment :
 
     override fun onClickContactCsButton(product: ProductUiModel) {
         when {
-            product.isArchived || product.isInGracePeriod  -> {
+            product.isArchived || product.isInGracePeriod -> {
                 showProductArchivalBottomSheet(product.id, product.isInGracePeriod, product.isArchived)
             }
             product.isViolation() -> {
@@ -2185,9 +2182,9 @@ open class ProductManageFragment :
         } else {
             val isPowerMerchantOrOfficialStore = viewModel.isPowerMerchant() || isOfficialStore
             productManageBottomSheet?.show(
-                childFragmentManager,
-                product,
-                isPowerMerchantOrOfficialStore
+                fm = childFragmentManager,
+                product = product,
+                isPowerMerchantOrOfficialStore = isPowerMerchantOrOfficialStore
             )
         }
     }
@@ -3376,7 +3373,7 @@ open class ProductManageFragment :
         inGracePeriod: Boolean,
         archived: Boolean
     ) {
-        ProductArchivalBottomSheet.createInstance(productId,archived, inGracePeriod) {
+        ProductArchivalBottomSheet.createInstance(productId, archived, inGracePeriod) {
             showErrorToast(it)
         }.show(childFragmentManager)
     }

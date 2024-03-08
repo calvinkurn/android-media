@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.review.common.util.TimeConverter
 import com.tokopedia.review.feature.inbox.buyerreview.view.customview.ShopReputationView
@@ -47,7 +47,7 @@ class InboxReputationViewHolder constructor(
         name?.text = MethodChecker.fromHtml(element.revieweeName)
         date?.text = getDate(element.createTime)
         invoice?.text = element.invoice
-        ImageHandler.loadImageCircle2(avatar?.context, avatar, element.revieweePicture)
+        avatar?.loadImageCircle(element.revieweePicture)
         setDeadline(element)
         setReputation(element)
         setAction(element)

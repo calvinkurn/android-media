@@ -19,7 +19,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addbod.viewmodel.AddBodViewModel
+import com.tokopedia.profilecompletion.settingprofile.addbod.viewmodel.AddBodViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profilecompletion.ProfileCompletionNewConstants
 import com.tokopedia.profilecompletion.profilecompletion.view.util.ProfileCompletionEvents

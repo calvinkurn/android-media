@@ -10,7 +10,8 @@ import android.webkit.URLUtil
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.R
@@ -44,7 +45,7 @@ class SectionCarouselAdapter(
         fun bindData(item:ImageList?){
             item?.let {
                 if(URLUtil.isValidUrl(it.imageURLMobile))
-                    ImageHandler.loadImageFitCenter(context,ivCol,it.imageURLMobile)
+                    ivCol?.loadImageFitCenter(it.imageURLMobile)
 
                 bnrTitle?.text = it.inBannerTitle
                 bnrSubTitle?.text = it.inBannerSubTitle

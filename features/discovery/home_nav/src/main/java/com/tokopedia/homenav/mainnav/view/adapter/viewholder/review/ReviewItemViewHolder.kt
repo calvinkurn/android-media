@@ -6,7 +6,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderReviewBinding
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewModel
@@ -19,7 +18,6 @@ import com.tokopedia.utils.view.binding.viewBinding
  * Created by dhaba
  */
 
-@MePage(MePage.Widget.REVIEW)
 class ReviewItemViewHolder(itemView: View, val mainNavListener: MainNavListener) :
     AbstractViewHolder<ReviewModel>(itemView) {
     private var binding: HolderReviewBinding? by viewBinding()

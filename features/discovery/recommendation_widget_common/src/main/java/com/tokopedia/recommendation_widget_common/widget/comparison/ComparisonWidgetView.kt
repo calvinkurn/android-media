@@ -38,6 +38,7 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
     private var adapter: ComparedItemAdapter? = null
     private var comparedAdapter: ComparisonWidgetAdapter? = null
     private var isAnchorClickable: Boolean = false
+    private var shouldUseReimagineCard: Boolean = true
 
     private var userSessionInterface = UserSession(context)
 
@@ -88,6 +89,7 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
 
         try {
             isAnchorClickable = typedArray.getBoolean(R.styleable.ComparisonWidgetView_clickableAnchor, false)
+            shouldUseReimagineCard = typedArray.getBoolean(R.styleable.ComparisonWidgetView_useReimagine, true)
         } finally {
             typedArray.recycle()
         }
@@ -111,6 +113,7 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
                         context,
                         this@ComparisonWidgetView.isAnchorClickable,
                         comparisonColorConfig,
+                        shouldUseReimagineCard
                     )
 
                 if (this@ComparisonWidgetView.adapter == null) {
@@ -140,7 +143,8 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
                             comparisonWidgetInterface = comparisonWidgetInterface,
                             trackingQueue = trackingQueue,
                             userSessionInterface = userSessionInterface,
-                            recommendationTrackingModel = recommendationTrackingModel
+                            recommendationTrackingModel = recommendationTrackingModel,
+                            shouldUseReimagineCard = shouldUseReimagineCard
                         )
                         rv_comparison_widget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                         rv_comparison_widget?.adapter = adapter
@@ -167,7 +171,8 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
                             comparisonWidgetInterface = comparisonWidgetInterface,
                             trackingQueue = trackingQueue,
                             userSessionInterface = userSessionInterface,
-                            recommendationTrackingModel = recommendationTrackingModel
+                            recommendationTrackingModel = recommendationTrackingModel,
+                            shouldUseReimagineCard = shouldUseReimagineCard
                         )
                         rv_compared_item?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                         rv_compared_item?.adapter = comparedAdapter

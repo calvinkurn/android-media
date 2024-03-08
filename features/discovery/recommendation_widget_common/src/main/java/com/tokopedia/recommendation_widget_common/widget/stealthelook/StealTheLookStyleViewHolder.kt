@@ -24,7 +24,7 @@ class StealTheLookStyleViewHolder(
 ) : RecyclerView.ViewHolder(itemView) {
     companion object {
         val LAYOUT = recommendation_widget_commonR.layout.recommendation_widget_steal_the_look_page
-        private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.steaalthelook.StealTheLookPageViewHolder"
+        private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.stealthelook.StealTheLookPageViewHolder"
     }
 
     private val binding = RecommendationWidgetStealTheLookPageBinding.bind(itemView)
@@ -43,11 +43,12 @@ class StealTheLookStyleViewHolder(
     private fun renderLeftGrid(model: StealTheLookStyleModel) {
         val grid = model.getGridAtPos(RecommendationItem.GridPosition.Left)
         val imageView = binding.stlItemLeftGrid.stlItemImage
-        val ribbonArchView = binding.stlItemLeftGrid.stlItemRibbonArch
+        val ribbonArchTopView = binding.stlItemLeftGrid.stlItemRibbonArchTop
+        val ribbonArchBottomView = binding.stlItemLeftGrid.stlItemRibbonArchBottom
         val ribbonContentView = binding.stlItemLeftGrid.stlItemRibbonContent
         val ribbonTextView = binding.stlItemLeftGrid.stlItemRibbonText
         val reloadLayout = binding.stlItemLeftGrid.stlReload
-        renderGrid(grid, imageView, ribbonArchView, ribbonContentView, ribbonTextView, reloadLayout)
+        renderGrid(grid, imageView, ribbonArchTopView, ribbonArchBottomView, ribbonContentView, ribbonTextView, reloadLayout)
         adjustLeftPadding()
         imageView.setGridClickListener(grid, model.tracking)
     }
@@ -55,22 +56,24 @@ class StealTheLookStyleViewHolder(
     private fun renderTopRightGrid(model: StealTheLookStyleModel) {
         val grid = model.getGridAtPos(RecommendationItem.GridPosition.TopRight)
         val imageView = binding.stlItemTopRightGrid.stlItemImage
-        val ribbonArchView = binding.stlItemTopRightGrid.stlItemRibbonArch
+        val ribbonArchTopView = binding.stlItemTopRightGrid.stlItemRibbonArchTop
+        val ribbonArchBottomView = binding.stlItemTopRightGrid.stlItemRibbonArchBottom
         val ribbonContentView = binding.stlItemTopRightGrid.stlItemRibbonContent
         val ribbonTextView = binding.stlItemTopRightGrid.stlItemRibbonText
         val reloadLayout = binding.stlItemTopRightGrid.stlReload
-        renderGrid(grid, imageView, ribbonArchView, ribbonContentView, ribbonTextView, reloadLayout)
+        renderGrid(grid, imageView, ribbonArchTopView, ribbonArchBottomView, ribbonContentView, ribbonTextView, reloadLayout)
         imageView.setGridClickListener(grid, model.tracking)
     }
 
     private fun renderBottomRightGrid(model: StealTheLookStyleModel) {
         val grid = model.getGridAtPos(RecommendationItem.GridPosition.BottomRight)
         val imageView = binding.stlItemBottomRightGrid.stlItemImage
-        val ribbonArchView = binding.stlItemBottomRightGrid.stlItemRibbonArch
+        val ribbonArchTopView = binding.stlItemBottomRightGrid.stlItemRibbonArchTop
+        val ribbonArchBottomView = binding.stlItemBottomRightGrid.stlItemRibbonArchBottom
         val ribbonContentView = binding.stlItemBottomRightGrid.stlItemRibbonContent
         val ribbonTextView = binding.stlItemBottomRightGrid.stlItemRibbonText
         val reloadLayout = binding.stlItemBottomRightGrid.stlReload
-        renderGrid(grid, imageView, ribbonArchView, ribbonContentView, ribbonTextView, reloadLayout)
+        renderGrid(grid, imageView, ribbonArchTopView, ribbonArchBottomView, ribbonContentView, ribbonTextView, reloadLayout)
         imageView.setGridClickListener(grid, model.tracking)
     }
 
@@ -78,7 +81,7 @@ class StealTheLookStyleViewHolder(
         val leftGridRatio: String
         val leftGridWeight: Int
         val outerLeftPadding: Int
-        if(binding.stlItemLeftGrid.stlItemRibbonArch.isVisible) {
+        if(binding.stlItemLeftGrid.stlItemRibbonArchTop.isVisible) {
             leftGridRatio = itemView.context.resources.getString(recommendation_widget_commonR.string.steal_the_look_left_item_ratio)
             leftGridWeight = itemView.context.resources.getInteger(recommendation_widget_commonR.integer.steal_the_look_left_item_horizontal_weight)
             outerLeftPadding = itemView.context.resources.getDimensionPixelOffset(recommendation_widget_commonR.dimen.steal_the_look_outer_left_padding_ribbon)
@@ -97,14 +100,15 @@ class StealTheLookStyleViewHolder(
     private fun renderGrid(
         model: StealTheLookGridModel?,
         imageView: ImageView,
-        ribbonArchView: View,
+        ribbonArchTopView: View,
+        ribbonArchBottomView: View,
         ribbonContentView: View,
         ribbonTextView: Typography,
         reloadLayout: RecommendationImageReloadBinding,
     ) {
         val item = model?.recommendationItem
         renderImage(item?.imageUrl, imageView, reloadLayout)
-        renderRibbon(item?.discountPercentage.orEmpty(), ribbonArchView, ribbonContentView, ribbonTextView)
+        renderRibbon(item?.discountPercentage.orEmpty(), ribbonArchTopView, ribbonArchBottomView, ribbonContentView, ribbonTextView)
     }
 
     private fun renderImage(
@@ -136,17 +140,20 @@ class StealTheLookStyleViewHolder(
 
     private fun renderRibbon(
         ribbonText: String,
-        ribbonArchView: View,
+        ribbonArchTopView: View,
+        ribbonArchBottomView: View,
         ribbonContentView: View,
         ribbonTextView: Typography
     ) {
         if (ribbonText.isNotEmpty()) {
-            ribbonArchView.show()
+            ribbonArchTopView.show()
+            ribbonArchBottomView.show()
             ribbonContentView.show()
             ribbonTextView.show()
             ribbonTextView.text = ribbonText
         } else {
-            ribbonArchView.hide()
+            ribbonArchTopView.hide()
+            ribbonArchBottomView.hide()
             ribbonContentView.hide()
             ribbonTextView.hide()
         }

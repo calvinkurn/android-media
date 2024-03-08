@@ -37,27 +37,15 @@ class ContentCardGQLRepository @Inject constructor() : BaseRepository(), Content
         val componentItem = getComponent(componentId, pageEndPoint)
         val componentsListSize = componentItem?.getComponentsItem()?.size ?: 0
         val parentPosition = componentItem?.position ?: 0
-        val list = when (contentCardComponentName) {
-            ComponentNames.ContentCard.componentName ->
-                DiscoveryDataMapper().mapListToComponentList(
-                    componentData,
-                    ComponentNames.ContentCardItem.componentName,
-                    componentProperties,
-                    parentListSize = componentsListSize,
-                    parentSectionId = componentItem?.parentSectionId,
-                    parentComponentPosition = parentPosition
-                )
-            else ->
-                DiscoveryDataMapper().mapListToComponentList(
-                    componentData,
-                    ComponentNames.ContentCardItem.componentName,
-                    null,
-                    parentListSize = componentsListSize,
-                    parentSectionId = componentItem?.parentSectionId,
-                    parentComponentPosition = parentPosition
-                )
+        val list = DiscoveryDataMapper().mapListToComponentList(
+            componentData,
+            ComponentNames.ContentCardItem.componentName,
+            componentProperties,
+            parentListSize = componentsListSize,
+            parentSectionId = componentItem?.parentSectionId,
+            parentComponentPosition = parentPosition
+        )
 
-        }
         return Pair(list, nextPage)
     }
 }

@@ -17,7 +17,7 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(8)
+            scrollToPosition(11)
         }
 
         // Then
@@ -37,7 +37,7 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(10)
         }
 
         // Then
@@ -72,7 +72,7 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(9, 50) // offset for post purchase
         }
 
         // Then
@@ -110,7 +110,7 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(9)
+            scrollToPosition(9, 50) // offset for post purchase
         }
 
         // Then

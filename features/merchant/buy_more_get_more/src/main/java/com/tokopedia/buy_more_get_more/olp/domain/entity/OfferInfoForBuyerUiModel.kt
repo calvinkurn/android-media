@@ -42,7 +42,8 @@ data class OfferInfoForBuyerUiModel(
             val tierWording: String = "",
             val rules: List<Rule> = emptyList(),
             val benefits: List<Benefit> = emptyList(),
-            val attributes: String = ""
+            val attributes: String = "",
+            val isOOS: Boolean = false
         ) {
             data class Rule(
                 val typeId: Long = 0,
@@ -52,8 +53,15 @@ data class OfferInfoForBuyerUiModel(
 
             data class Benefit(
                 val typeId: Long = 0,
-                val value: Int = 0
-            )
+                val value: Int = 0,
+                val products: List<ProductBenefit> = emptyList()
+            ) {
+                data class ProductBenefit(
+                    val productId: Long = 0,
+                    val image: String = "",
+                    val priority: Int = 0
+                )
+            }
         }
     }
 
@@ -113,5 +121,10 @@ data class OfferInfoForBuyerUiModel(
         data class SetOfferTypeId(val offerTypeId: Long) : OlpEvent()
 
         data class SetSharingData(val sharingData: SharingDataByOfferIdUiModel) : OlpEvent()
+
+        data class TapTier(
+            val selectedTier: Offering.Tier,
+            val offerInfo: OfferInfoForBuyerUiModel
+        ) : OlpEvent()
     }
 }

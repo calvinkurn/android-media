@@ -13,7 +13,7 @@ import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
@@ -293,9 +293,16 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
     }
 
     private fun renderBundleInfo(dataObject: GetOrderSnapshot) {
-        productBundlingInfoLayout?.showWithCondition(dataObject.isBundleProduct)
-        productBundlingIconImage?.setImageUrl(dataObject.bundleIcon)
-        productBundlingNameText?.text = dataObject.bundleName
+        val bundleName = dataObject.bundleName.takeIf { it.isNotBlank() && dataObject.isBundleProduct }
+        val bmgmName = dataObject.offering.label.takeIf { it.isNotBlank() }
+        val bundleIcon = dataObject.bundleIcon.takeIf { it.isNotBlank() && bundleName != null }
+        val bmgmIcon = dataObject.offering.iconUrl.takeIf { it.isNotBlank() && bmgmName != null }
+        val label = bundleName ?: bmgmName
+        val iconUrl = bundleIcon ?: bmgmIcon
+        val show = label != null && iconUrl != null
+        productBundlingInfoLayout?.showIfWithBlock(show) {
+            productBundlingIconImage?.setImageUrl(iconUrl.orEmpty())
+            productBundlingNameText?.text = label.orEmpty()
+        }
     }
-
 }

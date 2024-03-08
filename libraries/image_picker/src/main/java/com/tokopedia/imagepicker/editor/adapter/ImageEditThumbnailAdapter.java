@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.media.loader.JvmMediaLoader;
 
 import java.util.ArrayList;
 
@@ -105,7 +105,7 @@ public class ImageEditThumbnailAdapter extends RecyclerView.Adapter<ImageEditThu
     @Override
     public void onBindViewHolder(ImageEditThumbnailViewHolder holder, int position) {
         String imagePath = imagePathList.get(position).get(currentEditStepIndexList.get(position));
-        ImageHandler.loadImageRounded(holder.imageView.getContext(), holder.imageView, imagePath, 20);
+        JvmMediaLoader.loadImageRounded(holder.imageView, imagePath, 20);
         holder.rectGreenView.setVisibility(selectedIndex == position ? View.VISIBLE : View.GONE);
     }
 

@@ -77,30 +77,21 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <com.tokopedia.unifycomponents.UnifyButton
-                                android:id="@+id/recharge_general_secondary_button"
-                                android:layout_width="match_parent"
+                            <androidx.compose.ui.platform.ComposeView
+                                android:id="@+id/recharge_general_secondary_button_compose"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:enabled="true"
-                                android:text="@string/enquiry_label"
-                                android:visibility="gone"
                                 android:layout_marginTop="8dp"
-                                tools:visibility="visible"
-                                app:unifyButtonSize="medium"
-                                app:unifyButtonVariant="ghost"
                                 android:layout_marginHorizontal="8dp"
                                 />
 
-                            <com.tokopedia.unifycomponents.UnifyButton
-                                android:id="@+id/recharge_general_enquiry_button"
-                                android:layout_width="match_parent"
+                            <androidx.compose.ui.platform.ComposeView
+                                android:id="@+id/recharge_general_enquiry_button_compose"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_marginTop="8dp"
-                                android:text="@string/enquiry_label"
-                                app:unifyButtonType="main"
-                                app:unifyButtonSize="medium"
                                 android:layout_marginHorizontal="8dp"
                                 />
 

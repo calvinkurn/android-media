@@ -1,5 +1,6 @@
 package com.tokopedia.home_account.view
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -131,10 +132,35 @@ class HomeAccountUserViewModel @Inject constructor(
     val isOclEligible: LiveData<Boolean>
         get() = _isOclEligible
 
-    fun refreshUserProfile() {
+    private val _refreshAndUpdateLayoutProfile = MutableLiveData<ProfileDataView>()
+    val refreshAndUpdateLayoutProfile: LiveData<ProfileDataView> get() = _refreshAndUpdateLayoutProfile
+
+    @SuppressLint("PII Data Exposure")
+    fun refreshUserProfile(isUpdateLayout : Boolean = false) {
         launch {
             try {
-                userProfileAndSaveSessionUseCase(Unit)
+                val result = userProfileAndSaveSessionUseCase(Unit)
+
+                if (isUpdateLayout) {
+                    val buyerAccountData = _buyerAccountData.value
+                    if (buyerAccountData is Success && result is Success) {
+                        val oldProfile = buyerAccountData.data
+                        val newProfile = result.data.profileInfo
+                        val newProfileData = ProfileDataView(
+                            name = newProfile.fullName,
+                            phone = newProfile.phone,
+                            email = newProfile.email,
+                            avatar = newProfile.profilePicture,
+                            isLinked = oldProfile.isLinked,
+                            isShowLinkStatus = oldProfile.isShowLinkStatus,
+                            memberStatus = oldProfile.memberStatus,
+                            isSuccessGetTokopediaPlusData = oldProfile.isSuccessGetTokopediaPlusData,
+                            tokopediaPlusWidget = oldProfile.tokopediaPlusWidget,
+                            offerInterruptData = oldProfile.offerInterruptData
+                        )
+                        _refreshAndUpdateLayoutProfile.value = newProfileData
+                    }
+                }
             } catch (ignored: Exception) {}
         }
     }

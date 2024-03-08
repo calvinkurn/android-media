@@ -3,6 +3,7 @@ package com.tokopedia.cart.view.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.view.uimodel.CartLoadingHolderData
+import com.tokopedia.baselist.R as baselistR
 
 /**
  * Created by Irfan Khoirul on 2019-06-26.
@@ -11,7 +12,7 @@ import com.tokopedia.cart.view.uimodel.CartLoadingHolderData
 class CartLoadingViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     companion object {
-        val LAYOUT = com.tokopedia.baselist.R.layout.loading_layout
+        val LAYOUT = baselistR.layout.loading_layout
     }
 
     fun bind(element: CartLoadingHolderData) {

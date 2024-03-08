@@ -1,21 +1,27 @@
 package com.tokopedia.search.result.presentation.view.activity
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
@@ -28,9 +34,17 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.URLParser
+import com.tokopedia.home_component.usecase.thematic.ThematicModel
+import com.tokopedia.home_component.util.ImageLoaderStateListener
+import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
+import com.tokopedia.search.databinding.SearchActivitySearchBinding
 import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.result.SearchParameterModule
 import com.tokopedia.search.result.SearchState
@@ -56,23 +70,23 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.telemetry.ITelemetryActivity
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.android.synthetic.main.search_activity_search.*
+import kotlinx.android.synthetic.main.search_activity_search.view.*
+import kotlinx.coroutines.flow.collectLatest
 import java.net.URLEncoder
 import javax.inject.Inject
 import javax.inject.Named
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.MutableList
-import kotlin.collections.listOf
-import kotlin.collections.mutableListOf
-import kotlin.collections.set
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class SearchActivity : BaseActivity(),
+class SearchActivity :
+    BaseActivity(),
     SearchView,
     RedirectionListener,
     SearchNavigationListener,
     PageLoadTimePerformanceInterface by searchProductPerformanceMonitoring(),
     HasComponent<BaseAppComponent>,
-    ITelemetryActivity{
+    ITelemetryActivity {
 
     private var searchNavigationToolbar: NavToolbar? = null
     private var container: MotionLayout? = null
@@ -105,6 +119,8 @@ class SearchActivity : BaseActivity(),
     private var searchComponent: SearchComponent? = null
     private lateinit var searchParameter: SearchParameter // initialized in getExtrasFromIntent
 
+    private val binding: SearchActivitySearchBinding? by viewBinding()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         startMonitoring(SEARCH_RESULT_TRACE)
         startPreparePagePerformanceMonitoring()
@@ -119,28 +135,45 @@ class SearchActivity : BaseActivity(),
         setStatusBarColor()
         proceed()
         handleIntent()
+        observeSearchState()
+        searchViewModel?.getThematic()
     }
 
-    private fun setStatusBarColor() {
+    private fun observeSearchState() {
+        lifecycleScope.launchWhenCreated {
+            searchViewModel?.stateFlow?.collectLatest {
+                if (it.shouldShowThematic()) {
+                    it.thematicModel?.let { it1 ->
+                        showThematic(
+                            it1
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param statusBarColor: color resource id
+     */
+    private fun setStatusBarColor(statusBarColor: Int = unifyprinciplesR.color.Unify_NN0) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!isDarkMode()) {
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
-        }
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = ContextCompat.getColor(this, statusBarColor)
     }
 
     private fun getExtrasFromIntent(intent: Intent) {
         searchParameter = getSearchParameterFromIntentUri(intent)
 
         if (searchParameter.getSearchQuery().isEmpty()) {
-            @Suppress("UNCHECKED_CAST")
             // Should be safe to cast non-null type to nullable type
+            @Suppress("UNCHECKED_CAST")
             val map = searchParameter.getSearchParameterMap() as Map<String?, Any>
             SearchLogger().logAnomalyNoKeyword(UrlParamUtils.generateUrlParamString(map))
         }
@@ -148,7 +181,8 @@ class SearchActivity : BaseActivity(),
 
     private fun getSearchParameterFromIntentUri(intent: Intent): SearchParameter {
         val uri = intent.data
-        val searchParameter = if (uri == null) SearchParameter() else SearchParameter(uri.toString())
+        val searchParameter =
+            if (uri == null) SearchParameter() else SearchParameter(uri.toString())
         searchParameter.cleanUpNullValuesInMap()
         return searchParameter
     }
@@ -204,8 +238,16 @@ class SearchActivity : BaseActivity(),
             it.setToolbarPageName(SearchConstant.SEARCH_RESULT_PAGE)
             it.setIcon(
                 IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.SRP))
-                    .addIcon(IconList.ID_CART, disableRouteManager = false, disableDefaultGtmTracker = false) { }
-                    .addIcon(IconList.ID_NAV_GLOBAL, disableRouteManager = false, disableDefaultGtmTracker = false) { }
+                    .addIcon(
+                        IconList.ID_CART,
+                        disableRouteManager = false,
+                        disableDefaultGtmTracker = false
+                    ) { }
+                    .addIcon(
+                        IconList.ID_NAV_GLOBAL,
+                        disableRouteManager = false,
+                        disableDefaultGtmTracker = false
+                    ) { }
             )
         }
     }
@@ -250,12 +292,18 @@ class SearchActivity : BaseActivity(),
     }
 
     private fun isLandingPage() =
-            searchParameter.getBoolean(SearchApiConst.LANDING_PAGE)
+        searchParameter.getBoolean(SearchApiConst.LANDING_PAGE)
 
     private fun initViewPager() {
         viewPager?.offscreenPageLimit = 2
         viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
+
             override fun onPageSelected(position: Int) {
                 searchViewModel?.setActiveTab(position)
                 this@SearchActivity.onPageSelected(position)
@@ -269,14 +317,18 @@ class SearchActivity : BaseActivity(),
         when (position) {
             SearchTabPosition.TAB_FIRST_POSITION ->
                 SearchTracking.eventSearchResultTabClick(productTabTitle)
+
             SearchTabPosition.TAB_SECOND_POSITION ->
                 SearchTracking.eventSearchResultTabClick(shopTabTitle)
         }
     }
 
     private fun configureTabLayout() {
-        if (isLandingPage()
-                || Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) return
+        if (isLandingPage() ||
+            Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP
+        ) {
+            return
+        }
 
         container?.let {
             it.loadLayoutDescription(R.xml.search_tab_layout_scene)
@@ -285,11 +337,25 @@ class SearchActivity : BaseActivity(),
         }
     }
 
-    private fun getContainerTransitionListener(): MotionLayout.TransitionListener? {
+    private fun getContainerTransitionListener(): MotionLayout.TransitionListener {
         return object : MotionLayout.TransitionListener {
             override fun onTransitionStarted(motionLayout: MotionLayout, i: Int, i1: Int) {}
-            override fun onTransitionChange(motionLayout: MotionLayout, i: Int, i1: Int, v: Float) {}
-            override fun onTransitionTrigger(motionLayout: MotionLayout, i: Int, b: Boolean, v: Float) {}
+            override fun onTransitionChange(
+                motionLayout: MotionLayout,
+                i: Int,
+                i1: Int,
+                v: Float
+            ) {
+            }
+
+            override fun onTransitionTrigger(
+                motionLayout: MotionLayout,
+                i: Int,
+                b: Boolean,
+                v: Float
+            ) {
+            }
+
             override fun onTransitionCompleted(motionLayout: MotionLayout, i: Int) {
                 onContainerTransitionCompleted(i)
             }
@@ -323,7 +389,7 @@ class SearchActivity : BaseActivity(),
     }
 
     private fun observeViewModel() {
-        searchViewModel?.apply{
+        searchViewModel?.apply {
             observeState()
 
             onEach(SearchState::activeTabPosition, ::setViewPagerCurrentItem)
@@ -352,7 +418,7 @@ class SearchActivity : BaseActivity(),
         return activeTab !in listOf(
             SearchConstant.ActiveTab.PRODUCT,
             SearchConstant.ActiveTab.SHOP,
-            SearchConstant.ActiveTab.MPS,
+            SearchConstant.ActiveTab.MPS
         )
     }
 
@@ -369,21 +435,22 @@ class SearchActivity : BaseActivity(),
     }
 
     private fun createPagerAdapter(searchFragmentTitles: List<String>): SearchViewPagerAdapter =
-        if (searchParameter.isMps())
+        if (searchParameter.isMps()) {
             MPSPagerAdapter(
                 supportFragmentManager,
                 searchFragmentTitles,
                 classLoader,
-                supportFragmentManager.fragmentFactory,
+                supportFragmentManager.fragmentFactory
             )
-        else
+        } else {
             SearchSectionPagerAdapter(
                 supportFragmentManager,
                 searchFragmentTitles,
                 searchParameter,
                 classLoader,
-                supportFragmentManager.fragmentFactory,
+                supportFragmentManager.fragmentFactory
             )
+        }
 
     private fun addFragmentTitlesToList(searchSectionItemList: MutableList<String>) {
         searchSectionItemList.add(productTabTitle)
@@ -393,11 +460,12 @@ class SearchActivity : BaseActivity(),
 
     private fun initTabLayout() {
         tabLayout?.clearOnTabSelectedListeners()
-        tabLayout?.addOnTabSelectedListener(object : TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
-            override fun onTabReselected(tab: TabLayout.Tab) {
-                this@SearchActivity.onTabReselected(tab.position)
-            }
-        })
+        tabLayout?.addOnTabSelectedListener(object :
+                TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+                override fun onTabReselected(tab: TabLayout.Tab) {
+                    this@SearchActivity.onTabReselected(tab.position)
+                }
+            })
     }
 
     private fun onTabReselected(tabPosition: Int) {
@@ -409,14 +477,16 @@ class SearchActivity : BaseActivity(),
 
     private fun firstPositionFragmentReselected() {
         val firstPageFragment = viewPagerAdapter?.getFirstPageFragment()
-        if (firstPageFragment is BackToTopView)
+        if (firstPageFragment is BackToTopView) {
             firstPageFragment.backToTop()
+        }
     }
 
     private fun secondPositionFragmentReselected() {
         val secondPageFragment = viewPagerAdapter?.getSecondPageFragment()
-        if (secondPageFragment is BackToTopView)
+        if (secondPageFragment is BackToTopView) {
             secondPageFragment.backToTop()
+        }
     }
 
     private fun setToolbarTitle() {
@@ -427,13 +497,13 @@ class SearchActivity : BaseActivity(),
         val query = searchParameter.getSearchQuery()
 
         searchNavigationToolbar?.setupSearchbar(
-                hints = listOf(HintData(query, query)),
-                applink = "",
-                searchbarClickCallback = this::onSearchNavigationSearchBarClicked,
-                searchbarImpressionCallback = null,
-                durationAutoTransition = 0,
-                shouldShowTransition = true,
-                disableDefaultGtmTracker = false,
+            hints = listOf(HintData(query, query)),
+            applink = "",
+            searchbarClickCallback = this::onSearchNavigationSearchBarClicked,
+            searchbarImpressionCallback = null,
+            durationAutoTransition = 0,
+            shouldShowTransition = true,
+            disableDefaultGtmTracker = false
         )
     }
 
@@ -447,8 +517,9 @@ class SearchActivity : BaseActivity(),
     }
 
     private fun setSearchNavigationCartButton() {
-        if (userSession.isLoggedIn)
+        if (userSession.isLoggedIn) {
             setSearchNavigationCartButtonCount()
+        }
     }
 
     private fun setSearchNavigationCartButtonCount() {
@@ -456,7 +527,7 @@ class SearchActivity : BaseActivity(),
     }
 
     private fun getCartCount() =
-            localCacheHandler.getInt(SearchConstant.Cart.CACHE_TOTAL_CART, 0)
+        localCacheHandler.getInt(SearchConstant.Cart.CACHE_TOTAL_CART, 0)
 
     override fun isAllowShake() = false
 
@@ -504,6 +575,92 @@ class SearchActivity : BaseActivity(),
         if (it.isOpeningAutoComplete) {
             showSearchInputView()
             searchViewModel?.showAutoCompleteHandled()
+        }
+    }
+
+    private fun showThematic(thematicModel: ThematicModel) = binding?.let {
+        val thematicImageLoadListener = object : ImageLoaderStateListener {
+            override fun successLoad(view: ImageView) {
+                view.show()
+                setThematicStatusBar()
+            }
+
+            override fun failedLoad(view: ImageView) {
+                view.hide()
+            }
+        }
+
+        val thematicHeight = calculateThematicHeight(thematicModel)
+        it.thematicForeground.setLayoutHeight(thematicHeight)
+        it.thematicBackground.setLayoutHeight(thematicHeight)
+
+        it.thematicForeground.loadImageWithoutPlaceholder(
+            thematicModel.foregroundImageURL,
+            "thematicForeground",
+            thematicImageLoadListener,
+            skipErrorPlaceholder = true
+        )
+        it.thematicBackground.loadImageWithoutPlaceholder(
+            thematicModel.backgroundImageURL,
+            "thematicBackground",
+            thematicImageLoadListener,
+            skipErrorPlaceholder = true
+        )
+
+        thematic_container.visibility = View.VISIBLE
+        setThematicTheme()
+    }
+
+    private fun calculateThematicHeight(thematicModel: ThematicModel): Int {
+        return (thematicModel.heightPercentage * getScreenHeight()) / 100
+    }
+
+    /**
+     * Status bar set to have layout underneath and set as transparent so that layout can be seen
+     */
+    private fun setThematicStatusBar() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT
+        container?.loadLayoutDescription(R.xml.search_tab_layout_thematic_scene)
+        val statusBarHeight = DisplayMetricUtils.getStatusBarHeight(this@SearchActivity)
+        container?.getConstraintSet(R.id.searchMotionTabStart)?.setMargin(
+            R.id.searchNavigationToolbar,
+            ConstraintSet.TOP,
+            statusBarHeight
+        )
+        container?.getConstraintSet(R.id.searchMotionTabEnd)?.setMargin(
+            R.id.searchNavigationToolbar,
+            ConstraintSet.TOP,
+            statusBarHeight
+        )
+    }
+
+    /**
+     * Set navigation toolbar background to transparent, then switch bar so that its re-rendered
+     * Should also change nav back button's color according to theme
+     * Should be called after succesfuly inflating thematic
+     */
+    private fun setThematicTheme() {
+        val state = searchViewModel?.stateFlow?.value ?: return
+        binding?.let {
+            searchNavigationToolbar?.setIconAndNavRecyclerCustomColor(
+                ContextCompat.getColor(
+                    this,
+                    unifyprinciplesR.color.Unify_Static_Black
+                ),
+                ContextCompat.getColor(
+                    this,
+                    unifyprinciplesR.color.Unify_Static_White
+                )
+            )
+            if (state.isThematicLightMode()) {
+                searchNavigationToolbar?.switchToLightToolbar(force = true)
+            } else if (state.isThematicDarkMode()) {
+                searchNavigationToolbar?.switchToDarkToolbar(true)
+            } else {
+                searchNavigationToolbar?.switchToolbarBasedOnUiMode()
+            }
+            searchNavigationToolbar?.setBackgroundAlpha(0f)
         }
     }
 }

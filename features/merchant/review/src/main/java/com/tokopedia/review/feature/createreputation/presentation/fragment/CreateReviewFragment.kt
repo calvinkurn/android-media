@@ -19,7 +19,7 @@ import com.airbnb.lottie.LottieDrawable
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -38,7 +38,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.BuildConfig
@@ -638,7 +637,7 @@ class CreateReviewFragment :
     }
 
     private fun showImage(url: String) {
-        ImageHandler.loadImageWithoutPlaceholder(binding?.imgAnimationReview, url)
+        binding?.imgAnimationReview?.loadImage(url)
     }
 
     private fun generateAnimationByIndex(index: Int) {

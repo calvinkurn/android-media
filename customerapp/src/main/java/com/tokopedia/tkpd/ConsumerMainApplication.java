@@ -58,6 +58,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         GlobalConfig.ENABLE_MACROBENCHMARK_UTIL = BuildConfig.ENABLE_MACROBENCHMARK_UTIL;
+        GlobalConfig.IS_NAKAMA_VERSION = BuildConfig.IS_NAKAMA_VERSION;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.IS_PREINSTALL = BuildConfig.IS_PREINSTALL;
@@ -132,16 +133,24 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     private void setupAlphaObserver() {
-        String versionName = BuildConfig.VERSION_NAME;
-        if (versionName.endsWith(SUFFIX_ALPHA) && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)) {
+        if (isAlphaVersion()) {
             registerActivityLifecycleCallbacks(new AlphaObserver());
-            registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
-                @Override
-                public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
-                    openFeedbackForm(uri, className, isFromScreenshot);
-                }
-            }));
         }
+        if (isAlphaVersion() || isNakamaVersion()) {
+            registerActivityLifecycleCallbacks(
+                    new Screenshot(getApplicationContext().getContentResolver(), this::openFeedbackForm)
+            );
+        }
+    }
+
+    private boolean isAlphaVersion() {
+        String versionName = GlobalConfig.VERSION_NAME;
+        return versionName.endsWith(SUFFIX_ALPHA)
+                && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true);
+    }
+
+    private boolean isNakamaVersion() {
+        return GlobalConfig.IS_NAKAMA_VERSION;
     }
 
     @Nullable

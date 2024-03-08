@@ -3,11 +3,9 @@ package com.tokopedia.oldcatalog.ui.bottomsheet
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment
 import com.tokopedia.oldcatalog.listener.CatalogDetailListener
 import com.tokopedia.oldcatalog.ui.fragment.CatalogAllReviewFragment
 import com.tokopedia.oldcatalog.ui.fragment.CatalogDetailPageFragment
-import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment as CatalogDetailPageFragmentV4
 import com.tokopedia.oldcatalog.ui.fragment.CatalogProductComparisonFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -19,7 +17,7 @@ class CatalogComponentBottomSheet : BottomSheetUnify(), CatalogDetailListener {
     private var catalogName = ""
     private var brand = ""
     private var categoryId = ""
-    private var origin : Int  = 0
+    private var origin: Int = 0
 
     init {
         isFullpage = true
@@ -46,28 +44,36 @@ class CatalogComponentBottomSheet : BottomSheetUnify(), CatalogDetailListener {
             brand = requireArguments().getString(ARG_EXTRA_CATALOG_BRAND, "")
             categoryId = requireArguments().getString(ARG_EXTRA_CATALOG_CATEGORY_ID, "")
             recommendedCatalogId = requireArguments().getString(ARG_EXTRA_RECOMMENDED_CATALOG_ID, "")
-            origin = requireArguments().getInt(ARG_SHEET_ORIGIN,0)
+            origin = requireArguments().getInt(ARG_SHEET_ORIGIN, 0)
         }
         setUpTitle()
-        if(savedInstanceState == null) {
-            when(origin){
-
+        if (savedInstanceState == null) {
+            when (origin) {
                 ORIGIN_ALL_REVIEWS -> {
-                    childFragmentManager.beginTransaction().replace(R.id.frame_content,
-                        CatalogAllReviewFragment.newInstance(catalogName, catalogId, catalogDetailListener)).commit()
+                    childFragmentManager.beginTransaction().replace(
+                        R.id.frame_content,
+                        CatalogAllReviewFragment.newInstance(catalogName, catalogId, catalogDetailListener)
+                    ).commit()
                 }
 
                 ORIGIN_ULTIMATE_VERSION -> {
-                    childFragmentManager.beginTransaction().replace(R.id.frame_content,
-                        CatalogProductComparisonFragment.newInstance(catalogName, catalogId, brand,
-                            categoryId, recommendedCatalogId)).commit()
+                    childFragmentManager.beginTransaction().replace(
+                        R.id.frame_content,
+                        CatalogProductComparisonFragment.newInstance(
+                            catalogName,
+                            catalogId,
+                            brand,
+                            categoryId,
+                            recommendedCatalogId
+                        )
+                    ).commit()
                 }
             }
         }
     }
 
     private fun setUpTitle() {
-        when(origin){
+        when (origin) {
             ORIGIN_ALL_REVIEWS -> setTitle(getString(R.string.catalog_ulasan_produk))
             ORIGIN_ULTIMATE_VERSION -> setTitle(getString(R.string.catalog_perbandingan_produk))
         }
@@ -79,16 +85,8 @@ class CatalogComponentBottomSheet : BottomSheetUnify(), CatalogDetailListener {
 
     override fun changeComparison(comparedCatalogId: String) {
         when (parentFragment) {
-            is CatalogComparisonDetailFragment -> {
-                (parentFragment as? CatalogComparisonDetailFragment)?.changeComparison(comparedCatalogId)
-            }
-
             is CatalogDetailPageFragment -> {
                 (parentFragment as? CatalogDetailPageFragment)?.changeComparison(comparedCatalogId)
-            }
-
-            is CatalogDetailPageFragmentV4 -> {
-                (parentFragment as? CatalogDetailPageFragmentV4)?.changeComparison(comparedCatalogId)
             }
         }
     }
@@ -104,9 +102,15 @@ class CatalogComponentBottomSheet : BottomSheetUnify(), CatalogDetailListener {
         const val ORIGIN_ALL_REVIEWS = 0
         const val ORIGIN_ULTIMATE_VERSION = 1
 
-        fun newInstance(catalogName : String, catalogId : String, brand : String, categoryId : String,
-                        recommendedCatalogId : String,
-                        origin : Int ,listener: CatalogDetailListener?): CatalogComponentBottomSheet {
+        fun newInstance(
+            catalogName: String,
+            catalogId: String,
+            brand: String,
+            categoryId: String,
+            recommendedCatalogId: String,
+            origin: Int,
+            listener: CatalogDetailListener?
+        ): CatalogComponentBottomSheet {
             return CatalogComponentBottomSheet().apply {
                 catalogDetailListener = listener
                 arguments = Bundle().apply {
@@ -115,7 +119,7 @@ class CatalogComponentBottomSheet : BottomSheetUnify(), CatalogDetailListener {
                     putString(ARG_EXTRA_CATALOG_BRAND, brand)
                     putString(ARG_EXTRA_CATALOG_CATEGORY_ID, categoryId)
                     putString(ARG_EXTRA_RECOMMENDED_CATALOG_ID, recommendedCatalogId)
-                    putInt(ARG_SHEET_ORIGIN,origin)
+                    putInt(ARG_SHEET_ORIGIN, origin)
                 }
             }
         }

@@ -46,9 +46,11 @@ class ProductRecommendationDataMapper @Inject constructor(
                             reviewCount = recommendationItem.countReview,
                             ratingCount = recommendationItem.rating,
                             shopLocation = recommendationItem.location,
-                            shopBadgeList = recommendationItem.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it
-                                        ?: "")
+                            shopBadgeList = recommendationItem.badges.map {
+                                ProductCardModel.ShopBadge(
+                                    title = it.title,
+                                    imageUrl = it.imageUrl
+                                )
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = recommendationItem.isFreeOngkirActive,

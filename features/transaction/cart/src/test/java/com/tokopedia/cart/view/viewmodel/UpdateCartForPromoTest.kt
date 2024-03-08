@@ -2,9 +2,9 @@ package com.tokopedia.cart.view.viewmodel
 
 import com.tokopedia.cart.utils.DataProvider
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
-import com.tokopedia.cartrevamp.view.helper.CartDataHelper
-import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
-import com.tokopedia.cartrevamp.view.uimodel.UpdateCartPromoState
+import com.tokopedia.cart.view.helper.CartDataHelper
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.UpdateCartPromoState
 import com.tokopedia.network.exception.ResponseErrorException
 import io.mockk.Runs
 import io.mockk.coEvery

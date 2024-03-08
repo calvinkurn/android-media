@@ -16,5 +16,11 @@ data class PlayShortsConfig(
     val maxTaggedProduct: Int = 0,
 
     @SerializedName("short_video_source_id")
-    val shortVideoSourceId: String = ""
+    val shortVideoSourceId: String = "",
+
+    @SerializedName("eligible_interspersing")
+    val eligibleInterspersing: Boolean = false,
+
+    @SerializedName("product_count_for_interspersing")
+    val productCountForInterspersing: Int = 1,
 )
