@@ -244,6 +244,19 @@ class ShareExViewModel @Inject constructor(
             sourceId = imageGeneratorProperty?.sourceId,
             args = imageGeneratorProperty?.args
         )
+        bottomSheetResultArg?.bottomSheetModel?.let { bottomSheetModel ->
+            val position = _bottomSheetUiState.value.chipPosition
+            val updatedUiResult = bottomSheetModel.map(
+                position = position,
+                selectedImageUrl = imageUrl
+            )
+            updateBottomSheetUiState(
+                title = bottomSheetModel.title,
+                uiModelList = updatedUiResult,
+                bottomSheetModel = bottomSheetModel,
+                chipPosition = position
+            )
+        }
     }
 
     private fun updateImageGeneratorUiState(
