@@ -22,7 +22,7 @@ class WishlistCollectionActivity : BaseSimpleActivity(), AppLogInterface {
         inflateFragment()
     }
 
-    override fun getPageName(): String {
-        return PageName.WISHLIST
-    }
+    override fun getPageName(): String = PageName.WISHLIST
+
+    override fun isEnterFromWhitelisted() = true
 }
