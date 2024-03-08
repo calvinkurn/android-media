@@ -55,7 +55,7 @@ class PlayBroadcastLiveStatsBottomSheet @Inject constructor(
                         LiveStatsLayout(
                             modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
                             gridCount = 2,
-                            listData = uiState.liveStatsList.map {
+                            listData = uiState.liveReportSummary.liveStats.map {
                                 when (it) {
                                     is LiveStatsUiModel.EstimatedIncome -> {
                                         LiveStatsCardModel.Clickable(

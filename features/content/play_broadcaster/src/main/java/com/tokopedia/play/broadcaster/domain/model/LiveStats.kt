@@ -27,6 +27,8 @@ data class LiveStats(
     val liveConcurrentUsers: String = "",
     @SerializedName("estimated_income_fmt")
     val estimatedIncome: String = "",
+    @SerializedName("timestamp")
+    val timestamp: Long = 0L,
 ): PlaySocketType {
         override val type: PlaySocketEnum get() = PlaySocketEnum.LiveStats
 }

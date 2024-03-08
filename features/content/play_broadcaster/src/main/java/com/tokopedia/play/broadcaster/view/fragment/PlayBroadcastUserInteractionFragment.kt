@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -428,7 +429,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
                 NestTheme(isOverrideStatusBarColor = false) {
                     LiveStatsView(
-                        liveStatsList = uiState.liveStatsList,
+                        liveStatsList = uiState.liveReportSummary.liveStats,
                         onClick = {
                             openLiveStatsSheet()
                         }

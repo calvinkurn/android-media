@@ -58,6 +58,7 @@ import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.log.BroadcasterErrorLog
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.stats.EstimatedIncomeDetailUiModel
+import com.tokopedia.play.broadcaster.ui.model.stats.LiveReportSummaryUiModel
 import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
@@ -232,8 +233,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _accountStateInfo = MutableStateFlow(AccountStateInfo())
 
-    private val _liveStatsList = MutableStateFlow(emptyList<LiveStatsUiModel>())
-
     /** Preparation */
     private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
     private val _title = getCurrentSetupDataStore().getObservableTitle()
@@ -243,6 +242,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _beautificationConfig = MutableStateFlow(BeautificationConfigUiModel.Empty)
     private val _tickerBottomSheetConfig = MutableStateFlow(TickerBottomSheetUiModel.Empty)
 
+    /** Stats */
+    private val _liveReportSummary = MutableStateFlow(LiveReportSummaryUiModel.Empty)
     private val _estimatedIncomeDetail = MutableStateFlow<NetworkResult<EstimatedIncomeDetailUiModel>>(NetworkResult.Unknown)
 
     val tickerBottomSheetConfig: TickerBottomSheetUiModel
@@ -420,7 +421,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _cover,
         _beautificationConfig,
         _tickerBottomSheetConfig,
-        _liveStatsList,
+        _liveReportSummary,
         _estimatedIncomeDetail,
     ) { channelState,
         pinnedMessage,
@@ -442,7 +443,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         cover,
         beautificationConfig,
         tickerBottomSheetConfig,
-        liveStatsList,
+        liveReportSummary,
         estimatedIncomeDetail ->
         PlayBroadcastUiState(
             channel = channelState,
@@ -465,7 +466,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             cover = cover,
             beautificationConfig = beautificationConfig,
             tickerBottomSheetConfig = tickerBottomSheetConfig,
-            liveStatsList = liveStatsList,
+            liveReportSummary = liveReportSummary,
             estimatedIncomeDetail = estimatedIncomeDetail,
         )
     }.stateIn(
@@ -481,7 +482,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val broadcastTimerStateChanged: Flow<PlayBroadcastTimerState>
         get() = broadcastTimer.stateChanged.map {
             if (it is PlayBroadcastTimerState.Active) {
-                updateLiveStats(listOf(LiveStatsUiModel.Duration(it.duration)))
+                updateDuration(it.duration)
             }
 
             it
@@ -982,8 +983,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             socketMapper.map()
         }
 
-        println("JOE LOG socket result $result")
-
         when (result) {
             is NewMetricList -> queueNewMetrics(playBroadcastMapper.mapNewMetricList(result))
             is LiveDuration -> {
@@ -1037,7 +1036,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         LiveStatsUiModel.TotalViewer(result.visitChannel),
                         LiveStatsUiModel.EstimatedIncome(result.estimatedIncome),
                         LiveStatsUiModel.Like(result.likeChannel),
-                    )
+                    ),
+                    result.timestamp.toString(),
                 )
             }
         }
@@ -2413,27 +2413,51 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun setupLiveStats(selectedAccount: ContentAccountUiModel) {
         viewModelScope.launch {
-            _liveStatsList.update {
-                mutableListOf<LiveStatsUiModel>().apply {
-                    add(LiveStatsUiModel.Viewer())
-                    add(LiveStatsUiModel.TotalViewer())
-                    if (selectedAccount.isShop) {
-                        add(LiveStatsUiModel.EstimatedIncome())
-                    }
-                    add(LiveStatsUiModel.Like())
-                    add(LiveStatsUiModel.Duration())
-                }
+            _liveReportSummary.update {
+                LiveReportSummaryUiModel(
+                    liveStats = mutableListOf<LiveStatsUiModel>().apply {
+                        add(LiveStatsUiModel.Viewer())
+                        add(LiveStatsUiModel.TotalViewer())
+                        if (selectedAccount.isShop) {
+                            add(LiveStatsUiModel.EstimatedIncome())
+                        }
+                        add(LiveStatsUiModel.Like())
+                        add(LiveStatsUiModel.Duration())
+                    },
+                    timestamp = "",
+                )
             }
         }
     }
 
-    private fun updateLiveStats(newLiveStats: List<LiveStatsUiModel>) {
-        _liveStatsList.update {
-            it.map { liveStats ->
-                newLiveStats.firstOrNull { item ->
-                    item::class == liveStats::class
-                } ?: return@map liveStats
+    private fun updateLiveStats(newLiveStats: List<LiveStatsUiModel>, timestamp: String) {
+        _liveReportSummary.update {
+            if (timestamp.length >= it.timestamp.length && timestamp > it.timestamp) {
+                it.copy(
+                    liveStats = it.liveStats.map { liveStats ->
+                        newLiveStats.firstOrNull { item ->
+                            item::class == liveStats::class
+                        } ?: return@map liveStats
+                    },
+                    timestamp = timestamp
+                )
+            } else {
+                it
             }
+        }
+    }
+
+    private fun updateDuration(duration: Long) {
+        _liveReportSummary.update {
+            it.copy(
+                liveStats = it.liveStats.map { liveStats ->
+                    if (liveStats is LiveStatsUiModel.Duration) {
+                        liveStats.copy(timeInMillis = duration)
+                    } else {
+                        liveStats
+                    }
+                }
+            )
         }
     }
 

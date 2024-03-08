@@ -19,7 +19,7 @@ import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiMode
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.stats.EstimatedIncomeDetailUiModel
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
+import com.tokopedia.play.broadcaster.ui.model.stats.LiveReportSummaryUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
@@ -50,7 +50,7 @@ data class PlayBroadcastUiState(
     val cover: PlayCoverUiModel,
     val beautificationConfig: BeautificationConfigUiModel,
     val tickerBottomSheetConfig: TickerBottomSheetUiModel,
-    val liveStatsList: List<LiveStatsUiModel>,
+    val liveReportSummary: LiveReportSummaryUiModel,
     val estimatedIncomeDetail: NetworkResult<EstimatedIncomeDetailUiModel>,
 ) {
     companion object {
@@ -85,7 +85,7 @@ data class PlayBroadcastUiState(
                 cover = PlayCoverUiModel.empty(),
                 beautificationConfig = BeautificationConfigUiModel.Empty,
                 tickerBottomSheetConfig = TickerBottomSheetUiModel.Empty,
-                liveStatsList = emptyList(),
+                liveReportSummary = LiveReportSummaryUiModel.Empty,
                 estimatedIncomeDetail = NetworkResult.Unknown,
             )
     }
