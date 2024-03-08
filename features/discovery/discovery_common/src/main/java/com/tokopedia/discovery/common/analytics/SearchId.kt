@@ -1,24 +1,20 @@
 package com.tokopedia.discovery.common.analytics
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
-import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.PRE_SEARCH_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ID
 
 object SearchId {
 
-    val value: String
-        get() = AppLogAnalytics.getCurrentData(SEARCH_ID)?.toString() ?: ""
+    var value: String = ""
+        private set
 
-    private val currentPreSearchId: String
-        get() = AppLogAnalytics.getCurrentData(PRE_SEARCH_ID)?.toString() ?: ""
-
-    val previousValue: String
-        get() = currentPreSearchId.ifBlank {
-            (AppLogAnalytics.getLastDataBeforeCurrent(SEARCH_ID) ?: "").toString()
-        }
+    var previousValue: String = ""
+        private set
 
     fun update(searchId: String) {
-        AppLogAnalytics.putPageData(PRE_SEARCH_ID, this.value)
+        this.previousValue = this.value
+        this.value = searchId
+
         AppLogAnalytics.putPageData(SEARCH_ID, searchId)
     }
 }
