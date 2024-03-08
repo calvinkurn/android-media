@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.chatbot2.csat.domain.model
+package com.tokopedia.csat_rating.dynamiccsat.domain.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
