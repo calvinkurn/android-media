@@ -176,7 +176,7 @@ class ThematicWidgetViewHolder(
                 it.clipToOutline = true
                 it.background = MethodChecker.getDrawable(
                     itemView.context,
-                    shop_widgetR.drawable.bg_shop_reimagined_rounded
+                    R.drawable.bg_shop_reimagined_rounded
                 )
                 (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart =
                     SHOP_RE_IMAGINE_MARGIN.toInt()
@@ -360,8 +360,8 @@ class ThematicWidgetViewHolder(
 
     private fun setupBackgroundColor(startBackGroundColor: String?, endBackGroundColor: String?) {
         val colors = intArrayOf(
-            getBackGroundColor(itemView.context, startBackGroundColor, shop_widgetR.color.dms_clr_thematic_widget_bg_default_first_color),
-            getBackGroundColor(itemView.context, endBackGroundColor, shop_widgetR.color.dms_clr_thematic_widget_bg_default_second_color)
+            getBackGroundColor(itemView.context, startBackGroundColor, R.color.dms_clr_thematic_widget_bg_default_first_color),
+            getBackGroundColor(itemView.context, endBackGroundColor, R.color.dms_clr_thematic_widget_bg_default_second_color)
         )
         val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors)
         viewParallaxBackground?.background = gradientDrawable

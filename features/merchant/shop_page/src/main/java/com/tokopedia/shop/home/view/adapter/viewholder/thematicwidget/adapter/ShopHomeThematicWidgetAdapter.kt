@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.shop.home.view.adapter.viewholder.thematicwidget.typefactory.ShopHomeThematicWidgetTypeFactoryImpl
 
-open class ShopHomeThematicWidgetAdapter(
+class ShopHomeThematicWidgetAdapter(
     baseListAdapterTypeFactory: ShopHomeThematicWidgetTypeFactoryImpl,
     private val differ: ShopHomeThematicWidgetDiffUtil
 ): BaseListAdapter<Visitable<*>, ShopHomeThematicWidgetTypeFactoryImpl>(baseListAdapterTypeFactory) {
