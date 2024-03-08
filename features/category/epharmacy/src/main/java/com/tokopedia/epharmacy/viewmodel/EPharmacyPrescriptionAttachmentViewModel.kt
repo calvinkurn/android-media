@@ -87,15 +87,15 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         )
     }
 
-    fun updateEPharmacyCart(uiUpdater: EPharmacyAttachmentUiUpdater) {
+    fun updateEPharmacyCart(uiUpdater: EPharmacyAttachmentUiUpdater, isSilent: Boolean = false) {
         updateCartUseCase.setParams(
-            updateCartRequestList = uiUpdater.getUpdateCartParams(ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.userCartContent),
+            updateCartRequestList = uiUpdater.getUpdateCartParams(ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.userCartContent, isSilent),
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         )
         updateCartUseCase.execute({
-            _updateEPharmacyCart.postValue(it.data.status)
+            if(!isSilent) _updateEPharmacyCart.postValue(it.data.status)
         }, {
-            _updateEPharmacyCart.postValue(false)
+            if(!isSilent) _updateEPharmacyCart.postValue(false)
         })
     }
 
