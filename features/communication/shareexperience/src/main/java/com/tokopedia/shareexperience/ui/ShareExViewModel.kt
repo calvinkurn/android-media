@@ -124,18 +124,20 @@ class ShareExViewModel @Inject constructor(
     private fun getShareBottomSheetData() {
         viewModelScope.launch {
             try {
+                val bottomSheetArg = bottomSheetArg!! // Safe !!
                 val bottomSheetResultArg = bottomSheetResultArg!! // Safe !!
                 when {
                     (bottomSheetResultArg.throwable != null) -> {
                         getDefaultBottomSheetModel(
                             bottomSheetResultArg.throwable,
-                            bottomSheetArg?.defaultUrl.toEmptyStringIfNull()
+                            bottomSheetArg.defaultUrl,
+                            bottomSheetArg.defaultImageUrl
                         )
                     }
                     (bottomSheetResultArg.bottomSheetModel != null) -> {
                         handleFirstLoadBottomSheetModel(
                             bottomSheetResultArg.bottomSheetModel,
-                            bottomSheetArg?.selectedChip.toEmptyStringIfNull()
+                            bottomSheetArg.selectedChip
                         )
                     }
                 }
@@ -148,7 +150,8 @@ class ShareExViewModel @Inject constructor(
                 )
                 getDefaultBottomSheetModel(
                     throwable = throwable,
-                    defaultUrl = ""
+                    defaultUrl = "",
+                    defaultImageUrl = ""
                 )
             }
         }
@@ -168,8 +171,12 @@ class ShareExViewModel @Inject constructor(
         )
     }
 
-    private fun getDefaultBottomSheetModel(throwable: Throwable, defaultUrl: String) {
-        val defaultShareProperties = getSharePropertiesUseCase.getDefaultData()
+    private fun getDefaultBottomSheetModel(
+        throwable: Throwable,
+        defaultUrl: String,
+        defaultImageUrl: String
+    ) {
+        val defaultShareProperties = getSharePropertiesUseCase.getDefaultData(defaultImageUrl)
         bottomSheetResultArg = bottomSheetResultArg?.copy(
             bottomSheetModel = defaultShareProperties
         )
@@ -178,7 +185,7 @@ class ShareExViewModel @Inject constructor(
             title = defaultShareProperties.title,
             uiModelList = uiResult,
             bottomSheetModel = defaultShareProperties,
-            chipPosition = 0 // default
+            chipPosition = 0, // default
         )
     }
 
@@ -230,7 +237,7 @@ class ShareExViewModel @Inject constructor(
             imageUrl = bottomSheetModel.getSelectedImageUrl(
                 chipPosition = chipPosition,
                 imagePosition = 0 // Default first image
-            ),
+            )?: bottomSheetArg?.defaultImageUrl.orEmpty(),
             sourceId = imageGeneratorProperty?.sourceId,
             args = imageGeneratorProperty?.args
         )

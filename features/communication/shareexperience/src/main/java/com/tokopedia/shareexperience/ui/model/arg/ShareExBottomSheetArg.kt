@@ -33,7 +33,8 @@ class ShareExBottomSheetArg private constructor(
     /**
      * Optional
      */
-    val selectedChip: String
+    val selectedChip: String,
+    val defaultImageUrl: String
 ) : Parcelable {
     class Builder(
         val pageTypeEnum: ShareExPageTypeEnum,
@@ -47,6 +48,7 @@ class ShareExBottomSheetArg private constructor(
         private var campaignId: String? = null
         private var generalId: String? = null
         private var selectedChip: String? = null
+        private var defaultImageUrl: String? = null
 
         fun withProductId(productId: String) = apply {
             this.productId = productId
@@ -76,6 +78,10 @@ class ShareExBottomSheetArg private constructor(
             this.selectedChip = selectedChip
         }
 
+        fun withDefaultImageUrl(defaultImageUrl: String) = apply {
+            this.defaultImageUrl = defaultImageUrl
+        }
+
         fun build(): ShareExBottomSheetArg {
             return ShareExBottomSheetArg(
                 pageTypeEnum = pageTypeEnum,
@@ -89,7 +95,8 @@ class ShareExBottomSheetArg private constructor(
                 campaignId = campaignId.orEmpty(),
                 generalId = generalId.orEmpty(),
 
-                selectedChip = selectedChip.orEmpty()
+                selectedChip = selectedChip.orEmpty(),
+                defaultImageUrl = defaultImageUrl.orEmpty()
             )
         }
     }

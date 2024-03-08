@@ -145,6 +145,6 @@ fun ShareExBottomSheetModel.getImageGeneratorProperty(
     return this.bottomSheetPage.listShareProperty.getOrNull(chipPosition)?.imageGenerator
 }
 
-fun ShareExBottomSheetModel.getSelectedImageUrl(chipPosition: Int, imagePosition: Int): String {
-    return this.bottomSheetPage.listShareProperty.getOrNull(chipPosition)?.listImage?.getOrNull(imagePosition) ?: ""
+fun ShareExBottomSheetModel.getSelectedImageUrl(chipPosition: Int, imagePosition: Int): String? {
+    return this.bottomSheetPage.listShareProperty.getOrNull(chipPosition)?.listImage?.getOrNull(imagePosition)
 }

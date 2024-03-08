@@ -27,6 +27,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
     private val sharePropertiesQuery = ShareExGetSharePropertiesQuery()
     override suspend fun getData(params: ShareExBottomSheetRequest): Flow<ShareExResult<ShareExBottomSheetModel>> {
         return flow {
+            throw Throwable()
             val request = getRequest(params)
             val dto = repository.request<ShareExBottomSheetWrapperRequest, ShareExWrapperResponseDto>(
                 sharePropertiesQuery,
@@ -39,8 +40,8 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
             .flowOn(dispatchers.io)
     }
 
-    override fun getDefaultData(): ShareExBottomSheetModel {
-        return mapper.mapDefault()
+    override fun getDefaultData(defaultImageUrl: String): ShareExBottomSheetModel {
+        return mapper.mapDefault(defaultImageUrl)
     }
 
     private fun getRequest(params: ShareExBottomSheetRequest): ShareExBottomSheetWrapperRequest {

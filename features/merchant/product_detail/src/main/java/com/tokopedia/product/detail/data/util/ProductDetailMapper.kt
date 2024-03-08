@@ -1083,7 +1083,8 @@ object ProductDetailMapper {
     fun generateShareExBottomSheetArg(
         productId: String,
         productUrl: String,
-        campaignId: String
+        campaignId: String,
+        productImageUrl: String
     ): ShareExBottomSheetArg {
         return ShareExBottomSheetArg.Builder(
             pageTypeEnum = ShareExPageTypeEnum.PDP,
@@ -1097,7 +1098,10 @@ object ProductDetailMapper {
                 labelImpressionAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}",
                 labelActionClickAffiliateRegistration = "$productId - ${ShareExTrackerArg.SHARE_ID_KEY}"
             )
-        ).withProductId(productId).build()
+        )
+            .withProductId(productId)
+            .withDefaultImageUrl(productImageUrl)
+            .build()
     }
 
     private fun generateAffiliateEligibilityRequest(
