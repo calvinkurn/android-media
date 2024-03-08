@@ -22,7 +22,6 @@ class AutoCompleteFragment @Inject constructor(
 ) : TkpdBaseV4Fragment() {
 
     private val viewModel: AutoCompleteViewModel by viewModels { viewModelFactory }
-    private val searchEntrance = SearchEntrance()
 
     override fun getScreenName(): String = SCREEN_UNIVERSEARCH
 
@@ -39,7 +38,7 @@ class AutoCompleteFragment @Inject constructor(
                     viewModel,
                     iris,
                     (activity as? AutoCompleteListener),
-                    searchEntrance.value,
+                    SearchEntrance.value(),
                 )
             }
         }

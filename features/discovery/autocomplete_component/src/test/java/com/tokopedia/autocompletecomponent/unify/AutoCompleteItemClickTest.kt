@@ -10,7 +10,12 @@ class AutoCompleteItemClickTest : AutoCompleteTestFixtures() {
     @Test
     fun `on item clicked should update state to navigate`() {
         val clickedItemDataView =
-            AutoCompleteUnifyDataView(domainModel = SuggestionUnify(applink = "test_applink"))
+            AutoCompleteUnifyDataView(
+                domainModel = SuggestionUnify(
+                    applink = "test_applink",
+                    featureId = "keyword",
+                )
+            )
         val viewModel = autoCompleteViewModel()
         `When AutoComplete Item is Clicked`(viewModel, clickedItemDataView)
         `Then Assert State Navigation Value is Changed According to Clicked Item Data View`(
@@ -26,6 +31,10 @@ class AutoCompleteItemClickTest : AutoCompleteTestFixtures() {
         assertThat(
             viewModel.stateValue.navigate?.applink,
             equalTo(clickedItemDataView.domainModel.applink)
+        )
+        assertThat(
+            viewModel.stateValue.navigate?.featureId,
+            equalTo(clickedItemDataView.domainModel.featureId)
         )
     }
 
