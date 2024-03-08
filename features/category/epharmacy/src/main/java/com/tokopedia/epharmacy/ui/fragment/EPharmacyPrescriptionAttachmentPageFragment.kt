@@ -18,6 +18,7 @@ import com.tokopedia.common_epharmacy.EPHARMACY_CEK_RESEP_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_CHOOSER_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
+import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_UOH
 import com.tokopedia.common_epharmacy.EPHARMACY_SEND_RESULT_KEY
 import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
@@ -425,6 +426,9 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 ePharmacyPrescriptionAttachmentViewModel.getGroupIds().toString()
             )
             trackingSentBoolean = true
+        }
+        if (source == EPHARMACY_PPG_SOURCE_UOH) {
+            ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart(ePharmacyAttachmentUiUpdater, true)
         }
         updateUi()
     }

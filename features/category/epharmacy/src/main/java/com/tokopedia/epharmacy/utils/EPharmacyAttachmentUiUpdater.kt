@@ -32,12 +32,15 @@ class EPharmacyAttachmentUiUpdater(var mapOfData: LinkedHashMap<String, BaseEPha
         updateModel(EPharmacyShimmerDataModel(SHIMMER_COMPONENT_1, SHIMMER_COMPONENT))
     }
 
-    fun getUpdateCartParams(userCartContent: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.UpdateCart>?): List<UpdateCartRequest> {
+    fun getUpdateCartParams(userCartContent: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.UpdateCart>?,  isSilent: Boolean = false): List<UpdateCartRequest> {
         if(userCartContent == null)
             return emptyList()
 
-        val cartsRequest = arrayListOf<UpdateCartRequest>()
         val mapUserCartContent : MutableMap<Long, EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.UpdateCart> = userCartContent.associateBy{ it.productId}.toMutableMap()
+        if(isSilent){
+            return getUpdateCartRequestList(mapUserCartContent)
+        }
+
         mapOfData.values.filterIsInstance<EPharmacyAttachmentDataModel>().forEach { epDataModel ->
             val currProductId : Long = epDataModel.shopInfo?.products?.firstOrNull()?.productId.orZero()
             if(mapUserCartContent.contains(currProductId)){
@@ -61,6 +64,11 @@ class EPharmacyAttachmentUiUpdater(var mapOfData: LinkedHashMap<String, BaseEPha
                 }
             }
         }
+        return getUpdateCartRequestList(mapUserCartContent)
+    }
+
+    private fun getUpdateCartRequestList(mapUserCartContent: MutableMap<Long, EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.UpdateCart>) : List<UpdateCartRequest> {
+        val cartsRequest = arrayListOf<UpdateCartRequest>()
 
         for (cart in mapUserCartContent){
             cartsRequest.add(
@@ -71,8 +79,7 @@ class EPharmacyAttachmentUiUpdater(var mapOfData: LinkedHashMap<String, BaseEPha
                 )
             )
         }
-
-        return cartsRequest
+        return cartsRequest.filter { it.quantity != 0 }
     }
 
     fun getTotalAmount(): Double {

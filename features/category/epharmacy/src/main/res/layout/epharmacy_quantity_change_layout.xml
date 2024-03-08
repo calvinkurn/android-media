@@ -52,6 +52,7 @@
                 android:gravity="center"
                 android:background="@color/Unify_NN50"
                 android:layout_marginEnd="16dp"
+                app:typographyWeight="bold"
                 />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -97,6 +98,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="@string/epharmacy_sesuai_resep"
                 android:gravity="center"
+                app:typographyWeight="bold"
                 />
 
             <com.tokopedia.unifycomponents.QuantityEditorUnify
@@ -147,6 +149,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sesuai_card"
         android:layout_marginTop="16dp"
+        app:typographyWeight="bold"
         tools:text="Subtotal (2 barang)"
         />
 
@@ -157,6 +160,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sesuai_card"
         android:layout_marginTop="16dp"
+        app:typographyWeight="bold"
         tools:text="Rp149.440"
         />
 
