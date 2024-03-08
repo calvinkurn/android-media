@@ -20,8 +20,10 @@ class CartBuyAgainItemViewHolder(
     fun bind(element: CartBuyAgainItemHolderData) {
         binding.productCardView.apply {
             setProductModel(
-                element.recommendationItem.toProductCardModel(true, UnifyButton.Type.MAIN)
-                    .copy(isInBackground = true)
+                element.recommendationItem.toProductCardModel(
+                    true,
+                    UnifyButton.Type.MAIN
+                )
             )
             setOnClickListener {
                 listener?.onBuyAgainProductClicked(element)
