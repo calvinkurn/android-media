@@ -81,7 +81,7 @@ internal fun ReportScreen(reports: List<ReviewReportUiModel>, onSubmit: (ReviewR
 
 @Preview
 @Composable
-internal fun MyApp() {
+internal fun ReportScreenPreview() {
     ReportScreen(
         reports = emptyList()
     )
