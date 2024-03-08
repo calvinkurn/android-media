@@ -698,6 +698,7 @@ open class ProductDetailFragment :
 
     fun getStayAnalyticsData(): TrackStayProductDetail {
         return viewModel.getStayAnalyticsData()
+            .copy(isSkuSelected = pdpUiUpdater?.productSingleVariant != null)
     }
 
     private fun setPDPDebugMode() {

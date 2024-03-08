@@ -37,7 +37,7 @@ data class TrackStayProductDetail(
     val isSingleSku: Boolean,
     val mainPhotoViewCount: Int,
     val skuPhotoViewCount: Int,
-    val isSkuSelected: Boolean = true, // always selected in case of P1 flow
+    var isSkuSelected: Boolean = true,
     val isAddCartSelected: Boolean
 )
 
