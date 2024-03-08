@@ -134,7 +134,8 @@ class ContentTaggedProductBottomSheetItemView(
         binding.btnProductBuy.isEnabled = isStockAvailable
         binding.btnProductAtc.isEnabled = isStockAvailable
 
-        binding.viewOverlayOos.showWithCondition(!isStockAvailable)
+        binding.viewOverlayOos.showWithCondition(!isStockAvailable && !isMaskedPrice)
+
         binding.labelOutOfStock.showWithCondition(!isStockAvailable)
         binding.labelSoon.showWithCondition(isMaskedPrice)
     }
