@@ -49,7 +49,6 @@ class VideoPictureView @JvmOverloads constructor(
     private var liveIndicator: LiveIndicatorUiModel = LiveIndicatorUiModel()
     // endregion
 
-
     init {
         binding.pdpViewPager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
     }
@@ -150,18 +149,18 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun setupViewPagerCallback() {
         binding.pdpViewPager.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                onMediaPageSelected(position)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                if (state == RecyclerView.SCROLL_STATE_IDLE) {
-                    mListener?.getProductVideoCoordinator()
-                        ?.onScrollChangedListener(binding.pdpViewPager, pagerSelectedLastPosition)
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    onMediaPageSelected(position)
                 }
-            }
-        })
+
+                override fun onPageScrollStateChanged(state: Int) {
+                    if (state == RecyclerView.SCROLL_STATE_IDLE) {
+                        mListener?.getProductVideoCoordinator()
+                            ?.onScrollChangedListener(binding.pdpViewPager, pagerSelectedLastPosition)
+                    }
+                }
+            })
     }
 
     private fun onMediaPageSelected(position: Int) {
@@ -274,7 +273,7 @@ class VideoPictureView @JvmOverloads constructor(
             override fun onViewAttachedToWindow(view: View) {
                 binding.liveThumbnailView.playUrl(
                     liveIndicator.mediaUrl,
-                    50.seconds
+                    CLIP_VIDEO_DURATION
                 )
             }
 
@@ -319,5 +318,6 @@ class VideoPictureView @JvmOverloads constructor(
     companion object {
         private const val VIDEO_PICTURE_PAGE_LIMIT = 3
         private const val HIDE_LABEL_IMAGE_COUNT_MIN = 1
+        private val CLIP_VIDEO_DURATION = 3.seconds
     }
 }
