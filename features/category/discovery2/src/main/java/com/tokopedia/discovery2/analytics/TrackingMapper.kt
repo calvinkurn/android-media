@@ -23,20 +23,19 @@ object TrackingMapper {
         }
     }
 
-    fun List<DataItem>?.setTopLevelTab(componentsItem: ComponentsItem) {
-        this?.forEach { dataItem ->
-            dataItem.topLevelTab = getTopLevelParentComponent(componentsItem)
+    fun getTopLevelParentComponent(component: ComponentsItem?): TopLevelTab {
+        try {
+            if (component == null) return UnknownTab
+
+            val parentComponentId = component.parentComponentId
+            if (parentComponentId.isEmpty()) return component.getSelectedTab()
+
+            val parentComponent = getComponent(parentComponentId, component.pageEndPoint)
+            return getTopLevelParentComponent(parentComponent)
+
+        } catch (e: StackOverflowError) {
+            return UnknownTab
         }
-    }
-
-    private fun getTopLevelParentComponent(component: ComponentsItem?): TopLevelTab {
-        if (component == null) return UnknownTab
-
-        val parentComponentId = component.parentComponentId
-        if (parentComponentId.isEmpty()) return component.getSelectedTab()
-
-        val parentComponent = getComponent(parentComponentId, component.pageEndPoint)
-        return getTopLevelParentComponent(parentComponent)
     }
 
     private fun ComponentsItem.getSelectedTab(): TopLevelTab {

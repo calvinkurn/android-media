@@ -5,7 +5,6 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.TrackingMapper.setAppLog
-import com.tokopedia.discovery2.analytics.TrackingMapper.setTopLevelTab
 import com.tokopedia.discovery2.data.ComponentAdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataResponse
@@ -45,9 +44,6 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
         val componentData = response.data.component?.let { componentFromResponse ->
             componentFromResponse.data.apply {
                 setAppLog(additionalInfo?.tracker, componentFromResponse.getSource())
-                componentItem?.let {
-                    setTopLevelTab(it)
-                }
             }
         }
 
