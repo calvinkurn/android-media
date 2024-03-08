@@ -113,6 +113,7 @@ ext {
     gojekCourierVersion = '0.1.5'
     gojekCourierClientVersion = '0.0.8.4@aar'
     profileInstallerVersion = '1.3.0'
+    tracingVersion = '1.2.0'
     desugarJdkVersion= '1.2.2'
     laku6SdkVersion = '2.5.20'
     rechargePcidssVersion = '1.2.1'
@@ -373,7 +374,8 @@ ext {
             desugarJdk            : "com.android.tools:desugar_jdk_libs:$desugarJdkVersion",
             ffmpeg                : "com.arthenica:mobileffmpeg:4.4@aar",
             influxInteractor      : "com.tokopedia.skynet:db-interactor:1.0-alpha-05",
-            rechargePcidss        : "com.tokopedia.recharge_credit_card.widget:recharge-pcidss:${rechargePcidssVersion}@aar"
+            rechargePcidss        : "com.tokopedia.recharge_credit_card.widget:recharge-pcidss:${rechargePcidssVersion}@aar",
+            tracingKtx            : "androidx.tracing:tracing-ktx:${tracingVersion}"
     ]
 
     sduiDependencies = [
