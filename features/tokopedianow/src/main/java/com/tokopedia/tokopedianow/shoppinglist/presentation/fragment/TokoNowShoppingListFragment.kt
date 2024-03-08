@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.kotlin.extensions.orFalse
@@ -60,6 +61,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.Shoppin
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapterTypeFactory
 import com.tokopedia.tokopedianow.shoppinglist.presentation.bottomsheet.TokoNowShoppingListAnotherOptionBottomSheet
 import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingListDecoration
+import com.tokopedia.tokopedianow.shoppinglist.presentation.model.CoachMarkModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_MULTI_PRODUCTS_TO_CART
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
@@ -90,6 +92,8 @@ class TokoNowShoppingListFragment :
     companion object {
         private const val TOP_CHECK_ALL_THRESHOLD_ALPHA = 10f
         private const val TOP_CHECK_ALL_MAX_ALPHA = 255f
+        private const val COACH_MARK_NOW_SHOPPING_LIST_PAGE = "coach_mark_shopping_list_page"
+        private const val COACH_MARK_NOW_SHOPPING_LIST_BOTTOM_BULK_ATC = "coach_mark_shopping_list_page_bottom_bulk_atc"
 
         fun newInstance(): TokoNowShoppingListFragment = TokoNowShoppingListFragment()
     }
@@ -133,6 +137,7 @@ class TokoNowShoppingListFragment :
     private var isNavToolbarScrollingBehaviourEnabled: Boolean = true
     private var isStickyTopCheckAllScrollingBehaviorEnabled: Boolean = false
     private var loader: LoaderDialog? = null
+    private var pageCoachMark: CoachMarkModel? = null
 
     /**
      * -- override function section --
@@ -181,7 +186,9 @@ class TokoNowShoppingListFragment :
         binding?.navToolbar?.updateNotification()
     }
 
-    override fun refreshLayoutPage() {  }
+    override fun refreshLayoutPage() {
+        viewModel.refreshLayout()
+    }
 
     override fun getScrollState(adapterPosition: Int): Parcelable? = null
 
@@ -219,7 +226,6 @@ class TokoNowShoppingListFragment :
 
                     if (uiState.data.isRequiredToScrollUp) {
                         binding.rvShoppingList.scrollToPosition(Int.ZERO)
-                        viewModel.updateScrollState()
                     }
                 }
             }
@@ -268,6 +274,7 @@ class TokoNowShoppingListFragment :
                 isStickyTopCheckAllScrollingBehaviorEnabled = isAvailable
                 bottomBulkAtcView.showWithCondition(isAvailable)
                 adjustRecyclerViewBottomPadding()
+                if (isAvailable) showBottomBulkAtcCoachMark()
             }
         }
     }
@@ -365,6 +372,14 @@ class TokoNowShoppingListFragment :
         }
     }
 
+    private suspend fun collectIsCoachMarkShown(
+        binding: FragmentTokopedianowShoppingListBinding
+    ) {
+        viewModel.isCoachMarkShown.collect { isShown ->
+            if (isShown) binding.showPageCoachMark()
+        }
+    }
+
     /**
      * -- private function section --
      */
@@ -418,6 +433,7 @@ class TokoNowShoppingListFragment :
                 launch { collectBottomBulkAtc(this@collectStateFlow) }
                 launch { collectLoaderDialogShown() }
                 launch { collectToasterErrorShown(this@collectStateFlow) }
+                launch { collectIsCoachMarkShown(this@collectStateFlow) }
             }
         }
     }
@@ -427,6 +443,53 @@ class TokoNowShoppingListFragment :
     private fun resumeLayout() {
         viewModel.resumeLayout()
         binding?.navToolbar?.updateNotification()
+    }
+
+    private fun FragmentTokopedianowShoppingListBinding.showPageCoachMark() {
+        rvShoppingList.post {
+            var tpShoppingList: View? = null
+            var tpAddToShoppingList: View? = null
+            var tpBuyAgain: View? = null
+
+            adapter.getHeader()?.let {
+                rvShoppingList.findViewHolderForAdapterPosition(adapter.findPosition(it))?.apply {
+                    tpShoppingList = itemView.findViewById(R.id.vtp_title)
+                    tpBuyAgain = itemView.findViewById(R.id.tp_cta)
+                }
+            }
+
+            adapter.getFirstProductRecommendation()?.let {
+                rvShoppingList.findViewHolderForAdapterPosition(adapter.findPosition(it))?.apply {
+                    tpAddToShoppingList = itemView.findViewById(R.id.tp_add_wishlist)
+                }
+            }
+
+            if (!CoachMarkPreference.hasShown(root.context, COACH_MARK_NOW_SHOPPING_LIST_PAGE)) {
+                pageCoachMark = CoachMarkModel {
+                    CoachMarkPreference.setShown(root.context, COACH_MARK_NOW_SHOPPING_LIST_PAGE, true)
+                }.apply {
+                    setDataForShoppingListPage(
+                        tpShoppingList = tpShoppingList,
+                        tpAddToShoppingList = tpAddToShoppingList,
+                        tpBuyAgain = tpBuyAgain
+                    )
+                    show(root.context)
+                }
+            }
+        }
+    }
+
+    private fun FragmentTokopedianowShoppingListBinding.showBottomBulkAtcCoachMark() {
+        if (!CoachMarkPreference.hasShown(root.context, COACH_MARK_NOW_SHOPPING_LIST_BOTTOM_BULK_ATC)) {
+            CoachMarkModel {
+                CoachMarkPreference.setShown(root.context, COACH_MARK_NOW_SHOPPING_LIST_BOTTOM_BULK_ATC, true)
+            }.apply {
+                setDataForBottomBulkAtc(
+                    ubAtc = bottomBulkAtcView.ubAtc
+                )
+                show(root.context)
+            }
+        }
     }
 
     private fun FragmentTokopedianowShoppingListBinding.setupRecyclerView() {
@@ -577,6 +640,8 @@ class TokoNowShoppingListFragment :
                             navToolbar.setCustomBackButton(color = ContextCompat.getColor(binding.root.context, (if (binding.navToolbar.context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)))
                             navToolbar.setToolbarTitle(getString(R.string.tokopedianow_shopping_list_page_title))
                             switchToLightStatusBar()
+                            pageCoachMark?.hide()
+                            pageCoachMark = null
                         }
                     }
                 }

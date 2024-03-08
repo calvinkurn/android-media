@@ -83,6 +83,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_MULTI_PRODUCTS_TO_CART
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_WISHLIST
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -90,7 +91,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -144,6 +144,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val _isLoaderDialogShown: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val _toasterData: MutableStateFlow<ToasterModel?> = MutableStateFlow(null)
     private val _bottomBulkAtcData: MutableStateFlow<BottomBulkAtcModel?> = MutableStateFlow(null)
+    private val _isCoachMarkShown: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private var hasLoadedLayout: Boolean = false
     private var mMiniCartData: MiniCartSimplifiedData? = null
@@ -174,6 +175,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
         get() = _bottomBulkAtcData.asStateFlow()
     val toasterData
         get() = _toasterData.asStateFlow()
+    val isCoachMarkShown
+        get() = _isCoachMarkShown.asStateFlow()
 
     /**
      * -- private suspend function section --
@@ -522,6 +525,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
          */
 
         hasLoadedLayout = true
+
+        _isCoachMarkShown.value = true
     }
 
     private fun setDataToBottomWidget(
@@ -585,11 +590,13 @@ class TokoNowShoppingListViewModel @Inject constructor(
         }
     }
 
-    private fun onErrorAddingToCart() {
+    private fun onErrorAddingToCart(
+        messageError: String
+    ) {
         _isLoaderDialogShown.value = false
 
         _toasterData.value = ToasterModel(
-            text = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_to_add_product_to_cart),
+            text = messageError,
             actionText = resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_for_cta),
             type = Toaster.TYPE_ERROR,
             event = ADD_MULTI_PRODUCTS_TO_CART
@@ -909,16 +916,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
         }
     }
 
-    fun updateScrollState() {
-        _layoutState.update { state ->
-            if (state is Success<LayoutModel>) {
-                state.copy(getUpdatedLayout())
-            } else {
-                state
-            }
-        }
-    }
-
     fun addToWishlist(
         product: ShoppingListHorizontalProductCardItemUiModel
     ) {
@@ -1010,12 +1007,14 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
                 if (response is com.tokopedia.usecase.coroutines.Success && response.data.atcMulti.buyAgainData.success == SUCCESS_STATUS) {
                     onSuccessAddingToCart(addToCartMultiParams.size)
-                } else {
-                    onErrorAddingToCart()
+                } else if (response is com.tokopedia.usecase.coroutines.Success) {
+                    onErrorAddingToCart(response.data.atcMulti.buyAgainData.message.firstOrNull().orEmpty())
+                } else if (response is Fail) {
+                    onErrorAddingToCart(resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_to_add_product_to_cart))
                 }
             },
             onError = {
-                onErrorAddingToCart()
+                onErrorAddingToCart(resourceProvider.getString(R.string.tokopedianow_shopping_list_toaster_text_error_to_add_product_to_cart))
             }
         )
     }

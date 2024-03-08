@@ -304,4 +304,10 @@
     <string name="tokopedianow_shopping_list_toaster_text_success_to_add_product_to_shopping_list">1 barang berhasil ditambahkan ke List belanja.</string>
     <string name="tokopedianow_shopping_list_toaster_text_success_to_add_product_to_cart">%d barang berhasil ditambahkan ke keranjang.</string>
     <string name="tokopedianow_shopping_list_toaster_text_success_for_cta">Oke</string>
+    <string name="tokopedianow_shopping_list_coach_mark_step_button_last_child">Oke</string>
+    <string name="tokopedianow_shopping_list_first_page_coach_mark_title">Baru! Simpan daftar belanjaan rutinmu</string>
+    <string name="tokopedianow_shopping_list_first_page_coach_mark_description">Atur List Belanja sesuai kebutuhan, praktis lho~</string>
+    <string name="tokopedianow_shopping_list_second_page_coach_mark_description">Klik ini buat masukkan produk ke List Belanja kamu.</string>
+    <string name="tokopedianow_shopping_list_third_page_coach_mark_description">Buka halaman Beli Lagi buat cek produk-produk yang pernah kamu beli sebelumnya.</string>
+    <string name="tokopedianow_shopping_list_bottom_bulk_atc_coach_mark_description">Klik di sini buat masukkan produk yang kamu pilih ke keranjang.</string>
 </resources>

@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowBottomBulkAtcViewBinding
+import com.tokopedia.unifycomponents.UnifyButton
 
 class BottomBulkAtcView @JvmOverloads constructor(
     context: Context,
@@ -19,6 +20,9 @@ class BottomBulkAtcView @JvmOverloads constructor(
         this,
         true
     )
+
+    val ubAtc: UnifyButton
+        get() = binding.ubAtc
 
     fun bind(
         counter: Int,
