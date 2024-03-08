@@ -1,7 +1,6 @@
 package com.tokopedia.content.product.preview.view.fragment
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -115,6 +114,13 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private var coachMarkJob: Job? = null
+
+    private val hasCoachMark : Boolean get() =
+        when(val source = productPreviewSource.source) {
+            is ProductPreviewSourceModel.ProductSourceData -> source.hasReviewMedia
+            is ProductPreviewSourceModel.ReviewSourceData -> false
+            else -> false
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -316,19 +322,6 @@ class ProductPreviewFragment @Inject constructor(
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) return
-        when (resultCode) {
-            AtcVariantHelper.ATC_VARIANT_RESULT_CODE -> {
-                AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
-                    if (this.mapOfSelectedVariantOption.isNullOrEmpty()) return@onActivityResultAtcVariant
-                    analytics.onClickVariantGBVS(pageSource)
-                }
-            }
-            else -> super.onActivityResult(requestCode, resultCode, data)
-        }
-    }
-
     private fun handleAtc(model: BottomNavUiModel) {
         if (model.buttonState == OOS) analytics.onClickRemindMe(pageSource)
         if (model.hasVariant) {
@@ -347,12 +340,13 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun handleCoachMark() {
-        if (productPreviewSource.source !is ProductPreviewSourceModel.ProductSourceData || viewModel.hasVisit) return
-        coachMarkJob?.cancel()
-        coachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
-            delay(DELAY_COACH_MARK)
-            coachMark.showCoachMark(step = coachMarkItems)
-            viewModel.onAction(ProductPreviewAction.HasVisitCoachMark)
+        if(hasCoachMark && !viewModel.hasVisit) {
+            coachMarkJob?.cancel()
+            coachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
+                delay(DELAY_COACH_MARK)
+                coachMark.showCoachMark(step = coachMarkItems)
+                viewModel.onAction(ProductPreviewAction.HasVisitCoachMark)
+            }
         }
     }
 

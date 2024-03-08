@@ -94,7 +94,8 @@ class ReviewContentViewHolder(
         binding.ivReviewMenu,
         binding.ivReviewStar,
         binding.tvReviewDescription,
-        binding.tvReviewDetails
+        binding.tvReviewDetails,
+        binding.ivReviewShare,
     )
 
     private val mediaScrollListener = object : RecyclerView.OnScrollListener() {
@@ -125,7 +126,7 @@ class ReviewContentViewHolder(
 
     private var snapHelperMedia = PagerSnapHelper()
 
-    private val descriptionUiModel = DescriptionUiModel()
+    private val descriptionUiModel : DescriptionUiModel
 
     private val clickableSpan: ClickableSpan =
         object : ClickableSpan() {
@@ -149,6 +150,7 @@ class ReviewContentViewHolder(
         binding.layoutLikeReview.root.setOnClickListener {
             reviewInteractionListener.onLike(false)
         }
+        descriptionUiModel = DescriptionUiModel()
     }
 
     fun bind(item: ReviewContentUiModel) {
@@ -158,7 +160,7 @@ class ReviewContentViewHolder(
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
-        setupTap()
+        setupTap(item)
     }
 
     fun bindScrolling(isScrolling: Boolean) {
@@ -232,6 +234,11 @@ class ReviewContentViewHolder(
     }
 
     private fun bindDescription(description: ReviewDescriptionUiModel) = with(binding) {
+        if (description.description.isBlank()) {
+            reviewOverlay.gone()
+            tvReviewDescription.gone()
+            return@with
+        }
         val divider = root.context.getString(R.string.circle_dot_divider)
         tvReviewDetails.text = buildString {
             append(description.stars)
@@ -284,6 +291,7 @@ class ReviewContentViewHolder(
             descriptionUiModel.truncatedText = truncatedText
             setupExpanded()
         }
+        binding.tvReviewDescription.maxLines = MAX_LINES_THRESHOLD //Initial state
         tvReviewDescription.show()
     }
 
@@ -322,9 +330,12 @@ class ReviewContentViewHolder(
         binding.ivDanceLike.removeAllAnimationListeners()
     }
 
-    private fun setupTap() {
+    private fun setupTap(item: ReviewContentUiModel) {
         binding.ivReviewMenu.setOnClickListener {
             reviewInteractionListener.onMenuClicked()
+        }
+        binding.ivReviewShare.setOnClickListener {
+            reviewInteractionListener.onShareClicked(item)
         }
     }
 

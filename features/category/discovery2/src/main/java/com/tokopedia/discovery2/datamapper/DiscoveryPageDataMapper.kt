@@ -262,7 +262,7 @@ class DiscoveryPageDataMapper(
         return listComponents
     }
 
-    private fun getFiltersFromQuery(component: ComponentsItem) {
+    private fun getFiltersFromQuery(component: ComponentsItem, queryParameterMapWithRpc: Map<String, String>) {
         for ((key, value) in queryParameterMapWithRpc) {
             val adjustedValue = Utils.isRPCFilterApplicableForTab(value, component)
             if (adjustedValue.isNotEmpty()) {
@@ -878,10 +878,12 @@ class DiscoveryPageDataMapper(
     private fun handleQuickFilter(component: ComponentsItem) {
         component.isSticky = component.properties?.chipSize == Constant.ChipSize.LARGE
 
-        if (!component.isSelectedFiltersFromQueryApplied && queryParameterMapWithRpc.isNotEmpty()) {
+        val isQueryParameterAvailable = queryParameterMapWithRpc.isNotEmpty() || queryParameterMapWithoutRpc.isNotEmpty()
+        if (!component.isSelectedFiltersFromQueryApplied && isQueryParameterAvailable) {
             component.isSelectedFiltersFromQueryApplied = true
             getFiltersFromQuery(
-                component
+                component,
+                queryParameterMapWithRpc + queryParameterMapWithoutRpc
             )
         }
 

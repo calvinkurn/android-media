@@ -170,20 +170,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 12. click ATC to global variant bottomsheet
-     * 49607
-     */
-    override fun onClickVariantGBVS(pageSource: String) {
-        analyticManager.sendClickContent(
-            eventAction = "click - variant bottomsheet atc entry point",
-            eventLabel = "$pageSource - $productId",
-            mainAppTrackerId = "49607",
-            customFields = mapOf(Key.productId to productId)
-        )
-    }
-
-    /**
-     * 13. click laporkan ulasan in ulasan tab
+     * 12. click laporkan ulasan in ulasan tab
      * 49650
      */
     override fun onClickReviewReport() {
@@ -196,7 +183,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 14. click mode nonton in ulasan tab
+     * 13. click mode nonton in ulasan tab
      * 49651
      */
     override fun onClickReviewWatchMode() {
@@ -209,7 +196,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 15. click pause/play in video
+     * 14. click pause/play in video
      * 49845
      */
     override fun onClickPauseOrPlayVideo(pageSource: String) {
@@ -222,7 +209,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 16. submit report from ulasan tab
+     * 15. submit report from ulasan tab
      * 49850
      */
     override fun onClickSubmitReport() {
@@ -235,7 +222,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * 17. like/unlike content
+     * 16. like/unlike content
      * 49851
      */
     override fun onClickLikeOrUnlike() {

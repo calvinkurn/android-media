@@ -509,17 +509,9 @@ class ReviewGalleryFragment :
                 attachmentId = attachmentId
             )
         } else {
-            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
-                context = requireContext(),
-                pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
-                productID = viewModel.getProductId(),
-                shopID = viewModel.getShopId(),
-                isProductReview = true,
-                isFromGallery = true,
-                mediaPosition = reviewGalleryMediaThumbnailUiModel.mediaNumber,
-                showSeeMore = false,
-                preloadedDetailedReviewMediaResult = viewModel.concatenatedReviewImages.value
-            ).also { startActivityForResult(it, IMAGE_PREVIEW_ACTIVITY_CODE) }
+            goToReviewMediaGallery(
+                reviewGalleryMediaThumbnailUiModel = reviewGalleryMediaThumbnailUiModel
+            )
         }
     }
 
@@ -538,6 +530,22 @@ class ReviewGalleryFragment :
             )
         )
         startActivity(intent)
+    }
+
+    private fun goToReviewMediaGallery(
+        reviewGalleryMediaThumbnailUiModel: ReviewGalleryMediaThumbnailUiModel
+    ) {
+        ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+            context = requireContext(),
+            pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
+            productID = viewModel.getProductId(),
+            shopID = viewModel.getShopId(),
+            isProductReview = true,
+            isFromGallery = true,
+            mediaPosition = reviewGalleryMediaThumbnailUiModel.mediaNumber,
+            showSeeMore = false,
+            preloadedDetailedReviewMediaResult = viewModel.concatenatedReviewImages.value
+        ).also { startActivityForResult(it, IMAGE_PREVIEW_ACTIVITY_CODE) }
     }
 
     private fun isFirstPage(): Boolean {
