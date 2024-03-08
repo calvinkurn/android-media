@@ -452,10 +452,8 @@ object AppLogSearch {
         val rank: Int,
         val shopID: String?,
         val searchEntrance: String,
+        val sourcePageType: String,
     ) {
-        val sourcePageType: String
-            get() = SourcePageType.PRODUCT_CARD
-
         val trackId: String
             get() = "${searchID}_${(itemRank ?: rank)}"
 
