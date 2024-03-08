@@ -434,7 +434,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
         coEvery { epharmacyUseCase.executeOnBackground() } returns
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(null,
                         null,
                         null,
                         null,
@@ -512,7 +512,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
         coEvery { epharmacyUseCase.executeOnBackground() } returns
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(null,
                         null,
                         null,
                         null,
@@ -596,12 +596,13 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                         null,
                         null,
                         null,
+                        null,
                         listOf(
                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
                                 null,
                                 null,
-                                "1",
                                 null,
+                                1,
                                 null,
                                 null,
                                 null,
@@ -684,6 +685,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
                         null,
                         null,
                         null,
@@ -777,6 +779,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
                         null,
                         null,
                         null,
@@ -896,6 +899,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                         null,
                         null,
                         null,
+                        null,
                         listOf(
                             EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
                                 null,
@@ -996,6 +1000,7 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
             EPharmacyPrepareProductsGroupResponse(
                 EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+                        null,
                         null,
                         null,
                         null,
@@ -1125,7 +1130,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                         attachmentPageTickerLogoUrl = null,
                         toaster = null,
                         papPrimaryCTA = null,
-                        checkoutFlow = null
+                        checkoutFlow = null,
+                        userCartContent = null
                     )
                 )
             )
@@ -1296,7 +1302,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                         attachmentPageTickerLogoUrl = null,
                         toaster = null,
                         papPrimaryCTA = null,
-                        checkoutFlow = null
+                        checkoutFlow = null,
+                        userCartContent = null
                     )
                 )
             )
@@ -1642,7 +1649,8 @@ class CheckoutViewModelEpharmacyTest : BaseCheckoutViewModelTest() {
                         attachmentPageTickerLogoUrl = null,
                         toaster = null,
                         papPrimaryCTA = null,
-                        checkoutFlow = null
+                        checkoutFlow = null,
+                        userCartContent = null
                     )
                 )
             )

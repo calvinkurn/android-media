@@ -330,7 +330,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        GroupData(null, null, null, listOf(), null, null)
+                        GroupData(null,null, null, null, listOf(), null, null)
                     )
                 ),
                 ""
@@ -378,6 +378,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
                         GroupData(
+                            null,
                             null,
                             null,
                             null,
@@ -439,7 +440,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        GroupData(
+                        GroupData(null,
                             null,
                             null,
                             null,
@@ -510,7 +511,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        GroupData(
+                        GroupData(null,
                             null,
                             null,
                             null,
@@ -593,7 +594,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        GroupData(
+                        GroupData(null,
                             null,
                             null,
                             null,
@@ -677,7 +678,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        GroupData(
+                        GroupData(null,
                             null,
                             null,
                             null,
@@ -758,7 +759,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        GroupData(
+                        GroupData(null,
                             null,
                             null,
                             null,
@@ -839,7 +840,7 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse, String?) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
                     EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                        GroupData(
+                        GroupData(null,
                             null,
                             null,
                             null,
@@ -963,7 +964,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             attachmentPageTickerLogoUrl = null,
                             toaster = null,
                             papPrimaryCTA = null,
-                            checkoutFlow = null
+                            checkoutFlow = null,
+                            userCartContent = null
                         )
                     )
                 ),
@@ -1110,7 +1112,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             attachmentPageTickerLogoUrl = null,
                             toaster = null,
                             papPrimaryCTA = null,
-                            checkoutFlow = null
+                            checkoutFlow = null,
+                            userCartContent = null
                         )
                     )
                 ),
@@ -1228,7 +1231,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             attachmentPageTickerLogoUrl = null,
                             toaster = null,
                             papPrimaryCTA = null,
-                            checkoutFlow = null
+                            checkoutFlow = null,
+                            userCartContent = null
                         )
                     )
                 ),
@@ -1572,7 +1576,8 @@ class ShipmentViewModelPrescriptionIdsTest : BaseShipmentViewModelTest() {
                             attachmentPageTickerLogoUrl = null,
                             toaster = null,
                             papPrimaryCTA = null,
-                            checkoutFlow = null
+                            checkoutFlow = null,
+                            userCartContent = null
                         )
                     )
                 ),
