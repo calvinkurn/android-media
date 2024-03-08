@@ -5,19 +5,11 @@ package com.tokopedia.play.widget.ui.model
  */
 sealed class PlayFeedUiModel
 
-data class PlayWidgetJumboUiModel(
-    val model: PlayWidgetUiModel
-): PlayFeedUiModel()
-
 data class PlayWidgetLargeUiModel(
     val model: PlayWidgetUiModel
 ): PlayFeedUiModel()
 
 data class PlayWidgetMediumUiModel(
-    val model: PlayWidgetUiModel
-): PlayFeedUiModel()
-
-data class PlayWidgetSmallUiModel(
     val model: PlayWidgetUiModel
 ): PlayFeedUiModel()
 
