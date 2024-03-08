@@ -31,8 +31,12 @@ class CartBuyAgainViewHolder(
             binding.productCardView.apply {
                 val data = element.buyAgainList[0] as CartBuyAgainItemHolderData
                 setProductModel(
-                    data.recommendationItem.toProductCardModel(true, UnifyButton.Type.MAIN)
-                        .copy(isInBackground = true)
+                    data.recommendationItem.toProductCardModel(
+                        true,
+                        UnifyButton.Type.MAIN
+                    ).copy(
+                        shopBadgeList = emptyList()
+                    )
                 )
                 setOnClickListener {
                     listener?.onBuyAgainProductClicked(data)
@@ -48,7 +52,8 @@ class CartBuyAgainViewHolder(
                 buyAgainAdapter = CartBuyAgainAdapter(listener)
             }
             buyAgainAdapter?.buyAgainList = element.buyAgainList
-            val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
+            val layoutManager =
+                LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
             binding.rvBuyAgain.layoutManager = layoutManager
             binding.rvBuyAgain.adapter = buyAgainAdapter
             val itemDecorationCount = binding.rvBuyAgain.itemDecorationCount
@@ -70,4 +75,3 @@ class CartBuyAgainViewHolder(
         }
     }
 }
-
