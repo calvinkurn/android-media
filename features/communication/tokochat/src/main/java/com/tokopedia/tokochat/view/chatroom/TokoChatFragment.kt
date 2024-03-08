@@ -398,6 +398,7 @@ open class TokoChatFragment @Inject constructor(
     private fun renderBackground(url: String) {
         baseBinding?.tokochatIvBgChat?.let {
             it.loadImage(url) {
+                setPlaceHolder(-1)
                 centerInside()
                 isAnimate(false)
                 setCacheStrategy(MediaCacheStrategy.DATA)
