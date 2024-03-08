@@ -2,7 +2,6 @@
 <resources>
     <color name="mvc_dms_toolbar_color">#FFE0FFEE</color>
     <color name="mvc_dms_divider_color">#E5E7E9</color>
-    <color name="mvc_dms_white">#ffffff</color>
     <color name="mvc_dms_NN950_light">#212121</color>
     <color name="mvc_dms_NN950_dark">#F5F6FF</color>
     <color name="mvc_dms_NN600_light">#6D7588</color>
