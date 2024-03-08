@@ -242,7 +242,7 @@ object AppLogSearch {
     ) {
         fun json() = JSONObject(buildMap {
             put(IMPR_ID, imprId)
-            put(ENTER_FROM, enterFrom())
+            put(ENTER_FROM, enterFrom)
             put(SEARCH_TYPE, searchType)
             put(ENTER_METHOD, enterMethod)
             put(SEARCH_KEYWORD, searchKeyword)
