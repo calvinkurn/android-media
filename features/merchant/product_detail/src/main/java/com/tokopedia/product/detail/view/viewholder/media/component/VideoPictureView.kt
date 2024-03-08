@@ -7,13 +7,11 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.view.View.OnClickListener
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.widget.liveindicator.analytic.PlayWidgetLiveIndicatorAnalytic
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
@@ -253,8 +251,10 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun setupLiveIndicator() {
-        setupLiveIndicatorEvent()
-        setupLiveIndicatorAnalytic()
+        if (liveIndicator.isLive) {
+            setupLiveIndicatorEvent()
+            setupLiveIndicatorAnalytic()
+        }
     }
 
     private fun setupLiveIndicatorAnalytic() = with(binding) {
@@ -268,29 +268,15 @@ class VideoPictureView @JvmOverloads constructor(
         liveThumbnailView.setAnalyticModel(model = liveIndicatorAnalyticModel)
     }
 
-    private val liveThumbnailOnAttachListener by lazyThreadSafetyNone {
-        object : OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(view: View) {
-                binding.liveThumbnailView.playUrl(
-                    liveIndicator.mediaUrl,
-                    CLIP_VIDEO_DURATION
-                )
-            }
-
-            override fun onViewDetachedFromWindow(view: View) {
-                binding.liveThumbnailView.stopPlayer()
-            }
-        }
-    }
-
     private fun setupLiveIndicatorEvent() = with(binding) {
         // set event click
         val onClick = OnClickListener { mListener?.goToApplink(url = liveIndicator.appLink) }
         liveBadgeView.setOnClickListener(onClick)
         liveThumbnailView.setOnClickListener(onClick)
-
-        liveThumbnailView.removeOnAttachStateChangeListener(liveThumbnailOnAttachListener)
-        liveThumbnailView.addOnAttachStateChangeListener(liveThumbnailOnAttachListener)
+        liveThumbnailView.playUrl(
+            url = liveIndicator.mediaUrl,
+            playFor = CLIP_VIDEO_DURATION
+        )
     }
 
     private fun shouldShowLiveIndicatorXOverlayRecomm(position: Int) = with(binding) {
