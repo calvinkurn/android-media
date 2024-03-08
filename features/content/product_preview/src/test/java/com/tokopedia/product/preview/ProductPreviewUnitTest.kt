@@ -3,7 +3,7 @@ package com.tokopedia.product.preview
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.content.product.preview.data.mock.ProductPreviewMockData
 import com.tokopedia.content.product.preview.domain.repository.ProductPreviewRepository
-import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreference
+import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreferences
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
@@ -40,7 +40,7 @@ class ProductPreviewUnitTest {
     private val attachmentId = "attachmentId_12345"
     private val mockRepository: ProductPreviewRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
-    private val mockSharedPref: ProductPreviewSharedPreference = mockk(relaxed = true)
+    private val mockSharedPref: ProductPreviewSharedPreferences = mockk(relaxed = true)
 
     private fun getRobot(sourceModel: ProductPreviewSourceModel): ProductPreviewViewModelRobot {
         return ProductPreviewViewModelRobot(

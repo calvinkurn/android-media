@@ -2,7 +2,7 @@ package com.tokopedia.product.preview.robot
 
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.domain.repository.ProductPreviewRepository
-import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreference
+import com.tokopedia.content.product.preview.utils.ProductPreviewSharedPreferences
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewReportUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
@@ -26,7 +26,7 @@ internal class ProductPreviewViewModelRobot(
     source: ProductPreviewSourceModel = mockk(relaxed = true),
     repository: ProductPreviewRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
-    sharedPref: ProductPreviewSharedPreference = mockk(relaxed = true)
+    sharedPref: ProductPreviewSharedPreferences = mockk(relaxed = true)
 ) : Closeable {
 
     private val viewModel = ProductPreviewViewModel(

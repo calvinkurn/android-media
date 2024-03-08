@@ -8,7 +8,7 @@ import javax.inject.Inject
 /**
  * @author by astidhiyaa on 01/02/24
  */
-class ProductPreviewSharedPreference @Inject constructor(
+class ProductPreviewSharedPreferences @Inject constructor(
     @ApplicationContext context: Context,
     private val userSession: UserSessionInterface
 ) {
