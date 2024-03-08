@@ -4087,7 +4087,8 @@ open class ProductDetailFragment :
             generateShareExBottomSheetArg(
                 productId = dynamicProductInfoP1.basic.productID,
                 productUrl = dynamicProductInfoP1.basic.url,
-                campaignId = dynamicProductInfoP1.data.campaign.campaignID
+                campaignId = dynamicProductInfoP1.data.campaign.campaignID,
+                productImageUrl = dynamicProductInfoP1.basic.defaultMediaUrl
             )
         )
     }
