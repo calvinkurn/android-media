@@ -75,6 +75,14 @@ open class BaseChatUiModel constructor(
         return bubbleStatus == STATUS_DELETED
     }
 
+    fun isVisibleToSellerOnly(): Boolean {
+        return bubbleStatus == STATUS_VISIBLE_TO_SELLER_ONLY
+    }
+
+    fun isVisibleToBuyerOnly(): Boolean {
+        return bubbleStatus == STATUS_VISIBLE_TO_BUYER_ONLY
+    }
+
     companion object {
         const val SENDING_TEXT = "Sedang mengirim ..."
         const val SOURCE_AUTO_REPLY = "auto_reply"
@@ -86,6 +94,8 @@ open class BaseChatUiModel constructor(
 
         const val STATUS_NORMAL = 1
         const val STATUS_DELETED = 5
+        const val STATUS_VISIBLE_TO_SELLER_ONLY = 10
+        const val STATUS_VISIBLE_TO_BUYER_ONLY = 11
     }
 
     /**

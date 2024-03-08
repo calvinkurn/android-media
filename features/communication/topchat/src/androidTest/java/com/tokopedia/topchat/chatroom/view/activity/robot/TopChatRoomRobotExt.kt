@@ -8,6 +8,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.header.HeaderRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.imageattachment.ImageAttachmentRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.longclickbubblemenu.LongClickBubbleMenuRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.msgbubble.MsgBubbleRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.ordercancellation.OrderCancellationRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.PreviewAttachmentResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.PreviewAttachmentRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.ProductPreviewRobot
@@ -35,3 +36,4 @@ fun srwRobot(func: SrwRobot.() -> Unit) = SrwRobot.apply(func)
 fun productBundlingRobot(func: ProductBundlingRobot.() -> Unit) = ProductBundlingRobot.apply(func)
 fun imageAttachmentRobot(func: ImageAttachmentRobot.() -> Unit) = ImageAttachmentRobot.apply(func)
 fun longClickBubbleMenuRobot(func: LongClickBubbleMenuRobot.() -> Unit) = LongClickBubbleMenuRobot.apply(func)
+fun orderCancellationRobot(func: OrderCancellationRobot.() -> Unit) = OrderCancellationRobot.apply(func)
