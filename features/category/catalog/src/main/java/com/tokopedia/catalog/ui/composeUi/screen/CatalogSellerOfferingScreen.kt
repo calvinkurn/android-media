@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -63,6 +64,7 @@ import com.tokopedia.nest.components.loader.NestLoaderSize
 import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.NestTypography
+import com.tokopedia.nest.principles.ui.NestColor
 import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
@@ -270,6 +272,7 @@ fun CatalogSellerOfferingBody(
                                 Modifier
                                     .fillMaxWidth()
                                     .height(1.dp)
+                                    .background(NestNN.light._50)
                             )
                         }
                         if (index == productList.size - 1 && hasNextPage.value) {

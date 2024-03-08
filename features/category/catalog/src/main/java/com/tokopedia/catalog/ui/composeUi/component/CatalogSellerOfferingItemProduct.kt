@@ -308,7 +308,7 @@ private fun ProductVisualWithStock(
 
 @Composable
 private fun ShopInfoRow(shopName: String, shopLocation: String, badge: String) {
-    val maxCharShopName = 22
+    val maxCharShopName = 20
     val maxCharShopLocation = 15
     val shopNameTruncate = if (shopName.length > maxCharShopName) {
         shopName.substring(Int.ZERO,maxCharShopName) + "....."
