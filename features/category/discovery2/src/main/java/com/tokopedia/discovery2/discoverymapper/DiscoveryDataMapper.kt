@@ -17,6 +17,8 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.StylesGroup
+import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TAB_DEFAULT_BACKGROUND
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -74,7 +76,7 @@ class DiscoveryDataMapper {
         ): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             component.data?.forEachIndexed { index, it ->
-                val id = "${TABS_ITEM}_$index"
+                val id = "${TABS_ITEM}_${component.id}_$index"
                 if (!it.name.isNullOrEmpty()) {
                     if (component.isSupportPinnedTab()) {
                         pinnedActiveTab(component.pinnedActiveTabId, it, index)

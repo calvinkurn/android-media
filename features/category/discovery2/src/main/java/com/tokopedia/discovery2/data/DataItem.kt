@@ -655,6 +655,8 @@ data class DataItem(
     var warehouseId: Long? = null,
 
     var itemPosition: Int = 0,
+
+    var topLevelTab: TopLevelTab = UnknownTab
 ) {
     val leftMargin: Int
         get() {
