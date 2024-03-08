@@ -3092,7 +3092,7 @@ class ChatbotFragment2 :
             startTime,
             opponentId
         )
-        getViewState()?.removeDynamicStickyButton()
+        getViewState()?.removeDynamicStickyButtonAction()
         getViewState()?.scrollToBottom()
     }
 

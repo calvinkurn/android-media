@@ -422,20 +422,6 @@ class ChatbotViewStateImpl(
         }
     }
 
-    override fun removeDynamicStickyButton() {
-        var item: DynamicStickyButtonUiModel? = null
-        for (it in adapter.list) {
-            if (it is DynamicStickyButtonUiModel) {
-                item = it
-                break
-            }
-        }
-
-        if (item != null && adapter.list.isNotEmpty()) {
-            adapter.clearElement(item)
-        }
-    }
-
     override fun removeDynamicStickyButtonAction() {
         var dynamicStickyButtonUiModel: DynamicStickyButtonUiModel? = null
         var tmpIndex = 0
