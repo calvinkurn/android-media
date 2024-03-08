@@ -612,6 +612,8 @@ data class CustomDataOtherV2(
     val promoFlags: String?,
     @SerializedName("tickers")
     val tickers: String?,
+    @SerializedName("signature_purchase_info")
+    val signaturePurchaseInfo: String?,
     @SerializedName("summary_info")
     var summaryInfo: String = ""
 ) : Parcelable

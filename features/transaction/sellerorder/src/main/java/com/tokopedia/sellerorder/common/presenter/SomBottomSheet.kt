@@ -18,8 +18,9 @@ import com.tokopedia.sellerorder.common.listener.SingleTapListener
 import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
-abstract class SomBottomSheet<T : ViewBinding> (
+abstract class SomBottomSheet<T : ViewBinding>(
     childViewsLayoutResourceId: Int,
     private val showOverlay: Boolean,
     private val showCloseButton: Boolean,
@@ -189,13 +190,11 @@ abstract class SomBottomSheet<T : ViewBinding> (
     }
 
     private fun setupBottomSheetContent(view: ViewGroup) {
-        val bottomSheetLayout = this.bottomSheetLayout ?: (View.inflate(context, com.tokopedia.unifycomponents.R.layout.bottom_sheet_layout, view) as ViewGroup).getChildAt(view.childCount - 1)?.apply {
+        val bottomSheetLayout = this.bottomSheetLayout ?: (View.inflate(context, unifycomponentsR.layout.bottom_sheet_layout, view) as ViewGroup).getChildAt(view.childCount - 1)?.apply {
             this as ViewGroup
             isClickable = true
             binding?.run {
-                if (root.parent != null) {
-                    (root.parent as? ViewGroup)?.removeView(root)
-                }
+                (root.parent as? ViewGroup)?.removeView(root)
                 addView(root)
             }
             val bottomSheetBehavior = bottomSheetBehavior ?: BottomSheetBehavior.from(this).apply {
@@ -240,14 +239,14 @@ abstract class SomBottomSheet<T : ViewBinding> (
     }
 
     fun showCloseButton() {
-        bottomSheetLayout?.findViewById<ImageView>(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)?.apply {
+        bottomSheetLayout?.findViewById<ImageView>(unifycomponentsR.id.bottom_sheet_close)?.apply {
             show()
             setOnClickListener { dismiss() }
         }
     }
 
     fun hideKnob() {
-        bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_knob)?.gone()
+        bottomSheetLayout?.findViewById<View>(unifycomponentsR.id.bottom_sheet_knob)?.gone()
     }
 
     fun isShowing(): Boolean {
@@ -267,20 +266,29 @@ abstract class SomBottomSheet<T : ViewBinding> (
         if (!showKnob) {
             hideKnob()
         }
-        if (clearPadding) {
-            clearSidePadding()
-        }
+        setupWrapperPadding()
+        setupHeaderMargin()
     }
 
-    private fun clearSidePadding() {
-        bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)
-            ?.setPadding(Int.ZERO, BOTTOM_SHEET_GAP_DEFAULT.toPx(), Int.ZERO, Int.ZERO)
-        (bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)?.layoutParams as? LinearLayout.LayoutParams)?.setMargins(
-            BOTTOM_SHEET_GAP_DEFAULT.toPx(),
-            Int.ZERO,
-            BOTTOM_SHEET_GAP_DEFAULT.toPx(),
-            BOTTOM_SHEET_GAP_DEFAULT.toPx()
-        )
+    private fun setupWrapperPadding() {
+        bottomSheetLayout
+            ?.findViewById<View>(unifycomponentsR.id.bottom_sheet_wrapper)
+            ?.setPadding(
+                if (clearPadding) Int.ZERO else BOTTOM_SHEET_GAP_DEFAULT.toPx(),
+                Int.ZERO,
+                if (clearPadding) Int.ZERO else BOTTOM_SHEET_GAP_DEFAULT.toPx(),
+                Int.ZERO
+            )
+    }
+
+    private fun setupHeaderMargin() {
+        (bottomSheetLayout?.findViewById<View>(unifycomponentsR.id.bottom_sheet_header)?.layoutParams as? LinearLayout.LayoutParams)
+            ?.setMargins(
+                if (clearPadding) BOTTOM_SHEET_GAP_DEFAULT.toPx() else Int.ZERO,
+                BOTTOM_SHEET_GAP_DEFAULT.toPx(),
+                if (clearPadding) BOTTOM_SHEET_GAP_DEFAULT.toPx() else Int.ZERO,
+                BOTTOM_SHEET_GAP_DEFAULT.toPx()
+            )
     }
 
     fun setOnDismiss(onDismissed: () -> Unit) {

@@ -35,6 +35,7 @@ import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.date.DateUtil
@@ -116,7 +117,8 @@ fun TrackingHistoryItem(
                 .constrainAs(description) {
                     start.linkTo(day.start)
                     top.linkTo(day.bottom, margin = 5.dp)
-                },
+                }
+                .tag("tracking_history"),
             textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._950),
             text = HtmlLinkHelper(
                 LocalContext.current,
@@ -137,10 +139,12 @@ fun TrackingHistoryItem(
             text = "Kurir: ${trackHistoryModel.partnerName}"
         )
         Spacer(
-            modifier = Modifier.height(4.dp).constrainAs(endSpacing) {
-                top.linkTo(pod.bottom)
-                start.linkTo(day.start)
-            }
+            modifier = Modifier
+                .height(4.dp)
+                .constrainAs(endSpacing) {
+                    top.linkTo(pod.bottom)
+                    start.linkTo(day.start)
+                }
         )
         Box(
             Modifier
@@ -164,6 +168,7 @@ fun TrackingHistoryItem(
                     visibility =
                         if (trackHistoryModel.proof.imageId.isNotEmpty()) Visibility.Visible else Visibility.Gone
                 }
+                .tag("img_proof")
                 .clickable { seeProofOfDelivery(trackHistoryModel.proof) },
             source = ImageSource.Remote(
                 trackHistoryModel.proof.imageUrl,
@@ -213,7 +218,11 @@ private fun InvalidTrackingNotes(modifier: Modifier) {
 
 @Composable
 private fun InvalidTrackingNotesItem(text: String) {
-    Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.Top) {
+    Row(
+        Modifier.padding(top = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.Top
+    ) {
         Box(
             modifier = Modifier
                 .size(8.dp, 8.dp)

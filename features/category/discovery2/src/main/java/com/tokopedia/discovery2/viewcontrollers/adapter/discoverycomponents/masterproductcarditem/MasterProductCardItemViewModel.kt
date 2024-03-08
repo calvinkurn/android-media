@@ -9,6 +9,8 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
+import com.tokopedia.discovery2.analytics.TrackingMapper
+import com.tokopedia.discovery2.data.ComponentSourceData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
@@ -67,7 +69,10 @@ class MasterProductCardItemViewModel(val application: Application, val component
         components.data?.let {
             if (!it.isNullOrEmpty()) {
                 val productData = it.first()
-                productData.hasNotifyMe = getNotifyText(productData.notifyMe).isNotEmpty()
+                productData.apply {
+                    hasNotifyMe = getNotifyText(productData.notifyMe).isNotEmpty()
+                    setTopLevelTabOnRecommendationProduct()
+                }
                 dataItem.value = productData
                 setProductStockWording(productData)
                 lastQuantity = productData.quantity
@@ -79,6 +84,12 @@ class MasterProductCardItemViewModel(val application: Application, val component
                     )
             }
         }
+    }
+
+    private fun DataItem.setTopLevelTabOnRecommendationProduct() {
+        if (source != ComponentSourceData.Recommendation) return
+
+        topLevelTab = TrackingMapper.getTopLevelParentComponent(components)
     }
 
     private fun setProductStockWording(dataItem: DataItem) {

@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.model.productinfo
 
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
+import com.tokopedia.product.detail.common.data.model.media.YoutubeVideo
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 
 /**

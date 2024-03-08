@@ -1,5 +1,9 @@
+@file:SuppressLint("DeprecatedMethod")
+@file:Suppress("DEPRECATION")
+
 package com.tokopedia.home.beranda.presentation.view.listener
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.tokopedia.home.analytics.v2.Kd4SquareTracker
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -24,7 +28,7 @@ class Kd4WidgetCallback constructor(
     }
 
     override fun onCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Kd4SquareTracker.cardClicked(
                 channel,
                 channelGrid,
@@ -35,7 +39,7 @@ class Kd4WidgetCallback constructor(
     }
 
     override fun onViewAllChevronClicked(channel: ChannelModel) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Kd4SquareTracker.viewAllChevronClicked(channel) as HashMap<String, Any>
         )
     }

@@ -4,11 +4,9 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.analytics.TrackingMapper.setAppLog
 import com.tokopedia.discovery2.data.ComponentAdditionalInfo
-import com.tokopedia.discovery2.data.ComponentSourceData
-import com.tokopedia.discovery2.data.ComponentTracker
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT_QUERY_NAME
@@ -43,9 +41,9 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
         val additionalInfo = response.data.component?.compAdditionalInfo
         val componentItem = getComponent(requestParams.componentId, requestParams.pageEndpoint)
 
-        val componentData = response.data.component?.let {
-            it.data.apply {
-                setAppLog(additionalInfo?.tracker, it.getSource())
+        val componentData = response.data.component?.let { componentFromResponse ->
+            componentFromResponse.data.apply {
+                setAppLog(additionalInfo?.tracker, componentFromResponse.getSource())
             }
         }
 
@@ -241,18 +239,5 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
             }
         }
         return Pair(list, additionalInfo)
-    }
-
-    private fun List<DataItem>?.setAppLog(
-        tracker: ComponentTracker?,
-        source: ComponentSourceData,
-    ) {
-        tracker?.let { componentTracker ->
-            this?.forEachIndexed { index, dataItem ->
-                dataItem.itemPosition = index
-                dataItem.setAppLog(componentTracker)
-                dataItem.source = source
-            }
-        }
     }
 }

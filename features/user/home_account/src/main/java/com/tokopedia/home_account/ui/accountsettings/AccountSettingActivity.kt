@@ -81,9 +81,7 @@ class AccountSettingActivity : BaseActivity() {
             showErrorToast(it)
         }
         isShowSignInNotif = firebaseRC.getBoolean(REMOTE_CONFIG_SETTING_OTP_PUSH_NOTIF, false)
-        isShowBiometric = DeeplinkMapperUser.isGotoLoginDisabled() &&
-            abPlatform.getString(AccountConstants.RollenceKey.BIOMETRIC_ENTRY_POINT, "")
-                .isNotEmpty()
+        isShowBiometric = abPlatform.getString(AccountConstants.RollenceKey.BIOMETRIC_ENTRY_POINT, "").isNotEmpty()
         setContent {
             val state by viewModel.state.observeAsState()
             val additionalState by remember {

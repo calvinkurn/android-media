@@ -1137,6 +1137,8 @@ open class HomeRevampFragment :
         getHomeViewModel().getCMHomeWidgetData(false)
         // trigger gamification popup flow
         executeGamificationPopUpFlow()
+
+        AppLogSearch.cleanTrendingWordsClickData()
     }
 
     private fun executeGamificationPopUpFlow() {
@@ -2114,7 +2116,7 @@ open class HomeRevampFragment :
                 },
                 hintClickCallback = { hintData, index ->
                     if (hintData.imprId.isNotBlank())
-                        AppLogSearch.eventTrendingWordsClick(appLogTrendingWords(index, hintData))
+                        AppLogSearch.saveTrendingWordsClickData(appLogTrendingWords(index, hintData))
                 }
             )
         }

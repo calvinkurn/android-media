@@ -2,7 +2,6 @@ package com.tokopedia.analytics.byteio.search
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
-import com.tokopedia.analytics.byteio.AppLogAnalytics.getSourcePreviousPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam
@@ -77,6 +76,7 @@ import org.json.JSONObject
 object AppLogSearch {
 
     private val whitelistedEnterFrom = listOf(GOODS_SEARCH, STORE_SEARCH, PageName.HOME)
+    private const val TRENDING_WORDS_CLICK_DATA_KEY = "trending_words_click_data"
 
     object Event {
         const val SHOW_SEARCH = "show_search"
@@ -205,8 +205,20 @@ object AppLogSearch {
         AppLogAnalytics.send(TRENDING_WORDS_SHOW, JSONObject(trendingWords.toMap()))
     }
 
-    fun eventTrendingWordsClick(trendingWords: TrendingWords) {
-        AppLogAnalytics.send(TRENDING_WORDS_CLICK, JSONObject(trendingWords.toMap()))
+    fun eventTrendingWordsClick() {
+        val trendingWordsMap = AppLogAnalytics.getDataBeforeCurrent(TRENDING_WORDS_CLICK_DATA_KEY)
+
+        if (trendingWordsMap !is Map<*, *>) return
+
+        AppLogAnalytics.send(TRENDING_WORDS_CLICK, JSONObject(trendingWordsMap))
+    }
+
+    fun saveTrendingWordsClickData(trendingWords: TrendingWords) {
+        AppLogAnalytics.putPageData(TRENDING_WORDS_CLICK_DATA_KEY, trendingWords.toMap())
+    }
+
+    fun cleanTrendingWordsClickData() {
+        AppLogAnalytics.removePageData(TRENDING_WORDS_CLICK_DATA_KEY)
     }
 
     data class Search(
@@ -230,7 +242,7 @@ object AppLogSearch {
     ) {
         fun json() = JSONObject(buildMap {
             put(IMPR_ID, imprId)
-            put(ENTER_FROM, enterFrom())
+            put(ENTER_FROM, enterFrom)
             put(SEARCH_TYPE, searchType)
             put(ENTER_METHOD, enterMethod)
             put(SEARCH_KEYWORD, searchKeyword)

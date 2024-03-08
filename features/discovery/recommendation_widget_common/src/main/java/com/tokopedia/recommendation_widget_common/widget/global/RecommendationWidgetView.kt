@@ -54,7 +54,7 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
     fun bind(
         model: RecommendationWidgetModel,
         parentRootView: View? = null,
-        callback: Callback? = null,
+        callback: Callback? = null
     ) {
         val lifecycleOwner = context.asLifecycleOwner() ?: return
 
@@ -67,7 +67,7 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
         lifecycleOwner: LifecycleOwner,
         model: RecommendationWidgetModel,
         parentRootView: View?,
-        callback: Callback?,
+        callback: Callback?
     ) {
         job?.forEach { it.cancel() }
         job?.clear()
@@ -128,16 +128,17 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
 
     private fun renderView(
         visitableList: List<RecommendationVisitable>?,
-        callback: Callback?,
+        callback: Callback?
     ) {
         if (visitableList.isNullOrEmpty()) {
             hide()
 
-            if (visitableList?.isEmpty() == true)
+            if (visitableList?.isEmpty() == true) {
                 callback?.onError()
+            }
         } else {
             show()
-            callback?.onShow()
+            callback?.onShow(visitableList)
         }
     }
 
@@ -190,7 +191,7 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
     }
 
     interface Callback {
-        fun onShow() { }
+        fun onShow(visitableList: List<RecommendationVisitable>?) { }
         fun onError() { }
     }
 
