@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.tracing.trace
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartColor
@@ -84,17 +85,19 @@ class MultiLineGraphViewHolder(
     private var shouldShowEmptyState: Boolean = false
 
     override fun bind(element: MultiLineGraphWidgetUiModel) {
-        showAnimation?.end()
-        hideAnimation?.end()
-        this.element = element
+        trace("MultiLineGraphViewHolder.bind") {
+            showAnimation?.end()
+            hideAnimation?.end()
+            this.element = element
 
-        val data = element.data
-        setWidgetCardBackground(element.isMultiComponentWidget)
+            val data = element.data
+            setWidgetCardBackground(element.isMultiComponentWidget)
 
-        when {
-            data == null || element.showLoadingState -> setOnLoadingState()
-            data.error.isNotBlank() -> setOnErrorState(element)
-            else -> setOnSuccessState(element)
+            when {
+                data == null || element.showLoadingState -> setOnLoadingState()
+                data.error.isNotBlank() -> setOnErrorState(element)
+                else -> setOnSuccessState(element)
+            }
         }
     }
 
@@ -256,45 +259,47 @@ class MultiLineGraphViewHolder(
     }
 
     private fun setOnSuccessState(element: MultiLineGraphWidgetUiModel) {
-        removeWidgetWithCondition(element)
-        val metricItems = element.data?.metrics.orEmpty()
-        val metric = if (metricItems.contains(lastSelectedMetric)) {
-            lastSelectedMetric
-        } else {
-            metricItems.getOrNull(Int.ZERO)
-        }
-        metric?.isSelected = true
-
-        with(binding) {
-            loadingStateBinding.shcMlgLoadingState.gone()
-            shcMultiLineGraphErrorView.gone()
-            shcMlgSuccessState.visible()
-            setupTitle(element.title)
-
-            getWidgetComponents().forEach {
-                it.visible()
+        trace("MultiLineGraphViewHolder.setOnSuccessState") {
+            removeWidgetWithCondition(element)
+            val metricItems = element.data?.metrics.orEmpty()
+            val metric = if (metricItems.contains(lastSelectedMetric)) {
+                lastSelectedMetric
+            } else {
+                metricItems.getOrNull(Int.ZERO)
             }
+            metric?.isSelected = true
 
-            setupMetricCards(metricItems)
-            hideLegendView()
+            with(binding) {
+                loadingStateBinding.shcMlgLoadingState.gone()
+                shcMultiLineGraphErrorView.gone()
+                shcMlgSuccessState.visible()
+                setupTitle(element.title)
 
-            if (metric != null) {
-                lastSelectedMetric = metric
-                showLineGraph(listOf(metric))
-            }
+                getWidgetComponents().forEach {
+                    it.visible()
+                }
 
-            val metricPosition = metricItems.indexOf(metric)
-            scrollMetricToPosition(metricPosition)
+                setupMetricCards(metricItems)
+                hideLegendView()
 
-            setupLastUpdated(element)
-            setupCta(element)
-            setTagNotification(element.tag)
-            setupTooltip(element)
+                if (metric != null) {
+                    lastSelectedMetric = metric
+                    showLineGraph(listOf(metric))
+                }
 
-            horLineShcMultiLineGraphBtm.isVisible =
-                luvShcMultiLineGraph.isVisible || tvShcMultiLineCta.isVisible
-            root.addOnImpressionListener(element.impressHolder) {
-                listener.sendMultiLineGraphImpressionEvent(element)
+                val metricPosition = metricItems.indexOf(metric)
+                scrollMetricToPosition(metricPosition)
+
+                setupLastUpdated(element)
+                setupCta(element)
+                setTagNotification(element.tag)
+                setupTooltip(element)
+
+                horLineShcMultiLineGraphBtm.isVisible =
+                    luvShcMultiLineGraph.isVisible || tvShcMultiLineCta.isVisible
+                root.addOnImpressionListener(element.impressHolder) {
+                    listener.sendMultiLineGraphImpressionEvent(element)
+                }
             }
         }
     }
