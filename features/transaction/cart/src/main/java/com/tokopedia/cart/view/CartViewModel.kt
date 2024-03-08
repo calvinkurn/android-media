@@ -985,19 +985,15 @@ class CartViewModel @Inject constructor(
         )
     }
 
-    fun renderBuyAgain(recommendationWidget: RecommendationWidget?) {
+    private fun renderBuyAgain(recommendationWidget: RecommendationWidget) {
         val buyAgainList = mutableListOf<CartBuyAgainItem>()
-        if (recommendationWidget != null) {
-            val mappedBuyAgainList = recommendationWidget.recommendationItemList.map {
-                CartBuyAgainItemHolderData(it)
-            }
-            buyAgainList.addAll(mappedBuyAgainList)
-        } else {
-            cartModel.buyAgainList?.let { buyAgainList.addAll(it) }
+        val mappedBuyAgainList = recommendationWidget.recommendationItemList.map {
+            CartBuyAgainItemHolderData(it)
         }
+        buyAgainList.addAll(mappedBuyAgainList)
 
         val cartBuyAgainHolderData = CartBuyAgainHolderData()
-        val isSeeMoreAppLinkExist = recommendationWidget?.seeMoreAppLink?.isNotBlank() == true
+        val isSeeMoreAppLinkExist = recommendationWidget.seeMoreAppLink?.isNotBlank() == true
 
         val resultList = if (isSeeMoreAppLinkExist) {
             val maxIndex = min(BUY_AGAIN_PRODUCTS_LIMIT, buyAgainList.size)
@@ -1006,22 +1002,20 @@ class CartViewModel @Inject constructor(
             buyAgainList
         }
         if (buyAgainList.size > BUY_AGAIN_PRODUCTS_LIMIT && isSeeMoreAppLinkExist) {
-            resultList.add(CartBuyAgainViewAllData(recommendationWidget?.seeMoreAppLink ?: ""))
+            resultList.add(CartBuyAgainViewAllData(recommendationWidget.seeMoreAppLink))
         }
         cartBuyAgainHolderData.buyAgainList = resultList
 
         val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
-        cartSectionHeaderHolderData.title = recommendationWidget?.title ?: "Waktunya beli lagi, nih!"
+        cartSectionHeaderHolderData.title = recommendationWidget.title.ifEmpty { "Waktunya beli lagi, nih!" }
         cartSectionHeaderHolderData.showAllAppLink = if (buyAgainList.size > BUY_AGAIN_PRODUCTS_LIMIT) {
-            recommendationWidget?.seeMoreAppLink ?: ""
+            recommendationWidget.seeMoreAppLink
         } else {
             String.EMPTY
         }
         cartSectionHeaderHolderData.type = CartSectionHeaderActionType.ICON_BUTTON
 
         addCartBuyAgainData(cartSectionHeaderHolderData, cartBuyAgainHolderData)
-        cartModel.buyAgainList = buyAgainList.filterIsInstance(CartBuyAgainItemHolderData::class.java)
-        cartModel.shouldReloadBuyAgainList = false
 
         _buyAgainFloatingButtonData.value = CartBuyAgainFloatingButtonData(
             title = BUY_AGAIN_WORDING,

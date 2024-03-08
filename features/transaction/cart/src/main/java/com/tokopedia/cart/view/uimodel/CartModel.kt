@@ -10,7 +10,6 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSel
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 
 data class CartModel(
-    var buyAgainList: List<CartBuyAgainItemHolderData>? = null,
     var wishlists: List<CartWishlistItemHolderData>? = null,
     var recommendationWidgetMetadata: RecommendationWidgetMetadata = RecommendationWidgetMetadata(),
     var isLastApplyResponseStillValid: Boolean = true,
@@ -40,6 +39,5 @@ data class CartModel(
     var firstCartSectionHeaderPosition: Int = -1,
     var tmpAllUnavailableShop: MutableList<Any>? = null,
 
-    var shouldReloadRecentViewList: Boolean = false,
-    var shouldReloadBuyAgainList: Boolean = false
+    var shouldReloadRecentViewList: Boolean = false
 )

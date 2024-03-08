@@ -306,7 +306,6 @@ class CartRevampFragment :
     private var hasLoadRecommendation: Boolean = false
 
     private var hasTriedToLoadWishList: Boolean = false
-    private var shouldReloadRecentViewList: Boolean = false
     private var hasTriedToLoadRecommendation: Boolean = false
     private var delayShowPromoButtonJob: Job? = null
     private var delayShowSelectedAmountJob: Job? = null
@@ -2447,6 +2446,7 @@ class CartRevampFragment :
 
     private fun handleBuyAgainFloatingButtonVisibilityOnIdle() {
         if (cartPreferences.hasClickedBuyAgainFloatingButton()) return
+        if (binding?.fabBuyAgain?.visibility == View.GONE) return
 
         updateBuyAgainFloatingButtonVisibility(false)
         cartPreferences.setHasClickedBuyAgainFloatingButton()
@@ -3608,8 +3608,12 @@ class CartRevampFragment :
         }
     }
 
+    private fun isBuyAgainEnabled(): Boolean = CartBuyAgainRollenceManager(
+        RemoteConfigInstance.getInstance().abTestPlatform
+    ).isBuyAgainCartEnabled()
+
     private fun setBuyAgainFloatingButton() {
-        if (cartPreferences.hasClickedBuyAgainFloatingButton()) {
+        if (cartPreferences.hasClickedBuyAgainFloatingButton() || !isBuyAgainEnabled()) {
             binding?.fabBuyAgain?.gone()
         } else {
             CartBuyAgainAnalytics.sendImpressionFloatingButtonEvent(CartViewModel.BUY_AGAIN_WORDING)
@@ -3715,7 +3719,10 @@ class CartRevampFragment :
         val intentBottomSheetWishlistCollection =
             RouteManager.getIntent(context, applinkCollection)
         val isProductActive = source == WISHLIST_SOURCE_AVAILABLE_ITEM
-        intentBottomSheetWishlistCollection.putExtra(WishlistV2CommonConsts.IS_PRODUCT_ACTIVE, isProductActive)
+        intentBottomSheetWishlistCollection.putExtra(
+            WishlistV2CommonConsts.IS_PRODUCT_ACTIVE,
+            isProductActive
+        )
         addToWishlistCollectionLauncher.launch(intentBottomSheetWishlistCollection)
     }
 
@@ -4008,7 +4015,10 @@ class CartRevampFragment :
 
     private fun onResultFromAddToWishlistCollection(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null) {
-            val isSuccess = data.getBooleanExtra(ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS, false)
+            val isSuccess = data.getBooleanExtra(
+                ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
+                false
+            )
             val message =
                 data.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
             val collectionId =
@@ -4653,7 +4663,6 @@ class CartRevampFragment :
 
     private fun resetBottomSectionList() {
         viewModel.cartModel.shouldReloadRecentViewList = true
-        viewModel.cartModel.shouldReloadBuyAgainList = true
     }
 
     private fun retryGoToShipment() {
@@ -5857,11 +5866,7 @@ class CartRevampFragment :
             return
         }
 
-        if (viewModel.cartModel.buyAgainList == null || viewModel.cartModel.shouldReloadBuyAgainList) {
-            viewModel.processGetBuyAgainData()
-        } else {
-            viewModel.renderBuyAgain(null)
-        }
+        viewModel.processGetBuyAgainData()
     }
 
     private fun validateRenderWishlist() {
@@ -6125,6 +6130,7 @@ class CartRevampFragment :
 
     private fun updateBuyAgainFloatingButtonVisibility(isVisible: Boolean) {
         if (cartPreferences.hasClickedBuyAgainFloatingButton()) return
+        if (binding?.fabBuyAgain?.visibility == View.GONE) return
 
         val rvCart = binding?.rvCart ?: return
         val layoutManager = rvCart.layoutManager as GridLayoutManager
