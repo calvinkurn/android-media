@@ -8,13 +8,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastReportBinding
-import com.tokopedia.content.product.picker.seller.view.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
@@ -26,7 +25,6 @@ import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.generateHtmlSpanText
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
-import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
@@ -162,7 +160,7 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     private fun checkTickerLiveToVodConfig() {
         parentViewModel.submitAction(
-            PlayBroadcastAction.GetTickerBottomSheetConfig(
+            PlayBroadcastAction.GetDynamicTickerBottomSheetConfig(
                 page = TickerBottomSheetPage.LIVE_REPORT,
             )
         )
@@ -241,9 +239,8 @@ class PlayBroadcastReportFragment @Inject constructor(
 
                 override fun onDismiss() {
                     parentViewModel.submitAction(
-                        PlayBroadcastAction.SetLiveToVodPref(
+                        PlayBroadcastAction.SetDynamicTickerBottomSheetPref(
                             type = TickerBottomSheetType.TICKER,
-                            page = TickerBottomSheetPage.LIVE_REPORT,
                         )
                     )
                 }
