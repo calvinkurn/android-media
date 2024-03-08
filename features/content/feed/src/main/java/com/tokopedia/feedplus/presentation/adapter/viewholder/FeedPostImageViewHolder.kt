@@ -6,7 +6,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewParent
 import androidx.annotation.LayoutRes
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -111,7 +113,7 @@ class FeedPostImageViewHolder(
 
     private var mData: FeedCardImageContentModel? = null
 
-    private val isSelected = mutableStateOf(false)
+    private var isSelected by mutableStateOf(false)
 
     private val opacityViewList = listOf(
         binding.layoutAuthorInfo.root,
@@ -382,7 +384,7 @@ class FeedPostImageViewHolder(
     }
 
     private fun onSelected(data: FeedCardImageContentModel) {
-        isSelected.value = true
+        isSelected = true
         campaignView.resetView()
         campaignView.startAnimation()
         sendImpressionTracker(data)
@@ -394,7 +396,7 @@ class FeedPostImageViewHolder(
     }
 
     private fun onNotSelected() {
-        isSelected.value = false
+        isSelected = false
 
         job?.cancel()
         campaignView.resetView()

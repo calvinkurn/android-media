@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -210,7 +209,7 @@ internal fun FeedProductHighlight(
 }
 
 @Composable
-fun ProductTagItems(
+internal fun ProductTagItems(
     products: List<FeedCardProductModel>,
     totalProducts: Int,
     key: String,
@@ -219,12 +218,12 @@ fun ProductTagItems(
     onProductLabelClick: () -> Unit,
     onProductHighlightClose: () -> Unit,
     impressHighlight: (FeedCardProductModel) -> Unit,
-    isFocused: MutableState<Boolean>,
+    isFocused: Boolean,
 ) {
     var isHighlightVisible by remember { mutableStateOf(false) }
     val highlightedProduct = products.firstOrNull { it.isHighlight }
 
-    if (!isFocused.value) {
+    if (!isFocused) {
         isHighlightVisible = false
     } else {
         LaunchedEffect(key1 = key) {

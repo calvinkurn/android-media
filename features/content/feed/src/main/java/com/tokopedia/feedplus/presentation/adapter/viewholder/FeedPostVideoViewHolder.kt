@@ -6,7 +6,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import androidx.annotation.LayoutRes
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -92,7 +94,7 @@ class FeedPostVideoViewHolder(
 
     private var trackerDataModel: FeedTrackerDataModel? = null
 
-    private val isSelected = mutableStateOf(false)
+    private var isSelected by mutableStateOf(false)
 
     private val opacityViewList = listOf(
         binding.layoutAuthorInfo.root,
@@ -533,7 +535,7 @@ class FeedPostVideoViewHolder(
     }
 
     private fun onSelected(element: FeedCardVideoContentModel) {
-        isSelected.value = true
+        isSelected = true
         mIsSelected = true
         val trackerModel =
             trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(element)
@@ -559,7 +561,7 @@ class FeedPostVideoViewHolder(
         campaignView.resetView()
         hideClearView()
         productButtonView.pauseProductIconAnimation()
-        isSelected.value = false
+        isSelected = false
     }
 
     override fun onViewRecycled() {
