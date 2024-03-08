@@ -28,7 +28,7 @@ import com.tokopedia.unifycomponents.compose.NestRadioButton
  * @author by astidhiyaa on 28/11/23
  */
 @Composable
-fun ReportScreen(reports: List<ReviewReportUiModel>, onSubmit: (ReviewReportUiModel) -> Unit = {}) {
+internal fun ReportScreen(reports: List<ReviewReportUiModel>, onSubmit: (ReviewReportUiModel) -> Unit = {}) {
     var reason by remember { mutableStateOf("") }
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(ReviewReportUiModel.Empty) }
     NestTheme {
@@ -81,7 +81,7 @@ fun ReportScreen(reports: List<ReviewReportUiModel>, onSubmit: (ReviewReportUiMo
 
 @Preview
 @Composable
-fun MyApp() {
+internal fun MyApp() {
     ReportScreen(
         reports = emptyList()
     )

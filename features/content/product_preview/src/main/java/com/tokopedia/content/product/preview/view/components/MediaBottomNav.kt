@@ -41,7 +41,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
  * @author by astidhiyaa on 23/11/23
  */
 @Composable
-fun MediaBottomNav(
+internal fun MediaBottomNav(
     product: BottomNavUiModel,
     onAtcClicked: () -> Unit = {}
 ) {
