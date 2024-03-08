@@ -134,17 +134,11 @@ class ContentTaggedProductBottomSheetItemView(
         binding.btnProductBuy.isEnabled = isStockAvailable
         binding.btnProductAtc.isEnabled = isStockAvailable
 
-        if (!isStockAvailable) {
-            binding.labelOutOfStock.setLabel(context.getString(R.string.content_out_of_stock_label_text))
-        } else if (isMaskedPrice) {
-            binding.labelOutOfStock.setLabel(context.getString(R.string.content_soon_label_text))
-        } else {
-            binding.labelOutOfStock.setLabel("")
-        }
+        val showOverlay = !isStockAvailable || isMaskedPrice
+        binding.viewOverlayOos.showWithCondition(showOverlay)
 
-        val showLabel = !isStockAvailable || isMaskedPrice
-        binding.viewOverlayOos.showWithCondition(showLabel)
-        binding.labelOutOfStock.showWithCondition(showLabel)
+        binding.labelOutOfStock.showWithCondition(!isStockAvailable)
+        binding.labelSoon.showWithCondition(isMaskedPrice)
     }
 
     interface Listener {
