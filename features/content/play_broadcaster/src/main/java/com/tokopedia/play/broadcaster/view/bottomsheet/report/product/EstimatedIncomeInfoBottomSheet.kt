@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.bottomsheet.estimatedincome
+package com.tokopedia.play.broadcaster.view.bottomsheet.report.product
 
 import android.os.Bundle
 import androidx.compose.foundation.layout.padding

@@ -53,9 +53,9 @@ import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.estimatedincome.EstimatedIncomeDetailBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.stats.PlayBroadcastLiveStatsBottomSheet
-import com.tokopedia.play.broadcaster.view.compose.livestats.LiveStatsView
+import com.tokopedia.play.broadcaster.view.bottomsheet.report.product.ProductReportSummaryBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.report.live.PlayBroadcastLiveReportSummaryBottomSheet
+import com.tokopedia.play.broadcaster.view.compose.report.live.LiveStatsView
 import com.tokopedia.play.broadcaster.view.custom.PlayBroIconWithGreenDotView
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.game.quiz.QuizFormView
@@ -323,8 +323,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                 })
             }
-            is PlayBroadcastLiveStatsBottomSheet -> {
-                childFragment.setListener(object : PlayBroadcastLiveStatsBottomSheet.Listener {
+            is PlayBroadcastLiveReportSummaryBottomSheet -> {
+                childFragment.setListener(object : PlayBroadcastLiveReportSummaryBottomSheet.Listener {
                     override fun onEstimatedIncomeClicked() {
                         openEstimatedIncomeDetailSheet()
                     }
@@ -1339,14 +1339,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun openLiveStatsSheet() {
-        PlayBroadcastLiveStatsBottomSheet.getFragment(
+        PlayBroadcastLiveReportSummaryBottomSheet.getFragment(
             childFragmentManager,
             requireContext().classLoader
         ).show(childFragmentManager)
     }
 
     private fun openEstimatedIncomeDetailSheet() {
-        EstimatedIncomeDetailBottomSheet.getFragment(
+        ProductReportSummaryBottomSheet.getFragment(
             childFragmentManager,
             requireContext().classLoader
         ).show(childFragmentManager)

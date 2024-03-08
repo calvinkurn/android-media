@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.compose.livestats
+package com.tokopedia.play.broadcaster.view.compose.report.live
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -25,8 +25,8 @@ import com.tokopedia.nest.components.card.NestCardType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.noRippleClickable
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsCardModel
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsCardModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 
 /**
  * Created by Jonathan Darwin on 01 March 2024

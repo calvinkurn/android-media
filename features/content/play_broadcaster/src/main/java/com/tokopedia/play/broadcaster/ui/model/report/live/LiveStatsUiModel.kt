@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.ui.model.stats
+package com.tokopedia.play.broadcaster.ui.model.report.live
 
 import androidx.annotation.StringRes
 import com.tokopedia.iconunify.IconUnify

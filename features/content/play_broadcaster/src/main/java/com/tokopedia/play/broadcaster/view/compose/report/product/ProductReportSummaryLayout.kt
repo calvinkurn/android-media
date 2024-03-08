@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.compose.estimatedincome
+package com.tokopedia.play.broadcaster.view.compose.report.product
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,12 +18,12 @@ import com.tokopedia.globalerror.compose.NestGlobalError
 import com.tokopedia.globalerror.compose.NestGlobalErrorType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.play.broadcaster.ui.model.stats.EstimatedIncomeDetailUiModel
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsCardModel
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
-import com.tokopedia.play.broadcaster.ui.model.stats.ProductStatsUiModel
-import com.tokopedia.play.broadcaster.view.compose.livestats.LiveStatsLayout
-import com.tokopedia.play.broadcaster.view.compose.livestats.LiveStatsShimmer
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsCardModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.product.ProductReportSummaryUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.product.ProductStatsUiModel
+import com.tokopedia.play.broadcaster.view.compose.report.live.LiveReportSummaryLayout
+import com.tokopedia.play.broadcaster.view.compose.report.live.LiveReportSummaryShimmer
 import com.tokopedia.play_common.model.result.NetworkResult
 
 /**
@@ -31,23 +31,23 @@ import com.tokopedia.play_common.model.result.NetworkResult
  */
 
 @Composable
-fun EstimatedIncomeDetailLayout(
-    estimatedIncomeDetail: NetworkResult<EstimatedIncomeDetailUiModel>,
+fun ProductReportSummaryLayout(
+    productReportSummary: NetworkResult<ProductReportSummaryUiModel>,
     onEstimatedIncomeClicked: () -> Unit,
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = if (estimatedIncomeDetail is NetworkResult.Fail) {
+        contentAlignment = if (productReportSummary is NetworkResult.Fail) {
             Alignment.Center
         } else {
             Alignment.TopStart
         }
     ) {
-        when(estimatedIncomeDetail) {
+        when(productReportSummary) {
             is NetworkResult.Loading -> {
-                EstimatedIncomeDetailContainer(isScrollable = false) {
+                ProductReportSummaryContainer(isScrollable = false) {
                     item {
-                        LiveStatsShimmer()
+                        LiveReportSummaryShimmer()
                     }
 
                     items(3) {
@@ -56,11 +56,11 @@ fun EstimatedIncomeDetailLayout(
                 }
             }
             is NetworkResult.Success -> {
-                EstimatedIncomeDetailContainer(isScrollable = true) {
+                ProductReportSummaryContainer(isScrollable = true) {
                     item {
-                        LiveStatsLayout(
+                        LiveReportSummaryLayout(
                             gridCount = 2,
-                            listData = estimatedIncomeDetail.data.totalStatsList.map {
+                            listData = productReportSummary.data.totalStatsList.map {
                                 when (it) {
                                     is LiveStatsUiModel.EstimatedIncome -> {
                                         LiveStatsCardModel.Clickable(
@@ -79,17 +79,17 @@ fun EstimatedIncomeDetailLayout(
                         )
                     }
 
-                    items(estimatedIncomeDetail.data.productStatsList) {
+                    items(productReportSummary.data.productStatsList) {
                         ProductStatsCardView(productStats = it)
                     }
                 }
             }
             is NetworkResult.Fail -> {
                 NestGlobalError(
-                    type = if (estimatedIncomeDetail.error.isNetworkError)
+                    type = if (productReportSummary.error.isNetworkError)
                             NestGlobalErrorType.NoConnection
                         else NestGlobalErrorType.ServerError,
-                    onClickAction = estimatedIncomeDetail.onRetry,
+                    onClickAction = productReportSummary.onRetry,
                 )
             }
             else -> {}
@@ -98,7 +98,7 @@ fun EstimatedIncomeDetailLayout(
 }
 
 @Composable
-private fun EstimatedIncomeDetailContainer(
+private fun ProductReportSummaryContainer(
     isScrollable: Boolean,
     content: LazyListScope.() -> Unit,
 ) {
@@ -113,12 +113,12 @@ private fun EstimatedIncomeDetailContainer(
 
 @Composable
 @Preview
-private fun EstimatedIncomeDetailLayoutPreview() {
+private fun ProductReportSummaryLayoutPreview() {
     NestTheme {
         Surface {
-            EstimatedIncomeDetailLayout(
-                estimatedIncomeDetail = NetworkResult.Success(
-                    EstimatedIncomeDetailUiModel(
+            ProductReportSummaryLayout(
+                productReportSummary = NetworkResult.Success(
+                    ProductReportSummaryUiModel(
                         totalStatsList = listOf(
                             LiveStatsUiModel.EstimatedIncome(value ="Rp5.000.000", clickableIcon = IconUnify.INFORMATION),
                             LiveStatsUiModel.Visit("1"),
@@ -157,11 +157,11 @@ private fun EstimatedIncomeDetailLayoutPreview() {
 
 @Composable
 @Preview
-private fun EstimatedIncomeDetailShimmerPreview() {
+private fun ProductReportSummaryLayoutShimmerPreview() {
     NestTheme {
         Surface {
-            EstimatedIncomeDetailLayout(
-                estimatedIncomeDetail = NetworkResult.Loading,
+            ProductReportSummaryLayout(
+                productReportSummary = NetworkResult.Loading,
                 onEstimatedIncomeClicked = {}
             )
         }
@@ -170,11 +170,11 @@ private fun EstimatedIncomeDetailShimmerPreview() {
 
 @Composable
 @Preview
-private fun EstimatedIncomeDetailErrorPreview() {
+private fun ProductReportSummaryLayoutErrorPreview() {
     NestTheme {
         Surface {
-            EstimatedIncomeDetailLayout(
-                estimatedIncomeDetail = NetworkResult.Fail(Exception()),
+            ProductReportSummaryLayout(
+                productReportSummary = NetworkResult.Fail(Exception()),
                 onEstimatedIncomeClicked = {}
             )
         }
