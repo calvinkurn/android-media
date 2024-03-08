@@ -1505,7 +1505,7 @@ class ShopPageReimagineHeaderFragment :
         shopHeaderViewModel?.getNewShopPageTabData(
             shopId = shopId,
             shopDomain = shopDomain.orEmpty(),
-            isRefresh = isRefresh,
+            isRefresh = true, // Changed to true as in the requirement from ByteIO implementation. Use `isRefresh` if you want to perform caching mechanism to improve PLT for second page visit
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
             tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab,
