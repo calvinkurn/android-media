@@ -6,13 +6,13 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.topads.sdk.utils.TdnHelper
 import com.tokopedia.topads.sdk.widget.TdnBannerView
 
 class ProductTopAdsImageViewHolder(
     val view: View,
-    val listener: DynamicProductDetailListener
+    val listener: ProductDetailListener
 ) : AbstractViewHolder<TopAdsImageDataModel>(view) {
 
     private val topAdsTdnView: TdnBannerView = view.findViewById(R.id.adsTdnView)

@@ -3,14 +3,14 @@ package com.tokopedia.product.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
-import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
+
 /**
  * Created by Yehezkiel on 10/01/21
  * Activity mock for testing, use this if you want to adding new function on activity
@@ -49,20 +49,24 @@ class ProductDetailActivityCommonTest : BaseSimpleActivity(), HasComponent<Produ
         return PRODUCT_DETAIL_TAG
     }
 
-    override fun getNewFragment(): Fragment? = DynamicProductDetailFragment.newInstance(productId, "", "",
-            "", false,
-            trackerAttribution = "",
-            trackerListName = "", affiliateString = "", deeplinkUrl = "", layoutId = "")
+    override fun getNewFragment(): Fragment? = ProductDetailFragment.newInstance(
+        productId, "", "",
+        "", false,
+        trackerAttribution = "",
+        trackerListName = "", affiliateString = "", deeplinkUrl = "", layoutId = ""
+    )
 
     fun getPositionViewHolderByName(name: String): Int {
-        val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragment
+        val fragment =
+            supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as ProductDetailFragment
         return fragment.productAdapter?.currentList?.indexOfFirst {
             it.name() == name
         } ?: 0
     }
 
     fun getAdapterTotalSize(): Int {
-        val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragment
+        val fragment =
+            supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as ProductDetailFragment
         return fragment.productAdapter?.currentList?.size ?: 0
     }
 

@@ -26,6 +26,8 @@ import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 
 class ShopDecorationDialog {
@@ -92,8 +94,8 @@ class ShopDecorationDialog {
     private fun UnifyButton.applyBackground() {
         val drawable = GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
-            cornerRadius = context.resources.getDimension(com.tokopedia.unifycomponents.R.dimen.button_corner_radius)
-            val backgroundColor = ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.buttonunify_ghost_background_color)
+            cornerRadius = context.resources.getDimension(unifycomponentsR.dimen.button_corner_radius)
+            val backgroundColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
             setColor(backgroundColor)
         }
         background = drawable
@@ -112,7 +114,7 @@ class ShopDecorationDialog {
 
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
-                ds.color = MethodChecker.getColor(this@applySpannable.context,com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                ds.color = MethodChecker.getColor(this@applySpannable.context,unifyprinciplesR.color.Unify_GN500)
                 ds.isUnderlineText = false
             }
         }

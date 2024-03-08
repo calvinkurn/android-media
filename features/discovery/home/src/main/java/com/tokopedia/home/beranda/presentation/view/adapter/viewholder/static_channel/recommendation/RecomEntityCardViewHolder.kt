@@ -11,6 +11,7 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import com.tokopedia.home.beranda.domain.ForYouDataMapper.toModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecomEntityCardUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -21,6 +22,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomEntityCardBinding
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
+import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.modeAware
@@ -29,8 +32,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class RecomEntityCardViewHolder(
     view: View,
-    private val listener: Listener
-) : BaseRecommendationForYouViewHolder<RecomEntityCardUiModel>(
+    private val listener: GlobalRecomListener
+) : BaseRecommendationViewHolder<RecomEntityCardUiModel>(
     view,
     RecomEntityCardUiModel::class.java
 ) {
@@ -69,7 +72,7 @@ class RecomEntityCardViewHolder(
 
     private fun setOnCardClickListener(element: RecomEntityCardUiModel) {
         binding.entryPointCard.setOnClickListener {
-            listener.onEntityCardClickListener(element, bindingAdapterPosition)
+            listener.onContentCardClicked(element.toModel(), bindingAdapterPosition)
         }
     }
 
@@ -78,7 +81,7 @@ class RecomEntityCardViewHolder(
             element,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    listener.onEntityCardImpressionListener(element, bindingAdapterPosition)
+                    listener.onContentCardImpressed(element.toModel(), bindingAdapterPosition)
                 }
             }
         )
@@ -192,10 +195,5 @@ class RecomEntityCardViewHolder(
             configureConstraintSet(constraintSet)
             constraintSet.applyTo(it)
         }
-    }
-
-    interface Listener {
-        fun onEntityCardImpressionListener(item: RecomEntityCardUiModel, position: Int)
-        fun onEntityCardClickListener(item: RecomEntityCardUiModel, position: Int)
     }
 }

@@ -51,8 +51,9 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
 
     @Throws(Exception::class)
     override fun renderViewCpmShop(context: Context, cpmModel: CpmModel?, appLink: String, adsClickUrl: String, index: Int) {
-        if (activityIsFinishing(context))
+        if (activityIsFinishing(context)) {
             return
+        }
         val cpmData = cpmModel?.data?.firstOrNull()
         if (template == NO_TEMPLATE && isEligible(cpmData)) {
             View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager_reimagine, this)
@@ -98,6 +99,8 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                     shopAdsProductView.hide()
                     adsBannerShopCardView?.visible()
                     shopAdsWithThreeProducts.hide()
+                    shopAdsWithSingleProductHorizontal.hide()
+                    shopAdsWithSingleProductVertical.hide()
                     container?.setBackgroundResource(0)
                     (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 4.toPx(), 0, 0)
 
@@ -110,6 +113,8 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                     shopAdsProductView.hide()
                     shopAdsWithThreeProducts.hide()
                     adsBannerShopCardView?.gone()
+                    shopAdsWithSingleProductHorizontal.hide()
+                    shopAdsWithSingleProductVertical.hide()
                     list.isNestedScrollingEnabled = false
 
                     val shop_badge = findViewById<ImageView>(R.id.topAdsShopBadge)
@@ -156,7 +161,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                                     productCardModelList[i],
                                     cpmData.cpm.cpmShop.products[i].applinks,
                                     cpmData.cpm.cpmShop.products[i].image.m_url,
-                                    cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl,
+                                    cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl
                                 )
                                 val product = cpmData.cpm.cpmShop.products[i]
                                 model.apply {
@@ -187,6 +192,8 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             list?.gone()
             shopAdsWithThreeProducts.hide()
             topAdsCarousel.show()
+            shopAdsWithSingleProductHorizontal.hide()
+            shopAdsWithSingleProductVertical.hide()
             container?.background = ContextCompat.getDrawable(context, R.drawable.bg_os_gradient)
             setTopAdsCarousel(cpmModel, topAdsCarousel)
         } else if (cpmData.cpm?.layout == LAYOUT_5 && isEligible(cpmData)) {
@@ -195,6 +202,8 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             list?.gone()
             shopAdsProductView.show()
             shopAdsWithThreeProducts.hide()
+            shopAdsWithSingleProductHorizontal.hide()
+            shopAdsWithSingleProductVertical.hide()
             container?.setBackgroundResource(0)
             setShopAdsProduct(cpmModel, shopAdsProductView)
         } else if ((cpmData.cpm?.layout == LAYOUT_8 || cpmData.cpm?.layout == LAYOUT_9) && isEligible(cpmData)) {
@@ -203,9 +212,11 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             shopAdsProductView.hide()
             adsBannerShopCardView?.hide()
             shopAdsWithThreeProducts.show()
+            shopAdsWithSingleProductHorizontal.hide()
+            shopAdsWithSingleProductVertical.hide()
             list?.hide()
             setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerViewClickListener, hasAddProductToCartButton)
-        } else if(cpmData?.cpm?.layout == TopAdsConstants.LAYOUT_10){
+        } else if (cpmData?.cpm?.layout == TopAdsConstants.LAYOUT_10) {
             topAdsCarousel.hide()
             shopDetail?.hide()
             shopAdsProductView.hide()
@@ -215,7 +226,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             shopAdsWithSingleProductHorizontal.show()
             shopAdsWithSingleProductVertical.hide()
             shopAdsWithSingleProductHorizontal.setShopProductModel(getSingleAdsProductModel(cpmData, appLink, adsClickUrl, topAdsBannerViewClickListener, hasAddProductToCartButton))
-        } else if(cpmData?.cpm?.layout == TopAdsConstants.LAYOUT_11){
+        } else if (cpmData?.cpm?.layout == TopAdsConstants.LAYOUT_11) {
             topAdsCarousel.hide()
             shopDetail?.hide()
             shopAdsProductView.hide()
@@ -233,7 +244,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
         appLink: String,
         adsClickUrl: String,
         topAdsBannerClickListener: TopAdsBannerClickListener?,
-        hasAddProductToCartButton: Boolean,
+        hasAddProductToCartButton: Boolean
     ): ShopAdsWithSingleProductModel {
         return ShopAdsWithSingleProductModel(
             isOfficial = cpmData.cpm.cpmShop.isOfficial,
@@ -264,10 +275,11 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
     private fun renderHeaderSeeMore(cpmData: CpmData, appLink: String, adsClickUrl: String) {
         val containerSeeMore = findViewById<View>(R.id.topAdsBtnSeeMore)
         val isApplinkNotEmpty = appLink.isNotEmpty()
-        if (isApplinkNotEmpty)
+        if (isApplinkNotEmpty) {
             showHeaderSeeMore(containerSeeMore, cpmData, appLink, adsClickUrl)
-        else
+        } else {
             containerSeeMore.gone()
+        }
     }
 
     private fun showHeaderSeeMore(btnSeeMore: View, cpmData: CpmData, appLink: String, adsClickUrl: String) {
@@ -319,7 +331,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                     )
                 }
             },
-            null,
+            null
         )
     }
 }

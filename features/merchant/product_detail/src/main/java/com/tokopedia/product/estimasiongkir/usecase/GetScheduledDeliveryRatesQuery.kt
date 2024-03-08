@@ -80,7 +80,7 @@ object GetScheduledDeliveryRatesQuery : GqlQueryInterface {
         uniqueId: String,
         productMetadata: String,
         boMetadata: String,
-        orderValue: Int,
+        orderValue: Double,
         categoryId: String
     ) = mapOf(
         PARAM_ORIGIN to origin,

@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.logisticorder.view.TrackingPageComposeViewModel
 import com.tokopedia.logisticorder.view.TrackingPageViewModel
+import com.tokopedia.logisticorder.view.tipping.TippingDriverViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -22,4 +24,16 @@ abstract class TrackingPageViewModelModule {
     @IntoMap
     @ViewModelKey(TrackingPageViewModel::class)
     internal abstract fun provideTrackingPageViewModel(viewModel: TrackingPageViewModel): ViewModel
+
+    @ActivityScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(TrackingPageComposeViewModel::class)
+    internal abstract fun provideTrackingPageComposeViewModel(viewModel: TrackingPageComposeViewModel): ViewModel
+
+    @ActivityScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(TippingDriverViewModel::class)
+    internal abstract fun provideTippingDriverViewModel(viewModel: TippingDriverViewModel): ViewModel
 }

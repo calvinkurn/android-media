@@ -645,6 +645,23 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4485
+    // Tracker ID: 49899
+    fun sendViewOccBeliPakaiPromoEvent(shopId: String, userId: String, isSuccess: Boolean) {
+        val gtmData = getGtmData(
+            EventName.VIEW_PG_IRIS,
+            EventCategory.ORDER_SUMMARY,
+            EventAction.VIEW_OCC_BELI_PAKAI_PROMO,
+            isSuccess.toString()
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.TRACKER_ID] = TrackerId.VIEW_BELI_OCC_PAKAI_PROMO
+        gtmData[ExtraKey.SHOP_ID] = shopId
+        gtmData[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmData)
+    }
+
     companion object {
         private const val NOT_SUCCESS = "not success"
 

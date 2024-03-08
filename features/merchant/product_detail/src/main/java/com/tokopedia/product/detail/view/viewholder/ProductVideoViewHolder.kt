@@ -3,29 +3,33 @@ package com.tokopedia.product.detail.view.viewholder
 import android.animation.Animator
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import com.google.android.exoplayer2.Player
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.FADE_IN_VIDEO_THUMBNAIL_DURATION
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.HIDE_VALUE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOW_VALUE
 import com.tokopedia.product.detail.databinding.PdpVideoViewHolderBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.widget.ProductExoPlayer
 import com.tokopedia.product.detail.view.widget.VideoStateListener
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.unifycomponents.toPx
 
 /**
  * Created by Yehezkiel on 23/11/20
  */
 class ProductVideoViewHolder(
     val view: View,
-    private val listener: DynamicProductDetailListener?
+    private val listener: ProductDetailListener?
 ) :
 
     AbstractViewHolder<MediaDataModel>(view), ProductVideoReceiver {
@@ -39,6 +43,8 @@ class ProductVideoViewHolder(
     companion object {
         const val VIDEO_TYPE = "video"
         val LAYOUT = R.layout.pdp_video_view_holder
+
+        private val MARGIN_END_ICON_FULL_SCREEN_WHEN_LIVE = 64.toPx()
     }
 
     private val binding = PdpVideoViewHolderBinding.bind(view)
@@ -56,16 +62,27 @@ class ProductVideoViewHolder(
         setThumbnail(data.prefetchResource)
         videoVolume?.setOnClickListener {
             listener?.onVideoVolumeCLicked(mPlayer?.isMute() != true)
-            listener?.getProductVideoCoordinator()?.configureVolume(mPlayer?.isMute() != true, data.id)
+            listener?.getProductVideoCoordinator()
+                ?.configureVolume(mPlayer?.isMute() != true, data.id)
         }
         videoFullScreen?.setOnClickListener {
             listener?.onVideoFullScreenClicked()
+        }
+        setVideoFullScreenMargin(isLive = data.isLive)
+    }
+
+    private fun setVideoFullScreenMargin(isLive: Boolean) {
+        videoFullScreen?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            val end = if (isLive) MARGIN_END_ICON_FULL_SCREEN_WHEN_LIVE else Int.ZERO
+            if (this?.marginEnd != end) {
+                this?.marginEnd = end
+            }
         }
     }
 
     private fun setThumbnail(prefetchResource: Drawable? = null) = with(binding) {
         if (prefetchResource == null) {
-            pdpVideoOverlay.loadImageWithoutPlaceholder(thumbnail)
+            pdpVideoOverlay.loadImageWithoutPlaceholder(thumbnail) {}
         } else {
             pdpVideoOverlay.setImageDrawable(prefetchResource)
         }

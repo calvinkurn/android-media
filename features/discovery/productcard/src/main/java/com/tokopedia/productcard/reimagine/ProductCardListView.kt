@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.experiments.ReimagineListViewStrategy
 import com.tokopedia.video_widget.VideoPlayerController
 
@@ -55,6 +56,10 @@ class ProductCardListView: ConstraintLayout {
 
     fun setAddToCartOnClickListener(onClickListener: OnClickListener) {
         strategy.setAddToCartOnClickListener(onClickListener)
+    }
+
+    fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
+        strategy.setAddToCartNonVariantClickListener(addToCartNonVariantClickListener)
     }
 
     fun recycle() {

@@ -184,7 +184,7 @@ data class RechargeHomepageSections(
         @SerializedName("slashed_price")
         @Expose
         val slashedPrice: String = "",
-    )
+    ): ImpressHolder()
 
     data class Attributes(
         @SerializedName("title_color")
@@ -274,6 +274,10 @@ data class RechargeHomepageSections(
         @SerializedName("app_link")
         @Expose
         val applink: String = "",
+
+        @SerializedName("tracking")
+        @Expose
+        val tracking: List<Tracking> = listOf(),
     )
 }
 

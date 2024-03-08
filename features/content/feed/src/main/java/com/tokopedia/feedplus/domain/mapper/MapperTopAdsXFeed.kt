@@ -148,6 +148,7 @@ object MapperTopAdsXFeed {
         stockSoldPercentage = 0f,
         cartable = true,
         isCashback = product.isProductCashback,
-        cashbackFmt = merchantVouchers.firstOrNull().orEmpty()
+        cashbackFmt = merchantVouchers.firstOrNull().orEmpty(),
+        isHighlight = false, //Product highlight for organic only
     )
 }

@@ -354,7 +354,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tracking_history"
                 app:srcCompat="@drawable/info"
                 tools:ignore="VectorDrawableCompat"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/notification_text"
@@ -373,7 +373,7 @@
                 app:layout_constraintStart_toEndOf="@id/img_info"
                 app:layout_constraintTop_toTopOf="@id/img_info"
                 app:typographyType="body_2"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/notification_help_step"

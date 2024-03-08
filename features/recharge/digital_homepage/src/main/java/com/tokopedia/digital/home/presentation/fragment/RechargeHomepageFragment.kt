@@ -587,8 +587,11 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onClickThreeButton(optionButtons: List<RechargeHomepageSections.OptionButton>) {
-        showTodoWidgetBottomSheet(optionButtons)
+    override fun onClickThreeButton(widget: RechargeHomepageSections.Widgets) {
+        widget.tracking.find { it.action == RechargeHomepageAnalytics.ACTION_CLICK_THREE_DOTS }?.run {
+            rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+        }
+        showTodoWidgetBottomSheet(widget.optionButtons)
     }
 
     private fun showTodoWidgetBottomSheet(optionButtons: List<RechargeHomepageSections.OptionButton>) {
@@ -598,8 +601,17 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         bottomSheet.show(childFragmentManager, "")
     }
 
-    override fun onClickBottomSheetTodoWidget(applink: String) {
-        RouteManager.route(context, applink)
+    override fun onClickBottomSheetTodoWidget(optionButton: RechargeHomepageSections.OptionButton) {
+        RouteManager.route(context, optionButton.applink)
+        optionButton.tracking.find { it.action == RechargeHomepageAnalytics.ACTION_CLICK_BUTTON }?.run {
+            rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+        }
+    }
+
+    override fun onImpressBottomSheetTodoWidget(optionButton: RechargeHomepageSections.OptionButton) {
+        optionButton.tracking.find { it.action == RechargeHomepageAnalytics.ACTION_IMPRESSION_BUTTON }?.run {
+            rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+        }
     }
 
     override fun onCloseItem(widget: RechargeHomepageSections.Widgets) {
@@ -607,6 +619,12 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
         }
         viewModel.closeWidgetDigiPerso(widget.favId, widget.type)
+    }
+
+    override fun onImpressThreeButton(widget: RechargeHomepageSections.Widgets) {
+        widget.tracking.find { it.action == RechargeHomepageAnalytics.ACTION_IMPRESSION_THREE_DOTS }?.run {
+            rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+        }
     }
 
     private fun redirectToSearchByDynamicIconsFragment() {

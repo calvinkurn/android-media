@@ -7,7 +7,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
 import com.tokopedia.product.detail.databinding.ItemRecomViewHolderBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -15,7 +15,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class PdpRecommendationWidgetViewHolder(
     view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : AbstractViewHolder<PdpRecommendationWidgetDataModel>(view) {
 
     companion object {

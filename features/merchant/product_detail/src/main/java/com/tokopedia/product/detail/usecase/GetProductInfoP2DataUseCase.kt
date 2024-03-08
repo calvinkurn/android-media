@@ -61,6 +61,14 @@ class GetProductInfoP2DataUseCase @Inject constructor(
               Message
               DevMessage
             }
+            promoPriceStyle {
+              iconURL
+              productID
+              color
+              background
+              superGraphicURL
+              separatorColor
+            }
             ppGetItemDetailPage{
               program{
                 protectionAvailable
@@ -205,76 +213,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(
                 district_id
                 postal_code
                 geolocation
-              }
-            }
-            installmentRecommendation {
-              data {
-                monthly_price
-                os_monthly_price
-                partner_code
-                subtitle
-              }
-            }
-            installmentCalculation {
-              message
-              data {
-                credit_card {
-                  partner_code
-                  partner_name
-                  partner_icon
-                  partner_url
-                  tnc_id
-                  installment_list {
-                    term
-                    mdr_value
-                    mdr_type
-                    interest_rate
-                    minimum_amount
-                    maximum_amount
-                    monthly_price
-                    os_monthly_price
-                    partner_code
-                    partner_name
-                    partner_icon
-                  }
-                  instruction_list {
-                    order
-                    description
-                    ins_image_url
-                  }
-                }
-                non_credit_card {
-                  partner_code
-                  partner_name
-                  partner_icon
-                  partner_url
-                  tnc_id
-                  installment_list {
-                    term
-                    mdr_value
-                    mdr_type
-                    interest_rate
-                    minimum_amount
-                    maximum_amount
-                    monthly_price
-                    os_monthly_price
-                    partner_code
-                    partner_name
-                    partner_icon
-                  }
-                  instruction_list {
-                    order
-                    description
-                    ins_image_url
-                  }
-                }
-                tnc {
-                  tnc_id
-                  tnc_list {
-                    order
-                    description
-                  }
-                }
               }
             }
             validateTradeIn {

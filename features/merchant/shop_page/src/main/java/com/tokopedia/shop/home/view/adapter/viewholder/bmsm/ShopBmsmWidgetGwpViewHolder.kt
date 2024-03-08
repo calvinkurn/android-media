@@ -16,6 +16,7 @@ import com.tokopedia.shop_widget.buy_more_save_more.util.BmsmWidgetColorThemeCon
 import com.tokopedia.shop_widget.buy_more_save_more.util.ColorType
 import com.tokopedia.unifycomponents.R.*
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShopBmsmWidgetGwpViewHolder(
     itemView: View,
@@ -118,10 +119,10 @@ class ShopBmsmWidgetGwpViewHolder(
                 if (element.header.colorSchema.listColorSchema.isNotEmpty()) {
                     element.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
                 } else {
-                    ContextCompat.getColor(itemView.context, color.Unify_NN950)
+                    ContextCompat.getColor(itemView.context, color.Unify_NN1000)
                 }
             }
-            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(itemView.context, R.color.dms_static_black)
+            BmsmWidgetColorThemeConfig.DEFAULT -> ContextCompat.getColor(itemView.context, color.Unify_NN1000)
         }
 
         return textColor

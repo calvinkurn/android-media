@@ -37,7 +37,8 @@ data class FeedCardProductModel(
     val cartable: Boolean = false,
     val isCashback: Boolean = false,
     val cashbackFmt: String = "",
-    val isAvailable: Boolean = false
+    val isAvailable: Boolean = false,
+    val isHighlight: Boolean,
 )
 
 data class FeedCardProductAffiliate(

@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 
 class SeeMorePdpViewHolder(view: View,
@@ -19,9 +21,18 @@ class SeeMorePdpViewHolder(view: View,
         bannerBackgroundImage.setOnClickListener {
             element.listener.onBannerSeeMoreClicked(applink = element.applink, channel = channels)
         }
-        bannerBackgroundImage.loadImageWithoutPlaceholder(element.backgroundImage)
+        loadImage(element)
         container.setOnClickListener {
             element.listener.onBannerSeeMoreClicked(applink = element.applink, channel = channels)
+        }
+    }
+
+    private fun loadImage(element: SeeMorePdpDataModel) {
+        if(element.backgroundImage.isEmpty()) {
+            bannerBackgroundImage.hide()
+        } else {
+            bannerBackgroundImage.show()
+            bannerBackgroundImage.loadImageWithoutPlaceholder(element.backgroundImage)
         }
     }
 

@@ -7,9 +7,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.ext.toQueryParam
-import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_RECOM_ATC
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.RequestParams
@@ -62,7 +60,7 @@ constructor(
     ): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
-        val reimagineCardVersion = getProductCardReimagineVersion(pageName, hasNewProductCardEnabled)
+        val reimagineCardVersion = getProductCardReimagineVersion(hasNewProductCardEnabled)
         val newQueryParam = try {
             ChooseAddressUtils
                 .getLocalizingAddressData(context)
@@ -132,9 +130,8 @@ constructor(
         return params
     }
 
-    private fun getProductCardReimagineVersion(pageName: String, hasNewProductCardEnabled: Boolean): Int {
-        val isQuantityEditor = pageName.contains(PAGENAME_IDENTIFIER_RECOM_ATC)
-        return if (ProductCardExperiment.isReimagine() && hasNewProductCardEnabled && isQuantityEditor.not()) {
+    private fun getProductCardReimagineVersion(hasNewProductCardEnabled: Boolean): Int {
+        return if (ProductCardExperiment.isReimagine() && hasNewProductCardEnabled) {
             CARD_REIMAGINE_VERSION
         } else {
             CARD_REVERT_VERSION

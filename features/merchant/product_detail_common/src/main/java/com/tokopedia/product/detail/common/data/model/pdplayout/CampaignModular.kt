@@ -100,20 +100,8 @@ data class CampaignModular(
         get() = isActive && (campaignID.toIntOrNull() ?: 0) > 0
 
     fun processMaskingPrice(price: Price) {
-        discPercentageFmt = price.discPercentage.ifNullOrBlank {
-            percentageAmount.percentFormatted()
-        }
-        slashPriceFmt = price.slashPriceFmt.ifNullOrBlank {
-            discountedPrice.getCurrencyFormatted()
-        }
-        priceFmt = price.priceFmt.ifNullOrBlank {
-            originalPrice.getCurrencyFormatted()
-        }
-
-        if (hideGimmick) {
-            priceFmt = price.slashPriceFmt.ifNullOrBlank {
-                discountedPrice.getCurrencyFormatted()
-            }
-        }
+        discPercentageFmt = price.discPercentage
+        slashPriceFmt = price.slashPriceFmt
+        priceFmt = price.priceFmt
     }
 }

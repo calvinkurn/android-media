@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
@@ -19,7 +20,7 @@ import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.kotlin.extensions.view.onTabReselected
 import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
-import java.util.*
+import com.tokopedia.remoteconfig.RemoteConfig
 
 /**
  * Created by henrypriyono on 22/03/18.
@@ -27,6 +28,7 @@ import java.util.*
 
 class HomeRecommendationFeedViewHolder(
     view: View,
+    private val remoteConfig: RemoteConfig,
     private val listener: HomeCategoryListener,
     private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<HomeRecommendationFeedDataModel>(view), HomeTabFeedListener {
@@ -75,7 +77,8 @@ class HomeRecommendationFeedViewHolder(
             this,
             listener.childsFragmentManager,
             recommendationTabDataModelList,
-            listener.parentPool
+            listener.parentPool,
+            remoteConfig
         )
 
         binding.viewPagerHomeFeeds.offscreenPageLimit = DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT
@@ -150,21 +153,18 @@ class HomeRecommendationFeedViewHolder(
     }
 
     override fun onFeedContentScrolled(dy: Int, totalScrollY: Int) {
-        if (isMegaTabEnabled()) return
-        binding.tabLayoutHomeFeeds.adjustTabCollapseOnScrolled(dy, totalScrollY)
+        binding.tabLayoutHomeFeeds.ifVisible { adjustTabCollapseOnScrolled(dy, totalScrollY) }
     }
 
     override fun onFeedContentScrollStateChanged(newState: Int) {
-        if (isMegaTabEnabled()) return
         if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-            binding.tabLayoutHomeFeeds.scrollActiveTabToLeftScreen()
+            binding.tabLayoutHomeFeeds.ifVisible { scrollActiveTabToLeftScreen() }
         } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-            binding.tabLayoutHomeFeeds.snapCollapsingTab()
+            binding.tabLayoutHomeFeeds.ifVisible { snapCollapsingTab() }
         }
     }
 
     fun showFeedTabShadow(show: Boolean?) {
-        if (isMegaTabEnabled()) return
         if (show == true) {
             binding.viewFeedShadow.visibility = View.VISIBLE
         } else {
@@ -173,6 +173,10 @@ class HomeRecommendationFeedViewHolder(
     }
 
     private fun isMegaTabEnabled() = HomeRollenceController.isMegaTabEnabled
+
+    private inline fun <T : CollapsingTabLayout> T.ifVisible(invoke: T.() -> Unit) {
+        if (visibility == View.VISIBLE && isMegaTabEnabled()) invoke()
+    }
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.home_recommendation_feed_viewholder

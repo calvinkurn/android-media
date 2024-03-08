@@ -99,7 +99,6 @@
         android:text="@string/buy_again_label"
         android:visibility="gone"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
@@ -108,5 +107,17 @@
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost"
         tools:visibility="visible" />
+
+    <ViewStub
+        android:id="@+id/layout_bom_detail_product_bundle_add_on"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:inflatedId="@+id/layout_bom_detail_product_bundle_add_on"
+        android:layout="@layout/partial_add_on_summary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_item_bom_detail_bundling_action" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

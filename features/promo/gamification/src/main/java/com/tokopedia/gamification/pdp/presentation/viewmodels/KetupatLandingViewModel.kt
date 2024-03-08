@@ -67,11 +67,9 @@ class KetupatLandingViewModel @Inject constructor(
     ) {
         launchCatchError(
             block = {
-
                 this.landingPageRefreshCallback = landingPageRefreshCallback
                 val landingPageMainData =
                     async { ketupatLandingUseCase.getScratchCardLandingPage(slug) }
-
 
                 landingPageMainData.await().apply {
                     val code = this.gamiGetScratchCardLandingPage.resultStatus?.code
@@ -89,23 +87,22 @@ class KetupatLandingViewModel @Inject constructor(
                                 it
                             ).getString("eventSlug")
                         }.toString()
-                    this.gamiGetScratchCardLandingPage.sections.find { it?.type == "benefit-coupon" }?.jsonParameter.apply {
+                    this.gamiGetScratchCardLandingPage.sections.find { it?.type == "benefit-coupon" }?.jsonParameter?.apply {
                         benefitCouponRequest = BenefitCouponRequest(
-                            categoryIDCoupon = JSONObject(this.toString()).getLong("categoryIDCoupon"),
-                            categoryID = JSONObject(this.toString()).getLong("categoryID"),
-                            limit = JSONObject(this.toString()).getLong("limit"),
-                            page = JSONObject(this.toString()).getLong("page"),
-                            serviceID = "marketplace"
+                            categoryIDCoupon = JSONObject(this).getLong("categoryIDCoupon"),
+                            categoryID = JSONObject(this).getLong("categoryID"),
+                            limit = JSONObject(this).getLong("limit"),
+                            page = JSONObject(this).getLong("page"),
+                            serviceID = ""
                         )
                     }
-                    this.gamiGetScratchCardLandingPage.sections.find { it?.type == "benefit-coupon-slug" }?.jsonParameter.apply {
+                    this.gamiGetScratchCardLandingPage.sections.find { it?.type == "benefit-coupon-slug" }?.jsonParameter?.apply {
                         catalogSlugJSON =
-                            JSONObject(this.toString()).get("catalogSlugs") as JSONArray
+                            JSONObject(this).get("catalogSlugs") as JSONArray
                         for (i in 0 until catalogSlugJSON?.length().orZero()) {
                             slugList.add(catalogSlugJSON?.get(i).toString())
                         }
                     }
-
                 }
 
                 val benefitCouponDataAPI =
@@ -149,9 +146,9 @@ class KetupatLandingViewModel @Inject constructor(
         data: KetupatLandingPageData.GamiGetScratchCardLandingPage
     ): ArrayList<Visitable<KetupatLandingTypeFactory>>? {
         val tempList: ArrayList<Visitable<KetupatLandingTypeFactory>> = ArrayList()
-        if(data.sections.isNotEmpty()){
-            for(sectionItem in data.sections){
-                when(sectionItem?.type){
+        if (data.sections.isNotEmpty()) {
+            for (sectionItem in data.sections) {
+                when (sectionItem?.type) {
                     HEADER_TYPE -> {
                         sectionItem.let {
                             tempList.add(KetupatTopBannerVHModel(it, data.scratchCard))
@@ -159,11 +156,12 @@ class KetupatLandingViewModel @Inject constructor(
                     }
                     CRACK_TYPE -> {
                         sectionItem.let {
-                            tempList.add(KetupatCrackBannerVHModel(
-                                it,
-                                data.scratchCard,
-                                landingPageRefreshCallback
-                            )
+                            tempList.add(
+                                KetupatCrackBannerVHModel(
+                                    it,
+                                    data.scratchCard,
+                                    landingPageRefreshCallback
+                                )
                             )
                         }
                     }
@@ -173,7 +171,8 @@ class KetupatLandingViewModel @Inject constructor(
                                 tempList.add(
                                     KetupatBenefitCouponVHModel(
                                         it,
-                                        data.scratchCard, benefitCouponData.value
+                                        data.scratchCard,
+                                        benefitCouponData.value
                                     )
                                 )
                             }
@@ -206,7 +205,8 @@ class KetupatLandingViewModel @Inject constructor(
                                     tempList.add(
                                         KetupatReferralBannerVHModel(
                                             it,
-                                            referralTimeData, data.scratchCard
+                                            referralTimeData,
+                                            data.scratchCard
                                         )
                                     )
                                 }
@@ -228,5 +228,4 @@ class KetupatLandingViewModel @Inject constructor(
 
     fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<KetupatLandingTypeFactory>>> =
         ketaupatLandingDataList
-
 }

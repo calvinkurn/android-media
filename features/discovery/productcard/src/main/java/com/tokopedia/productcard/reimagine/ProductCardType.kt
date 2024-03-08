@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.reimagine
 
 import androidx.constraintlayout.widget.ConstraintSet
+import com.tokopedia.productcard.reimagine.cart.AddToCartConstraints
 import com.tokopedia.productcard.reimagine.ribbon.RibbonView
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.productcard.R as productcardR

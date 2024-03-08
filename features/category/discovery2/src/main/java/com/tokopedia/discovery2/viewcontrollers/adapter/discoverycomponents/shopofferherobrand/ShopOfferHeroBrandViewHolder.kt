@@ -106,7 +106,6 @@ class ShopOfferHeroBrandViewHolder(
         itemView.findViewById<ShapeableImageView>(R.id.siv_shadow_shop_icon)
     private val layoutShopIcon = itemView.findViewById<ConstraintLayout>(R.id.layout_shop_icon)
     private val sivShopBadge = itemView.findViewById<ShapeableImageView>(R.id.siv_shop_badge)
-    private val layoutShopInfo = itemView.findViewById<ConstraintLayout>(R.id.layout_shop_info)
     private val sivSeeAll = itemView.findViewById<ShapeableImageView>(R.id.siv_see_all)
     private val headerSpace = itemView.findViewById<Space>(R.id.header_space)
     private val progressBar = itemView.findViewById<CardView>(R.id.progress_bar)

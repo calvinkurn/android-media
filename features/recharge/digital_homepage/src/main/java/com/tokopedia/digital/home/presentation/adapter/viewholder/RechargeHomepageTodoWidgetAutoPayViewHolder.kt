@@ -16,6 +16,7 @@ import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.CATEGO
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.POSTPAIDREMINDER_TYPE
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageConst.PREPAIDREMINDER_TYPE
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -244,9 +245,14 @@ class RechargeHomepageTodoWidgetAutoPayViewHolder(
         binding: ViewRechargeHomeTodoWidgetAutopayBinding
     ) {
         with(binding) {
+            iconThreeButtonTodoWidget.addOnImpressionListener(
+                widget
+            ){
+               todoWidgetListener.onImpressThreeButton(widget)
+            }
             iconThreeButtonTodoWidget.show()
             iconThreeButtonTodoWidget.setOnClickListener {
-                todoWidgetListener.onClickThreeButton(widget.optionButtons)
+                todoWidgetListener.onClickThreeButton(widget)
             }
 
             btnMainTodoWidget.apply {

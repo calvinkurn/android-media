@@ -9,10 +9,10 @@ import com.tokopedia.tokopedianow.common.model.MediaItemUiModel
 import com.tokopedia.tokopedianow.common.util.NumberFormatter.formatFloatToString
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.common.util.VariantUtil.isVariant
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
 import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeProductResponse
-import com.tokopedia.tokopedianow.recipedetail.constant.MediaType
 import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeResponse
+import com.tokopedia.tokopedianow.recipecommon.ui.model.TagUiModel
+import com.tokopedia.tokopedianow.recipedetail.constant.MediaType
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientTabUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.InstructionTabUiModel
@@ -79,7 +79,7 @@ object RecipeDetailMapper {
             val productList = itemList.filterIsInstance<RecipeProductUiModel>()
 
             productList.forEach {
-                if(it.id !in miniCartProductIds) {
+                if (it.id !in miniCartProductIds) {
                     val product = it.copy(quantity = PRODUCT_DEFAULT_QTY)
                     val index = itemList.indexOf(it)
                     itemList[index] = product
@@ -101,7 +101,7 @@ object RecipeDetailMapper {
             MediaItemUiModel(
                 url = media.url,
                 thumbnailUrl = media.url,
-                type = if(media.type == MEDIA_TYPE_IMAGE) {
+                type = if (media.type == MEDIA_TYPE_IMAGE) {
                     MediaType.IMAGE
                 } else {
                     MediaType.VIDEO
@@ -169,7 +169,7 @@ object RecipeDetailMapper {
         }
 
         val ingredientTabItems = mutableListOf<Visitable<*>>().apply {
-            if(isOutOfCoverage) {
+            if (isOutOfCoverage) {
                 add(OutOfCoverageUiModel)
             } else {
                 addAll(products)

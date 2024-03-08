@@ -9,7 +9,10 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.di.DaggerOrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageModule
+import com.tokopedia.purchase_platform.common.constant.ARGS_LIST_AUTO_APPLY_PROMO
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.telemetry.ITelemetryActivity
+import java.util.ArrayList
 import javax.inject.Inject
 
 open class OrderSummaryPageActivity :
@@ -21,11 +24,13 @@ open class OrderSummaryPageActivity :
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
 
     override fun getNewFragment(): Fragment? {
+        val listAutoApplyPromo: ArrayList<PromoExternalAutoApply> = intent?.getParcelableArrayListExtra(ARGS_LIST_AUTO_APPLY_PROMO) ?: arrayListOf()
         return OrderSummaryPageFragment.newInstance(
             intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_PRODUCT_ID),
             intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_GATEWAY_CODE),
             intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_TENURE_TYPE),
-            intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_SOURCE)
+            intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_SOURCE),
+            listAutoApplyPromo
         )
     }
 

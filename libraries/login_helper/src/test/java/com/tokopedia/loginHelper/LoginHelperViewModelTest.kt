@@ -31,11 +31,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
-import io.mockk.runs
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -254,7 +252,7 @@ class LoginHelperViewModelTest {
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
         coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
-        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+        coEvery { loginTokenV2UseCase(any()) } returns responseToken
 
         viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
@@ -279,7 +277,7 @@ class LoginHelperViewModelTest {
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
         coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
-        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+        coEvery { loginTokenV2UseCase(any()) } returns responseToken
 
         viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, false))
 
@@ -307,7 +305,7 @@ class LoginHelperViewModelTest {
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
         coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
-        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+        coEvery { loginTokenV2UseCase(any()) } returns responseToken
 
         viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
@@ -333,7 +331,7 @@ class LoginHelperViewModelTest {
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
         coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
-        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+        coEvery { loginTokenV2UseCase(any()) } returns responseToken
 
         viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
@@ -361,7 +359,7 @@ class LoginHelperViewModelTest {
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
         coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
-        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+        coEvery { loginTokenV2UseCase(any()) } returns responseToken
 
         viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
@@ -386,7 +384,7 @@ class LoginHelperViewModelTest {
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
         coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
-        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+        coEvery { loginTokenV2UseCase(any()) } returns responseToken
 
         viewModel.processEvent(LoginHelperEvent.LoginUser(mockEmail, mockPassword, true))
 
@@ -460,22 +458,5 @@ class LoginHelperViewModelTest {
         )
         val result = viewModel.uiState.value.dataSourceType
         assertEquals(result, LoginHelperDataSourceType.LOCAL)
-    }
-
-    @Test
-    fun `onCleared success`() {
-        every {
-            getProfileUseCase.unsubscribe()
-        } just runs
-        every {
-            loginTokenV2UseCase.cancelJobs()
-        } just runs
-
-        val method = viewModel::class.java.getDeclaredMethod("onCleared")
-        method.isAccessible = true
-        method.invoke(viewModel)
-
-        verify { getProfileUseCase.unsubscribe() }
-        verify { loginTokenV2UseCase.cancelJobs() }
     }
 }

@@ -27,15 +27,9 @@ data class Price(
 
     fun updatePrice(variantChild: VariantChild?) = copy(
         value = variantChild?.price.orZero(),
-        priceFmt = variantChild?.priceFmt.ifNullOrBlank {
-            variantChild?.finalPrice?.getCurrencyFormatted().orEmpty()
-        },
-        slashPriceFmt = variantChild?.slashPriceFmt.ifNullOrBlank {
-            variantChild?.finalMainPrice?.getCurrencyFormatted().orEmpty()
-        },
-        discPercentage = variantChild?.discPercentage.ifNullOrBlank {
-            variantChild?.campaign?.discountedPercentage?.percentFormatted().orEmpty()
-        },
+        priceFmt = variantChild?.priceFmt.orEmpty(),
+        slashPriceFmt = variantChild?.slashPriceFmt.orEmpty(),
+        discPercentage = variantChild?.discPercentage.orEmpty(),
         isPriceMasked = variantChild?.isPriceMasked.orFalse()
     )
 

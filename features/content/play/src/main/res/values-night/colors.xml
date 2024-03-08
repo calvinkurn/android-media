@@ -10,4 +10,6 @@
 
     <color name="play_dms_text_social_proof">#AEB2BF</color>
 
+    <color name="play_dms_coupon_color">@color/Unify_NN50</color>
+
 </resources>

@@ -16,7 +16,6 @@ internal interface IReimagineGridViewStrategy {
 }
 
 internal interface IGridViewStrategy {
-    fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) { }
     fun setSimilarProductClickListener(similarProductClickListener: (View) -> Unit) { }
     fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) { }
     fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) { }
@@ -54,4 +53,5 @@ internal interface ProductCardStrategy:
     fun setOnLongClickListener(l: View.OnLongClickListener?) { }
     fun setThreeDotsOnClickListener(l: View.OnClickListener?) { }
     fun getVideoPlayerController(): VideoPlayerController = VideoPlayerController.empty()
+    fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener)
 }

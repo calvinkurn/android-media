@@ -1,7 +1,7 @@
 package com.tokopedia.loginregister.registerinitial.registeremail
 
 import com.tokopedia.loginregister.common.ViewIdGenerator
-import com.tokopedia.loginregister.registerinitial.RegisterEmailBase
+import com.tokopedia.loginregister.registerinitial.base.RegisterEmailBase
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.utils.view.binding.internal.findRootView
 import org.junit.Test

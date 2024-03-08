@@ -11,12 +11,13 @@ import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.ItemDynamicOneLinerBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 
 class DynamicOneLinerViewHolder(
     view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : ProductDetailPageViewHolder<DynamicOneLinerDataModel>(view) {
 
     companion object {
@@ -33,7 +34,7 @@ class DynamicOneLinerViewHolder(
         when (status) {
             STATUS_SHOW -> {
                 itemView.setLayoutHeight(LayoutParams.WRAP_CONTENT)
-                renderContent(this, getComponentTrackData(element))
+                renderContent(this, element.name, getComponentTrackData(element))
                 impressComponent(element)
             }
 
@@ -45,6 +46,7 @@ class DynamicOneLinerViewHolder(
 
     private fun renderContent(
         data: DynamicOneLinerDataModel.Data,
+        name: String,
         componentTrackDataModel: ComponentTrackDataModel
     ) = with(binding) {
         configPadding(binding, data)
@@ -60,13 +62,32 @@ class DynamicOneLinerViewHolder(
         }
 
         val url = data.applink
-        dynamicOneLinerIconRight.showIfWithBlock(url.isNotEmpty()) {
-            itemView.setOnClickListener {
-                listener.onClickDynamicOneLiner(data.text, componentTrackDataModel)
-                listener.goToApplink(url)
-            }
+        val showClickArea = url.isNotEmpty() ||
+            name == ProductDetailConstant.PRODUCT_DYNAMIC_ONELINER_PROMO
 
-            val chainStyle = when (data.chevronPos) {
+        setupChevronRight(
+            showClickArea = showClickArea,
+            chevronPos = data.chevronPos
+        )
+
+        setupClick(
+            url = url,
+            showClickArea = showClickArea,
+            text = data.text,
+            componentTrackDataModel = componentTrackDataModel
+        )
+        dynamicOneLinerSeparatorTop.showWithCondition(data.shouldShowSeparatorTop)
+        dynamicOneLinerSeparatorBottom.showWithCondition(data.shouldShowSeparatorBottom)
+    }
+
+    private fun setupChevronRight(
+        showClickArea: Boolean,
+        chevronPos: String
+    ) = with(binding) {
+        dynamicOneLinerIconRight.showIfWithBlock(
+            showClickArea
+        ) {
+            val chainStyle = when (chevronPos) {
                 CHEVRON_POS_FOLLOW -> ConstraintSet.CHAIN_PACKED
                 CHEVRON_POS_END -> ConstraintSet.CHAIN_SPREAD_INSIDE
                 else -> null
@@ -80,9 +101,21 @@ class DynamicOneLinerViewHolder(
                 constraintSet.applyTo(dynamicOneLinerContent)
             }
         }
+    }
 
-        dynamicOneLinerSeparatorTop.showWithCondition(data.shouldShowSeparatorTop)
-        dynamicOneLinerSeparatorBottom.showWithCondition(data.shouldShowSeparatorBottom)
+    private fun setupClick(
+        url: String,
+        text: String,
+        showClickArea: Boolean,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        if (showClickArea) {
+            itemView.setOnClickListener {
+                listener.onClickDynamicOneLiner(text, url, componentTrackDataModel)
+            }
+        } else {
+            itemView.setOnClickListener(null)
+        }
     }
 
     private fun configPadding(

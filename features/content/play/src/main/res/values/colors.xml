@@ -53,4 +53,6 @@
     <color name="play_dms_glare_center">#AAffffff</color>
     <color name="play_dms_glare_end">#00ffffff</color>
 
+    <color name="play_dms_coupon_color">@color/Unify_NN0</color>
+
 </resources>

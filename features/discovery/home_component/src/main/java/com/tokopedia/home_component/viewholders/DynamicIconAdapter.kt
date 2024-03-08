@@ -10,30 +10,36 @@ import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 /**
  * Created by dhaba
  */
-class DynamicIconAdapter(private val listener: DynamicIconComponentListener) : RecyclerView.Adapter<DynamicIconBigItemViewHolder>() {
+class DynamicIconAdapter(private val listener: DynamicIconComponentListener) : RecyclerView.Adapter<DynamicIconItemViewHolder>() {
     private val iconList = mutableListOf<DynamicIconComponent.DynamicIcon>()
     private var position: Int = 0
     private var isCache: Boolean = false
     private var isScrollable = false
     private var type: DynamicIconComponentDataModel.Type = DynamicIconComponentDataModel.Type.BIG
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconBigItemViewHolder {
-        val layout = if(this.type == DynamicIconComponentDataModel.Type.SMALL) {
-            DynamicIconSmallItemViewHolder.LAYOUT
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconItemViewHolder {
+        return if(this.type == DynamicIconComponentDataModel.Type.SMALL) {
+            DynamicIconSmallItemViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    DynamicIconSmallItemViewHolder.LAYOUT,
+                    parent,
+                    false
+                ),
+                listener,
+            )
         } else {
-            DynamicIconBigItemViewHolder.LAYOUT
+            DynamicIconBigItemViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    DynamicIconBigItemViewHolder.LAYOUT,
+                    parent,
+                    false
+                ),
+                listener,
+            )
         }
-        return DynamicIconBigItemViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                layout,
-                parent,
-                false
-            ),
-            listener,
-        )
     }
 
-    override fun onBindViewHolder(holder: DynamicIconBigItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DynamicIconItemViewHolder, position: Int) {
         iconList.getOrNull(position)?.let {
             holder.bind(it, isScrollable, this.position, isCache)
         }

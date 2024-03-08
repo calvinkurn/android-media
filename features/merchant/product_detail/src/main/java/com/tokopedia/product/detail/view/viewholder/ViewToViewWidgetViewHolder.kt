@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewWidgetBasicListener
@@ -13,7 +13,7 @@ import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewWi
 
 class ViewToViewWidgetViewHolder(
     view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: ProductDetailListener
 ) : AbstractViewHolder<ViewToViewWidgetDataModel>(view),
     ViewToViewWidgetBasicListener {
 

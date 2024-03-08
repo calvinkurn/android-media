@@ -11,6 +11,7 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopBadgeUiModel
 
 /**
  * Created by nathan on 2/6/18.
@@ -40,6 +41,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var freeOngkirPromoIcon: String? = null
     var isCarousel = false
     var labelGroupList: List<LabelGroupUiModel> = listOf()
+    var shopBadgeList: List<ShopBadgeUiModel> = emptyList()
     var stockLabel: String = ""
     var hideGimmick: Boolean = false
     var stockSoldPercentage: Int = 0

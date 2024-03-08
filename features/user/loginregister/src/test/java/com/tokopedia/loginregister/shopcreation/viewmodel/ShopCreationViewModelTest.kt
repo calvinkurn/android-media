@@ -5,8 +5,8 @@ import androidx.lifecycle.Observer
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.loginregister.FileUtil
 import com.tokopedia.loginregister.shopcreation.data.GetUserProfileCompletionPojo
-import com.tokopedia.loginregister.shopcreation.data.RegisterCheckData
-import com.tokopedia.loginregister.shopcreation.data.RegisterCheckPojo
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.common.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.data.ShopInfoPojo
 import com.tokopedia.loginregister.shopcreation.data.UserProfileCompletionData
@@ -15,7 +15,7 @@ import com.tokopedia.loginregister.shopcreation.data.UserProfileUpdatePojo
 import com.tokopedia.loginregister.shopcreation.data.UserProfileValidate
 import com.tokopedia.loginregister.shopcreation.data.UserProfileValidatePojo
 import com.tokopedia.loginregister.shopcreation.domain.GetUserProfileCompletionUseCase
-import com.tokopedia.loginregister.shopcreation.domain.RegisterCheckUseCase
+import com.tokopedia.loginregister.common.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ShopInfoUseCase
 import com.tokopedia.loginregister.shopcreation.domain.UpdateUserProfileUseCase
 import com.tokopedia.loginregister.shopcreation.domain.ValidateUserProfileUseCase
@@ -45,7 +45,6 @@ import org.hamcrest.MatcherAssert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Subscriber
 
 /**
  * Created by Ade Fulki on 18/01/21.
@@ -115,15 +114,15 @@ class ShopCreationViewModelTest {
     fun before() {
         MockKAnnotations.init(this)
         viewmodel = ShopCreationViewModel(
-                registerUseCase,
-                registerCheckUseCase,
-                getUserProfileCompletionUseCase,
-                validateUserProfileUseCase,
-                updateUserProfileUseCase,
-                getProfileUseCase,
-                shopInfoUseCase,
-                userSession,
-                CoroutineTestDispatchersProvider
+            registerUseCase,
+            registerCheckUseCase,
+            getUserProfileCompletionUseCase,
+            validateUserProfileUseCase,
+            updateUserProfileUseCase,
+            getProfileUseCase,
+            shopInfoUseCase,
+            userSession,
+            CoroutineTestDispatchersProvider
         )
     }
 
@@ -231,7 +230,6 @@ class ShopCreationViewModelTest {
         MatcherAssert.assertThat((viewmodel.addPhoneResponse.value as Fail).throwable, CoreMatchers.instanceOf(RuntimeException::class.java))
     }
 
-
     @Test
     fun `Failed add phone`() {
         viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
@@ -326,11 +324,7 @@ class ShopCreationViewModelTest {
 
         viewmodel.registerPhoneAndName.observeForever(registerPhoneAndNameObserver)
 
-        every { graphqlResponse.getData<RegisterPojo>(any()) } returns successRegisterPhoneAndNameResponse
-
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onNext(graphqlResponse)
-        }
+        coEvery { registerUseCase(any()) } returns successRegisterPhoneAndNameResponse
 
         viewmodel.registerPhoneAndName("", "")
 
@@ -349,9 +343,7 @@ class ShopCreationViewModelTest {
 
         every { graphqlResponse.getData<RegisterPojo>(any()) } returns successRegisterPhoneAndNameResponse
 
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onNext(graphqlResponse)
-        }
+        coEvery { registerUseCase(any()) } returns successRegisterPhoneAndNameResponse
 
         viewmodel.registerPhoneAndName("", "")
 
@@ -371,9 +363,7 @@ class ShopCreationViewModelTest {
 
         every { graphqlResponse.getData<RegisterPojo>(any()) } returns successRegisterPhoneAndNameResponse
 
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onNext(graphqlResponse)
-        }
+        coEvery { registerUseCase(any()) } returns successRegisterPhoneAndNameResponse
 
         viewmodel.registerPhoneAndName("", "")
 
@@ -384,9 +374,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Failed register phone and name`() {
         viewmodel.registerPhoneAndName.observeForever(registerPhoneAndNameObserver)
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onError(throwable)
-        }
+        coEvery { registerUseCase(any()) } throws throwable
 
         viewmodel.registerPhoneAndName("", "")
 
@@ -395,18 +383,6 @@ class ShopCreationViewModelTest {
 
         val result = viewmodel.registerPhoneAndName.value as Fail
         assertEquals(throwable, result.throwable)
-    }
-
-    @Test
-    fun `on complete register phone and name`() {
-        viewmodel.registerPhoneAndName.observeForever(registerPhoneAndNameObserver)
-        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
-            secondArg<Subscriber<GraphqlResponse>>().onCompleted()
-        }
-
-        viewmodel.registerPhoneAndName("", "")
-
-        verify(exactly = 0) { registerPhoneAndNameObserver.onChanged(any<Fail>()) }
     }
 
     @Test
@@ -503,45 +479,44 @@ class ShopCreationViewModelTest {
     fun `clear background task`() {
         viewmodel.clearBackgroundTask()
         verify {
-            registerUseCase.unsubscribe()
             getProfileUseCase.unsubscribe()
         }
     }
 
     companion object {
         private val successAddNameResponse: UserProfileUpdatePojo = FileUtil.parse(
-                "/success_add_name_response.json",
-                UserProfileUpdatePojo::class.java
+            "/success_add_name_response.json",
+            UserProfileUpdatePojo::class.java
         )
         private val successAddPhoneResponse: UserProfileUpdatePojo = FileUtil.parse(
-                "/success_add_phone_response.json",
-                UserProfileUpdatePojo::class.java
+            "/success_add_phone_response.json",
+            UserProfileUpdatePojo::class.java
         )
         private val successRegisterCheckResponse: RegisterCheckPojo = FileUtil.parse(
-                "/success_register_check_response.json",
-                RegisterCheckPojo::class.java
+            "/success_register_check_response.json",
+            RegisterCheckPojo::class.java
         )
         private val successGetShopInfoResponse: ShopInfoPojo = FileUtil.parse(
-                "/success_get_shop_info_response.json",
-                ShopInfoPojo::class.java
+            "/success_get_shop_info_response.json",
+            ShopInfoPojo::class.java
         )
         private val successGetUserProfileResponse: GetUserProfileCompletionPojo = FileUtil.parse(
-                "/success_get_user_profile_response.json",
-                GetUserProfileCompletionPojo::class.java
+            "/success_get_user_profile_response.json",
+            GetUserProfileCompletionPojo::class.java
         )
         private val successValidateUserProfileResponse: UserProfileValidatePojo = FileUtil.parse(
-                "/success_validate_user_profile_response.json",
-                UserProfileValidatePojo::class.java
+            "/success_validate_user_profile_response.json",
+            UserProfileValidatePojo::class.java
         )
         private val successGetUserInfoResponse: ProfilePojo = FileUtil.parse(
-                "/success_get_user_info_response.json",
-                ProfilePojo::class.java
+            "/success_get_user_info_response.json",
+            ProfilePojo::class.java
         )
         private val successRegisterPhoneAndNameResponse: RegisterPojo = FileUtil.parse(
-                "/success_register_phone_and_name_response.json",
-                RegisterPojo::class.java
+            "/success_register_phone_and_name_response.json",
+            RegisterPojo::class.java
         )
-        private val throwable = Throwable()
+        private val throwable = Exception()
         private val errors = listOf("errors")
     }
 }
