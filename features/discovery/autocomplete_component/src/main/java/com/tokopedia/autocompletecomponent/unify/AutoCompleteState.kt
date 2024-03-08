@@ -1,7 +1,14 @@
 package com.tokopedia.autocompletecomponent.unify
 
 import com.tokopedia.autocompletecomponent.unify.domain.model.SuggestionUnify
+import com.tokopedia.autocompletecomponent.unify.domain.model.SuggestionUnifyFlag
 import com.tokopedia.autocompletecomponent.unify.domain.model.UniverseSuggestionUnifyModel
+import com.tokopedia.autocompletecomponent.util.AUTOCOMPLETE_UNIFY_BADGE_OFFICIAL_STORE
+import com.tokopedia.autocompletecomponent.util.AUTOCOMPLETE_UNIFY_BADGE_OFFICIAL_STORE_FLAG
+import com.tokopedia.autocompletecomponent.util.AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT
+import com.tokopedia.autocompletecomponent.util.AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_FLAG
+import com.tokopedia.autocompletecomponent.util.AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_PRO
+import com.tokopedia.autocompletecomponent.util.AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_PRO_FLAG
 import com.tokopedia.autocompletecomponent.util.AutoCompleteNavigate
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -55,10 +62,14 @@ data class AutoCompleteState(
         val mappedResultList = resultData.data.map {
             val domainModel =
                 if (it.isAds && adsModel != null) {
+                    val cpmBadgeUrl = getAdsBadgeUrlForHeadline(
+                        adsModel.cpm.badges.getOrNull(0)?.title ?: "",
+                        it.flags,
+                    )
                     it.copy(
                         applink = adsModel.applinks,
                         image = it.image.copy(
-                            iconImageUrl = adsModel.cpm.badges.getOrNull(0)?.imageUrl ?: "",
+                            iconImageUrl = cpmBadgeUrl,
                             imageUrl = adsModel.cpm.cpmImage.fullUrl
                         ),
                         template = "master",
@@ -86,6 +97,27 @@ data class AutoCompleteState(
             )
         }
         return copy(resultList = mappedResultList)
+    }
+
+    private fun getAdsBadgeUrlForHeadline(
+        headlineAdsBadgeTitle: String,
+        autoCompleteFlag:  List<SuggestionUnifyFlag>
+    ): String {
+        return when (headlineAdsBadgeTitle) {
+            AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT ->
+                (autoCompleteFlag.find {
+                    it.name == AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_FLAG
+                }?.value) ?: ""
+            AUTOCOMPLETE_UNIFY_BADGE_OFFICIAL_STORE ->
+                (autoCompleteFlag.find {
+                    it.name == AUTOCOMPLETE_UNIFY_BADGE_OFFICIAL_STORE_FLAG
+                }?.value) ?: ""
+            AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_PRO ->
+                (autoCompleteFlag.find {
+                    it.name == AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_PRO_FLAG
+                }?.value) ?: ""
+            else -> ""
+        }
     }
 
     fun updateResultList(resultList: List<AutoCompleteUnifyDataView>) =

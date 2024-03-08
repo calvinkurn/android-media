@@ -24,3 +24,10 @@ internal val EXCLUDED_NAV_SOURCE = listOf(
     "tokonow",
 )
 
+internal const val AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT = "Power Merchant"
+internal const val AUTOCOMPLETE_UNIFY_BADGE_OFFICIAL_STORE = "Official Store"
+internal const val AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_PRO = "Power Merchant Pro"
+internal const val AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_FLAG = "shop_tier_icon:1"
+internal const val AUTOCOMPLETE_UNIFY_BADGE_OFFICIAL_STORE_FLAG= "shop_tier_icon:2"
+internal const val AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_PRO_FLAG = "shop_tier_icon:3"
+
