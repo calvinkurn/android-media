@@ -56,6 +56,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.net.URLDecoder
 import javax.inject.Inject
 
 class ShareExViewModel @Inject constructor(
@@ -185,7 +186,7 @@ class ShareExViewModel @Inject constructor(
             title = defaultShareProperties.title,
             uiModelList = uiResult,
             bottomSheetModel = defaultShareProperties,
-            chipPosition = 0, // default
+            chipPosition = 0 // default
         )
     }
 
@@ -354,22 +355,23 @@ class ShareExViewModel @Inject constructor(
     ): String {
         val utmSource = ShareExConstants.ShortLinkValue.SOURCE
         val uri = Uri.parse(url)
-        val newUri = Uri.Builder()
+        val newUriBuilder = Uri.Builder()
 
         // Only set scheme, authority, and path if they are not null
-        uri.scheme?.let { newUri.scheme(it) }
-        uri.authority?.let { newUri.authority(it) }
-        uri.path?.let { newUri.path(it) }
+        uri.scheme?.let { newUriBuilder.scheme(it) }
+        uri.authority?.let { newUriBuilder.authority(it) }
+        uri.path?.let { newUriBuilder.path(it) }
 
         if (!uri.query.isNullOrEmpty()) {
-            newUri.appendQueryParameter(ShareExConstants.UTM.SOURCE_KEY, utmSource)
-            newUri.appendQueryParameter(ShareExConstants.UTM.MEDIUM_KEY, channelEnum.label)
-            newUri.appendQueryParameter(ShareExConstants.UTM.CAMPAIGN_KEY, campaign)
+            newUriBuilder.appendQueryParameter(ShareExConstants.UTM.SOURCE_KEY, utmSource)
+            newUriBuilder.appendQueryParameter(ShareExConstants.UTM.MEDIUM_KEY, channelEnum.label)
+            newUriBuilder.appendQueryParameter(ShareExConstants.UTM.CAMPAIGN_KEY, campaign)
         } else {
             val query = "${ShareExConstants.UTM.SOURCE_KEY}=$utmSource&${ShareExConstants.UTM.MEDIUM_KEY}=${channelEnum.label}&${ShareExConstants.UTM.CAMPAIGN_KEY}=$campaign"
-            newUri.query(query)
+            newUriBuilder.query(query)
         }
-        return newUri.build().toString()
+        val newUri = newUriBuilder.build().toString()
+        return URLDecoder.decode(newUri, "UTF-8")
     }
 
     private fun generateShortLinkRequest(
