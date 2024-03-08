@@ -378,13 +378,14 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun handleUIClick(view: View) {
-        if(isEligibleToTrack()) {
-            dataItem?.let {
+        dataItem?.let {
+            if (it.isEligibleToTrack()) {
                 AppLogRecommendation.sendProductClickAppLog(
                     it.asProductTrackModel(productCardName)
                 )
             }
         }
+
         masterProductCardItemViewModel?.sendTopAdsClick()
         var applink = dataItem?.applinks ?: ""
         if ((fragment as DiscoveryFragment).isAffiliateInitialized) {
@@ -423,14 +424,14 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun trackShowProductCard(dataItem: DataItem) {
         masterProductCardGridView?.addOnImpression1pxListener(dataItem.appLogImpressHolder) {
-            if(isEligibleToTrack()) {
+            if (dataItem.isEligibleToTrack()) {
                 AppLogRecommendation.sendProductShowAppLog(
                     dataItem.asProductTrackModel(productCardName)
                 )
             }
         }
         masterProductCardListView?.addOnImpression1pxListener(dataItem.appLogImpressHolder) {
-            if(isEligibleToTrack()) {
+            if (dataItem.isEligibleToTrack()) {
                 AppLogRecommendation.sendProductShowAppLog(
                     dataItem.asProductTrackModel(productCardName)
                 )
@@ -521,6 +522,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     override fun isEligibleToTrack(): Boolean {
-        return dataItem?.isEligibleToTrack().orFalse()
+        return dataItem?.isEligibleToTrack().orFalse() && masterProductCardItemViewModel?.getTemplateType() != LIST
     }
 }
