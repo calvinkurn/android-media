@@ -27,7 +27,6 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
     private val sharePropertiesQuery = ShareExGetSharePropertiesQuery()
     override suspend fun getData(params: ShareExBottomSheetRequest): Flow<ShareExResult<ShareExBottomSheetModel>> {
         return flow {
-            throw Throwable()
             val request = getRequest(params)
             val dto = repository.request<ShareExBottomSheetWrapperRequest, ShareExWrapperResponseDto>(
                 sharePropertiesQuery,
