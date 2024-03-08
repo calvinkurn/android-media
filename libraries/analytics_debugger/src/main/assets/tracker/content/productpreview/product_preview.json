@@ -135,18 +135,6 @@
     },
     {
       "event": "clickContent",
-      "eventAction": "click - variant bottomsheet atc entry point",
-      "eventCategory": "product detail page - unified content viewing",
-      "eventLabel": "(Produk|Ulasan) - .*",
-      "trackerId": "49607",
-      "businessUnit": "content",
-      "currentSite": "tokopediamarketplace",
-      "productId": ".*",
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
-      "event": "clickContent",
       "eventAction": "click - laporkan ulasan",
       "eventCategory": "product detail page - unified content viewing",
       "eventLabel": ".* - .*",

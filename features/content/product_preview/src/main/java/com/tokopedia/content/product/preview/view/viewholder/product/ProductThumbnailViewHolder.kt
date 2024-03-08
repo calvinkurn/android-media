@@ -2,7 +2,6 @@ package com.tokopedia.content.product.preview.view.viewholder.product
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.databinding.ItemProductThumbnailBinding
@@ -13,25 +12,15 @@ import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUi
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 
-internal class ProductThumbnailViewHolder(
+class ProductThumbnailViewHolder(
     private val binding: ItemProductThumbnailBinding,
     private val listener: ProductThumbnailListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(data: ProductMediaUiModel) {
-        binding.ivReviewMediaImage.loadImage(data.thumbnailUrl)
-        if (data.selected) {
-            binding.viewSelected.background = ContextCompat.getDrawable(
-                binding.root.context,
-                R.drawable.product_thumbnail_selected_box
-            )
-        } else {
-            binding.viewSelected.background = ContextCompat.getDrawable(
-                binding.root.context,
-                R.drawable.product_thumbnail_unselected_box
-            )
-        }
+        bindSelected(data.selected)
 
+        binding.ivReviewMediaImage.loadImage(data.thumbnailUrl)
         binding.textVideoDuration.apply {
             showWithCondition(
                 data.type == MediaType.Video && data.videoTotalDuration != 0L
@@ -41,6 +30,13 @@ internal class ProductThumbnailViewHolder(
         binding.root.setOnClickListener {
             listener.onClickProductThumbnail(bindingAdapterPosition)
         }
+    }
+
+    fun bindSelected(isSelected: Boolean) {
+        binding.viewSelected.setBackgroundResource(
+            if (isSelected) R.drawable.product_thumbnail_selected_box
+            else R.drawable.product_thumbnail_unselected_box
+        )
     }
 
     companion object {
