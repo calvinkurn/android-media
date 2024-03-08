@@ -33,6 +33,12 @@
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toEndOf="@id/txt_anim_label" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupLiveIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="liveBadgeView, liveThumbnailView" />
+
     <com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveBadgeView
         android:id="@+id/liveBadgeView"
         android:layout_width="wrap_content"
@@ -41,4 +47,13 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.tokopedia.play.widget.liveindicator.ui.PlayWidgetLiveThumbnailView
+        android:id="@+id/liveThumbnailView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@id/liveBadgeView"
+        app:layout_constraintEnd_toEndOf="@id/liveBadgeView"
+        app:layout_constraintStart_toStartOf="@id/liveBadgeView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

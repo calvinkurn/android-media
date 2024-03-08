@@ -7,10 +7,13 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnClickListener
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.widget.liveindicator.analytic.PlayWidgetLiveIndicatorAnalytic
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
@@ -22,6 +25,7 @@ import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.media.model.LiveIndicatorUiModel
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Created by Yehezkiel on 23/11/20
@@ -77,7 +81,7 @@ class VideoPictureView @JvmOverloads constructor(
         updateMediaLabel(position = pagerSelectedLastPosition)
         setupRecommendationLabel(recommendation = recommendation)
         setupRecommendationLabelListener(position = pagerSelectedLastPosition)
-        setupLiveIndicatorAnalytic()
+        setupLiveIndicator()
         shouldShowLiveIndicatorXOverlayRecomm(position = pagerSelectedLastPosition)
         renderVideoOnceAtPosition(position = initialScrollPosition)
 
@@ -249,20 +253,45 @@ class VideoPictureView @JvmOverloads constructor(
         }
     }
 
-    private fun setupLiveIndicatorAnalytic() = with(binding.liveBadgeView) {
+    private fun setupLiveIndicator() {
+        setupLiveIndicatorEvent()
+        setupLiveIndicatorAnalytic()
+    }
+
+    private fun setupLiveIndicatorAnalytic() = with(binding) {
         val p1 = mListener?.getProductInfo() ?: return
-
-        setAnalyticModel(
-            model = PlayWidgetLiveIndicatorAnalytic.Model(
-                channelId = liveIndicator.channelID,
-                productId = p1.basic.productID,
-                shopId = p1.basic.shopID
-            )
+        val liveIndicatorAnalyticModel = PlayWidgetLiveIndicatorAnalytic.Model(
+            channelId = liveIndicator.channelID,
+            productId = p1.basic.productID,
+            shopId = p1.basic.shopID
         )
+        liveBadgeView.setAnalyticModel(model = liveIndicatorAnalyticModel)
+        liveThumbnailView.setAnalyticModel(model = liveIndicatorAnalyticModel)
+    }
 
-        setOnClickListener {
-            mListener?.goToApplink(url = liveIndicator.appLink)
+    private val liveThumbnailOnAttachListener by lazyThreadSafetyNone {
+        object : OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(view: View) {
+                binding.liveThumbnailView.playUrl(
+                    liveIndicator.mediaUrl,
+                    50.seconds
+                )
+            }
+
+            override fun onViewDetachedFromWindow(view: View) {
+                binding.liveThumbnailView.stopPlayer()
+            }
         }
+    }
+
+    private fun setupLiveIndicatorEvent() = with(binding) {
+        // set event click
+        val onClick = OnClickListener { mListener?.goToApplink(url = liveIndicator.appLink) }
+        liveBadgeView.setOnClickListener(onClick)
+        liveThumbnailView.setOnClickListener(onClick)
+
+        liveThumbnailView.removeOnAttachStateChangeListener(liveThumbnailOnAttachListener)
+        liveThumbnailView.addOnAttachStateChangeListener(liveThumbnailOnAttachListener)
     }
 
     private fun shouldShowLiveIndicatorXOverlayRecomm(position: Int) = with(binding) {
@@ -271,18 +300,18 @@ class VideoPictureView @JvmOverloads constructor(
 
         when {
             isLive -> {
-                binding.liveBadgeView.show()
+                binding.groupLiveIndicator.show()
                 binding.txtAnimLabelRecommendation.hideView()
             }
 
             isPictureType -> {
                 binding.txtAnimLabelRecommendation.showView()
-                binding.liveBadgeView.hide()
+                binding.groupLiveIndicator.hide()
             }
 
             else -> {
                 binding.txtAnimLabelRecommendation.hideView()
-                binding.liveBadgeView.hide()
+                binding.groupLiveIndicator.hide()
             }
         }
     }
