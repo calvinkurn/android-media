@@ -71,10 +71,10 @@ class ExplicitPersonalizeViewModel @Inject constructor(
             block = {
                 val isActivated = getRolloutUserVariantUseCase(listOf(ABTEST_KEY_EXPLICIT_PERSONALIZE))
 
-                if (isActivated.rolloutUserVariant.featureVariants.first().variant != ABTEST_VARIANT_EXPLICIT_PERSONALIZE) {
-                    _stateGetQuestion.value = ExplicitPersonalizeResult.Failed
-                    return@launchCatchError
-                }
+//                if (isActivated.rolloutUserVariant.featureVariants.first().variant != ABTEST_VARIANT_EXPLICIT_PERSONALIZE) {
+//                    _stateGetQuestion.value = ExplicitPersonalizeResult.Failed
+//                    return@launchCatchError
+//                }
 
                 val template = getQuestionsUseCase(GetQuestionsUseCase.QuestionParams(templateName = CATEGORY_PREFERENCE))
                     .explicitProfileQuestionDataModel.template

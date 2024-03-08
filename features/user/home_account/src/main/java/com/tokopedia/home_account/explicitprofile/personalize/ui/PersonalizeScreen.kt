@@ -18,7 +18,8 @@ fun PersonalizeScreen(
     counterState: LiveData<Int>,
     onSave: () -> Unit,
     onOptionSelected: (OptionSelected) -> Unit,
-    onSkip: () -> Unit
+    onSkip: () -> Unit,
+    onSuccessSaveAnswer: () -> Unit
 ) {
     val uiStateObserver by uiState.observeAsState(initial = ExplicitPersonalizeResult.Loading)
     val counterStateObserver by counterState.observeAsState(initial = 10)
@@ -27,25 +28,29 @@ fun PersonalizeScreen(
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            when (val state = uiStateObserver) {
-                is ExplicitPersonalizeResult.Loading -> {
-                    LoadingScreen()
+            if (saveAnswerStateObserver is PersonalizeSaveAnswerResult.Success) {
+                SuccessScreen()
+                onSuccessSaveAnswer.invoke()
+            } else {
+                when (val state = uiStateObserver) {
+                    is ExplicitPersonalizeResult.Loading -> {
+                        LoadingScreen()
+                    }
+                    is ExplicitPersonalizeResult.Success -> {
+                        PersonalizeQuestionScreen(
+                            listQuestion = state.listQuestion,
+                            countItemSelected = counterStateObserver,
+                            maxItemSelected = state.maxItemSelected,
+                            minItemSelected = state.minItemSelected,
+                            onSave = { onSave.invoke() },
+                            onSkip = { onSkip.invoke() },
+                            onOptionSelected = { onOptionSelected(it) },
+                            isLoadingSaveAnswer = saveAnswerStateObserver is PersonalizeSaveAnswerResult.Loading
+                        )
+                    }
+                    else -> {}
                 }
-                is ExplicitPersonalizeResult.Success -> {
-                    PersonalizeQuestionScreen(
-                        listQuestion = state.listQuestion,
-                        countItemSelected = counterStateObserver,
-                        maxItemSelected = state.maxItemSelected,
-                        minItemSelected = state.minItemSelected,
-                        onSave = { onSave.invoke() },
-                        onSkip = { onSkip.invoke() },
-                        onOptionSelected = { onOptionSelected(it) },
-                        isLoadingSaveAnswer = saveAnswerStateObserver is PersonalizeSaveAnswerResult.Loading
-                    )
-                }
-                else -> {}
             }
-
         }
     }
 }
