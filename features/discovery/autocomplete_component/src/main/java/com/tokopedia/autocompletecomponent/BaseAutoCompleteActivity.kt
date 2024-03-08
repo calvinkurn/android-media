@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.DEFAULT_SEARCH_KEYWORD
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.NORMAL_SEARCH
 import com.tokopedia.applink.ApplinkConst
@@ -92,6 +93,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 open class BaseAutoCompleteActivity :
     BaseActivity(),
@@ -261,7 +263,7 @@ open class BaseAutoCompleteActivity :
             addFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             statusBarColor = ContextCompat.getColor(
                 this@BaseAutoCompleteActivity,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                unifyprinciplesR.color.Unify_NN0
             )
         }
     }
@@ -496,6 +498,8 @@ open class BaseAutoCompleteActivity :
 
         if (getQueryOrHint(searchParameterCopy).isEmpty()) return true
 
+        sendTrackingByteIOTrendingWords(searchParameterCopy)
+
         val searchResultApplink = createSearchResultApplink(searchParameterCopy)
 
         sendTrackingSubmitQuery(searchParameterCopy, searchResultApplink)
@@ -509,6 +513,11 @@ open class BaseAutoCompleteActivity :
         val query = searchParameter.getSearchQuery()
 
         return query.ifEmpty { searchParameter[HINT] ?: "" }
+    }
+
+    private fun sendTrackingByteIOTrendingWords(searchParameter: Map<String, String>) {
+        if (searchParameter[SearchApiConst.Q].isNullOrEmpty()) // Enter with placeholder
+            AppLogSearch.eventTrendingWordsClick()
     }
 
     private fun getTrackingQueryOrHint(searchParameter: Map<String, String>): String {

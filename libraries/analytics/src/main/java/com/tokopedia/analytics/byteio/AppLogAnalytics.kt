@@ -310,6 +310,14 @@ object AppLogAnalytics {
         return null
     }
 
+    fun getDataBeforeCurrent(key: String): Any? {
+        if (_pageDataList.isEmpty()) return null
+        val idx = _pageDataList.lastIndex - 1
+
+        return if (idx >= 0) _pageDataList[idx][key]
+        else null
+    }
+
     fun clearAllPageData() {
         _pageDataList.clear()
     }
