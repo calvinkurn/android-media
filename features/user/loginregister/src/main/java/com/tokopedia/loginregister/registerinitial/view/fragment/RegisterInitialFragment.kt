@@ -1391,7 +1391,11 @@ class RegisterInitialFragment :
 
             TkpdFirebaseAnalytics.getInstance(it).setUserId(userSession.userId)
 
-            goToExplicitPersonalize()
+            if (GlobalConfig.isSellerApp()) {
+                finishSuccessResult()
+            } else {
+                goToExplicitPersonalize()
+            }
             saveFirstInstallTime()
 
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
