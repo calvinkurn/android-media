@@ -11,5 +11,5 @@ interface ReviewInteractionListener {
     fun onLike(isDoubleTap: Boolean)
     fun updateReviewWatchMode()
 
-    fun onShareClicked(item: ReviewContentUiModel)
+    fun onShareClicked(item: ReviewContentUiModel, selectedMediaId: String)
 }

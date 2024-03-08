@@ -51,6 +51,10 @@ import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
+import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
+import com.tokopedia.shareexperience.ui.util.ShareExInitializer
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -127,6 +131,8 @@ class ReviewFragment @Inject constructor(
         if (loginStatus) viewModel.onAction(ProductPreviewAction.LikeFromResult)
     }
 
+    private var shareExInitializer: ShareExInitializer? = null
+
     override fun getScreenName() = REVIEW_FRAGMENT_TAG
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,6 +157,7 @@ class ReviewFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeReviewMainData()
+        initializeShareEx()
 
         setupView()
 
@@ -357,8 +364,19 @@ class ReviewFragment @Inject constructor(
         viewModel.onAction(ProductPreviewAction.ToggleReviewWatchMode)
     }
 
-    override fun onShareClicked(item: ReviewContentUiModel) {
-        //TODO("Not yet implemented")
+    override fun onShareClicked(item: ReviewContentUiModel, selectedMediaId: String) {
+        shareExInitializer?.openShareBottomSheet(
+            bottomSheetArg = ShareExBottomSheetArg.Builder(
+                pageTypeEnum = ShareExPageTypeEnum.REVIEW,
+                defaultUrl = "",
+                trackerArg = ShareExTrackerArg(
+                    utmCampaign = ""
+                )
+            )
+                .withReviewId(item.reviewId)
+                .withAttachmentId(selectedMediaId)
+                .build()
+        )
     }
 
     /**
@@ -372,6 +390,12 @@ class ReviewFragment @Inject constructor(
     private fun getCurrentPosition(): Int {
         return (binding.rvReview.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition()
             ?: RecyclerView.NO_POSITION
+    }
+
+    private fun initializeShareEx() {
+        context?.let {
+            shareExInitializer = ShareExInitializer(it)
+        }
     }
 
     companion object {

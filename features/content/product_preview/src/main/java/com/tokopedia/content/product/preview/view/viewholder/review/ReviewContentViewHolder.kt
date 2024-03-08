@@ -335,7 +335,11 @@ class ReviewContentViewHolder(
             reviewInteractionListener.onMenuClicked()
         }
         binding.ivReviewShare.setOnClickListener {
-            reviewInteractionListener.onShareClicked(item)
+            reviewInteractionListener.onShareClicked(
+                item = item,
+                selectedMediaId = item.medias.getOrNull(getContentCurrentPosition())?.mediaId
+                    ?: item.medias.firstOrNull()?.mediaId.orEmpty()
+            )
         }
     }
 
