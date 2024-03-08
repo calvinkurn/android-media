@@ -10,13 +10,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst.INTERNAL_CONTENT_DETAIL
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.util.WindowWidthSizeClass
 import com.tokopedia.content.common.util.calculateWindowSizeClass
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.UserFeedPostImpressCoordinator
@@ -30,6 +30,7 @@ import com.tokopedia.people.views.adapter.UserFeedPostsBaseAdapter
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_CONTENT
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_EMPTY
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_ERROR
+import com.tokopedia.people.views.fragment.base.UserProfileTabFragment
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.PostUiModel
@@ -43,7 +44,7 @@ class UserProfileFeedFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
     private val userProfileTracker: UserProfileTracker,
     private val impressCoordinator: UserFeedPostImpressCoordinator,
-) : TkpdBaseV4Fragment(), UserFeedPostsBaseAdapter.FeedPostsCallback {
+) : UserProfileTabFragment(), UserFeedPostsBaseAdapter.FeedPostsCallback {
 
     private var nextCursor: String = ""
 
@@ -92,7 +93,8 @@ class UserProfileFeedFragment @Inject constructor(
         initObserver()
         setupFeedsPosts()
 
-        fetchFeedsPosts()
+        if (!isParentFragmentConfigChanges())
+            fetchFeedsPosts()
     }
 
     override fun onPause() {

@@ -78,6 +78,7 @@ import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment.Comp
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileBadgeBottomSheet
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileOptionBottomSheet
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileReviewOnboardingBottomSheet
+import com.tokopedia.people.views.fragment.contract.UserProfileFragmentContract
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
@@ -125,7 +126,8 @@ class UserProfileFragment @Inject constructor(
     ScreenShotListener,
     PermissionListener,
     ShopRecomWidgetCallback,
-    FeedPlusContainerListener {
+    FeedPlusContainerListener,
+    UserProfileFragmentContract {
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenShotDetector: ScreenshotDetector? = null
@@ -133,6 +135,7 @@ class UserProfileFragment @Inject constructor(
     private var shouldRefreshRecyclerView: Boolean = false
     private var isViewMoreClickedBio: Boolean = false
     private var fabCreated: Boolean = false
+    private var isConfigChanges: Boolean = false
 
     private var _binding: UpFragmentUserProfileBinding? = null
 
@@ -181,6 +184,7 @@ class UserProfileFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isConfigChanges = savedInstanceState != null
         setupAttachChildFragmentListener()
     }
 
@@ -213,8 +217,10 @@ class UserProfileFragment @Inject constructor(
             refreshLandingPageData(true)
         }
 
-        refreshLandingPageData(true)
-        mainBinding.userPostContainer.displayedChild = PAGE_LOADING
+        if (!isConfigChanges) {
+            refreshLandingPageData(true)
+            mainBinding.userPostContainer.displayedChild = PAGE_LOADING
+        }
 
         mainBinding.appBarUserProfile.addOnOffsetChangedListener { _, verticalOffset ->
             shouldRefreshRecyclerView = verticalOffset == 0
@@ -262,6 +268,9 @@ class UserProfileFragment @Inject constructor(
 
         _binding = null
     }
+
+    override val isParentConfigChanges: Boolean
+        get() = isConfigChanges
 
     private fun setupAttachChildFragmentListener() {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->

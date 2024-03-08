@@ -13,13 +13,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
 import com.tokopedia.content.common.util.WindowWidthSizeClass
+import com.tokopedia.content.common.util.calculateWindowSizeClass
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.UserVideoPostImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
@@ -37,6 +38,7 @@ import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_ER
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_LOADING
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.REQUEST_CODE_LOGIN_TO_SET_REMINDER
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.REQUEST_CODE_PLAY_ROOM
+import com.tokopedia.people.views.fragment.base.UserProfileTabFragment
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
@@ -52,15 +54,13 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.content.common.util.calculateWindowSizeClass
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 
 class UserProfileVideoFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
     private val userSession: UserSessionInterface,
     private val userProfileTracker: UserProfileTracker,
     private val impressCoordinator: UserVideoPostImpressCoordinator,
-) : TkpdBaseV4Fragment() {
+) : UserProfileTabFragment() {
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         GridLayoutManager(
@@ -177,7 +177,8 @@ class UserProfileVideoFragment @Inject constructor(
         initObserver()
         setupPlayVideo()
 
-        submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
+        if (!isParentFragmentConfigChanges())
+            submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
     }
 
     override fun onPause() {
