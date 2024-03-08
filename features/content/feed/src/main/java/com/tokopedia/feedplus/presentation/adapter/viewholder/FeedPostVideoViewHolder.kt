@@ -6,6 +6,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import androidx.annotation.LayoutRes
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.content.common.ui.custom.player.ContentPlayerControl
@@ -38,6 +42,7 @@ import com.tokopedia.feedplus.presentation.uiview.*
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -76,7 +81,6 @@ class FeedPostVideoViewHolder(
         listener,
         captionViewListener
     )
-    private val productTagView = FeedProductTagView(binding.productTagView, listener)
     private val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
@@ -90,6 +94,8 @@ class FeedPostVideoViewHolder(
 
     private var trackerDataModel: FeedTrackerDataModel? = null
 
+    private var isSelected by mutableStateOf(false)
+
     private val opacityViewList = listOf(
         binding.layoutAuthorInfo.root,
         binding.tvFeedCaption,
@@ -101,7 +107,7 @@ class FeedPostVideoViewHolder(
         binding.overlayBottom.root,
         binding.overlayRight.root,
         binding.btnDisableClearMode,
-        binding.productTagView.root,
+        binding.productTagView.rootView,
         binding.productTagButton.root,
         binding.rvFeedAsgcTags,
         binding.feedCampaignRibbon.root
@@ -204,6 +210,8 @@ class FeedPostVideoViewHolder(
         binding.playerFeedVideo.videoSurfaceView?.setOnTouchListener { _, motionEvent ->
             postGestureDetector.onTouchEvent(motionEvent)
         }
+
+        binding.productTagView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindowOrReleasedFromPool)
     }
 
     fun bind(item: FeedContentAdapter.Item) {
@@ -231,6 +239,7 @@ class FeedPostVideoViewHolder(
                 bindCampaignRibbon(data)
                 bindComments(data)
                 bindVideoPlayer(data)
+                bindProductLabel(data)
 
                 val trackerData =
                     trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(data)
@@ -265,7 +274,11 @@ class FeedPostVideoViewHolder(
             val newPayloads = mutableListOf<Any>().apply {
                 addAll(payloads)
                 if (feedPayloads.payloads.contains(FEED_POST_SELECTED_CHANGED)) add(selectedPayload)
-                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) add(scrollingPayload)
+                if (feedPayloads.payloads.contains(FEED_POST_SCROLLING_CHANGED)) {
+                    add(
+                        scrollingPayload
+                    )
+                }
             }
             bind(item.data as FeedCardVideoContentModel, newPayloads)
         }
@@ -373,19 +386,6 @@ class FeedPostVideoViewHolder(
     }
 
     private fun bindProductTag(data: FeedCardVideoContentModel) {
-        productTagView.bindData(
-            postId = data.id,
-            author = data.author,
-            postType = data.typename,
-            isFollowing = data.followers.isFollowed,
-            campaign = data.campaign,
-            products = data.products,
-            totalProducts = data.totalProducts,
-            trackerData = trackerDataModel,
-            positionInFeed = absoluteAdapterPosition,
-            topAdsTrackerData = null
-        )
-
         productButtonView.bindData(
             postId = data.id,
             author = data.author,
@@ -501,7 +501,7 @@ class FeedPostVideoViewHolder(
             btnDisableClearMode.showWithCondition(showDisableClearMode)
         }
 
-        productTagView.showClearView()
+        binding.productTagView.rootView.gone()
         productButtonView.showClearView()
     }
 
@@ -514,14 +514,14 @@ class FeedPostVideoViewHolder(
             menuButton.show()
             shareButton.show()
             productTagButton.root.show()
-            productTagView.root.show()
+            productTagView.rootView.show()
             overlayTop.root.show()
             overlayBottom.root.show()
             overlayRight.root.show()
             btnDisableClearMode.hide()
         }
 
-        productTagView.showIfPossible()
+        binding.productTagView.rootView.show()
         productButtonView.showIfPossible()
     }
 
@@ -535,6 +535,7 @@ class FeedPostVideoViewHolder(
     }
 
     private fun onSelected(element: FeedCardVideoContentModel) {
+        isSelected = true
         mIsSelected = true
         val trackerModel =
             trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(element)
@@ -560,6 +561,7 @@ class FeedPostVideoViewHolder(
         campaignView.resetView()
         hideClearView()
         productButtonView.pauseProductIconAnimation()
+        isSelected = false
     }
 
     override fun onViewRecycled() {
@@ -570,6 +572,48 @@ class FeedPostVideoViewHolder(
         binding.playerFeedVideo.player = null
         binding.playerControl.player = null
         thePlayer?.let { listener.detachPlayer(it) }
+    }
+
+    private fun bindProductLabel(element: FeedCardVideoContentModel) {
+        val trackerModel =
+            trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(element)
+        binding.productTagView.setContent {
+            ProductTagItems(
+                isFocused = isSelected,
+                products = element.products,
+                totalProducts = element.totalProducts,
+                key = element.id,
+                onAtcClick = {
+                    listener.addToCartHighlight(it, element.campaign, absoluteAdapterPosition)
+                },
+                onProductLabelClick = {
+                    listener.onProductTagViewClicked(
+                        element.id,
+                        element.author,
+                        element.type,
+                        element.followers.isFollowed,
+                        element.campaign,
+                        element.hasVoucher,
+                        element.products,
+                        element.totalProducts,
+                        trackerModel,
+                        absoluteAdapterPosition
+                    )
+                },
+                onProductClick = {
+                    listener.onHighlightClick(
+                        it,
+                        absoluteAdapterPosition
+                    )
+                },
+                impressHighlight = {
+                    listener.impressHighlightCard(it, trackerDataModel)
+                },
+                onProductHighlightClose = {
+                    listener.onHighlightClose(trackerDataModel)
+                }
+            )
+        }
     }
 
     companion object {
