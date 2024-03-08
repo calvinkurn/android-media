@@ -115,8 +115,8 @@ class ProductPreviewFragment @Inject constructor(
 
     private var coachMarkJob: Job? = null
 
-    private val hasCoachMark : Boolean get() =
-        when(val source = productPreviewSource.source) {
+    private val hasCoachMark: Boolean get() =
+        when (val source = productPreviewSource.source) {
             is ProductPreviewSourceModel.ProductSourceData -> source.hasReviewMedia
             is ProductPreviewSourceModel.ReviewSourceData -> false
             else -> false
@@ -262,9 +262,11 @@ class ProductPreviewFragment @Inject constructor(
                         Toaster.build(
                             requireView().rootView,
                             text = getString(event.type.textRes),
-                            actionText = if (isAtc) { getString(
+                            actionText = if (isAtc) {
+                                getString(
                                     contentproductpreviewR.string.bottom_atc_success_click_toaster
-                                ) } else { "" },
+                                )
+                            } else { "" },
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 if (isAtc) viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))
@@ -340,7 +342,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun handleCoachMark() {
-        if(hasCoachMark && !viewModel.hasVisit) {
+        if (hasCoachMark && !viewModel.hasVisit) {
             coachMarkJob?.cancel()
             coachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
                 delay(DELAY_COACH_MARK)
