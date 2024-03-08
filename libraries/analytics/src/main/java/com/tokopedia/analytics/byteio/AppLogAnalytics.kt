@@ -148,7 +148,7 @@ object AppLogAnalytics {
         val data = JSONObject().also {
             it.addEntranceForm()
             it.addSourcePageType()
-        }
+        }.toString()
         put(ENTRANCE_INFO, data)
     }
 
