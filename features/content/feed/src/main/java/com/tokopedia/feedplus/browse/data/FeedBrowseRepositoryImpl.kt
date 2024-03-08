@@ -7,20 +7,15 @@ import com.tokopedia.content.common.usecase.GetPlayWidgetSlotUseCase
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
 import com.tokopedia.feedplus.browse.data.model.StoryGroupsModel
-import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.domain.usecase.GetContentWidgetRecommendationUseCase
-import com.tokopedia.feedplus.presentation.model.type.AuthorType
-import com.tokopedia.kotlin.extensions.view.isEven
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.stories.internal.storage.StoriesSeenStorage
 import com.tokopedia.stories.internal.usecase.StoriesGroupsUseCase
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
 /**
  * Created by meyta.taliti on 11/08/23.
@@ -129,7 +124,7 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                 source = source,
                 sourceID = "",
                 entryPoint = "browse-page",
-                cursor = cursor,
+                cursor = cursor
             )
         )
 

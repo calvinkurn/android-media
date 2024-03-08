@@ -10,7 +10,7 @@ import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.StoryWidget
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.LoadingModel
 
 internal class StoriesAdapter(
-    private val storyListener: StoryWidgetViewHolder.Item.Listener,
+    private val storyListener: StoryWidgetViewHolder.Item.Listener
 ) : ListAdapter<Any, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
@@ -55,11 +55,13 @@ internal class StoriesAdapter(
     }
 
     fun setLoading() {
-        submitList(List(6) { LoadingModel })
+        submitList(List(PLACEHOLDER_AMOUNT) { LoadingModel })
     }
 
     companion object {
         private const val TYPE_LOADING = 0
         private const val TYPE_STORY = 1
+
+        private const val PLACEHOLDER_AMOUNT = 6
     }
 }
