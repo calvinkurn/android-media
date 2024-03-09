@@ -6,15 +6,11 @@ import android.graphics.Point
 import android.view.View
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.tokopedia.kotlin.extensions.view.getLocationOnScreen
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.kotlin.extensions.view.getStatusBarHeight
 import com.tokopedia.product.detail.databinding.ProductDetailFragmentBinding
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.AnimatedImageAnchor
 import com.tokopedia.unifycomponents.toPx
-import kotlin.math.roundToInt
 
 class AtcAnimationManager(
     val mediator: PdpComponentCallbackMediator
@@ -56,18 +52,14 @@ class AtcAnimationManager(
             post {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
-                val initialImageCenterCoordinate = getInitialImageCoordinate()
                 val targetViewCenterCoordinate = getTargetCenterPosition(target, 2)
                 setContent {
                     resetLaunchEffect = !resetLaunchEffect
 
-                    val x = targetViewCenterCoordinate.x - initialImageCenterCoordinate.x
-                    val y = initialImageCenterCoordinate.y - targetViewCenterCoordinate.y
-
                     AnimatedImageAnchor(
                         resetLaunchEffect = resetLaunchEffect,
-                        xTarget = x,
-                        yTarget = -y,
+                        xTarget = targetViewCenterCoordinate.x,
+                        yTarget = targetViewCenterCoordinate.y,
                         image = image,
                         onFinishAnimated = {
                             viewModel.onFinishAnimation()
@@ -76,12 +68,6 @@ class AtcAnimationManager(
                 }
             }
         }
-    }
-
-    private fun getInitialImageCoordinate(): Point {
-        val centerX = getScreenWidth() * 0.5
-        val centerY = getScreenHeight() * 0.4 + context!!.getStatusBarHeight()
-        return Point(centerX.roundToInt(), centerY.roundToInt())
     }
 
     private fun getTargetCenterPosition(
