@@ -24,7 +24,6 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import coil.compose.rememberAsyncImagePainter
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -101,7 +100,6 @@ fun AnimatedImageAnchor(
                 .offset {
                     IntOffset(xAnimatable.value.roundToInt(), yAnimatable.value.roundToInt())
                 }
-                .zIndex(20f)
                 .graphicsLayer {
                     scaleX = scaleAnimatable.value
                     scaleY = scaleAnimatable.value
