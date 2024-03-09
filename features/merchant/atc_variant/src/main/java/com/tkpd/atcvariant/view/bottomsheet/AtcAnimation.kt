@@ -8,6 +8,7 @@ import android.content.Context
 import android.graphics.Point
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.view.animation.PathInterpolator
 import android.widget.ImageView
@@ -18,11 +19,13 @@ import androidx.fragment.app.Fragment
 import com.tkpd.atcvariant.databinding.AtcAnimationLayoutBinding
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getLocationOnScreen
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.getStatusBarHeight
 import com.tokopedia.kotlin.extensions.view.half
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.third
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.UnifyMotion
@@ -35,10 +38,11 @@ class AtcAnimation(private val context: Context) {
 
     companion object {
         private val STROKE_WIDTH = 4.toPx()
-        private val RADIUS_DEFAULT = 24.toPx().toFloat()
+        private val RADIUS_DEFAULT = 24f.toPx()
         private val TARGET_RADIUS = RADIUS_DEFAULT * 4
-        private const val START_SCALE_IN_PLAY = 0.5f
-        private const val END_SCALE_IN_FLY = 0.05f
+        private const val SCALE_BEFORE_TO_CENTER_SCREEN = 0.8f
+        private const val SCALE_AFTER_IN_CART = 0.05f
+        private val IMAGE_SIZE_AFTER_IN_CENTER = 218f.toPx()
 
         private const val PROP_TRANSLATION_X = "translationX"
         private const val PROP_TRANSLATION_Y = "translationY"
@@ -49,12 +53,6 @@ class AtcAnimation(private val context: Context) {
 
         private val NO_LOCATION = Point(-Int.ZERO, -Int.ZERO)
     }
-
-    private var mSourceImageView: ImageView? = null
-
-    private var mTargetLocation: Point = NO_LOCATION
-
-    private var mSourceLocation: Point = NO_LOCATION
 
     private val mBinding by lazyThreadSafetyNone {
         AtcAnimationLayoutBinding.inflate(LayoutInflater.from(context))
@@ -71,19 +69,25 @@ class AtcAnimation(private val context: Context) {
         PathInterpolator(0.63f, 0.01f, 0.29f, 1f)
     }
 
-    private val mShowAnimatorSet by lazyThreadSafetyNone {
+    private val mFirstAnimatorSet by lazyThreadSafetyNone {
         AnimatorSet().apply {
             interpolator = mBezierPath
-            duration = UnifyMotion.T3
+            duration = UnifyMotion.T5
         }
     }
 
-    private val mFlyAnimatorSet by lazyThreadSafetyNone {
+    private val mSecondAnimatorSet by lazyThreadSafetyNone {
         AnimatorSet().apply {
             interpolator = mBezierPath
-            duration = UnifyMotion.T3
+            duration = UnifyMotion.T5
         }
     }
+
+    private var mSourceImageView: ImageView? = null
+
+    private var mSourceLocation: Point = NO_LOCATION
+
+    private var mTargetLocation: Point = NO_LOCATION
 
     fun setSourceView(view: ImageView) {
         mSourceImageView = view
@@ -100,21 +104,21 @@ class AtcAnimation(private val context: Context) {
 
     // cancel all animate and dismiss the popup window
     private fun cancelPopUpWindow() {
-        mShowAnimatorSet.removeAllListeners()
-        mFlyAnimatorSet.removeAllListeners()
-        mShowAnimatorSet.cancel()
-        mFlyAnimatorSet.cancel()
+        mFirstAnimatorSet.removeAllListeners()
+        mFirstAnimatorSet.cancel()
+
+        mSecondAnimatorSet.removeAllListeners()
+        mSecondAnimatorSet.cancel()
+
         mPopupWindow.dismiss()
     }
 
     private fun showPopUpWindow(onAnimateEnded: () -> Unit) {
         val target = mSourceImageView ?: return
         mPopupWindow.showAtLocation(target, Gravity.CENTER, Int.ZERO, Int.ZERO)
-        mPopupWindow.contentView.addOneTimeGlobalLayoutListener {
-            prepare()
-            resetState()
-            animate(onAnimateEnded)
-        }
+        prepare()
+        resetState()
+        animate(onAnimateEnded)
     }
 
     private fun prepare() {
@@ -123,9 +127,18 @@ class AtcAnimation(private val context: Context) {
         // set resource as drawable from source
         mBinding.productImage.setImageDrawable(source.drawable)
 
+        // calculate location from source view
+        setSourceLocation(source = source)
+    }
+
+    private fun setSourceLocation(source: ImageView) {
         // get source location on screen by actual within popup window
-        val location = source.getLocationOnScreen()
-        mSourceLocation = Point(location.sourceXActual, location.sourceYActual)
+        mSourceLocation = source.getLocationOnScreen().run {
+            val cardImage = mBinding.cardImage
+            val actualX = x - STROKE_WIDTH - cardImage.marginStart
+            val actualY = y - STROKE_WIDTH - cardImage.marginTop - context.getStatusBarHeight()
+            Point(actualX, actualY)
+        }
     }
 
     private fun resetState() {
@@ -145,21 +158,31 @@ class AtcAnimation(private val context: Context) {
     }
 
     private fun animate(onAnimateEnded: () -> Unit) {
-        showAnimation(onEnded = {
-            flyingAnimation(onEnded = {
+        playFirstAnimation(onEnded = {
+            playSecondAnimation(onEnded = {
                 mPopupWindow.dismiss()
                 onAnimateEnded()
             })
         })
     }
 
-    private fun showAnimation(onEnded: () -> Unit) = mBinding.cardImage.postOnAnimation {
-        val animations = prepareShowAnimation()
+    /***
+     * ----------------------------
+     * First Animation
+     * ----------------------------
+     * Animation specs as below.
+     * - translate position from [mSourceImageView] position to center of screen
+     * - scale from [SCALE_AFTER_IN_CART] to [IMAGE_SIZE_AFTER_IN_CENTER] div current width
+     * - alpha 0 to 1
+     */
+    // region of first animation
+    private fun playFirstAnimation(onEnded: () -> Unit) = mBinding.cardImage.postOnAnimation {
+        val animations = prepareFirstAnimation()
 
-        mShowAnimatorSet.apply {
+        mFirstAnimatorSet.apply {
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    mShowAnimatorSet.removeListener(this)
+                    mFirstAnimatorSet.removeListener(this)
                     onEnded()
                 }
             })
@@ -167,54 +190,96 @@ class AtcAnimation(private val context: Context) {
         }.start()
     }
 
-    private fun prepareShowAnimation(): List<Animator> = with(mBinding.cardImage) {
-        val scaleX = ObjectAnimator.ofFloat(this, PROP_SCALE_X, START_SCALE_IN_PLAY, Float.ONE)
-        val scaleY = ObjectAnimator.ofFloat(this, PROP_SCALE_Y, START_SCALE_IN_PLAY, Float.ONE)
-        val alpha = ObjectAnimator.ofFloat(this, PROP_ALPHA, Float.ZERO, Float.ONE)
-        return listOf(scaleX, scaleY, alpha)
-    }
+    private val translateXtoCenterOfScreen
+        get() = with(mBinding.cardImage) {
+            getScreenWidth().toFloat().half - width.toFloat().half - marginStart
+        }
 
-    private fun flyingAnimation(onEnded: () -> Unit) = mBinding.cardImage.postOnAnimation {
-        val animators = prepareFlyingAnimator()
-        mFlyAnimatorSet.apply {
+    private val translateYtoThirdOfScreen
+        get() = with(mBinding.cardImage) {
+            getScreenHeight().toFloat().third - height.toFloat().half - marginTop
+        }
+
+    private fun prepareFirstAnimation(): List<Animator> = with(mBinding.cardImage) {
+        val targetScaleX = IMAGE_SIZE_AFTER_IN_CENTER / width
+        val targetScaleY = IMAGE_SIZE_AFTER_IN_CENTER / height
+        val scaleX = animateBy(
+            property = PROP_SCALE_X,
+            from = SCALE_BEFORE_TO_CENTER_SCREEN,
+            to = targetScaleX
+        )
+        val scaleY = animateBy(
+            property = PROP_SCALE_Y,
+            from = SCALE_BEFORE_TO_CENTER_SCREEN,
+            to = targetScaleY
+        )
+        val alpha = animateBy(
+            property = PROP_ALPHA,
+            from = Float.ZERO,
+            to = Float.ONE
+        )
+        val translateX = animateBy(
+            property = PROP_TRANSLATION_X,
+            to = translateXtoCenterOfScreen
+        )
+        val translateY = animateBy(
+            property = PROP_TRANSLATION_Y,
+            to = translateYtoThirdOfScreen
+        )
+        return listOf(scaleX, scaleY, alpha, translateX, translateY)
+    }
+    // endregion
+
+    /***
+     * ----------------------------
+     * Second Animation
+     * ----------------------------
+     * Animation specs as below.
+     * - translate position from center of screen to [mTargetLocation]
+     * - scale from current scale(after first animation) to [SCALE_AFTER_IN_CART]
+     * - alpha 0 to 1
+     */
+    // region of second animation
+    private fun playSecondAnimation(onEnded: () -> Unit) = mBinding.cardImage.postOnAnimation {
+        val animators = prepareSecondAnimator()
+        mSecondAnimatorSet.apply {
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    mShowAnimatorSet.removeListener(this)
+                    mFirstAnimatorSet.removeListener(this)
                     onEnded()
                 }
             })
-            duration = UnifyMotion.T5
             startDelay = UnifyMotion.T3
             playTogether(animators)
         }.start()
     }
 
-    private fun prepareFlyingAnimator(): List<Animator> = with(mBinding.cardImage) {
-        val targetX = mTargetLocation.targetXActual
-        val targetY = mTargetLocation.targetYActual
-        val translateX =
-            ObjectAnimator.ofFloat(this, PROP_TRANSLATION_X, translationX, targetX.toFloat())
-        val translateY =
-            ObjectAnimator.ofFloat(this, PROP_TRANSLATION_Y, translationY, targetY.toFloat())
-        val scaleX = ObjectAnimator.ofFloat(this, PROP_SCALE_X, Float.ONE, END_SCALE_IN_FLY)
-        val scaleY = ObjectAnimator.ofFloat(this, PROP_SCALE_Y, Float.ONE, END_SCALE_IN_FLY)
-        val alpha = ObjectAnimator.ofFloat(this, PROP_ALPHA, Float.ONE, Float.ZERO)
-        val rounded = ObjectAnimator.ofFloat(this, PROP_RADIUS, radius, TARGET_RADIUS)
+    private fun prepareSecondAnimator(): List<Animator> = with(mBinding.cardImage) {
+        val targetTranslation = getTargetTranslation()
+        val translateX = animateBy(property = PROP_TRANSLATION_X, to = targetTranslation.first)
+        val translateY = animateBy(property = PROP_TRANSLATION_Y, to = targetTranslation.second)
+        val scaleX = animateBy(property = PROP_SCALE_X, to = SCALE_AFTER_IN_CART)
+        val scaleY = animateBy(property = PROP_SCALE_Y, to = SCALE_AFTER_IN_CART)
+        val alpha = animateBy(property = PROP_ALPHA, to = Float.ZERO)
+        val rounded = animateBy(property = PROP_RADIUS, to = TARGET_RADIUS)
 
         return listOf(translateX, translateY, scaleX, scaleY, rounded, alpha)
     }
 
-    private val Point.sourceXActual
-        get() = x - STROKE_WIDTH - mBinding.cardImage.marginStart
+    private fun getTargetTranslation() = mTargetLocation.run {
+        val source = mSourceImageView ?: return Float.ZERO to Float.ZERO
+        val actualX = x - source.width.toFloat().half
+        val actualY = y - source.height.toFloat().half - context.getStatusBarHeight()
+        actualX to actualY
+    }
 
-    private val Point.sourceYActual
-        get() = y - STROKE_WIDTH - mBinding.cardImage.marginTop - context.getStatusBarHeight()
+    private fun View.animateBy(property: String, from: Float, to: Float): Animator {
+        return ObjectAnimator.ofFloat(this, property, from, to)
+    }
 
-    private val Point.targetXActual
-        get() = x - mSourceImageView?.width.orZero().half
-
-    private val Point.targetYActual
-        get() = y - mSourceImageView?.height.orZero().half - context.getStatusBarHeight()
+    private fun View.animateBy(property: String, to: Float): Animator {
+        return ObjectAnimator.ofFloat(this, property, to)
+    }
 }
 
 fun Fragment.atcAnimator() = lazy { AtcAnimation(context = requireContext()) }
