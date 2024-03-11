@@ -30,8 +30,17 @@ object TrackDiscoveryRecommendationMapper {
             entranceForm = componentNames.getEntranceForm(),
             originalPrice = price.toFloatOrZero(),
             salesPrice = discountedPrice.toFloatOrZero(),
-            isEligibleRecTrigger = isEligibleRecTrigger
+            isEligibleRecTrigger = isEligibleRecTrigger,
+            isTrackAsHorizontalSourceModule = componentNames.isTrackAsHorizontalSourceModule()
         )
+    }
+
+    private fun String.isTrackAsHorizontalSourceModule() : Boolean{
+        return when(this){
+            ComponentNames.ProductCardSingleItem.componentName,
+            ComponentNames.ProductCardSingleItemReimagine.componentName -> true
+            else -> false
+        }
     }
 
     fun String.getEntranceForm(): EntranceForm {
