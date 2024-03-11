@@ -296,6 +296,9 @@ class ProductDetailViewModel @Inject constructor(
     private var hasDoneAddToCart: Boolean = false
     val mainPhotoViewed: MutableSet<Int> = mutableSetOf()
     val skuPhotoViewed: MutableSet<Int> = mutableSetOf()
+    private val isSingleSku: Boolean
+        get() = if (getProductInfoP1?.isProductVariant() == false) true
+                    else variantData?.children?.size == 1
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -514,14 +517,14 @@ class ProductDetailViewModel @Inject constructor(
     fun getProductDetailTrack(): TrackProductDetail? {
         val p1 = getProductInfoP1 ?: return null
         val p2 = p2Data.value ?: return null
-
+        Timber.d("Is single sku ${p1.isProductVariant()} ${p1.isProductVariant()}")
         return TrackProductDetail(
             productId = p1.parentProductId,
             productCategory = p1.basic.category.detail.firstOrNull()?.name.orEmpty(),
             productType = p1.productType,
             originalPrice = p1.originalPriceFmt,
             salePrice = p1.data.campaign.priceFmt,
-            isSingleSku = p1.isSingleSku
+            isSingleSku = isSingleSku
         )
     }
 
@@ -538,7 +541,7 @@ class ProductDetailViewModel @Inject constructor(
             originalPrice = p1?.originalPriceFmt.orEmpty(),
             salePrice = p1?.data?.campaign?.priceFmt.orEmpty(),
             isLoadData = isLoadData,
-            isSingleSku = p1?.isSingleSku == true,
+            isSingleSku = isSingleSku,
             mainPhotoViewCount = mainCount,
             skuPhotoViewCount = skuCount,
             isAddCartSelected = hasDoneAddToCart
@@ -793,7 +796,7 @@ class ProductDetailViewModel @Inject constructor(
                 originalPrice = data.originalPrice,
                 salePrice = data.finalPrice,
                 skuId = data.basic.productID,
-                isSingleSku = data.isSingleSku,
+                isSingleSku = isSingleSku,
                 qty = data.basic.minOrder.toString(),
                 isHaveAddress = false
             )
