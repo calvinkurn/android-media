@@ -53,6 +53,7 @@ data class BroadMatchItemDataView(
     val externalReference: String = "",
     val stockBarDataView: StockBarDataView = StockBarDataView(),
     val warehouseID: String = "",
+    val parentId: String = "",
     val byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData(),
     val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
 ) : ImpressHolder(), Wishlistable, ByteIORanking by byteIORanking {
@@ -82,6 +83,8 @@ data class BroadMatchItemDataView(
         )
     }
 
+    private fun hasParentId() = parentId != "" && parentId != ZERO_PARENT_ID
+
     fun asImpressionObjectDataLayer(): Any {
         return asObjectDataLayer()
     }
@@ -97,10 +100,10 @@ data class BroadMatchItemDataView(
         searchId = byteIOTrackingData.searchId,
         searchEntrance = byteIOTrackingData.searchEntrance,
         searchResultId = getRank().toString(),
-        listItemId = id,
+        listItemId = getByteIOProductId(),
         itemRank = getItemRank(),
         listResultType = AppLogSearch.ParamValue.GOODS,
-        productID = id,
+        productID = getByteIOProductId(),
         searchKeyword = byteIOTrackingData.keyword,
         tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
         rank = getRank(),
@@ -110,14 +113,18 @@ data class BroadMatchItemDataView(
         aladdinButtonType = aladdinButtonType,
     )
 
+    private fun getByteIOProductId() =
+        if (hasParentId()) parentId
+        else id
+
     fun asByteIOProduct() = AppLogSearch.Product(
         entranceForm = EntranceForm.SEARCH_HORIZONTAL_GOODS_CARD,
         isAd = isOrganicAds,
-        productID = id,
+        productID = getByteIOProductId(),
         searchID = byteIOTrackingData.searchId,
         requestID = byteIOTrackingData.imprId,
         searchResultID = getRank().toString(),
-        listItemId = id,
+        listItemId = getByteIOProductId(),
         itemRank = getItemRank(),
         listResultType = AppLogSearch.ParamValue.GOODS,
         searchKeyword = byteIOTrackingData.keyword,
@@ -129,6 +136,8 @@ data class BroadMatchItemDataView(
     )
 
     companion object {
+
+        private const val ZERO_PARENT_ID = "0"
 
         fun create(
             otherRelatedProduct: OtherRelatedProduct,
@@ -201,6 +210,7 @@ data class BroadMatchItemDataView(
             externalReference = externalReference,
             stockBarDataView = product.stockBarDataView,
             warehouseID = product.warehouseID,
+            parentId = product.parentId,
             byteIOTrackingData = byteIOTrackingData,
         )
 
