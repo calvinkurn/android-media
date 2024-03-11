@@ -61,8 +61,9 @@ class InspirationListAtcViewDelegate @Inject constructor(
     ) {
         InspirationCarouselTracking.trackCarouselClick(trackingData)
 
-        AppLogSearch.eventSearchResultClick(product.asByteIOSearchResult(""))
-        AppLogSearch.eventProductClick(product.asByteIOProduct())
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultClick(product.asByteIOSearchResult(""))
+//        AppLogSearch.eventProductClick(product.asByteIOProduct())
     }
 
     override fun trackItemImpress(product: InspirationCarouselDataView.Option.Product) {
@@ -73,8 +74,9 @@ class InspirationListAtcViewDelegate @Inject constructor(
             )
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, trackingData)
 
-        AppLogSearch.eventSearchResultShow(product.asByteIOSearchResult(null))
-        AppLogSearch.eventProductShow(product.asByteIOProduct())
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultShow(product.asByteIOSearchResult(null))
+//        AppLogSearch.eventProductShow(product.asByteIOProduct())
     }
 
     override fun trackAddToCart(trackingData: InspirationCarouselTracking.Data) {
@@ -157,6 +159,7 @@ class InspirationListAtcViewDelegate @Inject constructor(
     }
 
     override fun trackImpression(option: InspirationCarouselDataView.Option) {
-        AppLogSearch.eventSearchResultShow(option.asByteIOSearchResult())
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultShow(option.asByteIOSearchResult())
     }
 }
