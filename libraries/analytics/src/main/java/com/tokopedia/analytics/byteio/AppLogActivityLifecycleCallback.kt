@@ -72,7 +72,7 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
             return
         }
         delay(300)
-        val quitType = if (AppLogAnalytics.getPreviousHash() == hash
+        val quitType = if ( AppLogAnalytics.lastTwoIsHavingHash(hash)
             && currentActivityName != "AtcVariantActivity") {
             QuitType.NEXT
         } else {

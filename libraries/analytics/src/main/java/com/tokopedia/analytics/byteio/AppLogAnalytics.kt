@@ -103,9 +103,9 @@ object AppLogAnalytics {
     internal fun removePageName(activity: Activity) {
         synchronized(lock) {
             val pageNameToRemove =
-                pageNames.findLast { it.first == activity.javaClass.simpleName }
-            if (pageNameToRemove != null) {
-                pageNames.remove(pageNameToRemove)
+                pageNames.indexOfLast { it.first == activity.javaClass.simpleName }
+            if (pageNameToRemove != -1) {
+                pageNames.removeAt(pageNameToRemove)
             }
         }
     }
@@ -189,8 +189,12 @@ object AppLogAnalytics {
         put(ENTER_METHOD, getLastDataBeforeCurrent(ENTER_METHOD))
     }
 
-    fun getPreviousHash(): Int {
-        return pageNames.getOrNull(pageNames.size - 2)?.second.orZero()
+    fun lastTwoIsHavingHash(hash: Int): Boolean {
+        return pageNames.previousHash() == hash || pageNames.previousHash(2) == hash
+    }
+
+    private fun List<Pair<String, Int?>>.previousHash(step: Int = 1): Int {
+        return getOrNull(pageNames.lastIndex - step)?.second.orZero()
     }
 
     fun send(event: String, params: JSONObject) {
@@ -253,7 +257,9 @@ object AppLogAnalytics {
 
     private fun removeShadowStack(currentIndex: Int) {
         var tempCurrentIndex = currentIndex
-        while (tempCurrentIndex >= 0 && _pageDataList.getOrNull(tempCurrentIndex)?.get(IS_SHADOW) == true) {
+        while (tempCurrentIndex >= 0 && _pageDataList.getOrNull(tempCurrentIndex)
+                ?.get(IS_SHADOW) == true
+        ) {
             _pageDataList.removeAt(tempCurrentIndex)
             tempCurrentIndex--
         }
