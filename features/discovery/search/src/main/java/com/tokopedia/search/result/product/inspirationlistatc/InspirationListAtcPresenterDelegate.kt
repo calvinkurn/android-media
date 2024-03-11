@@ -189,7 +189,7 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
                 cartId,
                 quantity
             )
-        inspirationListAtcView.trackItemClick(trackingData)
+        inspirationListAtcView.trackItemClick(trackingData, product)
         inspirationListAtcView.trackAddToCart(trackingData)
         if (product.isOrganicAds) inspirationListAtcView.trackAdsClick(product)
     }

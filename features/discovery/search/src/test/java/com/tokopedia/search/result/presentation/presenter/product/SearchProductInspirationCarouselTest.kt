@@ -841,6 +841,8 @@ internal class SearchProductInspirationCarouselTest : ProductListPresenterTestFi
         stockBarDataView.originalStock shouldBe inspirationCarouselProduct.stockBar.originalStock
         stockBarDataView.percentageValue shouldBe inspirationCarouselProduct.stockBar.percentageValue
         stockBarDataView.color shouldBe inspirationCarouselProduct.stockBar.color
+
+        parentId shouldBe inspirationCarouselProduct.parentId
     }
 
     private fun Visitable<*>.assertNotBroadMatchDataView(visitableIndex: Int) {

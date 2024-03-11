@@ -225,7 +225,7 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         )
 
         verify {
-            inspirationListAtcView.trackItemClick(expectedTrackData)
+            inspirationListAtcView.trackItemClick(expectedTrackData, expectedProduct)
             inspirationListAtcView.trackAddToCart(expectedTrackData)
         }
     }
