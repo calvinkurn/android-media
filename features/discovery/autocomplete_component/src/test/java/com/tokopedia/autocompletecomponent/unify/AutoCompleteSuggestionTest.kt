@@ -1,6 +1,7 @@
 package com.tokopedia.autocompletecomponent.unify
 
 import com.tokopedia.autocompletecomponent.jsonToObject
+import com.tokopedia.autocompletecomponent.suggestion.domain.model.ShopAdsModel
 import com.tokopedia.autocompletecomponent.unify.domain.model.SuggestionUnifyModel
 import com.tokopedia.autocompletecomponent.unify.domain.model.UniverseSuggestionUnifyModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
