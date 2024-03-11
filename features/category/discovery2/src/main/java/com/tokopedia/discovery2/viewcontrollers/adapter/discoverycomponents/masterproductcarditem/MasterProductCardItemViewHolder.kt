@@ -518,7 +518,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             requestId = dataItem?.getAppLog()?.requestId.orEmpty(),
             moduleName = dataItem?.getAppLog()?.pageName.orEmpty(),
             listName = dataItem?.topLevelTab?.name.orEmpty(),
-            listNum = dataItem?.topLevelTab?.index.orZero(),
+            listNum = dataItem?.topLevelTab?.index?:-1,
             entranceForm = productCardName.getEntranceForm()
         )
     }
