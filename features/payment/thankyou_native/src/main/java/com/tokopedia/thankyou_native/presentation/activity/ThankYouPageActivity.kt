@@ -15,7 +15,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
-import com.tokopedia.analytics.byteio.IAppLogActivity
+import com.tokopedia.analytics.byteio.AppLogInterface
+import com.tokopedia.analytics.byteio.PageName
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -26,6 +27,7 @@ import com.tokopedia.nps.helper.InAppReviewHelper
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_ENABLE_PURCHASE_INFO
 import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_ENABLE_THANKYOUPAGE_V2
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -80,7 +82,7 @@ class ThankYouPageActivity :
     BaseSimpleActivity(),
     HasComponent<ThankYouPageComponent>,
     ThankYouPageDataLoadCallback,
-    IAppLogActivity{
+    AppLogInterface {
 
     @Inject
     lateinit var thankYouPageAnalytics: dagger.Lazy<ThankYouPageAnalytics>
@@ -212,7 +214,8 @@ class ThankYouPageActivity :
                     bundle,
                     thanksPageData,
                     isWidgetOrderingEnabled(),
-                    isV2Enabled()
+                    isV2Enabled(),
+                    isPurchaseInfoEnabled()
                 ),
                 ""
             )
@@ -464,6 +467,15 @@ class ThankYouPageActivity :
         }
     }
 
+    private fun isPurchaseInfoEnabled(): Boolean {
+        return try {
+            val remoteConfig = FirebaseRemoteConfigImpl(this)
+            return remoteConfig.getBoolean(ANDROID_ENABLE_PURCHASE_INFO, true)
+        } catch (ignore: Exception) {
+            false
+        }
+    }
+
     private fun hideStatusBar() {
 
         rootView.apply {
@@ -485,6 +497,6 @@ class ThankYouPageActivity :
     }
 
     override fun getPageName(): String {
-        return "order_submit"
+        return PageName.ORDER_SUBMIT
     }
 }

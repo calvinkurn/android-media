@@ -4,10 +4,11 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.search.AppLogSearch
+import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ENTRANCE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.FILTER_PANEL
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS_SEARCH
-import com.tokopedia.discovery.common.analytics.SearchEntrance
 import com.tokopedia.discovery.common.analytics.SearchId
 import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.utils.Dimension90Utils
@@ -50,7 +51,6 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val reimagineRollence: ReimagineRollence,
     queryKeyProvider: QueryKeyProvider,
-    private val searchEntrance: SearchEntrance,
 ) : BottomSheetFilterView,
     ContextProvider by WeakReferenceContextProvider(context),
     FragmentProvider by fragmentProvider,
@@ -69,6 +69,9 @@ class BottomSheetFilterViewDelegate @Inject constructor(
     private val pageSource: String by lazy {
         Dimension90Utils.getDimension90(getSearchParameter()?.getSearchParameterMap().orEmpty())
     }
+
+    private val searchEntrance: String
+        get() = AppLogAnalytics.getCurrentData(SEARCH_ENTRANCE)?.toString().orEmpty()
 
     override fun sendTrackingOpenFilterPage() {
         SearchSortFilterTracking.eventOpenFilterPage()
@@ -166,7 +169,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
                 ecomFilterName = "",
                 ecomFilterPosition = "",
                 buttonTypeClick = FILTER_PANEL,
-                searchEntrance = searchEntrance.value,
+                searchEntrance = searchEntrance,
             )
         )
     }
@@ -251,7 +254,7 @@ class BottomSheetFilterViewDelegate @Inject constructor(
                 ecomFilterName = ecomFilterName,
                 ecomFilterPosition = ecomFilterPosition,
                 buttonTypeClick = FILTER_PANEL,
-                searchEntrance = searchEntrance.value,
+                searchEntrance = searchEntrance,
             )
         )
     }

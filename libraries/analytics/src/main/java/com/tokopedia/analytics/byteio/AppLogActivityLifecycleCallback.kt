@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.analytics.byteio.AppLogAnalytics.currentActivityName
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.pushPageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
@@ -29,10 +30,11 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
         if (activity is AppLogInterface) {
             pushPageData(activity)
         }
+        setCurrent(activity)
     }
 
     override fun onActivityStarted(activity: Activity) {
-        setCurrent(activity)
+        // no op
     }
 
     private fun setCurrent(activity: Activity) {
@@ -67,15 +69,15 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
             )
             return
         }
-        delay(500)
-        val quitType = if (AppLogAnalytics.getLastDataBeforeCurrent(AppLogParam.ACTIVITY_HASH_CODE) == hash) {
+        delay(300)
+        val quitType = if (AppLogAnalytics.getPreviousHash() == hash
+            && currentActivityName != "AtcVariantActivity") {
             QuitType.NEXT
         } else {
             QuitType.CLOSE
         }
         sendStayProductDetail(
-            durationInMs,
-            product, quitType
+            durationInMs, product, quitType
         )
     }
 

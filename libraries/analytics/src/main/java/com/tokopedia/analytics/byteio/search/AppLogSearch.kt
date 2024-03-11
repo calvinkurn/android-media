@@ -2,7 +2,6 @@ package com.tokopedia.analytics.byteio.search
 
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
-import com.tokopedia.analytics.byteio.AppLogAnalytics.getSourcePreviousPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogInterface
 import com.tokopedia.analytics.byteio.AppLogParam
@@ -17,7 +16,6 @@ import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_CLICK
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_SHOW
 import com.tokopedia.analytics.byteio.PageName
-import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.CHOOSE_SEARCH_FILTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.ENTER_SEARCH_BLANKPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.SEARCH
@@ -77,6 +75,7 @@ import org.json.JSONObject
 object AppLogSearch {
 
     private val whitelistedEnterFrom = listOf(GOODS_SEARCH, STORE_SEARCH, PageName.HOME)
+    private const val TRENDING_WORDS_CLICK_DATA_KEY = "trending_words_click_data"
 
     object Event {
         const val SHOW_SEARCH = "show_search"
@@ -205,8 +204,20 @@ object AppLogSearch {
         AppLogAnalytics.send(TRENDING_WORDS_SHOW, JSONObject(trendingWords.toMap()))
     }
 
-    fun eventTrendingWordsClick(trendingWords: TrendingWords) {
-        AppLogAnalytics.send(TRENDING_WORDS_CLICK, JSONObject(trendingWords.toMap()))
+    fun eventTrendingWordsClick() {
+        val trendingWordsMap = AppLogAnalytics.getDataBeforeCurrent(TRENDING_WORDS_CLICK_DATA_KEY)
+
+        if (trendingWordsMap !is Map<*, *>) return
+
+        AppLogAnalytics.send(TRENDING_WORDS_CLICK, JSONObject(trendingWordsMap))
+    }
+
+    fun saveTrendingWordsClickData(trendingWords: TrendingWords) {
+        AppLogAnalytics.putPageData(TRENDING_WORDS_CLICK_DATA_KEY, trendingWords.toMap())
+    }
+
+    fun cleanTrendingWordsClickData() {
+        AppLogAnalytics.removePageData(TRENDING_WORDS_CLICK_DATA_KEY)
     }
 
     data class Search(
@@ -230,7 +241,7 @@ object AppLogSearch {
     ) {
         fun json() = JSONObject(buildMap {
             put(IMPR_ID, imprId)
-            put(ENTER_FROM, enterFrom())
+            put(ENTER_FROM, enterFrom)
             put(SEARCH_TYPE, searchType)
             put(ENTER_METHOD, enterMethod)
             put(SEARCH_KEYWORD, searchKeyword)
@@ -358,6 +369,8 @@ object AppLogSearch {
         val shopId: String?,
         val aladdinButtonType: String?,
     ) {
+        val trackId: String
+            get() = "${searchId}_${(itemRank ?: rank)}"
 
         fun json() = JSONObject(
             buildMap {
@@ -394,6 +407,16 @@ object AppLogSearch {
 
     fun eventSearchResultClick(searchResult: SearchResult) {
         AppLogAnalytics.send(SEARCH_RESULT_CLICK, searchResult.json())
+
+        with(searchResult) {
+            AppLogAnalytics.setGlobalParams(
+                trackId = trackId,
+                requestId = imprId,
+            )
+
+            AppLogAnalytics.putPageData(SEARCH_RESULT_ID, searchResultId)
+            listItemId?.let { AppLogAnalytics.putPageData(LIST_ITEM_ID, it) }
+        }
     }
 
     data class ChooseSearchFilter(
@@ -440,10 +463,8 @@ object AppLogSearch {
         val rank: Int,
         val shopID: String?,
         val searchEntrance: String,
+        val sourcePageType: String,
     ) {
-        val sourcePageType: String
-            get() = SourcePageType.PRODUCT_CARD
-
         val trackId: String
             get() = "${searchID}_${(itemRank ?: rank)}"
 
@@ -491,8 +512,6 @@ object AppLogSearch {
                 requestId = requestID,
             )
 
-            AppLogAnalytics.putPageData(SEARCH_ENTRANCE, searchEntrance)
-            AppLogAnalytics.putPageData(SEARCH_ID, searchID)
             AppLogAnalytics.putPageData(SEARCH_RESULT_ID, searchResultID)
             listItemId?.let { AppLogAnalytics.putPageData(LIST_ITEM_ID, it) }
         }

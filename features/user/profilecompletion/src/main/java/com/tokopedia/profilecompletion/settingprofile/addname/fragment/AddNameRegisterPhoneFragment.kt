@@ -17,7 +17,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.splitcompat.SplitCompat
-import com.scp.auth.common.utils.ScpUtils
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -326,8 +325,6 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment() {
             BEARER,
             EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV)
         )
-        /* Migrate token to lsdk */
-        ScpUtils.saveTokens(accessToken = data.accessToken, refreshToken = data.refreshToken)
     }
 
     fun onSuccessRegister(registerInfo: RegisterInfo) {

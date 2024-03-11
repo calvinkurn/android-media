@@ -6,8 +6,10 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.copytoclipboard.CopyTo
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.header.HeaderResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.imageattachment.ImageAttachmentResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.invoice.InvoiceResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.longclickbubblemenu.LongClickBubbleMenuResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.msgbubble.MsgBubbleResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.ordercancellation.OrderCancellationResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.orderprogress.OrderProgressResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.previewattachment.ProductPreviewResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult
@@ -35,3 +37,5 @@ fun voucherResult(func: VoucherResult.() -> Unit) = VoucherResult.apply(func)
 fun productBundlingResult(func: ProductBundlingResult.() -> Unit) = ProductBundlingResult.apply(func)
 fun longClickBubbleMenuResult(func: LongClickBubbleMenuResult.() -> Unit) = LongClickBubbleMenuResult.apply(func)
 fun imageAttachmentResult(func: ImageAttachmentResult.() -> Unit) = ImageAttachmentResult.apply(func)
+fun orderCancellationResult(func: OrderCancellationResult.() -> Unit) = OrderCancellationResult.apply(func)
+fun invoiceResult(func: InvoiceResult.() -> Unit) = InvoiceResult.apply(func)

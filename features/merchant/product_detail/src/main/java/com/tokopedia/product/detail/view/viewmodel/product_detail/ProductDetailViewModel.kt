@@ -43,7 +43,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailPrefetch
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
-import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.media.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
@@ -293,9 +293,9 @@ class ProductDetailViewModel @Inject constructor(
      * These variable are for storing appLog stay-analytics data
      * */
     private var isLoadData: Boolean = false
-    var hasDoneAddToCart: Boolean = false
-    var mainPhotoViewed: MutableSet<Int> = mutableSetOf()
-    var skuPhotoViewed: MutableSet<Int> = mutableSetOf()
+    private var hasDoneAddToCart: Boolean = false
+    val mainPhotoViewed: MutableSet<Int> = mutableSetOf()
+    val skuPhotoViewed: MutableSet<Int> = mutableSetOf()
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -449,11 +449,14 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     fun getShopInfo(): ShopInfo {
-        return p2Data.value?.shopInfo ?: ShopInfo()
+        val p2 = p2Data.value ?: return ShopInfo()
+        return p2.shopInfo
     }
 
     fun getCartTypeByProductId(): CartTypeData? {
-        return p2Data.value?.cartRedirection?.get(getProductInfoP1?.basic?.productID ?: "")
+        val p2 = p2Data.value ?: return null
+        val p1 = getProductInfoP1 ?: return null
+        return p2.cartRedirection[p1.basic.productID]
     }
 
     fun updateLastAction(talkLastAction: ProductDetailTalkLastAction) {
@@ -461,7 +464,10 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     fun getMiniCartItem(): MiniCartItem.MiniCartItemProduct? {
-        return p2Data.value?.miniCart?.get(getProductInfoP1?.basic?.productID ?: "")
+        val p2 = p2Data.value ?: return null
+        val miniCart = p2.miniCart ?: return null
+        val p1 = getProductInfoP1 ?: return null
+        return miniCart[p1.basic.productID]
     }
 
     fun updateDynamicProductInfoData(data: ProductInfoP1?) {
@@ -707,7 +713,7 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     private fun sendConfirmCartBytIoTracker() {
-        val data = getProductInfoP1 ?: throw Exception()
+        val data = getProductInfoP1 ?: return
         AppLogPdp.sendConfirmCart(
             TrackConfirmCart(
                 productId = data.parentProductId,
@@ -728,6 +734,7 @@ class ProductDetailViewModel @Inject constructor(
         }
 
         EmbraceMonitoring.stopMoments(EmbraceKey.KEY_ACT_ADD_TO_CART)
+        hasDoneAddToCart = true
         if (result.isStatusError()) {
             val errorMessage = result.getAtcErrorMessage() ?: ""
             if (errorMessage.isNotBlank()) {
@@ -750,7 +757,6 @@ class ProductDetailViewModel @Inject constructor(
                     result.data.notes
                 )
             }
-            hasDoneAddToCart = true
             _addToCartLiveData.value = result.asSuccess()
         }
     }

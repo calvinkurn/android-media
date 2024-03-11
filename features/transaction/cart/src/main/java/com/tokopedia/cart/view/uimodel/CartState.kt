@@ -74,7 +74,7 @@ sealed interface AddToCartExternalEvent {
 }
 
 sealed interface CartTrackerEvent {
-    data class ATCTrackingURLRecent(val productModel: CartRecentViewItemHolderData) :
+    data class ATCTrackingURLRecent(val recommendationItem: RecommendationItem) :
         CartTrackerEvent
 
     data class ATCTrackingURLRecommendation(val recommendationItem: RecommendationItem) :

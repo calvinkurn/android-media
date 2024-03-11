@@ -28,6 +28,7 @@ import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_ID
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamKey.SEARCH_RESULT_ID
 import com.tokopedia.analyticsdebugger.cassava.Cassava
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -62,7 +63,7 @@ object AppLogAnalytics {
      * to override value for current page name
      */
     @JvmField
-    var pageNames = mutableListOf<Pair<String, String?>>()
+    var pageNames = mutableListOf<Pair<String, Int?>>()
 
     @JvmField
     var activityCount: Int = 0
@@ -91,7 +92,7 @@ object AppLogAnalytics {
         val actName = activity.javaClass.simpleName
         if (activity is IAppLogActivity) {
             synchronized(lock) {
-                pageNames.add(actName to activity.getPageName())
+                pageNames.add(actName to activity.hashCode())
             }
         } else {
             synchronized(lock) {
@@ -140,14 +141,14 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addEntranceInfo() {
-        put(ENTRANCE_INFO, generateEntranceInfoJson())
+        put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
     }
 
     internal fun JSONObject.addEntranceInfoCart() {
         val data = JSONObject().also {
             it.addEntranceForm()
             it.addSourcePageType()
-        }
+        }.toString()
         put(ENTRANCE_INFO, data)
     }
 
@@ -188,17 +189,21 @@ object AppLogAnalytics {
         put(ENTER_METHOD, getLastDataBeforeCurrent(ENTER_METHOD))
     }
 
-    private fun currentPageName(): String {
-        return synchronized(lock) {
-            pageNames.findLast { it.first == currentActivityName }?.second ?: ""
-        }
-    }
+//    private fun currentPageName(): String {
+//        return synchronized(lock) {
+//            pageNames.findLast { it.first == currentActivityName }?.second ?: ""
+//        }
+//    }
+//
+//    internal fun previousPageName(skip: Int = 1): String {
+//        return synchronized(lock) {
+//            (pageNames.getOrNull(pageNames.indexOf(pageNames.findLast { it.first == currentActivityName }) - skip)?.second)
+//                ?: ""
+//        }
+//    }
 
-    internal fun previousPageName(skip: Int = 1): String {
-        return synchronized(lock) {
-            (pageNames.getOrNull(pageNames.indexOf(pageNames.findLast { it.first == currentActivityName }) - skip)?.second)
-                ?: ""
-        }
+    fun getPreviousHash(): Int {
+        return pageNames.getOrNull(pageNames.size - 2)?.second.orZero()
     }
 
     fun send(event: String, params: JSONObject) {
@@ -271,6 +276,10 @@ object AppLogAnalytics {
         Timber.d("Put _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
+    fun removePageData(key: String) {
+        _pageDataList.lastOrNull()?.remove(key)
+    }
+
     fun putEnterMethod(enterMethod: EnterMethod) {
         putPageData(ENTER_METHOD, enterMethod.str)
     }
@@ -299,6 +308,14 @@ object AppLogAnalytics {
             idx--
         }
         return null
+    }
+
+    fun getDataBeforeCurrent(key: String): Any? {
+        if (_pageDataList.isEmpty()) return null
+        val idx = _pageDataList.lastIndex - 1
+
+        return if (idx >= 0) _pageDataList[idx][key]
+        else null
     }
 
     fun clearAllPageData() {

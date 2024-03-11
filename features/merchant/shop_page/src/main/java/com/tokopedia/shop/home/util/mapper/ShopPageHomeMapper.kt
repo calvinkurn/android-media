@@ -1575,7 +1575,8 @@ object ShopPageHomeMapper {
                             )
                         }
                     )
-                }
+                },
+                totalProduct = it.bmsmTotalProduct
             )
         }
     }

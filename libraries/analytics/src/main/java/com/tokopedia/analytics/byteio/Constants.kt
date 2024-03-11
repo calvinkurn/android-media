@@ -37,7 +37,7 @@ data class TrackStayProductDetail(
     val isSingleSku: Boolean,
     val mainPhotoViewCount: Int,
     val skuPhotoViewCount: Int,
-    val isSkuSelected: Boolean = true, // always selected in case of P1 flow
+    var isSkuSelected: Boolean = true,
     val isAddCartSelected: Boolean
 )
 
@@ -148,6 +148,7 @@ object PageName {
     const val CART = "cart"
     const val SHOP = "shop"
     const val SKU = "sku"
+    const val ORDER_SUBMIT = "order_submit"
     const val EXTERNAL_PROMO = "external_promo"
     const val RECOMMENDATION = "recommendation"
 }

@@ -63,6 +63,11 @@ abstract class ShareExViewModelTestFixture {
         mimeType = ShareExMimeTypeEnum.TEXT,
         packageName = "dummyPackage"
     )
+    protected val dummyChannelWithImage = ShareExChannelItemModel(
+        channelEnum = ShareExChannelEnum.OTHERS,
+        mimeType = ShareExMimeTypeEnum.IMAGE,
+        packageName = "dummyPackage"
+    )
     protected val dummyUrl = "https://www.tokopedia.com"
     protected val dummyShortLink = "https://tokopedia.link"
 
