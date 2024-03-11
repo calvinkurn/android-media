@@ -80,11 +80,19 @@ class InspirationCarouselViewHolder(
     }
 
     override fun bind(element: InspirationCarouselDataView) {
+        bindImpression(element)
         bindHeader(element)
         if (isChipsLayout(element))
             bindChipsCarousel(element)
         else
             bindContent(element)
+    }
+
+    private fun bindImpression(element: InspirationCarouselDataView) {
+        val option = element.options.getOrNull(0) ?: return
+        binding?.root?.addOnImpression1pxListener(option.byteIOImpressHolder) {
+            inspirationCarouselListener.onInspirationCarouselOptionImpressed1Px(option)
+        }
     }
 
     private fun bindHeader(element: InspirationCarouselDataView) {
@@ -375,10 +383,6 @@ class InspirationCarouselViewHolder(
                 val productList = option.product.map { product -> product.toProductCardModel() }
                 it.initRecyclerViewForGrid(option, productList)
                 configureSeeAllButton(option)
-
-                it.addOnImpression1pxListener(option.byteIOImpressHolder) {
-                    inspirationCarouselListener.onInspirationCarouselOptionImpressed1Px(option)
-                }
             } else {
                 it.setDefaultHeightInspirationCarouselOptionList()
                 it.layoutManager = createLayoutManager()
