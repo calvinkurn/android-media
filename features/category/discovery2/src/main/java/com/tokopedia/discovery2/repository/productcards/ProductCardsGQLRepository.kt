@@ -105,6 +105,7 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
                     }
                 }
 
+                ComponentNames.ProductCardSingleReimagine.componentName,
                 ComponentNames.ProductCardSingle.componentName -> {
                     if (componentProperties?.cardType.equals("V1", true)) {
                         DiscoveryDataMapper().mapListToComponentList(
