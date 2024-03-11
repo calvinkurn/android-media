@@ -377,13 +377,17 @@ object AppLogAnalytics {
     }
 
     fun removeGlobalParam() {
-        _pageDataList.lastOrNull()?.remove(ENTRANCE_FORM)
-        _pageDataList.lastOrNull()?.remove(ENTER_METHOD)
-        _pageDataList.lastOrNull()?.remove(SOURCE_MODULE)
-        _pageDataList.lastOrNull()?.remove(IS_AD)
-        _pageDataList.lastOrNull()?.remove(TRACK_ID)
-        _pageDataList.lastOrNull()?.remove(SOURCE_PAGE_TYPE)
-        _pageDataList.lastOrNull()?.remove(REQUEST_ID)
+        listOf(
+            ENTRANCE_FORM,
+            ENTER_METHOD,
+            SOURCE_MODULE,
+            IS_AD,
+            TRACK_ID,
+            SOURCE_PAGE_TYPE,
+            REQUEST_ID
+        ).forEach {
+            _pageDataList.lastOrNull()?.remove(it)
+        }
     }
 
     private fun ArrayList<HashMap<String, Any>>.printForLog(): String {
