@@ -5,9 +5,8 @@ import android.app.Application
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.byteio.AppLogAnalytics.currentActivityName
-import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.pushPageData
-import com.tokopedia.analytics.byteio.AppLogAnalytics.removeGlobalParam
+import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.removePageName
 import com.tokopedia.analytics.byteio.pdp.AppLogPdp.sendStayProductDetail
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -51,7 +50,6 @@ class AppLogActivityLifecycleCallback : Application.ActivityLifecycleCallbacks, 
                 activity.startTime = System.currentTimeMillis()
             }
         }
-        removeGlobalParam()
     }
 
     override fun onActivityPaused(activity: Activity) {
