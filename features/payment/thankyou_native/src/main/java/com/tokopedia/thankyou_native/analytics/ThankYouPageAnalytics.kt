@@ -57,7 +57,11 @@ class ThankYouPageAnalytics @Inject constructor(
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
 
-    fun sendScreenAuthenticatedEvent(paymentId: String?, merchantCode: String?, screenName: String) {
+    fun sendScreenAuthenticatedEvent(
+        paymentId: String?,
+        merchantCode: String?,
+        screenName: String
+    ) {
         val customDimension: MutableMap<String, String> = mutableMapOf()
         customDimension[KEY_PAYMENT_ID] = paymentId ?: ""
         customDimension[KEY_MERCHANT_CODE] = merchantCode ?: ""
@@ -78,21 +82,22 @@ class ThankYouPageAnalytics @Inject constructor(
     }
 
     fun sendSubmitOrderByteIoTracker(data: ThanksPageData) {
+        val prodId = data.shopOrder.joinToString(",") { shop ->
+            shop.purchaseItemList.joinToString(",") { item ->
+                item.parentProductId.takeIf { it.isNotEmpty() || !it.contains("null") }
+                    ?: item.productId
+            }
+        }
         AppLogPdp.sendSubmitOrderResult(
             SubmitOrderResult(
                 shippingPrice = data.shopOrder.sumOf { it.shippingAmount.toDouble() },
                 discountedShippingPrice = data.shopOrder.sumOf { it.discountShippingAmount.toDouble() },
                 totalPayment = data.amount.toDouble(),
                 discountedAmount = data.shopOrder.sumOf { it.discountAmount.toDouble() },
-                totalTax = data.shopOrder.sumOf { it.tax }.toDouble(),
                 payType = data.gatewayName,
                 cartItemId = data.shopOrder.joinToString(",") { shop ->
                     shop.purchaseItemList.joinToString(",") { it.cartId }
                 },
-                skuId = data.shopOrder.joinToString(",") { shopLevel ->
-                    shopLevel.purchaseItemList.joinToString(",") { orderLevel ->
-                        orderLevel.productId
-                    } },
                 orderId = data.shopOrder.joinToString(",") { it.orderId },
                 comboId = data.paymentID,
                 summaryInfo = data.customDataOther?.summaryInfo.orEmpty(),
@@ -100,9 +105,7 @@ class ThankYouPageAnalytics @Inject constructor(
                     shippingType = data.shopOrder.joinToString(",") { it.shippingDesc },
                     eta = data.shopOrder.joinToString(",") { it.logisticETA.toString() }
                 ).toJsonString(),
-                productId = data.shopOrder.joinToString(",") { shop ->
-                    shop.purchaseItemList.joinToString(",") { it.parentProductId }
-                },
+                productId = prodId,
             )
         )
     }
@@ -123,8 +126,8 @@ class ThankYouPageAnalytics @Inject constructor(
                 }
             }
         }, onError = {
-                it.printStackTrace()
-            })
+            it.printStackTrace()
+        })
     }
 
     private fun senDigitalThankYouPageDataLoadEvent(thanksPageData: ThanksPageData) {
@@ -138,8 +141,8 @@ class ThankYouPageAnalytics @Inject constructor(
                 }
             }
         }, onError = {
-                it.printStackTrace()
-            })
+            it.printStackTrace()
+        })
     }
 
     private fun processDataForGTM(eventData: String) {
@@ -147,12 +150,16 @@ class ThankYouPageAnalytics @Inject constructor(
         val eventList: JsonArray = gson.fromJson(eventData, object : TypeToken<JsonArray>() {}.type)
 
         eventList.forEach { data ->
-            val eventMap: MutableMap<String, Any> = gson.fromJson(data, object : TypeToken<Map<String, Any>>() {}.type)
+            val eventMap: MutableMap<String, Any> =
+                gson.fromJson(data, object : TypeToken<Map<String, Any>>() {}.type)
             analyticTracker.sendEnhanceEcommerceEvent(eventMap)
         }
     }
 
-    private fun getParentTrackingNode(thanksPageData: ThanksPageData, shopOrder: ShopOrder): MutableMap<String, Any> {
+    private fun getParentTrackingNode(
+        thanksPageData: ThanksPageData,
+        shopOrder: ShopOrder
+    ): MutableMap<String, Any> {
         return mutableMapOf(
             ParentTrackingKey.KEY_EVENT to thanksPageData.event,
             ParentTrackingKey.KEY_EVENT_CATEGORY to thanksPageData.eventCategory,
@@ -201,7 +208,8 @@ class ThankYouPageAnalytics @Inject constructor(
             productNodeMap[ParentTrackingKey.KEY_ID] = item.productId
             productNodeMap[ProductNodeTrackingKey.KEY_PRICE] = item.price.toString()
             productNodeMap[ProductNodeTrackingKey.KEY_BRAND] = item.productBrand
-            productNodeMap[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = addSlashInCategory(item.category)
+            productNodeMap[ParentTrackingKey.AF_KEY_CATEGORY_NAME] =
+                addSlashInCategory(item.category)
             productNodeMap[ProductNodeTrackingKey.KEY_VARIANT] = item.variant
             productNodeMap[ParentTrackingKey.KEY_QTY] = item.quantity
             productNodeMap[ProductNodeTrackingKey.KEY_DIMENSION83] = item.bebasOngkirDimension
@@ -321,7 +329,11 @@ class ThankYouPageAnalytics @Inject constructor(
         analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_SELECT_CONTENT, bundle)
     }
 
-    fun sendBannerImpressionEvent(thanksPageData: ThanksPageData, banner: BannerItem, position: Int) {
+    fun sendBannerImpressionEvent(
+        thanksPageData: ThanksPageData,
+        banner: BannerItem,
+        position: Int
+    ) {
         val promotionBundle = getEnhancedECommerceBanner(banner, position)
         val bundle = Bundle().apply {
             putString(KEY_EVENT, KEY_EVENT_VIEW_ITEM)
@@ -400,14 +412,16 @@ class ThankYouPageAnalytics @Inject constructor(
                 afValue[AFInAppEventParameterName.RECEIPT_ID] = thanksPageData.paymentID
                 afValue[AFInAppEventType.ORDER_ID] = orderIds
                 afValue[ParentTrackingKey.AF_SHIPPING_PRICE] = shipping
-                afValue[ParentTrackingKey.AF_PURCHASE_SITE] = when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
-                    MarketPlaceThankPage -> MARKET_PLACE
-                    else -> DIGITAL
-                }
+                afValue[ParentTrackingKey.AF_PURCHASE_SITE] =
+                    when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
+                        MarketPlaceThankPage -> MARKET_PLACE
+                        else -> DIGITAL
+                    }
                 afValue[AFInAppEventParameterName.CURRENCY] = ParentTrackingKey.VALUE_IDR
                 afValue[ParentTrackingKey.AF_VALUE_PRODUCTTYPE] = productList
                 afValue[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = productCategory
-                afValue[AFInAppEventParameterName.CONTENT_TYPE] = ParentTrackingKey.AF_VALUE_PRODUCTTYPE
+                afValue[AFInAppEventParameterName.CONTENT_TYPE] =
+                    ParentTrackingKey.AF_VALUE_PRODUCTTYPE
 
                 val criteoAfValue: Map<String, Any> = java.util.HashMap(afValue)
                 if (productArray.length() > 0) {
@@ -415,7 +429,10 @@ class ThankYouPageAnalytics @Inject constructor(
                     afValue[AFInAppEventParameterName.CONTENT] = afContent
                 }
                 TrackApp.getInstance().appsFlyer.sendTrackEvent(AFInAppEventType.PURCHASE, afValue)
-                TrackApp.getInstance().appsFlyer.sendTrackEvent(ParentTrackingKey.AF_KEY_CRITEO, criteoAfValue)
+                TrackApp.getInstance().appsFlyer.sendTrackEvent(
+                    ParentTrackingKey.AF_KEY_CRITEO,
+                    criteoAfValue
+                )
             }
         }, onError = { it.printStackTrace() })
     }

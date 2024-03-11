@@ -231,7 +231,7 @@ object AppLogPdp {
             it.put("delivery_info", model.deliveryInfo)
             it.put("pay_type", model.payType)
             it.put("cart_item_id", model.cartItemId)
-            it.put("sku_id", model.skuId)
+//            it.put("sku_id", model.skuId) // removed
             it.put("order_id", model.orderId)
             it.put("combo_id", model.comboId)
             it.put("product_id", model.productId)

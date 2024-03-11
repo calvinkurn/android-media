@@ -146,8 +146,9 @@ object AppLogAnalytics {
 
     internal fun JSONObject.addEntranceInfoCart() {
         val data = JSONObject().also {
-            it.addEntranceForm()
-            it.addSourcePageType()
+            it.addEnterFromInfo()
+            put(ENTRANCE_FORM, PageName.CART)
+            put(SOURCE_PAGE_TYPE, PageName.CART)
         }.toString()
         put(ENTRANCE_INFO, data)
     }
