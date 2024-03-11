@@ -14,29 +14,29 @@ internal fun initAppLog(context: Context) {
 
     config.setUriConfig(UriConfig.Builder().also<UriConfig.Builder> { builder ->
         builder.setInstallEnv(Env(InstallUrl(
-            "https://log-va.tiktokv.com/service/2/device_register/",
-            "https://log-va.tiktokv.com/service/2/app_alert_check/",
+            "https://log.byteoversea.com/service/2/device_register/",
+            "https://i.byteoversea.com/service/2/app_alert_check/",
         ), true, false))
         // 自定义埋点上报域名
         builder.setSendUris(
             arrayOf(
-                "https://log.tiktokv.com/service/2/app_log/",
-                "https://applog.tiktokv.com/service/2/app_log/",
+                "https://log.byteoversea.com/service/2/app_log/",
+                "https://log15.byteoversea.com/service/2/app_log/",
             ),
         )
         // 自定义实时埋点上报域名
         builder.setRealUris(
             arrayOf(
+                "https://rtlog.byteoversea.com/service/2/app_log/",
                 "https://rtlog.tiktokv.com/service/2/app_log/",
                 "https://rtapplog.tiktokv.com/service/2/app_log/",
             ),
         )
         // 自定义 logsettings 上报域名
-        builder.setSettingUri("https://log.tiktokv.com/service/2/log_settings/")
+        builder.setSettingUri("https://log.byteoversea.com/service/2/log_settings/")
     }.build())
 
-// 注入自定义网络接口实现（可选），接入示例见下一节
-// TTNET 接入 https://doc.bytedance.net/docs/2577/3086/22837/
+    // TTNET: https://doc.bytedance.net/docs/2577/3086/22837/
     config.setNetworkClient(AppLogNetworkClient());
 
     config.setAutoStart(true);
