@@ -96,11 +96,6 @@ class AtcVariantActivity : BaseSimpleActivity(), AppLogInterface {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        AppLogPdp.addToCart.set(false)
-    }
-
     private fun observeData() {
         sharedViewModel.activityResult.observe(this) {
             val cacheManager = SaveInstanceCacheManager(this, true)
