@@ -127,14 +127,15 @@ data class AppLogRecommendationProductModel(
             authorId: String = "",
             groupId: String = "",
             cardName: String = CardName.REC_GOODS_CARD,
-            isEligibleRecTrigger: Boolean = true
+            isEligibleRecTrigger: Boolean = true,
+            isTrackAsHorizontalSourceModule : Boolean = false
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
                 productId = productId.zeroAsEmpty(),
                 listName = tabName.underscoredParam(),
                 listNum = tabPosition.inc().zeroAsEmpty(),
                 moduleName = moduleName,
-                sourceModule = constructSourceModule(isAd, moduleName, entranceForm),
+                sourceModule = constructSourceModule(isAd, moduleName, entranceForm, isTrackAsHorizontalSourceModule),
                 trackId = constructTrackId(null, productId, requestId, position, cardName),
                 isAd = isAd.intValue,
                 isUseCache = isUseCache.intValue,

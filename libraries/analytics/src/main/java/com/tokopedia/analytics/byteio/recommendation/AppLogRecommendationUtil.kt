@@ -29,6 +29,7 @@ internal fun constructSourceModule(
     isAd: Boolean,
     moduleName: String,
     entranceForm: EntranceForm,
+    isTrackAsHorizontalSourceModule: Boolean = false,
 ): String {
     val prefix = if (isAd) {
         SOURCE_MODULE_ADS
@@ -37,6 +38,9 @@ internal fun constructSourceModule(
     }
 
     val pageName = AppLogAnalytics.getCurrentData(AppLogParam.PAGE_NAME)
+    if(isTrackAsHorizontalSourceModule){
+        return SOURCE_MODULE_HORIZONTAL_FORMAT.format(prefix, pageName, moduleName)
+    }
     return when (entranceForm) {
         EntranceForm.PURE_GOODS_CARD,
         EntranceForm.CONTENT_GOODS_CARD,
