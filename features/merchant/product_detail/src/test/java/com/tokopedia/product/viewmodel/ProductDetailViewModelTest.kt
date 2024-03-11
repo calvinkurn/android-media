@@ -100,6 +100,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
@@ -126,6 +127,28 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         val selectedMiniCart = viewModel.getMiniCartItem()
 
         assertTrue(selectedMiniCart == null)
+    }
+
+    @Test
+    fun `get mini cart return null when p1 or p2 null`() {
+        // #1 : p2 is null
+        every {
+            spykViewModel.p2Data.value
+        } returns null
+        assertNull(spykViewModel.getMiniCartItem())
+
+        // #1 : p2.miniCart is null
+        every {
+            spykViewModel.p2Data.value?.miniCart
+        } returns null
+        assertNull(spykViewModel.getMiniCartItem())
+
+        // #1 : p2.miniCart is null
+        every {
+            spykViewModel.p2Data.value
+        } returns ProductInfoP2UiData(miniCart = mutableMapOf("1" to MiniCartItem.MiniCartItemProduct()))
+        spykViewModel.getProductInfoP1 = null
+        assertNull(spykViewModel.getMiniCartItem())
     }
 
     @Test
@@ -260,7 +283,7 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `get shop info from P2 when data null`() {
         every {
-            spykViewModel.p2Data.value?.shopInfo
+            spykViewModel.p2Data.value
         } returns null
         val shopInfo = spykViewModel.getShopInfo()
 
@@ -326,8 +349,8 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
         spykViewModel.getProductInfoP1 =
             ProductInfoP1(basic = BasicInfo(productID = "123"))
         every {
-            spykViewModel.p2Data.value?.cartRedirection
-        } returns mapOf("123" to CartTypeData())
+            spykViewModel.p2Data.value
+        } returns ProductInfoP2UiData(cartRedirection = mapOf("123" to CartTypeData()))
 
         val cartRedirection = spykViewModel.getCartTypeByProductId()
 
@@ -335,11 +358,23 @@ open class ProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `get cart type by product id when data null`() {
+    fun `get cart type by product id when p1 data null`() {
         spykViewModel.getProductInfoP1 = null
         every {
-            spykViewModel.p2Data.value?.cartRedirection
-        } returns mapOf("321" to CartTypeData())
+            spykViewModel.p2Data.value
+        } returns ProductInfoP2UiData(cartRedirection = mapOf("321" to CartTypeData()))
+
+        val cartRedirection = spykViewModel.getCartTypeByProductId()
+
+        Assert.assertNull(cartRedirection)
+    }
+
+    @Test
+    fun `get cart type by product id when p1 & p2 data null`() {
+        spykViewModel.getProductInfoP1 = null
+        every {
+            spykViewModel.p2Data.value
+        } returns null
 
         val cartRedirection = spykViewModel.getCartTypeByProductId()
 

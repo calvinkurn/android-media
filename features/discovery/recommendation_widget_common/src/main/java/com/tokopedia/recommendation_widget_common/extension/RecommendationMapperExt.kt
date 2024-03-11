@@ -250,6 +250,7 @@ const val LABEL_FULFILLMENT: String = "fulfillment"
 const val LAYOUTTYPE_HORIZONTAL_ATC: String = "horizontal-atc"
 const val LAYOUTTYPE_INFINITE_ATC: String = "infinite-atc"
 const val PAGENAME_IDENTIFIER_RECOM_ATC: String = "hatc"
+const val PAGENAME_PREFIX_CART: String = "cart"
 const val DEFAULT_QTY_0: Int = 0
 const val DEFAULT_QTY_1: Int = 1
 
@@ -274,11 +275,9 @@ fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean {
 }
 
 private fun RecommendationEntity.RecommendationData.getAtcType(): RecommendationItem.AddToCartType {
-    return if (hasQuantityEditor()) {
-        RecommendationItem.AddToCartType.QuantityEditor
-    } else {
-        RecommendationItem.AddToCartType.None
-    }
+    return if (hasQuantityEditor()) RecommendationItem.AddToCartType.QuantityEditor
+    else if(hasDirectAtc()) RecommendationItem.AddToCartType.DirectAtc
+    else RecommendationItem.AddToCartType.None
 }
 
 private fun RecommendationEntity.Recommendation.getGridPosition(): RecommendationItem.GridPosition {
@@ -292,6 +291,9 @@ private fun RecommendationEntity.Recommendation.getGridPosition(): Recommendatio
 
 private fun RecommendationEntity.RecommendationData.hasQuantityEditor() =
     isTokonow() || pageName.contains(PAGENAME_IDENTIFIER_RECOM_ATC)
+
+private fun RecommendationEntity.RecommendationData.hasDirectAtc() =
+    pageName.startsWith(PAGENAME_PREFIX_CART)
 
 fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): RecommendationBanner? {
     assets?.banner?.let {

@@ -139,5 +139,22 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".buyer_request_cancel.presentation.BuyerRequestCancelRespondActivity"
+            android:exported="false"
+            android:theme="@style/NonDialogTransparent"
+            android:windowSoftInputMode="adjustNothing">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_seller"
+                    android:path="@string/path_buyer_order_request_cancel_respond"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

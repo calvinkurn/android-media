@@ -43,7 +43,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailPrefetch
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
-import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.media.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
@@ -293,9 +293,12 @@ class ProductDetailViewModel @Inject constructor(
      * These variable are for storing appLog stay-analytics data
      * */
     private var isLoadData: Boolean = false
-    var hasDoneAddToCart: Boolean = false
-    var mainPhotoViewed: MutableSet<Int> = mutableSetOf()
-    var skuPhotoViewed: MutableSet<Int> = mutableSetOf()
+    private var hasDoneAddToCart: Boolean = false
+    val mainPhotoViewed: MutableSet<Int> = mutableSetOf()
+    val skuPhotoViewed: MutableSet<Int> = mutableSetOf()
+    private val isSingleSku: Boolean
+        get() = if (getProductInfoP1?.isProductVariant() == false) true
+                    else variantData?.children?.size == 1
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -449,11 +452,14 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     fun getShopInfo(): ShopInfo {
-        return p2Data.value?.shopInfo ?: ShopInfo()
+        val p2 = p2Data.value ?: return ShopInfo()
+        return p2.shopInfo
     }
 
     fun getCartTypeByProductId(): CartTypeData? {
-        return p2Data.value?.cartRedirection?.get(getProductInfoP1?.basic?.productID ?: "")
+        val p2 = p2Data.value ?: return null
+        val p1 = getProductInfoP1 ?: return null
+        return p2.cartRedirection[p1.basic.productID]
     }
 
     fun updateLastAction(talkLastAction: ProductDetailTalkLastAction) {
@@ -461,7 +467,10 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     fun getMiniCartItem(): MiniCartItem.MiniCartItemProduct? {
-        return p2Data.value?.miniCart?.get(getProductInfoP1?.basic?.productID ?: "")
+        val p2 = p2Data.value ?: return null
+        val miniCart = p2.miniCart ?: return null
+        val p1 = getProductInfoP1 ?: return null
+        return miniCart[p1.basic.productID]
     }
 
     fun updateDynamicProductInfoData(data: ProductInfoP1?) {
@@ -508,14 +517,14 @@ class ProductDetailViewModel @Inject constructor(
     fun getProductDetailTrack(): TrackProductDetail? {
         val p1 = getProductInfoP1 ?: return null
         val p2 = p2Data.value ?: return null
-
+        Timber.d("Is single sku ${p1.isProductVariant()} ${p1.isProductVariant()}")
         return TrackProductDetail(
             productId = p1.parentProductId,
             productCategory = p1.basic.category.detail.firstOrNull()?.name.orEmpty(),
             productType = p1.productType,
             originalPrice = p1.originalPriceFmt,
             salePrice = p1.data.campaign.priceFmt,
-            isSingleSku = p1.isSingleSku
+            isSingleSku = isSingleSku
         )
     }
 
@@ -532,7 +541,7 @@ class ProductDetailViewModel @Inject constructor(
             originalPrice = p1?.originalPriceFmt.orEmpty(),
             salePrice = p1?.data?.campaign?.priceFmt.orEmpty(),
             isLoadData = isLoadData,
-            isSingleSku = p1?.isSingleSku == true,
+            isSingleSku = isSingleSku,
             mainPhotoViewCount = mainCount,
             skuPhotoViewCount = skuCount,
             isAddCartSelected = hasDoneAddToCart
@@ -787,7 +796,7 @@ class ProductDetailViewModel @Inject constructor(
                 originalPrice = data.originalPrice,
                 salePrice = data.finalPrice,
                 skuId = data.basic.productID,
-                isSingleSku = data.isSingleSku,
+                isSingleSku = isSingleSku,
                 qty = data.basic.minOrder.toString(),
                 isHaveAddress = false
             )

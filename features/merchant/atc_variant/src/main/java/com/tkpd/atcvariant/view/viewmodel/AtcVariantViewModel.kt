@@ -509,8 +509,8 @@ class AtcVariantViewModel @Inject constructor(
                     productId = parentId,
                     productCategory = categoryLvl1,
                     productType = ProductType.AVAILABLE, // always available tbc
-                    originalPrice = selectedChild?.finalPrice.orZero(),
-                    salePrice = selectedChild?.price.orZero(),
+                    originalPrice = selectedChild?.finalMainPrice.orZero(),
+                    salePrice = selectedChild?.finalPrice.orZero(),
                     skuId = selectedChild?.productId.orEmpty(),
                     addSkuNum = selectedChild?.getFinalMinOrder().orZero()
                 )
@@ -521,8 +521,8 @@ class AtcVariantViewModel @Inject constructor(
                     productId = parentId,
                     productCategory = categoryLvl1,
                     productType = ProductType.AVAILABLE, // always available tbc
-                    originalPrice = selectedChild?.finalPrice.orZero(),
-                    salePrice = selectedChild?.price.orZero(),
+                    originalPrice = selectedChild?.finalMainPrice.orZero(),
+                    salePrice = selectedChild?.finalPrice.orZero(),
                     skuId = selectedChild?.productId.orEmpty(),
                     isSingleSku = getVariantData()?.children?.size == 1,
                     qty = selectedChild?.getFinalMinOrder().orZero().toString(),
@@ -647,8 +647,8 @@ class AtcVariantViewModel @Inject constructor(
             productId = parentId,
             productCategory = categoryLvl1,
             productType = ProductType.AVAILABLE,
-            originalPrice = selectedChild?.finalPrice.orZero(),
-            salePrice = selectedChild?.price.orZero(),
+            originalPrice = selectedChild?.finalMainPrice.orZero(),
+            salePrice = selectedChild?.finalPrice.orZero(),
             skuId = selectedChild?.productId.orEmpty(),
             addSkuNum = selectedChild?.getFinalMinOrder().orZero(),
         )

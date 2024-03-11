@@ -17,6 +17,7 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.getEntranceForm
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
@@ -378,13 +379,14 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun handleUIClick(view: View) {
-        if(isEligibleToTrack()) {
-            dataItem?.let {
+        dataItem?.let {
+            if (it.isEligibleToTrack()) {
                 AppLogRecommendation.sendProductClickAppLog(
-                    it.asProductTrackModel(productCardName)
+                    it.asProductTrackModel(productCardName, isEligibleToTrack())
                 )
             }
         }
+
         masterProductCardItemViewModel?.sendTopAdsClick()
         var applink = dataItem?.applinks ?: ""
         if ((fragment as DiscoveryFragment).isAffiliateInitialized) {
@@ -423,14 +425,14 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun trackShowProductCard(dataItem: DataItem) {
         masterProductCardGridView?.addOnImpression1pxListener(dataItem.appLogImpressHolder) {
-            if(isEligibleToTrack()) {
+            if (dataItem.isEligibleToTrack()) {
                 AppLogRecommendation.sendProductShowAppLog(
                     dataItem.asProductTrackModel(productCardName)
                 )
             }
         }
         masterProductCardListView?.addOnImpression1pxListener(dataItem.appLogImpressHolder) {
-            if(isEligibleToTrack()) {
+            if (dataItem.isEligibleToTrack()) {
                 AppLogRecommendation.sendProductShowAppLog(
                     dataItem.asProductTrackModel(productCardName)
                 )
@@ -515,12 +517,13 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             sessionId = dataItem?.getAppLog()?.sessionId.orEmpty(),
             requestId = dataItem?.getAppLog()?.requestId.orEmpty(),
             moduleName = dataItem?.getAppLog()?.pageName.orEmpty(),
-            listName = dataItem?.tabName.orEmpty(),
-            listNum = dataItem?.tabIndex?.firstOrNull().orZero(),
+            listName = dataItem?.topLevelTab?.name.orEmpty(),
+            listNum = dataItem?.topLevelTab?.index?:-1,
+            entranceForm = productCardName.getEntranceForm()
         )
     }
 
     override fun isEligibleToTrack(): Boolean {
-        return dataItem?.isEligibleToTrack().orFalse()
+        return dataItem?.isEligibleToTrack().orFalse() && masterProductCardItemViewModel?.getTemplateType() != LIST
     }
 }

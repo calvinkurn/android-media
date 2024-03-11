@@ -138,6 +138,11 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         bottomsheetTitle
                         recommendation
                       }
+                      liveIndicator {
+                        isLive
+                        channelID
+                        applink
+                      }
                       videos {
                         source
                         url

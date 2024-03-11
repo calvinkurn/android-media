@@ -1,6 +1,6 @@
 package com.tokopedia.product.info.view.models
 
-import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
+import com.tokopedia.product.detail.common.data.model.media.YoutubeVideo
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
 
 /**

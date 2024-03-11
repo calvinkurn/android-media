@@ -14,6 +14,7 @@ import io.mockk.slot
 const val AutoCompleteInitialStateSuccessJSON = "autocomplete/unify/initial_state.json"
 const val AutoCompleteInitialStateRecentSuccessJSON = "autocomplete/unify/initial_state_recent.json"
 const val AutoCompleteSuggestionSuccessJSON = "autocomplete/unify/suggestion_state.json"
+const val AutoCompleteSuggestionShopAdsSuccessJSON = "autocomplete/unify/suggestion_state-with-shop-ads.json"
 const val AutoCompleteSuggestionRumahSuccessJSON = "autocomplete/unify/suggestion_state_rumah.json"
 const val AutoCompleteSuggestionRumahBothSuccessJSON = "autocomplete/unify/suggestion_state_rumah_both.json"
 const val HeadlineAdsRumahSuccessJSON = "autocomplete/unify/headline_ads_rumah.json"

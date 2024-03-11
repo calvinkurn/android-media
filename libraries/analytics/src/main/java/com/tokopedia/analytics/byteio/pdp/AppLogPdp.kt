@@ -17,6 +17,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastDataBeforeCurrent
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
+import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
@@ -181,7 +182,7 @@ object AppLogPdp {
         AppLogAnalytics.putPageData(SOURCE_PREVIOUS_PAGE, getLastDataBeforeCurrent(PAGE_NAME).toString())
         AppLogAnalytics.send(EventName.ENTER_PAGE, JSONObject().also {
             it.addPage()
-            it.addEnterFrom()
+            it.put(ENTER_FROM, getLastDataBeforeCurrent(ENTER_FROM))
             it.addSourcePreviousPage()
             it.addEnterMethod()
             it.addEntranceInfoCart()
@@ -230,7 +231,7 @@ object AppLogPdp {
             it.put("delivery_info", model.deliveryInfo)
             it.put("pay_type", model.payType)
             it.put("cart_item_id", model.cartItemId)
-            it.put("sku_id", model.skuId)
+//            it.put("sku_id", model.skuId) // removed
             it.put("order_id", model.orderId)
             it.put("combo_id", model.comboId)
             it.put("product_id", model.productId)

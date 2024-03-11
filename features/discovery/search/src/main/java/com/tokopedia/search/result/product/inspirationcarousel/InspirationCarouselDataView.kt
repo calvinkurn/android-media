@@ -3,13 +3,15 @@ package com.tokopedia.search.result.product.inspirationcarousel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.SourcePageType
+import com.tokopedia.analytics.byteio.SourcePageType.PRODUCT_CARD
+import com.tokopedia.analytics.byteio.SourcePageType.VIDEO
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_DILAYANI_TOKOPEDIA
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
@@ -310,10 +312,10 @@ data class InspirationCarouselDataView(
                 searchId = byteIOTrackingData.searchId,
                 searchEntrance = byteIOTrackingData.searchEntrance,
                 searchResultId = getRank().toString(),
-                listItemId = getListItemId(),
+                listItemId = getByteIOProductId(),
                 itemRank = getItemRank(),
                 listResultType = AppLogSearch.ParamValue.GOODS,
-                productID = id,
+                productID = getByteIOProductId(),
                 searchKeyword = byteIOTrackingData.keyword,
                 tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
                 rank = getRank(),
@@ -323,18 +325,18 @@ data class InspirationCarouselDataView(
                 aladdinButtonType = aladdinButtonType,
             )
 
-            private fun getListItemId() =
+            private fun getByteIOProductId() =
                 if (hasParentId()) parentId
                 else id
 
             fun asByteIOProduct() = AppLogSearch.Product(
                 entranceForm = EntranceForm.SEARCH_HORIZONTAL_GOODS_CARD,
                 isAd = isOrganicAds,
-                productID = id,
+                productID = getByteIOProductId(),
                 searchID = byteIOTrackingData.searchId,
                 requestID = byteIOTrackingData.imprId,
                 searchResultID = getRank().toString(),
-                listItemId = getListItemId(),
+                listItemId = getByteIOProductId(),
                 itemRank = getItemRank(),
                 listResultType = AppLogSearch.ParamValue.GOODS,
                 searchKeyword = byteIOTrackingData.keyword,
@@ -342,6 +344,7 @@ data class InspirationCarouselDataView(
                 rank = getRank(),
                 shopID = null,
                 searchEntrance = byteIOTrackingData.searchEntrance,
+                sourcePageType = if (customVideoURL.isBlank()) PRODUCT_CARD else VIDEO,
             )
         }
     }

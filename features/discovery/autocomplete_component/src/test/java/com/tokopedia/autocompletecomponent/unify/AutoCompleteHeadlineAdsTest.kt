@@ -14,7 +14,7 @@ class AutoCompleteHeadlineAdsTest : AutoCompleteTestFixtures() {
         val initialParameter = mapOf(SearchApiConst.Q to "samsung")
         val viewModel = autoCompleteViewModel(AutoCompleteState(initialParameter))
         val suggestionModel =
-            AutoCompleteSuggestionSuccessJSON.jsonToObject<SuggestionUnifyModel>()
+            AutoCompleteSuggestionShopAdsSuccessJSON.jsonToObject<SuggestionUnifyModel>()
         val shopAdsModel = HeadlineAdsRumahSuccessJSON.jsonToObject<ShopAdsModel>()
         suggestionModel.data.cpmModel = shopAdsModel.cpmModel
 

@@ -117,7 +117,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anch
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
@@ -157,9 +156,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.mvcwidget.AnimatedInfos
-import com.tokopedia.mvcwidget.IntentManger
-import com.tokopedia.mvcwidget.IntentManger.Keys.REGISTER_MEMBER_SUCCESS
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
@@ -1887,26 +1883,6 @@ open class DiscoveryFragment :
                         (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel)
                     discoveryPlayWidgetViewModel.updatePlayWidgetTotalView(channelId, totalView)
                     discoveryPlayWidgetViewModel.updatePlayWidgetReminder(channelId, isReminder)
-                }
-            }
-
-            MvcView.REQUEST_CODE -> {
-                if (resultCode == MvcView.RESULT_CODE_OK) {
-                    data?.let {
-                        val bundle = data.getBundleExtra(REGISTER_MEMBER_SUCCESS)
-                        bundle?.let {
-                            val listInfo =
-                                bundle.getParcelableArrayList<AnimatedInfos>(IntentManger.Keys.ANIMATED_INFO)
-                                    ?: ArrayList()
-                            val isShown = bundle.getBoolean(IntentManger.Keys.IS_SHOWN, true)
-                            val shopID = bundle.getString(IntentManger.Keys.SHOP_ID, "")
-                            (discoveryBaseViewModel as? DiscoMerchantVoucherViewModel)?.updateData(
-                                shopID,
-                                isShown,
-                                listInfo
-                            )
-                        }
-                    }
                 }
             }
         }

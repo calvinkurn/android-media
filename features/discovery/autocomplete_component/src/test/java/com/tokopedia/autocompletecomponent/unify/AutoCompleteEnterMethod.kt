@@ -29,7 +29,7 @@ class AutoCompleteEnterMethod: AutoCompleteTestFixtures() {
 
         autoCompleteViewModel.onScreenInitialized()
 
-        assertThat(autoCompleteViewModel.stateValue.enterMethod, `is`(""))
+        assertThat(autoCompleteViewModel.stateValue.enterMethod, `is`(ENTER))
     }
 
     @Test

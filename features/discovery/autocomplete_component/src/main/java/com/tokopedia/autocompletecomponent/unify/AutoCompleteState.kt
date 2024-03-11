@@ -24,7 +24,7 @@ data class AutoCompleteState(
         get() = !isInitialState
 
     val enterMethod: String
-        get() = parameter[ENTER_METHOD] ?: ""
+        get() = parameter[ENTER_METHOD] ?: ENTER
 
     val query: String
         get() = parameter[SearchApiConst.Q] ?: ""
@@ -60,9 +60,6 @@ data class AutoCompleteState(
         val dimension90 = Dimension90Utils.getDimension90(parameter)
         val searchTerm = parameter.getOrElse(SearchApiConst.Q) { "" }
 
-        // AppLog Logic
-        var masterIndex = -1
-
         // Ads Logic
         val firstAdsId = resultData.cpmModel.data.getOrNull(0)?.cpm?.cpmShop?.id
         val secondAdsId = resultData.cpmModel.data.getOrNull(1)?.cpm?.cpmShop?.id
@@ -78,7 +75,12 @@ data class AutoCompleteState(
             }
 
         val adsModel = adsIndex?.let { resultData.cpmModel.data[it] }
-        val mappedResultList = resultData.data.map {
+
+        val suggestionUnifyList =
+            if (adsModel == null) resultData.data.filterNot(SuggestionUnify::isAds)
+            else resultData.data
+
+        val mappedResultList = suggestionUnifyList.mapIndexed { index, it ->
             val domainModel =
                 if (it.isAds && adsModel != null) {
                     it.copy(
@@ -100,19 +102,15 @@ data class AutoCompleteState(
                             trackerUrl = adsModel.adClickUrl
                         )
                     )
-                } else if (it.isAds) {
-                    SuggestionUnify()
                 } else {
                     it
                 }
-            if (domainModel.isTrendingWord()) {
-                masterIndex += 1
-            }
+
             AutoCompleteUnifyDataView(
-                domainModel,
+                domainModel = domainModel,
                 searchTerm = searchTerm,
                 dimension90 = dimension90,
-                appLogIndex = masterIndex
+                appLogIndex = index,
             )
         }
         return mappedResultList

@@ -3,6 +3,8 @@ package com.tokopedia.search.result.presentation.model
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.analytics.byteio.EntranceForm.SEARCH_PURE_GOODS_CARD
 import com.tokopedia.analytics.byteio.EntranceForm.SEARCH_VIDEO_GOODS_CARD
+import com.tokopedia.analytics.byteio.SourcePageType.PRODUCT_CARD
+import com.tokopedia.analytics.byteio.SourcePageType.VIDEO
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.VIDEO_GOODS
@@ -212,11 +214,11 @@ class ProductItemDataView:
             imprId = byteIOTrackingData.imprId,
             searchId = byteIOTrackingData.searchId,
             searchEntrance = byteIOTrackingData.searchEntrance,
-            searchResultId = byteIOTrackingSearchResultID(),
+            searchResultId = byteIOProductId(),
             listItemId = null,
             itemRank = null,
             listResultType = null,
-            productID = productID,
+            productID = byteIOProductId(),
             searchKeyword = byteIOTrackingData.keyword,
             tokenType = if (customVideoURL.isBlank()) GOODS else VIDEO_GOODS,
             rank = getRank(),
@@ -226,17 +228,17 @@ class ProductItemDataView:
             aladdinButtonType = aladdinButtonType,
         )
 
-    private fun byteIOTrackingSearchResultID(): String =
+    private fun byteIOProductId(): String =
         if (hasParent()) parentId
         else productID
 
     fun asByteIOProduct() = AppLogSearch.Product(
         entranceForm = if (customVideoURL.isBlank()) SEARCH_PURE_GOODS_CARD else SEARCH_VIDEO_GOODS_CARD,
         isAd = isAds,
-        productID = productID,
+        productID = byteIOProductId(),
         searchID = byteIOTrackingData.searchId,
         requestID = byteIOTrackingData.imprId,
-        searchResultID = byteIOTrackingSearchResultID(),
+        searchResultID = byteIOProductId(),
         listItemId = null,
         itemRank = null,
         listResultType = null,
@@ -245,6 +247,7 @@ class ProductItemDataView:
         rank = getRank(),
         shopID = shopID,
         searchEntrance = byteIOTrackingData.searchEntrance,
+        sourcePageType = if (customVideoURL.isBlank()) PRODUCT_CARD else VIDEO,
     )
 
     companion object {

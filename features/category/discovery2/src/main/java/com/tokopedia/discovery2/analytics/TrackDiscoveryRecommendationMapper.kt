@@ -12,7 +12,8 @@ import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 
 object TrackDiscoveryRecommendationMapper {
     fun DataItem.asProductTrackModel(
-        componentNames: String
+        componentNames: String,
+        isEligibleRecTrigger : Boolean = true
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = productId.orEmpty(),
@@ -28,11 +29,12 @@ object TrackDiscoveryRecommendationMapper {
             shopId = shopId.orEmpty(),
             entranceForm = componentNames.getEntranceForm(),
             originalPrice = price.toFloatOrZero(),
-            salesPrice = discountedPrice.toFloatOrZero()
+            salesPrice = discountedPrice.toFloatOrZero(),
+            isEligibleRecTrigger = isEligibleRecTrigger
         )
     }
 
-    private fun String.getEntranceForm(): EntranceForm {
+    fun String.getEntranceForm(): EntranceForm {
         return when (this) {
             ComponentNames.ProductCardCarouselItem.componentName,
             ComponentNames.ProductCardCarouselItemReimagine.componentName,

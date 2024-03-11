@@ -39,6 +39,13 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
+
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultShow(
+//            product.asByteIOSearchResult(null)
+//        )
+//
+//        AppLogSearch.eventProductShow(product.asByteIOProduct())
     }
 
     override fun trackEventImpressionInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product) {
@@ -50,6 +57,13 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
+
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultShow(
+//            product.asByteIOSearchResult(null)
+//        )
+//
+//        AppLogSearch.eventProductShow(product.asByteIOProduct())
     }
 
     override fun trackEventClickInspirationCarouselGridItem(
@@ -78,6 +92,13 @@ class InspirationCarouselViewDelegate @Inject constructor(
             )
 
         InspirationCarouselTracking.trackCarouselClick(data)
+
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultClick(
+//            product.asByteIOSearchResult("")
+//        )
+//
+//        AppLogSearch.eventProductClick(product.asByteIOProduct())
     }
 
     override fun trackEventImpressionInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product) {
@@ -89,6 +110,13 @@ class InspirationCarouselViewDelegate @Inject constructor(
         val trackingQueue = trackingQueue
 
         InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
+
+        // TODO:: To be enabled later
+//        AppLogSearch.eventSearchResultShow(
+//            product.asByteIOSearchResult(null)
+//        )
+//
+//        AppLogSearch.eventProductShow(product.asByteIOProduct())
     }
 
     override fun trackEventClickInspirationCarouselChipsItem(

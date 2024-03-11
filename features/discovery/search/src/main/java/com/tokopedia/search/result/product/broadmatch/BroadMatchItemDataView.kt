@@ -2,6 +2,7 @@ package com.tokopedia.search.result.product.broadmatch
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
@@ -52,6 +53,7 @@ data class BroadMatchItemDataView(
     val externalReference: String = "",
     val stockBarDataView: StockBarDataView = StockBarDataView(),
     val warehouseID: String = "",
+    val parentId: String = "",
     val byteIOTrackingData: ByteIOTrackingData = ByteIOTrackingData(),
     val byteIORanking: ByteIORankingImpl = ByteIORankingImpl(),
 ) : ImpressHolder(), Wishlistable, ByteIORanking by byteIORanking {
@@ -81,6 +83,8 @@ data class BroadMatchItemDataView(
         )
     }
 
+    private fun hasParentId() = parentId != "" && parentId != ZERO_PARENT_ID
+
     fun asImpressionObjectDataLayer(): Any {
         return asObjectDataLayer()
     }
@@ -96,10 +100,10 @@ data class BroadMatchItemDataView(
         searchId = byteIOTrackingData.searchId,
         searchEntrance = byteIOTrackingData.searchEntrance,
         searchResultId = getRank().toString(),
-        listItemId = id,
+        listItemId = getByteIOProductId(),
         itemRank = getItemRank(),
         listResultType = AppLogSearch.ParamValue.GOODS,
-        productID = id,
+        productID = getByteIOProductId(),
         searchKeyword = byteIOTrackingData.keyword,
         tokenType = AppLogSearch.ParamValue.GOODS_COLLECT,
         rank = getRank(),
@@ -109,14 +113,18 @@ data class BroadMatchItemDataView(
         aladdinButtonType = aladdinButtonType,
     )
 
+    private fun getByteIOProductId() =
+        if (hasParentId()) parentId
+        else id
+
     fun asByteIOProduct() = AppLogSearch.Product(
         entranceForm = EntranceForm.SEARCH_HORIZONTAL_GOODS_CARD,
         isAd = isOrganicAds,
-        productID = id,
+        productID = getByteIOProductId(),
         searchID = byteIOTrackingData.searchId,
         requestID = byteIOTrackingData.imprId,
         searchResultID = getRank().toString(),
-        listItemId = id,
+        listItemId = getByteIOProductId(),
         itemRank = getItemRank(),
         listResultType = AppLogSearch.ParamValue.GOODS,
         searchKeyword = byteIOTrackingData.keyword,
@@ -124,9 +132,12 @@ data class BroadMatchItemDataView(
         rank = getRank(),
         shopID = shopId,
         searchEntrance = byteIOTrackingData.searchEntrance,
+        sourcePageType = SourcePageType.PRODUCT_CARD,
     )
 
     companion object {
+
+        private const val ZERO_PARENT_ID = "0"
 
         fun create(
             otherRelatedProduct: OtherRelatedProduct,
@@ -199,6 +210,7 @@ data class BroadMatchItemDataView(
             externalReference = externalReference,
             stockBarDataView = product.stockBarDataView,
             warehouseID = product.warehouseID,
+            parentId = product.parentId,
             byteIOTrackingData = byteIOTrackingData,
         )
 

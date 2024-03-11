@@ -37,7 +37,7 @@ data class TrackStayProductDetail(
     val isSingleSku: Boolean,
     val mainPhotoViewCount: Int,
     val skuPhotoViewCount: Int,
-    val isSkuSelected: Boolean = true, // always selected in case of P1 flow
+    var isSkuSelected: Boolean = true,
     val isAddCartSelected: Boolean
 )
 
@@ -92,13 +92,13 @@ data class SubmitOrderResult(
     val discountedShippingPrice: Double,
     val totalPayment: Double,
     val discountedAmount: Double,
-    val totalTax: Double,
+    val totalTax: Double = 0.0,
     val summaryInfo: String,
     val currency: String = "IDR",
     val deliveryInfo: String,
     val payType: String,
     val cartItemId: String,
-    val skuId: String,
+    val skuId: String? = null,
     val orderId: String,
     val comboId: String,
     val productId: String

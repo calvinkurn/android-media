@@ -222,50 +222,6 @@
         "flags": []
       },
       {
-        "suggestion_id": "",
-        "feature_id": "",
-        "feature_type": "",
-        "template": "master",
-        "url": "",
-        "applink": "",
-        "is_ads": true,
-        "image": {
-          "image_url": "",
-          "is_border": false,
-          "radius": "",
-          "icon_image_url": ""
-        },
-        "title": {
-          "text": "",
-          "type": "",
-          "icon_image_url": ""
-        },
-        "subtitle": {
-          "text": "",
-          "icon_image_url": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/73219520-a7b2-4289-ab74-1a6d9e5d5fcf.png"
-        },
-        "label": {
-          "text": "",
-          "text_color": "",
-          "bg_color": ""
-        },
-        "cta": {
-          "action": "",
-          "image_url": ""
-        },
-        "product": {
-          "discount": "",
-          "original_price": ""
-        },
-        "tracking": {
-          "code": "",
-          "component_id": "02.11.02.01",
-          "tracking_option": 3,
-          "tracker_url": ""
-        },
-        "flags": []
-      },
-      {
         "suggestion_id": "15274229",
         "feature_id": "shop",
         "feature_type": "",

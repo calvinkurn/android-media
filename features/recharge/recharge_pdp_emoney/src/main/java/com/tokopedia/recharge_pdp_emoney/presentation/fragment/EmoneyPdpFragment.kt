@@ -33,6 +33,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
@@ -71,6 +72,7 @@ import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyBCAInfoB
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyMenuBottomSheets
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyProductDetailBottomSheet
 import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyBCAGenCheckModel
+import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyImageModel
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpBottomCheckoutWidget
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
@@ -286,6 +288,8 @@ open class EmoneyPdpFragment :
                                 }
                             }
                         }
+
+                        renderImages(it.data)
                     }
                 }
             }
@@ -390,6 +394,18 @@ open class EmoneyPdpFragment :
                 }
             }
         }
+    }
+
+    private fun renderImages(data: TelcoCatalogPrefixSelect) {
+        binding.emoneyPdpInputCardWidget.renderEmoneyImages(mapImage(data), childFragmentManager)
+    }
+
+    private fun mapImage(data: TelcoCatalogPrefixSelect): List<EmoneyImageModel> {
+        return data.rechargeCatalogPrefixSelect.prefixes.filter {
+            it.operator.attributes.status == STATUS_ACTIVE
+        }.map {
+            EmoneyImageModel(it.operator.attributes.imageUrl, it.operator.attributes.name)
+        }.distinct()
     }
 
     private fun trackOnClickMultiCheckout(data: DigitalAtcTrackingModel) {
@@ -1178,6 +1194,8 @@ open class EmoneyPdpFragment :
         const val ISSUER_NAME_EMONEY = "emoney"
         const val ISSUER_NAME_BRIZZI = "brizzi"
         const val ISSUER_NAME_TAPCASH = "tapcash"
+
+        private const val STATUS_ACTIVE = 1
 
         private const val TOOLBAR_ICON_SIZE = 64
 

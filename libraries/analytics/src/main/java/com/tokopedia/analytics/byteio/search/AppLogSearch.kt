@@ -16,7 +16,6 @@ import com.tokopedia.analytics.byteio.EventName
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_CLICK
 import com.tokopedia.analytics.byteio.EventName.CART_ENTRANCE_SHOW
 import com.tokopedia.analytics.byteio.PageName
-import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.CHOOSE_SEARCH_FILTER
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.ENTER_SEARCH_BLANKPAGE
 import com.tokopedia.analytics.byteio.search.AppLogSearch.Event.SEARCH
@@ -242,7 +241,7 @@ object AppLogSearch {
     ) {
         fun json() = JSONObject(buildMap {
             put(IMPR_ID, imprId)
-            put(ENTER_FROM, enterFrom())
+            put(ENTER_FROM, enterFrom)
             put(SEARCH_TYPE, searchType)
             put(ENTER_METHOD, enterMethod)
             put(SEARCH_KEYWORD, searchKeyword)
@@ -370,6 +369,8 @@ object AppLogSearch {
         val shopId: String?,
         val aladdinButtonType: String?,
     ) {
+        val trackId: String
+            get() = "${searchId}_${(itemRank ?: rank)}"
 
         fun json() = JSONObject(
             buildMap {
@@ -406,6 +407,16 @@ object AppLogSearch {
 
     fun eventSearchResultClick(searchResult: SearchResult) {
         AppLogAnalytics.send(SEARCH_RESULT_CLICK, searchResult.json())
+
+        with(searchResult) {
+            AppLogAnalytics.setGlobalParams(
+                trackId = trackId,
+                requestId = imprId,
+            )
+
+            AppLogAnalytics.putPageData(SEARCH_RESULT_ID, searchResultId)
+            listItemId?.let { AppLogAnalytics.putPageData(LIST_ITEM_ID, it) }
+        }
     }
 
     data class ChooseSearchFilter(
@@ -452,10 +463,8 @@ object AppLogSearch {
         val rank: Int,
         val shopID: String?,
         val searchEntrance: String,
+        val sourcePageType: String,
     ) {
-        val sourcePageType: String
-            get() = SourcePageType.PRODUCT_CARD
-
         val trackId: String
             get() = "${searchID}_${(itemRank ?: rank)}"
 

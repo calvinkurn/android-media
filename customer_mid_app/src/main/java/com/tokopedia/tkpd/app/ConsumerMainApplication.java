@@ -29,7 +29,6 @@ import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.newrelic.agent.android.NewRelic;
-import com.scp.auth.GotoSdk;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdate;
@@ -223,7 +222,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
         showDevOptNotification();
-        initGotoSDK();
         initByteIOPlatform();
         if (RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)) {
             PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
@@ -238,10 +236,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             TTNetHelper.initTTNet(this);
             LibraAbTest.init(this);
         }
-    }
-
-    private void initGotoSDK() {
-        GotoSdk.init(this);
     }
 
     private void initializeAppPerformanceTrace() {

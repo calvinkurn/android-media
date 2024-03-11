@@ -386,7 +386,7 @@ data class PromoData(
 
 @Parcelize
 data class PurchaseItem(
-    @SerializedName("cart_item_id")
+    @SerializedName("unique_id")
     var cartId: String = "",
     @SerializedName("parent_product_id")
     var parentProductId: String = "",
@@ -612,6 +612,8 @@ data class CustomDataOtherV2(
     val promoFlags: String?,
     @SerializedName("tickers")
     val tickers: String?,
+    @SerializedName("signature_purchase_info")
+    val signaturePurchaseInfo: String?,
     @SerializedName("summary_info")
     var summaryInfo: String = ""
 ) : Parcelable

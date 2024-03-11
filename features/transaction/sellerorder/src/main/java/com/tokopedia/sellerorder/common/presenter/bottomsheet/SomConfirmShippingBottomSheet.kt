@@ -19,15 +19,15 @@ import com.tokopedia.sellerorder.common.util.SomConsts.SOM_DROP_OFF_BOTTOM_SHEET
 import com.tokopedia.sellerorder.databinding.PartialInfoLayoutBinding
 
 class SomConfirmShippingBottomSheet(context: Context) : SomBottomSheet<PartialInfoLayoutBinding>(
-    LAYOUT,
-    true,
-    true,
-    false,
-    true,
-    false,
-    context.getString(R.string.automatic_shipping),
-    context,
-    true
+    childViewsLayoutResourceId = LAYOUT,
+    showOverlay = true,
+    showCloseButton = true,
+    showKnob = false,
+    clearPadding = true,
+    draggable = false,
+    bottomSheetTitle = context.getString(R.string.automatic_shipping),
+    context = context,
+    dismissOnClickOverlay = true
 ) {
 
     companion object {
