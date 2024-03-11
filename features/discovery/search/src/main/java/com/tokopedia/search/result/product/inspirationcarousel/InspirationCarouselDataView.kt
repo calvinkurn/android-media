@@ -3,6 +3,9 @@ package com.tokopedia.search.result.product.inspirationcarousel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.SourcePageType
+import com.tokopedia.analytics.byteio.SourcePageType.PRODUCT_CARD
+import com.tokopedia.analytics.byteio.SourcePageType.VIDEO
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
@@ -341,6 +344,7 @@ data class InspirationCarouselDataView(
                 rank = getRank(),
                 shopID = null,
                 searchEntrance = byteIOTrackingData.searchEntrance,
+                sourcePageType = if (customVideoURL.isBlank()) PRODUCT_CARD else VIDEO,
             )
         }
     }

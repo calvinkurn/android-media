@@ -3,6 +3,7 @@ package com.tokopedia.search.result.product.cpm
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analytics.byteio.EntranceForm.SEARCH_SHOP_CARD_BIG
 import com.tokopedia.analytics.byteio.EntranceForm.SEARCH_SHOP_CARD_SMALL
+import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SHOP_BIG
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SHOP_SMALL
@@ -134,6 +135,7 @@ data class CpmDataView(
             rank = getRank(),
             shopID = shopId,
             searchEntrance = byteIOTrackingData.searchEntrance,
+            sourcePageType = SourcePageType.PRODUCT_CARD,
         )
     }
 

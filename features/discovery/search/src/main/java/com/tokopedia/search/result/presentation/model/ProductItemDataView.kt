@@ -3,6 +3,8 @@ package com.tokopedia.search.result.presentation.model
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.analytics.byteio.EntranceForm.SEARCH_PURE_GOODS_CARD
 import com.tokopedia.analytics.byteio.EntranceForm.SEARCH_VIDEO_GOODS_CARD
+import com.tokopedia.analytics.byteio.SourcePageType.PRODUCT_CARD
+import com.tokopedia.analytics.byteio.SourcePageType.VIDEO
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.GOODS
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.VIDEO_GOODS
@@ -245,6 +247,7 @@ class ProductItemDataView:
         rank = getRank(),
         shopID = shopID,
         searchEntrance = byteIOTrackingData.searchEntrance,
+        sourcePageType = if (customVideoURL.isBlank()) PRODUCT_CARD else VIDEO,
     )
 
     companion object {

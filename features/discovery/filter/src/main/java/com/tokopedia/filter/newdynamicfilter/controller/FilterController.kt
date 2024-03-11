@@ -378,9 +378,7 @@ open class FilterController {
         filterViewState.map { selectedOptionUniqueId ->
             val option = OptionHelper.generateOptionFromUniqueId(selectedOptionUniqueId)
             val position = filterList.withIndex().find { filterIndexed ->
-                filterIndexed.value.options.any {
-                    opt -> opt.uniqueId == selectedOptionUniqueId
-                }
+                filterIndexed.value.options.any { it.key == option.key }
             }?.index ?: 0
 
             position to option
