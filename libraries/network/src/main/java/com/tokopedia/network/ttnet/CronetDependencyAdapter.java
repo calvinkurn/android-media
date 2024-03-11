@@ -1,7 +1,12 @@
 package com.tokopedia.network.ttnet;
 
+import android.app.Application;
+
 import com.bytedance.applog.AppLog;
 import com.bytedance.ttnet.cronet.AbsCronetDependAdapter;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.chromium.CronetAppProviderManager;
 import org.chromium.CronetDependManager;
@@ -9,7 +14,10 @@ import org.chromium.CronetDependManager;
 public class CronetDependencyAdapter extends AbsCronetDependAdapter {
    public static CronetDependencyAdapter INSTANCE = new CronetDependencyAdapter();
 
-   public static void inject() {
+   private static UserSessionInterface userSession;
+
+   public static void inject(Application application) {
+      userSession = new UserSession(application);
       CronetDependManager.inst().setAdapter(INSTANCE);
       CronetAppProviderManager.inst().setAdapter(INSTANCE);
    }
@@ -17,7 +25,7 @@ public class CronetDependencyAdapter extends AbsCronetDependAdapter {
    @Override
    public boolean loggerDebug() {
       // always return false unless it's on debug mode
-      return false;
+      return GlobalConfig.DEBUG;
    }
 
    @Override
@@ -28,7 +36,7 @@ public class CronetDependencyAdapter extends AbsCronetDependAdapter {
    @Override
    public String getUserId() {
       //todo, plz use Tokopedia Account service to return this value
-      return "";
+      return userSession.getUserId();
    }
 
    @Override
@@ -44,33 +52,33 @@ public class CronetDependencyAdapter extends AbsCronetDependAdapter {
    @Override
    public String getChannel() {
       // todo plz define your own channel enums: local_test, googleplay, xiaomi...
-      return "local_test";
+      return GlobalConfig.isAllowDebuggingTools() ? "local_test" : "googleplay";
    }
 
    @Override
    public String getVersionCode() {
       // todo remind that every version needs to be read from manifest or other config file
-      return "320309600";
+      return String.valueOf(GlobalConfig.VERSION_CODE);
    }
 
    @Override
    public String getVersionName() {
       // split by .
       // todo plz choose one of them
-      return "3.96";
-//      return "32.3.96.0.0";
+      // Prefer Format "32.3.96.0.0"
+      return GlobalConfig.VERSION_NAME;
    }
 
    @Override
    public String getUpdateVersionCode() {
       // same as getVersionCode (this update is for China domestic app only, so we use it same as version_code)
-      return "320309600";
+      return String.valueOf(GlobalConfig.VERSION_CODE);
    }
 
    @Override
    public String getManifestVersionCode() {
       // App对外发布版本号，返回接入app对外发布版本号
-      return "320309600";
+      return String.valueOf(GlobalConfig.VERSION_CODE);
    }
 
    @Override
