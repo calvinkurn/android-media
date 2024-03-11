@@ -34,6 +34,7 @@ class VideoPictureView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
+    var lastPositionIsSku: Pair<Int, Boolean>? = null
     private var componentTrackDataModel: ComponentTrackDataModel? = null
     private var mListener: ProductDetailListener? = null
     private var videoPictureAdapter: VideoPictureAdapter? = null
@@ -163,7 +164,9 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun onMediaPageSelected(position: Int) {
         val selected = videoPictureAdapter?.currentList?.getOrNull(position)
-        mListener?.onMediaViewed(position, selected?.variantOptionId.orEmpty().isNotBlankOrZero())
+        val isSku = selected?.variantOptionId.orEmpty().isNotBlankOrZero()
+        mListener?.onMediaViewed(position, isSku)
+        lastPositionIsSku = position to isSku
         if (pagerSelectedLastPosition != position) {
 
             if (selected != null) {

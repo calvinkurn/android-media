@@ -274,6 +274,7 @@ import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
+import com.tokopedia.product.detail.view.viewholder.media.ProductMediaViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
@@ -911,6 +912,14 @@ open class ProductDetailFragment :
         reloadUserLocationChanged()
         reloadMiniCart()
         reloadFintechWidget()
+        val positionSku = (getViewHolderByPosition(0) as? ProductMediaViewHolder)?.mediaPosition
+        positionSku?.let {
+            if (it.second) {
+                viewModel.skuPhotoViewed.add(it.first)
+            } else {
+                viewModel.mainPhotoViewed.add(it.first)
+            }
+        }
     }
 
     private fun reloadFintechWidget() {
