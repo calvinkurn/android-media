@@ -174,7 +174,12 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addSourceModule() {
-        put(SOURCE_MODULE, getLastData(SOURCE_MODULE))
+        val sourceModule = if (currentActivityName == "AtcVariantActivity") {
+            getLastDataExactStep(SOURCE_MODULE, 2)
+        } else {
+            getLastDataExactStep(SOURCE_MODULE)
+        }
+        put(SOURCE_MODULE, sourceModule)
     }
 
     internal fun JSONObject.addRequestId() {
@@ -296,6 +301,12 @@ object AppLogAnalytics {
             }
         }
         return null
+    }
+
+    fun getLastDataExactStep(key: String, step: Int = 1): Any? {
+        val idx = _pageDataList.lastIndex - step
+        val map = _pageDataList.getOrNull(idx)
+        return map?.getOrDefault(key, null)
     }
 
     fun getLastDataBeforeCurrent(key: String): Any? {
