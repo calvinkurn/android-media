@@ -75,7 +75,12 @@ data class AutoCompleteState(
             }
 
         val adsModel = adsIndex?.let { resultData.cpmModel.data[it] }
-        val mappedResultList = resultData.data.mapIndexed { index, it ->
+
+        val suggestionUnifyList =
+            if (adsModel == null) resultData.data.filterNot(SuggestionUnify::isAds)
+            else resultData.data
+
+        val mappedResultList = suggestionUnifyList.mapIndexed { index, it ->
             val domainModel =
                 if (it.isAds && adsModel != null) {
                     it.copy(
@@ -97,8 +102,6 @@ data class AutoCompleteState(
                             trackerUrl = adsModel.adClickUrl
                         )
                     )
-                } else if (it.isAds) {
-                    SuggestionUnify()
                 } else {
                     it
                 }
