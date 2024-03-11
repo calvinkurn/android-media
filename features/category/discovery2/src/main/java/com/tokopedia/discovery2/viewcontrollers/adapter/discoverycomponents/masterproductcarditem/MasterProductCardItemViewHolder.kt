@@ -170,8 +170,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardItemViewModel?.getDataItemValue()?.observe(
                 lifecycle,
                 Observer { data ->
+                    if(dataItem != data){
+                        trackShowProductCard(data)
+                    }
                     dataItem = data
-                    trackShowProductCard(data)
                 }
             )
             masterProductCardItemViewModel?.getProductModelValue()?.observe(
