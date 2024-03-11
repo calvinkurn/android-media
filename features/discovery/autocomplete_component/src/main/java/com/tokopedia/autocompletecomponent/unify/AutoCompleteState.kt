@@ -24,7 +24,7 @@ data class AutoCompleteState(
         get() = !isInitialState
 
     val enterMethod: String
-        get() = parameter[ENTER_METHOD] ?: ""
+        get() = parameter[ENTER_METHOD] ?: ENTER
 
     val query: String
         get() = parameter[SearchApiConst.Q] ?: ""
