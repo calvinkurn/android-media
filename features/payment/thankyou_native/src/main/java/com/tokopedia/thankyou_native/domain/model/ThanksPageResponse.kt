@@ -386,7 +386,7 @@ data class PromoData(
 
 @Parcelize
 data class PurchaseItem(
-    @SerializedName("cart_item_id")
+    @SerializedName("unique_id")
     var cartId: String = "",
     @SerializedName("parent_product_id")
     var parentProductId: String = "",
