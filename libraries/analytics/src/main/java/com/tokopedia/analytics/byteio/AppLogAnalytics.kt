@@ -36,7 +36,6 @@ import org.json.JSONObject
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
-
 object AppLogAnalytics {
 
     @JvmField
@@ -190,19 +189,6 @@ object AppLogAnalytics {
         put(ENTER_METHOD, getLastDataBeforeCurrent(ENTER_METHOD))
     }
 
-//    private fun currentPageName(): String {
-//        return synchronized(lock) {
-//            pageNames.findLast { it.first == currentActivityName }?.second ?: ""
-//        }
-//    }
-//
-//    internal fun previousPageName(skip: Int = 1): String {
-//        return synchronized(lock) {
-//            (pageNames.getOrNull(pageNames.indexOf(pageNames.findLast { it.first == currentActivityName }) - skip)?.second)
-//                ?: ""
-//        }
-//    }
-
     fun getPreviousHash(): Int {
         return pageNames.getOrNull(pageNames.size - 2)?.second.orZero()
     }
@@ -228,7 +214,9 @@ object AppLogAnalytics {
             """(%s) 
             |AppLog dId: ${AppLog.getDid()} 
             |userUniqueId: ${AppLog.getUserUniqueID()} 
-            |userId: ${AppLog.getUserUniqueID()}""".trimMargin(), TAG
+            |userId: ${AppLog.getUserUniqueID()}
+            """.trimMargin(),
+            TAG
         )
     }
 
@@ -258,11 +246,17 @@ object AppLogAnalytics {
 
             val shadowPageIndex = index - 1
             // Remove shadow stack
-            if (_pageDataList.getOrNull(shadowPageIndex)?.get(IS_SHADOW) == true) {
-                _pageDataList.removeAt(shadowPageIndex)
-            }
+            removeShadowStack(shadowPageIndex)
         }
         Timber.d("Remove _pageDataList: ${_pageDataList.printForLog()}}")
+    }
+
+    private fun removeShadowStack(currentIndex: Int) {
+        var tempCurrentIndex = currentIndex
+        while (tempCurrentIndex >= 0 && _pageDataList.getOrNull(tempCurrentIndex)?.get(IS_SHADOW) == true) {
+            _pageDataList.removeAt(tempCurrentIndex)
+            tempCurrentIndex--
+        }
     }
 
     private fun clearCurrentPageData() {
@@ -315,8 +309,11 @@ object AppLogAnalytics {
         if (_pageDataList.isEmpty()) return null
         val idx = _pageDataList.lastIndex - 1
 
-        return if (idx >= 0) _pageDataList[idx][key]
-        else null
+        return if (idx >= 0) {
+            _pageDataList[idx][key]
+        } else {
+            null
+        }
     }
 
     fun clearAllPageData() {
@@ -355,7 +352,7 @@ object AppLogAnalytics {
         isAd: Int? = null,
         trackId: String? = null,
         sourcePageType: String? = null,
-        requestId: String? = null,
+        requestId: String? = null
     ) {
         entranceForm?.let {
             putPageData(ENTRANCE_FORM, entranceForm)
@@ -377,6 +374,20 @@ object AppLogAnalytics {
         }
         requestId?.let {
             putPageData(REQUEST_ID, requestId)
+        }
+    }
+
+    fun removeGlobalParam() {
+        listOf(
+            ENTRANCE_FORM,
+            ENTER_METHOD,
+            SOURCE_MODULE,
+            IS_AD,
+            TRACK_ID,
+            SOURCE_PAGE_TYPE,
+            REQUEST_ID
+        ).forEach {
+            _pageDataList.lastOrNull()?.remove(it)
         }
     }
 
