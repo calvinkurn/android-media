@@ -431,6 +431,14 @@ object AppLogAnalytics {
         }.toString()
     }
 
+    fun getEntranceInfoForCheckout(buyType: AtcBuyType): String {
+        return JSONObject().also {
+            it.addEntranceInfoCart()
+            it.put("buy_type", buyType.code)
+            it.put("os_type", "android")
+        }.toString()
+    }
+
     fun getSourcePreviousPage(): String? {
         getLastDataBeforeCurrent(PAGE_NAME)?.let {
             return it.toString()

@@ -1363,7 +1363,7 @@ class ShipmentViewModel @Inject constructor(
             false,
             fingerprintSupport.toString(),
             publicKey,
-            AppLogAnalytics.getEntranceInfo(AtcBuyType.ATC)
+            AppLogAnalytics.getEntranceInfoForCheckout(AtcBuyType.ATC)
         )
     }
 
