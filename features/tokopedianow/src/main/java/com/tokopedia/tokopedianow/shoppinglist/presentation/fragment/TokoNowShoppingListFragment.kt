@@ -29,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -43,6 +44,7 @@ import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH
@@ -93,6 +95,7 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.Shopp
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListCartProductViewHolder
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.searchbar.R as searchbarR
@@ -108,6 +111,7 @@ class TokoNowShoppingListFragment :
         private const val TOP_CHECK_ALL_MAX_ALPHA = 255f
         private const val COACH_MARK_NOW_SHOPPING_LIST_PAGE = "coach_mark_shopping_list_page"
         private const val COACH_MARK_NOW_SHOPPING_LIST_BOTTOM_BULK_ATC = "coach_mark_shopping_list_page_bottom_bulk_atc"
+        private const val FIRST_INSTALL_CACHE_VALUE = 1800000L
 
         fun newInstance(): TokoNowShoppingListFragment = TokoNowShoppingListFragment()
     }
@@ -152,12 +156,21 @@ class TokoNowShoppingListFragment :
 
     private var isNavToolbarScrollingBehaviourEnabled: Boolean = true
     private var isStickyTopCheckAllScrollingBehaviorEnabled: Boolean = false
+    private var isShowFirstInstallSearch = false
     private var loader: LoaderDialog? = null
     private var pageCoachMark: CoachMarkModel? = null
 
     /**
      * -- override function section --
      */
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(activity)
+        firebaseRemoteConfig.let {
+            isShowFirstInstallSearch = it.getBoolean(ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentTokopedianowShoppingListBinding.inflate(inflater, container, false)
@@ -468,6 +481,35 @@ class TokoNowShoppingListFragment :
         binding?.navToolbar?.updateNotification()
     }
 
+    private fun isFirstInstall(): Boolean {
+        context?.let {
+            if (!viewModel.isLoggedIn() && isShowFirstInstallSearch) {
+                val sharedPrefs = it.getSharedPreferences(ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+                var firstInstallCacheValue = sharedPrefs.getLong(ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH, 0)
+                if (firstInstallCacheValue.isZero()) return false
+                firstInstallCacheValue += FIRST_INSTALL_CACHE_VALUE
+                val now = Date()
+                val firstInstallTime = Date(firstInstallCacheValue)
+                return if (now <= firstInstallTime) {
+                    true
+                } else {
+                    saveFirstInstallTime()
+                    false
+                }
+            } else {
+                return false
+            }
+        }
+        return false
+    }
+
+    private fun saveFirstInstallTime() {
+        context?.let {
+            val sharedPrefs = it.getSharedPreferences(ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+            sharedPrefs?.edit()?.putLong(ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH, Int.ZERO.toLong())?.apply()
+        }
+    }
+
     private fun FragmentTokopedianowShoppingListBinding.showPageCoachMark() {
         rvShoppingList.post {
             var tpShoppingList: View? = null
@@ -619,7 +661,8 @@ class TokoNowShoppingListFragment :
                         context,
                         ApplinkConstInternalDiscovery.AUTOCOMPLETE + ConstantKey.PARAM_APPLINK_AUTOCOMPLETE + "&" + "${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}",
                         TokoNowHomeFragment.SOURCE,
-                        context?.resources?.getString(R.string.tokopedianow_search_bar_hint).orEmpty()
+                        context?.resources?.getString(R.string.tokopedianow_search_bar_hint).orEmpty(),
+                        isFirstInstall().toString()
                     )
                 },
                 searchbarImpressionCallback = {},

@@ -1051,4 +1051,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
     fun getAvailableProducts(): List<ShoppingListHorizontalProductCardItemUiModel> = availableProducts
 
     fun isOutOfCoverage() = addressData.isOutOfCoverage()
+
+    fun isLoggedIn() = userSession.isLoggedIn
 }
