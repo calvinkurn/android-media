@@ -10,6 +10,7 @@ import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withStarted
@@ -17,8 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.coachmark.CoachMarkPreference
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
 import com.tokopedia.kotlin.extensions.orFalse
@@ -38,6 +41,10 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -45,13 +52,20 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ConstantKey
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.UiState
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowErrorViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowThematicHeaderViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowShoppingListBinding
+import com.tokopedia.tokopedianow.home.domain.model.Data
+import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
+import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState
 import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListComponent
@@ -114,13 +128,15 @@ class TokoNowShoppingListFragment :
             ShoppingListAdapterTypeFactory(
                 tokoNowView = this@TokoNowShoppingListFragment,
                 headerListener = createHeaderCallback(),
-                chooseAddressListener = this@TokoNowShoppingListFragment,
                 productCardItemListener = createHorizontalProductCardItemCallback(),
                 retryListener = createRetryCallback(),
                 errorListener = createErrorCallback(),
                 expandCollapseListener = createExpandCollapseCallback(),
                 topCheckAllListener = createTopCheckAllCallback(),
-                cartProductListener = createCartProductCallback()
+                cartProductListener = createCartProductCallback(),
+                emptyStateOocListener = createEmptyStateOocCallback(),
+                productRecommendationOocListener = createProductRecommendationCallback(),
+                productRecommendationOocBindListener = createProductRecommendationCallback()
             )
         )
     }
@@ -298,7 +314,7 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private suspend fun collectErrorNavToolbar(
+    private suspend fun collectNavToolbarBehavior(
         binding: FragmentTokopedianowShoppingListBinding
     ) {
         viewModel.isNavToolbarScrollingBehaviourEnabled.collect { isEnabled ->
@@ -318,6 +334,7 @@ class TokoNowShoppingListFragment :
                     switchToLightStatusBar()
                     setCustomBackButton(color = ContextCompat.getColor(context, (if (context.isDarkMode()) unifyprinciplesR.color.Unify_Static_White else searchbarR.color.searchbar_dms_state_light_icon)))
                     showShadow()
+                    setHint(SearchPlaceholder(Data(null, context?.resources?.getString(R.string.tokopedianow_search_bar_hint).orEmpty(), "")))
                 }
             }
         }
@@ -427,7 +444,7 @@ class TokoNowShoppingListFragment :
                 launch { collectLayoutState(this@collectStateFlow) }
                 launch { collectMiniCartState(this@collectStateFlow) }
                 launch { collectScrollBehavior(this@collectStateFlow) }
-                launch { collectErrorNavToolbar(this@collectStateFlow) }
+                launch { collectNavToolbarBehavior(this@collectStateFlow) }
                 launch { collectTopCheckAllSelected(this@collectStateFlow) }
                 launch { collectProductAvailability(this@collectStateFlow) }
                 launch { collectBottomBulkAtc(this@collectStateFlow) }
@@ -438,7 +455,13 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private fun loadLayout() = viewModel.loadLayout()
+    private fun loadLayout() {
+        if (viewModel.isOutOfCoverage()) {
+            viewModel.loadOutOfCoverageState()
+        } else {
+            viewModel.loadLayout()
+        }
+    }
 
     private fun resumeLayout() {
         viewModel.resumeLayout()
@@ -508,6 +531,7 @@ class TokoNowShoppingListFragment :
             viewModel.refreshLayout()
             strRefreshLayout.isEnabled = true
             strRefreshLayout.isRefreshing = false
+            navToolbar.updateNotification()
         }
     }
 
@@ -581,6 +605,29 @@ class TokoNowShoppingListFragment :
         }
     }
 
+    private fun NavToolbar.setHint(searchPlaceholder: SearchPlaceholder) {
+        searchPlaceholder.data?.let { data ->
+            setupSearchbar(
+                hints = listOf(
+                    HintData(
+                        data.placeholder.orEmpty(),
+                        data.keyword.orEmpty()
+                    )
+                ),
+                searchbarClickCallback = {
+                    RouteManager.route(
+                        context,
+                        ApplinkConstInternalDiscovery.AUTOCOMPLETE + ConstantKey.PARAM_APPLINK_AUTOCOMPLETE + "&" + "${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}",
+                        TokoNowHomeFragment.SOURCE,
+                        context?.resources?.getString(R.string.tokopedianow_search_bar_hint).orEmpty()
+                    )
+                },
+                searchbarImpressionCallback = {},
+                shouldShowTransition = false
+            )
+        }
+    }
+
     private fun IconBuilder.addNavGlobal(): IconBuilder = addIcon(
         iconId = IconList.ID_NAV_GLOBAL,
         disableRouteManager = false,
@@ -642,6 +689,8 @@ class TokoNowShoppingListFragment :
                             switchToLightStatusBar()
                             pageCoachMark?.hide()
                             pageCoachMark = null
+                        } else {
+                            navToolbar.switchToDarkToolbar()
                         }
                     }
                 }
@@ -654,6 +703,8 @@ class TokoNowShoppingListFragment :
                             navToolbar.setCustomBackButton(color = ContextCompat.getColor(binding.root.context, unifyprinciplesR.color.Unify_Static_White))
                             navToolbar.setToolbarTitle(String.EMPTY)
                             navToolbar.hideShadow()
+                        } else {
+                            navToolbar.switchToLightIcon()
                         }
                     }
                 }
@@ -752,6 +803,94 @@ class TokoNowShoppingListFragment :
         override fun onClickSeeDetail() {
             getMiniCart()?.showMiniCartListBottomSheet(this@TokoNowShoppingListFragment)
         }
+    }
+
+    private fun createEmptyStateOocCallback(): TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+        return object : TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+            override fun onRefreshLayoutPage() = refreshLayoutPage()
+
+            override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
+
+            override fun onGetEventCategory(): String = ""
+
+            override fun onSwitchService() { /* nothing to do */ }
+        }
+    }
+
+    private fun createProductRecommendationCallback() = object : TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener, TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener {
+        override fun onImpressedRecommendationCarouselItem(
+            model: TokoNowProductRecommendationOocUiModel?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+            itemPosition: Int,
+            adapterPosition: Int
+        ) {
+            //analytic
+        }
+
+        override fun onClickRecommendationCarouselItem(
+            model: TokoNowProductRecommendationOocUiModel?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+            itemPosition: Int,
+            adapterPosition: Int
+        ) {
+            //analytic
+
+            openAppLink(recomItem.appUrl)
+        }
+
+        override fun onSeeMoreClick(
+            data: RecommendationCarouselData,
+            applink: String
+        ) {
+            //analytic
+
+            RouteManager.route(context, applink)
+        }
+
+        override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) { /* do nothing */ }
+
+        override fun onGetCarouselScrollPosition(adapterPosition: Int): Int = 0
+
+        private fun openAppLink(appLink: String) {
+            if(appLink.isNotEmpty()) RouteManager.route(context, appLink)
+        }
+
+        override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
+            lifecycle.addObserver(observer)
+        }
+
+        override fun onATCNonVariantRecommendationCarouselItem(
+            model: TokoNowProductRecommendationOocUiModel?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+            recommendationCarouselPosition: Int,
+            quantity: Int
+        ) { /* do nothing */ }
+
+        override fun onAddVariantRecommendationCarouselItem(
+            model: TokoNowProductRecommendationOocUiModel?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem
+        ) { /* do nothing */ }
+
+        override fun onBindRecommendationCarousel(
+            model: TokoNowProductRecommendationOocUiModel,
+            adapterPosition: Int
+        ) { /* do noting */ }
+
+        override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) { /* nothing to do */ }
+
+        override fun onRecomTokonowAtcSuccess(message: String) { /* nothing to do */ }
+
+        override fun onRecomTokonowAtcFailed(throwable: Throwable) { /* nothing to do */ }
+
+        override fun onRecomTokonowAtcNeedToSendTracker(recommendationItem: RecommendationItem) { /* nothing to do */ }
+
+        override fun onRecomTokonowDeleteNeedToSendTracker(recommendationItem: RecommendationItem) { /* nothing to do */ }
+
+        override fun onClickItemNonLoginState() { /* nothing to do */ }
     }
 
     /**

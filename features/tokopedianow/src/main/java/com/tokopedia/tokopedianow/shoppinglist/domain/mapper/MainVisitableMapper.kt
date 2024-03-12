@@ -5,11 +5,17 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_OOC
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
 import com.tokopedia.tokopedianow.common.model.TokoNowDividerUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTitleUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder.Companion.SOURCE
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState.EXPAND
@@ -111,7 +117,7 @@ internal object MainVisitableMapper {
     fun MutableList<Visitable<*>>.addHeader(
         headerModel: HeaderModel,
         @TokoNowLayoutState state: Int
-    ) {
+    ): MutableList<Visitable<*>> {
         add(
             TokoNowThematicHeaderUiModel(
                 pageTitle = headerModel.pageTitle,
@@ -121,9 +127,14 @@ internal object MainVisitableMapper {
                 ctaChevronIsShown = headerModel.ctaChevronIsShown,
                 ctaChevronColor = headerModel.ctaChevronColor,
                 backgroundGradientColor = headerModel.backgroundGradientColor,
+                chooseAddressResIntColor = headerModel.chooseAddressResIntColor,
+                isSuperGraphicImageShown = headerModel.isSuperGraphicImageShown,
+                isChooseAddressShown = headerModel.isChooseAddressShown,
+                iconPullRefreshType = headerModel.iconPullRefreshType,
                 state = state
             )
         )
+        return this
     }
 
     fun MutableList<Visitable<*>>.addEmptyShoppingList(): MutableList<Visitable<*>> {
@@ -275,6 +286,29 @@ internal object MainVisitableMapper {
     fun MutableList<ShoppingListHorizontalProductCardItemUiModel>.addProduct(
         product: ShoppingListHorizontalProductCardItemUiModel
     ) = add(product)
+
+    fun MutableList<Visitable<*>>.addEmptyStateOoc(): MutableList<Visitable<*>> {
+        add(
+            TokoNowEmptyStateOocUiModel(
+                hostSource = SOURCE,
+                serviceType = NOW_OOC
+            )
+        )
+        return this
+    }
+
+    fun MutableList<Visitable<*>>.addProductRecommendationOoc(): MutableList<Visitable<*>> {
+        add(
+            TokoNowProductRecommendationOocUiModel(
+                pageName = PAGE_NAME_RECOMMENDATION_OOC_PARAM,
+                isFirstLoad = true,
+                isBindWithPageName = true,
+                isTokoNow = false,
+                miniCartSource = MiniCartSource.TokonowShoppingList
+            )
+        )
+        return this
+    }
 
     fun MutableList<ShoppingListHorizontalProductCardItemUiModel>.removeProduct(
         productId: String

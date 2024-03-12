@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase.Companion.SUCCESS_STATUS
+import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -71,9 +72,11 @@ import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.mapRecommendedProducts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addEmptyStateOoc
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProduct
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProductCartItem
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProductCarts
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProductRecommendationOoc
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.filteredBy
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.mapAvailableShoppingList
@@ -256,7 +259,10 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 backgroundGradientColor = TokoNowThematicHeaderUiModel.GradientColor(
                     startColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
                     endColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN400)
-                )
+                ),
+                chooseAddressResIntColor = unifyprinciplesR.color.Unify_Static_White,
+                isChooseAddressShown = true,
+                isSuperGraphicImageShown = true
             ),
             state = SHOW
         )
@@ -687,6 +693,29 @@ class TokoNowShoppingListViewModel @Inject constructor(
      * -- public function section --
      */
 
+    fun loadOutOfCoverageState() {
+        mutableLayout.clear()
+
+        mutableLayout
+            .addHeader(
+                headerModel = HeaderModel(
+                    backgroundGradientColor = TokoNowThematicHeaderUiModel.GradientColor(
+                        startColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_Background),
+                        endColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_Background)
+                    ),
+                    isChooseAddressShown = true,
+                    iconPullRefreshType = LayoutIconPullRefreshView.TYPE_GREEN
+                ),
+                state = SHOW
+            )
+            .addEmptyStateOoc()
+            .addProductRecommendationOoc()
+
+        _layoutState.value = Success(getUpdatedLayout())
+
+        _isNavToolbarScrollingBehaviourEnabled.value = false
+    }
+
     fun loadLayout() {
         loadLayoutJob = launchCatchError(
             block = {
@@ -1020,4 +1049,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     fun getAvailableProducts(): List<ShoppingListHorizontalProductCardItemUiModel> = availableProducts
+
+    fun isOutOfCoverage() = addressData.isOutOfCoverage()
 }

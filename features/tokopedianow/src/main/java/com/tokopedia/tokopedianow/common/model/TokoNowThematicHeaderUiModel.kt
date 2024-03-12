@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.common.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowThematicHeaderTypeFactory
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -16,6 +17,10 @@ data class TokoNowThematicHeaderUiModel(
     val backgroundLightColor: String = String.EMPTY,
     val backgroundDarkColor: String = String.EMPTY,
     val backgroundGradientColor: GradientColor? = null,
+    val chooseAddressResIntColor: Int? = null,
+    val isSuperGraphicImageShown: Boolean = false,
+    val isChooseAddressShown: Boolean = false,
+    val iconPullRefreshType: Int = LayoutIconPullRefreshView.TYPE_WHITE,
     @TokoNowLayoutState val state: Int = TokoNowLayoutState.SHOW
 ): Visitable<TokoNowThematicHeaderTypeFactory> {
     override fun type(typeFactory: TokoNowThematicHeaderTypeFactory): Int = typeFactory.type(this)

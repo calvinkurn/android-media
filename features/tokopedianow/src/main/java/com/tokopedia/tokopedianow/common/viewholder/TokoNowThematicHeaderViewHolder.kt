@@ -6,8 +6,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -16,10 +15,11 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.SHOW
@@ -28,7 +28,6 @@ import com.tokopedia.tokopedianow.common.util.TypographyUtil.setRightImageDrawab
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHeaderBinding
-import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeChooseAddressWidgetListener
 import com.tokopedia.unifyprinciples.Typography.Companion.DISPLAY_3
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
@@ -38,12 +37,13 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class TokoNowThematicHeaderViewHolder(
     itemView: View,
     private val listener: TokoNowHeaderListener? = null,
-    private val chooseAddressListener: TokoNowChooseAddressWidgetListener? = null,
     private val tokoNowView: TokoNowView? = null
 ): AbstractViewHolder<TokoNowThematicHeaderUiModel>(itemView) {
     companion object {
         private const val ALL_CORNER_SIZES_TITLE = 12f
         private const val ALL_CORNER_SIZES_CTA = 8f
+        private const val SOURCE_TRACKING = "tokonow page"
+        private const val SOURCE = "tokonow"
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_header
@@ -53,14 +53,15 @@ class TokoNowThematicHeaderViewHolder(
 
     override fun bind(data: TokoNowThematicHeaderUiModel) {
         binding?.apply {
-            setupChooseAddressWidget()
-            setupLayout()
+            setupChooseAddressWidget(data)
+            setupLayout(data)
             setupThematicHeader(data)
         }
     }
 
-    private fun ItemTokopedianowHeaderBinding.setupLayout() {
+    private fun ItemTokopedianowHeaderBinding.setupLayout(data: TokoNowThematicHeaderUiModel) {
         viewTopSpacing.layoutParams.height = NavToolbarExt.getFullToolbarHeight(itemView.context)
+        layoutIconPullRefresh.setColorPullRefresh(data.iconPullRefreshType)
         listener?.pullRefreshIconCaptured(layoutIconPullRefresh)
     }
 
@@ -157,7 +158,6 @@ class TokoNowThematicHeaderViewHolder(
             )
             val layerDrawable = LayerDrawable(arrayOf(gradientDrawable))
             root.background = layerDrawable
-            aivSuperGraphic.show()
         } else {
             root.setBackgroundColor(
                 safeParseColor(
@@ -168,8 +168,8 @@ class TokoNowThematicHeaderViewHolder(
                     )
                 )
             )
-            aivSuperGraphic.hide()
         }
+        aivSuperGraphic.showWithCondition(data.isSuperGraphicImageShown)
     }
 
     private fun ItemTokopedianowHeaderBinding.setupCta(
@@ -194,16 +194,17 @@ class TokoNowThematicHeaderViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHeaderBinding.setupChooseAddressWidget() {
-        chooseAddressWidget.showIfWithBlock(chooseAddressListener != null) {
-            bindChooseAddressWidget()
+    private fun ItemTokopedianowHeaderBinding.setupChooseAddressWidget(
+        data: TokoNowThematicHeaderUiModel
+    ) {
+        chooseAddressWidget.showIfWithBlock(data.isChooseAddressShown) {
+            bindChooseAddressWidget(data)
             showCoachMark()
             updateWidget()
         }
     }
 
     private fun ItemTokopedianowHeaderBinding.showCoachMark() {
-        val chooseAddressWidget = chooseAddressWidget
         val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(itemView.context)
 
         if (isNeedToShowCoachMark == true && chooseAddressWidget.isShown) {
@@ -220,14 +221,38 @@ class TokoNowThematicHeaderViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHeaderBinding.bindChooseAddressWidget() {
+    private fun ItemTokopedianowHeaderBinding.bindChooseAddressWidget(
+        data: TokoNowThematicHeaderUiModel
+    ) {
         tokoNowView?.let {
-            val listener = HomeChooseAddressWidgetListener(
-                it,
-                chooseAddressWidget,
-                chooseAddressListener
-            )
-            chooseAddressWidget.bindChooseAddress(listener)
+            chooseAddressWidget.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
+                override fun onLocalizingAddressUpdatedFromWidget() {
+                    chooseAddressWidget.updateWidget()
+                    tokoNowView.refreshLayoutPage()
+                }
+
+                override fun onLocalizingAddressServerDown() {}
+
+                override fun onClickChooseAddressTokoNowTracker() {}
+
+                override fun needToTrackTokoNow(): Boolean = true
+
+                override fun getLocalizingAddressHostFragment(): Fragment = tokoNowView.getFragmentPage()
+
+                override fun getLocalizingAddressHostSourceData(): String = SOURCE
+
+                override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE_TRACKING
+
+                override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
+
+                override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */ }
+
+                override fun onLocalizingAddressLoginSuccess() { /* to do : nothing */ }
+
+                override fun isFromTokonowPage(): Boolean = true
+
+                override fun onChangeTextColor(): Int = data.chooseAddressResIntColor ?: unifyprinciplesR.color.Unify_NN950_96
+            })
         }
     }
 
