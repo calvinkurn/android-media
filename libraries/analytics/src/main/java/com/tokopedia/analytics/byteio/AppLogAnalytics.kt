@@ -133,7 +133,7 @@ object AppLogAnalytics {
             it.addSourceModule()
 //            it.addEnterMethod()
             it.addEnterMethodPdp()
-            it.put(ENTER_METHOD, getLastDataExactStep())
+            it.put(ENTER_METHOD, getLastDataExactStep(ENTER_METHOD))
             it.put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
             it.put(SEARCH_ID, getLastData(SEARCH_ID))
             it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
