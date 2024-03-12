@@ -2,6 +2,8 @@ package com.tokopedia.checkout.revamp.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.analytics.byteio.AppLogAnalytics
+import com.tokopedia.analytics.byteio.pdp.AtcBuyType
 import com.tokopedia.checkout.data.model.request.checkout.Carts
 import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.Data
@@ -356,7 +358,8 @@ class CheckoutProcessor @Inject constructor(
             isThankyouNative = true,
             isExpress = false,
             fingerprintSupport = (fingerprintPublicKey != null).toString(),
-            fingerprintPublickey = fingerprintPublicKey ?: ""
+            fingerprintPublickey = fingerprintPublicKey ?: "",
+            tracker = AppLogAnalytics.getEntranceInfo(AtcBuyType.ATC)
         )
     }
 
