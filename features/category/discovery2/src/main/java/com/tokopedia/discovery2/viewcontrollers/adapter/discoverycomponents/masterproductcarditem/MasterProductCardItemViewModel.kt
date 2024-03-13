@@ -4,11 +4,14 @@ import android.app.Application
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.analytics.TrackingMapper
 import com.tokopedia.discovery2.data.ComponentSourceData
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -155,6 +158,19 @@ class MasterProductCardItemViewModel(val application: Application, val component
                     it.imageUrl ?: ""
                 )
                 components.topAdsTrackingStatus = true
+            }
+        }
+    }
+
+    fun trackShowProductCard() {
+        dataItem.value?.let {
+            if(!components.byteIoTrackingStatus) {
+                if (it.isEligibleToTrack()) {
+                    AppLogRecommendation.sendProductShowAppLog(
+                        it.asProductTrackModel(getComponentName())
+                    )
+                    components.byteIoTrackingStatus = true
+                }
             }
         }
     }

@@ -170,9 +170,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardItemViewModel?.getDataItemValue()?.observe(
                 lifecycle,
                 Observer { data ->
-                    if(dataItem != data){
-                        trackShowProductCard(data)
-                    }
                     dataItem = data
                 }
             )
@@ -413,6 +410,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
+        masterProductCardItemViewModel?.trackShowProductCard()
         masterProductCardItemViewModel?.sendTopAdsView()
         masterProductCardItemViewModel?.let {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
@@ -422,23 +420,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                     isFullFilment,
                     dataItem?.warehouseId ?: 0
                 )
-        }
-    }
-
-    private fun trackShowProductCard(dataItem: DataItem) {
-        masterProductCardGridView?.addOnImpression1pxListener(dataItem.appLogImpressHolder) {
-            if (dataItem.isEligibleToTrack()) {
-                AppLogRecommendation.sendProductShowAppLog(
-                    dataItem.asProductTrackModel(productCardName)
-                )
-            }
-        }
-        masterProductCardListView?.addOnImpression1pxListener(dataItem.appLogImpressHolder) {
-            if (dataItem.isEligibleToTrack()) {
-                AppLogRecommendation.sendProductShowAppLog(
-                    dataItem.asProductTrackModel(productCardName)
-                )
-            }
         }
     }
 
