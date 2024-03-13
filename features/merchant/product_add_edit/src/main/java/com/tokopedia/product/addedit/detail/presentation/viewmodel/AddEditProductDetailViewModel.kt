@@ -790,19 +790,6 @@ class AddEditProductDetailViewModel @Inject constructor(
             })
     }
 
-    fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>) {
-        val selectedSpecificationList = mutableListOf<SpecificationInputModel>()
-        annotationCategoryList.forEach {
-            val selectedValue = it.data.firstOrNull { value -> value.selected }
-            selectedValue?.apply {
-                val specificationInputModel = SpecificationInputModel(id, name, it.variant)
-                selectedSpecificationList.add(specificationInputModel)
-            }
-        }
-
-        updateSelectedSpecification(selectedSpecificationList)
-    }
-
     fun updateHasRequiredSpecification(annotationCategoryList: List<AnnotationCategoryData>) {
         mHasRequiredSpecification.value = annotationCategoryList.any {
             it.variant == SIGNAL_STATUS_VARIANT

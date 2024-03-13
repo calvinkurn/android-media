@@ -35,9 +35,8 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
 import com.tokopedia.product.addedit.productlimitation.domain.usecase.ProductLimitationUseCase
-import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
-import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputMapper
 import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.*
@@ -571,27 +570,13 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 val response = annotationCategoryUseCase.executeOnBackground()
                 response.drogonAnnotationCategoryV2.data
             }
-            updateSpecificationByAnnotationCategory(result)
+            productInputModel.getValueOrDefault().detailInputModel.specifications =
+                SpecificationInputMapper.updateSpecificationByAnnotationCategory(result)
             mIsLoading.value = false
         }, onError = {
                 AddEditProductErrorHandler.logExceptionToCrashlytics(it)
                 mIsLoading.value = false
             })
-    }
-
-    fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>) {
-        val result: MutableList<SpecificationInputModel> = mutableListOf()
-        annotationCategoryList.forEach {
-            val selectedValue = it.data.firstOrNull { value -> value.selected }
-            selectedValue?.apply {
-                val specificationInputModel = SpecificationInputModel(id.toString(), name)
-                result.add(specificationInputModel)
-            }
-        }
-
-        productInputModel.value?.apply {
-            detailInputModel.specifications = result
-        }
     }
 
     private fun shouldLoadProductData(param: Result<Boolean>): Boolean {

@@ -112,6 +112,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragmentArgs
 import com.tokopedia.product.addedit.specification.presentation.activity.AddEditProductSpecificationActivity
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputMapper
 import com.tokopedia.product.addedit.tracking.MediaImprovementTracker
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
@@ -1264,7 +1265,9 @@ class AddEditProductDetailFragment :
                     productSpecificationTextView?.show()
                     addProductSpecificationButton?.show()
                     productSpecificationReloadLayout?.hide()
-                    viewModel.updateSpecificationByAnnotationCategory(result.data)
+                    val selectedSpecificationList =
+                        SpecificationInputMapper.updateSpecificationByAnnotationCategory(result.data)
+                    viewModel.updateSelectedSpecification(selectedSpecificationList)
                     viewModel.updateHasRequiredSpecification(result.data)
                 }
 
@@ -1287,7 +1290,6 @@ class AddEditProductDetailFragment :
     private fun subscribeToHasRequiredSpecification() {
         viewModel.hasRequiredSpecification.observe(viewLifecycleOwner) {
             productSpecificationHeaderTextView.displayRequiredAsterisk(it)
-            val specificationList = viewModel.selectedSpecificationList.value.orEmpty()
         }
     }
 
