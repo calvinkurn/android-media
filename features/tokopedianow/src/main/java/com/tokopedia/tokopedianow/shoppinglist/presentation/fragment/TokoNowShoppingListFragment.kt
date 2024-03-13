@@ -695,6 +695,8 @@ class TokoNowShoppingListFragment :
             )
         }
 
+        override fun onClickChooseAddressWidgetTracker() {}
+
         override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView) {
             getRefreshLayout()?.setContentChildViewPullRefresh(view)
         }

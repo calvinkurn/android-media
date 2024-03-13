@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.shoppinglist.helper
+package com.tokopedia.tokopedianow.common.helper
 
 interface ResourceProvider {
     fun getString(resId: Int): String

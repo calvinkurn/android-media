@@ -9,7 +9,6 @@ data class HeaderModel(
     val pageTitleColor: Int? = null,
     val ctaText: String = String.EMPTY,
     val ctaTextColor: Int? = null,
-    val ctaChevronIsShown: Boolean = true,
     val ctaChevronColor: Int? = null,
     val backgroundGradientColor: GradientColor? = null,
     val chooseAddressResIntColor: Int? = null,

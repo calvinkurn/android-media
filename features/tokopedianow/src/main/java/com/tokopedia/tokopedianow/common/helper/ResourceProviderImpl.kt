@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.shoppinglist.helper
+package com.tokopedia.tokopedianow.common.helper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.view.MethodChecker

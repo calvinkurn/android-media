@@ -4,13 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryTitle
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToChooseAddress
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToHeaderSpace
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryHeader
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryPageMapper.mapToShowcaseProductCard
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper.createProductRecommendation
@@ -44,32 +41,6 @@ internal object VisitableMapper {
     )
 
     /**
-     * -- Header Section --
-     */
-
-    fun MutableList<Visitable<*>>.addHeaderSpace(
-        space: Int,
-        detailResponse: CategoryDetailResponse
-    ) {
-        add(
-            detailResponse.mapToHeaderSpace(
-                space = space
-            )
-        )
-    }
-
-    /**
-     * -- Choose Address Section --
-     */
-
-    fun MutableList<Visitable<*>>.addChooseAddress(
-        detailResponse: CategoryDetailResponse,
-        localCacheModel: LocalCacheModel
-    ) {
-        add(detailResponse.mapToChooseAddress(localCacheModel))
-    }
-
-    /**
      * -- Ticker Section --
      */
 
@@ -86,10 +57,17 @@ internal object VisitableMapper {
      * -- Category Title Section --
      */
 
-    fun MutableList<Visitable<*>>.addCategoryTitle(
-        detailResponse: CategoryDetailResponse
+    fun MutableList<Visitable<*>>.addCategoryHeader(
+        detailResponse: CategoryDetailResponse,
+        ctaText: String,
+        ctaTextColor: Int
     ) {
-        add(detailResponse.mapToCategoryTitle())
+        add(
+            detailResponse.mapToCategoryHeader(
+                ctaText = ctaText,
+                ctaTextColor = ctaTextColor
+            )
+        )
     }
 
     /**

@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState.Companion.LOADING
@@ -142,7 +142,10 @@ class TokoNowThematicHeaderViewHolder(
         data: TokoNowThematicHeaderUiModel
     ) {
         tpTitle.text = data.pageTitle
-        if (data.pageTitleColor != null) tpTitle.setTextColor(data.pageTitleColor)
+
+        if (data.pageTitleColor != null) {
+            tpTitle.setTextColor(data.pageTitleColor)
+        }
     }
 
     private fun ItemTokopedianowHeaderBinding.setupBackgroundColor(
@@ -156,8 +159,7 @@ class TokoNowThematicHeaderViewHolder(
                     data.backgroundGradientColor.endColor
                 )
             )
-            val layerDrawable = LayerDrawable(arrayOf(gradientDrawable))
-            root.background = layerDrawable
+            root.background = LayerDrawable(arrayOf(gradientDrawable))
         } else {
             root.setBackgroundColor(
                 safeParseColor(
@@ -175,21 +177,25 @@ class TokoNowThematicHeaderViewHolder(
     private fun ItemTokopedianowHeaderBinding.setupCta(
         data: TokoNowThematicHeaderUiModel
     ) {
-        tpCta.text = data.ctaText
-        tpCta.setOnClickListener {
-            listener?.onClickCtaHeader()
-        }
+        tpCta.showIfWithBlock(data.ctaText.isNotBlank()) {
+            text = data.ctaText
 
-        if (data.ctaChevronIsShown) {
-            tpCta.setType(DISPLAY_3)
-            if (data.ctaTextColor != null) tpCta.setTextColor(data.ctaTextColor)
+            if (data.ctaTextColor != null) {
+                tpCta.setTextColor(data.ctaTextColor)
+            }
+
             if (data.ctaChevronColor != null) {
+                tpCta.setType(DISPLAY_3)
                 tpCta.setRightImageDrawable(
                     drawable = ContextCompat.getDrawable(root.context, unifycomponentsR.drawable.iconunify_chevron_right),
                     width = root.getDimens(R.dimen.tokopedianow_shopping_list_chevron_icon_size),
                     height = root.getDimens(R.dimen.tokopedianow_shopping_list_chevron_icon_size),
                     color = data.ctaChevronColor
                 )
+            }
+
+            setOnClickListener {
+                listener?.onClickCtaHeader()
             }
         }
     }
@@ -205,8 +211,7 @@ class TokoNowThematicHeaderViewHolder(
     }
 
     private fun ItemTokopedianowHeaderBinding.showCoachMark() {
-        val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(itemView.context)
-
+        val isNeedToShowCoachMark = isLocalizingAddressNeedShowCoachMark(itemView.context)
         if (isNeedToShowCoachMark == true && chooseAddressWidget.isShown) {
             val coachMarkItems = arrayListOf(
                 CoachMark2Item(
@@ -231,9 +236,9 @@ class TokoNowThematicHeaderViewHolder(
                     tokoNowView.refreshLayoutPage()
                 }
 
-                override fun onLocalizingAddressServerDown() {}
-
-                override fun onClickChooseAddressTokoNowTracker() {}
+                override fun onClickChooseAddressTokoNowTracker() {
+                    listener?.onClickChooseAddressWidgetTracker()
+                }
 
                 override fun needToTrackTokoNow(): Boolean = true
 
@@ -243,11 +248,13 @@ class TokoNowThematicHeaderViewHolder(
 
                 override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE_TRACKING
 
-                override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
+                override fun onLocalizingAddressUpdatedFromBackground() { /* do nothing */ }
 
-                override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */ }
+                override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* do nothing */ }
 
-                override fun onLocalizingAddressLoginSuccess() { /* to do : nothing */ }
+                override fun onLocalizingAddressLoginSuccess() { /* do nothing */ }
+
+                override fun onLocalizingAddressServerDown() { /* do nothing */ }
 
                 override fun isFromTokonowPage(): Boolean = true
 
@@ -258,6 +265,7 @@ class TokoNowThematicHeaderViewHolder(
 
     interface TokoNowHeaderListener {
         fun onClickCtaHeader()
+        fun onClickChooseAddressWidgetTracker()
         fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView)
     }
 }

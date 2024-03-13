@@ -12,7 +12,6 @@ data class TokoNowThematicHeaderUiModel(
     val pageTitleColor: Int? = null,
     val ctaText: String = String.EMPTY,
     val ctaTextColor: Int? = null,
-    val ctaChevronIsShown: Boolean = false,
     val ctaChevronColor: Int? = null,
     val backgroundLightColor: String = String.EMPTY,
     val backgroundDarkColor: String = String.EMPTY,

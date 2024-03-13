@@ -49,7 +49,6 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuU
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryL1Binding
@@ -115,7 +114,6 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             categoryShowcaseItemListener = createCategoryShowcaseItemCallback(),
             categoryShowcaseHeaderListener = createCategoryShowcaseHeaderCallback(),
             tokoNowView = createTokoNowViewCallback(),
-            tokoNowChooseAddressWidgetListener = createTokoNowChooseAddressWidgetCallback(),
             tokoNowCategoryMenuListener = createTokoNowCategoryMenuCallback(),
             tokoNowProductRecommendationListener = createProductRecommendationCallback(),
             tokoNowHeaderListener = createTitleCallback(),
@@ -336,7 +334,12 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             )
         }
 
-        override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView) { /* nothing to do */ }
+        override fun onClickChooseAddressWidgetTracker() = analytic.sendClickWidgetChooseAddressEvent(
+            categoryIdL1 = categoryIdL1,
+            warehouseIds = viewModel.getWarehouseIds()
+        )
+
+        override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView) { /* do nothing */ }
     }
 
     private fun createCategoryNavigationCallback() = object : CategoryNavigationViewHolder.CategoryNavigationListener {
@@ -484,17 +487,6 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         )
 
         override fun onCategoryMenuWidgetImpression(data: TokoNowCategoryMenuUiModel) { /* nothing to do */ }
-    }
-
-    private fun createTokoNowChooseAddressWidgetCallback() = object : TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener {
-        override fun onChooseAddressWidgetRemoved() {
-            /* nothing to do */
-        }
-
-        override fun onClickChooseAddressWidgetTracker() = analytic.sendClickWidgetChooseAddressEvent(
-            categoryIdL1 = categoryIdL1,
-            warehouseIds = viewModel.getWarehouseIds()
-        )
     }
 
     private fun createProductRecommendationCallback() = object : TokoNowProductRecommendationView.TokoNowProductRecommendationListener {

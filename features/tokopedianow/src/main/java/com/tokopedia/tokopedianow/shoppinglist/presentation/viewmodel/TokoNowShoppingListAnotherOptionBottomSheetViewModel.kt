@@ -11,6 +11,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.helper.ResourceProvider
 import com.tokopedia.tokopedianow.common.model.UiState
 import com.tokopedia.tokopedianow.common.model.UiState.Success
 import com.tokopedia.tokopedianow.common.model.UiState.Loading
@@ -24,7 +25,6 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapp
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProduct
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.doIf
-import com.tokopedia.tokopedianow.shoppinglist.helper.ResourceProvider
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.uimodel.common.ShoppingListHorizontalProductCardItemUiModel
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType.AVAILABLE_SHOPPING_LIST

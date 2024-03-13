@@ -70,6 +70,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.helper.ResourceProvider
 import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.CommonVisitableMapper.mapRecommendedProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addEmptyStateOoc
@@ -80,7 +81,6 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.filteredBy
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.mapAvailableShoppingList
-import com.tokopedia.tokopedianow.shoppinglist.helper.ResourceProvider
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.RecommendationModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_MULTI_PRODUCTS_TO_CART
@@ -254,7 +254,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 pageTitleColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_Static_White),
                 ctaText = resourceProvider.getString(R.string.tokopedianow_shopping_list_repurchase),
                 ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_Static_White),
-                ctaChevronIsShown = true,
                 ctaChevronColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_Static_White),
                 backgroundGradientColor = TokoNowThematicHeaderUiModel.GradientColor(
                     startColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),

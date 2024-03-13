@@ -124,7 +124,6 @@ internal object MainVisitableMapper {
                 pageTitleColor = headerModel.pageTitleColor,
                 ctaText = headerModel.ctaText,
                 ctaTextColor = headerModel.ctaTextColor,
-                ctaChevronIsShown = headerModel.ctaChevronIsShown,
                 ctaChevronColor = headerModel.ctaChevronColor,
                 backgroundGradientColor = headerModel.backgroundGradientColor,
                 chooseAddressResIntColor = headerModel.chooseAddressResIntColor,
