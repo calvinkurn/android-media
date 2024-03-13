@@ -111,7 +111,6 @@ class ExplicitPersonalizeViewModel @Inject constructor(
             counter += it.answerValueList.size
         }
         _counterState.value = counter
-
     }
 
     fun saveAnswers() {
@@ -125,12 +124,7 @@ class ExplicitPersonalizeViewModel @Inject constructor(
                     is ExplicitPersonalizeResult.Success -> {
                         val currentList = state.listQuestion
                         currentList.forEach { item ->
-                            val answers = mutableListOf<String>()
-                            item.property.options.forEach { option ->
-                                if (option.isSelected) {
-                                    answers.add(option.value)
-                                }
-                            }
+                            val answers = getAnswersList(item.property.options)
 
                             questions.add(
                                 SaveMultipleAnswersParam.InputParam.SectionsParam.QuestionsParam(
@@ -168,6 +162,16 @@ class ExplicitPersonalizeViewModel @Inject constructor(
                 _stateSaveAnswer.postValue(PersonalizeSaveAnswerResult.Failed(it))
             }
         )
+    }
+
+    private fun getAnswersList(list : List<QuestionDataModel.Property.Options>): MutableList<String> {
+        val answers = mutableListOf<String>()
+        list.forEach { option ->
+            if (option.isSelected) {
+                answers.add(option.value)
+            }
+        }
+        return answers
     }
 
     companion object {
