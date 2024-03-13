@@ -270,6 +270,18 @@ object AppLogAnalytics {
         Timber.d("Remove _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
+    //remove list of page data by hashcode
+    fun removePageData(appLogInterface: AppLogInterface, listOfRemovedKey: List<String>) {
+        val pageDataIndex = _pageDataList
+            .withIndex()
+            .find { it.value[ACTIVITY_HASH_CODE] == appLogInterface.hashCode() }
+            ?: return
+
+        listOfRemovedKey.forEach {
+            _pageDataList[pageDataIndex.index].remove(it)
+        }
+    }
+
     private fun removeShadowStack(currentIndex: Int) {
         var tempCurrentIndex = currentIndex
         while (tempCurrentIndex >= 0 && _pageDataList.getOrNull(tempCurrentIndex)
