@@ -140,14 +140,14 @@ class ShareExBottomSheet :
         arg?.let {
             viewModel.bottomSheetArg = arg
             analytics.trackImpressionBottomSheet(
-                identifier = it.getIdentifier(),
+                productId = it.productId,
                 pageTypeEnum = it.pageTypeEnum,
                 shareId = getShareId(),
                 label = arg.trackerArg.labelImpressionBottomSheet
             )
             setCloseClickListener { _ ->
                 analytics.trackActionClickClose(
-                    identifier = it.getIdentifier(),
+                    productId = it.productId,
                     pageTypeEnum = it.pageTypeEnum,
                     shareId = getShareId(),
                     label = it.trackerArg.labelActionCloseIcon
@@ -284,7 +284,7 @@ class ShareExBottomSheet :
         viewModel.bottomSheetArg?.let {
             if (channelEnum != null) {
                 analytics.trackActionClickChannel(
-                    identifier = it.getIdentifier(),
+                    productId = it.productId,
                     pageTypeEnum = it.pageTypeEnum,
                     shareId = getShareId(),
                     channel = channelEnum.trackerName,

@@ -209,7 +209,7 @@ class ShareExInitializer(
     private fun trackClickIconShare(result: ShareExBottomSheetResultArg) {
         bottomSheetArg?.let {
             analytics.trackActionClickIconShare(
-                identifier = it.getIdentifier(),
+                productId = it.productId,
                 pageTypeEnum = it.pageTypeEnum,
                 shareId = result.bottomSheetModel?.bottomSheetPage?.listShareProperty?.firstOrNull()?.shareId.toString(),
                 label = it.trackerArg.labelActionClickShareIcon
