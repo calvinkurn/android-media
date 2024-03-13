@@ -314,7 +314,7 @@ object AppLogAnalytics {
         return null
     }
 
-    fun getLastDataExactStep(key: String, step: Int = 1): Any? {
+    private fun getLastDataExactStep(key: String, step: Int = 1): Any? {
         val idx = _pageDataList.lastIndex - step
         val map = _pageDataList.getOrNull(idx)
         return map?.getOrDefault(key, null)
@@ -426,6 +426,14 @@ object AppLogAnalytics {
     fun getEntranceInfo(buyType: AtcBuyType): String {
         return JSONObject().also {
             it.put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
+            it.put("buy_type", buyType.code)
+            it.put("os_type", "android")
+        }.toString()
+    }
+
+    fun getEntranceInfoForCheckout(buyType: AtcBuyType): String {
+        return JSONObject().also {
+            it.addEntranceInfoCart()
             it.put("buy_type", buyType.code)
             it.put("os_type", "android")
         }.toString()
