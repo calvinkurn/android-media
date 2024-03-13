@@ -17,7 +17,6 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
-import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.getEntranceForm
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
@@ -171,6 +170,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 lifecycle,
                 Observer { data ->
                     dataItem = data
+                    trackShowProductCard(data)
                 }
             )
             masterProductCardItemViewModel?.getProductModelValue()?.observe(
@@ -381,7 +381,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         dataItem?.let {
             if (it.isEligibleToTrack()) {
                 AppLogRecommendation.sendProductClickAppLog(
-                    it.asProductTrackModel(productCardName, isEligibleToTrack())
+                    it.asProductTrackModel(productCardName)
                 )
             }
         }
@@ -410,7 +410,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
-        masterProductCardItemViewModel?.trackShowProductCard()
         masterProductCardItemViewModel?.sendTopAdsView()
         masterProductCardItemViewModel?.let {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
@@ -502,7 +501,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             moduleName = dataItem?.getAppLog()?.pageName.orEmpty(),
             listName = dataItem?.topLevelTab?.name.orEmpty(),
             listNum = dataItem?.topLevelTab?.index?:-1,
-            entranceForm = productCardName.getEntranceForm()
         )
     }
 

@@ -7,13 +7,11 @@ import com.tokopedia.discovery2.data.ComponentSourceData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 
 object TrackDiscoveryRecommendationMapper {
     fun DataItem.asProductTrackModel(
-        componentNames: String,
-        isEligibleRecTrigger : Boolean = true
+        componentNames: String
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = productId.orEmpty(),
@@ -31,7 +29,6 @@ object TrackDiscoveryRecommendationMapper {
             entranceForm = componentNames.getEntranceForm(),
             originalPrice = price.toFloatOrZero(),
             salesPrice = discountedPrice.toFloatOrZero(),
-            isEligibleRecTrigger = isEligibleRecTrigger,
             isTrackAsHorizontalSourceModule = componentNames.isTrackAsHorizontalSourceModule()
         )
     }
@@ -44,7 +41,7 @@ object TrackDiscoveryRecommendationMapper {
         }
     }
 
-    fun String.getEntranceForm(): EntranceForm {
+    private fun String.getEntranceForm(): EntranceForm {
         return when (this) {
             ComponentNames.ProductCardCarouselItem.componentName,
             ComponentNames.ProductCardCarouselItemReimagine.componentName,

@@ -27,15 +27,13 @@ object AppLogRecommendation {
 
     fun sendProductClickAppLog(model: AppLogRecommendationProductModel) {
         AppLogAnalytics.send(EventName.PRODUCT_CLICK, model.toShowClickJson())
-        if ((model.entranceForm == EntranceForm.MISSION_HORIZONTAL_GOODS_CARD.str ||
-            model.entranceForm == EntranceForm.PURE_GOODS_CARD.str) &&
-            model.isEligibleRecTrigger) {
+        if (model.entranceForm == EntranceForm.MISSION_HORIZONTAL_GOODS_CARD.str ||
+            model.entranceForm == EntranceForm.PURE_GOODS_CARD.str) {
             AppLogAnalytics.send(EventName.CARD_CLICK, model.asCardModel().toShowClickJson())
         }
-        if ((model.entranceForm == EntranceForm.PURE_GOODS_CARD.str ||
+        if (model.entranceForm == EntranceForm.PURE_GOODS_CARD.str ||
             model.entranceForm == EntranceForm.CONTENT_GOODS_CARD.str ||
-            model.entranceForm == EntranceForm.DETAIL_GOODS_CARD.str) &&
-            model.isEligibleRecTrigger) {
+            model.entranceForm == EntranceForm.DETAIL_GOODS_CARD.str ) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
         model.setGlobalParams()

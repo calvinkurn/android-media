@@ -38,7 +38,6 @@ data class AppLogRecommendationProductModel(
     val authorId: String,
     val groupId: String,
     val cardName: String,
-    var isEligibleRecTrigger: Boolean = true
 ) {
 
     fun asCardModel() = AppLogRecommendationCardModel(
@@ -128,7 +127,6 @@ data class AppLogRecommendationProductModel(
             authorId: String = "",
             groupId: String = "",
             cardName: String = CardName.REC_GOODS_CARD,
-            isEligibleRecTrigger: Boolean = true,
             isTrackAsHorizontalSourceModule : Boolean = false
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
@@ -153,8 +151,7 @@ data class AppLogRecommendationProductModel(
                 enterMethod = enterMethod,
                 authorId = authorId.zeroAsEmpty(),
                 groupId = groupId.zeroAsEmpty(),
-                cardName = getCardName(cardName, isAd).spacelessParam(),
-                isEligibleRecTrigger = isEligibleRecTrigger
+                cardName = getCardName(cardName, isAd).spacelessParam()
             )
         }
     }

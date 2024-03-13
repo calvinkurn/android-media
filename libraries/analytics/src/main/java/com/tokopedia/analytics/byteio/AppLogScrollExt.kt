@@ -44,7 +44,6 @@ data class RecommendationTriggerObject(
     val isUnderGuide: Boolean = false,
     val listName: String = "",
     val listNum: Int = -1,
-    val entranceForm: EntranceForm? = null
 )
 
 class VerticalTrackScrollListener(
@@ -204,22 +203,17 @@ fun sendGlidePageTrack(scrollOffset: Float, model: GlidePageTrackObject) {
 }
 
 fun sendGlideRecommendationTrack(scrollOffset: Float, model: RecommendationTriggerObject) {
-    if (model.entranceForm == null ||
-        model.entranceForm == EntranceForm.PURE_GOODS_CARD ||
-        model.entranceForm == EntranceForm.CONTENT_GOODS_CARD ||
-        model.entranceForm == EntranceForm.DETAIL_GOODS_CARD) {
-        AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject().also {
-            it.addPage()
-            it.addEnterFrom()
-            it.put(AppLogParam.LIST_NAME, model.listName.underscoredParam())
-            it.put(AppLogParam.LIST_NUM, model.listNum.inc().zeroAsEmpty())
-            it.put(AppLogParam.ACTION_TYPE, ActionType.GLIDE)
-            it.put(AppLogParam.MODULE_NAME, model.moduleName)
-            it.put(AppLogParam.GLIDE_DISTANCE, scrollOffset)
-            it.put(AppLogParam.REC_SESSION_ID, model.sessionId)
-            it.put(AppLogParam.REQUEST_ID, model.requestId)
-        })
-    }
+    AppLogAnalytics.send(EventName.REC_TRIGGER, JSONObject().also {
+        it.addPage()
+        it.addEnterFrom()
+        it.put(AppLogParam.LIST_NAME, model.listName.underscoredParam())
+        it.put(AppLogParam.LIST_NUM, model.listNum.inc().zeroAsEmpty())
+        it.put(AppLogParam.ACTION_TYPE, ActionType.GLIDE)
+        it.put(AppLogParam.MODULE_NAME, model.moduleName)
+        it.put(AppLogParam.GLIDE_DISTANCE, scrollOffset)
+        it.put(AppLogParam.REC_SESSION_ID, model.sessionId)
+        it.put(AppLogParam.REQUEST_ID, model.requestId)
+    })
 }
 
 fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
