@@ -217,10 +217,10 @@ object AppLogPdp {
             if (confirmSku.getAndSet(false)) {
                 it.addTrackId()
                 it.addSourceModule()
+                it.addEntranceForm()
             }
             it.addPage()
             it.addSourcePageType()
-            it.addEntranceForm()
             it.addEntranceInfo()
             it.put("is_success", if (model.isSuccess) 1 else 0)
             it.put("fail_reason", model.failReason)
