@@ -1,9 +1,6 @@
 package com.tokopedia.network.ttnet
 
 import android.app.Application
-import android.util.Log
-import com.bytedance.frameworks.baselib.network.http.cronet.impl.TTNetDetectInfo.TTNetDetectHttpDnsInfo
-import com.bytedance.frameworks.baselib.network.http.cronet.impl.TTNetDetectInfo.TTNetDetectHttpGetInfo
 import com.bytedance.ttnet.TTNetInit
 
 object TTNetHelper {
@@ -12,7 +9,7 @@ object TTNetHelper {
     fun initTTNet(app: Application) {
         try {
             val context = app.applicationContext
-            CronetDependencyAdapter.inject()
+            CronetDependencyAdapter.inject(app)
             TTNetInit.setTTNetDepend(TTNetDependencyAdapter(context))
             TTNetInit.tryInitTTNet(
                 context,

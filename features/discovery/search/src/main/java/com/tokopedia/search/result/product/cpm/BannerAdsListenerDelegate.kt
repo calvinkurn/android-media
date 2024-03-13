@@ -78,7 +78,7 @@ class BannerAdsListenerDelegate(
             TopAdsGtmTracker.eventSearchResultPromoShopClick(data, position)
 
             if (dataView.isTrackByteIO()) {
-                if (position == 1) // Click on shop name
+                if (position == 1 || position == 0) // Click on shop name
                     AppLogSearch.eventSearchResultClick(
                         dataView.asByteIOSearchResult(CLICK_SHOP_NAME)
                     )

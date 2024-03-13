@@ -389,7 +389,7 @@ data class PurchaseItem(
     @SerializedName("unique_id")
     var cartId: String = "",
     @SerializedName("parent_product_id")
-    var parentProductId: String = "",
+    var parentProductId: String? = null,
     @SerializedName("product_id")
     val productId: String,
     @SerializedName("product_name")
