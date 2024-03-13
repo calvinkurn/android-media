@@ -25,9 +25,11 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_ATC_SELLER_RECOMMENDATION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_FAQ
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_NAVIGATION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_SEE_MORE_SPECIFICATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_SELLER_RECOMMENDATION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_VIDEO_EXPERT_REVIEW
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_BANNER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_DOUBLE_BANNER
@@ -51,6 +53,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_C
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COLUMN_INFO_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_REVIEW_WIDGET
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_TOP_SELLER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_VIDEO_BANNER_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_VIDEO_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_REVIEW_BANNER_IMPRESSION
@@ -61,18 +64,22 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_ITEM
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_PG_IRIS
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.SCREEN_NAME_CATALOG_DETAIL_PAGE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CHANGE_COMPARISON
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_ATC_TOP_SELLER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_BUTTON_CHOOSE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_FAQ
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_NAVIGATION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_ON_IMAGE_REVIEW
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_ON_IMAGE_REVIEW_BS
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_ON_SELENGKAPNYA_REVIEW
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_OTHER_OPTION_TOP_SELLER
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_PRODUCT_CARD_TOP_SELLER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_SEE_MORE_COLUMN_INFO
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_SEE_MORE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_VIDEO_EXPERT
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_ONE_BY_ONE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_THREE_BY_FOUR
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_CARD_TOP_SELLER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_COLUMN_INFO
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_DOUBLE_BANNER
@@ -1203,7 +1210,15 @@ class CatalogDetailPageFragment :
         viewModel.emitScrollEvent(widgetName)
     }
 
-    override fun onSellerOfferingAtcButtonClicked() {
+    override fun onSellerOfferingAtcButtonClicked(productId: String, shopId: String) {
+        val label = "$catalogId - product id: $productId - shop id: $shopId"
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = EVENT_ACTION_CLICK_ATC_SELLER_RECOMMENDATION,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = label,
+            trackerId = TRACKER_ID_CLICK_ATC_TOP_SELLER
+        )
         addToCart(viewModel.atcModel)
     }
 
@@ -1215,15 +1230,44 @@ class CatalogDetailPageFragment :
         RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
     }
 
-    override fun onSellerOfferingVariantArrowClicked(productId: String) {
+    override fun onSellerOfferingVariantArrowClicked(productId: String, shopId: String) {
+        val label = "$catalogId - product id: $productId - shop id: $shopId"
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = CatalogTrackerConstant.EVENT_ACTION_CLICK_OTHER_OPTION_SELLER_RECOMMENDATION,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = label,
+            trackerId = TRACKER_ID_CLICK_OTHER_OPTION_TOP_SELLER
+        )
         addToCart(viewModel.atcModel)
     }
 
-    override fun onSellerOfferingProductInfo(productId: String) {
+    override fun onSellerOfferingProductInfo(productId: String, shopId: String) {
+        val label = "$catalogId - product id: $productId - shop id: $shopId"
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = EVENT_ACTION_CLICK_SELLER_RECOMMENDATION,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = label,
+            trackerId = TRACKER_ID_CLICK_PRODUCT_CARD_TOP_SELLER
+        )
         RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
     }
 
     override fun onSellerOfferingButtonRightClicked() {
         goToProductListPage()
+    }
+
+    override fun onImpressionSellerOffering(productId: String, shopId: String) {
+        val label = "$catalogId - product id: $productId - shop id: $shopId"
+        sendOnTimeImpression(TRACKER_ID_IMPRESSION_CARD_TOP_SELLER) {
+            CatalogReimagineDetailAnalytics.sendEvent(
+                event = EVENT_VIEW_PG_IRIS,
+                action = EVENT_IMPRESSION_TOP_SELLER,
+                category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                labels = label,
+                trackerId = TRACKER_ID_IMPRESSION_CARD_TOP_SELLER,
+            )
+        }
     }
 }
