@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -29,6 +30,8 @@ import com.tokopedia.mvc.util.tracker.QuotaInfoTracker
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class QuotaInfoFragment: BaseDaggerFragment() {
 
@@ -132,7 +135,7 @@ class QuotaInfoFragment: BaseDaggerFragment() {
         tickerQuotaInfo.isVisible = quotaInfo.tickerTitle.isNotEmpty()
         tfRemainingQuota.text = getString(R.string.smvc_quota_info_quota_remaining_format, quotaInfo.quotaUsageFormatted)
         tfMoreSource.text = getString(R.string.smvc_quota_info_quota_button_format, quotaInfo.sources.size)
-        viewExpand.applyRoundedRectangle(com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+        viewExpand.applyRoundedRectangle(unifyprinciplesR.color.Unify_NN50)
         viewModel.displayShortQuotaList()
     }
 
@@ -163,9 +166,8 @@ class QuotaInfoFragment: BaseDaggerFragment() {
 
     private fun HeaderUnify.setupHeader() {
         title = context.getString(R.string.smvc_quota_info_page_title)
-        val iconClose = MethodChecker.getDrawable(context,
-            com.tokopedia.abstraction.R.drawable.ic_close_default)
-        applyIconUnifyColor(iconClose, com.tokopedia.unifyprinciples.R.color.Unify_NN950 )
+        val iconClose = MethodChecker.getDrawable(context, abstractionR.drawable.ic_close_default)
+        applyIconUnifyColor(iconClose, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950))
         navigationIcon = iconClose
         setNavigationOnClickListener {
             activity?.finish()

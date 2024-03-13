@@ -23,8 +23,6 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_STICKY_BUTTON
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceSentPojo
-import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
-import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
 import com.tokopedia.chatbot.chatbot2.data.chatactionballoon.ChatActionPojo
 import com.tokopedia.chatbot.chatbot2.data.csatoptionlist.CsatAttributesPojo
 import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachment
@@ -53,6 +51,8 @@ import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.stickyactionbutton.StickyActionButtonUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.videoupload.VideoUploadUiModel
+import com.tokopedia.csat_rating.dynamiccsat.domain.model.CsatModel
+import com.tokopedia.csat_rating.dynamiccsat.domain.model.PointModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 
