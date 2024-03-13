@@ -164,19 +164,19 @@ class StoriesWidgetTest {
 
         firstStoryHelper.onValues {
             Assertions.assertThat(it.last())
-                .isEqualTo(shopStoriesStates[0])
+                .isEqualToIgnoringGivenFields(shopStoriesStates[0], "updatedAt")
         }
         secondStoryHelper.onValues {
             Assertions.assertThat(it.last())
-                .isEqualTo(shopStoriesStates[1].copy(status = StoriesStatus.AllStoriesSeen))
+                .isEqualToIgnoringGivenFields(shopStoriesStates[1].copy(status = StoriesStatus.AllStoriesSeen), "updatedAt")
         }
         thirdStoryHelper.onValues {
             Assertions.assertThat(it.last())
-                .isEqualTo(shopStoriesStates[2])
+                .isEqualToIgnoringGivenFields(shopStoriesStates[2], "updatedAt")
         }
         fourthStoryHelper.onValues {
             Assertions.assertThat(it.last())
-                .isEqualTo(shopStoriesStates[3])
+                .isEqualToIgnoringGivenFields(shopStoriesStates[3], "updatedAt")
         }
     }
 

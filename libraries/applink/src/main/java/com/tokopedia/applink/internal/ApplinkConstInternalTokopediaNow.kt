@@ -30,6 +30,10 @@ object ApplinkConstInternalTokopediaNow {
     //TokoNowEducationalInfoActivity
     val EDUCATIONAL_INFO = "$INTERNAL_TOKOPEDIA_NOW/educational-info"
 
+    //TokoNowAllAnnotationActivity
+    @JvmField
+    val ALL_ANNOTATION = "$INTERNAL_TOKOPEDIA_NOW/all-annotation"
+
     @JvmField
     val SEARCH = "$INTERNAL_TOKOPEDIA_NOW/search"
 
