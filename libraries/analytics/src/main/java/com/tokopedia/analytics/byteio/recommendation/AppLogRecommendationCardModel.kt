@@ -82,6 +82,7 @@ data class AppLogRecommendationCardModel(
         fun create(
             cardId: String = "",
             productId: String = "",
+            parentProductId: String = "",
             cardName: String = "",
             position: Int = 0,
             tabName: String = "",
@@ -105,7 +106,7 @@ data class AppLogRecommendationCardModel(
         ): AppLogRecommendationCardModel {
             return AppLogRecommendationCardModel(
                 cardName = cardName.spacelessParam(),
-                productId = productId.zeroAsEmpty(),
+                productId = getProductId(productId, parentProductId),
                 listName = tabName.underscoredParam(),
                 listNum = tabPosition.inc().zeroAsEmpty(),
                 moduleName = moduleName,

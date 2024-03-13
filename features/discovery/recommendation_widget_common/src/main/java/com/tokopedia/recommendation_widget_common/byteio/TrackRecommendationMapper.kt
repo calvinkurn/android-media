@@ -12,14 +12,46 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardM
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.HomeRecommendationUtil.isFullSpan
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 object TrackRecommendationMapper {
+
+    fun RecommendationItem.asProductTrackModel(
+        isCache: Boolean = false,
+        entranceForm: EntranceForm,
+        enterMethod: String = "",
+        tabName: String = "",
+        tabPosition: Int = -1,
+    ): AppLogRecommendationProductModel {
+        return AppLogRecommendationProductModel.create(
+            productId = productId.toString(),
+            parentProductId = parentID.toString(),
+            position = position,
+            moduleName = pageName,
+            isAd = isTopAds,
+            isUseCache = isCache,
+            recParams = appLog.recParam,
+            requestId = appLog.requestId,
+            recSessionId = appLog.sessionId,
+            shopId = shopId.toString(),
+            entranceForm = entranceForm,
+            tabName = tabName,
+            tabPosition = tabPosition,
+            rate = ratingAverage.toFloatOrZero(),
+            enterMethod = enterMethod,
+            volume = countSold,
+            originalPrice = (if(slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
+            salesPrice = priceInt.toFloat(),
+        )
+    }
+
     fun RecommendationCardModel.asProductTrackModel(
         isCache: Boolean = false,
         enterMethod: EnterMethod? = null,
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = recommendationProductItem.id,
+            parentProductId = recommendationProductItem.parentProductId,
             tabName = tabName,
             tabPosition = tabIndex,
             moduleName = pageName,

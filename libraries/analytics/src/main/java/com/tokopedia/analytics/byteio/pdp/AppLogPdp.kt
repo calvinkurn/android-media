@@ -38,6 +38,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 object AppLogPdp {
 
     val addToCart = AtomicBoolean(false)
+    private val confirmSku = AtomicBoolean(false)
 
     fun sendPDPEnterPage(product: TrackProductDetail?) {
         if (product == null) {
@@ -93,7 +94,6 @@ object AppLogPdp {
         })
     }
 
-    @SuppressLint("PII Data Exposure")
     fun sendConfirmSku(product: TrackConfirmSku) {
         AppLogAnalytics.send(EventName.CONFIRM_SKU, JSONObject().also {
             it.addPage()
@@ -115,6 +115,7 @@ object AppLogPdp {
             it.put("quantity", product.qty)
 //            it.put("is_have_address", (if (product.isHaveAddress) 1 else 0)) // removed
         })
+        confirmSku.set(true)
     }
 
     fun sendConfirmCart(product: TrackConfirmCart) {
@@ -213,12 +214,14 @@ object AppLogPdp {
 
     fun sendSubmitOrderResult(model: SubmitOrderResult) {
         AppLogAnalytics.send(EventName.SUBMIT_ORDER_RESULT, JSONObject().also {
+            if (confirmSku.getAndSet(false)) {
+                it.addTrackId()
+                it.addSourceModule()
+            }
             it.addPage()
-            it.addTrackId()
             it.addSourcePageType()
             it.addEntranceForm()
             it.addEntranceInfo()
-            it.addSourceModule()
             it.put("is_success", if (model.isSuccess) 1 else 0)
             it.put("fail_reason", model.failReason)
             it.put("shipping_price", model.shippingPrice)

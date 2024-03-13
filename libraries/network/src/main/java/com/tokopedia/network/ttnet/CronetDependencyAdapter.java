@@ -1,7 +1,12 @@
 package com.tokopedia.network.ttnet;
 
+import android.app.Application;
+
 import com.bytedance.applog.AppLog;
 import com.bytedance.ttnet.cronet.AbsCronetDependAdapter;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.chromium.CronetAppProviderManager;
 import org.chromium.CronetDependManager;
@@ -9,75 +14,71 @@ import org.chromium.CronetDependManager;
 public class CronetDependencyAdapter extends AbsCronetDependAdapter {
    public static CronetDependencyAdapter INSTANCE = new CronetDependencyAdapter();
 
-   public static void inject() {
+   private static UserSessionInterface userSession;
+
+   public static void inject(Application application) {
+      userSession = new UserSession(application);
       CronetDependManager.inst().setAdapter(INSTANCE);
       CronetAppProviderManager.inst().setAdapter(INSTANCE);
    }
 
    @Override
    public boolean loggerDebug() {
-      // TTNet内部日志调试开关，线上不要开启，仅在local_test渠道或debug模式下返回true
-      // 必须实现
-      return false;
+      // always return false unless it's on debug mode
+      return GlobalConfig.DEBUG;
    }
 
    @Override
    public String getDeviceId() {
-      // 默认从LogSDK内部获取did，宿主App需要保证LogSDK正常初始化
-      // 必须实现
-//      return TeaAgent.getServerDeviceId();
       return AppLog.getDid();
    }
 
    @Override
    public String getUserId() {
-      // 默认从LogSDK内部获取uid，宿主App需要保证LogSDK正常初始化
-      // 必须实现
-//      return AppLog.getUserId();
-      return "";
+      //todo, plz use Tokopedia Account service to return this value
+      return userSession.getUserId();
    }
 
    @Override
    public String getAppId() {
-      // AppID直接hardcode即可，不要从LogSDK中获取（隐私弹窗未同意前无法从LogSDK拿到aid）
-      // 必须实现
       return "573733";
    }
 
    @Override
    public String getAppName() {
-      // App名称（必须实现）
       return "Tokopedia";
    }
 
    @Override
    public String getChannel() {
-      // App发布渠道（必须实现）
-      return "local_test";
+      // todo plz define your own channel enums: local_test, googleplay, xiaomi...
+      return GlobalConfig.isAllowDebuggingTools() ? "local_test" : "googleplay";
    }
 
    @Override
    public String getVersionCode() {
-      // App内部版本号，返回接入app版本号（必须实现）
-      return "100";
+      // todo remind that every version needs to be read from manifest or other config file
+      return String.valueOf(GlobalConfig.VERSION_CODE);
    }
 
    @Override
    public String getVersionName() {
-      // App内部版本名称，返回接入app版本名称（必须实现）
-      return "1.0.0";
+      // split by .
+      // todo plz choose one of them
+      // Prefer Format "32.3.96.0.0"
+      return GlobalConfig.VERSION_NAME;
    }
 
    @Override
    public String getUpdateVersionCode() {
-      // App灰度版本号，返回接入app灰度版本号
-      return "10000";
+      // same as getVersionCode (this update is for China domestic app only, so we use it same as version_code)
+      return String.valueOf(GlobalConfig.VERSION_CODE);
    }
 
    @Override
    public String getManifestVersionCode() {
       // App对外发布版本号，返回接入app对外发布版本号
-      return "1000";
+      return String.valueOf(GlobalConfig.VERSION_CODE);
    }
 
    @Override

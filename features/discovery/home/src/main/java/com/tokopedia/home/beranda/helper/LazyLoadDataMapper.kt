@@ -26,6 +26,7 @@ object LazyLoadDataMapper {
                 pageName = it.pageName,
                 categoryID = it.categoryID,
                 productID = it.productID,
+                parentProductID = it.parentProductID,
                 productName = it.productName,
                 recommendationType = it.recommendationType,
                 buType = it.buType,

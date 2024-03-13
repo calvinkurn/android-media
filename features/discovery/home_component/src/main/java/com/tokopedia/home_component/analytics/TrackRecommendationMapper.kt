@@ -15,6 +15,7 @@ object TrackRecommendationMapper {
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = data.productID,
+            parentProductId = data.parentProductID,
             moduleName = data.pageName,
             isAd = data.isTopads,
             isUseCache = isCache,
@@ -37,6 +38,7 @@ object TrackRecommendationMapper {
             cardId = data.id.toString(),
             cardName = CardName.MISSION_PAGE_CARD.format(data.title),
             productId = data.productID,
+            parentProductId = data.parentProductID,
             moduleName = data.pageName,
             isAd = data.isTopads,
             isUseCache = isCache,
