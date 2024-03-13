@@ -25,8 +25,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
@@ -170,7 +168,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 lifecycle,
                 Observer { data ->
                     dataItem = data
-                    trackShowProductCard(data)
                 }
             )
             masterProductCardItemViewModel?.getProductModelValue()?.observe(
@@ -410,6 +407,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
+        masterProductCardItemViewModel?.trackShowProductCard()
         masterProductCardItemViewModel?.sendTopAdsView()
         masterProductCardItemViewModel?.let {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
