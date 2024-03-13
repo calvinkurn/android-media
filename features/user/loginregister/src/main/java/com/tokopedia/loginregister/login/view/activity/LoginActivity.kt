@@ -78,7 +78,7 @@ open class LoginActivity :
         }
     }
 
-    private fun getBundleFromData(): Bundle {
+    open fun getBundleFromData(): Bundle {
         val bundle = Bundle()
         intent?.data?.let {
             var method = it.getQueryParameter(PARAM_LOGIN_METHOD).orEmpty()

@@ -26,7 +26,7 @@ interface LoginEmailPhoneContract {
 
         fun dismissLoadingLogin()
 
-        fun onSuccessLogin()
+        fun onSuccessLogin(shouldFinish: Boolean = true)
 
         fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo? = null)
 

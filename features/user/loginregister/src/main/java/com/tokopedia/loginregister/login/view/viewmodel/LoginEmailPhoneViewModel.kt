@@ -30,6 +30,12 @@ import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.model.LoginOption
 import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.domain.GetShopStatusUseCase
+import com.tokopedia.loginregister.login_sdk.data.AuthorizeData
+import com.tokopedia.loginregister.login_sdk.data.SdkAuthorizeParam
+import com.tokopedia.loginregister.login_sdk.data.SdkConsentData
+import com.tokopedia.loginregister.login_sdk.data.SdkConsentParam
+import com.tokopedia.loginregister.login_sdk.usecase.AuthorizeSdkUseCase
+import com.tokopedia.loginregister.login_sdk.usecase.LoginSdkConsentUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -63,6 +69,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val tickerInfoUseCase: TickerInfoUseCase,
     private val getProfileAndAdmin: GetUserInfoAndAdminUseCase,
     private val loginTokenV2UseCase: LoginTokenV2UseCase,
+    private val loginSdkConsentUseCase: LoginSdkConsentUseCase,
+    private val authorizeSdkUseCase: AuthorizeSdkUseCase,
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     private val dynamicBannerUseCase: DynamicBannerUseCase,
     private val registerCheckFingerprintUseCase: RegisterCheckFingerprintUseCase,
@@ -79,6 +87,10 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val mutableNavigateToGojekSeamless = SingleLiveEvent<Boolean>()
     val navigateToGojekSeamless: LiveData<Boolean>
         get() = mutableNavigateToGojekSeamless
+
+    private val mutableIsLoggedIn = SingleLiveEvent<Boolean>()
+    val isLoggedIn: LiveData<Boolean>
+        get() = mutableIsLoggedIn
 
     private val mutableRegisterCheckResponse = MutableLiveData<Result<RegisterCheckData>>()
     val registerCheckResponse: LiveData<Result<RegisterCheckData>>
@@ -103,6 +115,18 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val mutableProfileResponse = MutableLiveData<Result<ProfilePojo>>()
     val profileResponse: LiveData<Result<ProfilePojo>>
         get() = mutableProfileResponse
+
+    private val mutableConsent = MutableLiveData<Result<SdkConsentData>>()
+    val sdkConsent: LiveData<Result<SdkConsentData>>
+        get() = mutableConsent
+
+    private val mutableValidateClient = MutableLiveData<Boolean>()
+    val validateClient: LiveData<Boolean>
+        get() = mutableValidateClient
+
+    private val mutableAuthorizeResponse = MutableLiveData<Result<AuthorizeData>>()
+    val authorizeResponse: LiveData<Result<AuthorizeData>>
+        get() = mutableAuthorizeResponse
 
     private val mutableShowPopup = MutableLiveData<PopupError>()
     val showPopup: LiveData<PopupError>
@@ -437,6 +461,15 @@ class LoginEmailPhoneViewModel @Inject constructor(
         }
     }
 
+    fun checkLoginStatus() {
+        try {
+            val isLoggedIn = userSession.accessToken.isNotEmpty() && userSession.freshToken.isNotEmpty() && userSession.userId != "0" && userSession.userId.isNotEmpty()
+            mutableIsLoggedIn.value = isLoggedIn
+        } catch (e: Exception) {
+            mutableIsLoggedIn.value = false
+        }
+    }
+
     suspend fun isFingerprintRegistered(): Boolean {
         if (GlobalConfig.isSellerApp()) return false
         return try {
@@ -474,6 +507,50 @@ class LoginEmailPhoneViewModel @Inject constructor(
             _shopStatus.value = resp
         } catch (e: Exception) {
             _shopStatus.value = ShopStatus.Error(e)
+        }
+    }
+
+
+    fun getConsent(clientId: String, scopes: String, lang: String = "") {
+        launch {
+            try {
+                val result = loginSdkConsentUseCase(
+                    SdkConsentParam(clientId, scopes, lang)
+                )
+                mutableConsent.value = Success(result.data)
+            } catch (e: Exception) {
+                mutableConsent.value = Fail(e)
+            }
+        }
+    }
+
+    fun validateClient(signCert: String) {
+        launch {
+            try {
+                mutableValidateClient.value = true
+            } catch (e: Exception) {
+                mutableValidateClient.value = false
+            }
+        }
+    }
+
+    fun authorizeSdk(clientId: String, redirectUri: String, state: String, codeChallenge: String) {
+        launch {
+            try {
+                val result = authorizeSdkUseCase(
+                    SdkAuthorizeParam(
+                        clientId = clientId,
+                        redirectUri = redirectUri,
+                        responseType = "code",
+//                        state = state,
+//                        codeChallenge = codeChallenge,
+//                        codeChallengeMethod = "S256"
+                    )
+                )
+                mutableAuthorizeResponse.value = Success(result.data)
+            } catch (e: Exception) {
+                mutableAuthorizeResponse.value = Fail(e)
+            }
         }
     }
 

@@ -109,6 +109,7 @@ import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
+import com.tokopedia.loginregister.login_sdk.LoginSdkActivity
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.shopcreation.data.ShopStatus
 import com.tokopedia.loginregister.shopcreation.util.ShopCreationUtils
@@ -241,7 +242,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onResume() {
         super.onResume()
-        if (userSession.isLoggedIn && activity != null && activityShouldEnd) {
+        if (userSession.isLoggedIn && activity != null && activityShouldEnd && activity !is LoginSdkActivity) {
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
@@ -380,7 +381,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         super.onViewCreated(view, savedInstanceState)
         fetchRemoteConfig()
         if (savedInstanceState == null) {
-            clearData()
+//            clearData()
         }
 
         initObserver()
@@ -1085,7 +1086,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     @SuppressLint("PII Data Exposure")
-    override fun onSuccessLogin() {
+    override fun onSuccessLogin(shouldFinish: Boolean) {
         dismissLoadingLogin()
         activityShouldEnd = true
 
@@ -1413,7 +1414,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (isEnableSeamlessLogin) {
                 viewModel.getTemporaryKeyForSDK(profilePojo)
             } else {
-                onSuccessLogin()
+                if (activity is LoginSdkActivity) {
+                    onSuccessLogin(shouldFinish = false)
+                } else {
+                    onSuccessLogin()
+                }
             }
         }
     }
