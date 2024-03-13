@@ -6,12 +6,15 @@ import com.tokopedia.checkout.data.model.request.checkout.Carts
 import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.Data
 import com.tokopedia.checkout.data.model.request.checkout.Egold
+import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_OCC_MULTI_NON_TOKONOW
+import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_OCC_MULTI_TOKONOW
 import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_REGULAR_PRODUCT
 import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_TOKONOW_PRODUCT
 import com.tokopedia.checkout.data.model.request.checkout.Promo
 import com.tokopedia.checkout.data.model.request.checkout.TokopediaCorner
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase
 import com.tokopedia.checkout.revamp.view.crossSellGroup
@@ -53,14 +56,16 @@ class CheckoutProcessor @Inject constructor(
         deviceId: String,
         checkoutLeasingId: String,
         fingerprintPublicKey: String?,
-        hasClearPromoBeforeCheckout: Boolean
+        hasClearPromoBeforeCheckout: Boolean,
+        cartType: String
     ): CheckoutResult {
         val checkoutRequest = generateCheckoutRequest(
             listData,
             recipientAddressModel,
             validateUsePromoRevampUiModel,
             checkoutLeasingId,
-            isTradeInDropOff
+            isTradeInDropOff,
+            cartType
         )
         if (checkoutRequest.data.isNotEmpty() && checkoutRequest.data.first().groupOrders.isNotEmpty()) {
             // Get additional param for trade in analytics
@@ -180,7 +185,8 @@ class CheckoutProcessor @Inject constructor(
         recipientAddressModel: RecipientAddressModel,
         validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?,
         checkoutLeasingId: String,
-        isTradeInDropOff: Boolean
+        isTradeInDropOff: Boolean,
+        cartType: String
     ): Carts {
         // Set promo merchant request data
         val data = removeErrorShopProduct(listData, recipientAddressModel, isTradeInDropOff)
@@ -272,12 +278,12 @@ class CheckoutProcessor @Inject constructor(
             if (checkoutLeasingId.isNotEmpty()) {
                 leasingId = checkoutLeasingId.toLongOrZero()
             }
-            featureType = setCheckoutFeatureTypeData(data)
+            featureType = setCheckoutFeatureTypeData(data, cartType)
             crossSell = crossSellRequest
         }
     }
 
-    private fun setCheckoutFeatureTypeData(dataCheckoutRequestList: List<Data>): Int {
+    private fun setCheckoutFeatureTypeData(dataCheckoutRequestList: List<Data>, cartType: String): Int {
         var hasTokoNowProduct = false
         loopall@ for (dataCheckoutRequest in dataCheckoutRequestList) {
             for (groupOrder in dataCheckoutRequest.groupOrders) {
@@ -289,7 +295,11 @@ class CheckoutProcessor @Inject constructor(
                 }
             }
         }
-        return if (hasTokoNowProduct) FEATURE_TYPE_TOKONOW_PRODUCT else FEATURE_TYPE_REGULAR_PRODUCT
+        return if (cartType == CartShipmentAddressFormData.CART_TYPE_OCC) {
+            if (hasTokoNowProduct) FEATURE_TYPE_OCC_MULTI_TOKONOW else FEATURE_TYPE_OCC_MULTI_NON_TOKONOW
+        } else {
+            if (hasTokoNowProduct) FEATURE_TYPE_TOKONOW_PRODUCT else FEATURE_TYPE_REGULAR_PRODUCT
+        }
     }
 
     private fun setCheckoutRequestPromoData(

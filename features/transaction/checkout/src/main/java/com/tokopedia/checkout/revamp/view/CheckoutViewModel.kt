@@ -2332,7 +2332,8 @@ class CheckoutViewModel @Inject constructor(
             deviceId,
             checkoutLeasingId,
             fingerprintPublicKey,
-            hasClearPromoBeforeCheckout
+            hasClearPromoBeforeCheckout,
+            cartType
         )
         if (checkoutResult.success) {
             sendEEStep4(

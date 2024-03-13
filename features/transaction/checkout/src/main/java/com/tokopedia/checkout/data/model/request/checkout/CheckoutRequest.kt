@@ -7,6 +7,8 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 
 const val FEATURE_TYPE_REGULAR_PRODUCT = 3
 const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
+const val FEATURE_TYPE_OCC_MULTI_NON_TOKONOW = 1
+const val FEATURE_TYPE_OCC_MULTI_TOKONOW = 11
 
 data class CheckoutRequest(
     @SerializedName("carts")
