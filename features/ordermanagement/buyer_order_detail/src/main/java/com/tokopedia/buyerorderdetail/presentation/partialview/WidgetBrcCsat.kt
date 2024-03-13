@@ -11,6 +11,7 @@ import com.tokopedia.buyerorderdetail.databinding.WidgetBrcCsatBinding
 import com.tokopedia.buyerorderdetail.databinding.WidgetBrcCsatContentBinding
 import com.tokopedia.buyerorderdetail.presentation.model.WidgetBrcCsatUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.WidgetBrcCsatUiState
+import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -37,9 +38,11 @@ class WidgetBrcCsat(
     }
 
     private var _navigator: BuyerOrderDetailNavigator? = null
+    private var _viewModel: BuyerOrderDetailViewModel? = null
 
-    fun setup(navigator: BuyerOrderDetailNavigator) {
+    fun setup(navigator: BuyerOrderDetailNavigator, viewModel: BuyerOrderDetailViewModel) {
         _navigator = navigator
+        _viewModel = viewModel
     }
 
     fun setup(uiState: WidgetBrcCsatUiState) {
@@ -66,6 +69,15 @@ class WidgetBrcCsat(
             contentBinding.setup(data.orderID, data.helpUrl)
             if (!accordionData.contains(contentData)) addGroup(contentData)
             if (data.expanded) expandAllGroup() else collapseAllGroup()
+            checkAutoOpenCsatForm(data)
+        }
+    }
+
+    private fun checkAutoOpenCsatForm(data: WidgetBrcCsatUiModel) {
+        if (data.autoOpenCsatForm && !data.autoOpenCompleted) {
+            _viewModel?.setAutoOpenCsatForm(false)
+            data.autoOpenCompleted = true
+            contentBinding.onSmileyClicked(data.orderID, Int.ZERO)
         }
     }
 

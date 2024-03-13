@@ -10,7 +10,8 @@ import com.tokopedia.kotlin.extensions.orFalse
 object GetBrcCsatWidgetUiStateMapper {
     fun map(
         currentState: WidgetBrcCsatUiState,
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        autoOpenCsatForm: Boolean
     ): WidgetBrcCsatUiState {
         val brcCsatWidgetRequestState = getBuyerOrderDetailDataRequestState
             .getP1DataRequestState
@@ -25,7 +26,7 @@ object GetBrcCsatWidgetUiStateMapper {
             is GetBrcCsatWidgetRequestState.Requesting -> onRequesting(currentState = currentState)
             else -> {
                 if (brcCsatWidgetRequestState is GetBrcCsatWidgetRequestState.Complete.Success) {
-                    onSuccess(currentState, brcCsatWidgetRequestState, orderID)
+                    onSuccess(currentState, brcCsatWidgetRequestState, orderID, autoOpenCsatForm)
                 } else {
                     onError()
                 }
@@ -44,7 +45,8 @@ object GetBrcCsatWidgetUiStateMapper {
     private fun onSuccess(
         currentState: WidgetBrcCsatUiState,
         brcCsatWidgetRequestState: GetBrcCsatWidgetRequestState.Complete.Success,
-        orderID: String
+        orderID: String,
+        autoOpenCsatForm: Boolean
     ): WidgetBrcCsatUiState {
         val helpPageUrl = brcCsatWidgetRequestState.result?.data?.url?.helpPage?.android.orEmpty()
         val shouldShow = brcCsatWidgetRequestState.result?.data?.isEligible.orFalse() && helpPageUrl.isNotBlank()
@@ -55,7 +57,12 @@ object GetBrcCsatWidgetUiStateMapper {
                 false
             }
             WidgetBrcCsatUiState.HasData.Showing(
-                WidgetBrcCsatUiModel(orderID = orderID, helpUrl = helpPageUrl, expanded = expanded)
+                WidgetBrcCsatUiModel(
+                    orderID = orderID,
+                    helpUrl = helpPageUrl,
+                    expanded = expanded,
+                    autoOpenCsatForm = autoOpenCsatForm
+                )
             )
         } else {
             WidgetBrcCsatUiState.Hidden

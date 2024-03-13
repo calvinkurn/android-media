@@ -106,7 +106,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     private var getBuyerOrderDetailDataJob: Job? = null
     private var warrantyClaimButtonImpressed = false
-    private var openCsatForm = false
+    private var autoOpenCsatForm = false
     private val addOnsExpandableState = mutableListOf<String>()
     private val bmgmProductBenefitExpandableState = mutableListOf<String>()
 
@@ -455,16 +455,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
         }
     }
 
-    fun initAutoOpenCsatForm() {
-        openCsatForm = true
-    }
-
-    fun endAutoOpenCsatForm() {
-        openCsatForm = false
-    }
-
-    fun shouldAutoOpenCsat(): Boolean {
-        return openCsatForm
+    fun setAutoOpenCsatForm(value: Boolean) {
+        autoOpenCsatForm = value
     }
 
     private fun <T> Flow<T>.toStateFlow(initialValue: T) = stateIn(
@@ -531,7 +523,11 @@ class BuyerOrderDetailViewModel @Inject constructor(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): WidgetBrcCsatUiState {
         val currentState = brcCsatUiState.value
-        return GetBrcCsatWidgetUiStateMapper.map(currentState, getBuyerOrderDetailDataRequestState)
+        return GetBrcCsatWidgetUiStateMapper.map(
+            currentState,
+            getBuyerOrderDetailDataRequestState,
+            autoOpenCsatForm
+        )
     }
 
     private fun mapProductListUiState(
