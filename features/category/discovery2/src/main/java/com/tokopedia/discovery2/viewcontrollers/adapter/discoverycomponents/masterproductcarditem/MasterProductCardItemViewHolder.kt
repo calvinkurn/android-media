@@ -18,6 +18,7 @@ import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrackRecTrigger
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.di.getSubComponent
@@ -503,6 +504,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     override fun isEligibleToTrack(): Boolean {
-        return dataItem?.isEligibleToTrack().orFalse() && masterProductCardItemViewModel?.getTemplateType() != LIST
+        return dataItem?.isEligibleToTrackRecTrigger().orFalse()
     }
 }

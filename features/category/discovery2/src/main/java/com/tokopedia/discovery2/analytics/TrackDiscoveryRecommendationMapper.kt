@@ -29,7 +29,8 @@ object TrackDiscoveryRecommendationMapper {
             entranceForm = componentNames.getEntranceForm(),
             originalPrice = price.toFloatOrZero(),
             salesPrice = discountedPrice.toFloatOrZero(),
-            isTrackAsHorizontalSourceModule = componentNames.isTrackAsHorizontalSourceModule()
+            isTrackAsHorizontalSourceModule = componentNames.isTrackAsHorizontalSourceModule(),
+            isEligibleForRecTrigger = isEligibleToTrackRecTrigger()
         )
     }
 
@@ -64,6 +65,12 @@ object TrackDiscoveryRecommendationMapper {
 
     fun DataItem.isEligibleToTrack(): Boolean {
         return source == ComponentSourceData.Recommendation
+    }
+
+    fun DataItem.isEligibleToTrackRecTrigger(): Boolean {
+        return isEligibleToTrack() &&
+            (getAppLog()?.pageName?.contains("best_seller") == true ||
+                getAppLog()?.pageName?.contains("trending") == true)
     }
 
     fun ComponentsItem.isEligibleToTrack(): Boolean {

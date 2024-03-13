@@ -32,7 +32,10 @@ object AppLogRecommendation {
             AppLogAnalytics.send(EventName.CARD_CLICK, model.asCardModel().toShowClickJson())
         }
         if (model.entranceForm == EntranceForm.PURE_GOODS_CARD.str ||
-            model.entranceForm == EntranceForm.CONTENT_GOODS_CARD.str ) {
+            model.entranceForm == EntranceForm.CONTENT_GOODS_CARD.str ||
+            (model.entranceForm == EntranceForm.DETAIL_GOODS_CARD.str &&
+            model.isEligibleForRecTrigger)
+        ) {
             AppLogAnalytics.send(EventName.REC_TRIGGER, model.toRecTriggerJson())
         }
         model.setGlobalParams()
