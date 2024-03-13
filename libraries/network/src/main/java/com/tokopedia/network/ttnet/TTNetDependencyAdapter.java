@@ -144,20 +144,17 @@ public class TTNetDependencyAdapter implements ITTNetDepend {
     */
    @Override
    public String[] getConfigServers() {
-      return new String[]{"tnc16-platform-alisg.tiktokv.com",
-              "tnc16-platform-useast1a.tiktokv.com"};
+      return new String[]{"tnc16-alisg.isnssdk.com",
+              "tnc16-alisg.byteoversea.com",
+              "tnc16-useast1a.isnssdk.com"};
    }
 
    @Override
    public Map<String, String> getTTNetServiceDomainMap() {
       Map<String, String> domainMap = new HashMap<String, String>();
       domainMap.put(TTNetInit.DOMAIN_HTTPDNS_KEY, "34.102.215.99");
-      domainMap.put(TTNetInit.DOMAIN_NETLOG_KEY, "ttnet.tiktokv.com");
-//      if (DebugConfig.boeCanUse()) {
-//         domainMap.put(TTNetInit.DOMAIN_BOE_KEY, ".boe-gateway.byted.org");
-//      } else {
-         domainMap.put(TTNetInit.DOMAIN_BOE_KEY, "xxx");
-//      }
+      domainMap.put(TTNetInit.DOMAIN_NETLOG_KEY, "ttnet-sg.byteoversea.com");
+      domainMap.put(TTNetInit.DOMAIN_BOE_KEY, "xxx");
       return domainMap;
    }
 }
