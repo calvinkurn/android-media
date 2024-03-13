@@ -29,6 +29,7 @@ internal object QueryMissionWidget {
         "      pageName\n" +
         "      categoryID\n" +
         "      productID\n" +
+        "      parentProductID\n" +
         "      productName\n" +
         "      recommendationType\n" +
         "      buType\n" +

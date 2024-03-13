@@ -108,6 +108,7 @@ data class AppLogRecommendationProductModel(
     companion object {
         fun create(
             productId: String = "",
+            parentProductId: String = "",
             position: Int = 0,
             tabName: String = "",
             tabPosition: Int = -1,
@@ -131,7 +132,7 @@ data class AppLogRecommendationProductModel(
             isTrackAsHorizontalSourceModule : Boolean = false
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
-                productId = productId.zeroAsEmpty(),
+                productId = getProductId(productId, parentProductId),
                 listName = tabName.underscoredParam(),
                 listNum = tabPosition.inc().zeroAsEmpty(),
                 moduleName = moduleName,
