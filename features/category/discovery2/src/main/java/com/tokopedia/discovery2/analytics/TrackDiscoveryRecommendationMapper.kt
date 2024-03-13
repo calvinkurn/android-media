@@ -30,7 +30,7 @@ object TrackDiscoveryRecommendationMapper {
             originalPrice = price.toFloatOrZero(),
             salesPrice = discountedPrice.toFloatOrZero(),
             isTrackAsHorizontalSourceModule = componentNames.isTrackAsHorizontalSourceModule(),
-            isEligibleForRecTrigger = isEligibleToTrackRecTrigger()
+            isEligibleForRecTrigger = isEligibleToTrackRecTrigger(componentNames)
         )
     }
 
