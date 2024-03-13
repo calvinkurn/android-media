@@ -109,9 +109,7 @@ class ProductPreviewFragment @Inject constructor(
         viewModel.onAction(ProductPreviewAction.ProductActionFromResult)
     }
 
-    private val coachMark by lazyThreadSafetyNone {
-        CoachMark2(requireContext())
-    }
+    private var coachMark : CoachMark2? = null
 
     private var coachMarkJob: Job? = null
 
@@ -343,10 +341,12 @@ class ProductPreviewFragment @Inject constructor(
 
     private fun handleCoachMark() {
         if (hasCoachMark && !viewModel.hasVisit) {
+            coachMark = CoachMark2(requireContext())
+
             coachMarkJob?.cancel()
             coachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
                 delay(DELAY_COACH_MARK)
-                coachMark.showCoachMark(step = coachMarkItems)
+                coachMark?.showCoachMark(step = coachMarkItems)
                 viewModel.onAction(ProductPreviewAction.HasVisitCoachMark)
             }
         }
