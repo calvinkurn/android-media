@@ -125,7 +125,7 @@ class ReviewContentViewHolder(
 
     private var snapHelperMedia = PagerSnapHelper()
 
-    private val descriptionUiModel : DescriptionUiModel
+    private val descriptionUiModel: DescriptionUiModel
 
     private val clickableSpan: ClickableSpan =
         object : ClickableSpan() {
@@ -259,7 +259,6 @@ class ReviewContentViewHolder(
             val text = tvReviewDescription.layout
             if (text.lineCount <= MAX_LINES_THRESHOLD) return@doOnLayout
 
-
             tvReviewDescription.setOnClickListener {
                 descriptionUiModel.isExpanded = !descriptionUiModel.isExpanded
                 setupExpanded()
@@ -291,7 +290,7 @@ class ReviewContentViewHolder(
             descriptionUiModel.truncatedText = truncatedText
             setupExpanded()
         }
-        binding.tvReviewDescription.maxLines = MAX_LINES_THRESHOLD //Initial state
+        binding.tvReviewDescription.maxLines = MAX_LINES_THRESHOLD // Initial state
         tvReviewDescription.show()
     }
 
@@ -401,13 +400,15 @@ class ReviewContentViewHolder(
         return videoPlayerManager.occupy(id)
     }
 
-    override fun pauseVideo(id: String) {
+    override fun onPauseResumeVideo() {
         reviewInteractionListener.onPauseResumeVideo()
+    }
+
+    override fun pauseVideo(id: String) {
         videoPlayerManager.pause(id)
     }
 
     override fun resumeVideo(id: String) {
-        reviewInteractionListener.onPauseResumeVideo()
         videoPlayerManager.resume(id)
     }
 

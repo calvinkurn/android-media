@@ -83,8 +83,7 @@ class ProductMediaVideoViewHolder(
 
             override fun onVideoReadyToPlay(isPlaying: Boolean) {
                 hideLoading()
-                if (isPlaying) productPreviewVideoListener.resumeVideo(mVideoId)
-                else productPreviewVideoListener.pauseVideo(mVideoId)
+                productPreviewVideoListener.onPauseResumeVideo()
                 binding.iconPlay.showWithCondition(!isPlaying)
             }
 
