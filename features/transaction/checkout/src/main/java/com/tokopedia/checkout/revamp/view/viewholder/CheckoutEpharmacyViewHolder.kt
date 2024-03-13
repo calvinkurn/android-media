@@ -33,7 +33,7 @@ class CheckoutEpharmacyViewHolder(
         val VIEW_TYPE = R.layout.item_checkout_epharmacy
         const val EPharmacyAppLink = "tokopedia://epharmacy/"
         const val EPharmacyCountImageUrl = TokopediaImageUrl.E_PHARMACY_COUNT_IMAGE_URL
-        const val EPharmacyMiniConsultationAppLink = "tokopedia://epharmacy/attach-prescription/"
+        const val EPharmacyMiniConsultationAppLink = "tokopedia://epharmacy/component/attach-prescription/"
         private const val VIBRATION_ANIMATION_DURATION = 1250
         private const val VIBRATION_ANIMATION_TRANSLATION_X = -10
         private const val VIBRATION_ANIMATION_CYCLE = 4f
@@ -117,6 +117,8 @@ class CheckoutEpharmacyViewHolder(
             if (uploadPrescriptionUiModel.isIncompletePrescriptionError && uploadPrescriptionUiModel.productErrorCount > 0) {
                 binding.uploadDescriptionText.text =
                     itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_complete, uploadPrescriptionUiModel.productErrorCount)
+            } else if (uploadPrescriptionUiModel.isBlockCheckoutFlowMessage.isNotEmpty()) {
+                binding.uploadDescriptionText.text = uploadPrescriptionUiModel.isBlockCheckoutFlowMessage
             } else {
                 binding.uploadDescriptionText.text =
                     itemView.resources.getString(purchase_platformcommonR.string.pp_epharmacy_message_error_prescription_or_consultation_not_found_new)

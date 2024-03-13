@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewholder
+package com.tokopedia.product.detail.view.viewholder.dynamic_oneliner
 
 import android.view.View
 import android.view.ViewGroup.LayoutParams
@@ -10,15 +10,17 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.ItemDynamicOneLinerBinding
-import com.tokopedia.product.detail.view.listener.ProductDetailListener
+import com.tokopedia.product.detail.view.fragment.delegate.BasicComponentEvent
+import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
+import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.delegate.DynamicOneLinerCallback
+import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.event.DynamicOneLinerEvent
 
 class DynamicOneLinerViewHolder(
     view: View,
-    private val listener: ProductDetailListener
-) : ProductDetailPageViewHolder<DynamicOneLinerDataModel>(view) {
+    private val callback: DynamicOneLinerCallback
+) : ProductDetailPageViewHolder<DynamicOneLinerUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_one_liner
@@ -30,7 +32,7 @@ class DynamicOneLinerViewHolder(
 
     val binding = ItemDynamicOneLinerBinding.bind(view)
 
-    override fun bind(element: DynamicOneLinerDataModel) = with(element.data) {
+    override fun bind(element: DynamicOneLinerUiModel) = with(element.data) {
         when (status) {
             STATUS_SHOW -> {
                 itemView.setLayoutHeight(LayoutParams.WRAP_CONTENT)
@@ -38,14 +40,14 @@ class DynamicOneLinerViewHolder(
                 impressComponent(element)
             }
 
-            STATUS_HIDE -> {
+            else -> {
                 itemView.setLayoutHeight(0)
             }
         }
     }
 
     private fun renderContent(
-        data: DynamicOneLinerDataModel.Data,
+        data: DynamicOneLinerUiModel.Data,
         name: String,
         componentTrackDataModel: ComponentTrackDataModel
     ) = with(binding) {
@@ -111,7 +113,13 @@ class DynamicOneLinerViewHolder(
     ) {
         if (showClickArea) {
             itemView.setOnClickListener {
-                listener.onClickDynamicOneLiner(text, url, componentTrackDataModel)
+                callback.event(
+                    DynamicOneLinerEvent.OnDynamicOneLinerClicked(
+                        text,
+                        url,
+                        componentTrackDataModel
+                    )
+                )
             }
         } else {
             itemView.setOnClickListener(null)
@@ -120,19 +128,20 @@ class DynamicOneLinerViewHolder(
 
     private fun configPadding(
         binding: ItemDynamicOneLinerBinding,
-        data: DynamicOneLinerDataModel.Data
+        data: DynamicOneLinerUiModel.Data
     ) = with(binding.dynamicOneLinerContent) {
         setPadding(paddingLeft, data.paddingTopPx, paddingRight, data.paddingBottomPx)
     }
 
-    private fun impressComponent(element: DynamicOneLinerDataModel) {
+    private fun impressComponent(element: DynamicOneLinerUiModel) {
         itemView.addOnImpressionListener(
             holder = element.impressHolder,
-            holders = listener.getImpressionHolders(),
+            holders = callback.impressionHolders,
             name = element.name,
-            useHolders = listener.isRemoteCacheableActive()
+            useHolders = callback.isRemoteCacheableActive
         ) {
-            listener.onImpressComponent(getComponentTrackData(element))
+            val trackerData = getComponentTrackData(element = element)
+            callback.event(BasicComponentEvent.OnImpressComponent(trackData = trackerData))
         }
     }
 }
