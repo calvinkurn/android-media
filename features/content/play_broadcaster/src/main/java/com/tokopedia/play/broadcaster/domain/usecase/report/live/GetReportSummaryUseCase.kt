@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.domain.usecase.estimatedincome
+package com.tokopedia.play.broadcaster.domain.usecase.report.live
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -7,10 +7,10 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.play.broadcaster.domain.model.estimatedincome.GetReportSummaryRequest
-import com.tokopedia.play.broadcaster.domain.model.estimatedincome.GetReportSummaryResponse
-import com.tokopedia.play.broadcaster.domain.usecase.estimatedincome.GetReportSummaryUseCase.Companion.QUERY
-import com.tokopedia.play.broadcaster.domain.usecase.estimatedincome.GetReportSummaryUseCase.Companion.QUERY_NAME
+import com.tokopedia.play.broadcaster.domain.model.report.live.GetReportSummaryRequest
+import com.tokopedia.play.broadcaster.domain.model.report.live.GetReportSummaryResponse
+import com.tokopedia.play.broadcaster.domain.usecase.report.live.GetReportSummaryUseCase.Companion.QUERY
+import com.tokopedia.play.broadcaster.domain.usecase.report.live.GetReportSummaryUseCase.Companion.QUERY_NAME
 import javax.inject.Inject
 
 /**
@@ -37,12 +37,12 @@ class GetReportSummaryUseCase @Inject constructor(
         const val QUERY_NAME = "GetReportSummaryUseCaseQuery"
         const val QUERY = """
             query broadcasterReportSummariesBulkV2(
-                ${"$${PARAM_CONTENT_IDS}"}: [String!],
-                ${"$${PARAM_CONTENT_TYPE}"}: String!
+                ${"$$PARAM_CONTENT_IDS"}: [String!],
+                ${"$$PARAM_CONTENT_TYPE"}: String!
             ) {
                 broadcasterReportSummariesBulkV2(
-                    $PARAM_CONTENT_IDS: ${"$${PARAM_CONTENT_IDS}"},
-                    $PARAM_CONTENT_TYPE: ${"$${PARAM_CONTENT_TYPE}"}
+                    $PARAM_CONTENT_IDS: ${"$$PARAM_CONTENT_IDS"},
+                    $PARAM_CONTENT_TYPE: ${"$$PARAM_CONTENT_TYPE"}
                 ) {
                     reportData {
                         content {

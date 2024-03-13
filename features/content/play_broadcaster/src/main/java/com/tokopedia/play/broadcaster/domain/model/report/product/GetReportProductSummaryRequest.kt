@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.domain.model.estimatedincome
+package com.tokopedia.play.broadcaster.domain.model.report.product
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam

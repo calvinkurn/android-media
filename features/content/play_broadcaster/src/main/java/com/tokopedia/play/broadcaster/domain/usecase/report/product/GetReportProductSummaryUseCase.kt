@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.domain.usecase.estimatedincome
+package com.tokopedia.play.broadcaster.domain.usecase.report.product
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -7,9 +7,8 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.play.broadcaster.domain.model.estimatedincome.GetReportProductSummaryRequest
-import com.tokopedia.play.broadcaster.domain.model.estimatedincome.GetReportProductSummaryResponse
-import com.tokopedia.play.broadcaster.domain.usecase.beautification.SetBeautificationConfigUseCase
+import com.tokopedia.play.broadcaster.domain.model.report.product.GetReportProductSummaryRequest
+import com.tokopedia.play.broadcaster.domain.model.report.product.GetReportProductSummaryResponse
 import javax.inject.Inject
 
 /**
@@ -35,10 +34,10 @@ class GetReportProductSummaryUseCase @Inject constructor(
         const val QUERY_NAME = "GetReportProductSummaryUseCaseQuery"
         const val QUERY = """
             query broadcasterReportReportProductSummary(
-                ${"$${PARAM_REQ}"}: broadcasterReportReportProductSummaryRequest!
+                ${"$$PARAM_REQ"}: broadcasterReportReportProductSummaryRequest!
             ) {
                 broadcasterReportReportProductSummary(
-                    ${PARAM_REQ}: ${"$${PARAM_REQ}"}
+                    $PARAM_REQ: ${"$$PARAM_REQ"}
                 ) {
                     reportProductAggregate {
                         estimatedIncomeFmt
