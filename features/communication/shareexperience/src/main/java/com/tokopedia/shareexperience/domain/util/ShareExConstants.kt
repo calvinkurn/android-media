@@ -3,7 +3,7 @@ package com.tokopedia.shareexperience.domain.util
 object ShareExConstants {
 
     object Rollence {
-        const val ROLLENCE_SHARE_EX = "shareex_an"
+        const val ROLLENCE_SHARE_EX = "shareex_an_2"
     }
 
     object RemoteConfigKey {
