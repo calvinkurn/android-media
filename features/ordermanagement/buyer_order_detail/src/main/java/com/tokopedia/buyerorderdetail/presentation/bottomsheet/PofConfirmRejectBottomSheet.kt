@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerPartialOrderFulfillmentTracker
 import com.tokopedia.buyerorderdetail.databinding.PofConfirmRejectBottomsheetBinding
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
-import com.tokopedia.buyerorderdetail.presentation.activity.PartialOrderFulfillmentActivity
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.PartialOrderFulfillmentViewModel
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.media.loader.loadImage
@@ -117,10 +117,17 @@ class PofConfirmRejectBottomSheet : BottomSheetUnify() {
             when (it) {
                 is Success -> {
                     if (it.data.isSuccess) {
-                        dismiss()
-                        (activity as? PartialOrderFulfillmentActivity)?.setResultFinish(
-                            Activity.RESULT_OK
-                        )
+                        activity?.let { activity ->
+                            dismiss()
+                            val intent = activity.intent?.apply {
+                                putExtra(
+                                    ApplinkConstInternalOrder.PartialOrderFulfillmentKey.ACTION_TYPE,
+                                    ApplinkConstInternalOrder.PartialOrderFulfillmentKey.ACTION_TYPE_REJECT
+                                )
+                            }
+                            activity.setResult(Activity.RESULT_OK, intent)
+                            activity.finish()
+                        }
                     } else {
                         showToasterError()
                     }

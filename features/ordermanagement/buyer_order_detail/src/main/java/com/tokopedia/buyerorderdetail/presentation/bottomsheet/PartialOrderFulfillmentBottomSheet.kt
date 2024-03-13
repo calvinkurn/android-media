@@ -200,6 +200,10 @@ class PartialOrderFulfillmentBottomSheet : BottomSheetUnify(), PartialOrderFulfi
                     ApplinkConstInternalOrder.PartialOrderFulfillmentKey.TOASTER_MESSAGE,
                     message
                 )
+                putExtra(
+                    ApplinkConstInternalOrder.PartialOrderFulfillmentKey.ACTION_TYPE,
+                    ApplinkConstInternalOrder.PartialOrderFulfillmentKey.ACTION_TYPE_ACCEPT
+                )
             }
             it.setResult(Activity.RESULT_OK, intent)
             it.finish()
