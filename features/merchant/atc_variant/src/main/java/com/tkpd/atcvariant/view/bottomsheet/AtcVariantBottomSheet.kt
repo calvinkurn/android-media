@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub
+import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
@@ -149,6 +150,12 @@ class AtcVariantBottomSheet :
     private var buttonText = ""
     private var alreadyHitQtyTrack = false
     private var shouldSetActivityResult = true
+    private val atcAnimator by atcAnimator()
+    private var productImage: ImageView? = null
+
+    override fun onProductImageChanged(container: ImageView) {
+        productImage = container
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -972,11 +979,17 @@ class AtcVariantBottomSheet :
 
             if (openShipmentBottomSheetWhenError()) return@let
 
-            showProgressDialog {
+            /*showProgressDialog {
                 loadingProgressDialog?.dismiss()
-            }
+            }*/
 
-            viewModel.hitAtc(
+            val targetView = productImage ?: return
+
+            atcAnimator
+                .setView(targetView)
+                .show()
+
+            /*viewModel.hitAtc(
                 buttonAction,
                 sharedData?.shopId.orEmpty(),
                 viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted()
@@ -987,7 +1000,7 @@ class AtcVariantBottomSheet :
                 sharedData?.trackerListNamePdp ?: "",
                 sharedData?.showQtyEditor ?: false,
                 viewModel.getVariantAggregatorData()?.simpleBasicInfo?.shopName ?: ""
-            )
+            )*/
         }
     }
 
