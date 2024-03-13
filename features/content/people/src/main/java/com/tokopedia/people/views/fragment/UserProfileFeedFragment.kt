@@ -93,7 +93,7 @@ class UserProfileFeedFragment @Inject constructor(
         initObserver()
         setupFeedsPosts()
 
-        if (!isParentFragmentConfigChanges())
+        if (activity?.lastNonConfigurationInstance == null)
             fetchFeedsPosts()
     }
 

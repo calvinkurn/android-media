@@ -177,7 +177,7 @@ class UserProfileVideoFragment @Inject constructor(
         initObserver()
         setupPlayVideo()
 
-        if (!isParentFragmentConfigChanges())
+        if (activity?.lastNonConfigurationInstance == null)
             submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
     }
 

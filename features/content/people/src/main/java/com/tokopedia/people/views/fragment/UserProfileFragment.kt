@@ -170,8 +170,6 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private var viewPagerSelectedPage: Int = 0
-
     private val profileSettingsForActivityResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -201,6 +199,7 @@ class UserProfileFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         feedFloatingButtonManager.setInitialData(this)
 
+        initTab()
         initObserver()
         initListener()
         setHeader()
@@ -217,7 +216,7 @@ class UserProfileFragment @Inject constructor(
             refreshLandingPageData(true)
         }
 
-        if (!isConfigChanges) {
+        if (activity?.lastNonConfigurationInstance == null) {
             refreshLandingPageData(true)
             mainBinding.userPostContainer.displayedChild = PAGE_LOADING
         }
@@ -241,7 +240,6 @@ class UserProfileFragment @Inject constructor(
         }
 
         initFabUserProfile()
-        initTab()
     }
 
     override fun onResume() {
@@ -431,12 +429,11 @@ class UserProfileFragment @Inject constructor(
 
     private fun initTab() = with(mainBinding.profileTabs) {
         viewPager.adapter = pagerAdapter
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                viewPagerSelectedPage = position
-            }
-        })
+
+        val existingTabs = viewModel.profileTab.tabs
+        if (existingTabs.isNotEmpty()) {
+            pagerAdapter.onRestoreTabs(existingTabs)
+        }
     }
 
     private fun initObserver() {
@@ -784,7 +781,6 @@ class UserProfileFragment @Inject constructor(
                     mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
                 } else {
                     mainBinding.shopRecommendation.hide()
-                    mainBinding.profileTabs.viewPager.currentItem = viewPagerSelectedPage
                     mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
                 }
 

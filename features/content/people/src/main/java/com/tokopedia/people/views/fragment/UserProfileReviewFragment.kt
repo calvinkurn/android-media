@@ -170,7 +170,7 @@ class UserProfileReviewFragment @Inject constructor(
         setupView()
         setupObserver()
 
-        if (!isParentFragmentConfigChanges())
+        if (activity?.lastNonConfigurationInstance == null)
             viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
     }
 
