@@ -60,13 +60,13 @@ internal fun constructTrackId(
 ): String {
     return when (cardName) {
         CardName.REC_GOODS_CARD,
-        CardName.AD_GOODS_CARD,
-        CardName.MISSION_PRODUCT_CARD -> "${requestId}_${productId}_${position}"
+        CardName.AD_GOODS_CARD -> "${requestId}_${productId}_${position}"
         CardName.REC_VIDEO_CARD -> "${requestId}_${cardId}_${productId}_${position}"
         CardName.REC_CONTENT_CARD,
-        CardName.AD_FEED_CARD,
-        CardName.MISSION_PAGE_CARD -> "${requestId}_${cardId}_${position}"
-        else -> "${requestId}_${cardId}_${position}"
+        CardName.AD_FEED_CARD -> "${requestId}_${cardId}_${position}"
+        else -> if(productId.isEmpty()) {
+            "${requestId}_${cardId}_${position}"
+        } else "${requestId}_${productId}_${position}"
     }
 }
 
@@ -92,5 +92,9 @@ internal fun getProductId(
     productId: String,
     parentProductId: String,
 ): String {
-    return (parentProductId.takeIf { it.zeroAsEmpty().isNotEmpty() } ?: productId).zeroAsEmpty()
+    return if (parentProductId.zeroAsEmpty().isEmpty()) {
+        productId
+    } else {
+        parentProductId
+    }.zeroAsEmpty()
 }

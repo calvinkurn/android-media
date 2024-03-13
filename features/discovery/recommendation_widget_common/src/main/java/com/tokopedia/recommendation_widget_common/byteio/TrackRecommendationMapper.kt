@@ -19,7 +19,7 @@ object TrackRecommendationMapper {
     fun RecommendationItem.asProductTrackModel(
         isCache: Boolean = false,
         entranceForm: EntranceForm,
-        enterMethod: String = "",
+        enterMethod: EnterMethod? = null,
         tabName: String = "",
         tabPosition: Int = -1,
     ): AppLogRecommendationProductModel {
@@ -38,7 +38,7 @@ object TrackRecommendationMapper {
             tabName = tabName,
             tabPosition = tabPosition,
             rate = ratingAverage.toFloatOrZero(),
-            enterMethod = enterMethod,
+            enterMethod = enterMethod?.str,
             volume = countSold,
             originalPrice = (if(slashedPriceInt > 0) slashedPriceInt else priceInt).toFloat(),
             salesPrice = priceInt.toFloat(),
