@@ -8,7 +8,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryHeader
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryPageMapper.mapToShowcaseProductCard
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper.createProductRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.ProgressBarMapper.createProgressBar
@@ -26,6 +25,7 @@ import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.Prod
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
@@ -41,31 +41,20 @@ internal object VisitableMapper {
     )
 
     /**
-     * -- Ticker Section --
-     */
-
-    fun MutableList<Visitable<*>>.addTicker(
-        detailResponse: CategoryDetailResponse,
-        tickerList: List<TickerData>
-    ) {
-        if (tickerList.isNotEmpty()) {
-            add(detailResponse.mapToTicker(tickerList))
-        }
-    }
-
-    /**
      * -- Category Title Section --
      */
 
     fun MutableList<Visitable<*>>.addCategoryHeader(
         detailResponse: CategoryDetailResponse,
         ctaText: String,
-        ctaTextColor: Int
+        ctaTextColor: Int,
+        tickerList: List<TickerData>
     ) {
         add(
             detailResponse.mapToCategoryHeader(
                 ctaText = ctaText,
-                ctaTextColor = ctaTextColor
+                ctaTextColor = ctaTextColor,
+                tickerList = tickerList
             )
         )
     }
@@ -251,6 +240,15 @@ internal object VisitableMapper {
         when (layoutType) {
             CATEGORY_SHOWCASE.name -> updateShowcaseProductQuantity(productId, quantity)
             PRODUCT_ADS_CAROUSEL -> updateProductAdsQuantity(productId, quantity)
+        }
+    }
+
+    fun MutableList<Visitable<*>>.removeHeaderTicker() {
+        find { it is TokoNowThematicHeaderUiModel }?.let { visitable ->
+            val uiModel = (visitable as TokoNowThematicHeaderUiModel)
+            updateItemById(uiModel.id) {
+                uiModel.copy(ticker = null)
+            }
         }
     }
 

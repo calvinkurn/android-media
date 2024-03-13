@@ -22,7 +22,6 @@ import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCate
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryShowcase
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProductRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProgressBar
-import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.findCategoryShowcaseItem
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCategoryShowcase
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapProductAdsCarousel
@@ -53,6 +52,7 @@ import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
 import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeHeaderTicker
 import com.tokopedia.tokopedianow.common.helper.ResourceProvider
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -145,14 +145,11 @@ class TokoNowCategoryViewModel @Inject constructor(
 
         visitableList.clear()
 
-        visitableList.addTicker(
-            detailResponse = detailResponse,
-            tickerList = tickerData.tickerList
-        )
         visitableList.addCategoryHeader(
             detailResponse = detailResponse,
             ctaText = resourceProvider.getString(R.string.tokopedianow_category_title_another_category),
-            ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500)
+            ctaTextColor = resourceProvider.getColor(unifyprinciplesR.color.Unify_GN500),
+            tickerList = tickerData.tickerList
         )
         visitableList.addCategoryNavigation(
             categoryNavigationUiModel = categoryNavigationUiModel
@@ -348,6 +345,16 @@ class TokoNowCategoryViewModel @Inject constructor(
         launchCatchError(
             block = {
                 removeVisitableItem(PRODUCT_RECOMMENDATION.name)
+                updateVisitableListLiveData()
+            },
+            onError = { /* nothing to do */ }
+        )
+    }
+
+    fun removeTicker() {
+        launchCatchError(
+            block = {
+                visitableList.removeHeaderTicker()
                 updateVisitableListLiveData()
             },
             onError = { /* nothing to do */ }

@@ -5,6 +5,7 @@ import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefresh
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowThematicHeaderTypeFactory
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.unifycomponents.ticker.TickerData
 
 data class TokoNowThematicHeaderUiModel(
     val id: String = String.EMPTY,
@@ -16,10 +17,10 @@ data class TokoNowThematicHeaderUiModel(
     val backgroundLightColor: String = String.EMPTY,
     val backgroundDarkColor: String = String.EMPTY,
     val backgroundGradientColor: GradientColor? = null,
-    val chooseAddressResIntColor: Int? = null,
     val isSuperGraphicImageShown: Boolean = false,
-    val isChooseAddressShown: Boolean = false,
     val iconPullRefreshType: Int = LayoutIconPullRefreshView.TYPE_WHITE,
+    val chosenAddress: ChosenAddress? = null,
+    val ticker: Ticker? = null,
     @TokoNowLayoutState val state: Int = TokoNowLayoutState.SHOW
 ): Visitable<TokoNowThematicHeaderTypeFactory> {
     override fun type(typeFactory: TokoNowThematicHeaderTypeFactory): Int = typeFactory.type(this)
@@ -27,5 +28,14 @@ data class TokoNowThematicHeaderUiModel(
     data class GradientColor(
         val startColor: Int,
         val endColor: Int
+    )
+
+    data class ChosenAddress(
+        val chooseAddressResIntColor: Int? = null,
+        val isShown: Boolean = false
+    )
+
+    data class Ticker(
+        val tickerList: List<TickerData> = emptyList()
     )
 }

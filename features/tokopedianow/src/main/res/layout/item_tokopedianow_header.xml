@@ -41,7 +41,24 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_icon_pull_refresh" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="14dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        custom:tickerType="announcement"
+        custom:tickerShapeType="loose"
+        custom:closeButtonVisibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
+        xmlns:custom="http://schemas.android.com/apk/res-auto" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tp_title"
@@ -53,7 +70,7 @@
         android:maxLines="1"
         app:layout_constraintEnd_toStartOf="@id/tp_cta"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
+        app:layout_constraintTop_toBottomOf="@id/ticker"
         app:layout_goneMarginEnd="16dp"
         app:typographyType="heading_3"
         tools:text="List Belanja Kesukaanmu Mau Pilih Yang Mana"
@@ -67,7 +84,7 @@
         android:layout_marginEnd="16dp"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
+        app:layout_constraintTop_toBottomOf="@id/ticker"
         app:layout_goneMarginEnd="16dp"/>
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -80,7 +97,7 @@
         app:layout_constraintEnd_toStartOf="@id/tp_cta"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
+        app:layout_constraintTop_toBottomOf="@id/ticker"
         app:layout_goneMarginEnd="16dp"
         app:loader_corner_radius="16dp" />
 

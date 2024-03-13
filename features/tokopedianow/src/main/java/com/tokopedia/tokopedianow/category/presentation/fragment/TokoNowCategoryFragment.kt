@@ -339,6 +339,10 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             warehouseIds = viewModel.getWarehouseIds()
         )
 
+        override fun onCloseTicker() {
+            viewModel.removeTicker()
+        }
+
         override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView) { /* do nothing */ }
     }
 

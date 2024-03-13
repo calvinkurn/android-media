@@ -8,14 +8,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowDividerTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowErrorTypeFactory
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowHeaderSpaceTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowThematicHeaderTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTitleTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowDividerUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowErrorUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowHeaderSpaceUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowThematicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTitleUiModel
@@ -23,7 +21,6 @@ import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowDividerViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowErrorViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowHeaderSpaceViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowThematicHeaderViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
@@ -59,7 +56,6 @@ class ShoppingListAdapterTypeFactory(
     ShoppingListTypeFactory,
     ShoppingListHorizontalProductCardItemTypeFactory,
     TokoNowThematicHeaderTypeFactory,
-    TokoNowHeaderSpaceTypeFactory,
     TokoNowDividerTypeFactory,
     TokoNowTitleTypeFactory,
     TokoNowErrorTypeFactory,
@@ -67,7 +63,6 @@ class ShoppingListAdapterTypeFactory(
     TokoNowProductRecommendationOocTypeFactory
 {
     override fun type(uiModel: TokoNowThematicHeaderUiModel): Int = TokoNowThematicHeaderViewHolder.LAYOUT
-    override fun type(uiModel: TokoNowHeaderSpaceUiModel): Int = TokoNowHeaderSpaceViewHolder.LAYOUT
     override fun type(uiModel: TokoNowDividerUiModel): Int = TokoNowDividerViewHolder.LAYOUT
     override fun type(uiModel: TokoNowTitleUiModel): Int = TokoNowTitleViewHolder.LAYOUT
     override fun type(viewModel: LoadingMoreModel?): Int = TokoNowLoadingMoreViewHolder.LAYOUT
@@ -88,9 +83,6 @@ class ShoppingListAdapterTypeFactory(
                 itemView = parent,
                 listener = headerListener,
                 tokoNowView = tokoNowView
-            )
-            TokoNowHeaderSpaceViewHolder.LAYOUT -> TokoNowHeaderSpaceViewHolder(
-                itemView = parent
             )
             TokoNowDividerViewHolder.LAYOUT -> TokoNowDividerViewHolder(
                 itemView = parent

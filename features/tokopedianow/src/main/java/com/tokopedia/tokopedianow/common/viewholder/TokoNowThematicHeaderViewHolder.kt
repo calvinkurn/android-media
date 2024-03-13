@@ -8,6 +8,8 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
@@ -28,6 +30,9 @@ import com.tokopedia.tokopedianow.common.util.TypographyUtil.setRightImageDrawab
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHeaderBinding
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography.Companion.DISPLAY_3
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
@@ -38,12 +43,13 @@ class TokoNowThematicHeaderViewHolder(
     itemView: View,
     private val listener: TokoNowHeaderListener? = null,
     private val tokoNowView: TokoNowView? = null
-): AbstractViewHolder<TokoNowThematicHeaderUiModel>(itemView) {
+): AbstractViewHolder<TokoNowThematicHeaderUiModel>(itemView), TickerPagerCallback {
     companion object {
         private const val ALL_CORNER_SIZES_TITLE = 12f
         private const val ALL_CORNER_SIZES_CTA = 8f
         private const val SOURCE_TRACKING = "tokonow page"
         private const val SOURCE = "tokonow"
+        private const val PREFIX_LINK = "tokopedia"
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_header
@@ -51,7 +57,9 @@ class TokoNowThematicHeaderViewHolder(
 
     private var binding: ItemTokopedianowHeaderBinding? by viewBinding()
 
-    override fun bind(data: TokoNowThematicHeaderUiModel) {
+    override fun bind(
+        data: TokoNowThematicHeaderUiModel
+    ) {
         binding?.apply {
             setupChooseAddressWidget(data)
             setupLayout(data)
@@ -59,7 +67,17 @@ class TokoNowThematicHeaderViewHolder(
         }
     }
 
-    private fun ItemTokopedianowHeaderBinding.setupLayout(data: TokoNowThematicHeaderUiModel) {
+    override fun onPageDescriptionViewClick(
+        linkUrl: CharSequence,
+        itemData: Any?
+    ) {
+        val url = linkUrl.toString()
+        RouteManager.route(itemView.context, if (url.startsWith(PREFIX_LINK)) url else "${ApplinkConst.WEBVIEW}?url=${url}")
+    }
+
+    private fun ItemTokopedianowHeaderBinding.setupLayout(
+        data: TokoNowThematicHeaderUiModel
+    ) {
         viewTopSpacing.layoutParams.height = NavToolbarExt.getFullToolbarHeight(itemView.context)
         layoutIconPullRefresh.setColorPullRefresh(data.iconPullRefreshType)
         listener?.pullRefreshIconCaptured(layoutIconPullRefresh)
@@ -74,6 +92,7 @@ class TokoNowThematicHeaderViewHolder(
                 setupTitle(data)
                 setupCta(data)
                 setupBackgroundColor(data)
+                setupTicker(data)
             }
             LOADING -> {
                 setupLoadingState()
@@ -203,10 +222,38 @@ class TokoNowThematicHeaderViewHolder(
     private fun ItemTokopedianowHeaderBinding.setupChooseAddressWidget(
         data: TokoNowThematicHeaderUiModel
     ) {
-        chooseAddressWidget.showIfWithBlock(data.isChooseAddressShown) {
+        chooseAddressWidget.showIfWithBlock(data.chosenAddress != null && data.chosenAddress.isShown) {
             bindChooseAddressWidget(data)
             showCoachMark()
             updateWidget()
+        }
+    }
+
+    private fun ItemTokopedianowHeaderBinding.setupTicker(
+        data: TokoNowThematicHeaderUiModel
+    ) {
+        ticker.showIfWithBlock(data.ticker != null && data.ticker.tickerList.isNotEmpty()) {
+            val adapter = TickerPagerAdapter(
+                itemView.context,
+                data.ticker?.tickerList.orEmpty()
+            )
+
+            adapter.setPagerDescriptionClickEvent(
+                this@TokoNowThematicHeaderViewHolder
+            )
+
+            addPagerView(
+                adapter = adapter,
+                adapterData = data.ticker?.tickerList.orEmpty()
+            )
+
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) { /* do nothing */ }
+
+                override fun onDismiss() {
+                    listener?.onCloseTicker()
+                }
+            })
         }
     }
 
@@ -258,7 +305,7 @@ class TokoNowThematicHeaderViewHolder(
 
                 override fun isFromTokonowPage(): Boolean = true
 
-                override fun onChangeTextColor(): Int = data.chooseAddressResIntColor ?: unifyprinciplesR.color.Unify_NN950_96
+                override fun onChangeTextColor(): Int = data.chosenAddress?.chooseAddressResIntColor ?: unifyprinciplesR.color.Unify_NN950_96
             })
         }
     }
@@ -266,6 +313,7 @@ class TokoNowThematicHeaderViewHolder(
     interface TokoNowHeaderListener {
         fun onClickCtaHeader()
         fun onClickChooseAddressWidgetTracker()
+        fun onCloseTicker()
         fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView)
     }
 }

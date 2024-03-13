@@ -126,9 +126,7 @@ internal object MainVisitableMapper {
                 ctaTextColor = headerModel.ctaTextColor,
                 ctaChevronColor = headerModel.ctaChevronColor,
                 backgroundGradientColor = headerModel.backgroundGradientColor,
-                chooseAddressResIntColor = headerModel.chooseAddressResIntColor,
                 isSuperGraphicImageShown = headerModel.isSuperGraphicImageShown,
-                isChooseAddressShown = headerModel.isChooseAddressShown,
                 iconPullRefreshType = headerModel.iconPullRefreshType,
                 state = state
             )
