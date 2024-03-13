@@ -1,9 +1,10 @@
 package com.tokopedia.product.detail.view.viewholder.promo_price.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,14 +77,13 @@ fun NormalPriceComponent(
                 data.priceFmt,
                 textStyle = NestTheme.typography.heading3.copy(
                     color = NestTheme.colors.NN._950,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Bold
                 )
             )
 
             if (freeOngkirImageUrl.isNotEmpty()) {
                 NestImage(
                     source = Remote(freeOngkirImageUrl, customUIError = {
-
                     }),
                     type = NestImageType.Rect(0.dp),
                     modifier = Modifier
@@ -137,10 +136,11 @@ fun PromoPriceHeader(
     ) {
         if (mainIconUrl.isNotEmpty()) {
             NestImage(
-                source = Remote(mainIconUrl,
+                source = Remote(
+                    mainIconUrl,
                     customUIError = {
-
-                    }),
+                    }
+                ),
                 modifier = Modifier
                     .size(24.dp)
                     .padding(end = 4.dp)
@@ -204,11 +204,9 @@ fun PromoPriceFooter(
             )
         }
 
-
         if (boLogo.isNotEmpty()) {
             NestImage(
                 source = Remote(source = boLogo, customUIError = {
-
                 }),
                 type = NestImageType.Rect(0.dp),
                 modifier = Modifier
@@ -269,7 +267,6 @@ fun PromoPriceCard(
         if (data.superGraphicIconUrl.isNotEmpty()) {
             NestImage(
                 source = Remote(source = data.superGraphicIconUrl, customUIError = {
-
                 }),
                 type = NestImageType.Rect(0.dp),
                 modifier = Modifier.constrainAs(superGraphic) {
@@ -343,48 +340,17 @@ val String.color
         NestTheme.colors.NN._0
     }
 
+@SuppressLint("RememberReturnType")
 @Composable
 @Preview
 fun PromoPriceCardPreview() {
     NestTheme {
-        Surface(
+        Box(
             modifier = Modifier
                 .background(NestTheme.colors.NN._0)
-                .fillMaxSize(),
-            contentColor = NestTheme.colors.NN._0
+                .fillMaxSize()
         ) {
-            val egSuperGraphic =
-                "https://images.tokopedia.net/img/pdp/icons/promo/Promo%20background%20red.png"
-            val boLogo = "https://images.tokopedia.net/img/shop-page-reimagined/bo-normal.png"
-            val mainIconUrl =
-                "https://images.tokopedia.net/img/pdp/icons/promo/Promo%20icon%20red.png"
-
-            Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                PromoPriceCard(
-                    PromoPriceUiModel(
-                        priceAdditionalFmt = "Tanpa Promo: Rp.70.000",
-                        promoPriceFmt = "Rp.9.000.000",
-                        promoSubtitle = "Diskon 200rb Cashback 300rb",
-                        slashPriceFmt = "Rp.120.000.000.000.000.000",
-                        separatorColor = "",
-                        mainTextColor = "",
-                        cardBackgroundColor = "",
-                        mainIconUrl = mainIconUrl,
-                        boIconUrl = boLogo,
-                        superGraphicIconUrl = egSuperGraphic,
-                        applink = ""
-                    )
-                )
-
-                NormalPriceComponent(
-                    uiModel = Price(
-                        priceFmt = "Rp.11.000.000",
-                        slashPriceFmt = "Rp.15.000.000",
-                        discPercentage = "20%"
-                    ),
-                    freeOngkirImageUrl = boLogo
-                )
-            }
+//            Testing()
         }
     }
 }

@@ -59,6 +59,9 @@ class ProductPictureViewHolder(
                     resource: Drawable,
                     transition: Transition<in Drawable>?
                 ) {
+                    if (bindingAdapterPosition == 0) {
+                        listener?.sendImageBitmap(resource)
+                    }
                     binding.pdpMainImg.setImageDrawable(resource)
                     if (data.isPrefetch) {
                         data.prefetchResource = resource
@@ -72,6 +75,7 @@ class ProductPictureViewHolder(
             is MediaContainerType.Portrait -> {
                 setFashionScale()
             }
+
             else -> {
                 setNormalScale()
             }

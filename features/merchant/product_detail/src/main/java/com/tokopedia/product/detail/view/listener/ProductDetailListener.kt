@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.view.listener
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.util.SparseIntArray
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
@@ -48,6 +50,8 @@ interface ProductDetailListener {
     fun getTrackingQueueInstance(): TrackingQueue
     fun getUserSession(): UserSessionInterface
     fun getStoriesWidgetManager(): StoriesWidgetManager
+
+    fun sendImageBitmap(drawable: Drawable)
 
     /**
      * ProductMediaViewHolder

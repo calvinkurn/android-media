@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
+import android.os.Build
 import android.os.SystemClock
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -30,6 +31,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.utils.R
 import timber.log.Timber
+import kotlin.math.ceil
 
 /**
  * @author by milhamj on 30/11/18.
@@ -501,11 +503,5 @@ fun View.setOnClickDebounceListener(interval: Int = 750, block: () -> Unit) {
 fun View.getLocationOnScreen(): Point {
     val location = IntArray(2)
     this.getLocationOnScreen(location)
-    return Point(location[0], location[1])
-}
-
-fun View.getLocationInWindow(): Point {
-    val location = IntArray(2)
-    this.getLocationInWindow(location)
     return Point(location[0], location[1])
 }

@@ -82,4 +82,21 @@
         app:layout_constraintBottom_toTopOf="@id/pdp_button_container"
         app:layout_constraintTop_toBottomOf="@id/pdp_navtoolbar" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/pdpAtcAnimGuideline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.4"
+        android:orientation="horizontal"/>
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composeAnimAtc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/pdpAtcAnimGuideline"
+        app:layout_constraintBottom_toBottomOf="@+id/pdpAtcAnimGuideline"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

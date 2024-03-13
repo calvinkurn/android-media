@@ -9,7 +9,10 @@ import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.graphics.Point
+import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -96,6 +99,7 @@ import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -274,7 +278,6 @@ import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCa
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
-import com.tokopedia.product.detail.view.viewmodel.product_detail.event.ProductRecommendationEvent
 import com.tokopedia.product.detail.view.widget.NavigationTab
 import com.tokopedia.product.detail.view.widget.ProductDetailNavigator.goToMvc
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
@@ -350,10 +353,12 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import kotlinx.coroutines.flow.collectLatest
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.ceil
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
@@ -773,6 +778,12 @@ open class ProductDetailFragment :
         observeProductMediaRecomData()
         observeBottomSheetEdu()
         observeAffiliateEligibility()
+        observeBitmapReady()
+    }
+
+    private fun observeBitmapReady() {
+        viewLifecycleOwner.observe(viewModel.bitmapImage) { bitmap ->
+        }
     }
 
     private fun observeBottomSheetEdu() {
@@ -786,6 +797,15 @@ open class ProductDetailFragment :
 
     private fun observeOneTimeMethod() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.successAtcAndAnimation.collectLatest {
+                val atcData = viewModel.addToCartLiveData.value as? Success ?: return@collectLatest
+                showAddToCartDoneBottomSheet(
+                    atcData.data.data
+                )
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.oneTimeMethodState.collect {
                 when (it.event) {
                     is OneTimeMethodEvent.ImpressRestriction -> {
@@ -796,9 +816,11 @@ open class ProductDetailFragment :
                             shopId = viewModel.getProductInfoP1?.basic?.shopID ?: ""
                         )
                     }
+
                     is OneTimeMethodEvent.ImpressGeneralEduBs -> {
                         goToEducational(url = it.event.appLink)
                     }
+
                     else -> {
                         // noop
                     }
@@ -1027,20 +1049,24 @@ open class ProductDetailFragment :
             RQUEST_CODE_UPDATE_FINTECH_WIDGET, RQUEST_CODE_ACTIVATE_GOPAY -> {
                 reloadFintechWidget()
             }
+
             ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE,
             ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST -> {
                 data?.let {
                     activityResultTradeIn(it)
                 }
             }
+
             ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT -> {
                 updateCartNotification()
             }
+
             ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT -> {
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
                     onSwipeRefresh()
                 }
             }
+
             ProductDetailConstant.REQUEST_CODE_LOGIN -> {
                 hideProgressDialog()
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
@@ -1059,11 +1085,13 @@ open class ProductDetailFragment :
                     }
                 }
             }
+
             ProductDetailConstant.REQUEST_CODE_REPORT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     view?.showToasterSuccess(getString(R.string.success_to_report))
                 }
             }
+
             ProductDetailConstant.REQUEST_CODE_SHOP_INFO -> {
                 if (data != null) {
                     val isFavoriteFromShopPage =
@@ -1080,6 +1108,7 @@ open class ProductDetailFragment :
                     }
                 }
             }
+
             ProductDetailConstant.REQUEST_CODE_TOP_CHAT -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val favoriteData =
@@ -1094,6 +1123,7 @@ open class ProductDetailFragment :
                     }
                 }
             }
+
             PRODUCT_CARD_OPTIONS_REQUEST_CODE -> {
                 handleProductCardOptionsActivityResult(
                     requestCode,
@@ -1106,6 +1136,7 @@ open class ProductDetailFragment :
                     }
                 )
             }
+
             REQUEST_CODE_ADD_WISHLIST_COLLECTION -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val isSuccess = data.getBooleanExtra(BOOLEAN_EXTRA_SUCCESS, false)
@@ -1130,6 +1161,7 @@ open class ProductDetailFragment :
                     }
                 }
             }
+
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -1192,8 +1224,8 @@ open class ProductDetailFragment :
         val hasQuantityEditor =
             viewModel.getProductInfoP1?.basic?.isTokoNow == true ||
                 (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
-                    ?.data
-                    ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
+                ?.data
+                ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
         if (viewModel.getProductInfoP1 == null ||
             context == null ||
@@ -1420,6 +1452,7 @@ open class ProductDetailFragment :
             R.id.shop_credibility_ava, R.id.shop_credibility_name -> gotoShopDetail(
                 componentTrackDataModel
             )
+
             else -> {
             }
         }
@@ -1558,6 +1591,7 @@ open class ProductDetailFragment :
             ProductDetailConstant.TRADE_IN -> {
                 onTradeinClicked(componentTrackDataModel)
             }
+
             ProductDetailConstant.PRODUCT_VARIANT_INFO -> {
                 if (!GlobalConfig.isSellerApp()) {
                     ProductDetailTracking.Click.eventClickVariant(
@@ -1569,6 +1603,7 @@ open class ProductDetailFragment :
                     )
                 }
             }
+
             ProductDetailConstant.PRODUCT_WHOLESALE_INFO -> {
                 val data =
                     ProductDetailMapper.mapToWholesale(viewModel.getProductInfoP1?.data?.wholesale)
@@ -1582,6 +1617,7 @@ open class ProductDetailFragment :
                     }
                 }
             }
+
             ProductDetailConstant.PRODUCT_PROTECTION -> {
                 ProductDetailTracking.Click.eventClickPDPInsuranceProtection(
                     viewModel.getProductInfoP1,
@@ -1590,6 +1626,7 @@ open class ProductDetailFragment :
                 )
                 openFtInsuranceWebView(getPurchaseProtectionUrl())
             }
+
             ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO -> {
                 goToApplink(appLink)
                 ProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(
@@ -1597,6 +1634,7 @@ open class ProductDetailFragment :
                     componentTrackDataModel
                 )
             }
+
             ProductDetailConstant.INFO_OBAT_KERAS -> {
                 if (appLink.isNotEmpty()) {
                     goToApplink(appLink)
@@ -2084,11 +2122,12 @@ open class ProductDetailFragment :
         goToRecommendation()
     }
 
-    override val mvcLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
-            onSwipeRefresh()
+    override val mvcLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
+                onSwipeRefresh()
+            }
         }
-    }
 
     override fun onMerchantVoucherSummaryClicked(
         @MvcSource source: Int,
@@ -2473,7 +2512,10 @@ open class ProductDetailFragment :
         viewModel.deleteCartLiveData.observe(viewLifecycleOwner) {
             hideProgressDialog()
             it.doSuccessOrFail({ message ->
-                view?.showToasterSuccess(message.data, ctaText = getString(productdetailcommonR.string.pdp_common_oke))
+                view?.showToasterSuccess(
+                    message.data,
+                    ctaText = getString(productdetailcommonR.string.pdp_common_oke)
+                )
                 updateButtonState()
             }) { throwable ->
                 view?.showToasterError(
@@ -2488,7 +2530,10 @@ open class ProductDetailFragment :
     private fun observeUpdateCart() {
         viewModel.updateCartLiveData.observe(viewLifecycleOwner) {
             it.doSuccessOrFail({ success ->
-                view?.showToasterSuccess(success.data, ctaText = getString(productdetailcommonR.string.pdp_common_oke))
+                view?.showToasterSuccess(
+                    success.data,
+                    ctaText = getString(productdetailcommonR.string.pdp_common_oke)
+                )
             }) { throwable ->
                 view?.showToasterError(
                     throwable.message ?: "",
@@ -2527,6 +2572,7 @@ open class ProductDetailFragment :
                         getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
                     }
                 )
+
                 is Fail -> view?.showToasterError(
                     getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder)
                 )
@@ -2804,7 +2850,7 @@ open class ProductDetailFragment :
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
                 if (it.basic.isTokoNow && cartTypeData?.availableButtonsPriority?.firstOrNull()
-                        ?.isCartTypeDisabledOrRemindMe() == false
+                    ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
                 } else {
@@ -2863,6 +2909,7 @@ open class ProductDetailFragment :
                     )
                 }
             }, {
+                viewModel.onFinishAtc()
                 ProductDetailTracking.Impression.eventViewErrorWhenAddToCart(
                     it.message.orEmpty(),
                     viewModel.getProductInfoP1?.basic?.productID.orEmpty(),
@@ -2887,7 +2934,10 @@ open class ProductDetailFragment :
             )
         } else {
             val errorMessage = getErrorMessage(t)
-            view?.showToasterError(errorMessage, ctaText = getString(productdetailcommonR.string.pdp_common_oke))
+            view?.showToasterError(
+                errorMessage,
+                ctaText = getString(productdetailcommonR.string.pdp_common_oke)
+            )
             ProductDetailServerLogger.logBreadCrumbAtc(
                 isSuccess = false,
                 errorMessage = errorMessage,
@@ -3215,8 +3265,10 @@ open class ProductDetailFragment :
 
         if (recommendationWidget.hasNext) {
             addEndlessScrollListener {
-                val page = pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
-                val placeholderData = pdpUiUpdater?.getVerticalRecommendationPlaceholder(recommendationWidget.pageName)
+                val page =
+                    pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
+                val placeholderData =
+                    pdpUiUpdater?.getVerticalRecommendationPlaceholder(recommendationWidget.pageName)
 
                 viewModel.getVerticalRecommendationData(
                     recommendationWidget.pageName,
@@ -3267,18 +3319,23 @@ open class ProductDetailFragment :
                     )
                 }
             }
+
             ProductDetailCommonConstant.OCC_BUTTON -> {
                 sendTrackingATC(cartId)
                 goToOneClickCheckout()
             }
+
             ProductDetailCommonConstant.BUY_BUTTON -> {
                 sendTrackingATC(cartId)
                 goToCartCheckout(cartId)
             }
+
             ProductDetailCommonConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
-                showAddToCartDoneBottomSheet(result.data)
+                navToolbar?.updateNotification()
+                viewModel.onFinishAtc()
             }
+
             ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE -> {
                 // Same with OCS but should send devideId
                 sendTrackingATC(cartId)
@@ -3332,7 +3389,7 @@ open class ProductDetailFragment :
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                            viewModel.getProductInfoP1?.parentProductId.orEmpty()
+                        viewModel.getProductInfoP1?.parentProductId.orEmpty()
                         }"
                         ProductDetailTracking.Click.eventActivationOvo(
                             viewModel.getProductInfoP1?.parentProductId ?: "",
@@ -3340,6 +3397,7 @@ open class ProductDetailFragment :
                         )
                         RouteManager.route(it, applink)
                     }
+
                     ProductDetailCommonConstant.OVO_INSUFFICIENT_BALANCE_STATUS -> {
                         val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(
                             viewModel.getProductInfoP1?.parentProductId ?: "",
@@ -3348,6 +3406,7 @@ open class ProductDetailFragment :
                         )
                         bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
                     }
+
                     else -> view?.showToasterError(
                         getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         ctaText = getString(productdetailcommonR.string.pdp_common_oke)
@@ -3373,7 +3432,8 @@ open class ProductDetailFragment :
     }
 
     override fun updateUi() {
-        val newData = pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
+        val newData =
+            pdpUiUpdater?.getCurrentDataModels(viewModel.isAPlusContentExpanded()).orEmpty()
 
         val finalData = if (isTabletMode()) {
             manipulateDataTabletMode(newData)
@@ -3574,6 +3634,7 @@ open class ProductDetailFragment :
 
                 onShopFavoriteClick(isNplFollowType = true)
             }
+
             reData.restrictionCategoriesType() -> {
                 reData.action.firstOrNull()?.buttonLink?.let {
                     if (it.isEmpty()) {
@@ -3583,6 +3644,7 @@ open class ProductDetailFragment :
                     }
                 }
             }
+
             reData.restrictionGamificationType() -> {
                 ProductDetailTracking.Click.onRestrictionGamificationClicked(
                     viewModel.getProductInfoP1,
@@ -3593,6 +3655,7 @@ open class ProductDetailFragment :
                     goToApplink(it)
                 }
             }
+
             reData.restrictionLocationType() -> {
                 onRestrictionLocationClicked(reData)
             }
@@ -4402,40 +4465,6 @@ open class ProductDetailFragment :
         RouteManager.route(context, webViewUrl)
     }
 
-    private fun onSuccessRemoveWishlist(productId: String?) {
-        view?.showToasterSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
-            ctaListener = { }
-        )
-        if (productId != null) {
-            updateFabIcon(productId, false)
-        }
-    }
-
-    private fun onErrorRemoveWishList(errorMsg: String?) {
-        view?.showToasterError(
-            getErrorMessage(errorMsg),
-            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
-        )
-    }
-
-    private fun onSuccessAddWishlist(productId: String?) {
-        view?.showToasterSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            ctaListener = { goToWishlist() }
-        )
-        productId?.let { updateFabIcon(it, true) }
-    }
-
-    private fun onErrorAddWishList(errorMessage: String?) {
-        view?.showToasterError(
-            getErrorMessage(errorMessage),
-            ctaText = getString(productdetailcommonR.string.pdp_common_oke)
-        )
-    }
-
     private fun sendIntentResultWishlistChange(productId: String, isInWishlist: Boolean) {
         val resultIntent = Intent()
             .putExtra(
@@ -4635,7 +4664,12 @@ open class ProductDetailFragment :
             viewModel.getProductInfoP1
         )
         if (GlobalConfig.isSellerApp()) {
-            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE, productId, TOPADS_PERFORMANCE_CURRENT_SITE)
+            RouteManager.route(
+                context,
+                ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE,
+                productId,
+                TOPADS_PERFORMANCE_CURRENT_SITE
+            )
         } else {
             goToPdpSellerApp()
         }
@@ -4783,7 +4817,19 @@ open class ProductDetailFragment :
         }
     }
 
+    private fun getStatusBarHeight(context: Context): Int {
+        val resources = context.resources
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        return if (resourceId > 0) {
+            resources.getDimensionPixelSize(resourceId)
+        } else {
+            ceil(((if (VERSION.SDK_INT >= VERSION_CODES.M) 24 else 25) * resources.displayMetrics.density).toDouble())
+                .toInt()
+        }
+    }
+
     private fun doAtc(buttonAction: Int) {
+        atcAnimation.runAtcAnimation(binding)
         buttonActionType = buttonAction
         context?.let {
             val isVariant = viewModel.getProductInfoP1?.data?.variant?.isVariant ?: false
@@ -4849,7 +4895,7 @@ open class ProductDetailFragment :
         val selectedWarehouseId = viewModel.getMultiOriginByProductId().id
 
         viewModel.getProductInfoP1?.let { data ->
-            showProgressDialog()
+//            showProgressDialog()
             when (actionButton) {
                 ProductDetailCommonConstant.OCS_BUTTON -> {
                     val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
@@ -4871,9 +4917,11 @@ open class ProductDetailFragment :
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
+
                 ProductDetailCommonConstant.OCC_BUTTON -> {
                     addToCartOcc(data, selectedWarehouseId)
                 }
+
                 else -> {
                     val addToCartRequestParams = AddToCartRequestParams().apply {
                         productId = data.basic.productID
@@ -4949,7 +4997,6 @@ open class ProductDetailFragment :
                 ApplinkConst.SHOP,
                 shopId
             )
-
 
             val shopCredibility = pdpUiUpdater?.shopCredibility ?: return
 
@@ -5895,6 +5942,10 @@ open class ProductDetailFragment :
 
     override fun getUserSession(): UserSessionInterface {
         return viewModel.userSessionInterface
+    }
+
+    override fun sendImageBitmap(drawable: Drawable) {
+        viewModel.setBitmapImage(drawable.toBitmap())
     }
 
     override fun onImpressStockAssurance(

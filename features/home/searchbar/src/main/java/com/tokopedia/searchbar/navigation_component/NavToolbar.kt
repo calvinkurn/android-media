@@ -575,6 +575,15 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
+    fun getCartIconPosition(): View? {
+        val shareIconPosition = navIconAdapter?.getCartIconPosition()
+        shareIconPosition?.let {
+            val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it)
+            return viewholder?.itemView
+        }
+        return null
+    }
+
     fun updateIcon(oldIconId: Int, newIconId: Int) {
         navIconAdapter?.updateIcon(oldIconId, newIconId)
     }
