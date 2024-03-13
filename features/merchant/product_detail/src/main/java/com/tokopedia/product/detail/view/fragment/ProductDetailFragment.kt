@@ -776,7 +776,6 @@ open class ProductDetailFragment :
         observeProductMediaRecomData()
         observeBottomSheetEdu()
         observeAffiliateEligibility()
-        observeBitmapReady()
     }
 
     private fun observeBottomSheetEdu() {
