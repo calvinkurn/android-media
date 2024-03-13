@@ -130,9 +130,8 @@ data class AppLogRecommendationProductModel(
             cardName: String = CardName.REC_GOODS_CARD,
             isTrackAsHorizontalSourceModule : Boolean = false
         ): AppLogRecommendationProductModel {
-            val byteIoProductId = getProductId(productId, parentProductId)
             return AppLogRecommendationProductModel(
-                productId = byteIoProductId,
+                productId = getProductId(productId, parentProductId),
                 listName = tabName.underscoredParam(),
                 listNum = tabPosition.inc().zeroAsEmpty(),
                 moduleName = moduleName,
