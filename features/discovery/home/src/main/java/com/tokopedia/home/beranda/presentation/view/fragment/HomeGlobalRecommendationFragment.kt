@@ -640,7 +640,6 @@ class HomeGlobalRecommendationFragment :
     }
 
     override fun onContentCardClicked(item: ContentCardModel, position: Int) {
-        setAppLogEnterMethod(EnterMethod.CLICK_RECOM_CARD_INFINITE)
         sendCardClickAppLog(
             item.asCardTrackModel(
                 enterMethod = EnterMethod.CLICK_RECOM_CARD_INFINITE
@@ -999,10 +998,6 @@ class HomeGlobalRecommendationFragment :
     private fun getLocationParamString(): String {
         return ChooseAddressUtils.getLocalizingAddressData(requireContext())
             ?.convertToLocationParams() ?: ""
-    }
-
-    private fun setAppLogEnterMethod(enterMethod: EnterMethod) {
-        AppLogAnalytics.putEnterMethod(enterMethod)
     }
 
     override fun onDestroyView() {
