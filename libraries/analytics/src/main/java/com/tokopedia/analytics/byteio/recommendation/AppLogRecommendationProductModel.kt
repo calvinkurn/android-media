@@ -86,6 +86,7 @@ data class AppLogRecommendationProductModel(
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.SHOP_ID, shopId)
         put(AppLogParam.ITEM_ORDER, itemOrder)
+        put(AppLogParam.REC_SESSION_ID, recSessionId)
         if(volume > 0) put(AppLogParam.VOLUME, volume)
         if(rate > 0) put(AppLogParam.RATE, rate)
         if(originalPrice > 0) put(AppLogParam.ORIGINAL_PRICE, originalPrice)

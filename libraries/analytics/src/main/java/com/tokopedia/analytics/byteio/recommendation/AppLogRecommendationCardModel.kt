@@ -59,6 +59,7 @@ data class AppLogRecommendationCardModel(
         put(AppLogParam.REC_PARAMS, recParams)
         put(AppLogParam.SHOP_ID, shopId)
         put(AppLogParam.ITEM_ORDER, itemOrder)
+        put(AppLogParam.REC_SESSION_ID, recSessionId)
         if(volume > 0) put(AppLogParam.VOLUME, volume)
         if(rate > 0) put(AppLogParam.RATE, rate)
         if(originalPrice > 0) put(AppLogParam.ORIGINAL_PRICE, originalPrice)
