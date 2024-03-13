@@ -55,7 +55,7 @@ abstract class BaseFrameTimingBenchmark {
         val customTraceMetrics = customTrace().map { TraceSectionMetric(it) }
         val metrics = listOf(FrameTimingMetric()).plus(customTraceMetrics)
         benchmarkRule.measureTokopediaApps(
-            metrics = listOf(FrameTimingMetric()),
+            metrics = metrics,
             packageName = packageName(),
             startupMode = StartupMode.COLD,
             setupBlock = {
