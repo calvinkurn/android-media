@@ -21,7 +21,6 @@ data class AppLogRecommendationProductModel(
     val listNum: String,
     val moduleName: String,
     val sourceModule: String,
-    val trackId: String,
     val isAd: Int,
     val isUseCache: Int,
     val recSessionId: String,
@@ -38,16 +37,18 @@ data class AppLogRecommendationProductModel(
     val authorId: String,
     val groupId: String,
     val cardName: String,
-    var isEligibleRecTrigger: Boolean = true
+    val isEligibleForRecTrigger: Boolean,
 ) {
 
+    val trackId = constructTrackId(null, productId, requestId, itemOrder, cardName)
+
     fun asCardModel() = AppLogRecommendationCardModel(
+        cardId = "",
         productId = productId,
         listName = listName,
         listNum = listNum,
         moduleName = moduleName,
         sourceModule = sourceModule,
-        trackId = trackId,
         isAd = isAd,
         isUseCache = isUseCache,
         recSessionId = recSessionId,
@@ -86,6 +87,7 @@ data class AppLogRecommendationProductModel(
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.SHOP_ID, shopId)
         put(AppLogParam.ITEM_ORDER, itemOrder)
+        put(AppLogParam.REC_SESSION_ID, recSessionId)
         if(volume > 0) put(AppLogParam.VOLUME, volume)
         if(rate > 0) put(AppLogParam.RATE, rate)
         if(originalPrice > 0) put(AppLogParam.ORIGINAL_PRICE, originalPrice)
@@ -128,8 +130,8 @@ data class AppLogRecommendationProductModel(
             authorId: String = "",
             groupId: String = "",
             cardName: String = CardName.REC_GOODS_CARD,
-            isEligibleRecTrigger: Boolean = true,
-            isTrackAsHorizontalSourceModule : Boolean = false
+            isTrackAsHorizontalSourceModule : Boolean = false,
+            isEligibleForRecTrigger: Boolean = false,
         ): AppLogRecommendationProductModel {
             return AppLogRecommendationProductModel(
                 productId = getProductId(productId, parentProductId),
@@ -137,7 +139,6 @@ data class AppLogRecommendationProductModel(
                 listNum = tabPosition.inc().zeroAsEmpty(),
                 moduleName = moduleName,
                 sourceModule = constructSourceModule(isAd, moduleName, entranceForm, isTrackAsHorizontalSourceModule),
-                trackId = constructTrackId(null, productId, requestId, position, cardName),
                 isAd = isAd.intValue,
                 isUseCache = isUseCache.intValue,
                 recSessionId = recSessionId,
@@ -154,7 +155,7 @@ data class AppLogRecommendationProductModel(
                 authorId = authorId.zeroAsEmpty(),
                 groupId = groupId.zeroAsEmpty(),
                 cardName = getCardName(cardName, isAd).spacelessParam(),
-                isEligibleRecTrigger = isEligibleRecTrigger
+                isEligibleForRecTrigger = isEligibleForRecTrigger,
             )
         }
     }

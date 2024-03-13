@@ -2,7 +2,9 @@ package com.tokopedia.home_recom.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.EntranceForm
+import com.tokopedia.analytics.byteio.RecommendationTriggerObject
 import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
@@ -12,6 +14,7 @@ import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
+import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.listener.RecommendationTokonowListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -25,7 +28,7 @@ class RecommendationItemViewHolder(
         private val view: View,
         val listener: RecommendationListener,
         val tokonowListener: RecommendationTokonowListener? = null
-) : AbstractViewHolder<RecommendationItemDataModel>(view){
+) : AbstractViewHolder<RecommendationItemDataModel>(view), AppLogRecTriggerInterface {
 
     companion object{
         private const val RECOM_ITEM = "recom_item"
@@ -33,8 +36,11 @@ class RecommendationItemViewHolder(
 
     private val productCardView: ProductCardGridView by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
 
+    private var recTriggerObject = RecommendationTriggerObject()
+
     override fun bind(element: RecommendationItemDataModel) {
         setupCard(element)
+        setRecTriggerObject(element)
     }
 
     override fun bind(element: RecommendationItemDataModel, payloads: MutableList<Any>) {
@@ -114,5 +120,17 @@ class RecommendationItemViewHolder(
                 )
             }
         }
+    }
+
+    private fun setRecTriggerObject(model: RecommendationItemDataModel) {
+        recTriggerObject = RecommendationTriggerObject(
+            sessionId = model.productItem.appLog.sessionId,
+            requestId = model.productItem.appLog.requestId,
+            moduleName = model.productItem.pageName,
+        )
+    }
+
+    override fun getRecommendationTriggerObject(): RecommendationTriggerObject? {
+        return recTriggerObject
     }
 }

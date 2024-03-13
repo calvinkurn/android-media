@@ -17,8 +17,8 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.asProductTrackModel
-import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.getEntranceForm
 import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrack
+import com.tokopedia.discovery2.analytics.TrackDiscoveryRecommendationMapper.isEligibleToTrackRecTrigger
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.di.getSubComponent
@@ -26,8 +26,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.addOnImpression1pxListener
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
 import com.tokopedia.notifications.settings.NotificationReminderPrompt
@@ -170,9 +168,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardItemViewModel?.getDataItemValue()?.observe(
                 lifecycle,
                 Observer { data ->
-                    if(dataItem != data){
-                        trackShowProductCard(data)
-                    }
                     dataItem = data
                 }
             )
@@ -267,8 +262,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 it.applyCarousel()
                 productCardView?.layoutParams?.width =
                     Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(
-                        R.dimen.dp_70
-                    )
+                    R.dimen.dp_70
+                )
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             }
@@ -384,7 +379,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         dataItem?.let {
             if (it.isEligibleToTrack()) {
                 AppLogRecommendation.sendProductClickAppLog(
-                    it.asProductTrackModel(productCardName, isEligibleToTrack())
+                    it.asProductTrackModel(productCardName)
                 )
             }
         }
@@ -413,6 +408,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
+        masterProductCardItemViewModel?.trackShowProductCard()
         masterProductCardItemViewModel?.sendTopAdsView()
         masterProductCardItemViewModel?.let {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
@@ -422,23 +418,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                     isFullFilment,
                     dataItem?.warehouseId ?: 0
                 )
-        }
-    }
-
-    private fun trackShowProductCard(dataItem: DataItem) {
-        masterProductCardGridView?.addOnImpression1pxListener(dataItem.appLogImpressHolder) {
-            if (dataItem.isEligibleToTrack()) {
-                AppLogRecommendation.sendProductShowAppLog(
-                    dataItem.asProductTrackModel(productCardName)
-                )
-            }
-        }
-        masterProductCardListView?.addOnImpression1pxListener(dataItem.appLogImpressHolder) {
-            if (dataItem.isEligibleToTrack()) {
-                AppLogRecommendation.sendProductShowAppLog(
-                    dataItem.asProductTrackModel(productCardName)
-                )
-            }
         }
     }
 
@@ -520,12 +499,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             requestId = dataItem?.getAppLog()?.requestId.orEmpty(),
             moduleName = dataItem?.getAppLog()?.pageName.orEmpty(),
             listName = dataItem?.topLevelTab?.name.orEmpty(),
-            listNum = dataItem?.topLevelTab?.index?:-1,
-            entranceForm = productCardName.getEntranceForm()
+            listNum = dataItem?.topLevelTab?.index ?: -1
         )
     }
 
     override fun isEligibleToTrack(): Boolean {
-        return dataItem?.isEligibleToTrack().orFalse() && masterProductCardItemViewModel?.getTemplateType() != LIST
+        return dataItem?.isEligibleToTrackRecTrigger(masterProductCardItemViewModel?.getComponentName().orEmpty()).orFalse()
     }
 }

@@ -60,6 +60,8 @@ data class ComponentsItem(
 
     var topAdsTrackingStatus: Boolean = false,
 
+    var byteIoTrackingStatus: Boolean = false,
+
     var shimmerHeight: Int = 0,
 
     var shimmerWidth: Int = 0,

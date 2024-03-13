@@ -11,8 +11,8 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
-    query GetHomeRecommendationCard(${'$'}productPage: Int!, ${'$'}layouts: String!, ${'$'}param: String!, ${'$'}location: String!, , ${'$'}productCardVersion: String!) {
-        getHomeRecommendationCard(productPage: ${'$'}productPage, layouts: ${'$'}layouts, param: ${'$'}param, location: ${'$'}location, productCardVersion: ${'$'}productCardVersion) {
+    query GetHomeRecommendationCard(${'$'}productPage: Int!, ${'$'}layouts: String!, ${'$'}param: String!, ${'$'}location: String!, , ${'$'}productCardVersion: String!, ${'$'}bytedanceSessionID: String!, ${'$'}refreshType: Int!) {
+        getHomeRecommendationCard(productPage: ${'$'}productPage, layouts: ${'$'}layouts, param: ${'$'}param, location: ${'$'}location, productCardVersion: ${'$'}productCardVersion, bytedanceSessionID: ${'$'}bytedanceSessionID, refreshType: ${'$'}refreshType) {
             pageName
             layoutName
             hasNextPage

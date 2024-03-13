@@ -7,13 +7,11 @@ import com.tokopedia.discovery2.data.ComponentSourceData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 
 object TrackDiscoveryRecommendationMapper {
     fun DataItem.asProductTrackModel(
-        componentNames: String,
-        isEligibleRecTrigger : Boolean = true
+        componentNames: String
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = productId.orEmpty(),
@@ -31,8 +29,8 @@ object TrackDiscoveryRecommendationMapper {
             entranceForm = componentNames.getEntranceForm(),
             originalPrice = price.toFloatOrZero(),
             salesPrice = discountedPrice.toFloatOrZero(),
-            isEligibleRecTrigger = isEligibleRecTrigger,
-            isTrackAsHorizontalSourceModule = componentNames.isTrackAsHorizontalSourceModule()
+            isTrackAsHorizontalSourceModule = componentNames.isTrackAsHorizontalSourceModule(),
+            isEligibleForRecTrigger = isEligibleToTrackRecTrigger(componentNames)
         )
     }
 
@@ -44,7 +42,7 @@ object TrackDiscoveryRecommendationMapper {
         }
     }
 
-    fun String.getEntranceForm(): EntranceForm {
+    private fun String.getEntranceForm(): EntranceForm {
         return when (this) {
             ComponentNames.ProductCardCarouselItem.componentName,
             ComponentNames.ProductCardCarouselItemReimagine.componentName,
@@ -67,6 +65,16 @@ object TrackDiscoveryRecommendationMapper {
 
     fun DataItem.isEligibleToTrack(): Boolean {
         return source == ComponentSourceData.Recommendation
+    }
+
+    fun DataItem.isEligibleToTrackRecTrigger(componentNames: String): Boolean {
+        if(componentNames == ComponentNames.ProductCardSingleItem.componentName ||
+            componentNames == ComponentNames.ProductCardSingleItemReimagine.componentName) {
+            return isEligibleToTrack() &&
+                (getAppLog()?.pageName?.contains("best_seller") == true ||
+                    getAppLog()?.pageName?.contains("trending") == true)
+        }
+        return isEligibleToTrack()
     }
 
     fun ComponentsItem.isEligibleToTrack(): Boolean {
