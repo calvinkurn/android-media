@@ -82,11 +82,13 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProductRecommendationOoc
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.addProducts
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.filteredBy
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.getExpandCollapse
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.mapAvailableShoppingList
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.RecommendationModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_MULTI_PRODUCTS_TO_CART
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_WISHLIST
+import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState.EXPAND
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.coroutines.Deferred
@@ -272,14 +274,13 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     private fun addShoppingListSection(
-        isShoppingListAvailable: Boolean
+        isShoppingListAvailable: Boolean,
+        availableExpandCollapseCurrentState: ShoppingListProductState,
+        unavailableExpandCollapseCurrentState: ShoppingListProductState
     ) {
         mutableLayout.doIf(
             predicate = isShoppingListAvailable,
             then = {
-                val displayedAvailableItems = filteredAvailableProducts.take(MAX_TOTAL_PRODUCT_DISPLAYED)
-                val displayedUnavailableItems = filteredUnavailableProducts.take(MAX_TOTAL_PRODUCT_DISPLAYED)
-
                 /**
                  * Add Available Products
                  */
@@ -287,23 +288,26 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 doIf(
                     predicate = filteredAvailableProducts.isNotEmpty(),
                     then = layout@ {
+                        val displayedAvailableItems = filteredAvailableProducts.take(MAX_TOTAL_PRODUCT_DISPLAYED)
                         val areAllAvailableProductsSelected = filteredAvailableProducts.count { it.isSelected } == filteredAvailableProducts.size
                         val areAvailableProductsMoreThanDefaultDisplayed = filteredAvailableProducts.size > MAX_TOTAL_PRODUCT_DISPLAYED
                         val remainingTotalProduct = filteredAvailableProducts.size - displayedAvailableItems.size
+                        val newState = if (availableExpandCollapseCurrentState == EXPAND && areAvailableProductsMoreThanDefaultDisplayed) EXPAND else COLLAPSE
+                        val newDisplayedItems = if (availableExpandCollapseCurrentState == EXPAND && areAvailableProductsMoreThanDefaultDisplayed) filteredAvailableProducts else displayedAvailableItems
 
                         _isTopCheckAllSelected.value = areAllAvailableProductsSelected
 
                         this@layout
                             .addTopCheckAllShoppingList(
-                                productState = COLLAPSE,
+                                productState = newState,
                                 isSelected = areAllAvailableProductsSelected
                             )
-                            .addProducts(displayedAvailableItems)
+                            .addProducts(newDisplayedItems)
                             .doIf(
                                 predicate = areAvailableProductsMoreThanDefaultDisplayed,
                                 then = {
                                     addExpandCollapse(
-                                        productState = COLLAPSE,
+                                        productState = newState,
                                         remainingTotalProduct = remainingTotalProduct,
                                         productLayoutType = AVAILABLE_SHOPPING_LIST
                                     )
@@ -325,17 +329,20 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 doIf(
                     predicate = filteredUnavailableProducts.isNotEmpty(),
                     then = layout@ {
+                        val displayedUnavailableItems = filteredUnavailableProducts.take(MAX_TOTAL_PRODUCT_DISPLAYED)
                         val areUnavailableProductsMoreThanDefaultDisplayed = filteredUnavailableProducts.size > MAX_TOTAL_PRODUCT_DISPLAYED
                         val remainingTotalProduct = filteredUnavailableProducts.size - displayedUnavailableItems.size
+                        val newState = if (unavailableExpandCollapseCurrentState == EXPAND && areUnavailableProductsMoreThanDefaultDisplayed) EXPAND else COLLAPSE
+                        val newDisplayedItems = if (unavailableExpandCollapseCurrentState == EXPAND && areUnavailableProductsMoreThanDefaultDisplayed) filteredUnavailableProducts else displayedUnavailableItems
 
                         this@layout
                             .addTitle("$EMPTY_STOCK_WIDGET_TITLE(${filteredUnavailableProducts.size})")
-                            .addProducts(displayedUnavailableItems)
+                            .addProducts(newDisplayedItems)
                             .doIf(
                                 predicate = areUnavailableProductsMoreThanDefaultDisplayed,
                                 then = {
                                     addExpandCollapse(
-                                        productState = COLLAPSE,
+                                        productState = newState,
                                         remainingTotalProduct = remainingTotalProduct,
                                         productLayoutType = UNAVAILABLE_SHOPPING_LIST
                                     )
@@ -558,11 +565,22 @@ class TokoNowShoppingListViewModel @Inject constructor(
         _miniCartState.value = Error(throwable = Throwable())
     }
 
+    private fun getExpandCollapseState(
+        productLayoutType: ShoppingListProductLayoutType
+    ): ShoppingListProductState = mutableLayout.getExpandCollapse(productLayoutType)?.productState ?: COLLAPSE
+
     private fun updateLayout(
         isRequiredToScrollUp: Boolean = false
     ) {
         filterProductRecommendationWithAvailableProduct()
         filterShoppingListWithProductCart(mMiniCartData)
+
+        val availableExpandCollapseCurrentState = getExpandCollapseState(
+            productLayoutType = AVAILABLE_SHOPPING_LIST
+        )
+        val unavailableExpandCollapseCurrentState = getExpandCollapseState(
+            productLayoutType = UNAVAILABLE_SHOPPING_LIST
+        )
 
         mutableLayout.clear()
 
@@ -571,7 +589,9 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
         addHeaderSection()
         addShoppingListSection(
-            isShoppingListAvailable = isShoppingListAvailable
+            isShoppingListAvailable = isShoppingListAvailable,
+            availableExpandCollapseCurrentState = availableExpandCollapseCurrentState,
+            unavailableExpandCollapseCurrentState = unavailableExpandCollapseCurrentState
         )
         addProductCartWidgetSection(
             isShoppingListAvailable = isFilteredShoppingListAvailable

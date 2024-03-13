@@ -193,6 +193,10 @@ internal object MainVisitableMapper {
         return this
     }
 
+    fun MutableList<Visitable<*>>.getExpandCollapse(
+        productLayoutType: ShoppingListProductLayoutType
+    ): ShoppingListExpandCollapseUiModel? = firstOrNull { it is ShoppingListExpandCollapseUiModel && it.productLayoutType == productLayoutType } as? ShoppingListExpandCollapseUiModel
+
     fun MutableList<Visitable<*>>.removeLoadMore(): MutableList<Visitable<*>> {
         removeFirst { it is LoadingMoreModel }
         return this
