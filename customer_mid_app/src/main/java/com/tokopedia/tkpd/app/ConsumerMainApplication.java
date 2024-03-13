@@ -252,8 +252,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     private void initSlardar() {
         Log.e("TOKO", "init application");
-        EventsSenderUtils.setEventsSenderEnable("573733", true, this)
-        EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net")
+        EventsSenderUtils.setEventsSenderEnable("573733", true, this);
+        EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net");
         SlardarInit.INSTANCE.initApm(this);
         SlardarInit.INSTANCE.initNpth(this);
         AppLogInitKt.initAppLog(this);
