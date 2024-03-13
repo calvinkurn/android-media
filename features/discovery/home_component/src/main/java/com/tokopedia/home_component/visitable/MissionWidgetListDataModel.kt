@@ -28,6 +28,7 @@ data class MissionWidgetListDataModel(
     val showShimmering: Boolean = true,
     val source: Int,
     val type: Type = Type.CARD,
+    val componentName: String = "",
 ) : HomeComponentVisitable, ImpressHolder(),
     LoadableComponent by BlocksLoadableComponent(
         { status != STATUS_LOADING },
