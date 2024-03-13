@@ -24,7 +24,7 @@
             app:typographyWeight="bold"
             app:typographyType="display_2"
             android:text="@string/smvc_back"
-            android:textColor="@color/Neutral_N600"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

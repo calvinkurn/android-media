@@ -62,7 +62,7 @@
         android:layout_height="10dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
-        android:background="@color/Neutral_N300"
+        android:background="@color/Unify_NN300"
         app:layout_constraintBottom_toBottomOf="@+id/tpgStock"
         app:layout_constraintStart_toEndOf="@+id/tpgStock"
         app:layout_constraintTop_toTopOf="@+id/tpgStock"

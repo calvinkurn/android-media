@@ -42,6 +42,8 @@ object ShareExConstants {
         const val SOURCE_KEY = "utm_source"
         const val MEDIUM_KEY = "utm_medium"
         const val CAMPAIGN_KEY = "utm_campaign"
+
+        const val MEDIUM_VALUE = "share"
     }
 
     object PackageName {

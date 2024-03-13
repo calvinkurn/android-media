@@ -85,7 +85,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/iv_next_down"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_arrow_down_grey"
+                app:srcCompat="@drawable/unify_tab_chevron"
                 tools:visibility="visible" />
 
             <ImageView
@@ -98,7 +98,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_arrow_down_grey" />
+                app:srcCompat="@drawable/unify_tab_chevron" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>

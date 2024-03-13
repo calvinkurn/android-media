@@ -8,10 +8,17 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.databinding.WidgetEmoneyInputCardNumberBinding
+import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPDPImagesCardListAdapter
+import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpImagesListAdapter
+import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyListImageBottomSheets
+import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyImageModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
 
@@ -55,6 +62,45 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         })
+    }
+
+    fun renderEmoneyImages(listImages: List<EmoneyImageModel>, childFragmentManager: FragmentManager) {
+        if (listImages.size <= LIST_SIZE) {
+            renderEmoneyListImages(listImages)
+        } else {
+            renderTextViewList(listImages, childFragmentManager)
+        }
+    }
+
+    private fun renderTextViewList(listImages: List<EmoneyImageModel>, childFragmentManager: FragmentManager) {
+        binding.tgSeePartners.show()
+        binding.icChevronImageList.show()
+        val bestThree = listImages.subList(Int.ZERO, LIST_LIMITED_SIZE)
+        val adapter = EmoneyPDPImagesCardListAdapter()
+        binding.rvEmoneyLimitedList.adapter = adapter
+        binding.rvEmoneyLimitedList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        adapter.renderList(bestThree)
+
+        binding.tgSeePartners.setOnClickListener {
+            val bottomSheet = EmoneyListImageBottomSheets()
+            bottomSheet.updateData(listImages)
+            bottomSheet.show(childFragmentManager, "")
+        }
+    }
+
+    private fun renderEmoneyListImages(listImages: List<EmoneyImageModel>) {
+        binding.tgSeePartners.hide()
+        binding.icChevronImageList.hide()
+        if (listImages.isNotEmpty()) {
+            binding.rvEmoneyList.show()
+            val adapter = EmoneyPdpImagesListAdapter()
+            val layoutManager = GridLayoutManager(context, listImages.size)
+            binding.rvEmoneyList.adapter = adapter
+            binding.rvEmoneyList.layoutManager = layoutManager
+            adapter.renderList(listImages)
+        } else {
+            binding.rvEmoneyList.hide()
+        }
     }
 
     fun renderError(errorMsg: String) {
@@ -106,5 +152,7 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
     companion object {
         private const val MAX_CHAR_EMONEY_CARD_NUMBER_WITH_SPACES = 20
         private const val MAX_CHAR_EMONEY_CARD_NUMBER_BLOCK = 4
+        private const val LIST_SIZE = 5
+        private const val LIST_LIMITED_SIZE = 3
     }
 }

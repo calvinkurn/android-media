@@ -24,7 +24,7 @@
         app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="Berlangsung"
-        tools:textColor="@color/green_500" />
+        tools:textColor="@color/Unify_GN500" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btn_ubah_kupon"
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
         android:text="@string/smvc_ubah_kupon_label"
-        android:textColor="@color/green_500"
+        android:textColor="@color/Unify_GN500"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/tpg_voucher_status"
         app:layout_constraintEnd_toStartOf="@+id/icon_info"
@@ -185,7 +185,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_NN1000"
         app:layout_constraintBottom_toBottomOf="@+id/pgb_used_voucher"
         app:layout_constraintEnd_toStartOf="@+id/tpg_available_voucher_quota"
         app:layout_constraintTop_toTopOf="@+id/pgb_used_voucher"
