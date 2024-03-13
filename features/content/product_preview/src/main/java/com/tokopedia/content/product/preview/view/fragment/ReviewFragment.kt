@@ -369,13 +369,14 @@ class ReviewFragment @Inject constructor(
         val reviewId = item.reviewId
         val productId = viewModel.productPreviewSource.productId
         val mediaType = item.medias.find { it.mediaId == selectedMediaId }?.type?.value.orEmpty()
-        val label = "$SHARE_ID_KEY - $productId - $reviewId - $mediaType"
+        val partialLabel = "$SHARE_ID_KEY - $productId - $reviewId"
+        val label = "$partialLabel - $mediaType"
         shareExInitializer?.openShareBottomSheet(
             bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.REVIEW,
                 defaultUrl = "",
                 trackerArg = ShareExTrackerArg(
-                    utmCampaign = "",
+                    utmCampaign = "ViewReview - $partialLabel - $selectedMediaId",
                     labelActionClickShareIcon = label,
                     labelActionCloseIcon = label,
                     labelActionClickChannel = label,
