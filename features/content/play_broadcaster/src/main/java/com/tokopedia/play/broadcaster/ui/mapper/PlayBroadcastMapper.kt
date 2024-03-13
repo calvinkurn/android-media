@@ -48,9 +48,8 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.stats.EstimatedIncomeDetailUiModel
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveReportSummaryUiModel
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveReportSummaryUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.product.ProductReportSummaryUiModel
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import java.util.*
@@ -155,5 +154,5 @@ interface PlayBroadcastMapper {
 
     fun mapReportSummary(response: GetReportSummaryResponse, isAuthorShop: Boolean): LiveReportSummaryUiModel
 
-    fun mapReportProductSummary(response: GetReportProductSummaryResponse): EstimatedIncomeDetailUiModel
+    fun mapReportProductSummary(response: GetReportProductSummaryResponse): ProductReportSummaryUiModel
 }

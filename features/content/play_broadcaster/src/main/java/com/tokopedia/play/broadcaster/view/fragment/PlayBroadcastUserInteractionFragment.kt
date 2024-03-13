@@ -327,7 +327,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             is PlayBroadcastLiveReportSummaryBottomSheet -> {
                 childFragment.setListener(object : PlayBroadcastLiveReportSummaryBottomSheet.Listener {
                     override fun onEstimatedIncomeClicked() {
-                        openEstimatedIncomeDetailSheet()
+                        openProductReportSummarySheet()
                     }
                 })
             }
@@ -389,7 +389,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         icStatistic.setOnClickListener {
-            openEstimatedIncomeDetailSheet()
+            openProductReportSummarySheet()
         }
 
         childFragmentManager.commit {
@@ -1346,7 +1346,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         ).show(childFragmentManager)
     }
 
-    private fun openEstimatedIncomeDetailSheet() {
+    private fun openProductReportSummarySheet() {
         ProductReportSummaryBottomSheet.getFragment(
             childFragmentManager,
             requireContext().classLoader

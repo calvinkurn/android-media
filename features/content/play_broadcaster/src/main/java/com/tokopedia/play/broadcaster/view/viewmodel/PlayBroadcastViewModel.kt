@@ -89,11 +89,10 @@ import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiMode
 import com.tokopedia.play.broadcaster.ui.model.log.BroadcasterErrorLog
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveReportSummaryUiModel
 import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.product.ProductReportSummaryUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
-import com.tokopedia.play.broadcaster.ui.model.stats.EstimatedIncomeDetailUiModel
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveReportSummaryUiModel
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
@@ -157,29 +156,7 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.Set
-import kotlin.collections.addAll
-import kotlin.collections.emptyList
-import kotlin.collections.filter
-import kotlin.collections.filterNot
-import kotlin.collections.first
-import kotlin.collections.firstOrNull
-import kotlin.collections.isNotEmpty
-import kotlin.collections.lastOrNull
-import kotlin.collections.listOf
-import kotlin.collections.map
-import kotlin.collections.minus
-import kotlin.collections.mutableListOf
-import kotlin.collections.mutableMapOf
-import kotlin.collections.orEmpty
-import kotlin.collections.plus
 import kotlin.collections.set
-import kotlin.collections.toList
-import kotlin.collections.toMutableList
-import kotlin.collections.toMutableSet
-import kotlin.collections.toSet
 
 /**
  * Created by mzennis on 24/05/20.
@@ -308,7 +285,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     /** Stats */
     private val _liveReportSummary = MutableStateFlow(LiveReportSummaryUiModel.Empty)
-    private val _estimatedIncomeDetail = MutableStateFlow<NetworkResult<EstimatedIncomeDetailUiModel>>(NetworkResult.Unknown)
+    private val _productReportSummary = MutableStateFlow<NetworkResult<ProductReportSummaryUiModel>>(NetworkResult.Unknown)
 
     val tickerBottomSheetConfig: TickerBottomSheetUiModel
         get() = _tickerBottomSheetConfig.value
@@ -486,7 +463,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _beautificationConfig,
         _tickerBottomSheetConfig,
         _liveReportSummary,
-        _estimatedIncomeDetail,
+        _productReportSummary,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -508,7 +485,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         beautificationConfig,
         tickerBottomSheetConfig,
         liveReportSummary,
-        estimatedIncomeDetail ->
+        productReportSummary ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -531,7 +508,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             beautificationConfig = beautificationConfig,
             tickerBottomSheetConfig = tickerBottomSheetConfig,
             liveReportSummary = liveReportSummary,
-            estimatedIncomeDetail = estimatedIncomeDetail,
+            productReportSummary = productReportSummary,
         )
     }.stateIn(
         viewModelScope,
@@ -665,8 +642,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SelectPresetOption -> handleSelectPresetOption(event.preset)
             is PlayBroadcastAction.ChangePresetValue -> handleChangePresetValue(event.newValue)
 
-            /** Estimated Income */
-            is PlayBroadcastAction.GetEstimatedIncomeDetail -> handleGetEstimatedIncomeDetail()
+            /** Report */
+            is PlayBroadcastAction.GetProductReportSummary -> handleGetProductReportSummary()
 
             /** Log */
             is PlayBroadcastAction.SendErrorLog -> handleSendErrorLog(event.throwable)
@@ -2039,21 +2016,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         saveBeautificationConfig()
     }
 
-    private fun handleGetEstimatedIncomeDetail() {
+    private fun handleGetProductReportSummary() {
         viewModelScope.launchCatchError(block = {
-            if (_estimatedIncomeDetail.value is NetworkResult.Loading) return@launchCatchError
+            if (_productReportSummary.value is NetworkResult.Loading) return@launchCatchError
 
-            _estimatedIncomeDetail.update { NetworkResult.Loading }
+            _productReportSummary.update { NetworkResult.Loading }
 
             val response = repo.getReportProductSummary(channelId = channelId)
 
-            _estimatedIncomeDetail.update {
+            _productReportSummary.update {
                 NetworkResult.Success(response)
             }
         }) { throwable ->
-            _estimatedIncomeDetail.update {
+            _productReportSummary.update {
                 NetworkResult.Fail(throwable) {
-                    submitAction(PlayBroadcastAction.GetEstimatedIncomeDetail)
+                    submitAction(PlayBroadcastAction.GetProductReportSummary)
                 }
             }
         }

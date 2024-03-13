@@ -22,10 +22,10 @@ import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.generateHtmlSpanText
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.estimatedincome.EstimatedIncomeDetailBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.report.product.ProductReportSummaryBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -274,7 +274,7 @@ class PlayBroadcastReportFragment @Inject constructor(
     override fun onMetricClicked(view: SummaryInfoViewComponent, liveStats: LiveStatsUiModel) {
         when (liveStats) {
             is LiveStatsUiModel.EstimatedIncome -> {
-                openEstimatedIncomeDetailSheet()
+                openProductReportSummarySheet()
             }
             is LiveStatsUiModel.GameParticipant -> {
                 analytic.clickInteractiveParticipantDetail(
@@ -295,8 +295,8 @@ class PlayBroadcastReportFragment @Inject constructor(
         leaderboardReportBottomSheet.show(childFragmentManager)
     }
 
-    private fun openEstimatedIncomeDetailSheet() {
-        EstimatedIncomeDetailBottomSheet.getFragment(
+    private fun openProductReportSummarySheet() {
+        ProductReportSummaryBottomSheet.getFragment(
             childFragmentManager,
             requireContext().classLoader
         ).show(childFragmentManager)

@@ -3,12 +3,12 @@ package com.tokopedia.play.broadcaster.ui.state
 import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
-import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
@@ -17,9 +17,9 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveReportSummaryUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.product.ProductReportSummaryUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
-import com.tokopedia.play.broadcaster.ui.model.stats.EstimatedIncomeDetailUiModel
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveReportSummaryUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
@@ -51,7 +51,7 @@ data class PlayBroadcastUiState(
     val beautificationConfig: BeautificationConfigUiModel,
     val tickerBottomSheetConfig: TickerBottomSheetUiModel,
     val liveReportSummary: LiveReportSummaryUiModel,
-    val estimatedIncomeDetail: NetworkResult<EstimatedIncomeDetailUiModel>,
+    val productReportSummary: NetworkResult<ProductReportSummaryUiModel>,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -86,7 +86,7 @@ data class PlayBroadcastUiState(
                 beautificationConfig = BeautificationConfigUiModel.Empty,
                 tickerBottomSheetConfig = TickerBottomSheetUiModel.Empty,
                 liveReportSummary = LiveReportSummaryUiModel.Empty,
-                estimatedIncomeDetail = NetworkResult.Unknown,
+                productReportSummary = NetworkResult.Unknown,
             )
     }
 }

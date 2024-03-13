@@ -39,8 +39,8 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.stats.EstimatedIncomeDetailUiModel
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveReportSummaryUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveReportSummaryUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.product.ProductReportSummaryUiModel
 import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -423,8 +423,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         return LiveReportSummaryUiModel.Empty
     }
 
-    override fun mapReportProductSummary(response: GetReportProductSummaryResponse): EstimatedIncomeDetailUiModel {
-        return EstimatedIncomeDetailUiModel(
+    override fun mapReportProductSummary(response: GetReportProductSummaryResponse): ProductReportSummaryUiModel {
+        return ProductReportSummaryUiModel(
             totalStatsList = emptyList(),
             productStatsList = emptyList(),
         )

@@ -90,7 +90,7 @@ sealed interface PlayBroadcastAction {
     object RemoveBeautificationMenu : PlayBroadcastAction
 
     /** Estimated Income */
-    object GetEstimatedIncomeDetail : PlayBroadcastAction
+    object GetProductReportSummary : PlayBroadcastAction
 
     data class SendErrorLog(
         val throwable: Throwable,
