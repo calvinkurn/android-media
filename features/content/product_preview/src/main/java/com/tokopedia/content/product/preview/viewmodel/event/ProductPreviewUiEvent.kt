@@ -1,5 +1,6 @@
 package com.tokopedia.content.product.preview.viewmodel.event
 
+import androidx.annotation.StringRes
 import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewLikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.review.ReviewMenuStatus
@@ -13,7 +14,7 @@ sealed interface ProductPreviewUiEvent {
         val message: Int? = null,
         val type: Type
     ) : ProductPreviewUiEvent {
-        enum class Type(val textRes: Int) {
+        enum class Type(@StringRes val textRes: Int) {
             ATC(R.string.bottom_atc_success_toaster), Remind(R.string.bottom_wishlist_toaster), Report(
                 R.string.review_report_success_toaster
             ),
@@ -26,7 +27,7 @@ sealed interface ProductPreviewUiEvent {
         val type: Type = Type.Unknown,
         val onClick: () -> Unit
     ) : ProductPreviewUiEvent {
-        enum class Type(val textRes: Int) {
+        enum class Type(@StringRes val textRes: Int) {
             ATC(R.string.bottom_atc_failed_toaster), Report(R.string.review_report_failed_toaster), Unknown(
                 0
             );
