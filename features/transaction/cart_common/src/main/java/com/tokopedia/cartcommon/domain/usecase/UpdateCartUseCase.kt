@@ -13,18 +13,20 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class UpdateCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                            private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<UpdateCartV2Data>() {
+class UpdateCartUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) : UseCase<UpdateCartV2Data>() {
 
     private var params: Map<String, Any?>? = null
     private var consumeErrorResponse: Boolean = false
 
     fun setParams(updateCartRequestList: List<UpdateCartRequest>, source: String = "") {
         params = mapOf(
-                PARAM_KEY_LANG to PARAM_VALUE_ID,
-                PARAM_CARTS to updateCartRequestList,
-                PARAM_SOURCE to source,
-                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+            PARAM_KEY_LANG to PARAM_VALUE_ID,
+            PARAM_CARTS to updateCartRequestList,
+            PARAM_SOURCE to source,
+            KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
         )
 
         consumeErrorResponse = source.isBlank()
@@ -36,7 +38,8 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         }
 
         val request = GraphqlRequest(QUERY, UpdateCartGqlResponse::class.java, params)
-        val response = graphqlRepository.response(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
+        val response =
+            graphqlRepository.response(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
 
         return if (response.updateCartData.status == "OK") {
             if (consumeErrorResponse) {
@@ -54,10 +57,11 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
     }
 
     companion object {
-        val PARAM_CARTS = "carts"
-        val PARAM_SOURCE = "source"
-        val VALUE_SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
-        val VALUE_SOURCE_PDP_UPDATE_QTY_NOTES = "pdp_update_qty_notes"
+        const val PARAM_CARTS = "carts"
+        const val PARAM_SOURCE = "source"
+        const val VALUE_SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
+        const val VALUE_SOURCE_PDP_UPDATE_QTY_NOTES = "pdp_update_qty_notes"
+        const val VALUE_SOURCE_CART_CHANGE_VARIANT = "cart_change_variant"
 
         private const val PARAM_KEY_LANG = "lang"
         private const val PARAM_VALUE_ID = "id"
