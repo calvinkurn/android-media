@@ -39,7 +39,6 @@ import com.tokopedia.buy_more_get_more.olp.presentation.adapter.decoration.Produ
 import com.tokopedia.buy_more_get_more.olp.presentation.bottomsheet.TncBottomSheet
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.AtcProductListener
 import com.tokopedia.buy_more_get_more.olp.presentation.listener.OfferingInfoListener
-import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil
 import com.tokopedia.buy_more_get_more.olp.utils.constant.BundleConstant
 import com.tokopedia.buy_more_get_more.olp.utils.constant.Constant
 import com.tokopedia.buy_more_get_more.olp.utils.extension.setDefaultStatusBar
@@ -54,8 +53,6 @@ import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
 import com.tokopedia.campaign.utils.constant.SharingComponentConstant
 import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.showToaster
-import com.tokopedia.cart.view.helper.CartDataHelper
-import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -341,7 +338,8 @@ class OfferLandingPageFragment :
                     showBottomSheetGiftList(
                         result.data.selectedTier,
                         result.data.offerInfo,
-                        result.data.tierGifts
+                        result.data.tierGifts,
+                        result.data.mainProducts
                     )
                 }
 
@@ -1007,7 +1005,8 @@ class OfferLandingPageFragment :
     private fun showBottomSheetGiftList(
         selectedTier: OfferInfoForBuyerUiModel.Offering.Tier,
         offerInfo: OfferInfoForBuyerUiModel,
-        tierGifts: List<TierGifts>
+        tierGifts: List<TierGifts>,
+        mainProducts: List<MainProduct>
     ) {
         if (!shouldShowGiftListBottomSheet) return
         shouldShowGiftListBottomSheet = false
@@ -1023,12 +1022,7 @@ class OfferLandingPageFragment :
             pageSource = PageSource.OFFER_LANDING_PAGE,
             autoSelectTierChipByTierId = selectedTierId,
             shopId = currentState.shopData.shopId.toString(),
-            mainProducts = BmgmUtil.getGiftListMainProducts(
-                viewModel.cartDataList.value,
-                offerId = currentState.offerIds.firstOrNull().orZero(),
-                shopId = currentState.shopData.shopId.toString(),
-                offerTypeId = currentState.offerTypeId
-            )
+            mainProducts = mainProducts
         )
 
         bottomSheet.setOnDismissListener {
@@ -1051,21 +1045,5 @@ class OfferLandingPageFragment :
         return Status.values().firstOrNull { value ->
             value.code == errorCode.toLong()
         } ?: Status.SUCCESS
-    }
-
-    private fun getGiftListMainProducts(): List<MainProduct> {
-        val cartDataList = viewModel.cartDataList.value
-        val cartItem = cartDataList.filterIsInstance<CartItemHolderData>()
-        val cartStringOrder = cartItem.firstOrNull {
-            it.shopHolderData.shopId == currentState.shopData.shopId.toString()
-        }?.cartStringOrder.orEmpty()
-
-        return CartDataHelper.getListProductByOfferIdAndCartStringOrder(
-            cartDataList,
-            currentState.offerIds.firstOrNull().orZero(),
-            cartStringOrder
-        )
-            .filter { it.isSelected && it.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerTypeId == currentState.offerTypeId }
-            .map { MainProduct(it.productId.toLongOrZero(), it.quantity) }
     }
 }

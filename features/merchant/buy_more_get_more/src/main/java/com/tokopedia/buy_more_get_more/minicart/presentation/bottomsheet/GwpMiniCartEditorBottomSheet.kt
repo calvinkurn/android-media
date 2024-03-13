@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.bmsm_widget.domain.entity.MainProduct
 import com.tokopedia.bmsm_widget.domain.entity.PageSource
 import com.tokopedia.bmsm_widget.domain.entity.TierGifts
 import com.tokopedia.bmsm_widget.presentation.bottomsheet.GiftListBottomSheet
@@ -33,7 +34,6 @@ import com.tokopedia.buy_more_get_more.minicart.presentation.model.effect.MiniCa
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.event.MiniCartEditorEvent
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.state.MiniCartEditorState
 import com.tokopedia.buy_more_get_more.minicart.presentation.viewmodel.MiniCartEditorViewModel
-import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil.getGiftListMainProducts
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -143,6 +143,7 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
         val selectedTierId = tiersGift.keys.firstOrNull().orZero()
         val shopId = param.shopIds.firstOrNull().orZero().toString()
         val userId = viewModel.getUserId()
+        val mainProducts = data.products.map { MainProduct(it.productId.toLongOrZero(), it.productQuantity) }
 
         val bottomSheet = GiftListBottomSheet.newInstance(
             offerId = selectedOfferId,
@@ -158,11 +159,7 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
             pageSource = PageSource.OFFER_LANDING_PAGE,
             autoSelectTierChipByTierId = selectedTierId,
             shopId = shopId,
-            mainProducts = getGiftListMainProducts(
-                cartDataList = viewModel.cartDataList.value,
-                offerId = selectedOfferId,
-                shopId = shopId
-            )
+            mainProducts = mainProducts
         )
         if (childFragmentManager.isStateSaved || bottomSheet.isAdded) return
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
@@ -269,9 +266,6 @@ class GwpMiniCartEditorBottomSheet : BottomSheetUnify(), GwpMiniCartEditorAdapte
         showSummary(data)
         sendAnalyticImpressionBottomSheet(data)
         sendAnalyticCloseClicked(data)
-
-        // fetching latest cart list data for getting main product purpose
-        viewModel.setEvent(MiniCartEditorEvent.GetCartListData(param.cartId))
     }
 
     private fun sendAnalyticCloseClicked(data: BmgmMiniCartDataUiModel) {

@@ -9,12 +9,6 @@ import com.tokopedia.buy_more_get_more.minicart.presentation.model.BmgmMiniCartV
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.effect.MiniCartEditorEffect
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.event.MiniCartEditorEvent
 import com.tokopedia.buy_more_get_more.minicart.presentation.model.state.MiniCartEditorState
-import com.tokopedia.buy_more_get_more.olp.presentation.OfferLandingPageViewModel
-import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil.toCartDataList
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.domain.usecase.GetCartParam
-import com.tokopedia.cart.domain.usecase.GetCartRevampV4UseCase
-import com.tokopedia.cart.view.uimodel.CartMutableLiveData
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.SetCartlistCheckboxStateUseCase
@@ -41,7 +35,6 @@ class MiniCartEditorViewModel @Inject constructor(
     private val getMiniCartUseCase: Lazy<GetMiniCartEditorDataUseCase>,
     private val updateCartUseCase: Lazy<UpdateCartUseCase>,
     private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
-    private val getCartRevampV4UseCase: GetCartRevampV4UseCase,
     private val getGroupProductTickerUseCase: Lazy<GetGroupProductTickerUseCase>,
     private val dispatchers: Lazy<CoroutineDispatchers>,
     private val userSession: Lazy<UserSessionInterface>,
@@ -56,16 +49,12 @@ class MiniCartEditorViewModel @Inject constructor(
     private val _cartData = MutableStateFlow(MiniCartEditorState())
     val cartData: StateFlow<MiniCartEditorState> = _cartData.asStateFlow()
 
-    val cartDataList: CartMutableLiveData<ArrayList<Any>> =
-        CartMutableLiveData(arrayListOf())
-
     fun setEvent(event: MiniCartEditorEvent) {
         when (event) {
             is MiniCartEditorEvent.SetCartListCheckboxState -> setCartListCheckboxState()
             is MiniCartEditorEvent.FetchData -> fetchMiniCartData(event.param)
             is MiniCartEditorEvent.AdjustQuantity -> adjustQuantity(event.product, event.newQty)
             is MiniCartEditorEvent.DeleteCart -> deleteCart(event.product)
-            is MiniCartEditorEvent.GetCartListData -> getCartListData(event.cartId)
         }
     }
 
@@ -179,28 +168,6 @@ class MiniCartEditorViewModel @Inject constructor(
                     it.updateError(t)
                 }
             }
-        }
-    }
-
-    private fun getCartListData(cartId: String) {
-        viewModelScope.launch {
-            try {
-                val cartData = getCartRevampV4UseCase(
-                    GetCartParam(
-                        cartId = cartId,
-                        state = OfferLandingPageViewModel.GET_CART_STATE_DEFAULT,
-                        isCartReimagine = true
-                    )
-                )
-                setCartDataList(cartData)
-            } catch (_: Throwable) { }
-        }
-    }
-
-    private fun setCartDataList(cartData: CartData) {
-        cartDataList.value.run {
-            clear()
-            addAll(cartData.toCartDataList())
         }
     }
 
