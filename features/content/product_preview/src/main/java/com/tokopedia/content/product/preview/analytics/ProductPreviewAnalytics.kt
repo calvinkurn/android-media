@@ -1,5 +1,7 @@
 package com.tokopedia.content.product.preview.analytics
 
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+
 interface ProductPreviewAnalytics {
 
     /**
@@ -106,4 +108,10 @@ interface ProductPreviewAnalytics {
      * 49851
      */
     fun onClickLikeOrUnlike()
+
+    /**
+     * click ATC button
+     * 49590
+     */
+    fun onClickATC(bottomNavUiModel: BottomNavUiModel)
 }

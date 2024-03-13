@@ -335,6 +335,7 @@ class ProductPreviewFragment @Inject constructor(
                 }
             )
         } else {
+            analytics.onClickATC(model)
             viewModel.onAction(ProductPreviewAction.ProductAction(model))
         }
     }
