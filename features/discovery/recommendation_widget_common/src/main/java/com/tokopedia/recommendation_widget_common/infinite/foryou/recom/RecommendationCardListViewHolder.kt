@@ -16,7 +16,7 @@ class RecommendationCardListViewHolder constructor(
 ) : BaseRecommendationViewHolder<RecommendationCardModel>(
     view,
     RecommendationCardModel::class.java
-) {
+), AppLogRecTriggerInterface {
 
     private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
 
@@ -87,5 +87,9 @@ class RecommendationCardListViewHolder constructor(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.widget_for_you_recom_list
+    }
+
+    override fun getRecommendationTriggerObject(): RecommendationTriggerObject {
+        return recTriggerObject
     }
 }
