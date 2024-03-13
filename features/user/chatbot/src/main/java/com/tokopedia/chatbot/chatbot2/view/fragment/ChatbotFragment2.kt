@@ -1530,6 +1530,13 @@ class ChatbotFragment2 :
         mapMessageToList(visitable)
         getViewState()?.hideEmptyMessage(visitable)
         getViewState()?.onCheckToHideQuickReply(visitable)
+        removeDynamicStickyButtonOnNewMessage(visitable)
+    }
+
+    private fun removeDynamicStickyButtonOnNewMessage(visitable: Visitable<*>) {
+        if (visitable is MessageUiModel) {
+            getViewState()?.removeDynamicStickyButtonAction()
+        }
     }
 
     private fun manageVideoBubble() {
@@ -3074,7 +3081,12 @@ class ChatbotFragment2 :
         }
     }
 
+    override fun onValidateCtaVisibility() {
+        getViewState()?.removeDynamicStickyButtonAction()
+    }
+
     override fun onButtonActionClicked(bubble: ChatActionBubbleUiModel) {
+        getViewState()?.removeDynamicStickyButtonAction(true)
         val startTime = SendableUiModel.generateStartTime()
         viewModel.sendDynamicAttachmentText(
             messageId,
@@ -3082,7 +3094,6 @@ class ChatbotFragment2 :
             startTime,
             opponentId
         )
-        getViewState()?.removeDynamicStickyButton()
         getViewState()?.scrollToBottom()
     }
 

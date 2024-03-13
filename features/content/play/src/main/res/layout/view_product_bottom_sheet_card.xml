@@ -130,7 +130,7 @@
                 android:paddingTop="@dimen/spacing_lvl1"
                 android:paddingEnd="@dimen/spacing_lvl2"
                 android:paddingBottom="@dimen/spacing_lvl1"
-                android:textColor="@color/Unify_RN400"
+                android:textColor="@color/play_dms_discount_label_text"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_current_price"
                 app:layout_constraintStart_toEndOf="@+id/tv_current_price"
                 app:layout_constraintTop_toTopOf="@+id/tv_current_price"

@@ -7,30 +7,60 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
+import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.databinding.EpharmacyChooserBottomSheetBinding
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
-import com.tokopedia.epharmacy.utils.*
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.epharmacy.utils.ENABLER_IMAGE_URL
+import com.tokopedia.epharmacy.utils.EPHARMACY_CONS_DURATION
+import com.tokopedia.epharmacy.utils.EPHARMACY_CONS_PRICE
+import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
+import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_IS_ONLY_CONSULT
+import com.tokopedia.epharmacy.utils.EPHARMACY_IS_OUTSIDE_WORKING_HOURS
+import com.tokopedia.epharmacy.utils.EPHARMACY_NOTE
+import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationAnalytics
+import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.epharmacy.utils.MINI_CONS_CHOOSER_IMAGE_URL
+import com.tokopedia.epharmacy.utils.MINI_CONS_CHOOSER_IMAGE_URL_DISABLED
+import com.tokopedia.epharmacy.utils.UPLOAD_CHOOSER_IMAGE_URL
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.webview.ext.decode
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class EPharmacyChooserBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<EpharmacyChooserBottomSheetBinding>()
-    private var enableImageURL = ""
-    private var groupId = ""
-    private var enablerName = ""
-    private var consultationSourceId = 0L
+    private var enableImageURL = String.EMPTY
+    private var groupId = String.EMPTY
+    private var enablerName = String.EMPTY
+    private var duration = String.EMPTY
+    private var price = String.EMPTY
+    private var note = String.EMPTY
+    private var isOutsideWorkingHours = false
+    private var isOnlyConsultation = false
+
     companion object {
         fun newInstance(
             enableImageURL: String,
             groupId: String,
             enablerName: String,
-            consultationSourceId: Long
+            price: String?,
+            duration: String?,
+            note: String?,
+            isOutsideWorkingHours: Boolean,
+            isOnlyConsult: Boolean
         ): EPharmacyChooserBottomSheet {
             return EPharmacyChooserBottomSheet().apply {
                 showCloseIcon = false
@@ -43,7 +73,11 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                     putString(ENABLER_IMAGE_URL, enableImageURL)
                     putString(EPHARMACY_GROUP_ID, groupId)
                     putString(EPHARMACY_ENABLER_NAME, enablerName)
-                    putLong(EPHARMACY_CONSULTATION_SOURCE_ID, consultationSourceId)
+                    putString(EPHARMACY_CONS_PRICE, price)
+                    putString(EPHARMACY_CONS_DURATION, duration)
+                    putString(EPHARMACY_NOTE, note)
+                    putBoolean(EPHARMACY_IS_OUTSIDE_WORKING_HOURS, isOutsideWorkingHours)
+                    putBoolean(EPHARMACY_IS_ONLY_CONSULT, isOnlyConsult)
                 }
             }
         }
@@ -85,22 +119,35 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     }
 
     private fun extractArguments() {
-        enableImageURL = arguments?.getString(ENABLER_IMAGE_URL) ?: ""
-        groupId = arguments?.getString(EPHARMACY_GROUP_ID) ?: ""
-        enablerName = arguments?.getString(EPHARMACY_ENABLER_NAME) ?: ""
-        consultationSourceId = arguments?.getLong(EPHARMACY_CONSULTATION_SOURCE_ID) ?: 0L
+        enableImageURL = arguments?.getString(ENABLER_IMAGE_URL)?.decode().orEmpty()
+        groupId = arguments?.getString(EPHARMACY_GROUP_ID).orEmpty()
+        enablerName = arguments?.getString(EPHARMACY_ENABLER_NAME).orEmpty()
+        price = arguments?.getString(EPHARMACY_CONS_PRICE).orEmpty()
+        duration = arguments?.getString(EPHARMACY_CONS_DURATION).orEmpty()
+        note = arguments?.getString(EPHARMACY_NOTE).orEmpty()
+        isOutsideWorkingHours = arguments?.getBoolean(EPHARMACY_IS_OUTSIDE_WORKING_HOURS).orFalse()
+        isOnlyConsultation = arguments?.getBoolean(EPHARMACY_IS_ONLY_CONSULT).orFalse()
     }
 
     private fun setupBottomSheetUiData() {
         binding?.run {
             context?.resources?.let { res ->
-                chooserUpload.lblPAPTittleOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_resep_dokter_chooser_title)
-                chooserUpload.lblPAPDescriptionOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_resep_dokter_chooser_subtitle)
-                chooserMiniConsultation.lblPAPTittleOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_mini_consult_chooser_title)
-                chooserMiniConsultation.lblPAPDescriptionOptionBottomsheet.text = res.getString(com.tokopedia.epharmacy.R.string.eepharmacy_mini_consult_chooser_subtitle)
-                chooserUpload.stepIcon.loadImage(UPLOAD_CHOOSER_IMAGE_URL)
+                if (isOnlyConsultation) {
+                    lblPAPTitleBottomsheet.text = res.getString(R.string.epharmacy_mini_consult_chooser_title)
+                    chooserUpload.parent.hide()
+                } else {
+                    chooserUpload.parent.show()
+                    chooserUpload.lblPAPTittleOptionBottomsheet.text = res.getString(R.string.epharmacy_upload_resep_dokter_chooser_title)
+                    chooserUpload.lblPAPDescriptionOptionBottomsheet.text = res.getString(R.string.epharmacy_upload_resep_dokter_chooser_subtitle)
+                    chooserUpload.stepIcon.loadImage(UPLOAD_CHOOSER_IMAGE_URL)
+                    chooserUpload.divider.hide()
+                    chooserUpload.parent.setOnClickListener {
+                        uploadResepAction()
+                    }
+                }
+                chooserMiniConsultation.lblPAPTittleOptionBottomsheet.text = res.getString(R.string.epharmacy_mini_consult_chooser_title)
+                chooserMiniConsultation.lblPAPDescriptionOptionBottomsheet.text = res.getString(R.string.eepharmacy_mini_consult_chooser_subtitle)
                 chooserMiniConsultation.stepIcon.loadImage(MINI_CONS_CHOOSER_IMAGE_URL)
-                chooserMiniConsultation.baruLabel.show()
                 if (enableImageURL.isNotBlank()) {
                     bottomImageLogo.show()
                     bottomImageLogo.loadImage(enableImageURL)
@@ -108,11 +155,72 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                     bottomImageLogo.hide()
                 }
 
-                chooserUpload.parent.setOnClickListener {
-                    uploadResepAction()
+                if (isOutsideWorkingHours) {
+                    renderClosingHours()
+                    chooserMiniConsultation.parent.setOnClickListener(null)
+                } else {
+                    chooserMiniConsultation.parent.setOnClickListener {
+                        miniConsultationAction()
+                    }
                 }
-                chooserMiniConsultation.parent.setOnClickListener {
-                    miniConsultationAction()
+
+                renderDuration(duration)
+                renderPrice(price)
+                renderNote(note)
+                btnPelajari.setOnClickListener {
+                    routePelajari()
+                }
+            }
+        }
+    }
+
+    private fun routePelajari() {
+        RouteManager.route(context, "https://www.tokopedia.com/help/article/apa-itu-chat-dokter-di-tokopedia")
+    }
+
+    private fun renderDuration(durationText: String?) {
+        binding?.chooserMiniConsultation?.apply {
+            if (durationText?.isNotBlank().orFalse()) {
+                lblDuration.show()
+                lblChatDoctorDuration.show()
+                lblChatDoctorDuration.text = durationText
+            }
+        }
+    }
+
+    private fun renderPrice(priceText: String?) {
+        binding?.chooserMiniConsultation?.apply {
+            if (priceText?.isNotBlank().orFalse()) {
+                lblBiayaChatDokter.show()
+                lblChatDoctorFee.show()
+                lblChatDoctorFee.text = priceText
+            }
+        }
+    }
+
+    private fun renderClosingHours() {
+        binding?.chooserMiniConsultation?.let {
+            with(it) {
+                val disableColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN400)
+                lblPAPTittleOptionBottomsheet.setTextColor(disableColor)
+                lblPAPDescriptionOptionBottomsheet.setTextColor(disableColor)
+                baruLabel.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
+                lblBiayaChatDokter.setTextColor(disableColor)
+                lblDuration.setTextColor(disableColor)
+                lblChatDoctorFee.setTextColor(disableColor)
+                lblChatDoctorDuration.setTextColor(disableColor)
+                chevron.isEnabled = false
+                stepIcon.loadImage(MINI_CONS_CHOOSER_IMAGE_URL_DISABLED)
+            }
+        }
+    }
+
+    private fun renderNote(note: String) {
+        if (note.isNotBlank()) {
+            context?.let {
+                binding?.chooserMiniConsultation?.noteLl?.show()
+                context?.let {
+                    binding?.chooserMiniConsultation?.lblClosingSoon?.text = EPharmacyUtils.getTextFromHtml(note)
                 }
             }
         }

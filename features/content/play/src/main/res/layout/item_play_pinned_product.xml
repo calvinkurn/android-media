@@ -57,7 +57,7 @@
                 android:paddingTop="@dimen/spacing_lvl1"
                 android:paddingEnd="@dimen/spacing_lvl2"
                 android:paddingBottom="@dimen/spacing_lvl1"
-                android:textColor="@color/Unify_RN400"
+                android:textColor="@color/play_dms_discount_label_text"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@id/img_product"
                 app:layout_constraintTop_toTopOf="@id/img_product"
