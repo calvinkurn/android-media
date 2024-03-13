@@ -8,7 +8,8 @@ data class CheckoutPaymentWidgetData(
     val isTitleRed: Boolean = false,
     val subtitle: String = "",
     val description: String = "",
-    val isDescriptionRed: Boolean = false
+    val isDescriptionRed: Boolean = false,
+    val installmentText: String = ""
 ) {
 
     val isValidStateToContinue: Boolean

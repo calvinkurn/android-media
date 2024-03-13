@@ -3,11 +3,13 @@ package com.tokopedia.checkoutpayment.view
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +37,8 @@ fun CheckoutPaymentWidget(
     data: CheckoutPaymentWidgetData,
     modifier: Modifier = Modifier,
     onRetryClickedListener: () -> Unit = {},
-    onClickedListener: () -> Unit = {}
+    onClickedListener: () -> Unit = {},
+    onInstallmentClickedListener: () -> Unit = {}
 ) {
     if (data.state != CheckoutPaymentWidgetState.None) {
         NestTheme {
@@ -118,10 +121,10 @@ fun CheckoutPaymentWidget(
                         )
                         Row(
                             modifier = Modifier
-                                .padding(bottom = 12.dp)
                                 .setOnClickDebounceListener(showIndication = false) {
                                     onClickedListener()
-                                }.padding(start = 16.dp, end = 28.dp),
+                                }
+                                .padding(start = 16.dp, end = 28.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             NestImage(
@@ -140,7 +143,7 @@ fun CheckoutPaymentWidget(
                                         textStyle = NestTheme.typography.display3.copy(
                                             color = if (data.isTitleRed) NestTheme.colors.RN._500 else NestTheme.colors.NN._950
                                         ),
-                                        modifier = Modifier.weight(1f),
+                                        modifier = Modifier.weight(1f, fill = false),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
                                     )
@@ -172,6 +175,35 @@ fun CheckoutPaymentWidget(
                                 colorNightEnable = NestTheme.colors.NN._500
                             )
                         }
+                        if (data.installmentText.isNotEmpty()) {
+                            Spacer(modifier = Modifier
+                                .fillMaxWidth()
+                                .height(8.dp))
+                            Row(modifier = Modifier
+                                .padding(start = 52.dp, end = 28.dp)
+                                .setOnClickDebounceListener(showIndication = false) { onInstallmentClickedListener() }
+                                .background(NestTheme.colors.NN._50, RoundedCornerShape(percent = 50))
+                                .padding(top = 4.dp, bottom = 4.dp)) {
+                                NestTypography(
+                                    text = data.installmentText,
+                                    modifier = Modifier.padding(start = 12.dp, end = 4.dp).weight(1f, fill = false),
+                                    textStyle = NestTheme.typography.display3.copy(
+                                        color = NestTheme.colors.NN._950
+                                    ),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                NestIcon(
+                                    iconId = IconUnify.CHEVRON_DOWN,
+                                    modifier = Modifier.padding(end = 12.dp).size(16.dp),
+                                    colorLightEnable = NestTheme.colors.NN._950,
+                                    colorNightEnable = NestTheme.colors.NN._950
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(12.dp))
                     }
 
                     else -> {
@@ -205,6 +237,23 @@ fun CheckoutPaymentWidgetPreview() {
                 title = "Bank nama panjang sekali",
                 subtitle = "(isi saldo rekening panjang sekali)",
                 description = "cicilan sangat panjang hingga butuh 2 baris utk menuliskannya semua"
+            )
+        )
+        CheckoutPaymentWidget(
+            CheckoutPaymentWidgetData(
+                state = CheckoutPaymentWidgetState.Normal,
+                title = "Bank",
+                subtitle = "(isi saldo)",
+                description = "cicilan sangat panjang",
+                installmentText = "Bayar Penuh"
+            )
+        )
+        CheckoutPaymentWidget(
+            CheckoutPaymentWidgetData(
+                state = CheckoutPaymentWidgetState.Normal,
+                title = "Bank",
+                subtitle = "(isi saldo)",
+                installmentText = "Bayar Penuh Sampai Panjang Sekali Hingga Tidak Muat"
             )
         )
         CheckoutPaymentWidget(
