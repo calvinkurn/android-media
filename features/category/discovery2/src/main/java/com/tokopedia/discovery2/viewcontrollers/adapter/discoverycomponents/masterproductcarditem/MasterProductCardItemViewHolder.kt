@@ -262,8 +262,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 it.applyCarousel()
                 productCardView?.layoutParams?.width =
                     Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(
-                        R.dimen.dp_70
-                    )
+                    R.dimen.dp_70
+                )
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             }
@@ -499,11 +499,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             requestId = dataItem?.getAppLog()?.requestId.orEmpty(),
             moduleName = dataItem?.getAppLog()?.pageName.orEmpty(),
             listName = dataItem?.topLevelTab?.name.orEmpty(),
-            listNum = dataItem?.topLevelTab?.index?:-1,
+            listNum = dataItem?.topLevelTab?.index ?: -1
         )
     }
 
     override fun isEligibleToTrack(): Boolean {
-        return dataItem?.isEligibleToTrackRecTrigger().orFalse()
+        return dataItem?.isEligibleToTrackRecTrigger(masterProductCardItemViewModel?.getComponentName().orEmpty()).orFalse()
     }
 }
