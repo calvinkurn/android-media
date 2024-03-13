@@ -14,7 +14,6 @@ import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.byteio.TrackRecommendationMapper.asProductTrackModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
-import com.tokopedia.recommendation_widget_common.infinite.foryou.entity.ContentCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.listener.RecommendationTokonowListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -82,8 +81,6 @@ class RecommendationItemViewHolder(
                 AppLogRecommendation.sendProductClickAppLog(
                     element.productItem.asProductTrackModel(
                         entranceForm = EntranceForm.PURE_GOODS_CARD,
-                        tabName = element.chipName,
-                        tabPosition = element.chipPosition,
                     )
                 )
             }
@@ -114,8 +111,6 @@ class RecommendationItemViewHolder(
                 AppLogRecommendation.sendProductShowAppLog(
                     element.productItem.asProductTrackModel(
                         entranceForm = EntranceForm.PURE_GOODS_CARD,
-                        tabName = element.chipName,
-                        tabPosition = element.chipPosition,
                     )
                 )
             }
