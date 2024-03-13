@@ -1,9 +1,11 @@
 package com.tokopedia.stories.usecase
 
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel.ProductFormatPriority.Discount
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel.ProductFormatPriority.Masked
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel.ProductFormatPriority.Original
 import com.tokopedia.stories.uimodel.StoriesCampaignStatus
 import com.tokopedia.stories.uimodel.StoriesCampaignType
-import com.tokopedia.stories.usecase.response.StoriesProductFormatPriority
 import com.tokopedia.stories.usecase.response.StoriesProductResponse
 import com.tokopedia.stories.view.model.StoriesCampaignUiModel
 import com.tokopedia.utils.date.toDate
@@ -28,21 +30,26 @@ class ProductMapper @Inject constructor() {
                 appLink = product.appLink,
                 title = product.name,
                 imageUrl = product.imageUrl,
-                price = when (StoriesProductFormatPriority.getFormatPriority(product.priceFormatPriority)) {
-                    StoriesProductFormatPriority.Masked -> ContentTaggedProductUiModel.CampaignPrice(
+                price = when (ContentTaggedProductUiModel.ProductFormatPriority.getFormatPriority(product.priceFormatPriority)) {
+                    Masked -> ContentTaggedProductUiModel.CampaignPrice(
                         formattedPrice = product.priceMaskedFmt,
                         price = product.priceMasked,
                         isMasked = true
                     )
 
-                    StoriesProductFormatPriority.Discount -> ContentTaggedProductUiModel.DiscountedPrice(
+                    Discount -> ContentTaggedProductUiModel.DiscountedPrice(
                         discount = product.discount,
                         originalFormattedPrice = product.priceOriginalFmt,
                         formattedPrice = product.priceDiscountFmt,
                         price = product.priceDiscount
                     )
 
-                    StoriesProductFormatPriority.Original -> ContentTaggedProductUiModel.NormalPrice(
+                    Original -> ContentTaggedProductUiModel.NormalPrice(
+                        formattedPrice = product.priceFmt,
+                        price = product.price
+                    )
+
+                    else -> ContentTaggedProductUiModel.NormalPrice(
                         formattedPrice = product.priceFmt,
                         price = product.price
                     )
@@ -87,7 +94,11 @@ class ProductMapper @Inject constructor() {
     ): StoriesCampaignUiModel {
         val timeFormat = "yyyy-MM-dd HH:mm"
         return when (campaign.status) {
-            "ongoing", "upcoming" -> StoriesCampaignUiModel.Ongoing(title = campaign.name, endTime = campaign.endTime.toDate(timeFormat))
+            "ongoing", "upcoming" -> StoriesCampaignUiModel.Ongoing(
+                title = campaign.name,
+                endTime = campaign.endTime.toDate(timeFormat)
+            )
+
             else -> StoriesCampaignUiModel.Unknown
         }
     }

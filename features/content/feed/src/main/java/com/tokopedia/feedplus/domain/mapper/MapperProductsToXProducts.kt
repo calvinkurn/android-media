@@ -1,7 +1,9 @@
 package com.tokopedia.feedplus.domain.mapper
 
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedProductFormatPriority
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel.ProductFormatPriority.Discount
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel.ProductFormatPriority.Masked
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel.ProductFormatPriority.Original
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 
@@ -26,21 +28,26 @@ object MapperProductsToXProducts {
             appLink = product.applink,
             title = product.name,
             imageUrl = product.coverUrl,
-            price = when (FeedProductFormatPriority.getFormatPriority(product.priceFormatPriority)) {
-                FeedProductFormatPriority.Masked -> ContentTaggedProductUiModel.CampaignPrice(
+            price = when (ContentTaggedProductUiModel.ProductFormatPriority.getFormatPriority(product.priceFormatPriority)) {
+                Masked -> ContentTaggedProductUiModel.CampaignPrice(
                     formattedPrice = product.priceMaskedFmt,
                     price = product.priceMasked,
                     isMasked = true
                 )
 
-                FeedProductFormatPriority.Discount -> ContentTaggedProductUiModel.DiscountedPrice(
+                Discount -> ContentTaggedProductUiModel.DiscountedPrice(
                     discount = product.discount.toInt(),
                     originalFormattedPrice = product.priceOriginalFmt,
                     formattedPrice = product.priceDiscountFmt,
                     price = product.priceDiscount
                 )
 
-                FeedProductFormatPriority.Original -> ContentTaggedProductUiModel.NormalPrice(
+                Original -> ContentTaggedProductUiModel.NormalPrice(
+                    formattedPrice = product.priceFmt,
+                    price = product.price
+                )
+
+                else -> ContentTaggedProductUiModel.NormalPrice(
                     formattedPrice = product.priceFmt,
                     price = product.price
                 )

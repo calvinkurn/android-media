@@ -99,16 +99,3 @@ data class FeedXProductAffiliate(
     @SerializedName("channel")
     val channel: String = ""
 ) : Parcelable
-
-enum class FeedProductFormatPriority {
-    Masked, Discount, Original;
-
-    companion object {
-        fun getFormatPriority(formatPriority: String): FeedProductFormatPriority =
-            when (formatPriority.lowercase()) {
-                "masked" -> Masked
-                "discount" -> Discount
-                else -> Original
-            }
-    }
-}

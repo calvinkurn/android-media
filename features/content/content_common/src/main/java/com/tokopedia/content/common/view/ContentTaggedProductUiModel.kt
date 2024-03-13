@@ -93,4 +93,17 @@ data class ContentTaggedProductUiModel(
     enum class SourceType {
         Organic, NonOrganic
     }
+
+    enum class ProductFormatPriority {
+        Masked, Discount, Original;
+
+        companion object {
+            fun getFormatPriority(formatPriority: String): ProductFormatPriority =
+                when (formatPriority.lowercase()) {
+                    "masked" -> Masked
+                    "discount" -> Discount
+                    else -> Original
+                }
+        }
+    }
 }

@@ -1,7 +1,9 @@
 package com.tokopedia.feedcomponent.domain.mapper
 
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedProductFormatPriority
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel.ProductFormatPriority.Discount
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel.ProductFormatPriority.Masked
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel.ProductFormatPriority.Original
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 
@@ -24,21 +26,26 @@ object ProductMapper {
             appLink = product.appLink,
             title = product.name,
             imageUrl = product.coverURL,
-            price = when (FeedProductFormatPriority.getFormatPriority(product.priceFormatPriority)) {
-                FeedProductFormatPriority.Masked -> ContentTaggedProductUiModel.CampaignPrice(
+            price = when (ContentTaggedProductUiModel.ProductFormatPriority.getFormatPriority(product.priceFormatPriority)) {
+                Masked -> ContentTaggedProductUiModel.CampaignPrice(
                     formattedPrice = product.priceMaskedFmt,
                     price = product.priceMasked.toDouble(),
                     isMasked = true
                 )
 
-                FeedProductFormatPriority.Discount -> ContentTaggedProductUiModel.DiscountedPrice(
+                Discount -> ContentTaggedProductUiModel.DiscountedPrice(
                     discount = product.discount,
                     originalFormattedPrice = product.priceOriginalFmt,
                     formattedPrice = product.priceDiscountFmt,
                     price = product.priceDiscount.toDouble()
                 )
 
-                FeedProductFormatPriority.Original -> ContentTaggedProductUiModel.NormalPrice(
+                Original -> ContentTaggedProductUiModel.NormalPrice(
+                    formattedPrice = product.priceFmt,
+                    price = product.price.toDouble()
+                )
+
+                else -> ContentTaggedProductUiModel.NormalPrice(
                     formattedPrice = product.priceFmt,
                     price = product.price.toDouble()
                 )
