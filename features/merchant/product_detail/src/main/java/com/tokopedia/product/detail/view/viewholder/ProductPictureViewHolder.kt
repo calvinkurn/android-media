@@ -59,9 +59,6 @@ class ProductPictureViewHolder(
                     resource: Drawable,
                     transition: Transition<in Drawable>?
                 ) {
-                    if (bindingAdapterPosition == 0) {
-                        listener?.sendImageBitmap(resource)
-                    }
                     binding.pdpMainImg.setImageDrawable(resource)
                     if (data.isPrefetch) {
                         data.prefetchResource = resource
@@ -114,5 +111,9 @@ class ProductPictureViewHolder(
 
         // set scaleType must always be after setAdjustViewBounds
         scaleType = scale
+    }
+
+    fun getImageUnify(): ImageView? {
+        return binding.pdpMainImg
     }
 }

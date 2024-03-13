@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail
 
-import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
@@ -286,11 +285,6 @@ class ProductDetailViewModel @Inject constructor(
         SharingStarted.Lazily
     )
 
-    val bitmapImage: LiveData<Bitmap>
-        get() = _bitmapImage
-
-    private val _bitmapImage = MutableLiveData<Bitmap>()
-
     val showBottomSheetEdu: LiveData<BottomSheetEduUiModel?> = p2Data.map {
         val edu = it.bottomSheetEdu
         val showEdu = edu.isShow && edu.appLink.isNotBlank()
@@ -362,10 +356,6 @@ class ProductDetailViewModel @Inject constructor(
 
     fun onFinishAtc() {
         _finishAtc.tryEmit(true)
-    }
-
-    fun setBitmapImage(bitmap: Bitmap) {
-        _bitmapImage.value = bitmap
     }
 
     fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct) {

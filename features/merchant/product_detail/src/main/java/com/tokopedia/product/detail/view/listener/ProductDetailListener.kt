@@ -1,8 +1,7 @@
 package com.tokopedia.product.detail.view.listener
 
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.util.SparseIntArray
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -51,8 +50,6 @@ interface ProductDetailListener {
     fun getUserSession(): UserSessionInterface
     fun getStoriesWidgetManager(): StoriesWidgetManager
 
-    fun sendImageBitmap(drawable: Drawable)
-
     /**
      * ProductMediaViewHolder
      */
@@ -60,6 +57,7 @@ interface ProductDetailListener {
     fun onVideoVolumeCLicked(isMute: Boolean)
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
+    fun setImageUnify(imageView: ImageView?)
 
     fun onMerchantVoucherSummaryClicked(
         @MvcSource source: Int,
@@ -531,7 +529,9 @@ interface ProductDetailListener {
     fun onProductMediaRecomBottomSheetDismissed()
 
     fun onClickDynamicOneLiner(
-        title: String, url: String, component: ComponentTrackDataModel
+        title: String,
+        url: String,
+        component: ComponentTrackDataModel
     )
 
     /**

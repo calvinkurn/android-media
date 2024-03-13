@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.graphics.Point
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -20,7 +19,7 @@ import android.text.TextUtils
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
+import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -99,7 +98,6 @@ import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -779,11 +777,6 @@ open class ProductDetailFragment :
         observeBottomSheetEdu()
         observeAffiliateEligibility()
         observeBitmapReady()
-    }
-
-    private fun observeBitmapReady() {
-        viewLifecycleOwner.observe(viewModel.bitmapImage) { bitmap ->
-        }
     }
 
     private fun observeBottomSheetEdu() {
@@ -2214,6 +2207,10 @@ open class ProductDetailFragment :
 
     override fun getProductVideoCoordinator(): ProductVideoCoordinator? {
         return productVideoCoordinator
+    }
+
+    override fun setImageUnify(imageView: ImageView?) {
+        atcAnimation.setSourceView(imageView)
     }
 
     /**
@@ -5941,10 +5938,6 @@ open class ProductDetailFragment :
 
     override fun getUserSession(): UserSessionInterface {
         return viewModel.userSessionInterface
-    }
-
-    override fun sendImageBitmap(drawable: Drawable) {
-        viewModel.setBitmapImage(drawable.toBitmap())
     }
 
     override fun onImpressStockAssurance(

@@ -23,6 +23,7 @@ import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductPictureViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductVideoViewHolder
 import com.tokopedia.product.detail.view.viewholder.media.model.LiveIndicatorUiModel
 
 /**
@@ -46,7 +47,6 @@ class VideoPictureView @JvmOverloads constructor(
     // region uiModel
     private var liveIndicator: LiveIndicatorUiModel = LiveIndicatorUiModel()
     // endregion
-
 
     init {
         binding.pdpViewPager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
@@ -148,18 +148,36 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun setupViewPagerCallback() {
         binding.pdpViewPager.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                onMediaPageSelected(position)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                if (state == RecyclerView.SCROLL_STATE_IDLE) {
-                    mListener?.getProductVideoCoordinator()
-                        ?.onScrollChangedListener(binding.pdpViewPager, pagerSelectedLastPosition)
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    onMediaPageSelected(position)
+                    sendImageView(position)
                 }
-            }
-        })
+
+                override fun onPageScrollStateChanged(state: Int) {
+                    if (state == RecyclerView.SCROLL_STATE_IDLE) {
+                        mListener?.getProductVideoCoordinator()
+                            ?.onScrollChangedListener(binding.pdpViewPager, pagerSelectedLastPosition)
+                    }
+                }
+            })
+    }
+
+    private fun sendImageView(position: Int) {
+        val vh =
+            (binding.pdpViewPager.get(0) as? RecyclerView)?.findViewHolderForAdapterPosition(
+                position
+            )
+
+        val imageView = if (vh is ProductPictureViewHolder) {
+            vh.getImageUnify()
+        } else if (vh is ProductVideoViewHolder) {
+            vh.getImageUnify()
+        } else {
+            null
+        }
+
+        mListener?.setImageUnify(imageView)
     }
 
     private fun onMediaPageSelected(position: Int) {

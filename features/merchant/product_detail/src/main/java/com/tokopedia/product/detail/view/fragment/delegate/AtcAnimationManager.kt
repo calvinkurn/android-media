@@ -4,8 +4,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.view.View
+import android.widget.ImageView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.tokopedia.kotlin.extensions.view.getLocationOnScreen
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.product.detail.databinding.ProductDetailFragmentBinding
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
 import com.tokopedia.product.detail.view.viewmodel.product_detail.ProductDetailViewModel
@@ -22,21 +24,31 @@ class AtcAnimationManager(
 
     private var resetLaunchEffect = false
 
+    private var mSourceImageView: ImageView? = null
+
+    fun setSourceView(view: ImageView?) {
+        mSourceImageView = view
+    }
+
     fun runAtcAnimation(binding: ProductDetailFragmentBinding?) {
         if (context == null || binding == null) return
+
+        if (mSourceImageView == null) {
+            viewModel.onFinishAnimation()
+            return
+        }
+
         val toolbar = binding.pdpNavtoolbar
 
-        viewModel.bitmapImage.value?.let { bitmap ->
-            val cartViewMenu = toolbar.getCartIconPosition()
+        val cartViewMenu = toolbar.getCartIconPosition()
 
-            cartViewMenu?.apply {
-                post {
-                    renderAnimatedImage(
-                        binding = binding,
-                        target = this,
-                        image = bitmap
-                    )
-                }
+        cartViewMenu?.apply {
+            post {
+                renderAnimatedImage(
+                    binding = binding,
+                    target = this,
+                    image = mSourceImageView?.drawable!!.toBitmap()
+                )
             }
         }
     }
