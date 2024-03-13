@@ -86,7 +86,7 @@
         android:id="@+id/pdpAtcAnimGuideline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintGuide_percent="0.4"
+        app:layout_constraintGuide_percent="0.3"
         android:orientation="horizontal"/>
 
     <androidx.compose.ui.platform.ComposeView

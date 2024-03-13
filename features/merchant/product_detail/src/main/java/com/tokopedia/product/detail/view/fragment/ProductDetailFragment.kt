@@ -4829,7 +4829,6 @@ open class ProductDetailFragment :
     }
 
     private fun doAtc(buttonAction: Int) {
-        atcAnimation.runAtcAnimation(binding)
         buttonActionType = buttonAction
         context?.let {
             val isVariant = viewModel.getProductInfoP1?.data?.variant?.isVariant ?: false
@@ -4895,7 +4894,6 @@ open class ProductDetailFragment :
         val selectedWarehouseId = viewModel.getMultiOriginByProductId().id
 
         viewModel.getProductInfoP1?.let { data ->
-//            showProgressDialog()
             when (actionButton) {
                 ProductDetailCommonConstant.OCS_BUTTON -> {
                     val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
@@ -4923,6 +4921,7 @@ open class ProductDetailFragment :
                 }
 
                 else -> {
+                    atcAnimation.runAtcAnimation(binding)
                     val addToCartRequestParams = AddToCartRequestParams().apply {
                         productId = data.basic.productID
                         shopId = data.basic.shopID
