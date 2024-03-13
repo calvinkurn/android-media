@@ -3,8 +3,11 @@ package com.tokopedia.topchat.common.util
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.res.Resources.getSystem
+import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.Shader
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
@@ -371,7 +374,7 @@ object ViewUtil {
     }
 
     fun rotateView(
-        view:View?,
+        view: View?,
         startDegree: Float,
         endDegree: Float,
         duration: Long = 300L
@@ -379,12 +382,43 @@ object ViewUtil {
         try {
             view?.let {
                 val animator = ObjectAnimator.ofFloat(
-                    it, "rotation", startDegree, endDegree)
+                    it,
+                    "rotation",
+                    startDegree,
+                    endDegree
+                )
                 animator.duration = duration
                 animator.start()
             }
         } catch (throwable: Throwable) {
             Timber.d(throwable)
+        }
+    }
+
+    fun scaleBitmap(bitmap: Bitmap, imageViewWidth: Int): Bitmap {
+        return try {
+            val scale = imageViewWidth.toFloat() / bitmap.width.toFloat()
+            Bitmap.createScaledBitmap(
+                bitmap,
+                imageViewWidth,
+                (bitmap.height * scale).toInt(),
+                true
+            )
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+            bitmap // return original
+        }
+    }
+
+    fun verticalTileBitmap(context: Context, bitmap: Bitmap): BitmapDrawable? {
+        return try {
+            BitmapDrawable(context.resources, bitmap).apply {
+                // Set tile mode to REPEAT vertically
+                setTileModeXY(Shader.TileMode.CLAMP, Shader.TileMode.REPEAT)
+            }
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+            null
         }
     }
 }

@@ -11,6 +11,7 @@
         android:id="@+id/card_see_all"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:cardBackgroundColor="@color/cardunify_background"
         app:cardCornerRadius="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,12 +43,15 @@
                     android:layout_height="wrap_content"
                     app:typographyType="heading_3"
                     app:typographyWeight="bold"
+                    android:textColor="@color/Unify_NN1000"
                     tools:text="20+" />
 
                 <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tpg_other_product_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/bmsm_widget_text_another_product"
+                    android:textColor="@color/Unify_NN1000"
                     app:typographyType="paragraph_3"
                     app:typographyWeight="reguler" />
 

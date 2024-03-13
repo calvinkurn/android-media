@@ -18,4 +18,6 @@ internal sealed interface FeedBrowseAction {
         val slotId: String,
         val model: WidgetMenuModel
     ) : FeedBrowseAction
+
+    object UpdateStoriesStatus : FeedBrowseAction
 }

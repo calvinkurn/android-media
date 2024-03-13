@@ -499,6 +499,15 @@ object DeeplinkDFApp {
             DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT
         ),
 
+        // Dynamic CSAT
+        DFP(
+            INTERNAL,
+            HOST_TICKET,
+            PathType.PATH,
+            "/csat",
+            OPERATIONAL_CONTACT_US
+        ),
+
         // telephony_masking
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/telephony-masking")
     )
@@ -570,7 +579,8 @@ object DeeplinkDFApp {
             PathType.PATTERN,
             "/recipe/similar-product-bottomsheet"
         ),
-        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/buyer-communication")
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/buyer-communication"),
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/all-annotation")
     )
 
     private fun getDfTravel() = mutableListOf(

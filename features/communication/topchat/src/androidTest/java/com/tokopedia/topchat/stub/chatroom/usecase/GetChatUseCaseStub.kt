@@ -62,6 +62,10 @@ class GetChatUseCaseStub @Inject constructor(
         "broadcast/success_get_chat_broadcast_with_flexible_cta.json"
     private val autoReplyResponsePath =
         "auto_reply/success_get_chat_with_auto_reply.json"
+    private val sellerOrderCancellationBeforeResponse =
+        "seller/order_cancellation/success_get_chat_order_cancellation_before.json"
+    private val sellerOrderCancellationAfterResponse =
+        "seller/order_cancellation/success_get_chat_order_cancellation_after.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -423,6 +427,33 @@ class GetChatUseCaseStub @Inject constructor(
 
     /**
      * <!--- End SRW responses --->
+     */
+
+    /**
+     * <!--- Start Order Cancellation responses --->
+     */
+
+    val emptySellerOrderCancellation: GetExistingChatPojo
+        get() = alterResponseOf(sellerOrderCancellationBeforeResponse) { response ->
+            alterDateToToday(response)
+            val emptyArray = JsonArray()
+            response.getAsJsonObject(chatReplies)
+                .getAsJsonArray(list).get(0).asJsonObject
+                .add(chats, emptyArray)
+        }
+
+    val sellerOrderCancellationBefore: GetExistingChatPojo
+        get() = alterResponseOf(sellerOrderCancellationBeforeResponse) { response ->
+            alterDateToToday(response)
+        }
+
+    val sellerOrderCancellationAfter: GetExistingChatPojo
+        get() = alterResponseOf(sellerOrderCancellationAfterResponse) { response ->
+            alterDateToToday(response)
+        }
+
+    /**
+     * <!--- End Order Cancellation responses --->
      */
 
     fun getLastIndexOf(response: GetExistingChatPojo): Int {

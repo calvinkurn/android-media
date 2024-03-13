@@ -94,7 +94,7 @@ class TopchatRoomSellerAttachVoucherTest : BaseSellerTopchatRoomTest() {
 
         // Then
         voucherResult {
-            assertInvoiceAttachmentDesc(1, withSubstring("untuk produk tertentu"))
+            assertVoucherAttachmentDesc(1, withSubstring("untuk produk tertentu"))
         }
     }
 
@@ -111,7 +111,7 @@ class TopchatRoomSellerAttachVoucherTest : BaseSellerTopchatRoomTest() {
 
         // Then
         voucherResult {
-            assertInvoiceAttachmentDesc(0, not(withSubstring("untuk produk tertentu")))
+            assertVoucherAttachmentDesc(0, not(withSubstring("untuk produk tertentu")))
         }
     }
 
