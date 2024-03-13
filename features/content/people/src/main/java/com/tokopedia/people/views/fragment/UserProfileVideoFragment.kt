@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
@@ -38,7 +39,6 @@ import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_ER
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_LOADING
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.REQUEST_CODE_LOGIN_TO_SET_REMINDER
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.REQUEST_CODE_PLAY_ROOM
-import com.tokopedia.people.views.fragment.base.UserProfileTabFragment
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
@@ -60,7 +60,7 @@ class UserProfileVideoFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val userProfileTracker: UserProfileTracker,
     private val impressCoordinator: UserVideoPostImpressCoordinator,
-) : UserProfileTabFragment() {
+) : TkpdBaseV4Fragment() {
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         GridLayoutManager(

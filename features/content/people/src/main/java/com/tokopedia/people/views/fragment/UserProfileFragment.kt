@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -78,7 +77,6 @@ import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment.Comp
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileBadgeBottomSheet
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileOptionBottomSheet
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileReviewOnboardingBottomSheet
-import com.tokopedia.people.views.fragment.contract.UserProfileFragmentContract
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
@@ -126,8 +124,7 @@ class UserProfileFragment @Inject constructor(
     ScreenShotListener,
     PermissionListener,
     ShopRecomWidgetCallback,
-    FeedPlusContainerListener,
-    UserProfileFragmentContract {
+    FeedPlusContainerListener {
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenShotDetector: ScreenshotDetector? = null
@@ -266,9 +263,6 @@ class UserProfileFragment @Inject constructor(
 
         _binding = null
     }
-
-    override val isParentConfigChanges: Boolean
-        get() = isConfigChanges
 
     private fun setupAttachChildFragmentListener() {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->

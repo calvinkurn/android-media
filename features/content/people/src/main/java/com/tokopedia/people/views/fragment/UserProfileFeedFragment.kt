@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst.INTERNAL_CONTENT_DETAIL
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -30,7 +31,6 @@ import com.tokopedia.people.views.adapter.UserFeedPostsBaseAdapter
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_CONTENT
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_EMPTY
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_ERROR
-import com.tokopedia.people.views.fragment.base.UserProfileTabFragment
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.PostUiModel
@@ -38,13 +38,13 @@ import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.content.common.R as contentcommonR
 
 class UserProfileFeedFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
     private val userProfileTracker: UserProfileTracker,
     private val impressCoordinator: UserFeedPostImpressCoordinator,
-) : UserProfileTabFragment(), UserFeedPostsBaseAdapter.FeedPostsCallback {
+) : TkpdBaseV4Fragment(), UserFeedPostsBaseAdapter.FeedPostsCallback {
 
     private var nextCursor: String = ""
 
@@ -114,7 +114,7 @@ class UserProfileFeedFragment @Inject constructor(
 
         binding.rvFeed.layoutManager = gridLayoutManager
         if (binding.rvFeed.itemDecorationCount == 0) {
-            val spacing = requireContext().resources.getDimensionPixelOffset(contentCommonR.dimen.content_common_space_1)
+            val spacing = requireContext().resources.getDimensionPixelOffset(contentcommonR.dimen.content_common_space_1)
             binding.rvFeed.addItemDecoration(GridSpacingItemDecoration(spanCount, spacing, false))
         }
         binding.rvFeed.adapter = mAdapter

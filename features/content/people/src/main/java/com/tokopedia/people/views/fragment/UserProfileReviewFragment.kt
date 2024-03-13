@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.util.Router
@@ -35,7 +36,6 @@ import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.people.views.adapter.UserReviewAdapter
-import com.tokopedia.people.views.fragment.base.UserProfileTabFragment
 import com.tokopedia.people.views.itemdecoration.UserReviewItemDecoration
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
@@ -58,7 +58,7 @@ class UserProfileReviewFragment @Inject constructor(
     private val userProfileTracker: UserProfileTracker,
     private val userReviewImpressCoordinator: UserReviewImpressCoordinator,
     private val router: Router,
-) : UserProfileTabFragment() {
+) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentUserProfileReviewBinding? = null
     private val binding: FragmentUserProfileReviewBinding
