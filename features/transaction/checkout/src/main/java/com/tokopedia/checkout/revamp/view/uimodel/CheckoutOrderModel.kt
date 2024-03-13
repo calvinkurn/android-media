@@ -160,6 +160,7 @@ data class CheckoutOrderModel(
     var partnerConsultationId: String = "",
     var consultationDataString: String = "",
     var shouldResetCourier: Boolean = false,
+    var isBlockCheckoutFlowEPharmacy:Boolean = false,
 
     // new owoc
     val groupType: Int = 0,

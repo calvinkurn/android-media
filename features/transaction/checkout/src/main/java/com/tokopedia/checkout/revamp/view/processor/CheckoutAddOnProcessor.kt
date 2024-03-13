@@ -14,6 +14,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.view.ShipmentViewModel
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_STATUS_APPROVED
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_STATUS_REJECTED
+import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
@@ -64,7 +65,7 @@ class CheckoutAddOnProcessor @Inject constructor(
     suspend fun fetchEpharmacyData(listData: List<CheckoutItem>): List<CheckoutItem>? {
         return withContext(dispatchers.io) {
             try {
-                epharmacyUseCase.setParams()
+                epharmacyUseCase.setParams(mutableMapOf(EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to EPHARMACY_PPG_SOURCE_CHECKOUT))
                 val ePharmacyPrepareProductsGroupResponse = epharmacyUseCase.executeOnBackground()
                 return@withContext processEpharmacyData(ePharmacyPrepareProductsGroupResponse, listData)
             } catch (t: Throwable) {
@@ -258,6 +259,11 @@ class CheckoutAddOnProcessor @Inject constructor(
                 uploadPrescriptionUiModel.enablerNames = ArrayList(enablerNames)
                 uploadPrescriptionUiModel.shopIds = shopIds
                 uploadPrescriptionUiModel.cartIds = cartIds
+                ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.checkoutFlow?.checkoutIsBlockErrorMessage.orEmpty()
+                    .takeIf { it.isNotEmpty() }?.let {
+                        uploadPrescriptionUiModel.isBlockCheckoutFlowMessage = it
+                        uploadPrescriptionUiModel.isError = true
+                    }
                 checkoutItems[checkoutItems.size - EPHARMACY_INDEX_FROM_BOTTOM] =
                     CheckoutEpharmacyModel(epharmacy = uploadPrescriptionUiModel)
                 return checkoutItems
