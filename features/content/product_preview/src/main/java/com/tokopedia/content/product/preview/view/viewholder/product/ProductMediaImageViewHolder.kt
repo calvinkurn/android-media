@@ -1,6 +1,8 @@
 package com.tokopedia.content.product.preview.view.viewholder.product
 
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -9,6 +11,7 @@ import com.tokopedia.content.product.preview.databinding.ItemImageProductPreview
 import com.tokopedia.content.product.preview.view.components.items.ItemImageProductPreview
 import com.tokopedia.content.product.preview.view.listener.MediaImageListener
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductMediaUiModel
+import timber.log.Timber
 
 class ProductMediaImageViewHolder(
     private val binding: ItemImageProductPreviewBinding,
@@ -30,9 +33,30 @@ class ProductMediaImageViewHolder(
     }
 
     fun bind(content: ProductMediaUiModel) {
+        val gesture = GestureDetector(
+            binding.root.context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                    Timber.d("${e.pointerCount}")
+                    return true
+                }
+            }
+        )
+        binding.cvProductPreviewMediaImage.apply {
+            setOnTouchListener { _, motionEvent ->
+                performClick()
+                gesture.onTouchEvent(motionEvent)
+                true
+            }
+        }
         binding.cvProductPreviewMediaImage.apply {
             setContent {
-                ItemImageProductPreview(imageUrl = content.url)
+                ItemImageProductPreview(
+                    imageUrl = content.url,
+                    stateListener = { isScalingMode ->
+                        mediaImageLister.onImageInteraction(isScalingMode)
+                    }
+                )
             }
         }
     }

@@ -31,6 +31,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewActi
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.Navigate
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductActionFromResult
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductImageInteraction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaSelected
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ProductMediaVideoEnded
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewAction.ReviewContentScrolling
@@ -60,6 +61,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 
 class ProductPreviewViewModel @AssistedInject constructor(
@@ -145,6 +147,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             ToggleReviewWatchMode -> handleReviewWatchMode()
             HasVisitCoachMark -> productPrevSharedPref.setHasVisit()
             ProductMediaVideoEnded -> handleProductMediaVideoEnded()
+            is ProductImageInteraction -> handleProductImageInteraction(action.isScalingMode)
             is ProductMediaSelected -> handleProductMediaSelected(action.position)
             is ReviewContentSelected -> handleReviewContentSelected(action.position)
             is ReviewContentScrolling -> handleReviewContentScrolling(action.position, action.isScrolling)
@@ -330,6 +333,15 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     }
                 )
             }
+        }
+    }
+
+    private fun handleProductImageInteraction(isScalingMode: Boolean) {
+        Timber.d("isScaling $isScalingMode")
+        if (isScalingMode) {
+            autoScrollProductMedia?.cancel()
+        } else {
+            scheduleAutoScrollProductMedia()
         }
     }
 
@@ -564,5 +576,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     companion object {
         private const val DELAY_AUTO_SCROLL_PRODUCT_MEDIA = 3000L
+        private const val DEFAULT_SCALE = 1.0F
     }
 }
