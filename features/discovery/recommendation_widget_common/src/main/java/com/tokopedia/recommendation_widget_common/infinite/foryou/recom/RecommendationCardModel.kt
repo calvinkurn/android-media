@@ -46,6 +46,7 @@ data class RecommendationCardModel(
 
     data class ProductItem(
         val id: String = "",
+        val parentProductId: String = "",
         val name: String = "",
         val imageUrl: String = "",
         val recommendationType: String = "",

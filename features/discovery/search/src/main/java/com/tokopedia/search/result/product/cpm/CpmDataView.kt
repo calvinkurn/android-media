@@ -42,7 +42,7 @@ data class CpmDataView(
 
     fun isTrackByteIO() = byteIOTrackingLayout.contains(layout())
 
-    fun asByteIOSearchResult(aladdinButtonType: String?): AppLogSearch.SearchResult {
+    fun asByteIOSearchResult(aladdinButtonType: String?, isIncludeResultType : Boolean = true): AppLogSearch.SearchResult {
         val shopId = cpmModel.data.getOrNull(0)?.cpm?.cpmShop?.id ?: ""
         return AppLogSearch.SearchResult(
             imprId = byteIOTrackingData.imprId,
@@ -51,7 +51,7 @@ data class CpmDataView(
             searchResultId = shopId,
             listItemId = null,
             itemRank = null,
-            listResultType = AppLogSearch.ParamValue.SHOP,
+            listResultType = if (isIncludeResultType) AppLogSearch.ParamValue.SHOP else null,
             productID = "",
             searchKeyword = byteIOTrackingData.keyword,
             rank = getRank(),

@@ -100,6 +100,7 @@ import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.di.module.SearchNavigationListenerModule
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
@@ -1648,15 +1649,16 @@ class ProductListFragment :
     }
 
     private fun cleanByteIOProductClickData() {
-        AppLogAnalytics.run {
-            removePageData(ENTRANCE_FORM)
-            removePageData(IS_AD)
-            removePageData(TRACK_ID)
-            removePageData(SOURCE_PAGE_TYPE)
-            removePageData(REQUEST_ID)
-            removePageData(SEARCH_RESULT_ID)
-            removePageData(LIST_ITEM_ID)
-        }
+        val listOfRemovedKey = listOf(
+            ENTRANCE_FORM,
+            IS_AD,
+            TRACK_ID,
+            SOURCE_PAGE_TYPE,
+            REQUEST_ID,
+            SEARCH_RESULT_ID,
+            LIST_ITEM_ID
+            )
+        AppLogAnalytics.removePageData(activity as SearchActivity, listOfRemovedKey)
     }
 
     override fun sendTrackingByteIO() {

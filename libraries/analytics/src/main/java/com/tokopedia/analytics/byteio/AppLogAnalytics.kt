@@ -131,7 +131,8 @@ object AppLogAnalytics {
             it.put(IS_AD, getLastData(IS_AD))
             it.addRequestId()
             it.addSourceModule()
-            it.addEnterMethod()
+//            it.addEnterMethod()
+            it.addEnterMethodPdp()
             it.put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
             it.put(SEARCH_ID, getLastData(SEARCH_ID))
             it.put(SEARCH_RESULT_ID, getLastData(SEARCH_RESULT_ID))
@@ -174,7 +175,21 @@ object AppLogAnalytics {
     }
 
     internal fun JSONObject.addSourceModule() {
-        put(SOURCE_MODULE, getLastData(SOURCE_MODULE))
+        val sourceModule = if (currentActivityName == "AtcVariantActivity") {
+            getLastDataExactStep(SOURCE_MODULE, 2)
+        } else {
+            getLastDataExactStep(SOURCE_MODULE)
+        }
+        put(SOURCE_MODULE, sourceModule)
+    }
+
+    internal fun JSONObject.addEnterMethodPdp() {
+        val sourceModule = if (currentActivityName == "AtcVariantActivity") {
+            getLastDataExactStep(ENTER_METHOD, 2)
+        } else {
+            getLastDataExactStep(ENTER_METHOD)
+        }
+        put(ENTER_METHOD, sourceModule)
     }
 
     internal fun JSONObject.addRequestId() {
@@ -255,6 +270,18 @@ object AppLogAnalytics {
         Timber.d("Remove _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
+    //remove list of page data by hashcode
+    fun removePageData(appLogInterface: AppLogInterface, listOfRemovedKey: List<String>) {
+        val pageDataIndex = _pageDataList
+            .withIndex()
+            .find { it.value[ACTIVITY_HASH_CODE] == appLogInterface.hashCode() }
+            ?: return
+
+        listOfRemovedKey.forEach {
+            _pageDataList[pageDataIndex.index].remove(it)
+        }
+    }
+
     private fun removeShadowStack(currentIndex: Int) {
         var tempCurrentIndex = currentIndex
         while (tempCurrentIndex >= 0 && _pageDataList.getOrNull(tempCurrentIndex)
@@ -296,6 +323,12 @@ object AppLogAnalytics {
             }
         }
         return null
+    }
+
+    private fun getLastDataExactStep(key: String, step: Int = 1): Any? {
+        val idx = _pageDataList.lastIndex - step
+        val map = _pageDataList.getOrNull(idx)
+        return map?.getOrDefault(key, null)
     }
 
     fun getLastDataBeforeCurrent(key: String): Any? {
@@ -404,6 +437,14 @@ object AppLogAnalytics {
     fun getEntranceInfo(buyType: AtcBuyType): String {
         return JSONObject().also {
             it.put(ENTRANCE_INFO, generateEntranceInfoJson().toString())
+            it.put("buy_type", buyType.code)
+            it.put("os_type", "android")
+        }.toString()
+    }
+
+    fun getEntranceInfoForCheckout(buyType: AtcBuyType): String {
+        return JSONObject().also {
+            it.addEntranceInfoCart()
             it.put("buy_type", buyType.code)
             it.put("os_type", "android")
         }.toString()

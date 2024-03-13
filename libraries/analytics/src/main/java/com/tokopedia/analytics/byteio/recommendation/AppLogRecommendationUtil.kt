@@ -87,3 +87,10 @@ internal fun getCardName(
         else CardName.REC_GOODS_CARD
     } else cardName
 }
+
+internal fun getProductId(
+    productId: String,
+    parentProductId: String,
+): String {
+    return (parentProductId.takeIf { it.zeroAsEmpty().isNotEmpty() } ?: productId).zeroAsEmpty()
+}

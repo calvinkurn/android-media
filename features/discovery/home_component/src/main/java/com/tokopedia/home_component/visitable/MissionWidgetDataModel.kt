@@ -15,6 +15,7 @@ data class MissionWidgetDataModel(
     val pageName: String = "",
     val categoryID: String = "",
     val productID: String = "",
+    val parentProductID: String = "",
     val productName: String = "",
     val recommendationType: String = "",
     val buType: String = "",

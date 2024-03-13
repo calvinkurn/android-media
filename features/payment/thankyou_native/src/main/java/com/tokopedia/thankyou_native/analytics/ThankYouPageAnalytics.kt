@@ -84,7 +84,7 @@ class ThankYouPageAnalytics @Inject constructor(
     fun sendSubmitOrderByteIoTracker(data: ThanksPageData) {
         val prodId = data.shopOrder.joinToString(",") { shop ->
             shop.purchaseItemList.joinToString(",") { item ->
-                item.parentProductId.takeIf { it.isNotEmpty() || !it.contains("null") }
+                item.parentProductId?.takeIf { it.isNotEmpty() || !it.contains("null") }
                     ?: item.productId
             }
         }

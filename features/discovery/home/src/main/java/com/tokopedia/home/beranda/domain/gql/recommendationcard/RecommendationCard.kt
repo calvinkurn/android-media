@@ -28,6 +28,8 @@ data class RecommendationCard(
     val iconUrl: String = "",
     @SerializedName("id")
     val id: String = "0",
+    @SerializedName("parentProductID")
+    val parentProductId: String = "0",
     @SerializedName("categoryID")
     val categoryID: String = "0",
     @SerializedName("imageUrl")
@@ -127,6 +129,7 @@ data class RecommendationCard(
     fun mapToHomeGlobalRecommendationProductItem(): RecommendationCardModel.ProductItem {
         return RecommendationCardModel.ProductItem(
             id = id,
+            parentProductId = parentProductId,
             name = name,
             imageUrl = imageUrl,
             recommendationType = recommendationType,
