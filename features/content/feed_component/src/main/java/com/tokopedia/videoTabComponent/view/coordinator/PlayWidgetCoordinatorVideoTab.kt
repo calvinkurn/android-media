@@ -6,7 +6,6 @@ import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
-import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
@@ -20,8 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelChildren
 
 class PlayWidgetCoordinatorVideoTab(
-        lifecycleOwner: LifecycleOwner? = null,
-        mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
+    lifecycleOwner: LifecycleOwner? = null,
+    mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
 ) : LifecycleObserver {
 
     private val scope = CoroutineScope(mainCoroutineDispatcher)
@@ -66,11 +65,6 @@ class PlayWidgetCoordinatorVideoTab(
         widget.setWidgetInternalListener(mWidgetInternalListener)
     }
 
-    fun controlWidget(widget: PlayWidgetJumboView) {
-        widget.setWidgetListener(mListener)
-        widget.setAnalyticListener(mAnalyticListener)
-        widget.setWidgetInternalListener(mWidgetInternalListener)
-    }
     fun configureAutoplayForLargeAndJumboWidget(widgetCardsContainer: RecyclerView){
         autoPlayCoordinator.configureLargeOrJumboWidgetAutoplay(widgetCardsContainer)
     }
@@ -84,11 +78,6 @@ class PlayWidgetCoordinatorVideoTab(
     fun connect(widget: PlayWidgetLargeView, model: PlayWidgetUiModel) {
         widget.setData(model)
         autoPlayCoordinator.configureAutoPlay(widget.context, model.config, PlayWidgetType.Large)
-    }
-
-    fun connect(widget: PlayWidgetJumboView, model: PlayWidgetUiModel) {
-        widget.setData(model)
-        autoPlayCoordinator.configureAutoPlay(widget.context, model.config, PlayWidgetType.Jumbo)
     }
 
     fun setListener(listener: PlayWidgetListener?) {

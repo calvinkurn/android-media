@@ -1,10 +1,10 @@
 package com.tokopedia.chatbot.view.viewmodel
 
-import com.tokopedia.chatbot.chatbot2.csat.domain.model.CsatModel
-import com.tokopedia.chatbot.chatbot2.csat.domain.model.PointModel
 import com.tokopedia.chatbot.chatbot2.csat.view.CsatEvent
 import com.tokopedia.chatbot.chatbot2.csat.view.CsatUserAction
 import com.tokopedia.chatbot.chatbot2.csat.view.CsatViewModel
+import com.tokopedia.csat_rating.dynamiccsat.domain.model.CsatModel
+import com.tokopedia.csat_rating.dynamiccsat.domain.model.PointModel
 import com.tokopedia.unit.test.rule.StandardTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before

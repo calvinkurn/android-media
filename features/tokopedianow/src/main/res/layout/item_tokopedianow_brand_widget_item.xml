@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="94dp"
+    android:layout_height="94dp"
+    android:background="@drawable/tokopedianow_bg_brand_widget_item"
+    android:padding="8dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_brand"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter" />
+</FrameLayout>

@@ -23,7 +23,9 @@ data class StoriesGroupHeader(
 data class StoriesGroupItem(
     val groupId: String = "",
     val groupName: String = "",
-    val detail: StoriesDetail = StoriesDetail()
+    val detail: StoriesDetail = StoriesDetail(),
+    val author: StoryAuthor = StoryAuthor.Unknown,
+    val type: StoriesType = StoriesType.Category
 )
 
 data class StoriesDetail(
@@ -53,10 +55,11 @@ data class StoriesDetailItem(
     val productCount: String = "",
     val author: StoryAuthor = StoryAuthor.Unknown,
     val category: StoryCategory = StoryCategory.ASGC,
+    val categoryName: String = "",
     val publishedAt: String = "",
     val menus: List<ContentMenuItem> = emptyList(),
     val share: Sharing = Sharing.Empty,
-    val status: StoryStatus = StoryStatus.Unknown,
+    val status: StoryStatus = StoryStatus.Unknown
 ) {
 
     val storyType: String
@@ -106,7 +109,7 @@ data class StoriesDetailItem(
                 get() = Sharing(
                     isShareable = false,
                     shareText = "",
-                    metadata = StoriesLinkPropertiesProvider.get(),
+                    metadata = StoriesLinkPropertiesProvider.get()
                 )
         }
     }
@@ -141,4 +144,20 @@ data class StoriesDetailItem(
 
     val isProductAvailable: Boolean =
         productCount.isNotEmpty() && productCount != "0" && status == StoryStatus.Active
+}
+
+enum class StoriesType(val value: String) {
+    Category("category"),
+    Author("author");
+
+    companion object {
+        private val values = values()
+
+        fun get(value: String): StoriesType {
+            values.forEach {
+                if (value == it.value) return it
+            }
+            return Category
+        }
+    }
 }
