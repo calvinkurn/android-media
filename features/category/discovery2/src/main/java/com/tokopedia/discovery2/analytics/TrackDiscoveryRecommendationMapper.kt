@@ -67,10 +67,14 @@ object TrackDiscoveryRecommendationMapper {
         return source == ComponentSourceData.Recommendation
     }
 
-    fun DataItem.isEligibleToTrackRecTrigger(): Boolean {
-        return isEligibleToTrack() &&
-            (getAppLog()?.pageName?.contains("best_seller") == true ||
-                getAppLog()?.pageName?.contains("trending") == true)
+    fun DataItem.isEligibleToTrackRecTrigger(componentNames: String): Boolean {
+        if(componentNames == ComponentNames.ProductCardSingleItem.componentName ||
+            componentNames == ComponentNames.ProductCardSingleItemReimagine.componentName) {
+            return isEligibleToTrack() &&
+                (getAppLog()?.pageName?.contains("best_seller") == true ||
+                    getAppLog()?.pageName?.contains("trending") == true)
+        }
+        return isEligibleToTrack()
     }
 
     fun ComponentsItem.isEligibleToTrack(): Boolean {
