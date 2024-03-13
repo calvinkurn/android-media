@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.preference.edit.domain.payment
+package com.tokopedia.checkoutpayment.list.domain
 
 import com.tokopedia.checkoutpayment.list.data.ListingParam
 import com.tokopedia.checkoutpayment.list.data.PaymentListingParamRequest

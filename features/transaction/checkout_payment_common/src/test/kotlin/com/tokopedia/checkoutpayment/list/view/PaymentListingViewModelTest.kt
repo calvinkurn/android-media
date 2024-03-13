@@ -1,12 +1,9 @@
-package com.tokopedia.oneclickcheckout.preference.edit.view.payment
+package com.tokopedia.checkoutpayment.list.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.oneclickcheckout.common.view.model.Failure
-import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.checkoutpayment.list.data.ListingParam
 import com.tokopedia.checkoutpayment.list.data.PaymentListingParamRequest
-import com.tokopedia.checkoutpayment.list.view.PaymentListingViewModel
-import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.FakeGetPaymentListingParamUseCase
+import com.tokopedia.checkoutpayment.list.domain.FakeGetPaymentListingParamUseCase
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
