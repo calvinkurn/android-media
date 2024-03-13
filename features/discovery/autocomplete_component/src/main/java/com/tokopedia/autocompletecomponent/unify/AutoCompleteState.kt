@@ -9,7 +9,9 @@ import com.tokopedia.autocompletecomponent.util.AUTOCOMPLETE_UNIFY_BADGE_POWER_M
 import com.tokopedia.autocompletecomponent.util.AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_FLAG
 import com.tokopedia.autocompletecomponent.util.AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_PRO
 import com.tokopedia.autocompletecomponent.util.AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_PRO_FLAG
+import com.tokopedia.autocompletecomponent.util.AUTOCOMPLETE_UNIFY_SHOP_ADS_SUBTITLE
 import com.tokopedia.autocompletecomponent.util.AutoCompleteNavigate
+import com.tokopedia.autocompletecomponent.util.AutoCompleteTemplateEnum
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.Dimension90Utils
@@ -60,11 +62,17 @@ data class AutoCompleteState(
 
         val adsModel = adsIndex?.let { resultData.cpmModel.data[it] }
         val mappedResultList = resultData.data.map {
+            var shopAdsDataView: AutoCompleteUnifyDataView.ShopAdsDataView? = null
             val domainModel =
                 if (it.isAds && adsModel != null) {
                     val cpmBadgeUrl = getAdsBadgeUrlForHeadline(
                         adsModel.cpm.badges.getOrNull(0)?.title ?: "",
                         it.flags,
+                    )
+                    shopAdsDataView = AutoCompleteUnifyDataView.ShopAdsDataView(
+                        clickUrl = adsModel.adClickUrl,
+                        impressionUrl = adsModel.cpm.cpmImage.fullUrl,
+                        imageUrl = adsModel.cpm.cpmImage.fullEcs
                     )
                     it.copy(
                         applink = adsModel.applinks,
@@ -72,14 +80,14 @@ data class AutoCompleteState(
                             iconImageUrl = cpmBadgeUrl,
                             imageUrl = adsModel.cpm.cpmImage.fullUrl
                         ),
-                        template = "master",
+                        template = AutoCompleteTemplateEnum.Master.dataName,
                         suggestionId = adsModel.cpm.cpmShop.id,
                         isAds = true,
                         title = it.title.copy(
                             text = adsModel.cpm.name
                         ),
                         subtitle = it.subtitle.copy(
-                            text = adsModel.cpm.cpmShop.location
+                            text = AUTOCOMPLETE_UNIFY_SHOP_ADS_SUBTITLE
                         ),
                         tracking = it.tracking.copy(
                             trackerUrl = adsModel.adClickUrl
@@ -93,7 +101,8 @@ data class AutoCompleteState(
             AutoCompleteUnifyDataView(
                 domainModel,
                 searchTerm = searchTerm,
-                dimension90 = dimension90
+                dimension90 = dimension90,
+                shopAdsDataView = shopAdsDataView
             )
         }
         return copy(resultList = mappedResultList)

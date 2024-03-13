@@ -1,6 +1,7 @@
 package com.tokopedia.autocompletecomponent.unify
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -75,7 +76,8 @@ private fun AutoCompleteItemComponent(
     lazyListState: LazyListState,
     iris: Iris,
     viewModel: AutoCompleteViewModel,
-    analytics: ContextAnalytics
+    analytics: ContextAnalytics,
+    className: String = LocalContext.current.javaClass.name
 ) {
     Box(
         modifier = Modifier.addImpression(
@@ -84,6 +86,10 @@ private fun AutoCompleteItemComponent(
             state = lazyListState,
             onItemViewed = {
                 item.impress(iris)
+                viewModel.impressTopAds(
+                    item,
+                    className,
+                )
             },
             impressInterval = 0L
         )
@@ -93,7 +99,10 @@ private fun AutoCompleteItemComponent(
                 AutoCompleteMasterComponent(
                     item,
                     onItemClicked = {
-                        viewModel.onAutoCompleteItemClick(it)
+                        viewModel.onAutoCompleteItemClick(
+                            it,
+                            className,
+                        )
                         it.click(analytics)
                     },
                     onItemAction = {
@@ -104,7 +113,7 @@ private fun AutoCompleteItemComponent(
 
             AutoCompleteTemplateEnum.Education.toString() -> {
                 AutoCompleteEducationComponent(item, onItemClicked = {
-                    viewModel.onAutoCompleteItemClick(it)
+                    viewModel.onAutoCompleteItemClick(it, className)
                     it.click(analytics)
                 })
             }

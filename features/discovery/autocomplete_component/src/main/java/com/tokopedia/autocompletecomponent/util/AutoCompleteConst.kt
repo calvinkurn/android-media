@@ -31,3 +31,5 @@ internal const val AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_FLAG = "shop_tier_ico
 internal const val AUTOCOMPLETE_UNIFY_BADGE_OFFICIAL_STORE_FLAG= "shop_tier_icon:2"
 internal const val AUTOCOMPLETE_UNIFY_BADGE_POWER_MERCHANT_PRO_FLAG = "shop_tier_icon:3"
 
+internal const val AUTOCOMPLETE_UNIFY_SHOP_ADS_SUBTITLE = "Dipromosikan"
+

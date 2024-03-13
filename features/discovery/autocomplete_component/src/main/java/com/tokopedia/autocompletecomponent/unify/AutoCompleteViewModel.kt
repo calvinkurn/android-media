@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import com.tokopedia.autocompletecomponent.initialstate.DELETE_RECENT_SEARCH_USE_CASE
 import com.tokopedia.autocompletecomponent.initialstate.domain.deleterecentsearch.DeleteRecentSearchUseCase
+import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.domain.suggestiontracker.SuggestionTrackerUseCase
 import com.tokopedia.autocompletecomponent.unify.domain.AutoCompleteUnifyRequestUtil
 import com.tokopedia.autocompletecomponent.unify.domain.AutoCompleteUnifyRequestUtil.URL_TRACKER_USE_CASE
@@ -23,9 +24,11 @@ import com.tokopedia.autocompletecomponent.util.putChooseAddressParams
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.network.authentication.AuthHelper
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import rx.Subscriber
@@ -44,7 +47,8 @@ internal class AutoCompleteViewModel @Inject constructor(
     @Named(URL_TRACKER_USE_CASE)
     private val suggestionTrackerUseCase: RxUseCase<Void?>,
     private val userSession: UserSessionInterface,
-    private val chooseAddressUtilsWrapper: ChooseAddressUtilsWrapper
+    private val chooseAddressUtilsWrapper: ChooseAddressUtilsWrapper,
+    private val topAdsUrlHitter: TopAdsUrlHitter,
 ) : ViewModel() {
 
     private val _stateFlow = MutableStateFlow(autoCompleteState)
@@ -99,7 +103,8 @@ internal class AutoCompleteViewModel @Inject constructor(
     private fun onGetDataError(throwable: Throwable) {
     }
 
-    fun onAutoCompleteItemClick(item: AutoCompleteUnifyDataView) {
+    fun onAutoCompleteItemClick(item: AutoCompleteUnifyDataView, className: String) {
+        trackSuggestionShopAds(item, className)
         trackItemWithUrl(item)
         _stateFlow.value = stateValue.updateNavigate(AutoCompleteNavigate(item.domainModel.applink, stateValue.parameter))
     }
@@ -110,6 +115,17 @@ internal class AutoCompleteViewModel @Inject constructor(
         suggestionTrackerUseCase.execute(
             param,
             createEmptySuggestionTrackerSubscriber()
+        )
+    }
+
+    private fun trackSuggestionShopAds(item: AutoCompleteUnifyDataView, className: String) {
+        val shopAdsDataView = item.shopAdsDataView ?: return
+        topAdsUrlHitter.hitClickUrl(
+            className,
+            shopAdsDataView.clickUrl,
+            "",
+            "",
+            shopAdsDataView.imageUrl,
         )
     }
 
@@ -276,5 +292,17 @@ internal class AutoCompleteViewModel @Inject constructor(
         AuthHelper.getMD5Hash(userId)
     } else {
         AuthHelper.getMD5Hash(registrationId)
+    }
+
+    fun impressTopAds(item: AutoCompleteUnifyDataView, className: String) {
+        val adsDataView = item.shopAdsDataView ?: return
+
+        topAdsUrlHitter.hitImpressionUrl(
+            className,
+            adsDataView.impressionUrl,
+            "",
+            "",
+            adsDataView.imageUrl,
+        )
     }
 }

@@ -1,6 +1,8 @@
 package com.tokopedia.autocompletecomponent.unify.domain.usecase
 
 import com.tokopedia.autocompletecomponent.di.AutoCompleteScope
+import com.tokopedia.autocompletecomponent.initialstate.DELETE_RECENT_SEARCH_USE_CASE
+import com.tokopedia.autocompletecomponent.initialstate.domain.deleterecentsearch.DeleteRecentSearchUseCase
 import com.tokopedia.autocompletecomponent.suggestion.domain.SuggestionRepository
 import com.tokopedia.autocompletecomponent.suggestion.domain.getshopadssuggestion.GetShopAdsSuggestionUseCase
 import com.tokopedia.autocompletecomponent.suggestion.domain.suggestiontracker.SuggestionTrackerUseCase
@@ -31,5 +33,12 @@ class AutoCompleteUseCaseModule {
     @Named(AutoCompleteUnifyRequestUtil.URL_TRACKER_USE_CASE)
     fun provideSuggestionTrackerUseCase(suggestionRepository: SuggestionRepository): com.tokopedia.usecase.UseCase<Void?> {
         return SuggestionTrackerUseCase(suggestionRepository)
+    }
+
+    @AutoCompleteScope
+    @Provides
+    @Named(DELETE_RECENT_SEARCH_USE_CASE)
+    fun provideDeleteRecentSearchUseCase(): com.tokopedia.usecase.UseCase<Boolean> {
+        return DeleteRecentSearchUseCase(com.tokopedia.graphql.domain.GraphqlUseCase())
     }
 }

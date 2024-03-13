@@ -25,7 +25,7 @@ class AutoCompleteItemClickTest : AutoCompleteTestFixtures() {
     }
 
     private fun `When AutoComplete Item is Clicked`(viewModel: AutoCompleteViewModel, clickedItemDataView: AutoCompleteUnifyDataView) {
-        viewModel.onAutoCompleteItemClick(item = clickedItemDataView)
+        viewModel.onAutoCompleteItemClick(item = clickedItemDataView, "")
     }
 
     @Test

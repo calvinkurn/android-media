@@ -8,7 +8,8 @@ import com.tokopedia.nest.principles.utils.ImpressionHolder
 data class AutoCompleteUnifyDataView(
     val domainModel: SuggestionUnify = SuggestionUnify(),
     val searchTerm: String = "",
-    val dimension90: String = ""
+    val dimension90: String = "",
+    val shopAdsDataView: ShopAdsDataView? = null
 ) : SearchComponentTracking by searchComponentTracking(
     trackingOption = domainModel.tracking.trackingOption,
     keyword = searchTerm,
@@ -19,4 +20,10 @@ data class AutoCompleteUnifyDataView(
 ) {
     val impressionHolder = ImpressionHolder()
     val uniqueIdentifier = System.currentTimeMillis()
+
+    data class ShopAdsDataView(
+        val clickUrl: String = "",
+        val impressionUrl: String = "",
+        val imageUrl: String = "",
+    )
 }
