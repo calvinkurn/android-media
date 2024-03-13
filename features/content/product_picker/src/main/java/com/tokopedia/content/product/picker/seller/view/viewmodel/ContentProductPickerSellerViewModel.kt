@@ -89,6 +89,9 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
     val isEligibleForPin: Boolean
         get() = savedStateHandle.isEligibleForPin()
 
+    val searchKeyword: String
+        get() = searchQuery.value
+
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
     private val _selectedProductList = MutableStateFlow(
         savedStateHandle.getProductSections().flatMap { it.products }

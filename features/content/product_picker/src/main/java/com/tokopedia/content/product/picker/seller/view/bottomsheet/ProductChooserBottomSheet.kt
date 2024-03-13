@@ -191,6 +191,8 @@ class ProductChooserBottomSheet @Inject constructor(
         setCloseClickListener {
             closeBottomSheet()
         }
+
+        searchBarView.setKeyword(viewModel.searchKeyword)
     }
 
     private fun setupObserve() {
