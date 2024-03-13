@@ -65,16 +65,7 @@ data class MissionWidgetListDataModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        if (b !is MissionWidgetListDataModel) return false
-        if (this.id != b.id
-            && this.name != b.name
-            && this.missionWidgetList.size != b.missionWidgetList.size
-        ) return false
-        this.missionWidgetList.forEachIndexed { index, itemA ->
-            val itemB = b.missionWidgetList[index]
-            if (!itemA.equalsWith(itemB)) return false
-        }
-        return true
+        return this == b
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
