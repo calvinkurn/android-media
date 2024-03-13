@@ -22,7 +22,7 @@ buildscript {
         mavenLocal()
         mavenCentral()
         maven {
-            url "${gcp_artifactory_url}" + "/libs-release-local"
+            url "${gcp_artifactory_url}" + "/libs-release-experiment"
             credentials {
                 username = "${gcp_artifactory_username}"
                 password = "${gcp_artifactory_password}"

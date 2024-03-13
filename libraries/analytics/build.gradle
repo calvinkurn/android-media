@@ -81,6 +81,11 @@ dependencies {
     implementation 'com.bytedance.boringssl.so:boringssl-so:1.2.1'
     implementation 'com.bytedance.ies.common:cpp_shared:21.1.4'
 
+    // Tik tok Slardar
+    implementation 'com.bytedance.frameworks.core:commonmonitor:5.0.20.4.overseas'
+    implementation "com.bytedance.frameworks.core:npth:3.1.7.oversea-rc.67"
+    implementation "com.bytedance.frameworks.core:npth_core:3.1.7.oversea-rc.67"
+
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
