@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.bottomsheet.estimatedincome
+package com.tokopedia.play.broadcaster.view.bottomsheet.report.product
 
 import android.os.Bundle
 import android.view.View
@@ -13,6 +13,10 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.product.ProductReportSummaryUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.product.ProductStatsUiModel
+import com.tokopedia.play.broadcaster.view.compose.report.product.ProductReportSummaryLayout
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.stats.EstimatedIncomeDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
@@ -29,7 +33,7 @@ import javax.inject.Inject
 /**
  * Created by Jonathan Darwin on 04 March 2024
  */
-class EstimatedIncomeDetailBottomSheet @Inject constructor(
+class ProductReportSummaryBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
 ): BottomSheetUnify() {
 
@@ -64,8 +68,8 @@ class EstimatedIncomeDetailBottomSheet @Inject constructor(
                 ) {
                     val uiState by parentViewModel.uiState.collectAsStateWithLifecycle()
 
-                    EstimatedIncomeDetailLayout(
-                        estimatedIncomeDetail = uiState.estimatedIncomeDetail,
+                    ProductReportSummaryLayout(
+                        productReportSummary = uiState.estimatedIncomeDetail,
                         onEstimatedIncomeClicked = {
                             showEstimatedIncomeInfoSheet()
                         }
@@ -102,12 +106,12 @@ class EstimatedIncomeDetailBottomSheet @Inject constructor(
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): EstimatedIncomeDetailBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? EstimatedIncomeDetailBottomSheet
+        ): ProductReportSummaryBottomSheet {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ProductReportSummaryBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                EstimatedIncomeDetailBottomSheet::class.java.name
-            ) as EstimatedIncomeDetailBottomSheet
+                ProductReportSummaryBottomSheet::class.java.name
+            ) as ProductReportSummaryBottomSheet
         }
     }
 }

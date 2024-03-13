@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.bottomsheet.stats
+package com.tokopedia.play.broadcaster.view.bottomsheet.report.live
 
 import android.os.Bundle
 import androidx.compose.foundation.layout.padding
@@ -12,9 +12,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsCardModel
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
-import com.tokopedia.play.broadcaster.view.compose.livestats.LiveStatsLayout
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsCardModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
+import com.tokopedia.play.broadcaster.view.compose.report.live.LiveReportSummaryLayout
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -24,7 +24,7 @@ import javax.inject.Inject
 /**
  * Created by Jonathan Darwin on 01 March 2024
  */
-class PlayBroadcastLiveStatsBottomSheet @Inject constructor(
+class PlayBroadcastLiveReportSummaryBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
 ) : BottomSheetUnify() {
 
@@ -52,7 +52,7 @@ class PlayBroadcastLiveStatsBottomSheet @Inject constructor(
                     isOverrideStatusBarColor = false,
                 ) {
                     Surface {
-                        LiveStatsLayout(
+                        LiveReportSummaryLayout(
                             modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
                             gridCount = 2,
                             listData = uiState.liveReportSummary.liveStats.map {
@@ -101,12 +101,12 @@ class PlayBroadcastLiveStatsBottomSheet @Inject constructor(
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): PlayBroadcastLiveStatsBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayBroadcastLiveStatsBottomSheet
+        ): PlayBroadcastLiveReportSummaryBottomSheet {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayBroadcastLiveReportSummaryBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                PlayBroadcastLiveStatsBottomSheet::class.java.name
-            ) as PlayBroadcastLiveStatsBottomSheet
+                PlayBroadcastLiveReportSummaryBottomSheet::class.java.name
+            ) as PlayBroadcastLiveReportSummaryBottomSheet
         }
     }
 }

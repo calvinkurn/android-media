@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.LayoutPlaySummaryInfoBinding
 import com.tokopedia.play.broadcaster.ui.itemdecoration.MetricReportItemDecoration
@@ -23,7 +22,6 @@ import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.viewholder.TrafficMetricViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.TrafficMetricReportAdapter
-import com.tokopedia.play.broadcaster.view.compose.livestats.LiveStatsLayout
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.MutableStateFlow

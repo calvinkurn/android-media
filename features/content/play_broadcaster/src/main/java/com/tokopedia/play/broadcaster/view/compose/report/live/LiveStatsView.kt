@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.compose.livestats
+package com.tokopedia.play.broadcaster.view.compose.report.live
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +19,7 @@ import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.noRippleClickable
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 
 /**
  * Created by Jonathan Darwin on 29 February 2024

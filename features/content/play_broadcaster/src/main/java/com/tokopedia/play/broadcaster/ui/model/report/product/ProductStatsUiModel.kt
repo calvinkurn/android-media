@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.ui.model.stats
+package com.tokopedia.play.broadcaster.ui.model.report.product
 
 /**
  * Created by Jonathan Darwin on 04 March 2024

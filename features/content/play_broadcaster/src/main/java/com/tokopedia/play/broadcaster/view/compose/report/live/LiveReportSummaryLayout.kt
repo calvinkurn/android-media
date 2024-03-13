@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.compose.livestats
+package com.tokopedia.play.broadcaster.view.compose.report.live
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,20 +16,20 @@ import com.tokopedia.nest.components.loader.NestLoader
 import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsCardModel
-import com.tokopedia.play.broadcaster.ui.model.stats.LiveStatsUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsCardModel
+import com.tokopedia.play.broadcaster.ui.model.report.live.LiveStatsUiModel
 import kotlin.math.ceil
 
 /**
  * Created by Jonathan Darwin on 01 March 2024
  */
 @Composable
-fun LiveStatsLayout(
+fun LiveReportSummaryLayout(
     listData: List<LiveStatsCardModel>,
     modifier: Modifier = Modifier,
     gridCount: Int = 2,
 ) {
-    LiveStatsContainer(
+    LiveReportSummaryContainer(
         modifier = modifier,
         itemCount = listData.size,
         gridCount = gridCount,
@@ -45,12 +45,12 @@ fun LiveStatsLayout(
 }
 
 @Composable
-fun LiveStatsShimmer(
+fun LiveReportSummaryShimmer(
     modifier: Modifier = Modifier,
     itemCount: Int = 4,
     gridCount: Int = 2,
 ) {
-    LiveStatsContainer(
+    LiveReportSummaryContainer(
         modifier = modifier,
         itemCount = itemCount,
         gridCount = gridCount,
@@ -66,7 +66,7 @@ fun LiveStatsShimmer(
 }
 
 @Composable
-private fun LiveStatsContainer(
+private fun LiveReportSummaryContainer(
     itemCount: Int,
     gridCount: Int,
     content: @Composable RowScope.(idx: Int) -> Unit,
@@ -103,10 +103,10 @@ private fun LiveStatsContainer(
 
 @Composable
 @Preview
-private fun LiveStatsLayoutPreview() {
+private fun LiveReportSummaryLayoutPreview() {
     NestTheme {
         Surface {
-            LiveStatsLayout(
+            LiveReportSummaryLayout(
                 listData = listOf(
                     LiveStatsCardModel.NotClickable(LiveStatsUiModel.Viewer()),
                     LiveStatsCardModel.NotClickable(LiveStatsUiModel.TotalViewer()),
@@ -121,10 +121,10 @@ private fun LiveStatsLayoutPreview() {
 
 @Composable
 @Preview
-private fun LiveStatsShimmerPreview() {
+private fun LiveReportSummaryShimmerPreview() {
     NestTheme {
         Surface {
-            LiveStatsShimmer(
+            LiveReportSummaryShimmer(
                 itemCount = 4,
                 gridCount = 2,
             )

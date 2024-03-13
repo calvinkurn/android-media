@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.compose.estimatedincome
+package com.tokopedia.play.broadcaster.view.compose.report.product
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -29,7 +29,7 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.stats.ProductStatsUiModel
+import com.tokopedia.play.broadcaster.ui.model.report.product.ProductStatsUiModel
 
 /**
  * Created by Jonathan Darwin on 04 March 2024
