@@ -104,16 +104,15 @@ object SharedPreferencesUtil {
 
     fun getFirstTimeSpecificationCertification(context: Context): Boolean {
         val sharedPref = context.getSharedPreferences(
-            MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION_CERTIFICATION, Context.MODE_PRIVATE
-        )
-        return sharedPref.getBoolean(MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION, false)
+            MA_SA_ADDEDITPRODUCT_SHARED_PREF, Context.MODE_PRIVATE)
+        return sharedPref.getBoolean(MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION_CERTIFICATION, false)
     }
 
     fun setFirstTimeSpecificationCertification(context: Context) {
         val sharedPref = context.getSharedPreferences(
-            MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION_CERTIFICATION, Context.MODE_PRIVATE)
+            MA_SA_ADDEDITPRODUCT_SHARED_PREF, Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
-            putBoolean(MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION, true)
+            putBoolean(MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION_CERTIFICATION, true)
             commit()
         }
     }

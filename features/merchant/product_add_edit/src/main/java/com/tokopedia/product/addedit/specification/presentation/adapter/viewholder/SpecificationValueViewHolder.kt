@@ -75,11 +75,11 @@ class SpecificationValueViewHolder(
             setText(selectedSpecification.data)
             tooltipRequired?.isVisible = selectedSpecification.specificationVariant == SIGNAL_STATUS_VARIANT
 
-            showCoachmark(tfSpecification, selectedSpecification.isTextInput, selectedSpecification.specificationVariant)
+            showCoachmark(tfSpecification, selectedSpecification.isTextInput)
         }
     }
 
-    private fun showCoachmark(anchor: View, isTextInput: Boolean, specificationVariant: String) {
+    private fun showCoachmark(anchor: View, isTextInput: Boolean) {
         val coachMarkItem = ArrayList<CoachMark2Item>()
         val coachMark = CoachMark2(itemView.context)
         val isCoachmarkShown = SharedPreferencesUtil.getFirstTimeSpecificationCertification(itemView.context)
@@ -88,7 +88,7 @@ class SpecificationValueViewHolder(
                 CoachMark2Item(
                     anchor,
                     "",
-                    itemView.context.getString(R.string.message_onboarding_toaster, specificationVariant)
+                    itemView.context.getString(R.string.message_onboarding_toaster)
                 )
             )
             coachMark.showCoachMark(coachMarkItem)
