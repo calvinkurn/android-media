@@ -201,6 +201,7 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
             ProductSetupAction.SaveProducts -> handleSaveProducts()
             ProductSetupAction.RetryFetchProducts -> handleRetryFetchProducts()
             is ProductSetupAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
+            is ProductSetupAction.SyncSelectedProduct -> handleSyncSelectedProduct()
             is ProductSetupAction.ClickPinProduct -> handleClickPin(action.product)
         }
     }
@@ -416,6 +417,10 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
                 }
             )
         }
+    }
+
+    private fun handleSyncSelectedProduct() {
+        _selectedProductList.value = _productTagSectionList.value.flatMap { it.products }
     }
 
     private suspend fun getProductTagSummary() {
