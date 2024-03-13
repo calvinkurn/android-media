@@ -74,6 +74,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetC
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.BestSellerListener
@@ -112,6 +113,7 @@ import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.viewholders.FlashSaleViewHolder
 import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
 import com.tokopedia.home_component.viewholders.MerchantVoucherViewHolder
+import com.tokopedia.home_component.viewholders.Mission4SquareWidgetViewHolder
 import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftPaddingComponentViewHolder
@@ -422,6 +424,10 @@ class HomeAdapterFactory(
     }
 
     override fun type(missionWidgetListDataModel: MissionWidgetListDataModel): Int {
+        if (missionWidgetListDataModel.componentName == AtfKey.TYPE_MISSION_V3) {
+            return Mission4SquareWidgetViewHolder.LAYOUT
+        }
+
         return MissionWidgetViewHolder.LAYOUT
     }
 
@@ -619,6 +625,7 @@ class HomeAdapterFactory(
             CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view, cueWidgetCategoryListener)
             VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener)
             MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener)
+            Mission4SquareWidgetViewHolder.LAYOUT -> viewHolder = Mission4SquareWidgetViewHolder(view)
             Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, cardInteraction = true)
             MixLeftPaddingComponentViewHolder.LAYOUT ->
                 viewHolder =

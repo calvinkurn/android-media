@@ -23,6 +23,7 @@ import com.tokopedia.home.constant.AtfKey.TYPE_ICON
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON_V2
 import com.tokopedia.home.constant.AtfKey.TYPE_MISSION
 import com.tokopedia.home.constant.AtfKey.TYPE_MISSION_V2
+import com.tokopedia.home.constant.AtfKey.TYPE_MISSION_V3
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
 import com.tokopedia.home.constant.AtfKey.TYPE_TODO
 import com.tokopedia.home_component.model.ChannelGrid
@@ -347,7 +348,7 @@ class HomeVisitableFactoryImpl(
                                 )
                             }
 
-                            TYPE_MISSION, TYPE_MISSION_V2 -> {
+                            TYPE_MISSION, TYPE_MISSION_V2, TYPE_MISSION_V3 -> {
                                 data.atfStatusCondition(
                                     onLoading = {
                                         visitableList.add(

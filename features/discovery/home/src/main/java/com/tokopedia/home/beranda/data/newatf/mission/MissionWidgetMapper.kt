@@ -29,6 +29,7 @@ class MissionWidgetMapper @Inject constructor() {
                 showShimmering = atfData.atfMetadata.isShimmer,
                 source = MissionWidgetListDataModel.SOURCE_ATF,
                 widgetParam = atfData.atfMetadata.param,
+                componentName = atfData.atfMetadata.component,
             )
         } else {
             MissionWidgetListDataModel(
@@ -42,6 +43,7 @@ class MissionWidgetMapper @Inject constructor() {
                 showShimmering = atfData.atfMetadata.isShimmer,
                 source = MissionWidgetListDataModel.SOURCE_ATF,
                 type = getMissionWidgetType(atfData.atfMetadata.component),
+                componentName = atfData.atfMetadata.component,
                 widgetParam = atfData.atfMetadata.param,
             )
         }

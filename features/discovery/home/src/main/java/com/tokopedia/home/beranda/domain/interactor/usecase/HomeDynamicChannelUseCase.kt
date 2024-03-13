@@ -1249,7 +1249,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 }
                                 jobList.add(job)
                             }
-                            AtfKey.TYPE_MISSION, AtfKey.TYPE_MISSION_V2 -> {
+                            AtfKey.TYPE_MISSION, AtfKey.TYPE_MISSION_V2, AtfKey.TYPE_MISSION_V3 -> {
                                 jobList.add(
                                     async {
                                         atfData.apply {
