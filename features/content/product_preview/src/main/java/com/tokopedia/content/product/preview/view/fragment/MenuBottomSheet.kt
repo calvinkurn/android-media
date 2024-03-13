@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.content.common.report_content.ThreeDotsPage
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
@@ -54,6 +55,7 @@ class MenuBottomSheet : BottomSheetUnify() {
             setContent {
                 ThreeDotsPage(menuList = menus) { mListener?.onOptionClicked(it) }
             }
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         }
         setChild(composeView)
         return super.onCreateView(inflater, container, savedInstanceState)
