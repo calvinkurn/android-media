@@ -34,7 +34,7 @@ import com.tokopedia.unifyprinciples.UnifyMotion
  * Created by yovi.putra on 3/4/24.
  * Copyright (c) 2024 android-tokopedia-core All rights reserved.
  */
-class AtcAnimation(private val context: Context) {
+class AtcAnimator(private val context: Context) {
 
     companion object {
         private val STROKE_WIDTH = 4.toPx()
@@ -282,4 +282,4 @@ class AtcAnimation(private val context: Context) {
     }
 }
 
-fun Fragment.atcAnimator() = lazy { AtcAnimation(context = requireContext()) }
+fun Fragment.atcAnimator() = lazy { AtcAnimator(context = requireContext()) }

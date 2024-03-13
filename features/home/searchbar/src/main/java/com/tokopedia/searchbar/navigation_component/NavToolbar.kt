@@ -256,7 +256,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         val iconConfig = iconBuilder.build()
         viewModel?.setRegisteredIconList(iconConfig)
         this.useCentralizedIconNotification = iconConfig.useCentralizedIconNotification
-        navIconAdapter = NavToolbarIconAdapter(iconConfig, this, {navToolbarIconCustomLightColor}, {navToolbarIconCustomDarkColor})
+        navIconAdapter = NavToolbarIconAdapter(iconConfig, this, { navToolbarIconCustomLightColor }, { navToolbarIconCustomDarkColor })
         navIconAdapter?.setHasStableIds(true)
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.itemAnimator = null
@@ -364,8 +364,11 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
      * Switch toolbar based on UI mode (light/dark mode)
      */
     fun switchToolbarBasedOnUiMode() {
-        if(context?.isDarkMode() == true) switchToDarkToolbar()
-        else switchToLightToolbar()
+        if (context?.isDarkMode() == true) {
+            switchToDarkToolbar()
+        } else {
+            switchToLightToolbar()
+        }
     }
 
     /**
@@ -974,14 +977,5 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     ) {
         this.navToolbarIconCustomLightColor = navToolbarIconCustomLightColor
         this.navToolbarIconCustomDarkColor = navToolbarIconCustomDarkColor
-    }
-
-    fun getCartIconPosition(): View? {
-        val shareIconPosition = navIconAdapter?.getCartIconPosition()
-        shareIconPosition?.let {
-            val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it)
-            return viewholder?.itemView
-        }
-        return null
     }
 }
