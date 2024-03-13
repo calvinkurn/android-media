@@ -1,4 +1,4 @@
-package com.tokopedia.home_component.viewholders
+package com.tokopedia.home_component.viewholders.mission
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

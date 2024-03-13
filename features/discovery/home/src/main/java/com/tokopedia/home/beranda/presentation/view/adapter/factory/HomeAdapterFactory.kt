@@ -113,7 +113,7 @@ import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.viewholders.FlashSaleViewHolder
 import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
 import com.tokopedia.home_component.viewholders.MerchantVoucherViewHolder
-import com.tokopedia.home_component.viewholders.Mission4SquareWidgetViewHolder
+import com.tokopedia.home_component.viewholders.mission.Mission4SquareWidgetViewHolder
 import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftPaddingComponentViewHolder
