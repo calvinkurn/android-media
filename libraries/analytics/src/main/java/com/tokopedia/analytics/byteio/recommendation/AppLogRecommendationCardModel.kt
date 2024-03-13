@@ -40,6 +40,8 @@ data class AppLogRecommendationCardModel(
     val authorId: String,
 ) {
 
+    val trackId = constructTrackId(cardId, productId, requestId, itemOrder, cardName)
+
     fun toShowClickJson() = JSONObject().apply {
         addPage()
         put(AppLogParam.CARD_NAME, cardName)
@@ -52,7 +54,7 @@ data class AppLogRecommendationCardModel(
         put(AppLogParam.PRODUCT_ID, productId)
         put(AppLogParam.IS_AD, isAd)
         put(AppLogParam.IS_USE_CACHE, isUseCache)
-        put(AppLogParam.TRACK_ID, constructTrackId(cardId, productId, requestId, itemOrder, cardName))
+        put(AppLogParam.TRACK_ID, trackId)
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.REC_PARAMS, recParams)
         put(AppLogParam.SHOP_ID, shopId)

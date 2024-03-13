@@ -39,6 +39,8 @@ data class AppLogRecommendationProductModel(
     val cardName: String,
 ) {
 
+    val trackId = constructTrackId(null, productId, requestId, itemOrder, cardName)
+
     fun asCardModel() = AppLogRecommendationCardModel(
         cardId = "",
         productId = productId,
@@ -79,7 +81,7 @@ data class AppLogRecommendationProductModel(
         put(AppLogParam.IS_AD, isAd)
         put(AppLogParam.IS_USE_CACHE, isUseCache)
         put(AppLogParam.GROUP_ID, groupId)
-        put(AppLogParam.TRACK_ID, constructTrackId(null, productId, requestId, itemOrder, cardName))
+        put(AppLogParam.TRACK_ID, trackId)
         put(AppLogParam.REC_PARAMS, recParams)
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.SHOP_ID, shopId)
