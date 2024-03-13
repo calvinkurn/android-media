@@ -61,7 +61,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.*
 
 class ProductPreviewViewModel @AssistedInject constructor(
@@ -337,7 +336,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
     }
 
     private fun handleProductImageInteraction(isScalingMode: Boolean) {
-        Timber.d("isScaling $isScalingMode")
         if (isScalingMode) {
             autoScrollProductMedia?.cancel()
         } else {
