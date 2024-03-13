@@ -9,7 +9,7 @@ import com.tokopedia.tokopedianow.common.model.MediaItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.AddRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
+import com.tokopedia.tokopedianow.recipecommon.ui.model.TagUiModel
 import com.tokopedia.tokopedianow.recipedetail.constant.MediaType
 import com.tokopedia.tokopedianow.recipedetail.domain.model.TokoNowGetRecipe
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.BookmarkUiModel

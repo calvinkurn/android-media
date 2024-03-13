@@ -39,8 +39,10 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
@@ -66,6 +68,7 @@ import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.home.view.fragment.ShopPagePrefetchFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel.Companion.mapperForShopShowCase
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageHeaderComponent
@@ -336,7 +339,8 @@ class ShopPageHeaderFragmentTabContentWrapper :
             shopPagePageHeaderWidgetList,
             shopFollowButtonUiModel,
             getShopHeaderConfig(),
-            shopHeaderLayoutData.isOverrideTheme
+            shopHeaderLayoutData.isOverrideTheme,
+            shopPageHeaderDataModel
         )
     }
 
@@ -633,6 +637,9 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private fun createContentFragment(): Fragment? {
         return tabData?.let {
             when (it.name) {
+                ShopPageHeaderTabName.PRE_FETCH_DATA -> {
+                    ShopPagePrefetchFragment.newInstance()
+                }
                 ShopPageHeaderTabName.HOME -> {
                     ShopPageHomeFragment.createInstance(
                         shopId,
@@ -750,6 +757,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
         }
     }
 
+    
     fun setShopPageHeaderP1Data(
         shopPageHeaderP1Data: ShopPageHeaderP1HeaderData,
         isEnableDirectPurchase: Boolean,
@@ -768,6 +776,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             avatar = shopPageHeaderP1Data.shopAvatar
             listDynamicTabData = shopPageHeaderP1Data.listDynamicTabData
             this.isEnableDirectPurchase = isEnableDirectPurchase
+            this.shopBadge = shopPageHeaderP1Data.shopBadge
         }
         shopPagePageHeaderWidgetList = shopPageHeaderP1Data.listShopPageHeaderWidget
         shopHeaderLayoutData = shopPageHeaderP1Data.shopHeaderLayoutData
