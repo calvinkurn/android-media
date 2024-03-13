@@ -87,6 +87,7 @@ const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
               }
               recParam
               countSold
+              parentProductID
             }
       }
     }

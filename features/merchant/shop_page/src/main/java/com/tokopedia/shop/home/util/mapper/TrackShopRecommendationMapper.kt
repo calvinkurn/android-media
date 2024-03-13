@@ -11,6 +11,7 @@ object TrackShopRecommendationMapper {
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = id,
+            parentProductId = parentId,
             position = position,
             moduleName = recommendationPageName,
             isAd = false,

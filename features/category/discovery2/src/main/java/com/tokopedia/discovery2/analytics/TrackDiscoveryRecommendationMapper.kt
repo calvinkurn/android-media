@@ -17,6 +17,7 @@ object TrackDiscoveryRecommendationMapper {
     ): AppLogRecommendationProductModel {
         return AppLogRecommendationProductModel.create(
             productId = productId.orEmpty(),
+            parentProductId = parentProductId.orEmpty(),
             position = itemPosition,
             tabName = topLevelTab.name,
             tabPosition = topLevelTab.index,
