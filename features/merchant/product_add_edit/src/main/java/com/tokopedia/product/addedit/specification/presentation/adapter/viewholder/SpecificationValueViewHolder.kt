@@ -43,7 +43,8 @@ class SpecificationValueViewHolder(
             onSpecificationClickListener.onSpecificationValueTextClicked(bindingAdapterPosition)
         }
         tfSpecification?.editText?.setOnClickListener {
-            onSpecificationClickListener.onSpecificationValueTextClicked(bindingAdapterPosition)
+            if (tfSpecification.editText.isClickable)
+                onSpecificationClickListener.onSpecificationValueTextClicked(bindingAdapterPosition)
         }
         tfSpecification?.editText?.doOnTextChanged { text, _, count, _ ->
             onSpecificationClickListener.onSpecificationValueTextChanged(bindingAdapterPosition, text.toString())
