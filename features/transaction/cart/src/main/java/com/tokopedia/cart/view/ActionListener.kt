@@ -3,6 +3,8 @@ package com.tokopedia.cart.view
 import androidx.fragment.app.Fragment
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
+import com.tokopedia.cart.view.uimodel.CartBuyAgainItem
+import com.tokopedia.cart.view.uimodel.CartBuyAgainItemHolderData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
@@ -31,6 +33,8 @@ interface ActionListener {
 
     fun onShowAllItem(appLink: String)
 
+    fun onShowAllItemBuyAgain(appLink: String, isFromHeader: Boolean)
+
     fun onRemoveWishlistFromWishlist(productId: String)
 
     fun onWishlistProductClicked(productId: String)
@@ -54,6 +58,8 @@ interface ActionListener {
     fun onAddToCartRecentViewSuccess(recommendationItem: RecommendationItem, addToCartData: AddToCartDataModel)
 
     fun onAddToCartRecentViewFailed()
+
+    fun onBuyAgainButtonAddToCartClicked(productModel: CartBuyAgainItemHolderData)
 
     fun onDeleteAllDisabledProduct()
 
@@ -88,4 +94,8 @@ interface ActionListener {
     fun onAvailableCartItemImpression(availableCartItems: List<CartItemHolderData>)
 
     fun onChangeAddressClicked()
+
+    fun onBuyAgainImpression(list: List<CartBuyAgainItem>)
+
+    fun onBuyAgainProductClicked(product: CartBuyAgainItemHolderData)
 }

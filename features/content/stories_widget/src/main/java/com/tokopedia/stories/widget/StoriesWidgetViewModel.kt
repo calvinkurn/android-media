@@ -7,6 +7,7 @@ import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetInfo
 import com.tokopedia.stories.widget.domain.StoriesWidgetRepository
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
+import com.tokopedia.stories.widget.domain.TimeMillis
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -95,6 +96,7 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
                     widgetStates = it.widgetStates.mapValues { entry ->
                         val isStoriesSeen = repository.getUpdatedSeenStatus(
                             entry.key,
+                            entry.value.status == StoriesStatus.AllStoriesSeen,
                             entry.value.updatedAt
                         )
 
@@ -103,7 +105,8 @@ internal class StoriesWidgetViewModel @AssistedInject constructor(
                                 StoriesStatus.AllStoriesSeen
                             } else {
                                 entry.value.status
-                            }
+                            },
+                            updatedAt = TimeMillis.now()
                         )
                     }
                 )

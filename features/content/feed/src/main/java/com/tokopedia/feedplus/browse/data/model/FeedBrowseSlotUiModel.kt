@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.browse.data.model
 
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
@@ -42,6 +43,14 @@ internal sealed interface FeedBrowseSlotUiModel {
         override val title: String,
         val identifier: String,
         val authorList: List<AuthorWidgetModel>
+    ) : FeedBrowseSlotUiModel
+
+    data class StoryGroups(
+        override val slotId: String,
+        override val title: String,
+        val storyList: List<StoryNodeModel>,
+        val nextCursor: String,
+        val source: String
     ) : FeedBrowseSlotUiModel
 }
 
@@ -91,4 +100,14 @@ internal data class AuthorWidgetModel(
     val contentId: String,
     val contentAppLink: String,
     val channelType: String
+)
+
+internal data class StoryNodeModel(
+    val id: String,
+    val name: String,
+    val authorType: AuthorType,
+    val thumbnailUrl: String,
+    val hasUnseenStory: Boolean,
+    val appLink: String,
+    val lastUpdatedAt: Long
 )

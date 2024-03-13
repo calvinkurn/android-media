@@ -4,4 +4,5 @@
     <color name="tkpd_main_green_70">#b342b549</color>
     <color name="background_splash_screen">#00A958</color>
     <color name="grey">#888888</color>
+    <color name="dms_static_green_600">#0a8f08</color>
 </resources>

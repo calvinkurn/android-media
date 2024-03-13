@@ -133,7 +133,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="@string/manage_product_add_product_label"
-        android:textColor="@color/bg_button_green_border_outline"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="@+id/tpg_product_count"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tpg_product_count" />

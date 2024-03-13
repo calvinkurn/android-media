@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
-import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -20,22 +19,6 @@ class PlayWidgetSampleAnalytic(
 ) : PlayWidgetAnalyticListener {
 
     private var widgetPosition = RecyclerView.NO_POSITION
-
-    override fun onClickViewAll(view: PlayWidgetSmallView) {
-        Toast.makeText(context, object{}.javaClass.enclosingMethod!!.name, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onClickChannelCard(view: PlayWidgetSmallView, item: PlayWidgetChannelUiModel, config: PlayWidgetConfigUiModel, channelPositionInList: Int) {
-        Toast.makeText(context, "${object{}.javaClass.enclosingMethod!!.name}, position: $channelPositionInList, widgetPos: $widgetPosition", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onClickBannerCard(view: PlayWidgetSmallView) {
-        Toast.makeText(context, object{}.javaClass.enclosingMethod!!.name, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onImpressChannelCard(view: PlayWidgetSmallView, item: PlayWidgetChannelUiModel, config: PlayWidgetConfigUiModel, channelPositionInList: Int) {
-        Toast.makeText(context, "${object{}.javaClass.enclosingMethod!!.name}, position: $channelPositionInList, widgetPos: $widgetPosition", Toast.LENGTH_SHORT).show()
-    }
 
     override fun onImpressChannelCard(
         view: PlayWidgetMediumView,

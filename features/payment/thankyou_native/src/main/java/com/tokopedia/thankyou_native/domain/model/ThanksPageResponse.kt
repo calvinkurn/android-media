@@ -532,7 +532,11 @@ data class ConfigFlag(
     @SerializedName("hide_pg_recom")
     val shouldHideProductRecom: Boolean?,
     @SerializedName("hide_dg_recom")
-    val shouldHideDigitalRecom: Boolean?
+    val shouldHideDigitalRecom: Boolean?,
+    @SerializedName("hide_order_button")
+    val shouldHideOrderButton: Boolean = false,
+    @SerializedName("auto_redirect")
+    val autoRedirect: Boolean = false
 ) : Parcelable
 
 data class Tickers(
@@ -603,5 +607,7 @@ data class CustomDataOtherV2(
     @SerializedName("promo_flags")
     val promoFlags: String?,
     @SerializedName("tickers")
-    val tickers: String?
+    val tickers: String?,
+    @SerializedName("signature_purchase_info")
+    val signaturePurchaseInfo: String?
 ) : Parcelable

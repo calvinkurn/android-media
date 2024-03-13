@@ -1,7 +1,7 @@
 package com.tokopedia.stories.data.mapper
 
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel
-import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel
+import com.tokopedia.stories.internal.model.StoriesGroupsResponseModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesUiModel
 
