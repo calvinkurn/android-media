@@ -430,7 +430,7 @@ class FeedPostViewModelTest {
         )
 
         // when
-        viewModel.suspendAddProductToCart(dummyData)
+        viewModel.suspendAddProductToCart(dummyData, FeedProductActionModel.Source.BottomSheet)
         viewModel.processSuspendedAddProductToCart()
 
         // then
@@ -480,7 +480,7 @@ class FeedPostViewModelTest {
         coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswers {}
 
         // when
-        viewModel.addProductToCart(dummyData)
+        viewModel.addProductToCart(dummyData, FeedProductActionModel.Source.BottomSheet)
 
         // then
         assert(viewModel.observeAddProductToCart.value is Fail)
@@ -529,7 +529,8 @@ class FeedPostViewModelTest {
 
         val dummySuccess = FeedProductActionModel(
             cartId = cartId,
-            product = dummyData
+            product = dummyData,
+            source = FeedProductActionModel.Source.BottomSheet
         )
 
         coEvery { userSession.userId } returns "1"
@@ -538,7 +539,7 @@ class FeedPostViewModelTest {
         coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswers {}
 
         // when
-        viewModel.addProductToCart(dummyData)
+        viewModel.addProductToCart(dummyData, FeedProductActionModel.Source.BottomSheet)
 
         // then
         assert(viewModel.observeAddProductToCart.value is Success)
@@ -581,7 +582,7 @@ class FeedPostViewModelTest {
         )
 
         // when
-        viewModel.suspendBuyProduct(dummyData)
+        viewModel.suspendBuyProduct(dummyData, FeedProductActionModel.Source.BottomSheet)
         viewModel.processSuspendedBuyProduct()
 
         // then
@@ -631,7 +632,7 @@ class FeedPostViewModelTest {
         )
 
         // when
-        viewModel.buyProduct(dummyData)
+        viewModel.buyProduct(dummyData, FeedProductActionModel.Source.BottomSheet)
 
         // then
         assert(viewModel.observeBuyProduct.value is Fail)
@@ -680,7 +681,8 @@ class FeedPostViewModelTest {
 
         val dummySuccess = FeedProductActionModel(
             cartId = cartId,
-            product = dummyData
+            product = dummyData,
+            source = FeedProductActionModel.Source.BottomSheet,
         )
 
         coEvery { userSession.userId } returns "1"
@@ -689,7 +691,7 @@ class FeedPostViewModelTest {
         coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswers {}
 
         // when
-        viewModel.buyProduct(dummyData)
+        viewModel.buyProduct(dummyData, FeedProductActionModel.Source.BottomSheet)
 
         // then
         assert(viewModel.observeBuyProduct.value is Success)

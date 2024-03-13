@@ -12,7 +12,9 @@ import com.tokopedia.shop_widget.buy_more_save_more.presentation.viewholder.Bmsm
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.viewholder.BmsmSingleProductListViewHolder
 import com.tokopedia.shop_widget.buy_more_save_more.presentation.viewholder.BmsmTwoProductListViewHolder
 
-class BmsmWidgetProductListAdapter(private val listener: BmsmWidgetItemEventListener) :
+class BmsmWidgetProductListAdapter(
+    private val listener: BmsmWidgetItemEventListener,
+    val isOverrideTheme: Boolean) :
     ListAdapter<Product, RecyclerView.ViewHolder>(ProductListAdapterDiffCallback.ProductListDiffCallback) {
 
     private var productListUiModel: MutableList<Product> = mutableListOf()
@@ -39,21 +41,24 @@ class BmsmWidgetProductListAdapter(private val listener: BmsmWidgetItemEventList
             SINGLE_ITEM_VIEW -> {
                 BmsmSingleProductListViewHolder(
                     parent.inflateLayout(R.layout.item_bmsm_widget_single_product_list),
-                    listener
+                    listener,
+                    isOverrideTheme
                 )
             }
 
             SEE_ALL_ITEM_VIEW -> {
                 BmsmSeeAllProductViewHolder(
                     parent.inflateLayout(R.layout.item_bmsm_widget_see_all),
-                    listener
+                    listener,
+                    isOverrideTheme
                 )
             }
 
             TWO_ITEM_VIEW -> {
                 BmsmTwoProductListViewHolder(
                     parent.inflateLayout(R.layout.item_bmsm_widget_two_product_list_item),
-                    listener
+                    listener,
+                    isOverrideTheme
                 )
             }
 
@@ -61,7 +66,8 @@ class BmsmWidgetProductListAdapter(private val listener: BmsmWidgetItemEventList
                 val itemView = parent.inflateLayout(R.layout.item_bmsm_widget_product_list)
                 BmsmProductListViewHolder(
                     itemView,
-                    listener
+                    listener,
+                    isOverrideTheme
                 )
             }
         }

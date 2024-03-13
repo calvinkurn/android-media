@@ -8,9 +8,7 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
-import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.loginregister.R as loginregisterR
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import org.hamcrest.Matchers.not
 import com.tokopedia.header.R as headerR
 
@@ -130,18 +128,5 @@ open class LoginRegisterBase {
         onView(withId(loginregisterR.id.socmed_btn))
             .check(matches(isDisplayed()))
             .perform(ViewActions.click())
-    }
-
-    @Deprecated("SCP code need to be removed")
-    protected fun setupRollence(isScpActive: Boolean = false) {
-        val value = if (isScpActive) {
-            DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION
-        } else {
-            ""
-        }
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-            DeeplinkMapperUser.ROLLENCE_CVSDK_INTEGRATION,
-            value
-        )
     }
 }

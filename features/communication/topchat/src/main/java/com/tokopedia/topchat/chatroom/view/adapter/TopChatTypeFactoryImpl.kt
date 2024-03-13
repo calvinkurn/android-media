@@ -25,10 +25,12 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopChatRoomOrderCancellationListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.autoreply.TopChatRoomAutoReplyViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.banned.BannedChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.regular.TopChatRoomBubbleMessageViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ordercancellation.TopChatRoomOrderCancellationViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCardViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
@@ -65,6 +67,7 @@ open class TopChatTypeFactoryImpl constructor(
     private val listener: ReminderTickerViewHolder.Listener,
     private val productBundlingListener: ProductBundlingListener,
     private val censorListener: BannedChatMessageViewHolder.TopChatMessageCensorListener,
+    private val orderCancellationListener: TopChatRoomOrderCancellationListener,
     private val userSession: UserSessionInterface
 ) : BaseChatTypeFactoryImpl(
     imageAnnouncementListener,
@@ -187,6 +190,10 @@ open class TopChatTypeFactoryImpl constructor(
         return TopChatRoomAutoReplyViewHolder.LAYOUT
     }
 
+    override fun type(orderCancellationUiModel: TopChatRoomOrderCancellationUiModel): Int {
+        return TopChatRoomOrderCancellationViewHolder.LAYOUT
+    }
+
     // Check if chat bubble first, if not return default ViewHolder
     override fun createViewHolder(
         parent: ViewGroup,
@@ -288,6 +295,11 @@ open class TopChatTypeFactoryImpl constructor(
                 adapterListener,
                 chatMsgListener,
                 replyBubbleListener
+            )
+            TopChatRoomOrderCancellationViewHolder.LAYOUT -> TopChatRoomOrderCancellationViewHolder(
+                parent,
+                adapterListener,
+                orderCancellationListener
             )
             else -> createViewHolder(parent, type)
         }

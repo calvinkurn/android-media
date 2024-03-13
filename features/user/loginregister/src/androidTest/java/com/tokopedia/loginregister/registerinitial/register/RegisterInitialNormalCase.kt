@@ -54,7 +54,6 @@ class RegisterInitialNormalCase : RegisterInitialBase() {
         fakeRepo.registerCheckConfig = Config.WithResponse(RegisterCheckPojo(data))
 
         runTest {
-            setupRollence()
             intending(
                 hasData(
                     UriUtil.buildUri(
@@ -107,7 +106,6 @@ class RegisterInitialNormalCase : RegisterInitialBase() {
         fakeRepo.registerCheckConfig = Config.WithResponse(RegisterCheckPojo(data))
 
         runTest {
-            setupRollence()
             intending(
                 hasData(
                     UriUtil.buildUri(
@@ -162,7 +160,6 @@ class RegisterInitialNormalCase : RegisterInitialBase() {
         fakeRepo.registerCheckConfig = Config.WithResponse(RegisterCheckPojo(data))
 
         runTest {
-            setupRollence()
             intending(
                 hasData(
                     UriUtil.buildUri(

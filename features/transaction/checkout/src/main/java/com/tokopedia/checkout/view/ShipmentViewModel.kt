@@ -76,6 +76,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_STATUS_APPROVED
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_STATUS_REJECTED
+import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
@@ -1055,7 +1056,8 @@ class ShipmentViewModel @Inject constructor(
                 checkoutId = cartShipmentAddressFormData.epharmacyData.checkoutId,
                 frontEndValidation = cartShipmentAddressFormData.epharmacyData.frontEndValidation,
                 consultationFlow = cartShipmentAddressFormData.epharmacyData.consultationFlow,
-                rejectedWording = cartShipmentAddressFormData.epharmacyData.rejectedWording
+                rejectedWording = cartShipmentAddressFormData.epharmacyData.rejectedWording,
+                isBlockCheckoutFlowMessage = cartShipmentAddressFormData.epharmacyData.isBlockCheckoutFlowMessage
             )
         )
         fetchPrescriptionIds(cartShipmentAddressFormData.epharmacyData)
@@ -4561,11 +4563,11 @@ class ShipmentViewModel @Inject constructor(
     }
 
     fun fetchEpharmacyData() {
-        epharmacyUseCase.getEPharmacyPrepareProductsGroup({ ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse ->
+        epharmacyUseCase.getEPharmacyPrepareProductsGroup({ ePharmacyPrepareProductsGroupResponse, _ ->
             processEpharmacyData(ePharmacyPrepareProductsGroupResponse)
-        }) { throwable: Throwable? ->
+        }, { throwable: Throwable? ->
             Timber.d(throwable)
-        }
+        }, source = EPHARMACY_PPG_SOURCE_CHECKOUT, mutableMapOf(EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to EPHARMACY_PPG_SOURCE_CHECKOUT))
     }
 
     private fun processEpharmacyData(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse) {
@@ -4735,6 +4737,7 @@ class ShipmentViewModel @Inject constructor(
                 uploadPrescriptionUiModel.enablerNames = ArrayList(enablerNames)
                 uploadPrescriptionUiModel.shopIds = shopIds
                 uploadPrescriptionUiModel.cartIds = cartIds
+                uploadPrescriptionUiModel.isBlockCheckoutFlowMessage = ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.checkoutFlow?.checkoutIsBlockErrorMessage.orEmpty()
                 view?.updateUploadPrescription(uploadPrescriptionUiModel)
                 view?.showCoachMarkEpharmacy(uploadPrescriptionUiModel)
             }

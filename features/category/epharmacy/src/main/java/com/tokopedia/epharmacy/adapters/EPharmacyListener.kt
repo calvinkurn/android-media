@@ -28,10 +28,38 @@ interface EPharmacyListener {
 
     fun onEndAnimation(adapterPosition: Int, modelKey: String?) {}
 
+    /**
+     * Quantity Editor
+     */
+
+    fun onQuantityChanged(
+        changeInValue: Double,
+        productId: String?,
+        enablerName: String?,
+        tConsultationId: String?,
+        groupId: String?
+    ) {}
+
+    fun onEditorQuantityToast(
+        toasterType: Int,
+        message: String,
+        enablerName: String?,
+        tConsultationId: String?,
+        groupId: String?
+    ) {}
+
     fun onToast(toasterType: Int, message: String) {}
 
     /**
-     * Attachment Accordion
+     * Consultation Order Detail
+     */
+
+    fun onHelpButtonClicked(appUrl: String?) {}
+
+    fun onLihatInvoiceClicked(appUrl: String?) {}
+
+    /**
+     * Ticker
      */
     fun redirect(link: String) {}
 }

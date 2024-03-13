@@ -84,7 +84,9 @@ data class SomCourierList(
                     @SerializedName("shipment_package")
                     val listShipmentPackage: List<ShipmentPackage> = listOf()
                 ) {
-
+                    override fun toString(): String {
+                        return shipmentName
+                    }
                     data class ShipmentPackage(
                         @SerializedName("desc")
                         val desc: String = "",
@@ -97,7 +99,11 @@ data class SomCourierList(
 
                         @SerializedName("sp_id")
                         val spId: String = ""
-                    )
+                    ) {
+                        override fun toString(): String {
+                            return name
+                        }
+                    }
                 }
             }
         }

@@ -44,6 +44,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="2dp"
         android:inflatedId="@+id/tus_count_down_view_stub"
+        android:layout="@layout/layout_tokopedianow_timer_unify_single"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tp_subtitle"
         app:layout_constraintStart_toEndOf="@+id/tp_subtitle"

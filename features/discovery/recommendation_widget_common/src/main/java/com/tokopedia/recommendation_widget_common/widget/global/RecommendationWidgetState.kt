@@ -168,6 +168,8 @@ data class RecommendationWidgetState(
     fun getMiniCartItemProduct(productId: String): MiniCartItem.MiniCartItemProduct? =
         miniCartData?.miniCartItems?.getMiniCartItemProduct(productId)
 
+    fun showSuccessMessage(message: String) = copy(successMessage = message)
+
     fun showErrorMessage(message: String) = copy(errorMessage = message)
 
     fun dismissMessage() = copy(
