@@ -9,6 +9,8 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartMultiUseCase.C
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -154,7 +156,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private var loadLayoutJob: Job? = null
     private var saveShoppingListStateJob: Job? = null
     private var getMiniCartJob: Job? = null
-    private var recommendationModel = RecommendationModel()
+    private var recommendationModel: RecommendationModel = RecommendationModel()
 
     /**
      * -- public variable section --
@@ -204,9 +206,11 @@ class TokoNowShoppingListViewModel @Inject constructor(
         getShoppingListUseCase.execute(warehouses)
     }
 
-    private suspend fun getProductRecommendationDeferred() = async {
+    private suspend fun getProductRecommendationDeferred(
+        pageNumber: Int
+    ) = async {
         val param = GetRecommendationRequestParam(
-            pageNumber = recommendationModel.pageCounter,
+            pageNumber = pageNumber,
             userId = userSession.userId.toIntSafely(),
             pageName = PRODUCT_RECOMMENDATION_PAGE_NAME,
             xDevice = X_DEVICE_RECOMMENDATION_PARAM,
@@ -494,7 +498,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
             listOf(
                 getMiniCartDeferred(),
                 getShoppingListDeferred(),
-                getProductRecommendationDeferred()
+                getProductRecommendationDeferred(pageNumber = Int.ZERO)
             ).awaitAll()
         }
 
@@ -508,7 +512,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
         val productRecommendationData = result.component3() as RecommendationWidget
 
         recommendationModel = RecommendationModel(
-            pageCounter = if (productRecommendationData.hasNext) recommendationModel.pageCounter.inc() else recommendationModel.pageCounter,
+            pageCounter = if (productRecommendationData.hasNext) Int.ONE else Int.ZERO,
             hasNext = productRecommendationData.hasNext,
             title = productRecommendationData.title
         )
@@ -716,6 +720,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     fun loadLayout() {
+        loadLayoutJob?.cancel()
         loadLayoutJob = launchCatchError(
             block = {
                 loadSuccessState()
@@ -864,7 +869,9 @@ class TokoNowShoppingListViewModel @Inject constructor(
         if (isLastVisibleLoadingMore && loadLayoutJob?.isCompleted.orFalse()) {
             loadLayoutJob = launchCatchError(
                 block = {
-                    val productRecommendationData = getProductRecommendationDeferred().await()
+                    val productRecommendationData = getProductRecommendationDeferred(
+                        pageNumber = recommendationModel.pageCounter
+                    ).await()
                     recommendationModel.hasNext = productRecommendationData.hasNext
 
                     mutableLayout
@@ -930,8 +937,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
         updateLayout()
     }
-
-    fun getShopId(): Long = addressData.getShopId()
 
     fun resumeLayout() {
         if (addressData.isChoosenAddressUpdated()) {
@@ -1052,4 +1057,6 @@ class TokoNowShoppingListViewModel @Inject constructor(
     fun isOutOfCoverage() = addressData.isOutOfCoverage()
 
     fun isLoggedIn() = userSession.isLoggedIn
+
+    fun getShopId(): Long = addressData.getShopId()
 }

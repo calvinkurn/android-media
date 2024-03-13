@@ -55,6 +55,7 @@
         custom:tickerType="announcement"
         custom:tickerShapeType="loose"
         custom:closeButtonVisibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/choose_address_widget"

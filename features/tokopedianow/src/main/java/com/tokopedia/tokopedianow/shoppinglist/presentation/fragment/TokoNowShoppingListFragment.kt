@@ -216,7 +216,11 @@ class TokoNowShoppingListFragment :
     }
 
     override fun refreshLayoutPage() {
-        viewModel.refreshLayout()
+        binding?.apply {
+            rvShoppingList.removeOnScrollListener(loadMoreListener)
+            rvShoppingList.addOnScrollListener(loadMoreListener)
+            viewModel.refreshLayout()
+        }
     }
 
     override fun getScrollState(adapterPosition: Int): Parcelable? = null
@@ -570,7 +574,7 @@ class TokoNowShoppingListFragment :
 
     private fun FragmentTokopedianowShoppingListBinding.setupSwipeToRefreshLayout() {
         strRefreshLayout.setOnRefreshListener {
-            viewModel.refreshLayout()
+            refreshLayoutPage()
             strRefreshLayout.isEnabled = true
             strRefreshLayout.isRefreshing = false
             navToolbar.updateNotification()
@@ -777,7 +781,7 @@ class TokoNowShoppingListFragment :
                 fm = childFragmentManager,
                 availableProducts = viewModel.getAvailableProducts(),
                 onClickCloseListener = {
-                    viewModel.refreshLayout()
+                    refreshLayoutPage()
                 }
             )
         }
@@ -802,7 +806,7 @@ class TokoNowShoppingListFragment :
         }
     }
 
-    private fun createLoadMoreCallback()  = object : RecyclerView.OnScrollListener() {
+    private fun createLoadMoreCallback() = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             val lastVisiblePosition = getLayoutManager()?.findLastVisibleItemPosition()
@@ -817,7 +821,7 @@ class TokoNowShoppingListFragment :
 
     private fun createErrorCallback() = object : TokoNowErrorViewHolder.TokoNowErrorListener {
         override fun onClickRefresh() {
-            viewModel.refreshLayout()
+            refreshLayoutPage()
         }
     }
 

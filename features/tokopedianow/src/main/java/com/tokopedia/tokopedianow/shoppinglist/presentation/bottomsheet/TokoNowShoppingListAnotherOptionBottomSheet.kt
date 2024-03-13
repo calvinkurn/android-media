@@ -218,7 +218,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         availableProducts: List<ShoppingListHorizontalProductCardItemUiModel>,
         onClickCloseListener: () -> Unit
     ) {
-        setCloseClickListener {
+        setOnDismissListener {
             val isDataUpdated = viewModel.availableProducts != availableProducts
             if (isDataUpdated) onClickCloseListener.invoke()
             dismiss()

@@ -128,6 +128,10 @@ internal object MainVisitableMapper {
                 backgroundGradientColor = headerModel.backgroundGradientColor,
                 isSuperGraphicImageShown = headerModel.isSuperGraphicImageShown,
                 iconPullRefreshType = headerModel.iconPullRefreshType,
+                chosenAddress = TokoNowThematicHeaderUiModel.ChosenAddress(
+                    isShown = headerModel.isChooseAddressShown,
+                    chooseAddressResIntColor = headerModel.chooseAddressResIntColor
+                ),
                 state = state
             )
         )
