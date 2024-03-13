@@ -100,6 +100,10 @@ class ProductPreviewFragment @Inject constructor(
         pagerAdapter.getCurrentTabKey(binding.vpProductPreview.currentItem)
     }
 
+    private val currentTab: String get() =
+        pagerAdapter.getCurrentTabName(binding.vpProductPreview.currentItem).lowercase()
+
+
     override fun getScreenName() = PRODUCT_PREVIEW_FRAGMENT_TAG
 
     private val productAtcResult = registerForActivityResult(
@@ -325,6 +329,7 @@ class ProductPreviewFragment @Inject constructor(
     private fun handleAtc(model: BottomNavUiModel) {
         if (model.buttonState == OOS) analytics.onClickRemindMe(pageSource)
         if (model.hasVariant) {
+            analytics.onAtcVariant(model, currentTab)
             AtcVariantHelper.goToAtcVariant(
                 context = requireContext(),
                 pageSource = VariantPageSource.PRODUCT_PREVIEW_PAGESOURCE,
@@ -335,7 +340,7 @@ class ProductPreviewFragment @Inject constructor(
                 }
             )
         } else {
-            analytics.onClickATC(model)
+            analytics.onAtcWithoutVariant(model, currentTab)
             viewModel.onAction(ProductPreviewAction.ProductAction(model))
         }
     }

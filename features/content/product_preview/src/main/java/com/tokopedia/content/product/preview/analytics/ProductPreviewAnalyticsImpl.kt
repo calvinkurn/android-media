@@ -239,10 +239,10 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
     }
 
     /**
-     * click ATC button
-     * 49590
+     * 17. click ATC without global variant bottomsheet
+     * 50427
      */
-    override fun onClickATC(bottomNavUiModel: BottomNavUiModel) {
+    override fun onAtcWithoutVariant(bottomNavUiModel: BottomNavUiModel, currentTab: String) {
         var categoryId = ""
         var itemCategory = ""
         bottomNavUiModel.categoryTree.forEachIndexed { index, categoryTree ->
@@ -252,7 +252,7 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
         analyticManager.sendEEProduct(
             event = Event.add_to_cart,
             eventAction = "click - add to cart media fullscreen",
-            eventLabel = productId,
+            eventLabel = "$currentTab - $productId",
             itemList = "",
             products = listOf(
                 ContentEnhanceEcommerce.Product(
@@ -266,11 +266,24 @@ class ProductPreviewAnalyticsImpl @AssistedInject constructor(
                     customFields = mapOf(
                         "category_id" to categoryId,
                         "shop_id" to bottomNavUiModel.shop.id,
-                        "shop_name" to bottomNavUiModel.shop.name
+                        "shop_name" to bottomNavUiModel.shop.name,
                     )
                 )
             ),
-            mainAppTrackerId = "49590",
+            mainAppTrackerId = "50427",
+            customFields = mapOf(Key.productId to productId)
+        )
+    }
+
+    /**
+     * 18. click ATC to open global variant bottomsheet
+     * 50428
+     */
+    override fun onAtcVariant(bottomNavUiModel: BottomNavUiModel, currentTab: String) {
+        analyticManager.sendClickContent(
+            eventAction = "click - variant bottomsheet atc entry point",
+            eventLabel = "$currentTab - $productId",
+            mainAppTrackerId = "50428",
             customFields = mapOf(Key.productId to productId)
         )
     }
