@@ -15,13 +15,13 @@ import org.json.JSONObject
  * Byte.io tracking model
  */
 data class AppLogRecommendationCardModel(
+    val cardId: String,
     val cardName: String,
     val productId: String,
     val listName: String,
     val listNum: String,
     val moduleName: String,
     val sourceModule: String,
-    val trackId: String,
     val isAd: Int,
     val isUseCache: Int,
     val recSessionId: String,
@@ -52,7 +52,7 @@ data class AppLogRecommendationCardModel(
         put(AppLogParam.PRODUCT_ID, productId)
         put(AppLogParam.IS_AD, isAd)
         put(AppLogParam.IS_USE_CACHE, isUseCache)
-        put(AppLogParam.TRACK_ID, trackId)
+        put(AppLogParam.TRACK_ID, constructTrackId(cardId, productId, requestId, itemOrder, cardName))
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.REC_PARAMS, recParams)
         put(AppLogParam.SHOP_ID, shopId)
@@ -105,13 +105,13 @@ data class AppLogRecommendationCardModel(
             authorId: String = "",
         ): AppLogRecommendationCardModel {
             return AppLogRecommendationCardModel(
+                cardId = cardId,
                 cardName = cardName.spacelessParam(),
                 productId = getProductId(productId, parentProductId),
                 listName = tabName.underscoredParam(),
                 listNum = tabPosition.inc().zeroAsEmpty(),
                 moduleName = moduleName,
                 sourceModule = constructSourceModule(isAd, moduleName, entranceForm),
-                trackId = constructTrackId(cardId, productId, requestId, position, cardName),
                 isAd = isAd.intValue,
                 isUseCache = isUseCache.intValue,
                 recSessionId = recSessionId,

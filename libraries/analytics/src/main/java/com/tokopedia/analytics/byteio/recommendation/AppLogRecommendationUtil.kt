@@ -61,12 +61,12 @@ internal fun constructTrackId(
     return when (cardName) {
         CardName.REC_GOODS_CARD,
         CardName.AD_GOODS_CARD,
-        CardName.MISSION_PRODUCT_CARD -> "${requestId}_${productId}_${position.inc()}"
-        CardName.REC_VIDEO_CARD -> "${requestId}_${cardId}_${productId}_${position.inc()}"
+        CardName.MISSION_PRODUCT_CARD -> "${requestId}_${productId}_${position}"
+        CardName.REC_VIDEO_CARD -> "${requestId}_${cardId}_${productId}_${position}"
         CardName.REC_CONTENT_CARD,
         CardName.AD_FEED_CARD,
-        CardName.MISSION_PAGE_CARD -> "${requestId}_${cardId}_${position.inc()}"
-        else -> "${requestId}_${cardId}_${position.inc()}"
+        CardName.MISSION_PAGE_CARD -> "${requestId}_${cardId}_${position}"
+        else -> "${requestId}_${cardId}_${position}"
     }
 }
 

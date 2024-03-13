@@ -21,7 +21,6 @@ data class AppLogRecommendationProductModel(
     val listNum: String,
     val moduleName: String,
     val sourceModule: String,
-    val trackId: String,
     val isAd: Int,
     val isUseCache: Int,
     val recSessionId: String,
@@ -41,12 +40,12 @@ data class AppLogRecommendationProductModel(
 ) {
 
     fun asCardModel() = AppLogRecommendationCardModel(
+        cardId = "",
         productId = productId,
         listName = listName,
         listNum = listNum,
         moduleName = moduleName,
         sourceModule = sourceModule,
-        trackId = trackId,
         isAd = isAd,
         isUseCache = isUseCache,
         recSessionId = recSessionId,
@@ -80,7 +79,7 @@ data class AppLogRecommendationProductModel(
         put(AppLogParam.IS_AD, isAd)
         put(AppLogParam.IS_USE_CACHE, isUseCache)
         put(AppLogParam.GROUP_ID, groupId)
-        put(AppLogParam.TRACK_ID, trackId)
+        put(AppLogParam.TRACK_ID, constructTrackId(null, productId, requestId, itemOrder, cardName))
         put(AppLogParam.REC_PARAMS, recParams)
         put(AppLogParam.REQUEST_ID, requestId)
         put(AppLogParam.SHOP_ID, shopId)
@@ -129,13 +128,13 @@ data class AppLogRecommendationProductModel(
             cardName: String = CardName.REC_GOODS_CARD,
             isTrackAsHorizontalSourceModule : Boolean = false
         ): AppLogRecommendationProductModel {
+            val byteIoProductId = getProductId(productId, parentProductId)
             return AppLogRecommendationProductModel(
-                productId = getProductId(productId, parentProductId),
+                productId = byteIoProductId,
                 listName = tabName.underscoredParam(),
                 listNum = tabPosition.inc().zeroAsEmpty(),
                 moduleName = moduleName,
                 sourceModule = constructSourceModule(isAd, moduleName, entranceForm, isTrackAsHorizontalSourceModule),
-                trackId = constructTrackId(null, productId, requestId, position, cardName),
                 isAd = isAd.intValue,
                 isUseCache = isUseCache.intValue,
                 recSessionId = recSessionId,
