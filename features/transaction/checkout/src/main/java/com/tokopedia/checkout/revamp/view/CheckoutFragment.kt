@@ -75,6 +75,12 @@ import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity
 import com.tokopedia.checkout.webview.UpsellWebViewActivity
 import com.tokopedia.checkoutpayment.data.PaymentRequest
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
+import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_CC_TENOR_LIST
+import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_INSTALLMENT_OPTIONS
+import com.tokopedia.checkoutpayment.domain.TenorListData
+import com.tokopedia.checkoutpayment.installment.CreditCardInstallmentDetailBottomSheet
+import com.tokopedia.checkoutpayment.installment.GoCicilInstallmentDetailBottomSheet
 import com.tokopedia.checkoutpayment.list.view.PaymentListingActivity
 import com.tokopedia.checkoutpayment.view.OrderPaymentFee
 import com.tokopedia.checkoutpayment.view.bottomsheet.PaymentFeeInfoBottomSheet
@@ -2865,6 +2871,32 @@ class CheckoutFragment :
         if (gateway != null && metadata != null) {
 //            orderSummaryAnalytics.eventClickSelectedPaymentOption(gateway, userSession.get().userId)
             viewModel.choosePayment(gateway, metadata)
+        }
+    }
+
+    override fun onChangeInstallment(payment: CheckoutPaymentModel) {
+        if (payment.data?.paymentWidgetData?.firstOrNull()?.mandatoryHit?.contains(MANDATORY_HIT_INSTALLMENT_OPTIONS) == true) {
+            // gocicil
+            GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.processor).show(this, viewModel.generateGoCicilInstallmentRequest(payment), payment.installmentData, object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                override fun onSelectInstallment(selectedInstallment: GoCicilInstallmentOption, installmentList: List<GoCicilInstallmentOption>, tickerMessage: String, isSilent: Boolean) {
+
+                }
+
+                override fun onFailedLoadInstallment() {
+
+                }
+            })
+        } else if (payment.data?.paymentWidgetData?.firstOrNull()?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
+            // cc
+            CreditCardInstallmentDetailBottomSheet(viewModel.paymentProcessor.processor).show(this, viewModel.generateCreditCardTenorListRequest(payment), userSessionInterface.userId, payment.tenorList!!, payment.data!!.paymentWidgetData.first().installmentPaymentData.creditCardAttribute.tncInfo, object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                override fun onSelectInstallment(selectedInstallment: TenorListData, installmentList: List<TenorListData>) {
+
+                }
+
+                override fun onFailedLoadInstallment() {
+
+                }
+            })
         }
     }
 

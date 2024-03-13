@@ -19,4 +19,8 @@ data class GoCicilInstallmentOption(
     val isActive: Boolean = false,
     val description: String = "",
     val isRecommended: Boolean = false
-)
+) {
+
+    val hasPromoLabel: Boolean
+        get() = labelMessage.isNotBlank()
+}

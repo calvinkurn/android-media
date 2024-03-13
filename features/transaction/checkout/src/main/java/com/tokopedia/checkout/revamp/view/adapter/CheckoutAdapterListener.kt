@@ -176,5 +176,7 @@ interface CheckoutAdapterListener {
 
     fun onChangePayment(payment: CheckoutPaymentModel)
 
+    fun onChangeInstallment(payment: CheckoutPaymentModel)
+
     fun showPaymentFeeTooltipInfoBottomSheet(paymentFee: OrderPaymentFee)
 }

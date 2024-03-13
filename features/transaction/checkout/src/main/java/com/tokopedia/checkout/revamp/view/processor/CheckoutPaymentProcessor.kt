@@ -63,7 +63,7 @@ import javax.inject.Inject
 
 class CheckoutPaymentProcessor @Inject constructor(
     private val getPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase,
-    private val processor: PaymentProcessor,
+    val processor: PaymentProcessor,
     private val checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection,
     private val userSessionInterface: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
@@ -385,7 +385,7 @@ class CheckoutPaymentProcessor @Inject constructor(
         )
     }
 
-    private fun generateCreditCardTenorRequest(
+    fun generateCreditCardTenorRequest(
         payment: CheckoutPaymentModel,
         paymentData: PaymentWidgetData,
         paymentRequest: PaymentRequest,

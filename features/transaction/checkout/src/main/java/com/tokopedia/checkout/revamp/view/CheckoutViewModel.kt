@@ -55,6 +55,7 @@ import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.checkout.view.CheckoutLogger
 import com.tokopedia.checkout.view.CheckoutMutableLiveData
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
+import com.tokopedia.checkoutpayment.data.CreditCardTenorListRequest
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetChosenPaymentRequest
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetRequest
 import com.tokopedia.checkoutpayment.data.GoCicilInstallmentRequest
@@ -128,7 +129,7 @@ class CheckoutViewModel @Inject constructor(
     private val logisticCartProcessor: CheckoutShippingProcessor,
     private val promoProcessor: CheckoutPromoProcessor,
     private val addOnProcessor: CheckoutAddOnProcessor,
-    private val paymentProcessor: CheckoutPaymentProcessor,
+    val paymentProcessor: CheckoutPaymentProcessor,
     private val checkoutProcessor: CheckoutProcessor,
     private val calculator: CheckoutCalculator,
     private val toasterProcessor: CheckoutToasterProcessor,
@@ -3242,6 +3243,10 @@ class CheckoutViewModel @Inject constructor(
 
     fun generateGoCicilInstallmentRequest(payment: CheckoutPaymentModel): GoCicilInstallmentRequest {
         return paymentProcessor.generateInstallmentRequest(payment, payment.data!!.paymentWidgetData.first(), generatePaymentRequest(payment), listData.value, listData.value.cost()!!)
+    }
+
+    fun generateCreditCardTenorListRequest(payment: CheckoutPaymentModel): CreditCardTenorListRequest {
+        return paymentProcessor.generateCreditCardTenorRequest(payment, payment.data!!.paymentWidgetData.first(), generatePaymentRequest(payment), listData.value, listData.value.cost()!!)
     }
 
     fun choosePayment(gatewayCode: String, metadata: String) {
