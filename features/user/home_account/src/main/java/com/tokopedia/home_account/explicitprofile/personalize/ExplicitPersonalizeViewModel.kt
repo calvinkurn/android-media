@@ -84,7 +84,7 @@ class ExplicitPersonalizeViewModel @Inject constructor(
                 val minItemSelected = getRuleMinMax(template.rules.minAnswer)
                 if (sections.isNotEmpty() && sections.first().layout == MULTIPLE_ANSWER) {
                     sectionId = sections.first().sectionId
-                    sectionId = sections.first().sectionId
+                    initCounter(sections.first().questions)
                     _stateGetQuestion.value = ExplicitPersonalizeResult.Success(
                         listQuestion = sections.first().questions,
                         maxItemSelected = maxItemSelected,
@@ -103,6 +103,15 @@ class ExplicitPersonalizeViewModel @Inject constructor(
     //value 0. meaning there no rule for min or max
     private fun getRuleMinMax(rule: Int?): Int {
         return rule ?: 0
+    }
+
+    private fun initCounter(list: List<QuestionDataModel>) {
+        var counter = 0
+        list.forEach {
+            counter += it.answerValueList.size
+        }
+        _counterState.value = counter
+
     }
 
     fun saveAnswers() {
