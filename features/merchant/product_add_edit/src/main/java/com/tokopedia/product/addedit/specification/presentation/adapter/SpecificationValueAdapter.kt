@@ -60,6 +60,7 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
 
     override fun onSpecificationValueTextChanged(position: Int, text: String) {
         itemsSelected.getOrNull(position)?.data = text
+        onSpecificationChanged(itemsSelected)
     }
 
     fun setData(items: List<AnnotationCategoryData>) {
@@ -113,7 +114,7 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
         val optionTitle = mContext?.getString(R.string.title_specification_bottom_sheet) + " " + title
         var selectedPosition: Int? = null
         val options = annotationData.mapIndexed { index, value ->
-            if (value.id.toString() == selectedId) selectedPosition = index
+            if (value.id == selectedId) selectedPosition = index
             value.name
         }
         val optionPicker = OptionPicker().apply {
@@ -126,7 +127,7 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
                 annotationData.firstOrNull {
                     it.name == selectedText
                 }?.let {
-                    setDataSelected(adapterPosition, it.id.toString(), it.name)
+                    setDataSelected(adapterPosition, it.id, it.name)
                 }
             }
         }
