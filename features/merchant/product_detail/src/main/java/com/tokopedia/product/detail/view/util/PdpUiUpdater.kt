@@ -237,8 +237,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             productSingleVariant?.run {
                 isRefreshing = false
 
-                val ongoing = mapOfData[ProductDetailConstant.ONGOING_CAMPAIGN] as? OngoingCampaignUiModel
-                isCampaign = ongoing?.data?.hasOngoingCampaign ?: false
+                val ongoingCampaign = mapOfData[ProductDetailConstant.ONGOING_CAMPAIGN] as? OngoingCampaignUiModel
+                val ongoing = ongoingCampaign?.data?.hasOngoingCampaign ?: false
+                val thematic = ongoingCampaign?.data?.thematicCampaign?.campaignName?.isNotEmpty() ?: false
+                isCampaign = ongoing || thematic
             }
         }
 
@@ -712,8 +714,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS){
             productSingleVariant?.run {
                 val ongoing = ongoingCampaign?.data?.hasOngoingCampaign ?: false
+                val thematic = ongoingCampaign?.data?.thematicCampaign?.campaignName?.isNotEmpty() ?: false
                 val upcoming = upcomingCampaign?.shouldShow ?: false
-                isCampaign = ongoing || upcoming
+                isCampaign = ongoing || thematic || upcoming
             }
         }
     }
