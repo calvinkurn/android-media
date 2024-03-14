@@ -34,6 +34,7 @@ abstract class AutoCompleteTestFixtures {
     protected val suggestionTrackerUseCase = mockk<RxUseCase<Void?>>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
+    protected val sugSessionId = mockk<SugSessionId>(relaxed = true)
     internal fun autoCompleteViewModel(state: AutoCompleteState = AutoCompleteState()): AutoCompleteViewModel =
         AutoCompleteViewModel(
             autoCompleteState = state,
@@ -43,7 +44,8 @@ abstract class AutoCompleteTestFixtures {
             suggestionTrackerUseCase = suggestionTrackerUseCase,
             userSession = userSession,
             mockk(relaxed = true),
-            topAdsUrlHitter = topAdsUrlHitter
+            topAdsUrlHitter = topAdsUrlHitter,
+            sugSessionId = sugSessionId,
         )
 
     fun `Given Initial Use Case Is Successful`(

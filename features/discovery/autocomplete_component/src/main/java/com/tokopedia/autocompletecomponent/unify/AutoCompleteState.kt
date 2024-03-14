@@ -106,6 +106,7 @@ data class AutoCompleteState(
             else resultData.data
 
         val mappedResultList = suggestionUnifyList.mapIndexed { index, it ->
+            var shopAdsDataView: AutoCompleteUnifyDataView.ShopAdsDataView? = null
             val domainModel =
                 if (it.isAds && adsModel != null) {
                     val cpmBadgeUrl = getAdsBadgeUrlForHeadline(

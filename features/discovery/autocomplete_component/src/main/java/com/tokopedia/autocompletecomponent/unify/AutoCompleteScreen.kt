@@ -1,7 +1,5 @@
 package com.tokopedia.autocompletecomponent.unify
 
-import android.app.Activity
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,6 +9,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -87,7 +86,15 @@ internal fun AutoCompleteScreen(
                     it.domainModel.title.text + it.uniqueIdentifier + idx
                 }
             ) { idx, item ->
-                AutoCompleteItemComponent(item, idx, lazyListState, iris, viewModel, analytics)
+                AutoCompleteItemComponent(
+                    item,
+                    idx,
+                    lazyListState,
+                    iris,
+                    viewModel,
+                    analytics,
+                    searchEntrance
+                )
             }
         }
     }
@@ -101,6 +108,7 @@ private fun AutoCompleteItemComponent(
     iris: Iris,
     viewModel: AutoCompleteViewModel,
     analytics: ContextAnalytics,
+    searchEntrance: String,
     className: String = LocalContext.current.javaClass.name
 ) {
     Box(
@@ -114,6 +122,10 @@ private fun AutoCompleteItemComponent(
                     item,
                     className,
                 )
+                if (viewModel.stateValue.isSuggestion)
+                    AppLogSearch.eventTrendingWordsShowSuggestion(
+                        trendingWordsSuggestion(viewModel, item, searchEntrance)
+                    )
             },
             impressInterval = 0L
         )
@@ -128,6 +140,21 @@ private fun AutoCompleteItemComponent(
                             className,
                         )
                         it.click(analytics)
+                        if (viewModel.stateValue.isSuggestion) {
+                            AppLogAnalytics.putPageData(
+                                AppLogSearch.ParamKey.SUG_TYPE,
+                                item.sugType,
+                            )
+
+                            AppLogAnalytics.putPageData(
+                                AppLogSearch.ParamKey.PRE_CLICK_ID,
+                                viewModel.stateValue.appLogData.imprId,
+                            )
+
+                            AppLogSearch.eventTrendingWordsClickSuggestion(
+                                trendingWordsSuggestion(viewModel, item, searchEntrance)
+                            )
+                        }
                     },
                     onItemAction = {
                         viewModel.onAutocompleteItemAction(it)

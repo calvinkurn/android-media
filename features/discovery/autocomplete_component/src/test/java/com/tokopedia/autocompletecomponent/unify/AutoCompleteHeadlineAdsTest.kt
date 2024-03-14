@@ -47,7 +47,7 @@ class AutoCompleteHeadlineAdsTest : AutoCompleteTestFixtures() {
         )
         assertThat(
             isAdsDomainModel.subtitle.text,
-            `is`(shopAdsModel.cpmModel.data[0].cpm.cpmShop.location)
+            `is`("Dipromosikan")
         )
     }
 
@@ -84,7 +84,7 @@ class AutoCompleteHeadlineAdsTest : AutoCompleteTestFixtures() {
         )
         assertThat(
             isAdsDomainModel.subtitle.text,
-            `is`(shopAdsModel.cpmModel.data[1].cpm.cpmShop.location)
+            `is`("Dipromosikan")
         )
     }
 
@@ -115,13 +115,14 @@ class AutoCompleteHeadlineAdsTest : AutoCompleteTestFixtures() {
         val initialParameter = mapOf(SearchApiConst.Q to "samsung")
         val viewModel = autoCompleteViewModel(AutoCompleteState(initialParameter))
         val suggestionModel =
-            AutoCompleteSuggestionSuccessJSON.jsonToObject<SuggestionUnifyModel>()
+            AutoCompleteSuggestionShopAdsSuccessJSON.jsonToObject<SuggestionUnifyModel>()
         val shopAdsModel = HeadlineAdsRumahSuccessJSON.jsonToObject<ShopAdsModel>()
         val className = this.javaClass.simpleName
         suggestionModel.data.cpmModel = shopAdsModel.cpmModel
 
         `Given Suggestion Use Case Is Successful`(suggestionModel.data)
         `When screen is initialized`(viewModel)
+        suggestionModel.data.data
         val isAdsPosition = suggestionModel.data.data.indexOfFirst { it.isAds }
         val isAdsDataView = viewModel.stateValue.resultList[isAdsPosition]
 
@@ -182,7 +183,7 @@ class AutoCompleteHeadlineAdsTest : AutoCompleteTestFixtures() {
         val initialParameter = mapOf(SearchApiConst.Q to "samsung")
         val viewModel = autoCompleteViewModel(AutoCompleteState(initialParameter))
         val suggestionModel =
-            AutoCompleteSuggestionSuccessJSON.jsonToObject<SuggestionUnifyModel>()
+            AutoCompleteSuggestionShopAdsSuccessJSON.jsonToObject<SuggestionUnifyModel>()
         val shopAdsModel = HeadlineAdsRumahSuccessJSON.jsonToObject<ShopAdsModel>()
         val className = this.javaClass.simpleName
         suggestionModel.data.cpmModel = shopAdsModel.cpmModel
