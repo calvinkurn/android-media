@@ -126,6 +126,7 @@ import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
 import com.tokopedia.home_component.viewholders.TodoWidgetViewHolder
 import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.coupon.CouponWidgetListener
+import com.tokopedia.home_component.viewholders.mission.v3.Mission4SquareWidgetListener
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
@@ -216,6 +217,7 @@ class HomeAdapterFactory(
     private val couponWidgetListener: CouponWidgetListener,
     private val homeThematicUtil: HomeThematicUtil,
     private val origamiListenerDelegate: OrigamiListenerDelegate,
+    private val mission4SquareWidgetListener: Mission4SquareWidgetListener,
     private val remoteConfig: RemoteConfig
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
@@ -625,7 +627,7 @@ class HomeAdapterFactory(
             CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view, cueWidgetCategoryListener)
             VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener)
             MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener)
-            Mission4SquareWidgetViewHolder.LAYOUT -> viewHolder = Mission4SquareWidgetViewHolder(view)
+            Mission4SquareWidgetViewHolder.LAYOUT -> viewHolder = Mission4SquareWidgetViewHolder(view, mission4SquareWidgetListener)
             Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, cardInteraction = true)
             MixLeftPaddingComponentViewHolder.LAYOUT ->
                 viewHolder =
