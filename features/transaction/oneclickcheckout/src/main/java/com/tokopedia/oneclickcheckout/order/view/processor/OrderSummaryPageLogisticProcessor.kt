@@ -82,9 +82,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
     }
 
     private fun generateActionMetadata(orderCart: OrderCart): String {
-        val listActionProduct = arrayListOf<OrderActionMetadata.Action>()
-        orderCart.products.map {
-            listActionProduct.add(
+        val actionMetadata = OrderActionMetadata(
+            listAction = orderCart.products.map {
                 OrderActionMetadata.Action(
                     uniqueId = it.cartId,
                     listOf(
@@ -98,10 +97,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                         )
                     )
                 )
-            )
-        }
-        val actionMetadata = OrderActionMetadata(
-            listAction = listActionProduct
+            }
         )
         return gson.toJson(actionMetadata, OrderActionMetadata::class.java)
     }
