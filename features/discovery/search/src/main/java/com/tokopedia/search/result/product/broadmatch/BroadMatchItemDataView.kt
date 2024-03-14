@@ -223,6 +223,7 @@ data class BroadMatchItemDataView(
             byteIOTrackingData: ByteIOTrackingData,
         ) = BroadMatchItemDataView(
             id = otherRelatedProduct.id,
+            parentId = otherRelatedProduct.meta.parentId,
             name = otherRelatedProduct.name,
             price = otherRelatedProduct.price.number,
             priceString = otherRelatedProduct.price.text,
