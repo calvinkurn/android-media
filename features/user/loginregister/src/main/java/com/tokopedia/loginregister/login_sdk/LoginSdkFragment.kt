@@ -31,22 +31,23 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
     }
 
     private fun initObserver() {
-        viewModel.isLoggedIn.observe(viewLifecycleOwner) {
-            if (it) {
-                goToConsentPage()
-            }
-        }
+//        viewModel.isLoggedIn.observe(viewLifecycleOwner) {
+//            if (it) {
+//                goToConsentPage()
+//            }
+//        }
 
         viewModel.validateClient.observe(viewLifecycleOwner) {
             if (!it) {
                 redirectToTargetUri(redirectUrl, authCode = "", "Invalid Client Certificate")
+            } else {
+//                goToConsentPage()
             }
         }
     }
 
     private fun goToConsentPage() {
-//        Toast.makeText(requireActivity(), "Logged In", Toast.LENGTH_LONG).show()
-//        redirectToTargetUri(redirectUrl, "abc123xzz")
+        (activity as LoginSdkActivity).switchToConsentFragment()
     }
 
     private fun redirectToTargetUri(redirectUrl: String, authCode: String, error: String = "") {
@@ -62,8 +63,8 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
     }
 
     override fun onSuccessLogin(shouldFinish: Boolean) {
-        super.onSuccessLogin(shouldFinish)
-        redirectToTargetUri(redirectUrl, "abc123xzz")
+        super.onSuccessLogin(shouldFinish = false)
+        goToConsentPage()
     }
 
     companion object {

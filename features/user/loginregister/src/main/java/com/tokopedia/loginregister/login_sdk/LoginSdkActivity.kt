@@ -38,7 +38,7 @@ class LoginSdkActivity : LoginActivity() {
 //        return R.layout.activity_login_sdk
 //    }
 
-    private fun switchToConsentFragment() {
+    fun switchToConsentFragment() {
         supportFragmentManager.commit {
             val bundle = Bundle()
             bundle.putAll(getBundleFromData())
