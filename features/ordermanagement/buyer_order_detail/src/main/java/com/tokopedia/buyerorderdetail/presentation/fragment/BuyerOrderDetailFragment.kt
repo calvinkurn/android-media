@@ -458,7 +458,7 @@ open class BuyerOrderDetailFragment :
     }
 
     private fun setupBrcCsatWidget() {
-        binding?.widgetBrcBom?.setup(navigator, viewModel)
+        binding?.widgetBrcBom?.setup(navigator)
     }
 
     private fun loadBuyerOrderDetail(shouldCheckCache: Boolean) {
@@ -611,6 +611,7 @@ open class BuyerOrderDetailFragment :
         updateStickyButtons(uiState)
         updateSavingsWidget(uiState)
         updateBrcCsatWidget(uiState)
+        checkAutoOpenCsat(uiState.brcCsatUiState)
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stopLoadTimeMonitoring()
         EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_SHOWING_DATA)
@@ -676,6 +677,13 @@ open class BuyerOrderDetailFragment :
 
     private fun updateBrcCsatWidget(uiState: BuyerOrderDetailUiState.HasData) {
         binding?.widgetBrcBom?.setup(uiState.brcCsatUiState)
+    }
+
+    private fun checkAutoOpenCsat(brcCsatUiState: WidgetBrcCsatUiState) {
+        if (viewModel.shouldAutoOpenCsat() && brcCsatUiState is WidgetBrcCsatUiState.HasData.Showing) {
+            viewModel.endAutoOpenCsatForm()
+            navigator.goToBrcCsatForm(brcCsatUiState.data.orderID, Int.ZERO)
+        }
     }
 
     private fun onSuccessGetSavingWidget(uiState: BuyerOrderDetailUiState.HasData) {
@@ -905,7 +913,7 @@ open class BuyerOrderDetailFragment :
                 }
             }
             if (result != BuyerOrderDetailMiscConstant.RESULT_BUYER_REQUEST_CANCEL_STATUS_FAILED) {
-                viewModel.setAutoOpenCsatForm(true)
+                viewModel.initAutoOpenCsatForm()
                 loadBuyerOrderDetail(false)
             }
         } else if (resultCode == RESULT_CODE_CANCEL_ORDER_DISABLE) {
@@ -927,7 +935,7 @@ open class BuyerOrderDetailFragment :
                 ApplinkConstInternalOrder.PartialOrderFulfillmentKey.ACTION_TYPE
             ) ?: ApplinkConstInternalOrder.PartialOrderFulfillmentKey.ACTION_TYPE_ACCEPT
         if (actionType == ApplinkConstInternalOrder.PartialOrderFulfillmentKey.ACTION_TYPE_REJECT) {
-            viewModel.setAutoOpenCsatForm(true)
+            viewModel.initAutoOpenCsatForm()
         }
         handleResultRefreshOnly()
 
