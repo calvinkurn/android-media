@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.ViewStub
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
@@ -171,7 +172,9 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.video_widget.VideoPlayerAutoplay
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
+import kotlinx.coroutines.delay
 import org.json.JSONArray
+import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.filter.quick.SortFilter as SortFilterReimagine
 import com.tokopedia.filter.quick.SortFilter.Listener as SortFilterListener
@@ -1649,16 +1652,20 @@ class ProductListFragment :
     }
 
     private fun cleanByteIOProductClickData() {
-        val listOfRemovedKey = listOf(
-            ENTRANCE_FORM,
-            IS_AD,
-            TRACK_ID,
-            SOURCE_PAGE_TYPE,
-            REQUEST_ID,
-            SEARCH_RESULT_ID,
-            LIST_ITEM_ID
+        lifecycleScope.launchWhenCreated {
+            /** This delay is waiting for PDP stay tracker to get the data first */
+            delay(800)
+            val listOfRemovedKey = listOf(
+                ENTRANCE_FORM,
+                IS_AD,
+                TRACK_ID,
+                SOURCE_PAGE_TYPE,
+                REQUEST_ID,
+                SEARCH_RESULT_ID,
+                LIST_ITEM_ID
             )
-        AppLogAnalytics.removePageData(activity as SearchActivity, listOfRemovedKey)
+            AppLogAnalytics.removePageData(activity as SearchActivity, listOfRemovedKey)
+        }
     }
 
     override fun sendTrackingByteIO() {
