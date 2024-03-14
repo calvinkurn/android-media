@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
@@ -131,6 +130,30 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         }
     }
 
+    private fun setCtaClickListener() {
+        if (masterProductCardItemViewModel?.getTemplateType() == LIST) {
+            masterProductCardListView?.setGenericCtaButtonOnClickListener {
+                if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
+                    return@setGenericCtaButtonOnClickListener
+                }
+                lastClickTime = SystemClock.elapsedRealtime()
+                sentNotifyButtonEvent()
+                masterProductCardItemViewModel?.subscribeUser()
+                showNotificationReminderPrompt()
+            }
+        } else {
+            masterProductCardGridView?.setGenericCtaButtonOnClickListener {
+                if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
+                    return@setGenericCtaButtonOnClickListener
+                }
+                lastClickTime = SystemClock.elapsedRealtime()
+                sentNotifyButtonEvent()
+                masterProductCardItemViewModel?.subscribeUser()
+                showNotificationReminderPrompt()
+            }
+        }
+    }
+
     private fun checkForVariantProductCard(parentProductId: String?): Boolean {
         return parentProductId != null && parentProductId.toLongOrZero() > 0
     }
@@ -165,60 +188,37 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             productCardName = masterProductCardItemViewModel.getComponentName()
         }
         lifecycleOwner?.let { lifecycle ->
-            masterProductCardItemViewModel?.getDataItemValue()?.observe(
-                lifecycle,
-                Observer { data ->
-                    dataItem = data
-                }
-            )
-            masterProductCardItemViewModel?.getProductModelValue()?.observe(
-                lifecycle,
-                Observer { data ->
-                    populateData(data)
-                }
-            )
-            masterProductCardItemViewModel?.getComponentPosition()?.observe(
-                lifecycle,
-                Observer { position ->
-                    componentPosition = position
-                }
-            )
-            masterProductCardItemViewModel?.getShowLoginData()?.observe(
-                lifecycle,
-                Observer {
-                    if (it == true) {
-                        componentPosition?.let { position ->
-                            (fragment as DiscoveryFragment).openLoginScreen(
-                                position
-                            )
-                        }
+            masterProductCardItemViewModel?.getDataItemValue()?.observe(lifecycle) { data ->
+                dataItem = data
+            }
+            masterProductCardItemViewModel?.getProductModelValue()?.observe(lifecycle) { data ->
+                populateData(data)
+            }
+            masterProductCardItemViewModel?.getComponentPosition()?.observe(lifecycle) { position ->
+                componentPosition = position
+            }
+            masterProductCardItemViewModel?.getShowLoginData()?.observe(lifecycle) {
+                if (it == true) {
+                    componentPosition?.let { position ->
+                        (fragment as DiscoveryFragment).openLoginScreen(
+                            position
+                        )
                     }
                 }
-            )
-            masterProductCardItemViewModel?.notifyMeCurrentStatus()?.observe(
-                lifecycle,
-                Observer {
-                    updateNotifyMeState(it)
-                }
-            )
-            masterProductCardItemViewModel?.showNotifyToastMessage()?.observe(
-                lifecycle,
-                Observer {
-                    showNotifyResultToast(it)
-                }
-            )
-            masterProductCardItemViewModel?.getComponentPosition()?.observe(
-                lifecycle,
-                Observer {
-                    componentPosition = it
-                }
-            )
-            masterProductCardItemViewModel?.getSyncPageLiveData()?.observe(
-                lifecycle,
-                Observer {
-                    if (it) (fragment as DiscoveryFragment).reSync()
-                }
-            )
+            }
+            masterProductCardItemViewModel?.notifyMeCurrentStatus()?.observe(lifecycle) {
+                updateNotifyMeButton(it)
+                updateNotifyMeState(it)
+            }
+            masterProductCardItemViewModel?.showNotifyToastMessage()?.observe(lifecycle) {
+                showNotifyResultToast(it)
+            }
+            masterProductCardItemViewModel?.getComponentPosition()?.observe(lifecycle) {
+                componentPosition = it
+            }
+            masterProductCardItemViewModel?.getSyncPageLiveData()?.observe(lifecycle) {
+                if (it) (fragment as DiscoveryFragment).reSync()
+            }
             masterProductCardItemViewModel?.getScrollSimilarProductComponentID()
                 ?.observe(lifecycle) {
                     (fragment as DiscoveryFragment).scrollToComponentWithID(it)
@@ -262,8 +262,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 it.applyCarousel()
                 productCardView?.layoutParams?.width =
                     Resources.getSystem().displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(
-                    R.dimen.dp_70
-                )
+                        R.dimen.dp_70
+                    )
                 it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             }
@@ -275,6 +275,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         updateNotifyMeState(dataItem?.notifyMe)
 
         setWishlist()
+        setCtaClickListener()
         set3DotsWishlistWithAtc(dataItem)
         setSimilarProductWishlist(dataItem)
         checkProductIsFulfillment(productCardModel)
@@ -339,6 +340,39 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                     it1
                 )
             }
+        }
+    }
+
+    private fun updateNotifyMeButton(notifyMeStatus: Boolean?) {
+        val notifyText = masterProductCardItemViewModel?.getNotifyText(notifyMeStatus)
+        if (masterProductCardItemViewModel?.getTemplateType() == LIST) {
+            masterProductCardListView?.reRenderGenericCtaButton(
+                ProductCardModel(
+                    productCardGenericCta = ProductCardModel.ProductCardGenericCta(
+                        copyWriting = notifyText,
+                        mainButtonVariant = UnifyButton.Variant.GHOST,
+                        mainButtonType = if (notifyMeStatus == true) {
+                            UnifyButton.Type.ALTERNATE
+                        } else {
+                            UnifyButton.Type.MAIN
+                        }
+                    )
+                )
+            )
+        } else {
+            masterProductCardGridView?.reRenderGenericCtaButton(
+                ProductCardModel(
+                    productCardGenericCta = ProductCardModel.ProductCardGenericCta(
+                        copyWriting = notifyText,
+                        mainButtonVariant = UnifyButton.Variant.GHOST,
+                        mainButtonType = if (notifyMeStatus == true) {
+                            UnifyButton.Type.ALTERNATE
+                        } else {
+                            UnifyButton.Type.MAIN
+                        }
+                    )
+                )
+            )
         }
     }
 
