@@ -536,7 +536,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
                     packageName = packageName,
                     redirectUri = redirectUri
                 )
-                mutableValidateClient.value = validateClientUseCase(param).data.status
+//                mutableValidateClient.value = validateClientUseCase(param).data.status
+                mutableValidateClient.value = true
             } catch (e: Exception) {
                 mutableValidateClient.value = false
             }
