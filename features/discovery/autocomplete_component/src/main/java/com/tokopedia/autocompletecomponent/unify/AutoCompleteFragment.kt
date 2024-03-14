@@ -43,6 +43,10 @@ class AutoCompleteFragment @Inject constructor(
         viewModel.onScreenUpdateParameter(parameter)
     }
 
+    fun setIsTyping(isTyping: Boolean) {
+        viewModel.setIsTyping(isTyping)
+    }
+
     companion object {
         const val AUTO_COMPLETE_FRAGMENT_TAG = "AUTO_COMPLETE_TAG"
 

@@ -20,7 +20,8 @@ data class AutoCompleteState(
     val parameter: Map<String, String> = mapOf(),
     val resultList: List<AutoCompleteUnifyDataView> = listOf(),
     val navigate: AutoCompleteNavigate? = null,
-    val actionReplaceKeyword: String? = null
+    val actionReplaceKeyword: String? = null,
+    val isTyping: Boolean = false,
 ) {
     constructor(
         searchParameter: SearchParameter,
@@ -135,6 +136,7 @@ data class AutoCompleteState(
     fun updateNavigate(navigate: AutoCompleteNavigate?) = copy(navigate = navigate)
 
     fun updateReplaceKeyword(keyword: String?) = copy(actionReplaceKeyword = keyword)
+    fun updateIsTyping(isTyping: Boolean) = copy(isTyping = isTyping)
     fun parameterIsMps() = parameter[SearchApiConst.ACTIVE_TAB] == SearchApiConst.ACTIVE_TAB_MPS
     fun parameterStateIsSuggestions(): Boolean =
         parameter[SearchApiConst.Q].isNullOrBlank().not()

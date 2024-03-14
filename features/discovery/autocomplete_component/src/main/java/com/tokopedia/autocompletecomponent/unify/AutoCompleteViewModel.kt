@@ -66,6 +66,10 @@ internal class AutoCompleteViewModel @Inject constructor(
         actOnParameter()
     }
 
+    fun setIsTyping(isTyping: Boolean) {
+        _stateFlow.value = stateValue.updateIsTyping(isTyping)
+    }
+
     private fun actOnParameter() {
         val parameter = stateValue.getParameterMap()
         if (stateValue.parameterIsMps() && !stateValue.parameterStateIsSuggestions()) {
@@ -79,7 +83,7 @@ internal class AutoCompleteViewModel @Inject constructor(
     }
 
     private fun getSuggestionStateData(parameter: Map<String, String>) {
-        val requestParams = getParamsMainQuerySuggestion(parameter, userSession)
+        val requestParams = getParamsMainQuery(parameter, userSession)
         suggestionStateUseCase.execute(
             ::onGetStateDataSuccessful,
             ::onGetDataError,
@@ -88,7 +92,7 @@ internal class AutoCompleteViewModel @Inject constructor(
     }
 
     private fun getInitialStateData(parameter: Map<String, String>) {
-        val requestParams = getParamsMainQueryInitial(parameter, userSession)
+        val requestParams = getParamsMainQuery(parameter, userSession)
         initialStateUseCase.execute(
             ::onGetStateDataSuccessful,
             ::onGetDataError,
@@ -249,24 +253,6 @@ internal class AutoCompleteViewModel @Inject constructor(
 
     private fun getNavSource() = stateValue.getParameterMap()[SearchApiConst.NAVSOURCE] ?: ""
 
-    private fun getParamsMainQuerySuggestion(
-        searchParameter: Map<String, String>,
-        userSession: UserSessionInterface
-    ): RequestParams {
-        val params = getParamsMainQuery(searchParameter, userSession)
-        params.putBoolean(IS_TYPING, true)
-        return params
-    }
-
-    private fun getParamsMainQueryInitial(
-        searchParameter: Map<String, String>,
-        userSession: UserSessionInterface
-    ): RequestParams {
-        val params = getParamsMainQuery(searchParameter, userSession)
-        params.putBoolean(IS_TYPING, false)
-        return params
-    }
-
     @SuppressLint("PII Data Exposure")
     private fun getParamsMainQuery(
         searchParameter: Map<String, String>,
@@ -284,6 +270,7 @@ internal class AutoCompleteViewModel @Inject constructor(
             putString(SearchApiConst.USER_ID, userId)
             putString(SearchApiConst.UNIQUE_ID, uniqueId)
             putString(DEVICE_ID, registrationId)
+            putBoolean(IS_TYPING, stateValue.isTyping)
             putChooseAddressParams(chooseAddressUtilsWrapper.getLocalizingAddressData())
         }
     }

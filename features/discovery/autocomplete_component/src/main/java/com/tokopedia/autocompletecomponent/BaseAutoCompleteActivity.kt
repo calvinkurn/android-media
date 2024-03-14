@@ -729,6 +729,7 @@ open class BaseAutoCompleteActivity :
 
     override fun setIsTyping(isTyping: Boolean) {
         getSuggestionFragment()?.setIsTyping(isTyping)
+        getAutoCompleteFragment()?.setIsTyping(isTyping)
     }
 
     override fun setSearchQuery(keyword: String) {
@@ -850,6 +851,7 @@ open class BaseAutoCompleteActivity :
     }
 
     override fun setSearchQueryKeyword(keyword: String) {
+        setIsTyping(false)
         searchBarView?.setQuery(keyword, submit = false, copyText = true)
     }
 }
