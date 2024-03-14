@@ -65,7 +65,7 @@ class ShareExViewModelUpdateShareImageTest : ShareExViewModelTestFixture() {
                 assertEquals("sourceId", expectedValue.sourceId)
                 assertEquals(0, expectedValue.args?.size)
 
-                println(cancelAndConsumeRemainingEvents())
+                cancelAndConsumeRemainingEvents()
             }
         }
     }
@@ -116,7 +116,7 @@ class ShareExViewModelUpdateShareImageTest : ShareExViewModelTestFixture() {
                 assertEquals(null, expectedValue.sourceId)
                 assertEquals(null, expectedValue.args?.size)
 
-                println(cancelAndConsumeRemainingEvents())
+                cancelAndConsumeRemainingEvents()
             }
         }
     }

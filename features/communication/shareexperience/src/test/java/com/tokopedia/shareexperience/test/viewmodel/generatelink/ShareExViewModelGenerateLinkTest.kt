@@ -482,7 +482,7 @@ class ShareExViewModelGenerateLinkTest : ShareExViewModelTestFixture() {
             )
 
             coEvery {
-                getSharePropertiesUseCase.getDefaultData()
+                getSharePropertiesUseCase.getDefaultData("")
             } returns ShareExBottomSheetModel(
                 title = "testTitle",
                 subtitle = "testSubtitle",
