@@ -10,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.viewutil.asLifecycleOwner
@@ -168,14 +167,15 @@ class RecommendationWidgetView : LinearLayout, AppLogRecTriggerInterface {
     }
 
     private fun setRecTriggerObject(list: List<RecommendationVisitable>?) {
-        eligibleToTrack = list?.any { it is RecommendationVerticalModel }.orFalse()
-        if(!eligibleToTrack) return
-        val model = list?.firstOrNull()
-        recTriggerObject = RecommendationTriggerObject(
-            sessionId = model?.appLog?.sessionId.orEmpty(),
-            requestId = model?.appLog?.requestId.orEmpty(),
-            moduleName = model?.metadata?.pageName.orEmpty(),
-        )
+        val model = list?.find { it is RecommendationVerticalModel && it.widget.recommendationItemList.isNotEmpty() }
+        if(model != null) {
+            eligibleToTrack = true
+            recTriggerObject = RecommendationTriggerObject(
+                sessionId = model.appLog.sessionId,
+                requestId = model.appLog.requestId,
+                moduleName = model.metadata.pageName,
+            )
+        }
     }
 
     fun recycle() {

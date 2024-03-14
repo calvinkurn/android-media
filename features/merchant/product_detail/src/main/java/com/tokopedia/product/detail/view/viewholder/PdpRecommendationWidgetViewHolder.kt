@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.byteio.AppLogRecTriggerInterface
 import com.tokopedia.analytics.byteio.RecommendationTriggerObject
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -52,5 +53,9 @@ class PdpRecommendationWidgetViewHolder(
 
     override fun getRecommendationTriggerObject(): RecommendationTriggerObject? {
         return binding?.recomWidget?.getRecommendationTriggerObject()
+    }
+
+    override fun isEligibleToTrack(): Boolean {
+        return binding?.recomWidget?.isEligibleToTrack().orFalse()
     }
 }
