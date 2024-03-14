@@ -776,7 +776,7 @@ class CartRevampFragment :
                 binding?.vDisabledGoToCourierPageButton?.setOnClickListener {
                     guardCartClick {
                         if (CartDataHelper.getAllAvailableCartItemData(viewModel.cartDataList.value)
-                            .isNotEmpty()
+                                .isNotEmpty()
                         ) {
                             showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
                         }
@@ -2436,10 +2436,10 @@ class CartRevampFragment :
         val firstVisibleItemData = adapterData[topItemPosition]
 
         if ((
-            CartDataHelper.getAllAvailableCartItemData(adapterData).isNotEmpty() &&
-                CartDataHelper.hasSelectedCartItem(adapterData) &&
-                firstVisibleItemData !is CartSelectedAmountHolderData
-            ) || binderHelper.openCount > 1
+                CartDataHelper.getAllAvailableCartItemData(adapterData).isNotEmpty() &&
+                    CartDataHelper.hasSelectedCartItem(adapterData) &&
+                    firstVisibleItemData !is CartSelectedAmountHolderData
+                ) || binderHelper.openCount > 1
         ) {
             disableSwipeRefresh()
             setTopLayoutVisibility(true)
@@ -3915,10 +3915,10 @@ class CartRevampFragment :
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
                     newAddOnTitle = addOnProductDataResult.aggregatedData.title
                     newAddOnPrice = "(${
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        addOnProductDataResult.aggregatedData.price,
-                        false
-                    ).removeDecimalSuffix()
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            addOnProductDataResult.aggregatedData.price,
+                            false
+                        ).removeDecimalSuffix()
                     })"
                 }
 
@@ -5057,9 +5057,9 @@ class CartRevampFragment :
             override fun getSpanSize(position: Int): Int {
                 return if (position != RecyclerView.NO_POSITION) {
                     if (position < (
-                        cartAdapter?.itemCount
-                            ?: 0
-                        ) && cartAdapter?.getItemViewType(position) == CartRecommendationViewHolder.LAYOUT
+                            cartAdapter?.itemCount
+                                ?: 0
+                            ) && cartAdapter?.getItemViewType(position) == CartRecommendationViewHolder.LAYOUT
                     ) {
                         SPAN_SIZE_ONE
                     } else {
@@ -5237,9 +5237,9 @@ class CartRevampFragment :
             plusCoachMark?.dismissCoachMark()
             mainFlowCoachMark?.dismissCoachMark()
             if ((
-                viewModel.cartModel.cartListData?.onboardingData?.size
-                    ?: 0
-                ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
+                    viewModel.cartModel.cartListData?.onboardingData?.size
+                        ?: 0
+                    ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
             ) {
                 return
             }
@@ -6072,18 +6072,18 @@ class CartRevampFragment :
                 refreshCartWithProgressDialog(CartViewModel.GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
             }
 
-                override fun getLocalizingAddressHostSourceBottomSheet(): String {
-                    return CART_PAGE
-                }
+            override fun getLocalizingAddressHostSourceBottomSheet(): String {
+                return CART_PAGE
+            }
 
-                override fun onLocalizingAddressLoginSuccessBottomSheet() {
-                    // no-op
-                }
+            override fun onLocalizingAddressLoginSuccessBottomSheet() {
+                // no-op
+            }
 
-                override fun onDismissChooseAddressBottomSheet() {
-                    // no-op
-                }
-            })
+            override fun onDismissChooseAddressBottomSheet() {
+                // no-op
+            }
+        })
         chooseAddressBottomSheet.show(childFragmentManager)
     }
 
@@ -6185,14 +6185,16 @@ class CartRevampFragment :
 
     override fun onChangeVariantClicked(
         productId: String,
-        shopId: String
+        shopId: String,
+        cartId: String
     ) {
-        openVariantBottomSheet(productId, shopId)
+        openVariantBottomSheet(productId, shopId, cartId)
     }
 
     private fun openVariantBottomSheet(
         productId: String,
-        shopId: String
+        shopId: String,
+        cartId: String
     ) {
         context?.let {
             AtcVariantHelper.goToAtcVariant(
