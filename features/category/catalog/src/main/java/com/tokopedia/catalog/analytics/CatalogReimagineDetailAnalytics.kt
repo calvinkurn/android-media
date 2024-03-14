@@ -25,6 +25,8 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_SCREEN_NAME
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_TRACKER_ID
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.KEY_USER_ID
 import com.tokopedia.catalog.domain.model.CatalogProductItem
+import com.tokopedia.catalog.domain.model.CatalogProductListResponse
+import com.tokopedia.catalog.ui.model.CatalogProductListUiModel
 import com.tokopedia.oldcatalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.oldcatalog.model.util.CatalogUtil
 import com.tokopedia.track.TrackApp
@@ -220,6 +222,61 @@ object CatalogReimagineDetailAnalytics {
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
+    fun sendEventAtc(
+        event: String,
+        eventAction: String,
+        eventCategory: String,
+        catalogId: String,
+        trackerId: String = "",
+        item: CatalogProductListUiModel.CatalogProductUiModel,
+        searchFilterMap: HashMap<String, String>?,
+        position: Int,
+        userId: String,
+        catalogUrl: String,
+        productName: String
+    ) {
+        val list = ArrayList<Map<String, Any>>()
+        val productMap = HashMap<String, Any>()
+        productMap[KEY_ITEM_CATEGORY] = item.categoryId
+        productMap[KEY_ITEM_ID] = item.productID
+        productMap[CatalogDetailAnalytics.KEYS.LIST] =
+            CatalogDetailAnalytics.getCatalogTrackingUrl(catalogUrl)
+        productMap[KEY_ITEM_NAME] = productName
+        productMap[KEY_DIMENSION61] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
+        productMap[KEY_INDEX] = position
+        val price = item.price.original.ifEmpty {
+            item.price.text
+        }
+        productMap[KEY_PRICE] = CurrencyFormatHelper.convertRupiahToInt(
+            CurrencyFormatHelper.convertRupiahToInt(price).toString()
+        ).toString()
+        list.add(productMap)
+
+        val eCommerce = mapOf(
+            CatalogDetailAnalytics.KEYS.CLICK to mapOf(
+                CatalogDetailAnalytics.KEYS.ACTION_FIELD to mapOf(
+                    CatalogDetailAnalytics.KEYS.LIST to CatalogDetailAnalytics.getCatalogTrackingUrl(
+                        getCatalogTrackingUrl(catalogUrl)
+                    )
+                ),
+                CatalogDetailAnalytics.KEYS.PRODUCTS to list
+            )
+        )
+
+        val map = HashMap<String, Any>()
+        map[KEY_EVENT] = event
+        map[KEY_EVENT_CATEGORY] = eventCategory
+        map[KEY_EVENT_ACTION] = eventAction
+        map[KEY_EVENT_LABEL] = getCatalogEventLabel(catalogId)
+        map[KEY_TRACKER_ID] = trackerId
+        map[KEY_BUSINESS_UNIT] = BUSINESS_UNITS
+        map[KEY_CURRENT_SITE] = CURRENT_SITE
+        map[KEY_ITEM_LIST] = getCatalogTrackingUrl(catalogUrl)
+        map[KEY_ECOMMERCE] = eCommerce
+        map[KEY_USER_ID] = userId
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
     fun sendEvent(
         event: String,
         eventAction: String,
@@ -243,6 +300,61 @@ object CatalogReimagineDetailAnalytics {
         productMap[KEY_INDEX] = position
         productMap[KEY_PRICE] = CurrencyFormatHelper.convertRupiahToInt(
             CurrencyFormatHelper.convertRupiahToInt(item.priceString).toString()
+        ).toString()
+        list.add(productMap)
+
+        val eCommerce = mapOf(
+            CatalogDetailAnalytics.KEYS.CLICK to mapOf(
+                CatalogDetailAnalytics.KEYS.ACTION_FIELD to mapOf(
+                    CatalogDetailAnalytics.KEYS.LIST to CatalogDetailAnalytics.getCatalogTrackingUrl(
+                        getCatalogTrackingUrl(catalogUrl)
+                    )
+                ),
+                CatalogDetailAnalytics.KEYS.PRODUCTS to list
+            )
+        )
+
+        val map = HashMap<String, Any>()
+        map[KEY_EVENT] = event
+        map[KEY_EVENT_CATEGORY] = eventCategory
+        map[KEY_EVENT_ACTION] = eventAction
+        map[KEY_EVENT_LABEL] = getCatalogEventLabel(catalogId)
+        map[KEY_TRACKER_ID] = trackerId
+        map[KEY_BUSINESS_UNIT] = BUSINESS_UNITS
+        map[KEY_CURRENT_SITE] = CURRENT_SITE
+        map[KEY_ITEM_LIST] = getCatalogTrackingUrl(catalogUrl)
+        map[KEY_ECOMMERCE] = eCommerce
+        map[KEY_USER_ID] = userId
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    fun sendEvent(
+        event: String,
+        eventAction: String,
+        eventCategory: String,
+        catalogId: String,
+        trackerId: String = "",
+        item: CatalogProductListUiModel.CatalogProductUiModel,
+        searchFilterMap: HashMap<String, String>?,
+        position: Int,
+        userId: String,
+        catalogUrl: String,
+        productName: String
+    ) {
+        val list = ArrayList<Map<String, Any>>()
+        val productMap = HashMap<String, Any>()
+        productMap[KEY_ITEM_CATEGORY] = item.categoryId
+        productMap[KEY_ITEM_ID] = item.productID
+        productMap[CatalogDetailAnalytics.KEYS.LIST] =
+            CatalogDetailAnalytics.getCatalogTrackingUrl(catalogUrl)
+        productMap[KEY_ITEM_NAME] = productName
+        productMap[KEY_DIMENSION61] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
+        productMap[KEY_INDEX] = position
+        val price = item.price.original.ifEmpty {
+            item.price.text
+        }
+        productMap[KEY_PRICE] = CurrencyFormatHelper.convertRupiahToInt(
+            CurrencyFormatHelper.convertRupiahToInt(price).toString()
         ).toString()
         list.add(productMap)
 
@@ -316,6 +428,54 @@ object CatalogReimagineDetailAnalytics {
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
+    fun sendEventImpression(
+        event: String,
+        eventAction: String,
+        eventCategory: String,
+        catalogId: String,
+        trackerId: String = "",
+        item: CatalogProductListUiModel.CatalogProductUiModel,
+        searchFilterMap: HashMap<String, String>?,
+        position: Int,
+        userId: String,
+        catalogUrl: String,
+        productName: String
+    ) {
+        val list = ArrayList<Map<String, Any>>()
+        val productMap = HashMap<String, Any>()
+        productMap[KEY_ITEM_CATEGORY] = item.categoryId
+        productMap[KEY_DIMENSION61] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
+        productMap[KEY_ITEM_ID] = item.productID
+        productMap[CatalogDetailAnalytics.KEYS.LIST] =
+            CatalogDetailAnalytics.getCatalogTrackingUrl(catalogUrl)
+        productMap[KEY_ITEM_NAME] = productName
+        productMap[KEY_INDEX] = position
+        val price = item.price.original.ifEmpty {
+            item.price.text
+        }
+        productMap[KEY_PRICE] = CurrencyFormatHelper.convertRupiahToInt(
+            CurrencyFormatHelper.convertRupiahToInt(price).toString()
+        ).toString()
+        list.add(productMap)
+
+        val eCommerce = mapOf(
+            CatalogDetailAnalytics.KEYS.CURRENCY_CODE to CatalogDetailAnalytics.KEYS.IDR,
+            CatalogDetailAnalytics.KEYS.IMPRESSION to list
+        )
+
+        val map = HashMap<String, Any>()
+        map[KEY_EVENT] = event
+        map[KEY_EVENT_CATEGORY] = eventCategory
+        map[KEY_EVENT_ACTION] = eventAction
+        map[KEY_EVENT_LABEL] = getCatalogEventLabel(catalogId)
+        map[KEY_TRACKER_ID] = trackerId
+        map[KEY_BUSINESS_UNIT] = BUSINESS_UNITS
+        map[KEY_CURRENT_SITE] = CURRENT_SITE
+        map[KEY_ITEM_LIST] = getCatalogTrackingUrl(catalogUrl)
+        map[KEY_ECOMMERCE] = eCommerce
+        map[KEY_USER_ID] = userId
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
     private fun getCatalogEventLabel(label: String): String {
         return "catalog id: $label"
     }

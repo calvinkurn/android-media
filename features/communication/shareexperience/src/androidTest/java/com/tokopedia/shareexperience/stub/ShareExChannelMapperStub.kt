@@ -30,7 +30,7 @@ class ShareExChannelMapperStub @Inject constructor(
 
     var stubCommonChannel = false
 
-    override fun generateSocialMediaChannel(): ShareExChannelModel {
+    override fun generateSocialMediaChannel(isDefault: Boolean): ShareExChannelModel {
         return socialChannel
     }
 

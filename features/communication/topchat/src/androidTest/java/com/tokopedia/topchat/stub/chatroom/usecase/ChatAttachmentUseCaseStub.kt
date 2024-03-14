@@ -39,6 +39,10 @@ class ChatAttachmentUseCaseStub @Inject constructor(
         "buyer/success_get_chat_attachments_archived_product.json"
     private val sellerArchivedProductPath =
         "seller/success_get_chat_attachments_archived_product.json"
+    private val sellerOrderCancellationBeforePath =
+        "seller/order_cancellation/success_get_attachment_order_cancellation_before.json"
+    private val sellerOrderCancellationAfterPath =
+        "seller/order_cancellation/success_get_attachment_order_cancellation_after.json"
 
     val chatAttachmentNoVariant: ChatAttachmentResponse
         get() = alterResponseOf(defaultChatAttachmentResponsePath) {
@@ -280,6 +284,23 @@ class ChatAttachmentUseCaseStub @Inject constructor(
 
     /**
      * <!-- End Product Archived -->
+     */
+
+    /**
+     * <!-- Start Order Cancellation -->
+     */
+    val sellerOrderCancellationBeforeAttachment: ChatAttachmentResponse
+        get() = alterResponseOf(sellerOrderCancellationBeforePath) {
+            // no op
+        }
+
+    val sellerOrderCancellationAfterAttachment: ChatAttachmentResponse
+        get() = alterResponseOf(sellerOrderCancellationAfterPath) {
+            // no-op
+        }
+
+    /**
+     * <!-- End Order Cancellation -->
      */
 
     private fun alterAttachmentAttributesAt(

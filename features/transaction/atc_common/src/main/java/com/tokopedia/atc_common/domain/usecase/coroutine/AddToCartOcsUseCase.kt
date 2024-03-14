@@ -40,27 +40,33 @@ class AddToCartOcsUseCase @Inject constructor(
         private const val PARAM_UC_UT = "uc_ut_param"
         private const val PARAM_IS_TRADE_IN = "is_trade_in"
         private const val PARAM_SHIPPING_PRICE = "shipping_price"
+        private const val PARAM_ATC_FROM_EXTERNAL_SOURCE = "atc_from_external_source"
     }
 
     override fun graphqlQuery(): String = ADD_TO_CART_OCS_QUERY
 
     @GqlQuery(QUERY_ADD_TO_CART_OCS, ADD_TO_CART_OCS_QUERY)
     override suspend fun execute(params: AddToCartOcsRequestParams): AddToCartDataModel {
+        val atcParam = mutableMapOf(
+            PARAM_PRODUCT_ID to params.productId,
+            PARAM_SHOP_ID to params.shopId,
+            PARAM_QUANTITY to params.quantity,
+            PARAM_NOTES to params.notes,
+            PARAM_WAREHOUSE_ID to params.warehouseId,
+            PARAM_CUSTOMER_ID to params.customerId,
+            PARAM_TRACKER_ATTRIBUTION to params.trackerAttribution,
+            PARAM_TRACKER_LIST_NAME to params.trackerListName,
+            PARAM_UC_UT to params.utParam,
+            PARAM_IS_TRADE_IN to params.isTradeIn,
+            PARAM_SHIPPING_PRICE to params.shippingPrice.roundToLong(),
+            KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+        )
+        val atcFromExternalSource = params.atcFromExternalSource
+        if (atcFromExternalSource != null) {
+            atcParam[PARAM_ATC_FROM_EXTERNAL_SOURCE] = atcFromExternalSource
+        }
         val param = mapOf(
-            PARAM_ATC to mapOf(
-                PARAM_PRODUCT_ID to params.productId,
-                PARAM_SHOP_ID to params.shopId,
-                PARAM_QUANTITY to params.quantity,
-                PARAM_NOTES to params.notes,
-                PARAM_WAREHOUSE_ID to params.warehouseId,
-                PARAM_CUSTOMER_ID to params.customerId,
-                PARAM_TRACKER_ATTRIBUTION to params.trackerAttribution,
-                PARAM_TRACKER_LIST_NAME to params.trackerListName,
-                PARAM_UC_UT to params.utParam,
-                PARAM_IS_TRADE_IN to params.isTradeIn,
-                PARAM_SHIPPING_PRICE to params.shippingPrice.roundToLong(),
-                KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
-            )
+            PARAM_ATC to atcParam
         )
         val request = GraphqlRequest(
             AddToCartOcsQuery(),

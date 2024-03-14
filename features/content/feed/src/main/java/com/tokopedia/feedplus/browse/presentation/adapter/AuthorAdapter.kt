@@ -52,7 +52,7 @@ internal class AuthorAdapter(
         return when (val item = getItem(position)) {
             LoadingModel -> TYPE_LOADING
             is AuthorWidgetModel -> TYPE_AUTHOR
-            else -> throw UnsupportedOperationException("Type of item $item is not supported")
+            else -> error("Type of item $item is not supported")
         }
     }
 

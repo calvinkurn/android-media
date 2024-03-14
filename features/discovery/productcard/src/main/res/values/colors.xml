@@ -59,6 +59,6 @@
 
     <color name="dms_product_card_reimagine_image_overlay">#08000000</color>
     <color name="dms_product_card_reimagine_safe_product_image">#C7C6C6</color>
-    <color name="dms_product_card_bg_stock_info_carousel_color">@color/Unify_N50</color>
-    <color name="dms_product_card_bg_stock_info_stockbar_track_color">@color/Unify_N100</color>
+    <color name="dms_product_card_bg_stock_info_carousel_color">@color/Unify_NN50</color>
+    <color name="dms_product_card_bg_stock_info_stockbar_track_color">@color/Unify_NN100</color>
 </resources>
