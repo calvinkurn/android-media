@@ -349,4 +349,6 @@ public class RemoteConfigKey {
     public static final String ANDROID_PDP_DEBOUNCE_TIME = "android_pdp_debounce_time";
     public static final String ANDROID_ENABLE_PURCHASE_INFO = "android_enable_purchase_info";
 
+    public static final String ANDROID_ENABLE_DYNAMIC_SHOP_ADS_POSITION = "android_enable_dynamic_shop_ads_position";
+
 }
