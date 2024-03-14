@@ -611,6 +611,9 @@ object DeeplinkMainApp {
             },
             DLP.startsWith("see-all-category") { _: String ->
                 ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY
+            },
+            DLP.startsWith("all-annotation") { deeplink: String ->
+                DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowAllAnnotation(deeplink)
             }
         ),
         "occ" to mutableListOf(
