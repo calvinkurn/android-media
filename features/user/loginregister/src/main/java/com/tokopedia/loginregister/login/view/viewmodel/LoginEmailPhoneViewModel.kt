@@ -34,8 +34,10 @@ import com.tokopedia.loginregister.login_sdk.data.AuthorizeData
 import com.tokopedia.loginregister.login_sdk.data.SdkAuthorizeParam
 import com.tokopedia.loginregister.login_sdk.data.SdkConsentData
 import com.tokopedia.loginregister.login_sdk.data.SdkConsentParam
+import com.tokopedia.loginregister.login_sdk.data.ValidateClientParam
 import com.tokopedia.loginregister.login_sdk.usecase.AuthorizeSdkUseCase
 import com.tokopedia.loginregister.login_sdk.usecase.LoginSdkConsentUseCase
+import com.tokopedia.loginregister.login_sdk.usecase.ValidateClientUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -70,6 +72,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val getProfileAndAdmin: GetUserInfoAndAdminUseCase,
     private val loginTokenV2UseCase: LoginTokenV2UseCase,
     private val loginSdkConsentUseCase: LoginSdkConsentUseCase,
+    private val validateClientUseCase: ValidateClientUseCase,
     private val authorizeSdkUseCase: AuthorizeSdkUseCase,
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     private val dynamicBannerUseCase: DynamicBannerUseCase,
@@ -524,10 +527,16 @@ class LoginEmailPhoneViewModel @Inject constructor(
         }
     }
 
-    fun validateClient(signCert: String) {
+    fun validateClient(clientId: String, signature: String, packageName: String, redirectUri: String) {
         launch {
             try {
-                mutableValidateClient.value = true
+                val param = ValidateClientParam (
+                    clientId = clientId,
+                    signature = signature,
+                    packageName = packageName,
+                    redirectUri = redirectUri
+                )
+                mutableValidateClient.value = validateClientUseCase(param).data.status
             } catch (e: Exception) {
                 mutableValidateClient.value = false
             }

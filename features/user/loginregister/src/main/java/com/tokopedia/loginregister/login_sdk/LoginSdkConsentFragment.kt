@@ -71,7 +71,12 @@ class LoginSdkConsentFragment: BaseDaggerFragment() {
 
         setupObserver()
 
-        viewModel.validateClient(callerCert)
+        viewModel.validateClient(
+            clientId = arguments?.getString("client_id") ?: "",
+            signature = callerCert,
+            packageName = arguments?.getString("package_name") ?: "",
+            redirectUri = redirectUrl
+        )
     }
 
     private fun setupObserver() {

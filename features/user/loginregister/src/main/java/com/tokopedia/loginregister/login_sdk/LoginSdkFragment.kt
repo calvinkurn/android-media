@@ -16,12 +16,17 @@ class LoginSdkFragment: LoginEmailPhoneFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         redirectUrl = arguments?.getString("redirect_uri") ?: ""
-        viewModel.validateClient(arguments?.getString("sign_cert") ?: "")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
+        viewModel.validateClient(
+            clientId = arguments?.getString("client_id") ?: "",
+            signature = arguments?.getString("sign_cert") ?: "",
+            packageName = arguments?.getString("package_name") ?: "",
+            redirectUri = redirectUrl
+        )
     }
 
     private fun checkLoginStatus() {
