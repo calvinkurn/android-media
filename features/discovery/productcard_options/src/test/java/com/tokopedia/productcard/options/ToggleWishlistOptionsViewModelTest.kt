@@ -2,7 +2,7 @@ package com.tokopedia.productcard.options
 
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.productcard.options.testutils.TestException
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase.WISHSLIST_URL
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsWishlishedUseCase.WISHSLIST_URL
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

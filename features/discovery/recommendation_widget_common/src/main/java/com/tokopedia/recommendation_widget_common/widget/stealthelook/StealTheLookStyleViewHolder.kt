@@ -186,7 +186,7 @@ class StealTheLookStyleViewHolder(
         model.grids.forEach {
             val item = it.recommendationItem
             if (item.isTopAds && item.appUrl.isNotEmpty()) {
-                TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                     CLASS_NAME,
                     item.trackerImageUrl,
                     item.productId.toString(),
@@ -199,7 +199,7 @@ class StealTheLookStyleViewHolder(
 
     private fun sendTopAdsClickTracker(recommendationItem: RecommendationItem) {
         if (recommendationItem.isTopAds && recommendationItem.appUrl.isNotEmpty()) {
-            TopAdsUrlHitter(itemView.context).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
                 CLASS_NAME,
                 recommendationItem.clickUrl,
                 recommendationItem.productId.toString(),

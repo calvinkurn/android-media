@@ -23,7 +23,7 @@
         android:visibility="gone"
         android:text="@string/pdp_title_topads_headline" />
 
-    <com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
+    <com.tokopedia.topads.sdk.old.widget.TopAdsHeadlineView
         android:id="@+id/topads_headline_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

@@ -6,9 +6,9 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.sdk.TopAdsConstants.TopAdsClickUrlTrackerConstant.RESPONSE_HEADER_KEY
-import com.tokopedia.topads.sdk.listener.ImpressionListener
-import com.tokopedia.topads.sdk.listener.TopAdsHeaderResponseListener
-import com.tokopedia.topads.sdk.utils.ImpressionTaskAlert.Companion.getInstance
+import com.tokopedia.topads.sdk.old.listener.ImpressionListener
+import com.tokopedia.topads.sdk.old.listener.TopAdsHeaderResponseListener
+import com.tokopedia.topads.sdk.old.utils.ImpressionTaskAlert.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -32,7 +32,7 @@ class ImpresionTask {
         try {
             var traceElement: StackTraceElement
             var stackTraceElements = Thread.currentThread().stackTrace
-            if (stackTraceElements[CONST_FOUR].className.equals(TopAdsUrlHitter::class.qualifiedName)) {
+            if (stackTraceElements[CONST_FOUR].className.equals(com.tokopedia.topads.sdk.utils.TopAdsUrlHitter::class.qualifiedName)) {
                 traceElement = stackTraceElements[CONST_FIVE]
             } else {
                 traceElement = stackTraceElements[CONST_FOUR]

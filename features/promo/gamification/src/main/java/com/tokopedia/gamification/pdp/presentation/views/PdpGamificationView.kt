@@ -316,7 +316,7 @@ class PdpGamificationView : LinearLayout {
 
     private fun hitWishlistClickUrl(item: RecommendationItem) {
         context?.let {
-            TopAdsUrlHitter(it).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(
                 this::class.java.simpleName,
                 item.clickUrl+CLICK_TYPE_WISHLIST,
                 item.productId.toString(),

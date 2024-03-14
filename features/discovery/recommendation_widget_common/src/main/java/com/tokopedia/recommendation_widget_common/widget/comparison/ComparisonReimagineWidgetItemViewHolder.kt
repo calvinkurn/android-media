@@ -38,7 +38,7 @@ class ComparisonReimagineWidgetItemViewHolder constructor(
             binding?.productCardView?.setOnClickListener {
                 if (comparisonModel.recommendationItem.isTopAds) {
                     val product = comparisonModel.recommendationItem
-                    TopAdsUrlHitter(context).hitClickUrl(
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
                         CLASS_NAME,
                         product.clickUrl,
                         product.productId.toString(),
@@ -64,7 +64,7 @@ class ComparisonReimagineWidgetItemViewHolder constructor(
         binding?.productCardView?.addOnImpressionListener(comparisonModel) {
             if (comparisonModel.recommendationItem.isTopAds) {
                 val product = comparisonModel.recommendationItem
-                TopAdsUrlHitter(context).hitImpressionUrl(
+                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
                     CLASS_NAME,
                     product.trackerImageUrl,
                     product.productId.toString(),

@@ -2484,7 +2484,7 @@ class WishlistCollectionDetailFragment :
         topAdsImageViewModel: TopAdsImageViewModel,
         position: Int
     ) {
-        TopAdsUrlHitter(context).hitImpressionUrl(
+        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
             this::class.java.simpleName,
             topAdsImageViewModel.adViewUrl,
             "",
@@ -2503,7 +2503,7 @@ class WishlistCollectionDetailFragment :
         position: Int
     ) {
         if (recommendationItem.isTopAds) {
-            TopAdsUrlHitter(context).hitImpressionUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
                 this::class.java.simpleName,
                 recommendationItem.trackerImageUrl,
                 recommendationItem.productId.toString(),
@@ -2525,7 +2525,7 @@ class WishlistCollectionDetailFragment :
             userSession.userId
         )
         if (recommendationItem.isTopAds) {
-            TopAdsUrlHitter(context).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
                 this::class.java.simpleName,
                 recommendationItem.clickUrl,
                 recommendationItem.productId.toString(),
@@ -2552,7 +2552,7 @@ class WishlistCollectionDetailFragment :
         position: Int
     ) {
         if (recommendationItem.isTopAds) {
-            TopAdsUrlHitter(context).hitImpressionUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
                 this::class.java.simpleName,
                 recommendationItem.trackerImageUrl,
                 recommendationItem.productId.toString(),
@@ -2577,7 +2577,7 @@ class WishlistCollectionDetailFragment :
             userSession.userId
         )
         if (recommendationItem.isTopAds) {
-            TopAdsUrlHitter(context).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
                 this::class.java.simpleName,
                 recommendationItem.clickUrl,
                 recommendationItem.productId.toString(),

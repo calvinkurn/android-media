@@ -18,12 +18,11 @@ import com.tokopedia.home_recom.util.RecommendationDispatcherTest
 import com.tokopedia.home_recom.util.RecommendationRollenceController
 import com.tokopedia.home_recom.util.Status
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface

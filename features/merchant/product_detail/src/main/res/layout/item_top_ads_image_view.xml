@@ -9,7 +9,7 @@
         android:layout_height="@dimen/thick_divider_height_component"
         android:layout_marginBottom="16dp" />
 
-    <com.tokopedia.topads.sdk.widget.TdnBannerView
+    <com.tokopedia.topads.sdk.old.widget.TdnBannerView
         android:id="@+id/adsTdnView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

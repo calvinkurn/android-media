@@ -24,7 +24,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
@@ -40,13 +40,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeRecommendationViewModel @Inject constructor(
-    private val getHomeRecommendationUseCase: Lazy<GetHomeRecommendationUseCase>,
-    private val getHomeRecommendationCardUseCase: Lazy<GetHomeRecommendationCardUseCase>,
-    private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
-    private val getTopAdsHeadlineUseCase: Lazy<GetTopAdsHeadlineUseCase>,
-    private val userSessionInterface: Lazy<UserSessionInterface>,
-    private val topAdsAddressHelper: Lazy<TopAdsAddressHelper>,
-    homeDispatcher: Lazy<CoroutineDispatchers>
+        private val getHomeRecommendationUseCase: Lazy<GetHomeRecommendationUseCase>,
+        private val getHomeRecommendationCardUseCase: Lazy<GetHomeRecommendationCardUseCase>,
+        private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
+        private val getTopAdsHeadlineUseCase: Lazy<GetTopAdsHeadlineUseCase>,
+        private val userSessionInterface: Lazy<UserSessionInterface>,
+        private val topAdsAddressHelper: Lazy<TopAdsAddressHelper>,
+        homeDispatcher: Lazy<CoroutineDispatchers>
 ) : BaseViewModel(homeDispatcher.get().io) {
 
     companion object {

@@ -16,13 +16,13 @@ import javax.inject.Inject
 
 @SearchScope
 class BroadMatchPresenterDelegate @Inject constructor(
-    private val broadMatchView: BroadMatchView,
-    private val dynamicProductView: InspirationCarouselDynamicProductView,
-    private val topAdsUrlHitter: TopAdsUrlHitter,
-    private val classNameProvider: ClassNameProvider,
-    private val applinkModifier: ApplinkModifier,
-    private val pagination: Pagination,
-    private val suggestionPresenter: SuggestionPresenter,
+        private val broadMatchView: BroadMatchView,
+        private val dynamicProductView: InspirationCarouselDynamicProductView,
+        private val topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter,
+        private val classNameProvider: ClassNameProvider,
+        private val applinkModifier: ApplinkModifier,
+        private val pagination: Pagination,
+        private val suggestionPresenter: SuggestionPresenter,
 ) : BroadMatchPresenter {
 
     var relatedDataView: RelatedDataView? = null

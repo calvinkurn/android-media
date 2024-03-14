@@ -33,7 +33,7 @@ class CarouselProductCardViewHolder (
             setProductModel(element.productModel)
             addOnImpressionListener(element.impressHolder) {
                 if(element.grid.isTopads){
-                    TopAdsUrlHitter(className).hitImpressionUrl(context, element.grid.impression,
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(className).hitImpressionUrl(context, element.grid.impression,
                             element.grid.id,
                             element.grid.name,
                             element.grid.imageUrl,
@@ -44,7 +44,7 @@ class CarouselProductCardViewHolder (
             }
             setOnClickListener {
                 if(element.grid.isTopads){
-                    TopAdsUrlHitter(className).hitClickUrl(context, element.grid.productClickUrl,
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(className).hitClickUrl(context, element.grid.productClickUrl,
                             element.grid.id,
                             element.grid.name,
                             element.grid.imageUrl,

@@ -36,7 +36,6 @@ import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.databinding.SearchResultShopFragmentLayoutBinding
 import com.tokopedia.search.result.SearchViewModel
-import com.tokopedia.search.result.presentation.view.activity.SearchComponent
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation

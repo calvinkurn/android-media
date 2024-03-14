@@ -65,7 +65,7 @@ class BannerTopAdsViewHolder constructor(
             recommendationBannerTopAdsUiModel,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                         this::class.java.simpleName,
                         recommendationBannerTopAdsUiModel.topAdsImageViewModel?.adViewUrl,
                         "",
@@ -84,7 +84,7 @@ class BannerTopAdsViewHolder constructor(
 
     private fun setBannerTopAdsClickListener(element: BannerTopAdsModel) {
         binding?.homeRecomTopadsImageView?.setOnClickListener {
-            TopAdsUrlHitter(itemView.context).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
                 this::class.java.simpleName,
                 element.topAdsImageViewModel?.adClickUrl,
                 "",

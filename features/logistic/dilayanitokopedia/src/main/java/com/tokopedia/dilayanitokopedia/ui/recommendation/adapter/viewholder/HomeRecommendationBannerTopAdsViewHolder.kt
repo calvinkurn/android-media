@@ -35,7 +35,7 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) :
     override fun bind(element: HomeRecommendationBannerTopAdsDataModel, listener: SmartListener) {
         loadImageTopAds(element, listener as HomeRecommendationListener)
         binding?.homeRecomTopadsImageView?.setOnClickListener {
-            TopAdsUrlHitter(itemView.context).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
                 this::class.java.simpleName,
                 element.topAdsImageViewModel?.adClickUrl,
                 "",
@@ -56,7 +56,7 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) :
                 recommendationBannerTopAdsDataModelDataModel,
                 object : ViewHintListener {
                     override fun onViewHint() {
-                        TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                             this::class.java.simpleName,
                             recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.adViewUrl,
                             "",

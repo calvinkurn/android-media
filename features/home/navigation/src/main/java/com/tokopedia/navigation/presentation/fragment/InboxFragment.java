@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
@@ -58,7 +57,6 @@ import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener;
 import com.tokopedia.topads.sdk.utils.TdnHelper;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response;
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response;
@@ -72,9 +70,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import kotlin.Unit;
-import kotlin.jvm.functions.Function2;
 
 /**
  * Created by meta on 19/06/18.

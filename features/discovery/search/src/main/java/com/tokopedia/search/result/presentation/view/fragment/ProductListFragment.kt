@@ -132,7 +132,6 @@ import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.resources.isDarkMode
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.video_widget.VideoPlayerAutoplay
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor

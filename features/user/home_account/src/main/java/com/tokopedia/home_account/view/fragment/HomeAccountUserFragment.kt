@@ -443,7 +443,7 @@ open class HomeAccountUserFragment :
         }
         activity?.let {
             if (item.isTopAds) {
-                TopAdsUrlHitter(it)
+                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it)
                     .hitImpressionUrl(
                         it::class.qualifiedName,
                         item.trackerImageUrl,
@@ -460,7 +460,7 @@ open class HomeAccountUserFragment :
         homeAccountAnalytic.eventAccountProductClick(item, adapterPosition, widgetTitle)
         activity?.let {
             if (item.isTopAds) {
-                TopAdsUrlHitter(it).hitClickUrl(
+                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(
                     it::class.qualifiedName,
                     item.clickUrl,
                     item.productId.toString(),
@@ -1723,7 +1723,7 @@ open class HomeAccountUserFragment :
 
     private fun hitWishlistClickUrl(item: ProductCardOptionsModel) {
         context?.let {
-            TopAdsUrlHitter(it).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(
                 this::class.java.simpleName,
                 item.topAdsClickUrl + CLICK_TYPE_WISHLIST,
                 item.productId,

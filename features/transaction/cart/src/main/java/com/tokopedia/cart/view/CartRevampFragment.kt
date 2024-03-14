@@ -813,7 +813,7 @@ class CartRevampFragment :
 
     override fun onRecentViewProductClicked(position: Int, recommendationItem: RecommendationItem) {
         if (recommendationItem.isTopAds) {
-            TopAdsUrlHitter(context?.applicationContext).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context?.applicationContext).hitClickUrl(
                 CART_CLASS_QUALIFIED_NAME,
                 recommendationItem.clickUrl,
                 recommendationItem.productId.toString(),
@@ -884,7 +884,7 @@ class CartRevampFragment :
         when {
             topAds -> {
                 activity?.let {
-                    TopAdsUrlHitter(CART_CLASS_QUALIFIED_NAME).hitClickUrl(
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(CART_CLASS_QUALIFIED_NAME).hitClickUrl(
                         it,
                         clickUrl,
                         productId,
@@ -907,7 +907,7 @@ class CartRevampFragment :
         when {
             topAds -> {
                 activity?.let {
-                    TopAdsUrlHitter(CART_CLASS_QUALIFIED_NAME).hitImpressionUrl(
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(CART_CLASS_QUALIFIED_NAME).hitImpressionUrl(
                         it,
                         url,
                         productId,
@@ -1163,7 +1163,7 @@ class CartRevampFragment :
         recommendationItem: RecommendationItem
     ) {
         if (recommendationItem.isTopAds) {
-            TopAdsUrlHitter(context?.applicationContext).hitImpressionUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context?.applicationContext).hitImpressionUrl(
                 CART_CLASS_QUALIFIED_NAME,
                 recommendationItem.trackerImageUrl,
                 recommendationItem.productId.toString(),
@@ -4620,7 +4620,7 @@ class CartRevampFragment :
         val imageUrl = recommendationItem.imageUrl
         val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click"
         activity?.let {
-            TopAdsUrlHitter(context).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
                 CART_CLASS_QUALIFIED_NAME,
                 url,
                 productId,
@@ -4644,7 +4644,7 @@ class CartRevampFragment :
         val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click"
 
         activity?.let {
-            TopAdsUrlHitter(CART_CLASS_QUALIFIED_NAME).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(CART_CLASS_QUALIFIED_NAME).hitClickUrl(
                 it,
                 url,
                 productId,
@@ -4661,7 +4661,7 @@ class CartRevampFragment :
         val url = "${bannerShopProductUiModel.adsClickUrl}&click_source=ATC_direct_click"
 
         activity?.let {
-            TopAdsUrlHitter(CART_CLASS_QUALIFIED_NAME).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(CART_CLASS_QUALIFIED_NAME).hitClickUrl(
                 it,
                 url,
                 productId,

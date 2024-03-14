@@ -37,7 +37,7 @@ class ComparisonBpcWidgetItemViewHolder(
             productCardView.setOnClickListener {
                 if (element.recommendationItem.isTopAds) {
                     val product = element.recommendationItem
-                    TopAdsUrlHitter(context).hitClickUrl(
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
                         CLASS_NAME,
                         product.clickUrl,
                         product.productId.toString(),
@@ -50,7 +50,7 @@ class ComparisonBpcWidgetItemViewHolder(
             productCardView.addOnImpressionListener(element) {
                 if (element.recommendationItem.isTopAds) {
                     val product = element.recommendationItem
-                    TopAdsUrlHitter(context).hitImpressionUrl(
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
                         CLASS_NAME,
                         product.trackerImageUrl,
                         product.productId.toString(),

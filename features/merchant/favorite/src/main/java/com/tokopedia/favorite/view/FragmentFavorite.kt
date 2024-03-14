@@ -423,7 +423,7 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
     ) {
         if (!alreadyHitImpressionUrls.contains(url)) {
             alreadyHitImpressionUrls.add(url)
-            TopAdsUrlHitter(context).hitImpressionUrl(className, url, productId, productName, imageUrl)
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(className, url, productId, productName, imageUrl)
         }
     }
 

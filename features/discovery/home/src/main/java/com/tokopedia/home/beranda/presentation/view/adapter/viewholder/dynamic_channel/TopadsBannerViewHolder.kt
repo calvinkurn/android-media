@@ -75,7 +75,7 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
                         element.topAdsImageViewModel?.bannerId?:""
                 )
 
-                TopAdsUrlHitter(className).hitImpressionUrl(
+                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(className).hitImpressionUrl(
                         itemView.context,
                         viewUrl,
                         "",

@@ -115,7 +115,7 @@ class RecommendationCarouselWidgetView :
 
                 if (model.listener?.onProductImpress(carouselProductCardPosition, productRecommendation) == true) return
                 if (productCardModel.isTopAds) {
-                    TopAdsUrlHitter(context).hitImpressionUrl(
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
                         this@RecommendationCarouselWidgetView::class.java.simpleName,
                         productRecommendation.trackerImageUrl,
                         productRecommendation.productId.toString(),
@@ -150,7 +150,7 @@ class RecommendationCarouselWidgetView :
 
                 if (model.listener?.onProductClick(carouselProductCardPosition, productRecommendation) == true) return
                 if (productCardModel.isTopAds) {
-                    TopAdsUrlHitter(context).hitClickUrl(
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
                         this@RecommendationCarouselWidgetView::class.java.simpleName,
                         productRecommendation.clickUrl,
                         productRecommendation.productId.toString(),

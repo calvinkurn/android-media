@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.domain.interactor.repository
 
 import android.os.Bundle
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import dagger.Lazy
 import javax.inject.Inject

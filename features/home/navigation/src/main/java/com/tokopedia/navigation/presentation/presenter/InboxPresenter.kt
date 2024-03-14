@@ -15,10 +15,10 @@ import com.tokopedia.navigation.presentation.view.InboxView
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.old.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.topads.sdk.utils.*
-import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,13 +34,13 @@ import javax.inject.Inject
 const val TOPADS_HEADLINE_VALUE_SRC = "inbox"
 
 class InboxPresenter @Inject constructor(
-    private val getNotificationUseCase: GetDrawerNotificationUseCase,
-    private val getRecommendationUseCase: GetRecommendationUseCase,
-    private val userSessionInterface: UserSessionInterface,
-    private val addToWishListV2UseCase: AddToWishlistV2UseCase,
-    private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-    private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
-    private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel
+        private val getNotificationUseCase: GetDrawerNotificationUseCase,
+        private val getRecommendationUseCase: GetRecommendationUseCase,
+        private val userSessionInterface: UserSessionInterface,
+        private val addToWishListV2UseCase: AddToWishlistV2UseCase,
+        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+        private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
+        private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel
 ) : BaseDaggerPresenter<CustomerView>() {
 
     private var inboxView: InboxView? = null

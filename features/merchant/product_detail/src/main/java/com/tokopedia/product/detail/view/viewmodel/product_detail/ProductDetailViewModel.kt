@@ -97,9 +97,9 @@ import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
-import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase.Companion.TIMEOUT_REMOTE_CONFIG_KEY
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase
+import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase.Companion.TIMEOUT_REMOTE_CONFIG_KEY
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
@@ -137,35 +137,35 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ProductDetailViewModel @Inject constructor(
-    private val dispatcher: CoroutineDispatchers,
-    private val getPdpLayoutUseCase: Lazy<GetPdpLayoutUseCase>,
-    private val getProductInfoP2LoginUseCase: Lazy<GetProductInfoP2LoginUseCase>,
-    private val getProductInfoP2OtherUseCase: Lazy<GetProductInfoP2OtherUseCase>,
-    private val getP2DataAndMiniCartUseCase: Lazy<GetP2DataAndMiniCartUseCase>,
-    private val toggleFavoriteUseCase: Lazy<ToggleFavoriteUseCase>,
-    private val deleteWishlistV2UseCase: Lazy<DeleteWishlistV2UseCase>,
-    private val addToWishlistV2UseCase: Lazy<AddToWishlistV2UseCase>,
-    private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
-    private val recommendationNowAffiliate: Lazy<RecommendationNowAffiliate>,
-    private val trackAffiliateUseCase: Lazy<TrackAffiliateUseCase>,
-    private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
-    private val addToCartUseCase: Lazy<AddToCartUseCase>,
-    private val addToCartOcsUseCase: Lazy<AddToCartOcsUseCase>,
-    private val addToCartOccUseCase: Lazy<AddToCartOccMultiUseCase>,
-    private val toggleNotifyMeUseCase: Lazy<ToggleNotifyMeUseCase>,
-    private val discussionMostHelpfulUseCase: Lazy<DiscussionMostHelpfulUseCase>,
-    private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
-    private val miniCartListSimplifiedUseCase: Lazy<GetMiniCartListSimplifiedUseCase>,
-    private val updateCartUseCase: Lazy<UpdateCartUseCase>,
-    private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
-    private val getTopadsIsAdsUseCase: Lazy<GetTopadsIsAdsUseCase>,
-    private val affiliateEligibilityUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
-    private val remoteConfig: RemoteConfig,
-    val userSessionInterface: UserSessionInterface,
-    private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
-    private val productRecommSubViewModel: ProductRecommSubViewModel,
-    playWidgetSubViewModel: PlayWidgetSubViewModel,
-    thumbnailVariantSubViewModel: ThumbnailVariantSubViewModel
+        private val dispatcher: CoroutineDispatchers,
+        private val getPdpLayoutUseCase: Lazy<GetPdpLayoutUseCase>,
+        private val getProductInfoP2LoginUseCase: Lazy<GetProductInfoP2LoginUseCase>,
+        private val getProductInfoP2OtherUseCase: Lazy<GetProductInfoP2OtherUseCase>,
+        private val getP2DataAndMiniCartUseCase: Lazy<GetP2DataAndMiniCartUseCase>,
+        private val toggleFavoriteUseCase: Lazy<ToggleFavoriteUseCase>,
+        private val deleteWishlistV2UseCase: Lazy<DeleteWishlistV2UseCase>,
+        private val addToWishlistV2UseCase: Lazy<AddToWishlistV2UseCase>,
+        private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
+        private val recommendationNowAffiliate: Lazy<RecommendationNowAffiliate>,
+        private val trackAffiliateUseCase: Lazy<TrackAffiliateUseCase>,
+        private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
+        private val addToCartUseCase: Lazy<AddToCartUseCase>,
+        private val addToCartOcsUseCase: Lazy<AddToCartOcsUseCase>,
+        private val addToCartOccUseCase: Lazy<AddToCartOccMultiUseCase>,
+        private val toggleNotifyMeUseCase: Lazy<ToggleNotifyMeUseCase>,
+        private val discussionMostHelpfulUseCase: Lazy<DiscussionMostHelpfulUseCase>,
+        private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
+        private val miniCartListSimplifiedUseCase: Lazy<GetMiniCartListSimplifiedUseCase>,
+        private val updateCartUseCase: Lazy<UpdateCartUseCase>,
+        private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
+        private val getTopadsIsAdsUseCase: Lazy<GetTopadsIsAdsUseCase>,
+        private val affiliateEligibilityUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
+        private val remoteConfig: RemoteConfig,
+        val userSessionInterface: UserSessionInterface,
+        private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
+        private val productRecommSubViewModel: ProductRecommSubViewModel,
+        playWidgetSubViewModel: PlayWidgetSubViewModel,
+        thumbnailVariantSubViewModel: ThumbnailVariantSubViewModel
 ) : ParentSubViewModel(dispatcher.main, productRecommSubViewModel, playWidgetSubViewModel, thumbnailVariantSubViewModel),
     IProductRecommSubViewModel by productRecommSubViewModel,
     IPlayWidgetSubViewModel by playWidgetSubViewModel,

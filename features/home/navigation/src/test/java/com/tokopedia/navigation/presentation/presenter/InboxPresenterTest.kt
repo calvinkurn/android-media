@@ -8,8 +8,8 @@ import com.tokopedia.navigation.presentation.view.InboxView
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
-import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.old.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response

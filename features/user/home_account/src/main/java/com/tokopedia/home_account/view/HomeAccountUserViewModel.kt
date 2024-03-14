@@ -41,7 +41,7 @@ import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.ocl.OclPreference
 import com.tokopedia.sessioncommon.domain.usecase.GetOclStatusUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -56,29 +56,29 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeAccountUserViewModel @Inject constructor(
-    private val userSession: UserSessionInterface,
-    private val accountPref: AccountPreference,
-    private val fingerprintPreference: FingerprintPreference,
-    private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
-    private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
-    private val setUserProfileSafeModeUseCase: UpdateSafeModeUseCase,
-    private val getRecommendationUseCase: GetRecommendationUseCase,
-    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-    private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
-    private val getBalanceAndPointUseCase: GetBalanceAndPointUseCase,
-    private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
-    private val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,
-    private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
-    private val userProfileSafeModeUseCase: GetSafeModeUseCase,
-    private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
-    private val tokopediaPlusUseCase: TokopediaPlusUseCase,
-    private val saveAttributeOnLocal: SaveAttributeOnLocalUseCase,
-    private val offerInterruptUseCase: OfferInterruptUseCase,
-    private val userProfileAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
-    private val profileWithDataStoreMapper: ProfileWithDataStoreMapper,
-    private val getOclStatusUseCase: GetOclStatusUseCase,
-    private val oclPreference: OclPreference,
-    dispatcher: CoroutineDispatchers
+        private val userSession: UserSessionInterface,
+        private val accountPref: AccountPreference,
+        private val fingerprintPreference: FingerprintPreference,
+        private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
+        private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
+        private val setUserProfileSafeModeUseCase: UpdateSafeModeUseCase,
+        private val getRecommendationUseCase: GetRecommendationUseCase,
+        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+        private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
+        private val getBalanceAndPointUseCase: GetBalanceAndPointUseCase,
+        private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
+        private val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,
+        private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
+        private val userProfileSafeModeUseCase: GetSafeModeUseCase,
+        private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
+        private val tokopediaPlusUseCase: TokopediaPlusUseCase,
+        private val saveAttributeOnLocal: SaveAttributeOnLocalUseCase,
+        private val offerInterruptUseCase: OfferInterruptUseCase,
+        private val userProfileAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
+        private val profileWithDataStoreMapper: ProfileWithDataStoreMapper,
+        private val getOclStatusUseCase: GetOclStatusUseCase,
+        private val oclPreference: OclPreference,
+        dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val _buyerAccountData = MutableLiveData<Result<ProfileDataView>>()

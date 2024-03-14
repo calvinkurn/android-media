@@ -20,7 +20,7 @@ class GetInitialDataPageUseCaseWithCoroutine constructor(
         private val topAdsAddressHelper: TopAdsAddressHelper
 ): UseCase<DataFavorite>() {
 
-    private val cacheHandler: CacheHandler = CacheHandler(context, CacheHandler.TOP_ADS_CACHE)
+    private val cacheHandler: com.tokopedia.topads.sdk.utils.CacheHandler = com.tokopedia.topads.sdk.utils.CacheHandler(context, com.tokopedia.topads.sdk.utils.CacheHandler.TOP_ADS_CACHE)
     private val random: Random = Random()
     private val userSession: UserSessionInterface = UserSession(context)
 
@@ -56,7 +56,7 @@ class GetInitialDataPageUseCaseWithCoroutine constructor(
         val requestParams = GetTopAdsShopUseCaseWithCoroutine.defaultParams(topAdsAddressHelper.getAddressData())
         requestParams.putBoolean(GetTopAdsShopUseCaseWithCoroutine.KEY_IS_FORCE_REFRESH, false)
         requestParams.putString(GetTopAdsShopUseCaseWithCoroutine.KEY_USER_ID, userSession.userId)
-        val preferredCacheList = cacheHandler.getArrayListInteger(CacheHandler.KEY_PREFERRED_CATEGORY)
+        val preferredCacheList = cacheHandler.getArrayListInteger(com.tokopedia.topads.sdk.utils.CacheHandler.KEY_PREFERRED_CATEGORY)
         requestParams.putInt(GetTopAdsShopUseCaseWithCoroutine.KEY_DEP_ID, getRandomId(preferredCacheList))
         getTopAdsShopUseCase.requestParams = requestParams
 

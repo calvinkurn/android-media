@@ -244,7 +244,7 @@ class MvcMultiShopView @JvmOverloads constructor(
 
     private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
         adInfo?.let {
-            TopAdsUrlHitter(context).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
                 className,
                 it.AdClickUrl,
                 it.AdID,

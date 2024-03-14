@@ -88,7 +88,7 @@ class FlashSaleViewHolder(
                     ) {
                         channelGrids.getOrNull(carouselProductCardPosition)?.let {
                             if (it.isTopads) {
-                                TopAdsUrlHitter(className).hitImpressionUrl(
+                                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(className).hitImpressionUrl(
                                     context,
                                     it.impression,
                                     it.id,
@@ -111,7 +111,7 @@ class FlashSaleViewHolder(
                     ) {
                         channelGrids.getOrNull(carouselProductCardPosition)?.let {
                             if (it.isTopads) {
-                                TopAdsUrlHitter(className).hitImpressionUrl(
+                                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(className).hitImpressionUrl(
                                     context,
                                     it.productClickUrl,
                                     it.id,

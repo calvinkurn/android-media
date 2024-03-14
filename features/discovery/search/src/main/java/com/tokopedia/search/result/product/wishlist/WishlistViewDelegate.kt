@@ -75,7 +75,7 @@ class WishlistViewDelegate @Inject constructor(
 
     override fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel) {
         context?.let {
-            TopAdsUrlHitter(it).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(
                 className,
                 productCardOptionsModel.topAdsClickUrl + CLICK_TYPE_WISHLIST,
                 productCardOptionsModel.productId,

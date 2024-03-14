@@ -242,7 +242,7 @@ class ViewToViewBottomSheet @Inject constructor(
         className: String
     ) {
         if (product.recommendationItem.isTopAds) {
-            TopAdsUrlHitter(context).hitImpressionUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
                 className,
                 product.recommendationItem.trackerImageUrl,
                 product.recommendationItem.productId.toString(),
@@ -267,7 +267,7 @@ class ViewToViewBottomSheet @Inject constructor(
         className: String
     ) {
         if (product.recommendationItem.isTopAds) {
-            TopAdsUrlHitter(context).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
                 className,
                 product.recommendationItem.clickUrl,
                 product.recommendationItem.productId.toString(),

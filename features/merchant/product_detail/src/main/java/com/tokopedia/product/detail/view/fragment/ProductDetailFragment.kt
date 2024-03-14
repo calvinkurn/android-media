@@ -1692,7 +1692,7 @@ open class ProductDetailFragment :
         productImageUrl: String
     ) {
         context?.run {
-            TopAdsUrlHitter(this::class.java.name).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(this::class.java.name).hitClickUrl(
                 this,
                 topAdsUrl,
                 productId,
@@ -1709,7 +1709,7 @@ open class ProductDetailFragment :
         productImageUrl: String
     ) {
         context?.run {
-            TopAdsUrlHitter(this::class.java.name).hitImpressionUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(this::class.java.name).hitImpressionUrl(
                 this,
                 topAdsUrl,
                 productId,
@@ -2560,7 +2560,7 @@ open class ProductDetailFragment :
                 { topAdsData ->
                     if (!isTopadsDynamicsSlottingAlreadyCharged) {
                         context?.let {
-                            TopAdsUrlHitter(it).hitImpressionUrl(
+                            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitImpressionUrl(
                                 this::class.java.name,
                                 topAdsData.data.product.image.m_url,
                                 topAdsData.data.product.id,
@@ -2568,7 +2568,7 @@ open class ProductDetailFragment :
                                 topAdsData.data.product.image.m_ecs
                             )
 
-                            TopAdsUrlHitter(it).hitClickUrl(
+                            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(
                                 this::class.java.name,
                                 topAdsData.data.clickUrl,
                                 topAdsData.data.product.id,
@@ -4327,7 +4327,7 @@ open class ProductDetailFragment :
 
     private fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel) {
         context?.let {
-            TopAdsUrlHitter(it).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(
                 this::class.java.simpleName,
                 productCardOptionsModel.topAdsClickUrl + CLICK_TYPE_WISHLIST,
                 productCardOptionsModel.productId,

@@ -46,7 +46,7 @@ class RecommendationItemViewHolder(
             setImageProductViewHintListener(element.productItem, object: ViewHintListener {
                 override fun onViewHint() {
                     if(element.productItem.isTopAds){
-                        TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                                 this.javaClass.simpleName,
                                 element.productItem.trackerImageUrl,
                                 element.productItem.productId.toString(),
@@ -61,7 +61,7 @@ class RecommendationItemViewHolder(
 
             setOnClickListener {
                 listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
-                if (element.productItem.isTopAds) TopAdsUrlHitter(itemView.context).hitClickUrl(
+                if (element.productItem.isTopAds) com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
                         this.javaClass.simpleName,
                         element.productItem.clickUrl,
                         element.productItem.productId.toString(),

@@ -71,7 +71,7 @@ class MerchantCouponListAdapter(
     private fun sendTopadsImpression(context: Context, adInfo: AdInfo?) {
         if (!eventSet.contains(adInfo?.AdID) && !adImpression.contains(adInfo?.AdID)) {
             eventSet.add(adInfo?.AdID)
-            TopAdsUrlHitter(context).hitImpressionUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
                 className,
                 adInfo?.AdViewUrl,
                 "",

@@ -27,7 +27,7 @@ class InfiniteProductViewHolder(
     }
 
     private fun hitTopAdsImpression(recommendationItem: RecommendationItem) {
-        TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(
             this@InfiniteProductViewHolder::class.java.simpleName,
             recommendationItem.trackerImageUrl,
             recommendationItem.productId.toString(),
@@ -37,7 +37,7 @@ class InfiniteProductViewHolder(
     }
 
     private fun hitTopAdsClick(recommendationItem: RecommendationItem) {
-        TopAdsUrlHitter(itemView.context).hitClickUrl(
+        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
             this@InfiniteProductViewHolder::class.java.simpleName,
             recommendationItem.clickUrl,
             recommendationItem.productId.toString(),

@@ -3,7 +3,7 @@ package com.tokopedia.topads.sdk.utils
 import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_CAROUSEL
 import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_SINGLE
 import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_VERTICAL_CAROUSEL
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.old.domain.model.TopAdsImageViewModel
 
 object TdnHelper {
     private val categorisedList = mutableListOf<List<TopAdsImageViewModel>>()

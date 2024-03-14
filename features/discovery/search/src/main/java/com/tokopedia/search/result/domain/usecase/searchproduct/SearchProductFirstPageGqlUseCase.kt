@@ -20,7 +20,7 @@ import com.tokopedia.search.result.domain.model.UserProfileDobModel
 import com.tokopedia.search.result.domain.usecase.InspirationCarouselQuery.createSearchInspirationCarouselRequest
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineViewParams.createHeadlineParams
 import com.tokopedia.usecase.RequestParams
@@ -43,12 +43,12 @@ private const val TDN_SEARCH_DIMENSION = 3
 private const val HEADLINE_IMPRESSION_COUNT_FIRST_PAGE = "0"
 
 class SearchProductFirstPageGqlUseCase(
-    private val graphqlUseCase: GraphqlUseCase,
-    private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
-    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-    private val coroutineDispatchers: CoroutineDispatchers,
-    private val searchLogger: SearchLogger,
-    private val reimagineRollence: ReimagineRollence,
+        private val graphqlUseCase: GraphqlUseCase,
+        private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
+        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+        private val coroutineDispatchers: CoroutineDispatchers,
+        private val searchLogger: SearchLogger,
+        private val reimagineRollence: ReimagineRollence,
 ): UseCase<SearchProductModel>(), CoroutineScope {
 
     private val masterJob = SupervisorJob()

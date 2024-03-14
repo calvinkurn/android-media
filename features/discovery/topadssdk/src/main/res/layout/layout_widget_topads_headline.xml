@@ -11,7 +11,7 @@
         android:layout_height="@dimen/dp_240"
         app:loader_type="rect" />
 
-    <com.tokopedia.topads.sdk.widget.TopAdsBannerView
+    <com.tokopedia.topads.sdk.old.widget.TopAdsBannerView
         android:id="@+id/top_ads_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

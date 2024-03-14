@@ -5,16 +5,13 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase;
-import com.tokopedia.topads.sdk.repository.TopAdsRepository;
+import com.tokopedia.topads.sdk.old.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.old.domain.interactor.TopAdsImageViewUseCase;
+import com.tokopedia.topads.sdk.old.repository.TopAdsRepository;
 import com.tokopedia.topads.sdk.utils.CacheHandler;
-import com.tokopedia.topads.sdk.utils.TopAdsIrisSession;
-import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel;
+import com.tokopedia.topads.sdk.old.utils.TopAdsIrisSession;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import java.lang.ref.WeakReference;
 
 import dagger.Module;
 import dagger.Provides;

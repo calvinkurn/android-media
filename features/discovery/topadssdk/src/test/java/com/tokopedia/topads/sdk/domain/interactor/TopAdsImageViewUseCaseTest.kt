@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.domain.interactor
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*

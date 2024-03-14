@@ -173,7 +173,7 @@ class BestSellerViewHolder(
             chipProductDataModel?.productModelList?.getOrNull(itemPosition) ?: return
 
         if (productDataModel.isTopAds) {
-            TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                 CLASSNAME,
                 productDataModel.trackerImageUrl,
                 productDataModel.productId,
@@ -201,7 +201,7 @@ class BestSellerViewHolder(
             chipProductDataModel?.productModelList?.getOrNull(itemPosition) ?: return
 
         if (productDataModel.isTopAds) {
-            TopAdsUrlHitter(itemView.context).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
                 CLASSNAME,
                 productDataModel.clickUrl,
                 productDataModel.productId,

@@ -1,9 +1,9 @@
 package com.tokopedia.topads.sdk.domain.model
 
 import com.tokopedia.topads.sdk.base.adapter.Item
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
-import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
+import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.old.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 
 data class ShopAdsWithThreeProductModel(
     var isOfficial: Boolean = false,

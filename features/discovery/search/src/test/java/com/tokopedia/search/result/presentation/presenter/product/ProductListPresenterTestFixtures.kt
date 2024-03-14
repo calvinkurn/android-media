@@ -120,7 +120,7 @@ internal open class ProductListPresenterTestFixtures {
         mockk<UseCase<InspirationCarouselChipsProductModel>>(relaxed = true)
     protected val saveLastFilterUseCase = mockk<UseCase<Int>>(relaxed = true)
     protected val getPostATCCarouselUseCase = mockk<UseCase<SearchInspirationCarousel>>(relaxed = true)
-    protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
+    protected val topAdsUrlHitter = mockk<com.tokopedia.topads.sdk.utils.TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val searchCoachMarkLocalCache = mockk<CoachMarkLocalCache>(relaxed = true)
     protected val topAdsHeadlineHelper = mockk<TopAdsHeadlineHelper>(relaxed = true)

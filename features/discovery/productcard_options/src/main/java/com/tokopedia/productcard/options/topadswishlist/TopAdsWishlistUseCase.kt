@@ -1,7 +1,7 @@
 package com.tokopedia.productcard.options.topadswishlist
 
 import com.tokopedia.topads.sdk.domain.TopAdsWishlistService
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase.WISHSLIST_URL
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsWishlishedUseCase.WISHSLIST_URL
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable

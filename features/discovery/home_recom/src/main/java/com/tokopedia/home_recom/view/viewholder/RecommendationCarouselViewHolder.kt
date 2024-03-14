@@ -50,7 +50,7 @@ class RecommendationCarouselViewHolder(val view: View, val listener: Recommendat
                                 productRecommendation.parentPosition,
                                 carouselProductCardPosition)
                         if (productRecommendation.productItem.isTopAds) {
-                            TopAdsUrlHitter(itemView.context).hitClickUrl(
+                            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
                                     className,
                                     productRecommendation.productItem.clickUrl,
                                     productRecommendation.productItem.productId.toString(),
@@ -68,7 +68,7 @@ class RecommendationCarouselViewHolder(val view: View, val listener: Recommendat
                     override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
                         if(productRecommendation.productItem.isTopAds){
-                            TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                                     className,
                                     productRecommendation.productItem.trackerImageUrl,
                                     productRecommendation.productItem.productId.toString(),

@@ -62,7 +62,7 @@ class CarouselFeaturedShopViewHolder (
     private fun setListener(element: CarouselFeaturedShopCardDataModel){
         itemView.addOnImpressionListener(element.impressHolder) {
             if(element.grid.impression.isNotBlank()){
-                TopAdsUrlHitter(itemView.context).hitImpressionUrl(this::class.java.simpleName, element.grid.impression,
+                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(this::class.java.simpleName, element.grid.impression,
                         element.grid.id,
                         element.grid.name,
                         element.grid.imageUrl,
@@ -72,7 +72,7 @@ class CarouselFeaturedShopViewHolder (
         }
         itemView.setOnClickListener {
             if(element.grid.productClickUrl.isNotBlank()){
-                TopAdsUrlHitter(itemView.context).hitClickUrl(this::class.java.simpleName, element.grid.productClickUrl,
+                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(this::class.java.simpleName, element.grid.productClickUrl,
                         element.grid.id,
                         element.grid.name,
                         element.grid.imageUrl,

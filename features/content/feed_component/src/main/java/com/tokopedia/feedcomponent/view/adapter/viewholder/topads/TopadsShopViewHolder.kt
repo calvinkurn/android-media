@@ -14,7 +14,7 @@ import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
 import com.tokopedia.topads.sdk.view.adapter.DynamicFeedShopAdapter
-import com.tokopedia.topads.sdk.widget.TopAdsDynamicFeedShopView
+import com.tokopedia.topads.sdk.old.widget.TopAdsDynamicFeedShopView
 
 /**
  * @author by milhamj on 08/01/19.

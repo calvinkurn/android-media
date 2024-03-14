@@ -549,7 +549,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
 
     private fun hitWishlistTopadsClickUrl(clickUrl: String, productId: String, productName: String, imageUrl: String) {
         context?.let {
-            TopAdsUrlHitter(it).hitClickUrl(
+            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(
                 this::class.java.simpleName, clickUrl+CLICK_TYPE_WISHLIST,
                 productId, productName, imageUrl)
         }
@@ -564,7 +564,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     override fun onProductAnchorImpression(productInfoDataModel: ProductInfoDataModel) {
         productInfoDataModel.productDetailData?.let { productDetailData ->
             if (productDetailData.isTopads) {
-                TopAdsUrlHitter(context).hitImpressionUrl(
+                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
                         className,
                         productDetailData.trackerImageUrl,
                         productDetailData.id.toString(),
@@ -586,7 +586,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     override fun onProductAnchorClick(productInfoDataModel: ProductInfoDataModel) {
         productInfoDataModel.productDetailData?.let { productDetailData ->
             if (productDetailData.isTopads) {
-                TopAdsUrlHitter(context).hitClickUrl(
+                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
                         className,
                         productDetailData.clickUrl,
                         productDetailData.id.toString(),
@@ -607,7 +607,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         productInfoDataModel.productDetailData?.let {productDetailData ->
             if (recommendationWidgetViewModel.isLoggedIn()) {
                 if (productDetailData.isTopads) {
-                    TopAdsUrlHitter(context).hitClickUrl(
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
                             className,
                             productDetailData.clickUrl,
                             productDetailData.id.toString(),
@@ -626,7 +626,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         productInfoDataModel.productDetailData?.let { productDetailData ->
             if (recommendationWidgetViewModel.isLoggedIn()){
                 if (productDetailData.isTopads) {
-                    TopAdsUrlHitter(context).hitClickUrl(
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
                             className,
                             productDetailData.clickUrl,
                             productDetailData.id.toString(),
@@ -647,7 +647,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         productInfoDataModel.productDetailData?.let {productDetailData ->
             if (recommendationWidgetViewModel.isLoggedIn()) {
                 if (productDetailData.isTopads) {
-                    TopAdsUrlHitter(context).hitClickUrl(
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
                             className,
                             productDetailData.clickUrl,
                             productDetailData.id.toString(),

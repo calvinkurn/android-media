@@ -2517,7 +2517,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         var list = UohConsts.RECOMMENDATION_LIST_TRACK
         if (topAds) {
             list += UohConsts.RECOMMENDATION_LIST_TOPADS_TRACK
-            activity?.let { TopAdsUrlHitter(it).hitImpressionUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
+            activity?.let { com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitImpressionUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
         }
 
         trackingQueue?.let {
@@ -2554,7 +2554,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             )
         }
 
-        if (topAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, clickUrl, productId, productName, imageUrl) }
+        if (topAds) activity?.let { com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, clickUrl, productId, productName, imageUrl) }
         onProductClicked(productId)
     }
 
@@ -2604,7 +2604,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         arrayListProduct.add(product)
 
         userSession?.userId?.let { UohAnalytics.productAtcRecommendation(userId = it, listProduct = arrayListProduct, isTopads = isTopAds) }
-        if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
+        if (isTopAds) activity?.let { com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
     }
 
     override fun onImpressionPmsButton() {

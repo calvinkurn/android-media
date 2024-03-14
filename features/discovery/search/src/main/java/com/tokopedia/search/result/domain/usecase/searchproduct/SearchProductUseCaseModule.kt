@@ -12,7 +12,7 @@ import com.tokopedia.search.result.data.mapper.searchproduct.SearchProductMapper
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
 import com.tokopedia.search.utils.SearchLogger
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession

@@ -54,7 +54,7 @@ class RecomCarouselProductCardViewHolder (view: View,
         productCardView?.run {
             addOnImpressionListener(element.recomItem) {
                 if(element.recomItem.isTopAds){
-                    TopAdsUrlHitter(context).hitImpressionUrl(
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
                             className,
                             element.recomItem.trackerImageUrl,
                             element.recomItem.productId.toString(),
@@ -66,7 +66,7 @@ class RecomCarouselProductCardViewHolder (view: View,
             }
             setOnClickListener {
                 if(element.recomItem.isTopAds){
-                    TopAdsUrlHitter(context).hitClickUrl(
+                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
                             className,
                             element.recomItem.clickUrl,
                             element.recomItem.productId.toString(),

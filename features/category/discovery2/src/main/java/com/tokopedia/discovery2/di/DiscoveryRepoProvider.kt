@@ -47,7 +47,7 @@ class DiscoveryRepoProvider : RepositoryProvider {
         return FilterGQLRepository()
     }
 
-    override fun provideTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase {
+    override fun provideTopAdsTrackingUseCase(topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter): TopAdsTrackingUseCase {
         return DiscoveryTopAdsTrackingUseCase(topAdsUrlHitter)
     }
 

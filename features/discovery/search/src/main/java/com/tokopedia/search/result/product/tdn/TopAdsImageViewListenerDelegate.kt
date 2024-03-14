@@ -19,7 +19,7 @@ class TopAdsImageViewListenerDelegate(
     ) {
         if (className == null || context == null) return
 
-        TopAdsUrlHitter(context).hitImpressionUrl(
+        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
             className,
             searchTopAdsImageDataView.topAdsImageViewModel.adViewUrl,
             "",

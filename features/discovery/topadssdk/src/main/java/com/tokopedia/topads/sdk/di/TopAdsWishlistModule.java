@@ -7,7 +7,7 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.topads.sdk.UrlTopAdsSdk;
 import com.tokopedia.topads.sdk.base.AuthInterceptor;
 import com.tokopedia.topads.sdk.domain.TopAdsWishlistService;
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsWishlishedUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;

@@ -39,21 +39,21 @@ import kotlin.coroutines.suspendCoroutine
 
 @SearchScope
 class InspirationCarouselPresenterDelegate @Inject constructor(
-    private val view: InspirationCarouselView,
-    private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
-    private val topAdsUrlHitter: TopAdsUrlHitter,
-    private val classNameProvider: ClassNameProvider,
-    private val requestParamsGenerator: RequestParamsGenerator,
-    @param:Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
+        private val view: InspirationCarouselView,
+        private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
+        private val topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter,
+        private val classNameProvider: ClassNameProvider,
+        private val requestParamsGenerator: RequestParamsGenerator,
+        @param:Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
     private val getInspirationCarouselChipsUseCase: Lazy<UseCase<InspirationCarouselChipsProductModel>>,
-    private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
-    private val viewUpdater: ViewUpdater,
-    private val deduplication: Deduplication,
-    @Named(SearchConstant.SearchCoupon.SEARCH_COUPON_USE_CASE)
+        private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
+        private val viewUpdater: ViewUpdater,
+        private val deduplication: Deduplication,
+        @Named(SearchConstant.SearchCoupon.SEARCH_COUPON_USE_CASE)
     private val couponUseCase: com.tokopedia.usecase.coroutines.UseCase<SearchCouponModel>,
-    @Named(SearchConstant.SearchCoupon.SEARCH_COUPON_REDEEM_USE_CASE)
+        @Named(SearchConstant.SearchCoupon.SEARCH_COUPON_REDEEM_USE_CASE)
     private val redeemCouponUseCase: com.tokopedia.usecase.coroutines.UseCase<SearchRedeemCouponModel>,
-    private val iris: Iris
+        private val iris: Iris
 ) : InspirationCarouselPresenter,
     ApplinkOpener by ApplinkOpenerDelegate {
 

@@ -62,8 +62,8 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
 
     var isObserverAttached = false
 
-    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
-        TopAdsUrlHitter(context)
+    private val topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter by lazy {
+        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context)
     }
 
     private val viewModel: MarketPlaceRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {

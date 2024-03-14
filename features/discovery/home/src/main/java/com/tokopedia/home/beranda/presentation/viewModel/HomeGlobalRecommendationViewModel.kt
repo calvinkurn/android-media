@@ -24,7 +24,7 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.Sh
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerOldTopAdsModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.HeadlineTopAdsModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
@@ -41,13 +41,13 @@ import javax.inject.Inject
 
 @RecomTemporary
 class HomeGlobalRecommendationViewModel @Inject constructor(
-    private val getHomeRecommendationUseCase: Lazy<GetHomeGlobalRecommendationUseCase>,
-    private val getHomeRecommendationCardUseCase: Lazy<GetGlobalHomeRecommendationCardUseCase>,
-    private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
-    private val getTopAdsHeadlineUseCase: Lazy<GetTopAdsHeadlineUseCase>,
-    private val userSessionInterface: Lazy<UserSessionInterface>,
-    private val topAdsAddressHelper: Lazy<TopAdsAddressHelper>,
-    homeDispatcher: Lazy<CoroutineDispatchers>
+        private val getHomeRecommendationUseCase: Lazy<GetHomeGlobalRecommendationUseCase>,
+        private val getHomeRecommendationCardUseCase: Lazy<GetGlobalHomeRecommendationCardUseCase>,
+        private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
+        private val getTopAdsHeadlineUseCase: Lazy<GetTopAdsHeadlineUseCase>,
+        private val userSessionInterface: Lazy<UserSessionInterface>,
+        private val topAdsAddressHelper: Lazy<TopAdsAddressHelper>,
+        homeDispatcher: Lazy<CoroutineDispatchers>
 ) : BaseViewModel(homeDispatcher.get().io) {
 
     companion object {

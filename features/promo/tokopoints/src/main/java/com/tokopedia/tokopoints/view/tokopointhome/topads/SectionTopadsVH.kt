@@ -62,7 +62,7 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
                         topadsReward.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
                             override fun onTopAdsImageViewImpression(viewUrl: String) {
                                 sendBannerImpression(content.sectionTitle)
-                                TopAdsUrlHitter(packageName).hitImpressionUrl(
+                                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(packageName).hitImpressionUrl(
                                     view.context,
                                     viewUrl,
                                     topadsBannerData.bannerId,
@@ -75,7 +75,7 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
                         topadsReward.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
                             override fun onTopAdsImageViewClicked(applink: String?) {
                                 RouteManager.route(view.context, applink)
-                                TopAdsUrlHitter(itemView.context).hitClickUrl(
+                                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
                                     this::class.java.simpleName,
                                     topadsBannerData.adClickUrl,
                                     topadsBannerData.bannerId,

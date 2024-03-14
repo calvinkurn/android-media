@@ -33,16 +33,16 @@ import javax.inject.Inject
 
 @SearchScope
 class InspirationListPostAtcViewDelegate @Inject constructor(
-    private val trackingQueue: TrackingQueue,
-    private val searchNavigationListener: SearchNavigationListener?,
-    private val topAdsUrlHitter: TopAdsUrlHitter,
-    private val atcVariantLauncher: AddToCartVariantBottomSheetLauncher,
-    private val searchParameterProvider: SearchParameterProvider,
-    classNameProvider: ClassNameProvider,
-    @SearchContext
+        private val trackingQueue: TrackingQueue,
+        private val searchNavigationListener: SearchNavigationListener?,
+        private val topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter,
+        private val atcVariantLauncher: AddToCartVariantBottomSheetLauncher,
+        private val searchParameterProvider: SearchParameterProvider,
+        classNameProvider: ClassNameProvider,
+        @SearchContext
     context: Context,
-    fragmentProvider: FragmentProvider,
-    queryKeyProvider: QueryKeyProvider,
+        fragmentProvider: FragmentProvider,
+        queryKeyProvider: QueryKeyProvider,
 ): InspirationListPostAtcView,
     SearchParameterProvider by searchParameterProvider,
     ContextProvider by WeakReferenceContextProvider(context),

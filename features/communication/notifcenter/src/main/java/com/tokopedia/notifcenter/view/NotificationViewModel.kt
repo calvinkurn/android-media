@@ -40,7 +40,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -56,22 +56,22 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class NotificationViewModel @Inject constructor(
-    private val notifcenterDetailUseCase: NotifcenterDetailUseCase,
-    private val notifcenterFilterUseCase: NotifcenterFilterV2UseCase,
-    private val bumpReminderUseCase: NotifcenterSetReminderBumpUseCase,
-    private val deleteReminderUseCase: NotifcenterDeleteReminderBumpUseCase,
-    private val clearNotifUseCase: ClearNotifCounterUseCase,
-    private val markAsReadUseCase: MarkNotificationAsReadUseCase,
-    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-    private val getRecommendationUseCase: GetRecommendationUseCase,
-    private val addWishListV2UseCase: AddToWishlistV2UseCase,
-    private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-    private val userSessionInterface: UserSessionInterface,
-    private var addToCartUseCase: AddToCartUseCase,
-    private var notifOrderListUseCase: NotifOrderListUseCase,
-    private var affiliateEducationArticleUseCase: AffiliateEducationArticleUseCase,
-    private var getNotificationCounterUseCase: GetNotificationCounterUseCase,
-    private val dispatcher: CoroutineDispatchers
+        private val notifcenterDetailUseCase: NotifcenterDetailUseCase,
+        private val notifcenterFilterUseCase: NotifcenterFilterV2UseCase,
+        private val bumpReminderUseCase: NotifcenterSetReminderBumpUseCase,
+        private val deleteReminderUseCase: NotifcenterDeleteReminderBumpUseCase,
+        private val clearNotifUseCase: ClearNotifCounterUseCase,
+        private val markAsReadUseCase: MarkNotificationAsReadUseCase,
+        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+        private val getRecommendationUseCase: GetRecommendationUseCase,
+        private val addWishListV2UseCase: AddToWishlistV2UseCase,
+        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+        private val userSessionInterface: UserSessionInterface,
+        private var addToCartUseCase: AddToCartUseCase,
+        private var notifOrderListUseCase: NotifOrderListUseCase,
+        private var affiliateEducationArticleUseCase: AffiliateEducationArticleUseCase,
+        private var getNotificationCounterUseCase: GetNotificationCounterUseCase,
+        private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io), WishlistListener {
 
     var filter: Long = NotifcenterDetailUseCase.FILTER_NONE

@@ -178,7 +178,7 @@ class BestSellerViewHolder (private val view: View,
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        if (item.isTopAds) TopAdsUrlHitter(view.context).hitClickUrl(
+        if (item.isTopAds) com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(view.context).hitClickUrl(
             CLASS_NAME,
             item.clickUrl,
             item.productId.toString(),
@@ -189,7 +189,7 @@ class BestSellerViewHolder (private val view: View,
     }
 
     override fun onProductImpression(item: RecommendationItem) {
-        if (item.isTopAds) TopAdsUrlHitter(view.context).hitImpressionUrl(CLASS_NAME, item.trackerImageUrl, item.productId.toString(), item.name, item.imageUrl)
+        if (item.isTopAds) com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(view.context).hitImpressionUrl(CLASS_NAME, item.trackerImageUrl, item.productId.toString(), item.name, item.imageUrl)
         bestSellerDataModel?.let { listener.onBestSellerImpress(it, item, adapterPosition) }
     }
 

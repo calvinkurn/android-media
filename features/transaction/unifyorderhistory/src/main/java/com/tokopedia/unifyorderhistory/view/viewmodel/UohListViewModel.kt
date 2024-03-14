@@ -18,7 +18,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unifyorderhistory.data.model.FlightResendEmail
 import com.tokopedia.unifyorderhistory.data.model.LsPrintData
@@ -56,20 +56,20 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class UohListViewModel @Inject constructor(
-    dispatcher: CoroutineDispatchers,
-    private val getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase,
-    private val uohListUseCase: UohListUseCase,
-    private val getRecommendationUseCase: GetRecommendationUseCase,
-    private val uohFinishOrderUseCase: UohFinishOrderUseCase,
-    private val atcMultiProductsUseCase: AddToCartMultiUseCase,
-    private val addToCartOccUseCase: AddToCartOccMultiUseCase,
-    private val lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase,
-    private val flightResendEmailUseCase: FlightResendEmailUseCase,
-    private val trainResendEmailUseCase: TrainResendEmailUseCase,
-    private val rechargeSetFailUseCase: RechargeSetFailUseCase,
-    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-    private val atcUseCase: AddToCartUseCase,
-    private val getUohPmsCounterUseCase: GetUohPmsCounterUseCase
+        dispatcher: CoroutineDispatchers,
+        private val getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase,
+        private val uohListUseCase: UohListUseCase,
+        private val getRecommendationUseCase: GetRecommendationUseCase,
+        private val uohFinishOrderUseCase: UohFinishOrderUseCase,
+        private val atcMultiProductsUseCase: AddToCartMultiUseCase,
+        private val addToCartOccUseCase: AddToCartOccMultiUseCase,
+        private val lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase,
+        private val flightResendEmailUseCase: FlightResendEmailUseCase,
+        private val trainResendEmailUseCase: TrainResendEmailUseCase,
+        private val rechargeSetFailUseCase: RechargeSetFailUseCase,
+        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+        private val atcUseCase: AddToCartUseCase,
+        private val getUohPmsCounterUseCase: GetUohPmsCounterUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _filterCategoryResult = MutableLiveData<Result<UohFilterCategory>>()

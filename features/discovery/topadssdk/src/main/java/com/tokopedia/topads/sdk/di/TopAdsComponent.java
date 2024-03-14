@@ -1,11 +1,10 @@
 package com.tokopedia.topads.sdk.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.topads.sdk.widget.TdnBannerView;
-import com.tokopedia.topads.sdk.widget.TdnVerticalView;
-import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
-import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView;
-import com.tokopedia.topads.sdk.widget.TopAdsImageView;
+import com.tokopedia.topads.sdk.old.widget.TdnVerticalView;
+import com.tokopedia.topads.sdk.old.widget.TopAdsHeadlineView;
+import com.tokopedia.topads.sdk.old.widget.TopAdsImageView;
+import com.tokopedia.topads.sdk.old.widget.TdnBannerView;
 
 import dagger.Component;
 
