@@ -325,7 +325,7 @@ object AppLogAnalytics {
         return null
     }
 
-    private fun getLastDataExactStep(key: String, step: Int = 1): Any? {
+    fun getLastDataExactStep(key: String, step: Int = 1): Any? {
         val idx = _pageDataList.lastIndex - step
         val map = _pageDataList.getOrNull(idx)
         return map?.getOrDefault(key, null)
