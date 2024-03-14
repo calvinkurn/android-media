@@ -169,6 +169,8 @@ import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.promousage.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
@@ -363,6 +365,10 @@ class CartRevampFragment :
     private var addToWishlistCollectionLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             onResultFromAddToWishlistCollection(result.resultCode, result.data)
+        }
+    private var changeVariantLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            onResultFromChangeVariant(result.resultCode, result.data)
         }
 
     private val cartSwipeToDeleteOnBoardingPreferences: CartOnBoardingPreferences by lazy {
@@ -6053,18 +6059,18 @@ class CartRevampFragment :
     override fun onChangeAddressClicked() {
         val chooseAddressBottomSheet = ChooseAddressBottomSheet()
         chooseAddressBottomSheet.setListener(object :
-                ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
-                override fun onLocalizingAddressServerDown() {
-                    // no-op
-                }
+            ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+            override fun onLocalizingAddressServerDown() {
+                // no-op
+            }
 
-                override fun onAddressDataChanged() {
-                    val clearBoPromo = generateParamClearBo()
-                    if (clearBoPromo != null) {
-                        viewModel.clearAllBo(clearBoPromo)
-                    }
-                    refreshCartWithProgressDialog(CartViewModel.GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
+            override fun onAddressDataChanged() {
+                val clearBoPromo = generateParamClearBo()
+                if (clearBoPromo != null) {
+                    viewModel.clearAllBo(clearBoPromo)
                 }
+                refreshCartWithProgressDialog(CartViewModel.GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
+            }
 
                 override fun getLocalizingAddressHostSourceBottomSheet(): String {
                     return CART_PAGE
@@ -6175,5 +6181,46 @@ class CartRevampFragment :
             userSession.userId
         )
         onProductClicked(product.recommendationItem.productId.toString())
+    }
+
+    override fun onChangeVariantClicked(
+        productId: String,
+        shopId: String
+    ) {
+        openVariantBottomSheet(productId, shopId)
+    }
+
+    private fun openVariantBottomSheet(
+        productId: String,
+        shopId: String
+    ) {
+        context?.let {
+            AtcVariantHelper.goToAtcVariant(
+                context = it,
+                productId = productId,
+                pageSource = VariantPageSource.CART_PAGESOURCE, // TODO: to be confirmed..
+                shopId = shopId,
+                startActivitResult = { intent: Intent, _ ->
+                    changeVariantLauncher.launch(intent)
+                }
+                // TODO: Should we send cartId to VBS for updateCart?
+            )
+        }
+    }
+
+    private fun onResultFromChangeVariant(resultCode: Int, intent: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            context?.let {
+                AtcVariantHelper.onActivityResultAtcVariant(
+                    context = it,
+                    requestCode = AtcVariantHelper.ATC_VARIANT_RESULT_CODE,
+                    data = intent
+                ) {
+                    if (atcMessage.isNotBlank()) {
+                        showToastMessageGreen(atcMessage)
+                    }
+                }
+            }
+        }
     }
 }
