@@ -10,7 +10,9 @@ import androidx.annotation.Keep
 enum class ShareExPageTypeEnum(val value: String, val valueInt: Int) {
     OTHERS("others", 0),
     PDP("pdp", 1),
-    REVIEW("review", 2);
+    REVIEW("review", 2),
+    SHOP("shop", 3),
+    DISCOVERY("discovery", 4);
 
     companion object {
         fun fromValue(value: String): ShareExPageTypeEnum {
