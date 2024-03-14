@@ -83,7 +83,6 @@ import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRe
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -611,7 +610,6 @@ open class BuyerOrderDetailFragment :
         updateStickyButtons(uiState)
         updateSavingsWidget(uiState)
         updateBrcCsatWidget(uiState)
-        checkAutoOpenCsat(uiState.brcCsatUiState)
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stopLoadTimeMonitoring()
         EmbraceMonitoring.logBreadcrumb(BREADCRUMB_BOM_DETAIL_SHOWING_DATA)
@@ -677,13 +675,6 @@ open class BuyerOrderDetailFragment :
 
     private fun updateBrcCsatWidget(uiState: BuyerOrderDetailUiState.HasData) {
         binding?.widgetBrcBom?.setup(uiState.brcCsatUiState)
-    }
-
-    private fun checkAutoOpenCsat(brcCsatUiState: WidgetBrcCsatUiState) {
-        if (viewModel.shouldAutoOpenCsat() && brcCsatUiState is WidgetBrcCsatUiState.HasData.Showing) {
-            viewModel.endAutoOpenCsatForm()
-            navigator.goToBrcCsatForm(brcCsatUiState.data.orderID, Int.ZERO)
-        }
     }
 
     private fun onSuccessGetSavingWidget(uiState: BuyerOrderDetailUiState.HasData) {
@@ -913,7 +904,6 @@ open class BuyerOrderDetailFragment :
                 }
             }
             if (result != BuyerOrderDetailMiscConstant.RESULT_BUYER_REQUEST_CANCEL_STATUS_FAILED) {
-                viewModel.initAutoOpenCsatForm()
                 loadBuyerOrderDetail(false)
             }
         } else if (resultCode == RESULT_CODE_CANCEL_ORDER_DISABLE) {
@@ -928,16 +918,9 @@ open class BuyerOrderDetailFragment :
     }
 
     private fun handleResultPartialOrderFulfillment(data: Intent?) {
-        val toasterMessage = data
-            ?.getStringExtra(ApplinkConstInternalOrder.PartialOrderFulfillmentKey.TOASTER_MESSAGE)
-        val actionType = data
-            ?.getStringExtra(
-                ApplinkConstInternalOrder.PartialOrderFulfillmentKey.ACTION_TYPE
-            ) ?: ApplinkConstInternalOrder.PartialOrderFulfillmentKey.ACTION_TYPE_ACCEPT
-        if (actionType == ApplinkConstInternalOrder.PartialOrderFulfillmentKey.ACTION_TYPE_REJECT) {
-            viewModel.initAutoOpenCsatForm()
-        }
         handleResultRefreshOnly()
+        val toasterMessage =
+            data?.getStringExtra(ApplinkConstInternalOrder.PartialOrderFulfillmentKey.TOASTER_MESSAGE)
 
         if (!toasterMessage.isNullOrBlank()) {
             view?.run {

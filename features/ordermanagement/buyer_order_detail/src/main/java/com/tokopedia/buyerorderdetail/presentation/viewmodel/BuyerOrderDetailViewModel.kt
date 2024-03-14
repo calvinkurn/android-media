@@ -17,6 +17,7 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
 import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailDataUseCase
 import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMapper
@@ -38,6 +39,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEvent
 import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEventUiState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.WidgetBrcCsatUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailChatCounterUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailGroupBookingUiState
@@ -106,7 +108,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     private var getBuyerOrderDetailDataJob: Job? = null
     private var warrantyClaimButtonImpressed = false
-    private var openCsatForm = false
     private val addOnsExpandableState = mutableListOf<String>()
     private val bmgmProductBenefitExpandableState = mutableListOf<String>()
 
@@ -453,18 +454,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
         } else {
             bmgmProductBenefitExpandableState.add(identifier)
         }
-    }
-
-    fun initAutoOpenCsatForm() {
-        openCsatForm = true
-    }
-
-    fun endAutoOpenCsatForm() {
-        openCsatForm = false
-    }
-
-    fun shouldAutoOpenCsat(): Boolean {
-        return openCsatForm
     }
 
     private fun <T> Flow<T>.toStateFlow(initialValue: T) = stateIn(

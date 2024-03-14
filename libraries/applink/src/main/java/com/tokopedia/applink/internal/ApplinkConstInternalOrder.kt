@@ -221,8 +221,5 @@ object ApplinkConstInternalOrder {
 
     object PartialOrderFulfillmentKey {
         const val TOASTER_MESSAGE = "pof_toaster_message"
-        const val ACTION_TYPE = "action_type"
-        const val ACTION_TYPE_ACCEPT = "0"
-        const val ACTION_TYPE_REJECT = "1"
     }
 }
