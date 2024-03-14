@@ -64,7 +64,7 @@ class ExplicitPersonalizeViewModel @Inject constructor(
         }
     }
 
-    private fun getQuestion() {
+    fun getQuestion() {
         _stateGetQuestion.value = ExplicitPersonalizeResult.Loading
 
         launchCatchError (
