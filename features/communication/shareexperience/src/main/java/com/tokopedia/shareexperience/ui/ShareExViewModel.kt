@@ -258,12 +258,13 @@ class ShareExViewModel @Inject constructor(
                 position = position,
                 selectedImageUrl = imageUrl
             )
-            updateBottomSheetUiState(
-                title = bottomSheetModel.title,
-                uiModelList = updatedUiResult,
-                bottomSheetModel = bottomSheetModel,
-                chipPosition = position
-            )
+            _bottomSheetUiState.update { uiState ->
+                uiState.copy(
+                    title = bottomSheetModel.title,
+                    uiModelList = updatedUiResult,
+                    chipPosition = position
+                )
+            }
         }
     }
 
