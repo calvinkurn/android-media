@@ -225,7 +225,7 @@ object AppLogAnalytics {
     fun init(application: Application) {
         initAppLog(application.applicationContext)
         remoteConfig = FirebaseRemoteConfigImpl(application.applicationContext)
-        if (GlobalConfig.DEBUG) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             EventsSenderUtils.setEventsSenderEnable("573733", true, application)
             EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net")
         }
@@ -270,7 +270,7 @@ object AppLogAnalytics {
         Timber.d("Remove _pageDataList: ${_pageDataList.printForLog()}}")
     }
 
-    //remove list of page data by hashcode
+    // remove list of page data by hashcode
     fun removePageData(appLogInterface: AppLogInterface, listOfRemovedKey: List<String>) {
         val pageDataIndex = _pageDataList
             .withIndex()
@@ -285,7 +285,7 @@ object AppLogAnalytics {
     private fun removeShadowStack(currentIndex: Int) {
         var tempCurrentIndex = currentIndex
         while (tempCurrentIndex >= 0 && _pageDataList.getOrNull(tempCurrentIndex)
-                ?.get(IS_SHADOW) == true
+            ?.get(IS_SHADOW) == true
         ) {
             _pageDataList.removeAt(tempCurrentIndex)
             tempCurrentIndex--
