@@ -29,7 +29,8 @@ class BannerShopProductReimagineViewHolder(
             productCardGridViewA.run {
                 setProductModel(ProductCardModelReimagine.from(productCardViewModel))
 
-                addOnImpressionListener(element) {
+                addOnImpressionListener(cpmData.cpm.cpmShop.products
+                    .get(absoluteAdapterPosition).imageProduct) {
                     impressionListener?.onImpressionProductAdsItem(
                         adapterPosition,
                         model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition),
