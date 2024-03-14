@@ -130,7 +130,7 @@ object AppLogAnalytics {
             it.addTrackId()
             it.put(IS_AD, getLastData(IS_AD))
             it.addRequestId()
-            it.addSourceModule()
+            it.addSourceModulePdp()
 //            it.addEnterMethod()
             it.addEnterMethodPdp()
             it.put(SEARCH_ENTRANCE, getLastData(SEARCH_ENTRANCE))
@@ -174,7 +174,7 @@ object AppLogAnalytics {
         put(SOURCE_PAGE_TYPE, getLastData(SOURCE_PAGE_TYPE))
     }
 
-    internal fun JSONObject.addSourceModule() {
+    internal fun JSONObject.addSourceModulePdp() {
         val sourceModule = if (currentActivityName == "AtcVariantActivity") {
             getLastDataExactStep(SOURCE_MODULE, 2)
         } else {

@@ -1,6 +1,5 @@
 package com.tokopedia.analytics.byteio.pdp
 
-import android.annotation.SuppressLint
 import com.tokopedia.analytics.byteio.AppLogAnalytics
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFrom
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEnterFromInfo
@@ -10,16 +9,18 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceInfo
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addEntranceInfoCart
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addRequestId
-import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModule
+import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourceModulePdp
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePageType
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePreviousPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastDataBeforeCurrent
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
+import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
 import com.tokopedia.analytics.byteio.AppLogParam.PAGE_NAME
 import com.tokopedia.analytics.byteio.AppLogParam.PREVIOUS_PAGE
+import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_MODULE
 import com.tokopedia.analytics.byteio.AppLogParam.SOURCE_PREVIOUS_PAGE
 import com.tokopedia.analytics.byteio.CartClickAnalyticsModel
 import com.tokopedia.analytics.byteio.EventName
@@ -50,7 +51,7 @@ object AppLogPdp {
             it.put(PAGE_NAME, getLastData(PAGE_NAME))
             it.addEntranceForm()
             it.addSourcePageType()
-            it.addSourceModule()
+            it.addSourceModulePdp()
             it.addEntranceInfo()
             it.addEnterFromInfo()
             it.put("product_id", product.productId)
@@ -74,7 +75,7 @@ object AppLogPdp {
             it.put(PAGE_NAME, PageName.PDP)
             it.addSourcePageType()
             it.addEntranceForm()
-            it.addSourceModule()
+            it.addSourceModulePdp()
             it.addTrackId()
             it.addEntranceInfo()
             it.addEnterFromInfo()
@@ -101,7 +102,7 @@ object AppLogPdp {
             it.addRequestId()
             it.addSourcePageType()
             it.addEntranceForm()
-            it.addSourceModule()
+            it.addSourceModulePdp()
             it.addEnterFromInfo()
             it.addEntranceInfo()
             it.put("product_id", product.productId)
@@ -124,7 +125,7 @@ object AppLogPdp {
             it.addTrackId()
             it.addSourcePageType()
             it.addEntranceForm()
-            it.addSourceModule()
+            it.addSourceModulePdp()
             it.addSourcePreviousPage()
             it.addEnterFromInfo()
             it.addRequestId()
@@ -149,7 +150,7 @@ object AppLogPdp {
             it.addTrackId()
             it.addSourcePageType()
             it.addEntranceForm()
-            it.addSourceModule()
+            it.addSourceModulePdp()
             it.addEnterFromInfo()
             it.addSourcePreviousPage()
             it.addRequestId()
@@ -216,7 +217,7 @@ object AppLogPdp {
         AppLogAnalytics.send(EventName.SUBMIT_ORDER_RESULT, JSONObject().also {
             if (confirmSku.getAndSet(false)) {
                 it.addTrackId()
-                it.addSourceModule()
+                it.put(SOURCE_MODULE, getLastData(SOURCE_MODULE))
                 it.addEntranceForm()
             }
             it.addPage()
