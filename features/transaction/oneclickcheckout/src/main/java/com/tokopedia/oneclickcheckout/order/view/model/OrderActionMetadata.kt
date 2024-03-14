@@ -12,9 +12,9 @@ data class OrderActionMetadata(
         @SerializedName("unique_id")
         val uniqueId: String = "",
         @SerializedName("metadata")
-        val listMetadata: List<OrderActionMetadata> = emptyList()
+        val listMetadata: List<Metadata> = emptyList()
     ) {
-        data class OrderActionMetadata(
+        data class Metadata(
             @SerializedName("key")
             val key: String = "",
             @SerializedName("value")
