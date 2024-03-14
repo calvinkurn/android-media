@@ -219,6 +219,10 @@ data class SearchProductV5(
                         @SerializedName("isImageBlurred")
                         @Expose
                         val isImageBlurred: Boolean = false,
+
+                        @SerializedName("parentID")
+                        @Expose
+                        val parentId: String =  ""
                     )
                 }
             }
