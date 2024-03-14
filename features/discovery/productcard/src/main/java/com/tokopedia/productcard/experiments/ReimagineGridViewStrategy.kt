@@ -231,4 +231,8 @@ internal class ReimagineGridViewStrategy(
     override fun setGenericCtaSecondaryButtonOnClickListener(l: View.OnClickListener?) {
         genericCtaExtension.ctaSecondaryClickListener = { l?.onClick(it) }
     }
+
+    override fun reRenderGenericCtaButton(productCardModel: ProductCardModelReimagine) {
+        genericCtaExtension.render(productCardModel)
+    }
 }

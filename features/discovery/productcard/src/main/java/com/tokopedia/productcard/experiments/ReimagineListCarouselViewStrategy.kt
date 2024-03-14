@@ -144,7 +144,9 @@ internal class ReimagineListCarouselViewStrategy(
     override fun setGenericCtaButtonOnClickListener(l: View.OnClickListener?) {
         genericCtaExtension.ctaClickListener = { l?.onClick(it) }
     }
-
+    override fun reRenderGenericCtaButton(productCardModel: ProductCardModelReimagine) {
+        genericCtaExtension.render(productCardModel)
+    }
     override fun setGenericCtaSecondaryButtonOnClickListener(l: View.OnClickListener?) {
         genericCtaExtension.ctaSecondaryClickListener = { l?.onClick(it) }
     }

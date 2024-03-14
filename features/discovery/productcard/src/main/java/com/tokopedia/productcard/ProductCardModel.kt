@@ -190,12 +190,13 @@ data class ProductCardModel(
      * @property secondaryCtaBorderColorToken border color for the secondary CTA
      */
     data class ProductCardGenericCta(
-        val copyWriting: String? = null,
+        val copyWriting: String? = "",
         val mainButtonVariant: Int = UnifyButton.Variant.GHOST,
         val mainButtonType: Int = UnifyButton.Type.MAIN,
         val shouldShowSecondaryCta: Boolean = false,
         @IdRes
         val secondaryCtaIconResource: Int? = null,
+        val secondaryCtaIconResourceColorToken: Int? = null,
         val secondaryCtaBackgroundColorToken: Int? = null,
         val secondaryCtaBorderColorToken: Int? = null
     )

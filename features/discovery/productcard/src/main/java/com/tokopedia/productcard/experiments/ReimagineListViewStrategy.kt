@@ -186,6 +186,10 @@ internal class ReimagineListViewStrategy(
         genericCtaExtension.ctaSecondaryClickListener = { l?.onClick(it) }
     }
 
+    override fun reRenderGenericCtaButton(productCardModel: ProductCardModelReimagine) {
+        genericCtaExtension.render(productCardModel)
+    }
+
     override fun recycle() {
         imageView?.glideClear()
         video.clear()

@@ -213,8 +213,10 @@ data class ProductCardModel(
                 return ProductCardGenericCta(
                     copyWriting = productCardGenericCta.copyWriting,
                     mainButtonVariant = productCardGenericCta.mainButtonVariant,
+                    mainButtonType = productCardGenericCta.mainButtonType,
                     shouldShowSecondaryCta = productCardGenericCta.shouldShowSecondaryCta,
                     secondaryCtaIconResource = productCardGenericCta.secondaryCtaIconResource,
+                    secondaryCtaIconResourceColorToken = productCardGenericCta.secondaryCtaIconResourceColorToken,
                     secondaryCtaBackgroundColorToken = productCardGenericCta.secondaryCtaBackgroundColorToken,
                     secondaryCtaBorderColorToken = productCardGenericCta.secondaryCtaBorderColorToken
                 )
