@@ -33,8 +33,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     companion object {
         // This a reminder to developer.
         // If this size is modified, please also add unit test for the added deeplink.
-        const val SIZE_HOST = 161
-        const val SIZE_PATH = 273
+        const val SIZE_HOST = 162
+        const val SIZE_PATH = 274
     }
 
     override fun setup() {
@@ -3201,5 +3201,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://stories/creation"
         val appLink = UriUtil.buildUri(ApplinkConst.Stories.STORIES_CREATION)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check product preivew appLink then should return tokopedia internal product preview`() {
+        val productId = "12345"
+        val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_PRODUCT_PREVIEW}/$productId"
+        assertEqualsDeepLinkMapper("tokopedia://product-preview/$productId", expectedDeepLink)
     }
 }
