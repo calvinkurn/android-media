@@ -185,6 +185,7 @@ import com.tokopedia.utils.time.TimeHelper
 import dagger.Lazy
 import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.checkoutpayment.R as checkoutpaymentR
 import com.tokopedia.logisticcart.R as logisticcartR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Product as GiftingProduct
@@ -2879,22 +2880,26 @@ class CheckoutFragment :
             // gocicil
             GoCicilInstallmentDetailBottomSheet(viewModel.paymentProcessor.processor).show(this, viewModel.generateGoCicilInstallmentRequest(payment), payment.installmentData, object : GoCicilInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                 override fun onSelectInstallment(selectedInstallment: GoCicilInstallmentOption, installmentList: List<GoCicilInstallmentOption>, tickerMessage: String, isSilent: Boolean) {
-
+                    viewModel.chooseInstallment(selectedInstallment, installmentList, tickerMessage, isSilent)
                 }
 
                 override fun onFailedLoadInstallment() {
-
+                    view?.let { v ->
+                        Toaster.build(v, getString(checkoutpaymentR.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                    }
                 }
             })
         } else if (payment.data?.paymentWidgetData?.firstOrNull()?.mandatoryHit?.contains(MANDATORY_HIT_CC_TENOR_LIST) == true) {
             // cc
             CreditCardInstallmentDetailBottomSheet(viewModel.paymentProcessor.processor).show(this, viewModel.generateCreditCardTenorListRequest(payment), userSessionInterface.userId, payment.tenorList!!, payment.data!!.paymentWidgetData.first().installmentPaymentData.creditCardAttribute.tncInfo, object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                 override fun onSelectInstallment(selectedInstallment: TenorListData, installmentList: List<TenorListData>) {
-
+                    viewModel.chooseInstallmentCC(selectedInstallment, installmentList)
                 }
 
                 override fun onFailedLoadInstallment() {
-
+                    view?.let { v ->
+                        Toaster.build(v, getString(checkoutpaymentR.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                    }
                 }
             })
         }

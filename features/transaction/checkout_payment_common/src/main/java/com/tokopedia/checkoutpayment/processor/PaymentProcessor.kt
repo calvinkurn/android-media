@@ -215,9 +215,22 @@ class PaymentProcessor @Inject constructor(
         currentWidget: CheckoutPaymentWidgetData
     ): CheckoutPaymentWidgetData {
         val currentData = payment.paymentWidgetData.firstOrNull() ?: return currentWidget
+        val selectedTenure = currentData.installmentPaymentData.selectedTenure
+        var installmentText = ""
+        if (!tenorList.isNullOrEmpty()) {
+            tenorList.firstOrNull { it.tenure == selectedTenure }?.let {
+                installmentText = "Cicil ${it.tenure}"
+            }
+        }
+        if (installmentData != null) {
+            installmentData.installmentOptions.firstOrNull { it.installmentTerm == selectedTenure }?.let {
+                installmentText = "Cicil ${it.installmentTerm}"
+            }
+        }
         return currentWidget.copy(
             logoUrl = currentData.imageUrl,
-            title = currentData.gatewayName
+            title = currentData.gatewayName,
+            installmentText = installmentText
         )
     }
 }

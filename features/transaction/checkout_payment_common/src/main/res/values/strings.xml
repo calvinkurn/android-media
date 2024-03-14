@@ -16,6 +16,8 @@
 
     <string name="lbl_installment_afpb_default">Pilih Bayar Penuh / Cicilan</string>
 
+    <string name="default_afpb_error">Maaf, ada kendala saat memproses pesananmu. Pilih jenis pembayaran lagi.</string>
+
     <!--GOPAYLATERCICIL-->
     <string name="occ_gocicil_bottom_sheet_title">Bayarnya mau berapa lama?</string>
     <string name="occ_gocicil_default_installment">Pilih periode cicilan</string>

@@ -4,8 +4,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetRequest
 import com.tokopedia.checkoutpayment.data.GetPaymentWidgetResponse
-import com.tokopedia.checkoutpayment.data.PaymentAmountValidationResponse
-import com.tokopedia.checkoutpayment.data.PaymentFeeDetailResponse
 import com.tokopedia.checkoutpayment.data.PaymentWidgetDataResponse
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -67,42 +65,42 @@ class GetPaymentWidgetUseCase @Inject constructor(
     }
 
     override suspend fun execute(params: GetPaymentWidgetRequest): PaymentWidgetListData {
-        mapResponse(repository.response(listOf(GraphqlRequest(graphqlQuery(), GetPaymentWidgetResponse::class.java, mapOf("params" to params)))).getSuccessData())
-        return mapResponse(
-            GetPaymentWidgetResponse(
-                paymentWidgetData = listOf(
-                    PaymentWidgetDataResponse(
-                        gatewayCode = "ALFAMART",
-                        gatewayName = "Alfamart / Alfamidi / Lawson / Dan+Dan",
-                        imageUrl = "https://images.tokopedia.net/img/toppay/payment-logo/alfamart.png",
-                        amountValidation = PaymentAmountValidationResponse(
-                            minimumAmount = 10000,
-                            maximumAmount = 50000,
-                            minimumAmountErrorMessage = "too low",
-                            maximumAmountErrorMessage = "too high"
-                        )
-                    )
-                ),
-                paymentFeeDetails = listOf(
-                    PaymentFeeDetailResponse(
-                        title = "testing title",
-                        amount = 10000.0,
-                        showTooltip = true,
-                        showSlashed = true,
-                        slashedFee = 3000,
-                        tooltipInfo = "hallo"
-                    ),
-                    PaymentFeeDetailResponse(
-                        title = "testing title2",
-                        amount = 1000.0,
-                        showTooltip = true,
-                        showSlashed = true,
-                        slashedFee = 3000,
-                        tooltipInfo = "hallo"
-                    )
-                )
-            )
-        )
+        return mapResponse(repository.response(listOf(GraphqlRequest(graphqlQuery(), GetPaymentWidgetResponse::class.java, mapOf("params" to params)))).getSuccessData())
+//        return mapResponse(
+//            GetPaymentWidgetResponse(
+//                paymentWidgetData = listOf(
+//                    PaymentWidgetDataResponse(
+//                        gatewayCode = "ALFAMART",
+//                        gatewayName = "Alfamart / Alfamidi / Lawson / Dan+Dan",
+//                        imageUrl = "https://images.tokopedia.net/img/toppay/payment-logo/alfamart.png",
+//                        amountValidation = PaymentAmountValidationResponse(
+//                            minimumAmount = 10000,
+//                            maximumAmount = 50000,
+//                            minimumAmountErrorMessage = "too low",
+//                            maximumAmountErrorMessage = "too high"
+//                        )
+//                    )
+//                ),
+//                paymentFeeDetails = listOf(
+//                    PaymentFeeDetailResponse(
+//                        title = "testing title",
+//                        amount = 10000.0,
+//                        showTooltip = true,
+//                        showSlashed = true,
+//                        slashedFee = 3000,
+//                        tooltipInfo = "hallo"
+//                    ),
+//                    PaymentFeeDetailResponse(
+//                        title = "testing title2",
+//                        amount = 1000.0,
+//                        showTooltip = true,
+//                        showSlashed = true,
+//                        slashedFee = 3000,
+//                        tooltipInfo = "hallo"
+//                    )
+//                )
+//            )
+//        )
     }
 
     private fun mapResponse(response: GetPaymentWidgetResponse): PaymentWidgetListData {

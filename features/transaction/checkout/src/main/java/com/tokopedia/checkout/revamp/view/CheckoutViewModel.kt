@@ -61,8 +61,11 @@ import com.tokopedia.checkoutpayment.data.GetPaymentWidgetRequest
 import com.tokopedia.checkoutpayment.data.GoCicilInstallmentRequest
 import com.tokopedia.checkoutpayment.data.PaymentFeeRequest
 import com.tokopedia.checkoutpayment.data.PaymentRequest
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentData
+import com.tokopedia.checkoutpayment.domain.GoCicilInstallmentOption
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_CC_TENOR_LIST
 import com.tokopedia.checkoutpayment.domain.PaymentWidgetData.Companion.MANDATORY_HIT_INSTALLMENT_OPTIONS
+import com.tokopedia.checkoutpayment.domain.TenorListData
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetData
 import com.tokopedia.checkoutpayment.view.CheckoutPaymentWidgetState
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
@@ -2319,7 +2322,7 @@ class CheckoutViewModel @Inject constructor(
         hasClearPromoBeforeCheckout: Boolean
     ) {
         cartProcessor.processSaveShipmentState(listData.value, recipientAddressModel)
-        val updateCartResult = cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(listData.value), "", cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
+        val updateCartResult = cartProcessor.updateCart(cartProcessor.generateUpdateCartRequest(listData.value), "checkout", cartProcessor.generateUpdateCartPaymentRequest(listData.value.payment()))
         if (!updateCartResult.isSuccess) {
             toasterProcessor.commonToaster.emit(CheckoutPageToaster(Toaster.TYPE_ERROR, updateCartResult.toasterMessage, updateCartResult.throwable))
         }
@@ -3254,7 +3257,7 @@ class CheckoutViewModel @Inject constructor(
             pageState.value = CheckoutPageState.Loading
             val updateCartResult = cartProcessor.updateCart(
                 cartProcessor.generateUpdateCartRequest(listData.value),
-                "",
+                "update_payment",
                 UpdateCartPaymentRequest(
                     gatewayCode = gatewayCode,
                     metadata = metadata
@@ -3282,6 +3285,51 @@ class CheckoutViewModel @Inject constructor(
             listData.value = checkoutItems
             calculateTotal()
         }
+    }
+
+    fun chooseInstallmentCC(selectedInstallment: TenorListData, installmentList: List<TenorListData>) {
+        val checkoutItems = listData.value.toMutableList()
+        val payment = checkoutItems.payment()!!
+        val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
+        val originalPaymentData = paymentWidgetData.first()
+        val newPaymentData = originalPaymentData.copy(
+            installmentPaymentData = originalPaymentData.installmentPaymentData.copy(
+                selectedTenure = selectedInstallment.tenure
+            )
+        )
+        paymentWidgetData[0] = newPaymentData
+        checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = payment.copy(
+            data = payment.data.copy(
+                paymentWidgetData = paymentWidgetData
+            ),
+            tenorList = installmentList
+        )
+        listData.value = checkoutItems
+        calculateTotal()
+    }
+
+    fun chooseInstallment(selectedInstallment: GoCicilInstallmentOption, installmentList: List<GoCicilInstallmentOption>, tickerMessage: String, silent: Boolean) {
+        val checkoutItems = listData.value.toMutableList()
+        val payment = checkoutItems.payment()!!
+        val paymentWidgetData = payment.data!!.paymentWidgetData.toMutableList()
+        val originalPaymentData = paymentWidgetData.first()
+        val newPaymentData = originalPaymentData.copy(
+            installmentPaymentData = originalPaymentData.installmentPaymentData.copy(
+                selectedTenure = selectedInstallment.installmentTerm
+            )
+        )
+        paymentWidgetData[0] = newPaymentData
+        checkoutItems[checkoutItems.size - PAYMENT_INDEX_FROM_BOTTOM] = payment.copy(
+            data = payment.data.copy(
+                paymentWidgetData = paymentWidgetData
+            ),
+            installmentData = GoCicilInstallmentData(
+                tickerMessage = tickerMessage,
+                installmentOptions = installmentList
+            )
+        )
+        listData.value = checkoutItems
+        calculateTotal()
     }
 
     companion object {
