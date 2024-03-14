@@ -15,6 +15,7 @@ import com.tokopedia.analytics.byteio.AppLogAnalytics.addSourcePreviousPage
 import com.tokopedia.analytics.byteio.AppLogAnalytics.addTrackId
 import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastData
 import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastDataBeforeCurrent
+import com.tokopedia.analytics.byteio.AppLogAnalytics.getLastDataBeforeHash
 import com.tokopedia.analytics.byteio.AppLogAnalytics.intValue
 import com.tokopedia.analytics.byteio.AppLogParam
 import com.tokopedia.analytics.byteio.AppLogParam.ENTER_FROM
@@ -67,11 +68,12 @@ object AppLogPdp {
     internal fun sendStayProductDetail(
         durationInMs: Long,
         product: TrackStayProductDetail,
-        quitType: String
+        quitType: String,
+        hash: Int
     ) {
         val isAddToCart = product.isAddCartSelected || addToCart.getAndSet(false)
         AppLogAnalytics.send(EventName.STAY_PRODUCT_DETAIL, JSONObject().also {
-            it.put(PREVIOUS_PAGE, getLastDataBeforeCurrent(PAGE_NAME))
+            it.put(PREVIOUS_PAGE, getLastDataBeforeHash(PAGE_NAME, hash))
             it.put(PAGE_NAME, PageName.PDP)
             it.addSourcePageType()
             it.addEntranceForm()

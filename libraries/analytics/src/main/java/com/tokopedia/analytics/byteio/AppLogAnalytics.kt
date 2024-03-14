@@ -344,6 +344,23 @@ object AppLogAnalytics {
         return null
     }
 
+    fun getLastDataBeforeHash(key: String, hash: Int): Any? {
+        if (_pageDataList.isEmpty()) return null
+        var idx = _pageDataList.lastIndex
+        var startFind = false
+        while (idx >= 0) {
+            val map = _pageDataList[idx]
+            map[key]?.let {
+                if (startFind) return it
+            }
+            if (map.getOrDefault(ACTIVITY_HASH_CODE, null) == hash) {
+                startFind = true
+            }
+            idx--
+        }
+        return null
+    }
+
     fun getDataBeforeCurrent(key: String): Any? {
         if (_pageDataList.isEmpty()) return null
         val idx = _pageDataList.lastIndex - 1
