@@ -11,20 +11,30 @@ import com.bytedance.apm.core.IDynamicParams
 import com.bytedance.apm.listener.IApmStartListener
 import com.bytedance.apm.trace.TraceStats
 import com.bytedance.applog.AppLog
+import com.tokopedia.config.GlobalConfig
 import com.bytedance.bdinstall.Level
 import com.bytedance.crash.ICommonParams
 import com.bytedance.crash.Npth
 import com.bytedance.crash.runtime.AllDefaultUrls
 
 object SlardarInit {
-
-    fun initNpth(application: Application) {
+    private const val AID = "aid"
+    private const val CHANNEL = "channel"
+    private const val APP_VERSION = "app_version"
+    private const val VERSION_CODE = "version_code"
+    private const val UPDATE_VERSION_CODE = "update_version_code"
+    fun initNpth(application: Application, aid: String, channel: String) {
         Npth.setApplication(application)
         Npth.init(application, object : ICommonParams {
             override fun getCommonParams(): MutableMap<String, Any> {
-                val result = mutableMapOf<String, Any>()
                 val params = mutableMapOf<String, String>()
+                params[AID] = aid
+                params[CHANNEL] = channel
+                params[APP_VERSION] = GlobalConfig.VERSION_NAME
+                params[VERSION_CODE] = GlobalConfig.VERSION_CODE.toString()
+                params[UPDATE_VERSION_CODE] = GlobalConfig.VERSION_CODE.toString()
                 AppLog.putCommonParams(AppLog.getContext(), params, true, Level.L0)
+                val result = mutableMapOf<String, Any>()
                 result.putAll(params)
                 return result
             }

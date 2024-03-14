@@ -255,7 +255,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         EventsSenderUtils.setEventsSenderEnable("573733", true, this);
         EventsSenderUtils.setEventVerifyHost("573733", "https://log.byteoversea.net");
         SlardarInit.INSTANCE.initApm(this);
-        SlardarInit.INSTANCE.initNpth(this);
+        SlardarInit.INSTANCE.initNpth(this, "573733", "local_test");
         AppLogInitKt.initAppLog(this);
         SlardarInit.INSTANCE.startApm();
     }
