@@ -652,7 +652,8 @@ open class BuyerOrderDetailFragment :
 
     private fun updateStickyButtons(uiState: BuyerOrderDetailUiState.HasData) {
         stickyActionButton?.setupActionButtons(
-            actionButtonsUiModel = uiState.actionButtonsUiState.data
+            actionButtonsUiModel = uiState.actionButtonsUiState.data,
+            hasCsatWidgetShowing = uiState.brcCsatUiState is WidgetBrcCsatUiState.HasData.Showing
         )
     }
 
