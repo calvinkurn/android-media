@@ -56,6 +56,18 @@ const val CHIP_GET_INBOX_DETAIL_QUERY = """query chipGetInboxDetailQuery(${'$'}c
                     thumbnail
                 }
                 allowClose
+                dynamicCSAT{
+                    title
+                    service
+                    minimumOtherReasonChar
+                    points{
+                        score
+                        caption
+                        otherReasonTitle
+                        reasonTitle
+                        reasons
+                    }
+                }
             }
         }
         messageError
