@@ -101,6 +101,7 @@ object AceSearchProductV5Query {
                       warehouseID
                       componentID
                       isImageBlurred
+                      parentID
                     }
                   }
                 }

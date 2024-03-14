@@ -7,9 +7,9 @@ import com.tokopedia.analytics.byteio.SourcePageType
 import com.tokopedia.analytics.byteio.search.AppLogSearch
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SHOP_BIG
 import com.tokopedia.analytics.byteio.search.AppLogSearch.ParamValue.SHOP_SMALL
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.addtocart.AddToCartConstant
 import com.tokopedia.search.result.product.byteio.ByteIORanking
 import com.tokopedia.search.result.product.byteio.ByteIORankingImpl
 import com.tokopedia.search.result.product.byteio.ByteIOTrackingData
@@ -17,6 +17,7 @@ import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.topads.sdk.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Product as CPMProduct
 
 data class CpmDataView(
@@ -100,10 +101,10 @@ data class CpmDataView(
             searchId = byteIOTrackingData.searchId,
             searchEntrance = byteIOTrackingData.searchEntrance,
             searchResultId = shopId,
-            listItemId = cpmProduct.id,
+            listItemId = byteIOProductId(cpmProduct),
             itemRank = productPosition,
             listResultType = AppLogSearch.ParamValue.GOODS,
-            productID = cpmProduct.id,
+            productID = byteIOProductId(cpmProduct),
             searchKeyword = byteIOTrackingData.keyword,
             rank = getRank(),
             isAd = true,
@@ -123,11 +124,11 @@ data class CpmDataView(
         return AppLogSearch.Product(
             entranceForm = if (isShopSmall()) SEARCH_SHOP_CARD_SMALL else SEARCH_SHOP_CARD_BIG,
             isAd = true,
-            productID = cpmProduct.id,
+            productID = byteIOProductId(cpmProduct),
             searchID = byteIOTrackingData.searchId,
             requestID = byteIOTrackingData.imprId,
             searchResultID = shopId,
-            listItemId = cpmProduct.id,
+            listItemId = byteIOProductId(cpmProduct),
             itemRank = productPosition,
             listResultType = AppLogSearch.ParamValue.GOODS,
             searchKeyword = byteIOTrackingData.keyword,
@@ -138,6 +139,12 @@ data class CpmDataView(
             sourcePageType = SourcePageType.PRODUCT_CARD,
         )
     }
+
+    private fun byteIOProductId(product: Product): String =
+        if (hasParent(product)) product.parentId
+        else product.id
+
+    private fun hasParent(product: Product) = product.parentId != "" && product.parentId != AddToCartConstant.DEFAULT_PARENT_ID
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
