@@ -6205,7 +6205,7 @@ class CartRevampFragment :
                 startActivitResult = { intent: Intent, _ ->
                     changeVariantLauncher.launch(intent)
                 }
-                // TODO: Should we send cartId to VBS for updateCart?
+                // TODO: should we send cartId to VBS for updateCart?
             )
         }
     }
@@ -6218,9 +6218,7 @@ class CartRevampFragment :
                     requestCode = AtcVariantHelper.ATC_VARIANT_RESULT_CODE,
                     data = intent
                 ) {
-                    if (atcMessage.isNotBlank()) {
-                        showToastMessageGreen(atcMessage)
-                    }
+                    // TODO: refresh cart after success change variant, then auto scroll to product after refresh cart
                 }
             }
         }
