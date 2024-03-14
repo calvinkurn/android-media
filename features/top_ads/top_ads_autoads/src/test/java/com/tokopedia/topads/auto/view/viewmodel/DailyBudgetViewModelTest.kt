@@ -56,8 +56,12 @@ class DailyBudgetViewModelTest {
         repository = mockk()
         context = mockk()
         bidInfoUseCase = mockk(relaxed = true)
-        viewModel = spyk(DailyBudgetViewModel(context, testRule.dispatchers, repository,
-            rawQueries, topAdsGetShopDepositUseCase, bidInfoUseCase, queryPostAutoadsUseCase))
+        viewModel = spyk(
+            DailyBudgetViewModel(
+                context, testRule.dispatchers, repository,
+                rawQueries, topAdsGetShopDepositUseCase, bidInfoUseCase, queryPostAutoadsUseCase
+            )
+        )
         mockkObject(RequestHelper)
         every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
         every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
@@ -71,21 +75,30 @@ class DailyBudgetViewModelTest {
 
         coEvery { repository.response(any(), any()) } throws t
 
+        coEvery {
+            bidInfoUseCase.executeQuerySafeMode(captureLambda(), any())
+        } answers {
+            secondArg<(Result<ResponseBidInfo.Result>) -> Unit>().invoke(Fail(throwable = t))
+        }
+
         viewModel.getBudgetInfo("reqType", "source") {
             data = it
         }
-
         assertEquals(null, data)
     }
 
 
     @Test
-    fun `test result in getBudgetInfo`() = testRule.runTest {
+    fun `test result in getBudgetInfo`() {
         val expected = 2
         var actual = 0
         val bidInfoData: ResponseBidInfo.Result =
-            ResponseBidInfo.Result(com.tokopedia.topads.common.data.response.TopadsBidInfo(data =
-            listOf(com.tokopedia.topads.common.data.response.TopadsBidInfo.DataItem(shopStatus = expected))))
+            ResponseBidInfo.Result(
+                TopadsBidInfo(
+                    data =
+                    listOf(TopadsBidInfo.DataItem(shopStatus = expected))
+                )
+            )
 
         val onSuccess: (ResponseBidInfo.Result) -> Unit = {
             actual = it.topadsBidInfo.data[0].shopStatus
@@ -93,7 +106,7 @@ class DailyBudgetViewModelTest {
         every {
             bidInfoUseCase.executeQuerySafeMode(captureLambda(), any())
         } answers {
-            onSuccess.invoke(bidInfoData)
+            firstArg<(ResponseBidInfo.Result) -> Unit>().invoke(bidInfoData)
         }
         viewModel.getBudgetInfo("reqType", "source", onSuccess)
         assertEquals(expected, actual)
@@ -101,12 +114,16 @@ class DailyBudgetViewModelTest {
 
     @Test
     fun `test exception in postAutoAds`() {
-        val param = AutoAdsParam(AutoAdsParam.Input(TOGGLE_OFF, CHANNEL, 1000,
-            "123", AutoAdsBaseBudgetFragment.SOURCE))
+        val param = AutoAdsParam(
+            AutoAdsParam.Input(
+                TOGGLE_OFF, CHANNEL, 1000,
+                "123", AutoAdsBaseBudgetFragment.SOURCE
+            )
+        )
         val data = Fail(throwable = Throwable())
 
         every {
-            queryPostAutoadsUseCase.executeQuery(param,captureLambda())
+            queryPostAutoadsUseCase.executeQuery(param, captureLambda())
         } answers {
             secondArg<(Result<TopAdsAutoAdsModel>) -> Unit>().invoke(data)
         }
@@ -118,12 +135,16 @@ class DailyBudgetViewModelTest {
 
     @Test
     fun `test result in postAutoAds`() {
-        val param = AutoAdsParam(AutoAdsParam.Input(TOGGLE_OFF, CHANNEL, 1000,
-            "123", AutoAdsBaseBudgetFragment.SOURCE))
+        val param = AutoAdsParam(
+            AutoAdsParam.Input(
+                TOGGLE_OFF, CHANNEL, 1000,
+                "123", AutoAdsBaseBudgetFragment.SOURCE
+            )
+        )
         val data = Success(TopAdsAutoAdsModel(shopId = "123"))
 
         every {
-            queryPostAutoadsUseCase.executeQuery(param,captureLambda())
+            queryPostAutoadsUseCase.executeQuery(param, captureLambda())
         } answers {
             secondArg<(Result<TopAdsAutoAdsModel>) -> Unit>().invoke(data)
         }
@@ -141,8 +162,10 @@ class DailyBudgetViewModelTest {
         } returns expected
         viewModel.getTopAdsDeposit()
         coVerify { topAdsGetShopDepositUseCase.executeOnBackground() }
-        assertEquals(viewModel.getTopAdsDepositLiveData().value,
-            expected.topadsDashboardDeposits.data.amount)
+        assertEquals(
+            viewModel.getTopAdsDepositLiveData().value,
+            expected.topadsDashboardDeposits.data.amount
+        )
     }
 
     @Test
@@ -174,8 +197,13 @@ class DailyBudgetViewModelTest {
     @Test
     fun `test result in topadsStatisticsEstimationPotentialReach`() {
         val data =
-            EstimationResponse.TopadsStatisticsEstimationAttribute(listOf(EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem(
-                type = 2)))
+            EstimationResponse.TopadsStatisticsEstimationAttribute(
+                listOf(
+                    EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem(
+                        type = 2
+                    )
+                )
+            )
         var actual: EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem? = null
         val expected = 2
         val successData: EstimationResponse = mockk(relaxed = true)

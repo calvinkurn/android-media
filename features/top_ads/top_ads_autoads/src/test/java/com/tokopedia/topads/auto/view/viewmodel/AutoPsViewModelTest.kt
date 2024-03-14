@@ -10,6 +10,8 @@ import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.DepositAmount
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.response.TopadsDashboardDeposits
 import com.tokopedia.topads.common.data.response.TopadsGetBudgetRecommendation
 import com.tokopedia.topads.common.data.response.TopadsGetBudgetRecommendationResponse
@@ -92,7 +94,9 @@ class AutoPsViewModelTest {
         } throws Throwable()
         coEvery {
             bidInfoUseCase.executeQuerySafeMode(captureLambda(), any())
-        } throws Throwable()
+        } answers {
+            firstArg<(Result<TopadsBidInfo>) -> Unit>().invoke(Fail(throwable = Throwable()))
+        }
         coEvery {
             topadsStatisticsEstimationAttributeUseCase.execute(
                 TopadsAutoPsConstants.STATISTICS_ESTIMATION_TYPE,
@@ -103,6 +107,7 @@ class AutoPsViewModelTest {
             topAdsGetAutoAdsUseCase.executeOnBackground()
         } throws Throwable()
 
+
         viewModel.loadData()
 
         assertEquals(null, viewModel.autoAdsData.value)
@@ -112,6 +117,11 @@ class AutoPsViewModelTest {
 
     @Test
     fun `test exception in getVariantById`() {
+        coEvery {
+            getVariantByIdUseCase().getVariantById.shopIdVariants
+        } answers {
+            throw Throwable()
+        }
         viewModel.getVariantById()
         assertEquals(
             emptyList<GetVariantByIdResponse.GetVariantById.ExperimentVariant>(),
@@ -156,7 +166,9 @@ class AutoPsViewModelTest {
 
         coEvery { getBudgetRecommendationUseCase.executeOnBackground() } returns budgetRecommendation
         coEvery { topAdsGetShopDepositUseCase.executeOnBackground() } returns deposit
-        coEvery { bidInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } returns Unit
+        coEvery { bidInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            firstArg<(ResponseBidInfo.Result) -> Unit>().invoke(ResponseBidInfo.Result(TopadsBidInfo()))
+        }
         coEvery {
             topadsStatisticsEstimationAttributeUseCase.execute(
                 TopadsAutoPsConstants.STATISTICS_ESTIMATION_TYPE,
