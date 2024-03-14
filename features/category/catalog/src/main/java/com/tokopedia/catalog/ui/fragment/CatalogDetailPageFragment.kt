@@ -737,6 +737,13 @@ class CatalogDetailPageFragment :
             btnProductList.setOnClickListener {
                 //Change Value VariantName if Bottom Sheet Option Variant Ready
                 goToSellerOfferingProductListPage(String.EMPTY, productListConfig)
+                CatalogReimagineDetailAnalytics.sendEvent(
+                    event = EVENT_VIEW_CLICK_PG,
+                    action = EVENT_ACTION_SEE_OPTIONS,
+                    category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                    labels = catalogId,
+                    trackerId = TRACKER_ID_CLICK_BUTTON_CHOOSE
+                )
             }
 
             if (properties.isDarkTheme) {
@@ -1265,14 +1272,6 @@ class CatalogDetailPageFragment :
     }
 
     override fun onSellerOfferingVariantArrowClicked(productId: String, shopId: String) {
-        val label = "$catalogId - product id: $productId - shop id: $shopId"
-        CatalogReimagineDetailAnalytics.sendEvent(
-            event = EVENT_VIEW_CLICK_PG,
-            action = CatalogTrackerConstant.EVENT_ACTION_CLICK_OTHER_OPTION_SELLER_RECOMMENDATION,
-            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
-            labels = label,
-            trackerId = TRACKER_ID_CLICK_OTHER_OPTION_TOP_SELLER
-        )
         addToCart(viewModel.atcModel)
     }
 
@@ -1288,7 +1287,15 @@ class CatalogDetailPageFragment :
         RouteManager.route(context, ApplinkConst.PRODUCT_INFO, productId)
     }
 
-    override fun onSellerOfferingButtonRightClicked() {
+    override fun onSellerOfferingButtonRightClicked(productId: String, shopId: String) {
+        val label = "$catalogId - product id: $productId - shop id: $shopId"
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = CatalogTrackerConstant.EVENT_ACTION_CLICK_OTHER_OPTION_SELLER_RECOMMENDATION,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = label,
+            trackerId = TRACKER_ID_CLICK_OTHER_OPTION_TOP_SELLER
+        )
         //Change Value VariantName if Bottom Sheet Option Variant Ready
         goToSellerOfferingProductListPage(String.EMPTY, productListConfig)
     }

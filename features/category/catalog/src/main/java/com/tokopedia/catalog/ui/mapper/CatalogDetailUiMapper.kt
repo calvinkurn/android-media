@@ -814,7 +814,9 @@ class CatalogDetailUiMapper @Inject constructor(
                 price = if (minPrice == maxPrice) maxPrice else "$minPrice - $maxPrice",
                 textTitleColor = color,
                 textPriceColor = color,
-                iconColor = color
+                iconColor = color,
+                shopId = data.topSeller.shop.id,
+                productId = data.topSeller.productID,
             )
         } else {
             BlankUiModel()
