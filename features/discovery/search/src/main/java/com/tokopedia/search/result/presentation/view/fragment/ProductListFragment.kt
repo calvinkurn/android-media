@@ -691,6 +691,7 @@ class ProductListFragment :
     }
 
     override fun setProductList(list: List<Visitable<*>>) {
+        recyclerViewUpdater.enterMethod = enterMethod
         recyclerViewUpdater.setItems(list)
         SearchIdlingResource.decrement()
     }
