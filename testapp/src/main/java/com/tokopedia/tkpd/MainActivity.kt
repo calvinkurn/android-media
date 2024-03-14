@@ -31,6 +31,7 @@ class MainActivity : BaseActivity() {
         Model(getDefaultAppLink(), false, "Login")
     )
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(this)
@@ -164,7 +165,7 @@ class MainActivity : BaseActivity() {
         /*
          * Put your default applink here
          */
-        return ""
+        return "tokopedia://home"
     }
 
     data class Model(
