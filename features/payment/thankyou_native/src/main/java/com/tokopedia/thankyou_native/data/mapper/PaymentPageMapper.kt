@@ -1,4 +1,5 @@
 package com.tokopedia.thankyou_native.data.mapper
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.thankyou_native.data.mapper.PaymentStatusMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentWaitingCOD
 
