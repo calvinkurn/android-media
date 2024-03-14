@@ -874,7 +874,10 @@ data class GetBuyerOrderDetailResponse(
                 data class ResoCsat(
                     @SerializedName("show")
                     @Expose
-                    val show: Boolean = false
+                    val show: Boolean = false,
+                    @SerializedName("help_url")
+                    @Expose
+                    val helpUrl: String = ""
                 )
                 data class Ppp(
                     @SerializedName("show")

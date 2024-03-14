@@ -26,7 +26,12 @@ object GetBrcCsatWidgetUiStateMapper {
             is GetBrcCsatWidgetRequestState.Requesting -> onRequesting(currentState = currentState)
             else -> {
                 if (brcCsatWidgetRequestState is GetBrcCsatWidgetRequestState.Complete.Success) {
-                    onSuccess(currentState, brcCsatWidgetRequestState.response, orderID)
+                    onSuccess(
+                        currentState = currentState,
+                        response = brcCsatWidgetRequestState.response,
+                        orderID = orderID,
+                        buyerOrderDetailRequestState = getBuyerOrderDetailDataRequestState.getP0DataRequestState.getBuyerOrderDetailRequestState
+                    )
                 } else {
                     onError()
                 }
@@ -45,9 +50,15 @@ object GetBrcCsatWidgetUiStateMapper {
     private fun onSuccess(
         currentState: WidgetBrcCsatUiState,
         response: GetBrcCsatWidgetResponse.Data.ResolutionGetCsatFormV4?,
-        orderID: String
+        orderID: String,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState
     ): WidgetBrcCsatUiState {
-        val helpPageUrl = "https://www.tokopedia.com/help"
+        val helpPageUrl = (buyerOrderDetailRequestState as? GetBuyerOrderDetailRequestState.Complete.Success)
+            ?.result
+            ?.widget
+            ?.resoCsat
+            ?.helpUrl
+            .orEmpty()
         val shouldShow = response?.data?.isEligible.orFalse() && helpPageUrl.isNotBlank()
         return if (shouldShow) {
             val expanded = if (currentState is WidgetBrcCsatUiState.HasData) {

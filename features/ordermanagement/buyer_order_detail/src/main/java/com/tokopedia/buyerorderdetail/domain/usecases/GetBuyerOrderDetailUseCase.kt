@@ -609,6 +609,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   }
                   reso_csat {
                     show
+                    help_url
                   }
                   ppp {
                     show
