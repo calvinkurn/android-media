@@ -93,10 +93,6 @@ class AtcVariantViewModel @Inject constructor(
     val buttonData: LiveData<Result<PartialButtonDataModel>>
         get() = _buttonData
 
-    /*private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
-    val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
-        get() = _addToCartLiveData*/
-
     private val _atcAnimationEnded = MutableStateFlow(false)
     private val _addToCartState = MutableStateFlow<Result<AddToCartDataModel>?>(null)
 
@@ -173,7 +169,8 @@ class AtcVariantViewModel @Inject constructor(
 
             val selectedVariantChild =
                 getVariantData()?.getChildByOptionId(selectedVariantIds.values.toList())
-            val selectedMiniCart = minicartData?.get(selectedVariantChild?.productId ?: "")
+            val productId = selectedVariantChild?.productId ?: ""
+            val selectedMiniCart = minicartData?.get(productId)
             val shouldShowDeleteButton = selectedMiniCart != null
             val cartData = AtcCommonMapper.mapToCartRedirectionData(
                 selectedVariantChild,
@@ -185,8 +182,8 @@ class AtcVariantViewModel @Inject constructor(
 
             val isPartiallySelected =
                 AtcVariantMapper.isPartiallySelectedOptionId(selectedVariantIds)
-            val selectedWarehouse = getSelectedWarehouse(selectedVariantChild?.productId ?: "")
-            val selectedQuantity = getSelectedQuantity(selectedVariantChild?.productId ?: "")
+            val selectedWarehouse = getSelectedWarehouse(productId)
+            val selectedQuantity = getSelectedQuantity(productId)
 
             // We update visitable to re-render selected variant and header
             val list = AtcCommonMapper.updateVisitable(
@@ -212,11 +209,11 @@ class AtcVariantViewModel @Inject constructor(
                 _stockCopy.postValue(selectedVariantChild?.stock?.stockCopy ?: "")
 
                 // generate restriction data (shop followers or exclusive campaign)
-                assignReData(aggregatorData?.reData, selectedVariantChild?.productId ?: "")
-                assignRatesData(selectedVariantChild?.productId ?: "")
+                assignReData(aggregatorData?.reData, productId)
+                assignRatesData(productId)
 
                 updateActivityResult(
-                    selectedProductId = selectedVariantChild?.productId ?: "",
+                    selectedProductId = productId,
                     mapOfSelectedVariantOption = selectedVariantIds
                 )
             }

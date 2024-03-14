@@ -991,7 +991,7 @@ class AtcVariantBottomSheet :
 
             if (openShipmentBottomSheetWhenError()) return@let
 
-            showWaitingIndicator(source = pageSource)
+            showWaitingIndicator(action = buttonAction, source = pageSource)
 
             viewModel.hitAtc(
                 buttonAction,
@@ -1008,8 +1008,9 @@ class AtcVariantBottomSheet :
         }
     }
 
-    private fun showWaitingIndicator(source: String) {
-        if (source == VariantPageSource.PDP_PAGESOURCE.source) {
+    private fun showWaitingIndicator(action: Int, source: String) {
+        val shouldShowAnimation = shouldShowWithAnimation(action = action, source = source)
+        if (shouldShowAnimation) {
             atcAnimator.show { viewModel.atcAnimationEnd() }
         } else {
             viewModel.atcAnimationEnd()
@@ -1017,6 +1018,11 @@ class AtcVariantBottomSheet :
                 loadingProgressDialog?.dismiss()
             }
         }
+    }
+
+    private fun shouldShowWithAnimation(action: Int, source: String): Boolean {
+        return action == ProductDetailCommonConstant.ATC_BUTTON &&
+            source == VariantPageSource.PDP_PAGESOURCE.source
     }
 
     private fun doAddWishlistV2(productId: String) {
