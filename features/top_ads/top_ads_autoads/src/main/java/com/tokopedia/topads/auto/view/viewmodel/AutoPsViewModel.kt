@@ -62,8 +62,6 @@ class AutoPsViewModel @Inject constructor(
         get() = _autoAdsData
     private val _budgetRecommendation: MutableLiveData<Result<TopadsGetBudgetRecommendationResponse>> =
         MutableLiveData()
-    val budgetrecommendation: LiveData<Result<TopadsGetBudgetRecommendationResponse>>
-        get() = _budgetRecommendation
     private val _topAdsGetAutoAds: MutableLiveData<AutoAdsResponse.TopAdsGetAutoAds> =
         MutableLiveData()
     val topAdsGetAutoAds: LiveData<AutoAdsResponse.TopAdsGetAutoAds> = _topAdsGetAutoAds

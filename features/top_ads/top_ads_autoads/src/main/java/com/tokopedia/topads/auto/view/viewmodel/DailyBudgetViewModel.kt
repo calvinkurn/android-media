@@ -102,18 +102,6 @@ class DailyBudgetViewModel @Inject constructor(
             it.printStackTrace()
         }
     }
-
-    private fun getParams(dataParams: AutoAdsParam): RequestParams {
-        val params = RequestParams.create()
-        try {
-            params.putAll(Utils.jsonToMap(Gson().toJson(dataParams)))
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        } finally {
-            return params
-        }
-    }
-
     fun getPotentialImpressionGQL(budget: Int, lowClickDivider: Int): String {
         return String.format("%,.0f", (budget / lowClickDivider).toDouble())
     }
