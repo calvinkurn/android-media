@@ -4,21 +4,21 @@ import com.google.gson.annotations.SerializedName
 
 data class RolloutUserVariantResponse(
 	@SerializedName("RolloutUserVariant")
-	val rolloutUserVariant: RolloutUserVariant
+	val rolloutUserVariant: RolloutUserVariant = RolloutUserVariant()
 )
 
 data class RolloutUserVariant(
 	@SerializedName("message")
-	val message: String,
+	val message: String = "",
 
 	@SerializedName("featureVariants")
-	val featureVariants: List<FeatureVariantsItem>
+	val featureVariants: List<FeatureVariantsItem> = listOf()
 )
 
 data class FeatureVariantsItem(
 	@SerializedName("feature")
-	val feature: String,
+	val feature: String = "",
 
 	@SerializedName("variant")
-	val variant: String
+	val variant: String = ""
 )
