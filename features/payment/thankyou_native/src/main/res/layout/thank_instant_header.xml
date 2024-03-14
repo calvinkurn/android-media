@@ -53,8 +53,7 @@
         android:layout_height="40dp"
         android:scaleType="fitCenter"
         app:layout_constraintStart_toEndOf="@id/spaceStart"
-        app:layout_constraintTop_toBottomOf="@id/spaceTop"
-        app:layout_constraintBottom_toBottomOf="@id/headerDescription"/>
+        app:layout_constraintTop_toBottomOf="@id/spaceTop"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/titleChevron"
@@ -63,7 +62,7 @@
         app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintEnd_toStartOf="@id/spaceEnd"
         app:layout_constraintTop_toTopOf="@id/headerIcon"
-        app:layout_constraintBottom_toBottomOf="@id/headerIcon"/>
+        app:layout_constraintBottom_toBottomOf="@id/headerDescription"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/headerTitle"
