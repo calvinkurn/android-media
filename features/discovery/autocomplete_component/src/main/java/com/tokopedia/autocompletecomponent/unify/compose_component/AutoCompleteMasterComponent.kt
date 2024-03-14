@@ -47,12 +47,15 @@ internal fun AutoCompleteMasterComponent(
         )
 
         Spacer(Modifier.width(8.dp))
-        if (domainItem.cta.imageUrl.isNotBlank()) {
-            AutoCompleteRightIconCta(domainItem.cta) {
+
+        if (domainItem.label.text.isNotBlank()) {
+            AutoCompleteRightLabel(domainItem.label) {
                 onItemAction(item.domainModel)
             }
-        } else if (domainItem.label.text.isNotBlank()) {
-            AutoCompleteRightLabel(domainItem.label) {
+        }
+        if (domainItem.cta.imageUrl.isNotBlank()) {
+            Spacer(modifier = Modifier.width(4.dp))
+            AutoCompleteRightIconCta(domainItem.cta) {
                 onItemAction(item.domainModel)
             }
         }

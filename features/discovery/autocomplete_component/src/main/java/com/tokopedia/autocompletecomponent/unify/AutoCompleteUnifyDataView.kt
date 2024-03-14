@@ -10,11 +10,11 @@ data class AutoCompleteUnifyDataView(
     val searchTerm: String = "",
     val dimension90: String = "",
     val appLogIndex: Int = 0,
+    val shopAdsDataView: ShopAdsDataView? = null
 ) : SearchComponentTracking by searchComponentTracking(
     trackingOption = domainModel.tracking.trackingOption,
     keyword = searchTerm,
-    valueId = "0",
-    valueName = "${domainModel.title}${if (domainModel.subtitle.text.isNotEmpty()) "|${domainModel.subtitle}" else ""}",
+    valueName = domainModel.title.text,
     componentId = domainModel.tracking.componentId,
     applink = domainModel.applink,
     dimension90 = dimension90
@@ -26,4 +26,11 @@ data class AutoCompleteUnifyDataView(
 
     val sugType: String
         get() = domainModel.tracking.tts.sugType
+    val uniqueIdentifier = System.currentTimeMillis()
+
+    data class ShopAdsDataView(
+        val clickUrl: String = "",
+        val impressionUrl: String = "",
+        val imageUrl: String = "",
+    )
 }

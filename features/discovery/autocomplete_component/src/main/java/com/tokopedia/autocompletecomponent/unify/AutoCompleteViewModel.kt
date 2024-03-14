@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import com.tokopedia.autocompletecomponent.initialstate.DELETE_RECENT_SEARCH_USE_CASE
 import com.tokopedia.autocompletecomponent.initialstate.domain.deleterecentsearch.DeleteRecentSearchUseCase
+import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
+import com.tokopedia.autocompletecomponent.suggestion.domain.suggestiontracker.SuggestionTrackerUseCase
 import com.tokopedia.autocompletecomponent.unify.byteio.SugSessionId
 import com.tokopedia.autocompletecomponent.unify.domain.AutoCompleteUnifyRequestUtil
+import com.tokopedia.autocompletecomponent.unify.domain.AutoCompleteUnifyRequestUtil.URL_TRACKER_USE_CASE
 import com.tokopedia.autocompletecomponent.unify.domain.model.SuggestionUnify
 import com.tokopedia.autocompletecomponent.unify.domain.model.UniverseSuggestionUnifyModel
 import com.tokopedia.autocompletecomponent.util.ACTION_DELETE
@@ -15,20 +18,24 @@ import com.tokopedia.autocompletecomponent.util.ChooseAddressUtilsWrapper
 import com.tokopedia.autocompletecomponent.util.DEFAULT_COUNT
 import com.tokopedia.autocompletecomponent.util.DEVICE_ID
 import com.tokopedia.autocompletecomponent.util.FEATURE_ID_RECENT_SEARCH
+import com.tokopedia.autocompletecomponent.util.IS_TYPING
 import com.tokopedia.autocompletecomponent.util.KEY_COUNT
 import com.tokopedia.autocompletecomponent.util.SEARCHBAR
 import com.tokopedia.autocompletecomponent.util.putChooseAddressParams
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.network.authentication.AuthHelper
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
+import com.tokopedia.usecase.UseCase as RxUseCase
 
 internal class AutoCompleteViewModel @Inject constructor(
     autoCompleteState: AutoCompleteState,
@@ -37,9 +44,12 @@ internal class AutoCompleteViewModel @Inject constructor(
     @Named(AutoCompleteUnifyRequestUtil.SUGGESTION_STATE_USE_CASE)
     private val suggestionStateUseCase: UseCase<UniverseSuggestionUnifyModel>,
     @Named(DELETE_RECENT_SEARCH_USE_CASE)
-    private val deleteRecentSearchUseCase: com.tokopedia.usecase.UseCase<Boolean>,
+    private val deleteRecentSearchUseCase: RxUseCase<Boolean>,
+    @Named(URL_TRACKER_USE_CASE)
+    private val suggestionTrackerUseCase: RxUseCase<Void?>,
     private val userSession: UserSessionInterface,
     private val chooseAddressUtilsWrapper: ChooseAddressUtilsWrapper,
+    private val topAdsUrlHitter: TopAdsUrlHitter,
     private val sugSessionId: SugSessionId,
 ) : ViewModel() {
 
@@ -65,6 +75,10 @@ internal class AutoCompleteViewModel @Inject constructor(
     fun onScreenUpdateParameter(updatedParameter: Map<String, String>) {
         _stateFlow.value = stateValue.updateParameter(updatedParameter)
         actOnParameter()
+    }
+
+    fun setIsTyping(isTyping: Boolean) {
+        _stateFlow.value = stateValue.updateIsTyping(isTyping)
     }
 
     private fun actOnParameter() {
@@ -107,13 +121,53 @@ internal class AutoCompleteViewModel @Inject constructor(
     private fun onGetDataError(throwable: Throwable) {
     }
 
-    fun onAutoCompleteItemClick(item: AutoCompleteUnifyDataView) {
+    fun onAutoCompleteItemClick(item: AutoCompleteUnifyDataView, className: String) {
+        trackSuggestionShopAds(item, className)
+        trackItemWithUrl(item)
         _stateFlow.value = stateValue.updateNavigate(
             AutoCompleteNavigate(
                 applink = item.domainModel.applink,
                 featureId = item.domainModel.featureId,
             )
         )
+    }
+
+    private fun trackItemWithUrl(item: AutoCompleteUnifyDataView) {
+        val param =
+            createSuggestionTrackerParams(item.domainModel.tracking.trackerUrl)
+        suggestionTrackerUseCase.execute(
+            param,
+            createEmptySuggestionTrackerSubscriber()
+        )
+    }
+
+    private fun trackSuggestionShopAds(item: AutoCompleteUnifyDataView, className: String) {
+        val shopAdsDataView = item.shopAdsDataView ?: return
+        topAdsUrlHitter.hitClickUrl(
+            className,
+            shopAdsDataView.clickUrl,
+            "",
+            "",
+            shopAdsDataView.imageUrl,
+        )
+    }
+
+    private fun createSuggestionTrackerParams(urlTracker: String) = SuggestionTrackerUseCase.getParams(
+        urlTracker,
+        userSession.deviceId,
+        userSession.userId
+    )
+
+    private fun createEmptySuggestionTrackerSubscriber() = object : Subscriber<Void?>() {
+        override fun onCompleted() {
+        }
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onNext(aVoid: Void?) {
+        }
     }
 
     fun onNavigated() {
@@ -190,11 +244,11 @@ internal class AutoCompleteViewModel @Inject constructor(
         )
         deleteRecentSearchUseCase.execute(
             params,
-            getDeleteRecentSearchSubscriber(item.suggestionId)
+            getDeleteRecentSearchSubscriber(item)
         )
     }
 
-    private fun getDeleteRecentSearchSubscriber(suggestionId: String): Subscriber<Boolean> =
+    private fun getDeleteRecentSearchSubscriber(item: SuggestionUnify): Subscriber<Boolean> =
         object : Subscriber<Boolean>() {
             override fun onCompleted() {
             }
@@ -205,18 +259,18 @@ internal class AutoCompleteViewModel @Inject constructor(
 
             override fun onNext(isSuccess: Boolean) {
                 if (isSuccess) {
-                    deleteSearchItemFromStateResult(suggestionId)
+                    deleteSearchItemFromStateResult(item)
                 }
             }
         }
 
-    private fun deleteSearchItemFromStateResult(suggestionId: String) {
+    private fun deleteSearchItemFromStateResult(item: SuggestionUnify) {
         val resultList = stateValue.resultList.toMutableList()
-        resultList.removeFirst { it.domainModel.suggestionId == suggestionId }
+        resultList.removeFirst { it.domainModel == item }
         _stateFlow.value = stateValue.updateResultList(resultList)
     }
 
-    private fun getNavSource() = stateValue.parameter[SearchApiConst.NAVSOURCE] ?: ""
+    private fun getNavSource() = stateValue.getParameterMap()[SearchApiConst.NAVSOURCE] ?: ""
 
     @SuppressLint("PII Data Exposure")
     private fun getParamsMainQuery(
@@ -235,6 +289,7 @@ internal class AutoCompleteViewModel @Inject constructor(
             putString(SearchApiConst.USER_ID, userId)
             putString(SearchApiConst.UNIQUE_ID, uniqueId)
             putString(DEVICE_ID, registrationId)
+            putBoolean(IS_TYPING, stateValue.isTyping)
             putChooseAddressParams(chooseAddressUtilsWrapper.getLocalizingAddressData())
         }
     }
@@ -243,5 +298,17 @@ internal class AutoCompleteViewModel @Inject constructor(
         AuthHelper.getMD5Hash(userId)
     } else {
         AuthHelper.getMD5Hash(registrationId)
+    }
+
+    fun impressTopAds(item: AutoCompleteUnifyDataView, className: String) {
+        val adsDataView = item.shopAdsDataView ?: return
+
+        topAdsUrlHitter.hitImpressionUrl(
+            className,
+            adsDataView.impressionUrl,
+            "",
+            "",
+            adsDataView.imageUrl,
+        )
     }
 }

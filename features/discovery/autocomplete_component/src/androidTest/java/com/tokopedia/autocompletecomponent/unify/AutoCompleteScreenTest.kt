@@ -34,8 +34,10 @@ class AutoCompleteScreenTest {
         initialStateUseCase = initialStateUseCase,
         suggestionStateUseCase = suggestionStateUseCase,
         deleteRecentSearchUseCase = mockk(relaxed = true),
+        suggestionTrackerUseCase = mockk(relaxed = true),
         userSession = mockk(relaxed = true),
-        chooseAddressUtilsWrapper = mockk(relaxed = true)
+        chooseAddressUtilsWrapper = mockk(relaxed = true),
+        mockk(relaxed = true),
     )
 
     private lateinit var resultModel: UniverseSuggestionUnifyModel

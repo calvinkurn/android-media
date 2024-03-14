@@ -3,6 +3,8 @@ package com.tokopedia.autocompletecomponent.unify
 import com.tokopedia.autocompletecomponent.jsonToObject
 import com.tokopedia.autocompletecomponent.unify.domain.model.InitialStateUnifyModel
 import com.tokopedia.autocompletecomponent.unify.domain.model.UniverseSuggestionUnifyModel
+import com.tokopedia.usecase.RequestParams
+import io.mockk.slot
 import io.mockk.verify
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
@@ -36,10 +38,17 @@ class AutoCompleteInitialTest : AutoCompleteTestFixtures() {
     fun `on initial state successful should show success data`() {
         val model =
             AutoCompleteInitialStateSuccessJSON.jsonToObject<InitialStateUnifyModel>().data
-        `Given Initial Use Case Is Successful`(model)
+        val requestParamsSlot = slot<RequestParams>()
+        `Given Initial Use Case Is Successful`(model, requestParamsSlot)
         `When Screen Is Initialized`()
         val state = viewModel.stateValue
         `Then Assert That State Result Data is Equals to Model Data`(state, model)
+        val requestParams = requestParamsSlot.captured
+        `Then assert parameter is typing should not be true`(requestParams)
+    }
+
+    private fun `Then assert parameter is typing should not be true`(requestParams: RequestParams) {
+        assert(!requestParams.getBoolean("is_typing", false))
     }
 
     private fun `Then Assert That State Result Data is Equals to Model Data`(
