@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.mapper
 
 import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetBrcCsatWidgetResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.presentation.model.WidgetBrcCsatUiModel
@@ -25,7 +26,7 @@ object GetBrcCsatWidgetUiStateMapper {
             is GetBrcCsatWidgetRequestState.Requesting -> onRequesting(currentState = currentState)
             else -> {
                 if (brcCsatWidgetRequestState is GetBrcCsatWidgetRequestState.Complete.Success) {
-                    onSuccess(currentState, brcCsatWidgetRequestState, orderID)
+                    onSuccess(currentState, brcCsatWidgetRequestState.response, orderID)
                 } else {
                     onError()
                 }
@@ -43,11 +44,11 @@ object GetBrcCsatWidgetUiStateMapper {
 
     private fun onSuccess(
         currentState: WidgetBrcCsatUiState,
-        brcCsatWidgetRequestState: GetBrcCsatWidgetRequestState.Complete.Success,
+        response: GetBrcCsatWidgetResponse.Data.ResolutionGetCsatFormV4?,
         orderID: String
     ): WidgetBrcCsatUiState {
-        val helpPageUrl = brcCsatWidgetRequestState.result?.data?.url?.helpPage?.android.orEmpty()
-        val shouldShow = brcCsatWidgetRequestState.result?.data?.isEligible.orFalse() && helpPageUrl.isNotBlank()
+        val helpPageUrl = "https://www.tokopedia.com/help"
+        val shouldShow = response?.data?.isEligible.orFalse() && helpPageUrl.isNotBlank()
         return if (shouldShow) {
             val expanded = if (currentState is WidgetBrcCsatUiState.HasData) {
                 currentState.data.expanded

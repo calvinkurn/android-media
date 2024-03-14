@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
+import org.json.JSONObject
 import javax.inject.Inject
 
 class GetBrcCsatWidgetUseCase @Inject constructor(
@@ -25,7 +26,7 @@ class GetBrcCsatWidgetUseCase @Inject constructor(
     override suspend fun execute(params: GetBrcCsatWidgetRequestParams): Flow<GetBrcCsatWidgetRequestState> =
         flow {
             emit(GetBrcCsatWidgetRequestState.Requesting)
-            emit(GetBrcCsatWidgetRequestState.Complete.Success(sendRequest(params)))
+            emit(GetBrcCsatWidgetRequestState.Complete.Success(sendRequest(params).resolutionGetCsatFormV4))
         }.catch {
             emit(GetBrcCsatWidgetRequestState.Complete.Error(it))
         }.onCompletion {
@@ -34,13 +35,13 @@ class GetBrcCsatWidgetUseCase @Inject constructor(
 
     private fun createRequestParam(params: GetBrcCsatWidgetRequestParams): Map<String, Any> {
         return RequestParams.create().apply {
-            putObject(PARAM_INPUT, params.orderID)
+            putString(PARAM_INPUT, JSONObject().put(PARAM_ORDER_ID, params.orderId).toString())
         }.parameters
     }
 
     private suspend fun sendRequest(
         params: GetBrcCsatWidgetRequestParams
-    ): GetBrcCsatWidgetResponse.ResolutionGetCsatFormV4 {
+    ): GetBrcCsatWidgetResponse.Data {
         return repository.request(
             graphqlQuery(),
             createRequestParam(params),
@@ -63,16 +64,12 @@ class GetBrcCsatWidgetUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_INPUT = "param"
+        private const val PARAM_ORDER_ID = "orderID"
         private const val QUERY = """
             query BomGetBrcCsatWidget($$PARAM_INPUT: String) {
               resolution_get_csat_form_v4(param: $$PARAM_INPUT) {
                 data {
                   isEligible
-                  url {
-                    helpPage {
-                      android
-                    }
-                  }
                 }
               }
             }

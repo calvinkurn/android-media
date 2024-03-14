@@ -4,34 +4,25 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class GetBrcCsatWidgetResponse(
-    @SerializedName("resolution_get_csat_form_v4")
+    @SerializedName("data")
     @Expose
-    val resolutionGetCsatFormV4: ResolutionGetCsatFormV4? = null
+    val data: Data? = null
 ) {
-    data class ResolutionGetCsatFormV4(
-        @SerializedName("data")
+    data class Data(
+        @SerializedName("resolution_get_csat_form_v4")
         @Expose
-        val data: Data? = null
+        val resolutionGetCsatFormV4: ResolutionGetCsatFormV4? = null
     ) {
-        data class Data(
-            @SerializedName("isEligible")
+        data class ResolutionGetCsatFormV4(
+            @SerializedName("data")
             @Expose
-            val isEligible: Boolean? = null,
-            @SerializedName("url")
-            @Expose
-            val url: Url? = null
+            val data: Data? = null
         ) {
-            data class Url(
-                @SerializedName("helpPage")
+            data class Data(
+                @SerializedName("isEligible")
                 @Expose
-                val helpPage: HelpPage? = null
-            ) {
-                data class HelpPage(
-                    @SerializedName("android")
-                    @Expose
-                    val android: String? = null
-                )
-            }
+                val isEligible: Boolean? = null
+            )
         }
     }
 }

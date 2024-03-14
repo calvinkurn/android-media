@@ -53,7 +53,7 @@ class GetP1DataUseCase @Inject constructor(
 
     private fun getBrcCsatWidgetUseCaseRequestStates(params: GetP1DataParams) = flow {
         if (params.hasBrcCsat) {
-            emitAll(executeGetBrcCsatWidgetUseCase(GetBrcCsatWidgetRequestParams(params.orderId.toString(), params.shouldCheckCache)))
+            emitAll(executeGetBrcCsatWidgetUseCase(GetBrcCsatWidgetRequestParams(params.orderId, params.shouldCheckCache)))
         } else {
             emit(GetBrcCsatWidgetRequestState.Complete.Success(null))
         }
@@ -80,7 +80,8 @@ class GetP1DataUseCase @Inject constructor(
     private fun execute(params: GetP1DataParams): Flow<GetP1DataRequestState> {
         return combine(
             getOrderResolutionUseCaseRequestStates(params),
-            getInsuranceDetailUseCaseRequestStates(params)
+            getInsuranceDetailUseCaseRequestStates(params),
+            getBrcCsatWidgetUseCaseRequestStates(params)
         ) { flows ->
             mapP1UseCasesRequestState(
                 flows[0] as GetOrderResolutionRequestState, // please make sure that flow[0] is GetOrderResolutionRequestState after editing the flow source
