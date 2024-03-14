@@ -52,6 +52,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.domain.util.ShareExConstants.DefaultValue.SOURCE
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg
 import com.tokopedia.shareexperience.ui.model.arg.ShareExTrackerArg.Companion.SHARE_ID_KEY
@@ -374,7 +375,12 @@ class ReviewFragment @Inject constructor(
         shareExInitializer?.openShareBottomSheet(
             bottomSheetArg = ShareExBottomSheetArg.Builder(
                 pageTypeEnum = ShareExPageTypeEnum.REVIEW,
-                defaultUrl = "",
+                defaultUrl = generateCurrentPageAppLink(
+                    productId = productId,
+                    reviewId = reviewId,
+                    attachmentId = selectedMediaId,
+                    source = SOURCE
+                ),
                 trackerArg = ShareExTrackerArg(
                     utmCampaign = "ViewReview - $partialLabel - $selectedMediaId",
                     labelActionClickShareIcon = label,
@@ -387,6 +393,15 @@ class ReviewFragment @Inject constructor(
                 .withAttachmentId(selectedMediaId)
                 .build()
         )
+    }
+
+    private fun generateCurrentPageAppLink(
+        productId: String,
+        reviewId: String,
+        attachmentId: String,
+        source: String
+    ): String {
+        return "tokopedia://product-review/$productId?review_id=$reviewId&attachment_id=$attachmentId&source=$source"
     }
 
     /**

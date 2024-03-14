@@ -11,6 +11,7 @@ object ShareExConstants {
     }
 
     object DefaultValue {
+        const val SOURCE = "share"
         const val DEFAULT_TITLE = "Bagikan ke teman kamu"
     }
 
