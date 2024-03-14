@@ -7,6 +7,7 @@ import com.tokopedia.usecase.RequestParams
 import io.mockk.slot
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
+import org.hamcrest.core.IsNull.nullValue
 import org.junit.Test
 
 class AutoCompleteReplaceTest : AutoCompleteTestFixtures() {
@@ -29,6 +30,25 @@ class AutoCompleteReplaceTest : AutoCompleteTestFixtures() {
             viewModel,
             itemWithReplaceCta
         )
+
+        `When replace keyword acknowledged`(viewModel)
+
+        `Then Viewmodel state actionReplaceKeyword should be empty`(
+            viewModel
+        )
+    }
+
+    private fun `Then Viewmodel state actionReplaceKeyword should be empty`(
+        viewModel: AutoCompleteViewModel
+    ) {
+        assertThat(
+            viewModel.stateFlow.value.actionReplaceKeyword,
+            `is`(nullValue())
+        )
+    }
+
+    private fun `When replace keyword acknowledged`(viewModel: AutoCompleteViewModel) {
+        viewModel.onActionReplaceAcknowledged()
     }
 
     private fun `Then Viewmodel state actionReplaceKeyword should be item's title text`(

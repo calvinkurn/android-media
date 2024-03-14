@@ -1,9 +1,12 @@
 package com.tokopedia.autocompletecomponent.unify
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,8 +38,10 @@ import com.tokopedia.autocompletecomponent.util.FEATURE_ID_RECENT_SEARCH
 import com.tokopedia.autocompletecomponent.util.FEATURE_ID_RELATED_KEYWORD
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
 import com.tokopedia.iris.Iris
+import com.tokopedia.nest.principles.utils.addImpression
 import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 
 @Composable
@@ -47,6 +52,7 @@ internal fun AutoCompleteScreen(
     searchEntrance: String,
 ) {
     val analytics = TrackApp.getInstance().gtm
+    val lazyListState = rememberLazyListState()
 
     Surface(
         modifier = Modifier
@@ -71,58 +77,101 @@ internal fun AutoCompleteScreen(
         }
 
         LazyColumn(
-            modifier = Modifier.tag("MainLazyColumn")
+            modifier = Modifier.tag("MainLazyColumn"),
+            state = lazyListState
         ) {
-            items(
-                state.value.resultList
-            ) { item ->
-                LaunchedEffect(key1 = item, block = {
-                    item.impress(iris)
-                    if (viewModel.stateValue.isSuggestion)
-                        AppLogSearch.eventTrendingWordsShowSuggestion(
-                            trendingWordsSuggestion(viewModel, item, searchEntrance)
+            this@LazyColumn.itemsIndexed(
+                items = state.value.resultList,
+                key = { idx, it ->
+                    it.domainModel.title.text + it.uniqueIdentifier + idx
+                }
+            ) { idx, item ->
+                AutoCompleteItemComponent(
+                    item,
+                    idx,
+                    lazyListState,
+                    iris,
+                    viewModel,
+                    analytics,
+                    searchEntrance
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AutoCompleteItemComponent(
+    item: AutoCompleteUnifyDataView,
+    idx: Int,
+    lazyListState: LazyListState,
+    iris: Iris,
+    viewModel: AutoCompleteViewModel,
+    analytics: ContextAnalytics,
+    searchEntrance: String,
+    className: String = LocalContext.current.javaClass.name
+) {
+    Box(
+        modifier = Modifier.addImpression(
+            uniqueIdentifier = item.domainModel.title.text + item.uniqueIdentifier + idx,
+            impressionState = item.impressionHolder,
+            state = lazyListState,
+            onItemViewed = {
+                item.impress(iris)
+                viewModel.impressTopAds(
+                    item,
+                    className,
+                )
+                if (viewModel.stateValue.isSuggestion)
+                    AppLogSearch.eventTrendingWordsShowSuggestion(
+                        trendingWordsSuggestion(viewModel, item, searchEntrance)
+                    )
+            },
+            impressInterval = 0L
+        )
+    ) {
+        when (item.domainModel.template) {
+            AutoCompleteTemplateEnum.Master.toString() -> {
+                AutoCompleteMasterComponent(
+                    item,
+                    onItemClicked = {
+                        viewModel.onAutoCompleteItemClick(
+                            it,
+                            className,
                         )
-                })
-                when (item.domainModel.template) {
-                    AutoCompleteTemplateEnum.Master.toString() -> {
-                        AutoCompleteMasterComponent(
-                            item,
-                            onItemClicked = {
-                                viewModel.onAutoCompleteItemClick(it)
-                                it.click(analytics)
-                                if (viewModel.stateValue.isSuggestion) {
-                                    AppLogAnalytics.putPageData(
-                                        AppLogSearch.ParamKey.SUG_TYPE,
-                                        item.sugType,
-                                    )
+                        it.click(analytics)
+                        if (viewModel.stateValue.isSuggestion) {
+                            AppLogAnalytics.putPageData(
+                                AppLogSearch.ParamKey.SUG_TYPE,
+                                item.sugType,
+                            )
 
-                                    AppLogAnalytics.putPageData(
-                                        AppLogSearch.ParamKey.PRE_CLICK_ID,
-                                        viewModel.stateValue.appLogData.imprId,
-                                    )
+                            AppLogAnalytics.putPageData(
+                                AppLogSearch.ParamKey.PRE_CLICK_ID,
+                                viewModel.stateValue.appLogData.imprId,
+                            )
 
-                                    AppLogSearch.eventTrendingWordsClickSuggestion(
-                                        trendingWordsSuggestion(viewModel, item, searchEntrance)
-                                    )
-                                }
-                            },
-                            onItemAction = {
-                                viewModel.onAutocompleteItemAction(it)
-                            }
-                        )
-                    }
-
-                    AutoCompleteTemplateEnum.Education.toString() -> {
-                        AutoCompleteEducationComponent(item, onItemClicked = {
-                            viewModel.onAutoCompleteItemClick(it)
-                        })
-                    }
-
-                    AutoCompleteTemplateEnum.Title.toString() -> {
-                        AutoCompleteTitleComponent(item) {
-                            viewModel.onAutocompleteItemAction(it)
+                            AppLogSearch.eventTrendingWordsClickSuggestion(
+                                trendingWordsSuggestion(viewModel, item, searchEntrance)
+                            )
                         }
+                    },
+                    onItemAction = {
+                        viewModel.onAutocompleteItemAction(it)
                     }
+                )
+            }
+
+            AutoCompleteTemplateEnum.Education.toString() -> {
+                AutoCompleteEducationComponent(item, onItemClicked = {
+                    viewModel.onAutoCompleteItemClick(it, className)
+                    it.click(analytics)
+                })
+            }
+
+            AutoCompleteTemplateEnum.Title.toString() -> {
+                AutoCompleteTitleComponent(item) {
+                    viewModel.onAutocompleteItemAction(it)
                 }
             }
         }

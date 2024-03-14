@@ -12,15 +12,8 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@Module
+@Module(includes = [AutoCompleteTopAdsUrlHitterModule::class])
 internal class AutoCompleteModule {
-    @AutoCompleteScope
-    @Provides
-    @Named(DELETE_RECENT_SEARCH_USE_CASE)
-    fun provideDeleteRecentSearchUseCase(): com.tokopedia.usecase.UseCase<Boolean> {
-        return DeleteRecentSearchUseCase(GraphqlUseCase())
-    }
-
     @AutoCompleteScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
