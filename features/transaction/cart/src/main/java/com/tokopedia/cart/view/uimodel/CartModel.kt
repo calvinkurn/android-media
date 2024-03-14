@@ -37,5 +37,7 @@ data class CartModel(
     // adapter
     var tmpCollapsedUnavailableShop: DisabledCollapsedHolderData? = null,
     var firstCartSectionHeaderPosition: Int = -1,
-    var tmpAllUnavailableShop: MutableList<Any>? = null
+    var tmpAllUnavailableShop: MutableList<Any>? = null,
+
+    var shouldReloadRecentViewList: Boolean = false
 )

@@ -6,6 +6,7 @@ import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
 import com.tokopedia.catalog.ui.fragment.CatalogLandingPageFragment
 import com.tokopedia.catalog.ui.fragment.CatalogProductListFragment
 import com.tokopedia.catalog.ui.fragment.CatalogProductListImprovementFragment
+import com.tokopedia.catalog.ui.fragment.CatalogSellerOfferingFragment
 import com.tokopedia.catalog.ui.fragment.CatalogSwitchingComparisonFragment
 import com.tokopedia.oldcatalog.ui.fragment.CatalogAllReviewFragment
 import com.tokopedia.oldcatalog.ui.fragment.CatalogDetailProductListingFragment
@@ -35,4 +36,7 @@ interface CatalogComponent {
     fun inject(catalogProductListImprovementFragment: CatalogProductListImprovementFragment)
 
     fun inject(catalogSwitchingComparisonFragment: CatalogSwitchingComparisonFragment)
+
+    fun inject(catalogSellerOfferingFragment: CatalogSellerOfferingFragment)
+
 }
