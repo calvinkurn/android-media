@@ -544,7 +544,8 @@ class ProductDetailViewModel @Inject constructor(
             isSingleSku = isSingleSku,
             mainPhotoViewCount = mainCount,
             skuPhotoViewCount = skuCount,
-            isAddCartSelected = hasDoneAddToCart
+            isAddCartSelected = hasDoneAddToCart,
+            isSkuSelected = p1?.isProductVariant() == false
         )
     }
 
