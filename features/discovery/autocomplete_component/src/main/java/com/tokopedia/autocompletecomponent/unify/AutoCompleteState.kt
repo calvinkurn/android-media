@@ -88,7 +88,8 @@ data class AutoCompleteState(
                             text = adsModel.cpm.name
                         ),
                         subtitle = it.subtitle.copy(
-                            text = AUTOCOMPLETE_UNIFY_SHOP_ADS_SUBTITLE
+                            text = AUTOCOMPLETE_UNIFY_SHOP_ADS_SUBTITLE,
+                            iconImageUrl = ""
                         ),
                         tracking = it.tracking.copy(
                             trackerUrl = adsModel.adClickUrl
