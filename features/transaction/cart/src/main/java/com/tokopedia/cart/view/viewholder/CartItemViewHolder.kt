@@ -1175,8 +1175,27 @@ class CartItemViewHolder(
             textProductVariant.text = data.variant
             textProductVariant.show()
             paddingRight = itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
+            textProductVariant.setOnClickListener {
+                actionListener?.onChangeVariantClicked(
+                    data.productId,
+                    data.shopHolderData.shopId,
+                    data.cartId
+                )
+            }
+            binding.iconVariant.setImage(IconUnify.CHEVRON_DOWN)
+            binding.iconVariant.setOnClickListener {
+                actionListener?.onChangeVariantClicked(
+                    data.productId,
+                    data.shopHolderData.shopId,
+                    data.cartId
+                )
+            }
+            binding.iconVariant.show()
         } else {
+            textProductVariant.setOnClickListener(null)
             textProductVariant.gone()
+            binding.iconVariant.setOnClickListener(null)
+            binding.iconVariant.gone()
         }
         textProductVariant.setPadding(0, paddingTop, paddingRight, 0)
         if (data.isError) {
@@ -1949,7 +1968,8 @@ class CartItemViewHolder(
             }
 
             CartProductLabelData.TYPE_TIMER -> {
-                val remainingTimeMillis = productLabelData.localExpiredTimeMillis - System.currentTimeMillis()
+                val remainingTimeMillis =
+                    productLabelData.localExpiredTimeMillis - System.currentTimeMillis()
                 if (productLabelData.alwaysShowTimer) {
                     binding.cartCampaignProductLabel.showTimedLabel(
                         remainingTimeMillis = remainingTimeMillis,

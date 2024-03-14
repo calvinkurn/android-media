@@ -54,6 +54,10 @@ class CartItemAdapter {
             cartDetailInfo: CartDetailInfo,
             tierProductData: CartDetailInfo.BmGmTierProductData
         )
-        fun onChangeVariantClicked(productId: String, shopId: String)
+        fun onChangeVariantClicked(
+            productId: String,
+            shopId: String,
+            cartId: String
+        )
     }
 }
