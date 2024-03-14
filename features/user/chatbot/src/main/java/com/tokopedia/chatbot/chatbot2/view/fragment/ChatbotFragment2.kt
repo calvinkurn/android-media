@@ -197,6 +197,7 @@ import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoard
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
 import com.tokopedia.chatbot.view.util.OnboardingVideoDismissListener
+import com.tokopedia.csat_rating.dynamiccsat.DynamicCsatConst
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
@@ -1529,6 +1530,13 @@ class ChatbotFragment2 :
         mapMessageToList(visitable)
         getViewState()?.hideEmptyMessage(visitable)
         getViewState()?.onCheckToHideQuickReply(visitable)
+        removeDynamicStickyButtonOnNewMessage(visitable)
+    }
+
+    private fun removeDynamicStickyButtonOnNewMessage(visitable: Visitable<*>) {
+        if (visitable is MessageUiModel) {
+            getViewState()?.removeDynamicStickyButtonAction()
+        }
     }
 
     private fun manageVideoBubble() {
@@ -1743,11 +1751,11 @@ class ChatbotFragment2 :
             caseID = data.getStringExtra(ChatBotCsatActivity.CASE_ID).orEmpty()
             caseChatID = data.getStringExtra(ChatBotCsatActivity.CASE_CHAT_ID).orEmpty()
             reasonCode = data.getStringExtra(SELECTED_ITEMS).orEmpty()
-            service = data.getStringExtra(SERVICE).orEmpty()
-            otherReason = data.getStringExtra(OTHER_REASON).orEmpty()
-            dynamicReasons = data.getStringArrayListExtra(DYNAMIC_REASON).orEmpty()
+            service = data.getStringExtra(DynamicCsatConst.SERVICE).orEmpty()
+            otherReason = data.getStringExtra(DynamicCsatConst.OTHER_REASON).orEmpty()
+            dynamicReasons = data.getStringArrayListExtra(DynamicCsatConst.DYNAMIC_REASON).orEmpty()
             rating = if (dynamicReasons.isNotEmpty()) {
-                data.extras?.getInt(EMOJI_STATE).orZero().toLong()
+                data.extras?.getInt(DynamicCsatConst.EMOJI_STATE).orZero().toLong()
             } else {
                 data.extras?.getLong(EMOJI_STATE).orZero()
             }
@@ -3073,7 +3081,12 @@ class ChatbotFragment2 :
         }
     }
 
+    override fun onValidateCtaVisibility() {
+        getViewState()?.removeDynamicStickyButtonAction()
+    }
+
     override fun onButtonActionClicked(bubble: ChatActionBubbleUiModel) {
+        getViewState()?.removeDynamicStickyButtonAction(true)
         val startTime = SendableUiModel.generateStartTime()
         viewModel.sendDynamicAttachmentText(
             messageId,
@@ -3081,7 +3094,6 @@ class ChatbotFragment2 :
             startTime,
             opponentId
         )
-        getViewState()?.removeDynamicStickyButton()
         getViewState()?.scrollToBottom()
     }
 

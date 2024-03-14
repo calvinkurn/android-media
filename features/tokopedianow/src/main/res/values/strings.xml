@@ -256,8 +256,6 @@
 
     <!-- Claim Coupon Widget -->
     <string name="tokopedianow_claim_coupon_widget_button_claim_text">Klaim</string>
-    <string name="tokopedianow_claim_coupon_widget_local_load_title">Konten gagal ditampilkan</string>
-    <string name="tokopedianow_claim_coupon_widget_local_load_description">Klik ikon di samping buat coba lagi.</string>
     <string name="tokopedianow_claim_coupon_widget_coupon_claimed_toaster_success_description">Selamat, kupon berhasil diklaim! Lihat kupon saya sekarang.</string>
     <string name="tokopedianow_claim_coupon_widget_coupon_claimed_toaster_success_cta">Lihat</string>
     <string name="tokopedianow_claim_coupon_widget_coupon_claimed_toaster_error_description_default">Ada yang salah. Silakan coba lagi.</string>
@@ -277,6 +275,10 @@
     <string name="tokopedianow_buyer_communication_two_hour_benefit">2 Jam Tiba<sup>*</sup>. Butuh cepat? Nikmati pengiriman cepat, langsung ke alamatmu. (<sup>*</sup>Khusus Jadetabek)</string>
     <string name="tokopedianow_buyer_communication_tnc"><![CDATA[Dengan belanja, kamu menyetujui syarat & ketentuan.]]></string>
     <string name="tokopedianow_buyer_communication_tnc_label">syarat &amp; ketentuan.</string>
+    <string name="tokopedianow_all_annotation_page_title">Semua brand</string>
+
+    <string name="tokopedianow_widget_local_load_title">Konten gagal ditampilkan</string>
+    <string name="tokopedianow_widget_local_load_description">Klik ikon di samping buat coba lagi.</string>
 
     <!-- Shopping List -->
     <string name="tokopedianow_shopping_list_page_title">List Belanja</string>

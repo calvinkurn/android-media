@@ -886,10 +886,8 @@ class ChatListFragment :
     }
 
     override fun onOperationalInsightTickerClicked(element: ShopChatTicker) {
-        val operationalInsightBottomSheet = OperationalInsightBottomSheet(
-            element,
-            userSession.shopId
-        )
+        val operationalInsightBottomSheet = OperationalInsightBottomSheet()
+        operationalInsightBottomSheet.setData(element, userSession.shopId)
         operationalInsightBottomSheet.show(childFragmentManager, FilterMenu.TAG)
         TopChatAnalyticsKt.eventClickOperationalInsightTicker(
             shopId = userSession.shopId,

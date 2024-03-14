@@ -191,6 +191,7 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
         carouselLayoutManager?.removeOnItemSelectionListener(itemSelectionListener)
         carouselLayoutManager?.addOnItemSelectionListener(itemSelectionListener)
         recyclerView?.apply {
+            layoutParams.height = Int.ZERO
             isNestedScrollingEnabled = false
             (this@apply.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ratio
             this.layoutManager = carouselLayoutManager

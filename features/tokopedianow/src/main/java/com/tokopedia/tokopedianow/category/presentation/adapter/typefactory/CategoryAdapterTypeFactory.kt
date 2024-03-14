@@ -5,6 +5,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.tokopedianow.annotation.analytic.AnnotationWidgetAnalytic
+import com.tokopedia.tokopedianow.annotation.presentation.adapter.typefactory.BrandWidgetTypeFactory
+import com.tokopedia.tokopedianow.annotation.presentation.uimodel.BrandWidgetUiModel
+import com.tokopedia.tokopedianow.annotation.presentation.viewholder.BrandWidgetViewHolder
+import com.tokopedia.tokopedianow.annotation.presentation.viewholder.BrandWidgetViewHolder.BrandWidgetListener
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
@@ -38,12 +43,14 @@ class CategoryAdapterTypeFactory(
     private var categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null,
     private var tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
     private var tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null,
+    private var brandWidgetListener: BrandWidgetListener? = null,
+    private val brandWidgetAnalytic: AnnotationWidgetAnalytic,
     private var tokoNowHeaderListener: TokoNowHeaderListener? = null,
     private var recycledViewPool: RecyclerView.RecycledViewPool? = null,
     private var tokoNowView: TokoNowView? = null,
     private val lifecycleOwner: LifecycleOwner? = null,
     tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener? = null,
-    productAdsCarouselListener: ProductAdsCarouselListener
+    productAdsCarouselListener: ProductAdsCarouselListener,
 ) : BaseCategoryAdapterTypeFactory(
     tokoNowChooseAddressWidgetListener,
     productAdsCarouselListener,
@@ -52,11 +59,13 @@ class CategoryAdapterTypeFactory(
     TokoNowThematicHeaderTypeFactory,
     TokoNowCategoryMenuTypeFactory,
     TokoNowProductRecommendationTypeFactory,
-    TokoNowProgressBarTypeFactory {
+    TokoNowProgressBarTypeFactory,
+    BrandWidgetTypeFactory {
 
     /* Category Component Ui Model */
     override fun type(uiModel: CategoryNavigationUiModel): Int = CategoryNavigationViewHolder.LAYOUT
     override fun type(uiModel: CategoryShowcaseUiModel): Int = CategoryShowcaseViewHolder.LAYOUT
+    override fun type(uiModel: BrandWidgetUiModel): Int = BrandWidgetViewHolder.LAYOUT
 
     /* Common Component Ui Model */
     override fun type(uiModel: TokoNowCategoryMenuUiModel): Int = TokoNowCategoryMenuViewHolder.LAYOUT
@@ -96,6 +105,11 @@ class CategoryAdapterTypeFactory(
                 listener = tokoNowHeaderListener,
                 tokoNowView = tokoNowView
             )
+            BrandWidgetViewHolder.LAYOUT -> BrandWidgetViewHolder(
+                itemView = view,
+                analytic = brandWidgetAnalytic,
+                listener = brandWidgetListener
+            )
             else -> super.createViewHolder(view, type)
         }
     }
@@ -108,6 +122,7 @@ class CategoryAdapterTypeFactory(
         categoryShowcaseHeaderListener = null
         tokoNowCategoryMenuListener = null
         tokoNowProductRecommendationListener = null
+        brandWidgetListener = null
         tokoNowView = null
     }
 }

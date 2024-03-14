@@ -13,6 +13,15 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.tokopedianow.annotation.domain.mapper.BrandWidgetMapper.addBrandWidget
+import com.tokopedia.tokopedianow.annotation.domain.mapper.BrandWidgetMapper.mapBrandWidget
+import com.tokopedia.tokopedianow.annotation.domain.mapper.BrandWidgetMapper.mapBrandWidgetError
+import com.tokopedia.tokopedianow.annotation.domain.mapper.BrandWidgetMapper.mapBrandWidgetLoading
+import com.tokopedia.tokopedianow.annotation.domain.mapper.BrandWidgetMapper.removeBrandWidget
+import com.tokopedia.tokopedianow.annotation.domain.model.TokoNowGetAnnotationListResponse.GetAnnotationListResponse
+import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationPageSource
+import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationType
+import com.tokopedia.tokopedianow.annotation.domain.usecase.GetAnnotationWidgetUseCase
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryRecommendationMapper.mapToCategoryRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.DEFAULT_PRODUCT_QUANTITY
@@ -39,6 +48,7 @@ import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.findAdsProductCarousel
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
@@ -48,8 +58,8 @@ import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
-import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L1
+import com.tokopedia.tokopedianow.category.domain.model.CategorySharingModel
+import com.tokopedia.tokopedianow.category.constant.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeHeaderTicker
@@ -64,6 +74,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     private val getCategoryProductUseCase: GetCategoryProductUseCase,
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
     private val getProductAdsUseCase: GetProductAdsUseCase,
+    private val getAnnotationWidgetUseCase: GetAnnotationWidgetUseCase,
     private val aceSearchParamMapper: AceSearchParamMapper,
     private val addressData: TokoNowLocalAddress,
     private val resourceProvider: ResourceProvider,
@@ -158,6 +169,7 @@ class TokoNowCategoryViewModel @Inject constructor(
             categoryId = listOf(categoryIdL1)
         )
         visitableList.addProductAdsCarousel()
+        visitableList.addBrandWidget()
 
         addCategoryShowcases(
             categoryNavigationUiModel = categoryNavigationUiModel
@@ -336,6 +348,7 @@ class TokoNowCategoryViewModel @Inject constructor(
             block = {
                 getBatchShowcase(hasAdded = true)
                 getProductAds(categoryIdL1)
+                getBrandWidget()
             },
             onError = { /* nothing to do */ }
         )
@@ -396,6 +409,40 @@ class TokoNowCategoryViewModel @Inject constructor(
         )
     }
 
+    fun retryGetBrandWidget(id: String) {
+        visitableList.mapBrandWidgetLoading(id)
+        updateVisitableListLiveData()
+        getBrandWidget()
+    }
+
+    private fun getBrandWidget() {
+        launchCatchError(block = {
+            val response = getAnnotationWidget(AnnotationType.BRAND)
+
+            if (response.showWidget()) {
+                visitableList.mapBrandWidget(response)
+            } else {
+                visitableList.removeBrandWidget()
+            }
+
+            updateVisitableListLiveData()
+        }) {
+            visitableList.mapBrandWidgetError()
+            updateVisitableListLiveData()
+        }
+    }
+
+    private suspend fun getAnnotationWidget(
+        annotationType: AnnotationType
+    ): GetAnnotationListResponse {
+        return getAnnotationWidgetUseCase.execute(
+            categoryId = categoryIdL1,
+            warehouses = getWarehouses(),
+            annotationType = annotationType,
+            pageSource = AnnotationPageSource.CLP_L1
+        )
+    }
+
     private fun createRequestQueryParams(categoryId: String): Map<String?, Any?> {
         return aceSearchParamMapper.createRequestParams(
             source = CATEGORY_TOKONOW_DIRECTORY,
@@ -417,29 +464,33 @@ class TokoNowCategoryViewModel @Inject constructor(
 
     private fun trackCategoryShowCase(product: ProductCardCompactUiModel, quantity: Int) {
         visitableList.findCategoryShowcaseItem(product.productId)?.let { item ->
-            _atcDataTracker.postValue(CategoryAtcTrackerModel(
-                categoryIdL1 = categoryIdL1,
-                index = item.index,
-                headerName = item.headerName,
-                quantity = quantity,
-                product = product,
-                layoutType = CATEGORY_SHOWCASE.name
-            ))
+            _atcDataTracker.postValue(
+                CategoryAtcTrackerModel(
+                    categoryIdL1 = categoryIdL1,
+                    index = item.index,
+                    headerName = item.headerName,
+                    quantity = quantity,
+                    product = product,
+                    layoutType = CATEGORY_SHOWCASE.name
+                )
+            )
         }
     }
 
     private fun trackProductAdsAddToCart(product: ProductCardCompactUiModel, quantity: Int) {
         visitableList.findAdsProductCarousel(product.productId).let { item ->
-            _atcDataTracker.postValue(CategoryAtcTrackerModel(
-                index = item.position,
-                quantity = quantity,
-                shopId = item.shopId,
-                shopName = item.shopName,
-                shopType = item.shopType,
-                categoryBreadcrumbs = item.categoryBreadcrumbs,
-                product = item.productCardModel,
-                layoutType = PRODUCT_ADS_CAROUSEL
-            ))
+            _atcDataTracker.postValue(
+                CategoryAtcTrackerModel(
+                    index = item.position,
+                    quantity = quantity,
+                    shopId = item.shopId,
+                    shopName = item.shopName,
+                    shopType = item.shopType,
+                    categoryBreadcrumbs = item.categoryBreadcrumbs,
+                    product = item.productCardModel,
+                    layoutType = PRODUCT_ADS_CAROUSEL
+                )
+            )
         }
     }
 
@@ -451,14 +502,16 @@ class TokoNowCategoryViewModel @Inject constructor(
         val deepLinkParam = "$DEFAULT_DEEPLINK_PARAM/$categoryIdL1"
         val utmCampaignList = getUtmCampaignList()
 
-        _shareLiveData.postValue(CategorySharingModel(
-            categoryIdLvl2 = "",
-            categoryIdLvl3 = "",
-            title = title,
-            deeplinkParam = deepLinkParam,
-            url = url,
-            utmCampaignList = utmCampaignList
-        ))
+        _shareLiveData.postValue(
+            CategorySharingModel(
+                categoryIdLvl2 = "",
+                categoryIdLvl3 = "",
+                title = title,
+                deeplinkParam = deepLinkParam,
+                url = url,
+                utmCampaignList = utmCampaignList
+            )
+        )
     }
 
     private fun getUtmCampaignList(): List<String> {
@@ -471,5 +524,10 @@ class TokoNowCategoryViewModel @Inject constructor(
             name = detailResponse.categoryDetail.data.name,
             url = detailResponse.categoryDetail.data.url
         )
+    }
+
+    private fun getWarehouses(): String {
+        val addressLocalCacheModel = addressData.getAddressData()
+        return AddressMapper.mapToWarehouses(addressLocalCacheModel)
     }
 }

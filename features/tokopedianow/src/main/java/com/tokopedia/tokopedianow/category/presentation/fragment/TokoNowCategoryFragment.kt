@@ -29,6 +29,9 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.annotation.analytic.AnnotationWidgetAnalytic
+import com.tokopedia.tokopedianow.annotation.analytic.AnnotationWidgetAnalytic.Companion.ANNOTATION_TYPE_BRAND
+import com.tokopedia.tokopedianow.annotation.presentation.viewholder.BrandWidgetViewHolder.BrandWidgetListener
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryComponent
 import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
@@ -47,14 +50,14 @@ import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
-import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
+import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryL1Binding
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
-import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_CATEGORY_ID
-import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_REF
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking
+import com.tokopedia.tokopedianow.category.constant.RECOM_QUERY_PARAM_CATEGORY_ID
+import com.tokopedia.tokopedianow.category.constant.RECOM_QUERY_PARAM_REF
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -118,6 +121,8 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             tokoNowProductRecommendationListener = createProductRecommendationCallback(),
             tokoNowHeaderListener = createTitleCallback(),
             productAdsCarouselListener = createProductCardAdsCallback(),
+            brandWidgetListener = createBrandWidgetListener(),
+            brandWidgetAnalytic = createBrandWidgetAnalytic(),
             recycledViewPool = recycledViewPool,
             lifecycleOwner = viewLifecycleOwner
         )
@@ -444,7 +449,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         override fun onProductCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()
     }
 
-    private fun createCategoryShowcaseHeaderCallback() = object : TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
+    private fun createCategoryShowcaseHeaderCallback() = object : TokoNowDynamicHeaderListener {
         override fun onSeeAllClicked(
             context: Context,
             channelId: String,
@@ -646,6 +651,27 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         override fun onProductCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()
     }
 
+    private fun createBrandWidgetListener(): BrandWidgetListener {
+        return object: BrandWidgetListener {
+            override fun clickRetryButton(id: String) {
+                viewModel.retryGetBrandWidget(id)
+            }
+
+            override fun onSeeAllClicked(
+                context: Context,
+                channelId: String,
+                headerName: String,
+                appLink: String,
+                widgetId: String
+            ) {
+            }
+
+            override fun onChannelExpired() {
+
+            }
+        }
+    }
+
     private fun createNavRecyclerViewOnScrollListener(
         navToolbar: NavToolbar
     ): RecyclerView.OnScrollListener {
@@ -667,5 +693,9 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             },
             fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
         )
+    }
+
+    private fun createBrandWidgetAnalytic(): AnnotationWidgetAnalytic {
+        return AnnotationWidgetAnalytic(categoryIdL1, ANNOTATION_TYPE_BRAND)
     }
 }

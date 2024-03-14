@@ -5,10 +5,6 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 open class PlayFeedUiModel
 
-data class PlayWidgetJumboUiModel(
-    val model: PlayWidgetUiModel
-): PlayFeedUiModel()
-
 data class PlayWidgetLargeUiModel(
     val model: PlayWidgetUiModel
 ): PlayFeedUiModel()
