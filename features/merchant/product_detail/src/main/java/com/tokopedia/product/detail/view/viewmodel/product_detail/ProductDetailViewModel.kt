@@ -34,7 +34,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailPrefetch
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
-import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.media.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
@@ -287,7 +287,7 @@ class ProductDetailViewModel @Inject constructor(
 
     fun hasShopAuthority(): Boolean = isShopOwner() || getShopInfo().allowManage
     fun isShopOwner(): Boolean =
-        isUserSessionActive && userSessionInterface.shopId.toIntOrNull() == getProductInfoP1?.basic?.getShopId()
+        isUserSessionActive && userSessionInterface.shopId == getProductInfoP1?.basic?.shopID
 
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
@@ -425,11 +425,14 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     fun getShopInfo(): ShopInfo {
-        return p2Data.value?.shopInfo ?: ShopInfo()
+        val p2 = p2Data.value ?: return ShopInfo()
+        return p2.shopInfo
     }
 
     fun getCartTypeByProductId(): CartTypeData? {
-        return p2Data.value?.cartRedirection?.get(getProductInfoP1?.basic?.productID ?: "")
+        val p2 = p2Data.value ?: return null
+        val p1 = getProductInfoP1 ?: return null
+        return p2.cartRedirection[p1.basic.productID]
     }
 
     fun updateLastAction(talkLastAction: ProductDetailTalkLastAction) {
@@ -437,7 +440,10 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     fun getMiniCartItem(): MiniCartItem.MiniCartItemProduct? {
-        return p2Data.value?.miniCart?.get(getProductInfoP1?.basic?.productID ?: "")
+        val p2 = p2Data.value ?: return null
+        val miniCart = p2.miniCart ?: return null
+        val p1 = getProductInfoP1 ?: return null
+        return miniCart[p1.basic.productID]
     }
 
     fun updateDynamicProductInfoData(data: ProductInfoP1?) {
@@ -736,7 +742,7 @@ class ProductDetailViewModel @Inject constructor(
         }
         val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
             getProductInfoP2LoginAsync(
-                shopId = p1.basic.getShopId(),
+                shopId = p1.basic.shopID,
                 productId = p1.basic.productID,
                 isFromCache = p1.cacheState.isFromCache
             )
@@ -750,7 +756,7 @@ class ProductDetailViewModel @Inject constructor(
             hasQuantityEditor = p1.basic.isTokoNow || hasQuantityEditor
         )
         val p2OtherDeferred: Deferred<ProductInfoP2Other> =
-            getProductInfoP2OtherAsync(p1.basic.productID, p1.basic.getShopId())
+            getProductInfoP2OtherAsync(p1.basic.productID, p1.basic.shopID)
 
         p2DataDeferred.await().let { p2 ->
             this@ProductDetailViewModel._p2Data.postValue(p2)
@@ -1152,7 +1158,7 @@ class ProductDetailViewModel @Inject constructor(
 
     private fun getProductInfoP2OtherAsync(
         productId: String,
-        shopId: Int
+        shopId: String
     ): Deferred<ProductInfoP2Other> {
         return async(dispatcher.io) {
             getProductInfoP2OtherUseCase.get().executeOnBackground(
@@ -1163,7 +1169,7 @@ class ProductDetailViewModel @Inject constructor(
     }
 
     private fun getProductInfoP2LoginAsync(
-        shopId: Int,
+        shopId: String,
         productId: String,
         isFromCache: Boolean
     ): Deferred<ProductInfoP2Login> {

@@ -78,6 +78,7 @@ class GetReviewUseCase @Inject constructor(
                     productName
                     productImageURL
                     productStatus
+                    productPageURL
                   }
                   reviewDataInbox {
                     feedbackID

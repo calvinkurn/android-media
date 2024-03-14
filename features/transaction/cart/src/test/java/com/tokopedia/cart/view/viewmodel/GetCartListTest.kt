@@ -8,10 +8,8 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.view.uimodel.CartState
 import com.tokopedia.network.exception.ResponseErrorException
 import io.mockk.coEvery
-import io.mockk.every
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import rx.Observable
 
 class GetCartListTest : BaseCartViewModelTest() {
 
@@ -22,7 +20,7 @@ class GetCartListTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
-        every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData(
@@ -43,7 +41,7 @@ class GetCartListTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } throws exception
 
-        every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData(
@@ -63,7 +61,7 @@ class GetCartListTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
-        every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData(
@@ -84,7 +82,7 @@ class GetCartListTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } throws exception
 
-        every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData(
@@ -113,7 +111,7 @@ class GetCartListTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
-        every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData(
@@ -142,7 +140,7 @@ class GetCartListTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
-        every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData(

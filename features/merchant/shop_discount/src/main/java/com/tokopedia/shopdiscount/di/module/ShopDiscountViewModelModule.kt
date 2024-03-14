@@ -16,6 +16,7 @@ import com.tokopedia.shopdiscount.product_detail.presentation.viewmodel.ShopDisc
 import com.tokopedia.shopdiscount.search.presentation.SearchProductViewModel
 import com.tokopedia.shopdiscount.select.presentation.SelectProductViewModel
 import com.tokopedia.shopdiscount.set_period.presentation.viewmodel.SetPeriodBottomSheetViewModel
+import com.tokopedia.shopdiscount.subsidy.presentation.viewmodel.ShopDiscountOptOutReasonBottomSheetViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -82,5 +83,12 @@ abstract class ShopDiscountViewModelModule {
     @IntoMap
     @ViewModelKey(ShopDiscountManageVariantViewModel::class)
     internal abstract fun provideShopDiscountManageProductVariantDiscountViewModel(viewModel: ShopDiscountManageVariantViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ShopDiscountOptOutReasonBottomSheetViewModel::class)
+    internal abstract fun provideShopDiscountOptOutReasonBottomSheetViewModel(
+        viewModel: ShopDiscountOptOutReasonBottomSheetViewModel
+    ): ViewModel
 
 }

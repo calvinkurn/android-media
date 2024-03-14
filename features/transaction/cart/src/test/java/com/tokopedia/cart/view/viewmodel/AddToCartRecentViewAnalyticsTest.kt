@@ -1,11 +1,11 @@
 package com.tokopedia.cart.view.viewmodel
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import org.junit.Assert
 import org.junit.Test
 
@@ -17,7 +17,7 @@ class AddToCartRecentViewAnalyticsTest : BaseCartViewModelTest() {
         val result: Map<String, Any>?
 
         // When
-        result = cartViewModel.generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData(), AddToCartDataModel(), false)
+        result = cartViewModel.generateAddToCartEnhanceEcommerceDataLayer(RecommendationItem(), AddToCartDataModel(), false)
 
         // Then
         val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
@@ -31,7 +31,7 @@ class AddToCartRecentViewAnalyticsTest : BaseCartViewModelTest() {
         val result: Map<String, Any>?
 
         // When
-        result = cartViewModel.generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData(), AddToCartDataModel(), false)
+        result = cartViewModel.generateAddToCartEnhanceEcommerceDataLayer(RecommendationItem(), AddToCartDataModel(), false)
 
         // Then
         val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
@@ -45,7 +45,7 @@ class AddToCartRecentViewAnalyticsTest : BaseCartViewModelTest() {
         val result: Map<String, Any>?
 
         // When
-        result = cartViewModel.generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData(), AddToCartDataModel(), true)
+        result = cartViewModel.generateAddToCartEnhanceEcommerceDataLayer(RecommendationItem(), AddToCartDataModel(), true)
 
         // Then
         val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
@@ -59,7 +59,7 @@ class AddToCartRecentViewAnalyticsTest : BaseCartViewModelTest() {
         val result: Map<String, Any>?
 
         // When
-        result = cartViewModel.generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData(), AddToCartDataModel(), true)
+        result = cartViewModel.generateAddToCartEnhanceEcommerceDataLayer(RecommendationItem(), AddToCartDataModel(), true)
 
         // Then
         val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>

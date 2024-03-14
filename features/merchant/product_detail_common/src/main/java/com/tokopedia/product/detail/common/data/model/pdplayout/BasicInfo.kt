@@ -92,7 +92,6 @@ data class BasicInfo(
     fun getDefaultOngkirDouble(): Double = defaultOngkirEstimation.toDoubleOrNull()
         ?: DEFAULT_PRICE_MINIMUM_SHIPPING
 
-    fun getShopId(): Int = shopID.toIntOrNull() ?: 0
     fun isActive(): Boolean {
         return status == ProductStatusTypeDef.ACTIVE
     }

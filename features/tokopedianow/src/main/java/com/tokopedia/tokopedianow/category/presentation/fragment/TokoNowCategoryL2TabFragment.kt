@@ -65,10 +65,10 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder.Toko
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowL2TabBinding
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
-import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_CATEGORY_ID
-import com.tokopedia.tokopedianow.oldcategory.utils.RECOM_QUERY_PARAM_REF
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking
+import com.tokopedia.tokopedianow.category.analytic.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
+import com.tokopedia.tokopedianow.category.constant.RECOM_QUERY_PARAM_CATEGORY_ID
+import com.tokopedia.tokopedianow.category.constant.RECOM_QUERY_PARAM_REF
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
 import com.tokopedia.tokopedianow.searchcategory.presentation.bottomsheet.TokoNowProductFeedbackBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet

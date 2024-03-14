@@ -65,7 +65,8 @@ class BeautificationRobot {
         mockBroadcastTimer = mockBroadcastTimer,
         mockGetChannelUseCase = mockGetChannelUseCase,
         mockGetAddedTagUseCase = mockGetAddedTagUseCase,
-        mockValueWrapper = mockValueWrapper
+        mockValueWrapper = mockValueWrapper,
+        mockBroadcasterErrorLogger = mockk(relaxed = true),
     )
 
     private val playBroadcastRepositoryTestModule = PlayBroadcastRepositoryTestModule(

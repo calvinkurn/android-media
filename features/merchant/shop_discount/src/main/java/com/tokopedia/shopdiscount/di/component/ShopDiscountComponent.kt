@@ -14,11 +14,15 @@ import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountManageVariantFragment
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountMultiLocEduFragment
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
+import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountSubsidyProgramInformationBottomSheet
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
 import com.tokopedia.shopdiscount.select.presentation.SelectProductActivity
 import com.tokopedia.shopdiscount.select.presentation.SelectProductFragment
 import com.tokopedia.shopdiscount.set_period.presentation.bottomsheet.SetPeriodBottomSheet
+import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountOptOutMultipleProductSubsidyBottomSheet
+import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountOptOutSingleProductSubsidyBottomSheet
+import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountSubsidyOptOutReasonBottomSheet
 import dagger.Component
 
 @ShopDiscountComponentScope
@@ -45,4 +49,8 @@ interface ShopDiscountComponent {
     fun inject(bottomSheet: SetPeriodBottomSheet)
     fun inject(fragment: ShopDiscountMultiLocEduFragment)
     fun inject(fragment: ShopDiscountManageVariantFragment)
+    fun inject(fragment: ShopDiscountSubsidyProgramInformationBottomSheet)
+    fun inject(fragment: ShopDiscountOptOutMultipleProductSubsidyBottomSheet)
+    fun inject(fragment: ShopDiscountSubsidyOptOutReasonBottomSheet)
+    fun inject(fragment: ShopDiscountOptOutSingleProductSubsidyBottomSheet)
 }

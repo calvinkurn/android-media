@@ -1,0 +1,240 @@
+{
+  "promoCatalogGetCouponListWidget": {
+    "resultStatus": {
+      "code": "200",
+      "status": "OK"
+    },
+    "couponListWidget": [
+      {
+        "widgetInfo": {
+          "headerList": [
+            {
+              "key": "benefit-type",
+              "parent": {
+                "key": "",
+                "text": "Cashback",
+                "colorInfo": {
+                  "colorList": [
+                    "#0094CF"
+                  ]
+                }
+              },
+              "child": [
+                {
+                  "key": "",
+                  "text": "",
+                  "colorInfo": {
+                    "colorList": [
+                      "#000000"
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "titleList": [
+            {
+              "key": "benefit-amount",
+              "parent": {
+                "key": "",
+                "text": "20% s.d. 100Rb",
+                "colorInfo": {
+                  "colorList": [
+                    "#000000"
+                  ]
+                }
+              }
+            }
+          ],
+          "subtitleList": [
+            {
+              "key": "tnc",
+              "parent": {
+                "key": "",
+                "text": "Khusus toko tertentu",
+                "colorInfo": {
+                  "colorList": [
+                    "#000000"
+                  ]
+                }
+              }
+            }
+          ],
+          "footerList": [
+            {
+              "key": "time-limit",
+              "parent": {
+                "key": "",
+                "text": "Berakhir dalam ",
+                "colorInfo": {
+                  "colorList": [
+                    "#000000"
+                  ]
+                }
+              },
+              "child": [
+                {
+                  "key": "time-limit-value",
+                  "text": "\u003cb\u003e7 hari\u003cb\u003e",
+                  "valueList": [
+                    {
+                      "key": "expired-time-unix",
+                      "value": "1709139600"
+                    }
+                  ],
+                  "colorInfo": {
+                    "colorList": [
+                      "#000000"
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "ctaList": [
+            {
+              "text": "Habis",
+              "type": "info",
+              "isDisabled": true,
+              "jsonMetadata": "{\"catalog_id\":40487}",
+              "toasters": []
+            }
+          ],
+          "badgeList": [
+            {
+              "key": "badge",
+              "text": "Sisa 4"
+            }
+          ],
+          "iconURL": "https://images.tokopedia.net/img/promo/icon/Type=Cashback.png",
+          "backgroundInfo": {
+            "imageURL": "https://images.tokopedia.net/img/promo/spg/Benefit=Cashback.png"
+          },
+          "actionInfo": {
+            "text": "",
+            "url": "",
+            "applink": "",
+            "type": "redirect",
+            "isDisabled": false,
+            "jsonMetadata": "{\"url\":\"https://www.tokopedia.com/rewards/kupon/detail/ATCDWCB10\",\"app_link\":\"tokopedia://tokopoints/tukar-point/detail/ATCDWCB10\"}"
+          }
+        }
+      },
+      {
+        "widgetInfo": {
+          "headerList": [
+            {
+              "key": "benefit-type",
+              "parent": {
+                "key": "",
+                "text": "Cashback",
+                "colorInfo": {
+                  "colorList": [
+                    "#0094CF"
+                  ]
+                }
+              },
+              "child": [
+                {
+                  "key": "",
+                  "text": "",
+                  "colorInfo": {
+                    "colorList": [
+                      "#000000"
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "titleList": [
+            {
+              "key": "benefit-amount",
+              "parent": {
+                "key": "",
+                "text": "20% s.d. 100Rb",
+                "colorInfo": {
+                  "colorList": [
+                    "#000000"
+                  ]
+                }
+              }
+            }
+          ],
+          "subtitleList": [
+            {
+              "key": "tnc",
+              "parent": {
+                "key": "",
+                "text": "Khusus toko tertentu",
+                "colorInfo": {
+                  "colorList": [
+                    "#000000"
+                  ]
+                }
+              }
+            }
+          ],
+          "footerList": [
+            {
+              "key": "time-limit",
+              "parent": {
+                "key": "",
+                "text": "Berakhir dalam ",
+                "colorInfo": {
+                  "colorList": [
+                    "#000000"
+                  ]
+                }
+              },
+              "child": [
+                {
+                  "key": "time-limit-value",
+                  "text": "\u003cb\u003e7 hari\u003cb\u003e",
+                  "valueList": [
+                    {
+                      "key": "expired-time-unix",
+                      "value": "1709139600"
+                    }
+                  ],
+                  "colorInfo": {
+                    "colorList": [
+                      "#000000"
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "ctaList": [
+            {
+              "text": "Klaim",
+              "type": "claim",
+              "isDisabled": true,
+              "jsonMetadata": "{\"catalog_id\":40487}",
+              "toasters": []
+            }
+          ],
+          "badgeList": [
+            {
+              "key": "badge",
+              "text": "Sisa 4"
+            }
+          ],
+          "iconURL": "https://images.tokopedia.net/img/promo/icon/Type=Cashback.png",
+          "backgroundInfo": {
+            "imageURL": "https://images.tokopedia.net/img/promo/spg/Benefit=Cashback.png"
+          },
+          "actionInfo": {
+            "text": "",
+            "url": "",
+            "applink": "",
+            "type": "redirect",
+            "isDisabled": false,
+            "jsonMetadata": "{\"url\":\"https://www.tokopedia.com/rewards/kupon/detail/ATCDWCB10\",\"app_link\":\"tokopedia://tokopoints/tukar-point/detail/ATCDWCB10\"}"
+          }
+        }
+      }
+    ]
+  }
+}

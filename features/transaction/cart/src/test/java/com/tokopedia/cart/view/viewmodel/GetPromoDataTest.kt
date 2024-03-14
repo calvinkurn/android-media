@@ -6,10 +6,8 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import io.mockk.coEvery
-import io.mockk.every
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import rx.Observable
 
 class GetPromoDataTest : BaseCartViewModelTest() {
 
@@ -29,7 +27,7 @@ class GetPromoDataTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
-        every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData("", true, false)
@@ -50,7 +48,7 @@ class GetPromoDataTest : BaseCartViewModelTest() {
 
         coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
-        every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
+        coEvery { updateCartCounterUseCase(Unit) } returns 1
 
         // WHEN
         cartViewModel.processInitialGetCartData("", true, false)

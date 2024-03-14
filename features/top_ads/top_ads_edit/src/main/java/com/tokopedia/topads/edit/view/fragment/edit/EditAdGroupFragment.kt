@@ -691,9 +691,9 @@ class EditAdGroupFragment : BaseDaggerFragment() {
             this.editedRecomBid = it
             val bidTypeData: ArrayList<TopAdsBidSettingsModel> = arrayListOf()
             bidTypeData.add(TopAdsBidSettingsModel(ParamObject.PRODUCT_SEARCH, if (groupInfoResponse?.bidSettings?.firstOrNull()?.bidType != "product_auto_search")
-                groupInfoResponse?.bidSettings?.firstOrNull()?.priceBid else bidSuggestion.toFloat()))
+                groupInfoResponse?.bidSettings?.firstOrNull()?.priceBid else bidSuggestion.toFloatOrZero()))
             bidTypeData.add(
-                TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE, it.removeCommaRawString().toFloat())
+                TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE, it.removeCommaRawString().toFloatOrZero())
             )
             dataKeyword[Constants.BID_TYPE] = bidTypeData
             updateDailyBudget()

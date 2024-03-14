@@ -9,8 +9,13 @@ import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.model.PriceCtaSellerOfferingProperties
+import com.tokopedia.catalog.ui.model.ProductListConfig
 import com.tokopedia.catalog.ui.model.ShareProperties
 import com.tokopedia.catalog.ui.model.WidgetTypes
+import com.tokopedia.catalogcommon.R as catalogcommonR
+import com.tokopedia.catalog.util.ColorConst.COLOR_DEEP_AZURE
+import com.tokopedia.catalog.util.ColorConst.COLOR_OCEAN_BLUE
+import com.tokopedia.catalog.util.ColorConst.COLOR_WHITE
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
@@ -54,7 +59,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import com.tokopedia.catalog.R as catalogR
-import com.tokopedia.catalogcommon.R as catalogcommonR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -117,6 +121,11 @@ class CatalogDetailUiMapper @Inject constructor(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
     ): CatalogDetailUiModel {
         val widgets = mapToWidgetVisitables(remoteModel)
+        val headerColorProductList = if (remoteModel.productListCfg.headerColor.isNullOrEmpty()){
+            COLOR_DEEP_AZURE
+        }else{
+            remoteModel.productListCfg.headerColor
+        }
         return CatalogDetailUiModel(
             widgets = widgets,
             navigationProperties = mapToNavigationProperties(remoteModel, widgets),
@@ -124,7 +133,11 @@ class CatalogDetailUiMapper @Inject constructor(
             priceCtaSellerOfferingProperties = mapToPriceCtaSellerOfferingProperties(remoteModel),
             productSortingStatus = remoteModel.basicInfo.productSortingStatus.orZero(),
             catalogUrl = remoteModel.basicInfo.url.orEmpty(),
-            shareProperties = mapToShareProperties(remoteModel, widgets)
+            shareProperties = mapToShareProperties(remoteModel, widgets),
+            productListConfig = ProductListConfig(remoteModel.productListCfg.limit?:"20",
+                headerColorProductList,
+                remoteModel.basicInfo.marketPrice?.getOrNull(Int.ZERO)?.min.orZero(),
+                remoteModel.basicInfo.marketPrice?.getOrNull(Int.ZERO)?.max.orZero())
         )
     }
 
@@ -525,18 +538,14 @@ class CatalogDetailUiMapper @Inject constructor(
                     textReviewColor = getTextColor(isDarkMode),
                     textTitleColor = getTextColor(isDarkMode),
                     textSubTitleColor = getTextColorTrustmaker(isDarkMode),
-                    backgroundColor = if (isDarkMode) "1AAEB2BF" else "FFFFFF",
+                    backgroundColor = if (isDarkMode) COLOR_OCEAN_BLUE else COLOR_WHITE,
                     styleIconPlay = ExpertReviewUiModel.StyleIconPlay(
                         iconColor = colorMapping(
                             isDarkMode,
                             unifyprinciplesR.color.Unify_Static_White,
                             unifyprinciplesR.color.Unify_Static_Black
                         ),
-                        background = colorMapping(
-                            isDarkMode,
-                            catalogcommonR.drawable.bg_circle_border_dark,
-                            catalogcommonR.drawable.bg_circle_border_light
-                        )
+                        background = if (isDarkMode) catalogcommonR.color.dms_static_color_ocean_blue else unifyprinciplesR.color.Unify_Static_White
                     )
                 )
             }
@@ -654,7 +663,12 @@ class CatalogDetailUiMapper @Inject constructor(
                     author = it.author,
                     videoLink = it.url,
                     textTitleColor = getTextColor(darkMode),
-                    textSubTitleColor = getTextColor(darkMode)
+                    textSubTitleColor = getTextColor(darkMode),
+                    backgroundColor = if (darkMode) {
+                        catalogcommonR.drawable.bg_rounded_border_dark
+                    } else {
+                        catalogcommonR.drawable.bg_rounded_border_light
+                    }
                 )
             }
         )

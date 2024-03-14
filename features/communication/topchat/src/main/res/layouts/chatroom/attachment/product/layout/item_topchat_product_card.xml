@@ -220,7 +220,7 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@null"
                 android:visibility="gone"
-                tools:src="@drawable/ic_close_default"
+                tools:src="@drawable/imagestate_placeholder"
                 tools:visibility="visible" />
 
             <LinearLayout
