@@ -1,7 +1,6 @@
 package com.tkpd.atcvariant.view.bottomsheet
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -46,7 +45,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
@@ -96,6 +94,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
  * Created by Yehezkiel on 05/05/21
@@ -127,8 +126,6 @@ class AtcVariantBottomSheet :
             ChooseAddressUtils.getLocalizingAddressData(it)
         }
     }
-
-    private var loadingProgressDialog: ProgressDialog? = null
 
     private val compositeSubscription by lazy { CompositeSubscription() }
     private val adapterFactory by lazy {
@@ -180,7 +177,7 @@ class AtcVariantBottomSheet :
             }
 
             ATC_LOGIN_REQUEST_CODE -> {
-                loadingProgressDialog?.dismiss()
+                baseAtcBtn?.hideLoading()
                 if (resultCode == Activity.RESULT_OK) {
                     viewModel.updateActivityResult(
                         requestCode = ATC_LOGIN_REQUEST_CODE,
@@ -347,7 +344,7 @@ class AtcVariantBottomSheet :
             nplFollowersButton?.stopLoading()
             when (it) {
                 is Success -> {
-                    showToasterSuccess(getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_follow_shop_npl))
+                    showToasterSuccess(getString(productdetailcommonR.string.merchant_product_detail_success_follow_shop_npl))
                     viewModel.updateActivityResult(isFollowShop = true)
                     nplFollowersButton?.setupVisibility = false
                 }
@@ -418,9 +415,8 @@ class AtcVariantBottomSheet :
     }
 
     private fun observeDeleteCart() {
-        viewModel.deleteCartLiveData.observe(viewLifecycleOwner, {
-            loadingProgressDialog?.dismiss()
-
+        viewModel.deleteCartLiveData.observe(viewLifecycleOwner) {
+            baseAtcBtn?.hideLoading()
             when (it) {
                 is Success -> showToasterSuccess(it.data, getString(R.string.atc_variant_oke_label))
                 is Fail -> {
@@ -428,12 +424,12 @@ class AtcVariantBottomSheet :
                     logException(it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun observeUpdateCart() {
-        viewModel.updateCartLiveData.observe(viewLifecycleOwner, {
-            loadingProgressDialog?.dismiss()
+        viewModel.updateCartLiveData.observe(viewLifecycleOwner) {
+            baseAtcBtn?.hideLoading()
 
             when (it) {
                 is Success -> showToasterSuccess(it.data, getString(R.string.atc_variant_oke_label))
@@ -442,11 +438,11 @@ class AtcVariantBottomSheet :
                     logException(it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun observeInitialVisitablesData() {
-        viewModel.initialData.observe(viewLifecycleOwner, {
+        viewModel.initialData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> adapter.submitList(it.data)
                 is Fail -> {
@@ -455,7 +451,7 @@ class AtcVariantBottomSheet :
                     logException(throwable)
                 }
             }
-        })
+        }
     }
 
     private fun showError(it: Throwable) {
@@ -469,7 +465,7 @@ class AtcVariantBottomSheet :
     }
 
     private fun observeButtonState() {
-        viewModel.buttonData.observe(viewLifecycleOwner, {
+        viewModel.buttonData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> renderButton(it.data)
                 is Fail -> {
@@ -477,7 +473,7 @@ class AtcVariantBottomSheet :
                     logException(it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun showToasterError(
@@ -497,7 +493,7 @@ class AtcVariantBottomSheet :
     private fun observeCart() {
         lifecycleScope.launchWhenStarted {
             viewModel.addToCartResultState.collectLatest {
-                loadingProgressDialog?.dismiss()
+                baseAtcBtn?.hideLoading()
 
                 when (it) {
                     is Success -> {
@@ -543,15 +539,15 @@ class AtcVariantBottomSheet :
     private fun getErrorMessage(throwable: Throwable): String {
         return if (throwable is ResponseErrorException) {
             throwable.message
-                ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+                ?: getString(productdetailcommonR.string.merchant_product_detail_error_default)
         } else if (throwable is AkamaiErrorException && throwable.message != null) {
             throwable.message
-                ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+                ?: getString(productdetailcommonR.string.merchant_product_detail_error_default)
         } else {
             context?.let {
                 ErrorHandler.getErrorMessage(it, throwable)
             }
-                ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+                ?: getString(productdetailcommonR.string.merchant_product_detail_error_default)
         }
     }
 
@@ -666,7 +662,7 @@ class AtcVariantBottomSheet :
                 dismiss()
             }, {
                 showToasterError(
-                    getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
+                    getString(abstractionR.string.default_request_error_unknown),
                     getString(R.string.atc_variant_oke_label)
                 )
             })
@@ -686,7 +682,7 @@ class AtcVariantBottomSheet :
     private fun onSuccessAtcTokoNow(successMessage: String?, cartId: String) {
         context?.let {
             val message = if (successMessage == null || successMessage.isEmpty()) {
-                it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)
+                it.getString(productdetailcommonR.string.merchant_product_detail_success_atc_default)
             } else {
                 successMessage
             }
@@ -714,7 +710,7 @@ class AtcVariantBottomSheet :
             showPostATC(context, productId, postAtcLayout, cartData)
         } else {
             val message = if (successMessage.isNullOrEmpty()) {
-                context.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)
+                context.getString(productdetailcommonR.string.merchant_product_detail_success_atc_default)
             } else {
                 successMessage
             }
@@ -812,9 +808,7 @@ class AtcVariantBottomSheet :
     }
 
     override fun onDeleteQuantityClicked(productId: String) {
-        showProgressDialog {
-            loadingProgressDialog?.dismiss()
-        }
+        baseAtcBtn?.showLoading()
 
         viewModel.deleteProductInCart(productId)
     }
@@ -1011,12 +1005,10 @@ class AtcVariantBottomSheet :
     private fun showWaitingIndicator(action: Int, source: String) {
         val shouldShowAnimation = shouldShowWithAnimation(action = action, source = source)
         if (shouldShowAnimation) {
-            atcAnimator.show { viewModel.atcAnimationEnd() }
+            atcAnimator.show(onAnimateEnded = { viewModel.atcAnimationEnd() })
         } else {
+            baseAtcBtn?.showLoading()
             viewModel.atcAnimationEnd()
-            showProgressDialog {
-                loadingProgressDialog?.dismiss()
-            }
         }
     }
 
@@ -1139,7 +1131,7 @@ class AtcVariantBottomSheet :
     private fun checkLogin(): Boolean {
         var goToLogin = false
         if (!userSessionInterface.isLoggedIn) {
-            showProgressDialog()
+            baseAtcBtn?.showLoading()
             activity?.let {
                 goToLogin = true
                 startActivityForResult(
@@ -1151,30 +1143,13 @@ class AtcVariantBottomSheet :
         return goToLogin
     }
 
-    private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
-        if (loadingProgressDialog == null) {
-            loadingProgressDialog = activity?.createDefaultProgressDialog(
-                getString(com.tokopedia.abstraction.R.string.title_loading),
-                cancelable = onCancelClicked != null,
-                onCancelClicked = {
-                    onCancelClicked?.invoke()
-                }
-            )
-        }
-        loadingProgressDialog?.run {
-            if (!isShowing) {
-                show()
-            }
-        }
-    }
-
     private fun showErrorVariantUnselected() {
         val variantErrorMessage =
             if (viewModel.getVariantData()?.getVariantsIdentifier()?.isEmpty() == true) {
-                getString(com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant)
+                getString(productdetailcommonR.string.add_to_cart_error_variant)
             } else {
                 getString(
-                    com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant_builder,
+                    productdetailcommonR.string.add_to_cart_error_variant_builder,
                     viewModel.getVariantData()?.getVariantsIdentifier()
                         ?: ""
                 )
