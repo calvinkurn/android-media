@@ -47,7 +47,6 @@ data class RecommendationTriggerObject(
 )
 
 class VerticalTrackScrollListener(
-    private val trackGlidePage: Boolean = false,
     private val glidePageTrackCallback: () -> GlidePageTrackObject?,
 ) : RecyclerView.OnScrollListener() {
     // total scroll is total offset for multiple glide.
@@ -230,14 +229,13 @@ fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
 
 /**
  * event: tiktokec_rec_trigger & tiktokec_glide_page
- * Add track listener after success fetching data from BE.
- * If no recommendation on the page, leave recommendedTriggerObject as null
+ * Listener must be passed at beginning, no need to wait for data,
+ * but GlidePageTrack model will be passed using callback
  */
 fun RecyclerView.addVerticalTrackListener(
-    trackGlidePage: Boolean = false,
     glidePageTrackCallback: () -> GlidePageTrackObject? = { null },
 ) {
-    this.addOnScrollListener(VerticalTrackScrollListener(trackGlidePage, glidePageTrackCallback))
+    this.addOnScrollListener(VerticalTrackScrollListener(glidePageTrackCallback))
 }
 
 /**
