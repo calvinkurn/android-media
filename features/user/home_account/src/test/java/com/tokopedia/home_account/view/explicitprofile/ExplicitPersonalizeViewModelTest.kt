@@ -82,7 +82,7 @@ class ExplicitPersonalizeViewModelTest {
     @Test
     fun `when get question then rollance off`() {
         val expected = ExplicitPersonalizeResult.Failed
-        val response = RolloutUserVariantResponse()
+        val response = RolloutUserVariantResponse(RolloutUserVariant(featureVariants = listOf(FeatureVariantsItem(variant = ""))))
         val responseSuccessGetQuestion = responseSuccessGetQuestion
 
         coEvery { getRolloutUserVariantUseCase(any()) } returns response
