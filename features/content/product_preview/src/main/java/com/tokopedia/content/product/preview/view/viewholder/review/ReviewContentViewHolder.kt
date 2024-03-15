@@ -332,13 +332,6 @@ class ReviewContentViewHolder(
     }
 
     companion object {
-        private const val MAX_LINES_VALUE = 25
-        private const val MAX_LINES_THRESHOLD = 2
-        private const val READ_MORE_COUNT = 24
-        private const val FADING_EDGE_HEIGHT = 20
-        private const val VERTICAL_POSITIVE_DIRECTION = 1
-        private const val VERTICAL_NEGATIVE_DIRECTION = -1
-        private const val DEFAULT_ZERO = 0
 
         fun create(
             parent: ViewGroup,
