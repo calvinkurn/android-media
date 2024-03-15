@@ -9,7 +9,7 @@ data class GetPaymentWidgetRequest(
     val chosenPayment: GetPaymentWidgetChosenPaymentRequest = GetPaymentWidgetChosenPaymentRequest(),
     @SerializedName("cart_metadata")
     val cartMetadata: String = "",
-    @SerializedName("detail_data")
+    @SerializedName("client_metadata")
     val paymentRequest: String = ""
 )
 

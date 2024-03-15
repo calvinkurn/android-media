@@ -65,7 +65,7 @@ class UpdateCartUseCase @Inject constructor(
     companion object {
         val PARAM_CARTS = "carts"
         val PARAM_SOURCE = "source"
-        val PARAM_PAYMENT = "payment"
+        val PARAM_PAYMENT = "payment_params"
         val VALUE_SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
         val VALUE_SOURCE_PDP_UPDATE_QTY_NOTES = "pdp_update_qty_notes"
 
@@ -73,8 +73,8 @@ class UpdateCartUseCase @Inject constructor(
         private const val PARAM_VALUE_ID = "id"
 
         val QUERY = """
-        mutation update_cart_v2(${'$'}carts: [ParamsCartUpdateCartV2Type], ${'$'}lang: String, ${'$'}source: String,  ${'$'}chosen_address: ChosenAddressParam) {
-            update_cart_v2(carts: ${'$'}carts, lang: ${'$'}lang, source: ${'$'}source, chosen_address: ${'$'}chosen_address) {
+        mutation update_cart_v2(${'$'}carts: [ParamsCartUpdateCartV2Type], ${'$'}lang: String, ${'$'}source: String, ${'$'}chosen_address: ChosenAddressParam, ${'$'}payment_params: PaymentParams) {
+            update_cart_v2(carts: ${'$'}carts, lang: ${'$'}lang, source: ${'$'}source, chosen_address: ${'$'}chosen_address, payment_params: ${'$'}payment_params) {
                 error_message
                 status
                 data {

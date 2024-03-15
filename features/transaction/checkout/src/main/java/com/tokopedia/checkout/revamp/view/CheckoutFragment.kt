@@ -2322,6 +2322,7 @@ class CheckoutFragment :
             paymentPassData.callbackSuccessUrl = checkoutResult.checkoutData.callbackSuccessUrl
             paymentPassData.callbackFailedUrl = checkoutResult.checkoutData.callbackFailedUrl
             paymentPassData.queryString = checkoutResult.checkoutData.queryString
+            paymentPassData.method = checkoutResult.checkoutData.method
             val intent =
                 RouteManager.getIntent(
                     activity,

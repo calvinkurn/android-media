@@ -20,6 +20,9 @@ import androidx.compose.ui.unit.dp
 import com.tokopedia.checkoutpayment.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
+import com.tokopedia.nest.components.ButtonSize
+import com.tokopedia.nest.components.ButtonVariant
+import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestDivider
 import com.tokopedia.nest.components.NestDividerSize
 import com.tokopedia.nest.components.NestImage
@@ -124,7 +127,7 @@ fun CheckoutPaymentWidget(
                                 .setOnClickDebounceListener(showIndication = false) {
                                     onClickedListener()
                                 }
-                                .padding(start = 16.dp, end = 28.dp),
+                                .padding(start = 16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             NestImage(
@@ -167,13 +170,26 @@ fun CheckoutPaymentWidget(
                                     )
                                 }
                             }
-                            NestIcon(
-                                iconId = IconUnify.CHEVRON_RIGHT,
-                                modifier = Modifier
-                                    .size(24.dp),
-                                colorLightEnable = NestTheme.colors.NN._500,
-                                colorNightEnable = NestTheme.colors.NN._500
-                            )
+                            if (data.actionButtonText.isBlank()) {
+                                NestIcon(
+                                    iconId = IconUnify.CHEVRON_RIGHT,
+                                    modifier = Modifier
+                                        .padding(start = 2.dp, end = 28.dp)
+                                        .size(24.dp),
+                                    colorLightEnable = NestTheme.colors.NN._500,
+                                    colorNightEnable = NestTheme.colors.NN._500
+                                )
+                            } else {
+                                NestButton(
+                                    text = data.actionButtonText,
+                                    variant = ButtonVariant.GHOST,
+                                    size = ButtonSize.SMALL,
+                                    modifier = Modifier.padding(start = 2.dp, end = 16.dp),
+                                    onClick = {
+                                        onClickedListener()
+                                    }
+                                )
+                            }
                         }
                         if (data.installmentText.isNotEmpty()) {
                             Spacer(modifier = Modifier
@@ -186,7 +202,9 @@ fun CheckoutPaymentWidget(
                                 .padding(top = 4.dp, bottom = 4.dp)) {
                                 NestTypography(
                                     text = data.installmentText,
-                                    modifier = Modifier.padding(start = 12.dp, end = 4.dp).weight(1f, fill = false),
+                                    modifier = Modifier
+                                        .padding(start = 12.dp, end = 4.dp)
+                                        .weight(1f, fill = false),
                                     textStyle = NestTheme.typography.display3.copy(
                                         color = NestTheme.colors.NN._950
                                     ),
@@ -195,7 +213,9 @@ fun CheckoutPaymentWidget(
                                 )
                                 NestIcon(
                                     iconId = IconUnify.CHEVRON_DOWN,
-                                    modifier = Modifier.padding(end = 12.dp).size(16.dp),
+                                    modifier = Modifier
+                                        .padding(end = 12.dp)
+                                        .size(16.dp),
                                     colorLightEnable = NestTheme.colors.NN._950,
                                     colorNightEnable = NestTheme.colors.NN._950
                                 )
@@ -270,6 +290,17 @@ fun CheckoutPaymentWidgetPreview() {
                 subtitle = "(isi saldo rekening panjang sekali)",
                 description = "cicilan sangat panjang",
                 isDescriptionRed = true
+            )
+        )
+        CheckoutPaymentWidget(
+            CheckoutPaymentWidgetData(
+                state = CheckoutPaymentWidgetState.Normal,
+                title = "Bank nama panjang sekali",
+                isTitleRed = true,
+                subtitle = "(isi saldo rekening panjang sekali)",
+                description = "cicilan sangat panjang",
+                isDescriptionRed = true,
+                actionButtonText = "top-up"
             )
         )
     }
