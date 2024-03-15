@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.content.product.preview.data.mapper.ProductPreviewSourceMapper
 import com.tokopedia.content.product.preview.databinding.ActivityProductPreviewBinding
 import com.tokopedia.content.product.preview.di.ProductPreviewInjector
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
@@ -16,13 +17,28 @@ import com.tokopedia.content.product.preview.viewmodel.utils.ProductPreviewSourc
 import javax.inject.Inject
 import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
-@Suppress("LateinitUsage")
 class ProductPreviewActivity @Inject constructor() : BaseActivity() {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    private lateinit var binding: ActivityProductPreviewBinding
+    private var _binding: ActivityProductPreviewBinding? = null
+    private val binding: ActivityProductPreviewBinding
+        get() = _binding!!
+
+    private val productPreviewBundle: Bundle?
+        get() {
+            val productId = intent.data?.pathSegments?.first()
+
+            val bundle = if (productId.isNullOrBlank()) {
+                intent.extras
+            } else {
+                ProductPreviewSourceMapper(productId).mapSourceAppLink(intent)
+            }
+
+            if (bundle == null) finish()
+            return bundle
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -46,7 +62,7 @@ class ProductPreviewActivity @Inject constructor() : BaseActivity() {
     }
 
     private fun setupViews() {
-        binding = ActivityProductPreviewBinding.inflate(layoutInflater)
+        _binding = ActivityProductPreviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         openFragment()
@@ -71,8 +87,13 @@ class ProductPreviewActivity @Inject constructor() : BaseActivity() {
         return ProductPreviewFragment.getOrCreate(
             fragmentManager = supportFragmentManager,
             classLoader = classLoader,
-            bundle = intent.extras
+            bundle = productPreviewBundle
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     companion object {

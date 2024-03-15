@@ -62,8 +62,8 @@ class ProductPreviewFragment @Inject constructor(
     private val analyticsFactory: ProductPreviewAnalytics.Factory
 ) : TkpdBaseV4Fragment() {
 
-    private val productPreviewSource: ProductPreviewSourceModel
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    private val viewModel by activityViewModels<ProductPreviewViewModel> {
+        val productPreviewSource = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelable(
                 PRODUCT_PREVIEW_SOURCE,
                 ProductPreviewSourceModel::class.java
@@ -71,8 +71,6 @@ class ProductPreviewFragment @Inject constructor(
         } else {
             arguments?.getParcelable(PRODUCT_PREVIEW_SOURCE)
         } ?: ProductPreviewSourceModel.Empty
-
-    private val viewModel by activityViewModels<ProductPreviewViewModel> {
         viewModelFactory.create(productPreviewSource)
     }
 
@@ -103,7 +101,6 @@ class ProductPreviewFragment @Inject constructor(
     private val currentTab: String get() =
         pagerAdapter.getCurrentTabName(binding.vpProductPreview.currentItem).lowercase()
 
-
     override fun getScreenName() = PRODUCT_PREVIEW_FRAGMENT_TAG
 
     private val productAtcResult = registerForActivityResult(
@@ -113,12 +110,12 @@ class ProductPreviewFragment @Inject constructor(
         viewModel.onAction(ProductPreviewAction.ProductActionFromResult)
     }
 
-    private var coachMark : CoachMark2? = null
+    private var coachMark: CoachMark2? = null
 
     private var coachMarkJob: Job? = null
 
     private val hasCoachMark: Boolean get() =
-        when (val source = productPreviewSource.source) {
+        when (val source = viewModel.productPreviewSource.source) {
             is ProductPreviewSourceModel.ProductSourceData -> source.hasReviewMedia
             is ProductPreviewSourceModel.ReviewSourceData -> false
             else -> false
