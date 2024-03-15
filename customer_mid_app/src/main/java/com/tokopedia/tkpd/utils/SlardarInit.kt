@@ -36,6 +36,7 @@ object SlardarInit {
                 params[VERSION_CODE] = GlobalConfig.VERSION_CODE.toString()
                 params[UPDATE_VERSION_CODE] = GlobalConfig.VERSION_CODE.toString()
                 AppLog.putCommonParams(AppLog.getContext(), params, true, Level.L0)
+                AppLog.setUserID(userId.toLongOrZero())
                 val result = mutableMapOf<String, Any>()
                 result.putAll(params)
                 return result
