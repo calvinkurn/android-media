@@ -491,7 +491,7 @@ class AtcVariantViewModel @Inject constructor(
                 TrackConfirmCart(
                     productId = parentId,
                     productCategory = categoryLvl1,
-                    productType = ProductType.AVAILABLE, // always available tbc
+                    productType = selectedChild?.productType ?: ProductType.NOT_AVAILABLE,
                     originalPrice = selectedChild?.finalMainPrice.orZero(),
                     salePrice = selectedChild?.finalPrice.orZero(),
                     skuId = selectedChild?.productId.orEmpty(),
@@ -503,7 +503,7 @@ class AtcVariantViewModel @Inject constructor(
                 TrackConfirmSku(
                     productId = parentId,
                     productCategory = categoryLvl1,
-                    productType = ProductType.AVAILABLE, // always available tbc
+                    productType = selectedChild?.productType ?: ProductType.NOT_AVAILABLE,
                     originalPrice = selectedChild?.finalMainPrice.orZero(),
                     salePrice = selectedChild?.finalPrice.orZero(),
                     skuId = selectedChild?.productId.orEmpty(),
@@ -650,7 +650,7 @@ class AtcVariantViewModel @Inject constructor(
         return TrackConfirmCartResult(
             productId = parentId,
             productCategory = categoryLvl1,
-            productType = ProductType.AVAILABLE,
+            productType = selectedChild?.productType ?: ProductType.NOT_AVAILABLE,
             originalPrice = selectedChild?.finalMainPrice.orZero(),
             salePrice = selectedChild?.finalPrice.orZero(),
             skuId = selectedChild?.productId.orEmpty(),
