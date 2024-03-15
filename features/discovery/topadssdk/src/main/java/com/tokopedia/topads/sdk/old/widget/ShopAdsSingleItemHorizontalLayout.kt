@@ -18,8 +18,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.old.domain.model.Product
-import com.tokopedia.topads.sdk.old.domain.model.ShopAdsWithSingleProductModel
+import com.tokopedia.topads.sdk.domain.model.Product
+import com.tokopedia.topads.sdk.domain.model.ShopAdsWithSingleProductModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.CardUnify2
@@ -45,8 +45,8 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
     private var productContainer: CardUnify2? = null
     private var productDiscountGroup: View? = null
 
-    private val topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter by lazy {
-        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context)
+    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+        TopAdsUrlHitter(context)
     }
 
     constructor(context: Context) : super(context) {

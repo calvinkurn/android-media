@@ -12,7 +12,6 @@ import com.tokopedia.navigation.presentation.presenter.MainParentPresenter
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase

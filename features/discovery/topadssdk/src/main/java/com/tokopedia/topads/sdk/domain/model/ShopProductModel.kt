@@ -1,7 +1,7 @@
 package com.tokopedia.topads.sdk.domain.model
 
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_5
 
 private const val KEY_SHOP_ISGOLD = 1
 

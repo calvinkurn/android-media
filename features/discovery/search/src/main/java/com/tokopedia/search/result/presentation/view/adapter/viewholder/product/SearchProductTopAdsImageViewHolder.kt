@@ -32,7 +32,7 @@ class SearchProductTopAdsImageViewHolder(
         element ?: return
 
         val topAdsImageView = binding.searchProductTopAdsImageView
-        val topAdsImageViewModel = element.topAdsImageViewModel
+        val topAdsImageViewModel = element.topAdsImageUiModel
 
         topAdsImageView.loadImage(topAdsImageViewModel, IMAGE_CORNER_RADIUS) {
             topAdsImageView.hide()

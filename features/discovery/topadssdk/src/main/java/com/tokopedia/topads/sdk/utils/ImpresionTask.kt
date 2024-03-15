@@ -5,10 +5,10 @@ import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.topads.sdk.TopAdsConstants.TopAdsClickUrlTrackerConstant.RESPONSE_HEADER_KEY
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TopAdsClickUrlTrackerConstant.RESPONSE_HEADER_KEY
 import com.tokopedia.topads.sdk.old.listener.ImpressionListener
 import com.tokopedia.topads.sdk.old.listener.TopAdsHeaderResponseListener
-import com.tokopedia.topads.sdk.old.utils.ImpressionTaskAlert.Companion.getInstance
+import com.tokopedia.topads.sdk.utils.ImpressionTaskAlert.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

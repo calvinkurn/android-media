@@ -17,13 +17,13 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardView
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.TopAdsConstants
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_8
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_9
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_8
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_9
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.ShopAdsWithSingleProductModel
-import com.tokopedia.topads.sdk.base.adapter.Item
+import com.tokopedia.topads.sdk.common.adapter.Item
 import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.old.listener.*
 import com.tokopedia.topads.sdk.old.view.adapter.BannerAdsAdapter

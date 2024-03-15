@@ -37,7 +37,7 @@ class LegoProductCardViewHolder(
             setProductModel(element.productModel)
             addOnImpressionListener(element) {
                 if(element.grid.isTopads){
-                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(className).hitImpressionUrl(context, element.grid.impression,
+                    TopAdsUrlHitter(className).hitImpressionUrl(context, element.grid.impression,
                         element.grid.id,
                         element.grid.name,
                         element.grid.imageUrl,
@@ -46,7 +46,7 @@ class LegoProductCardViewHolder(
             }
             setOnClickListener {
                 if(element.grid.isTopads){
-                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(className).hitClickUrl(context, element.grid.productClickUrl,
+                    TopAdsUrlHitter(className).hitClickUrl(context, element.grid.productClickUrl,
                         element.grid.id,
                         element.grid.name,
                         element.grid.imageUrl,

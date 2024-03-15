@@ -29,13 +29,13 @@ import com.tokopedia.shopwidget.shopcard.ShopCardListener
 import com.tokopedia.shopwidget.shopcard.ShopCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardView
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.TopAdsConstants.DILYANI_TOKOPEDIA
-import com.tokopedia.topads.sdk.TopAdsConstants.FULFILLMENT
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_10
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_11
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_8
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_9
-import com.tokopedia.topads.sdk.base.adapter.Item
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.DILYANI_TOKOPEDIA
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.FULFILLMENT
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_10
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_11
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_8
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_9
+import com.tokopedia.topads.sdk.common.adapter.Item
 import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.old.listener.*
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -56,6 +56,7 @@ import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerProductS
 import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopUiModel
 import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopViewMoreUiModel
+import com.tokopedia.topads.sdk.utils.snaphelper.GravitySnapHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -138,7 +139,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             val list = findViewById<RecyclerView>(R.id.list)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
-            val snapHelper = com.tokopedia.topads.sdk.utils.snaphelper.GravitySnapHelper(Gravity.START)
+            val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
 
             template = SHOP_TEMPLATE
@@ -960,17 +961,27 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     override fun displayAds(cpmModel: CpmModel?, index: Int) {
         try {
+
+
             if (cpmModel != null && cpmModel.data.size > 0) {
                 val data = cpmModel.data[0]
+
                 if (data?.cpm != null) {
-                    if (data.cpm.cpmShop != null && isResponseValid(data)) {
-                        renderViewCpmShop(context, cpmModel, data.applinks, data.adClickUrl, index)
-                    } else if (data.cpm.templateId == ITEM_4) {
-                        renderViewCpmDigital(context, data.cpm)
-                        setOnClickListener {
-                            if (topAdsBannerViewClickListener != null) {
-                                topAdsBannerViewClickListener!!.onBannerAdsClicked(0, data.applinks, data)
-                                topAdsUrlHitter.hitClickUrl(className, data.adClickUrl, "", "", "")
+
+                    //new approach
+                    if (isEnableNewApproach()) {
+
+                    } else {
+                        //old approach
+                        if (data.cpm.cpmShop != null && isResponseValid(data)) {
+                            renderViewCpmShop(context, cpmModel, data.applinks, data.adClickUrl, index)
+                        } else if (data.cpm.templateId == ITEM_4) {
+                            renderViewCpmDigital(context, data.cpm)
+                            setOnClickListener {
+                                if (topAdsBannerViewClickListener != null) {
+                                    topAdsBannerViewClickListener!!.onBannerAdsClicked(0, data.applinks, data)
+                                    topAdsUrlHitter.hitClickUrl(className, data.adClickUrl, "", "", "")
+                                }
                             }
                         }
                     }
@@ -979,6 +990,10 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun isEnableNewApproach(): Boolean {
+        return true
     }
 
     private fun isResponseValid(data: CpmData): Boolean {

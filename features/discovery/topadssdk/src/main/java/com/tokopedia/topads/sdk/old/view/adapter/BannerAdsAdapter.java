@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.R;
-import com.tokopedia.topads.sdk.base.adapter.Item;
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.common.adapter.Item;
+import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.old.view.adapter.factory.BannerAdsTypeFactory;
 
 import java.util.ArrayList;

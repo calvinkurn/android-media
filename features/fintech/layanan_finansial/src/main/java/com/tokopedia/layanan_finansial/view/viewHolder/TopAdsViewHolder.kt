@@ -10,9 +10,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.view.adapter.TopAdsAdapter
 import com.tokopedia.layanan_finansial.view.models.TopAdsImageModel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
-import com.tokopedia.topads.sdk.widget.TopAdsImageView
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
+import com.tokopedia.topads.sdk.old.listener.TopAdsImageVieWApiResponseListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.widget.TopAdsImageView
 import com.tokopedia.unifyprinciples.Typography
 
 class TopAdsViewHolder(val view: View) : AbstractViewHolder<Visitable<*>>(view) {
@@ -44,7 +44,7 @@ class TopAdsViewHolder(val view: View) : AbstractViewHolder<Visitable<*>>(view) 
         }
 
         topAdsImageView.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
-            override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
+            override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageUiModel>) {
                 val imageList = imageDataList as ArrayList<TopAdsImageModel>
                 if (imageDataList.isNotEmpty()) {
                     recommendedText.visibility = View.VISIBLE

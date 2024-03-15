@@ -10,8 +10,8 @@ import dagger.Provides
 class TopAdsUrlHitterModule {
 
     @Provides
-    fun topAdsUrlHitter(@ApplicationContext context: Context): com.tokopedia.topads.sdk.utils.TopAdsUrlHitter {
-        return com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context)
+    fun topAdsUrlHitter(@ApplicationContext context: Context): TopAdsUrlHitter {
+        return TopAdsUrlHitter(context)
     }
 
 }

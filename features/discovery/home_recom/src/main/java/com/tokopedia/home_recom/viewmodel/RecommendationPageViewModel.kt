@@ -29,7 +29,6 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase
-import com.tokopedia.topads.sdk.domain.usecase.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
@@ -65,7 +64,6 @@ open class RecommendationPageViewModel @Inject constructor(
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
         private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-        private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val getPrimaryProductUseCase: GetPrimaryProductUseCase,
         private val addToCartUseCase: AddToCartUseCase,
         private val getTopadsIsAdsUseCase: GetTopadsIsAdsUseCase,

@@ -12,9 +12,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Shop
-import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
-import com.tokopedia.topads.sdk.view.adapter.DynamicFeedShopAdapter
-import com.tokopedia.topads.sdk.old.widget.TopAdsDynamicFeedShopView
+import com.tokopedia.topads.sdk.old.listener.TopAdsItemClickListener
+import com.tokopedia.topads.sdk.v2.dynamicfeedshop.adapter.DynamicFeedShopAdapter
+import com.tokopedia.topads.sdk.v2.dynamicfeedshop.widget.TopAdsDynamicFeedShopView
 
 /**
  * @author by milhamj on 08/01/19.

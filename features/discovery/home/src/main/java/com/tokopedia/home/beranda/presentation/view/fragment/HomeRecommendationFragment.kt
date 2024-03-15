@@ -578,7 +578,7 @@ class HomeRecommendationFragment :
     override fun onBannerTopAdsOldClick(model: BannerOldTopAdsModel, position: Int) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             )
@@ -587,14 +587,14 @@ class HomeRecommendationFragment :
         val rvContext = recyclerView?.context
 
         rvContext?.let {
-            RouteManager.route(it, model.topAdsImageViewModel?.applink)
+            RouteManager.route(it, model.topAdsImageUiModel?.applink)
         }
     }
 
     override fun onBannerTopAdsOldImpress(model: BannerOldTopAdsModel, position: Int) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             ) as HashMap<String, Any>
@@ -604,7 +604,7 @@ class HomeRecommendationFragment :
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             )
@@ -620,7 +620,7 @@ class HomeRecommendationFragment :
         rvContext?.let {
             RouteManager.route(
                 it,
-                model.topAdsImageViewModel?.applink
+                model.topAdsImageUiModel?.applink
             )
         }
     }
@@ -628,7 +628,7 @@ class HomeRecommendationFragment :
     override fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int) {
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
-                model.topAdsImageViewModel,
+                model.topAdsImageUiModel,
                 tabIndex,
                 position
             ) as HashMap<String, Any>

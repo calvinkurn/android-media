@@ -3,7 +3,7 @@ package com.tokopedia.topads.sdk.old.view.adapter.viewholder.banner
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerProductShimmerUiModel
 
 

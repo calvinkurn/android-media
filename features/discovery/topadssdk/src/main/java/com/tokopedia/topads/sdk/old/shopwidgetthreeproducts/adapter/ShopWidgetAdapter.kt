@@ -3,9 +3,9 @@ package com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.sdk.shopwidgetthreeproducts.factory.ShopWidgetFactory
-import com.tokopedia.topads.sdk.shopwidgetthreeproducts.model.ShopWidgetItem
-import com.tokopedia.topads.sdk.shopwidgetthreeproducts.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.factory.ShopWidgetFactory
+import com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.model.ShopWidgetItem
+import com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.viewholder.AbstractViewHolder
 
 class ShopWidgetAdapter(private val shopWidgetFactory: ShopWidgetFactory) :
     RecyclerView.Adapter<AbstractViewHolder<ShopWidgetItem>>() {

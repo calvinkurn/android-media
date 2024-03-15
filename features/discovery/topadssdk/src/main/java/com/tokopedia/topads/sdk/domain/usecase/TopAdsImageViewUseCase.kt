@@ -1,7 +1,7 @@
 package com.tokopedia.topads.sdk.domain.usecase
 
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.old.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
+import com.tokopedia.topads.sdk.data.repository.TopAdsRepository
 import kotlin.collections.set
 
 private const val ADS_TYPE = "ep"
@@ -22,7 +22,7 @@ class TopAdsImageViewUseCase constructor(
     private val irisSessionId: String
 ) {
 
-    suspend fun getImageData(queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
+    suspend fun getImageData(queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageUiModel> {
         return repository.getImageData(queryParams)
     }
 

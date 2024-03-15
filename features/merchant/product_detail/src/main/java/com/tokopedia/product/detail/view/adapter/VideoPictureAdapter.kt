@@ -12,7 +12,7 @@ import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductPictureViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductVideoViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductVideoViewHolder.Companion.VIDEO_TYPE
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder
 
 /**
  * Created by Yehezkiel on 23/11/20

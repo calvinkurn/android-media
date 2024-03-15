@@ -2,7 +2,7 @@ package com.tokopedia.topads.sdk.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -77,7 +77,7 @@ class TopAdsImageViewViewModelTest {
 
     @Test
     fun `test getImageData with success`() {
-        val data = arrayListOf(TopAdsImageViewModel(bannerName = "my_banner"))
+        val data = arrayListOf(TopAdsImageUiModel(bannerName = "my_banner"))
         coEvery { topAdsImageViewUseCase.getImageData(any()) } returns data
         viewModel.getImageData(mutableMapOf())
         Assert.assertEquals(

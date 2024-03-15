@@ -10,10 +10,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
-import com.tokopedia.topads.sdk.widget.TopAdsImageView
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
+import com.tokopedia.topads.sdk.old.listener.TopAdsImageVieWApiResponseListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.widget.TopAdsImageView
 import com.tokopedia.unifycomponents.ImageUnify
 
 class TopAdsBannerViewHolder(
@@ -34,7 +34,7 @@ class TopAdsBannerViewHolder(
 
     init {
         topAdsImageView.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
-            override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
+            override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageUiModel>) {
                 topAdsBannerModel?.run {
                     topAdsBannerList = imageDataList
                     if (topAdsBannerList.isNotEmpty()) {
@@ -51,7 +51,7 @@ class TopAdsBannerViewHolder(
         })
     }
 
-    private fun bindTopAdsBanner(topAdsBanner: TopAdsImageViewModel) {
+    private fun bindTopAdsBanner(topAdsBanner: TopAdsImageUiModel) {
         topAdsImageView.loadImage(topAdsBanner)
         topAdsImageView.setTopAdsImageViewImpression(object :
             TopAdsImageViewImpressionListener {

@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopViewMoreUiModel
 import com.tokopedia.viewallcard.ViewAllCard

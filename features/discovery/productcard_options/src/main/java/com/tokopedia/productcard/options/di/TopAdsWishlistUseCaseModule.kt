@@ -3,10 +3,8 @@ package com.tokopedia.productcard.options.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.network.NetworkRouter
-import com.tokopedia.productcard.options.topadswishlist.TopAdsWishlistUseCase
 import com.tokopedia.topads.sdk.UrlTopAdsSdk
 import com.tokopedia.topads.sdk.base.AuthInterceptor
-import com.tokopedia.topads.sdk.domain.TopAdsWishlistService
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -17,12 +15,6 @@ import retrofit2.Retrofit
 
 @Module
 internal class TopAdsWishlistUseCaseModule {
-
-    @Provides
-    @ProductCardOptionsScope
-    fun topAdsWishlishedUseCase(topAdsWishlistService: TopAdsWishlistService): UseCase<Boolean> {
-        return TopAdsWishlistUseCase(topAdsWishlistService)
-    }
 
     @Provides
     @ProductCardOptionsScope

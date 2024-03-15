@@ -1,6 +1,6 @@
 package com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner;
 
-import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.common.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.old.view.adapter.factory.BannerAdsTypeFactory;
 

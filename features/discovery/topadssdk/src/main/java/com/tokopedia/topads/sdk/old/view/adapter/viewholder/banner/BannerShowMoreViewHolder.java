@@ -4,7 +4,7 @@ import android.view.View;
 
 import androidx.annotation.LayoutRes;
 
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopViewMoreUiModel;

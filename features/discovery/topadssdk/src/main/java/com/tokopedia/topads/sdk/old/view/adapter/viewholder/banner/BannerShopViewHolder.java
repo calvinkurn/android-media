@@ -9,8 +9,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.topads.sdk.R;
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
-import com.tokopedia.topads.sdk.old.domain.model.Cpm;
+import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.old.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;

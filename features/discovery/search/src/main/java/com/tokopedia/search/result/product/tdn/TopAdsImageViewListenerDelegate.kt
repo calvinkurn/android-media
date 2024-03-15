@@ -6,7 +6,6 @@ import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class TopAdsImageViewListenerDelegate(
     context: Context?,
@@ -21,16 +20,16 @@ class TopAdsImageViewListenerDelegate(
 
         com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
             className,
-            searchTopAdsImageDataView.topAdsImageViewModel.adViewUrl,
+            searchTopAdsImageDataView.topAdsImageUiModel.adViewUrl,
             "",
             "",
-            searchTopAdsImageDataView.topAdsImageViewModel.imageUrl
+            searchTopAdsImageDataView.topAdsImageUiModel.imageUrl
         )
 
     }
 
     override fun onTopAdsImageViewClick(searchTopAdsImageDataView: SearchProductTopAdsImageDataView) {
-        val applink = searchTopAdsImageDataView.topAdsImageViewModel.applink ?: return
+        val applink = searchTopAdsImageDataView.topAdsImageUiModel.applink ?: return
         openApplink(context, applink)
     }
 }

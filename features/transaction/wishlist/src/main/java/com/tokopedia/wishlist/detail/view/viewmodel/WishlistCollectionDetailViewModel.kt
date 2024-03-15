@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -225,7 +225,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         )
     }
 
-    suspend fun getTopAdsData(): TopAdsImageViewModel? {
+    suspend fun getTopAdsData(): TopAdsImageUiModel? {
         return try {
             val queryParams =
                 topAdsImageViewUseCase.getQueryMap(

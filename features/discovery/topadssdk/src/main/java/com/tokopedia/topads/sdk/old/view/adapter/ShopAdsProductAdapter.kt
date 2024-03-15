@@ -10,8 +10,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.TopAdsConstants.CONST_5
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.CONST_5
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.old.domain.model.ShopProductModel.ShopProductModelItem
 import com.tokopedia.topads.sdk.old.listener.FollowButtonClickListener
 import com.tokopedia.topads.sdk.old.listener.ShopAdsProductListener

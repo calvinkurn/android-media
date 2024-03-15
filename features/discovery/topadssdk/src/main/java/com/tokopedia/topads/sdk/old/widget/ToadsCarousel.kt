@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.old.domain.model.TopAdsCarouselModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsCarouselModel
 import com.tokopedia.topads.sdk.old.listener.TopAdsCarouselListener
 import com.tokopedia.topads.sdk.old.view.adapter.TopAdsCarouselAdapter
 import com.tokopedia.unifycomponents.BaseCustomView

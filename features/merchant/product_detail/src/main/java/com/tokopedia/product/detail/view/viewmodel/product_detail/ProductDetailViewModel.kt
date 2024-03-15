@@ -101,7 +101,7 @@ import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.usecase.GetTopadsIsAdsUseCase.Companion.TIMEOUT_REMOTE_CONFIG_KEY
 import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
@@ -231,9 +231,9 @@ class ProductDetailViewModel @Inject constructor(
     val discussionMostHelpful: LiveData<Result<DiscussionMostHelpfulResponseWrapper>>
         get() = _discussionMostHelpful
 
-    private val _topAdsImageView: MutableLiveData<Result<ArrayList<TopAdsImageViewModel>>> =
+    private val _topAdsImageView: MutableLiveData<Result<ArrayList<TopAdsImageUiModel>>> =
         MutableLiveData()
-    val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageViewModel>>>
+    val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageUiModel>>>
         get() = _topAdsImageView
 
     private val _topAdsRecomChargeData =

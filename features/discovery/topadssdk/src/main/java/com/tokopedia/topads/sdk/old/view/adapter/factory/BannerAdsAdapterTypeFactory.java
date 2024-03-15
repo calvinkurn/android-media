@@ -2,8 +2,8 @@ package com.tokopedia.topads.sdk.old.view.adapter.factory;
 
 import android.view.ViewGroup;
 
-import com.tokopedia.topads.sdk.base.adapter.exception.TypeNotSupportedException;
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.common.adapter.exception.TypeNotSupportedException;
+import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.old.listener.TopAdsAddToCartClickListener;
 import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.old.listener.TopAdsItemImpressionListener;

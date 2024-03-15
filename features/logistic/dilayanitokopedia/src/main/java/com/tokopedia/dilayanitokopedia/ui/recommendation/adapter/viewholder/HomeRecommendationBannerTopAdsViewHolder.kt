@@ -18,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeRecommendationBannerTopAdsViewHolder(view: View) :
@@ -37,10 +36,10 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) :
         binding?.homeRecomTopadsImageView?.setOnClickListener {
             com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
                 this::class.java.simpleName,
-                element.topAdsImageViewModel?.adClickUrl,
+                element.topAdsImageUiModel?.adClickUrl,
                 "",
                 "",
-                element.topAdsImageViewModel?.imageUrl,
+                element.topAdsImageUiModel?.imageUrl,
                 HOME_RECOM_TAB_BANNER
             )
             listener.onBannerTopAdsClick(element, adapterPosition)
@@ -51,17 +50,17 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) :
         recommendationBannerTopAdsDataModelDataModel: HomeRecommendationBannerTopAdsDataModel,
         listener: HomeRecommendationListener
     ) {
-        recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.let {
+        recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel?.let {
             itemView.addOnImpressionListener(
                 recommendationBannerTopAdsDataModelDataModel,
                 object : ViewHintListener {
                     override fun onViewHint() {
                         com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                             this::class.java.simpleName,
-                            recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.adViewUrl,
+                            recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel.adViewUrl,
                             "",
                             "",
-                            recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl,
+                            recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel.imageUrl,
                             HOME_RECOM_TAB_BANNER
                         )
                         listener.onBannerTopAdsImpress(recommendationBannerTopAdsDataModelDataModel, adapterPosition)
@@ -71,13 +70,13 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) :
             binding?.homeRecomTopadsLoaderImage?.show()
             binding?.homeRecomTopadsImageView?.let {
                 Glide.with(itemView.context)
-                    .load(recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl)
+                    .load(recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel.imageUrl)
                     .transform(RoundedCorners(roundedCorners))
                     .override(
                         itemView.context.resources.displayMetrics.widthPixels,
                         getHeight(
-                            recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageWidth,
-                            recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageHeight
+                            recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel.imageWidth,
+                            recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel.imageHeight
                         )
                     )
                     .fitCenter()

@@ -1,6 +1,6 @@
 package com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner
 
-import com.tokopedia.topads.sdk.base.adapter.Item
+import com.tokopedia.topads.sdk.common.adapter.Item
 import com.tokopedia.topads.sdk.old.view.adapter.factory.BannerAdsTypeFactory
 
 class BannerProductShimmerUiModel : Item<BannerAdsTypeFactory> {

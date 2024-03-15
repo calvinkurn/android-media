@@ -1,14 +1,14 @@
 package com.tokopedia.topads.sdk.utils
 
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_1
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_10
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_11
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_2
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
-import com.tokopedia.topads.sdk.old.domain.model.Cpm
-import com.tokopedia.topads.sdk.old.domain.model.CpmData
-import com.tokopedia.topads.sdk.old.domain.model.CpmModel
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_1
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_10
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_11
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_2
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_5
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_6
+import com.tokopedia.topads.sdk.domain.model.Cpm
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 import javax.inject.Inject
 
 class TopAdsHeadlineHelper  @Inject constructor() {

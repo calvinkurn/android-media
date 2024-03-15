@@ -5,18 +5,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.TopAdsConstants.CONST_5
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
-import com.tokopedia.topads.sdk.old.domain.model.ShopProductModel.ShopProductModelItem
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.CONST_5
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_5
+import com.tokopedia.topads.sdk.domain.model.ShopProductModel.ShopProductModelItem
 import com.tokopedia.topads.sdk.old.listener.FollowButtonClickListener
 import com.tokopedia.topads.sdk.old.listener.ShopAdsProductListener
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.shopwidget.R as shopwidgetR

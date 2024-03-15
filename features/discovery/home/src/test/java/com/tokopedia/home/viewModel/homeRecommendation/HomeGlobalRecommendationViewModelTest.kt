@@ -25,7 +25,7 @@ import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -744,7 +744,7 @@ class HomeGlobalRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(model)
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()))
 
         getTopAdsHeadlineUseCase.givenDataReturn(TopAdsHeadlineResponse())
 
@@ -918,7 +918,7 @@ class HomeGlobalRecommendationViewModelTest {
             model2
         )
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()))
 
         getTopAdsHeadlineUseCase.givenDataReturn(TopAdsHeadlineResponse())
 
@@ -1027,7 +1027,7 @@ class HomeGlobalRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(model, model2)
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()), arrayListOf())
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()), arrayListOf())
 
         getTopAdsHeadlineUseCase.givenDataReturn(TopAdsHeadlineResponse())
 
@@ -1133,7 +1133,7 @@ class HomeGlobalRecommendationViewModelTest {
 
         getTopAdsHeadlineUseCase.givenDataReturn(TopAdsHeadlineResponse())
 
-        topAdsImageViewUseCase.givenDataReturnAndThenThrows(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturnAndThenThrows(arrayListOf(TopAdsImageUiModel()))
 
         every { HomeRecommendationController.isUsingRecommendationCard() } returns false
 
@@ -1371,7 +1371,7 @@ class HomeGlobalRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(model)
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()))
 
         val cpmModel = CpmModel()
         val cpmData = CpmData()
@@ -1446,7 +1446,7 @@ class HomeGlobalRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(model)
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()))
 
         val cpmModel = CpmModel()
         val cpmData = CpmData()
@@ -1506,7 +1506,7 @@ class HomeGlobalRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(model)
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()))
 
         val cpmModel = CpmModel()
         val cpmData = CpmData()
@@ -1587,7 +1587,7 @@ class HomeGlobalRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(model)
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()))
 
         every { HomeRecommendationController.isUsingRecommendationCard() } returns false
 
@@ -1659,7 +1659,7 @@ class HomeGlobalRecommendationViewModelTest {
 
         getHomeRecommendationUseCase.givenDataReturn(model)
 
-        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageUiModel()))
 
         every { HomeRecommendationController.isUsingRecommendationCard() } returns false
 

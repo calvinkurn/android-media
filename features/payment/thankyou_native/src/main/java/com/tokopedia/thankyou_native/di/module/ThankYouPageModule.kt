@@ -13,7 +13,7 @@ import com.tokopedia.thankyou_native.presentation.adapter.PurchaseDetailAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.factory.InvoiceTypeFactory
 import com.tokopedia.thankyou_native.presentation.adapter.factory.PurchaseDetailTypeFactory
 import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.data.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface

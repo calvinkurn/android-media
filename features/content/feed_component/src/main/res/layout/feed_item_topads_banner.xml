@@ -17,7 +17,7 @@
         android:layout_margin="16dp"
         android:layout_height="120dp" />
 
-    <com.tokopedia.topads.sdk.old.widget.TopAdsImageView
+    <com.tokopedia.topads.sdk.v2.tdnbanner.widget.TopAdsImageView
         android:id="@+id/top_ads_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

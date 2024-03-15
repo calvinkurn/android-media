@@ -5,11 +5,11 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
-import com.tokopedia.topads.sdk.old.domain.TopAdsParams;
-import com.tokopedia.topads.sdk.old.domain.interactor.TopAdsImageViewUseCase;
-import com.tokopedia.topads.sdk.old.repository.TopAdsRepository;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase;
+import com.tokopedia.topads.sdk.data.repository.TopAdsRepository;
 import com.tokopedia.topads.sdk.utils.CacheHandler;
-import com.tokopedia.topads.sdk.old.utils.TopAdsIrisSession;
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 

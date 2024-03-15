@@ -26,7 +26,7 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.H
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.topads.sdk.utils.VALUE_ITEM
@@ -238,7 +238,7 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
                             .toMutableList()
                     val newList = data.homeRecommendations.toMutableList()
                     val topAdsBanner =
-                        arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
+                        arrayListOf<Pair<String, ArrayList<TopAdsImageUiModel>>>()
                     homeBannerTopAds.forEach {
                         if (it.bannerType == HomeRecommendationMapper.TYPE_BANNER_ADS) {
                             val bannerData = topAdsImageViewUseCase.get().getImageData(
@@ -307,11 +307,11 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
     }
 
     private fun handleTopAdsWidgets(
-        data: HomeGlobalRecommendationDataModel,
-        topAdsBanner: ArrayList<Pair<String, ArrayList<TopAdsImageViewModel>>>,
-        homeBannerTopAds: List<BannerOldTopAdsModel>,
-        headlineAds: TopAdsHeadlineResponse,
-        newList: MutableList<ForYouRecommendationVisitable>
+            data: HomeGlobalRecommendationDataModel,
+            topAdsBanner: ArrayList<Pair<String, ArrayList<TopAdsImageUiModel>>>,
+            homeBannerTopAds: List<BannerOldTopAdsModel>,
+            headlineAds: TopAdsHeadlineResponse,
+            newList: MutableList<ForYouRecommendationVisitable>
     ) {
         incrementTopadsPage()
         val headlineData = headlineAds.displayAds.data
@@ -416,7 +416,7 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
                     data.homeRecommendations.filterIsInstance<BannerOldTopAdsModel>()
                         .toMutableList()
                 val newList = data.homeRecommendations.toMutableList()
-                val topAdsBanner2 = arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
+                val topAdsBanner2 = arrayListOf<Pair<String, ArrayList<TopAdsImageUiModel>>>()
                 homeBannerTopAds.forEachIndexed { index, it ->
                     if (it.bannerType == HomeRecommendationMapper.TYPE_BANNER_ADS) {
                         val bannerData = topAdsImageViewUseCase.get().getImageData(

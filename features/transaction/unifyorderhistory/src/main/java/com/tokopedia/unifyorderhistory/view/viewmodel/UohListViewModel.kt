@@ -19,7 +19,7 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.unifyorderhistory.data.model.FlightResendEmail
 import com.tokopedia.unifyorderhistory.data.model.LsPrintData
 import com.tokopedia.unifyorderhistory.data.model.PmsNotification
@@ -120,8 +120,8 @@ class UohListViewModel @Inject constructor(
     val atcResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcResult
 
-    private val _tdnBannerResult = MutableLiveData<Result<TopAdsImageViewModel>>()
-    val tdnBannerResult: LiveData<Result<TopAdsImageViewModel>>
+    private val _tdnBannerResult = MutableLiveData<Result<TopAdsImageUiModel>>()
+    val tdnBannerResult: LiveData<Result<TopAdsImageUiModel>>
         get() = _tdnBannerResult
 
     private val _getUohPmsCounterResult = MutableLiveData<Result<PmsNotification>>()

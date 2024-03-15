@@ -7,7 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.utils.UrlParamUtils
-import com.tokopedia.topads.sdk.TopAdsConstants.SEEN_ADS
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.SEEN_ADS
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineViewParams.createHeadlineParams
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase

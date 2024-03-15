@@ -19,7 +19,7 @@ import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.old.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.old.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
-import com.tokopedia.topads.sdk.old.viewmodel.TopAdsHeadlineViewModel
+import com.tokopedia.topads.sdk.presentation.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.unifycomponents.LoaderUnify
 import java.lang.ref.WeakReference
 import javax.inject.Inject

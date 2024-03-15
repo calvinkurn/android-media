@@ -21,7 +21,7 @@ import com.tokopedia.search.result.domain.usecase.InspirationCarouselQuery.creat
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineViewParams.createHeadlineParams
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -167,11 +167,11 @@ class SearchProductFirstPageGqlUseCase(
     private fun createTopAdsImageViewModelObservable(
         query: String,
         requestParams: RequestParams,
-    ): Observable<List<TopAdsImageViewModel>> {
+    ): Observable<List<TopAdsImageUiModel>> {
         return if(requestParams.isSkipTdnBanner()) {
             Observable.just(emptyList())
         } else {
-            Observable.create<List<TopAdsImageViewModel>>({ emitter ->
+            Observable.create<List<TopAdsImageUiModel>>({ emitter ->
                 try {
                     launch { emitTopAdsImageViewData(emitter, query) }
                 } catch (throwable: Throwable) {
@@ -182,7 +182,7 @@ class SearchProductFirstPageGqlUseCase(
         }
     }
 
-    private suspend fun emitTopAdsImageViewData(emitter: Emitter<List<TopAdsImageViewModel>>, query: String) {
+    private suspend fun emitTopAdsImageViewData(emitter: Emitter<List<TopAdsImageUiModel>>, query: String) {
         withContext(coroutineDispatchers.io) {
             try {
                 val topAdsImageViewModelList = topAdsImageViewUseCase.getImageData(
@@ -200,7 +200,7 @@ class SearchProductFirstPageGqlUseCase(
     private fun TopAdsImageViewUseCase.getQueryMapSearch(query: String) =
         getQueryMap(query, TDN_SEARCH_INVENTORY_ID, "", TDN_SEARCH_ITEM_COUNT, TDN_SEARCH_DIMENSION, "")
 
-    private fun Observable<List<TopAdsImageViewModel>>.tdnTimeout(): Observable<List<TopAdsImageViewModel>> {
+    private fun Observable<List<TopAdsImageUiModel>>.tdnTimeout(): Observable<List<TopAdsImageUiModel>> {
         val timeoutMs : Long = TDN_TIMEOUT
 
         return this.timeout(timeoutMs, TimeUnit.MILLISECONDS, Observable.create({ emitter ->
@@ -210,12 +210,12 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     private fun setTopAdsImageViewModelList(
-        searchProductModel: SearchProductModel?,
-        topAdsImageViewModelList: List<TopAdsImageViewModel>?
+            searchProductModel: SearchProductModel?,
+            topAdsImageUiModelList: List<TopAdsImageUiModel>?
     ): SearchProductModel? {
-        if (searchProductModel == null || topAdsImageViewModelList == null) return searchProductModel
+        if (searchProductModel == null || topAdsImageUiModelList == null) return searchProductModel
 
-        searchProductModel.setTopAdsImageViewModelList(topAdsImageViewModelList)
+        searchProductModel.setTopAdsImageViewModelList(topAdsImageUiModelList)
 
         return searchProductModel
     }

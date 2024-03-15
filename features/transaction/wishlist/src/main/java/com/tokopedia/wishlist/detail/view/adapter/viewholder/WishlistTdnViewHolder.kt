@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.wishlist.databinding.WishlistTdnItemBinding
@@ -32,7 +32,7 @@ class WishlistTdnViewHolder(private val binding: WishlistTdnItemBinding, private
             }
             binding.root.layoutParams = params
         } else {
-            if (item.dataObject is TopAdsImageViewModel) {
+            if (item.dataObject is TopAdsImageUiModel) {
                 binding.root.visible()
                 val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
                     height = ViewGroup.LayoutParams.WRAP_CONTENT

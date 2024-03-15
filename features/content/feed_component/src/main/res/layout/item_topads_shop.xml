@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="-8dp" />
 
-    <com.tokopedia.topads.sdk.old.widget.TopAdsDynamicFeedShopView
+    <com.tokopedia.topads.sdk.v2.dynamicfeedshop.widget.TopAdsDynamicFeedShopView
         android:id="@+id/topadsShop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

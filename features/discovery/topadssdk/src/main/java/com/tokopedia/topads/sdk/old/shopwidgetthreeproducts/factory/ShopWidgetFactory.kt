@@ -1,8 +1,8 @@
 package com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.factory
 
 import android.view.View
-import com.tokopedia.topads.sdk.shopwidgetthreeproducts.model.*
-import com.tokopedia.topads.sdk.shopwidgetthreeproducts.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.model.*
+import com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.viewholder.AbstractViewHolder
 
 interface ShopWidgetFactory {
 

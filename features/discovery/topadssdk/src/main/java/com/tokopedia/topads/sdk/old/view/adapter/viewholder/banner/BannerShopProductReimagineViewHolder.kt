@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.old.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopProductUiModel
@@ -29,13 +29,17 @@ class BannerShopProductReimagineViewHolder(
             productCardGridViewA.run {
                 setProductModel(ProductCardModelReimagine.from(productCardViewModel))
 
-                addOnImpressionListener(element) {
-                    impressionListener?.onImpressionProductAdsItem(
-                        adapterPosition,
-                        model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition - 1),
-                        model.cpmData
-                    )
-                    impressionListener?.onImpressionHeadlineAdsItem(adapterPosition, model.cpmData)
+                val impressHolder = model.cpmData.cpm.cpmShop.products.getOrNull(bindingAdapterPosition)?.imageProduct
+
+                impressHolder?.let {
+                    addOnImpressionListener(it) {
+                        impressionListener?.onImpressionProductAdsItem(
+                            adapterPosition,
+                            model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition - 1),
+                            model.cpmData
+                        )
+                        impressionListener?.onImpressionHeadlineAdsItem(adapterPosition, model.cpmData)
+                    }
                 }
 
                 setOnClickListener {

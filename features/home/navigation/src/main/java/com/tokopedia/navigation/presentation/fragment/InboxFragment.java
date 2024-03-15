@@ -50,11 +50,10 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel;
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener;
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener;
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener;
-import com.tokopedia.topads.sdk.utils.TdnHelper;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -125,7 +124,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private boolean isTopAdsBannerAdded;
     private int headlineExperimentPosition = HEADLINE_POS_NOT_TO_BE_ADDED;
     private int toAdsBannerExperimentPosition = TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED;
-    private List<TopAdsImageViewModel> topAdsBannerInProductCards;
+    private List<TopAdsImageUiModel> topAdsBannerInProductCards;
     private List<Integer> headlineIndexList;
 
     public static InboxFragment newInstance() {
@@ -646,7 +645,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
 
     @Override
-    public void onTdnBannerResponse(@NonNull List<List<TopAdsImageViewModel>> categoriesList) {
+    public void onTdnBannerResponse(@NonNull List<List<TopAdsImageUiModel>> categoriesList) {
         if (categoriesList.isEmpty()) return;
         if (categoriesList.size() == TOP_ADS_BANNER_COUNT) {
             topAdsBannerInProductCards = categoriesList.get(1);

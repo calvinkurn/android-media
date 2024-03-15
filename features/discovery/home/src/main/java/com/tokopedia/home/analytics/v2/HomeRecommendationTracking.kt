@@ -26,7 +26,7 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.play.PlayCardM
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.BannerTopAdsModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -333,9 +333,9 @@ object HomeRecommendationTracking : BaseTrackerConst() {
     }
 
     fun getImpressionBannerTopAdsOld(
-        topAdsImageViewModel: TopAdsImageViewModel?,
-        tabPosition: Int,
-        position: Int
+            topAdsImageUiModel: TopAdsImageUiModel?,
+            tabPosition: Int,
+            position: Int
     ) = BaseTrackerBuilder().constructBasicPromotionView(
         Event.PROMO_VIEW,
         Category.HOMEPAGE,
@@ -343,19 +343,19 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         Label.NONE,
         listOf(
             Promotion(
-                id = topAdsImageViewModel?.bannerId.orEmpty(),
+                id = topAdsImageUiModel?.bannerId.orEmpty(),
                 name = CustomAction.BANNER_ADS_FIELD.format(tabPosition.toString()),
                 position = position.toString(),
-                creative = topAdsImageViewModel?.imageUrl.orEmpty(),
-                creativeUrl = topAdsImageViewModel?.imageUrl.orEmpty()
+                creative = topAdsImageUiModel?.imageUrl.orEmpty(),
+                creativeUrl = topAdsImageUiModel?.imageUrl.orEmpty()
             )
         )
     ).build()
 
     fun getClickBannerTopAdsOld(
-        topAdsImageViewModel: TopAdsImageViewModel?,
-        tabPosition: Int,
-        position: Int
+            topAdsImageUiModel: TopAdsImageUiModel?,
+            tabPosition: Int,
+            position: Int
     ) = BaseTrackerBuilder().constructBasicPromotionClick(
         event = Event.PROMO_CLICK,
         eventCategory = Category.HOMEPAGE,
@@ -363,11 +363,11 @@ object HomeRecommendationTracking : BaseTrackerConst() {
         eventLabel = Label.NONE,
         promotions = listOf(
             Promotion(
-                id = topAdsImageViewModel?.bannerId.orEmpty(),
+                id = topAdsImageUiModel?.bannerId.orEmpty(),
                 name = CustomAction.BANNER_ADS_FIELD.format(tabPosition.toString()),
                 position = position.toString(),
-                creative = topAdsImageViewModel?.imageUrl.orEmpty(),
-                creativeUrl = topAdsImageViewModel?.imageUrl.orEmpty()
+                creative = topAdsImageUiModel?.imageUrl.orEmpty(),
+                creativeUrl = topAdsImageUiModel?.imageUrl.orEmpty()
             )
         )
     ).build()
@@ -620,7 +620,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             homeTopAdsRecommendationBannerTopAdsUiModel.categoryId,
             homeTopAdsRecommendationBannerTopAdsUiModel.layoutCard,
             homeTopAdsRecommendationBannerTopAdsUiModel.layoutItem,
-            homeTopAdsRecommendationBannerTopAdsUiModel.topAdsImageViewModel?.bannerName.orEmpty()
+            homeTopAdsRecommendationBannerTopAdsUiModel.topAdsImageUiModel?.bannerName.orEmpty()
         )
 
         val listPromotions = arrayListOf(
@@ -636,7 +636,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             event = Event.PROMO_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = IMPRESSION_ON_BANNER_RECOMMENDATION_CARD_FOR_YOU,
-            eventLabel = "${homeTopAdsRecommendationBannerTopAdsUiModel.layoutCard} - ${homeTopAdsRecommendationBannerTopAdsUiModel.layoutItem} - ${homeTopAdsRecommendationBannerTopAdsUiModel.topAdsImageViewModel?.bannerName.orEmpty()}",
+            eventLabel = "${homeTopAdsRecommendationBannerTopAdsUiModel.layoutCard} - ${homeTopAdsRecommendationBannerTopAdsUiModel.layoutItem} - ${homeTopAdsRecommendationBannerTopAdsUiModel.topAdsImageUiModel?.bannerName.orEmpty()}",
             promotions = listPromotions
         ).appendBusinessUnit(BusinessUnit.DEFAULT).appendCurrentSite(CurrentSite.DEFAULT)
             .appendUserId(userId).appendCustomKeyValue(
@@ -657,7 +657,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
             putString(Category.KEY, Category.HOMEPAGE)
             putString(
                 Label.KEY,
-                "${bannerTopAdsUiModel.layoutCard} - ${bannerTopAdsUiModel.layoutItem} - ${bannerTopAdsUiModel.topAdsImageViewModel?.bannerName.orEmpty()}"
+                "${bannerTopAdsUiModel.layoutCard} - ${bannerTopAdsUiModel.layoutItem} - ${bannerTopAdsUiModel.topAdsImageUiModel?.bannerName.orEmpty()}"
             )
             putString(
                 TrackerId.KEY,
@@ -687,7 +687,7 @@ object HomeRecommendationTracking : BaseTrackerConst() {
                                 bannerTopAdsUiModel.categoryId,
                                 bannerTopAdsUiModel.layoutCard,
                                 bannerTopAdsUiModel.layoutItem,
-                                bannerTopAdsUiModel.topAdsImageViewModel?.bannerName.orEmpty()
+                                bannerTopAdsUiModel.topAdsImageUiModel?.bannerName.orEmpty()
                             )
                         )
                     }

@@ -7,12 +7,12 @@ internal object ApplyItemDecorationReimagineHelper {
 
     fun RecyclerView.addItemDecoratorShopAdsReimagine() {
         removeItemDecorationIfExist()
-        addItemDecoration(com.tokopedia.topads.sdk.utils.ItemDecorationShopAdsReimagine(6.toPx()))
+        addItemDecoration(ItemDecorationShopAdsReimagine(6.toPx()))
     }
 
     fun RecyclerView.addItemDecoratorShopCardAdsReimagine() {
         removeItemDecorationIfExist()
-        addItemDecoration(com.tokopedia.topads.sdk.utils.ItemDecorationShopAdsReimagine(0.toPx()))
+        addItemDecoration(ItemDecorationShopAdsReimagine(0.toPx()))
     }
 
     private fun RecyclerView.removeItemDecorationIfExist() {

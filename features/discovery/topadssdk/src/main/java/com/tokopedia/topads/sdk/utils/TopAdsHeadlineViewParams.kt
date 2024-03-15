@@ -1,7 +1,7 @@
 package com.tokopedia.topads.sdk.utils
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.topads.sdk.old.domain.TopAdsParams
+import com.tokopedia.topads.sdk.domain.TopAdsParams
 import java.util.HashMap
 
 private const val HEADLINE = "headline"

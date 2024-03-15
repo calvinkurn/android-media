@@ -12,11 +12,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.Product
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
-import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
+import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.old.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.old.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.utils.*
-import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
+import com.tokopedia.topads.sdk.old.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
 const val TOPADS_HEADLINE_VALUE_SRC = "fav_product"

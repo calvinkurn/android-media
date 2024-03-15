@@ -1,18 +1,18 @@
 package com.tokopedia.topads.sdk.utils
 
-import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_CAROUSEL
-import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_SINGLE
-import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_VERTICAL_CAROUSEL
-import com.tokopedia.topads.sdk.old.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TdnBannerConstants.TYPE_CAROUSEL
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TdnBannerConstants.TYPE_SINGLE
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TdnBannerConstants.TYPE_VERTICAL_CAROUSEL
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 
 object TdnHelper {
-    private val categorisedList = mutableListOf<List<TopAdsImageViewModel>>()
+    private val categorisedList = mutableListOf<List<TopAdsImageUiModel>>()
 
-    fun categoriesTdnBanners(banners: List<TopAdsImageViewModel>): MutableList<List<TopAdsImageViewModel>> {
+    fun categoriesTdnBanners(banners: List<TopAdsImageUiModel>): MutableList<List<TopAdsImageUiModel>> {
         categorisedList.clear()
-        val carouselList = mutableListOf<TopAdsImageViewModel>()
-        val singleList = mutableListOf<TopAdsImageViewModel>()
-        val verticalList = mutableListOf<TopAdsImageViewModel>()
+        val carouselList = mutableListOf<TopAdsImageUiModel>()
+        val singleList = mutableListOf<TopAdsImageUiModel>()
+        val verticalList = mutableListOf<TopAdsImageUiModel>()
         banners.forEach {
             when {
                 it.layoutType == TYPE_CAROUSEL -> {

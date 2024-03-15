@@ -20,7 +20,7 @@ import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModu
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.domain.usecase.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.data.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase

@@ -2,7 +2,6 @@ package com.tokopedia.productcard.options
 
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.productcard.options.testutils.TestException
-import com.tokopedia.topads.sdk.domain.usecase.TopAdsWishlishedUseCase.WISHSLIST_URL
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -208,16 +207,6 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
                 true,
                 "Wishlist result isAddWishlist should be true"
         )
-    }
-
-    private fun `Then verify TopAds wishlist API is called with correct parameters`(
-            topAdsWishlistRequestParams: CapturingSlot<RequestParams>,
-            topAdsWishlistUrl: String
-    ) {
-        val requestParams = topAdsWishlistRequestParams.captured
-        val wishlistUrl = requestParams.getString(WISHSLIST_URL, "")
-
-        wishlistUrl shouldBe topAdsWishlistUrl
     }
 
     @Test

@@ -7,9 +7,9 @@ import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductTopAdsBannerLayoutReimagineBinding
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_2
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_2
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_5
+import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_6
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener

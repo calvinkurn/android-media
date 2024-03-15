@@ -21,7 +21,7 @@ import com.tokopedia.product.detail.databinding.PdpVideoViewHolderBinding
 import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.widget.ProductExoPlayer
 import com.tokopedia.product.detail.view.widget.VideoStateListener
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.unifycomponents.toPx
 
 /**

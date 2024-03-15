@@ -22,9 +22,8 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.B
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.TemporaryBackwardCompatible
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.WidgetForYouOldTopadsBinding
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.topads.sdk.widget.BANNER_TYPE_HORIZONTAL
-import com.tokopedia.topads.sdk.widget.BANNER_TYPE_VERTICAL
+import com.tokopedia.topads.sdk.old.widget.BANNER_TYPE_HORIZONTAL
+import com.tokopedia.topads.sdk.old.widget.BANNER_TYPE_VERTICAL
 import com.tokopedia.utils.view.binding.viewBinding
 
 @TemporaryBackwardCompatible
@@ -51,7 +50,7 @@ class BannerOldTopAdsViewHolder(
         recommendationBannerTopAdsDataModelDataModel: BannerOldTopAdsModel,
         listener: GlobalRecomListener
     ) {
-        recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.let { topAdsImageViewModel ->
+        recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel?.let { topAdsImageViewModel ->
 
             setBannerTopAdsImpressionListener(
                 recommendationBannerTopAdsDataModelDataModel,
@@ -113,10 +112,10 @@ class BannerOldTopAdsViewHolder(
                 override fun onViewHint() {
                     com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                         this::class.java.simpleName,
-                        recommendationBannerTopAdsDataModel.topAdsImageViewModel?.adViewUrl,
+                        recommendationBannerTopAdsDataModel.topAdsImageUiModel?.adViewUrl,
                         "",
                         "",
-                        recommendationBannerTopAdsDataModel.topAdsImageViewModel?.imageUrl,
+                        recommendationBannerTopAdsDataModel.topAdsImageUiModel?.imageUrl,
                         HOME_RECOM_TAB_BANNER
                     )
                     listener.onBannerTopAdsOldImpress(
@@ -132,10 +131,10 @@ class BannerOldTopAdsViewHolder(
         binding?.homeRecomTopadsImageView?.setOnClickListener {
             com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
                 this::class.java.simpleName,
-                element.topAdsImageViewModel?.adClickUrl,
+                element.topAdsImageUiModel?.adClickUrl,
                 "",
                 "",
-                element.topAdsImageViewModel?.imageUrl,
+                element.topAdsImageUiModel?.imageUrl,
                 HOME_RECOM_TAB_BANNER
             )
             listener.onBannerTopAdsOldClick(element, bindingAdapterPosition)
@@ -146,7 +145,7 @@ class BannerOldTopAdsViewHolder(
         recommendationBannerTopAdsDataModelDataModel: BannerOldTopAdsModel,
         appCompatImageView: AppCompatImageView
     ) {
-        recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.imageUrl?.let {
+        recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel?.imageUrl?.let {
             appCompatImageView.loadImageRounded(it, TDN_BANNER_ROUNDED.toPx()) {
                 fitCenter()
                 listener(onSuccess = { _, _ ->

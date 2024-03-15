@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.old.domain.model.ShopProductModel
+import com.tokopedia.topads.sdk.domain.model.ShopProductModel
 import com.tokopedia.topads.sdk.old.listener.FollowButtonClickListener
 import com.tokopedia.topads.sdk.old.listener.ShopAdsProductListener
 import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.addItemDecoratorShopCardAdsReimagine

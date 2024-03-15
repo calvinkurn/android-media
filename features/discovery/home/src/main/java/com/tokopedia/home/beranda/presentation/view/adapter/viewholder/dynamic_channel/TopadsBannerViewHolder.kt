@@ -13,9 +13,8 @@ import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home.databinding.HomeDcTopadsBannerBinding
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.old.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryListener) :
@@ -41,13 +40,13 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
                 }
         )
 
-        if (element.topAdsImageViewModel == null) {
+        if (element.topAdsImageUiModel == null) {
             binding?.homeTopadsShimmeringLoading?.visibility = View.VISIBLE
             binding?.homeTopadsImageView?.visibility = View.GONE
         } else {
             binding?.homeTopadsShimmeringLoading?.visibility = View.GONE
             binding?.homeTopadsImageView?.visibility = View.VISIBLE
-            element.topAdsImageViewModel?.let {
+            element.topAdsImageUiModel?.let {
                 try {
                     binding?.homeTopadsImageView?.loadImage(it) {
                         categoryListener.removeViewHolderAtPosition(adapterPosition)
@@ -65,14 +64,14 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
                         element.channel,
                         categoryListener.userId,
                         false,
-                        element.topAdsImageViewModel?.bannerId?:""
+                        element.topAdsImageUiModel?.bannerId?:""
                 )
                 BannerAdsTracking.sendBannerAdsImpressionTracking(
                         categoryListener.getTrackingQueueObj(),
                         element.channel,
                         categoryListener.userId,
                         true,
-                        element.topAdsImageViewModel?.bannerId?:""
+                        element.topAdsImageUiModel?.bannerId?:""
                 )
 
                 com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(className).hitImpressionUrl(
@@ -91,7 +90,7 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
                         element.channel,
                         categoryListener.userId,
                         adapterPosition,
-                        element.topAdsImageViewModel?.bannerId?:""
+                        element.topAdsImageUiModel?.bannerId?:""
                 )
 
                 categoryListener.onSectionItemClicked(applink?:"")
