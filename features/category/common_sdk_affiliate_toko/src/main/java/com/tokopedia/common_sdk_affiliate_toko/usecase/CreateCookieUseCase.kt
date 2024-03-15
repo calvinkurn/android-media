@@ -49,7 +49,10 @@ class CreateCookieUseCase @Inject constructor(
                 param.affiliatePageDetail.source.atcSource.source
             ),
             CreateAffiliateCookieRequest.LinkDetail(
-                channel = param.affiliateChannel
+                channel = param.affiliateChannel,
+                subIds = param.subIds.map {
+                    CreateAffiliateCookieRequest.AdditionalParam(it.key, it.value)
+                }.toList()
             ),
             CreateAffiliateCookieRequest.PageDetail(
                 param.affiliatePageDetail.pageId,

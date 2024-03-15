@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.viewmodel.product_detail
 
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
@@ -19,7 +20,9 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.model.AdditionalParam
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper.Companion.PARAM_START_SUBID
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -166,7 +169,12 @@ class ProductDetailViewModel @Inject constructor(
     private val productRecommSubViewModel: ProductRecommSubViewModel,
     playWidgetSubViewModel: PlayWidgetSubViewModel,
     thumbnailVariantSubViewModel: ThumbnailVariantSubViewModel
-) : ParentSubViewModel(dispatcher.main, productRecommSubViewModel, playWidgetSubViewModel, thumbnailVariantSubViewModel),
+) : ParentSubViewModel(
+    dispatcher.main,
+    productRecommSubViewModel,
+    playWidgetSubViewModel,
+    thumbnailVariantSubViewModel
+),
     IProductRecommSubViewModel by productRecommSubViewModel,
     IPlayWidgetSubViewModel by playWidgetSubViewModel,
     IThumbnailVariantSubViewModel by thumbnailVariantSubViewModel,
@@ -293,7 +301,8 @@ class ProductDetailViewModel @Inject constructor(
         get() = userSessionInterface.isLoggedIn
 
     private var _productMediaRecomBottomSheetData: ProductMediaRecomBottomSheetData? = null
-    private val _productMediaRecomBottomSheetState = MutableLiveData<ProductMediaRecomBottomSheetState>()
+    private val _productMediaRecomBottomSheetState =
+        MutableLiveData<ProductMediaRecomBottomSheetState>()
     val productMediaRecomBottomSheetState: LiveData<ProductMediaRecomBottomSheetState>
         get() = _productMediaRecomBottomSheetState
 
@@ -307,7 +316,8 @@ class ProductDetailViewModel @Inject constructor(
 
     var deviceId: String = userSessionInterface.deviceId ?: ""
 
-    private var aPlusContentExpanded: Boolean = ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
+    private var aPlusContentExpanded: Boolean =
+        ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
 
     override fun getP1(): ProductInfoP1? = getProductInfoP1
 
@@ -627,9 +637,11 @@ class ProductDetailViewModel @Inject constructor(
                 is AddToCartRequestParams -> {
                     getAddToCartUseCase(requestParams)
                 }
+
                 is AddToCartOcsRequestParams -> {
                     getAddToCartOcsUseCase(requestParams)
                 }
+
                 is AddToCartOccMultiRequestParams -> {
                     getAddToCartOccUseCase(atcParams)
                 }
@@ -1121,21 +1133,35 @@ class ProductDetailViewModel @Inject constructor(
         productInfo: ProductInfoP1,
         affiliateUuid: String,
         uuid: String,
-        affiliateChannel: String
+        affiliateChannel: String,
+        affiliateSubIds: Bundle?
     ) {
         launchCatchError(block = {
             val affiliatePageDetail =
                 ProductDetailMapper.getAffiliatePageDetail(productInfo)
 
+            val subIds = affiliateSubIds?.let {
+                it.keySet().mapNotNull { k ->
+                    val key = k.toIntOrNull() ?: k.substring(PARAM_START_SUBID.length).toIntOrNull()
+                    ?: return@mapNotNull null
+
+                    AdditionalParam(
+                        key = key.toString(),
+                        value = it.getString(key.toString(), "")
+                    )
+                }.toList()
+            } ?: emptyList()
+
             affiliateCookieHelper.get().initCookie(
                 affiliateUUID = affiliateUuid,
                 affiliateChannel = affiliateChannel,
                 affiliatePageDetail = affiliatePageDetail,
-                uuid = uuid
+                uuid = uuid,
+                subIds = subIds
             )
         }, onError = {
-                // no op, expect to be handled by Affiliate SDK
-            })
+            // no op, expect to be handled by Affiliate SDK
+        })
     }
 
     private fun updateRecomAtcStatusAndMiniCart(
@@ -1252,12 +1278,14 @@ class ProductDetailViewModel @Inject constructor(
                     it.copy(event = event, impressRestriction = true)
                 }
             }
+
             is OneTimeMethodEvent.ImpressGeneralEduBs -> {
                 if (_oneTimeMethod.value.impressGeneralEduBS) return
                 _oneTimeMethod.update {
                     it.copy(event = event, impressGeneralEduBS = true)
                 }
             }
+
             else -> {
                 // noop
             }
@@ -1272,17 +1300,18 @@ class ProductDetailViewModel @Inject constructor(
     ) {
         launch(context = dispatcher.main) {
             runCatching {
-                val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
-                    if (
-                        productMediaRecomBottomSheetData?.pageName == pageName &&
-                        productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
-                    ) {
-                        productMediaRecomBottomSheetData
-                    } else {
-                        setProductMediaRecomBottomSheetLoading(title)
-                        loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                val data =
+                    _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
+                        if (
+                            productMediaRecomBottomSheetData?.pageName == pageName &&
+                            productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
+                        ) {
+                            productMediaRecomBottomSheetData
+                        } else {
+                            setProductMediaRecomBottomSheetLoading(title)
+                            loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                        }
                     }
-                }
                 setProductMediaRecomBottomSheetData(title, data)
             }.onFailure {
                 setProductMediaRecomBottomSheetError(title = title, error = it)
