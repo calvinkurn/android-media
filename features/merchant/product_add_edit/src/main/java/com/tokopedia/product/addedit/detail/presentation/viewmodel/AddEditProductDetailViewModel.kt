@@ -792,7 +792,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun updateHasRequiredSpecification(annotationCategoryList: List<AnnotationCategoryData>) {
         mHasRequiredSpecification.value = annotationCategoryList.any {
-            it.variant == SIGNAL_STATUS_VARIANT
+            it.isMandatory
         }
     }
 

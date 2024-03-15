@@ -29,6 +29,7 @@ import com.tokopedia.product.addedit.specification.domain.model.DrogonAnnotation
 import com.tokopedia.product.addedit.specification.domain.model.Values
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.SIGNAL_STATUS_VARIANT
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputMapper
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
@@ -1378,7 +1379,8 @@ class AddEditProductDetailViewModelTest {
         Assert.assertTrue(result is Success)
 
         if (result is Success) {
-            viewModel.updateSpecificationByAnnotationCategory(result.data)
+            val selectedSpec = SpecificationInputMapper.updateSpecificationByAnnotationCategory(result.data)
+            viewModel.updateSelectedSpecification(selectedSpec)
             val specificationText = viewModel.specificationText.getOrAwaitValue()
             Assert.assertTrue(specificationText.isEmpty())
         }
@@ -1419,7 +1421,8 @@ class AddEditProductDetailViewModelTest {
         Assert.assertTrue(result is Success)
 
         if (result is Success) {
-            viewModel.updateSpecificationByAnnotationCategory(result.data)
+            val selectedSpec = SpecificationInputMapper.updateSpecificationByAnnotationCategory(result.data)
+            viewModel.updateSelectedSpecification(selectedSpec)
             val specificationList = viewModel.selectedSpecificationList.getOrAwaitValue()
             val specificationText = viewModel.specificationText.getOrAwaitValue()
             Assert.assertEquals("Indomie", specificationList[0].data)
@@ -1493,7 +1496,8 @@ class AddEditProductDetailViewModelTest {
         Assert.assertTrue(result is Success)
 
         if (result is Success) {
-            viewModel.updateSpecificationByAnnotationCategory(result.data)
+            val selectedSpec = SpecificationInputMapper.updateSpecificationByAnnotationCategory(result.data)
+            viewModel.updateSelectedSpecification(selectedSpec)
             val specificationText = viewModel.specificationText.getOrAwaitValue()
             Assert.assertEquals("Indomie, Bawang1, Bawang2, Bawang3, Bawang4, +1 lainnya", specificationText)
         }
@@ -1527,7 +1531,8 @@ class AddEditProductDetailViewModelTest {
                 )
             )
         )
-        viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
+        val selectedSpec = SpecificationInputMapper.updateSpecificationByAnnotationCategory(annotationCategoryData)
+        viewModel.updateSelectedSpecification(selectedSpec)
         val specificationText = viewModel.specificationText.getOrAwaitValue()
         Assert.assertTrue(specificationText.isEmpty())
     }
@@ -1681,10 +1686,10 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `when updateHasRequiredSpecification updated with SIGNAL_STATUS_VARIANT, should update hasRequiredSpecification`() {
+    fun `when updateHasRequiredSpecification updated with required field, should update hasRequiredSpecification`() {
         val annotationData = listOf(
             AnnotationCategoryData(
-                variant = SIGNAL_STATUS_VARIANT
+                isMandatory = true
             )
         )
         viewModel.updateHasRequiredSpecification(annotationData)
@@ -1706,12 +1711,14 @@ class AddEditProductDetailViewModelTest {
     fun `when validateSelectedSpecificationList, should return valid result`() {
         val annotationData = listOf(
             AnnotationCategoryData(
-                variant = SIGNAL_STATUS_VARIANT
+                variant = SIGNAL_STATUS_VARIANT,
+                isMandatory = true
             )
         )
         val selectedSpec = listOf(
             SpecificationInputModel(
-                specificationVariant = SIGNAL_STATUS_VARIANT
+                specificationVariant = SIGNAL_STATUS_VARIANT,
+                required = true
             )
         )
 
