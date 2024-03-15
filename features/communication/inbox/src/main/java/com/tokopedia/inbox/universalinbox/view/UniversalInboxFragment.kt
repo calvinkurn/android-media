@@ -210,6 +210,12 @@ class UniversalInboxFragment @Inject constructor(
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                observeProductRecommendation()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 observeInboxMenuAndCounter()
             }
         }
@@ -217,12 +223,6 @@ class UniversalInboxFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 observeInboxNavigation()
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                observeProductRecommendation()
             }
         }
 
