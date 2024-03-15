@@ -211,7 +211,24 @@ class ExplicitPersonalizeViewModelTest {
             maxItemSelected = maxAnswer
         )
         val responseRollance = responseRollance
-        val responseGetQuestion = responseSuccessGetQuestion
+        val responseGetQuestion = ExplicitprofileGetQuestion(
+            ExplicitProfileGetQuestionDataModel(
+                template = TemplateDataModel(
+                    sections = mutableListOf(
+                        SectionsDataModel(
+                            layout = "MultipleAnswer",
+                            questions = mutableListOf(QuestionDataModel(
+                                questionId = 1,
+                                property = QuestionDataModel.Property(
+                                    options = mutableListOf(QuestionDataModel.Property.Options(value = "999", caption = "Olahraga", isSelected = true))
+                                ),
+                                answerValueList = mutableListOf("999")
+                            ))
+                        )
+                    )
+                )
+            )
+        )
         val itemSelected = OptionSelected(
             indexOption = 0,
             indexCategory = 0,
