@@ -228,9 +228,10 @@ fun sendHorizontalSlideTrack(scrollOffset: Float, model: SlideTrackObject) {
 }
 
 /**
- * event: tiktokec_rec_trigger & tiktokec_glide_page
- * Listener must be passed at beginning, no need to wait for data,
- * but GlidePageTrack model will be passed using callback
+ * event: tiktokec_rec_trigger (recommendation) & tiktokec_glide_page (page level)
+ * Listener must be passed at beginning, no need to wait for data.
+ * For pages that needs to track glide page (page level), need to pass GlidePageTrackObject as lambda,
+ * which will be invoked every scroll stops
  */
 fun RecyclerView.addVerticalTrackListener(
     glidePageTrackCallback: () -> GlidePageTrackObject? = { null },
