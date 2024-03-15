@@ -2908,15 +2908,19 @@ open class ProductDetailFragment :
                 handleAtcError(it)
                 reason = it.message.orEmpty()
             })
-            val model = viewModel.getConfirmCartResultData().apply {
-                isSuccess = success
-                failReason = reason
-                cartItemId = cartId
-            }
-            if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
-                || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON) {
-                AppLogPdp.sendConfirmCartResult(model)
-            }
+            sendConfirmResultByteIoTracker(cartId, reason, success)
+        }
+    }
+
+    private fun sendConfirmResultByteIoTracker(cartId: String, reason: String, success: Boolean) {
+        val model = viewModel.getConfirmCartResultData().apply {
+            isSuccess = success
+            failReason = reason
+            cartItemId = cartId
+        }
+        if (buttonActionType == ProductDetailCommonConstant.ATC_BUTTON
+            || buttonActionType == ProductDetailCommonConstant.OCS_BUTTON) {
+            AppLogPdp.sendConfirmCartResult(model)
         }
     }
 
@@ -5498,7 +5502,7 @@ open class ProductDetailFragment :
     }
 
     fun trackVerticalScroll() {
-        if(hasApplogScrollListener) return
+        if (hasApplogScrollListener) return
         getRecyclerView()?.addVerticalTrackListener()
         hasApplogScrollListener = true
     }
