@@ -84,6 +84,5 @@ internal fun ItemImageProductPreview(
 }
 
 private const val HALF = 2
-private const val MIN_OFFSET = 0F
 private const val MIN_ZOOM = 1f
 private const val MAX_ZOOM = 2f
