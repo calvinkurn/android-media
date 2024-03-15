@@ -35,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.content.product.preview.R
 
 class ReviewContentViewHolder(
     private val binding: ItemReviewContentBinding,
@@ -209,6 +210,16 @@ class ReviewContentViewHolder(
     }
 
     private fun bindDescription(description: ReviewDescriptionUiModel) = with(binding) {
+        val divider = root.context.getString(R.string.circle_dot_divider)
+        tvReviewDetails.text = buildString {
+            append(description.stars)
+            if (description.productType.isNotBlank()) {
+                append(" $divider ")
+                append(description.productType)
+            }
+            append(" $divider ")
+            append(description.timestamp)
+        }
         captionView.bind(description.description)
     }
 
