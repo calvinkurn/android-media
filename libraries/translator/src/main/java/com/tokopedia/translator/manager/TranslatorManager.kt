@@ -36,8 +36,6 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.suspendCoroutine
-
 
 class TranslatorManager() : CoroutineScope {
 
@@ -47,9 +45,8 @@ class TranslatorManager() : CoroutineScope {
     private var mSelectors = HashMap<String, String>()
     private var mStringPoolManager: StringPoolManager = StringPoolManager()
     private var API_KEY: String? = null
-    private var mLangsGroup: String? = "id-en"
 
-    var isTranslationInProgress = false
+    private var isTranslationInProgress = false
 
     var destinationLang: String = "en"
 
@@ -63,12 +60,6 @@ class TranslatorManager() : CoroutineScope {
         }
 
         try {
-            mLangsGroup = "${
-                SharedPrefsUtils.getStringPreference(application, SOURCE_LANGUAGE)!!.split(DELIM_LANG_CODE)[1]
-            }-${
-                SharedPrefsUtils.getStringPreference(application, DESTINATION_LANGUAGE)!!.split(DELIM_LANG_CODE)[1]
-            }"
-
             destinationLang = mApplication?.let { app ->
                 SharedPrefsUtils.getStringPreference(app.applicationContext, DESTINATION_LANGUAGE)?.split(DELIM_LANG_CODE.toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()?.getOrNull(1)
             } ?: "en"
@@ -89,9 +80,7 @@ class TranslatorManager() : CoroutineScope {
         private val service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService::class.java)
 
         fun getCurrentActivity(): Activity? {
-            return mCurrentActivity?.get() ?: run {
-                null
-            }
+            return mCurrentActivity?.get()
         }
 
         fun setCurrentActivity(mCurrentActivity: WeakReference<Activity>) {
@@ -100,7 +89,6 @@ class TranslatorManager() : CoroutineScope {
 
         @JvmStatic
         fun init(application: Application, apiKey: String): TranslatorManager? {
-
             if (sInstance == null) {
                 synchronized(LOCK) {
                     TranslatorManagerFragment.init(application)
@@ -122,9 +110,7 @@ class TranslatorManager() : CoroutineScope {
         }
     }
 
-
     private fun prepareSelectors(views: List<View?>) {
-
         if (views.isEmpty()) return
 
         val updateViewList = mutableListOf<TextViewUpdateModel>()
@@ -134,14 +120,13 @@ class TranslatorManager() : CoroutineScope {
                 val viewText = view.text.trim().toString()
 
                 if (viewText.isNotBlank()) {
-
                     val stringPoolItem = mStringPoolManager.get(viewText)
 
                     if (stringPoolItem == null || stringPoolItem.demandedText.isBlank() || (stringPoolItem.requestedLocale != destinationLang)) {
-                        //prepare for translate
+                        // prepare for translate
                         mStringPoolManager.add(view, viewText, "", "")
                     } else {
-                        //translate
+                        // translate
                         if (!TextUtils.equals(viewText, stringPoolItem.demandedText)) {
                             updateViewList.add(TextViewUpdateModel(view, stringPoolItem.demandedText))
                         }
@@ -149,7 +134,6 @@ class TranslatorManager() : CoroutineScope {
                 }
             }
 
-            Log.d(TAG, "Created selectors for current screen $mSelectors")
             Log.d(TAG, "current string pool $mStringPoolManager")
         }
 
@@ -196,7 +180,6 @@ class TranslatorManager() : CoroutineScope {
     }
 
     private suspend fun fetchTranslationService(originStrList: List<String>, views: List<TextView>) {
-
         val call = service.getTranslatedString("dict-chrome-ex", "id", destinationLang, "t", originStrList)
 
         try {
@@ -211,7 +194,6 @@ class TranslatorManager() : CoroutineScope {
                     val arrayStr = jsonStringToArray(strJson)
 
                     if (arrayStr.isNotEmpty()) {
-
                         mStringPoolManager.updateCache(views, originStrList, arrayStr, destinationLang)
 
                         val charCountOld = SharedPrefsUtils.getIntegerPreference(mApplication!!.applicationContext, CHARS_COUNT, 0)
@@ -219,7 +201,8 @@ class TranslatorManager() : CoroutineScope {
                         updateScreenWithTranslatedString(views)
 
                         SharedPrefsUtils.setIntegerPreference(
-                            mApplication!!.applicationContext, CHARS_COUNT,
+                            mApplication!!.applicationContext,
+                            CHARS_COUNT,
                             originStrList.size + charCountOld
                         )
                     }
@@ -242,12 +225,10 @@ class TranslatorManager() : CoroutineScope {
     }
 
     private fun updateScreenWithTranslatedString(views: List<TextView>) {
-
         val updateScreenViewList = mutableListOf<TextViewUpdateModel>()
 
         try {
             for (view in views) {
-
                 val tvText = view.text?.trim().toString()
 
                 val stringPoolItem = mStringPoolManager.get(tvText)
@@ -267,7 +248,6 @@ class TranslatorManager() : CoroutineScope {
                     }
                 }
             }
-
         } catch (e: Exception) {
             e.printStackTrace()
         }

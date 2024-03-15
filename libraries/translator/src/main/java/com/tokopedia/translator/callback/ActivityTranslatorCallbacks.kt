@@ -17,7 +17,6 @@ import android.app.Activity
 import android.app.Application
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
@@ -25,7 +24,6 @@ import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import com.bumptech.glide.manager.SupportRequestManagerFragment
 import com.tokopedia.translator.manager.TranslatorManager
 import com.tokopedia.translator.manager.TranslatorManagerFragment
 import com.tokopedia.translator.ui.SharedPrefsUtils
@@ -44,7 +42,6 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
-
 
 class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, CoroutineScope {
 
@@ -72,17 +69,11 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
             Log.i(TAG, "onActivityResumed() invoked of :" + activity.localClassName)
             val weakActivity = WeakReference<Activity>(activity)
             TranslatorManager.setCurrentActivity(weakActivity)
-            translatorManager?.clearSelectors()
 
             val rootView: View = activity.window.decorView.findViewById(android.R.id.content)
 
             launch {
-
                 setAddonGlobalLayoutListener(rootView) {
-                    translatorManager?.startTranslate()
-                }
-
-                setAddonPreDrawLayoutListener(rootView) {
                     translatorManager?.startTranslate()
                 }
 
@@ -99,14 +90,12 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
                     }
             }
         }
-
     }
 
     override fun onActivityPaused(activity: Activity) {
     }
 
     override fun onActivityStopped(activity: Activity) {
-
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
@@ -121,7 +110,6 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
     private fun setAddonGlobalLayoutListener(rootView: View, startTranslate: suspend () -> Unit) {
         rootView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-
                 launch {
                     startTranslate.invoke()
                 }
@@ -131,33 +119,24 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         })
     }
 
-    private fun setAddonPreDrawLayoutListener(rootView: View, startTranslate: suspend () -> Unit) {
-        rootView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-
-            override fun onPreDraw(): Boolean {
-
-                launch {
-                    startTranslate.invoke()
-                }
-
-                return true
-            }
-        })
-    }
-
     @OptIn(FlowPreview::class)
     fun ViewTreeObserver.onScrollChangedAsFlow(): Flow<Unit> {
-
         return callbackFlow<Unit> {
-
             val onScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
                 trySend(Unit)
             }
 
+            val addOnPreDrawListener = ViewTreeObserver.OnPreDrawListener {
+                trySend(Unit)
+                true
+            }
+
             addOnScrollChangedListener(onScrollChangedListener)
+            addOnPreDrawListener(addOnPreDrawListener)
 
             awaitClose {
                 removeOnScrollChangedListener(onScrollChangedListener)
+                removeOnPreDrawListener(addOnPreDrawListener)
             }
         }.debounce(DELAYING_SCROLL_TO_IDLE)
     }
@@ -202,20 +181,12 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks, Coro
         private fun setTranslatorFragment(f: Fragment) {
             val mContext = f.context
             if (mContext?.let { SharedPrefsUtils.getBooleanPreference(it, TranslatorSettingView.IS_ENABLE, false) } == true) {
-                Log.i(TAG, "onFragmentResumed() invoked of :" + f::class.java.simpleName)
-
                 val weakFragment = WeakReference<Fragment>(f)
                 TranslatorManagerFragment.setCurrentFragment(weakFragment)
 
                 if (f is BottomSheetUnify) {
                     f.view?.let {
-
-                        setAddonPreDrawLayoutListener(it) {
-                            translatorManagerFragment?.startTranslate()
-                        }
-
                         launch {
-
                             it.viewTreeObserver.onScrollChangedAsFlow().collect {
                                 translatorManagerFragment?.startTranslate()
                             }
