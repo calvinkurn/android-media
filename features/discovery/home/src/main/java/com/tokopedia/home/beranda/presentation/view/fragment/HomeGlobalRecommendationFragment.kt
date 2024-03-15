@@ -706,7 +706,7 @@ class HomeGlobalRecommendationFragment :
             DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
             getLocationParamString(),
             sourceType = sourceType,
-            refreshType = REFRESH_TYPE_OPEN,
+            refreshType = REFRESH_TYPE_REFRESH,
             tabIndex = tabIndex
         )
     }
@@ -797,7 +797,7 @@ class HomeGlobalRecommendationFragment :
                 DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE,
                 getLocationParamString(),
                 sourceType = sourceType,
-                refreshType = REFRESH_TYPE_REFRESH,
+                refreshType = REFRESH_TYPE_OPEN,
                 tabIndex = tabIndex
             )
         }

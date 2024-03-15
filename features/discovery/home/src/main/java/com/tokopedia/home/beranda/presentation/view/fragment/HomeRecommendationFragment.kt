@@ -18,11 +18,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.analytics.byteio.addVerticalTrackListener
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardClickAppLog
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendCardShowAppLog
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductClickAppLog
-import com.tokopedia.analytics.byteio.recommendation.AppLogRecommendation.sendProductShowAppLog
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -158,8 +153,6 @@ class HomeRecommendationFragment :
 
     private var startY = 0.0F
     private var startX = 0.0F
-
-    private var hasApplogScrollListener = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -478,9 +471,6 @@ class HomeRecommendationFragment :
     }
 
     override fun onProductCardImpressed(model: RecommendationCardModel, position: Int) {
-        sendProductShowAppLog(
-            model.asProductTrackModel()
-        )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {
@@ -528,9 +518,6 @@ class HomeRecommendationFragment :
     }
 
     override fun onProductCardClicked(model: RecommendationCardModel, position: Int) {
-        sendProductClickAppLog(
-            model.asProductTrackModel()
-        )
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {
@@ -619,9 +606,6 @@ class HomeRecommendationFragment :
     }
 
     override fun onBannerTopAdsClick(model: BannerTopAdsModel, position: Int) {
-        sendCardClickAppLog(
-            model.asCardTrackModel()
-        )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             HomeRecommendationTracking.getClickBannerTopAdsOld(
                 model.topAdsImageViewModel,
@@ -646,9 +630,6 @@ class HomeRecommendationFragment :
     }
 
     override fun onBannerTopAdsImpress(model: BannerTopAdsModel, position: Int) {
-        sendCardShowAppLog(
-            model.asCardTrackModel()
-        )
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressionBannerTopAdsOld(
                 model.topAdsImageViewModel,
@@ -667,9 +648,6 @@ class HomeRecommendationFragment :
     }
 
     override fun onContentCardImpressed(item: ContentCardModel, position: Int) {
-        sendCardShowAppLog(
-            item.asCardTrackModel()
-        )
         trackingQueue.putEETracking(
             HomeRecommendationTracking.getImpressEntityCardTracking(
                 item,
@@ -680,9 +658,6 @@ class HomeRecommendationFragment :
     }
 
     override fun onContentCardClicked(item: ContentCardModel, position: Int) {
-        sendCardClickAppLog(
-            item.asCardTrackModel()
-        )
         HomeRecommendationTracking.sendClickEntityCardTracking(
             item,
             position,
@@ -767,13 +742,6 @@ class HomeRecommendationFragment :
                 }
             }
         })
-        trackVerticalScroll()
-    }
-
-    private fun trackVerticalScroll() {
-        if(hasApplogScrollListener) return
-        recyclerView?.addVerticalTrackListener(trackGlidePage = true)
-        hasApplogScrollListener = true
     }
 
     private fun goToProductDetail(productId: String, position: Int) {
