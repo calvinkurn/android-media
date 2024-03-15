@@ -170,7 +170,7 @@ public class ImpressedImageView extends AppCompatImageView {
      */
     public void setImage(ProductImage image) {
         this.holder = image;
-        Glide.with(getContext()).load(image.getM_ecs()).into(this);
+        JvmMediaLoader.loadImage(this, image.getM_ecs());
     }
 
     /**

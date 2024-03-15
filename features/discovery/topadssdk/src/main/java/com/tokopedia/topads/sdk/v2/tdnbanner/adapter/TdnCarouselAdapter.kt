@@ -1,7 +1,6 @@
 package com.tokopedia.topads.sdk.v2.tdnbanner.adapter
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,21 +8,18 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TdnBannerConstants.TYPE_VERTICAL_CAROUSEL
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import timber.log.Timber
 
 class TdnCarouselAdapter(
@@ -126,42 +122,33 @@ class TdnCarouselAdapter(
                 } else {
                     widthHorizontalCarousel(width)
                 }
-                getRequestBuilder(imageData.imageUrl, cornerRadius)?.override(
-                    calculatedWidth,
-                    getHeight(imageData.imageWidth, imageData.imageHeight, calculatedWidth)
-                )
-                    ?.addListener(object : RequestListener<Drawable> {
 
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            isFirstResource: Boolean
-                        ): Boolean {
+                tdnBanner.loadImage(imageData.imageUrl, properties = {
+                    if (cornerRadius > Int.ZERO) {
+                        transforms(listOf(FitCenter(), RoundedCorners(cornerRadius)))
+                    } else {
+                        fitCenter()
+                    }
+
+                    overrideSize(
+                        Resize(
+                            calculatedWidth,
+                            getHeight(imageData.imageWidth, imageData.imageHeight, calculatedWidth)
+                        )
+                    )
+
+                    listener(onSuccess = { _, _ ->
+
+                        recordImpression(imageData, onTdnBannerImpressed)
+                        if (!isUsingInfiniteScroll) recyclerView?.smoothScrollBy(Int.ONE, Int.ONE)
+                        Timber.d("TDN Banner is loaded successfully")
+                        tdnShimmer.hide()
+                        recordClick(imageData, onTdnBannerClicked)
+                    }, onError = {
                             Timber.d("Error in loading TDN Banner")
                             onLoadFailed.invoke()
-                            return false
-                        }
-
-                        override fun onResourceReady(
-                            resource: Drawable?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            recordImpression(imageData, onTdnBannerImpressed)
-                            if (!isUsingInfiniteScroll) recyclerView?.smoothScrollBy(Int.ONE, Int.ONE)
-                            Timber.d("TDN Banner is loaded successfully")
-
-                            tdnShimmer.hide()
-
-                            recordClick(imageData, onTdnBannerClicked)
-
-                            return false
-                        }
-                    })
-                    ?.into(tdnBanner)
+                        })
+                })
             } else {
                 tdnBanner.hide()
             }
@@ -178,7 +165,7 @@ class TdnCarouselAdapter(
             itemView.setOnClickListener {
                 onTdnBannerClicked(imageData)
                 Timber.d("TDN Banner is clicked")
-                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
+                TopAdsUrlHitter(itemView.context).hitClickUrl(
                     this@TdnCarouselAdapter.javaClass.canonicalName,
                     imageData.adClickUrl,
                     "",
@@ -194,7 +181,7 @@ class TdnCarouselAdapter(
         ) {
             imageData.ImpressHolder?.let { ImpressHolder ->
                 tdnBanner?.addOnImpressionListener(ImpressHolder) {
-                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                    TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                         this.javaClass.name,
                         imageData.adViewUrl,
                         "",
@@ -203,22 +190,6 @@ class TdnCarouselAdapter(
                     )
                     onTdnBannerImpressed.invoke(imageData)
                 }
-            }
-        }
-
-        private fun getRequestBuilder(imageUrl: String?, radius: Int): RequestBuilder<Drawable>? {
-            return if (itemView.context.isAvailable()) {
-                if (radius > Int.ZERO) {
-                    Glide.with(itemView.context)
-                        .load(imageUrl)
-                        .transform(FitCenter(), RoundedCorners(radius))
-                } else {
-                    Glide.with(itemView.context)
-                        .load(imageUrl)
-                        .fitCenter()
-                }
-            } else {
-                null
             }
         }
 

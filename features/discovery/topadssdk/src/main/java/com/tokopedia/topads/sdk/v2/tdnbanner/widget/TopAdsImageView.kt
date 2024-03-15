@@ -1,30 +1,26 @@
 package com.tokopedia.topads.sdk.v2.tdnbanner.widget
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.old.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.old.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.presentation.viewmodel.TopAdsImageViewViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
@@ -48,7 +44,8 @@ class TopAdsImageView : AppCompatImageView {
 
     private val topAdsImageViewViewModel by lazy {
         val vm = viewModelFactory?.let {
-            ViewModelProvider(context as AppCompatActivity,
+            ViewModelProvider(
+                context as AppCompatActivity,
                 it
             ).get(TopAdsImageViewViewModel::class.java)
         }
@@ -71,7 +68,6 @@ class TopAdsImageView : AppCompatImageView {
         topAdsImageViewImpressionListener = listener
     }
 
-
     /** Use this function to hit the api according to parameters, and handle response in callbacks
      * @param query Search term query to look for ads. Example: leather shoes
      * @param source Page source that do the request. Example: search, fav_product
@@ -85,21 +81,22 @@ class TopAdsImageView : AppCompatImageView {
         initViewModel()
         val queryParams = topAdsImageViewViewModel.get()?.getQueryParams(query, source, pageToken, adsCount, dimenId, depId, productID, page)
         queryParams?.let { topAdsImageViewViewModel.get()?.getImageData(it) }
-        topAdsImageViewViewModel.get()?.getResponse()?.observe(context as LifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
-                    Timber.d("Response received successfully")
-                }
-                is Fail -> {
-                    topAdsImageVieWApiResponseListener?.onError(it.throwable)
-                    Timber.d("error in response")
+        topAdsImageViewViewModel.get()?.getResponse()?.observe(
+            context as LifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
+                        Timber.d("Response received successfully")
+                    }
+                    is Fail -> {
+                        topAdsImageVieWApiResponseListener?.onError(it.throwable)
+                        Timber.d("error in response")
+                    }
                 }
             }
-
-        })
+        )
     }
-
 
     private fun initViewModel() {
         val application = context.applicationContext as BaseMainApplication
@@ -124,47 +121,39 @@ class TopAdsImageView : AppCompatImageView {
      * */
     fun loadImage(imageData: TopAdsImageUiModel, cornerRadius: Int = 0, onLoadFailed: () -> Unit = {}) {
         if (!imageData.imageUrl.isNullOrEmpty()) {
-            getRequestBuilder(imageData.imageUrl, cornerRadius).override(context.resources.displayMetrics.widthPixels,
-                    getHeight(imageData.imageWidth, imageData.imageHeight))
-                    .addListener(object : RequestListener<Drawable> {
+            this.loadImage(imageData.imageUrl, properties = {
+                if (cornerRadius > Int.ZERO) {
+                    transforms(listOf(FitCenter(), RoundedCorners(cornerRadius)))
+                } else {
+                    fitCenter()
+                }
 
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            Timber.d("Error in loading TopAdsImageView")
-                            onLoadFailed.invoke()
-                            return false
-                        }
+                overrideSize(
+                    Resize(
+                        context.resources.displayMetrics.widthPixels,
+                        getHeight(imageData.imageWidth, imageData.imageHeight)
+                    )
+                )
 
-                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl
-                                    ?: "")
-                            Timber.d("TopAdsImageView is loaded successfully")
+                listener(onSuccess = { _, _ ->
+                    topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(
+                        imageData.adViewUrl
+                            ?: ""
+                    )
+                    Timber.d("TopAdsImageView is loaded successfully")
 
-                            this@TopAdsImageView.setOnClickListener {
-                                topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData.applink)
-                                Timber.d("TopAdsImageView is clicked")
-                                TopAdsUrlHitter(context).hitClickUrl(this@TopAdsImageView.javaClass.canonicalName,imageData.adClickUrl,"","","")
-                            }
-                            return false
-                        }
-
+                    this@TopAdsImageView.setOnClickListener {
+                        topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData.applink)
+                        Timber.d("TopAdsImageView is clicked")
+                        TopAdsUrlHitter(context).hitClickUrl(this@TopAdsImageView.javaClass.canonicalName, imageData.adClickUrl, "", "", "")
+                    }
+                }, onError = {
+                        Timber.d("Error in loading TopAdsImageView")
+                        onLoadFailed.invoke()
                     })
-                    .into(this)
+            })
         } else {
             this.hide()
-        }
-
-    }
-
-    private fun getRequestBuilder(imageUrl: String?, radius: Int): RequestBuilder<Drawable> {
-        return if (radius > 0) {
-            Glide.with(context)
-                    .load(imageUrl)
-                    .transform(FitCenter(), RoundedCorners(radius))
-        } else {
-            Glide.with(context)
-                    .load(imageUrl)
-                    .fitCenter()
-
         }
     }
 
@@ -174,5 +163,4 @@ class TopAdsImageView : AppCompatImageView {
         val widthRatio = deviceWidth / width.toFloat()
         return (widthRatio * height).toInt()
     }
-
 }

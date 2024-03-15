@@ -1,30 +1,25 @@
 package com.tokopedia.topads.sdk.v2.tdnvertical.widget
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
-import com.tokopedia.topads.sdk.v2.tdnvertical.listener.TdnVerticalBannerResponseListener
 import com.tokopedia.topads.sdk.presentation.viewmodel.TopAdsImageViewViewModel
+import com.tokopedia.topads.sdk.v2.tdnvertical.listener.TdnVerticalBannerResponseListener
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toPx
@@ -49,12 +44,16 @@ class TdnVerticalView : BaseCustomView {
 
     private var topAdsImageViewViewModel: TopAdsImageViewViewModel? = null
     private fun initViewModel() {
-
         topAdsImageViewViewModel = viewModelFactory?.let {
-            ViewModelProvider(context as AppCompatActivity,
+            ViewModelProvider(
+                context as AppCompatActivity,
                 it
-            )[(TopAdsImageViewViewModel::class.java.canonicalName
-                ?: "") + counter++, TopAdsImageViewViewModel::class.java]
+            )[
+                (
+                    TopAdsImageViewViewModel::class.java.canonicalName
+                        ?: ""
+                    ) + counter++, TopAdsImageViewViewModel::class.java
+            ]
         }
     }
 
@@ -81,7 +80,6 @@ class TdnVerticalView : BaseCustomView {
             .baseAppComponent(application.baseAppComponent)
             .build()
         component.inject(this)
-
     }
 
     fun setTdnResponseListener(listener: TdnVerticalBannerResponseListener) {
@@ -122,7 +120,6 @@ class TdnVerticalView : BaseCustomView {
                     Timber.d("error in response")
                 }
             }
-
         }
     }
 
@@ -165,44 +162,24 @@ class TdnVerticalView : BaseCustomView {
         onTdnBannerImpressed: (imageData: TopAdsImageUiModel) -> Unit
     ) {
         if (!imageData.imageUrl.isNullOrEmpty()) {
-            Glide.with(context).load(imageData.imageUrl)
-                .transform(FitCenter(), RoundedCorners(cornerRadius))
-                .addListener(object : RequestListener<Drawable> {
-
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        Timber.d("Error in loading TDN Banner")
-                        onLoadFailed.invoke()
-                        return false
-                    }
-
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
+            tdnBanner.loadImage(imageData.imageUrl) {
+                transforms(listOf(FitCenter(), RoundedCorners(cornerRadius)))
+                listener(
+                    onSuccess = { _, _ ->
                         tdnShimmer.hide()
                         recordImpression(imageData, onTdnBannerImpressed)
                         Timber.d("TDN Banner is loaded successfully")
-
                         recordClick(imageData, onTdnBannerClicked)
-
-                        return false
+                    },
+                    onError = { _ ->
+                        Timber.d("Error in loading TDN Banner")
+                        onLoadFailed.invoke()
                     }
-
-                })
-                .into(tdnBanner)
-
+                )
+            }
         } else {
             tdnBanner.hide()
         }
-
     }
 
     private fun recordClick(
