@@ -31,6 +31,16 @@ internal object QueryMissionWidget {
         "      isCarousel\n" +
         "      shopID\n" +
         "      campaignCode\n" +
+        "      labelGroup {\n" +
+        "       title\n" +
+        "       type\n" +
+        "       position\n" +
+        "       url\n" +
+        "       styles {\n" +
+        "        key\n" +
+        "        value\n" +
+        "       }\n" +
+        "      }\n" +
         "    }\n" +
         "    config {\n" +
         "      styleParam\n" +

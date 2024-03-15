@@ -10,7 +10,7 @@ object AtfKey {
     const val TYPE_TODO = "todo_widget_carousel"
     const val TYPE_MISSION = "mission_widget"
     const val TYPE_MISSION_V2 = "mission_widget_v2"
-    const val TYPE_MISSION_V3 = "static_mission_widget"
+    const val TYPE_MISSION_V3 = "mission_widget_v3"
 
     const val STATUS_LOADING = 0
     const val STATUS_ERROR = 1
