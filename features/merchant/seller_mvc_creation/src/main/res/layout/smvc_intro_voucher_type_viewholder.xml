@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/title"
         android:gravity="center"
+        android:textColor="@color/mvc_dms_NN950_dark"
         app:typographyType="heading_3"
         android:paddingStart="60dp"
         android:paddingEnd="60dp"
