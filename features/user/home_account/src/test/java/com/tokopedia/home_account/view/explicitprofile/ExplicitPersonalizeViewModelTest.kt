@@ -214,6 +214,10 @@ class ExplicitPersonalizeViewModelTest {
         val responseGetQuestion = ExplicitprofileGetQuestion(
             ExplicitProfileGetQuestionDataModel(
                 template = TemplateDataModel(
+                    rules = TemplateDataModel.Rules(
+                        minAnswer = minAnswer,
+                        maxAnswer = maxAnswer
+                    ),
                     sections = mutableListOf(
                         SectionsDataModel(
                             layout = "MultipleAnswer",
