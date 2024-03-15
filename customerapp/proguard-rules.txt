@@ -403,3 +403,8 @@ public static com.tokopedia.stability.ChangeDelegate *;
 -dontwarn android.os.SystemProperties
 -dontwarn com.ss.android.message.PushThreadHandlerManager
 -dontwarn com.ss.android.message.log.PushLog
+
+# Slardar
+-keep class com.bytedance.retrofit2.SsResponse { *; }
+-keep class com.bytedance.crash.entity.EventBody { *; }
+-keep class com.bytedance.crash.entity.Header { *; }
