@@ -855,4 +855,8 @@ open class TopChatViewStateImpl constructor(
             ImageUtil.stopAVDTypingAnimation(it)
         }
     }
+
+    fun hideReplyBox() {
+        showReplyBox(false)
+    }
 }

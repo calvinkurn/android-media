@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardPaginationLoadState
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.usecase.productbundlingusecase.ProductBundlingUseCase
 import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
@@ -59,25 +60,36 @@ class CarouselErrorLoadViewModel(
                             components.parentComponentId,
                             components.pageEndPoint
                         )
+
                     ComponentNames.MerchantVoucherCarousel.componentName ->
                         merchantVoucherUseCase?.getCarouselPaginatedData(
                             components.parentComponentId,
                             components.pageEndPoint
                         )
+
                     ComponentNames.ProductBundling.componentName ->
                         productBundlingUseCase?.getProductBundlingPaginatedData(
                             components.parentComponentId,
                             components.pageEndPoint
                         )
 
-                    else -> productCardUseCase?.getCarouselPaginatedData(
+                    else -> when (productCardUseCase?.getCarouselPaginatedData(
                         components.parentComponentId,
                         components.pageEndPoint
-                    )
+                    )) {
+                        ProductCardPaginationLoadState.LOAD_MORE -> {
+                            true
+                        }
+
+                        else -> {
+                            false
+                        }
+
+                    }
                 }
             }
         }, onError = {
-                showLoader.value = false
-            })
+            showLoader.value = false
+        })
     }
 }

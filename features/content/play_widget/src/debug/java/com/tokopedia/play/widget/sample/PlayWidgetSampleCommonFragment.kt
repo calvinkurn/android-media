@@ -88,15 +88,6 @@ class PlayWidgetSampleCommonFragment : TkpdBaseV4Fragment() {
     private fun getSampleData(): List<PlayWidgetState> {
         return listOf(
 //            PlayWidgetState(
-//                model = PlayWidgetUiMock.getSamplePlayWidget(
-//                    items = listOf(
-//                        PlayWidgetUiMock.getSampleChannelModel(PlayWidgetChannelType.Vod)
-//                    )
-//                ),
-//                widgetType = PlayWidgetType.Jumbo,
-//                isLoading = false,
-//            ),
-//            PlayWidgetState(
 //                model = PlayWidgetUiMock.getSamplePlayWidget(),
 //                widgetType = PlayWidgetType.Small,
 //                isLoading = false,
