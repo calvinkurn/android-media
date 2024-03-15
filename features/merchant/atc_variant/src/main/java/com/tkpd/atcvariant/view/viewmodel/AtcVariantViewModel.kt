@@ -46,6 +46,7 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
@@ -480,25 +481,7 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    fun hitAtc(
-        actionButton: Int,
-        shopId: String,
-        categoryName: String,
-        userId: String,
-        shippingMinPrice: Double,
-        trackerAttributionPdp: String,
-        trackerListNamePdp: String,
-        showQtyEditor: Boolean,
-        shopName: String
-    ) {
-        val selectedChild = getVariantData()?.getChildByOptionId(
-            getSelectedOptionIds()?.values.orEmpty().toList()
-        )
-        val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
-        val selectedMiniCart = getSelectedMiniCartItem(selectedChild?.productId ?: "")
-        val updatedQuantity = localQuantityData[selectedChild?.productId ?: ""]
-            ?: selectedChild?.getFinalMinOrder() ?: 1
-
+    private fun sendByteIoConfirmTracker(actionButton: Int, selectedChild: VariantChild?) {
         val parentId = getVariantData()?.parentId.orEmpty()
         val categoryLvl1 = aggregatorData?.simpleBasicInfo?.category?.detail?.firstOrNull()?.name.orEmpty()
         if (actionButton == ProductDetailCommonConstant.ATC_BUTTON
@@ -530,7 +513,28 @@ class AtcVariantViewModel @Inject constructor(
                 )
             )
         }
+    }
 
+    fun hitAtc(
+        actionButton: Int,
+        shopId: String,
+        categoryName: String,
+        userId: String,
+        shippingMinPrice: Double,
+        trackerAttributionPdp: String,
+        trackerListNamePdp: String,
+        showQtyEditor: Boolean,
+        shopName: String
+    ) {
+        val selectedChild = getVariantData()?.getChildByOptionId(
+            getSelectedOptionIds()?.values.orEmpty().toList()
+        )
+        val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
+        val selectedMiniCart = getSelectedMiniCartItem(selectedChild?.productId ?: "")
+        val updatedQuantity = localQuantityData[selectedChild?.productId ?: ""]
+            ?: selectedChild?.getFinalMinOrder() ?: 1
+
+        sendByteIoConfirmTracker(actionButton, selectedChild)
         if (selectedMiniCart != null && showQtyEditor) {
             getUpdateCartUseCase(selectedMiniCart, updatedQuantity, showQtyEditor)
         } else {
