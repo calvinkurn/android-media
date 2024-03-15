@@ -10,7 +10,9 @@ import com.tokopedia.product.detail.view.listener.ProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.delegate.DynamicOneLinerCallback
 import com.tokopedia.product.detail.view.viewholder.dynamic_oneliner.event.DynamicOneLinerEvent
 import com.tokopedia.sdui.SDUIManager
+import com.tokopedia.sdui.extention.ActionHandler
 import com.tokopedia.sdui.interfaces.SDUITrackingInterface
+import com.tokopedia.sdui.utils.DivActionUtils
 import org.json.JSONObject
 
 class SDUIViewHolder(
@@ -29,12 +31,16 @@ class SDUIViewHolder(
 
     private val sduiManager = lazy {
         SDUIManager().apply {
-//            initSDUI(context, actionHandler)
-            initSDUI(context)
+            initSDUI(
+                context = context,
+                sduiTrackingInterface = actionHandler
+            )
         }
     }
 
     private var element: SDUIDataModel? = null
+
+    private var sduiView: View? = null
 
     override fun bind(element: SDUIDataModel) {
         loadSDUIWidget(element)
@@ -48,6 +54,7 @@ class SDUIViewHolder(
     }
 
     private fun createAndAddSDUIView(element: SDUIDataModel) {
+        if (sduiView != null) return
         val jsonObject = element.jsonObject ?: return
         val templateJSON = jsonObject.optJSONObject("templates") ?: return
         val cardJson = jsonObject.getJSONObject("card") ?: return
@@ -69,23 +76,29 @@ class SDUIViewHolder(
             callback.event(BasicComponentEvent.OnImpressComponent(trackData = trackerData))
         }
 
-        binding.sduiViewContainer.removeAllViews()
         binding.sduiViewContainer.addView(view)
+        this.sduiView = view
     }
+
 
     private fun generateActionHandler() = lazy {
         object : SDUITrackingInterface {
 
+            private fun parsePayloadToEventMap(payload: JSONObject): HashMap<String, Any> {
+                val trackingData = payload.getJSONObject(ActionHandler.KEY_TRACKING_DATA)
+                return DivActionUtils.toMap(trackingData)
+            }
+
             override fun onViewClick(trackerPayload: JSONObject?) {
-                val element = element ?: return
-                callback.event(
-                    DynamicOneLinerEvent.OnDynamicOneLinerClicked(
-                    "", "", getComponentTrackData(element)
-                ))
+                val payload = trackerPayload ?: return
+                val eventMap = parsePayloadToEventMap(payload)
+                listener.sendTracker(eventMap)
             }
 
             override fun onViewVisible(trackerPayload: JSONObject?) {
-                // No Op
+                val payload = trackerPayload ?: return
+                val eventMap = parsePayloadToEventMap(payload)
+                listener.sendTracker(eventMap)
             }
         }
     }

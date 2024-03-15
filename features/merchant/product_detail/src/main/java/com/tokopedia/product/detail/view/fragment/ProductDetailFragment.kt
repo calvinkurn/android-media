@@ -3934,6 +3934,10 @@ open class ProductDetailFragment :
     override fun isRemoteCacheableActive(): Boolean = viewModel.getProductInfoP1
         ?.cacheState?.remoteCacheableActive.orFalse()
 
+    override fun sendTracker(eventMap: HashMap<String, Any>) {
+        trackingQueue.putEETracking(eventMap)
+    }
+
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
         SingleClick.doSomethingBeforeTime(interval = DEBOUNCE_CLICK) {
             context?.let { ctx ->
