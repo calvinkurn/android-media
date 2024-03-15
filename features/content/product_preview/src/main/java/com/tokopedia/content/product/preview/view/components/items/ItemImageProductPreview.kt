@@ -1,7 +1,8 @@
 package com.tokopedia.content.product.preview.view.components.items
 
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -13,10 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.platform.LocalConfiguration
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
@@ -27,9 +27,31 @@ internal fun ItemImageProductPreview(
     onDoubleTap: (() -> Unit)? = null,
     stateListener: ((isZoomMode: Boolean) -> Unit)? = null
 ) {
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp
+    val screenWidth = configuration.screenWidthDp
+
     var zoom by remember { mutableStateOf(MIN_ZOOM) }
     var offset by remember { mutableStateOf(Offset.Zero) }
     var isZoomMode by remember { mutableStateOf(false) }
+    val state = rememberTransformableState { zoomChange, offsetChange, _ ->
+        zoom = (zoom * zoomChange).coerceIn(MIN_ZOOM, MAX_ZOOM)
+
+        val extraWidth = (zoom.minus(MIN_ZOOM)) * screenWidth
+        val extraHeight = (zoom.minus(MIN_ZOOM)) * screenHeight
+
+        val maxX = extraWidth.div(HALF)
+        val maxY = extraHeight.div(HALF)
+
+        offset = Offset(
+            x = (offset.x + zoom * offsetChange.x).coerceIn(-maxX, maxX),
+            y = (offset.y + zoom * offsetChange.y).coerceIn(-maxY, maxY)
+        )
+
+        // notify and stop auto scroll when isZoomMode is `true`
+        isZoomMode = zoom != MIN_ZOOM
+        stateListener?.invoke(isZoomMode)
+    }
 
     NestTheme(darkTheme = true) {
         BoxWithConstraints(
@@ -48,21 +70,12 @@ internal fun ItemImageProductPreview(
                             onDoubleTap = { onDoubleTap?.invoke() }
                         )
                     }
-                    .pointerInput(Unit) {
-                        detectTransformGestures { centroid, pan, zoomChange, _ ->
-                            offset = offset.calculateNewOffset(centroid, pan, zoom, zoomChange, size)
-                            zoom = maxOf(MIN_ZOOM, zoom * zoomChange)
-
-                            isZoomMode = zoom != MIN_ZOOM
-                            stateListener?.invoke(isZoomMode)
-                        }
-                    }
+                    .transformable(state)
                     .graphicsLayer(
                         scaleX = zoom,
                         scaleY = zoom,
-                        translationX = -offset.x * zoom,
-                        translationY = -offset.y * zoom,
-                        transformOrigin = TransformOrigin(MIN_OFFSET, MIN_OFFSET)
+                        translationX = offset.x,
+                        translationY = offset.y
                     )
                     .fillMaxSize()
             )
@@ -70,21 +83,7 @@ internal fun ItemImageProductPreview(
     }
 }
 
-private fun Offset.calculateNewOffset(
-    centroid: Offset,
-    pan: Offset,
-    zoom: Float,
-    gestureZoom: Float,
-    size: IntSize
-): Offset {
-    val newScale = maxOf(MIN_ZOOM, zoom * gestureZoom)
-    val newOffset = (this + centroid / zoom) -
-        (centroid / newScale + pan / zoom)
-    return Offset(
-        x = newOffset.x.coerceIn(MIN_OFFSET, (size.width / zoom) * (zoom - MIN_ZOOM)),
-        y = newOffset.y.coerceIn(MIN_OFFSET, (size.height / zoom) * (zoom - MIN_ZOOM))
-    )
-}
-
+private const val HALF = 2
 private const val MIN_OFFSET = 0F
 private const val MIN_ZOOM = 1f
+private const val MAX_ZOOM = 2f
