@@ -10,6 +10,10 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
       primaryColor
       secondaryColor
     }
+    productListCfg{
+      headerColor
+      limit
+    }
     basicInfo{
       id
       departmentId
