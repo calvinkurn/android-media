@@ -849,17 +849,11 @@ class AtcVariantBottomSheet :
 
     override fun addToCartClick(buttonText: String) {
         this.buttonText = buttonText
-//        AppLogAnalytics.sendConfirmCart(TrackConfirmCart(
-//
-//        ))
         doAtc(ProductDetailCommonConstant.ATC_BUTTON)
     }
 
     override fun buyNowClick(buttonText: String) {
         this.buttonText = buttonText
-//        AppLogAnalytics.sendConfirmSku(TrackConfirmSku(
-//
-//        ))
         doAtc(ProductDetailCommonConstant.BUY_BUTTON)
     }
 
@@ -972,7 +966,6 @@ class AtcVariantBottomSheet :
 
     private fun doAtc(buttonAction: Int) {
         buttonActionType = buttonAction
-        Log.d("BYTEIO", "atc button clicked $buttonAction")
         context?.let {
             val isPartialySelected =
                 AtcVariantMapper.isPartiallySelectedOptionId(viewModel.getSelectedOptionIds())
