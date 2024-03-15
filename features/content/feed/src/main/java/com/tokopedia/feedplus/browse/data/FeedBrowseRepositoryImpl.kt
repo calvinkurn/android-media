@@ -6,11 +6,14 @@ import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.content.common.usecase.GetPlayWidgetSlotUseCase
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
+import com.tokopedia.feedplus.browse.data.model.StoryGroupsModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.domain.usecase.GetContentWidgetRecommendationUseCase
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
+import com.tokopedia.stories.internal.storage.StoriesSeenStorage
+import com.tokopedia.stories.internal.usecase.StoriesGroupsUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -22,6 +25,8 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
     private val feedXHomeUseCase: FeedXHomeUseCase,
     private val playWidgetSlotUseCase: GetPlayWidgetSlotUseCase,
     private val getContentWidgetRecommendationUseCase: GetContentWidgetRecommendationUseCase,
+    private val storiesGroupsUseCase: StoriesGroupsUseCase,
+    private val storiesSeenStorage: StoriesSeenStorage,
     private val mapper: FeedBrowseMapper,
     private val connectionUtil: PlayWidgetConnectionUtil,
     private val dispatchers: CoroutineDispatchers
@@ -106,6 +111,36 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
         )
 
         mapper.mapWidgetResponse(response)
+    }
+
+    override suspend fun getStoryGroups(
+        source: String,
+        cursor: String
+    ): StoryGroupsModel = withContext(dispatchers.io) {
+        val response = storiesGroupsUseCase(
+            StoriesGroupsUseCase.Request(
+                authorID = "",
+                authorType = "",
+                source = source,
+                sourceID = "",
+                entryPoint = "browse-page",
+                cursor = cursor
+            )
+        )
+
+        mapper.mapWidgetResponse(response)
+    }
+
+    override suspend fun getUpdatedSeenStoriesStatus(
+        shopId: String,
+        currentHasSeenAll: Boolean,
+        lastUpdated: Long
+    ): Boolean = withContext(dispatchers.io) {
+        storiesSeenStorage.hasSeenAllAuthorStories(
+            key = StoriesSeenStorage.Author.Shop(shopId),
+            currentHasSeenAll = currentHasSeenAll,
+            laterThanMillis = lastUpdated
+        )
     }
 
     companion object {

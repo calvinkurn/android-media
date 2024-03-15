@@ -5,13 +5,18 @@ package com.tokopedia.stories.internal.storage
  */
 interface StoriesSeenStorage {
 
-    suspend fun hasSeenAllAuthorStories(key: Author, laterThanMillis: Long): Boolean
+    suspend fun hasSeenAllAuthorStories(
+        key: Author,
+        currentHasSeenAll: Boolean,
+        laterThanMillis: Long
+    ): Boolean
 
     suspend fun setSeenAllAuthorStories(key: Author)
 
     sealed interface Author {
 
-        abstract val id: String
+        val id: String
+
         @JvmInline
         value class Shop(override val id: String) : Author
 

@@ -15,6 +15,7 @@ import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBox
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.TextAreaUnify2
@@ -54,6 +55,8 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
             replyBox = findViewById(R.id.reply_box)
             replyBubbleContainer = findViewById(R.id.reply_bubble_container)
             commentEditText = findViewById(R.id.new_comment)
+            commentEditText?.setCounter(MAX_CHARACTER)
+            commentEditText?.counterView?.gone()
             setEditTextPadding()
             addAttachmentMenu = commentEditText?.icon1
             sendButton = findViewById(R.id.send_but)
@@ -131,5 +134,6 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
         val LAYOUT = R.layout.customview_chatbot_small_reply_box_2
 
         const val ICON_1_PADDING = 32
+        const val MAX_CHARACTER = 1500
     }
 }

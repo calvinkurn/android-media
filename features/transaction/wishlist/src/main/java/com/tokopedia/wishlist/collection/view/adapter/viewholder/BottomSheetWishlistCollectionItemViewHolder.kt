@@ -9,20 +9,20 @@ import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.wishlist.R
-import com.tokopedia.wishlist.databinding.AddWishlistCollectionItemBinding
 import com.tokopedia.wishlist.collection.data.model.BottomSheetWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlist.collection.data.response.GetWishlistCollectionsBottomSheetResponse
 import com.tokopedia.wishlist.collection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
 import com.tokopedia.wishlist.collection.view.adapter.BottomSheetWishlistCollectionAdapter
+import com.tokopedia.wishlist.databinding.AddWishlistCollectionItemBinding
 
 class BottomSheetWishlistCollectionItemViewHolder(
     private val binding: AddWishlistCollectionItemBinding
 ) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(
-            item: BottomSheetWishlistCollectionTypeLayoutData,
-            actionListener: BottomSheetWishlistCollectionAdapter.ActionListener?,
-            source: String
+        item: BottomSheetWishlistCollectionTypeLayoutData,
+        actionListener: BottomSheetWishlistCollectionAdapter.ActionListener?,
+        source: String
     ) {
         if (item.dataObject is GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data.MainSection.CollectionsItem) {
             binding.run {
@@ -60,7 +60,7 @@ class BottomSheetWishlistCollectionItemViewHolder(
                 }
                 mainCollectionTotalItem.text = totalItemText
 
-                if (item.dataObject.isContainProduct && source != SRC_WISHLIST_COLLECTION_BULK_ADD) {
+                if (item.dataObject.isContainProduct && source == SRC_WISHLIST_COLLECTION_BULK_ADD) {
                     icCheck.visible()
                 } else {
                     icCheck.gone()

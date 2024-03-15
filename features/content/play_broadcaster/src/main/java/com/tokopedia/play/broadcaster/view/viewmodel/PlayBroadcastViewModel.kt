@@ -1,7 +1,12 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.os.Bundle
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
@@ -15,6 +20,8 @@ import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -22,11 +29,20 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
 import com.tokopedia.play.broadcaster.data.type.PlaySocketType
-import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.Banned
+import com.tokopedia.play.broadcaster.domain.model.Chat
+import com.tokopedia.play.broadcaster.domain.model.Freeze
+import com.tokopedia.play.broadcaster.domain.model.GetSocketCredentialResponse
+import com.tokopedia.play.broadcaster.domain.model.LiveDuration
+import com.tokopedia.play.broadcaster.domain.model.NewMetricList
+import com.tokopedia.play.broadcaster.domain.model.TotalLike
+import com.tokopedia.play.broadcaster.domain.model.TotalView
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.livetovod.GetTickerBottomSheetRequest
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
@@ -36,11 +52,30 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
-import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
+import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
+import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
+import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.CoverConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.DurationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.EventUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
-import com.tokopedia.play.broadcaster.ui.model.beautification.*
-import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductTagConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.ShareUiModel
+import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
+import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.DownloadCustomFaceAssetException
+import com.tokopedia.play.broadcaster.ui.model.beautification.DownloadLicenseAssetException
+import com.tokopedia.play.broadcaster.ui.model.beautification.DownloadModelAssetException
+import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
@@ -52,13 +87,19 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiMod
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
+import com.tokopedia.play.broadcaster.ui.model.log.BroadcasterErrorLog
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.log.BroadcasterErrorLog
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
-import com.tokopedia.play.broadcaster.ui.state.*
+import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
+import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
+import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
+import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
+import com.tokopedia.play.broadcaster.ui.state.QuizBottomSheetUiState
+import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
+import com.tokopedia.play.broadcaster.ui.state.ScheduleConfigUiModel
+import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.removeUnusedField
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupAutoAddField
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupEditable
@@ -113,6 +154,7 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.set
 
 /**
  * Created by mzennis on 24/05/20.
@@ -530,10 +572,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.GetConfiguration -> handleGetConfiguration(event.selectedType)
             is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.needLoading)
             is PlayBroadcastAction.SuccessOnBoardingUGC -> handleSuccessOnBoardingUGC()
-            is PlayBroadcastAction.GetTickerBottomSheetConfig -> handleTickerBottomSheetConfig(event.page)
-            is PlayBroadcastAction.SetLiveToVodPref -> handleSetLiveToVodPref(
-                type = event.type, page = event.page
-            )
+            is PlayBroadcastAction.GetDynamicTickerBottomSheetConfig -> handleGetDynamicTickerBottomSheetConfig(event.page)
+            is PlayBroadcastAction.SetDynamicTickerBottomSheetPref -> handleSetDynamicTickerBottomSheetPref(type = event.type)
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -717,7 +757,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (configUiModel.channelStatus == ChannelStatus.Draft ||
                 configUiModel.channelStatus == ChannelStatus.CompleteDraft
             ) {
-                handleTickerBottomSheetConfig(page = TickerBottomSheetPage.LIVE_PREPARATION)
+                handleGetDynamicTickerBottomSheetConfig(page = TickerBottomSheetPage.LIVE_PREPARATION)
             }
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcasterAuthorConfig(selectedAccount) }
@@ -812,43 +852,44 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) { }
     }
 
-    private fun handleTickerBottomSheetConfig(page: TickerBottomSheetPage) {
+    private fun handleGetDynamicTickerBottomSheetConfig(page: TickerBottomSheetPage) {
         viewModelScope.launchCatchError(block = {
             val response = repo.getTickerBottomSheetConfig(GetTickerBottomSheetRequest(page))
+            val cacheKey = response.cacheKey.ifBlank { return@launchCatchError }
             val pref = when (response.type) {
                 TickerBottomSheetType.BOTTOM_SHEET -> {
-                    sharedPref.getLiveToVodBottomSheetPref(
-                        page = page.value,
-                        authorId = selectedAccount.id
+                    sharedPref.getDynamicBottomSheetPref(
+                        key = cacheKey,
+                        userId = userSession.userId,
                     )
                 }
                 TickerBottomSheetType.TICKER -> {
-                    sharedPref.getLiveToVodTickerPref(
-                        page = page.value,
-                        authorId = selectedAccount.id
+                    sharedPref.getDynamicTickerPref(
+                        key = cacheKey,
+                        userId = userSession.userId,
                     )
                 }
                 TickerBottomSheetType.UNKNOWN -> false
             }
 
-            _tickerBottomSheetConfig.value = if (pref) response else TickerBottomSheetUiModel.Empty
+            _tickerBottomSheetConfig.value = if (pref) TickerBottomSheetUiModel.Empty else response
         }) {
             _tickerBottomSheetConfig.value = TickerBottomSheetUiModel.Empty
         }
     }
 
-    private fun handleSetLiveToVodPref(type: TickerBottomSheetType, page: TickerBottomSheetPage) {
+    private fun handleSetDynamicTickerBottomSheetPref(type: TickerBottomSheetType) {
         when (type) {
             TickerBottomSheetType.BOTTOM_SHEET -> {
-                sharedPref.setLiveToVodBottomSheetPref(
-                    page = page.value,
-                    authorId = selectedAccount.id
+                sharedPref.setDynamicBottomSheetPref(
+                    key = _tickerBottomSheetConfig.value.cacheKey,
+                    userId = userSession.userId,
                 )
             }
             TickerBottomSheetType.TICKER -> {
-                sharedPref.setLiveToVodTickerPref(
-                    page = page.value,
-                    authorId = selectedAccount.id
+                sharedPref.setDynamicTickerPref(
+                    key = _tickerBottomSheetConfig.value.cacheKey,
+                    userId = userSession.userId,
                 )
             }
             TickerBottomSheetType.UNKNOWN -> return

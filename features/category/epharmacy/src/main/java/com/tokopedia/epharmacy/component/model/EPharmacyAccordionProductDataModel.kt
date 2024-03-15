@@ -8,7 +8,10 @@ import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 data class EPharmacyAccordionProductDataModel(
     val name: String = "",
     val type: String = "",
-    val product: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?
+    val product: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?,
+    val enablerName: String?,
+    val tConsultationId: String?,
+    val groupId: String?
 ) :
     BaseEPharmacyDataModel {
 

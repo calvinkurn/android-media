@@ -68,6 +68,9 @@ internal class FeedBrowseViewModel @Inject constructor(
             is FeedBrowseAction.SelectChipWidget -> {
                 handleSelectChip(action.model, action.slotId)
             }
+            FeedBrowseAction.UpdateStoriesStatus -> {
+                handleUpdateStoriesStatus()
+            }
         }
     }
 
@@ -118,11 +121,37 @@ internal class FeedBrowseViewModel @Inject constructor(
         }
     }
 
+    private fun handleUpdateStoriesStatus() {
+        viewModelScope.launch {
+            val storiesSlots = getSlotsByInstance<FeedBrowseSlotUiModel.StoryGroups>()
+            storiesSlots.forEach { slot ->
+                if (slot.model !is FeedBrowseSlotUiModel.StoryGroups) return@forEach
+                val newStories = slot.model.storyList.map { story ->
+                    val hasSeenAllStories = repository.getUpdatedSeenStoriesStatus(
+                        story.id,
+                        !story.hasUnseenStory,
+                        story.lastUpdatedAt
+                    )
+                    story.copy(
+                        hasUnseenStory = if (hasSeenAllStories) false else story.hasUnseenStory,
+                        lastUpdatedAt = System.currentTimeMillis()
+                    )
+                }
+
+                updateWidget<FeedBrowseSlotUiModel.StoryGroups>(
+                    slot.model.slotId,
+                    slot.result
+                ) { it.copy(storyList = newStories) }
+            }
+        }
+    }
+
     private suspend fun getAndUpdateData(model: FeedBrowseSlotUiModel) {
         when (model) {
             is FeedBrowseSlotUiModel.ChannelsWithMenus -> model.getAndUpdateData()
             is FeedBrowseSlotUiModel.InspirationBanner -> model.getAndUpdateData()
             is FeedBrowseSlotUiModel.Authors -> model.getAndUpdateData()
+            is FeedBrowseSlotUiModel.StoryGroups -> model.getAndUpdateData()
         }
     }
 
@@ -220,6 +249,21 @@ internal class FeedBrowseViewModel @Inject constructor(
         }
     }
 
+    private suspend fun FeedBrowseSlotUiModel.StoryGroups.getAndUpdateData() {
+        updateWidget<FeedBrowseSlotUiModel.StoryGroups>(slotId, ResultState.Loading)
+        try {
+            val mappedResult = repository.getStoryGroups(source, nextCursor)
+            updateWidget<FeedBrowseSlotUiModel.StoryGroups>(slotId, ResultState.Success) {
+                it.copy(
+                    storyList = mappedResult.storyList,
+                    nextCursor = mappedResult.nextCursor
+                )
+            }
+        } catch (err: Throwable) {
+            updateWidget<FeedBrowseSlotUiModel.StoryGroups>(slotId, ResultState.Fail(err))
+        }
+    }
+
     private suspend inline fun <reified T : FeedBrowseSlotUiModel> updateWidget(
         slotId: String,
         state: ResultState,
@@ -230,5 +274,10 @@ internal class FeedBrowseViewModel @Inject constructor(
             if (widget.model !is T) return@update it
             it + (slotId to FeedBrowseStatefulModel(state, onUpdate(widget.model)))
         }
+    }
+
+    private inline fun <reified T : FeedBrowseSlotUiModel> getSlotsByInstance(): List<FeedBrowseStatefulModel> {
+        val widgets = _widgets.value
+        return widgets.values.filter { it.model is T }
     }
 }
