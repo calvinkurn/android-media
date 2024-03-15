@@ -485,8 +485,8 @@ class CatalogDetailPageFragment :
             if (it is Success) {
                 productSortingStatus = it.data.productSortingStatus
                 catalogUrl = it.data.catalogUrl
-                categoryId = it.data.priceCtaProperties.departmentId
-                brand = it.data.priceCtaProperties.brand
+                categoryId = it.data.departmentId
+                brand = it.data.brand
                 title = it.data.navigationProperties.title
                 productListConfig = it.data.productListConfig
                 binding?.setupToolbar(it.data.navigationProperties)
