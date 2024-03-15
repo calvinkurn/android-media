@@ -16,6 +16,8 @@ import com.bytedance.bdinstall.Level
 import com.bytedance.crash.ICommonParams
 import com.bytedance.crash.Npth
 import com.bytedance.crash.runtime.AllDefaultUrls
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object SlardarInit {
     private const val AID = "aid"
@@ -23,7 +25,7 @@ object SlardarInit {
     private const val APP_VERSION = "app_version"
     private const val VERSION_CODE = "version_code"
     private const val UPDATE_VERSION_CODE = "update_version_code"
-    fun initNpth(application: Application, aid: String, channel: String) {
+    fun initNpth(application: Application, aid: String, channel: String, userId: String) {
         Npth.setApplication(application)
         Npth.init(application, object : ICommonParams {
             override fun getCommonParams(): MutableMap<String, Any> {
@@ -44,7 +46,7 @@ object SlardarInit {
             }
 
             override fun getUserId(): Long {
-                return 0 // todo
+                return userId.toLongOrZero()
             }
 
             override fun getSessionId(): String {
