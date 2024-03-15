@@ -5502,7 +5502,7 @@ open class ProductDetailFragment :
     }
 
     fun trackVerticalScroll() {
-        if(hasApplogScrollListener) return
+        if (hasApplogScrollListener) return
         getRecyclerView()?.addVerticalTrackListener()
         hasApplogScrollListener = true
     }
