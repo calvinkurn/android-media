@@ -243,7 +243,7 @@ class ReviewFragment @Inject constructor(
                 scrollListener.updateStateAfterGetData()
             }
             is ReviewPaging.Error -> {
-                if (scrollListener.currentPage >= 1) return
+                if (scrollListener.currentPage > 0) return
                 showError(state)
             }
             else -> {}
