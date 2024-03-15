@@ -41,7 +41,6 @@ import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxAdapter
 import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxRecommendationDecoration
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactory
 import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactoryImpl
-import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationProductViewHolder
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxEndlessScrollListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
@@ -359,10 +358,17 @@ class UniversalInboxFragment @Inject constructor(
         title: String,
         newList: List<Visitable<in UniversalInboxTypeFactory>>
     ) {
+        removeProductRecommendation()
         val editedNewList = newList.toMutableList()
         setHeadlineAndBannerExperiment(editedNewList)
         adapter.tryAddProductRecommendation(title, editedNewList)
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+    }
+
+    private fun removeProductRecommendation() {
+        if (endlessRecyclerViewScrollListener?.currentPage.toZeroIfNull() <= 0) {
+            adapter.tryRemoveProductRecommendation()
+        }
     }
 
     private suspend fun observeAutoScrollUiState() {
@@ -949,25 +955,6 @@ class UniversalInboxFragment @Inject constructor(
             }
             AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, view)
         }
-    }
-
-    private fun getUserCurrentProductRecommendationPosition(): Int {
-        var result = -1
-        val layoutManager = binding?.inboxRv?.layoutManager as? StaggeredGridLayoutManager
-        layoutManager?.let { lm ->
-            val spanArray = IntArray(lm.spanCount)
-            val firstVisiblePosition = lm.findFirstVisibleItemPositions(spanArray).minOrNull() ?: -1
-            val lastVisiblePosition = lm.findLastVisibleItemPositions(spanArray).minOrNull() ?: -1
-
-            for (position in firstVisiblePosition..lastVisiblePosition) {
-                val viewHolder = binding?.inboxRv?.findViewHolderForAdapterPosition(position)
-                if (viewHolder is UniversalInboxRecommendationProductViewHolder) {
-                    result = position
-                    break
-                }
-            }
-        }
-        return result
     }
 
     companion object {
