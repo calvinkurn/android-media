@@ -11,6 +11,8 @@ import javax.inject.Inject
 
 /**
  * Created by jegul on 28/01/21
+ * TODO() move to common so stories can use as well.
+ * TODO() change to coroutine use case
  */
 @GqlQuery(GetReportSummariesUseCase.QUERY_NAME, GetReportSummariesUseCase.QUERY)
 class GetReportSummariesUseCase @Inject constructor(
