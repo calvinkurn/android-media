@@ -40,6 +40,8 @@ import com.tokopedia.content.product.picker.seller.analytic.ContentProductPicker
 import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
+import com.tokopedia.play.broadcaster.analytic.report.PlayBroadcastReportAnalytic
+import com.tokopedia.play.broadcaster.analytic.report.PlayBroadcastReportAnalyticImpl
 import com.tokopedia.play.broadcaster.util.countup.PlayCountUp
 import com.tokopedia.play.broadcaster.util.countup.PlayCountUpImpl
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
@@ -132,6 +134,10 @@ abstract class PlayBroadcastBindModule {
     @Binds
     @ActivityRetainedScope
     abstract fun bindPlayBroadcastBeautificationAnalytic(analytic: PlayBroadcastBeautificationAnalyticImpl): PlayBroadcastBeautificationAnalytic
+
+    @Binds
+    @ActivityRetainedScope
+    abstract fun bindgPlayBroadcastReportAnalytic(analytic: PlayBroadcastReportAnalyticImpl): PlayBroadcastReportAnalytic
 
     @Binds
     @ActivityRetainedScope

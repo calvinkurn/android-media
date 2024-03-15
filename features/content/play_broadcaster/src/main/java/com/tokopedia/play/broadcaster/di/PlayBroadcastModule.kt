@@ -26,6 +26,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
+import com.tokopedia.play.broadcaster.analytic.report.PlayBroadcastReportAnalytic
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl
@@ -123,6 +124,7 @@ class PlayBroadcastModule(
         shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
         playBroadcastPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
         beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
+        reportAnalytic: PlayBroadcastReportAnalytic,
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
             userSession,
@@ -138,6 +140,7 @@ class PlayBroadcastModule(
             shortsEntryPointAnalytic,
             playBroadcastPerformanceDashboardEntryPointAnalytic,
             beautificationAnalytic,
+            reportAnalytic,
         )
     }
 

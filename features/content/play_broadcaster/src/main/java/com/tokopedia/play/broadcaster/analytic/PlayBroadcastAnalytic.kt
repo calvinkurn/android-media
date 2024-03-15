@@ -15,6 +15,7 @@ import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnal
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.analytic.report.PlayBroadcastReportAnalytic
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -38,7 +39,8 @@ class PlayBroadcastAnalytic(
     private val accountAnalytic: PlayBroadcastAccountAnalytic,
     private val shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
     private val playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
-    private val beautificationAnalytic: PlayBroadcastBeautificationAnalytic
+    private val beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
+    private val reportAnalytic: PlayBroadcastReportAnalytic,
 ) : PlayBroadcastInteractiveAnalytic by interactiveAnalytic,
     PlayBroSetupMenuAnalytic by setupMenuAnalytic,
     PlayBroSetupTitleAnalytic by setupTitleAnalytic,
@@ -50,7 +52,8 @@ class PlayBroadcastAnalytic(
     PlayBroadcastAccountAnalytic by accountAnalytic,
     PlayShortsEntryPointAnalytic by shortsEntryPointAnalytic,
     PlayPerformanceDashboardEntryPointAnalytic by playPerformanceDashboardEntryPointAnalytic,
-    PlayBroadcastBeautificationAnalytic by beautificationAnalytic {
+    PlayBroadcastBeautificationAnalytic by beautificationAnalytic,
+    PlayBroadcastReportAnalytic by reportAnalytic {
 
     /**
      * View Camera and Microphone Permission Page
