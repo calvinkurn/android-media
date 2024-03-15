@@ -66,8 +66,6 @@ import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductTagConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.ShareUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.DownloadCustomFaceAssetException
@@ -214,10 +212,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
-    val observableTotalView: LiveData<TotalViewUiModel>
-        get() = _observableTotalView
-    val observableTotalLike: LiveData<TotalLikeUiModel>
-        get() = _observableTotalLike
     val observableChatList: LiveData<out List<PlayChatUiModel>>
         get() = _observableChatList
     val observableNewChat: LiveData<Event<PlayChatUiModel>>
@@ -243,8 +237,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
-    private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
-    private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableNewMetrics = MutableLiveData<Event<List<PlayMetricUiModel>>>()
     private val _observableShareInfo = MutableLiveData<String>()
