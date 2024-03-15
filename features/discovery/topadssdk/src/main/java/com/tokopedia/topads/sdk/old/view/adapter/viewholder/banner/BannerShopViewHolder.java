@@ -7,7 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.LayoutRes;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.bumptech.glide.Glide;
+import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Cpm;
@@ -81,7 +81,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopUiModel> 
             }
             if(shopImage!=null){
                 if (cpm.getCpmShop().getImageShop().getSEcs() != null) {
-                    Glide.with(shopImage).load(cpm.getCpmShop().getImageShop().getSEcs()).into(shopImage);
+                    JvmMediaLoader.loadImage(shopImage, cpm.getCpmShop().getImageShop().getSEcs());
                 }
 
             }
@@ -91,7 +91,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopUiModel> 
             if(shopBadge!=null){
                 if (cpm.getBadges().size() > 0) {
                     shopBadge.setVisibility(View.VISIBLE);
-                    Glide.with(shopBadge).load(cpm.getBadges().get(0).getImageUrl()).into(shopBadge);
+                    JvmMediaLoader.loadImage(shopBadge, cpm.getBadges().get(0).getImageUrl());
                 } else {
                     shopBadge.setVisibility(View.GONE);
                 }
