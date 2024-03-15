@@ -1,10 +1,13 @@
-package com.tokopedia.topads.dashboard.view.model
+package com.tokopedia.topads.dashboard.viewmodel
 
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.GroupListDataItem
+import com.tokopedia.topads.common.data.model.TotalProductKeyResponse
+import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.HeadlineInfoResponse
 import com.tokopedia.topads.common.data.response.ResponseBidInfo
@@ -17,21 +20,39 @@ import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
+import com.tokopedia.topads.common.domain.model.GetVariantByIdResponse
+import com.tokopedia.topads.common.domain.model.TopadsShopInfoV2Model
+import com.tokopedia.topads.common.domain.usecase.GetVariantByIdUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupListUseCase
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
-import com.tokopedia.topads.dashboard.data.model.*
-import com.tokopedia.topads.common.data.model.CountDataItem
-import com.tokopedia.topads.common.data.model.TotalProductKeyResponse
-import com.tokopedia.topads.common.domain.usecase.GetVariantByIdUseCase
 import com.tokopedia.topads.common.domain.usecase.TopadsGetShopInfoUseCase
-import com.tokopedia.topads.dashboard.domain.interactor.*
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.model.DataStatistic
+import com.tokopedia.topads.dashboard.data.model.KeywordActionResponse
+import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
+import com.tokopedia.topads.dashboard.data.model.StatsData
+import com.tokopedia.topads.dashboard.domain.interactor.GetHeadlineInfoUseCase
+import com.tokopedia.topads.dashboard.domain.interactor.GroupInfoUseCase
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetAdKeywordUseCase
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetProductKeyCountUseCase
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetStatisticsUseCase
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupActionUseCase
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsKeywordsActionUseCase
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGetInsightCountByAdGroupIDResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsBatchGetInsightCountByAdGroupIDUseCase
-import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Before
@@ -68,7 +89,8 @@ class GroupDetailViewModelTest {
     private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
     private val headlineInfoUseCase: GetHeadlineInfoUseCase = mockk(relaxed = true)
-    private val topAdsBatchGetInsightCountByAdGroupIDUseCase: TopAdsBatchGetInsightCountByAdGroupIDUseCase = mockk(relaxed = true)
+    private val topAdsBatchGetInsightCountByAdGroupIDUseCase: TopAdsBatchGetInsightCountByAdGroupIDUseCase =
+        mockk(relaxed = true)
     private val getVariantByIdUseCase: GetVariantByIdUseCase = mockk(relaxed = true)
     private val getShopInfoUseCase: TopadsGetShopInfoUseCase = mockk(relaxed = true)
     private val res: Resources = mockk(relaxed = true)
@@ -76,7 +98,8 @@ class GroupDetailViewModelTest {
     private val params: RequestParams = mockk(relaxed = true)
 
     private val viewModel by lazy {
-        GroupDetailViewModel(rule.dispatchers,
+        GroupDetailViewModel(
+            rule.dispatchers,
             topAdsGetGroupProductDataUseCase,
             topAdsGetAdKeywordUseCase,
             topAdsProductActionUseCase,
@@ -93,7 +116,8 @@ class GroupDetailViewModelTest {
             topAdsBatchGetInsightCountByAdGroupIDUseCase,
             getVariantByIdUseCase,
             getShopInfoUseCase,
-            userSession)
+            userSession
+        )
     }
 
     @Before
@@ -126,11 +150,10 @@ class GroupDetailViewModelTest {
 
     @Test
     fun `getGroupProductData on empty response should invoke error`() {
-        val fakeResponse =
-            spyk(NonGroupResponse(NonGroupResponse.TopadsDashboardGroupProducts(data = emptyList())))
+        spyk(NonGroupResponse(NonGroupResponse.TopadsDashboardGroupProducts(data = emptyList())))
         var onErrorInvoked = false
 
-        coEvery { topAdsGetGroupProductDataUseCase.execute(any()) } returns fakeResponse
+        coEvery { topAdsGetGroupProductDataUseCase.execute(any()) } throws throwable
 
         viewModel.getGroupProductData(1, "1", "", "", 1, "", "", 0, {}, {
             onErrorInvoked = true
@@ -148,7 +171,13 @@ class GroupDetailViewModelTest {
             actual = it.dailyBudget
         }
         every { groupInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            onSuccess.invoke(data)
+            firstArg<(GroupInfoResponse) -> Unit>().invoke(
+                GroupInfoResponse(
+                    topAdsGetPromoGroup = GroupInfoResponse.TopAdsGetPromoGroup(
+                        data = data
+                    )
+                )
+            )
         }
         viewModel.getGroupInfo(res, "", "", onSuccess)
         Assert.assertEquals(expected, actual)
@@ -175,7 +204,13 @@ class GroupDetailViewModelTest {
             actual = it.priceBid
         }
         every { headlineInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            onSuccess.invoke(data)
+            firstArg<(HeadlineInfoResponse) -> Unit>().invoke(
+                HeadlineInfoResponse(
+                    topAdsGetPromoGroup = HeadlineInfoResponse.TopAdsGetPromoHeadline(
+                        data = data
+                    )
+                )
+            )
         }
         viewModel.getHeadlineInfo(res, "", onSuccess)
         Assert.assertEquals(expected, actual)
@@ -198,16 +233,21 @@ class GroupDetailViewModelTest {
         val expected = "10"
         var actual = "0"
         val data =
-            ProductStatisticsResponse(getDashboardProductStatistics = GetDashboardProductStatistics(
-                listOf(WithoutGroupDataItem(adId = expected))))
+            ProductStatisticsResponse(
+                getDashboardProductStatistics = GetDashboardProductStatistics(
+                    listOf(WithoutGroupDataItem(adId = expected))
+                )
+            )
         val onSuccess: (data: GetDashboardProductStatistics) -> Unit = {
             actual = it.data[0].adId
         }
         every {
-            topAdsGetProductStatisticsUseCase.executeQuerySafeMode(captureLambda(),
-                any())
+            topAdsGetProductStatisticsUseCase.executeQuerySafeMode(
+                captureLambda(),
+                any()
+            )
         } answers {
-            onSuccess.invoke(data.getDashboardProductStatistics)
+            firstArg<(ProductStatisticsResponse) -> Unit>().invoke(data)
         }
         viewModel.getProductStats(res, "", "", listOf(), onSuccess, "", 1, 0)
         Assert.assertEquals(expected, actual)
@@ -215,16 +255,30 @@ class GroupDetailViewModelTest {
 
     @Test
     fun `getProductStats error`() {
-        val throwable = spyk(Throwable())
 
+        val startDate = "2022-01-01"
+        val endDate = "2022-12-31"
+        val adIds = listOf("ad1", "ad2")
+        val selectedSortId = "sortId"
+        val selectedStatusId: Int? = null
+        val goalId = 123
+        val throwable = spyk(Throwable())
         every {
-            topAdsGetProductStatisticsUseCase.executeQuerySafeMode(any(),
-                captureLambda())
+            topAdsGetProductStatisticsUseCase.executeQuerySafeMode(
+                any(),
+                captureLambda()
+            )
         } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
-        viewModel.getProductStats(res, "", "", listOf(), {}, "", 1, 0)
-
+        viewModel.getProductStats(
+            res, startDate, endDate, adIds, {}, selectedSortId, selectedStatusId, goalId
+        )
+        coVerify {
+            (topAdsGetProductStatisticsUseCase).setParams(
+                startDate, endDate, adIds, selectedSortId, 0, goalId
+            )
+        }
         verify { throwable.printStackTrace() }
     }
 
@@ -247,13 +301,96 @@ class GroupDetailViewModelTest {
     @Test
     fun `getBidInfo failure`() {
         val throwable = spyk(Throwable())
-
         every { bidInfoUseCase.executeQuerySafeMode(any(), captureLambda()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
         viewModel.getBidInfo(listOf(), "") {}
-
         verify { throwable.printStackTrace() }
+    }
+
+    @Test
+    fun `changeBidState should set daily budget when not automatic and dailyBudgetSpent is not unlimited`() {
+        viewModel.changeBidState(
+            isAutomatic = false,
+            groupId = 1,
+            dailyBudgetSpent = "100",
+            priceSpent = 10f,
+            onSuccess = { }
+        )
+    }
+
+    @Test
+    fun `changeBidState should set strategies to AUTO_BID_STATE when isAutomatic is true`() {
+        viewModel.changeBidState(
+            true,
+            123,
+            1.23f,
+            4.56f,
+            7.89f,
+            "1000",
+            2.34f,
+            { })
+    }
+
+    @Test
+    fun `changeBidState should set strategies and bid settings when isAutomatic is false`() {
+        viewModel.changeBidState(
+            false,
+            456,
+            2.34f,
+            5.67f,
+            8.90f,
+            "2000",
+            3.45f,
+            { })
+    }
+
+    @Test
+    fun `topAdsCreated exception`() {
+        val throwable = spyk(Throwable())
+        val dataGrp = hashMapOf<String, Any?>("key1" to "value1", "key2" to 2)
+        val dataKey = hashMapOf<String, Any?>("keyA" to "valueA", "keyB" to true)
+
+        coEvery {
+            topAdsCreateUseCase.execute(any())
+        } answers {
+            throw throwable
+        }
+        viewModel.topAdsCreated(dataGrp, dataKey, {}, {})
+    }
+
+    @Test
+    fun `topAdsCreated fail`() {
+        val dataGrp = hashMapOf<String, Any?>("key1" to "value1", "key2" to 2)
+        val dataKey = hashMapOf<String, Any?>("keyA" to "valueA", "keyB" to true)
+
+        coEvery {
+            topAdsCreateUseCase.execute(any()).topadsManageGroupAds.groupResponse
+        } answers {
+            FinalAdResponse.TopadsManageGroupAds.GroupResponse(
+                errors = listOf(
+                    FinalAdResponse.TopadsManageGroupAds.ErrorsItem(
+                        "",
+                        "",
+                        ""
+                    )
+                )
+            )
+        }
+        viewModel.topAdsCreated(dataGrp, dataKey, {}, {})
+    }
+
+    @Test
+    fun `topAdsCreated success`() {
+        val dataGrp = hashMapOf<String, Any?>("key1" to "value1", "key2" to 2)
+        val dataKey = hashMapOf<String, Any?>("keyA" to "valueA", "keyB" to true)
+
+        coEvery {
+            topAdsCreateUseCase.execute(any()).topadsManageGroupAds.groupResponse
+        } answers {
+            FinalAdResponse.TopadsManageGroupAds.GroupResponse(errors = null)
+        }
+        viewModel.topAdsCreated(dataGrp, dataKey, {}, {})
     }
 
     @Test
@@ -261,13 +398,15 @@ class GroupDetailViewModelTest {
         val expected = "10"
         var actual = "0"
         val data =
-            KeywordsResponse(getTopadsDashboardKeywords = KeywordsResponse.GetTopadsDashboardKeywords
-                (listOf(KeywordsResponse.GetTopadsDashboardKeywords.DataItem(keywordId = expected))))
+            KeywordsResponse(
+                getTopadsDashboardKeywords = KeywordsResponse.GetTopadsDashboardKeywords
+                    (listOf(KeywordsResponse.GetTopadsDashboardKeywords.DataItem(keywordId = expected)))
+            )
         val onSuccess: (data: KeywordsResponse.GetTopadsDashboardKeywords) -> Unit = {
             actual = it.data[0].keywordId
         }
         every { topAdsGetAdKeywordUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            onSuccess.invoke(data.getTopadsDashboardKeywords)
+            firstArg<(KeywordsResponse) -> Unit>().invoke(data)
         }
         viewModel.getGroupKeywordData(res, 1, 1, "", "", 1, 1, onSuccess, {})
         Assert.assertEquals(expected, actual)
@@ -324,8 +463,10 @@ class GroupDetailViewModelTest {
         val throwable = spyk(Throwable())
 
         every {
-            topAdsGetProductKeyCountUseCase.executeQuerySafeMode(any(),
-                captureLambda())
+            topAdsGetProductKeyCountUseCase.executeQuerySafeMode(
+                any(),
+                captureLambda()
+            )
         } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
@@ -456,13 +597,31 @@ class GroupDetailViewModelTest {
     }
 
     @Test
+    fun `setKeywordAction failure`() {
+        val throwable = spyk(Throwable())
+
+        every {
+            topAdsKeywordsActionUseCase.executeQuerySafeMode(any(), captureLambda())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        viewModel.setKeywordAction("", listOf(), res, {})
+
+        verify { throwable.printStackTrace() }
+
+    }
+
+    @Test
     fun `setProductActionMoveGroup success test`() {
         var successCalled = false
         val fakeParam: RequestParams = mockk(relaxed = true)
 
         every {
-            topAdsCreateUseCase.createRequestParamMoveGroup(any(),
-                TopAdsDashboardConstant.SOURCE_DASH, any(), ParamObject.ACTION_ADD)
+            topAdsCreateUseCase.createRequestParamMoveGroup(
+                any(),
+                TopAdsDashboardConstant.SOURCE_DASH, any(), ParamObject.ACTION_ADD
+            )
         } returns fakeParam
 
         viewModel.setProductActionMoveGroup("", listOf()) { successCalled = true }
@@ -478,8 +637,10 @@ class GroupDetailViewModelTest {
         var successCalled = false
 
         every {
-            topAdsCreateUseCase.createRequestParamMoveGroup(any(),
-                TopAdsDashboardConstant.SOURCE_DASH, any(), ParamObject.ACTION_ADD)
+            topAdsCreateUseCase.createRequestParamMoveGroup(
+                any(),
+                TopAdsDashboardConstant.SOURCE_DASH, any(), ParamObject.ACTION_ADD
+            )
         } throws throwable
 
         viewModel.setProductActionMoveGroup("", listOf()) { successCalled = true }
@@ -507,10 +668,12 @@ class GroupDetailViewModelTest {
         every {
             topAdsCreateUseCase.createRequestParamActionDelete(any(), any(), any())
         } returns params
-        viewModel.setKeywordActionForGroup("",
+        viewModel.setKeywordActionForGroup(
+            "",
             TopAdsDashboardConstant.ACTION_DELETE,
             listOf(),
-            res) { successCalled = true }
+            res
+        ) { successCalled = true }
         coVerify { topAdsCreateUseCase.execute(params) }
 
         Assert.assertTrue(successCalled)
@@ -523,12 +686,125 @@ class GroupDetailViewModelTest {
             topAdsCreateUseCase.createRequestParamActionDelete(any(), any(), any())
         } throws throwable
 
-        viewModel.setKeywordActionForGroup("",
+        viewModel.setKeywordActionForGroup(
+            "",
             TopAdsDashboardConstant.ACTION_DELETE,
             listOf(),
-            res) { successCalled = true }
+            res
+        ) { successCalled = true }
 
         Assert.assertTrue(!successCalled)
+    }
+
+    @Test
+    fun `getGroupInsightData failure`() {
+        val throwable = spyk(Throwable())
+        coEvery {
+            topAdsBatchGetInsightCountByAdGroupIDUseCase.invoke(any(), any())
+        } answers {
+            throw throwable
+        }
+        viewModel.getGroupInsightData("", "")
+        Assert.assertEquals(
+            viewModel.groupInsightCount.value,
+            TopAdsListAllInsightState.Fail(throwable)
+        )
+    }
+
+    //success
+    @Test
+    fun `getGroupInsightData success`() {
+        val data = TopAdsBatchGetInsightCountByAdGroupIDResponse(
+            topAdsBatchGetInsightCountByAdGroupID =
+            TopAdsBatchGetInsightCountByAdGroupIDResponse.TopAdsBatchGetInsightCountByAdGroupID(
+                groups = listOf()
+            )
+        )
+        coEvery {
+            topAdsBatchGetInsightCountByAdGroupIDUseCase.invoke(any(), any())
+        } answers {
+            TopAdsListAllInsightState.Success(data)
+        }
+
+        viewModel.getGroupInsightData("", "")
+        Assert.assertEquals(
+            viewModel.groupInsightCount.value,
+            TopAdsListAllInsightState.Success(data)
+        )
+    }
+
+    @Test
+    fun `getVariantById failure`() {
+        val throwable = spyk(Throwable())
+
+        coEvery {
+            getVariantByIdUseCase().getVariantById
+        } answers {
+            throw throwable
+        }
+        viewModel.getVariantById()
+        Assert.assertEquals(
+            viewModel.shopVariant.value,
+            listOf<GetVariantByIdResponse.GetVariantById.ExperimentVariant>()
+        )
+    }
+
+    @Test
+    fun `getVariantById success`() {
+        val data = GetVariantByIdResponse.GetVariantById(
+            userIdVariants = listOf(
+                GetVariantByIdResponse.GetVariantById.ExperimentVariant(
+                    experiment = "experiment",
+                    variant = "variant"
+                )
+            ),
+            shopIdVariants = listOf(
+                GetVariantByIdResponse.GetVariantById.ExperimentVariant(
+                    experiment = "experiment",
+                    variant = "variant"
+                )
+            ),
+            sessionIdVariants = listOf(
+                GetVariantByIdResponse.GetVariantById.ExperimentVariant(
+                    experiment = "experiment",
+                    variant = "variant"
+                )
+            )
+        )
+        coEvery {
+            getVariantByIdUseCase().getVariantById
+        } answers {
+            data
+        }
+        viewModel.getVariantById()
+        Assert.assertEquals(viewModel.shopVariant.value, data.shopIdVariants)
+    }
+
+    @Test
+    fun `getShopInfo failure`() {
+        val throwable = spyk(Throwable())
+
+        every {
+            getShopInfoUseCase.getShopInfo(captureLambda(), any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+        viewModel.getShopInfo()
+        Assert.assertEquals(viewModel.shopInfoResult.value, Fail(throwable))
+    }
+
+    @Test
+    fun `getShopInfo success`() {
+        val data =
+            TopadsShopInfoV2Model()
+
+        every {
+            getShopInfoUseCase.getShopInfo(captureLambda(), any(), any())
+        } answers {
+            firstArg<(TopadsShopInfoV2Model) -> Unit>().invoke(data)
+        }
+        viewModel.getShopInfo()
+        Assert.assertEquals(viewModel.shopInfoResult.value, Success(data))
     }
 
 
