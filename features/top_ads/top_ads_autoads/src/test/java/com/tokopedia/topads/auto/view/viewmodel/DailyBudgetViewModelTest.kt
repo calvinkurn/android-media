@@ -87,6 +87,23 @@ class DailyBudgetViewModelTest {
         assertEquals(null, data)
     }
 
+    @Test
+    fun `test fail in getBudgetInfo`() {
+        val t = Exception("my excep")
+        var data: ResponseBidInfo.Result? = null
+
+        coEvery { repository.response(any(), any()) } throws t
+
+        coEvery {
+            bidInfoUseCase.executeQuerySafeMode(captureLambda(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(t)
+        }
+        viewModel.getBudgetInfo("reqType", "source") {
+            data = it
+        }
+        assertEquals(null, data)
+    }
 
     @Test
     fun `test result in getBudgetInfo`() {

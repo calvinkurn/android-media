@@ -10,6 +10,7 @@ import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.DepositAmount
+import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.data.response.ResponseBidInfo
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.response.TopadsDashboardDeposits
@@ -130,6 +131,24 @@ class AutoPsViewModelTest {
     }
 
     @Test
+    fun `test result in getVariantById`() {
+        val data = GetVariantByIdResponse.GetVariantById.ExperimentVariant("","")
+        val dataList = listOf(data)
+        val result = GetVariantByIdResponse(GetVariantByIdResponse.GetVariantById(
+            userIdVariants = listOf(),
+            shopIdVariants = dataList,
+            sessionIdVariants = listOf()
+        ))
+        coEvery {
+            getVariantByIdUseCase()
+        } answers {
+            result
+        }
+        viewModel.getVariantById()
+        assertEquals(listOf(data), viewModel.shopVariant.value)
+    }
+
+    @Test
     fun `test exception in postAutoPs`() {
         val param = AutoAdsParam(
             AutoAdsParam.Input(
@@ -154,6 +173,40 @@ class AutoPsViewModelTest {
             TopadsGetBudgetRecommendation(
                 TopadsGetBudgetRecommendation.Data(1000, 10000, true),
                 listOf()
+            )
+        )
+        val deposit = Deposit(TopadsDashboardDeposits(DepositAmount(5000)))
+        val estimation = EstimationResponse(
+            EstimationResponse.TopadsStatisticsEstimationAttribute(
+                listOf(EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem(0))
+            )
+        )
+        val autoAds = AutoAdsResponse.TopAdsGetAutoAds()
+
+        coEvery { getBudgetRecommendationUseCase.executeOnBackground() } returns budgetRecommendation
+        coEvery { topAdsGetShopDepositUseCase.executeOnBackground() } returns deposit
+        coEvery { bidInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            firstArg<(ResponseBidInfo.Result) -> Unit>().invoke(ResponseBidInfo.Result(TopadsBidInfo()))
+        }
+        coEvery {
+            topadsStatisticsEstimationAttributeUseCase.execute(
+                TopadsAutoPsConstants.STATISTICS_ESTIMATION_TYPE,
+                TopadsAutoPsConstants.TOPADS_AUTO_PS_SOURCE
+            )
+        } returns estimation
+        coEvery { topAdsGetAutoAdsUseCase.executeOnBackground() } returns autoAds
+
+        viewModel.loadData()
+
+        assertEquals(autoAds, viewModel.topAdsGetAutoAds.value)
+    }
+
+    @Test
+    fun `test result fail in loadData`() {
+        val budgetRecommendation = TopadsGetBudgetRecommendationResponse(
+            TopadsGetBudgetRecommendation(
+                TopadsGetBudgetRecommendation.Data(1000, 10000, true),
+                listOf(Error())
             )
         )
         val deposit = Deposit(TopadsDashboardDeposits(DepositAmount(5000)))
