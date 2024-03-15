@@ -2,7 +2,7 @@ package com.tokopedia.play.model.viewmodel
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.analytic.PlayNewAnalytic
-import com.tokopedia.play.domain.GetReportSummariesUseCase
+import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.mapper.MapperBuilder
 import com.tokopedia.play.util.CastPlayerHelper

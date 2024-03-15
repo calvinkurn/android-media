@@ -11,6 +11,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.track.response.ReportSummaries
+import com.tokopedia.content.common.track.usecase.GetReportSummariesUseCase
+import com.tokopedia.content.common.types.TrackContentType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toAmountString
@@ -1610,8 +1613,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
-        getReportSummariesUseCase.params = GetReportSummariesUseCase.createParam(channelId)
-        getReportSummariesUseCase.executeOnBackground()
+        getReportSummariesUseCase(GetReportSummariesUseCase.Param(channelId, TrackContentType.Play.value))
     }
 
     private fun trackVisitChannel(channelId: String, shouldTrack: Boolean, sourceType: String) {
