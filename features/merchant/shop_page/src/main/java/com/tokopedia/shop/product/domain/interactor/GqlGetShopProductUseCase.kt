@@ -5,9 +5,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.shop.common.constant.ShopPageGqlQueryConstant
-import com.tokopedia.shop.common.constant.ShopParamApiConstant
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.usecase.coroutines.UseCase
@@ -53,15 +51,9 @@ class GqlGetShopProductUseCase @Inject constructor(
             shopId: String,
             filter: ShopProductFilterInput
         ): Map<String, Any> {
-            val modifiedFilter = if (ProductCardExperiment.isReimagine()) {
-                filter.copy(usecase = ShopParamApiConstant.SHOP_GET_PRODUCT_V2)
-            } else {
-                filter
-            }
-            
             return mapOf(
                 PARAM_SHOP_ID to shopId,
-                PARAM_FILTER to modifiedFilter,
+                PARAM_FILTER to filter,
                 PARAM_SOURCE to PARAM_VALUE_SOURCE
             )
         }
