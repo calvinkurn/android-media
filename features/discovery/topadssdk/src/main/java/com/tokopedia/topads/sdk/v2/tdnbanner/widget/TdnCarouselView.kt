@@ -13,8 +13,8 @@ import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TdnBannerConstants.TYPE_CAROUSEL
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TdnBannerConstants.TYPE_VERTICAL_CAROUSEL
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
-import com.tokopedia.topads.sdk.old.decoration.TdnCarouselItemDecoration
 import com.tokopedia.topads.sdk.v2.tdnbanner.adapter.TdnCarouselAdapter
+import com.tokopedia.topads.sdk.v2.tdnbanner.decoration.TdnCarouselItemDecoration
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
