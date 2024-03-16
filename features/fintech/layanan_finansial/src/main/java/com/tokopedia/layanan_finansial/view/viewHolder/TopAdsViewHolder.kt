@@ -11,7 +11,7 @@ import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.view.adapter.TopAdsAdapter
 import com.tokopedia.layanan_finansial.view.models.TopAdsImageModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
-import com.tokopedia.topads.sdk.old.listener.TopAdsImageVieWApiResponseListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.v2.tdnbanner.widget.TopAdsImageView
 import com.tokopedia.unifyprinciples.Typography
 
