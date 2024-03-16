@@ -8,13 +8,13 @@ import com.tokopedia.search.databinding.SearchResultProductTopAdsBannerLayoutBin
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_6
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CpmViewHolder(
     itemView: View,
-    bannerAdsListener: BannerAdsListener?,
+    bannerAdsListener: BannerAdsListener?
 ) : AbstractViewHolder<CpmDataView>(itemView) {
 
     companion object {
