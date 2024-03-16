@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.view.adapter
+package com.tokopedia.topads.sdk.v2.shopadslayout5.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,41 +12,44 @@ import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.CONST_5
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.LAYOUT_5
-import com.tokopedia.topads.sdk.old.domain.model.ShopProductModel.ShopProductModelItem
-import com.tokopedia.topads.sdk.old.listener.FollowButtonClickListener
-import com.tokopedia.topads.sdk.old.listener.ShopAdsProductListener
+import com.tokopedia.topads.sdk.v2.shopadslayout5.uimodel.ShopProductModel.ShopProductModelItem
+import com.tokopedia.topads.sdk.v2.shopadslayout5.listener.FollowButtonClickListener
+import com.tokopedia.topads.sdk.v2.shopadslayout5.listener.ShopAdsProductListener
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.shopwidget.R as shopwidgetR
+import com.tokopedia.gm.common.R as gmcommonR
 
-class ShopAdsProductAdapter(
+class ShopAdsProductReimagineAdapter(
     private val shopAdsProductListener: ShopAdsProductListener,
-    private val followButtonClickListener:FollowButtonClickListener?
-) : RecyclerView.Adapter<ShopAdsProductAdapter.ShopAdsProductViewHolder>() {
+    private val followButtonClickListener: FollowButtonClickListener?,
+) : RecyclerView.Adapter<ShopAdsProductReimagineAdapter.ShopAdsProductViewHolder>() {
 
 
     private val shopAdsProductItemList = arrayListOf<ShopProductModelItem>()
 
     fun setList(list: List<ShopProductModelItem>) {
+        val itemCount = itemCount
         shopAdsProductItemList.clear()
-        shopAdsProductItemList.addAll(list)
-        notifyDataSetChanged()
+        notifyItemRangeRemoved(0, itemCount)
 
+        shopAdsProductItemList.addAll(list)
+        notifyItemRangeInserted(0, shopAdsProductItemList.size)
     }
 
     inner class ShopAdsProductViewHolder(itemView: View, private val shopAdsProductListener: ShopAdsProductListener) : RecyclerView.ViewHolder(itemView) {
-        private val productImage = itemView.findViewById<ImageView>(R.id.productImage)
-        private val productLogoShop = itemView.findViewById<ImageView>(R.id.productLogoShop)
-        private val productShopBadge = itemView.findViewById<ImageView>(R.id.productShopBadge)
-        private val productShopName = itemView.findViewById<Typography>(R.id.productShopName)
-        private val shopProductReviews = itemView.findViewById<LinearLayout>(R.id.shopProductReviews)
-        private val reviewCount = itemView.findViewById<Typography>(R.id.reviewCount)
-        private val locationIcon = itemView.findViewById<ImageView>(R.id.locationIcon)
-        private val locationName = itemView.findViewById<Typography>(R.id.locationName)
-        private val buttonFollow = itemView.findViewById<UnifyButton>(R.id.buttonFollow)
+        private val productImage = itemView.findViewById<ImageView>(R.id.topAdsProductImage)
+        private val productLogoShop = itemView.findViewById<ImageView>(R.id.topAdsProductLogoShop)
+        private val productShopBadge = itemView.findViewById<ImageView>(R.id.topAdsProductShopBadge)
+        private val productShopName = itemView.findViewById<Typography>(R.id.topAdsProductShopName)
+        private val shopProductReviews = itemView.findViewById<LinearLayout>(R.id.topAdsShopProductReviews)
+        private val reviewCount = itemView.findViewById<Typography>(R.id.topAdsReviewCount)
+        private val locationIcon = itemView.findViewById<ImageView>(R.id.topAdsLocationIcon)
+        private val locationName = itemView.findViewById<Typography>(R.id.topAdsLocationName)
+        private val buttonFollow = itemView.findViewById<UnifyButton>(R.id.topAdsButtonFollow)
 
 
         fun bind(shopProductModelItem: ShopProductModelItem) {
-
             productImage.loadImage(shopProductModelItem.imageUrl)
             productLogoShop.loadImageCircle(shopProductModelItem.shopIcon)
             loadBadge(shopProductModelItem)
@@ -60,7 +63,6 @@ class ShopAdsProductAdapter(
 
             itemView.setOnClickListener { shopAdsProductListener.onItemClicked(shopProductModelItem.position) }
             setFollowButton(shopProductModelItem.layoutType, shopProductModelItem)
-
         }
 
         private fun setFollowButton(
@@ -111,16 +113,19 @@ class ShopAdsProductAdapter(
 
         private fun setTextViewReviewCount(countReview: String) {
             reviewCount.show()
-            reviewCount.text = String.format("%s%s%s", "(", countReview, ")")
+            reviewCount.text = getCountReview(countReview)
         }
+
+        private fun getCountReview(countReview: String) =
+            itemView.resources.getString(R.string.topads_shop_product_count_review, countReview)
 
         private fun loadBadge(shopProductModelItem: ShopProductModelItem) {
             val isImageShopBadgeVisible = getIsImageShopBadgeVisible(shopProductModelItem)
             productShopBadge.shouldShowWithAction(isImageShopBadgeVisible) {
                 when {
                     shopProductModelItem.isOfficial -> productShopBadge.loadImage(R.drawable.ic_official_store)
-                    shopProductModelItem.isPMPro -> productShopBadge.loadImage(com.tokopedia.shopwidget.R.drawable.shopwidget_ic_pm_pro)
-                    shopProductModelItem.isGoldShop -> productShopBadge.loadImage(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
+                    shopProductModelItem.isPMPro -> productShopBadge.loadImage(shopwidgetR.drawable.shopwidget_ic_pm_pro)
+                    shopProductModelItem.isGoldShop -> productShopBadge.loadImage(gmcommonR.drawable.ic_power_merchant)
                 }
             }
         }
@@ -133,7 +138,7 @@ class ShopAdsProductAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopAdsProductViewHolder {
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.topads_with_one_product_layout_item, parent, false)
+        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.topads_with_one_product_layout_item_reimagine, parent, false)
         return ShopAdsProductViewHolder(view, shopAdsProductListener)
     }
 

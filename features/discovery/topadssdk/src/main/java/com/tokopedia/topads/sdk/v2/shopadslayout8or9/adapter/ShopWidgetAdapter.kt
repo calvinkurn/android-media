@@ -1,11 +1,11 @@
-package com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.adapter
+package com.tokopedia.topads.sdk.v2.shopadslayout8or9.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.factory.ShopWidgetFactory
-import com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.model.ShopWidgetItem
-import com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.factory.ShopWidgetFactory
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.model.ShopWidgetItem
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.viewholder.AbstractViewHolder
 
 class ShopWidgetAdapter(private val shopWidgetFactory: ShopWidgetFactory) :
     RecyclerView.Adapter<AbstractViewHolder<ShopWidgetItem>>() {
@@ -30,8 +30,11 @@ class ShopWidgetAdapter(private val shopWidgetFactory: ShopWidgetFactory) :
     }
 
     fun submitList(list: List<ShopWidgetItem>){
+        val itemCount = itemCount
         this.list.clear()
+        notifyItemRangeRemoved(0, itemCount)
+
         this.list.addAll(list)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(0, this.list.size)
     }
 }

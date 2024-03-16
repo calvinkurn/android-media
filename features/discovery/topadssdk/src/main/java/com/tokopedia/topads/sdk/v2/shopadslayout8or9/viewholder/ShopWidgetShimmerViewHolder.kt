@@ -1,9 +1,9 @@
-package com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.viewholder
+package com.tokopedia.topads.sdk.v2.shopadslayout8or9.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.shopwidgetthreeproducts.model.ShopWidgetShimmerUiModel
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.model.ShopWidgetShimmerUiModel
 
 class ShopWidgetShimmerViewHolder(itemView: View) :
     AbstractViewHolder<ShopWidgetShimmerUiModel>(itemView) {

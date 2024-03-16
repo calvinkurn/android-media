@@ -1,11 +1,18 @@
-package com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.factory
+package com.tokopedia.topads.sdk.v2.shopadslayout8or9.factory
 
 import android.view.View
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
-import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
-import com.tokopedia.topads.sdk.shopwidgetthreeproducts.model.*
-import com.tokopedia.topads.sdk.shopwidgetthreeproducts.viewholder.*
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.listener.ShopWidgetAddToCartClickListener
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.model.EmptyShopCardModel
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.model.ProductItemModel
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.model.ShopWidgetShimmerUiModel
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.model.ShowMoreItemModel
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.viewholder.EmptyShopCardViewHolder
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.viewholder.ProductItemViewHolder
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.viewholder.ShopWidgetShimmerViewHolder
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.viewholder.ShowMoreItemVieHolder
 
 class ShopWidgetFactoryImpl(
     private val shopWidgetAddToCartClickListener: ShopWidgetAddToCartClickListener?,

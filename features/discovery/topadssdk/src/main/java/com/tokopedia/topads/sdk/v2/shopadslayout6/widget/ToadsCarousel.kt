@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.widget
+package com.tokopedia.topads.sdk.v2.shopadslayout6.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.domain.model.TopAdsCarouselModel
-import com.tokopedia.topads.sdk.old.listener.TopAdsCarouselListener
-import com.tokopedia.topads.sdk.old.view.adapter.TopAdsCarouselAdapter
+import com.tokopedia.topads.sdk.v2.shopadslayout6.uimodel.TopAdsCarouselModel
+import com.tokopedia.topads.sdk.v2.shopadslayout6.listener.TopAdsCarouselListener
+import com.tokopedia.topads.sdk.v2.shopadslayout6.adapter.TopAdsCarouselAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
 
 class ToadsCarousel : BaseCustomView {

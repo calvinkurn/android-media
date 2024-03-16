@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.widget
+package com.tokopedia.topads.sdk.v2.shopadslayout5.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.domain.model.ShopProductModel
-import com.tokopedia.topads.sdk.old.listener.FollowButtonClickListener
-import com.tokopedia.topads.sdk.old.listener.ShopAdsProductListener
-import com.tokopedia.topads.sdk.old.view.adapter.ShopAdsProductAdapter
+import com.tokopedia.topads.sdk.v2.shopadslayout5.uimodel.ShopProductModel
+import com.tokopedia.topads.sdk.v2.shopadslayout5.listener.FollowButtonClickListener
+import com.tokopedia.topads.sdk.v2.shopadslayout5.listener.ShopAdsProductListener
+import com.tokopedia.topads.sdk.v2.shopadslayout5.adapter.ShopAdsProductAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 
@@ -34,7 +34,7 @@ class ShopAdsWithOneProductView : BaseCustomView {
         View.inflate(context, R.layout.topads_with_one_product_layout, this)
     }
 
-    fun setShopProductModel(shopProductModel: ShopProductModel, shopAdsProductListener: ShopAdsProductListener, followButtonClickListener:FollowButtonClickListener?) {
+    fun setShopProductModel(shopProductModel: ShopProductModel, shopAdsProductListener: ShopAdsProductListener, followButtonClickListener: FollowButtonClickListener?) {
 
         initTShopProductTitle(shopProductModel)
         initTopAdsCarouselItem(shopProductModel, shopAdsProductListener, followButtonClickListener)

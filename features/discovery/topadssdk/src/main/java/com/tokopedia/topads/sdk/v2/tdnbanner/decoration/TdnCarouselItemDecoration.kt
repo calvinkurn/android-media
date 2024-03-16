@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.decoration
+package com.tokopedia.topads.sdk.v2.tdnbanner.decoration
 
 import android.graphics.Rect
 import androidx.recyclerview.widget.RecyclerView

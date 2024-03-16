@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.widget
+package com.tokopedia.topads.sdk.v2.shopadslayout10.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -19,7 +19,8 @@ import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.Product
-import com.tokopedia.topads.sdk.domain.model.ShopAdsWithSingleProductModel
+import com.tokopedia.topads.sdk.v2.uimodel.ShopAdsWithSingleProductModel
+import com.tokopedia.topads.sdk.v2.shopadslayout11.widget.ShopAdsSingleItemVerticalLayout
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.CardUnify2
@@ -106,56 +107,71 @@ class ShopAdsSingleItemHorizontalLayout : BaseCustomView {
             productSlashedPrice?.strikethrough()
             setDiscountPercent(productModel)
 
-            shopAdsWithSingleProductModel.impressHolder?.let { impressHolder ->
-                productContainer?.addOnImpressionListener(impressHolder) {
-                    shopAdsWithSingleProductModel.impressionListener?.onImpressionProductAdsItem(Int.ZERO, shopAdsWithSingleProductModel.listItem, shopAdsWithSingleProductModel.cpmData)
-                    shopAdsWithSingleProductModel.impressionListener?.onImpressionHeadlineAdsItem(Int.ZERO, shopAdsWithSingleProductModel.cpmData)
+            setProductContainerImpression(shopAdsWithSingleProductModel)
+
+            setShopImageImpression(shopAdsWithSingleProductModel)
+
+            setProductContainerClickListener(shopAdsWithSingleProductModel, product)
+
+            setBodyContainerClickListener(shopAdsWithSingleProductModel)
+        }
+    }
+
+    private fun setBodyContainerClickListener(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel) =
+        bodyContainer?.setOnClickListener {
+            shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(
+                Int.ZERO,
+                shopAdsWithSingleProductModel.shopApplink,
+                shopAdsWithSingleProductModel.cpmData
+            )
+            topAdsUrlHitter.hitClickUrl(
+                ShopAdsSingleItemVerticalLayout::class.java.simpleName,
+                shopAdsWithSingleProductModel.adsClickUrl,
+                String.EMPTY,
+                String.EMPTY,
+                String.EMPTY
+            )
+        }
+
+    private fun setProductContainerClickListener(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel, product: Product) {
+        productContainer?.setOnClickListener {
+            shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(
+                Int.ZERO,
+                product.applinks,
+                shopAdsWithSingleProductModel.cpmData
+            )
+            topAdsUrlHitter.hitClickUrl(
+                ShopAdsSingleItemVerticalLayout::class.java.simpleName,
+                shopAdsWithSingleProductModel.adsClickUrl,
+                String.EMPTY,
+                String.EMPTY,
+                String.EMPTY
+            )
+        }
+    }
+
+    private fun setShopImageImpression(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel) {
+        shopAdsWithSingleProductModel.impressHolder?.let { impressHolder ->
+            shopImage?.addOnImpressionListener(impressHolder) {
+                shopAdsWithSingleProductModel.impressionListener?.let {
+                    it.onImpressionHeadlineAdsItem(Int.ZERO, shopAdsWithSingleProductModel.cpmData)
+                    topAdsUrlHitter.hitImpressionUrl(
+                        this::class.java.name,
+                        shopAdsWithSingleProductModel.cpmData.cpm.cpmImage.fullUrl,
+                        "",
+                        "",
+                        ""
+                    )
                 }
             }
+        }
+    }
 
-            shopAdsWithSingleProductModel.impressHolder?.let { impressHolder ->
-                shopImage?.addOnImpressionListener(impressHolder) {
-                    shopAdsWithSingleProductModel.impressionListener?.let {
-                        it.onImpressionHeadlineAdsItem(Int.ZERO, shopAdsWithSingleProductModel.cpmData)
-                        topAdsUrlHitter.hitImpressionUrl(
-                            this::class.java.name,
-                            shopAdsWithSingleProductModel.cpmData.cpm.cpmImage.fullUrl,
-                            "",
-                            "",
-                            ""
-                        )
-                    }
-                }
-            }
-
-            productContainer?.setOnClickListener {
-                shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(
-                    Int.ZERO,
-                    product.applinks,
-                    shopAdsWithSingleProductModel.cpmData
-                )
-                topAdsUrlHitter.hitClickUrl(
-                    ShopAdsSingleItemVerticalLayout::class.java.simpleName,
-                    shopAdsWithSingleProductModel.adsClickUrl,
-                    String.EMPTY,
-                    String.EMPTY,
-                    String.EMPTY
-                )
-            }
-
-            bodyContainer?.setOnClickListener {
-                shopAdsWithSingleProductModel.topAdsBannerClickListener?.onBannerAdsClicked(
-                    Int.ZERO,
-                    shopAdsWithSingleProductModel.shopApplink,
-                    shopAdsWithSingleProductModel.cpmData
-                )
-                topAdsUrlHitter.hitClickUrl(
-                    ShopAdsSingleItemVerticalLayout::class.java.simpleName,
-                    shopAdsWithSingleProductModel.adsClickUrl,
-                    String.EMPTY,
-                    String.EMPTY,
-                    String.EMPTY
-                )
+    private fun setProductContainerImpression(shopAdsWithSingleProductModel: ShopAdsWithSingleProductModel) {
+        shopAdsWithSingleProductModel.impressHolder?.let { impressHolder ->
+            productContainer?.addOnImpressionListener(impressHolder) {
+                shopAdsWithSingleProductModel.impressionListener?.onImpressionProductAdsItem(Int.ZERO, shopAdsWithSingleProductModel.listItem, shopAdsWithSingleProductModel.cpmData)
+                shopAdsWithSingleProductModel.impressionListener?.onImpressionHeadlineAdsItem(Int.ZERO, shopAdsWithSingleProductModel.cpmData)
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.widget
+package com.tokopedia.topads.sdk.v2.shopadslayout5.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.domain.model.ShopProductModel
-import com.tokopedia.topads.sdk.old.listener.FollowButtonClickListener
-import com.tokopedia.topads.sdk.old.listener.ShopAdsProductListener
+import com.tokopedia.topads.sdk.v2.shopadslayout5.uimodel.ShopProductModel
+import com.tokopedia.topads.sdk.v2.shopadslayout5.listener.FollowButtonClickListener
+import com.tokopedia.topads.sdk.v2.shopadslayout5.listener.ShopAdsProductListener
 import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.addItemDecoratorShopCardAdsReimagine
-import com.tokopedia.topads.sdk.old.view.adapter.ShopAdsProductReimagineAdapter
+import com.tokopedia.topads.sdk.v2.shopadslayout5.adapter.ShopAdsProductReimagineAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 
@@ -36,7 +36,7 @@ class ShopAdsWithOneProductReimagineView : BaseCustomView {
     }
 
     fun setShopProductModel(shopProductModel: ShopProductModel, shopAdsProductListener: ShopAdsProductListener,
-                            followButtonClickListener:FollowButtonClickListener?,) {
+                            followButtonClickListener: FollowButtonClickListener?,) {
 
         initTShopProductTitle(shopProductModel)
         initTopAdsCarouselItem(shopProductModel, shopAdsProductListener, followButtonClickListener)

@@ -1,6 +1,6 @@
-package com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.model
+package com.tokopedia.topads.sdk.v2.shopadslayout8or9.model
 
-import com.tokopedia.topads.sdk.shopwidgetthreeproducts.factory.ShopWidgetFactory
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.factory.ShopWidgetFactory
 
 class ShopWidgetShimmerUiModel: ShopWidgetItem {
 

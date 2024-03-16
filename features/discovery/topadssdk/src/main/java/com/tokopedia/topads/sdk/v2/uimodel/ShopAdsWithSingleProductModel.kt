@@ -1,8 +1,10 @@
-package com.tokopedia.topads.sdk.domain.model
+package com.tokopedia.topads.sdk.v2.uimodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.old.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
 
 data class ShopAdsWithSingleProductModel(
     var isOfficial: Boolean = false,
