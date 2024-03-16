@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.view.adapter.viewholder.banner;
+package com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -11,10 +11,10 @@ import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Cpm;
-import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener;
-import com.tokopedia.topads.sdk.old.listener.TopAdsItemImpressionListener;
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
-import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopUiModel;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopUiModel;
 import com.tokopedia.topads.sdk.old.widget.TopAdsBannerView;
 
 /**

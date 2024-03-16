@@ -1,8 +1,8 @@
-package com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner;
+package com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel;
 
 import com.tokopedia.topads.sdk.common.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
-import com.tokopedia.topads.sdk.old.view.adapter.factory.BannerAdsTypeFactory;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.adapter.factory.BannerAdsTypeFactory;
 
 /**
  * Created by errysuprayogi on 4/16/18.

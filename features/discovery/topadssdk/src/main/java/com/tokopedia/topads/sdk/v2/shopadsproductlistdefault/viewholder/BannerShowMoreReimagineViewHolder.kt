@@ -1,12 +1,12 @@
-package com.tokopedia.topads.sdk.old.view.adapter.viewholder.banner
+package com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopViewMoreUiModel
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopViewMoreUiModel
 import com.tokopedia.viewallcard.ViewAllCard
 
 class BannerShowMoreReimagineViewHolder(

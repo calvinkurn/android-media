@@ -1,13 +1,13 @@
-package com.tokopedia.topads.sdk.old.view.adapter.factory;
+package com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.adapter.factory;
 
 
 import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder;
-import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopProductUiModel;
-import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerProductShimmerUiModel;
-import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopUiModel;
-import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopViewMoreUiModel;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerProductShimmerUiModel;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopViewMoreUiModel;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopProductUiModel;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopUiModel;
 
 /**
  * Created by errysuprayogi on 4/16/18.

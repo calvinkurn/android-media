@@ -1,13 +1,13 @@
-package com.tokopedia.topads.sdk.old.view.adapter.viewholder.banner
+package com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.old.listener.TopAdsItemImpressionListener
-import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopProductUiModel
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopProductUiModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.productcard.reimagine.ProductCardModel.Companion as ProductCardModelReimagine
 
@@ -38,7 +38,6 @@ class BannerShopProductReimagineViewHolder(
                             model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition - 1),
                             model.cpmData
                         )
-                        impressionListener?.onImpressionHeadlineAdsItem(adapterPosition, model.cpmData)
                     }
                 }
 
