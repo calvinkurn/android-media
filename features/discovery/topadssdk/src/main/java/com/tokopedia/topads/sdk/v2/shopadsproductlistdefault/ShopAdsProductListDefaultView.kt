@@ -84,7 +84,7 @@ class ShopAdsProductListDefaultView(
     private var isFlashSaleTokoLabel: Boolean = false
     private var flashSaleTimerData: Date? = null
     private var isShowCta: Boolean = false
-    protected var hasAddProductToCartButton: Boolean = false
+    private var hasAddProductToCartButton: Boolean = false
 
     private val linearLayoutMerchantVoucher: LinearLayout? = view?.findViewById(R.id.linearLayoutMerchantVoucher)
     private val list = view?.findViewById<RecyclerView?>(R.id.list_v2)

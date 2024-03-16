@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.Product
-import com.tokopedia.topads.sdk.widget.TopAdsBannerView
+import com.tokopedia.topads.sdk.old.widget.TopAdsBannerView
 
 /**
  * Created By : Muhammad Furqan on 05/04/23

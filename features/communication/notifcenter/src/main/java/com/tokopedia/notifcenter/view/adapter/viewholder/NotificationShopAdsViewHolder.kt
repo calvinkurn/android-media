@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.model.NotifTopAdsHeadline
-import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
+import com.tokopedia.topads.sdk.v2.topadsheadline.TopAdsHeadlineView
 
 class NotificationShopAdsViewHolder(itemView: View?) :
     AbstractViewHolder<NotifTopAdsHeadline>(itemView) {

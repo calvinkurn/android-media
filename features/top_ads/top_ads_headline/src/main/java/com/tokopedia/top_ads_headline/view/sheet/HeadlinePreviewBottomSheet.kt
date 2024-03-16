@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.widget.TopAdsBannerView
+import com.tokopedia.topads.sdk.old.widget.TopAdsBannerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class HeadlinePreviewBottomSheet : BottomSheetUnify() {

@@ -23,7 +23,7 @@ import dagger.Provides
  * Created by Lukas on 2019-07-31
  */
 
-@Module(includes = [TopAdsWishlistModule::class, RecommendationModule::class])
+@Module(includes = [RecommendationModule::class])
 class GlobalNavModule {
     @Provides
     fun provideMainParentPresenter(

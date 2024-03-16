@@ -33,7 +33,7 @@ class ShopAdsLayout8or9View(
 
     private val shopAdsWithThreeProducts = view?.findViewById<ShopAdsWithThreeProducts>(R.id.shopAdsWithThreeProducts)
 
-    protected var hasAddProductToCartButton: Boolean = false
+    private var hasAddProductToCartButton: Boolean = false
     private var isShowCta: Boolean = false
 
     override fun render(cpmModel: CpmModel, cpmData: CpmData, appLink: String, adsClickUrl: String) {

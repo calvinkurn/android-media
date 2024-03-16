@@ -26,7 +26,7 @@ import dagger.Provides
 /**
  * A class module for dagger recommendation page
  */
-@Module(includes = [TopAdsWishlistModule::class])
+@Module
 class HomeRecommendationModule {
 
     @Provides

@@ -26,6 +26,7 @@ import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadl
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
+import com.tokopedia.topads.sdk.old.widget.TopAdsBannerView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -44,7 +45,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
     private var productImagePreviewWidget: TopAdsProductImagePreviewWidget? = null
     private var productPickerErrorText: com.tokopedia.unifyprinciples.Typography? = null
     private var promotionalMessageInputText: com.tokopedia.unifycomponents.TextFieldUnify? = null
-    private var topAdsBannerView: com.tokopedia.topads.sdk.widget.TopAdsBannerView? = null
+    private var topAdsBannerView: TopAdsBannerView? = null
     private var btnSubmit: com.tokopedia.unifycomponents.UnifyButton? = null
 
     companion object {
