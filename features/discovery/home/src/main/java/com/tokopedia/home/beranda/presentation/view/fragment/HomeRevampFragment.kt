@@ -1761,7 +1761,7 @@ open class HomeRevampFragment :
             openWebViewURL(slidesModel.redirectUrl, activity)
         }
         if (slidesModel.redirectUrl.isNotEmpty()) {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
+            TopAdsUrlHitter(context).hitClickUrl(
                 className,
                 slidesModel.redirectUrl,
                 slidesModel.id.toString(),
@@ -2257,7 +2257,7 @@ open class HomeRevampFragment :
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
         } else {
             if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
-                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
+                TopAdsUrlHitter(context).hitImpressionUrl(
                     className,
                     bannerSlidesModel.topadsViewUrl,
                     bannerSlidesModel.id.toString(),

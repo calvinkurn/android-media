@@ -25,7 +25,7 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
                 model.recomendationItem,object : ViewHintListener {
                     override fun onViewHint() {
                         if (impressItem.isTopAds) {
-                            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                            TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                                 className,
                                 impressItem.trackerImageUrl,
                                 impressItem.productId.toString(),
@@ -39,7 +39,7 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val liste
 
             productView.setOnClickListener {
                 if (impressItem.isTopAds) {
-                        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
+                        TopAdsUrlHitter(itemView.context).hitClickUrl(
                             className,
                             impressItem.clickUrl,
                             impressItem.productId.toString(),

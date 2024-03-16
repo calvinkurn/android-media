@@ -57,7 +57,7 @@ class SectionMerchantCouponAdapter(val arrayList: ArrayList<CatalogMVCWithProduc
     private fun sendTopadsImpression(context: Context, adInfo: AdInfo?) {
         if (!eventSet.contains(adInfo?.AdID)) {
             eventSet.add(adInfo?.AdID)
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
+            TopAdsUrlHitter(context).hitImpressionUrl(
                 className,
                 adInfo?.AdViewUrl,
                 "",

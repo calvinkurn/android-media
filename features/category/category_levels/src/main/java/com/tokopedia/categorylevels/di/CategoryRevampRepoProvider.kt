@@ -40,7 +40,7 @@ class CategoryRevampRepoProvider(private val appComponent: BaseAppComponent, val
         return DaggerCategoryRevampComponent.builder().baseAppComponent(appComponent).build().getCategoryQuickFilterRepository()
     }
 
-    override fun provideTopAdsTrackingUseCase(topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter): TopAdsTrackingUseCase {
+    override fun provideTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase {
         return CategoryTopAdsTrackingUseCase(topAdsUrlHitter)
     }
 

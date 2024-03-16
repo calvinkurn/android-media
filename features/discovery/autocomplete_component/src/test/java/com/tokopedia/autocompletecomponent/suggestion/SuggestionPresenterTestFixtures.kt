@@ -30,7 +30,7 @@ internal open class SuggestionPresenterTestFixtures {
 
     protected val getSuggestionUseCase = mockk<UseCase<SuggestionUniverse>>(relaxed = true)
     protected val suggestionTrackerUseCase = mockk<RxUseCase<Void?>>(relaxed = true)
-    protected val topAdsUrlHitter = mockk<com.tokopedia.topads.sdk.utils.TopAdsUrlHitter>(relaxed = true)
+    protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
 
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val coachMarkLocalCache = mockk<CoachMarkLocalCache>(relaxed = true)

@@ -69,7 +69,7 @@ class ComparisonWidgetComparedItemViewHolder(
         binding?.productCardView?.addOnImpressionListener(comparisonModel) {
             if (comparisonModel.recommendationItem.isTopAds) {
                 val product = comparisonModel.recommendationItem
-                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
+                TopAdsUrlHitter(context).hitImpressionUrl(
                     CLASS_NAME,
                     product.trackerImageUrl,
                     product.productId.toString(),

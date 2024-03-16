@@ -52,7 +52,7 @@ class SuggestionPresenter @Inject constructor(
     private val getSuggestionUseCase: UseCase<SuggestionUniverse>,
         @Named(SUGGESTION_TRACKER_USE_CASE)
     private val suggestionTrackerUseCase: RxUseCase<Void?>,
-        private val topAdsUrlHitter: Lazy<com.tokopedia.topads.sdk.utils.TopAdsUrlHitter>,
+        private val topAdsUrlHitter: Lazy<TopAdsUrlHitter>,
         private val userSession: UserSessionInterface,
         private val coachMarkLocalCache: CoachMarkLocalCache,
         private val schedulersProvider: SchedulersProvider,

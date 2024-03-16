@@ -2559,7 +2559,7 @@ open class ProductDetailFragment :
                 { topAdsData ->
                     if (!isTopadsDynamicsSlottingAlreadyCharged) {
                         context?.let {
-                            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitImpressionUrl(
+                            TopAdsUrlHitter(it).hitImpressionUrl(
                                 this::class.java.name,
                                 topAdsData.data.product.image.m_url,
                                 topAdsData.data.product.id,
@@ -2567,7 +2567,7 @@ open class ProductDetailFragment :
                                 topAdsData.data.product.image.m_ecs
                             )
 
-                            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(
+                            TopAdsUrlHitter(it).hitClickUrl(
                                 this::class.java.name,
                                 topAdsData.data.clickUrl,
                                 topAdsData.data.product.id,
@@ -4326,7 +4326,7 @@ open class ProductDetailFragment :
 
     private fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel) {
         context?.let {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(
+            TopAdsUrlHitter(it).hitClickUrl(
                 this::class.java.simpleName,
                 productCardOptionsModel.topAdsClickUrl + CLICK_TYPE_WISHLIST,
                 productCardOptionsModel.productId,

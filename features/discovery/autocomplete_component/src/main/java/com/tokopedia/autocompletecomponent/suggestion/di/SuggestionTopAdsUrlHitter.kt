@@ -11,6 +11,6 @@ class SuggestionTopAdsUrlHitter {
 
     @SuggestionScope
     @Provides
-    fun provideTopAdsUrlHitter(@ApplicationContext context: Context): com.tokopedia.topads.sdk.utils.TopAdsUrlHitter =
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context)
+    fun provideTopAdsUrlHitter(@ApplicationContext context: Context): TopAdsUrlHitter =
+            TopAdsUrlHitter(context)
 }

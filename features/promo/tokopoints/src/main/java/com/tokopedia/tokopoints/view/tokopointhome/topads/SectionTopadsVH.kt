@@ -14,9 +14,10 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
-import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageVieWApiResponseListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 import org.json.JSONObject
 
@@ -61,7 +62,7 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
                         topadsReward.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
                             override fun onTopAdsImageViewImpression(viewUrl: String) {
                                 sendBannerImpression(content.sectionTitle)
-                                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(packageName).hitImpressionUrl(
+                                TopAdsUrlHitter(packageName).hitImpressionUrl(
                                     view.context,
                                     viewUrl,
                                     topadsBannerData.bannerId,
@@ -74,7 +75,7 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
                         topadsReward.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
                             override fun onTopAdsImageViewClicked(applink: String?) {
                                 RouteManager.route(view.context, applink)
-                                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
+                                TopAdsUrlHitter(itemView.context).hitClickUrl(
                                     this::class.java.simpleName,
                                     topadsBannerData.adClickUrl,
                                     topadsBannerData.bannerId,
