@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.view;
+package com.tokopedia.topads.sdk.v2.dynamicfeedshop.widget;
 
 import android.content.Context;
 import android.content.res.Resources;
