@@ -161,7 +161,7 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     }
 
     @Provides
-    fun providesDiscoveryTopAdsTrackingUseCase(topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter): TopAdsTrackingUseCase {
+    fun providesDiscoveryTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase {
         return repoProvider.provideTopAdsTrackingUseCase(topAdsUrlHitter)
     }
 

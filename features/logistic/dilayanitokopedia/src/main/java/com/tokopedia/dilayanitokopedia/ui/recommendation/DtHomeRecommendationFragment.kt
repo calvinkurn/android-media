@@ -372,7 +372,7 @@ class DtHomeRecommendationFragment : Fragment(), TopAdsBannerClickListener {
 
     private fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel) {
         context?.let {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(
+            TopAdsUrlHitter(it).hitClickUrl(
                 this::class.java.simpleName,
                 productCardOptionsModel.topAdsClickUrl + CLICK_TYPE_WISHLIST,
                 productCardOptionsModel.productId,

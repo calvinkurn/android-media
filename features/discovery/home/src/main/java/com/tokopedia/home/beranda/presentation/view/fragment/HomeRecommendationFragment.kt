@@ -71,6 +71,7 @@ import com.tokopedia.recommendation_widget_common.infinite.foryou.topads.model.B
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -424,7 +425,7 @@ class HomeRecommendationFragment :
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {
-                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(className).hitImpressionUrl(
+                TopAdsUrlHitter(className).hitImpressionUrl(
                     it,
                     model.recommendationProductItem.trackerImageUrl,
                     model.recommendationProductItem.id,
@@ -471,7 +472,7 @@ class HomeRecommendationFragment :
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {
-                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(className).hitImpressionUrl(
+                TopAdsUrlHitter(className).hitImpressionUrl(
                     it,
                     model.recommendationProductItem.trackerImageUrl,
                     model.recommendationProductItem.id,
@@ -518,7 +519,7 @@ class HomeRecommendationFragment :
         val tabNameLowerCase = tabName.lowercase(Locale.getDefault())
         if (model.recommendationProductItem.isTopAds) {
             context?.let {
-                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(className).hitClickUrl(
+                TopAdsUrlHitter(className).hitClickUrl(
                     it,
                     model.recommendationProductItem.clickUrl,
                     model.recommendationProductItem.id,
@@ -875,7 +876,7 @@ class HomeRecommendationFragment :
 
     private fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel) {
         context?.let {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(
+            TopAdsUrlHitter(it).hitClickUrl(
                 this::class.java.simpleName,
                 productCardOptionsModel.topAdsClickUrl + CLICK_TYPE_WISHLIST,
                 productCardOptionsModel.productId,

@@ -57,7 +57,7 @@ class RecommendationVerticalProductCardViewHolder(
 
     private fun onProductCardImpressed(element: RecommendationVerticalProductCardModel) {
         if (element.recomItem.isTopAds) {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(binding.productCardView.context).hitImpressionUrl(
+            TopAdsUrlHitter(binding.productCardView.context).hitImpressionUrl(
                 CLASS_NAME,
                 element.recomItem.trackerImageUrl,
                 element.recomItem.productId.toString(),
@@ -69,7 +69,7 @@ class RecommendationVerticalProductCardViewHolder(
 
         element.widgetTracking?.sendEventItemImpression(
             trackingQueue = trackingQueue,
-            item = element.recomItem,
+            item = element.recomItem
         )
     }
 
@@ -80,7 +80,7 @@ class RecommendationVerticalProductCardViewHolder(
             .getOrNull(bindingAdapterPosition) ?: return
 
         if (element.recomItem.isTopAds) {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(binding.productCardView.context).hitClickUrl(
+            TopAdsUrlHitter(binding.productCardView.context).hitClickUrl(
                 CLASS_NAME,
                 productRecommendation.clickUrl,
                 productRecommendation.productId.toString(),
@@ -90,7 +90,7 @@ class RecommendationVerticalProductCardViewHolder(
         }
 
         element.widgetTracking?.sendEventItemClick(
-            item = element.recomItem,
+            item = element.recomItem
         )
 
         RouteManager.route(binding.productCardView.context, productRecommendation.appUrl)

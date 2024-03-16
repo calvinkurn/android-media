@@ -15,6 +15,7 @@ import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.recommendation_widget_common.infinite.foryou.BaseRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.infinite.foryou.GlobalRecomListener
 import com.tokopedia.topads.sdk.old.widget.BANNER_TYPE_VERTICAL
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeRecommendationBannerTopAdsViewHolder(
@@ -71,7 +72,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
             recommendationBannerTopAdsUiModel,
             object : ViewHintListener {
                 override fun onViewHint() {
-                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                    TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                         this::class.java.simpleName,
                         recommendationBannerTopAdsUiModel.topAdsImageUiModel?.adViewUrl,
                         "",
@@ -90,7 +91,7 @@ class HomeRecommendationBannerTopAdsViewHolder(
 
     private fun setBannerTopAdsClickListener(element: HomeRecommendationBannerTopAdsUiModel) {
         binding?.homeRecomTopadsImageView?.setOnClickListener {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
+            TopAdsUrlHitter(itemView.context).hitClickUrl(
                 this::class.java.simpleName,
                 element.topAdsImageUiModel?.adClickUrl,
                 "",

@@ -15,7 +15,7 @@ interface RepositoryProvider {
     fun provideDiscoveryPageRepository(getGQLString: (Int) -> String): DiscoveryPageRepository
     fun provideProductCardsRepository(): ProductCardsRepository
     fun provideQuickFilterRepository(): QuickFilterRepository
-    fun provideTopAdsTrackingUseCase(topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter): TopAdsTrackingUseCase
+    fun provideTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase
     fun provideEmptyStateRepository(): EmptyStateRepository
     fun provideFilterRepository(): FilterRepository
     fun provideTopAdsHeadlineRepository(): TopAdsHeadlineRepository

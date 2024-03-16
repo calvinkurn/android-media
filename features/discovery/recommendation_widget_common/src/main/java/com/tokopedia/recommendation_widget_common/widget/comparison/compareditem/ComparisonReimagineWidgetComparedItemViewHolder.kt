@@ -20,7 +20,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ComparisonReimagineWidgetComparedItemViewHolder(
     val view: View
-): RecyclerView.ViewHolder(view), ComparisonViewHolder {
+) : RecyclerView.ViewHolder(view), ComparisonViewHolder {
 
     private var binding: ItemComparisonReimagineComparedWidgetBinding? by viewBinding()
 
@@ -36,16 +36,15 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
         comparisonWidgetInterface: ComparisonWidgetInterface,
         recommendationTrackingModel: RecommendationTrackingModel,
         trackingQueue: TrackingQueue?,
-        userSession: UserSessionInterface,
+        userSession: UserSessionInterface
     ) {
-
         binding?.specsView?.setSpecsInfo(comparisonModel.specsModel)
         binding?.productCardView?.setProductModel(comparisonModel.productCardModel)
         if (comparisonModel.isClickable) {
             binding?.productCardView?.setOnClickListener {
                 if (comparisonModel.recommendationItem.isTopAds) {
                     val product = comparisonModel.recommendationItem
-                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
+                    TopAdsUrlHitter(context).hitClickUrl(
                         CLASS_NAME,
                         product.clickUrl,
                         product.productId.toString(),
@@ -92,4 +91,3 @@ class ComparisonReimagineWidgetComparedItemViewHolder(
         }
     }
 }
-

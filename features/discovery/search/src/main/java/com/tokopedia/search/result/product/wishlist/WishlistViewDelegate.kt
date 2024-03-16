@@ -28,7 +28,7 @@ class WishlistViewDelegate @Inject constructor(
     context: Context?,
     queryKeyProvider: QueryKeyProvider,
     fragmentProvider: FragmentProvider,
-    classNameProvider: ClassNameProvider,
+    classNameProvider: ClassNameProvider
 ) : WishlistView,
     ContextProvider by WeakReferenceContextProvider(context),
     QueryKeyProvider by queryKeyProvider,
@@ -67,15 +67,16 @@ class WishlistViewDelegate @Inject constructor(
         val view = getFragment().view ?: return
         val context = context ?: return
 
-        if (wishlistResult.isAddWishlist)
+        if (wishlistResult.isAddWishlist) {
             AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, view)
-        else
+        } else {
             AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, view)
+        }
     }
 
     override fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel) {
         context?.let {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(
+            TopAdsUrlHitter(it).hitClickUrl(
                 className,
                 productCardOptionsModel.topAdsClickUrl + CLICK_TYPE_WISHLIST,
                 productCardOptionsModel.productId,
@@ -96,18 +97,19 @@ class WishlistViewDelegate @Inject constructor(
                 ctaText,
                 wishlistResult.ctaActionV2,
                 view,
-                it,
+                it
             )
         }
     }
 
     private fun getWishlistErrorMessage(wishlistResult: WishlistResult) =
-        if (wishlistResult.messageV2.isNotEmpty())
+        if (wishlistResult.messageV2.isNotEmpty()) {
             wishlistResult.messageV2
-        else if (wishlistResult.isAddWishlist)
+        } else if (wishlistResult.isAddWishlist) {
             getFragment().getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
-        else
+        } else {
             getFragment().getString(Rwishlist.string.on_failed_remove_from_wishlist_msg)
+        }
 
     companion object {
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"

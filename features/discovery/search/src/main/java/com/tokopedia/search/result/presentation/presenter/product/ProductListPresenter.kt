@@ -125,58 +125,58 @@ import com.tokopedia.filter.quick.SortFilterItem as SortFilterItemReimagine
 
 @Suppress("LongParameterList")
 class ProductListPresenter @Inject constructor(
-        @param:Named(SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
+    @param:Named(SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
     private val searchProductFirstPageUseCase: UseCase<SearchProductModel>,
-        @param:Named(SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
+    @param:Named(SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
     private val searchProductLoadMoreUseCase: UseCase<SearchProductModel>,
-        private val userSession: UserSessionInterface,
-        @param:Named(LOCAL_CACHE_NAME)
+    private val userSession: UserSessionInterface,
+    @param:Named(LOCAL_CACHE_NAME)
     private val searchCoachMarkLocalCache: CoachMarkLocalCache,
-        @param:Named(GET_DYNAMIC_FILTER_USE_CASE)
+    @param:Named(GET_DYNAMIC_FILTER_USE_CASE)
     private val getDynamicFilterUseCase: Lazy<UseCase<DynamicFilterModel>>,
-        @param:Named(GET_PRODUCT_COUNT_USE_CASE)
+    @param:Named(GET_PRODUCT_COUNT_USE_CASE)
     private val getProductCountUseCase: Lazy<UseCase<String>>,
-        @param:Named(GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE)
+    @param:Named(GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE)
     private val getLocalSearchRecommendationUseCase: Lazy<UseCase<SearchProductModel>>,
-        @param:Named(SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
+    @param:Named(SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
     private val getInspirationCarouselChipsUseCase: Lazy<UseCase<InspirationCarouselChipsProductModel>>,
-        @param:Named(SAVE_LAST_FILTER_USE_CASE)
+    @param:Named(SAVE_LAST_FILTER_USE_CASE)
     private val saveLastFilterUseCase: Lazy<UseCase<Int>>,
-        private val addToCartUseCase: AddToCartUseCase,
-        @param:Named(GET_POST_ATC_CAROUSEL_USE_CASE)
+    private val addToCartUseCase: AddToCartUseCase,
+    @param:Named(GET_POST_ATC_CAROUSEL_USE_CASE)
     private val getPostATCCarouselUseCase: Lazy<UseCase<SearchInspirationCarousel>>,
-        private val topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter,
-        private val schedulersProvider: SchedulersProvider,
-        private val topAdsHeadlineHelper: TopAdsHeadlineHelper,
-        performanceMonitoringProvider: PerformanceMonitoringProvider,
-        private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
-        private val bannerDelegate: BannerPresenterDelegate,
-        private val requestParamsGenerator: RequestParamsGenerator,
-        private val paginationImpl: PaginationImpl,
-        private val lastFilterPresenterDelegate: LastFilterPresenterDelegate,
-        private val sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate,
-        private val bannedProductsPresenterDelegate: BannedProductsPresenterDelegate,
-        private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
-        private val broadMatchDelegate: BroadMatchPresenterDelegate,
-        private val suggestionPresenter: SuggestionPresenter,
-        private val tickerPresenter: TickerPresenter,
-        private val safeSearchPresenter: SafeSearchPresenterDelegate,
-        wishlistPresenterDelegate: WishlistPresenterDelegate,
-        dynamicFilterModelProvider: DynamicFilterModelProvider,
-        bottomSheetFilterPresenter: BottomSheetFilterPresenter,
-        private val visitableFactory: VisitableFactory,
-        private val inspirationCarouselPresenter: InspirationCarouselPresenterDelegate,
-        private val recommendationPresenterDelegate: RecommendationPresenterDelegate,
-        private val adsLowOrganic: AdsLowOrganic,
-        @Named(SearchConstant.AB_TEST_REMOTE_CONFIG)
+    private val topAdsUrlHitter: TopAdsUrlHitter,
+    private val schedulersProvider: SchedulersProvider,
+    private val topAdsHeadlineHelper: TopAdsHeadlineHelper,
+    performanceMonitoringProvider: PerformanceMonitoringProvider,
+    private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
+    private val bannerDelegate: BannerPresenterDelegate,
+    private val requestParamsGenerator: RequestParamsGenerator,
+    private val paginationImpl: PaginationImpl,
+    private val lastFilterPresenterDelegate: LastFilterPresenterDelegate,
+    private val sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate,
+    private val bannedProductsPresenterDelegate: BannedProductsPresenterDelegate,
+    private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
+    private val broadMatchDelegate: BroadMatchPresenterDelegate,
+    private val suggestionPresenter: SuggestionPresenter,
+    private val tickerPresenter: TickerPresenter,
+    private val safeSearchPresenter: SafeSearchPresenterDelegate,
+    wishlistPresenterDelegate: WishlistPresenterDelegate,
+    dynamicFilterModelProvider: DynamicFilterModelProvider,
+    bottomSheetFilterPresenter: BottomSheetFilterPresenter,
+    private val visitableFactory: VisitableFactory,
+    private val inspirationCarouselPresenter: InspirationCarouselPresenterDelegate,
+    private val recommendationPresenterDelegate: RecommendationPresenterDelegate,
+    private val adsLowOrganic: AdsLowOrganic,
+    @Named(SearchConstant.AB_TEST_REMOTE_CONFIG)
     private val remoteConfig: RemoteConfig,
-        private val responseCodeImpl: ResponseCodeImpl,
-        private val similarSearchOnBoardingPresenterDelegate: SimilarSearchOnBoardingPresenterDelegate,
-        private val inspirationKeywordPresenter: InspirationKeywordPresenterDelegate,
-        private val inspirationProductItemPresenter: InspirationProductPresenterDelegate,
-        private val reimagineRollence: ReimagineRollence,
-        private val lastClickProductIdProvider: LastClickedProductIdProviderImpl,
-        private val deduplication: Deduplication
+    private val responseCodeImpl: ResponseCodeImpl,
+    private val similarSearchOnBoardingPresenterDelegate: SimilarSearchOnBoardingPresenterDelegate,
+    private val inspirationKeywordPresenter: InspirationKeywordPresenterDelegate,
+    private val inspirationProductItemPresenter: InspirationProductPresenterDelegate,
+    private val reimagineRollence: ReimagineRollence,
+    private val lastClickProductIdProvider: LastClickedProductIdProviderImpl,
+    private val deduplication: Deduplication
 ) : BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,

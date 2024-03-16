@@ -15,7 +15,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ComparisonReimagineWidgetItemViewHolder constructor(
     val view: View
-): RecyclerView.ViewHolder(view), ComparisonViewHolder {
+) : RecyclerView.ViewHolder(view), ComparisonViewHolder {
 
     private var binding: ItemComparisonReimagineWidgetBinding? by viewBinding()
 
@@ -38,7 +38,7 @@ class ComparisonReimagineWidgetItemViewHolder constructor(
             binding?.productCardView?.setOnClickListener {
                 if (comparisonModel.recommendationItem.isTopAds) {
                     val product = comparisonModel.recommendationItem
-                    com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
+                    TopAdsUrlHitter(context).hitClickUrl(
                         CLASS_NAME,
                         product.clickUrl,
                         product.productId.toString(),
@@ -64,7 +64,7 @@ class ComparisonReimagineWidgetItemViewHolder constructor(
         binding?.productCardView?.addOnImpressionListener(comparisonModel) {
             if (comparisonModel.recommendationItem.isTopAds) {
                 val product = comparisonModel.recommendationItem
-                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
+                TopAdsUrlHitter(context).hitImpressionUrl(
                     CLASS_NAME,
                     product.trackerImageUrl,
                     product.productId.toString(),
@@ -85,4 +85,3 @@ class ComparisonReimagineWidgetItemViewHolder constructor(
         }
     }
 }
-

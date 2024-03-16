@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeRecommendationBannerTopAdsViewHolder(view: View) :
@@ -34,7 +35,7 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) :
     override fun bind(element: HomeRecommendationBannerTopAdsDataModel, listener: SmartListener) {
         loadImageTopAds(element, listener as HomeRecommendationListener)
         binding?.homeRecomTopadsImageView?.setOnClickListener {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
+            TopAdsUrlHitter(itemView.context).hitClickUrl(
                 this::class.java.simpleName,
                 element.topAdsImageUiModel?.adClickUrl,
                 "",
@@ -55,7 +56,7 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) :
                 recommendationBannerTopAdsDataModelDataModel,
                 object : ViewHintListener {
                     override fun onViewHint() {
-                        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                        TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                             this::class.java.simpleName,
                             recommendationBannerTopAdsDataModelDataModel.topAdsImageUiModel.adViewUrl,
                             "",

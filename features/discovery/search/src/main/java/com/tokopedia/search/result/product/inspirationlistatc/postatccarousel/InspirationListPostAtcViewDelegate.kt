@@ -33,17 +33,17 @@ import javax.inject.Inject
 
 @SearchScope
 class InspirationListPostAtcViewDelegate @Inject constructor(
-        private val trackingQueue: TrackingQueue,
-        private val searchNavigationListener: SearchNavigationListener?,
-        private val topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter,
-        private val atcVariantLauncher: AddToCartVariantBottomSheetLauncher,
-        private val searchParameterProvider: SearchParameterProvider,
-        classNameProvider: ClassNameProvider,
-        @SearchContext
+    private val trackingQueue: TrackingQueue,
+    private val searchNavigationListener: SearchNavigationListener?,
+    private val topAdsUrlHitter: TopAdsUrlHitter,
+    private val atcVariantLauncher: AddToCartVariantBottomSheetLauncher,
+    private val searchParameterProvider: SearchParameterProvider,
+    classNameProvider: ClassNameProvider,
+    @SearchContext
     context: Context,
-        fragmentProvider: FragmentProvider,
-        queryKeyProvider: QueryKeyProvider,
-): InspirationListPostAtcView,
+    fragmentProvider: FragmentProvider,
+    queryKeyProvider: QueryKeyProvider
+) : InspirationListPostAtcView,
     SearchParameterProvider by searchParameterProvider,
     ContextProvider by WeakReferenceContextProvider(context),
     FragmentProvider by fragmentProvider,
@@ -79,7 +79,7 @@ class InspirationListPostAtcViewDelegate @Inject constructor(
                 message,
                 Snackbar.LENGTH_SHORT,
                 Toaster.TYPE_NORMAL,
-                if (isSuccess) getFragment().getString(R.string.search_see_cart) else "",
+                if (isSuccess) getFragment().getString(R.string.search_see_cart) else ""
             ) {
                 if (isSuccess) openApplink(context, ApplinkConst.CART)
             }.show()
@@ -97,7 +97,7 @@ class InspirationListPostAtcViewDelegate @Inject constructor(
             shopId = product.shopId,
             trackerCDListName = getInspirationCarouselUnificationListName(
                 type,
-                product.componentId,
+                product.componentId
             )
         ) {
             val trackingData =
@@ -105,7 +105,7 @@ class InspirationListPostAtcViewDelegate @Inject constructor(
                     product,
                     getSearchParameter(),
                     it.cartId,
-                    product.minOrder.toIntOrZero(),
+                    product.minOrder.toIntOrZero()
                 )
 
             trackItemClick(trackingData)
@@ -156,7 +156,7 @@ class InspirationListPostAtcViewDelegate @Inject constructor(
     }
 
     private fun trackCarouselClickCloseAction(
-        option: InspirationCarouselDataView.Option,
+        option: InspirationCarouselDataView.Option
     ) {
         val searchParams = searchParameterProvider.getSearchParameter()?.getSearchParameterMap().orEmpty()
         val keyword = searchParameterProvider.getSearchParameter()?.getSearchQuery().orEmpty()

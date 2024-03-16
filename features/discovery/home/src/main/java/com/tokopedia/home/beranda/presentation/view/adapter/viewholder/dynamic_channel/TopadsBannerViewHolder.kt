@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home.databinding.HomeDcTopadsBannerBinding
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
@@ -72,7 +73,7 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
                     element.topAdsImageUiModel?.bannerId ?: ""
                 )
 
-                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(className).hitImpressionUrl(
+                TopAdsUrlHitter(className).hitImpressionUrl(
                     itemView.context,
                     viewUrl,
                     "",

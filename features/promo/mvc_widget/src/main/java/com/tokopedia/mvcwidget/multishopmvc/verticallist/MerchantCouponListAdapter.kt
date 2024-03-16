@@ -46,10 +46,10 @@ class MerchantCouponListAdapter(
     }
 
     private fun setData(vh: CouponListViewHolder, item: MultiShopModel) {
-        vh.multiShopView.setMultiShopModel(item,source)
+        vh.multiShopView.setMultiShopModel(item, source)
     }
 
-    override fun loadData(currentPageIndex: Int,vararg args: String?) {
+    override fun loadData(currentPageIndex: Int, vararg args: String?) {
         super.loadData(currentPageIndex, *args)
         viewmodel.merchantCouponData(currentPageIndex)
     }
@@ -71,7 +71,7 @@ class MerchantCouponListAdapter(
     private fun sendTopadsImpression(context: Context, adInfo: AdInfo?) {
         if (!eventSet.contains(adInfo?.AdID) && !adImpression.contains(adInfo?.AdID)) {
             eventSet.add(adInfo?.AdID)
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
+            TopAdsUrlHitter(context).hitImpressionUrl(
                 className,
                 adInfo?.AdViewUrl,
                 "",
@@ -96,7 +96,7 @@ class MerchantCouponListAdapter(
             val promotions = HashMap<String, Any>()
             promotions["promotions"] = listOf<Map<String, Any?>>(item)
             sendTopadsImpression(holder.itemView.context, items[holder.adapterPosition].AdInfo)
-            MvcTracker().viewMVCCoupon(eventLabel, promotions ,source)
+            MvcTracker().viewMVCCoupon(eventLabel, promotions, source)
         }
     }
 

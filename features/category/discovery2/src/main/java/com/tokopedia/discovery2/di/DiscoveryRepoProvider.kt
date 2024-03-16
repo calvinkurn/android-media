@@ -25,9 +25,14 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 class DiscoveryRepoProvider : RepositoryProvider {
     override fun providePageLoadTimePerformanceMonitoring(): PageLoadTimePerformanceInterface {
         return PageLoadTimePerformanceCallback(
-                DISCOVERY_PLT_PREPARE_METRICS,
-                DISCOVERY_PLT_NETWORK_METRICS,
-                DISCOVERY_PLT_RENDER_METRICS,0,0,0,0,null
+            DISCOVERY_PLT_PREPARE_METRICS,
+            DISCOVERY_PLT_NETWORK_METRICS,
+            DISCOVERY_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
     }
 
@@ -47,7 +52,7 @@ class DiscoveryRepoProvider : RepositoryProvider {
         return FilterGQLRepository()
     }
 
-    override fun provideTopAdsTrackingUseCase(topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter): TopAdsTrackingUseCase {
+    override fun provideTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase {
         return DiscoveryTopAdsTrackingUseCase(topAdsUrlHitter)
     }
 
@@ -58,5 +63,4 @@ class DiscoveryRepoProvider : RepositoryProvider {
     override fun provideTopAdsHeadlineRepository(): TopAdsHeadlineRepository {
         return DiscoveryTopAdsHeadlineRepository()
     }
-
 }

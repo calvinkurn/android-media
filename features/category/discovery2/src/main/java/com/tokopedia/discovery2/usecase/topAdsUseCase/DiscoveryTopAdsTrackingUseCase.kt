@@ -3,7 +3,7 @@ package com.tokopedia.discovery2.usecase.topAdsUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import javax.inject.Inject
 
-class DiscoveryTopAdsTrackingUseCase @Inject constructor(val topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter) : TopAdsTrackingUseCase(){
+class DiscoveryTopAdsTrackingUseCase @Inject constructor(val topAdsUrlHitter: TopAdsUrlHitter) : TopAdsTrackingUseCase() {
 
     override fun hitImpressions(className: String?, url: String, productId: String, productName: String, imageUrl: String) {
         if (!className.isNullOrEmpty() && url.isNotEmpty()) {

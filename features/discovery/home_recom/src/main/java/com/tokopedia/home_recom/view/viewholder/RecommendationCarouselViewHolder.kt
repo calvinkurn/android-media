@@ -31,57 +31,58 @@ class RecommendationCarouselViewHolder(val view: View, val listener: Recommendat
 
     override fun bind(element: RecommendationCarouselDataModel) {
         title.text = element.title
-        seeMore.visibility = if(element.appLinkSeeMore.isEmpty()) View.GONE else View.VISIBLE
+        seeMore.visibility = if (element.appLinkSeeMore.isEmpty()) View.GONE else View.VISIBLE
         seeMore.setOnClickListener {
             RouteManager.route(itemView.context, element.appLinkSeeMore)
         }
         setupRecyclerView(element)
     }
 
-    private fun setupRecyclerView(dataModel: RecommendationCarouselDataModel){
+    private fun setupRecyclerView(dataModel: RecommendationCarouselDataModel) {
         val products = dataModel.products
         recyclerView.bindCarouselProductCardViewGrid(
-                carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
-                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
-                        listener.onProductClick(
-                                productRecommendation.productItem,
-                                productRecommendation.productItem.type,
-                                productRecommendation.parentPosition,
-                                carouselProductCardPosition)
-                        if (productRecommendation.productItem.isTopAds) {
-                            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitClickUrl(
-                                    className,
-                                    productRecommendation.productItem.clickUrl,
-                                    productRecommendation.productItem.productId.toString(),
-                                    productRecommendation.productItem.name,
-                                    productRecommendation.productItem.imageUrl
-                            )
-                        }
+            carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
+                override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
+                    listener.onProductClick(
+                        productRecommendation.productItem,
+                        productRecommendation.productItem.type,
+                        productRecommendation.parentPosition,
+                        carouselProductCardPosition
+                    )
+                    if (productRecommendation.productItem.isTopAds) {
+                        TopAdsUrlHitter(itemView.context).hitClickUrl(
+                            className,
+                            productRecommendation.productItem.clickUrl,
+                            productRecommendation.productItem.productId.toString(),
+                            productRecommendation.productItem.name,
+                            productRecommendation.productItem.imageUrl
+                        )
                     }
-                },
-                carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
-                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
-                        return products.getOrNull(carouselProductCardPosition)?.productItem
-                    }
-
-                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
-                        if(productRecommendation.productItem.isTopAds){
-                            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context).hitImpressionUrl(
-                                    className,
-                                    productRecommendation.productItem.trackerImageUrl,
-                                    productRecommendation.productItem.productId.toString(),
-                                    productRecommendation.productItem.name,
-                                    productRecommendation.productItem.imageUrl
-                            )
-                        }
-                        listener.onProductImpression(productRecommendation.productItem)
-                    }
-                },
-                productCardModelList = products.map {
-                    it.productItem.toProductCardModel()
                 }
+            },
+            carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
+                override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                    return products.getOrNull(carouselProductCardPosition)?.productItem
+                }
+
+                override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
+                    if (productRecommendation.productItem.isTopAds) {
+                        TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                            className,
+                            productRecommendation.productItem.trackerImageUrl,
+                            productRecommendation.productItem.productId.toString(),
+                            productRecommendation.productItem.name,
+                            productRecommendation.productItem.imageUrl
+                        )
+                    }
+                    listener.onProductImpression(productRecommendation.productItem)
+                }
+            },
+            productCardModelList = products.map {
+                it.productItem.toProductCardModel()
+            }
 
         )
     }
