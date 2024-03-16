@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
-import com.tokopedia.topads.sdk.old.listener.TopAdsImageVieWApiResponseListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.v2.tdnbanner.widget.TopAdsImageView
 import com.tokopedia.unifycomponents.ImageUnify
@@ -40,28 +40,26 @@ class TopAdsBannerViewHolder(
                     if (topAdsBannerList.isNotEmpty()) {
                         bindTopAdsBanner(topAdsBannerList.first())
                     }
-
                 }
             }
 
             override fun onError(t: Throwable) {
-
             }
-
         })
     }
 
     private fun bindTopAdsBanner(topAdsBanner: TopAdsImageUiModel) {
         topAdsImageView.loadImage(topAdsBanner)
         topAdsImageView.setTopAdsImageViewImpression(object :
-            TopAdsImageViewImpressionListener {
-            override fun onTopAdsImageViewImpression(viewUrl: String) {
-                topAdsBannerListener?.onTopAdsViewImpression(
-                    topAdsBanner.bannerId
-                        ?: "", topAdsBanner.imageUrl ?: ""
-                )
-            }
-        })
+                TopAdsImageViewImpressionListener {
+                override fun onTopAdsImageViewImpression(viewUrl: String) {
+                    topAdsBannerListener?.onTopAdsViewImpression(
+                        topAdsBanner.bannerId
+                            ?: "",
+                        topAdsBanner.imageUrl ?: ""
+                    )
+                }
+            })
         shimmerView.hide()
         topAdsImageView.show()
     }
