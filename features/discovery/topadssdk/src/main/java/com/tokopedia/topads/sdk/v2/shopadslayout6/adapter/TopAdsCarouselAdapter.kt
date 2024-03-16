@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.view.adapter
+package com.tokopedia.topads.sdk.v2.shopadslayout6.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,23 +10,24 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.old.domain.model.TopAdsCarouselModel.TopAdsCarouselItem
-import com.tokopedia.topads.sdk.old.listener.TopAdsCarouselListener
+import com.tokopedia.topads.sdk.v2.shopadslayout6.listener.TopAdsCarouselListener
+import com.tokopedia.topads.sdk.v2.shopadslayout6.uimodel.TopAdsCarouselModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifyprinciples.Typography
 
 private const val PRODUCT_INDEX_ZERO = 0
 private const val PRODUCT_INDEX_ONE = 1
-
 class TopAdsCarouselAdapter(private val topAdsCarouselListener: TopAdsCarouselListener) : RecyclerView.Adapter<TopAdsCarouselAdapter.TopAdsCarouselViewHolder>() {
 
-    private val topAdsCarouselItemList = arrayListOf<TopAdsCarouselItem>()
+    private val topAdsCarouselItemList = arrayListOf<TopAdsCarouselModel.TopAdsCarouselItem>()
 
-    fun setList(list: List<TopAdsCarouselItem>) {
-        topAdsCarouselItemList.clear()
-        topAdsCarouselItemList.addAll(list)
-        notifyDataSetChanged()
+    fun setList(list: List<TopAdsCarouselModel.TopAdsCarouselItem>) {
+        val itemCount = itemCount
+        this.topAdsCarouselItemList.clear()
+        notifyItemRangeRemoved(0, itemCount)
 
+        this.topAdsCarouselItemList.addAll(list)
+        notifyItemRangeInserted(0, this.topAdsCarouselItemList.size)
     }
 
     inner class TopAdsCarouselViewHolder(itemView: View, private val topAdsCarouselListener: TopAdsCarouselListener) : RecyclerView.ViewHolder(itemView) {
@@ -38,7 +39,7 @@ class TopAdsCarouselAdapter(private val topAdsCarouselListener: TopAdsCarouselLi
         private val topAdsCarouselRoot = itemView.findViewById<CardUnify>(R.id.topAdsCarouselRoot)
 
 
-        fun bind(topAdsCarouselItem: TopAdsCarouselItem) {
+        fun bind(topAdsCarouselItem: TopAdsCarouselModel.TopAdsCarouselItem) {
 
             imageFirst.loadImage(topAdsCarouselItem.imageUrlOne)
             imageSecond.loadImage(topAdsCarouselItem.imageUrlTwo)
@@ -60,20 +61,20 @@ class TopAdsCarouselAdapter(private val topAdsCarouselListener: TopAdsCarouselLi
             }
             imageFirst.setOnClickListener {
                 topAdsCarouselListener.onProductItemClicked(
-                    PRODUCT_INDEX_ZERO,
+                        PRODUCT_INDEX_ZERO,
                     topAdsCarouselItem.position
                 )
             }
             imageSecond.setOnClickListener {
                 topAdsCarouselListener.onProductItemClicked(
-                    PRODUCT_INDEX_ONE,
+                        PRODUCT_INDEX_ONE,
                     topAdsCarouselItem.position
                 )
             }
 
         }
 
-        private fun loadBadge(topAdsCarouselItem: TopAdsCarouselItem) {
+        private fun loadBadge(topAdsCarouselItem: TopAdsCarouselModel.TopAdsCarouselItem) {
             val isImageShopBadgeVisible = getIsImageShopBadgeVisible(topAdsCarouselItem)
             brandBadge.shouldShowWithAction(isImageShopBadgeVisible) {
                 when {
@@ -84,7 +85,7 @@ class TopAdsCarouselAdapter(private val topAdsCarouselListener: TopAdsCarouselLi
             }
         }
 
-        private fun getIsImageShopBadgeVisible(topAdsCarouselItem: TopAdsCarouselItem): Boolean {
+        private fun getIsImageShopBadgeVisible(topAdsCarouselItem: TopAdsCarouselModel.TopAdsCarouselItem): Boolean {
             return topAdsCarouselItem.isOfficial
                     || topAdsCarouselItem.isPMPro
                     || topAdsCarouselItem.isGoldShop
@@ -108,5 +109,3 @@ class TopAdsCarouselAdapter(private val topAdsCarouselListener: TopAdsCarouselLi
     }
 
 }
-
-
