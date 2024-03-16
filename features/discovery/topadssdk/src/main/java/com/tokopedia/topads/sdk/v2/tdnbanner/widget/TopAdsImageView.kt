@@ -16,10 +16,10 @@ import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
-import com.tokopedia.topads.sdk.old.listener.TopAdsImageVieWApiResponseListener
-import com.tokopedia.topads.sdk.old.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.presentation.viewmodel.TopAdsImageViewViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageVieWApiResponseListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

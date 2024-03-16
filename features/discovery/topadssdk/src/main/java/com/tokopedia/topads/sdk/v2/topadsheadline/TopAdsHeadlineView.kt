@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.widget
+package com.tokopedia.topads.sdk.v2.topadsheadline
 
 import android.content.Context
 import android.util.AttributeSet
@@ -14,11 +14,12 @@ import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.old.listener.TopAdsAddToCartClickListener
-import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.old.listener.TopAdsItemImpressionListener
-import com.tokopedia.topads.sdk.old.listener.TopAdsShopFollowBtnClickListener
-import com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
+import com.tokopedia.topads.sdk.old.widget.TopAdsBannerView
+import com.tokopedia.topads.sdk.v2.listener.TopAdsAddToCartClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsShopFollowBtnClickListener
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.presentation.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.unifycomponents.LoaderUnify
 import java.lang.ref.WeakReference

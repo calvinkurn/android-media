@@ -12,17 +12,20 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.Product
-import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.old.listener.TopAdsItemImpressionListener
-import com.tokopedia.topads.sdk.old.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.utils.*
-import com.tokopedia.topads.sdk.old.widget.TopAdsHeadlineView
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsShopFollowBtnClickListener
+import com.tokopedia.topads.sdk.v2.topadsheadline.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
 const val TOPADS_HEADLINE_VALUE_SRC = "fav_product"
 
-class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionInterface,
-                               private val topAdsHeadlineListener: TopAdsHeadlineListener? = null) : AbstractViewHolder<TopadsHeadlineUiModel>(view), TopAdsShopFollowBtnClickListener, TopAdsBannerClickListener {
+class TopAdsHeadlineViewHolder(
+    view: View,
+    private val userSession: UserSessionInterface,
+    private val topAdsHeadlineListener: TopAdsHeadlineListener? = null
+) : AbstractViewHolder<TopadsHeadlineUiModel>(view), TopAdsShopFollowBtnClickListener, TopAdsBannerClickListener {
 
     private val topadsHeadlineView: TopAdsHeadlineView = view.findViewById(R.id.topads_headline_view)
     private var topadsHeadlineUiModel: TopadsHeadlineUiModel? = null
@@ -49,7 +52,8 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     }
 
     private fun getHeadlineAdsParam(topadsHeadLinePage: Int): String {
-        return UrlParamHelper.generateUrlParamString(mutableMapOf(
+        return UrlParamHelper.generateUrlParamString(
+            mutableMapOf(
                 PARAM_DEVICE to VALUE_DEVICE,
                 PARAM_PAGE to topadsHeadLinePage,
                 PARAM_EP to VALUE_EP,
@@ -58,7 +62,8 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
                 PARAM_SRC to TOPADS_HEADLINE_VALUE_SRC,
                 PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
                 PARAM_USER_ID to userSession.userId
-        ))
+            )
+        )
     }
 
     private fun onSuccessResponse(cpmModel: CpmModel) {
@@ -94,7 +99,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
             }
             topadsHeadlineUiModel?.let { setImpressionListener(it) }
         } else {
-            //remove old design
+            // remove old design
             removeTopadsView()
         }
     }
@@ -117,11 +122,10 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
         }
     }
 
-    private fun removeTopadsView(){
+    private fun removeTopadsView() {
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.hide()
         this.itemView.hide()
         topAdsHeadlineListener?.hideTopadsView(adapterPosition)
     }
-
 }

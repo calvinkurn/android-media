@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.domain.model
+package com.tokopedia.topads.sdk.v2.shopadslayout6.uimodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
 

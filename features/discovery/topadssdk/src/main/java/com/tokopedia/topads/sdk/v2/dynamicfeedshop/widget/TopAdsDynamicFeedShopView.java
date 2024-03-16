@@ -12,7 +12,7 @@ import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.v2.dynamicfeedshop.listener.LocalAdsClickListener;
-import com.tokopedia.topads.sdk.old.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.v2.dynamicfeedshop.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.v2.dynamicfeedshop.adapter.DynamicFeedShopAdapter;
 
 import java.util.List;

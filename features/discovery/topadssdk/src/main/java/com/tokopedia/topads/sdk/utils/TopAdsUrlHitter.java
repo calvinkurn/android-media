@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
-import com.tokopedia.topads.sdk.old.listener.TopAdsHeaderResponseListener;
+import com.tokopedia.topads.sdk.v2.listener.TopAdsHeaderResponseListener;
 
 public class TopAdsUrlHitter {
 
