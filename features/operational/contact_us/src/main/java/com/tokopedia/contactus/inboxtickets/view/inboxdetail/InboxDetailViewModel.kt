@@ -40,6 +40,7 @@ import com.tokopedia.contactus.utils.CommonConstant.INVALID_NUMBER
 import com.tokopedia.contactus.utils.CommonConstant.SIZE_ONE
 import com.tokopedia.contactus.utils.CommonConstant.SIZE_ZERO
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
+import com.tokopedia.csat_rating.dynamiccsat.domain.model.CsatModel
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -144,13 +145,16 @@ class InboxDetailViewModel @Inject constructor(
         getTicketDetails(ticketId)
     }
 
-    fun submitCsatRating(reason: String, rating: Int) {
+    fun submitCsatRating(reason: String, rating: Int, otherReason: String? = "", service: String? = "", dynamicReasons: List<String>? = emptyList()) {
         launchCatchError(
             block = {
                 val requestParams = submitRatingUseCase.createRequestParams(
                     getFirstCommentId(),
                     rating,
-                    reason
+                    reason,
+                    otherReason,
+                    service,
+                    dynamicReasons
                 )
                 val chipGetInboxDetail = submitRatingUseCase(requestParams).getInboxDetail()
                 if (chipGetInboxDetail.getErrorListMessage().isNotEmpty()) {
@@ -188,6 +192,10 @@ class InboxDetailViewModel @Inject constructor(
 
     fun getCSATBadReasonList(): List<BadCsatReasonListItem> {
         return currentState.csatReasonListBadReview
+    }
+
+    fun getDynamicCsatData(): CsatModel {
+        return currentState.dynamicCsat
     }
 
     fun refreshLayout() {
@@ -228,7 +236,8 @@ class InboxDetailViewModel @Inject constructor(
                                 ticketDetail = chipGetInboxDetail.getDataTicket().apply {
                                     isShowRating = false
                                 },
-                                isIssueClose = false
+                                isIssueClose = false,
+                                dynamicCsat = CsatMapper.mapCsatModel(ticketId, chipGetInboxDetail.getDataTicket().dynamicCsat)
                             )
                         }
                     } else {
@@ -237,7 +246,8 @@ class InboxDetailViewModel @Inject constructor(
                                 isLoading = false,
                                 csatReasonListBadReview = chipGetInboxDetail.getDataTicket()
                                     .getBadCsatReasons(),
-                                ticketDetail = chipGetInboxDetail.getDataTicket()
+                                ticketDetail = chipGetInboxDetail.getDataTicket(),
+                                dynamicCsat = CsatMapper.mapCsatModel(ticketId, chipGetInboxDetail.getDataTicket().dynamicCsat)
                             )
                         }
                     }
@@ -465,7 +475,6 @@ class InboxDetailViewModel @Inject constructor(
                 if (isCanUploadImageWithSecureUpload(chipUploadHostConfig)) {
                     securelyUploadedImages =
                         secureUploadUseCase.uploadSecureImage(files, chipUploadHostConfig, uniqIDs)
-
                 } else {
                     val errorMessage =
                         chipUploadHostConfig.getUploadHostConfig().getErrorMessage()
@@ -514,12 +523,12 @@ class InboxDetailViewModel @Inject constructor(
         )
     }
 
-    private fun isCanUploadImageWithSecureUpload(chipUploadHostConfig: ChipUploadHostConfig) : Boolean {
+    private fun isCanUploadImageWithSecureUpload(chipUploadHostConfig: ChipUploadHostConfig): Boolean {
         return chipUploadHostConfig.getUploadHostConfig().getUploadHostConfigData().getHost()
             .getServerID() != FAILURE_KEY_UPLOAD_HOST_CONFIG
     }
 
-    private fun isReplayingTicketSuccess(replayingTicketResponse: TicketReplyResponse) : Boolean{
+    private fun isReplayingTicketSuccess(replayingTicketResponse: TicketReplyResponse): Boolean {
         return replayingTicketResponse.getTicketReplay()
             .getTicketReplayData().status == REPLY_TICKET_RESPONSE_STATUS
     }
@@ -558,7 +567,7 @@ class InboxDetailViewModel @Inject constructor(
         )
     }
 
-    private fun isSendAttachmentSuccess(sendingAttachmentUrlResponse: StepTwoResponse) : Boolean {
+    private fun isSendAttachmentSuccess(sendingAttachmentUrlResponse: StepTwoResponse): Boolean {
         return sendingAttachmentUrlResponse.getTicketAttach().getAttachment().isSuccess > INDEX_ZERO
     }
 

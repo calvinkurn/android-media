@@ -19,6 +19,8 @@
         android:layout_height="16dp"
         app:icon_color_light_enable="@color/Unify_GN500"
         app:icon_color_light_disabled="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_GN500"
+        app:icon_color_night_disabled="@color/Unify_NN900"
         app:icon_name="SORT"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

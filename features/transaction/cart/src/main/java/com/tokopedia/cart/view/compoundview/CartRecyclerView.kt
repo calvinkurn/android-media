@@ -34,6 +34,10 @@ class CartRecyclerView : RecyclerView {
     }
 
     override fun onInterceptTouchEvent(e: MotionEvent?): Boolean {
+        if (shouldClearFocus() && this.focusedChild != null) {
+            clearFocus()
+        }
+
         if (shouldInterceptTouchEvent()) {
             val layouts = viewBinderHelper.getOpenedLayout()
             for (layout in layouts) {
@@ -65,6 +69,10 @@ class CartRecyclerView : RecyclerView {
             return true
         }
         return super.onInterceptTouchEvent(e)
+    }
+
+    private fun shouldClearFocus(): Boolean {
+        return true
     }
 
     private fun shouldInterceptTouchEvent(): Boolean {

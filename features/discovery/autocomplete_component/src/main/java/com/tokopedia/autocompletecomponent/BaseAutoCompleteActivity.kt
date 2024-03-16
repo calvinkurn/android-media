@@ -579,7 +579,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
     private fun renderSearchBarState(state: SearchBarState) {
         showMps()
-        if (state.isMpsAnimationEnabled) enableMpsIconAnimation() else disableMpsIconAnimation()
         if (state.shouldShowCoachMark) {
             showPlusIconCoachMark()
         }
@@ -606,16 +605,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     private fun showMps() {
         searchBarView.setMPSEnabled(true)
         searchBarView.showAddButton()
-    }
-
-    private fun enableMpsIconAnimation() {
-        searchBarView.setMPSAnimationEnabled(true)
-        searchBarView.startMpsAnimation()
-    }
-    private fun disableMpsIconAnimation() {
-        searchBarView.stopMpsAnimation()
-        searchBarView.setMPSAnimationEnabled(false)
-        searchBarView.enableAddButton()
     }
 
     override fun showSuggestionView() {
