@@ -3,7 +3,7 @@ package com.tokopedia.feedcomponent.analytics.topadstracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import javax.inject.Inject
 
-class SendTopAdsUseCase @Inject constructor(private val topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter) {
+class SendTopAdsUseCase @Inject constructor(private val topAdsUrlHitter: TopAdsUrlHitter) {
 
     private var className = SendTopAdsUseCase::class.java.name
 
