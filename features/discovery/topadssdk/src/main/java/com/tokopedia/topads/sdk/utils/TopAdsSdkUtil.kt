@@ -11,10 +11,9 @@ object TopAdsSdkUtil {
     private const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
 
     fun isTimerValid(saleStartDate: Date?, saleEndDate: Date?): Boolean {
-        if (saleStartDate == null || saleEndDate == null ) return false
+        if (saleStartDate == null || saleEndDate == null) return false
         val currentSystemTime = Calendar.getInstance().time
         return currentSystemTime.time > saleStartDate.time && currentSystemTime.time < saleEndDate.time
-
     }
 
     fun parseData(date: String?, timerFormat: String = DATE_FORMAT): Date? {
@@ -26,5 +25,9 @@ object TopAdsSdkUtil {
                 null
             }
         }
+    }
+
+    fun isEnableTopAdsSdkV2(): Boolean {
+        return true
     }
 }
