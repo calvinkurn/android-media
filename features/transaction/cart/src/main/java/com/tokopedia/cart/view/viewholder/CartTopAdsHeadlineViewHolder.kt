@@ -13,9 +13,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.old.listener.TopAdsAddToCartClickListener
-import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.old.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
 import com.tokopedia.topads.sdk.utils.PARAM_EP
 import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
@@ -27,8 +24,11 @@ import com.tokopedia.topads.sdk.utils.PARAM_USER_ID
 import com.tokopedia.topads.sdk.utils.UrlParamHelper
 import com.tokopedia.topads.sdk.utils.VALUE_DEVICE
 import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
-import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopProductUiModel
-import com.tokopedia.topads.sdk.old.widget.TopAdsHeadlineView
+import com.tokopedia.topads.sdk.v2.listener.TopAdsAddToCartClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopProductUiModel
+import com.tokopedia.topads.sdk.v2.topadsheadline.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
 class CartTopAdsHeadlineViewHolder(
