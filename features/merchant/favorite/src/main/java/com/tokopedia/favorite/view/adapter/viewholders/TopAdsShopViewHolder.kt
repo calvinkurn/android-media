@@ -38,7 +38,7 @@ class TopAdsShopViewHolder(
         val LAYOUT = R.layout.favorite_child_favorite_rec_shop
     }
 
-    private val topAdsUrlHitter by lazy { com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(itemView.context) }
+    private val topAdsUrlHitter by lazy { TopAdsUrlHitter(itemView.context) }
 
     private var recShopRecyclerView: RecyclerView =
         itemView.findViewById(R.id.rec_shop_recycler_view)

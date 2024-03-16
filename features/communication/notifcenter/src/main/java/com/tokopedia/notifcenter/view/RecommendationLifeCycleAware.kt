@@ -20,6 +20,7 @@ import com.tokopedia.notifcenter.view.listener.WishlistListener
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
@@ -156,7 +157,7 @@ class RecommendationLifeCycleAware constructor(
     }
 
     private fun onImpressionTopAds(item: RecommendationItem) {
-        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
+        TopAdsUrlHitter(context).hitImpressionUrl(
             fragment?.activity?.javaClass?.name,
             item.trackerImageUrl,
             item.productId.toString(),
@@ -229,7 +230,7 @@ class RecommendationLifeCycleAware constructor(
     }
 
     private fun onClickTopAdsWishlistItem(item: RecommendationItem) {
-        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
+        TopAdsUrlHitter(context).hitClickUrl(
             fragment?.activity?.javaClass?.name,
             item.clickUrl + CLICK_TYPE_WISHLIST,
             item.productId.toString(),
@@ -240,7 +241,7 @@ class RecommendationLifeCycleAware constructor(
     }
 
     private fun onClickTopAds(item: RecommendationItem) {
-        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
+        TopAdsUrlHitter(context).hitClickUrl(
             fragment?.activity?.javaClass?.name,
             item.clickUrl,
             item.productId.toString(),

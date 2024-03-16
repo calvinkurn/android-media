@@ -172,7 +172,7 @@ class TopAdsShopAdapter(
     private fun onShopClicked(item: TopAdsShopItem): View.OnClickListener {
         return View.OnClickListener { view ->
             val context = view.context
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(view.context).hitClickUrl(
+            TopAdsUrlHitter(view.context).hitClickUrl(
                     className,
                     item.shopClickUrl,
                     item.shopId,

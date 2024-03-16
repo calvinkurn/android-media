@@ -14,6 +14,7 @@ import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.LoaderUnify
 import timber.log.Timber
@@ -106,7 +107,7 @@ class SingleTdnView : BaseCustomView {
         tdnBanner.setOnClickListener {
             Timber.d("TDN Banner is clicked")
             imageData.applink?.let { applink -> onTdnBannerClicked(imageData) }
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
+            TopAdsUrlHitter(context).hitClickUrl(
                 this@SingleTdnView.javaClass.canonicalName,
                 imageData.adClickUrl,
                 "",
@@ -122,7 +123,7 @@ class SingleTdnView : BaseCustomView {
     ) {
         imageData.ImpressHolder?.let { ImpressHolder ->
             tdnBanner.addOnImpressionListener(ImpressHolder) {
-                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
+                TopAdsUrlHitter(context).hitImpressionUrl(
                     this.javaClass.name,
                     imageData.adViewUrl,
                     "",

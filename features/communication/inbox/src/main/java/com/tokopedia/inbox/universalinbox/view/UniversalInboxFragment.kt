@@ -64,6 +64,7 @@ import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.presentation.viewmodel.TopAdsHeadlineViewModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TdnBannerResponseListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -737,7 +738,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun onClickTopAds(item: RecommendationItem) {
-        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
+        TopAdsUrlHitter(context).hitClickUrl(
             activity?.javaClass?.name,
             item.clickUrl,
             item.productId.toString(),
@@ -769,7 +770,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun onImpressionTopAds(item: RecommendationItem) {
-        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
+        TopAdsUrlHitter(context).hitImpressionUrl(
             activity?.javaClass?.name,
             item.trackerImageUrl,
             item.productId.toString(),
@@ -835,7 +836,7 @@ class UniversalInboxFragment @Inject constructor(
     }
 
     private fun onClickTopAdsWishlistItem(item: RecommendationItem) {
-        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
+        TopAdsUrlHitter(context).hitClickUrl(
             activity?.javaClass?.name,
             item.clickUrl + CLICK_TYPE_WISHLIST,
             item.productId.toString(),

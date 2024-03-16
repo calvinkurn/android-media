@@ -19,6 +19,7 @@ import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
 import com.tokopedia.topads.sdk.presentation.viewmodel.TopAdsImageViewViewModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.v2.tdnvertical.listener.TdnVerticalBannerResponseListener
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -189,7 +190,7 @@ class TdnVerticalView : BaseCustomView {
         tdnBanner.setOnClickListener {
             Timber.d("TDN Banner is clicked")
             imageData.applink?.let { applink -> onTdnBannerClicked(imageData) }
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
+            TopAdsUrlHitter(context).hitClickUrl(
                 this@TdnVerticalView.javaClass.canonicalName,
                 imageData.adClickUrl,
                 "",
@@ -205,7 +206,7 @@ class TdnVerticalView : BaseCustomView {
     ) {
         imageData.ImpressHolder?.let { ImpressHolder ->
             tdnBanner.addOnImpressionListener(ImpressHolder) {
-                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
+                TopAdsUrlHitter(context).hitImpressionUrl(
                     this.javaClass.name,
                     imageData.adViewUrl,
                     "",

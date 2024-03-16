@@ -124,6 +124,7 @@ import com.tokopedia.sessioncommon.tracker.OclTracker
 import com.tokopedia.sessioncommon.util.OclUtils
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.CardUnify
@@ -441,7 +442,7 @@ open class HomeAccountUserFragment :
         }
         activity?.let {
             if (item.isTopAds) {
-                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it)
+                TopAdsUrlHitter(it)
                     .hitImpressionUrl(
                         it::class.qualifiedName,
                         item.trackerImageUrl,
@@ -458,7 +459,7 @@ open class HomeAccountUserFragment :
         homeAccountAnalytic.eventAccountProductClick(item, adapterPosition, widgetTitle)
         activity?.let {
             if (item.isTopAds) {
-                com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(
+                TopAdsUrlHitter(it).hitClickUrl(
                     it::class.qualifiedName,
                     item.clickUrl,
                     item.productId.toString(),
@@ -1721,7 +1722,7 @@ open class HomeAccountUserFragment :
 
     private fun hitWishlistClickUrl(item: ProductCardOptionsModel) {
         context?.let {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(it).hitClickUrl(
+            TopAdsUrlHitter(it).hitClickUrl(
                 this::class.java.simpleName,
                 item.topAdsClickUrl + CLICK_TYPE_WISHLIST,
                 item.productId,

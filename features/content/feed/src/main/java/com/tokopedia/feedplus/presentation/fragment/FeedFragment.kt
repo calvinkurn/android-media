@@ -258,8 +258,8 @@ class FeedFragment :
             feedEntrySource
         )
     }
-    private val topAdsUrlHitter: com.tokopedia.topads.sdk.utils.TopAdsUrlHitter by lazy {
-        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context)
+    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+        TopAdsUrlHitter(context)
     }
 
     private var commentEntrySource: ContentCommentBottomSheet.EntrySource? = null

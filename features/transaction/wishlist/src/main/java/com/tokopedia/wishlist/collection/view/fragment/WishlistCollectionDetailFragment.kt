@@ -63,6 +63,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -2483,7 +2484,7 @@ class WishlistCollectionDetailFragment :
             topAdsImageUiModel: TopAdsImageUiModel,
             position: Int
     ) {
-        com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
+        TopAdsUrlHitter(context).hitImpressionUrl(
             this::class.java.simpleName,
             topAdsImageUiModel.adViewUrl,
             "",
@@ -2502,7 +2503,7 @@ class WishlistCollectionDetailFragment :
         position: Int
     ) {
         if (recommendationItem.isTopAds) {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
+            TopAdsUrlHitter(context).hitImpressionUrl(
                 this::class.java.simpleName,
                 recommendationItem.trackerImageUrl,
                 recommendationItem.productId.toString(),
@@ -2524,7 +2525,7 @@ class WishlistCollectionDetailFragment :
             userSession.userId
         )
         if (recommendationItem.isTopAds) {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
+            TopAdsUrlHitter(context).hitClickUrl(
                 this::class.java.simpleName,
                 recommendationItem.clickUrl,
                 recommendationItem.productId.toString(),
@@ -2551,7 +2552,7 @@ class WishlistCollectionDetailFragment :
         position: Int
     ) {
         if (recommendationItem.isTopAds) {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
+            TopAdsUrlHitter(context).hitImpressionUrl(
                 this::class.java.simpleName,
                 recommendationItem.trackerImageUrl,
                 recommendationItem.productId.toString(),
@@ -2576,7 +2577,7 @@ class WishlistCollectionDetailFragment :
             userSession.userId
         )
         if (recommendationItem.isTopAds) {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
+            TopAdsUrlHitter(context).hitClickUrl(
                 this::class.java.simpleName,
                 recommendationItem.clickUrl,
                 recommendationItem.productId.toString(),

@@ -1104,7 +1104,7 @@ class WishlistCollectionFragment :
 
     override fun onRecommendationItemImpression(recommendationItem: RecommendationItem, position: Int) {
         if (recommendationItem.isTopAds) {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitImpressionUrl(
+            TopAdsUrlHitter(context).hitImpressionUrl(
                 this::class.java.simpleName,
                 recommendationItem.trackerImageUrl,
                 recommendationItem.productId.toString(),
@@ -1118,7 +1118,7 @@ class WishlistCollectionFragment :
     override fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int) {
         WishlistAnalytics.clickRecommendationItem(recommendationItem, position, userSession.userId)
         if (recommendationItem.isTopAds) {
-            com.tokopedia.topads.sdk.utils.TopAdsUrlHitter(context).hitClickUrl(
+            TopAdsUrlHitter(context).hitClickUrl(
                 this::class.java.simpleName,
                 recommendationItem.clickUrl,
                 recommendationItem.productId.toString(),
