@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.listener
+package com.tokopedia.topads.sdk.v2.dynamicfeedshop.listener
 
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
