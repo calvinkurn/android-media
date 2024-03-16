@@ -4,10 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,17 +16,12 @@ import com.bumptech.glide.Glide;
 
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.old.listener.TopAdsItemImpressionListener;
-
-import java.util.List;
-
-import kotlin.ReplaceWith;
+import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener;
 
 /**
  * @author by errysuprayogi on 4/3/17.
