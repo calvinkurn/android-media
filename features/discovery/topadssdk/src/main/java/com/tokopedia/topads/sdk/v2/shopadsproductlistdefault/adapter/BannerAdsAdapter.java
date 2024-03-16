@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.view.adapter;
+package com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.adapter;
 
 import android.content.Context;
 
@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.common.adapter.Item;
 import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder;
-import com.tokopedia.topads.sdk.old.view.adapter.factory.BannerAdsTypeFactory;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.adapter.factory.BannerAdsTypeFactory;
 
 import java.util.ArrayList;
 import java.util.List;

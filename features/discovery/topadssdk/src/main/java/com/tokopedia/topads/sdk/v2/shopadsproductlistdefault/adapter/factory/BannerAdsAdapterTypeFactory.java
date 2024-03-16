@@ -1,20 +1,20 @@
-package com.tokopedia.topads.sdk.old.view.adapter.factory;
+package com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.adapter.factory;
 
 import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.common.adapter.exception.TypeNotSupportedException;
 import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder;
-import com.tokopedia.topads.sdk.old.listener.TopAdsAddToCartClickListener;
-import com.tokopedia.topads.sdk.old.listener.TopAdsBannerClickListener;
-import com.tokopedia.topads.sdk.old.listener.TopAdsItemImpressionListener;
-import com.tokopedia.topads.sdk.old.view.adapter.viewholder.banner.BannerProductShimmerViewHolder;
-import com.tokopedia.topads.sdk.old.view.adapter.viewholder.banner.BannerShopViewHolder;
-import com.tokopedia.topads.sdk.old.view.adapter.viewholder.banner.BannerShopProductViewHolder;
-import com.tokopedia.topads.sdk.old.view.adapter.viewholder.banner.BannerShowMoreViewHolder;
-import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerProductShimmerUiModel;
-import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopProductUiModel;
-import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopUiModel;
-import com.tokopedia.topads.sdk.old.view.adapter.viewmodel.banner.BannerShopViewMoreUiModel;
+import com.tokopedia.topads.sdk.v2.listener.TopAdsAddToCartClickListener;
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerProductShimmerUiModel;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopViewMoreUiModel;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder.BannerProductShimmerViewHolder;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder.BannerShopProductViewHolder;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder.BannerShopViewHolder;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.viewholder.BannerShowMoreViewHolder;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopProductUiModel;
+import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopUiModel;
 
 /**
  * Created by errysuprayogi on 4/16/18.
