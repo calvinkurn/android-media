@@ -7,9 +7,9 @@ import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_RADIUS
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.databinding.TdnBannerLayoutBinding
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TdnBannerViewHolder(itemView: View) : BaseViewHolder(itemView) {

@@ -8,8 +8,8 @@ import com.tokopedia.inbox.databinding.UniversalInboxTopadsBannerItemBinding
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.EIGHT_DP
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
-import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TdnBannerResponseListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class UniversalInboxTopAdsBannerViewHolder constructor(

@@ -5,9 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.InboxTopAdsBannerUiModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
-import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.widget.TdnBannerView
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TdnBannerResponseListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.widget.TdnBannerView
 import com.tokopedia.unifycomponents.toPx
 
 class InboxTopAdsBannerViewHolder constructor(

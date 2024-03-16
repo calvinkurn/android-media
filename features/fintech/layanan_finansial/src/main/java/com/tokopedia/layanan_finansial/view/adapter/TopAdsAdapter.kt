@@ -8,10 +8,10 @@ import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.view.models.TopAdsImageModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.utils.ImpresionTask
-import com.tokopedia.topads.sdk.widget.TopAdsImageView
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.widget.TopAdsImageView
 
 
 class TopAdsAdapter(

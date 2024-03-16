@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageUiModel
-import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
+import com.tokopedia.topads.sdk.v2.tdnbanner.listener.TdnBannerResponseListener
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.binding.viewBinding

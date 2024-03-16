@@ -10,7 +10,7 @@ import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductTopAdsImageViewLayoutBinding
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsImageViewClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SearchProductTopAdsImageViewHolder(
