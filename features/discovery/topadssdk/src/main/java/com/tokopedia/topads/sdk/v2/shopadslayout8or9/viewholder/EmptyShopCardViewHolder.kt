@@ -1,11 +1,10 @@
-package com.tokopedia.topads.sdk.old.shopwidgetthreeproducts.viewholder
+package com.tokopedia.topads.sdk.v2.shopadslayout8or9.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.topads.sdk.R
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.shopwidgetthreeproducts.model.EmptyShopCardModel
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.v2.shopadslayout8or9.model.EmptyShopCardModel
+import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
 
 class EmptyShopCardViewHolder(
     itemView: View,
