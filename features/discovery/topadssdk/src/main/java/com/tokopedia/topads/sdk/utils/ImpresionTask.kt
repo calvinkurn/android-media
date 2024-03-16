@@ -6,9 +6,9 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.sdk.common.constants.TopAdsConstants.TopAdsClickUrlTrackerConstant.RESPONSE_HEADER_KEY
-import com.tokopedia.topads.sdk.old.listener.ImpressionListener
-import com.tokopedia.topads.sdk.old.listener.TopAdsHeaderResponseListener
 import com.tokopedia.topads.sdk.utils.ImpressionTaskAlert.Companion.getInstance
+import com.tokopedia.topads.sdk.v2.listener.ImpressionListener
+import com.tokopedia.topads.sdk.v2.listener.TopAdsHeaderResponseListener
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -57,7 +57,6 @@ class ImpresionTask {
     constructor(className: String?, topAdsHeaderResponseListener: TopAdsHeaderResponseListener) {
         this.topAdsHeaderResponseListener = topAdsHeaderResponseListener
         className?.let { taskAlert = getInstance(it) }
-
     }
 
     constructor(className: String?, userSession: UserSessionInterface?) {
@@ -72,7 +71,7 @@ class ImpresionTask {
                     if (taskAlert != null) {
                         taskAlert!!.track(url, fileName, methodName, lineNumber)
                     }
-                    //Request 1
+                    // Request 1
                     val token = object : TypeToken<DataResponse<String>>() {}.type
                     val restRequest = RestRequest.Builder(url, token).build()
                     val result = restRepository.getResponse(restRequest).getData<String>()
@@ -98,10 +97,10 @@ class ImpresionTask {
                 try {
                     taskAlert?.track(url, fileName, methodName, lineNumber)
 
-                    //Request 1
+                    // Request 1
                     val token = object : TypeToken<DataResponse<String>>() {}.type
                     val restRequest = RestRequest.Builder(url, token).build()
-                    val headers = restRepository.getResponse(restRequest).headers;
+                    val headers = restRepository.getResponse(restRequest).headers
                     if (topAdsHeaderResponseListener != null) {
                         if (headers != null) {
                             topAdsHeaderResponseListener?.onSuccess(headers[RESPONSE_HEADER_KEY] ?: "")
