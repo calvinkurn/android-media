@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.old.listener
+package com.tokopedia.topads.sdk.v2.shopadslayout6.listener
 
 
 interface TopAdsCarouselListener {
