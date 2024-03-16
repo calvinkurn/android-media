@@ -90,7 +90,6 @@
         <include
             layout="@layout/layout_ads_banner_header_cta_reimagine"
             android:id="@+id/topAdsBtnSeeMore"
-            android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -127,7 +126,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.tokopedia.topads.sdk.old.widget.ToadsCarousel
+    <com.tokopedia.topads.sdk.v2.shopadslayout6.widget.ToadsCarousel
         android:id="@+id/TopAdsCarousel"
         android:layout_height="wrap_content"
         android:layout_width="@dimen/unify_space_0"
@@ -139,7 +138,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.tokopedia.topads.sdk.old.widget.ShopAdsWithOneProductReimagineView
+    <com.tokopedia.topads.sdk.v2.shopadslayout5.widget.ShopAdsWithOneProductReimagineView
         android:id="@+id/shopAdsProductView"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -151,7 +150,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.tokopedia.topads.sdk.old.widget.ShopAdsWithThreeProducts
+    <com.tokopedia.topads.sdk.v2.shopadslayout8or9.widget.ShopAdsWithThreeProducts
         android:id="@+id/shopAdsWithThreeProducts"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
@@ -161,7 +160,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <com.tokopedia.topads.sdk.old.widget.ShopAdsSingleItemHorizontalLayout
+    <com.tokopedia.topads.sdk.v2.shopadslayout10.widget.ShopAdsSingleItemHorizontalLayout
         android:id="@+id/shopAdsWithSingleProductHorizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -171,7 +170,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.tokopedia.topads.sdk.old.widget.ShopAdsSingleItemVerticalLayout
+    <com.tokopedia.topads.sdk.v2.shopadslayout11.widget.ShopAdsSingleItemVerticalLayout
         android:id="@+id/shopAdsWithSingleProductVertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
