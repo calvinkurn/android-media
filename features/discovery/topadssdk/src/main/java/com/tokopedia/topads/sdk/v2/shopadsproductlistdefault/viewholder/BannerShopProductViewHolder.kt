@@ -6,19 +6,22 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.common.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.v2.listener.TopAdsAddToCartClickListener
 import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.v2.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.v2.shopadsproductlistdefault.uimodel.BannerShopProductUiModel
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 /**
  * Created by errysuprayogi on 4/16/18.
  */
 
-class BannerShopProductViewHolder(container: View, private val topAdsBannerClickListener: TopAdsBannerClickListener?,
-                                  private val impressionListener: TopAdsItemImpressionListener?,
-                                  private val addToCartClickListener: TopAdsAddToCartClickListener?) : AbstractViewHolder<BannerShopProductUiModel?>(container) {
+class BannerShopProductViewHolder(
+    container: View,
+    private val topAdsBannerClickListener: TopAdsBannerClickListener?,
+    private val impressionListener: TopAdsItemImpressionListener?,
+    private val addToCartClickListener: TopAdsAddToCartClickListener?
+) : AbstractViewHolder<BannerShopProductUiModel?>(container) {
     private val productCardGridView: ProductCardGridView = itemView.findViewById(R.id.product_item)
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(itemView.context)
@@ -30,15 +33,26 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
             productCardGridView.run {
                 applyCarousel()
                 setProductModel(productCardViewModel)
-                setImageProductViewHintListener(model, object : ViewHintListener {
-                    override fun onViewHint() {
-                        impressionListener?.onImpressionProductAdsItem(adapterPosition, model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition-1), model.cpmData)
-                        impressionListener?.onImpressionHeadlineAdsItem(adapterPosition, model.cpmData)
-                    }
-                })
+
+                val impressHolder = model.cpmData.cpm.cpmShop.products.getOrNull(bindingAdapterPosition)?.imageProduct
+
+                impressHolder?.let {
+                    setImageProductViewHintListener(
+                        it,
+                        object : ViewHintListener {
+                            override fun onViewHint() {
+                                impressionListener?.onImpressionProductAdsItem(adapterPosition, model.cpmData.cpm.cpmShop.products.getOrNull(adapterPosition - 1), model.cpmData)
+                                impressionListener?.onImpressionHeadlineAdsItem(adapterPosition, model.cpmData)
+                            }
+                        }
+                    )
+                }
                 setOnClickListener {
-                    topAdsBannerClickListener?.onBannerAdsClicked(adapterPosition,
-                            model.appLink, model.cpmData)
+                    topAdsBannerClickListener?.onBannerAdsClicked(
+                        adapterPosition,
+                        model.appLink,
+                        model.cpmData
+                    )
                     topAdsUrlHitter.hitClickUrl(className, model.adsClickUrl, "", "", "")
                 }
                 addToCartClickListener?.let { listener ->
@@ -56,5 +70,4 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
         var LAYOUT = R.layout.layout_ads_banner_shop_a_product
         private val className = BannerShopProductViewHolder::class.java.simpleName
     }
-
 }
