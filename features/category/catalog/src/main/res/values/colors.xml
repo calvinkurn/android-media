@@ -22,4 +22,10 @@
     <color name="catalog_dms_dark_color_text_common">#F5F6FF</color>
     <color name="catalog_dms_light_color_text_common">#212121</color>
     <color name="catalog_dms_green">#00AA5B</color>
+    <color name="catalog_dms_pastel_pink">#FFB2C2</color>
+    <color name="catalog_dms_coral_red">#F94D63</color>
+    <color name="catalog_dms_whispering_white">#FFF5F6</color>
+    <color name="catalog_dms_sunshine_yellow">#FFC400</color>
+    <color name="catalog_dms_misty_blue">#BFC9D9</color>
+    <color name="catalog_dms_golden_rod">#FFA617</color>
 </resources>
