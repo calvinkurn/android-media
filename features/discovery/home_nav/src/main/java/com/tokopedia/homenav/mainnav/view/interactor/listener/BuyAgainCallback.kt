@@ -88,13 +88,11 @@ class BuyAgainCallback(
     }
 
     override fun onBuyAgainWidgetImpression(models: List<BuyAgainModel>, position: Int) {
-        mainNavListener.putEEToTrackingQueue(
-            BuyAgainTracker.impression(
-                userId = mainNavListener.getUserId(),
-                pageDetail = mDetail,
-                position = position,
-                models = models
-            ) as HashMap<String, Any>
+        BuyAgainTracker.impression(
+            userId = mainNavListener.getUserId(),
+            pageDetail = mDetail,
+            position = position,
+            models = models
         )
     }
 

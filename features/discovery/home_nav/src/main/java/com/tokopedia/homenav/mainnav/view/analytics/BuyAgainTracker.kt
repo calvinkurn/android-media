@@ -1,5 +1,3 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package com.tokopedia.homenav.mainnav.view.analytics
 
 import android.os.Bundle
@@ -10,8 +8,6 @@ import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
 object BuyAgainTracker : BaseTrackerConst() {
-
-    private const val COMMON_CATEGORY = "global menu"
 
     private const val GLOBAL_MENU_ITEM = "/global_menu - %s"
     private const val COMPONENT_NAME = "buy_again_card"
@@ -27,9 +23,36 @@ object BuyAgainTracker : BaseTrackerConst() {
     ): Map<String, Any> {
         val pageSource = pageDetail?.source?.asTrackingPageSource(pageDetail.path)
 
+        val bundle = Bundle().apply {
+            putString(Event.KEY, Event.PRODUCT_VIEW)
+            putString(Action.KEY, IMPRESSION_ACTION)
+            putString(Category.KEY, MainNavTrackingConst.GLOBAL_MENU)
+            putString(Label.KEY, COMPONENT_NAME)
+            putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+            putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+            putString(ItemList.KEY, GLOBAL_MENU_ITEM.format(COMPONENT_NAME))
+            putString(TrackerId.KEY, IMPRESSION_TRACKER_ID)
+            putString(UserId.KEY, userId)
+            putParcelableArray(
+                Items.KEY, models.mapIndexed { _, model ->
+                Bundle().apply {
+                    putString("index", (position + 1).toString())
+                    putString("dimension39", GLOBAL_MENU_ITEM.format(COMPONENT_NAME))
+                    putString("dimension80", "")
+                    putString("item_brand", "")
+                    putString("item_category", model.category)
+                    putString("item_id", model.productId)
+                    putString("item_name", model.productName)
+                    putString("item_variant", "")
+                    putString("price", model.priceInt)
+                }
+            }.toTypedArray()
+            )
+        }
+
         return BaseTrackerBuilder().constructBasicPromotionView(
-            event = Event.PRODUCT_VIEW,
-            eventCategory = COMMON_CATEGORY,
+            event = "view_item_list",
+            eventCategory = MainNavTrackingConst.GLOBAL_MENU,
             eventAction = IMPRESSION_ACTION,
             eventLabel = COMPONENT_NAME,
             promotions = models.mapIndexed { _, model ->
@@ -48,44 +71,6 @@ object BuyAgainTracker : BaseTrackerConst() {
             .appendCustomKeyValue(ItemList.KEY, GLOBAL_MENU_ITEM.format(COMPONENT_NAME))
             .build()
     }
-
-    /**
-     * {
-     *   "event": "view_item_list",
-     *   "eventAction": "product list impression",
-     *   "eventCategory": "global menu",
-     *   "eventLabel": "{component_name}",
-     *   "trackerId": "49873",
-     *   "businessUnit": "home & browse",
-     *   "currentSite": "tokopediamarketplace",
-     *   "item_list": "/global_menu - {component_name}",
-     *   "items": [
-     *     {
-     *       "dimension40": "/global_menu - {component_name}",
-     *       "dimension90": "{page_name/page_title}.{banner_component_name/nav_source}.{banner_name/hard_code}.{category_id/srp_page_id}",
-     *       "index": "{this is integer}",
-     *       "item_brand": "{product_brand}",
-     *       "item_category": "{product_category_id}",
-     *       "item_id": "{product_id}",
-     *       "item_name": "{product_name}",
-     *       "item_variant": "{product_variant}",
-     *       "price": "{this is float}"
-     *     },
-     *     {
-     *       "dimension40": "/global_menu - {component_name}",
-     *       "dimension90": "{page_name/page_title}.{banner_component_name/nav_source}.{banner_name/hard_code}.{category_id/srp_page_id}",
-     *       "index": "{this is integer}",
-     *       "item_brand": "{product_brand}",
-     *       "item_category": "{product_category_id}",
-     *       "item_id": "{product_id}",
-     *       "item_name": "{product_name}",
-     *       "item_variant": "{product_variant}",
-     *       "price": "{this is float}"
-     *     }
-     *   ],
-     *   "userId": "{user_id}"
-     * }
-     */
 
     // @Link: https://mynakama.tokopedia.com/datatracker/requestdetail/view/1890 (row: 19)
     private const val PRODUCT_CLICK_ACTION = "click product list"
@@ -111,10 +96,10 @@ object BuyAgainTracker : BaseTrackerConst() {
                     putString("dimension45", model.cartId)
                     putString("dimension90", "")
                     putString("item_brand", "")
-                    putString("item_category", "")
+                    putString("item_category", model.category)
                     putString("item_id", model.productId)
                     putString("item_name", model.productName)
-                    putString("item_variant", "")
+                    putString("item_variant", model.variant)
                     putString("price", model.price)
                 }
             )
@@ -147,7 +132,7 @@ object BuyAgainTracker : BaseTrackerConst() {
                     putString("dimension45", model.cartId)
                     putString("dimension90", "")
                     putString("item_brand", "")
-                    putString("item_category", "")
+                    putString("item_category", model.category)
                     putString("item_id", model.productId)
                     putString("item_name", model.productName)
                     putString("item_variant", model.variant)

@@ -21,12 +21,13 @@ object BuyAgainMapper {
             shopId = item.shopId.toString(),
             shopName = item.shopName,
             shopType = item.shopType,
-            hasVariant = item.isUseQuantityEditor(),
+            hasVariant = item.isProductHasParentID(),
             bannerUrl = item.imageUrl,
             price = item.price,
             priceInt = item.priceInt.toString(),
             slashPrice = item.slashedPrice,
-            discount = item.discountPercentage
+            discount = item.discountPercentage,
+            category = item.categoryBreadcrumbs
         )
     }
 }

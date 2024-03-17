@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import com.tokopedia.homenav.databinding.LayoutLightProductCardAtcBinding
 import com.tokopedia.homenav.R
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadImageRounded
 
 typealias BuyAgainModel = BuyAgainView.Data
@@ -64,6 +65,7 @@ class BuyAgainView @JvmOverloads constructor(
         binding.txtSlashPrice.text = slashPrice
         binding.txtDiscount.text = discount
 
+        binding.txtSlashPrice.strikethrough()
         binding.txtSlashPrice.show()
         binding.txtDiscount.show()
     }
@@ -81,6 +83,7 @@ class BuyAgainView @JvmOverloads constructor(
         val priceInt: String,
         val slashPrice: String,
         val discount: String,
+        val category: String,
         val variant: String = ""
     )
 
