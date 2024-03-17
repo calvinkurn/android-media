@@ -8,13 +8,14 @@ import com.tokopedia.home_component.databinding.GlobalComponent4squareMissionWid
 import com.tokopedia.home_component.decoration.StaticMissionWidgetItemDecoration
 import com.tokopedia.home_component.viewholders.mission.v3.Mission4SquareWidgetListener
 import com.tokopedia.home_component.viewholders.mission.v3.MissionWidgetAdapter
-import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
 
-class Mission4SquareWidgetViewHolder constructor(
+class Mission4SquareWidgetViewHolder(
     view: View,
     private val listener: Mission4SquareWidgetListener
 ) : AbstractViewHolder<MissionWidgetListDataModel>(view) {
@@ -31,7 +32,7 @@ class Mission4SquareWidgetViewHolder constructor(
         if (element == null) return
 
         setupHeaderView(element.header)
-        setupMissionWidgetList(element.missionWidgetList)
+        setupMissionWidgetList(element)
     }
 
     private fun setupHeaderView(header: ChannelHeader?) {
@@ -39,8 +40,24 @@ class Mission4SquareWidgetViewHolder constructor(
         binding?.txtHeader?.text = header.name
     }
 
-    private fun setupMissionWidgetList(data: List<MissionWidgetDataModel>) {
-        mAdapter?.submitList(data.take(4)) //TODO: create mapper for this one!
+    private fun setupMissionWidgetList(element: MissionWidgetListDataModel) {
+        if (element.isShowMissionWidget()) {
+            when (element.status) {
+                MissionWidgetListDataModel.STATUS_LOADING -> {
+                    shouldShowShimmerAndHideDataList()
+                }
+                MissionWidgetListDataModel.STATUS_ERROR -> {
+                    shouldHideSimmerAndShowDataList()
+                }
+                else -> {
+                    shouldHideSimmerAndShowDataList()
+
+                    //TODO: create mapper for this one!
+                    val data = element.missionWidgetList.take(4)
+                    mAdapter?.submitList(data)
+                }
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -55,6 +72,16 @@ class Mission4SquareWidgetViewHolder constructor(
         binding?.lstCard?.addItemDecoration(StaticMissionWidgetItemDecoration())
         binding?.lstCard?.layoutManager = layoutManager
         binding?.lstCard?.adapter = mAdapter
+    }
+
+    private fun shouldHideSimmerAndShowDataList() {
+        binding?.shimmering?.root?.gone()
+        binding?.lstCard?.show()
+    }
+
+    private fun shouldShowShimmerAndHideDataList() {
+        binding?.shimmering?.root?.show()
+        binding?.lstCard?.gone()
     }
 
     companion object {
