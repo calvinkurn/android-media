@@ -15,7 +15,9 @@ import com.tokopedia.linter.detectors.xml.XMLDetector
 import org.w3c.dom.Attr
 
 class TkpdDesignAttributeDetector : Detector(), XmlScanner {
-
+    val EXCLUDED_MODULES = listOf(
+        "tkpddesign"
+    )
     val listLayout = listOf(
         "bottomsheetbuilder_list_divider",
         "closeable_bottom_sheet_dialog",
@@ -191,6 +193,9 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
 
     override fun visitAttribute(context: XmlContext, attribute: Attr) {
         val attributeValue = attribute.nodeValue
+        if (isInExcludedModule(context)) {
+            return // Skip lint check for this module
+        }
         if (listLayout.contains(
                 attributeValue.substringAfter(
                     "@layout/"
@@ -205,6 +210,16 @@ class TkpdDesignAttributeDetector : Detector(), XmlScanner {
                 "Detected using tkpddesign or ambiguous with tkpddesign. Using component from the tkpddesign package is not allowed. Because TkpdDesign will be deleted soon. You can also consult @edwinnrw or @faisalramd"
             context.report(ISSUE, attribute, context.getLocation(attribute), message)
         }
+    }
+
+    private fun isInExcludedModule(context: XmlContext): Boolean {
+        val sourceFilePath = context.file.path
+        for (excludedModule in EXCLUDED_MODULES) {
+            if (sourceFilePath.contains(excludedModule.replace("/", java.io.File.separator))) {
+                return true
+            }
+        }
+        return false
     }
 
     companion object {
