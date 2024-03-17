@@ -214,6 +214,8 @@ internal object MainVisitableMapper {
         return this
     }
 
+    fun List<ShoppingListHorizontalProductCardItemUiModel>.resetIndices() = mapIndexed { index, uiModel -> uiModel.copy(index = index) }
+
     fun MutableList<Visitable<*>>.addProductCarts(
         products: List<ShoppingListCartProductItemUiModel>
     ): MutableList<Visitable<*>> {

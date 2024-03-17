@@ -22,6 +22,7 @@ data class ShoppingListHorizontalProductCardItemUiModel(
     val minOrder: Int = Int.ZERO,
     val shopId: String = String.EMPTY,
     val warehouseId: String = String.EMPTY,
+    val index: Int = Int.ZERO,
     @TokoNowLayoutState val state: Int = TokoNowLayoutState.SHOW,
     val productLayoutType: ShoppingListProductLayoutType
 ): Visitable<ShoppingListHorizontalProductCardItemTypeFactory>, ImpressHolder() {

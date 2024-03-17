@@ -14,6 +14,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.UiState
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowErrorViewHolder
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowShoppingListAnotherOptionBinding
+import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.bottomsheet.ShoppingListAnotherOptionBottomSheetAdapterTypeFactory
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListComponent
@@ -53,6 +54,9 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModel: TokoNowShoppingListAnotherOptionBottomSheetViewModel
+
+    @Inject
+    lateinit var analytic: ShoppingListAnalytic
 
     /**
      * -- private variable section --
@@ -209,7 +213,20 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         override fun onClickAddToShoppingList(
             product: ShoppingListHorizontalProductCardItemUiModel
         ) {
+            analytic.shoppingListHorizontalProductCardAnalytic.trackClickAddToShoppingListOnProduct(product)
             viewModel.addToWishlist(product)
+        }
+
+        override fun onClickProduct(
+            product: ShoppingListHorizontalProductCardItemUiModel
+        ) {
+            analytic.shoppingListHorizontalProductCardAnalytic.trackClickProduct(product)
+        }
+
+        override fun onImpressProduct(
+            product: ShoppingListHorizontalProductCardItemUiModel
+        ) {
+            analytic.shoppingListHorizontalProductCardAnalytic.trackImpressProduct(product)
         }
     }
 
@@ -219,6 +236,7 @@ class TokoNowShoppingListAnotherOptionBottomSheet : BottomSheetUnify() {
         onClickCloseListener: () -> Unit
     ) {
         setOnDismissListener {
+            analytic.trackClickCloseButtonOnAnotherOptionBottomSheet()
             val isDataUpdated = viewModel.availableProducts != availableProducts
             if (isDataUpdated) onClickCloseListener.invoke()
             dismiss()

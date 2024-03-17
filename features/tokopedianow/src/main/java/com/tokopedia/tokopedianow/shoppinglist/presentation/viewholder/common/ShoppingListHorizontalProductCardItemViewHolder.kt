@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -69,6 +70,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
                     setupRightButton(data)
                     setupCheckbox(data)
                     setupAppLink(data)
+                    setupImpression(data)
                 }
                 else -> { /* nothing to do */ }
             }
@@ -159,7 +161,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
     ) {
         tpOtherOption.showIfWithBlock(isOos(data.productLayoutType)) {
             setOnClickListener {
-                listener?.onClickOtherOptions(data.id)
+                listener?.onClickAnotherOption(data)
             }
         }
     }
@@ -239,7 +241,7 @@ class ShoppingListHorizontalProductCardItemViewHolder(
             cbProduct.setOnCheckedChangeListener(null)
             cbProduct.isChecked = data.isSelected
             cbProduct.setOnCheckedChangeListener { _, isSelected ->
-                listener?.onSelectCheckbox(data.id, isSelected)
+                listener?.onSelectCheckbox(data, isSelected)
             }
         } else {
             iuProduct.setMargin(
@@ -309,7 +311,16 @@ class ShoppingListHorizontalProductCardItemViewHolder(
         root.setOnClickListener {
             if (data.appLink.isNotBlank()) {
                 RouteManager.route(root.context, data.appLink)
+                listener?.onClickProduct(data)
             }
+        }
+    }
+
+    private fun ItemTokopedianowShoppingListHorizontalProductCardBinding.setupImpression(
+        data: ShoppingListHorizontalProductCardItemUiModel
+    ) {
+        root.addOnImpressionListener(data) {
+            listener?.onImpressProduct(data)
         }
     }
 
@@ -319,16 +330,22 @@ class ShoppingListHorizontalProductCardItemViewHolder(
 
     interface ShoppingListHorizontalProductCardItemListener {
         fun onSelectCheckbox(
-            productId: String,
+            product: ShoppingListHorizontalProductCardItemUiModel,
             isSelected: Boolean
         )
-        fun onClickOtherOptions(
-            productId: String
+        fun onClickAnotherOption(
+            product: ShoppingListHorizontalProductCardItemUiModel
         )
         fun onClickDeleteIcon(
             product: ShoppingListHorizontalProductCardItemUiModel
         )
         fun onClickAddToShoppingList(
+            product: ShoppingListHorizontalProductCardItemUiModel
+        )
+        fun onClickProduct(
+            product: ShoppingListHorizontalProductCardItemUiModel
+        )
+        fun onImpressProduct(
             product: ShoppingListHorizontalProductCardItemUiModel
         )
     }

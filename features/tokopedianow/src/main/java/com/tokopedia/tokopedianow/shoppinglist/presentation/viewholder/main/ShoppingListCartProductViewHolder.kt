@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.TypographyUtil.setRightImageDrawable
@@ -33,11 +34,16 @@ class ShoppingListCartProductViewHolder(
         }
     }
 
-    override fun bind(element: ShoppingListCartProductUiModel) {
+    override fun bind(
+        data: ShoppingListCartProductUiModel
+    ) {
         binding?.apply {
             rvProductInCart.adapter = ShoppingListProductInCartAdapter(
-                itemList = element.productList
+                itemList = data.productList
             )
+            root.addOnImpressionListener(data) {
+                listener?.onImpressWidget()
+            }
         }
     }
 
@@ -63,5 +69,6 @@ class ShoppingListCartProductViewHolder(
 
     interface ShoppingListCartProductListener {
         fun onClickSeeDetail()
+        fun onImpressWidget()
     }
 }

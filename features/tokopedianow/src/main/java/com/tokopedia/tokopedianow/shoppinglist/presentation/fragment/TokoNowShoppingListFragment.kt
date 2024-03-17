@@ -34,7 +34,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -68,10 +67,12 @@ import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowShoppingListBi
 import com.tokopedia.tokopedianow.home.domain.model.Data
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
+import com.tokopedia.tokopedianow.shoppinglist.analytic.ShoppingListAnalytic
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductLayoutType
 import com.tokopedia.tokopedianow.shoppinglist.util.ShoppingListProductState
 import com.tokopedia.tokopedianow.shoppinglist.di.component.DaggerShoppingListComponent
 import com.tokopedia.tokopedianow.shoppinglist.di.module.ShoppingListModule
+import com.tokopedia.tokopedianow.shoppinglist.helper.AbstractShoppingListHorizontalProductCardItemListener
 import com.tokopedia.tokopedianow.shoppinglist.presentation.activity.TokoNowShoppingListActivity
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapter
 import com.tokopedia.tokopedianow.shoppinglist.presentation.adapter.main.ShoppingListAdapterTypeFactory
@@ -80,7 +81,6 @@ import com.tokopedia.tokopedianow.shoppinglist.presentation.decoration.ShoppingL
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.CoachMarkModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_MULTI_PRODUCTS_TO_CART
-import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.common.ShoppingListHorizontalProductCardItemViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListExpandCollapseViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListRetryViewHolder
 import com.tokopedia.tokopedianow.shoppinglist.presentation.viewholder.main.ShoppingListTopCheckAllViewHolder
@@ -122,6 +122,9 @@ class TokoNowShoppingListFragment :
 
     @Inject
     lateinit var viewModel: TokoNowShoppingListViewModel
+
+    @Inject
+    lateinit var analytic: ShoppingListAnalytic
 
     /**
      * -- private variable section --
@@ -198,7 +201,7 @@ class TokoNowShoppingListFragment :
             setupOnScrollListener()
         }
 
-        loadLayout()
+        viewModel.loadLayout()
     }
 
     override fun onResume() {
@@ -305,9 +308,16 @@ class TokoNowShoppingListFragment :
         viewModel.isProductAvailable.collect { isAvailable ->
             binding.apply {
                 isStickyTopCheckAllScrollingBehaviorEnabled = isAvailable
-                bottomBulkAtcView.showWithCondition(isAvailable)
+
+                if (isAvailable) {
+                    bottomBulkAtcView.show()
+                    analytic.shoppingListBottomBulkAtcAnalytic.trackImpressMiniCartShoppingList()
+                    showBottomBulkAtcCoachMark()
+                } else {
+                    bottomBulkAtcView.hide()
+                }
+
                 adjustRecyclerViewBottomPadding()
-                if (isAvailable) showBottomBulkAtcCoachMark()
             }
         }
     }
@@ -381,20 +391,34 @@ class TokoNowShoppingListFragment :
                     ADD_WISHLIST -> {
                         showToaster(data) {
                             if (data.any is ShoppingListHorizontalProductCardItemUiModel) {
-                                viewModel.addToWishlist(data.any)
+                                viewModel.addToWishlist(
+                                    onTrackAddToWishlist = {
+                                       analytic.shoppingListHorizontalProductCardAnalytic.trackClickAddToShoppingListOnProduct(data.any)
+                                    },
+                                    product = data.any
+                                )
                             }
                         }
                     }
                     DELETE_WISHLIST -> {
                         showToaster(data) {
                             if (data.any is ShoppingListHorizontalProductCardItemUiModel) {
-                                viewModel.deleteFromWishlist(data.any)
+                                viewModel.deleteFromWishlist(
+                                    onTrackDeleteFromWishlist = {
+                                        analytic.shoppingListHorizontalProductCardAnalytic.trackClickDeleteButtonOnProduct(data.any)
+                                    },
+                                    product = data.any
+                                )
                             }
                         }
                     }
                     ADD_MULTI_PRODUCTS_TO_CART -> {
                         showToaster(data) {
-                            viewModel.addMultiProductsToCart()
+                            viewModel.addMultiProductsToCart(
+                                onTrackAddToCartMulti = {
+                                    analytic.shoppingListBottomBulkAtcAnalytic.trackClickAtcMiniCartShoppingList(it)
+                                }
+                            )
                         }
                         if(data.any != null && data.any is MiniCartSimplifiedData) {
                             binding.miniCartWidget.updateData(data.any)
@@ -411,6 +435,12 @@ class TokoNowShoppingListFragment :
     ) {
         viewModel.isCoachMarkShown.collect { isShown ->
             if (isShown) binding.showPageCoachMark()
+        }
+    }
+
+    private suspend fun collectIsPageImpressionTracked() {
+        viewModel.isPageImpressionTracked.collect { isTracked ->
+            if (isTracked) analytic.trackImpressShoppingListPage()
         }
     }
 
@@ -468,15 +498,8 @@ class TokoNowShoppingListFragment :
                 launch { collectLoaderDialogShown() }
                 launch { collectToasterErrorShown(this@collectStateFlow) }
                 launch { collectIsCoachMarkShown(this@collectStateFlow) }
+                launch { collectIsPageImpressionTracked() }
             }
-        }
-    }
-
-    private fun loadLayout() {
-        if (viewModel.isOutOfCoverage()) {
-            viewModel.loadOutOfCoverageState()
-        } else {
-            viewModel.loadLayout()
         }
     }
 
@@ -590,7 +613,11 @@ class TokoNowShoppingListFragment :
 
     private fun FragmentTokopedianowShoppingListBinding.setupBottomBulkAtc() {
         bottomBulkAtcView.onAtcClickListener {
-            viewModel.addMultiProductsToCart()
+            viewModel.addMultiProductsToCart(
+                onTrackAddToCartMulti = {
+                    analytic.shoppingListBottomBulkAtcAnalytic.trackClickAtcMiniCartShoppingList(it)
+                }
+            )
         }
     }
 
@@ -693,19 +720,17 @@ class TokoNowShoppingListFragment :
 
     private fun createHeaderCallback() = object : TokoNowThematicHeaderViewHolder.TokoNowHeaderListener {
         override fun onClickCtaHeader() {
-            RouteManager.route(
-                context,
-                ApplinkConstInternalTokopediaNow.REPURCHASE
-            )
+            analytic.trackClickBuyMoreOnTopNav()
+            RouteManager.route(context, ApplinkConstInternalTokopediaNow.REPURCHASE)
+        }
+
+        override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView) {
+            getRefreshLayout()?.setContentChildViewPullRefresh(view)
         }
 
         override fun onClickChooseAddressWidgetTracker() { /* do nothing */ }
 
         override fun onCloseTicker() { /* do nothing */ }
-
-        override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView) {
-            getRefreshLayout()?.setContentChildViewPullRefresh(view)
-        }
     }
 
     private fun createNavRecyclerViewOnScrollCallback(
@@ -765,18 +790,20 @@ class TokoNowShoppingListFragment :
         )
     }
 
-    private fun createHorizontalProductCardItemCallback() = object : ShoppingListHorizontalProductCardItemViewHolder.ShoppingListHorizontalProductCardItemListener {
+    private fun createHorizontalProductCardItemCallback() = object: AbstractShoppingListHorizontalProductCardItemListener() {
         override fun onSelectCheckbox(
-            productId: String,
+            product: ShoppingListHorizontalProductCardItemUiModel,
             isSelected: Boolean
         ) {
-            viewModel.selectAvailableProduct(productId, isSelected)
+            analytic.shoppingListHorizontalProductCardAnalytic.trackClickCheckboxOnProduct(product)
+            viewModel.selectAvailableProduct(product.id, isSelected)
         }
 
-        override fun onClickOtherOptions(
-            productId: String
+        override fun onClickAnotherOption(
+            product: ShoppingListHorizontalProductCardItemUiModel
         ) {
-            val bottomSheet = TokoNowShoppingListAnotherOptionBottomSheet.newInstance(productId)
+            analytic.shoppingListHorizontalProductCardAnalytic.trackClickAnotherOptionOnProduct(product)
+            val bottomSheet = TokoNowShoppingListAnotherOptionBottomSheet.newInstance(product.id)
             bottomSheet.show(
                 fm = childFragmentManager,
                 availableProducts = viewModel.getAvailableProducts(),
@@ -789,13 +816,35 @@ class TokoNowShoppingListFragment :
         override fun onClickDeleteIcon(
             product: ShoppingListHorizontalProductCardItemUiModel
         ) {
-            viewModel.deleteFromWishlist(product)
+            viewModel.deleteFromWishlist(
+                onTrackDeleteFromWishlist = {
+                    analytic.shoppingListHorizontalProductCardAnalytic.trackClickDeleteButtonOnProduct(product)
+                },
+                product = product
+            )
         }
 
         override fun onClickAddToShoppingList(
             product: ShoppingListHorizontalProductCardItemUiModel
         ) {
-            viewModel.addToWishlist(product)
+            viewModel.addToWishlist(
+                onTrackAddToWishlist = {
+                    analytic.shoppingListHorizontalProductCardAnalytic.trackClickAddToShoppingListOnProduct(product)
+                },
+                product = product
+            )
+        }
+
+        override fun onClickProduct(
+            product: ShoppingListHorizontalProductCardItemUiModel
+        ) {
+            analytic.shoppingListHorizontalProductCardAnalytic.trackClickProduct(product)
+        }
+
+        override fun onImpressProduct(
+            product: ShoppingListHorizontalProductCardItemUiModel
+        ) {
+            analytic.shoppingListHorizontalProductCardAnalytic.trackImpressProduct(product)
         }
     }
 
@@ -842,17 +891,24 @@ class TokoNowShoppingListFragment :
             productState: ShoppingListProductState,
             isSelected: Boolean
         ) {
+            analytic.trackClickCheckboxTopCheckAll()
             viewModel.selectAllAvailableProducts(productState, isSelected)
         }
     }
 
     private fun createTopCheckAllCheckedChangeCallback() = CompoundButton.OnCheckedChangeListener { _, isSelected ->
+        analytic.trackClickCheckboxTopCheckAll()
         viewModel.selectAllAvailableProducts(isSelected)
     }
 
     private fun createCartProductCallback() = object : ShoppingListCartProductViewHolder.ShoppingListCartProductListener {
         override fun onClickSeeDetail() {
+            analytic.shoppingListCartProductAnalytic.trackClickSeeDetail()
             getMiniCart()?.showMiniCartListBottomSheet(this@TokoNowShoppingListFragment)
+        }
+
+        override fun onImpressWidget() {
+            analytic.shoppingListCartProductAnalytic.trackImpressCartProductWidget()
         }
     }
 

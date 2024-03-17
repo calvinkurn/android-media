@@ -84,6 +84,7 @@ import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.filteredBy
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.getExpandCollapse
 import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.mapAvailableShoppingList
+import com.tokopedia.tokopedianow.shoppinglist.domain.mapper.MainVisitableMapper.resetIndices
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.RecommendationModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel
 import com.tokopedia.tokopedianow.shoppinglist.presentation.model.ToasterModel.Event.ADD_MULTI_PRODUCTS_TO_CART
@@ -152,6 +153,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     private val _toasterData: MutableStateFlow<ToasterModel?> = MutableStateFlow(null)
     private val _bottomBulkAtcData: MutableStateFlow<BottomBulkAtcModel?> = MutableStateFlow(null)
     private val _isCoachMarkShown: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _isPageImpressionTracked: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private var hasLoadedLayout: Boolean = false
     private var mMiniCartData: MiniCartSimplifiedData? = null
@@ -184,6 +186,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
         get() = _toasterData.asStateFlow()
     val isCoachMarkShown
         get() = _isCoachMarkShown.asStateFlow()
+    val isPageImpressionTracked
+        get() = _isPageImpressionTracked.asStateFlow()
 
     /**
      * -- private suspend function section --
@@ -302,7 +306,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                                 productState = newState,
                                 isSelected = areAllAvailableProductsSelected
                             )
-                            .addProducts(newDisplayedItems)
+                            .addProducts(newDisplayedItems.resetIndices())
                             .doIf(
                                 predicate = areAvailableProductsMoreThanDefaultDisplayed,
                                 then = {
@@ -337,7 +341,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
                         this@layout
                             .addTitle("$EMPTY_STOCK_WIDGET_TITLE(${filteredUnavailableProducts.size})")
-                            .addProducts(newDisplayedItems)
+                            .addProducts(newDisplayedItems.resetIndices())
                             .doIf(
                                 predicate = areUnavailableProductsMoreThanDefaultDisplayed,
                                 then = {
@@ -392,7 +396,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                             }
                         )
                         .addTitle(recommendationModel.title)
-                        .addProducts(filteredRecommendedProducts)
+                        .addProducts(filteredRecommendedProducts.resetIndices())
                         .doIf(
                             predicate = recommendationModel.hasNext,
                             then = {
@@ -541,6 +545,8 @@ class TokoNowShoppingListViewModel @Inject constructor(
          */
 
         hasLoadedLayout = true
+
+        _isPageImpressionTracked.value = true
 
         _isCoachMarkShown.value = true
     }
@@ -712,11 +718,19 @@ class TokoNowShoppingListViewModel @Inject constructor(
         )
     }
 
-    /**
-     * -- public function section --
-     */
+    private fun loadFirstPage() {
+        loadLayoutJob?.cancel()
+        loadLayoutJob = launchCatchError(
+            block = {
+                loadSuccessState()
+            },
+            onError = { throwable ->
+                loadErrorState(throwable)
+            }
+        )
+    }
 
-    fun loadOutOfCoverageState() {
+    private fun loadOutOfCoverageState() {
         mutableLayout.clear()
 
         mutableLayout
@@ -739,16 +753,16 @@ class TokoNowShoppingListViewModel @Inject constructor(
         _isNavToolbarScrollingBehaviourEnabled.value = false
     }
 
+    /**
+     * -- public function section --
+     */
+
     fun loadLayout() {
-        loadLayoutJob?.cancel()
-        loadLayoutJob = launchCatchError(
-            block = {
-                loadSuccessState()
-            },
-            onError = { throwable ->
-                loadErrorState(throwable)
-            }
-        )
+        if (isOutOfCoverage()) {
+            loadOutOfCoverageState()
+        } else {
+            loadFirstPage()
+        }
     }
 
     fun refreshLayout() {
@@ -970,6 +984,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     fun addToWishlist(
+        onTrackAddToWishlist: () -> Unit,
         product: ShoppingListHorizontalProductCardItemUiModel
     ) {
         launchCatchError(
@@ -992,6 +1007,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 val response = addToWishlistUseCase.executeOnBackground()
                 if (response is com.tokopedia.usecase.coroutines.Success) {
                     onSuccessAddingToWishlist(product)
+                    onTrackAddToWishlist.invoke()
                 } else {
                     onErrorAddingToWishlist(product)
                 }
@@ -1003,6 +1019,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
     }
 
     fun deleteFromWishlist(
+        onTrackDeleteFromWishlist: () -> Unit,
         product: ShoppingListHorizontalProductCardItemUiModel
     ) {
         launchCatchError(
@@ -1025,6 +1042,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
                 val response = deleteFromWishlistUseCase.executeOnBackground()
                 if (response is com.tokopedia.usecase.coroutines.Success) {
                     onSuccessDeletingFromWishlist(product)
+                    onTrackDeleteFromWishlist.invoke()
                 } else {
                     onErrorDeletingFromWishlist(product)
                 }
@@ -1035,7 +1053,9 @@ class TokoNowShoppingListViewModel @Inject constructor(
         )
     }
 
-    fun addMultiProductsToCart() {
+    fun addMultiProductsToCart(
+        onTrackAddToCartMulti: (List<AddToCartMultiParam>) -> Unit
+    ) {
         launchCatchError(
             block = {
                 _toasterData.value = null
@@ -1060,6 +1080,7 @@ class TokoNowShoppingListViewModel @Inject constructor(
 
                 if (response is com.tokopedia.usecase.coroutines.Success && response.data.atcMulti.buyAgainData.success == SUCCESS_STATUS) {
                     onSuccessAddingToCart(addToCartMultiParams.size)
+                    onTrackAddToCartMulti.invoke(addToCartMultiParams)
                 } else if (response is com.tokopedia.usecase.coroutines.Success) {
                     onErrorAddingToCart(response.data.atcMulti.buyAgainData.message.firstOrNull().orEmpty())
                 } else if (response is Fail) {
