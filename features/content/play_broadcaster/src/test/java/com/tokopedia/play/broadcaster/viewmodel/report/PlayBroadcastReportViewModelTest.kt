@@ -50,7 +50,7 @@ class PlayBroadcastReportViewModelTest {
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         coEvery { mockRepo.getBroadcastingConfig(any(), any()) } returns uiModelBuilder.buildBroadcastingConfigUiModel()
 
-        coEvery { mockRepo.getReportSummary(any(), any()) } returns mockLiveReportSummary
+        coEvery { mockRepo.getLiveReportSummary(any(), any()) } returns mockLiveReportSummary
         coEvery { mockRepo.getReportProductSummary(any()) } returns mockProductReportSummary
     }
 
@@ -88,7 +88,8 @@ class PlayBroadcastReportViewModelTest {
 
     @Test
     fun `playBroadcaster_report_getReportSummary_error`() {
-        coEvery { mockRepo.getReportSummary(any(), any()) } throws mockException
+
+        coEvery { mockRepo.getLiveReportSummary(any(), any()) } throws mockException
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -133,14 +134,14 @@ class PlayBroadcastReportViewModelTest {
 
         robot.use {
 
-            coEvery { mockRepo.getReportSummary(any(), any()) } returns mockPrevLiveReportSummary
+            coEvery { mockRepo.getLiveReportSummary(any(), any()) } returns mockPrevLiveReportSummary
 
             val prevState = it.recordState {
                 getAccountConfiguration()
                 it.getViewModel().submitAction(PlayBroadcastAction.GetLiveReportSummary)
             }
 
-            coEvery { mockRepo.getReportSummary(any(), any()) } returns mockCurrLiveReportSummary
+            coEvery { mockRepo.getLiveReportSummary(any(), any()) } returns mockCurrLiveReportSummary
 
             val currState = it.recordState {
                 it.getViewModel().submitAction(PlayBroadcastAction.GetLiveReportSummary)
