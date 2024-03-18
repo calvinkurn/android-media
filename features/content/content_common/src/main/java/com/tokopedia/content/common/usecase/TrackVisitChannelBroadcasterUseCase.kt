@@ -13,6 +13,8 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 05/02/21.
  * duplicate: com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
+ * TODO(): Need to remove this class and com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
+ *          use BroadcasterReportTrackViewerUseCase for visit content
  */
 @GqlQuery(TrackVisitChannelBroadcasterUseCase.QUERY_NAME, TrackVisitChannelBroadcasterUseCase.QUERY)
 class TrackVisitChannelBroadcasterUseCase @Inject constructor(
