@@ -95,7 +95,7 @@ class ShopAdsProductListDefaultView(
         list?.isNestedScrollingEnabled = false
 
         if (isReimagine) {
-            renderAllComponentsReimagine(container, cpmData, appLink, adsClickUrl)
+            renderAllComponentsReimagine(cpmData, appLink, adsClickUrl)
         } else {
             renderAllComponentsNonReimagine(container, cpmData, appLink, adsClickUrl)
         }
@@ -120,14 +120,12 @@ class ShopAdsProductListDefaultView(
         renderBannerAdapterList(cpmData, appLink, adsClickUrl)
     }
 
-    private fun renderAllComponentsReimagine(container: View?, cpmData: CpmData, appLink: String, adsClickUrl: String) {
-        setContainerBackground(container, cpmData)
+    private fun renderAllComponentsReimagine(cpmData: CpmData, appLink: String, adsClickUrl: String) {
         setShopView(cpmData)
         setShopDetailClickListener(cpmData)
         setShopImage(cpmData)
         renderLabelMerchantVouchers(cpmData)
-        renderHeaderSeeMoreReimagine(cpmData, appLink, adsClickUrl)
-        renderBannerAdapterList(cpmData, appLink, adsClickUrl)
+        renderBannerAdapterListReimagine(cpmData, appLink, adsClickUrl)
     }
 
     private fun setContainerBackground(container: View?, cpmData: CpmData) {
@@ -235,6 +233,45 @@ class ShopAdsProductListDefaultView(
                 hideFlashSaleToko(topAdsFlashSaleTimer)
             }
         }
+    }
+
+    private fun renderBannerAdapterListReimagine(cpmData: CpmData, appLink: String, adsClickUrl: String) {
+        val items = ArrayList<Item<*>>()
+        val shop = cpmData.cpm.cpmShop
+
+        if (cpmData.cpm.cpmShop.products.isNotEmpty()) {
+            val productCardModelList = getProductCardModels(cpmData.cpm.cpmShop.products, hasAddProductToCartButton)
+            for (i in 0 until productCardModelList.size) {
+                if (i < ITEM_3) {
+                    val product = shop.products[i]
+                    val model = BannerShopProductUiModel(
+                        cpmData,
+                        productCardModelList[i],
+                        product.applinks,
+                        product.image.m_url,
+                        product.imageProduct.imageClickUrl
+                    ).apply {
+                        productId = product.id
+                        productName = product.name
+                        productMinOrder = product.productMinimumOrder
+                        productCategory = product.categoryBreadcrumb
+                        productPrice = product.priceFormat
+                        shopId = cpmData.cpm.cpmShop.id
+                    }
+                    items.add(model)
+                }
+            }
+
+            renderHeaderSeeMoreReimagine(cpmData, appLink, adsClickUrl)
+
+            if (productCardModelList.size < ITEM_3) {
+                items.add(BannerShopViewMoreUiModel(cpmData, appLink, adsClickUrl))
+            }
+        } else {
+            repeat(ITEM_3) { items.add(BannerProductShimmerUiModel()) }
+        }
+
+        bannerAdsAdapter.setList(items)
     }
 
     private fun renderBannerAdapterList(cpmData: CpmData, appLink: String, adsClickUrl: String) {

@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardModel
@@ -27,7 +26,6 @@ import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.old.view.reimagine.BannerAdsAdapterTypeFactoryReimagine
 import com.tokopedia.topads.sdk.utils.ApplyItemDecorationReimagineHelper.addItemDecoratorShopAdsReimagine
-import com.tokopedia.topads.sdk.utils.TopAdsSdkUtil
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.utils.snaphelper.GravitySnapHelper
 import com.tokopedia.topads.sdk.v2.listener.TopAdsBannerClickListener
@@ -152,7 +150,6 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                     val shopImage = findViewById<ImageView>(R.id.topAdsShopImage)
                     shopImage?.let {
                         shopImage.loadImage(cpmData.cpm.cpmImage.fullEcs)
-                        shopImage.clearImage()
                         cpmData.cpm.cpmShop.imageShop?.let { it1 ->
                             shopImage.addOnImpressionListener(it1) {
                                 impressionListener?.let {

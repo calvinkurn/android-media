@@ -109,7 +109,8 @@ class ShopAdsLayout2View(
             },
             isOfficial = cpmData.cpm.cpmShop.isOfficial,
             isPMPro = cpmData.cpm.cpmShop.isPMPro,
-            impressHolder = cpmData.cpm.cpmShop.imageShop
+            impressHolder = cpmData.cpm.cpmShop.imageShop,
+            isReimagine = isReimagine
         )
     }
 }

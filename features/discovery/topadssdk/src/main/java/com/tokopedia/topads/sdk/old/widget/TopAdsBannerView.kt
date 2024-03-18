@@ -9,6 +9,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
@@ -366,7 +367,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 if (isEligible(cpmData)) {
                     when (cpmData?.cpm?.layout) {
                         LAYOUT_2 -> {
-                            renderShopAdsLayout2(cpmModel, cpmData, appLink, adsClickUrl)
+                            renderShopAdsLayout2(cpmModel, cpmData, appLink, adsClickUrl, isReimagine)
                         }
 
                         else -> {
@@ -402,7 +403,6 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun renderShopAdsLayout11(cpmModel: CpmModel, cpmData: CpmData, appLink: String, adsClickUrl: String) {
         if (bannerAdsRendering == null || bannerAdsRendering !is ShopAdsLayout11View) {
-            currentView = null
             val view = getCurrentView(R.layout.item_ads_shop_layout_11)
             bannerAdsRendering = null
             bannerAdsRendering = ShopAdsLayout11View(
@@ -421,7 +421,6 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun renderShopAdsLayout10(cpmModel: CpmModel, cpmData: CpmData, appLink: String, adsClickUrl: String) {
         if (bannerAdsRendering == null || bannerAdsRendering !is ShopAdsLayout10View) {
-            currentView = null
             val view = getCurrentView(R.layout.item_ads_shop_layout_10)
             bannerAdsRendering = null
             bannerAdsRendering = ShopAdsLayout10View(
@@ -440,7 +439,6 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun renderShopAdsLayout8or9(cpmModel: CpmModel, cpmData: CpmData, appLink: String, adsClickUrl: String) {
         if (bannerAdsRendering == null || bannerAdsRendering !is ShopAdsLayout8or9View) {
-            currentView = null
             val view = getCurrentView(R.layout.item_ads_shop_layout_8_or_9)
             bannerAdsRendering = null
             bannerAdsRendering = ShopAdsLayout8or9View(
@@ -461,7 +459,6 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun renderShopAdsLayout5(cpmModel: CpmModel, cpmData: CpmData, appLink: String, adsClickUrl: String, isReimagine: Boolean) {
         if (bannerAdsRendering == null || bannerAdsRendering !is ShopAdsLayout5View) {
-            currentView = null
             val view = if (isReimagine) {
                 getCurrentView(R.layout.item_ads_shop_layout_5_reimagine)
             } else {
@@ -482,7 +479,6 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun renderShopAdsLayout6(cpmModel: CpmModel, cpmData: CpmData, appLink: String, adsClickUrl: String) {
         if (bannerAdsRendering == null || bannerAdsRendering !is ShopAdsLayout6View) {
-            currentView = null
             val view = getCurrentView(R.layout.item_ads_shop_layout_6)
             bannerAdsRendering = null
             bannerAdsRendering = ShopAdsLayout6View(
@@ -498,7 +494,6 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun renderShopAdsProductListDefault(cpmModel: CpmModel, cpmData: CpmData, appLink: String, adsClickUrl: String, isReimagine: Boolean) {
         if (bannerAdsRendering == null || bannerAdsRendering !is ShopAdsProductListDefaultView) {
-            currentView = null
             val view = if (isReimagine) {
                 getCurrentView(R.layout.item_ads_banner_product_list_default_reimagine)
             } else {
@@ -524,9 +519,8 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         }
     }
 
-    private fun renderShopAdsLayout2(cpmModel: CpmModel, cpmData: CpmData, appLink: String, adsClickUrl: String) {
+    private fun renderShopAdsLayout2(cpmModel: CpmModel, cpmData: CpmData, appLink: String, adsClickUrl: String, isReimagine: Boolean) {
         if (bannerAdsRendering == null || bannerAdsRendering !is ShopAdsLayout2View) {
-            currentView = null
             val view = getCurrentView(R.layout.item_ads_shop_card_view)
             bannerAdsRendering = null
             bannerAdsRendering = ShopAdsLayout2View(
@@ -534,7 +528,8 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 WeakReference(context),
                 topAdsUrlHitter,
                 impressionListener,
-                topAdsBannerViewClickListener
+                topAdsBannerViewClickListener,
+                isReimagine
             )
         }
 
@@ -542,9 +537,13 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     fun getCurrentView(layoutId: Int): View? {
-        if (currentView == null) {
-            currentView = View.inflate(context, layoutId, this)
+        currentView?.let {
+            this.removeView(it)
         }
+        currentView = null
+
+        currentView = LayoutInflater.from(context).inflate(layoutId, this, false)
+        addView(currentView)
         return currentView
     }
 
