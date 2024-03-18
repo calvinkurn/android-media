@@ -74,6 +74,7 @@ object MediaTracking {
         componentTrackDataModel: ComponentTrackDataModel?,
         commonTracker: CommonTracker?
     ) {
+        val componentTracker = componentTrackDataModel ?: return
         val common = commonTracker ?: return
         val action = "click - overlay recomm component"
         val event = "clickPG"
@@ -88,7 +89,7 @@ object MediaTracking {
             "trackerId" to "50210",
             "productId" to common.productId,
             "layout" to TrackingUtil.generateLayoutValue(productInfo = common.productInfo),
-            "component" to componentTrackDataModel?.getComponentData(action).orEmpty(),
+            "component" to componentTracker.getComponentData(action),
             "shopId" to common.shopId,
             "userId" to common.userId
         )
