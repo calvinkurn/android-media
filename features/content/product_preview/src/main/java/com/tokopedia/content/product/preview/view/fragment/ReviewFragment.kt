@@ -30,6 +30,7 @@ import com.tokopedia.content.product.preview.utils.LoginReviewContract
 import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
+import com.tokopedia.content.product.preview.utils.isUsingShare
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewContentAdapter
 import com.tokopedia.content.product.preview.view.listener.ReviewInteractionListener
 import com.tokopedia.content.product.preview.view.listener.ReviewMediaListener
@@ -51,6 +52,7 @@ import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.util.ShareExConstants.DefaultValue.SOURCE
 import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
@@ -67,7 +69,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ReviewFragment @Inject constructor(
     private val analyticsFactory: ProductPreviewAnalytics.Factory,
-    private val router: Router
+    private val router: Router,
+    private val abTestPlatform: AbTestPlatform
 ) : TkpdBaseV4Fragment(),
     ReviewInteractionListener,
     MenuBottomSheet.Listener,
@@ -420,8 +423,10 @@ class ReviewFragment @Inject constructor(
     }
 
     private fun initializeShareEx() {
-        context?.let {
-            shareExInitializer = ShareExInitializer(it)
+        if (abTestPlatform.isUsingShare()) {
+            context?.let {
+                shareExInitializer = ShareExInitializer(it)
+            }
         }
     }
 

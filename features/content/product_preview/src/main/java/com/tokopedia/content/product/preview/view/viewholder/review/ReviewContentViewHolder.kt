@@ -160,6 +160,7 @@ class ReviewContentViewHolder(
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
+        bindShare(item.isShareAble)
         setupTap(item)
     }
 
@@ -375,6 +376,10 @@ class ReviewContentViewHolder(
     ) = with(binding.pcReviewContent) {
         setIndicator(mediaSize)
         setCurrentIndicator(mediaSelectedPosition)
+    }
+
+    private fun bindShare(isUsingShare: Boolean) {
+        binding.ivReviewShare.showWithCondition(isUsingShare)
     }
 
     private fun scrollTo(position: Int) {

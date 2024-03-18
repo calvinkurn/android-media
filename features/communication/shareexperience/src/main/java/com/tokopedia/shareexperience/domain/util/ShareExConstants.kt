@@ -4,6 +4,7 @@ object ShareExConstants {
 
     object Rollence {
         const val ROLLENCE_SHARE_EX = "shareex_an"
+        const val ROLLENCE_SHARE_EX_REVIEW = "an_sharexreview"
     }
 
     object RemoteConfigKey {
