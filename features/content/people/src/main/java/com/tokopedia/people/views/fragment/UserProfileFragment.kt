@@ -132,7 +132,6 @@ class UserProfileFragment @Inject constructor(
     private var shouldRefreshRecyclerView: Boolean = false
     private var isViewMoreClickedBio: Boolean = false
     private var fabCreated: Boolean = false
-    private var isConfigChanges: Boolean = false
 
     private var _binding: UpFragmentUserProfileBinding? = null
 
@@ -179,7 +178,6 @@ class UserProfileFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isConfigChanges = savedInstanceState != null
         setupAttachChildFragmentListener()
     }
 
