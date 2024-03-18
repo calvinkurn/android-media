@@ -1,6 +1,7 @@
 package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.types.TrackContentType
 import com.tokopedia.content.common.usecase.BroadcasterReportTrackViewerUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.play.domain.repository.PlayViewerBroTrackerRepository
@@ -17,11 +18,14 @@ class PlayViewerBroTrackerRepositoryImpl @Inject constructor(
         channelId: String,
         productIds: List<String>
     ) {
+        //TODO: remove track view
         withContext(dispatchers.io) {
             broadcasterReportTrackViewerUseCase.apply {
                 params = BroadcasterReportTrackViewerUseCase.createParams(
-                    channelId,
-                    productIds
+                    channelId = channelId,
+                    productIds = productIds,
+                    event = BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges,
+                    type = TrackContentType.Play
                 )
             }.executeOnBackground()
         }

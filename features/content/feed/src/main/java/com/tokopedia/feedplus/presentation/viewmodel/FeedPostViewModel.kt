@@ -1236,6 +1236,7 @@ class FeedPostViewModel @Inject constructor(
     }
 
     fun trackChannelPerformance(model: FeedCardVideoContentModel) {
+        //TODO: remove track view
         val playChannelId = model.playChannelId
         if (playChannelId.isBlank()) return
 
@@ -1244,8 +1245,10 @@ class FeedPostViewModel @Inject constructor(
             trackReportTrackViewerUseCase.apply {
                 setRequestParams(
                     BroadcasterReportTrackViewerUseCase.createParams(
-                        playChannelId,
-                        productIds
+                        channelId = playChannelId,
+                        productIds = productIds,
+                        event = BroadcasterReportTrackViewerUseCase.Companion.Event.ProductChanges,
+                        type = TrackContentType.Play
                     )
                 )
             }.executeOnBackground()
