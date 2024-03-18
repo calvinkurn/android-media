@@ -1972,7 +1972,7 @@ open class ProductDetailFragment :
             reviewID
         )
 
-        if (enableContentProductPreview) {
+        if (enableContentProductPreview && enableRollenceContentProductPreview) {
             goToProductPreviewActivityReviewSource(
                 reviewId = reviewID,
                 attachmentId = attachmentID
