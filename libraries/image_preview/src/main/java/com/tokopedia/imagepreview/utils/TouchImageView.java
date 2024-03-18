@@ -10,15 +10,13 @@
 
 package com.tokopedia.imagepreview.utils;
 
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -595,6 +593,7 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
         //
         private PointF last = new PointF();
 
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             mScaleDetector.onTouchEvent(event);
@@ -912,14 +911,8 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
         }
     }
 
-    @TargetApi(VERSION_CODES.JELLY_BEAN)
     private void compatPostOnAnimation(Runnable runnable) {
-        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
-            postOnAnimation(runnable);
-
-        } else {
-            postDelayed(runnable, 1000/60);
-        }
+        postOnAnimation(runnable);
     }
 
     private void printMatrixInfo() {
