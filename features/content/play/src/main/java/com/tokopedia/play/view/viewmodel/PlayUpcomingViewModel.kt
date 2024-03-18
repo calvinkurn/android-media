@@ -483,14 +483,13 @@ class PlayUpcomingViewModel @Inject constructor(
     fun startSSE(channelId: String) {
         sseJob?.cancel()
         sseJob = viewModelScope.launch {
-            val socketCredential = getSocketCredential()
-            connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, socketCredential.gcToken)
+            connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, getSocketCredential().gcToken)
             playChannelSSE.listen().collect {
                 when (it) {
                     is SSEAction.Message -> handleSSEMessage(it.message, channelId)
                     is SSEAction.Close -> {
                         if (it.reason == SSECloseReason.ERROR) {
-                            connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, socketCredential.gcToken)
+                            connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, getSocketCredential().gcToken)
                         }
                     }
                 }
