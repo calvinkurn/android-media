@@ -153,6 +153,7 @@ import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.CATEGORY_ID
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
+import com.tokopedia.home.util.HomeRefreshType
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
@@ -1150,7 +1151,7 @@ open class HomeRevampFragment :
 
     private fun conditionalViewModelRefresh() {
         if (!validateChooseAddressWidget()) {
-            getHomeViewModel().refreshWithThreeMinsRules(isFirstInstall = isFirstInstall())
+            getHomeViewModel().refreshWithThreeMinsRules(isFirstInstall = isFirstInstall(), refreshType = HomeRefreshType.AUTO_REFRESH)
         }
     }
 
@@ -1167,7 +1168,7 @@ open class HomeRevampFragment :
                 val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
                     .setLocalCacheModel(localChooseAddressData)
                 getHomeViewModel().updateChooseAddressData(updatedChooseAddressData)
-                getHomeViewModel().refreshHomeData()
+                getHomeViewModel().refreshHomeData(HomeRefreshType.ADDRESS_CHANGED)
             }
 
             return isAddressChanged
@@ -1678,10 +1679,6 @@ open class HomeRevampFragment :
         onActionLinkClicked(actionLink)
     }
 
-    private fun doHomeDataRefresh() {
-        getHomeViewModel().refreshHomeData()
-    }
-
     private fun onGoToSell() {
         if (isUserLoggedIn) {
             val shopId = userShopId
@@ -1923,7 +1920,7 @@ open class HomeRevampFragment :
         removeNetworkError()
         if (this::viewModel.isInitialized) {
             getHomeViewModel().getSearchHint(isFirstInstall())
-            getHomeViewModel().refreshHomeData()
+            getHomeViewModel().refreshHomeData(HomeRefreshType.PULL_TO_REFRESH)
         } else {
             hideLoading()
         }
@@ -1944,7 +1941,8 @@ open class HomeRevampFragment :
             if (getHomeViewModel().homeDataModel.list.isNotEmpty()) {
                 getHomeViewModel().refreshWithThreeMinsRules(
                     forceRefresh = true,
-                    isFirstInstall = isFirstInstall()
+                    isFirstInstall = isFirstInstall(),
+                    refreshType = HomeRefreshType.ADDRESS_CHANGED
                 )
             }
         }
@@ -1972,6 +1970,10 @@ open class HomeRevampFragment :
         getHomeViewModel().onCouponClaim(data, catalogId, couponPosition)
     }
 
+    override fun getHomeRefreshType(): HomeRefreshType {
+        return getHomeViewModel().refreshType
+    }
+
     override fun onChooseAddressServerDown() {
         getHomeViewModel().removeChooseAddressWidget()
     }
@@ -1989,7 +1991,7 @@ open class HomeRevampFragment :
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
         if (::viewModel.isInitialized) {
-            getHomeViewModel().refreshHomeData()
+            getHomeViewModel().refreshHomeData(HomeRefreshType.RELOAD)
         }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
@@ -2262,7 +2264,7 @@ open class HomeRevampFragment :
     }
 
     override fun onDynamicChannelRetryClicked() {
-        getHomeViewModel().refreshHomeData()
+        getHomeViewModel().refreshHomeData(HomeRefreshType.RELOAD)
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {

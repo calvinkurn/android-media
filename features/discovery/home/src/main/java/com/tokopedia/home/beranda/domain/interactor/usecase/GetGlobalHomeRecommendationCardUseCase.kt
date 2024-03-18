@@ -5,6 +5,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeGlobalRecommendationCardMapper
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommendationCardResponse
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeGlobalRecommendationDataModel
 import com.tokopedia.productcard.experiments.ProductCardExperiment
+import com.tokopedia.recommendation_widget_common.byteio.RefreshType
 import com.tokopedia.recommendation_widget_common.infinite.foryou.utils.RecomTemporary
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -26,7 +27,7 @@ class GetGlobalHomeRecommendationCardUseCase @Inject constructor(
         tabName: String,
         paramSource: String,
         location: String,
-        refreshType: Int,
+        refreshType: RefreshType,
         bytedanceSessionId: String,
     ): HomeGlobalRecommendationDataModel {
         graphqlUseCase.setRequestParams(createRequestParams(productPage, paramSource, location, refreshType, bytedanceSessionId))
@@ -42,7 +43,7 @@ class GetGlobalHomeRecommendationCardUseCase @Inject constructor(
         productPage: Int,
         paramSource: String,
         location: String,
-        refreshType: Int,
+        refreshType: RefreshType,
         bytedanceSessionId: String,
     ): Map<String, Any> {
         return RequestParams.create().apply {
@@ -51,7 +52,7 @@ class GetGlobalHomeRecommendationCardUseCase @Inject constructor(
             putString(PARAM_SOURCE_TYPE, paramSource)
             putString(PARAM_LOCATION, location)
             putString(PRODUCT_CARD_VERSION, getProductCardVersion())
-            putInt(REFRESH_TYPE, refreshType)
+            putInt(REFRESH_TYPE, refreshType.value)
             putString(BYTEDANCE_SESSION_ID, bytedanceSessionId)
         }.parameters
     }
@@ -70,11 +71,6 @@ class GetGlobalHomeRecommendationCardUseCase @Inject constructor(
         private const val PRODUCT_CARD_VERSION_V5 = "v5"
         private const val REFRESH_TYPE = "refreshType"
         private const val BYTEDANCE_SESSION_ID = "bytedanceSessionID"
-        const val REFRESH_TYPE_UNKNOWN = -1
-        const val REFRESH_TYPE_OPEN = 0
-        const val REFRESH_TYPE_REFRESH = 1
-        const val REFRESH_TYPE_LOAD_MORE = 2
-        const val REFRESH_TYPE_PUSH = 3
 
         private const val LAYOUTS_VALUE = "product,recom_card,banner_ads,video"
     }

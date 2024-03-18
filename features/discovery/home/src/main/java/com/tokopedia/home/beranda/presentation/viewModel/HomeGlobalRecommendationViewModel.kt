@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.domain.interactor.GetHomeGlobalRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.GetGlobalHomeRecommendationCardUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.GetGlobalHomeRecommendationCardUseCase.Companion.REFRESH_TYPE_LOAD_MORE
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeGlobalRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRecommendationController
@@ -15,6 +14,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.recommendation_widget_common.byteio.RefreshType
 import com.tokopedia.recommendation_widget_common.infinite.foryou.ForYouRecommendationVisitable
 import com.tokopedia.recommendation_widget_common.infinite.foryou.recom.RecommendationCardModel
 import com.tokopedia.recommendation_widget_common.infinite.foryou.state.model.EmptyStateModel
@@ -90,7 +90,7 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
         locationParam: String = "",
         tabIndex: Int = 0,
         sourceType: String,
-        refreshType: Int,
+        refreshType: RefreshType,
     ) {
         recSessionId = ""
         if (HomeRecommendationController.isUsingRecommendationCard()) {
@@ -122,7 +122,7 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
         tabName: String,
         locationParam: String,
         sourceType: String,
-        refreshType: Int
+        refreshType: RefreshType
     ) {
         launchCatchError(coroutineContext, block = {
             val result = getHomeRecommendationCardUseCase.get().execute(
@@ -187,7 +187,7 @@ class HomeGlobalRecommendationViewModel @Inject constructor(
                 tabName,
                 sourceType,
                 locationParam,
-                refreshType = REFRESH_TYPE_LOAD_MORE,
+                refreshType = RefreshType.LOAD_MORE,
                 bytedanceSessionId = recSessionId
             )
 
