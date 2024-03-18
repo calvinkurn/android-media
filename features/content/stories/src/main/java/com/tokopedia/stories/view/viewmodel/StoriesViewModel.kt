@@ -300,6 +300,7 @@ class StoriesViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launch { repository.setHasAckStoriesFeature() }
+        viewModelScope.launchCatchError(block = { repository.getReportSummary(storyId)}) {}
     }
 
     private fun handleMainData(selectedGroup: Int) {
