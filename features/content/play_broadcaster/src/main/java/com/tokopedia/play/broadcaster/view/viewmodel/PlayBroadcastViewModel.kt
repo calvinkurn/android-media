@@ -643,6 +643,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.ChangePresetValue -> handleChangePresetValue(event.newValue)
 
             /** Report */
+            is PlayBroadcastAction.GetLiveReportSummary -> handleGetLiveReportSummary()
             is PlayBroadcastAction.GetProductReportSummary -> handleGetProductReportSummary()
 
             /** Log */
@@ -1071,7 +1072,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
             }
             is LiveStats -> {
-                updateLiveStats(
+                updateLiveReportSummary(
                     listOf(
                         LiveStatsUiModel.Viewer(result.liveConcurrentUsers),
                         LiveStatsUiModel.TotalViewer(result.visitChannel),
@@ -1817,6 +1818,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             startWebSocket()
             getPinnedMessage()
             getInteractiveConfig()
+            submitAction(PlayBroadcastAction.GetLiveReportSummary)
         }) {
             logger.logBroadcastError(it)
             _uiEvent.emit(
@@ -2014,6 +2016,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         saveBeautificationConfig()
+    }
+
+    private fun handleGetLiveReportSummary() {
+        viewModelScope.launchCatchError(block = {
+            val response = repo.getReportSummary(channelId, selectedAccount.isShop)
+            updateLiveReportSummary(response.liveStats, response.timestamp)
+        }) {
+
+        }
     }
 
     private fun handleGetProductReportSummary() {
@@ -2471,7 +2482,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun updateLiveStats(newLiveStats: List<LiveStatsUiModel>, timestamp: String) {
+    private fun updateLiveReportSummary(newLiveStats: List<LiveStatsUiModel>, timestamp: String) {
         _liveReportSummary.update {
             if (timestamp.length >= it.timestamp.length && timestamp > it.timestamp) {
                 it.copy(
